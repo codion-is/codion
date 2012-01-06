@@ -60,7 +60,7 @@ public final class DateInputPanel extends JPanel {
           try {
             currentValue = getDate();
           }
-          catch (ParseException ex) {/**/}
+          catch (ParseException ignored) {}
           final Date newValue = UiUtil.getDateFromUser(currentValue, Messages.get(Messages.SELECT_DATE), inputField);
           inputField.setText(dateFormat.format(newValue));
         }

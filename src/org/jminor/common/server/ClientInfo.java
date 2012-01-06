@@ -118,7 +118,7 @@ public final class ClientInfo implements Serializable {
     }
 
     final StringBuilder builder = new StringBuilder(user.toString());
-    if (databaseUser != null && databaseUser != user) {
+    if (databaseUser != null && !user.equals(databaseUser)) {
       builder.append(" (databaseUser: ").append(databaseUser.toString()).append(")");
     }
     builder.append("@").append(clientHost).append(" [").append(clientTypeID).append("] - ").append(clientID.toString());

@@ -206,12 +206,12 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
     try {
       UnicastRemoteObject.unexportObject(this, true);
     }
-    catch (NoSuchObjectException e) {/**/}
+    catch (NoSuchObjectException ignored) {}
     for (final LoginProxy proxy : loginProxies.values()) {
       try {
         proxy.close();
       }
-      catch (Exception e) {/**/}
+      catch (Exception ignored) {}
     }
 
     handleShutdown();

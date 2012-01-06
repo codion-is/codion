@@ -456,7 +456,7 @@ public final class Util {
         objects.add(inputStream.readObject());
       }
     }
-    catch (EOFException ex) {/**/}
+    catch (EOFException ignored) {}
     catch (Exception e) {
       throw new RuntimeException(e);
     }

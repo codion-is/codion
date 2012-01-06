@@ -1032,7 +1032,7 @@ public final class UiUtil {
           final File file = selectFile(txtFilename, getParentPath(txtFilename.getText()));
           txtFilename.setText(file.getAbsolutePath());
         }
-        catch (CancelException ex) {/**/}
+        catch (CancelException ignored) {}
       }
     };
   }

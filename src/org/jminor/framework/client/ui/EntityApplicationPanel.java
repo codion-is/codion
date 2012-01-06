@@ -881,7 +881,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         try {
           exit();
         }
-        catch(CancelException uc) {/**/}
+        catch(CancelException ignored) {}
       }
     });
     frame.getContentPane().setLayout(new BorderLayout());

@@ -17,7 +17,7 @@ import java.util.Timer;
 import java.util.TimerTask;
 
 /**
- * A DatabaseMonitor 
+ * A DatabaseMonitor
  */
 public final class DatabaseMonitor {
 
@@ -110,7 +110,7 @@ public final class DatabaseMonitor {
         try {
           updateStats();
         }
-        catch (RemoteException e) {/**/}
+        catch (RemoteException ignored) {}
       }
     }, delay, delay);
   }

@@ -142,7 +142,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
         checkConnectionStatement.close();
       }
     }
-    catch (Exception e) {/**/}
+    catch (Exception ignored) {}
     try {
       if (connection != null && !connection.isClosed()) {
         connection.rollback();
@@ -266,7 +266,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
           resultSet.close();
         }
       }
-      catch (SQLException e) {/**/}
+      catch (SQLException ignored) {}
       methodLogger.logExit("query", exception, null);
     }
   }
@@ -418,7 +418,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
           statement.close();
         }
       }
-      catch (SQLException e) {/**/}
+      catch (SQLException ignored) {}
       methodLogger.logExit("executeCallableStatement", exception, null);
     }
   }
@@ -447,7 +447,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
           statement.close();
         }
       }
-      catch (SQLException e) {/**/}
+      catch (SQLException ignored) {}
       methodLogger.logExit(EXECUTE, exception, null);
     }
   }
@@ -511,7 +511,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
           statement.close();
         }
       }
-      catch (SQLException e) {/**/}
+      catch (SQLException ignored) {}
       methodLogger.logExit(EXECUTE, exception, null);
     }
   }
@@ -590,7 +590,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
           rs.close();
         }
       }
-      catch (Exception e) {/**/}
+      catch (Exception ignored) {}
     }
   }
 

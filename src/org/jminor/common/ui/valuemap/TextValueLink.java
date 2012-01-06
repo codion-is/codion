@@ -184,6 +184,9 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    * A simple null format, which performs no formatting
    */
   private static final class NullFormat extends Format {
+
+    private static final long serialVersionUID = 1;
+
     /** {@inheritDoc} */
     @Override
     public StringBuffer format(final Object obj, final StringBuffer toAppendTo, final FieldPosition pos) {

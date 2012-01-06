@@ -507,10 +507,8 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   private void setTableEditModel(final EntityEditModel editModel, final EntityTableModel tableModel) {
-    if (tableModel != null) {
-      if (!entityID.equals(tableModel.getEntityID())) {
-        throw new IllegalArgumentException("Table model entityID mismatch, found: " + tableModel.getEntityID() + ", required: " + entityID);
-      }
+    if (tableModel != null && !entityID.equals(tableModel.getEntityID())) {
+      throw new IllegalArgumentException("Table model entityID mismatch, found: " + tableModel.getEntityID() + ", required: " + entityID);
     }
     if (tableModel != null) {
       if (tableModel.hasEditModel()) {

@@ -461,7 +461,7 @@ class PropertyImpl implements Property, Serializable {
     private boolean searchable = true;
     private boolean groupingColumn = false;
     private boolean aggregateColumn = false;
-    private ForeignKeyProperty foreignKeyProperty;
+    private ForeignKeyProperty foreignKeyProperty = null;
 
     ColumnPropertyImpl(final String propertyID, final int type, final String caption) {
       super(propertyID, type, caption);

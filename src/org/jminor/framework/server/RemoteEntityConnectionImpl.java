@@ -497,7 +497,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     if (!Util.nullOrEmpty(initialPoolUsers)) {
       for (final String commaSplit : initialPoolUsers.split(",")) {
         final String usernamePassword = commaSplit.trim();
-        final int splitIndex = usernamePassword.indexOf(":");
+        final int splitIndex = usernamePassword.indexOf(':');
         if (splitIndex == -1) {
           throw new IllegalArgumentException("Username and password for pooled connection should be separated by ':', " + usernamePassword);
         }

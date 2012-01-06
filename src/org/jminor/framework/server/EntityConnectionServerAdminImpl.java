@@ -481,7 +481,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     if (arguments.length == 0) {
       startServer();
     }
-    else if (arguments[0].toLowerCase().equals("shutdown")) {
+    else if (arguments[0].equalsIgnoreCase("shutdown")) {
       shutdownServer();
     }
   }

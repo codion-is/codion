@@ -2641,3 +2641,4 @@
   Entities.getDefinitions() now uses a LinkedHashMap for a defined iteration order
   EntityDefinitionImpl.ENTITY_DEFINITIONS is now a LinkedHashMap for a defined iteration order
   DefaultEntityApplicationModelTest.getDependencyTreeModel() now uses preorderEnumeration when going through dependency tree
+  Sonar run
