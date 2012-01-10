@@ -49,7 +49,7 @@ public final class DateUtil {
         format.parse(dateString);
         return true;
       }
-      catch (ParseException e) {/**/}
+      catch (ParseException ignored) {}
     }
 
     return false;

@@ -355,7 +355,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
     try {
       Thread.sleep(random.nextInt(maximumRetryWaitPeriod));
     }
-    catch (InterruptedException e) {/**/}
+    catch (InterruptedException ignored) {}
   }
 
   private boolean isNewConnectionWarranted(final long elapsedTime) {

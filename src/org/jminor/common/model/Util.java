@@ -711,7 +711,7 @@ public final class Util {
           resultSet.close();
         }
       }
-      catch (SQLException e) {/**/}
+      catch (SQLException ignored) {}
     }
   }
 
@@ -729,7 +729,7 @@ public final class Util {
           statement.close();
         }
       }
-      catch (SQLException e) {/**/}
+      catch (SQLException ignored) {}
     }
   }
 
@@ -747,7 +747,7 @@ public final class Util {
           closeable.close();
         }
       }
-      catch (Exception e) {/**/}
+      catch (Exception ignored) {}
     }
   }
 

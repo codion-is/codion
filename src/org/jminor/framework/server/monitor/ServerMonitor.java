@@ -304,7 +304,7 @@ public final class ServerMonitor {
             updateStats();
           }
         }
-        catch (RemoteException e) {/**/}
+        catch (RemoteException ignored) {}
       }
     }, delay, delay);
   }

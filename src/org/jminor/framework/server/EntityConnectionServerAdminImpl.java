@@ -152,11 +152,11 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     try {
       Util.getRegistry(server.getRegistryPort()).unbind(server.getServerName());
     }
-    catch (NotBoundException e) {/**/}
+    catch (NotBoundException ignored) {}
     try {
       Util.getRegistry(server.getRegistryPort()).unbind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName());
     }
-    catch (NotBoundException e) {/**/}
+    catch (NotBoundException ignored) {}
 
     final String shutdownInfo = server.getServerName() + " removed from registry";
     LOG.info(shutdownInfo);
@@ -167,7 +167,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     try {
       UnicastRemoteObject.unexportObject(this, true);
     }
-    catch (NoSuchObjectException e) {/**/}
+    catch (NoSuchObjectException ignored) {}
   }
 
   /** {@inheritDoc} */

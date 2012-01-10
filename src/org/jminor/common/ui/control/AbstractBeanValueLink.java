@@ -138,12 +138,12 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
       try {
         return getValueOwner().getClass().getMethod("is" + propertyName);
       }
-      catch (NoSuchMethodException e) {/**/}
+      catch (NoSuchMethodException ignored) {}
       try {
         return getValueOwner().getClass().getMethod(propertyName.substring(0, 1).toLowerCase()
                 + propertyName.substring(1, propertyName.length()));
       }
-      catch (NoSuchMethodException e) {/**/}
+      catch (NoSuchMethodException ignored) {}
     }
 
     return getValueOwner().getClass().getMethod("get" + propertyName);

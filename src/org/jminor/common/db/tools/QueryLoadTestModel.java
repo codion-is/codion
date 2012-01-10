@@ -146,7 +146,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
           try {
             connection.rollback();
           }
-          catch (SQLException e1) {/**/}
+          catch (SQLException ignored) {}
         }
         throw new ScenarioException(e);
       }

@@ -385,7 +385,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
       try {
         Thread.sleep(maximumThinkTime);
       }
-      catch (InterruptedException e) {/**/}
+      catch (InterruptedException ignored) {}
     }
     evtDoneExiting.fire();
   }

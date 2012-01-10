@@ -6,10 +6,11 @@ package org.jminor.common.db.tools;
 import org.jminor.common.db.Databases;
 import org.jminor.common.model.User;
 
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.util.Arrays;
+
+import static org.junit.Assert.assertTrue;
 
 public final class QueryLoadTestModelTest {
 
@@ -36,12 +37,12 @@ public final class QueryLoadTestModelTest {
     try {
       Thread.sleep(1500);
     }
-    catch (InterruptedException e) {/**/}
+    catch (InterruptedException ignored) {}
     loadTest.removeApplicationBatch();
     try {
       Thread.sleep(500);
     }
-    catch (InterruptedException e) {/**/}
+    catch (InterruptedException ignored) {}
     assertTrue(SELECT_ALBUMS.getSuccessfulRunCount() > 0);
     assertTrue(SELECT_CUSTOMERS.getSuccessfulRunCount() > 0);
     assertTrue(SELECT_DEPARTMENTS.getSuccessfulRunCount() > 0);

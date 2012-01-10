@@ -922,7 +922,7 @@ public final class EntityUiUtil {
                     true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null);
             editModel.setValue(foreignKeyProperty.getPropertyID(), !selected.isEmpty() ? selected.iterator().next() : null);
           }
-          catch (CancelException ex) {/**/}
+          catch (CancelException ignored) {}
         }
       });
       btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);

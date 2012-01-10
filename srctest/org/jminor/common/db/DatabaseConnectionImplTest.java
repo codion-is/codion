@@ -91,14 +91,14 @@ public class DatabaseConnectionImplTest {
         new DatabaseConnectionImpl(DATABASE, connection);
         fail("Should not be able to create a connection with a closed connection");
       }
-      catch (IllegalArgumentException e) {/**/}
+      catch (IllegalArgumentException ignored) {}
     }
     finally {
       if (connection != null) {
         try {
           connection.close();
         }
-        catch (Exception e) {/**/}
+        catch (Exception ignored) {}
       }
     }
   }

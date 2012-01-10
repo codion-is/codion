@@ -2648,3 +2648,4 @@
   Util.countLines() now throws IOException instead of wrapping it in a RuntimeException
   Util.writeFile() now throws IOException instead of wrapping it in a RuntimeException
   UiUtil.showImage() now throws FileNotFoundException instead of RuntimeException when the image file can not be found
+  Ignored exceptions now named ignored

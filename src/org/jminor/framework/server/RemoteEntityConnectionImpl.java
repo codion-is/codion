@@ -158,7 +158,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
       try {
         clientInfo.setClientHost(getClientHost());
       }
-      catch (ServerNotActiveException e) {/**/}
+      catch (ServerNotActiveException ignored) {}
     }
     catch (DatabaseException e) {
       disconnect();

@@ -727,7 +727,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     try {
       rollback();
     }
-    catch (SQLException e) {/**/}
+    catch (SQLException ignored) {}
   }
 
   private static String createLogMessage(final User user, final String sqlStatement, final List<?> values, final SQLException exception, final LogEntry entry) {

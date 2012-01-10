@@ -49,7 +49,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     try {
       model.refresh();
     }
-    catch (Exception e) {/**/}
+    catch (Exception ignored) {}
 
     return applicationModel;
   }
@@ -159,7 +159,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         Thread.sleep(random.nextInt(1500));
         application.getConnectionProvider().getConnection();
       }
-      catch (InterruptedException e) {/**/}
+      catch (InterruptedException ignored) {}
     }
     @Override
     public int getDefaultWeight() {
