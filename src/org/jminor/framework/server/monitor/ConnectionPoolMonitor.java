@@ -250,16 +250,16 @@ public final class ConnectionPoolMonitor {
             poolStatistics.getMininumCheckOutTime(), poolStatistics.getMaximumCheckOutTime());
     final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStatistics.getFineGrainedStatistics());
     if (!stats.isEmpty()) {
-      final XYSeries inPoolSeries = new XYSeries("In pool");
-      final XYSeries inUseSeries = new XYSeries("In use");
+      final XYSeries fineGrainedInPoolSeries = new XYSeries("In pool");
+      final XYSeries fineGrainedInUseSeries = new XYSeries("In use");
       for (final ConnectionPoolState inPool : stats) {
-        inPoolSeries.add(inPool.getTimestamp(), inPool.getSize());
-        inUseSeries.add(inPool.getTimestamp(), inPool.getInUse());
+        fineGrainedInPoolSeries.add(inPool.getTimestamp(), inPool.getSize());
+        fineGrainedInUseSeries.add(inPool.getTimestamp(), inPool.getInUse());
       }
 
       this.fineGrainedStatisticsCollection.removeAllSeries();
-      this.fineGrainedStatisticsCollection.addSeries(inPoolSeries);
-      this.fineGrainedStatisticsCollection.addSeries(inUseSeries);
+      this.fineGrainedStatisticsCollection.addSeries(fineGrainedInPoolSeries);
+      this.fineGrainedStatisticsCollection.addSeries(fineGrainedInUseSeries);
     }
     evtStatisticsUpdated.fire();
   }
