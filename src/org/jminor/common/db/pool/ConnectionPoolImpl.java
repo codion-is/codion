@@ -123,7 +123,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   /** {@inheritDoc} */
   public void returnConnection(final PoolableConnection connection) {
     if (connection.isTransactionOpen()) {
-      throw new RuntimeException("Open transaction");
+      throw new IllegalStateException("Open transaction");
     }
     if (closed || !connection.isValid()) {
       synchronized (pool) {

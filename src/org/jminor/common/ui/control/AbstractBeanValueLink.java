@@ -52,6 +52,7 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
    * @param valueChangeEvent an event observer notified each time the value changes
    * @param linkType the link type
    * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
+   * @throws IllegalArgumentException in case the required accessor methods are missing the the owner class
    */
   public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> valueClass,
                                final EventObserver valueChangeEvent, final LinkType linkType,
@@ -74,7 +75,7 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
       }
     }
     catch (NoSuchMethodException e) {
-      throw new RuntimeException("Bean property methods for " + propertyName + ", type: " + valueClass + " not found in class " + owner.getClass().getName(), e);
+      throw new IllegalArgumentException("Bean property methods for " + propertyName + ", type: " + valueClass + " not found in class " + owner.getClass().getName(), e);
     }
   }
 

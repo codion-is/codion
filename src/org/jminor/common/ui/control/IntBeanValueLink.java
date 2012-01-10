@@ -74,11 +74,7 @@ public class IntBeanValueLink extends TextBeanValueLink {
     if (text.isEmpty() && getValueClass().equals(int.class)) {
       return 0;
     }
-    try {
-      return Util.getInt(getText());
-    }
-    catch (NumberFormatException nf) {
-      throw new RuntimeException(nf);
-    }
+
+    return Util.getInt(getText());
   }
 }

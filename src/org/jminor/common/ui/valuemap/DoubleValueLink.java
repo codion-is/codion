@@ -46,11 +46,6 @@ public final class DoubleValueLink<K> extends TextValueLink<K> {
   /** {@inheritDoc} */
   @Override
   protected Object getValueFromText(final String text) {
-    try {
-      return Util.getDouble(text);
-    }
-    catch (NumberFormatException nf) {
-      throw new RuntimeException(nf);
-    }
+    return Util.getDouble(text);
   }
 }

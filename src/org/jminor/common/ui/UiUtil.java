@@ -72,6 +72,7 @@ import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
 import java.io.File;
+import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
@@ -1051,7 +1052,7 @@ public final class UiUtil {
    * is checked against the <code>acceptedFileTypes</code> collection.
    * @param dialogParent the component to use as dialog parent
    * @param acceptedFileTypes a collection of lower case file type suffixes, "gif", "jpeg"...
-   * @throws IOException in case of an IO exception
+   * @throws IOException in case of an IO exception, f.ex. if the image file is not found
    * @throws IllegalArgumentException in case the file type is not accepted
    */
   public static void showImage(final String imagePath, final JComponent dialogParent,
@@ -1080,7 +1081,7 @@ public final class UiUtil {
       else {
         final File imageFile = new File(imagePath);
         if (!imageFile.exists()) {
-          throw new RuntimeException(Messages.get(Messages.FILE_NOT_FOUND) + ": " + imagePath);
+          throw new FileNotFoundException(Messages.get(Messages.FILE_NOT_FOUND) + ": " + imagePath);
         }
         image = ImageIO.read(imageFile);
       }

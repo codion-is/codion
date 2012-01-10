@@ -280,16 +280,18 @@ public final class Util {
   /**
    * @param filename the name of the file
    * @return the number of lines in the given file
+   * @throws java.io.IOException in case the file can not be read
    */
-  public static int countLines(final String filename) {
+  public static int countLines(final String filename) throws IOException {
     return countLines(new File(filename));
   }
 
   /**
    * @param file the file
    * @return the number of lines in the given file
+   * @throws java.io.IOException in case the file can not be read
    */
-  public static int countLines(final File file) {
+  public static int countLines(final File file) throws IOException {
     BufferedReader reader = null;
     try {
       reader = new BufferedReader(new FileReader(file));
@@ -300,16 +302,13 @@ public final class Util {
 
       return lines;
     }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
     finally {
       Util.closeSilently(reader);
     }
   }
 
   /**
-   * Fetch the entire contents of a resource textfile, and return it in a String, using the default Charset.
+   * Fetch the entire contents of a resource text file, and return it in a String, using the default Charset.
    * @param resourceClass the resource class
    * @param resourceName the name of the resource to retrieve
    * @return the contents of the resource file
@@ -422,15 +421,15 @@ public final class Util {
   }
 
   public static void writeDelimitedFile(final String[][] headers, final String[][] data, final String delimiter,
-                                        final File file) {
+                                        final File file) throws IOException {
     writeFile(getDelimitedString(headers, data, delimiter), file);
   }
 
-  public static void writeFile(final String contents, final File file) {
+  public static void writeFile(final String contents, final File file) throws IOException {
     writeFile(contents, file, false);
   }
 
-  public static void writeFile(final String contents, final File file, final boolean append) {
+  public static void writeFile(final String contents, final File file, final boolean append) throws IOException {
     rejectNullValue(contents, "contents");
     rejectNullValue(file, "file");
     BufferedWriter writer = null;
@@ -438,9 +437,6 @@ public final class Util {
       final FileWriter fileWriter = new FileWriter(file, append);
       writer = new BufferedWriter(fileWriter);
       writer.write(contents);
-    }
-    catch (IOException e) {
-      throw new RuntimeException(e);
     }
     finally {
       closeSilently(writer);

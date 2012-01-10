@@ -40,7 +40,7 @@ public final class MethodControl extends Control {
    * @param owner the object owning the method being called
    * @param methodName the name of the method to call
    * @param enabledState if specified then this control will only be enabled when this state is
-   * @throws RuntimeException if the method was not found in the owner object
+   * @throws IllegalArgumentException if the method was not found in the owner object
    */
   public MethodControl(final String name, final Object owner, final String methodName, final StateObserver enabledState) {
     super(name, enabledState);
@@ -51,7 +51,7 @@ public final class MethodControl extends Control {
       this.method = owner.getClass().getMethod(methodName);
     }
     catch (NoSuchMethodException e) {
-      throw new RuntimeException("Method " + methodName + " not found in class " + owner.getClass().getName(), e);
+      throw new IllegalArgumentException("Method " + methodName + " not found in class " + owner.getClass().getName(), e);
     }
   }
 

@@ -385,7 +385,7 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
-  private void handleInsert(final InsertEvent insertEvent) {
+  private void handleInsert(final InsertEvent insertEvent) throws DatabaseException {
     final List<Entity.Key> primaryKeys = insertEvent.getInsertedKeys();
     if (containsTableModel()) {
       tableModel.clearSelection();
@@ -457,27 +457,22 @@ public class DefaultEntityModel implements EntityModel {
    * and sets the value of the master property to the entity with the primary key found
    * at index 0 in <code>insertedPrimaryKeys</code>
    * @param insertedPrimaryKeys the primary keys of the inserted entities
+   * @throws DatabaseException in case of an exception while selecting the newly inserted entities
    */
-  private void refreshDetailModelsAfterInsert(final List<Entity.Key> insertedPrimaryKeys) {
+  private void refreshDetailModelsAfterInsert(final List<Entity.Key> insertedPrimaryKeys) throws DatabaseException {
     if (detailModels.isEmpty()) {
       return;
     }
-
-    try {
-      final Entity insertedEntity = connectionProvider.getConnection().selectSingle(insertedPrimaryKeys.get(0));
-      for (final EntityModel detailModel : detailModels) {
-        for (final Property.ForeignKeyProperty foreignKeyProperty :
-                Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
-          final EntityEditModel detailEditModel = detailModel.getEditModel();
-          if (detailEditModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
-            detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
-          }
-          detailEditModel.setValue(foreignKeyProperty.getPropertyID(), insertedEntity);
+    final Entity insertedEntity = connectionProvider.getConnection().selectSingle(insertedPrimaryKeys.get(0));
+    for (final EntityModel detailModel : detailModels) {
+      for (final Property.ForeignKeyProperty foreignKeyProperty :
+              Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
+        final EntityEditModel detailEditModel = detailModel.getEditModel();
+        if (detailEditModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
+          detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
         }
+        detailEditModel.setValue(foreignKeyProperty.getPropertyID(), insertedEntity);
       }
-    }
-    catch (DatabaseException ex) {
-      throw new RuntimeException(ex);
     }
   }
 
@@ -527,7 +522,12 @@ public class DefaultEntityModel implements EntityModel {
       /** {@inheritDoc} */
       @Override
       public void inserted(final InsertEvent event) {
-        handleInsert(event);
+        try {
+          handleInsert(event);
+        }
+        catch (DatabaseException e) {
+          throw new RuntimeException(e);
+        }
       }
     });
     editModel.addAfterUpdateListener(new UpdateListener() {

@@ -45,11 +45,6 @@ public final class IntValueLink<K> extends TextValueLink<K> {
   /** {@inheritDoc} */
   @Override
   protected Object getValueFromText(final String text) {
-    try {
-      return Util.getInt(text);
-    }
-    catch (NumberFormatException nf) {
-      throw new RuntimeException(nf);
-    }
+    return Util.getInt(text);
   }
 }

@@ -2642,3 +2642,9 @@
   EntityDefinitionImpl.ENTITY_DEFINITIONS is now a LinkedHashMap for a defined iteration order
   DefaultEntityApplicationModelTest.getDependencyTreeModel() now uses preorderEnumeration when going through dependency tree
   Sonar run
+  DefaultEntityModel.refreshDetailModelsAfterDelete() now throws DatabaseException instead of RuntimeException
+  ConnectionPoolImpl.returnConnection() now throws IllegalStateException instead of RuntimeException in case a transaction is open
+  MethodControl constructor now throws IllegalArgumentException instead of RuntimeException
+  Util.countLines() now throws IOException instead of wrapping it in a RuntimeException
+  Util.writeFile() now throws IOException instead of wrapping it in a RuntimeException
+  UiUtil.showImage() now throws FileNotFoundException instead of RuntimeException when the image file can not be found

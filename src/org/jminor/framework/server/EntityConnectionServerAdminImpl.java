@@ -432,7 +432,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   private static void startServer() throws RemoteException, ClassNotFoundException {
     final Integer serverPort = (Integer) Configuration.getValue(Configuration.SERVER_PORT);
     if (serverPort == null) {
-      throw new RuntimeException("Configuration property '" + Configuration.SERVER_PORT + "' is required");
+      throw new IllegalArgumentException("Configuration property '" + Configuration.SERVER_PORT + "' is required");
     }
     final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
     final int serverAdminPort = Configuration.getIntValue(Configuration.SERVER_ADMIN_PORT);

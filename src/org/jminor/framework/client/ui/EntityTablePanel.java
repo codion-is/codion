@@ -85,6 +85,7 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.print.PrinterException;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -685,6 +686,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       final List<Entity> selected = getEntityTableModel().getSelectedItems();
       Util.writeFile(EntityUtil.getEntitySerializer().serialize(selected), UiUtil.chooseFileToSave(this, null, null));
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
+    }
+    catch (IOException e) {
+      handleException(e);
     }
     catch (Serializer.SerializeException e) {
       handleException(e);

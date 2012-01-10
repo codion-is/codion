@@ -15,7 +15,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 
 /**
- * A PoolMonitor
+ * A class responsible for monitoring the connection pools of a given EntityConnectionServer.
  */
 public final class PoolMonitor {
 

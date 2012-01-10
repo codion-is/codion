@@ -207,7 +207,7 @@ public final class ExceptionDialog extends JDialog {
     }
   }
 
-  public void saveErrorReport() {
+  public void saveErrorReport() throws IOException {
     try {
       Util.writeFile(detailsArea.getText(), UiUtil.chooseFileToSave(detailsArea, null, null));
     }

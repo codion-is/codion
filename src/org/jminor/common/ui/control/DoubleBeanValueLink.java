@@ -72,11 +72,7 @@ public class DoubleBeanValueLink extends TextBeanValueLink {
     if (text.isEmpty() && getValueClass().equals(double.class)) {
       return 0;
     }
-    try {
-      return Util.getDouble(getText());
-    }
-    catch (NumberFormatException nf) {
-      throw new RuntimeException(nf);
-    }
+
+    return Util.getDouble(getText());
   }
 }
