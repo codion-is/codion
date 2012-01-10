@@ -35,12 +35,12 @@ public class EntityServerMonitorPanelTest {
     final DatabaseMonitor databaseMonitor = serverMonitor.getDatabaseMonitor();
     databaseMonitor.setStatsUpdateInterval(350);
     final ConnectionPoolMonitor poolMonitor = databaseMonitor.getConnectionPoolMonitor().getConnectionPoolInstanceMonitors().iterator().next();
-    poolMonitor.setCollectFineGrainedStats(true);
-    poolMonitor.setStatsUpdateInterval(300);
+    poolMonitor.setCollectFineGrainedStatistics(true);
+    poolMonitor.setStatisticsUpdateInterval(300);
 
     Thread.sleep(1000);
-    poolMonitor.resetStats();
-    poolMonitor.resetInPoolStats();
+    poolMonitor.resetStatistics();
+    poolMonitor.resetInPoolStatistics();
 
     poolMonitor.shutdown();
     Thread.sleep(500);

@@ -34,22 +34,22 @@ public final class ConnectionPoolMonitor {
 
   private static final int THOUSAND = 1000;
 
-  private final Event evtStatsUpdated = Events.event();
-  private final Event evtStatsUpdateIntervalChanged = Events.event();
+  private final Event evtStatisticsUpdated = Events.event();
+  private final Event evtStatisticsUpdateIntervalChanged = Events.event();
   private final Event evtCollectFineGrainedStatsChanged = Events.event();
   private final Event evtRefresh = Events.event();
 
   private final User user;
-  private final ConnectionPool pool;
-  private ConnectionPoolStatistics poolStats;
+  private final ConnectionPool connectionPool;
+  private ConnectionPoolStatistics poolStatistics;
 
   private final XYSeries poolSizeSeries = new XYSeries("Size");
   private final XYSeries minimumPoolSizeSeries = new XYSeries("Min");
   private final XYSeries maximumPoolSizeSeries = new XYSeries("Max");
-  private final XYSeries inPoolSeriesMacro = new XYSeries("In pool");
-  private final XYSeries inUseSeriesMacro = new XYSeries("In use");
-  private final XYSeriesCollection statsCollection = new XYSeriesCollection();
-  private final XYSeriesCollection macroStatsCollection = new XYSeriesCollection();
+  private final XYSeries inPoolSeries = new XYSeries("In pool");
+  private final XYSeries inUseSeries = new XYSeries("In use");
+  private final XYSeriesCollection fineGrainedStatisticsCollection = new XYSeriesCollection();
+  private final XYSeriesCollection statisticsCollection = new XYSeriesCollection();
   private final XYSeries delayedRequestsPerSecond = new XYSeries("Delayed");
   private final XYSeries failedRequestsPerSecond = new XYSeries("Failed");
   private final XYSeries connectionRequestsPerSecond = new XYSeries("Requests");
@@ -57,110 +57,110 @@ public final class ConnectionPoolMonitor {
   private final YIntervalSeries averageCheckOutTime = new YIntervalSeries("Average check out time");
   private final YIntervalSeriesCollection checkOutTimeCollection = new YIntervalSeriesCollection();
 
-  private long lastStatsUpdateTime = 0;
+  private long lastStatisticsUpdateTime = 0;
 
   private Timer updateTimer;
-  private int statsUpdateInterval;
+  private int statisticsUpdateInterval;
 
-  public ConnectionPoolMonitor(final ConnectionPool pool) throws RemoteException {
-    this.user = pool.getUser();
-    this.pool = pool;
-    this.macroStatsCollection.addSeries(inPoolSeriesMacro);
-    this.macroStatsCollection.addSeries(inUseSeriesMacro);
-    this.macroStatsCollection.addSeries(poolSizeSeries);
-    this.macroStatsCollection.addSeries(minimumPoolSizeSeries);
-    this.macroStatsCollection.addSeries(maximumPoolSizeSeries);
+  public ConnectionPoolMonitor(final ConnectionPool connectionPool) throws RemoteException {
+    this.user = connectionPool.getUser();
+    this.connectionPool = connectionPool;
+    this.statisticsCollection.addSeries(inPoolSeries);
+    this.statisticsCollection.addSeries(inUseSeries);
+    this.statisticsCollection.addSeries(poolSizeSeries);
+    this.statisticsCollection.addSeries(minimumPoolSizeSeries);
+    this.statisticsCollection.addSeries(maximumPoolSizeSeries);
     this.connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecond);
     this.connectionRequestsPerSecondCollection.addSeries(delayedRequestsPerSecond);
     this.connectionRequestsPerSecondCollection.addSeries(failedRequestsPerSecond);
     this.checkOutTimeCollection.addSeries(averageCheckOutTime);
-    updateStats();
-    setStatsUpdateInterval(3);
+    updateStatistics();
+    setStatisticsUpdateInterval(3);
   }
 
   public User getUser() {
     return user;
   }
 
-  public ConnectionPoolStatistics getConnectionPoolStats() {
-    return poolStats;
+  public ConnectionPoolStatistics getConnectionPoolStatistics() {
+    return poolStatistics;
   }
 
   public int getPooledConnectionTimeout() {
-    return pool.getConnectionTimeout() / THOUSAND;
+    return connectionPool.getConnectionTimeout() / THOUSAND;
   }
 
   public void setPooledConnectionTimeout(final int value) {
-    pool.setConnectionTimeout(value * THOUSAND);
+    connectionPool.setConnectionTimeout(value * THOUSAND);
   }
 
   public int getPoolCleanupInterval() {
-    return pool.getCleanupInterval() / THOUSAND;
+    return connectionPool.getCleanupInterval() / THOUSAND;
   }
 
   public void setPoolCleanupInterval(final int value) {
-    pool.setCleanupInterval(value);
+    connectionPool.setCleanupInterval(value);
   }
 
   public int getMinimumPoolSize() {
-    return pool.getMinimumPoolSize();
+    return connectionPool.getMinimumPoolSize();
   }
 
   public void setMinimumPoolSize(final int value) {
-    pool.setMinimumPoolSize(value);
+    connectionPool.setMinimumPoolSize(value);
   }
 
   public int getMaximumPoolSize() {
-    return pool.getMaximumPoolSize();
+    return connectionPool.getMaximumPoolSize();
   }
 
   public void setMaximumPoolSize(final int value) {
-    pool.setMaximumPoolSize(value);
+    connectionPool.setMaximumPoolSize(value);
   }
 
   public int getMaximumRetryWaitPeriod() {
-    return pool.getMaximumRetryWaitPeriod();
+    return connectionPool.getMaximumRetryWaitPeriod();
   }
 
   public void setMaximumRetryWaitPeriod(final int value) {
-    pool.setMaximumRetryWaitPeriod(value);
+    connectionPool.setMaximumRetryWaitPeriod(value);
   }
 
   public int getMaximumCheckOutTime() {
-    return pool.getMaximumCheckOutTime();
+    return connectionPool.getMaximumCheckOutTime();
   }
 
   public void setMaximumCheckOutTime(final int value) {
-    pool.setMaximumCheckOutTime(value);
+    connectionPool.setMaximumCheckOutTime(value);
   }
 
   public int getNewConnectionThreshold() {
-    return pool.getNewConnectionThreshold();
+    return connectionPool.getNewConnectionThreshold();
   }
 
   public void setNewConnectionThreshold(final int value) {
-    pool.setNewConnectionThreshold(value);
+    connectionPool.setNewConnectionThreshold(value);
   }
 
   public boolean datasetContainsData() {
-    return statsCollection.getSeriesCount() > 0
-            && statsCollection.getSeries(0).getItemCount() > 0
-            && statsCollection.getSeries(1).getItemCount() > 0;
+    return fineGrainedStatisticsCollection.getSeriesCount() > 0
+            && fineGrainedStatisticsCollection.getSeries(0).getItemCount() > 0
+            && fineGrainedStatisticsCollection.getSeries(1).getItemCount() > 0;
   }
 
-  public XYDataset getInPoolDataSet() {
-    final XYSeriesCollection poolDataSet = new XYSeriesCollection();
-    poolDataSet.addSeries(statsCollection.getSeries(0));
-    poolDataSet.addSeries(statsCollection.getSeries(1));
+  public XYDataset getFineGrainedInPoolDataset() {
+    final XYSeriesCollection poolDataset = new XYSeriesCollection();
+    poolDataset.addSeries(fineGrainedStatisticsCollection.getSeries(0));
+    poolDataset.addSeries(fineGrainedStatisticsCollection.getSeries(1));
 
-    return poolDataSet;
+    return poolDataset;
   }
 
-  public XYDataset getInPoolDataSetMacro() {
-    return macroStatsCollection;
+  public XYDataset getInPoolDataset() {
+    return statisticsCollection;
   }
 
-  public XYDataset getRequestsPerSecondDataSet() {
+  public XYDataset getRequestsPerSecondDataset() {
     return connectionRequestsPerSecondCollection;
   }
 
@@ -168,13 +168,13 @@ public final class ConnectionPoolMonitor {
     return checkOutTimeCollection;
   }
 
-  public void resetStats() {
-    pool.resetStatistics();
+  public void resetStatistics() {
+    connectionPool.resetStatistics();
   }
 
-  public void resetInPoolStats() {
-    inPoolSeriesMacro.clear();
-    inUseSeriesMacro.clear();
+  public void resetInPoolStatistics() {
+    inPoolSeries.clear();
+    inUseSeries.clear();
     connectionRequestsPerSecond.clear();
     delayedRequestsPerSecond.clear();
     failedRequestsPerSecond.clear();
@@ -184,25 +184,25 @@ public final class ConnectionPoolMonitor {
     averageCheckOutTime.clear();
   }
 
-  public void setCollectFineGrainedStats(final boolean value) {
-    pool.setCollectFineGrainedStatistics(value);
+  public void setCollectFineGrainedStatistics(final boolean value) {
+    connectionPool.setCollectFineGrainedStatistics(value);
     evtCollectFineGrainedStatsChanged.fire();
   }
 
-  public boolean isCollectFineGrainedStats() {
-    return pool.isCollectFineGrainedStatistics();
+  public boolean isCollectFineGrainedStatistics() {
+    return connectionPool.isCollectFineGrainedStatistics();
   }
 
-  public void setStatsUpdateInterval(final int value) {
-    if (value != this.statsUpdateInterval) {
-      statsUpdateInterval = value;
-      evtStatsUpdateIntervalChanged.fire();
+  public void setStatisticsUpdateInterval(final int value) {
+    if (value != this.statisticsUpdateInterval) {
+      statisticsUpdateInterval = value;
+      evtStatisticsUpdateIntervalChanged.fire();
       startUpdateTimer(value * 1000);
     }
   }
 
-  public int getStatsUpdateInterval() {
-    return statsUpdateInterval;
+  public int getStatisticsUpdateInterval() {
+    return statisticsUpdateInterval;
   }
 
   public void shutdown() {
@@ -211,15 +211,15 @@ public final class ConnectionPoolMonitor {
     }
   }
 
-  public void addStatsListener(final ActionListener listener) {
-    evtStatsUpdated.addListener(listener);
+  public void addStatisticsListener(final ActionListener listener) {
+    evtStatisticsUpdated.addListener(listener);
   }
 
-  public void removeStatsListener(final ActionListener listener) {
-    evtStatsUpdated.removeListener(listener);
+  public void removeStatisticsListener(final ActionListener listener) {
+    evtStatisticsUpdated.removeListener(listener);
   }
 
-  public EventObserver getCollectFineGrainedStatsObserver() {
+  public EventObserver getCollectFineGrainedStatisticsObserver() {
     return evtCollectFineGrainedStatsChanged.getObserver();
   }
 
@@ -227,28 +227,28 @@ public final class ConnectionPoolMonitor {
     return evtRefresh.getObserver();
   }
 
-  public EventObserver getStatsObserver() {
-    return evtStatsUpdated.getObserver();
+  public EventObserver getStatisticsObserver() {
+    return evtStatisticsUpdated.getObserver();
   }
 
-  public EventObserver getStatsUpdateIntervalObserver() {
-    return evtStatsUpdateIntervalChanged.getObserver();
+  public EventObserver getStatisticsUpdateIntervalObserver() {
+    return evtStatisticsUpdateIntervalChanged.getObserver();
   }
 
-  private void updateStats() {
-    poolStats = pool.getStatistics(lastStatsUpdateTime);
-    lastStatsUpdateTime = poolStats.getTimestamp();
-    poolSizeSeries.add(poolStats.getTimestamp(), poolStats.getSize());
-    minimumPoolSizeSeries.add(poolStats.getTimestamp(), pool.getMinimumPoolSize());
-    maximumPoolSizeSeries.add(poolStats.getTimestamp(), pool.getMaximumPoolSize());
-    inPoolSeriesMacro.add(poolStats.getTimestamp(), poolStats.getAvailable());
-    inUseSeriesMacro.add(poolStats.getTimestamp(), poolStats.getInUse());
-    connectionRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getRequestsPerSecond());
-    delayedRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getDelayedRequestsPerSecond());
-    failedRequestsPerSecond.add(poolStats.getTimestamp(), poolStats.getFailedRequestsPerSecond());
-    averageCheckOutTime.add(poolStats.getTimestamp(), poolStats.getAverageGetTime(),
-            poolStats.getMininumCheckOutTime(), poolStats.getMaximumCheckOutTime());
-    final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStats.getFineGrainedStatistics());
+  private void updateStatistics() {
+    poolStatistics = connectionPool.getStatistics(lastStatisticsUpdateTime);
+    lastStatisticsUpdateTime = poolStatistics.getTimestamp();
+    poolSizeSeries.add(poolStatistics.getTimestamp(), poolStatistics.getSize());
+    minimumPoolSizeSeries.add(poolStatistics.getTimestamp(), connectionPool.getMinimumPoolSize());
+    maximumPoolSizeSeries.add(poolStatistics.getTimestamp(), connectionPool.getMaximumPoolSize());
+    inPoolSeries.add(poolStatistics.getTimestamp(), poolStatistics.getAvailable());
+    inUseSeries.add(poolStatistics.getTimestamp(), poolStatistics.getInUse());
+    connectionRequestsPerSecond.add(poolStatistics.getTimestamp(), poolStatistics.getRequestsPerSecond());
+    delayedRequestsPerSecond.add(poolStatistics.getTimestamp(), poolStatistics.getDelayedRequestsPerSecond());
+    failedRequestsPerSecond.add(poolStatistics.getTimestamp(), poolStatistics.getFailedRequestsPerSecond());
+    averageCheckOutTime.add(poolStatistics.getTimestamp(), poolStatistics.getAverageGetTime(),
+            poolStatistics.getMininumCheckOutTime(), poolStatistics.getMaximumCheckOutTime());
+    final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStatistics.getFineGrainedStatistics());
     if (!stats.isEmpty()) {
       final XYSeries inPoolSeries = new XYSeries("In pool");
       final XYSeries inUseSeries = new XYSeries("In use");
@@ -257,11 +257,11 @@ public final class ConnectionPoolMonitor {
         inUseSeries.add(inPool.getTimestamp(), inPool.getInUse());
       }
 
-      this.statsCollection.removeAllSeries();
-      this.statsCollection.addSeries(inPoolSeries);
-      this.statsCollection.addSeries(inUseSeries);
+      this.fineGrainedStatisticsCollection.removeAllSeries();
+      this.fineGrainedStatisticsCollection.addSeries(inPoolSeries);
+      this.fineGrainedStatisticsCollection.addSeries(inUseSeries);
     }
-    evtStatsUpdated.fire();
+    evtStatisticsUpdated.fire();
   }
 
   private static List<ConnectionPoolState> sortAndRemoveDuplicates(final List<ConnectionPoolState> stats) {
@@ -292,7 +292,7 @@ public final class ConnectionPoolMonitor {
     updateTimer.schedule(new TimerTask() {
       @Override
       public void run() {
-        updateStats();
+        updateStatistics();
       }
     }, delay, delay);
   }

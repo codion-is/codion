@@ -44,14 +44,14 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private static final int RESET_FIELD_COLUMNS = 14;
 
   private final NumberFormat format = NumberFormat.getInstance();
-  private final JFreeChart inPoolChart = ChartFactory.createXYStepChart(null,
+  private final JFreeChart inPoolFineGrainedChart = ChartFactory.createXYStepChart(null,
           null, null, null, PlotOrientation.VERTICAL, true, true, false);
-  private final JFreeChart inPoolMacroChart = ChartFactory.createXYStepChart(null,
+  private final JFreeChart inPoolChart = ChartFactory.createXYStepChart(null,
           null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final JFreeChart requestsPerSecondChart = ChartFactory.createXYStepChart(null,
           null, null, null, PlotOrientation.VERTICAL, true, true, false);
+  private final ChartPanel inPoolFineGrainedChartPanel = new ChartPanel(inPoolFineGrainedChart);
   private final ChartPanel inPoolChartPanel = new ChartPanel(inPoolChart);
-  private final ChartPanel inPoolChartPanelMacro = new ChartPanel(inPoolMacroChart);
   private final ChartPanel requestsPerSecondChartPanel = new ChartPanel(requestsPerSecondChart);
 
   private ChartPanel checkOutTimePanel;
@@ -77,20 +77,20 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   public void updateView() {
-    final ConnectionPoolStatistics stats = model.getConnectionPoolStats();
-    txtPoolSize.setText(format.format(stats.getSize()));
-    txtCreated.setText(format.format(stats.getCreated()));
-    txtDestroyed.setText(format.format(stats.getDestroyed()));
-    txtResetTime.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(stats.getResetTime()));
-    txtRequested.setText(format.format(stats.getRequests()));
-    double prc = (double) stats.getDelayedRequests() / (double) stats.getRequests() * 100;
-    txtDelayed.setText(format.format(stats.getDelayedRequests())
+    final ConnectionPoolStatistics statistics = model.getConnectionPoolStatistics();
+    txtPoolSize.setText(format.format(statistics.getSize()));
+    txtCreated.setText(format.format(statistics.getCreated()));
+    txtDestroyed.setText(format.format(statistics.getDestroyed()));
+    txtResetTime.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(statistics.getResetTime()));
+    txtRequested.setText(format.format(statistics.getRequests()));
+    double prc = (double) statistics.getDelayedRequests() / (double) statistics.getRequests() * 100;
+    txtDelayed.setText(format.format(statistics.getDelayedRequests())
             + (prc > 0 ? " (" + format.format(prc)+"%)" : ""));
-    prc = (double) stats.getFailedRequests() / (double) stats.getRequests() * 100;
-    txtFailed.setText(format.format(stats.getFailedRequests())
+    prc = (double) statistics.getFailedRequests() / (double) statistics.getRequests() * 100;
+    txtFailed.setText(format.format(statistics.getFailedRequests())
             + (prc > 0 ? " (" + format.format(prc)+"%)" : ""));
     if (model.datasetContainsData()) {
-      inPoolChart.getXYPlot().setDataset(model.getInPoolDataSet());
+      inPoolFineGrainedChart.getXYPlot().setDataset(model.getFineGrainedInPoolDataset());
     }
   }
 
@@ -99,8 +99,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     setLayout(new FlexibleGridLayout(1, 3, 5, 5, true, false));
 
     add(getChartPanel());
-    add(getStatsPanel());
-    add(getConfigPanel());
+    add(getStatisticsPanel());
+    add(getConfigurationPanel());
   }
 
   private void initializeCharts(final ConnectionPoolMonitor model) {
@@ -114,17 +114,17 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     devRenderer.setBaseShapesVisible(false);
     checkOutTimeChart.getXYPlot().setRenderer(devRenderer);
 
-    inPoolMacroChart.getXYPlot().setDataset(model.getInPoolDataSetMacro());
-    final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) inPoolMacroChart.getXYPlot().getRenderer();
+    inPoolChart.getXYPlot().setDataset(model.getInPoolDataset());
+    final XYLineAndShapeRenderer renderer = (XYLineAndShapeRenderer) inPoolChart.getXYPlot().getRenderer();
     renderer.setSeriesPaint(0, Color.RED);
     renderer.setSeriesPaint(1, Color.BLUE);
     renderer.setSeriesPaint(2, Color.PINK);
     renderer.setSeriesPaint(3, Color.GREEN);
     renderer.setSeriesPaint(4, Color.MAGENTA);
-    requestsPerSecondChart.getXYPlot().setDataset(model.getRequestsPerSecondDataSet());
+    requestsPerSecondChart.getXYPlot().setDataset(model.getRequestsPerSecondDataset());
     checkOutTimeChart.getXYPlot().setDataset(model.getCheckOutTimeCollection());
+    setColors(inPoolFineGrainedChart);
     setColors(inPoolChart);
-    setColors(inPoolMacroChart);
     setColors(requestsPerSecondChart);
     setColors(checkOutTimeChart);
   }
@@ -135,14 +135,14 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.addStatsListener(new ActionListener() {
+    model.addStatisticsListener(new ActionListener() {
       public void actionPerformed(final ActionEvent e) {
         updateView();
       }
     });
   }
 
-  private JPanel getConfigPanel() {
+  private JPanel getConfigurationPanel() {
     final JPanel configBase = new JPanel(new GridLayout(0, 1, 5, 5));
 
     final JSpinner spnTimeout = new JSpinner(new IntBeanSpinnerValueLink(model, "pooledConnectionTimeout", null).getSpinnerModel());
@@ -175,8 +175,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     return panel;
   }
 
-  private JPanel getStatsPanel() {
-    final JPanel statsBase = new JPanel(new GridLayout(0, 1, 5, 5));
+  private JPanel getStatisticsPanel() {
+    final JPanel statisticsBase = new JPanel(new GridLayout(0, 1, 5, 5));
     txtPoolSize.setEditable(false);
     txtPoolSize.setColumns(30);
     txtPoolSize.setHorizontalAlignment(JLabel.CENTER);
@@ -193,20 +193,20 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     txtResetTime.setEditable(false);
     txtResetTime.setHorizontalAlignment(JLabel.CENTER);
 
-    final JButton btnReset = ControlProvider.createButton(Controls.methodControl(model, "resetStats", "Reset"));
+    final JButton btnReset = ControlProvider.createButton(Controls.methodControl(model, "resetStatistics", "Reset"));
     btnReset.setMaximumSize(UiUtil.getPreferredTextFieldSize());
 
-    statsBase.add(UiUtil.northCenterPanel(new JLabel("Pool size"), txtPoolSize));
-    statsBase.add(UiUtil.northCenterPanel(new JLabel("Connections requested"), txtRequested));
-    statsBase.add(UiUtil.northCenterPanel(new JLabel("Delayed requests"), txtDelayed));
-    statsBase.add(UiUtil.northCenterPanel(new JLabel("Failed requests"), txtFailed));
-    statsBase.add(UiUtil.northCenterPanel(new JLabel("Connections created"), txtCreated));
-    statsBase.add(UiUtil.northCenterPanel(new JLabel("Connections destroyed"), txtDestroyed));
-    statsBase.add(UiUtil.northCenterPanel(new JLabel("since"), txtResetTime));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Pool size"), txtPoolSize));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections requested"), txtRequested));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Delayed requests"), txtDelayed));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Failed requests"), txtFailed));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections created"), txtCreated));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections destroyed"), txtDestroyed));
+    statisticsBase.add(UiUtil.northCenterPanel(new JLabel("since"), txtResetTime));
 
     final JPanel panel = new JPanel(new BorderLayout(5, 5));
     panel.setBorder(BorderFactory.createTitledBorder("Statistics"));
-    panel.add(statsBase, BorderLayout.NORTH);
+    panel.add(statisticsBase, BorderLayout.NORTH);
     panel.add(btnReset, BorderLayout.SOUTH);
 
     return panel;
@@ -214,8 +214,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(new GridLayout(1, 2, 5, 5));
-    final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statsUpdateInterval",
-            model.getStatsUpdateIntervalObserver()).getSpinnerModel());
+    final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statisticsUpdateInterval",
+            model.getStatisticsUpdateIntervalObserver()).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);
@@ -226,23 +226,23 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     final JPanel configBase = new JPanel(new BorderLayout(5,5));
     configBase.add(chartConfig, BorderLayout.WEST);
     final JButton btnReset = ControlProvider.createButton(
-            Controls.methodControl(model, "resetInPoolStats", "Reset"));
+            Controls.methodControl(model, "resetInPoolStatistics", "Reset"));
     btnReset.setMaximumSize(UiUtil.getPreferredTextFieldSize());
     configBase.add(btnReset, BorderLayout.EAST);
 
-    final JCheckBox chkCollectStats = new JCheckBox("Fine grained statistics");
-    chkCollectStats.setModel(new ToggleBeanValueLink(model, "collectFineGrainedStats", model.getCollectFineGrainedStatsObserver(), null).getButtonModel());
-    chkCollectStats.setMaximumSize(UiUtil.getPreferredTextFieldSize());
+    final JCheckBox chkCollectStatistics = new JCheckBox("Fine grained statistics");
+    chkCollectStatistics.setModel(new ToggleBeanValueLink(model, "collectFineGrainedStatistics", model.getCollectFineGrainedStatisticsObserver(), null).getButtonModel());
+    chkCollectStatistics.setMaximumSize(UiUtil.getPreferredTextFieldSize());
 
     final JPanel inPoolBase = new JPanel(new BorderLayout(5, 5));
     final JPanel checkBoxBase = new JPanel(new BorderLayout(5, 5));
-    checkBoxBase.add(chkCollectStats, BorderLayout.EAST);
-    inPoolBase.add(inPoolChartPanel, BorderLayout.CENTER);
+    checkBoxBase.add(chkCollectStatistics, BorderLayout.EAST);
+    inPoolBase.add(inPoolFineGrainedChartPanel, BorderLayout.CENTER);
     inPoolBase.add(checkBoxBase, BorderLayout.NORTH);
 
     final JPanel chartBase = new JPanel(new GridLayout(2,2));
     chartBase.add(requestsPerSecondChartPanel);
-    chartBase.add(inPoolChartPanelMacro);
+    chartBase.add(inPoolChartPanel);
     chartBase.add(checkOutTimePanel);
     chartBase.add(inPoolBase);
     chartBase.setBorder(BorderFactory.createEtchedBorder());

@@ -67,9 +67,9 @@ public final class ServerMonitorPanel extends JPanel {
    */
   public ServerMonitorPanel(final ServerMonitor model) throws RemoteException {
     this.model = model;
-    requestsPerSecondChart.getXYPlot().setDataset(model.getConnectionRequestsDataSet());
-    memoryUsageChart.getXYPlot().setDataset(model.getMemoryUsageDataSet());
-    connectionCountChart.getXYPlot().setDataset(model.getConnectionCountDataSet());
+    requestsPerSecondChart.getXYPlot().setDataset(model.getConnectionRequestsDataset());
+    memoryUsageChart.getXYPlot().setDataset(model.getMemoryUsageDataset());
+    connectionCountChart.getXYPlot().setDataset(model.getConnectionCountDataset());
     setColors(requestsPerSecondChart);
     setColors(memoryUsageChart);
     setColors(connectionCountChart);

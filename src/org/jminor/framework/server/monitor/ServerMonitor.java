@@ -152,15 +152,15 @@ public final class ServerMonitor {
     evtLoggingLevelChanged.fire();
   }
 
-  public XYSeriesCollection getConnectionRequestsDataSet() {
+  public XYSeriesCollection getConnectionRequestsDataset() {
     return connectionRequestsPerSecondCollection;
   }
 
-  public XYSeriesCollection getMemoryUsageDataSet() {
+  public XYSeriesCollection getMemoryUsageDataset() {
     return memoryUsageCollection;
   }
 
-  public XYSeriesCollection getConnectionCountDataSet() {
+  public XYSeriesCollection getConnectionCountDataset() {
     return connectionCountCollection;
   }
 
