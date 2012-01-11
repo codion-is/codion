@@ -2651,3 +2651,4 @@
   Ignored exceptions now named ignored
   ConnectionPoolMonitor/Panel, renamed some fields and methods
   ServerMonitor/Panel, renamed some methods
+  ValueMapImpl.hashCode(), minor refactoring

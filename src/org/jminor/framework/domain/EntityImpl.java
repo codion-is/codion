@@ -714,7 +714,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
                           final Map<String, Definition> entityDefinitions) {
     Util.rejectNullValue(property, PROPERTY_PARAM);
     if (property instanceof Property.PrimaryKeyProperty) {
-      this.primaryKey = null;
+      primaryKey = null;
     }
     validateValue(this, property, value);
     if (validateType) {

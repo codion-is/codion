@@ -88,7 +88,9 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   public int hashCode() {
     int hash = MAGIC_NUMBER;
     for (final Object value : getValues()) {
-      hash = hash + (value == null ? 0 : value.hashCode());
+      if (value != null) {
+        hash = hash + value.hashCode();
+      }
     }
 
     return hash;
