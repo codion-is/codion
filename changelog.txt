@@ -2652,3 +2652,4 @@
   ConnectionPoolMonitor/Panel, renamed some fields and methods
   ServerMonitor/Panel, renamed some methods
   ValueMapImpl.hashCode(), minor refactoring
+  ValueChangeMapImpl.setAs() bug fixed, setAs(this) simply cleared the map, test added

@@ -70,6 +70,9 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
 
   /** {@inheritDoc} */
   public final void setAs(final ValueChangeMap<K, V> sourceMap) {
+    if (sourceMap == this) {
+      return;
+    }
     clear();
     if (sourceMap != null) {
       for (final K entryKey : sourceMap.getValueKeys()) {

@@ -13,6 +13,30 @@ import static org.junit.Assert.*;
 public class ValueChangeMapImplTest {
 
   @Test
+  public void setAs() {
+    final ValueChangeMap<Integer, String> dest = new ValueChangeMapImpl<Integer, String>();
+
+    final ValueChangeMap<Integer, String> source = new ValueChangeMapImpl<Integer, String>();
+    source.setValue(1, "1");
+    source.setValue(2, "2");
+    source.setValue(2, "3");
+
+    dest.setAs(source);
+
+    assertEquals("1", dest.getValue(1));
+    assertEquals("3", dest.getValue(2));
+    assertEquals("2", dest.getOriginalValue(2));
+
+    assertTrue(dest.equals(source));
+
+    dest.setAs(dest);
+
+    assertEquals("1", dest.getValue(1));
+    assertEquals("3", dest.getValue(2));
+    assertEquals("2", dest.getOriginalValue(2));
+  }
+
+  @Test
   public void test() {
     final ValueChangeMap<String, Integer> model = new ValueChangeMapImpl<String, Integer>();
     final String key = "key";
