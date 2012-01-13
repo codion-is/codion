@@ -5,15 +5,92 @@ package org.jminor.common.model;
 
 import org.junit.Test;
 
+import java.io.File;
+import java.io.FileOutputStream;
+import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Properties;
 
 import static org.junit.Assert.*;
 
 public class UtilTest {
+
+  @Test
+  public void parseConfigurationFile() throws IOException {
+    File mainConfigurationFile = null;
+    File secondConfigurationFile = null;
+    File thirdConfigurationFile = null;
+    try {
+      //Create three config files, the first references the second which references the third
+      final File userDir = new File(System.getProperty("user.dir"));
+      mainConfigurationFile = new File(userDir, "UtilTestMain.config");
+      secondConfigurationFile = new File(userDir, "UtilTestSecond.config");
+      thirdConfigurationFile = new File(userDir, "UtilTestThird.config");
+
+      Properties properties = new Properties();
+      properties.put("main.property", "value");
+      properties.put(Util.ADDITIONAL_CONFIGURATION_FILES, "UtilTestSecond.config");
+      FileOutputStream outputStream = null;
+      try {
+        outputStream = new FileOutputStream(mainConfigurationFile);
+        properties.store(outputStream, "");
+      }
+      finally {
+        Util.closeSilently(outputStream);
+      }
+
+      properties = new Properties();
+      properties.put("second.property", "value");
+      properties.put(Util.ADDITIONAL_CONFIGURATION_FILES, "UtilTestThird.config");
+      try {
+        outputStream = new FileOutputStream(secondConfigurationFile);
+        properties.store(outputStream, "");
+      }
+      finally {
+        Util.closeSilently(outputStream);
+      }
+
+      properties = new Properties();
+      properties.put("third.property", "value");
+      try {
+        outputStream = new FileOutputStream(thirdConfigurationFile);
+        properties.store(outputStream, "");
+      }
+      finally {
+        Util.closeSilently(outputStream);
+      }
+
+      //done prep, now the test
+      Util.parseConfigurationFile("UtilTestMain.config");
+      assertEquals("value", System.getProperty("main.property"));
+      assertEquals("value", System.getProperty("second.property"));
+      assertEquals("value", System.getProperty("third.property"));
+    }
+    finally {
+      try {
+        if (mainConfigurationFile != null) {
+          mainConfigurationFile.delete();
+        }
+      }
+      catch (Exception ignored) {}
+      try {
+        if (secondConfigurationFile != null) {
+          secondConfigurationFile.delete();
+        }
+      }
+      catch (Exception ignored) {}
+      try {
+        if (thirdConfigurationFile != null) {
+          thirdConfigurationFile.delete();
+        }
+      }
+      catch (Exception ignored) {}
+    }
+  }
 
   @Test
   public void spaceAwareCollator() {

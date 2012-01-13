@@ -21,7 +21,6 @@ import org.jminor.framework.domain.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -547,16 +546,7 @@ public class DefaultEntityModel implements EntityModel {
     final ActionListener initializer = new ActionListener() {
       /** {@inheritDoc} */
       public void actionPerformed(final ActionEvent e) {
-        if (SwingUtilities.isEventDispatchThread()) {
-          SwingUtilities.invokeLater(new Runnable() {
-            public void run() {
-              initializeDetailModels();
-            }
-          });
-        }
-        else {
-          initializeDetailModels();
-        }
+        initializeDetailModels();
       }
     };
     evtLinkedDetailModelsChanged.addListener(initializer);

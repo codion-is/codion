@@ -2653,3 +2653,9 @@
   ServerMonitor/Panel, renamed some methods
   ValueMapImpl.hashCode(), minor refactoring
   ValueChangeMapImpl.setAs() bug fixed, setAs(this) simply cleared the map, test added
+  DefaultEntityModel.bindEvents() revoked usage of invokeLater() when initializing the detail models (see changelog line 2599)
+  Util.parseConfigurationFile() overloaded with a filename parameter
+  Util.ADDITIONAL_CONFIGURATION_FILES property added
+  Util.parseConfigurationFile() uses the above to discover additional configuration files to parse
+  Util.parseConfigurationFile() now searches under user.dir/filename if the file is not found on the classpath
+  UtilTest.parseConfigurationFile() added

@@ -75,13 +75,21 @@ public final class Util {
   private Util() {}
 
   /**
-   * Specifies the configuration file name to search for and parse at startup, relative to user.dir,
-   * this is done last, so that settings in the configuration file override settings
-   * gotten via runtime parameters<br>
+   * Specifies the main configuration file.<br>
    * Value type: String<br>
    * Default value: null
+   * @see #parseConfigurationFile()
    */
   public static final String CONFIGURATION_FILE = "jminor.configurationFile";
+
+  /**
+   * Add a property with this name in the main configuration file and specify a comma separated list
+   * of additional configuration files that should be parsed along with the main configuration file.<br>
+   * Value type: String<br>
+   * Default value: null
+   * @see #parseConfigurationFile()
+   */
+  public static final String ADDITIONAL_CONFIGURATION_FILES = "jminor.additionalConfigurationFiles";
 
   /**
    * Returns true if the given host is reachable, false if it is not or an exception is thrown while trying
@@ -860,26 +868,53 @@ public final class Util {
   }
 
   /**
-   * Parses the configuration file specified by the CONFIGURATION_FILE property,
-   * adding the resulting properties via System.setProperty(key, value)
+   * Parses the configuration file specified by the {@link #CONFIGURATION_FILE} property,
+   * adding the resulting properties via System.setProperty(key, value).
+   * Also parses any configuration files specified by {@link #ADDITIONAL_CONFIGURATION_FILES}.
    * @see #CONFIGURATION_FILE
    */
   public static void parseConfigurationFile() {
-    final String filename = System.getProperty(CONFIGURATION_FILE);
+    parseConfigurationFile(System.getProperty(CONFIGURATION_FILE));
+  }
+
+  /**
+   * Parses the given configuration file adding the resulting properties via System.setProperty(key, value).
+   * If a file with the given name is not found on the classpath we try to locate it on the filesystem,
+   * relative to user.dir, if the file is not found.
+   * If the {@link #ADDITIONAL_CONFIGURATION_FILES} property is found, the files specified are parsed as well,
+   * note that the actual property value is not added to the system properties.
+   * @param filename the configuration filename
+   * @see #CONFIGURATION_FILE
+   */
+  public static void parseConfigurationFile(final String filename) {
     if (filename != null) {
       InputStream inputStream = null;
+      String additionalConfigurationFiles = null;
       try {
         inputStream = ClassLoader.getSystemResourceAsStream(filename);
-        if (inputStream == null) {
-          throw new RuntimeException("Unable to load configuration file: " + filename);
+        if (inputStream == null) {//not on classpath
+          final File configurationFile = new File(System.getProperty("user.dir") + File.separator + filename);
+          if (!configurationFile.exists()) {
+            throw new RuntimeException("Configuration file not found on classpath (" + filename + ") or as a file (" + configurationFile.getPath() + ")");
+          }
+          inputStream = new FileInputStream(configurationFile);
+          LOG.debug("Reading configuration file from filesystem: {}", filename);
         }
-        LOG.debug("Reading configuration file: {}", filename);
+        else {
+          LOG.debug("Reading configuration file from classpath: {}", filename);
+        }
         final Properties properties = new Properties();
         properties.load(inputStream);
         for (final Map.Entry entry : properties.entrySet()) {
           final Object key = entry.getKey();
-          LOG.debug("{} - > {}", key, properties.get(key));
-          System.setProperty((String) key, (String) properties.get(key));
+          final String value = (String) properties.get(key);
+          LOG.debug("{} - > {}", key, value);
+          if (key.equals(ADDITIONAL_CONFIGURATION_FILES)) {
+            additionalConfigurationFiles = value;
+          }
+          else {
+            System.setProperty((String) key, value);
+          }
         }
       }
       catch (IOException e) {
@@ -887,6 +922,12 @@ public final class Util {
       }
       finally {
         closeSilently(inputStream);
+      }
+      if (additionalConfigurationFiles != null) {
+        final String[] configurationFiles = additionalConfigurationFiles.split(",");
+        for (final String configurationFile : configurationFiles) {
+          parseConfigurationFile(configurationFile.trim());
+        }
       }
     }
   }
@@ -903,7 +944,7 @@ public final class Util {
       localRegistry.list();
     }
     catch (Exception e) {
-      LOG.debug("Error when trying to locate registry on server start", e);
+      LOG.debug("Exception occurred while trying to locate registry", e);
       LOG.info("Creating registry on port: {}", port);
       LocateRegistry.createRegistry(port);
     }
