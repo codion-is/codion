@@ -597,7 +597,7 @@ public final class Util {
 
   public static String createRandomString(final int minLength, final int maxLength) {
     if (minLength > maxLength) {
-      throw new IllegalArgumentException("Mininum length can not exceed maximum length");
+      throw new IllegalArgumentException("Minimum length can not exceed maximum length");
     }
     final StringBuilder sb = new StringBuilder();
     final int length = minLength == maxLength ? minLength : RANDOM.nextInt(maxLength - minLength) + minLength;
@@ -953,7 +953,7 @@ public final class Util {
   /**
    * @param port the port on which to look for a registry
    * @return the registry
-   * @throws java.rmi.RemoteException in case of an exception
+   * @throws RemoteException in case of an exception
    */
   public static Registry getRegistry(final int port) throws RemoteException {
     return LocateRegistry.getRegistry(port);
