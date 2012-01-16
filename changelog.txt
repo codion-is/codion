@@ -2659,3 +2659,5 @@
   Util.parseConfigurationFile() uses the above to discover additional configuration files to parse
   Util.parseConfigurationFile() now searches under user.dir/filename if the file is not found on the classpath
   UtilTest.parseConfigurationFile() added
+  DefaultEntityComboBoxModel.foreignKeyFilterCriteria now includes items which have null for the relevant foreign key value
+  DefaultEntityComboBoxModelTest, refactored a bit due to the above

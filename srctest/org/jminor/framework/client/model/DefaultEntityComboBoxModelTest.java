@@ -45,6 +45,54 @@ public final class DefaultEntityComboBoxModelTest {
   }
 
   @Test
+  public void setForeignKeyFilterEntities() throws Exception {
+    comboBoxModel.refresh();
+    final Entity blake = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "BLAKE");
+    comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_MGR_FK, Arrays.asList(blake));
+    assertEquals(6, comboBoxModel.getSize());
+    for (int i = 0; i < comboBoxModel.getSize(); i++) {
+      final Entity item = (Entity) comboBoxModel.getElementAt(i);
+      if (item.isValueNull(EmpDept.EMPLOYEE_MGR_FK)) {
+        assertEquals("KING", item.getStringValue(EmpDept.EMPLOYEE_NAME));
+      }
+      else {
+        assertEquals(item.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK), blake);
+      }
+    }
+
+    final Entity sales = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+    comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_DEPARTMENT_FK, Arrays.asList(sales));
+    assertEquals(2, comboBoxModel.getSize());
+    for (int i = 0; i < comboBoxModel.getSize(); i++) {
+      final Entity item = (Entity) comboBoxModel.getElementAt(i);
+      assertEquals(item.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), sales);
+      assertEquals(item.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK), blake);
+    }
+
+    final Entity accounting = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
+    final EntityComboBoxModel deptComboBoxModel = comboBoxModel.createForeignKeyFilterComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK);
+    deptComboBoxModel.setSelectedItem(accounting);
+    assertEquals(4, comboBoxModel.getSize());
+    for (int i = 0; i < comboBoxModel.getSize(); i++) {
+      final Entity item = (Entity) comboBoxModel.getElementAt(i);
+      assertEquals(item.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), accounting);
+      if (item.isValueNull(EmpDept.EMPLOYEE_MGR_FK)) {
+        assertEquals("KING", item.getStringValue(EmpDept.EMPLOYEE_NAME));
+      }
+      else {
+        assertEquals(item.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK), blake);
+      }
+    }
+    for (final Entity employee : comboBoxModel.getAllItems()) {
+      if (employee.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK).equals(accounting)) {
+        comboBoxModel.setSelectedItem(employee);
+        break;
+      }
+    }
+    assertEquals(accounting, deptComboBoxModel.getSelectedValue());
+  }
+
+  @Test
   public void test() throws Exception {
     assertEquals(EmpDept.T_EMPLOYEE, comboBoxModel.getEntityID());
     comboBoxModel.setStaticData(false);
@@ -69,27 +117,6 @@ public final class DefaultEntityComboBoxModelTest {
     comboBoxModel.setSelectedItem(null);
     comboBoxModel.setSelectedEntityByPrimaryKey(clark.getPrimaryKey());
     assertEquals(clark, comboBoxModel.getSelectedValue());
-
-    //test foreign key filtering
-    final Entity sales = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
-    comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_DEPARTMENT_FK, Arrays.asList(sales));
-    for (int i = 0; i < comboBoxModel.getSize(); i++) {
-      assertEquals(((Entity) comboBoxModel.getElementAt(0)).getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), sales);
-    }
-    final Entity research = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "RESEARCH");
-    final EntityComboBoxModel fkModel = comboBoxModel.createForeignKeyFilterComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK);
-    fkModel.setSelectedItem(research);
-    for (int i = 0; i < comboBoxModel.getSize(); i++) {
-      assertEquals(((Entity) comboBoxModel.getElementAt(0)).getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), research);
-    }
-    final Entity accounting = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
-    for (final Entity employee : comboBoxModel.getAllItems()) {
-      if (employee.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK).equals(accounting)) {
-        comboBoxModel.setSelectedItem(employee);
-        break;
-      }
-    }
-    assertEquals(accounting, fkModel.getSelectedValue());
 
     comboBoxModel.clear();
     assertTrue(comboBoxModel.getSize() == 0);

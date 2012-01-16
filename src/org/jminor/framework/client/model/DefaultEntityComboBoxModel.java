@@ -55,12 +55,13 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   private boolean forceRefresh = false;
 
   /**
-   * the EntitySelectCriteria used to filter the data
+   * the EntitySelectCriteria used to filter the data when queried
    */
   private EntitySelectCriteria selectCriteria;
 
   /**
-   * A map of entities used to filter the contents of this model
+   * A map of entities used to filter the contents of this model by foreign key value.
+   * The key in the map is the ID of the relevant foreign key property.
    */
   private final Map<String, Set<Entity>> foreignKeyFilterEntities = new HashMap<String, Set<Entity>>();
 
@@ -70,7 +71,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
         final Entity foreignKeyValue = item.getForeignKeyValue(entry.getKey());
         final Set<Entity> filterValues = entry.getValue();
-        if (!filterValues.isEmpty() && !filterValues.contains(foreignKeyValue)) {
+        if (foreignKeyValue != null && !filterValues.isEmpty() && !filterValues.contains(foreignKeyValue)) {
           return false;
         }
       }
