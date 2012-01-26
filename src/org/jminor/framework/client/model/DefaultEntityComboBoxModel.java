@@ -253,13 +253,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
         }
       }
     });
-    addRefreshListener(new ActionListener() {
-      /** {@inheritDoc} */
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        foreignKeyModel.forceRefresh();
-      }
-    });
+    addRefreshListener(new ForeignKeyModelRefreshListener(foreignKeyModel));
   }
 
   /** {@inheritDoc} */
@@ -360,5 +354,20 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       }
     }
     return -1;
+  }
+
+  private static final class ForeignKeyModelRefreshListener implements ActionListener {
+
+    private final EntityComboBoxModel foreignKeyModel;
+
+    public ForeignKeyModelRefreshListener(final EntityComboBoxModel foreignKeyModel) {
+      this.foreignKeyModel = foreignKeyModel;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      foreignKeyModel.forceRefresh();
+    }
   }
 }

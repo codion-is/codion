@@ -572,7 +572,8 @@ public final class EntityUtil {
     public final void setProperty(final Class beanClass, final String propertyID, final String propertyName) {
       Map<String, String> beanPropertyMap = propertyMap.get(beanClass);
       if (beanPropertyMap == null) {
-        propertyMap.put(beanClass, beanPropertyMap = new HashMap<String, String>());
+        beanPropertyMap = new HashMap<String, String>();
+        propertyMap.put(beanClass, beanPropertyMap);
       }
       beanPropertyMap.put(propertyID, propertyName);
     }
@@ -600,8 +601,8 @@ public final class EntityUtil {
       }
 
       final Entity entity = Entities.entity(getEntityID(bean.getClass()));
-      final Map<String, String> propertyMap = getPropertyMap(bean.getClass());
-      for (final Map.Entry<String, String> propertyEntry : propertyMap.entrySet()) {
+      final Map<String, String> beanPropertyMap = getPropertyMap(bean.getClass());
+      for (final Map.Entry<String, String> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = Entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
         final Method getter = Util.getGetMethod(property.getTypeClass(), propertyEntry.getValue(), bean);
         entity.setValue(property, getter.invoke(bean));
@@ -627,8 +628,8 @@ public final class EntityUtil {
 
       final Class beanClass = getBeanClass(entity.getEntityID());
       final Object bean = beanClass.getConstructor().newInstance();
-      final Map<String, String> propertyMap = getPropertyMap(beanClass);
-      for (final Map.Entry<String, String> propertyEntry : propertyMap.entrySet()) {
+      final Map<String, String> beanPropertyMap = getPropertyMap(beanClass);
+      for (final Map.Entry<String, String> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = Entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
         final Method setter = Util.getSetMethod(property.getTypeClass(), propertyEntry.getValue(), bean);
         setter.invoke(bean, entity.getValue(property));

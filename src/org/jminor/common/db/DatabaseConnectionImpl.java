@@ -382,7 +382,8 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
     catch (SQLException e) {
       LOG.error("Exception during commit: " + user.getUsername(), e);
-      throw exception = e;
+      exception = e;
+      throw e;
     }
     finally {
       methodLogger.logExit("commit", exception, null);
@@ -404,7 +405,8 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
     catch (SQLException e) {
       LOG.error("Exception during rollback: " + user.getUsername(), e);
-      throw exception = e;
+      exception = e;
+      throw e;
     }
     finally {
       methodLogger.logExit("rollback", exception, null);
