@@ -74,6 +74,7 @@ public final class RemoteLoadTestServer extends AbstractRemoteServer<RemoteLoadT
    * @throws UnsupportedOperationException consistently
    * @throws RemoteException in case of a remote exception
    */
+  @Override
   public int getServerLoad() throws RemoteException {
     throw new UnsupportedOperationException();
   }

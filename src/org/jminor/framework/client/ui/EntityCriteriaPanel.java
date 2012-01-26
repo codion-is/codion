@@ -111,6 +111,7 @@ public final class EntityCriteriaPanel extends JPanel {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void actionPerformed(final ActionEvent e) {
       propertyList.repaint();
     }
@@ -133,6 +134,7 @@ public final class EntityCriteriaPanel extends JPanel {
   private static final class SearchModelComparator implements Comparator<PropertySearchModel>, Serializable {
     private static final long serialVersionUID = 1;
     /** {@inheritDoc} */
+    @Override
     public int compare(final PropertySearchModel o1, final PropertySearchModel o2) {
       final Property propertyOne = (Property) o1.getColumnIdentifier();
       final Property propertyTwo = (Property) o2.getColumnIdentifier();
@@ -156,6 +158,7 @@ public final class EntityCriteriaPanel extends JPanel {
     }
 
     /** {@inheritDoc} */
+    @Override
     @SuppressWarnings({"unchecked"})
     public void valueChanged(final ListSelectionEvent e) {
       editorPanel.removeAll();

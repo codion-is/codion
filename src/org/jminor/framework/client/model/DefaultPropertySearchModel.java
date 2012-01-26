@@ -41,6 +41,7 @@ public class DefaultPropertySearchModel extends DefaultColumnSearchModel<Propert
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Criteria<Property.ColumnProperty> getCriteria() {
     return getValueCount(getSearchType()) == 1 ?
             EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), isCaseSensitive(), getSearchType(), getUpperBound()) :

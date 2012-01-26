@@ -23,10 +23,12 @@ public abstract class AbstractInputProvider<T, K extends JComponent> implements 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final K getInputComponent() {
     return this.inputComponent;
   }
 
   /** {@inheritDoc} */
+  @Override
   public abstract T getValue();
 }

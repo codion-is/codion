@@ -34,6 +34,7 @@ public final class RegexFilterCriteria<T> implements FilterCriteria<T> {
    * @param item the item
    * @return true if the item should be included
    */
+  @Override
   public boolean include(final T item) {
     return item != null && pattern.matcher(item.toString()).find();
   }

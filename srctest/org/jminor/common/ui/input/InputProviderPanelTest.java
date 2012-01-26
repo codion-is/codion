@@ -17,9 +17,11 @@ public class InputProviderPanelTest {
   public void test() {
     final JTextField txt = new JTextField();
     final InputProviderPanel panel = new InputProviderPanel("Test", new InputProvider() {
+      @Override
       public JComponent getInputComponent() {
         return txt;
       }
+      @Override
       public Object getValue() {
         return txt.getText();
       }
@@ -30,6 +32,7 @@ public class InputProviderPanelTest {
     assertFalse(panel.isInputAccepted());
     final Collection<Object> event = new ArrayList<Object>();
     final ActionListener listener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         event.add(new Object());
       }

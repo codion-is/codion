@@ -231,6 +231,7 @@ public final class DefaultEntityTableModelTest {
     assertFalse(testModel.isCellEditable(0,0));
 
     final ReportDataWrapper wrapper = new ReportDataWrapper() {
+      @Override
       public Object getDataSource() {
         return null;
       }

@@ -3,13 +3,14 @@
  */
 package org.jminor.common.model;
 
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertTrue;
 
 public class EventImplTest {
 
@@ -18,6 +19,7 @@ public class EventImplTest {
     final Event event = new Events.EventImpl();
     final List<Object> res = new ArrayList<Object>();
     final ActionListener listener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         res.add(new Object());
       }

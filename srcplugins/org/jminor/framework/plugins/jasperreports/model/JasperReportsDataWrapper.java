@@ -21,6 +21,7 @@ public final class JasperReportsDataWrapper implements ReportDataWrapper<JRDataS
   }
 
   /** {@inheritDoc} */
+  @Override
   public JRDataSource getDataSource() {
     return dataSource;
   }

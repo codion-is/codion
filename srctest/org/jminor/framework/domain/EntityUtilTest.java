@@ -9,15 +9,87 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.Test;
 
+import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.List;
 import java.util.Map;
 
 import static org.junit.Assert.*;
 
 public class EntityUtilTest {
+
+  @Test
+  public void toBean() throws InvocationTargetException, NoSuchMethodException,
+          InstantiationException, IllegalAccessException {
+    final EntityUtil.EntityBeanMapper beanMap = createEmployeeEntityBeanMap();
+
+    final Integer id = 42;
+    final Double commission = 42.2;
+    final Integer department = 10;
+    final Date hiredate = new Date();
+    final String job = "job";
+    final Integer manager = 12;
+    final String name = "John Doe";
+    final Double salary = 1234.5;
+
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_ID, id);
+    employee.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
+    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT, department);
+    employee.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
+    employee.setValue(EmpDept.EMPLOYEE_JOB, job);
+    employee.setValue(EmpDept.EMPLOYEE_MGR, manager);
+    employee.setValue(EmpDept.EMPLOYEE_NAME, name);
+    employee.setValue(EmpDept.EMPLOYEE_SALARY, salary);
+
+    final EmployeeBean employeeBean = (EmployeeBean) beanMap.toBean(employee);
+    assertEquals(id, employeeBean.getId());
+    assertEquals(commission, employeeBean.getCommission());
+    assertEquals(department, employeeBean.getDeptno());
+    assertEquals(hiredate, employeeBean.getHiredate());
+    assertEquals(job, employeeBean.getJob());
+    assertEquals(manager, employeeBean.getMgr());
+    assertEquals(name, employeeBean.getName());
+    assertEquals(salary, employeeBean.getSalary());
+  }
+
+  @Test
+  public void toEntity() throws InvocationTargetException, NoSuchMethodException,
+          IllegalAccessException {
+    final EntityUtil.EntityBeanMapper beanMap = createEmployeeEntityBeanMap();
+
+    final Integer id = 42;
+    final Double commission = 42.2;
+    final Integer department = 10;
+    final Date hiredate = new Date();
+    final String job = "job";
+    final Integer manager = 12;
+    final String name = "John Doe";
+    final Double salary = 1234.5;
+
+    final EmployeeBean employeeBean = new EmployeeBean();
+    employeeBean.setId(id);
+    employeeBean.setCommission(commission);
+    employeeBean.setDeptno(department);
+    employeeBean.setHiredate(hiredate);
+    employeeBean.setJob(job);
+    employeeBean.setMgr(manager);
+    employeeBean.setName(name);
+    employeeBean.setSalary(salary);
+
+    final Entity employee = beanMap.toEntity(employeeBean);
+    assertEquals(id, employee.getValue(EmpDept.EMPLOYEE_ID));
+    assertEquals(commission, employee.getValue(EmpDept.EMPLOYEE_COMMISSION));
+    assertEquals(department, employee.getValue(EmpDept.EMPLOYEE_DEPARTMENT));
+    assertEquals(hiredate, employee.getValue(EmpDept.EMPLOYEE_HIREDATE));
+    assertEquals(job, employee.getValue(EmpDept.EMPLOYEE_JOB));
+    assertEquals(manager, employee.getValue(EmpDept.EMPLOYEE_MGR));
+    assertEquals(name, employee.getValue(EmpDept.EMPLOYEE_NAME));
+    assertEquals(salary, employee.getValue(EmpDept.EMPLOYEE_SALARY));
+  }
 
   @Test
   public void getPropertyValues() {
@@ -208,5 +280,98 @@ public class EntityUtilTest {
     Configuration.setValue(Configuration.ENTITY_DESERIALIZER_CLASS, "org.jminor.framework.plugins.json.EntityJSONParser");
     assertNotNull(EntityUtil.getEntityDeserializer());
     Configuration.clearValue(Configuration.ENTITY_DESERIALIZER_CLASS);
+  }
+
+  private EntityUtil.EntityBeanMapper createEmployeeEntityBeanMap() {
+    final EntityUtil.EntityBeanMapper beanMap = new EntityUtil.EntityBeanMapper();
+    beanMap.setEntityID(EmployeeBean.class, EmpDept.T_EMPLOYEE);
+    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_ID, "id");
+    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_COMMISSION, "commission");
+    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_DEPARTMENT, "deptno");
+    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_HIREDATE, "hiredate");
+    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_JOB, "job");
+    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_MGR, "mgr");
+    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_NAME, "name");
+    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_SALARY, "salary");
+
+    return beanMap;
+  }
+
+  static class EmployeeBean {
+
+    private Integer id;
+    private String name;
+    private String job;
+    private Integer mgr;
+    private Date hiredate;
+    private Double salary;
+    private Double commission;
+    private Integer deptno;
+
+    public EmployeeBean() {}
+
+    public Double getCommission() {
+      return commission;
+    }
+
+    public void setCommission(final Double commission) {
+      this.commission = commission;
+    }
+
+    public Integer getDeptno() {
+      return deptno;
+    }
+
+    public void setDeptno(final Integer deptno) {
+      this.deptno = deptno;
+    }
+
+    public Date getHiredate() {
+      return hiredate;
+    }
+
+    public void setHiredate(final Date hiredate) {
+      this.hiredate = hiredate;
+    }
+
+    public Integer getId() {
+      return id;
+    }
+
+    public void setId(final Integer id) {
+      this.id = id;
+    }
+
+    public String getJob() {
+      return job;
+    }
+
+    public void setJob(final String job) {
+      this.job = job;
+    }
+
+    public Integer getMgr() {
+      return mgr;
+    }
+
+    public void setMgr(final Integer mgr) {
+      this.mgr = mgr;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(final String name) {
+      this.name = name;
+    }
+
+    public Double getSalary() {
+      return salary;
+    }
+
+    public void setSalary(final Double salary) {
+      this.salary = salary;
+    }
   }
 }

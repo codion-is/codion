@@ -75,22 +75,26 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void refresh() {
     setContents(initializeContents());
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void clear() {
     setSelectedItem(null);
     setContents(null);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isCleared() {
     return cleared;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setContents(final Collection<T> contents) {
     if (contents == null || !contents.contains(selectedItem)) {
       setSelectedItem(null);
@@ -109,6 +113,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void filterContents() {
     try {
       visibleItems.addAll(filteredItems);
@@ -133,11 +138,13 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<T> getFilteredItems() {
     return Collections.unmodifiableList(filteredItems);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<T> getVisibleItems() {
     if (nullValueString == null) {
       return Collections.unmodifiableList(visibleItems);
@@ -147,6 +154,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setFilterCriteria(final FilterCriteria<T> filterCriteria) {
     if (filterCriteria == null) {
       this.filterCriteria = acceptAllCriteria;
@@ -158,11 +166,13 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final FilterCriteria<T> getFilterCriteria() {
     return filterCriteria;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<T> getAllItems() {
     final List<T> entities = new ArrayList<T>(visibleItems);
     entities.addAll(filteredItems);
@@ -171,16 +181,19 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getFilteredItemCount() {
     return filteredItems.size();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getVisibleItemCount() {
     return visibleItems.size();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isVisible(final T item) {
     if (item == null) {
       return nullValueString != null;
@@ -190,11 +203,13 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isFiltered(final T item) {
     return filteredItems.contains(item);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addItem(final T item) {
     if (filterCriteria.include(item)) {
       visibleItems.add(item);
@@ -205,6 +220,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeItem(final T item) {
     if (visibleItems.contains(item)) {
       visibleItems.remove(item);
@@ -217,6 +233,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean contains(final T item, final boolean includeFiltered) {
     final boolean ret = visibleItems.contains(item);
     if (!ret && includeFiltered) {
@@ -227,11 +244,13 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getNullValueString() {
     return nullValueString;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setNullValueString(final String nullValueString) {
     this.nullValueString = nullValueString;
     if (selectedItem == null) {
@@ -240,6 +259,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isNullValueSelected() {
     if (selectedItem instanceof String && nullValueString == null) {
       return ((String) selectedItem).isEmpty();
@@ -249,6 +269,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final T getSelectedValue() {
     if (isNullValueSelected()) {
       return null;
@@ -261,6 +282,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    * @return the selected item, N.B. this can include the <code>nullValueString</code>
    * in case it has been set, {@link #getSelectedValue()} is usually what you want
    */
+  @Override
   public final Object getSelectedItem() {
     if (selectedItem == null && nullValueString != null) {
       return nullValueString;
@@ -270,6 +292,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setSelectedItem(final Object anItem) {
     final Object toSelect = translateSelectionItem(anItem);
     if (vetoSelectionChange(toSelect)) {
@@ -291,26 +314,31 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setFilterSelectedItem(final boolean value) {
     this.filterSelectedItem = value;
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isFilterSelectedItem() {
     return filterSelectedItem;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addListDataListener(final ListDataListener l) {
     listDataListeners.add(l);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeListDataListener(final ListDataListener l) {
     listDataListeners.remove(l);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Object getElementAt(final int index) {
     final Object element = visibleItems.get(index);
     if (element == null) {
@@ -321,26 +349,31 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getSize() {
     return visibleItems.size();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addFilteringListener(final ActionListener listener) {
     evtFilteringDone.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeFilteringListener(final ActionListener listener) {
     evtFilteringDone.removeListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addSelectionListener(final ActionListener listener) {
     evtSelectionChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeSelectionListener(final ActionListener listener) {
     evtSelectionChanged.removeListener(listener);
   }
@@ -410,6 +443,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     }
 
     /** {@inheritDoc} */
+    @Override
     @SuppressWarnings({"unchecked"})
     public int compare(final T o1, final T o2) {
       if (o1 == null && o2 == null) {

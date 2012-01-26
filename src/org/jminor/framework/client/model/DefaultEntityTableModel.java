@@ -152,6 +152,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setEditModel(final EntityEditModel editModel) {
     Util.rejectNullValue(editModel, "editModel");
     if (this.editModel != null) {
@@ -165,11 +166,13 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean hasEditModel() {
     return this.editModel != null;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<Property> getTableColumnProperties() {
     final List<Property> propertyList = new ArrayList<Property>(getColumnModel().getColumnCount());
     final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
@@ -181,60 +184,71 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isQueryConfigurationAllowed() {
     return queryConfigurationAllowed;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityTableModel setQueryConfigurationAllowed(final boolean value) {
     this.queryConfigurationAllowed = value;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getFetchCount() {
     return fetchCount;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityTableModel setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isQueryCriteriaRequired() {
     return queryCriteriaRequired;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityTableModel setQueryCriteriaRequired(final boolean value) {
     this.queryCriteriaRequired = value;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isRemoveItemsOnDelete() {
     return removeItemsOnDelete;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityTableModel setRemoveItemsOnDelete(final boolean value) {
     this.removeItemsOnDelete = value;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getEntityID() {
     return entityID;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityTableSearchModel getSearchModel() {
     return searchModel;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityEditModel getEditModel() {
     if (editModel == null) {
       throw new IllegalStateException("No edit model has been set for table model: " + this);
@@ -243,42 +257,50 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isBatchUpdateAllowed() {
     return batchUpdateAllowed;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed) {
     this.batchUpdateAllowed = batchUpdateAllowed;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isDeleteAllowed() {
     return editModel != null && editModel.isDeleteAllowed();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isUpdateAllowed() {
     return editModel != null && editModel.isUpdateAllowed();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isReadOnly() {
     return editModel == null || editModel.isReadOnly();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final ReportDataWrapper getReportDataSource() {
     return reportDataSource;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityTableModel setReportDataSource(final ReportDataWrapper reportDataSource) {
     this.reportDataSource = reportDataSource;
     return this;
@@ -291,11 +313,13 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getPropertyColumnIndex(final String propertyID) {
     return getColumnModel().getColumnIndex(Entities.getProperty(getEntityID(), propertyID));
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Object getValueAt(final int rowIndex, final int columnIndex) {
     final Property property = getColumnIdentifier(columnIndex);
     final Entity rowEntity = getItemAt(rowIndex);
@@ -319,17 +343,20 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public Color getPropertyBackgroundColor(final int row, final Property columnProperty) {
     return getItemAt(row).getBackgroundColor(columnProperty);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Collection<Object> getValues(final Property property, final boolean selectedOnly) {
     return EntityUtil.getPropertyValues(property.getPropertyID(),
             selectedOnly ? getSelectedItems() : getVisibleItems(), false);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Entity getEntityByPrimaryKey(final Entity.Key primaryKey) {
     for (final Entity entity : getVisibleItems()) {
       if (entity.getPrimaryKey().equals(primaryKey)) {
@@ -341,11 +368,13 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int indexOf(final Entity.Key primaryKey) {
     return indexOf(getEntityByPrimaryKey(primaryKey));
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getStatusMessage() {
     final int filteredItemCount = getFilteredItemCount();
 
@@ -357,6 +386,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, final boolean atFront) {
     try {
       addItems(connectionProvider.getConnection().selectMany(primaryKeys), atFront);
@@ -367,6 +397,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void replaceEntities(final Collection<Entity> entities) {
     for (int i = 0; i < getVisibleItemCount(); i++) {
       final Entity entity = getItemAt(i);
@@ -389,6 +420,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setForeignKeySearchValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues) {
     final List<Property.ForeignKeyProperty> properties = Entities.getForeignKeyProperties(entityID, foreignKeyEntityID);
     if (!properties.isEmpty() && searchModel.setSearchValues(properties.get(0).getPropertyID(), foreignKeyValues)) {
@@ -397,6 +429,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues) {
     final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(this.entityID, foreignKeyEntityID);
     boolean changed = false;
@@ -417,11 +450,13 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Collection<Entity.Key> getPrimaryKeysOfSelectedEntities() {
     return EntityUtil.getPrimaryKeys(getSelectedItems());
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setSelectedByPrimaryKeys(final Collection<Entity.Key> keys) {
     final List<Entity.Key> keyList = new ArrayList<Entity.Key>(keys);
     final List<Integer> indexes = new ArrayList<Integer>();
@@ -437,6 +472,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Collection<Entity> getEntitiesByPrimaryKeys(final Collection<Entity.Key> keys) {
     final List<Entity> entities = new ArrayList<Entity>();
     for (final Entity entity : getAllItems()) {
@@ -452,6 +488,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Collection<Entity> getEntitiesByPropertyValues(final Map<String, Object> values) {
     final List<Entity> entities = new ArrayList<Entity>();
     for (final Entity entity : getAllItems()) {
@@ -472,6 +509,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void deleteSelected() throws CancelException, DatabaseException {
     if (editModel == null) {
       throw new IllegalStateException("No edit model has been set for table model: " + this);
@@ -480,6 +518,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void update(final List<Entity> entities) throws CancelException, ValidationException, DatabaseException {
     if (editModel == null) {
       throw new IllegalStateException("No edit model has been set for table model: " + this);
@@ -488,15 +527,18 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final PropertySummaryModel getPropertySummaryModel(final String propertyID) {
     return getPropertySummaryModel(Entities.getProperty(entityID, propertyID));
   }
 
   /** {@inheritDoc} */
+  @Override
   public final PropertySummaryModel getPropertySummaryModel(final Property property) {
     if (!propertySummaryModels.containsKey(property.getPropertyID())) {
       final PropertySummaryModel.PropertyValueProvider valueProvider = new PropertySummaryModel.PropertyValueProvider() {
         /** {@inheritDoc} */
+        @Override
         public void bindValuesChangedEvent(final Event event) {
           addFilteringListener(event);//todo summary is updated twice per refresh and should update on insert
           addRefreshDoneListener(event);
@@ -504,11 +546,13 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
         }
 
         /** {@inheritDoc} */
+        @Override
         public Collection<?> getValues() {
           return DefaultEntityTableModel.this.getValues(property, isValueSubset());
         }
 
         /** {@inheritDoc} */
+        @Override
         public boolean isValueSubset() {
           return !isSelectionEmpty();
         }
@@ -520,16 +564,19 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Iterator<Entity> getSelectedEntitiesIterator() {
     return getSelectedItems().iterator();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final SortingDirective getSortingDirective(final String propertyID) {
     return super.getSortingDirective(Entities.getProperty(entityID, propertyID));
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setSortingDirective(final String propertyID, final SortingDirective directive,
                                         final boolean addColumnToSort) {
     super.setSortingDirective(Entities.getProperty(entityID, propertyID), directive, addColumnToSort);
@@ -603,17 +650,20 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private void bindEvents() {
     addColumnHiddenListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         handleColumnHidden((Property) e.getSource());
       }
     });
     addRefreshDoneListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         searchModel.rememberCurrentSearchState();
       }
     });
     searchModel.addSimpleSearchListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         refresh();
       }
@@ -630,12 +680,14 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     });
     editModel.addAfterRefreshListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         refresh();
       }
     });
     addSelectedIndexListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         final Entity itemToSelect = isSelectionEmpty() ? null : getSelectedItem();
         editModel.setEntity(itemToSelect);
@@ -644,6 +696,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
     addTableModelListener(new TableModelListener() {
       /** {@inheritDoc} */
+      @Override
       public void tableChanged(final TableModelEvent e) {
         //if the selected record is being updated via the table model refresh the one in the edit model
         if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getSelectedIndex()) {

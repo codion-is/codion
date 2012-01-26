@@ -18,6 +18,7 @@ public abstract class ValueChangeListener<K, V> implements ActionListener {
    * @param e the event
    * @throws IllegalArgumentException in case the received event is not a ValueChangeEvent instance
    */
+  @Override
   @SuppressWarnings({"unchecked"})
   public final void actionPerformed(final ActionEvent e) {
     if (!(e instanceof ValueChangeEvent)) {

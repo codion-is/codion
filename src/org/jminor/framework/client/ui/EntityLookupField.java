@@ -140,6 +140,7 @@ public final class EntityLookupField extends JTextField {
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         getModel().setSelectedEntities(toEntityList(list.getSelectedValues()));
         dialog.dispose();
@@ -188,6 +189,7 @@ public final class EntityLookupField extends JTextField {
     };
     model.addSearchStringListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         updateColors();
       }
@@ -197,6 +199,7 @@ public final class EntityLookupField extends JTextField {
   private void addEscapeListener() {
     final AbstractAction escapeAction = new AbstractAction("EntityLookupField.cancel") {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         getModel().refreshSearchText();
         selectAll();
@@ -209,10 +212,12 @@ public final class EntityLookupField extends JTextField {
   private FocusListener initializeFocusListener() {
     return new FocusListener() {
       /** {@inheritDoc} */
+      @Override
       public void focusGained(final FocusEvent e) {
         updateColors();
       }
       /** {@inheritDoc} */
+      @Override
       public void focusLost(final FocusEvent e) {
         if (getText().isEmpty()) {
           getModel().setSelectedEntity(null);
@@ -233,6 +238,7 @@ public final class EntityLookupField extends JTextField {
   private AbstractAction initializeLookupAction() {
     final AbstractAction lookupAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         performLookup(true);
       }
@@ -303,6 +309,7 @@ public final class EntityLookupField extends JTextField {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void actionPerformed(final ActionEvent e) {
       final JPanel panel = new JPanel(new GridLayout(5,1,5,5));
       final JCheckBox boxCaseSensitive =
@@ -330,6 +337,7 @@ public final class EntityLookupField extends JTextField {
       panel.add(pnlValueSeparator);
       final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
         /** {@inheritDoc} */
+        @Override
         public void actionPerformed(final ActionEvent e) {
           lookupPanel.getModel().setCaseSensitive(boxCaseSensitive.isSelected());
           lookupPanel.getModel().setWildcardPrefix(boxPrefixWildcard.isSelected());
@@ -348,6 +356,7 @@ public final class EntityLookupField extends JTextField {
   private static final class EntityComparator implements Comparator<Entity>, Serializable {
     private static final long serialVersionUID = 1;
     /** {@inheritDoc} */
+    @Override
     public int compare(final Entity o1, final Entity o2) {
       return o1.compareTo(o2);
     }

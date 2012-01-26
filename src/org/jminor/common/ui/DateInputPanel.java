@@ -55,6 +55,7 @@ public final class DateInputPanel extends JPanel {
     if (includeButton) {
       final AbstractAction buttonAction = new AbstractAction("...") {
         /** {@inheritDoc} */
+        @Override
         public void actionPerformed(final ActionEvent e) {
           Date currentValue = null;
           try {

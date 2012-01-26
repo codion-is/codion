@@ -86,21 +86,25 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setPoolTime(final long time) {
     this.poolTime = time;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final long getPoolTime() {
     return poolTime;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setRetryCount(final int retryCount) {
     this.poolRetryCount = retryCount;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getRetryCount() {
     return poolRetryCount;
   }
@@ -112,26 +116,31 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final User getUser() {
     return user;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLoggingEnabled(final boolean enabled) {
     methodLogger.setEnabled(enabled);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isLoggingEnabled() {
     return methodLogger.isEnabled();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isValid() {
     return isValid(database, connection, checkConnectionStatement);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void disconnect() {
     if (!isConnected()) {
       return;
@@ -157,6 +166,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isConnected() {
     return connection != null;
   }
@@ -164,6 +174,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   /**
    * @return the underlying Connection object
    */
+  @Override
   public final Connection getConnection() {
     if (!isConnected()) {
       throw new IllegalStateException("Not connected");
@@ -173,11 +184,13 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Database getDatabase() {
     return database;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void beginTransaction() {
     if (transactionOpen) {
       throw new IllegalStateException("Transaction already open");
@@ -189,6 +202,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void rollbackTransaction(){
     SQLException exception = null;
     try {
@@ -210,6 +224,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void commitTransaction(){
     SQLException exception = null;
     try {
@@ -231,11 +246,13 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isTransactionOpen() {
     return transactionOpen;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException {
     Databases.QUERY_COUNTER.count(sql);
     methodLogger.logAccess("query", new Object[] {sql});
@@ -272,6 +289,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<String> queryStrings(final String sql) throws SQLException {
     final List res = query(sql, Databases.STRING_PACKER, -1);
     final List<String> strings = new ArrayList<String>(res.size());
@@ -283,6 +301,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int queryInteger(final String sql) throws SQLException {
     final List<Integer> integers = queryIntegers(sql);
     if (!integers.isEmpty()) {
@@ -293,18 +312,21 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings({"unchecked"})
   public final List<Integer> queryIntegers(final String sql) throws SQLException {
     return (List<Integer>) query(sql, Databases.INT_PACKER, -1);
   }
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings({"unchecked"})
   public final List<List> queryObjects(final String sql, final int fetchCount) throws SQLException {
     return (List<List>) query(sql, new MixedResultPacker(), fetchCount);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final byte[] readBlobField(final String tableName, final String columnName, final String whereClause) throws SQLException {
     //http://www.idevelopment.info/data/Programming/java/jdbc/LOBS/BLOBFileExample.java
     final String sql = "select " + columnName + " from " + tableName + " where " + whereClause;
@@ -317,6 +339,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void writeBlobField(final byte[] blobData, final String tableName, final String columnName,
                                    final String whereClause) throws SQLException {
     final long time = System.currentTimeMillis();
@@ -345,6 +368,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void commit() throws SQLException {
     if (transactionOpen) {
       throw new IllegalStateException("Can not perform a commit during an open transaction");
@@ -366,6 +390,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void rollback() throws SQLException {
     if (transactionOpen) {
       throw new IllegalStateException("Can not perform a rollback during an open transaction");
@@ -387,6 +412,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Object executeCallableStatement(final String sqlStatement, final int outParameterType) throws SQLException {
     Databases.QUERY_COUNTER.count(sqlStatement);
     methodLogger.logAccess("executeCallableStatement", new Object[] {sqlStatement, outParameterType});
@@ -424,6 +450,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void execute(final String sql) throws SQLException {
     Databases.QUERY_COUNTER.count(sql);
     methodLogger.logAccess(EXECUTE, new Object[] {sql});
@@ -453,6 +480,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
     if (transactionOpen) {
       throw new DatabaseException("Can not execute a function within an open transaction");
@@ -467,6 +495,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
     if (transactionOpen) {
       throw new DatabaseException("Can not execute a procedure within an open transaction");
@@ -479,6 +508,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void execute(final List<String> statements) throws SQLException {
     Util.rejectNullValue(statements, "statements");
     if (statements.size() == 1) {
@@ -517,11 +547,13 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<LogEntry> getLogEntries() {
     return methodLogger.getLogEntries();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final MethodLogger getMethodLogger() {
     return methodLogger;
   }
@@ -613,6 +645,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
 
   private static final class MixedResultPacker implements ResultPacker<List> {
     /** {@inheritDoc} */
+    @Override
     public List<List> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<List> result = new ArrayList<List>();
       final int columnCount = resultSet.getMetaData().getColumnCount();
@@ -631,6 +664,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
 
   private static final class BlobResultPacker implements ResultPacker {
     /** {@inheritDoc} */
+    @Override
     public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Blob> blobs = new ArrayList<Blob>();
       if (resultSet.next()) {

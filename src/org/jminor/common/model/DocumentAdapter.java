@@ -9,14 +9,17 @@ import javax.swing.event.DocumentListener;
 public class DocumentAdapter implements DocumentListener {
 
   /** {@inheritDoc} */
+  @Override
   public void changedUpdate(final DocumentEvent e) {}
 
   /** {@inheritDoc} */
+  @Override
   public void insertUpdate(final DocumentEvent e) {
     insertOrRemoveUpdate(e);
   }
 
   /** {@inheritDoc} */
+  @Override
   public void removeUpdate(final DocumentEvent e) {
     insertOrRemoveUpdate(e);
   }

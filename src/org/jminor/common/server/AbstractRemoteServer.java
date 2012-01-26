@@ -105,11 +105,13 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean connectionsAvailable() throws RemoteException {
     return !maximumNumberOfConnectionReached();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final T connect(final User user, final UUID clientID, final String clientTypeID) throws RemoteException,
           ServerException.ServerFullException, ServerException.LoginException {
     if (clientID == null) {
@@ -121,6 +123,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   }
 
   /** {@inheritDoc} */
+  @Override
   public final T connect(final ClientInfo clientInfo) throws RemoteException,
           ServerException.ServerFullException, ServerException.LoginException {
     if (shuttingDown) {
@@ -144,6 +147,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void disconnect(final UUID clientID) throws RemoteException {
     if (clientID == null) {
       return;
@@ -158,16 +162,19 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getServerName() {
     return serverName;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getServerVersion() {
     return Util.getVersionAndBuildNumber();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getServerPort() {
     return serverPort;
   }
@@ -256,12 +263,15 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
 
   private static LoginProxy createDefaultLoginProxy(final String clientTypeID) {
     return new LoginProxy() {
+      @Override
       public String getClientTypeID() {
         return clientTypeID;
       }
+      @Override
       public ClientInfo doLogin(final ClientInfo clientInfo) {
         return clientInfo;
       }
+      @Override
       public void close() {}
     };
   }

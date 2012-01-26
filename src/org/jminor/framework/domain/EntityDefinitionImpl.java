@@ -91,6 +91,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
    */
   private Entity.ToString stringProvider = new Entity.ToString() {
     /** {@inheritDoc} */
+    @Override
     public String toString(final Entity entity) {
       Util.rejectNullValue(entity, "entity");
       return new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString();
@@ -175,32 +176,38 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getEntityID() {
     return entityID;
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getTableName() {
     return tableName;
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getDomainID() {
     return domainID;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setDomainID(final String domainID) {
     this.domainID = domainID;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getCaption() {
     return caption;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setCaption(final String caption) {
     Util.rejectNullValue(caption, "caption");
     this.caption = caption;
@@ -208,33 +215,39 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isSmallDataset() {
     return smallDataset;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setSmallDataset(final boolean smallDataset) {
     this.smallDataset = smallDataset;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isReadOnly() {
     return readOnly;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setReadOnly(final boolean readOnly) {
     this.readOnly = readOnly;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public IdSource getIdSource() {
     return idSource;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setIdSource(final IdSource idSource) {
     Util.rejectNullValue(idSource, "idSource");
     this.idSource = idSource;
@@ -242,11 +255,13 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getIdValueSource() {
     return idValueSource;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setIdValueSource(final String idValueSource) {
     Util.rejectNullValue(idValueSource, "idValueSource");
     this.idValueSource = idValueSource;
@@ -254,11 +269,13 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getOrderByClause() {
     return orderByClause;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setOrderByClause(final String orderByClause) {
     Util.rejectNullValue(orderByClause, "orderByClause");
     this.orderByClause = orderByClause;
@@ -266,11 +283,13 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getGroupByClause() {
     return groupByClause;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setGroupByClause(final String groupByClause) {
     Util.rejectNullValue(groupByClause, "groupByClause");
     if (this.groupByClause != null) {
@@ -281,11 +300,13 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getSelectTableName() {
     return selectTableName;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setSelectTableName(final String selectTableName) {
     Util.rejectNullValue(selectTableName, "selectTableName");
     this.selectTableName = selectTableName;
@@ -293,11 +314,13 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getSelectQuery() {
     return selectQuery;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setSelectQuery(final String selectQuery) {
     Util.rejectNullValue(selectQuery, "selectQuery");
     this.selectQuery = selectQuery;
@@ -305,11 +328,13 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.ToString getStringProvider() {
     return stringProvider;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setStringProvider(final Entity.ToString stringProvider) {
     Util.rejectNullValue(stringProvider, "stringProvider");
     this.stringProvider = stringProvider;
@@ -317,11 +342,13 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Comparator<Entity> getComparator() {
     return comparator;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setComparator(final Comparator<Entity> comparator) {
     Util.rejectNullValue(comparator, "comparator");
     this.comparator = comparator;
@@ -329,6 +356,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Collection<String> getSearchPropertyIDs() {
     if (searchPropertyIDs == null) {
       return Collections.emptyList();
@@ -337,6 +365,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setSearchPropertyIDs(final String... searchPropertyIDs) {
     Util.rejectNullValue(searchPropertyIDs, "searchPropertyIDs");
     for (final String propertyID : searchPropertyIDs) {
@@ -350,16 +379,19 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Map<String, Property> getProperties() {
     return properties;
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean hasLinkedProperties(final String propertyID) {
     return linkedProperties.containsKey(propertyID);
   }
 
   /** {@inheritDoc} */
+  @Override
   public Collection<String> getLinkedPropertyIDs(final String propertyID) {
     final Collection<String> linked = linkedProperties.get(propertyID);
     if (linked == null) {
@@ -370,6 +402,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties() {
     if (primaryKeyProperties == null) {
       primaryKeyProperties = Collections.unmodifiableList(getPrimaryKeyProperties(properties.values()));
@@ -378,6 +411,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getSelectColumnsString() {
     if (selectColumnsString == null) {
       selectColumnsString = initializeSelectColumnsString(getColumnProperties());
@@ -386,6 +420,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Property> getVisibleProperties() {
     if (visibleProperties == null) {
       visibleProperties = Collections.unmodifiableList(getVisibleProperties(properties.values()));
@@ -394,6 +429,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Property.ColumnProperty> getColumnProperties() {
     if (columnProperties == null) {
       columnProperties = Collections.unmodifiableList(getColumnProperties(properties.values()));
@@ -402,6 +438,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Property.TransientProperty> getTransientProperties() {
     if (transientProperties == null) {
       transientProperties = Collections.unmodifiableList(getTransientProperties(properties.values()));
@@ -410,6 +447,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Property.ForeignKeyProperty> getForeignKeyProperties() {
     if (foreignKeyProperties == null) {
       foreignKeyProperties = Collections.unmodifiableList(getForeignKeyProperties(properties.values()));
@@ -418,6 +456,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean hasDenormalizedProperties() {
     if (denormalizedProperties == null) {
       denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
@@ -427,6 +466,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean hasDenormalizedProperties(final String foreignKeyPropertyID) {
     if (denormalizedProperties == null) {
       denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
@@ -435,6 +475,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String foreignKeyPropertyID) {
     if (denormalizedProperties == null) {
       denormalizedProperties = Collections.unmodifiableMap(getDenormalizedProperties(properties.values()));
@@ -449,29 +490,34 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setToStringProvider(final Entity.ToString toString) {
     this.stringProvider = toString;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setBackgroundColorProvider(final Entity.BackgroundColorProvider colorProvider) {
     this.backgroundColorProvider = colorProvider;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Definition setValidator(final Entity.Validator validator) {
     this.validator = validator;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity.Validator getValidator() {
     return validator;
   }
 
   /** {@inheritDoc} */
+  @Override
   public int compareTo(final Entity entity, final Entity entityToCompare) {
     Util.rejectNullValue(entity, "entity");
     Util.rejectNullValue(entityToCompare, "entityToCompare");
@@ -479,11 +525,13 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String toString(final Entity entity) {
     return stringProvider.toString(entity);
   }
 
   /** {@inheritDoc} */
+  @Override
   public Color getBackgroundColor(final Entity entity, final Property property) {
     if (backgroundColorProvider == null) {
       return null;

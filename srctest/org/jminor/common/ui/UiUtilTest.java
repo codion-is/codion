@@ -3,7 +3,6 @@ package org.jminor.common.ui;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import javax.swing.AbstractAction;
@@ -12,11 +11,14 @@ import javax.swing.JComponent;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
 
+import static org.junit.Assert.*;
+
 public class UiUtilTest {
 
   @Test
   public void linkToEnabledState() {
     final Action action = new AbstractAction("test") {
+      @Override
       public void actionPerformed(final ActionEvent e) {}
     };
     State state = States.state();

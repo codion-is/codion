@@ -290,6 +290,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     Collections.sort(allColumns, new Comparator<TableColumn>() {
       private final Collator collator = Collator.getInstance();
       /** {@inheritDoc} */
+      @Override
       public int compare(final TableColumn o1, final TableColumn o2) {
         return Util.collateSansSpaces(collator, o1.getIdentifier().toString(), o2.getIdentifier().toString());
       }
@@ -353,6 +354,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     UiUtil.selectAllOnFocusGained(txtSearch);
     UiUtil.addKeyEvent(txtSearch, KeyEvent.VK_ESCAPE, new AbstractAction("FilteredTablePanel.requestTableFocus") {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         getJTable().requestFocusInWindow();
       }
@@ -394,6 +396,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
     final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         tableModel.setRegularExpressionSearch(boxRegexp.isSelected());
       }
@@ -403,6 +406,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         UiUtil.showInDialog(UiUtil.getParentWindow(FilteredTablePanel.this), panel, true,
                 Messages.get(Messages.SETTINGS), true, true, action);
@@ -430,12 +434,14 @@ public class FilteredTablePanel<T, C> extends JPanel {
   private void bindEvents() {
     tableModel.addSortingListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         table.getTableHeader().repaint();
       }
     });
     tableModel.addSelectedIndexListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         if (scrollToSelectedItem && !tableModel.isSelectionEmpty()) {
           scrollToCoordinate(tableModel.getSelectedIndex(), table.getSelectedColumn());
@@ -444,12 +450,14 @@ public class FilteredTablePanel<T, C> extends JPanel {
     });
     tableModel.addRefreshStartedListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, FilteredTablePanel.this);
       }
     });
     tableModel.addRefreshDoneListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(false, FilteredTablePanel.this);
       }
@@ -461,6 +469,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
       if (model != null) {
         model.addSearchStateListener(new ActionListener() {
           /** {@inheritDoc} */
+          @Override
           public void actionPerformed(final ActionEvent e) {
             if (model.isEnabled()) {
               addFilterIndicator(column);
@@ -577,6 +586,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
       final Color color = c == null ? Color.GRAY : c.getBackground();
       // In a compound sort, make each successive triangle 20%
@@ -611,11 +621,13 @@ public class FilteredTablePanel<T, C> extends JPanel {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getIconWidth() {
       return size;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getIconHeight() {
       return size;
     }
@@ -629,6 +641,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     }
 
     /** {@inheritDoc} */
+    @Override
     @SuppressWarnings({"unchecked"})
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {

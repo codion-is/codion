@@ -136,10 +136,11 @@ public final class DefaultEntityModelTest {
     assertTrue(departmentModel.containsTableModel());
 
     final ActionListener linkedListener = new ActionListener() {
-      public void actionPerformed(final ActionEvent e) {
-      }
+      @Override
+      public void actionPerformed(final ActionEvent e) {}
     };
     final ActionListener listener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         eventCount++;
       }

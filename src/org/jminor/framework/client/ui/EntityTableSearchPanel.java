@@ -219,6 +219,7 @@ public final class EntityTableSearchPanel extends JPanel {
   private Action initializeSimpleSearchAction() {
     return new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         searchModel.performSimpleSearch();
       }

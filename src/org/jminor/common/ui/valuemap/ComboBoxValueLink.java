@@ -53,6 +53,7 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
     updateUI();
     comboBox.addItemListener(new ItemListener() {
       /** {@inheritDoc} */
+      @Override
       public void itemStateChanged(final ItemEvent e) {
         updateModel();
       }

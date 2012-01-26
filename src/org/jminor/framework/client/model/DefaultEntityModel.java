@@ -145,41 +145,49 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getEntityID() {
     return entityID;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityModel getMasterModel() {
     return masterModel;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setMasterModel(final EntityModel entityModel) {
     this.masterModel = entityModel;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityEditModel getEditModel() {
     return editModel;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityTableModel getTableModel() {
     return tableModel;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean containsTableModel() {
     return tableModel != null;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addDetailModels(final EntityModel... detailModels) {
     Util.rejectNullValue(detailModels, "detailModels");
     for (final EntityModel detailModel : detailModels) {
@@ -188,6 +196,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityModel addDetailModel(final EntityModel detailModel) {
     if (this.detailModels.contains(detailModel)) {
       throw new IllegalArgumentException("Detail model " + detailModel + " has already been added");
@@ -205,6 +214,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean containsDetailModel(final Class<? extends EntityModel> modelClass) {
     for (final EntityModel detailModel : detailModels) {
       if (detailModel.getClass().equals(modelClass)) {
@@ -216,6 +226,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean containsDetailModel(final String entityID) {
     for (final EntityModel detailModel : detailModels) {
       if (detailModel.getEntityID().equals(entityID)) {
@@ -227,16 +238,19 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean containsDetailModel(final EntityModel detailModel) {
     return detailModels.contains(detailModel);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Collection<? extends EntityModel> getDetailModels() {
     return Collections.unmodifiableCollection(detailModels);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLinkedDetailModels(final EntityModel... detailModels) {
     final Set<EntityModel> linked = new HashSet<EntityModel>(linkedDetailModels);
     linkedDetailModels.clear();
@@ -254,11 +268,13 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Collection<EntityModel> getLinkedDetailModels() {
     return Collections.unmodifiableCollection(linkedDetailModels);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityModel getDetailModel(final Class<? extends EntityModel> modelClass) {
     for (final EntityModel detailModel : detailModels) {
       if (detailModel.getClass().equals(modelClass)) {
@@ -270,6 +286,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityModel getDetailModel(final String entityID) {
     for (final EntityModel detailModel : detailModels) {
       if (detailModel.getEntityID().equals(entityID)) {
@@ -281,6 +298,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void refresh() {
     if (isRefreshing) {
       return;
@@ -302,6 +320,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void refreshDetailModels() {
     for (final EntityModel detailModel : detailModels) {
       detailModel.refresh();
@@ -309,6 +328,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void clear() {
     if (containsTableModel()) {
       tableModel.clear();
@@ -318,6 +338,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void clearDetailModels() {
     for (final EntityModel detailModel : detailModels) {
       detailModel.clear();
@@ -325,6 +346,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void initialize(final String foreignKeyEntityID, final List<Entity> foreignKeyValues) {
     if (containsTableModel()) {
       tableModel.setForeignKeySearchValues(foreignKeyEntityID, foreignKeyValues);
@@ -341,31 +363,37 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addLinkedDetailModelsListener(final ActionListener listener) {
     evtLinkedDetailModelsChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeLinkedDetailModelsListener(final ActionListener listener) {
     evtLinkedDetailModelsChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addBeforeRefreshListener(final ActionListener listener) {
     evtRefreshStarted.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeBeforeRefreshListener(final ActionListener listener) {
     evtRefreshStarted.removeListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addAfterRefreshListener(final ActionListener listener) {
     evtRefreshDone.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeAfterRefreshListener(final ActionListener listener) {
     evtRefreshDone.removeListener(listener);
   }
@@ -545,6 +573,7 @@ public class DefaultEntityModel implements EntityModel {
     });
     final ActionListener initializer = new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         initializeDetailModels();
       }

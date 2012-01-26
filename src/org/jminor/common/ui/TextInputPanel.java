@@ -141,6 +141,7 @@ public final class TextInputPanel extends JPanel {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void actionPerformed(final ActionEvent e) {
       final JTextArea txtArea = new JTextArea(textComponent.getText()) {
         @Override
@@ -165,6 +166,7 @@ public final class TextInputPanel extends JPanel {
       final JScrollPane scroller = new JScrollPane(txtArea);
       final AbstractAction okAction = new AbstractAction(Messages.get(Messages.OK)) {
         /** {@inheritDoc} */
+        @Override
         public void actionPerformed(final ActionEvent evt) {
           textComponent.setText(txtArea.getText());
         }

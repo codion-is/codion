@@ -49,6 +49,7 @@ public final class SelectedItemBeanValueLink extends AbstractBeanValueLink {
     updateUI();
     box.addItemListener(new ItemListener() {
       /** {@inheritDoc} */
+      @Override
       public void itemStateChanged(final ItemEvent e) {
         if (e.getStateChange() == ItemEvent.SELECTED) {
           updateModel();

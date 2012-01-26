@@ -96,6 +96,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     if (entities == null || entities.isEmpty()) {
       return new ArrayList<Entity.Key>();
@@ -164,6 +165,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Entity> update(final List<Entity> entities) throws DatabaseException {
     if (entities == null || entities.isEmpty()) {
       return entities;
@@ -233,6 +235,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /** {@inheritDoc} */
+  @Override
   public void delete(final EntityCriteria criteria) throws DatabaseException {
     Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
     checkReadOnly(criteria.getEntityID());
@@ -263,6 +266,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /** {@inheritDoc} */
+  @Override
   public void delete(final List<Entity.Key> entityKeys) throws DatabaseException {
     if (entityKeys == null || entityKeys.isEmpty()) {
       return;
@@ -304,16 +308,19 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException {
     return selectSingle(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, value));
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException {
     return selectSingle(EntityCriteriaUtil.selectCriteria(key));
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity selectSingle(final EntitySelectCriteria criteria) throws DatabaseException {
     final List<Entity> entities = selectMany(criteria);
     if (entities.isEmpty()) {
@@ -327,6 +334,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings({"unchecked"})
   public List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
     if (keys == null || keys.isEmpty()) {
@@ -337,21 +345,25 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DatabaseException {
     return selectMany(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, values));
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Entity> selectAll(final String entityID) throws DatabaseException {
     return selectMany(EntityCriteriaUtil.selectCriteria(entityID, Entities.getOrderByClause(entityID)));
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException {
     return doSelectMany(criteria, 0);
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws DatabaseException {
     String selectSQL = null;
     try {
@@ -377,6 +389,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /** {@inheritDoc} */
+  @Override
   public int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
     Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
     PreparedStatement statement = null;
@@ -410,6 +423,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /** {@inheritDoc} */
+  @Override
   public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
     final Map<String, Collection<Entity>> dependencyMap = new HashMap<String, Collection<Entity>>();
     if (entities == null || entities.isEmpty()) {
@@ -429,11 +443,13 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /** {@inheritDoc} */
+  @Override
   public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
     return reportWrapper.fillReport(getConnection());
   }
 
   /** {@inheritDoc} */
+  @Override
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
                         final byte[] blobData) throws DatabaseException {
     if (isTransactionOpen()) {
@@ -477,6 +493,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /** {@inheritDoc} */
+  @Override
   public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException {//todo does not work as is
     try {
       final Property.BlobProperty property =
@@ -494,6 +511,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /** {@inheritDoc} */
+  @Override
   public PoolableConnection getPoolableConnection() {
     return this;
   }
@@ -1042,6 +1060,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
 
     /** {@inheritDoc} */
+    @Override
     public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Object> result = new ArrayList<Object>(50);
       int counter = 0;
@@ -1094,6 +1113,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
      * @return a List of Entity objects representing the contents of <code>resultSet</code>
      * @throws java.sql.SQLException in case of an exception
      */
+    @Override
     public List<Entity> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       Util.rejectNullValue(resultSet, "resultSet");
       final List<Entity> entities = new ArrayList<Entity>();

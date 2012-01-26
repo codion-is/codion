@@ -123,6 +123,7 @@ public final class ToggleBeanValueLink extends AbstractBeanValueLink {
     this.buttonModel = buttonModel;
     this.buttonModel.addItemListener(new ItemListener() {
       /** {@inheritDoc} */
+      @Override
       public void itemStateChanged(final ItemEvent e) {
         updateModel();
       }

@@ -23,6 +23,7 @@ public interface FilterCriteria<T> {
      * @param item the item
      * @return true
      */
+    @Override
     public boolean include(final T item) {
       return true;
     }
@@ -36,6 +37,7 @@ public interface FilterCriteria<T> {
      * @param item the item
      * @return false
      */
+    @Override
     public boolean include(final T item) {
       return false;
     }

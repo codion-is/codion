@@ -23,23 +23,29 @@ public class DefaultPropertySummaryModelTest {
 
   final PropertySummaryModel testIntModel = new DefaultPropertySummaryModel(Properties.columnProperty("TestProperty", Types.INTEGER),
           new PropertySummaryModel.PropertyValueProvider() {
+    @Override
     public Collection<?> getValues() {
       return Arrays.asList(1,2,3,4,5);
     }
+    @Override
     public boolean isValueSubset() {
       return false;
     }
+    @Override
     public void bindValuesChangedEvent(final Event event) {}
   });
 
   final PropertySummaryModel testDoubleModel = new DefaultPropertySummaryModel(Properties.columnProperty("TestProperty", Types.DOUBLE),
           new PropertySummaryModel.PropertyValueProvider() {
+    @Override
     public Collection<?> getValues() {
       return Arrays.asList(1.1, 2.2, 3.3, 4.4, 5.5);
     }
+    @Override
     public boolean isValueSubset() {
       return false;
     }
+    @Override
     public void bindValuesChangedEvent(final Event event) {}
   });
 
@@ -52,6 +58,7 @@ public class DefaultPropertySummaryModelTest {
     assertEquals(PropertySummaryModel.SummaryType.SUM, testIntModel.getSummaryType());
     assertTrue(testIntModel.getSummaryTypes().size() > 0);
     final ActionListener listener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {}
     };
     testIntModel.addSummaryListener(listener);

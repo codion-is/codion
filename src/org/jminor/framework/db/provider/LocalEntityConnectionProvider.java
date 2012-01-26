@@ -51,6 +51,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getDescription() {
     final String sid = database.getSid();
     if (sid == null) {
@@ -61,6 +62,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   }
 
   /** {@inheritDoc} */
+  @Override
   public void disconnect() {
     if (getConnectionInternal() != null && getConnectionInternal().isValid()) {
       getConnectionInternal().disconnect();

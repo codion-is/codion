@@ -59,6 +59,7 @@ public final class TristateCheckBox extends JCheckBox {
     });
     final ActionMap actions = new ActionMapUIResource();
     actions.put("pressed", new AbstractAction() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         TristateCheckBox.this.iterateState();
       }
@@ -88,6 +89,7 @@ public final class TristateCheckBox extends JCheckBox {
     //Listen for enable changes
     if (model instanceof TristateButtonModel) {
       model.addChangeListener(new ChangeListener() {
+        @Override
         public void stateChanged(final ChangeEvent e) {
           TristateCheckBox.this.setFocusable(getModel().isEnabled());
         }

@@ -94,31 +94,37 @@ public abstract class AbstractDatabase implements Database {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getDatabaseType() {
     return databaseType;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getHost() {
     return host;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getPort() {
     return port;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getSid() {
     return sid;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isEmbedded() {
     return embedded;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Connection createConnection(final User user) throws ClassNotFoundException, DatabaseException {
     Util.rejectNullValue(user, "user");
     Util.rejectNullValue(user.getUsername(), "Username must be provided");
@@ -138,24 +144,29 @@ public abstract class AbstractDatabase implements Database {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean supportsNowait() {
     return true;
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean supportsIsValid() {
     return true;
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getCheckConnectionQuery() {
     return null;
   }
 
   /** {@inheritDoc} */
+  @Override
   public void shutdownEmbedded(final Properties connectionProperties) {}
 
   /** {@inheritDoc} */
+  @Override
   public String getSequenceSQL(final String sequenceName) {
     throw new UnsupportedOperationException("Sequence support is not implemented for database type: " + databaseType);
   }
@@ -169,6 +180,7 @@ public abstract class AbstractDatabase implements Database {
    * @param connectionProperties the connection properties
    * @return a string containing authentication info to append to the connection URL
    */
+  @Override
   public String getAuthenticationInfo(final Properties connectionProperties) {
     if (connectionProperties != null) {
       final String username = (String) connectionProperties.get(USER_PROPERTY);
@@ -182,11 +194,13 @@ public abstract class AbstractDatabase implements Database {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getErrorMessage(final SQLException exception) {
     return exception.getMessage();
   }
 
   /** {@inheritDoc} */
+  @Override
   public Properties addConnectionProperties(final Properties properties) {
     return properties;
   }

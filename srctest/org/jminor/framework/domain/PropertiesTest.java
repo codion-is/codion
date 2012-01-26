@@ -19,6 +19,7 @@ public final class PropertiesTest {
   @Test(expected = IllegalArgumentException.class)
   public void derivedPropertyWithoutLinkedProperties() {
     Properties.derivedProperty("propertyID", Types.INTEGER, "caption", new Property.DerivedProperty.Provider() {
+      @Override
       public Object getValue(final Map<String, Object> linkedValues) {
         return null;
       }

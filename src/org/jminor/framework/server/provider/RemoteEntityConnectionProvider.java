@@ -52,6 +52,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getDescription() {
     try {
       if (server == null) {
@@ -66,6 +67,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   /** {@inheritDoc} */
+  @Override
   public void disconnect() {
     try {
       if (getConnectionInternal() != null && isConnectionValid()) {
@@ -161,6 +163,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     }
 
     /** {@inheritDoc} */
+    @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       final Method remoteMethod = RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
       try {

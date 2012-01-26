@@ -41,6 +41,7 @@ public final class TristateValueLink<K> extends AbstractValueMapLink<K, Object>{
     this.buttonModel = buttonModel;
     this.buttonModel.addItemListener(new ItemListener() {
       /** {@inheritDoc} */
+      @Override
       public void itemStateChanged(final ItemEvent e) {
         updateModel();
       }

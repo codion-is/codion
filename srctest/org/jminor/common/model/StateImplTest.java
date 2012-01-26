@@ -19,11 +19,13 @@ public class StateImplTest {
   @Test
   public void test() {
     final Action listeningAction = new AbstractAction("test") {
+      @Override
       public void actionPerformed(final ActionEvent e) {}
     };
     final State state = new States.StateImpl();
     state.addListeningAction(listeningAction);
     final ActionListener listener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         stateChanged++;
       }

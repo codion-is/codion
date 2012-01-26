@@ -313,6 +313,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     }
 
     /** {@inheritDoc} */
+    @Override
     public ColumnSearchModel<K> getSearchModel() {
       return model;
     }
@@ -321,6 +322,7 @@ public class ColumnSearchPanel<K> extends JPanel {
      * @param isUpperBound true if the field should represent the upper bound, otherwise it should be the lower bound field
      * @return an input field for either the upper or lower bound
      */
+    @Override
     public JComponent initializeInputField(final boolean isUpperBound) {
       if (model.getType() == Types.BOOLEAN && !isUpperBound) {
         return null;//no lower bound field required for boolean values
@@ -336,6 +338,7 @@ public class ColumnSearchPanel<K> extends JPanel {
       if (field instanceof JTextField) {//enter button toggles the filter on/off
         ((JTextField) field).addActionListener(new ActionListener() {
           /** {@inheritDoc} */
+          @Override
           public void actionPerformed(final ActionEvent e) {
             model.setEnabled(!model.isEnabled());
           }
@@ -405,6 +408,7 @@ public class ColumnSearchPanel<K> extends JPanel {
   private void bindEvents() {
     stAdvancedSearch.addListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         initializePanel();
         if (toggleSearchAdvanced != null) {
@@ -417,6 +421,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     });
     searchModel.addLowerBoundRequiredListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         initializePanel();
         revalidate();
@@ -552,6 +557,7 @@ public class ColumnSearchPanel<K> extends JPanel {
 
     addAdvancedSearchListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         dialog.pack();
       }

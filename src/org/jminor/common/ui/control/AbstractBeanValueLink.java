@@ -21,32 +21,32 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
 
   /**
    * Instantiates a new AbstractBeanValueLink.
-   * @param owner the value owner
+   * @param valueOwner the value owner
    * @param propertyName the name of the property
    * @param valueClass the value class
    * @param valueChangeEvent an event observer notified each time the value changes
    */
-  public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> valueClass,
+  public AbstractBeanValueLink(final Object valueOwner, final String propertyName, final Class<?> valueClass,
                                final EventObserver valueChangeEvent) {
-    this(owner, propertyName, valueClass, valueChangeEvent, LinkType.READ_WRITE);
+    this(valueOwner, propertyName, valueClass, valueChangeEvent, LinkType.READ_WRITE);
   }
 
   /**
    * Instantiates a new AbstractBeanValueLink.
-   * @param owner the value owner
+   * @param valueOwner the value owner
    * @param propertyName the name of the property
    * @param valueClass the value class
    * @param valueChangeEvent an event observer notified each time the value changes
    * @param linkType the link type
    */
-  public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> valueClass,
+  public AbstractBeanValueLink(final Object valueOwner, final String propertyName, final Class<?> valueClass,
                                final EventObserver valueChangeEvent, final LinkType linkType) {
-    this(owner, propertyName, valueClass, valueChangeEvent, linkType, null);
+    this(valueOwner, propertyName, valueClass, valueChangeEvent, linkType, null);
   }
 
   /**
    * Instantiates a new AbstractBeanValueLink.
-   * @param owner the value owner
+   * @param valueOwner the value owner
    * @param propertyName the name of the property
    * @param valueClass the value class
    * @param valueChangeEvent an event observer notified each time the value changes
@@ -54,10 +54,10 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
    * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
    * @throws IllegalArgumentException in case the required accessor methods are missing the the owner class
    */
-  public AbstractBeanValueLink(final Object owner, final String propertyName, final Class<?> valueClass,
+  public AbstractBeanValueLink(final Object valueOwner, final String propertyName, final Class<?> valueClass,
                                final EventObserver valueChangeEvent, final LinkType linkType,
                                final StateObserver enabledObserver) {
-    super(owner, valueChangeEvent, linkType, enabledObserver);
+    super(valueOwner, valueChangeEvent, linkType, enabledObserver);
     try {
       Util.rejectNullValue(propertyName, "propertyName");
       Util.rejectNullValue(valueClass, "valueClass");
@@ -66,16 +66,16 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
       }
       this.propertyName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
       this.valueClass = valueClass;
-      this.getMethod = getGetMethod();
+      this.getMethod = Util.getGetMethod(valueClass, propertyName, valueOwner);
       if (linkType == LinkType.READ_ONLY) {
         this.setMethod = null;
       }
       else {
-        this.setMethod = getSetMethod();
+        this.setMethod = Util.getSetMethod(valueClass, propertyName, valueOwner);
       }
     }
     catch (NoSuchMethodException e) {
-      throw new IllegalArgumentException("Bean property methods for " + propertyName + ", type: " + valueClass + " not found in class " + owner.getClass().getName(), e);
+      throw new IllegalArgumentException("Bean property methods for " + propertyName + ", type: " + valueClass + " not found in class " + valueOwner.getClass().getName(), e);
     }
   }
 
@@ -119,33 +119,5 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
     catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  /**
-   * @return the method used to set the value of the linked property
-   * @throws NoSuchMethodException if the method does not exist in the owner class
-   */
-  private Method getSetMethod() throws NoSuchMethodException {
-    return getValueOwner().getClass().getMethod("set" + propertyName, valueClass);
-  }
-
-  /**
-   * @return the method used to get the value of the linked property
-   * @throws NoSuchMethodException if the method does not exist in the owner class
-   */
-  private Method getGetMethod() throws NoSuchMethodException {
-    if (valueClass.equals(boolean.class) || valueClass.equals(Boolean.class)) {
-      try {
-        return getValueOwner().getClass().getMethod("is" + propertyName);
-      }
-      catch (NoSuchMethodException ignored) {}
-      try {
-        return getValueOwner().getClass().getMethod(propertyName.substring(0, 1).toLowerCase()
-                + propertyName.substring(1, propertyName.length()));
-      }
-      catch (NoSuchMethodException ignored) {}
-    }
-
-    return getValueOwner().getClass().getMethod("get" + propertyName);
   }
 }

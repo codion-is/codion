@@ -70,41 +70,49 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final K getColumnIdentifier() {
     return columnIdentifier;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isCaseSensitive() {
     return caseSensitive;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setCaseSensitive(final boolean caseSensitive) {
     this.caseSensitive = caseSensitive;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Format getFormat() {
     return format;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLocked(final boolean value) {
     stLocked.setActive(value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isLocked() {
     return stLocked.isActive();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getType() {
     return type;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLikeValue(final Comparable value) {
     setSearchType(SearchType.LIKE);
     setUpperBound(value);
@@ -115,6 +123,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setUpperBound(final Object upper) {
     checkLock();
     if (!Util.equal(upperBound, upper)) {
@@ -124,6 +133,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Object getUpperBound() {
     if (type == Types.VARCHAR) {
       if (upperBound == null || (upperBound instanceof String && ((String) upperBound).isEmpty())) {
@@ -142,6 +152,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLowerBound(final Object value) {
     checkLock();
     if (!Util.equal(lowerBound, value)) {
@@ -151,6 +162,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Object getLowerBound() {
     if (type == Types.VARCHAR) {
       if (lowerBound == null || (lowerBound instanceof String && ((String) lowerBound).isEmpty())) {
@@ -169,91 +181,109 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setUpperBound(final String value) {
     setUpperBound((Object) value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setUpperBound(final Double value) {
     setUpperBound((Object) value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setUpperBound(final Integer value) {
     setUpperBound((Object) value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setUpperBound(final boolean value) {
     setUpperBound(Boolean.valueOf(value));
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setUpperBound(final char value) {
     setUpperBound(Character.valueOf(value));
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setUpperBound(final Boolean value) {
     setUpperBound((Object) value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setUpperBound(final Timestamp value) {
     setUpperBound((Object) value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setUpperBound(final Date value) {
     setUpperBound((Object) value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLowerBound(final String value) {
     setLowerBound((Object) value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLowerBound(final Double value) {
     setLowerBound((Object) value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLowerBound(final Integer value) {
     setLowerBound((Object) value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLowerBound(final boolean value) {
     setLowerBound(Boolean.valueOf(value));
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLowerBound(final char value) {
     setLowerBound(Character.valueOf(value));
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLowerBound(final Boolean value) {
     setLowerBound((Object) value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLowerBound(final Timestamp value) {
     setLowerBound((Object) value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLowerBound(final Date value) {
     setLowerBound((Object) value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final SearchType getSearchType() {
     return searchType;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setSearchType(final SearchType searchType) {
     Util.rejectNullValue(searchType, "searchType");
     checkLock();
@@ -264,6 +294,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isLowerBoundRequired() {
     return stLowerBoundRequired.isActive();
   }
@@ -283,21 +314,25 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isAutoEnable() {
     return autoEnable;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setAutoEnable(final boolean autoEnable) {
     this.autoEnable = autoEnable;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isEnabled() {
     return enabled;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setEnabled(final boolean value) {
     checkLock();
     if (enabled != value) {
@@ -307,16 +342,19 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setAutomaticWildcard(final boolean value) {
     automaticWildcard = value;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isAutomaticWildcard() {
     return automaticWildcard;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void clearSearch() {
     setEnabled(false);
     setUpperBound((Object) null);
@@ -326,106 +364,127 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final StateObserver getLockedObserver() {
     return stLocked.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver getEnabledObserver() {
     return evtEnabledChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver getLowerBoundObserver() {
     return evtLowerBoundChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver getUpperBoundObserver() {
     return evtUpperBoundChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addEnabledListener(final ActionListener listener) {
     evtEnabledChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeEnabledListener(final ActionListener listener) {
     evtEnabledChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addUpperBoundListener(final ActionListener listener) {
     evtUpperBoundChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeUpperBoundListener(final ActionListener listener) {
     evtUpperBoundChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addLowerBoundListener(final ActionListener listener) {
     evtLowerBoundChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeLowerBoundListener(final ActionListener listener) {
     evtLowerBoundChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addLowerBoundRequiredListener(final ActionListener listener) {
     stLowerBoundRequired.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeLowerBoundRequiredListener(final ActionListener listener) {
     stLowerBoundRequired.removeListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addClearedListener(final ActionListener listener) {
     evtSearchModelCleared.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeClearedListener(final ActionListener listener) {
     evtSearchModelCleared.removeListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addSearchStateListener(final ActionListener listener) {
     evtSearchStateChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeSearchStateListener(final ActionListener listener) {
     evtSearchStateChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addSearchTypeListener(final ActionListener listener) {
     evtSearchTypeChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeSearchTypeListener(final ActionListener listener) {
     evtSearchTypeChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver getSearchTypeObserver() {
     return evtSearchTypeChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean include(final Object object) {
     return include(getComparable(object));
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean include(final Comparable comparable) {
     if (!enabled) {
       return true;
@@ -597,6 +656,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   private void bindEvents() {
     final ActionListener autoEnableListener = new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         if (autoEnable) {
           final boolean upperBoundNull = upperBound == null;
@@ -617,6 +677,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     evtSearchTypeChanged.addListener(evtSearchStateChanged);
     evtEnabledChanged.addListener(evtSearchStateChanged);
     evtSearchTypeChanged.addListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         stLowerBoundRequired.setActive(getSearchType() == SearchType.WITHIN_RANGE || getSearchType() == SearchType.OUTSIDE_RANGE);
       }

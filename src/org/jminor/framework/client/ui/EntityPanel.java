@@ -514,6 +514,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void activatePanel() {
     initializePanel();
     if (getMasterPanel() != null) {
@@ -523,6 +524,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final MasterDetailPanel getMasterPanel() {
     MasterDetailPanel parentPanel = masterPanel;
     if (parentPanel == null) {
@@ -533,6 +535,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityPanel getActiveDetailPanel() {
     final Collection<EntityPanel> linkedDetailPanels = getLinkedDetailPanels();
     if (!linkedDetailPanels.isEmpty()) {
@@ -543,6 +546,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setActiveDetailPanel(final MasterDetailPanel detailPanel) {
     if (detailPanelTabbedPane != null) {
       if (getDetailPanelState() == EntityPanel.HIDDEN) {
@@ -550,6 +554,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       }
       detailPanelTabbedPane.setSelectedComponent((JComponent) detailPanel);
       SwingUtilities.invokeLater(new Runnable() {
+        @Override
         public void run() {
           entityModel.setLinkedDetailModels(getDetailPanelState() != HIDDEN ? getTabbedDetailPanel().getModel() : null);
         }
@@ -558,6 +563,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final MasterDetailPanel getPreviousPanel() {
     if (getMasterPanel() == null) {//no parent, no siblings
       return null;
@@ -577,6 +583,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final MasterDetailPanel getNextPanel() {
     if (getMasterPanel() == null) {//no parent, no siblings
       return null;
@@ -596,6 +603,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<EntityPanel> getDetailPanels() {
     return Collections.unmodifiableList(detailEntityPanels);
   }
@@ -996,6 +1004,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private void setupKeyboardActions() {
     final Action selectEditPanelAction = new AbstractAction("EntityPanel.selectEditPanel") {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         if (getEditPanelState() == HIDDEN) {
           setEditPanelState(EMBEDDED);
@@ -1005,6 +1014,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     };
     final Action selectInputComponentAction = new AbstractAction("EntityPanel.selectInputComponent") {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         if (getEditPanelState() == HIDDEN) {
           setEditPanelState(EMBEDDED);
@@ -1019,18 +1029,21 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     };
     final Action selectTablePanelAction = new AbstractAction("EntityPanel.selectTablePanel") {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         getTablePanel().getJTable().requestFocus();
       }
     };
     final Action selectSearchFieldAction = new AbstractAction("EntityPanel.selectSearchField") {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         getTablePanel().getSearchField().requestFocus();
       }
     };
     final Action toggleSearchPanelAction = new AbstractAction("EntityPanel.toggleSearchPanel") {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         if (!getTablePanel().isSearchPanelVisible()) {
           getTablePanel().setSearchPanelVisible(true);
@@ -1163,6 +1176,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
     tabbedPane.addChangeListener(new ChangeListener() {
       /** {@inheritDoc} */
+      @Override
       public void stateChanged(final ChangeEvent e) {
         getTabbedDetailPanel().activatePanel();
       }
@@ -1251,6 +1265,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private Action initializeTableDoubleClickAction() {
     return new AbstractAction() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         if (editControlPanel != null || (!detailEntityPanels.isEmpty() && includeDetailPanelTabPane)) {
           if (editControlPanel != null && getEditPanelState() == HIDDEN) {
@@ -1305,10 +1320,12 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
             parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
     SwingUtilities.invokeLater(new Runnable() {
       /** {@inheritDoc} */
+      @Override
       public void run() {
         detailPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailPanelTabbedPane, false,
                 caption + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
                 null, size, location, new AbstractAction() {
+          @Override
           public void actionPerformed(final ActionEvent e) {
             setDetailPanelState(HIDDEN);
           }
@@ -1335,6 +1352,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(this), editControlPanel, false,
             caption, false, true, null, null, location, new AbstractAction() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         setEditPanelState(HIDDEN);
       }
@@ -1373,12 +1391,14 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private void bindEvents() {
     entityModel.addBeforeRefreshListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityPanel.this);
       }
     });
     entityModel.addAfterRefreshListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
@@ -1397,6 +1417,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       this.direction = direction;
     }
 
+    @Override
     public void actionPerformed(final ActionEvent e) {
       MasterDetailPanel panel = null;
       switch(direction) {
@@ -1431,6 +1452,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       this.direction = direction;
     }
 
+    @Override
     public void actionPerformed(final ActionEvent e) {
       final MasterDetailPanel activePanelParent = panel.masterPanel;
       if (activePanelParent != null) {
@@ -1450,6 +1472,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       this.direction = direction;
     }
 
+    @Override
     public void actionPerformed(final ActionEvent e) {
       panel.resizePanel(direction, RESIZE_AMOUNT);
     }
@@ -1458,6 +1481,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private static class FocusActivationListener implements PropertyChangeListener, Serializable {
     private static final long serialVersionUID = 1;
     /** {@inheritDoc} */
+    @Override
     public void propertyChange(final PropertyChangeEvent evt) {
       final EntityEditPanel editPanel = UiUtil.getParentOfType((Component) evt.getNewValue(), EntityEditPanel.class);
       if (editPanel != null) {
@@ -1478,6 +1502,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     public void componentHidden(final ComponentEvent e) {
       SwingUtilities.invokeLater(new Runnable() {
         /** {@inheritDoc} */
+        @Override
         public void run() {
           setFilterPanelsVisible(false);
         }
@@ -1488,6 +1513,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     public void componentShown(final ComponentEvent e) {
       SwingUtilities.invokeLater(new Runnable() {
         /** {@inheritDoc} */
+        @Override
         public void run() {
           setFilterPanelsVisible(true);
         }

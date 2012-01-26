@@ -195,6 +195,7 @@ public class DatabaseConnectionImplTest {
   public void query() throws Exception {
     dbConnection = new DatabaseConnectionImpl(DATABASE, User.UNIT_TEST_USER);
     final List ret = dbConnection.query("select deptno, dname, loc from scott.dept", new ResultPacker() {
+      @Override
       public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
         final List<List> result = new ArrayList<List>();
         int counter = 0;

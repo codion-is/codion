@@ -43,6 +43,7 @@ public final class AbstractFilteredTableModelTest {
       addItems(Arrays.asList(ITEMS), false);
     }
 
+    @Override
     public Object getValueAt(final int rowIndex, final int columnIndex) {
       return getItemAt(rowIndex);
     }
@@ -81,6 +82,7 @@ public final class AbstractFilteredTableModelTest {
       @Override
       protected void doRefresh() {}
 
+      @Override
       public Object getValueAt(final int rowIndex, final int columnIndex) {
         return null;
       }
@@ -92,11 +94,13 @@ public final class AbstractFilteredTableModelTest {
     final Collection<Object> started = new ArrayList<Object>();
     final Collection<Object> done = new ArrayList<Object>();
     final ActionListener startListener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         started.add(new Object());
       }
     };
     final ActionListener doneListener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         done.add(new Object());
       }
@@ -115,6 +119,7 @@ public final class AbstractFilteredTableModelTest {
   public void removeItems() {
     final Collection<Object> events = new ArrayList<Object>();
     final ActionListener listener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         events.add(new Object());
       }
@@ -162,6 +167,7 @@ public final class AbstractFilteredTableModelTest {
     assertEquals(new Point(0, 3), point);
 
     final FilterCriteria<Object> criteria = new FilterCriteria<Object>() {
+      @Override
       public boolean include(final Object item) {
         return item.equals("b") || item.equals("e");
       }
@@ -187,11 +193,13 @@ public final class AbstractFilteredTableModelTest {
     final Collection<Object> hidden = new ArrayList<Object>();
     final Collection<Object> shown = new ArrayList<Object>();
     final ActionListener hideListener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         hidden.add(new Object());
       }
     };
     final ActionListener showListener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         shown.add(new Object());
       }
@@ -219,6 +227,7 @@ public final class AbstractFilteredTableModelTest {
   public void testSorting() {
     final Collection<Object> actionsPerformed = new ArrayList<Object>();
     final ActionListener listener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         actionsPerformed.add(new Object());
       }
@@ -275,6 +284,7 @@ public final class AbstractFilteredTableModelTest {
   public void testSelection() {
     final Collection<Object> events = new ArrayList<Object>();
     final ActionListener listener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         events.add(new Object());
       }
@@ -436,6 +446,7 @@ public final class AbstractFilteredTableModelTest {
   public void testFiltering() throws Exception {
     final Collection<Object> done = new ArrayList<Object>();
     final ActionListener listener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         done.add(new Object());
       }
@@ -448,6 +459,7 @@ public final class AbstractFilteredTableModelTest {
 
     try {
       tableModel.setFilterCriteria(new FilterCriteria<String>() {
+        @Override
         public boolean include(final String item) {
           return false;
         }

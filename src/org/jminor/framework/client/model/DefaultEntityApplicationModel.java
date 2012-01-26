@@ -36,6 +36,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void logout() {
     connectionProvider.setUser(null);
     clear();
@@ -43,6 +44,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void login(final User user) {
     connectionProvider.setUser(user);
     for (final EntityModel entityModel : entityModels) {
@@ -52,16 +54,19 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
+  @Override
   public final User getUser() {
     return connectionProvider.getConnection().getUser();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addEntityModels(final EntityModel... entityModels) {
     Util.rejectNullValue(entityModels, "entityModels");
     for (final EntityModel entityModel : entityModels) {
@@ -70,6 +75,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityModel addEntityModel(final EntityModel detailModel) {
     this.entityModels.add(detailModel);
 
@@ -77,6 +83,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean containsEntityModel(final Class<? extends EntityModel> modelClass) {
     for (final EntityModel entityModel : entityModels) {
       if (entityModel.getClass().equals(modelClass)) {
@@ -88,6 +95,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean containsEntityModel(final String entityID) {
     for (final EntityModel entityModel : entityModels) {
       if (entityModel.getEntityID().equals(entityID)) {
@@ -99,16 +107,19 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean containsEntityModel(final EntityModel entityModel) {
     return entityModels.contains(entityModel);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<? extends EntityModel> getEntityModels() {
     return Collections.unmodifiableList(entityModels);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void refresh() {
     for (final EntityModel entityModel : entityModels) {
       entityModel.refresh();
@@ -116,6 +127,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void clear() {
     for (final EntityModel entityModel : entityModels) {
       entityModel.clear();
@@ -123,6 +135,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityModel getEntityModel(final Class<? extends EntityModel> modelClass) {
     for (final EntityModel model : entityModels) {
       if (model.getClass().equals(modelClass)) {
@@ -134,6 +147,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityModel getEntityModel(final String entityID) {
     for (final EntityModel entityModel : entityModels) {
       if (entityModel.getEntityID().equals(entityID)) {

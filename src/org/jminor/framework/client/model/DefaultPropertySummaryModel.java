@@ -51,11 +51,13 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
   /**
    * @return the Property this summary model is based on
    */
+  @Override
   public final Property getProperty() {
     return property;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setSummaryType(final SummaryType summaryType) {
     Util.rejectNullValue(summaryType, "summaryType");
     if (!this.summaryType.equals(summaryType)) {
@@ -65,11 +67,13 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final SummaryType getSummaryType() {
     return summaryType;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<SummaryType> getSummaryTypes() {
     if (property.isNumerical()) {
       return Arrays.asList(SummaryType.NONE, SummaryType.SUM, SummaryType.AVERAGE, SummaryType.MINIMUM, SummaryType.MAXIMUM, SummaryType.MINIMUM_MAXIMUM);
@@ -79,6 +83,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getSummaryText() {
     switch (summaryType) {
       case NONE:
@@ -99,21 +104,25 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addSummaryListener(final ActionListener listener) {
     evtSummaryChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addSummaryTypeListener(final ActionListener listener) {
     evtSummaryTypeChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeSummaryListener(final ActionListener listener) {
     evtSummaryChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeSummaryTypeListener(final ActionListener listener) {
     evtSummaryTypeChanged.removeListener(listener);
   }

@@ -46,11 +46,13 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getReportName() {
     return reportPath;
   }
 
   /** {@inheritDoc} */
+  @Override
   public ReportResult<JasperPrint> fillReport(final Connection connection) throws ReportException {
     Util.rejectNullValue(connection, "connection");
     try {
@@ -63,6 +65,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   }
 
   /** {@inheritDoc} */
+  @Override
   public ReportResult<JasperPrint> fillReport(final ReportDataWrapper<JRDataSource> dataWrapper) throws ReportException {
     Util.rejectNullValue(dataWrapper, "dataWrapper");
     try {

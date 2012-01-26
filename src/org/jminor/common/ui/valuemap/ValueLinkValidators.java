@@ -68,6 +68,7 @@ public final class ValueLinkValidators {
       this.defaultToolTip = defaultToolTip;
       editModel.addValueListener(link.getKey(), new ActionListener() {
         /** {@inheritDoc} */
+        @Override
         public void actionPerformed(final ActionEvent e) {
           updateValidityInfo();
         }

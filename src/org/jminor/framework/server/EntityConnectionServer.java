@@ -94,6 +94,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getServerLoad() throws RemoteException {
     return RemoteEntityConnectionImpl.getRequestsPerSecond();
   }
@@ -288,6 +289,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
       webServer = new WebStartServer(webDocumentRoot, port);
       final ExecutorService executor = Executors.newSingleThreadExecutor();
       executor.execute(new Runnable() {
+        @Override
         public void run() {
           webServer.serve();
         }
@@ -333,6 +335,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
       final RemoteEntityConnectionImpl connection = new RemoteEntityConnectionImpl(database, clientInfo, getServerPort(),
               clientLoggingEnabled, sslEnabled);
       connection.addDisconnectListener(new ActionListener() {
+        @Override
         public void actionPerformed(final ActionEvent e) {
           try {
             disconnect(connection.getClientInfo().getClientID());

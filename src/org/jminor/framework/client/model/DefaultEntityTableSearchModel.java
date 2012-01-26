@@ -81,11 +81,13 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getEntityID() {
     return entityID;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<Property.SearchableProperty> getSearchableProperties() {
     final List<Property.SearchableProperty> searchProperties = new ArrayList<Property.SearchableProperty>();
     for (final PropertySearchModel<? extends Property.SearchableProperty> searchModel : propertySearchModels.values()) {
@@ -96,17 +98,20 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void rememberCurrentSearchState() {
     rememberedSearchState = getSearchModelState();
     stSearchStateChanged.setActive(false);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean hasSearchStateChanged() {
     return stSearchStateChanged.isActive();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final ColumnSearchModel<Property> getPropertyFilterModel(final String propertyID) {
     if (propertyFilterModels.containsKey(propertyID)) {
       return propertyFilterModels.get(propertyID);
@@ -116,16 +121,19 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Collection<ColumnSearchModel<Property>> getPropertyFilterModels() {
     return Collections.unmodifiableCollection(propertyFilterModels.values());
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<ColumnSearchModel<Property>> getPropertyFilterModelsOrdered() {
     return new ArrayList<ColumnSearchModel<Property>>(propertyFilterModels.values());
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean include(final Entity item) {
     for (final ColumnSearchModel<Property> columnFilter : propertyFilterModels.values()) {
       if (columnFilter.isEnabled() && !columnFilter.include(item)) {
@@ -137,6 +145,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void refresh() {
     for (final PropertySearchModel model : propertySearchModels.values()) {
       if (model instanceof Refreshable) {
@@ -146,6 +155,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void clear() {
     for (final PropertySearchModel model : propertySearchModels.values()) {
       if (model instanceof Refreshable) {
@@ -155,6 +165,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void clearPropertySearchModels() {
     for (final PropertySearchModel searchModel : propertySearchModels.values()) {
       searchModel.clearSearch();
@@ -162,16 +173,19 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Collection<PropertySearchModel<? extends Property.SearchableProperty>> getPropertySearchModels() {
     return Collections.unmodifiableCollection(propertySearchModels.values());
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean containsPropertySearchModel(final String propertyID) {
     return propertySearchModels.containsKey(propertyID);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final PropertySearchModel<? extends Property.SearchableProperty> getPropertySearchModel(final String propertyID) {
     if (propertySearchModels.containsKey(propertyID)) {
       return propertySearchModels.get(propertyID);
@@ -181,16 +195,19 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isSearchEnabled(final String propertyID) {
     return containsPropertySearchModel(propertyID) && getPropertySearchModel(propertyID).isEnabled();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isFilterEnabled(final String propertyID) {
     return getPropertyFilterModel(propertyID).isEnabled();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean setSearchValues(final String propertyID, final Collection<?> values) {
     final String searchState = getSearchModelState();
     if (containsPropertySearchModel(propertyID)) {
@@ -203,6 +220,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setFilterValue(final String propertyID, final Comparable value) {
     final ColumnSearchModel<Property> filterModel = getPropertyFilterModel(propertyID);
     if (filterModel != null) {
@@ -211,6 +229,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Criteria<Property.ColumnProperty> getSearchCriteria() {
     final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(searchConjunction);
     for (final PropertySearchModel<? extends Property.SearchableProperty> criteria : propertySearchModels.values()) {
@@ -226,22 +245,26 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Criteria<Property.ColumnProperty> getAdditionalSearchCriteria() {
     return additionalSearchCriteria;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityTableSearchModel setAdditionalSearchCriteria(final Criteria<Property.ColumnProperty> criteria) {
     this.additionalSearchCriteria = criteria;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getSimpleSearchString() {
     return simpleSearchString;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setSimpleSearchString(final String simpleSearchString) {
     this.simpleSearchString = simpleSearchString == null ? "" : simpleSearchString;
     evtSimpleSearchStringChanged.fire();
@@ -249,6 +272,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void performSimpleSearch() {
     final Conjunction conjunction = getSearchConjunction();
     try {
@@ -261,37 +285,44 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Conjunction getSearchConjunction() {
     return searchConjunction;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setSearchConjunction(final Conjunction conjunction) {
     this.searchConjunction = conjunction;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setSearchEnabled(final String propertyID, final boolean enabled) {
     if (containsPropertySearchModel(propertyID)) {
       getPropertySearchModel(propertyID).setEnabled(enabled);
     }
   }
 
+  @Override
   public final EventObserver getSimpleSearchStringObserver() {
     return evtSimpleSearchStringChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final StateObserver getSearchStateObserver() {
     return stSearchStateChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addSimpleSearchListener(final ActionListener listener) {
     evtSimpleSearchPerformed.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeSimpleSearchListener(final ActionListener listener) {
     evtSimpleSearchPerformed.removeListener(listener);
   }
@@ -300,6 +331,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     for (final PropertySearchModel searchModel : propertySearchModels.values()) {
       searchModel.addSearchStateListener(new ActionListener() {
         /** {@inheritDoc} */
+        @Override
         public void actionPerformed(final ActionEvent e) {
           stSearchStateChanged.setActive(!rememberedSearchState.equals(getSearchModelState()));
           stSearchStateChanged.notifyObservers();

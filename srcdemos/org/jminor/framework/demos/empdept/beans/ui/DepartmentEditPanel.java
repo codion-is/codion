@@ -31,6 +31,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
 
     //we don't allow editing of the department number since it's a primary key
     getEntityEditModel().getEntityNullObserver().addListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         if (getEntityEditModel().isEntityNew()) {
           txtDepartmentNumber.setEnabled(true);

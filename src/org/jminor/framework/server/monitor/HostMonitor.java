@@ -53,6 +53,7 @@ public final class HostMonitor {
         if (!containsServerMonitor(serverName)) {
           final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverName, registryPort);
           serverMonitor.addServerShutDownListener(new ActionListener() {
+            @Override
             public void actionPerformed(final ActionEvent e) {
               removeServer(serverMonitor);
             }

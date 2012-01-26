@@ -10,6 +10,7 @@ import java.awt.event.ActionListener;
 public abstract class InsertListener implements ActionListener {
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings({"unchecked"})
   public final void actionPerformed(final ActionEvent e) {
     if (!(e instanceof InsertEvent)) {

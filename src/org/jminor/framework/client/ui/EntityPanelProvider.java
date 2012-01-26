@@ -199,6 +199,7 @@ public class EntityPanelProvider implements Comparable {
     return tablePanelClass;
   }
 
+  @Override
   public final int compareTo(final Object o) {
     final String thisCompare = caption == null ? modelProvider.getModelClass().getSimpleName() : caption;
     final String thatCompare = ((EntityPanelProvider) o).caption == null

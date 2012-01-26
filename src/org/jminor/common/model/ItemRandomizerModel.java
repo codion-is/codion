@@ -53,65 +53,77 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void addItem(final T item, final int weight) {
     items.add(new DefaultRandomItem<T>(item, weight));
   }
 
   /** {@inheritDoc} */
+  @Override
   public void incrementWeight(final T item) {
     getRandomItem(item).incrementWeight();
     evtWeightsChanged.fire();
   }
 
   /** {@inheritDoc} */
+  @Override
   public void decrementWeight(final T item) {
     getRandomItem(item).decrementWeight();
     evtWeightsChanged.fire();
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setWeight(final T item, final int weight) {
     getRandomItem(item).setWeight(weight);
     evtWeightsChanged.fire();
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isItemEnabled(final T item) {
     return getRandomItem(item).isEnabled();
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setItemEnabled(final T item, final boolean value) {
     getRandomItem(item).setEnabled(value);
     evtEnabledChanged.fire();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addItem(final T item) {
     addItem(item, 0);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<ItemRandomizer.RandomItem<T>> getItems() {
     return items;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getItemCount() {
     return items.size();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver getWeightsObserver() {
     return evtWeightsChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver getEnabledObserver() {
     return evtEnabledChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final T getRandomItem() {
     final int totalWeights = getTotalWeights();
     if (totalWeights == 0) {
@@ -131,6 +143,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final double getWeightRatio(final T item) {
     final int totalWeights = getTotalWeights();
     if (totalWeights == 0) {
@@ -141,6 +154,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getWeight(final T item) {
     return getRandomItem(item).getWeight();
   }
@@ -209,21 +223,25 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getWeight() {
       return enabled ? weight : 0;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isEnabled() {
       return enabled;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setEnabled(final boolean value) {
       this.enabled = value;
     }
 
     /** {@inheritDoc} */
+    @Override
     public T getItem() {
       return item;
     }
@@ -247,11 +265,13 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void incrementWeight() {
       weight++;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void decrementWeight() {
       if (weight == 0) {
         throw new IllegalStateException("Weight can not be negative");
@@ -261,6 +281,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void setWeight(final int weight) {
       if (weight < 0) {
         throw new IllegalStateException("Weight can not be negative");

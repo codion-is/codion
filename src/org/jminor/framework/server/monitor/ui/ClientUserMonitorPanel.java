@@ -64,6 +64,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     clientTypeList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     clientTypeList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+      @Override
       public void valueChanged(final ListSelectionEvent e) {
         clientTypeMonitorPanel.setModel((ClientMonitor) clientTypeList.getSelectedValue());
       }
@@ -73,6 +74,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     userList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     userList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+      @Override
       public void valueChanged(final ListSelectionEvent e) {
         clientTypeMonitorPanel.setModel((ClientMonitor) userList.getSelectedValue());
       }
@@ -126,6 +128,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     cmbMaintenance = new JComboBox(new Integer[] {1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,120,180,340,6000,10000});
     cmbMaintenance.setSelectedItem(model.getMaintenanceInterval());
     cmbMaintenance.addItemListener(new ItemListener() {
+      @Override
       public void itemStateChanged(final ItemEvent e) {
         try {
           model.setMaintenanceInterval((Integer) cmbMaintenance.getSelectedItem());

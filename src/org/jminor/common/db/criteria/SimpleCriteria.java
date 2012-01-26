@@ -43,16 +43,19 @@ public final class SimpleCriteria<T> implements Criteria<T>, Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String asString() {
     return criteriaString;
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Object> getValues() {
     return values;
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<T> getValueKeys() {
     return keys;
   }

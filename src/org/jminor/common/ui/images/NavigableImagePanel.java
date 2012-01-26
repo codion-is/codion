@@ -204,6 +204,7 @@ public final class NavigableImagePanel extends JPanel {
   }
 
   private final class WheelZoomDevice implements MouseWheelListener {
+    @Override
     public void mouseWheelMoved(final MouseWheelEvent e) {
       final Point p = e.getPoint();
       final boolean zoomIn = (e.getWheelRotation() < 0);
@@ -284,12 +285,14 @@ public final class NavigableImagePanel extends JPanel {
     });
 
     addMouseMotionListener(new MouseMotionListener() {
+      @Override
       public void mouseDragged(final MouseEvent e) {
         if (SwingUtilities.isLeftMouseButton(e)
                 && !isInNavigationImage(e.getPoint())) {
           moveImage(e.getPoint());
         }
       }
+      @Override
       public void mouseMoved(final MouseEvent e) {
         //we need the mouse position so that after zooming
         //that position of the image is maintained

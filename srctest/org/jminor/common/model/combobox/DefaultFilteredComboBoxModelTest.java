@@ -31,8 +31,11 @@ public class DefaultFilteredComboBoxModelTest {
   private static final String BJORN = "björn";
 
   private final ListDataListener listDataListener = new ListDataListener() {
+    @Override
     public void intervalAdded(final ListDataEvent e) {}
+    @Override
     public void intervalRemoved(final ListDataEvent e) {}
+    @Override
     public void contentsChanged(final ListDataEvent e) {}
   };
 
@@ -64,6 +67,7 @@ public class DefaultFilteredComboBoxModelTest {
   public void testSelection() {
     final Collection<Object> selectionChangedCounter = new ArrayList<Object>();
     final ActionListener selectionListener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         selectionChangedCounter.add(new Object());
       }
@@ -84,6 +88,7 @@ public class DefaultFilteredComboBoxModelTest {
   public void filterWithSelection() {
     testModel.setSelectedItem(BJORN);
     testModel.setFilterCriteria(new FilterCriteria<String>() {
+      @Override
       public boolean include(final String item) {
         return !item.equals(BJORN);
       }
@@ -95,6 +100,7 @@ public class DefaultFilteredComboBoxModelTest {
     testModel.setFilterSelectedItem(false);
     testModel.setSelectedItem(BJORN);
     testModel.setFilterCriteria(new FilterCriteria<String>() {
+      @Override
       public boolean include(final String item) {
         return !item.equals(BJORN);
       }
@@ -107,6 +113,7 @@ public class DefaultFilteredComboBoxModelTest {
   public void setFilterCriteria() {
     final Collection<Object> filteringEndedCounter = new ArrayList<Object>();
     final ActionListener filteringEndedListener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         filteringEndedCounter.add(new Object());
       }
@@ -115,6 +122,7 @@ public class DefaultFilteredComboBoxModelTest {
     testModel.addFilteringListener(filteringEndedListener);
 
     testModel.setFilterCriteria(new FilterCriteria<String>() {
+      @Override
       public boolean include(final String item) {
         return false;
       }
@@ -122,6 +130,7 @@ public class DefaultFilteredComboBoxModelTest {
     assertEquals(1, filteringEndedCounter.size());
     assertEquals("The model should only include the null value item", 1, testModel.getSize());
     testModel.setFilterCriteria(new FilterCriteria<String>() {
+      @Override
       public boolean include(final String item) {
         return true;
       }
@@ -129,6 +138,7 @@ public class DefaultFilteredComboBoxModelTest {
     assertEquals(2, filteringEndedCounter.size());
     assertEquals("The model should be full", 6, testModel.getSize());
     testModel.setFilterCriteria(new FilterCriteria<String>() {
+      @Override
       public boolean include(final String item) {
         return !item.equals(ANNA);
       }
@@ -137,6 +147,7 @@ public class DefaultFilteredComboBoxModelTest {
     assertTrue("The model should not contain '" + ANNA + "'", !testModel.isVisible(ANNA));
     assertTrue(testModel.isFiltered(ANNA));
     testModel.setFilterCriteria(new FilterCriteria<String>() {
+      @Override
       public boolean include(final String item) {
         return item.equals(ANNA);
       }
@@ -164,6 +175,7 @@ public class DefaultFilteredComboBoxModelTest {
   public void removeItem() {
     //remove filtered item
     testModel.setFilterCriteria(new FilterCriteria<String>() {
+      @Override
       public boolean include(final String item) {
         return !item.equals(BJORN);
       }

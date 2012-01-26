@@ -51,17 +51,20 @@ public final class DerbyDatabase extends AbstractDatabase {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void loadDriver() throws ClassNotFoundException {
     Class.forName(isEmbedded() ? EMBEDDED_DRIVER_NAME : NETWORKED_DRIVER_NAME);
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getAutoIncrementValueSQL(final String idSource) {
     Util.rejectNullValue(idSource, "idSource");
     return AUTO_INCREMENT_QUERY + idSource;
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {

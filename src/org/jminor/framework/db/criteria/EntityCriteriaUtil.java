@@ -339,31 +339,37 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<Object> getValues() {
       return criteria == null ? null : criteria.getValues();
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<Property.ColumnProperty> getValueProperties() {
       return criteria == null ? null : criteria.getValueKeys();
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getEntityID() {
       return entityID;
     }
 
     /** {@inheritDoc} */
+    @Override
     public Criteria<Property.ColumnProperty> getCriteria() {
       return criteria;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getWhereClause() {
       return getWhereClause(true);
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getWhereClause(final boolean includeWhereKeyword) {
       final String criteriaString = criteria == null ? "" : criteria.asString();
 
@@ -458,46 +464,55 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Criteria<Property.ColumnProperty> getCriteria() {
       return criteria.getCriteria();
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getEntityID() {
       return criteria.getEntityID();
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<Property.ColumnProperty> getValueProperties() {
       return criteria.getValueProperties();
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<Object> getValues() {
       return criteria.getValues();
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getWhereClause() {
       return criteria.getWhereClause();
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getWhereClause(final boolean includeWhereKeyword) {
       return criteria.getWhereClause(includeWhereKeyword);
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getFetchCount() {
       return fetchCount;
     }
 
     /** {@inheritDoc} */
+    @Override
     public String getOrderByClause() {
       return orderByClause;
     }
 
     /** {@inheritDoc} */
+    @Override
     public EntitySelectCriteria setForeignKeyFetchDepthLimit(final String foreignKeyPropertyID, final int fetchDepthLimit) {
       if (foreignKeyFetchDepthLimits == null) {
         foreignKeyFetchDepthLimits = new HashMap<String, Integer>();
@@ -507,6 +522,7 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getForeignKeyFetchDepthLimit(final String foreignKeyPropertyID) {
       if (foreignKeyFetchDepthLimits != null && foreignKeyFetchDepthLimits.containsKey(foreignKeyPropertyID)) {
         return foreignKeyFetchDepthLimits.get(foreignKeyPropertyID);
@@ -516,6 +532,7 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
+    @Override
     public EntitySelectCriteria setForeignKeyFetchDepthLimit(final int fetchDepthLimit) {
       final Collection<Property.ForeignKeyProperty > properties = Entities.getForeignKeyProperties(getEntityID());
       for (final Property.ForeignKeyProperty property : properties) {
@@ -526,11 +543,13 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isSelectForUpdate() {
       return selectForUpdate;
     }
 
     /** {@inheritDoc} */
+    @Override
     public EntitySelectCriteria setSelectForUpdate(final boolean selectForUpdate) {
       this.selectForUpdate = selectForUpdate;
       return this;
@@ -592,16 +611,19 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String asString() {
       return criteria.asString();
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<Property.ColumnProperty> getValueKeys() {
       return criteria.getValueKeys();
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<Object> getValues() {
       return criteria.getValues();
     }
@@ -705,6 +727,7 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<Object> getValues() {
       if (isNullCriteria) {
         return Collections.emptyList();
@@ -714,6 +737,7 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<Property.ColumnProperty> getValueKeys() {
       if (isNullCriteria) {
         return Collections.emptyList();
@@ -723,6 +747,7 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String asString() {
       return getConditionString();
     }
@@ -909,11 +934,13 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String asString() {
       return getForeignKeyCriteriaString();
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<Property.ColumnProperty> getValueKeys() {
       if (isNullCriteria) {
         return Collections.emptyList();
@@ -923,6 +950,7 @@ public final class EntityCriteriaUtil {
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<Object> getValues() {
       if (isNullCriteria) {
         return Collections.emptyList();

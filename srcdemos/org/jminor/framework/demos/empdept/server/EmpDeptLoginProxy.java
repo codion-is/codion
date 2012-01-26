@@ -19,10 +19,12 @@ public final class EmpDeptLoginProxy implements LoginProxy {
     users.put("helen", "juno");
   }
 
+  @Override
   public String getClientTypeID() {
     return "org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel";
   }
 
+  @Override
   public ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException {
     authenticateUser(clientInfo.getUser());
 
@@ -36,6 +38,7 @@ public final class EmpDeptLoginProxy implements LoginProxy {
     }
   }
 
+  @Override
   public void close() {
     users.clear();
   }

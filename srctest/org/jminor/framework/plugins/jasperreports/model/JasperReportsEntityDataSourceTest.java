@@ -10,10 +10,11 @@ import org.jminor.framework.domain.Entity;
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRPropertiesHolder;
 import net.sf.jasperreports.engine.JRPropertiesMap;
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import java.util.List;
+
+import static org.junit.Assert.*;
 
 public class JasperReportsEntityDataSourceTest {
 
@@ -37,13 +38,21 @@ public class JasperReportsEntityDataSourceTest {
   private static class TestField implements JRField {
     private final String name;
     TestField(final String name) {this.name = name;}
+    @Override
     public String getName() {return name;}
+    @Override
     public String getDescription() {return null;}
+    @Override
     public void setDescription(final String s) {}
+    @Override
     public Class getValueClass() {return null;}
+    @Override
     public String getValueClassName() {return null;}
+    @Override
     public boolean hasProperties() {return false;}
+    @Override
     public JRPropertiesMap getPropertiesMap() {return null;}
+    @Override
     public JRPropertiesHolder getParentProperties() {return null;}
     @SuppressWarnings({"CloneDoesntDeclareCloneNotSupportedException", "CloneDoesntCallSuperClone"})
     @Override public Object clone() {return null;}

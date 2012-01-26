@@ -100,6 +100,7 @@ public class Chinook {
 
   public static final Property.DerivedProperty.Provider INVOICELINE_TOTAL_PROVIDER =
           new Property.DerivedProperty.Provider() {
+            @Override
             public Object getValue(final Map<String, Object> linkedValues) {
               final Integer quantity = (Integer) linkedValues.get(INVOICELINE_QUANTITY);
               final Double unitPrice = (Double) linkedValues.get(INVOICELINE_UNITPRICE);
@@ -145,6 +146,7 @@ public class Chinook {
 
   public static final Property.DerivedProperty.Provider TRACK_MIN_SEC_PROVIDER =
           new Property.DerivedProperty.Provider() {
+            @Override
             public Object getValue(final Map<String, Object> linkedValues) {
               final Integer milliseconds = (Integer) linkedValues.get(TRACK_MILLISECONDS);
               if (milliseconds == null || milliseconds <= 0) {
@@ -161,6 +163,7 @@ public class Chinook {
   public static final String P_UPDATE_TOTALS = "chinook.update_totals_procedure";
 
   private static final DatabaseConnection.Procedure UPDATE_TOTALS_PROCEDURE = new AbstractProcedure(P_UPDATE_TOTALS, "Update invoice totals") {
+    @Override
     public void execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {
       final EntityConnection entityConnection = (EntityConnection) connection;
       try {

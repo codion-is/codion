@@ -31,6 +31,7 @@ public final class Databases {
    */
   public static final ResultPacker<Integer> INT_PACKER = new ResultPacker<Integer>() {
     /** {@inheritDoc} */
+    @Override
     public List<Integer> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Integer> integers = new ArrayList<Integer>();
       int counter = 0;
@@ -47,6 +48,7 @@ public final class Databases {
    */
   public static final ResultPacker<String> STRING_PACKER = new ResultPacker<String>() {
     /** {@inheritDoc} */
+    @Override
     public List<String> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<String> strings = new ArrayList<String>();
       int counter = 0;
@@ -306,31 +308,37 @@ public final class Databases {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getQueriesPerSecond() {
       return queriesPerSecond;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDeletesPerSecond() {
       return deletesPerSecond;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getInsertsPerSecond() {
       return insertsPerSecond;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getSelectsPerSecond() {
       return selectsPerSecond;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getUpdatesPerSecond() {
       return updatesPerSecond;
     }
 
     /** {@inheritDoc} */
+    @Override
     public long getTimestamp() {
       return timestamp;
     }

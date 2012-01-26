@@ -180,6 +180,7 @@ public final class EntityGeneratorModel {
 
   private void bindEvents() {
     tableModel.addSelectionChangedListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         try {
           evtRefreshStarted.fire();
@@ -458,6 +459,7 @@ public final class EntityGeneratorModel {
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<Table> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Table> tables = new ArrayList<Table>();
       int counter = 0;
@@ -534,6 +536,7 @@ public final class EntityGeneratorModel {
 
   private static final class ColumnPacker implements ResultPacker<Column> {
     /** {@inheritDoc} */
+    @Override
     public List<Column> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Column> columns = new ArrayList<Column>();
       int counter = 0;
@@ -596,6 +599,7 @@ public final class EntityGeneratorModel {
 
   private static final class ForeignKeyPacker implements ResultPacker<ForeignKey> {
     /** {@inheritDoc} */
+    @Override
     public List<ForeignKey> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<ForeignKey> foreignKeys = new ArrayList<ForeignKey>();
       int counter = 0;
@@ -638,6 +642,7 @@ public final class EntityGeneratorModel {
 
   private static final class PrimaryKeyPacker implements ResultPacker<PrimaryKey> {
     /** {@inheritDoc} */
+    @Override
     public List<PrimaryKey> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<PrimaryKey> primaryKeys = new ArrayList<PrimaryKey>();
       int counter = 0;
@@ -679,6 +684,7 @@ public final class EntityGeneratorModel {
       }
     }
 
+    @Override
     public Object getValueAt(final int rowIndex, final int columnIndex) {
       return getItemAt(rowIndex).tableName;
     }

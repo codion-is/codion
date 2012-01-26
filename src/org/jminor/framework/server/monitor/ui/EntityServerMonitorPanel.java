@@ -58,6 +58,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public EntityServerMonitorPanel() throws RemoteException {
     this(new EntityServerMonitor(Configuration.getStringValue(Configuration.SERVER_HOST_NAME), getRegistryPorts()));
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+      @Override
       public void uncaughtException(final Thread t, final Throwable e) {
         DefaultExceptionHandler.getInstance().handleException(e, EntityServerMonitorPanel.this);
       }
@@ -220,6 +221,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   public static void main(final String[] arguments) {
     Configuration.resolveTruststoreProperty(EntityServerMonitorPanel.class.getSimpleName());
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         try {
           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

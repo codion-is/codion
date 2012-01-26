@@ -171,16 +171,19 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final User getUser() {
     return user;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setUser(final User user) {
     this.user = user;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final UsageScenario<T> getUsageScenario(final String usageScenarioName) {
     for (final UsageScenario<T> scenario : usageScenarios) {
       if (scenario.getName().equals(usageScenarioName)) {
@@ -192,6 +195,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Collection<String> getUsageScenarios() {
     final Collection<String> ret = new ArrayList<String>();
     for (final UsageScenario scenario : usageScenarios) {
@@ -202,27 +206,32 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setWeight(final String scenarioName, final int weight) {
     scenarioChooser.setWeight(getUsageScenario(scenarioName), weight);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isScenarioEnabled(final String scenarioName) {
     return scenarioChooser.isItemEnabled(getUsageScenario(scenarioName));
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setScenarioEnabled(final String scenarioName, final boolean value) {
     scenarioChooser.setItemEnabled(getUsageScenario(scenarioName), value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final ItemRandomizer<UsageScenario> getScenarioChooser() {
     return scenarioChooser;
   }
 
   /** {@inheritDoc}
    * @param name*/
+  @Override
   public final YIntervalSeriesCollection getScenarioDurationDataset(final String name) {
     final YIntervalSeriesCollection scenarioDurationCollection = new YIntervalSeriesCollection();
     scenarioDurationCollection.addSeries(durationSeries.get(name));
@@ -231,31 +240,37 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final XYSeriesCollection getThinkTimeDataset() {
     return thinkTimeCollection;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final XYSeriesCollection getNumberOfApplicationsDataset() {
     return numberOfApplicationsCollection;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final XYSeriesCollection getUsageScenarioDataset() {
     return usageScenarioCollection;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final XYSeriesCollection getUsageScenarioFailureDataset() {
     return scenarioFailureCollection;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final XYSeriesCollection getMemoryUsageDataset() {
     return memoryUsageCollection;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void resetChartData() {
     scenariosRunSeries.clear();
     delayedScenarioRunsSeries.clear();
@@ -274,11 +289,13 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getWarningTime() {
     return warningTime;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setWarningTime(final int warningTime) {
     if (warningTime <= 0) {
       throw new IllegalArgumentException("Warning time must be a positive integer");
@@ -291,11 +308,13 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getUpdateInterval() {
     return updateInterval;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setUpdateInterval(final int updateInterval) {
     if (updateInterval < 0) {
       throw new IllegalArgumentException("Update interval must be a positive integer");
@@ -309,16 +328,19 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getApplicationCount() {
     return applications.size();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getApplicationBatchSize() {
     return applicationBatchSize;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setApplicationBatchSize(final int applicationBatchSize) {
     if (applicationBatchSize <= 0) {
       throw new IllegalArgumentException("Application batch size must be a positive integer");
@@ -329,6 +351,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addApplicationBatch() {
     for (int i = 0; i < applicationBatchSize; i++) {
       final ApplicationRunner<T> runner = new ApplicationRunner<T>(this);
@@ -342,6 +365,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeApplicationBatch() {
     for (int i = 0; i < applicationBatchSize && !applications.isEmpty(); i++) {
       removeApplication();
@@ -349,28 +373,33 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isPaused() {
     return this.paused;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setPaused(final boolean value) {
     this.paused = value;
     evtPausedChanged.fire();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isCollectChartData() {
     return collectChartData;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setCollectChartData(final boolean value) {
     this.collectChartData = value;
     evtCollectChartDataChanged.fire();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void exit() {
     shuttingDown = true;
     updateTimer.cancel();
@@ -391,11 +420,13 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getMaximumThinkTime() {
     return this.maximumThinkTime;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setMaximumThinkTime(final int maximumThinkTime) {
     if (maximumThinkTime <= 0) {
       throw new IllegalArgumentException("Maximum think time must be a positive integer");
@@ -406,11 +437,13 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getMinimumThinkTime() {
     return this.minimumThinkTime;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setMinimumThinkTime(final int minimumThinkTime) {
     if (minimumThinkTime < 0) {
       throw new IllegalArgumentException("Minimum think time must be a positive integer");
@@ -421,11 +454,13 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getLoginDelayFactor() {
     return this.loginDelayFactor;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setLoginDelayFactor(final int loginDelayFactor) {
     if (loginDelayFactor < 0) {
       throw new IllegalArgumentException("Login delay factor must be a positive integer");
@@ -436,36 +471,43 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver applicationBatchSizeObserver() {
     return evtApplicationBatchSizeChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver applicationCountObserver() {
     return evtApplicationCountChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver maximumThinkTimeObserver() {
     return evtMaximumThinkTimeChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver getMinimumThinkTimeObserver() {
     return evtMinimumThinkTimeChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver getPauseObserver() {
     return evtPausedChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver collectChartDataObserver() {
     return evtCollectChartDataChanged.getObserver();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver getWarningTimeObserver() {
     return evtWarningTimeChanged.getObserver();
   }
@@ -621,6 +663,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void run() {
       try {
         if (loadTestModel.getLoginDelayFactor() > 0) {
@@ -716,26 +759,31 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getName() {
       return this.name;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getSuccessfulRunCount() {
       return successfulRunCount;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getUnsuccessfulRunCount() {
       return unsuccessfulRunCount;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getTotalRunCount() {
       return successfulRunCount + unsuccessfulRunCount;
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<ScenarioException> getExceptions() {
       synchronized (exceptions) {
         return Collections.unmodifiableList(exceptions);
@@ -743,12 +791,14 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void resetRunCount() {
       successfulRunCount = 0;
       unsuccessfulRunCount = 0;
     }
 
     /** {@inheritDoc} */
+    @Override
     public void clearExceptions() {
       synchronized (exceptions) {
         exceptions.clear();
@@ -764,6 +814,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void run(final T application) throws ScenarioException {
       if (application == null) {
         throw new IllegalArgumentException("Can not run without an application");
@@ -798,6 +849,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDefaultWeight() {
       return 1;
     }

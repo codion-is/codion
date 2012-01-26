@@ -35,11 +35,13 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void loadDriver() throws ClassNotFoundException {
     Class.forName(DRIVER_NAME);
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getAutoIncrementValueSQL(final String idSource) {
     Util.rejectNullValue(idSource, "idSource");
     return "select currval(" + idSource + ")";
@@ -53,6 +55,7 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getURL(final Properties connectionProperties) {
     Util.require("host", getHost());
     Util.require("port", getPort());

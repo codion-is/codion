@@ -136,6 +136,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private void bindEvents() {
     model.addStatisticsListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         updateView();
       }

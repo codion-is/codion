@@ -201,12 +201,15 @@ public class ConnectionPoolImplTest {
   private static PoolableConnectionProvider createConnectionProvider(final User user) {
     return new PoolableConnectionProvider() {
       final Database database = Databases.createInstance();
+      @Override
       public PoolableConnection createConnection() throws ClassNotFoundException, DatabaseException {
         return DatabaseConnections.createConnection(database, user);
       }
+      @Override
       public void destroyConnection(final PoolableConnection connection) {
         connection.disconnect();
       }
+      @Override
       public User getUser() {
         return user;
       }

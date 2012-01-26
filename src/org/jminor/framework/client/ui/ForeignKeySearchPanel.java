@@ -44,11 +44,13 @@ public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.Fore
     }
 
     /** {@inheritDoc} */
+    @Override
     public ColumnSearchModel<Property.ForeignKeyProperty> getSearchModel() {
       return model;
     }
 
     /** {@inheritDoc} */
+    @Override
     public JComponent initializeInputField(final boolean isUpperBound) {
       return initializeForeignKeyField();
     }

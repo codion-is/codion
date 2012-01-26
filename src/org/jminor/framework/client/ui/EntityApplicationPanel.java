@@ -105,6 +105,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void handleException(final Throwable exception, final JComponent dialogParent) {
     LOG.error(exception.getMessage(), exception);
     DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
@@ -300,16 +301,19 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /** {@inheritDoc} */
+  @Override
   public final MasterDetailPanel getMasterPanel() {
     return null;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityPanel getActiveDetailPanel() {
     return getEntityPanels().get(0);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setActiveDetailPanel(final MasterDetailPanel detailPanel) {
     if (applicationTabPane != null) {//initializeUI() may have been overridden
       applicationTabPane.setSelectedComponent((JComponent) detailPanel);
@@ -317,21 +321,25 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /** {@inheritDoc} */
+  @Override
   public final MasterDetailPanel getPreviousPanel() {
     return null;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final MasterDetailPanel getNextPanel() {
     return null;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final List<? extends MasterDetailPanel> getDetailPanels() {
     return Collections.unmodifiableList(entityPanels);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void activatePanel() {}
 
   /**
@@ -644,6 +652,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         @Override
         public void actionPerformed(final ActionEvent e) {
           SwingUtilities.invokeLater(new Runnable() {
+            @Override
             public void run() {
               showEntityPanelDialog(panelProvider);
             }
@@ -725,6 +734,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     applicationTabPane.setFocusable(false);
     applicationTabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     applicationTabPane.addChangeListener(new ChangeListener() {
+      @Override
       public void stateChanged(final ChangeEvent e) {
         ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
       }
@@ -746,6 +756,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       applicationTabPane.addTab(caption, entityPanel);
       if (entityPanel.getEditPanel() != null) {
         entityPanel.getEditPanel().getActiveObserver().addListener(new ActionListener() {
+          @Override
           public void actionPerformed(final ActionEvent e) {
             if (entityPanel.getEditPanel().isActive()) {
               LOG.debug("{} selectApplicationTab", entityPanel.getEditModel().getEntityID());
@@ -925,6 +936,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   protected void setUncaughtExceptionHandler() {
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+      @Override
       public void uncaughtException(final Thread t, final Throwable e) {
         DefaultExceptionHandler.getInstance().handleException(e, EntityApplicationPanel.this);
       }
@@ -977,6 +989,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private void bindEventsInternal() {
     final StateObserver connected = applicationModel.getConnectionProvider().getConnectedObserver();
     connected.addActivateListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         final Window parentWindow = getParentWindow();
         if (parentWindow instanceof JFrame) {
@@ -985,6 +998,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       }
     });
     connected.addDeactivateListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         final Window parentWindow = getParentWindow();
         if (parentWindow instanceof JFrame) {

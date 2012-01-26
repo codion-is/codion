@@ -32,6 +32,7 @@ public final class PropertySummaryPanel extends JPanel {
     this.model = model;
     model.addSummaryListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         final String summaryText = model.getSummaryText();
         txtSummary.setText(summaryText);
@@ -70,12 +71,14 @@ public final class PropertySummaryPanel extends JPanel {
     for (final PropertySummaryModel.SummaryType summaryType : model.getSummaryTypes()) {
       final JRadioButtonMenuItem item = new JRadioButtonMenuItem(new AbstractAction(summaryType.toString()) {
         /** {@inheritDoc} */
+        @Override
         public void actionPerformed(final ActionEvent e) {
           model.setSummaryType(summaryType);
         }
       });
       model.addSummaryTypeListener(new ActionListener() {
         /** {@inheritDoc} */
+        @Override
         public void actionPerformed(final ActionEvent e) {
           item.setSelected(model.getSummaryType() == summaryType);
         }

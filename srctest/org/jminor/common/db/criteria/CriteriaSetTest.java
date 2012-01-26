@@ -5,11 +5,12 @@ package org.jminor.common.db.criteria;
 
 import org.jminor.common.model.Conjunction;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public final class CriteriaSetTest {
 
@@ -40,16 +41,19 @@ public final class CriteriaSetTest {
   }
 
   private static class Criteria implements org.jminor.common.db.criteria.Criteria {
+    @Override
     public String asString() {
       return "criteria";
     }
 
+    @Override
     public List<Object> getValues() {
       final List<Object> values =  new ArrayList<Object>();
       values.add(1);
       return values;
     }
 
+    @Override
     public List<?> getValueKeys() {
       final List<Object> keys =  new ArrayList<Object>();
       keys.add("key");

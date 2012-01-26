@@ -58,6 +58,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel {
   }
 
   private static final class Runner implements Runnable {
+    @Override
     public void run() {
       try {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());

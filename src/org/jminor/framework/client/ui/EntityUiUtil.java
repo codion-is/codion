@@ -127,6 +127,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(tablePanel, "tablePanel");
     Util.rejectNullValue(imagePathPropertyID, "imagePathPropertyID");
     return new AbstractAction() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         try {
           final EntityTableModel tableModel = tablePanel.getEntityTableModel();
@@ -206,6 +207,7 @@ public final class EntityUiUtil {
     final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogOwner), dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         final List<Entity> entities = lookupModel.getSelectedItems();
         for (final Entity entity : entities) {
@@ -215,6 +217,7 @@ public final class EntityUiUtil {
       }
     };
     final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         selected.add(null);//hack to indicate cancel
         dialog.dispose();
@@ -224,6 +227,7 @@ public final class EntityUiUtil {
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
     entityTablePanel.initializePanel();
     entityTablePanel.addTableDoubleClickListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         if (!entityTablePanel.getEntityTableModel().isSelectionEmpty()) {
           okAction.actionPerformed(e);
@@ -236,6 +240,7 @@ public final class EntityUiUtil {
     }
 
     final Action searchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         lookupModel.refresh();
         if (lookupModel.getRowCount() > 0) {
@@ -731,6 +736,7 @@ public final class EntityUiUtil {
               + ", should be: " + tableModel.getEntityID());
     }
     final JButton btn = new JButton(new AbstractAction("...") {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         try {
           lookupField.getModel().setSelectedEntities(selectEntities(tableModel, lookupField,
@@ -869,6 +875,7 @@ public final class EntityUiUtil {
       this.lookupModel = lookupModel;
       updateUI();
       lookupModel.addSelectedEntitiesListener(new ActionListener() {
+        @Override
         public void actionPerformed(final ActionEvent e) {
           updateModel();
         }
@@ -916,6 +923,7 @@ public final class EntityUiUtil {
     private void initializeUI(final Property.ForeignKeyProperty foreignKeyProperty,
                               final EntityEditModel editModel, final EntityTableModel lookupModel) {
       final JButton btn = new JButton(new AbstractAction("...") {
+        @Override
         public void actionPerformed(final ActionEvent e) {
           try {
             final Collection<Entity> selected = selectEntities(lookupModel, textField,
@@ -954,6 +962,7 @@ public final class EntityUiUtil {
       this.panelProvider = panelProvider;
     }
 
+    @Override
     public void actionPerformed(final ActionEvent e) {
       final EntityEditPanel editPanel = panelProvider.createEditPanel(dataProvider.getConnectionProvider());
       editPanel.initializePanel();
@@ -999,6 +1008,7 @@ public final class EntityUiUtil {
       this.editPanel = editPanel;
     }
 
+    @Override
     public void actionPerformed(final ActionEvent e) {
       editPanel.setInitialFocus();
     }

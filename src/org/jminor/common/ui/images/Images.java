@@ -21,7 +21,6 @@ public final class Images {
   public static final String IMG_PREFERENCES_16 = "Preferences16.gif";
   public static final String IMG_REFRESH_16 = "Refresh16.gif";
   public static final String IMG_NEW_16 = "New16.gif";
-  public static final String IMG_PROPERTIES_16 = "Properties16.gif";
   public static final String IMG_UP_16 = "Up16.gif";
   public static final String IMG_DOWN_16 = "Down16.gif";
   public static final String IMG_STOP_16 = "Stop16.gif";
@@ -36,7 +35,7 @@ public final class Images {
 
   public static ImageIcon getImageIcon(final Class resourceOwnerClass, final String resourceName) {
     final URL url = resourceOwnerClass.getResource(resourceName);
-    Util.rejectNullValue(url, "Resource: " + resourceName + " for " + resourceOwnerClass + " not found");
+    Util.rejectNullValue(url, "Resource: " + resourceName + " for " + resourceOwnerClass);
 
     return new ImageIcon(Toolkit.getDefaultToolkit().getImage(url));
   }

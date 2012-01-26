@@ -45,44 +45,52 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getEntityID() {
     return entityID;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityModelProvider setModelClass(final Class<? extends EntityModel> modelClass) {
     this.modelClass = modelClass;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityModelProvider setEditModelClass(final Class<? extends EntityEditModel> editModelClass) {
     this.editModelClass = editModelClass;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityModelProvider setTableModelClass(final Class<? extends EntityTableModel> tableModelClass) {
     this.tableModelClass = tableModelClass;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Class<? extends EntityModel> getModelClass() {
     return modelClass;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Class<? extends EntityEditModel> getEditModelClass() {
     return editModelClass;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Class<? extends EntityTableModel> getTableModelClass() {
     return tableModelClass;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityModelProvider addDetailModelProvider(final EntityModelProvider detailModelProvider) {
     if (!detailModelProviders.contains(detailModelProvider)) {
       detailModelProviders.add(detailModelProvider);
@@ -92,6 +100,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean containsDetailModelProvider(final EntityModelProvider detailModelProvider) {
     return detailModelProviders.contains(detailModelProvider);
   }
@@ -109,6 +118,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityModel createModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
     try {
       final EntityModel model;
@@ -136,6 +146,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityEditModel createEditModel(final EntityConnectionProvider connectionProvider) {
     try {
       final EntityEditModel editModel;
@@ -160,6 +171,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityTableModel createTableModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
     try {
       final EntityTableModel tableModel;

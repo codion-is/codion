@@ -36,12 +36,14 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   private Event evtValueChanged;
 
   /** {@inheritDoc} */
+  @Override
   public void initializeValue(final K key, final V value) {
     super.setValue(key, value);
     handleValueInitialized(key, value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final V getOriginalValue(final K key) {
     if (isModified(key)) {
       return originalValues.get(key);
@@ -51,16 +53,19 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isModified() {
     return originalValues != null && !originalValues.isEmpty();
   }
 
   /** {@inheritDoc} */
+  @Override
   public ValueChangeMap<K, V> getInstance() {
     return new ValueChangeMapImpl<K, V>();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final ValueChangeMap<K, V> getCopy() {
     final ValueChangeMap<K, V> copy = getInstance();
     copy.setAs(this);
@@ -69,6 +74,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setAs(final ValueChangeMap<K, V> sourceMap) {
     if (sourceMap == this) {
       return;
@@ -93,11 +99,13 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isModified(final K key) {
     return originalValues != null && originalValues.containsKey(key);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void revertValue(final K key) {
     if (isModified(key)) {
       setValue(key, getOriginalValue(key));
@@ -105,6 +113,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void revertAll() {
     for (final K key : getValueKeys()) {
       revertValue(key);
@@ -112,11 +121,13 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void saveValue(final K key) {
     removeOriginalValue(key);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void saveAll() {
     for (final K key : getValueKeys()) {
       saveValue(key);
@@ -124,6 +135,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   /** {@inheritDoc} */
+  @Override
   public final ValueChangeMap<K, V> getOriginalCopy() {
     final ValueChangeMap<K, V> copy = getCopy();
     copy.revertAll();
@@ -132,6 +144,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   /** {@inheritDoc} */
+  @Override
   @SuppressWarnings({"unchecked"})
   public final Collection<K> getOriginalValueKeys() {
     if (originalValues == null) {
@@ -142,11 +155,13 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addValueListener(final ActionListener valueListener) {
     getValueChangeObserver().addListener(valueListener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeValueListener(final ActionListener valueListener) {
     if (evtValueChanged != null) {
       evtValueChanged.removeListener(valueListener);
@@ -154,10 +169,12 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   /** {@inheritDoc} */
+  @Override
   public final StateObserver getModifiedState() {
     final State state = States.state(isModified());
     getValueChangeObserver().addListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         state.setActive(isModified());
       }
@@ -167,6 +184,7 @@ public class ValueChangeMapImpl<K, V> extends ValueMapImpl<K, V> implements Valu
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EventObserver getValueChangeObserver() {
     return getValueChangedEvent().getObserver();
   }

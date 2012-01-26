@@ -55,6 +55,7 @@ public class Control extends AbstractAction {
     this.enabledObserver = enabledObserver == null ? States.state(true) : enabledObserver;
     this.enabledObserver.addListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         firePropertyChange("enabled", !Control.this.enabledObserver.isActive(), Control.this.enabledObserver.isActive());
       }
@@ -75,6 +76,7 @@ public class Control extends AbstractAction {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void actionPerformed(final ActionEvent e) {}
 
   /**

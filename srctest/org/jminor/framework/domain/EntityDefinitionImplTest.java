@@ -88,6 +88,7 @@ public class EntityDefinitionImplTest {
             Properties.columnProperty("1"),
             Properties.columnProperty("2"),
             Properties.derivedProperty("der", Types.INTEGER, "cap", new Property.DerivedProperty.Provider() {
+              @Override
               public Object getValue(final Map<String, Object> linkedValues) {
                 return null;
               }
@@ -103,6 +104,7 @@ public class EntityDefinitionImplTest {
     final Entity entity = Entities.entity("entity");
     assertNull(def.getBackgroundColor(entity, entity.getPrimaryKey().getFirstKeyProperty()));
     def.setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
+      @Override
       public Color getBackgroundColor(final Entity entity, final Property property) {
         return Color.BLUE;
       }
@@ -118,6 +120,7 @@ public class EntityDefinitionImplTest {
     entity.setValue("propertyID", 1);
     assertEquals("entityToString: propertyID:1", entity.toString());
     def.setToStringProvider(new Entity.ToString() {
+      @Override
       public String toString(final Entity valueMap) {
         return "test";
       }

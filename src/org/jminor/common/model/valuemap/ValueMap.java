@@ -50,6 +50,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
   /**
    * @return an unmodifiable view of the values in this map.
    */
+  @Override
   Collection<V> getValues();
 
   /**

@@ -33,6 +33,7 @@ public class ServerUtilTest {
       }
       @Override
       protected void doDisconnect(final Remote connection) throws RemoteException {}
+      @Override
       public int getServerLoad() throws RemoteException {
         return 0;
       }

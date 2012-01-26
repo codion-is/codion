@@ -78,12 +78,15 @@ public class AbstractRemoteServerTest {
     assertEquals(baseClientInfo, connection.getClientInfo());
     final Collection<Object> closeIndicator = new ArrayList<Object>();
     final LoginProxy loginProxy = new LoginProxy() {
+      @Override
       public String getClientTypeID() {
         return clientTypeID;
       }
+      @Override
       public ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException {
         return proxyClientInfo;
       }
+      @Override
       public void close() {
         closeIndicator.add(new Object());
       }
@@ -115,6 +118,7 @@ public class AbstractRemoteServerTest {
       this.clientInfo = clientInfo;
     }
 
+    @Override
     public ClientInfo getClientInfo() throws RemoteException{
       return clientInfo;
     }
@@ -138,6 +142,7 @@ public class AbstractRemoteServerTest {
     @Override
     protected void doDisconnect(final RemoteServerTest connection) throws RemoteException {}
 
+    @Override
     public int getServerLoad() throws RemoteException {
       return 0;
     }

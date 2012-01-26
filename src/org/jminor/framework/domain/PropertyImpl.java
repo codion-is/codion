@@ -161,71 +161,85 @@ class PropertyImpl implements Property, Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean is(final Property property) {
     return is(property.getPropertyID());
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isNumerical() {
     return isInteger() || isDouble();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isTime() {
     return isDate() || isTimestamp();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isDate() {
     return isType(Types.DATE);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isTimestamp() {
     return isType(Types.TIMESTAMP);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isCharacter() {
     return isType(Types.CHAR);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isString() {
     return isType(Types.VARCHAR);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isInteger() {
     return isType(Types.INTEGER);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isDouble() {
     return isType(Types.DOUBLE);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isBoolean() {
     return isType(Types.BOOLEAN);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean is(final String propertyID) {
     return this.propertyID.equals(propertyID);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getPropertyID() {
     return this.propertyID;
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getEntityID() {
     return entityID;
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setEntityID(final String entityID) {
     if (this.entityID != null) {
       throw new IllegalStateException("entityID (" + this.entityID + ") has already been set for property: " + propertyID);
@@ -234,93 +248,110 @@ class PropertyImpl implements Property, Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getType() {
     return type;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isType(final int type) {
     return this.type == type;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Property setHidden(final boolean hidden) {
     this.hidden = hidden;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isHidden() {
     return hidden;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Property setReadOnly(final boolean readOnly) {
     this.readOnly = readOnly;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isReadOnly() {
     return this.readOnly;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Property setDefaultValue(final Object defaultValue) {
     this.defaultValue = defaultValue;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Object getDefaultValue() {
     return this.defaultValue;
   }
 
   /** {@inheritDoc} */
+  @Override
   public Property setNullable(final boolean nullable) {
     this.nullable = nullable;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isNullable() {
     return nullable;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Property setMaxLength(final int maxLength) {
     this.maxLength = maxLength;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getMaxLength() {
     return maxLength;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Double getMax() {
     return max;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Property setMax(final double max) {
     this.max = max;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Double getMin() {
     return min;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Property setMin(final double min) {
     this.min = min;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Property setUseNumberFormatGrouping(final boolean useGrouping) {
     if (!(format instanceof NumberFormat)) {
       throw new IllegalStateException("Grouping only good for number formats");
@@ -331,49 +362,58 @@ class PropertyImpl implements Property, Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Property setPreferredColumnWidth(final int preferredColumnWidth) {
     this.preferredColumnWidth = preferredColumnWidth;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getPreferredColumnWidth() {
     return preferredColumnWidth;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getDescription() {
     return description;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Property setDescription(final String description) {
     this.description = description;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean hasDescription() {
     return description != null;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Character getMnemonic() {
     return mnemonic;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Property setMnemonic(final Character mnemonic) {
     this.mnemonic = mnemonic;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Format getFormat() {
     return format;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Property setFormat(final Format format) {
     if (isNumerical() && !(format instanceof NumberFormat)) {
       throw new IllegalArgumentException("NumberFormat expected for numerical property: " + propertyID);
@@ -386,6 +426,7 @@ class PropertyImpl implements Property, Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Property setMaximumFractionDigits(final int maximumFractionDigits) {
     if (!(format instanceof NumberFormat)) {
       throw new IllegalStateException("Maximum fraction digits is only applicable for numerical formats");
@@ -396,6 +437,7 @@ class PropertyImpl implements Property, Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int getMaximumFractionDigits() {
     if (!(format instanceof NumberFormat)) {
       throw new IllegalStateException("Maximum fraction digits is only applicable for numerical formats");
@@ -405,6 +447,7 @@ class PropertyImpl implements Property, Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getCaption() {
     if (caption == null) {
       return propertyID;
@@ -426,6 +469,7 @@ class PropertyImpl implements Property, Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Class<?> getTypeClass() {
     if (typeClass == null) {
       typeClass = Util.getTypeClass(type);
@@ -469,59 +513,70 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getColumnName() {
       return this.columnName;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final boolean columnHasDefaultValue() {
       return columnHasDefaultValue;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final ColumnProperty setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
       this.columnHasDefaultValue = columnHasDefaultValue;
       return this;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final boolean isUpdatable() {
       return this.updatable;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final ColumnProperty setUpdatable(final boolean updatable) {
       this.updatable = updatable;
       return this;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ColumnProperty setSearchable(final boolean searchable) {
       this.searchable = searchable;
       return this;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isSearchable() {
       return searchable;
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isDenormalized() {
       return false;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void setSelectIndex(final int selectIndex) {
       this.selectIndex = selectIndex;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getSelectIndex() {
       return selectIndex;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ColumnProperty setGroupingColumn(final boolean groupingColumn) {
       if (aggregateColumn) {
         throw new IllegalStateException(columnName + " is an aggregate column");
@@ -531,11 +586,13 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isGroupingColumn() {
       return groupingColumn;
     }
 
     /** {@inheritDoc} */
+    @Override
     public ColumnProperty setAggregateColumn(final boolean aggregateColumn) {
       if (groupingColumn) {
         throw new IllegalStateException(columnName + " is a grouping column");
@@ -545,21 +602,25 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isAggregateColumn() {
       return aggregateColumn;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty) {
       this.foreignKeyProperty = foreignKeyProperty;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final ForeignKeyProperty getForeignKeyProperty() {
       return foreignKeyProperty;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final boolean isForeignKeyProperty() {
       return foreignKeyProperty != null;
     }
@@ -636,11 +697,13 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getIndex() {
       return index;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final PrimaryKeyProperty setIndex(final int index) {
       if (index < 0) {
         throw new IllegalArgumentException("Primary key index must be at least 0");
@@ -709,6 +772,7 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public boolean isUpdatable() {
       for (final ColumnProperty referenceProperty : referenceProperties) {
         if (!referenceProperty.isUpdatable()) {
@@ -720,32 +784,38 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getReferencedEntityID() {
       return referencedEntityID;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final List<ColumnProperty> getReferenceProperties() {
       return referenceProperties;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final boolean isCompositeReference() {
       return compositeReference;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getFetchDepth() {
       return fetchDepth;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final ForeignKeyProperty setFetchDepth(final int fetchDepth) {
       this.fetchDepth = fetchDepth;
       return this;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getReferencedPropertyID(final Property referenceProperty) {
       if (linkedReferenceProperties == null) {
         return null;
@@ -811,11 +881,13 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getForeignKeyPropertyID() {
       return foreignKeyPropertyID;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final Property getDenormalizedProperty() {
       return denormalizedProperty;
     }
@@ -856,16 +928,19 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final boolean isValid(final Object value) {
       return values.contains(new Item<Object>(value, ""));
     }
 
     /** {@inheritDoc} */
+    @Override
     public final List<Item<Object>> getValues() {
       return values;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getCaption(final Object value) {
       final Item item = new Item<Object>(value, "");
       final int index = values.indexOf(item);
@@ -922,11 +997,13 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public Provider getValueProvider() {
       return valueProvider;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final List<String> getLinkedPropertyIDs() {
       return linkedPropertyIDs;
     }
@@ -964,11 +1041,13 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getForeignKeyPropertyID() {
       return foreignKeyPropertyID;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final Property getDenormalizedProperty() {
       return denormalizedProperty;
     }
@@ -995,6 +1074,7 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getSubQuery() {
       return subquery;
     }
@@ -1043,11 +1123,13 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final int getColumnType() {
       return columnType;
     }
 
     /** {@inheritDoc} */
+    @Override
     public final Boolean toBoolean(final Object object) {
       if (Util.equal(trueValue, object)) {
         return true;
@@ -1060,6 +1142,7 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String toSQLString(final Boolean value) {
       final Object result = toSQLValue(value);
       if (columnType == Types.VARCHAR) {
@@ -1075,6 +1158,7 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final Object toSQLValue(final Boolean value) {
       if (value == null) {
         return null;
@@ -1101,6 +1185,7 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getBlobColumnName() {
       return blobColumnName;
     }
@@ -1122,6 +1207,7 @@ class PropertyImpl implements Property, Serializable {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final AuditAction getAuditAction() {
       return auditAction;
     }

@@ -24,6 +24,7 @@ import java.io.InputStreamReader;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.InetAddress;
 import java.net.URI;
@@ -671,6 +672,7 @@ public final class Util {
     return new Comparator<T>() {
       private final Collator collator = Collator.getInstance();
       /** {@inheritDoc} */
+      @Override
       public int compare(final T o1, final T o2) {
         return collateSansSpaces(collator, o1.toString(), o2.toString());
       }
@@ -684,6 +686,7 @@ public final class Util {
    */
   public static void collateSansSpaces(final Collator collator, final List<?> list) {
     Collections.sort(list, new Comparator<Object>() {
+      @Override
       public int compare(final Object o1, final Object o2) {
         return collateSansSpaces(collator, o1.toString(), o2.toString());
       }
@@ -989,6 +992,54 @@ public final class Util {
     }
 
     return exception;
+  }
+
+  /**
+   * @param valueClass the class of the value for the given bean property
+   * @param property the name of the bean property for which to retrieve the set method
+   * @param valueOwner the bean object
+   * @return the method used to set the value of the linked property
+   * @throws NoSuchMethodException if the method does not exist in the owner class
+   */
+  public static Method getSetMethod(final Class valueClass, final String property, final Object valueOwner) throws NoSuchMethodException {
+    Util.rejectNullValue(valueClass, "valueClass");
+    Util.rejectNullValue(property, "property");
+    Util.rejectNullValue(valueOwner, "valueOwner");
+    if (property.isEmpty()) {
+      throw new IllegalArgumentException("Property must be specified");
+    }
+    final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
+    return valueOwner.getClass().getMethod("set" + propertyName, valueClass);
+  }
+
+  /**
+   * @param valueClass the class of the value for the given bean property
+   * @param property the name of the bean property for which to retrieve the get method
+   * @param valueOwner the bean object
+   * @return the method used to get the value of the linked property
+   * @throws NoSuchMethodException if the method does not exist in the owner class
+   */
+  public static Method getGetMethod(final Class valueClass, final String property, final Object valueOwner) throws NoSuchMethodException {
+    Util.rejectNullValue(valueClass, "valueClass");
+    Util.rejectNullValue(property, "property");
+    Util.rejectNullValue(valueOwner, "valueOwner");
+    if (property.isEmpty()) {
+      throw new IllegalArgumentException("Property must be specified");
+    }
+    final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
+    if (valueClass.equals(boolean.class) || valueClass.equals(Boolean.class)) {
+      try {
+        return valueOwner.getClass().getMethod("is" + propertyName);
+      }
+      catch (NoSuchMethodException ignored) {}
+      try {
+        return valueOwner.getClass().getMethod(propertyName.substring(0, 1).toLowerCase()
+                + propertyName.substring(1, propertyName.length()));
+      }
+      catch (NoSuchMethodException ignored) {}
+    }
+
+    return valueOwner.getClass().getMethod("get" + propertyName);
   }
 
   /**

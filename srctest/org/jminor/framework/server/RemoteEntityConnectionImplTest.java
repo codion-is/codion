@@ -57,6 +57,7 @@ public class RemoteEntityConnectionImplTest {
 
       final RemoteEntityConnectionImpl finalAdapter = adapter;
       final EntityConnection proxy = Util.initializeProxy(EntityConnection.class, new InvocationHandler() {
+        @Override
         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
           final Method remoteMethod = RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
           try {

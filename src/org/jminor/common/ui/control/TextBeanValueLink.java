@@ -64,16 +64,19 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void insertUpdate(final DocumentEvent e) {
     updateModel();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeUpdate(final DocumentEvent e) {
     updateModel();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void changedUpdate(final DocumentEvent e) {}
 
   /**

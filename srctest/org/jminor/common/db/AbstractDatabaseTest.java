@@ -1,20 +1,24 @@
 package org.jminor.common.db;
 
-import static org.junit.Assert.assertNull;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.sql.SQLException;
 import java.util.Properties;
 
+import static org.junit.Assert.assertNull;
+import static org.junit.Assert.assertTrue;
+
 public final class AbstractDatabaseTest {
   private final AbstractDatabase database = new AbstractDatabase("h2") {
+    @Override
     public void loadDriver() throws ClassNotFoundException {}
 
+    @Override
     public String getAutoIncrementValueSQL(final String idSource) {
       return null;
     }
 
+    @Override
     public String getURL(final Properties connectionProperties) {
       return null;
     }
@@ -28,6 +32,7 @@ public final class AbstractDatabaseTest {
     database.shutdownEmbedded(null);
     database.getErrorMessage(new SQLException());
     new AbstractDatabase("db") {
+      @Override
       public String getAutoIncrementValueSQL(final String idSource) {
         return null;
       }
@@ -35,9 +40,11 @@ public final class AbstractDatabaseTest {
       public String getSequenceSQL(final String sequenceName) {
         return null;
       }
+      @Override
       public String getURL(final Properties connectionProperties) {
         return null;
       }
+      @Override
       public void loadDriver() throws ClassNotFoundException {}
     };
   }

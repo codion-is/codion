@@ -39,6 +39,7 @@ public final class IntBeanSpinnerValueLink extends AbstractBeanValueLink {
     spinnerModel = new SpinnerNumberModel();
     spinnerModel.addChangeListener(new ChangeListener() {
       /** {@inheritDoc} */
+      @Override
       public void stateChanged(final ChangeEvent e) {
         updateModel();
       }

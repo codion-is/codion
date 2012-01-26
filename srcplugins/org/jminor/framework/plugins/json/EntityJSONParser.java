@@ -39,6 +39,7 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
     this.indentFactor = indentFactor;
   }
 
+  @Override
   public String serialize(final List<Entity> values) throws SerializeException {
     try {
       return getJSONString(values, false, indentFactor);
@@ -48,6 +49,7 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
     }
   }
 
+  @Override
   public List<Entity> deserialize(final String values) throws DeserializeException {
     try {
       return parseJSONString(values);

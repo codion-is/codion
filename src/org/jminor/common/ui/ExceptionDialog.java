@@ -107,6 +107,7 @@ public final class ExceptionDialog extends JDialog {
       }
       else {
         SwingUtilities.invokeAndWait(new Runnable() {
+          @Override
           public void run() {
             new ExceptionDialog(parentFrame).showForThrowable(title, message, throwable, modal);
           }
@@ -271,6 +272,7 @@ public final class ExceptionDialog extends JDialog {
 
   private void initUI() {
     final AbstractAction closeAction = new AbstractAction("close") {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         close();
       }
@@ -289,6 +291,7 @@ public final class ExceptionDialog extends JDialog {
 
   private void bindEvents() {
     evtShowDetailsChanged.addListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         initDetailView(isShowDetails());
       }

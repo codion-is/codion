@@ -80,6 +80,7 @@ public final class States {
       return active ? ACTIVE : INACTIVE;
     }
 
+    @Override
     public final StateObserver getObserver() {
       if (observer == null) {
         synchronized (evtStateChanged) {
@@ -89,26 +90,32 @@ public final class States {
       return observer;
     }
 
+    @Override
     public final EventObserver getStateChangeObserver() {
       return evtStateChanged.getObserver();
     }
 
+    @Override
     public void addActivateListener(final ActionListener listener) {
       evtStateActivated.addListener(listener);
     }
 
+    @Override
     public void removeActivateListener(final ActionListener listener) {
       evtStateActivated.removeListener(listener);
     }
 
+    @Override
     public void addDeactivateListener(final ActionListener listener) {
       evtStateDeactivated.addListener(listener);
     }
 
+    @Override
     public void removeDeactivateListener(final ActionListener listener) {
       evtStateDeactivated.removeListener(listener);
     }
 
+    @Override
     public synchronized void setActive(final boolean value) {
       final boolean oldValue = active;
       active = value;
@@ -123,32 +130,39 @@ public final class States {
       }
     }
 
+    @Override
     public boolean isActive() {
       return active;
     }
 
+    @Override
     public final void addListeningAction(final Action action) {
       Util.rejectNullValue(action, "action");
       action.setEnabled(isActive());
       addListener(new ActionListener() {
+        @Override
         public void actionPerformed(final ActionEvent e) {
           action.setEnabled(isActive());
         }
       });
     }
 
+    @Override
     public final void addListener(final ActionListener listener) {
       evtStateChanged.addListener(listener);
     }
 
+    @Override
     public final void notifyObservers() {
       evtStateChanged.fire();
     }
 
+    @Override
     public final void removeListener(final ActionListener listener) {
       evtStateChanged.removeListener(listener);
     }
 
+    @Override
     public StateObserver getReversedObserver() {
       return getObserver().getReversedObserver();
     }
@@ -161,6 +175,7 @@ public final class States {
     ReverseState(final StateObserver referenceObserver) {
       this.referenceObserver = referenceObserver;
       this.referenceObserver.addListener(new ActionListener() {
+        @Override
         public void actionPerformed(final ActionEvent e) {
           notifyObservers();
         }
@@ -192,6 +207,7 @@ public final class States {
 
     private final List<StateObserver> states = new ArrayList<StateObserver>();
     private final ActionListener linkAction = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         notifyObservers();
       }
@@ -222,10 +238,12 @@ public final class States {
       return stringBuilder.toString();
     }
 
+    @Override
     public Conjunction getConjunction() {
       return conjunction;
     }
 
+    @Override
     public synchronized void addState(final StateObserver state) {
       Util.rejectNullValue(state, "state");
       final boolean wasActive = isActive();
@@ -236,6 +254,7 @@ public final class States {
       }
     }
 
+    @Override
     public synchronized void removeState(final StateObserver state) {
       Util.rejectNullValue(state, "state");
       final boolean wasActive = isActive();
@@ -284,10 +303,12 @@ public final class States {
       this.state = state;
     }
 
+    @Override
     public boolean isActive() {
       return state.isActive();
     }
 
+    @Override
     public StateObserver getReversedObserver() {
       if (reversedState == null) {
         synchronized (state) {
@@ -297,30 +318,37 @@ public final class States {
       return reversedState.getObserver();
     }
 
+    @Override
     public void addListeningAction(final Action action) {
       state.addListeningAction(action);
     }
 
+    @Override
     public void addListener(final ActionListener listener) {
       state.addListener(listener);
     }
 
+    @Override
     public void removeListener(final ActionListener listener) {
       state.removeListener(listener);
     }
 
+    @Override
     public void addActivateListener(final ActionListener listener) {
       state.addActivateListener(listener);
     }
 
+    @Override
     public void removeActivateListener(final ActionListener listener) {
       state.removeActivateListener(listener);
     }
 
+    @Override
     public void addDeactivateListener(final ActionListener listener) {
       state.addDeactivateListener(listener);
     }
 
+    @Override
     public void removeDeactivateListener(final ActionListener listener) {
       state.removeDeactivateListener(listener);
     }
@@ -330,6 +358,7 @@ public final class States {
 
     private final List<WeakReference<State>> members = Collections.synchronizedList(new ArrayList<WeakReference<State>>());
 
+    @Override
     public void addState(final State state) {
       synchronized (members) {
         for (final WeakReference<State> reference : members) {
@@ -342,6 +371,7 @@ public final class States {
       }
       updateAccordingToState(state);
       state.addListener(new ActionListener() {
+        @Override
         public void actionPerformed(final ActionEvent e) {
           updateAccordingToState(state);
         }

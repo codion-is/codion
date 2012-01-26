@@ -45,11 +45,13 @@ public final class HSQLDatabase extends AbstractDatabase {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void loadDriver() throws ClassNotFoundException {
     Class.forName(DRIVER_NAME);
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getAutoIncrementValueSQL(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
@@ -62,6 +64,7 @@ public final class HSQLDatabase extends AbstractDatabase {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getURL(final Properties connectionProperties) {
     final String authentication = getAuthenticationInfo(connectionProperties);
     if (isEmbedded()) {

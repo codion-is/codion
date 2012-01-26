@@ -27,6 +27,7 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean next() throws JRException {
     final boolean hasNext = reportIterator.hasNext();
     if (hasNext) {
@@ -37,6 +38,7 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
   }
 
   /** {@inheritDoc} */
+  @Override
   public final JRDataSource getDataSource() {
     return this;
   }
@@ -48,6 +50,7 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
    * @throws net.sf.jasperreports.engine.JRException in case of an exception
    * @see org.jminor.framework.domain.Entity#getValue(org.jminor.framework.domain.Property)
    */
+  @Override
   public Object getFieldValue(final JRField jrField) throws JRException {
     Util.rejectNullValue(jrField, "jrField");
     try {

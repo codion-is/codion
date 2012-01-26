@@ -11,6 +11,8 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.framework.Configuration;
 
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Collator;
@@ -226,6 +228,7 @@ public final class EntityUtil {
    */
   public static Map<Object, Collection<Entity>> hashByPropertyValue(final String propertyID, final Collection<Entity> entities) {
     return Util.map(entities, new Util.HashKeyProvider<Object, Entity>() {
+      @Override
       public Object getKey(final Entity value) {
         return value.getValue(propertyID);
       }
@@ -239,6 +242,7 @@ public final class EntityUtil {
    */
   public static Map<String, Collection<Entity>> hashByEntityID(final Collection<Entity> entities) {
     return Util.map(entities, new Util.HashKeyProvider<String, Entity>() {
+      @Override
       public String getKey(final Entity value) {
         return value.getEntityID();
       }
@@ -252,6 +256,7 @@ public final class EntityUtil {
    */
   public static Map<String, Collection<Entity.Key>> hashKeysByEntityID(final Collection<Entity.Key> keys) {
     return Util.map(keys, new Util.HashKeyProvider<String, Entity.Key>() {
+      @Override
       public String getKey(final Entity.Key value) {
         return value.getEntityID();
       }
@@ -296,6 +301,7 @@ public final class EntityUtil {
     Util.rejectNullValue(properties, "properties");
     final Collator collator = Collator.getInstance();
     Collections.sort(properties, new Comparator<Property>() {
+      @Override
       public int compare(final Property o1, final Property o2) {
         return collator.compare(o1.toString().toLowerCase(), o2.toString().toLowerCase());
       }
@@ -349,6 +355,7 @@ public final class EntityUtil {
    */
   public static Entity createRandomEntity(final String entityID, final Map<String, Entity> referenceEntities) {
     return createEntity(entityID, new ValueProvider<Property, Object>() {
+      @Override
       public Object getValue(final Property key) {
         return getRandomValue(key, referenceEntities);
       }
@@ -513,6 +520,121 @@ public final class EntityUtil {
     }
     else {
       return ret;
+    }
+  }
+
+  /**
+   * A class for mapping between entities and corresponding bean classes
+   */
+  public static class EntityBeanMapper {
+
+    private final Map<Class, String> entityIDMap = new HashMap<Class, String>();
+    private final Map<Class, Map<String, String>> propertyMap = new HashMap<Class, Map<String, String>>();
+
+    /**
+     * Associates the given bean class with the given entityID
+     * @param beanClass the bean class representing entities with the given entityID
+     * @param entityID the ID of the entity represented by the given bean class
+     */
+    public final void setEntityID(final Class beanClass, final String entityID) {
+      entityIDMap.put(beanClass, entityID);
+    }
+
+    /**
+     * @param beanClass the bean class
+     * @return the entityID of the entity represented by the given bean class, null if none is specified
+     */
+    public final String getEntityID(final Class beanClass) {
+      return entityIDMap.get(beanClass);
+    }
+
+    /**
+     * @param entityID the entityID
+     * @return the class of the bean representing entities with the given entityID
+     * @throws IllegalArgumentException in case no bean class has been defined for the given entityID
+     */
+    public final Class getBeanClass(final String entityID) {
+      for (final Map.Entry<Class, String> entry : entityIDMap.entrySet()) {
+        if (entry.getValue().equals(entityID)) {
+          return entry.getKey();
+        }
+      }
+
+      throw new IllegalArgumentException("No bean class defined for entityID: " + entityID);
+    }
+
+    /**
+     * Links the given bean property name to the property identified by the given propertyID in the specified bean class
+     * @param beanClass the bean class
+     * @param propertyID the propertyID of the entity property
+     * @param propertyName the name of the bean property
+     */
+    public final void setProperty(final Class beanClass, final String propertyID, final String propertyName) {
+      Map<String, String> beanPropertyMap = propertyMap.get(beanClass);
+      if (beanPropertyMap == null) {
+        propertyMap.put(beanClass, beanPropertyMap = new HashMap<String, String>());
+      }
+      beanPropertyMap.put(propertyID, propertyName);
+    }
+
+    /**
+     * @param beanClass the bean class
+     * @return a Map mapping bean property names to propertyIDs for the given bean class
+     */
+    public final Map<String, String> getPropertyMap(final Class beanClass) {
+      return propertyMap.get(beanClass);
+    }
+
+    /**
+     * Transforms the given bean into a Entity according to the information found in this EntityBeanMapper instance
+     * @param bean the bean to transform
+     * @return a Entity derived from the given bean
+     * @throws NoSuchMethodException if a required getter method is not found in the bean class
+     * @throws java.lang.reflect.InvocationTargetException in case an exception is thrown during a bean method call
+     * @throws IllegalAccessException if a required method is not accessible
+     */
+    public Entity toEntity(final Object bean) throws NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException {
+      if (bean == null) {
+        return null;
+      }
+
+      final Entity entity = Entities.entity(getEntityID(bean.getClass()));
+      final Map<String, String> propertyMap = getPropertyMap(bean.getClass());
+      for (final Map.Entry<String, String> propertyEntry : propertyMap.entrySet()) {
+        final Property property = Entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
+        final Method getter = Util.getGetMethod(property.getTypeClass(), propertyEntry.getValue(), bean);
+        entity.setValue(property, getter.invoke(bean));
+      }
+
+      return entity;
+    }
+
+    /**
+     * Transforms the given entity into a bean according to the information found in this EntityBeanMapper instance
+     * @param entity the entity to transform
+     * @return a bean derived from the given entity
+     * @throws NoSuchMethodException if a required setter method is not found in the bean class
+     * @throws InvocationTargetException in case an exception is thrown during a bean method call
+     * @throws IllegalAccessException if a required method is not accessible
+     * @throws InstantiationException if the bean class can not be instantiated
+     */
+    public Object toBean(final Entity entity) throws NoSuchMethodException,
+            InvocationTargetException, IllegalAccessException, InstantiationException {
+      if (entity == null) {
+        return null;
+      }
+
+      final Class beanClass = getBeanClass(entity.getEntityID());
+      final Object bean = beanClass.getConstructor().newInstance();
+      final Map<String, String> propertyMap = getPropertyMap(beanClass);
+      for (final Map.Entry<String, String> propertyEntry : propertyMap.entrySet()) {
+        final Property property = Entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
+        final Method setter = Util.getSetMethod(property.getTypeClass(), propertyEntry.getValue(), bean);
+        setter.invoke(bean, entity.getValue(property));
+      }
+
+      return bean;
     }
   }
 }

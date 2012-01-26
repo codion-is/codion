@@ -3,12 +3,13 @@
  */
 package org.jminor.common.model;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class WeakPropertyChangeListenerTest {
 
@@ -18,6 +19,7 @@ public class WeakPropertyChangeListenerTest {
   @Test
   public void test() {
     PropertyChangeListener listener = new PropertyChangeListener() {
+      @Override
       public void propertyChange(final PropertyChangeEvent evt) {
         changeCounter++;
       }

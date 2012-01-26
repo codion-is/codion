@@ -22,11 +22,13 @@ public class AbstractOperation implements DatabaseConnection.Operation {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getID() {
     return id;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getName() {
     return this.name;
   }

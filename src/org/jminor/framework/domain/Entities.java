@@ -643,6 +643,7 @@ public final class Entities {
     }
 
     /** {@inheritDoc} */
+    @Override
     public String toString(final Entity entity) {
       final StringBuilder builder = new StringBuilder();
       for (final ValueProvider valueProvider : valueProviders) {
@@ -714,6 +715,7 @@ public final class Entities {
       }
 
       /** {@inheritDoc} */
+      @Override
       public String toString(final Entity entity) {
         if (entity.isValueNull(propertyID)) {
           return "";
@@ -734,6 +736,7 @@ public final class Entities {
       }
 
       /** {@inheritDoc} */
+      @Override
       @SuppressWarnings({"unchecked"})
       public String toString(final Entity entity) {
         if (entity.isValueNull(foreignKeyPropertyID)) {
@@ -757,6 +760,7 @@ public final class Entities {
       }
 
       /** {@inheritDoc} */
+      @Override
       public String toString(final Entity entity) {
         if (entity.isValueNull(propertyID)) {
           return "";
@@ -775,6 +779,7 @@ public final class Entities {
       }
 
       /** {@inheritDoc} */
+      @Override
       public String toString(final Entity entity) {
         return text;
       }
@@ -799,6 +804,7 @@ public final class Entities {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final String getEntityID() {
       return entityID;
     }
@@ -816,11 +822,13 @@ public final class Entities {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void validate(final Entity entity, final int action) throws ValidationException {
       validate((ValueMap<String, Object>) entity, action);
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void validate(final Collection<Entity> entities, final int action) throws ValidationException {
       for (final Entity entity : entities) {
         validate(entity, action);
@@ -848,6 +856,7 @@ public final class Entities {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void validate(final Entity entity, final String propertyID, final int action) throws ValidationException {
       Util.rejectNullValue(entity, "entity");
       final Property property = entity.getProperty(propertyID);
@@ -862,6 +871,7 @@ public final class Entities {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
       if (entity.isValueNull(property.getPropertyID())) {
         return;
@@ -880,6 +890,7 @@ public final class Entities {
     }
 
     /** {@inheritDoc} */
+    @Override
     public final void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException {
       if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
         if (action == INSERT) {

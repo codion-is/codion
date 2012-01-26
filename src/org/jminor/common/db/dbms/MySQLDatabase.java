@@ -35,16 +35,19 @@ public final class MySQLDatabase extends AbstractDatabase {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void loadDriver() throws ClassNotFoundException {
     Class.forName(DRIVER_NAME);
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getAutoIncrementValueSQL(final String idSource) {
     return AUTO_INCREMENT_QUERY;
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getURL(final Properties connectionProperties) {
     Util.require("host", getHost());
     Util.require("port", getPort());

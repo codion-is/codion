@@ -97,6 +97,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   private void initializeUI() {
     final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<ItemRandomizer.RandomItem<T>>(model.getItems());
     Collections.sort(items, new Comparator<ItemRandomizer.RandomItem<T>>() {
+      @Override
       public int compare(final ItemRandomizer.RandomItem<T> o1, final ItemRandomizer.RandomItem<T> o2) {
         return o1.getItem().toString().compareTo(o2.getItem().toString());
       }
@@ -106,6 +107,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
     itemList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     itemList.addListSelectionListener(new ListSelectionListener() {
+      @Override
       @SuppressWarnings({"unchecked"})
       public void valueChanged(final ListSelectionEvent e) {
         handleSelectionChanged();
@@ -183,6 +185,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
       updateUI();
       spinnerModel.addChangeListener(new ChangeListener() {
         /** {@inheritDoc} */
+        @Override
         public void stateChanged(final ChangeEvent e) {
           updateModel();
         }
@@ -226,6 +229,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
       updateUI();
       this.buttonModel.addItemListener(new ItemListener() {
         /** {@inheritDoc} */
+        @Override
         public void itemStateChanged(final ItemEvent e) {
           updateModel();
         }

@@ -69,6 +69,7 @@ public class Item<T> implements Comparable<Item>, Serializable {
    * @param o the item to compare with
    * @return the compare result
    */
+  @Override
   public final int compareTo(final Item o) {
     return COLLATOR.get().compare(caption, o.caption);
   }

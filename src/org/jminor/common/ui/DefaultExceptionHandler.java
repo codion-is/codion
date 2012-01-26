@@ -24,6 +24,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
     return INSTANCE;
   }
 
+  @Override
   public void handleException(final Throwable exception, final JComponent dialogParent) {
     final Throwable rootCause = unwrapExceptions(exception, RuntimeException.class, InvocationTargetException.class,
             ExceptionInInitializerError.class, UndeclaredThrowableException.class);

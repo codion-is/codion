@@ -12,6 +12,7 @@ import org.jminor.framework.domain.Property;
 public class DefaultPropertyFilterModelProvider implements PropertyFilterModelProvider {
 
   /** {@inheritDoc} */
+  @Override
   public ColumnSearchModel<Property> initializePropertyFilterModel(final Property property) {
     return new DefaultPropertyFilterModel(property);
   }

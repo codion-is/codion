@@ -228,6 +228,7 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public int compareTo(final LogEntry o) {
     if (this.entryTime < o.entryTime) {
       return -1;

@@ -24,6 +24,7 @@ public final class WeakPropertyChangeListener implements PropertyChangeListener 
   }
 
   /** {@inheritDoc} */
+  @Override
   public void propertyChange(final PropertyChangeEvent evt) {
     final PropertyChangeListener listener = listenerReference.get();
     if (listener == null) {

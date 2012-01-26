@@ -33,6 +33,7 @@ public class AbstractValueChangeMapEditModelTest {
               }
             }
           }) {
+            @Override
             public ValueChangeMap<String, Integer> getDefaultValueMap() {
               return new ValueChangeMapImpl<String, Integer>();
             }
@@ -49,11 +50,13 @@ public class AbstractValueChangeMapEditModelTest {
     }
   };
   private final ActionListener valueSetListener = new ActionListener() {
+    @Override
     public void actionPerformed(final ActionEvent e) {
       valueSetCounter.add(new Object());
     }
   };
   private final ActionListener valueMapSetListener = new ActionListener() {
+    @Override
     public void actionPerformed(final ActionEvent e) {
       valueMapSetCounter.add(new Object());
     }

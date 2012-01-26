@@ -2661,3 +2661,8 @@
   UtilTest.parseConfigurationFile() added
   DefaultEntityComboBoxModel.foreignKeyFilterCriteria now includes items which have null for the relevant foreign key value
   DefaultEntityComboBoxModelTest, refactored a bit due to the above
+  Images, unused field removed
+  Util.getGetMethod(), getSetMethod() added, (refactored from AbstractBeanValueLink)
+  AbstractBeanValueLinks uses the above
+  EntitUtil.EntityBeanMapper added, tested
+  @Override annotation added on interface implementations

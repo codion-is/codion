@@ -160,6 +160,7 @@ public final class LoadTestPanel extends JPanel {
     final ItemRandomizerPanel<LoadTestModel.UsageScenario> scenarioPanel = new ItemRandomizerPanel<LoadTestModel.UsageScenario>(loadTestModel.getScenarioChooser());
     scenarioPanel.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
     scenarioPanel.addSelectedItemListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         handleScenarioSelected();
       }
@@ -175,6 +176,7 @@ public final class LoadTestPanel extends JPanel {
     final JTextField txtPassword = new JPasswordField(user.getPassword());
     txtPassword.setColumns(8);
     final ActionListener userInfoListener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         loadTestModel.setUser(new User(txtUsername.getText(), txtPassword.getText()));
       }
@@ -443,6 +445,7 @@ public final class LoadTestPanel extends JPanel {
       super("Clear", txtExceptions, scenario);
     }
 
+    @Override
     public void actionPerformed(final ActionEvent e) {
       getScenario().clearExceptions();
       getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
@@ -455,6 +458,7 @@ public final class LoadTestPanel extends JPanel {
       super("Refresh", txtExceptions, scenario);
     }
 
+    @Override
     public void actionPerformed(final ActionEvent e) {
       getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
       final List<LoadTest.ScenarioException> exceptions = getScenario().getExceptions();

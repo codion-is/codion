@@ -171,16 +171,19 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   }
 
   /** {@inheritDoc} */
+  @Override
   public User getUser() throws RemoteException {
     return clientInfo.getUser();
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isConnected() throws RemoteException {
     return entityConnection == null ? connected : entityConnection.isConnected();
   }
 
   /** {@inheritDoc} */
+  @Override
   public void disconnect() throws RemoteException {
     if (!isConnected()) {
       return;
@@ -201,129 +204,154 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   }
 
   /** {@inheritDoc} */
+  @Override
   public int selectRowCount(final EntityCriteria criteria) throws DatabaseException, RemoteException {
     return connectionProxy.selectRowCount(criteria);
   }
 
   /** {@inheritDoc} */
+  @Override
   public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException, RemoteException, DatabaseException {
     return connectionProxy.fillReport(reportWrapper);
   }
 
   /** {@inheritDoc} */
+  @Override
   public void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
     connectionProxy.executeProcedure(procedureID, arguments);
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
     return connectionProxy.executeFunction(functionID, arguments);
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isValid() throws RemoteException {
     return connectionProxy.isValid();
   }
 
   /** {@inheritDoc} */
+  @Override
   public void beginTransaction() throws RemoteException {
     connectionProxy.beginTransaction();
   }
 
   /** {@inheritDoc} */
+  @Override
   public void commitTransaction() throws RemoteException {
     connectionProxy.commitTransaction();
   }
 
   /** {@inheritDoc} */
+  @Override
   public void rollbackTransaction() throws RemoteException {
     connectionProxy.rollbackTransaction();
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isTransactionOpen() throws RemoteException {
     return connectionProxy.isTransactionOpen();
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException, RemoteException {
     return connectionProxy.insert(entities);
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Entity> update(final List<Entity> entities) throws DatabaseException, RemoteException {
     return connectionProxy.update(entities);
   }
 
   /** {@inheritDoc} */
+  @Override
   public void delete(final List<Entity.Key> entityKeys) throws DatabaseException, RemoteException {
     connectionProxy.delete(entityKeys);
   }
 
   /** {@inheritDoc} */
+  @Override
   public void delete(final EntityCriteria criteria) throws DatabaseException, RemoteException {
     connectionProxy.delete(criteria);
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Object> selectPropertyValues(final String entityID, final String propertyID,
                                            final boolean order) throws DatabaseException, RemoteException {
     return connectionProxy.selectPropertyValues(entityID, propertyID, order);
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException, RemoteException {
     return connectionProxy.selectSingle(entityID, propertyID, value);
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity selectSingle(final Entity.Key key) throws DatabaseException, RemoteException {
     return connectionProxy.selectSingle(key);
   }
 
   /** {@inheritDoc} */
+  @Override
   public Entity selectSingle(final EntitySelectCriteria criteria) throws DatabaseException, RemoteException {
     return connectionProxy.selectSingle(criteria);
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException, RemoteException {
     return connectionProxy.selectMany(keys);
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException, RemoteException {
     return connectionProxy.selectMany(criteria);
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Entity> selectMany(final String entityID, final String propertyID,
                                  final Object... values) throws DatabaseException, RemoteException {
     return connectionProxy.selectMany(entityID, propertyID, values);
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Entity> selectAll(final String entityID) throws DatabaseException, RemoteException {
     return connectionProxy.selectAll(entityID);
   }
 
   /** {@inheritDoc} */
+  @Override
   public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException, RemoteException {
     return connectionProxy.selectDependentEntities(entities);
   }
 
   /** {@inheritDoc} */
+  @Override
   public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
                         final byte[] blobData) throws DatabaseException, RemoteException{
     connectionProxy.writeBlob(primaryKey, blobPropertyID, dataDescription, blobData);
   }
 
   /** {@inheritDoc} */
+  @Override
   public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException, RemoteException {
     return connectionProxy.readBlob(primaryKey, blobPropertyID);
   }
 
   /** {@inheritDoc} */
+  @Override
   public PoolableConnection getPoolableConnection() {
     throw new UnsupportedOperationException("getPoolableConnection is not supported on remote connections");
   }
@@ -612,6 +640,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     private volatile EntityConnection transactionConnection;
 
     /** {@inheritDoc} */
+    @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       final String methodName = method.getName();
       Exception exception = null;
@@ -777,16 +806,19 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     }
 
     /** {@inheritDoc} */
+    @Override
     public PoolableConnection createConnection() throws ClassNotFoundException, DatabaseException {
       return createDatabaseConnection(database, user).getPoolableConnection();
     }
 
     /** {@inheritDoc} */
+    @Override
     public void destroyConnection(final PoolableConnection connection) {
       connection.disconnect();
     }
 
     /** {@inheritDoc} */
+    @Override
     public User getUser() {
       return user;
     }

@@ -73,6 +73,7 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public String asString() {
     if (criteriaList.isEmpty()) {
       return "";
@@ -91,6 +92,7 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<Object> getValues() {
     final List<Object> values = new ArrayList<Object>();
     for (final Criteria<T> criteria : criteriaList) {
@@ -101,6 +103,7 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
   }
 
   /** {@inheritDoc} */
+  @Override
   public List<T> getValueKeys() {
     final List<T> types = new ArrayList<T>();
     for (final Criteria<T> criteria : criteriaList) {

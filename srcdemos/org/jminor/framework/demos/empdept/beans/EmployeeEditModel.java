@@ -14,12 +14,13 @@ import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
+
+import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 
 public final class EmployeeEditModel extends DefaultEntityEditModel {
 
@@ -48,6 +49,7 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
   private void bindEvents() {
     //Refresh the manager ComboBoxModel when an employee is either added or updated
     addEntitiesChangedListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         if (containsComboBoxModel(EMPLOYEE_MGR_FK)) {
           getEntityComboBoxModel(EMPLOYEE_MGR_FK).refresh();
@@ -62,6 +64,7 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
         //only show managers in the same department as the active entity
         if (containsComboBoxModel(EMPLOYEE_MGR_FK)) {
           getEntityComboBoxModel(EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Entity>() {
+            @Override
             public boolean include(final Entity item) {
               return (Util.equal(item.getForeignKeyValue(EMPLOYEE_DEPARTMENT_FK), event.getNewValue())
                       && !Util.equal(item, getEntityCopy()));

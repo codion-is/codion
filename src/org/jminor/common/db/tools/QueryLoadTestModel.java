@@ -47,6 +47,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
     this.pool = ConnectionPools.createPool(new ConnectionProvider(database, user));
     addExitListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         pool.close();
       }
@@ -180,16 +181,19 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
     }
 
     /** {@inheritDoc} */
+    @Override
     public PoolableConnection createConnection() throws ClassNotFoundException, DatabaseException {
       return DatabaseConnections.createConnection(database, user);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void destroyConnection(final PoolableConnection connection) {
       connection.disconnect();
     }
 
     /** {@inheritDoc} */
+    @Override
     public User getUser() {
       return user;
     }

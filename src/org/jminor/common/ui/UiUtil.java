@@ -404,6 +404,7 @@ public final class UiUtil {
     if (enabledState != null) {
       action.setEnabled(enabledState.isActive());
       enabledState.addListener(new ActionListener() {
+        @Override
         public void actionPerformed(final ActionEvent e) {
           action.setEnabled(enabledState.isActive());
         }
@@ -425,6 +426,7 @@ public final class UiUtil {
       component.setEnabled(enabledState.isActive());
       component.setFocusable(enabledState.isActive());
       enabledState.addListener(new ActionListener() {
+        @Override
         public void actionPerformed(final ActionEvent e) {
           component.setEnabled(enabledState.isActive());
           component.setFocusable(enabledState.isActive());
@@ -780,6 +782,7 @@ public final class UiUtil {
     }
     final String okCaption = okAction != null ? (String) okAction.getValue(Action.NAME) : Messages.get(Messages.OK);
     final Action ok = new AbstractAction(okCaption) {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         if (okAction != null) {
           okAction.actionPerformed(e);
@@ -944,6 +947,7 @@ public final class UiUtil {
 
   public static void addLookupDialog(final JTextField txtField, final ValueCollectionProvider valueCollectionProvider) {
     addKeyEvent(txtField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, new AbstractAction("UiUtil.lookupValue") {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         try {
           final Object value = selectValue(txtField, valueCollectionProvider.getValues());
@@ -974,6 +978,7 @@ public final class UiUtil {
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new DisposeWindowAction(dialog);
     final Action cancelAction = new AbstractAction("UiUtil.cancel") {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         list.clearSelection();
         dialog.dispose();
@@ -1028,6 +1033,7 @@ public final class UiUtil {
    */
   public static Action getBrowseAction(final JTextField txtFilename) {
     return new AbstractAction("...") {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         try {
           final File file = selectFile(txtFilename, getParentPath(txtFilename.getText()));
@@ -1158,6 +1164,7 @@ public final class UiUtil {
    */
   public static void addInitialFocusHack(final JComponent component, final Action onFocusAction) {
     component.addHierarchyListener(new HierarchyListener() {
+      @Override
       public void hierarchyChanged(final HierarchyEvent e) {
         if (component.isShowing() && (e.getChangeFlags() & HierarchyEvent.SHOWING_CHANGED) != 0) {
           SwingUtilities.getWindowAncestor(component).addWindowFocusListener(new WindowAdapter() {
@@ -1220,6 +1227,7 @@ public final class UiUtil {
      * Calls dispose on the window
      * @param e ignored
      */
+    @Override
     public void actionPerformed(final ActionEvent e) {
       window.dispose();
     }
@@ -1254,6 +1262,7 @@ public final class UiUtil {
      * Transfers focus according the the value of <code>backward</code>
      * @param e the action event
      */
+    @Override
     public void actionPerformed(final ActionEvent e) {
       if (backward) {
         component.transferFocusBackward();

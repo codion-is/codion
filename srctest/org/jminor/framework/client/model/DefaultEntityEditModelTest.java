@@ -211,6 +211,7 @@ public final class DefaultEntityEditModelTest {
     assertTrue(employeeEditModel.getAllowDeleteObserver().isActive());
 
     final ActionListener listener = new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {}
     };
     employeeEditModel.addAfterDeleteListener(listener);

@@ -36,6 +36,7 @@ public final class MaximumMatch extends PlainDocument {
     editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
     editor.setDocument(this);
     comboBox.addActionListener(new ActionListener() {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         if (!selecting) {
           highlightCompletedText(0);

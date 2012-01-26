@@ -78,6 +78,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
+  @Override
   public PoolableConnection getConnection() throws ClassNotFoundException, DatabaseException {
     if (!enabled || closed) {
       throw new IllegalStateException("ConnectionPool not enabled or closed");
@@ -121,6 +122,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void returnConnection(final PoolableConnection connection) {
     if (connection.isTransactionOpen()) {
       throw new IllegalStateException("Open transaction");
@@ -142,11 +144,13 @@ final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
+  @Override
   public User getUser() {
     return connectionProvider.getUser();
   }
 
   /** {@inheritDoc} */
+  @Override
   public void close() {
     closed = true;
     synchronized (pool) {
@@ -158,6 +162,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
+  @Override
   public ConnectionPoolStatistics getStatistics(final long since) {
     final ConnectionPoolStatisticsImpl statistics = new ConnectionPoolStatisticsImpl(getUser());
     synchronized (pool) {
@@ -189,26 +194,31 @@ final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
+  @Override
   public void resetStatistics() {
     counter.resetPoolStatistics();
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isCollectFineGrainedStatistics() {
     return collectFineGrainedStatistics;
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setCollectFineGrainedStatistics(final boolean value) {
     this.collectFineGrainedStatistics = value;
   }
 
   /** {@inheritDoc} */
+  @Override
   public boolean isEnabled() {
     return enabled;
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setEnabled(final boolean enabled) {
     this.enabled = enabled;
     if (!enabled) {
@@ -217,11 +227,13 @@ final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getCleanupInterval() {
     return poolCleanupInterval;
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setCleanupInterval(final int poolCleanupInterval) {
     if (poolCleanupInterval != this.poolCleanupInterval) {
       this.poolCleanupInterval = poolCleanupInterval;
@@ -230,31 +242,37 @@ final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getConnectionTimeout() {
     return pooledConnectionTimeout;
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setConnectionTimeout(final int timeout) {
     this.pooledConnectionTimeout = timeout;
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getMaximumRetryWaitPeriod() {
     return maximumRetryWaitPeriod;
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {
     this.maximumRetryWaitPeriod = maximumRetryWaitPeriod;
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getMinimumPoolSize() {
     return minimumPoolSize;
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setMinimumPoolSize(final int value) {
     if (value > maximumPoolSize || value < 0) {
       throw new IllegalArgumentException("Minimum pool size must be a positive integer an be less than maximum pool size");
@@ -263,11 +281,13 @@ final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getMaximumPoolSize() {
     return maximumPoolSize;
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setMaximumPoolSize(final int value) {
     if (value < minimumPoolSize || value < 1) {
       throw new IllegalArgumentException("Maximum pool size must be larger than 1 and larger than minimum pool size");
@@ -276,11 +296,13 @@ final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getMaximumCheckOutTime() {
     return maximumCheckOutTime;
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setMaximumCheckOutTime(final int value) {
     if (value < 0) {
       throw new IllegalArgumentException("Maximum check out time must be a positive integer");
@@ -289,11 +311,13 @@ final class ConnectionPoolImpl implements ConnectionPool {
   }
 
   /** {@inheritDoc} */
+  @Override
   public int getNewConnectionThreshold() {
     return newConnectionThreshold;
   }
 
   /** {@inheritDoc} */
+  @Override
   public void setNewConnectionThreshold(final int value) {
     if (value < 0 || value >= maximumCheckOutTime) {
       throw new IllegalArgumentException("Wait time before new connection must be larger than zero and smaller than maximumCheckOutTime");
@@ -600,16 +624,19 @@ final class ConnectionPoolImpl implements ConnectionPool {
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getSize() {
       return connectionCount;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getInUse() {
       return connectionsInUse;
     }
 
     /** {@inheritDoc} */
+    @Override
     public long getTimestamp() {
       return time;
     }
@@ -641,96 +668,115 @@ final class ConnectionPoolImpl implements ConnectionPool {
     private long maximumCheckOutTime;
 
     /** {@inheritDoc} */
+    @Override
     public User getUser() {
       return user;
     }
 
     /** {@inheritDoc} */
+    @Override
     public List<ConnectionPoolState> getFineGrainedStatistics() {
       return fineGrainedStatistics;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getAvailable() {
       return availableInPool;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getInUse() {
       return connectionsInUse;
     }
 
     /** {@inheritDoc} */
+    @Override
     public long getTimestamp() {
       return timestamp;
     }
 
     /** {@inheritDoc} */
+    @Override
     public long getCreationDate() {
       return this.creationDate;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getCreated() {
       return connectionsCreated;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDestroyed() {
       return connectionsDestroyed;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDelayedRequests() {
       return connectionRequestsDelayed;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getRequests() {
       return connectionRequests;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getDelayedRequestsPerSecond() {
       return requestsDelayedPerSecond;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getFailedRequests() {
       return connectionRequestsFailed;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getFailedRequestsPerSecond() {
       return requestsFailedPerSecond;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getRequestsPerSecond() {
       return requestsPerSecond;
     }
 
     /** {@inheritDoc} */
+    @Override
     public long getAverageGetTime() {
       return averageCheckOutTime;
     }
 
     /** {@inheritDoc} */
+    @Override
     public long getMininumCheckOutTime() {
       return mininumCheckOutTime;
     }
 
     /** {@inheritDoc} */
+    @Override
     public long getMaximumCheckOutTime() {
       return maximumCheckOutTime;
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getSize() {
       return poolSize;
     }
 
     /** {@inheritDoc} */
+    @Override
     public long getResetTime() {
       return resetDate;
     }

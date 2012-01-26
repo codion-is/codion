@@ -177,12 +177,15 @@ public class EntityConnectionServerTest {
     final String clientTypeID = "loginProxyTestClient";
     //create login proxy which returns clientinfo with databaseUser scott:tiger for authenticated users
     final LoginProxy proxy = new LoginProxy() {
+      @Override
       public String getClientTypeID() {
         return clientTypeID;
       }
+      @Override
       public ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException {
         return new ClientInfo(clientInfo.getClientID(), clientInfo.getClientTypeID(), clientInfo.getUser(), User.UNIT_TEST_USER);
       }
+      @Override
       public void close() {}
     };
 

@@ -67,6 +67,7 @@ public abstract class AbstractValueLink<T, V> extends Control {
     if (linkType != LinkType.WRITE_ONLY && modelValueChangeEvent != null) {
       modelValueChangeEvent.addListener(new ActionListener() {
         /** {@inheritDoc} */
+        @Override
         public void actionPerformed(final ActionEvent e) {
           updateUI();
         }
@@ -120,6 +121,7 @@ public abstract class AbstractValueLink<T, V> extends Control {
           try {
             SwingUtilities.invokeAndWait(new Runnable() {
               /** {@inheritDoc} */
+              @Override
               public void run() {
                 setUIValue(getModelValue());
               }

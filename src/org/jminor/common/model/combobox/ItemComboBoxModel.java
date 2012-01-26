@@ -114,16 +114,19 @@ public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> 
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getIconHeight() {
       return icon.getIconHeight();
     }
 
     /** {@inheritDoc} */
+    @Override
     public int getIconWidth() {
       return icon.getIconWidth();
     }
 
     /** {@inheritDoc} */
+    @Override
     public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
       icon.paintIcon(c, g, x, y);
     }

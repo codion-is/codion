@@ -30,11 +30,13 @@ public final class Events {
     private volatile EventObserverImpl observer;
 
     /** {@inheritDoc} */
+    @Override
     public void fire() {
       fire(defaultActionEvent);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void fire(final ActionEvent event) {
       if (observer != null) {
         for (final ActionListener listener : observer.getListeners()) {
@@ -44,11 +46,13 @@ public final class Events {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void actionPerformed(final ActionEvent e) {
       fire(e);
     }
 
     /** {@inheritDoc} */
+    @Override
     public EventObserver getObserver() {
       synchronized (defaultActionEvent) {
         if (observer == null) {
@@ -60,11 +64,13 @@ public final class Events {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void addListener(final ActionListener listener) {
       getObserver().addListener(listener);
     }
 
     /** {@inheritDoc} */
+    @Override
     public void removeListener(final ActionListener listener) {
       if (observer != null) {
         observer.removeListener(listener);
@@ -77,6 +83,7 @@ public final class Events {
     private final Collection<ActionListener> listeners = new ArrayList<ActionListener>();
 
     /** {@inheritDoc} */
+    @Override
     public void addListener(final ActionListener listener) {
       Util.rejectNullValue(listener, "listener");
       synchronized (listeners) {
@@ -87,6 +94,7 @@ public final class Events {
     }
 
     /** {@inheritDoc} */
+    @Override
     public synchronized void removeListener(final ActionListener listener) {
       synchronized (listeners) {
         listeners.remove(listener);

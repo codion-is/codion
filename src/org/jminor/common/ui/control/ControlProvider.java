@@ -134,16 +134,20 @@ public final class ControlProvider {
       this.vertical = vertical;
     }
 
+    @Override
     public void handleSeparator() {}
 
+    @Override
     public void handleControl(final Control control) {
       btnPanel.add(createButton(control));
     }
 
+    @Override
     public void handleToggleControl(final ToggleBeanValueLink control) {
       btnPanel.add(createCheckBox(control));
     }
 
+    @Override
     public void handleControlSet(final ControlSet controlSet) {
       if (vertical) {
         createVerticalButtonPanel(btnPanel, controlSet);
@@ -153,6 +157,7 @@ public final class ControlProvider {
       }
     }
 
+    @Override
     public void handleAction(final Action action) {
       btnPanel.add(new JButton(action));
     }
@@ -172,6 +177,7 @@ public final class ControlProvider {
       if (enabledState != null) {
         menu.setEnabled(enabledState.isActive());
         enabledState.addListener(new ActionListener() {
+          @Override
           public void actionPerformed(final ActionEvent e) {
             menu.setEnabled(enabledState.isActive());
           }
@@ -194,24 +200,29 @@ public final class ControlProvider {
       return menu;
     }
 
+    @Override
     public void handleSeparator() {
       menu.addSeparator();
     }
 
+    @Override
     public void handleControl(final Control control) {
       menu.add(control);
     }
 
+    @Override
     public void handleToggleControl(final ToggleBeanValueLink control) {
       menu.add(createCheckBoxMenuItem(control));
     }
 
+    @Override
     public void handleControlSet(final ControlSet controlSet) {
       final MenuControlIterator mv = new MenuControlIterator(controlSet);
       iterate(mv, controlSet);
       menu.add(mv.menu);
     }
 
+    @Override
     public void handleAction(final Action action) {
       menu.add(action);
     }
@@ -231,22 +242,27 @@ public final class ControlProvider {
       this.includeCaption = includeCaption;
     }
 
+    @Override
     public void handleSeparator() {
       toolbar.addSeparator();
     }
 
+    @Override
     public void handleControl(final Control control) {
       toolbar.add(control);
     }
 
+    @Override
     public void handleToggleControl(final ToggleBeanValueLink control) {
       toolbar.add(createToggleButton(control, includeCaption));
     }
 
+    @Override
     public void handleControlSet(final ControlSet controlSet) {
       iterate(new ToolBarControlIterator(toolbar), controlSet);
     }
 
+    @Override
     public void handleAction(final Action action) {
       toolbar.add(action);
     }

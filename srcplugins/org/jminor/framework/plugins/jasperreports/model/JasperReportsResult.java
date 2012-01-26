@@ -23,6 +23,7 @@ public final class JasperReportsResult implements ReportResult<JasperPrint>, Ser
   }
 
   /** {@inheritDoc} */
+  @Override
   public JasperPrint getResult() {
     return jasperPrint;
   }

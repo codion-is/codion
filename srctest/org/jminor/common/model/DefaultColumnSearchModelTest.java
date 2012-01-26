@@ -21,31 +21,37 @@ public class DefaultColumnSearchModelTest {
   final Collection<Object> clearCounter = new ArrayList<Object>();
 
   final ActionListener upperBoundListener = new ActionListener() {
+    @Override
     public void actionPerformed(final ActionEvent e) {
       upperBoundCounter.add(new Object());
     }
   };
   final ActionListener lowerBoundListener = new ActionListener() {
+    @Override
     public void actionPerformed(final ActionEvent e) {
       lowerBoundCounter.add(new Object());
     }
   };
   final ActionListener searchStateListener = new ActionListener() {
+    @Override
     public void actionPerformed(final ActionEvent e) {
       searchStateCounter.add(new Object());
     }
   };
   final ActionListener searchTypeListener = new ActionListener() {
+    @Override
     public void actionPerformed(final ActionEvent e) {
       searchTypeCounter.add(new Object());
     }
   };
   final ActionListener enabledListener = new ActionListener() {
+    @Override
     public void actionPerformed(final ActionEvent e) {
       enabledCounter.add(new Object());
     }
   };
   final ActionListener clearListener = new ActionListener() {
+    @Override
     public void actionPerformed(final ActionEvent e) {
       clearCounter.add(new Object());
     }

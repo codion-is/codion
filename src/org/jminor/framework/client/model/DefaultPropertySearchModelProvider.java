@@ -13,6 +13,7 @@ import org.jminor.framework.domain.Property;
 public class DefaultPropertySearchModelProvider implements PropertySearchModelProvider {
 
   /** {@inheritDoc} */
+  @Override
   public PropertySearchModel<? extends Property.SearchableProperty> initializePropertySearchModel(
           final Property.SearchableProperty property, final EntityConnectionProvider connectionProvider) {
     if (property instanceof Property.ForeignKeyProperty) {

@@ -368,6 +368,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       UiUtil.setWaitCursor(true, this);
       panel = new EntityCriteriaPanel(getEntityTableModel());
       action = new AbstractAction(FrameworkMessages.get(FrameworkMessages.APPLY)) {
+        @Override
         public void actionPerformed(final ActionEvent e) {
           getEntityTableModel().refresh();
         }
@@ -507,6 +508,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
       controlSet.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
         /** {@inheritDoc} */
+        @Override
         public void actionPerformed(final ActionEvent e) {
           updateSelectedEntities(property);
         }
@@ -942,6 +944,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK,
             new AbstractAction("EntityTablePanel.showEntityMenu") {
               /** {@inheritDoc} */
+              @Override
               public void actionPerformed(final ActionEvent e) {
                 showEntityMenu(getPopupLocation(table));
               }
@@ -1343,6 +1346,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
         searchPanel.addAdvancedListener(new ActionListener() {
           /** {@inheritDoc} */
+          @Override
           public void actionPerformed(final ActionEvent e) {
             if (isSearchPanelVisible()) {
               revalidate();
@@ -1356,6 +1360,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (summaryScrollPane != null) {
       tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
         /** {@inheritDoc} */
+        @Override
         public void stateChanged(final ChangeEvent e) {
           horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
           revalidate();
@@ -1446,6 +1451,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
     final ActionListener statusListener = new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         updateStatusMessage();
       }
@@ -1456,6 +1462,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
     getEntityTableModel().getSearchModel().getSearchStateObserver().addListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         getJTable().getTableHeader().repaint();
         getJTable().repaint();
@@ -1465,6 +1472,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (getEntityTableModel().hasEditModel()) {
       getEntityTableModel().getEditModel().addEntitiesChangedListener(new ActionListener() {
         /** {@inheritDoc} */
+        @Override
         public void actionPerformed(final ActionEvent e) {
           getJTable().repaint();
         }
@@ -1481,6 +1489,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final Font searchFont = new Font(defaultFont.getName(), Font.BOLD, defaultFont.getSize());
     header.setDefaultRenderer(new TableCellRenderer() {
       /** {@inheritDoc} */
+      @Override
       public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                      final boolean hasFocus, final int row, final int column) {
         final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
@@ -1674,6 +1683,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void actionPerformed(final ActionEvent e) {
       final Point location = getPopupLocation(table);
       popupMenu.show(table, location.x, location.y);
@@ -1695,6 +1705,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
 
     /** {@inheritDoc} */
+    @Override
     public void actionPerformed(final ActionEvent e) {
       final int selectedColumnIndex = table.getSelectedColumn();
       if (selectedColumnIndex != -1) {

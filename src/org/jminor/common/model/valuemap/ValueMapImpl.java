@@ -25,11 +25,13 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   public ValueMapImpl() {}
 
   /** {@inheritDoc} */
+  @Override
   public boolean isValueNull(final K key) {
     return getValue(key) == null;
   }
 
   /** {@inheritDoc} */
+  @Override
   public V setValue(final K key, final V value) {
     final boolean initialization = !values.containsKey(key);
     final V previousValue = values.put(key, value);
@@ -39,11 +41,13 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public V getValue(final K key) {
     return values.get(key);
   }
 
   /** {@inheritDoc} */
+  @Override
   public String getValueAsString(final K key) {
     final V value = values.get(key);
     if (value == null) {
@@ -54,6 +58,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public V copyValue(final V value) {
     return value;
   }
@@ -97,11 +102,13 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean containsValue(final K key) {
     return values.containsKey(key);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final V removeValue(final K key) {
     if (values.containsKey(key)) {
       final V value = values.remove(key);
@@ -114,22 +121,26 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Collection<K> getValueKeys() {
     return Collections.unmodifiableCollection(values.keySet());
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void clear() {
     values.clear();
     handleClear();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final int size() {
     return values.size();
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Collection<V> getValues() {
     return Collections.unmodifiableCollection(values.values());
   }

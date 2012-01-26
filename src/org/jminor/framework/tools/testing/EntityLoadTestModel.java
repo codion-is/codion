@@ -157,6 +157,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
       this.evtRefresh = refreshEvent;
     }
 
+    @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
       if (method.getName().endsWith("Listener")) {
         evtRefresh.addListener((ActionListener) args[0]);
@@ -186,6 +187,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
       this.evtRefresh = refreshEvent;
     }
 
+    @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
       if (method.getName().equals("addExitListener")) {
         return null;

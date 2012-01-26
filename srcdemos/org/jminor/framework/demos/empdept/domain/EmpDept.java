@@ -110,6 +110,7 @@ public class EmpDept {
             .setCaption(getString(EMPLOYEE))
             .setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
               /*provide a custom background color for managers*/
+              @Override
               public Color getBackgroundColor(final Entity entity, final Property property) {
                 if (property.is(EMPLOYEE_JOB) && "MANAGER".equals(entity.getValue(EMPLOYEE_JOB))) {
                   return Color.CYAN;

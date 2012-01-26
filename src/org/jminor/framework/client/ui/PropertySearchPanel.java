@@ -77,11 +77,13 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
     }
 
     /** {@inheritDoc} */
+    @Override
     public ColumnSearchModel<Property.ColumnProperty> getSearchModel() {
       return model;
     }
 
     /** {@inheritDoc} */
+    @Override
     public JComponent initializeInputField(final boolean isUpperBound) {
       if (model.getType() == Types.BOOLEAN && !isUpperBound) {
         return null;//no lower bound field required for booleans
@@ -162,6 +164,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
     private Action getEnableAction() {
       return new AbstractAction() {
         /** {@inheritDoc} */
+        @Override
         public void actionPerformed(final ActionEvent e) {
           model.setEnabled(!model.isEnabled());
         }

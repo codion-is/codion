@@ -28,6 +28,7 @@ public class EntityApplet extends JApplet {
   public final void init() {
     try {
       SwingUtilities.invokeAndWait(new Runnable() {
+        @Override
         public void run() {
           final EntityPanel panel = entityPanelProvider.createPanel(new RemoteEntityConnectionProvider(new User("scott", "tiger"),
                   UUID.randomUUID(), entityPanelProvider.toString()));
@@ -45,6 +46,7 @@ public class EntityApplet extends JApplet {
   @Override
   public final void destroy() {
     SwingUtilities.invokeLater(new Runnable() {
+      @Override
       public void run() {
         instance.getModel().getConnectionProvider().disconnect();
       }

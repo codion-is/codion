@@ -67,6 +67,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
 
   private final FilterCriteria<Entity> foreignKeyFilterCriteria = new FilterCriteria<Entity>() {
     /** {@inheritDoc} */
+    @Override
     public boolean include(final Entity item) {
       for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
         final Entity foreignKeyValue = item.getForeignKeyValue(entry.getKey());
@@ -93,6 +94,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
     setFilterCriteria(new FilterCriteria<Entity>() {
       /** {@inheritDoc} */
+      @Override
       public boolean include(final Entity item) {
         return superCriteria.include(item) && foreignKeyFilterCriteria.include(item);
       }
@@ -106,16 +108,19 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final String getEntityID() {
     return entityID;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void forceRefresh() {
     try {
       forceRefresh = true;
@@ -127,17 +132,20 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /** {@inheritDoc} */
+  @Override
   public final boolean isStaticData() {
     return staticData;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityComboBoxModel setStaticData(final boolean staticData) {
     this.staticData = staticData;
     return this;
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Entity getEntity(final Entity.Key primaryKey) {
     for (final Entity entity : getAllItems()) {
       if (entity != null && entity.getPrimaryKey().equals(primaryKey)) {
@@ -149,6 +157,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
     final int indexOfKey = getIndexOfKey(primaryKey);
     if (indexOfKey >= 0) {
@@ -163,6 +172,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setEntitySelectCriteria(final EntitySelectCriteria entitySelectCriteria) {
     if (entitySelectCriteria != null && !entitySelectCriteria.getEntityID().equals(entityID)) {
       throw new IllegalArgumentException("EntitySelectCriteria entityID mismatch, " + entityID
@@ -177,6 +187,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities) {
     final Set<Entity> filterEntities = new HashSet<Entity>();
     if (entities != null) {
@@ -188,6 +199,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /** {@inheritDoc} */
+  @Override
   public final Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyID) {
     final Collection<Entity> filterEntities = new ArrayList<Entity>();
     if (foreignKeyFilterEntities.containsKey(foreignKeyPropertyID)) {
@@ -198,6 +210,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /** {@inheritDoc} */
+  @Override
   public final EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID) {
     final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID);
     final EntityComboBoxModel foreignKeyModel =
@@ -210,6 +223,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void linkForeignKeyComboBoxModel(final String foreignKeyPropertyID, final EntityComboBoxModel foreignKeyModel) {
     final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID);
     if (!foreignKeyProperty.getReferencedEntityID().equals(foreignKeyModel.getEntityID())) {
@@ -222,6 +236,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     }
     foreignKeyModel.addSelectionListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         final Entity selectedEntity = foreignKeyModel.getSelectedValue();
         setForeignKeyFilterEntities(foreignKeyPropertyID,
@@ -230,6 +245,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     });
     addSelectionListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         final Entity selected = getSelectedValue();
         if (selected != null) {
@@ -239,6 +255,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     });
     addRefreshListener(new ActionListener() {
       /** {@inheritDoc} */
+      @Override
       public void actionPerformed(final ActionEvent e) {
         foreignKeyModel.forceRefresh();
       }
@@ -246,11 +263,13 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void addRefreshListener(final ActionListener listener) {
     evtRefreshDone.addListener(listener);
   }
 
   /** {@inheritDoc} */
+  @Override
   public final void removeRefreshListener(final ActionListener listener) {
     evtRefreshDone.removeListener(listener);
   }

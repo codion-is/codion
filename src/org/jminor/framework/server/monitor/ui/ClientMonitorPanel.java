@@ -58,6 +58,7 @@ public final class ClientMonitorPanel extends JPanel {
     setLayout(new BorderLayout(5, 5));
     clientInstanceList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     clientInstanceList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
+      @Override
       public void valueChanged(final ListSelectionEvent e) {
         try {
           final ClientInstanceMonitor clientMonitor = (ClientInstanceMonitor) clientInstanceList.getSelectedValue();
@@ -90,6 +91,7 @@ public final class ClientMonitorPanel extends JPanel {
   private JPopupMenu initializePopupMenu() {
     final ControlSet controls = new ControlSet();
     controls.add(new AbstractAction("Disconnect") {
+      @Override
       public void actionPerformed(final ActionEvent e) {
         final ClientInstanceMonitor clientMonitor = (ClientInstanceMonitor) clientInstanceList.getSelectedValue();
         if (clientMonitor != null) {
