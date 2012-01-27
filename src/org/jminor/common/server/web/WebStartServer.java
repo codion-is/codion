@@ -67,7 +67,7 @@ public final class WebStartServer extends Serve {
 
   /**
    * Runs a WebStartServer.
-   * @param args documentRoot [args]
+   * @param args documentRoot [port]
    */
   public static void main(final String[] args) {
     if (args.length == 0) {
