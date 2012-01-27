@@ -2672,3 +2672,4 @@
   webserver.jar library updated
   WebStartServer, changed according to updated library version, removed main
   ServerUtil, added logging
+  PropertyImpl, minor refactoring

@@ -746,14 +746,12 @@ class PropertyImpl implements Property, Serializable {
     ForeignKeyPropertyImpl(final String propertyID, final String caption, final String referencedEntityID,
                            final ColumnProperty[] referenceProperties, final String[] referencedPropertyIDs) {
       super(propertyID, Types.REF, caption);
+      Util.rejectNullValue(referencedEntityID, "referencedEntityID");
       for (final Property referenceProperty : referenceProperties) {
         Util.rejectNullValue(referenceProperty, "referenceProperty");
         if (referenceProperty.getPropertyID().equals(propertyID)) {
           throw new IllegalArgumentException(referencedEntityID + ", reference property does not have a unique name: " + propertyID);
         }
-      }
-      if (referencedEntityID == null) {
-        throw new IllegalArgumentException("referencedEntityID is null: " + propertyID);
       }
       if (referenceProperties.length > 1 && referencedPropertyIDs.length != referenceProperties.length) {
         throw new IllegalArgumentException("Reference property count mismatch");
