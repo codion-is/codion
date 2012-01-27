@@ -16,13 +16,11 @@ public final class CriteriaSetTest {
 
   @Test
   public void test() throws Exception {
-    final CriteriaSet<Object> andSet = new CriteriaSet<Object>(Conjunction.AND,
-            new Criteria(), new Criteria());
+    final CriteriaSet<Object> andSet = new CriteriaSet<Object>(Conjunction.AND, new TestCriteria(), new TestCriteria());
     assertEquals("AND criteria set should be working", "(criteria and criteria)", andSet.asString());
     assertEquals(2, andSet.getCriteriaCount());
 
-    final CriteriaSet<Object> orSet = new CriteriaSet<Object>(Conjunction.OR,
-            new Criteria(), new Criteria());
+    final CriteriaSet<Object> orSet = new CriteriaSet<Object>(Conjunction.OR, new TestCriteria(), new TestCriteria());
     assertEquals("OR criteria set should be working", "(criteria or criteria)", orSet.asString());
 
     final List<Object> values = orSet.getValues();
@@ -40,7 +38,7 @@ public final class CriteriaSetTest {
     assertEquals(0, set.getCriteriaCount());
   }
 
-  private static class Criteria implements org.jminor.common.db.criteria.Criteria {
+  private static class TestCriteria implements Criteria {
     @Override
     public String asString() {
       return "criteria";

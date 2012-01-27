@@ -2668,3 +2668,7 @@
   @Override annotation added on interface implementations
   Sonar run
   EntityUtilTest, minor improvements in toBean() and toEntity() tests
+  WebStartServerTest added
+  webserver.jar library updated
+  WebStartServer, changed according to updated library version, removed main
+  ServerUtil, added logging

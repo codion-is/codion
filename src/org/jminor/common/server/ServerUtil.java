@@ -76,16 +76,17 @@ public final class ServerUtil {
 
   private static RemoteServer checkServer(final RemoteServer server, final int requestedPort) throws RemoteException {
     if (!server.connectionsAvailable()) {
+      LOG.info("No connections available in server \"{}\"", server);
       return null;
     }
     final int port = server.getServerPort();
     if (requestedPort == -1 || port == requestedPort) {
       return server;
     }
+    LOG.info("Server \"{}\" is serving on port {}, requested port was {}", new Object[] {server, port, requestedPort});
 
     return null;
   }
-
 
   private static final class ServerComparator implements Comparator<RemoteServer>, Serializable {
     private static final long serialVersionUID = 1;
@@ -100,5 +101,4 @@ public final class ServerUtil {
       }
     }
   }
-
 }

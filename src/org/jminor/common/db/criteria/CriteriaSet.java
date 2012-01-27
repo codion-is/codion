@@ -127,7 +127,7 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
     final int criteriaCount = stream.readInt();
     criteriaList = new ArrayList<Criteria<T>>(criteriaCount);
     for (int i = 0; i < criteriaCount; i++) {
-      criteriaList.add(( Criteria<T>) stream.readObject());
+      criteriaList.add((Criteria<T>) stream.readObject());
     }
   }
 }
