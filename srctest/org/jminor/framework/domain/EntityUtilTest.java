@@ -24,11 +24,24 @@ public class EntityUtilTest {
   @Test
   public void toBean() throws InvocationTargetException, NoSuchMethodException,
           InstantiationException, IllegalAccessException {
-    final EntityUtil.EntityBeanMapper beanMap = createEmployeeEntityBeanMap();
+    final EntityUtil.EntityBeanMapper beanMapper = createEmpDeptBeanMapper();
+
+    final Integer deptNo = 13;
+    final String deptName = "Department";
+    final String deptLocation = "Location";
+
+    final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
+    department.setValue(EmpDept.DEPARTMENT_ID, deptNo);
+    department.setValue(EmpDept.DEPARTMENT_NAME, deptName);
+    department.setValue(EmpDept.DEPARTMENT_LOCATION, deptLocation);
+
+    final DepartmentBean departmentBean = (DepartmentBean) beanMapper.toBean(department);
+    assertEquals(deptNo, departmentBean.getDeptNo());
+    assertEquals(deptName, departmentBean.getName());
+    assertEquals(deptLocation, departmentBean.getLocation());
 
     final Integer id = 42;
     final Double commission = 42.2;
-    final Integer department = 10;
     final Date hiredate = new Date();
     final String job = "job";
     final Integer manager = 12;
@@ -38,17 +51,17 @@ public class EntityUtilTest {
     final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
     employee.setValue(EmpDept.EMPLOYEE_ID, id);
     employee.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
-    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT, department);
+    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
     employee.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
     employee.setValue(EmpDept.EMPLOYEE_JOB, job);
     employee.setValue(EmpDept.EMPLOYEE_MGR, manager);
     employee.setValue(EmpDept.EMPLOYEE_NAME, name);
     employee.setValue(EmpDept.EMPLOYEE_SALARY, salary);
 
-    final EmployeeBean employeeBean = (EmployeeBean) beanMap.toBean(employee);
+    final EmployeeBean employeeBean = (EmployeeBean) beanMapper.toBean(employee);
     assertEquals(id, employeeBean.getId());
     assertEquals(commission, employeeBean.getCommission());
-    assertEquals(department, employeeBean.getDeptno());
+    assertEquals(deptNo, employeeBean.getDeptno());
     assertEquals(hiredate, employeeBean.getHiredate());
     assertEquals(job, employeeBean.getJob());
     assertEquals(manager, employeeBean.getMgr());
@@ -59,11 +72,24 @@ public class EntityUtilTest {
   @Test
   public void toEntity() throws InvocationTargetException, NoSuchMethodException,
           IllegalAccessException {
-    final EntityUtil.EntityBeanMapper beanMap = createEmployeeEntityBeanMap();
+    final EntityUtil.EntityBeanMapper beanMapper = createEmpDeptBeanMapper();
+
+    final Integer deptNo = 13;
+    final String deptName = "Department";
+    final String deptLocation = "Location";
+
+    final DepartmentBean departmentBean = new DepartmentBean();
+    departmentBean.setDeptNo(deptNo);
+    departmentBean.setLocation(deptLocation);
+    departmentBean.setName(deptName);
+
+    final Entity department = beanMapper.toEntity(departmentBean);
+    assertEquals(deptNo, department.getValue(EmpDept.DEPARTMENT_ID));
+    assertEquals(deptName, department.getValue(EmpDept.DEPARTMENT_NAME));
+    assertEquals(deptLocation, department.getValue(EmpDept.DEPARTMENT_LOCATION));
 
     final Integer id = 42;
     final Double commission = 42.2;
-    final Integer department = 10;
     final Date hiredate = new Date();
     final String job = "job";
     final Integer manager = 12;
@@ -73,17 +99,17 @@ public class EntityUtilTest {
     final EmployeeBean employeeBean = new EmployeeBean();
     employeeBean.setId(id);
     employeeBean.setCommission(commission);
-    employeeBean.setDeptno(department);
+    employeeBean.setDeptno(deptNo);
     employeeBean.setHiredate(hiredate);
     employeeBean.setJob(job);
     employeeBean.setMgr(manager);
     employeeBean.setName(name);
     employeeBean.setSalary(salary);
 
-    final Entity employee = beanMap.toEntity(employeeBean);
+    final Entity employee = beanMapper.toEntity(employeeBean);
     assertEquals(id, employee.getValue(EmpDept.EMPLOYEE_ID));
     assertEquals(commission, employee.getValue(EmpDept.EMPLOYEE_COMMISSION));
-    assertEquals(department, employee.getValue(EmpDept.EMPLOYEE_DEPARTMENT));
+    assertEquals(deptNo, employee.getValue(EmpDept.EMPLOYEE_DEPARTMENT));
     assertEquals(hiredate, employee.getValue(EmpDept.EMPLOYEE_HIREDATE));
     assertEquals(job, employee.getValue(EmpDept.EMPLOYEE_JOB));
     assertEquals(manager, employee.getValue(EmpDept.EMPLOYEE_MGR));
@@ -282,8 +308,13 @@ public class EntityUtilTest {
     Configuration.clearValue(Configuration.ENTITY_DESERIALIZER_CLASS);
   }
 
-  private EntityUtil.EntityBeanMapper createEmployeeEntityBeanMap() {
+  private EntityUtil.EntityBeanMapper createEmpDeptBeanMapper() {
     final EntityUtil.EntityBeanMapper beanMap = new EntityUtil.EntityBeanMapper();
+    beanMap.setEntityID(DepartmentBean.class, EmpDept.T_DEPARTMENT);
+    beanMap.setProperty(DepartmentBean.class, EmpDept.DEPARTMENT_ID, "deptNo");
+    beanMap.setProperty(DepartmentBean.class, EmpDept.DEPARTMENT_NAME, "name");
+    beanMap.setProperty(DepartmentBean.class, EmpDept.DEPARTMENT_LOCATION, "location");
+
     beanMap.setEntityID(EmployeeBean.class, EmpDept.T_EMPLOYEE);
     beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_ID, "id");
     beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_COMMISSION, "commission");
@@ -295,6 +326,38 @@ public class EntityUtilTest {
     beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_SALARY, "salary");
 
     return beanMap;
+  }
+
+  static class DepartmentBean {
+    private Integer deptNo;
+    private String name;
+    private String location;
+
+    public DepartmentBean() {}
+
+    public Integer getDeptNo() {
+      return deptNo;
+    }
+
+    public void setDeptNo(final Integer deptNo) {
+      this.deptNo = deptNo;
+    }
+
+    public String getLocation() {
+      return location;
+    }
+
+    public void setLocation(final String location) {
+      this.location = location;
+    }
+
+    public String getName() {
+      return name;
+    }
+
+    public void setName(final String name) {
+      this.name = name;
+    }
   }
 
   static class EmployeeBean {

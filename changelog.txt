@@ -2667,3 +2667,4 @@
   EntitUtil.EntityBeanMapper added, tested
   @Override annotation added on interface implementations
   Sonar run
+  EntityUtilTest, minor improvements in toBean() and toEntity() tests
