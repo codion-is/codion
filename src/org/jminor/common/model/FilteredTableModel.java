@@ -206,12 +206,14 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   /**
    * @param columnIdentifier the column identifier
    * @return the sorting directive assigned to the given column
+   * @throws IllegalArgumentException in case no sorting directive has been set for the given column
    */
   SortingDirective getSortingDirective(final C columnIdentifier);
 
   /**
    * @param columnIdentifier the column identifier
    * @return the sorting priority for the given column
+   * @throws IllegalArgumentException in case no sorting directive has been set for the given column
    */
   int getSortingPriority(final C columnIdentifier);
 

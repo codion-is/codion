@@ -15,6 +15,11 @@ import org.junit.Test;
 public class DatabasesTest {
 
   @Test
+  public void getDatabaseStatistics() {
+    Databases.getDatabaseStatistics();
+  }
+
+  @Test
   public void test() {
     final String type = System.getProperty(Database.DATABASE_TYPE);
     final String host = System.getProperty(Database.DATABASE_HOST);
@@ -68,13 +73,13 @@ public class DatabasesTest {
         Databases.createInstance();
         fail();
       }
-      catch (Exception e) {}
+      catch (IllegalArgumentException e) {}
       try {
-        System.setProperty(Database.DATABASE_TYPE, null);
+        System.clearProperty(Database.DATABASE_TYPE);
         Databases.createInstance();
         fail();
       }
-      catch (Exception e) {}
+      catch (IllegalArgumentException e) {}
     }
     finally {
       System.setProperty(Database.DATABASE_TYPE, type);

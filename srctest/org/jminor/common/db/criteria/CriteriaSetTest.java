@@ -29,10 +29,10 @@ public final class CriteriaSetTest {
     assertEquals(2, keys.size());
 
     final CriteriaSet<Object> andOrAndSet = new CriteriaSet<Object>(Conjunction.AND, andSet, orSet);
-    assertEquals("AND OR AND critera set should be working", "((criteria and criteria) and (criteria or criteria))", andOrAndSet.asString());
+    assertEquals("AND OR AND criteria set should be working", "((criteria and criteria) and (criteria or criteria))", andOrAndSet.asString());
 
     final CriteriaSet<Object> andOrOrSet = new CriteriaSet<Object>(Conjunction.OR, andSet, orSet);
-    assertEquals("AND OR OR critera set should be working", "((criteria and criteria) or (criteria or criteria))", andOrOrSet.asString());
+    assertEquals("AND OR OR criteria set should be working", "((criteria and criteria) or (criteria or criteria))", andOrOrSet.asString());
 
     final CriteriaSet<Object> set = new CriteriaSet<Object>(Conjunction.OR);
     assertEquals(0, set.getCriteriaCount());

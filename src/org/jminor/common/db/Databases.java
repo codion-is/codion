@@ -66,12 +66,16 @@ public final class Databases {
    * @return a new Database instance based on runtime properties
    * @see Database#DATABASE_TYPE
    * @see Database#DATABASE_IMPLEMENTATION_CLASS
-   * @throws RuntimeException if an unrecognized database type is specified
+   * @throws IllegalArgumentException in case an unsupported database type is specified
+   * @throws RuntimeException in case of an exception occurring while instantiating the database implementation instance
    */
   public static Database createInstance() {
     try {
       final String databaseClassName = System.getProperty(Database.DATABASE_IMPLEMENTATION_CLASS, getDatabaseClassName());
       return (Database) Class.forName(databaseClassName).newInstance();
+    }
+    catch (IllegalArgumentException e) {
+      throw e;
     }
     catch (Exception e) {
       throw new RuntimeException(e);

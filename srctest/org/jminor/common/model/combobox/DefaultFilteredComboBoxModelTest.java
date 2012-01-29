@@ -190,6 +190,27 @@ public class DefaultFilteredComboBoxModelTest {
   }
 
   @Test
+  public void addItem() {
+    testModel.clear();
+    //add filtered item
+    testModel.setFilterCriteria(new FilterCriteria<String>() {
+      @Override
+      public boolean include(final String item) {
+        return !item.equals(BJORN);
+      }
+    });
+    testModel.addItem(BJORN);
+    assertFalse(BJORN + " should be filtered", testModel.isVisible(BJORN));
+
+    //add visible item
+    testModel.addItem(KALLI);
+    assertTrue(KALLI + " should not be filtered", testModel.isVisible(KALLI));
+
+    testModel.setFilterCriteria(null);
+    assertTrue(BJORN + " should not be filtered", testModel.isVisible(BJORN));
+  }
+
+  @Test
   public void setNullValueString() throws Exception {
     assertTrue(testModel.isVisible(null));
     testModel.refresh();

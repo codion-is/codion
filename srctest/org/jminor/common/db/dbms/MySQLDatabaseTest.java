@@ -13,20 +13,34 @@ public class MySQLDatabaseTest {
   public void getSequenceSQL() {
     new MySQLDatabase("host", "1234", "sid").getSequenceSQL("seq");
   }
-
+  
   @Test
-  public void test() {
-    MySQLDatabase db = new MySQLDatabase("host", "1234", "sid");
+  public void supportsIsValid() {
+    final MySQLDatabase db = new MySQLDatabase("host", "1234", "sid");
     assertTrue(db.supportsIsValid());
+  }
+  
+  @Test
+  public void getAuthenticationInfo() {
+    final MySQLDatabase db = new MySQLDatabase("host", "1234", "sid");
     assertNull(db.getAuthenticationInfo(null));
+  }
+  
+  @Test
+  public void getAutoIncrementValueSQL() {
+    final MySQLDatabase db = new MySQLDatabase("host", "1234", "sid");
     assertEquals(MySQLDatabase.AUTO_INCREMENT_QUERY, db.getAutoIncrementValueSQL(null));
+  }
+  
+  @Test
+  public void getURL() {
+    final MySQLDatabase db = new MySQLDatabase("host", "1234", "sid");
     assertEquals("jdbc:mysql://host:1234/sid", db.getURL(null));
-
-    db = new MySQLDatabase(null, null, null);
-    try {
-      db.getURL(null);
-      fail();
-    }
-    catch (RuntimeException e) {}
+  }
+  
+  @Test(expected = RuntimeException.class)
+  public void getURLMissingProperties() {
+    final MySQLDatabase db = new MySQLDatabase(null, null, null);
+    db.getURL(null);
   }
 }

@@ -52,7 +52,7 @@ public final class AggregateStateImplTest {
       andState.setActive(false);
       fail("Can not set active on an aggregate state");
     }
-    catch (Exception e) {}
+    catch (UnsupportedOperationException e) {}
 
     stateOne.setActive(false);
     stateTwo.setActive(false);
@@ -96,11 +96,5 @@ public final class AggregateStateImplTest {
     assertFalse("Or state should be inactive when no component state is active", orState.isActive());
     stateTwo.setActive(true);
     assertTrue("Or state should be active when one component state is active", orState.isActive());
-
-    try {
-      andState.setActive(false);
-      fail("Can not set active on an aggregate state");
-    }
-    catch (Exception e) {}
   }
 }

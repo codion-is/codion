@@ -76,7 +76,7 @@ public class ItemComboBoxModelTest {
     final ItemComboBoxModel<Integer> unsortedModel = new ItemComboBoxModel<Integer>(null, items) {
       @Override
       protected List<Item<Integer>> initializeContents() {
-        return items;//so we can clear the model later on without removing all items
+        return items;
       }
     };
 

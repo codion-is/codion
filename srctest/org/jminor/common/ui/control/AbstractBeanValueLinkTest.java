@@ -10,32 +10,32 @@ import org.junit.Test;
 public class AbstractBeanValueLinkTest {
 
   @Test
-  public void test() {
+  public void constructor() {
     new BeanValueLink(this, "a", String.class, Events.event(), LinkType.READ_WRITE);
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testNullOwner() {
+  public void constructorNullOwner() {
     new BeanValueLink(null, "a", String.class, Events.event(), LinkType.READ_WRITE);
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testNullPropertyName() {
+  public void constructorNullPropertyName() {
     new BeanValueLink(this, null, String.class, Events.event(), LinkType.READ_WRITE);
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testEmptyPropertyName() {
+  public void constructorEmptyPropertyName() {
     new BeanValueLink(this, "", String.class, Events.event(), LinkType.READ_WRITE);
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void testNullPropertyClass() {
+  public void constructorNullPropertyClass() {
     new BeanValueLink(this, "a", null, Events.event(), LinkType.READ_WRITE);
   }
   
   @Test(expected = IllegalArgumentException.class)
-  public void testNullLinkType() {
+  public void constructorNullLinkType() {
     new BeanValueLink(this, "a", String.class, Events.event(), null);
   }
 

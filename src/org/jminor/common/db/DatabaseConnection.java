@@ -8,7 +8,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import java.sql.SQLException;
 import java.util.List;
 
-
 /**
  * Specifies a database connection, providing basic transaction control and helper functions for querying and manipulating data.
  */
@@ -44,7 +43,7 @@ public interface DatabaseConnection extends PoolableConnection {
    * subsequent columns are disregarded
    * @return the first record in the result as a integer
    * @throws SQLException thrown if anything goes wrong during the execution
-   * @throws org.jminor.common.db.exception.DatabaseException thrown if no record is found
+   * @throws DatabaseException thrown if no record is found
    */
   int queryInteger(final String sql) throws SQLException, DatabaseException;
 
@@ -115,7 +114,7 @@ public interface DatabaseConnection extends PoolableConnection {
    * @param functionID the function ID
    * @param arguments the arguments, if any
    * @return the procedure return arguments, if any
-   * @throws org.jminor.common.db.exception.DatabaseException in case anything goes wrong during the execution
+   * @throws DatabaseException in case anything goes wrong during the execution
    */
   List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException;
 
@@ -123,7 +122,7 @@ public interface DatabaseConnection extends PoolableConnection {
    * Executes the procedure with the given id
    * @param procedureID the procedure ID
    * @param arguments the arguments, if any
-   * @throws org.jminor.common.db.exception.DatabaseException in case anything goes wrong during the execution
+   * @throws DatabaseException in case anything goes wrong during the execution
    */
   void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException;
 
@@ -152,7 +151,7 @@ public interface DatabaseConnection extends PoolableConnection {
      * Executes this procedure with the given connection
      * @param connection the db connection to use when executing
      * @param arguments the procedure arguments, if any
-     * @throws org.jminor.common.db.exception.DatabaseException in case of an exception during the execution
+     * @throws DatabaseException in case of an exception during the execution
      */
     void execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException;
   }
@@ -167,7 +166,7 @@ public interface DatabaseConnection extends PoolableConnection {
      * @param connection the db connection to use when executing
      * @param arguments the function arguments, if any
      * @return the function return arguments
-     * @throws org.jminor.common.db.exception.DatabaseException in case of an exception during the execution
+     * @throws DatabaseException in case of an exception during the execution
      */
     List<Object> execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException;
   }

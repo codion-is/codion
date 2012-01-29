@@ -58,12 +58,12 @@ public class ConnectionPoolImplTest {
       pool.setMaximumPoolSize(3);
       fail();
     }
-    catch (Exception e) {}
+    catch (IllegalArgumentException e) {}
     try {
       pool.setMaximumPoolSize(-1);
       fail();
     }
-    catch (Exception e) {}
+    catch (IllegalArgumentException e) {}
     pool.setMaximumPoolSize(6);
     assertEquals(6, pool.getMaximumPoolSize());
 
@@ -71,12 +71,12 @@ public class ConnectionPoolImplTest {
       pool.setMinimumPoolSize(8);
       fail();
     }
-    catch (Exception e) {}
+    catch (IllegalArgumentException e) {}
     try {
       pool.setMinimumPoolSize(-1);
       fail();
     }
-    catch (Exception e) {}
+    catch (IllegalArgumentException e) {}
     pool.setMinimumPoolSize(3);
     assertEquals(3, pool.getMinimumPoolSize());
 
@@ -114,7 +114,7 @@ public class ConnectionPoolImplTest {
       pool.returnConnection(dbConnectionOne);
       fail("Should not be able to return a connection with an open transaction");
     }
-    catch (RuntimeException e) {
+    catch (IllegalStateException e) {
       //expected
     }
     finally {

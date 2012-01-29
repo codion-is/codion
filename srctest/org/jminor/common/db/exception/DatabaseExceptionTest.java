@@ -10,9 +10,9 @@ public class DatabaseExceptionTest {
   @Test
   public void test() {
     new DatabaseException("hello");
-    final DatabaseException dbException = new DatabaseException("hello", "statement");
+    DatabaseException dbException = new DatabaseException("hello", "statement");
     assertEquals("statement", dbException.getStatement());
-    new DatabaseException(new SQLException(), "statement", "message");
-    assertEquals("statement", dbException.getStatement());
+    dbException = new DatabaseException(new SQLException(), "statement", "message");
+    assertEquals("message", dbException.getMessage());
   }
 }

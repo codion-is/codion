@@ -2,7 +2,6 @@ package org.jminor.common.ui.input;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.ui.DateInputPanel;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
@@ -23,7 +22,7 @@ public class DateInputProviderTest {
     provider = new DateInputProvider(null, format);
     assertNull(provider.getValue());
 
-    ((DateInputPanel) provider.getInputComponent()).getInputField().setText(format.format(date));
+    provider.getInputComponent().getInputField().setText(format.format(date));
     assertEquals(date, provider.getValue());
   }
 }

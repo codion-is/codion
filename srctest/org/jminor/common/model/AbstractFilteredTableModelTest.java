@@ -255,12 +255,12 @@ public final class AbstractFilteredTableModelTest {
       tableModel.getSortingDirective(1);
       fail();
     }
-    catch (RuntimeException e) {}
+    catch (IllegalArgumentException e) {}
     try {
       tableModel.getSortingPriority(1);
       fail();
     }
-    catch (RuntimeException e) {}
+    catch (IllegalArgumentException e) {}
 
     final List<String> items = new ArrayList<String>();
     items.add(null);

@@ -17,28 +17,49 @@ public class H2DatabaseTest {
   public void getSequenceSQLNullSequence() {
     new H2Database("host", "1234", "sid").getSequenceSQL(null);
   }
-
+  
   @Test
-  public void test() {
-    H2Database db = new H2Database("host", "1234", "sid");
-    final Properties props = new Properties();
-    props.put("user", "scott");
-    props.put(Database.PASSWORD_PROPERTY, "tiger");
+  public void supportsIsValid() {
+    final H2Database db = new H2Database("host", "1234", "sid");
     assertTrue(db.supportsIsValid());
+  }
+  
+  @Test
+  public void getAuthenticationInfo() {
+    final H2Database db = new H2Database("host", "1234", "sid");
+    final Properties props = new Properties();
+    props.put(Database.USER_PROPERTY, "scott");
+    props.put(Database.PASSWORD_PROPERTY, "tiger");
     assertEquals("user=scott;password=tiger", db.getAuthenticationInfo(props));
+  }
+  
+  @Test
+  public void getAutoIncrementValueSQL()  {
+    final H2Database db = new H2Database("host", "1234", "sid");
     assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.getAutoIncrementValueSQL(null));
+  }
+  
+  @Test
+  public void getSequenceSQL()  {
+    final H2Database db = new H2Database("host", "1234", "sid");
     final String idSource = "seq";
     assertEquals(H2Database.SEQUENCE_VALUE_QUERY + idSource, db.getSequenceSQL(idSource));
-    assertEquals(H2Database.URL_PREFIX + "//host:1234/sid;user=scott;password=tiger", db.getURL(props));
+  }
 
+  @Test
+  public void getURL() {
+    H2Database db = new H2Database("host", "1234", "sid");
+    final Properties props = new Properties();
+    props.put(Database.USER_PROPERTY, "scott");
+    props.put(Database.PASSWORD_PROPERTY, "tiger");
+    assertEquals(H2Database.URL_PREFIX + "//host:1234/sid;user=scott;password=tiger", db.getURL(props));
     db = new H2Database("dbname");
     assertEquals(H2Database.URL_PREFIX + "dbname;user=scott;password=tiger", db.getURL(props));
+  }
 
-    db = new H2Database(null, null, null);
-    try {
-      db.getURL(null);
-      fail();
-    }
-    catch (RuntimeException e) {}
+  @Test(expected = RuntimeException.class)
+  public void getURLMissingProperties() {
+    final H2Database db = new H2Database(null, null, null);
+    db.getURL(null);
   }
 }

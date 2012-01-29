@@ -116,14 +116,25 @@ public class DatabaseConnectionImplTest {
   @Test
   public void test() throws Exception {
     dbConnection.toString();
-    assertEquals(dbConnection.getUser(), User.UNIT_TEST_USER);
-    assertTrue(dbConnection.isLoggingEnabled());
-    assertEquals(DATABASE, dbConnection.getDatabase());
     dbConnection.setPoolTime(10);
     assertEquals(10, dbConnection.getPoolTime());
     dbConnection.setRetryCount(2);
     assertEquals(2, dbConnection.getRetryCount());
-    Databases.getDatabaseStatistics();
+  }
+
+  @Test
+  public void isLoggingEnabled() {
+    assertTrue(dbConnection.isLoggingEnabled());
+  }
+
+  @Test
+  public void getDatabase() {
+    assertEquals(DATABASE, dbConnection.getDatabase());
+  }
+
+  @Test
+  public void getUser() {
+    assertEquals(dbConnection.getUser(), User.UNIT_TEST_USER);
   }
 
   @Test

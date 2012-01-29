@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2011, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.State;
