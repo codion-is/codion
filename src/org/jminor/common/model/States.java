@@ -24,7 +24,7 @@ public final class States {
    * @return a new State
    */
   public static State state() {
-    return new StateImpl();
+    return state(false);
   }
 
   /**

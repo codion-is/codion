@@ -18,14 +18,9 @@ import static org.junit.Assert.*;
 
 public class DoubleValueLinkTest {
 
-  private final ValueChangeMapEditModel<String, Object> model;
-
-  public DoubleValueLinkTest() {
-    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
-  }
-
   @Test
   public void test() throws Exception {
+    final ValueChangeMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(DoubleField.POINT);
     final NumberFormat format = NumberFormat.getNumberInstance();

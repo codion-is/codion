@@ -1,10 +1,11 @@
 package org.jminor.common.ui;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import javax.swing.JTextField;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class TextInputPanelTest {
 
@@ -20,5 +21,18 @@ public class TextInputPanelTest {
     assertEquals("hello", panel.getText());
     panel.setText("just");
     assertEquals("just", txtField.getText());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullTextComponent() {
+    new TextInputPanel(null, "");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setTextExceedMaxLength() {
+    final JTextField txtField = new JTextField();
+    final TextInputPanel panel = new TextInputPanel(txtField, "title");
+    panel.setMaxLength(5);
+    panel.setText("123456");
   }
 }

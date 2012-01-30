@@ -7,18 +7,15 @@ import org.junit.Test;
 
 import java.sql.Types;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertNull;
+import static org.junit.Assert.*;
 
-public class AbstractSearchPanelTest {
+public class ColumnSearchPanelTest {
 
   @Test
   public void test() {
     final String key = "key";
     final ColumnSearchModel<String> model = new DefaultColumnSearchModel<String>(key, Types.VARCHAR, "%");
-    final SearchPanelImpl panel = new SearchPanelImpl(model, true, true);
+    final ColumnSearchPanel<String> panel = new ColumnSearchPanel<String>(model, true, true);
     assertEquals(model, panel.getSearchModel());
     assertNotNull(panel.getUpperBoundField());
     assertNotNull(panel.getLowerBoundField());
@@ -27,14 +24,13 @@ public class AbstractSearchPanelTest {
     assertFalse(panel.isDialogVisible());
     assertFalse(panel.isAdvancedSearchOn());
     panel.setAdvancedSearchOn(true);
+    assertTrue(panel.isAdvancedSearchOn());
     panel.setAdvancedSearchOn(false);
     assertFalse(panel.isAdvancedSearchOn());
   }
 
-  private static class SearchPanelImpl extends ColumnSearchPanel<String> {
-
-    private SearchPanelImpl(final ColumnSearchModel<String> objectSearchModel, final boolean includeActivateBtn, final boolean includeToggleAdvBtn) {
-      super(objectSearchModel, includeActivateBtn, includeToggleAdvBtn);
-    }
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullSearchModel() {
+    new ColumnSearchPanel<String>(null, true, true, null);
   }
 }

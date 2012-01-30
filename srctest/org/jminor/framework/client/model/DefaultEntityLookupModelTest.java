@@ -29,28 +29,19 @@ public final class DefaultEntityLookupModelTest {
   private DefaultEntityLookupModel lookupModel;
   private Collection<Property.ColumnProperty> lookupProperties;
 
-  @Test
-  public void testConstructor() {
-    try {
-      new DefaultEntityLookupModel(null, EntityConnectionImplTest.CONNECTION_PROVIDER, new ArrayList<Property.ColumnProperty>());
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, null, new ArrayList<Property.ColumnProperty>());
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER, null);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new DefaultEntityLookupModel(null, null, null);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullEntityID() {
+    new DefaultEntityLookupModel(null, EntityConnectionImplTest.CONNECTION_PROVIDER, new ArrayList<Property.ColumnProperty>());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullConnectionProvider() {
+    new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, null, new ArrayList<Property.ColumnProperty>());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullLookupProperties() {
+    new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER, null);
   }
 
   @Test

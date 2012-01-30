@@ -16,14 +16,9 @@ import static org.junit.Assert.*;
 
 public class IntValueLinkTest {
 
-  private final ValueChangeMapEditModel<String, Object> model;
-
-  public IntValueLinkTest() {
-    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
-  }
-
   @Test
   public void nullInitialValue() throws Exception {
+    final ValueChangeMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final IntField txt = new IntField();
     new IntValueLink<String>(txt, model, EmpDept.EMPLOYEE_ID, true, LinkType.READ_WRITE);
     assertNull("Initial Integer value should be null", model.getValue(EmpDept.EMPLOYEE_ID));
@@ -37,6 +32,7 @@ public class IntValueLinkTest {
 
   @Test
   public void nonNullInitialValue() {
+    final ValueChangeMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     model.setValue(EmpDept.EMPLOYEE_ID, 32);
     final IntField txt = new IntField();
     new IntValueLink<String>(txt, model, EmpDept.EMPLOYEE_ID, true, LinkType.READ_WRITE);

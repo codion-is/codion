@@ -89,6 +89,23 @@ public final class DefaultEntityApplicationModelTest {
     model.login(User.UNIT_TEST_USER);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullConnectionProvider() {
+    new DefaultEntityApplicationModel(null) {
+      @Override
+      protected void loadDomainModel() {}
+    };
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void loginNullUser() {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionImplTest.CONNECTION_PROVIDER) {
+      @Override
+      protected void loadDomainModel() {}
+    };
+    model.login(null);
+  }
+
   private static class DeptModel extends DefaultEntityModel {
     private DeptModel(final EntityConnectionProvider connectionProvider) {
       super(EmpDept.T_DEPARTMENT, connectionProvider);

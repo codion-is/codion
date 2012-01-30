@@ -29,8 +29,10 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   /**
    * Instantiates a new DefaultEntityApplicationModel
    * @param connectionProvider the EntityConnectionProvider instance
+   * @throws IllegalArgumentException in case connectionProvider is null
    */
   public DefaultEntityApplicationModel(final EntityConnectionProvider connectionProvider) {
+    Util.rejectNullValue(connectionProvider, "connectionProvider");
     this.connectionProvider = connectionProvider;
     loadDomainModel();
   }
@@ -46,6 +48,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   /** {@inheritDoc} */
   @Override
   public final void login(final User user) {
+    Util.rejectNullValue(user, "user");
     connectionProvider.setUser(user);
     for (final EntityModel entityModel : entityModels) {
       entityModel.refresh();

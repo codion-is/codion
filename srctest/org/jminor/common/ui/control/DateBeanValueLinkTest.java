@@ -9,18 +9,19 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import javax.swing.JFormattedTextField;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 public class DateBeanValueLinkTest {
 
   private Date dateValue;
-  private Event evtDateValueChanged = Events.event();
+  private final Event evtDateValueChanged = Events.event();
 
   @Test
   public void test() throws Exception {

@@ -4,8 +4,9 @@ import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.LoadTestModelTest;
 import org.jminor.common.model.User;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
 
 public class LoadTestPanelTest {
 
@@ -15,5 +16,10 @@ public class LoadTestPanelTest {
     final LoadTestPanel panel = new LoadTestPanel(model);
     assertEquals(model, panel.getModel());
     model.exit();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullModel() {
+    new LoadTestPanel(null);
   }
 }

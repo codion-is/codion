@@ -42,7 +42,7 @@ public final class DateInputPanel extends JPanel {
    * @param inputField the input field
    * @param dateFormat the date format
    * @param includeButton if true a "..." button is included
-   * @param enabledState the enabled state
+   * @param enabledState a StateObserver controlling the enabled state of the input field and button
    */
   public DateInputPanel(final JFormattedTextField inputField, final SimpleDateFormat dateFormat,
                         final boolean includeButton, final StateObserver enabledState) {
@@ -69,6 +69,7 @@ public final class DateInputPanel extends JPanel {
       this.button = new JButton(buttonAction);
       this.button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
       if (enabledState != null) {
+        UiUtil.linkToEnabledState(enabledState, this.inputField);
         UiUtil.linkToEnabledState(enabledState, this.button);
       }
       addFocusListener(new InputFocusAdapter(inputField));

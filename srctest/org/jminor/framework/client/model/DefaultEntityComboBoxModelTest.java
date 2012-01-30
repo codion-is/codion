@@ -25,23 +25,14 @@ public final class DefaultEntityComboBoxModelTest {
     comboBoxModel = new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
   }
 
-  @Test
-  public void testConstructor() {
-    try {
-      new DefaultEntityComboBoxModel(null, EntityConnectionImplTest.CONNECTION_PROVIDER);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, null);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new DefaultEntityComboBoxModel(null, null);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullEntityID() {
+    new DefaultEntityComboBoxModel(null, EntityConnectionImplTest.CONNECTION_PROVIDER);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullConnectionProvider() {
+    new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, null);
   }
 
   @Test
@@ -92,6 +83,11 @@ public final class DefaultEntityComboBoxModelTest {
     assertEquals(accounting, deptComboBoxModel.getSelectedValue());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void setEntitySelectCriteriaEntityIDMismatch() {
+    comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT));
+  }
+
   @Test
   public void test() throws Exception {
     assertEquals(EmpDept.T_EMPLOYEE, comboBoxModel.getEntityID());
@@ -102,12 +98,6 @@ public final class DefaultEntityComboBoxModelTest {
     comboBoxModel.refresh();
     assertTrue(comboBoxModel.getSize() > 0);
     assertFalse(comboBoxModel.isCleared());
-
-    try {
-      comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT));
-      fail("Criteria entityID mismatch");
-    }
-    catch (RuntimeException e) {}
 
     final Entity clark = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "CLARK");
     comboBoxModel.setSelectedItem(clark);

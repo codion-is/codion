@@ -22,6 +22,7 @@ public interface EntityApplicationModel extends Refreshable {
   /**
    * Logs in the given user
    * @param user the user to login
+   * @throws IllegalArgumentException in case user is null
    */
   void login(final User user);
 

@@ -2675,3 +2675,9 @@
   PropertyImpl, minor refactoring
   Unit test cleanup and refactoring
   WebStartServerTest, gives the server a moment to start
+0.6.5
+  TextInputPanel, added null check to constructor
+  DateInputPanel, enabledState now linked to input field as well as button
+  Some minor unit test improvements/refactorings
+  DefaultApplicationModel, constructor performs null check on connectionProvider
+  EntityApplicationModel.login(user) throws IllegalArgumentException if user is null

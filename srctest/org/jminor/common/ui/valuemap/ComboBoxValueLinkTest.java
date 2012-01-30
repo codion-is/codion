@@ -20,14 +20,9 @@ import static org.junit.Assert.assertTrue;
 
 public class ComboBoxValueLinkTest {
 
-  private final EntityEditModel model;
-
-  public ComboBoxValueLinkTest() {
-    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
-  }
-
   @Test
   public void test() throws Exception {
+    final EntityEditModel model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
     final EntityComboBoxModel comboBoxModel = model.createEntityComboBoxModel(fkProperty);
     final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);

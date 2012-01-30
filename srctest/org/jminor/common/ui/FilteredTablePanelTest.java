@@ -5,9 +5,10 @@ package org.jminor.common.ui;
 
 import org.jminor.common.model.AbstractFilteredTableModelTest;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
 
 public class FilteredTablePanelTest {
 
@@ -18,5 +19,10 @@ public class FilteredTablePanelTest {
     assertEquals(1, panel.getColumnFilterPanels().size());
     assertNotNull(panel.getJTable());
     assertNotNull(panel.getSearchField());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullTableModel() {
+    new FilteredTablePanel<String, Integer>(null, null);
   }
 }

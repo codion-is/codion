@@ -6,15 +6,16 @@ package org.jminor.common.ui.control;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import javax.swing.JTextField;
 
+import static org.junit.Assert.*;
+
 public class TextBeanValueLinkTest {
 
   private String stringValue;
-  private Event evtStringValueChanged = Events.event();
+  private final Event evtStringValueChanged = Events.event();
 
   @Test
   public void test() throws Exception {

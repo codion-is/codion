@@ -59,13 +59,23 @@ public final class DefaultEntityEditModelTest {
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, debugOutput);
   }
 
+  @Test(expected = IllegalStateException.class)
+  public void getPropertyComboBoxModelNotInitialized() {
+    employeeEditModel.getPropertyComboBoxModel(jobProperty);
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void getEntityComboBoxModelNotInitialized() {
+    employeeEditModel.getEntityComboBoxModel(deptProperty);
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void getEntityLookupModelNotInitialized() {
+    employeeEditModel.getEntityLookupModel(deptProperty);
+  }
+
   @Test
   public void initializePropertyComboBoxModel() {
-    try {
-      employeeEditModel.getPropertyComboBoxModel(jobProperty);
-      fail();
-    }
-    catch (IllegalStateException e) {}
     final FilteredComboBoxModel model = employeeEditModel.initializePropertyComboBoxModel(jobProperty, null, "null");
     assertNotNull(model);
     assertTrue(employeeEditModel.containsComboBoxModel(jobProperty.getPropertyID()));
@@ -80,11 +90,6 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void initializeEntityComboBoxModel() {
-    try {
-      employeeEditModel.getEntityComboBoxModel(deptProperty);
-      fail();
-    }
-    catch (IllegalStateException e) {}
     final EntityComboBoxModel model = employeeEditModel.initializeEntityComboBoxModel(deptProperty);
     assertNotNull(model);
     assertTrue(model.isCleared());
@@ -106,45 +111,36 @@ public final class DefaultEntityEditModelTest {
     assertEquals(deptProperty.getReferencedEntityID(), model.getEntityID());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void initializeEntityComboBoxModelNonFKProperty() {
+    employeeEditModel.initializeEntityComboBoxModel(jobProperty.getPropertyID());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getEntityComboBoxModelNonFKProperty() {
+    employeeEditModel.getEntityComboBoxModel(jobProperty.getPropertyID());
+  }
+
   @Test
   public void getEntityComboBoxModel() {
-    try {
-      employeeEditModel.initializeEntityComboBoxModel(jobProperty.getPropertyID());
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      employeeEditModel.getEntityComboBoxModel(jobProperty.getPropertyID());
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      employeeEditModel.getEntityComboBoxModel(deptProperty.getPropertyID());
-      fail();
-    }
-    catch (IllegalStateException e) {}
+    assertFalse(employeeEditModel.containsComboBoxModel(deptProperty.getPropertyID()));
     final EntityComboBoxModel model = employeeEditModel.initializeEntityComboBoxModel(deptProperty.getPropertyID());
     assertNotNull(model);
     assertEquals(model, employeeEditModel.getEntityComboBoxModel(deptProperty));
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void initializeEntityLookupModelNonFKProperty() {
+    employeeEditModel.initializeEntityLookupModel(jobProperty.getPropertyID());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getEntityLookupModelNonFKProperty() {
+    employeeEditModel.getEntityLookupModel(jobProperty.getPropertyID());
+  }
+
   @Test
   public void getEntityLookupModel() {
-    try {
-      employeeEditModel.initializeEntityLookupModel(jobProperty.getPropertyID());
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      employeeEditModel.getEntityLookupModel(jobProperty.getPropertyID());
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      employeeEditModel.getEntityLookupModel(deptProperty.getPropertyID());
-      fail();
-    }
-    catch (IllegalStateException e) {}
     final EntityLookupModel model = employeeEditModel.initializeEntityLookupModel(deptProperty.getPropertyID());
     assertNotNull(model);
     assertEquals(model, employeeEditModel.getEntityLookupModel(deptProperty));
@@ -153,11 +149,6 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void initializeEntityLookupModel() {
     assertFalse(employeeEditModel.containsLookupModel(deptProperty.getPropertyID()));
-    try {
-      employeeEditModel.getEntityLookupModel(deptProperty);
-      fail();
-    }
-    catch (IllegalStateException e) {}
     final EntityLookupModel model = employeeEditModel.initializeEntityLookupModel(deptProperty);
     assertNotNull(model);
     assertTrue(employeeEditModel.containsLookupModel(deptProperty.getPropertyID()));
@@ -182,24 +173,18 @@ public final class DefaultEntityEditModelTest {
     assertTrue(copyWithoutPrimaryKeyValue.isPrimaryKeyNull());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullEntityID() {
+    new DefaultEntityEditModel(null, EntityConnectionImplTest.CONNECTION_PROVIDER);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullConnectionProvider() {
+    new DefaultEntityEditModel("entityID", null);
+  }
+
   @Test
   public void test() throws Exception {
-    try {
-      new DefaultEntityEditModel(null, EntityConnectionImplTest.CONNECTION_PROVIDER);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new DefaultEntityEditModel("entityID", null);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new DefaultEntityEditModel(null, null);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-
     final StateObserver entityNullState = employeeEditModel.getEntityNullObserver();
 
     assertTrue(entityNullState.isActive());

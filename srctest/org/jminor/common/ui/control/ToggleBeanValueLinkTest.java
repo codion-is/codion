@@ -6,15 +6,16 @@ package org.jminor.common.ui.control;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 
-import static org.junit.Assert.*;
 import org.junit.Test;
 
 import javax.swing.JCheckBox;
 
+import static org.junit.Assert.*;
+
 public class ToggleBeanValueLinkTest {
 
   private boolean booleanValue;
-  private Event evtBooleanValueChanged = Events.event();
+  private final Event evtBooleanValueChanged = Events.event();
 
   @Test
   public void test() throws Exception {

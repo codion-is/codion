@@ -4,6 +4,7 @@
 package org.jminor.common.ui;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.Util;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -38,6 +39,7 @@ public final class TextInputPanel extends JPanel {
    * Instantiates a new TextInputPanel.
    * @param textComponent the text component
    * @param dialogTitle the input dialog title
+   * @throws IllegalArgumentException in case textComponent is null
    */
   public TextInputPanel(final JTextComponent textComponent, final String dialogTitle) {
     this(textComponent, dialogTitle, null);
@@ -48,6 +50,7 @@ public final class TextInputPanel extends JPanel {
    * @param textComponent the text component
    * @param dialogTitle the input dialog title
    * @param txtAreaSize the input text area size
+   * @throws IllegalArgumentException in case textComponent is null
    */
   public TextInputPanel(final JTextComponent textComponent, final String dialogTitle,
                         final Dimension txtAreaSize) {
@@ -60,9 +63,11 @@ public final class TextInputPanel extends JPanel {
    * @param dialogTitle the input dialog title
    * @param txtAreaSize the input text area size
    * @param buttonFocusable if true then the input button is focusable
+   * @throws IllegalArgumentException in case textComponent is null
    */
   public TextInputPanel(final JTextComponent textComponent, final String dialogTitle,
                         final Dimension txtAreaSize, final boolean buttonFocusable) {
+    Util.rejectNullValue(textComponent, "textComponent");
     this.dialogTitle = dialogTitle;
     this.textComponent = textComponent;
     this.txtAreaSize = txtAreaSize == null ? UiUtil.getScreenSizeRatio(DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO) : txtAreaSize;

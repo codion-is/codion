@@ -50,9 +50,10 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   /**
    * Instantiates a new RandomItemPanel.
    * @param itemRandomizer the ItemRandomizer to base this panel on
+   * @throws IllegalArgumentException in case itemRandomizer is null
    */
   public ItemRandomizerPanel(final ItemRandomizer<T> itemRandomizer) {
-    Util.rejectNullValue(itemRandomizer, "model");
+    Util.rejectNullValue(itemRandomizer, "itemRandomizer");
     this.model = itemRandomizer;
     initializeUI();
   }

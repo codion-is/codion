@@ -6,16 +6,17 @@ package org.jminor.common.ui.control;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import javax.swing.JComboBox;
 
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
+
 public class SelectedItemBeanValueLinkTest {
 
   private String selectedItem;
-  private Event evtSelectedItemChanged = Events.event();
+  private final Event evtSelectedItemChanged = Events.event();
 
   @Test
   public void test() throws Exception {

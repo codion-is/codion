@@ -1,11 +1,15 @@
 package org.jminor.common.ui;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNotNull;
+import org.jminor.common.model.State;
+import org.jminor.common.model.States;
+
 import org.junit.Test;
 
+import javax.swing.JFormattedTextField;
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static org.junit.Assert.*;
 
 public class DateInputPanelTest {
 
@@ -21,5 +25,27 @@ public class DateInputPanelTest {
     panel.getInputField().setText("01.03.2010");
 
     assertEquals(format.parse("01.03.2010"), panel.getDate());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullInputField() {
+    new DateInputPanel(null, new SimpleDateFormat("dd.MM.yyyy"), true, null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullDateFormat() {
+    new DateInputPanel(new JFormattedTextField(), null, true, null);
+  }
+
+  @Test
+  public void enabledState() {
+    final State enabledState = States.state();
+    final JFormattedTextField txtField = new JFormattedTextField();
+    final DateInputPanel inputPanel = new DateInputPanel(txtField, new SimpleDateFormat("dd.MM.yyyy"), true, enabledState.getObserver());
+    assertFalse(txtField.isEnabled());
+    assertFalse(inputPanel.getButton().isEnabled());
+    enabledState.setActive(true);
+    assertTrue(txtField.isEnabled());
+    assertTrue(inputPanel.getButton().isEnabled());
   }
 }

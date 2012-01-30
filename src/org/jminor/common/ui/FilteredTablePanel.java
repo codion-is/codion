@@ -524,6 +524,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
   @SuppressWarnings({"unchecked"})
   private static <T, C> List<ColumnSearchPanel<C>> initializeFilterPanels(final FilteredTableModel<T, C> tableModel) {
+    Util.rejectNullValue(tableModel, "tableModel");
     final List<ColumnSearchPanel<C>> filterPanels = new ArrayList<ColumnSearchPanel<C>>(tableModel.getColumnCount());
     final Enumeration<TableColumn> columns = tableModel.getColumnModel().getColumns();
     while (columns.hasMoreElements()) {

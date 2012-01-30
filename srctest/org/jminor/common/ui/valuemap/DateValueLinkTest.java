@@ -23,14 +23,9 @@ import static org.junit.Assert.assertNull;
 
 public class DateValueLinkTest {
 
-  private final ValueChangeMapEditModel<String, Object> model;
-
-  public DateValueLinkTest() {
-    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
-  }
-
   @Test
   public void test() throws Exception {
+    final ValueChangeMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
     final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format), true);
     new DateValueLink<String>(txtDate, model, EmpDept.EMPLOYEE_HIREDATE, LinkType.READ_WRITE, format, false);
