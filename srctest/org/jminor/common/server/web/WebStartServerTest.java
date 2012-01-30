@@ -27,6 +27,10 @@ public class WebStartServerTest {
   public void test() throws URISyntaxException, IOException {
     InputStream input = null;
     try {
+      try {//lets give the server a moment to start
+        Thread.sleep(500);
+      }
+      catch (InterruptedException ignored) {}
       input = new URL("http://localhost:12345/file_templates/EntityEditPanel.template").openStream();
       assertTrue(input.read() > 0);
     }
