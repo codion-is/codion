@@ -2681,3 +2681,4 @@
   Some minor unit test improvements/refactorings
   DefaultApplicationModel, constructor performs null check on connectionProvider
   EntityApplicationModel.login(user) throws IllegalArgumentException if user is null
+  EntityImpl.KeyImpl, added entityID to a couple of exceptions

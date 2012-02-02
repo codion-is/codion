@@ -880,7 +880,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     }
 
     /**
-     * Instantiates a new Key for the given entity type, assuming it is a single value key
+     * Instantiates a new KeyImpl for the given entity type, assuming it is a single value key
      * @param definition the entity definition
      * @param value the value
      * @throws IllegalArgumentException in case this key is a composite key
@@ -888,7 +888,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     KeyImpl(final Definition definition, final Object value) {
       this(definition);
       if (compositeKey) {
-        throw new IllegalArgumentException("Not a single value key");
+        throw new IllegalArgumentException(definition.getEntityID() + " has a composite primary key");
       }
 
       final Property property = definition.getPrimaryKeyProperties().get(0);
@@ -911,7 +911,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     @Override
     public Property.PrimaryKeyProperty getFirstKeyProperty() {
       if (getPropertyCount() == 0) {
-        throw new IllegalStateException("No properties defined for primary key");
+        throw new IllegalStateException(definition.getEntityID() + " has no primary key properties");
       }
 
       return getProperties().get(0);
@@ -1052,7 +1052,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
                   + definition.getEntityID() + ", "
                   + key + ", got " + value + "; " + value.getClass());
         }
-        setHashcode(value);
+        setHashCode(value);
       }
     }
 
@@ -1063,7 +1063,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       hashCodeDirty = false;
     }
 
-    private void setHashcode(final Object value) {
+    private void setHashCode(final Object value) {
       if (value == null) {
         hashCode = INTEGER_NULL_VALUE;
       }
