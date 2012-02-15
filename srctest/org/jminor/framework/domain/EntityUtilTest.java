@@ -22,7 +22,7 @@ import static org.junit.Assert.*;
 public class EntityUtilTest {
 
   @Test
-  public void toBean() throws InvocationTargetException, NoSuchMethodException,
+  public void toBeans() throws InvocationTargetException, NoSuchMethodException,
           InstantiationException, IllegalAccessException {
     final EntityUtil.EntityBeanMapper beanMapper = createEmpDeptBeanMapper();
 
@@ -35,7 +35,8 @@ public class EntityUtilTest {
     department.setValue(EmpDept.DEPARTMENT_NAME, deptName);
     department.setValue(EmpDept.DEPARTMENT_LOCATION, deptLocation);
 
-    final DepartmentBean departmentBean = (DepartmentBean) beanMapper.toBean(department);
+    final List<Object> deptBeans = beanMapper.toBeans(Arrays.asList(department));
+    final DepartmentBean departmentBean = (DepartmentBean) deptBeans.get(0);
     assertEquals(deptNo, departmentBean.getDeptNo());
     assertEquals(deptName, departmentBean.getName());
     assertEquals(deptLocation, departmentBean.getLocation());
@@ -58,7 +59,8 @@ public class EntityUtilTest {
     employee.setValue(EmpDept.EMPLOYEE_NAME, name);
     employee.setValue(EmpDept.EMPLOYEE_SALARY, salary);
 
-    final EmployeeBean employeeBean = (EmployeeBean) beanMapper.toBean(employee);
+    final List<Object> empBeans = beanMapper.toBeans(Arrays.asList(employee));
+    final EmployeeBean employeeBean = (EmployeeBean) empBeans.get(0);
     assertEquals(id, employeeBean.getId());
     assertEquals(commission, employeeBean.getCommission());
     assertEquals(deptNo, employeeBean.getDeptno());
@@ -70,7 +72,7 @@ public class EntityUtilTest {
   }
 
   @Test
-  public void toEntity() throws InvocationTargetException, NoSuchMethodException,
+  public void toEntities() throws InvocationTargetException, NoSuchMethodException,
           IllegalAccessException {
     final EntityUtil.EntityBeanMapper beanMapper = createEmpDeptBeanMapper();
 
@@ -83,7 +85,8 @@ public class EntityUtilTest {
     departmentBean.setLocation(deptLocation);
     departmentBean.setName(deptName);
 
-    final Entity department = beanMapper.toEntity(departmentBean);
+    final List<Entity> departments = beanMapper.toEntities(Arrays.asList(departmentBean));
+    final Entity department = departments.get(0);
     assertEquals(deptNo, department.getValue(EmpDept.DEPARTMENT_ID));
     assertEquals(deptName, department.getValue(EmpDept.DEPARTMENT_NAME));
     assertEquals(deptLocation, department.getValue(EmpDept.DEPARTMENT_LOCATION));
@@ -106,7 +109,8 @@ public class EntityUtilTest {
     employeeBean.setName(name);
     employeeBean.setSalary(salary);
 
-    final Entity employee = beanMapper.toEntity(employeeBean);
+    final List<Entity> employees = beanMapper.toEntities(Arrays.asList(employeeBean));
+    final Entity employee = employees.get(0);
     assertEquals(id, employee.getValue(EmpDept.EMPLOYEE_ID));
     assertEquals(commission, employee.getValue(EmpDept.EMPLOYEE_COMMISSION));
     assertEquals(deptNo, employee.getValue(EmpDept.EMPLOYEE_DEPARTMENT));

@@ -612,6 +612,24 @@ public final class EntityUtil {
     }
 
     /**
+     * Transforms the given beans into a Entities according to the information found in this EntityBeanMapper instance
+     * @param beans the beans to transform
+     * @return a List containing the Entities derived from the given beans
+     * @throws NoSuchMethodException if a required getter method is not found in the bean class
+     * @throws java.lang.reflect.InvocationTargetException in case an exception is thrown during a bean method call
+     * @throws IllegalAccessException if a required method is not accessible
+     */
+    public List<Entity> toEntities(final List<?> beans) throws InvocationTargetException,
+            NoSuchMethodException, IllegalAccessException {
+      final List<Entity> entities = new ArrayList<Entity>(beans.size());
+      for (final Object bean : beans) {
+        entities.add(toEntity(bean));
+      }
+
+      return entities;
+    }
+
+    /**
      * Transforms the given entity into a bean according to the information found in this EntityBeanMapper instance
      * @param entity the entity to transform
      * @return a bean derived from the given entity
@@ -636,6 +654,25 @@ public final class EntityUtil {
       }
 
       return bean;
+    }
+
+    /**
+     * Transforms the given entities into beans according to the information found in this EntityBeanMapper instance
+     * @param entities the entities to transform
+     * @return a List containing the beans derived from the given entities
+     * @throws NoSuchMethodException if a required setter method is not found in the bean class
+     * @throws InvocationTargetException in case an exception is thrown during a bean method call
+     * @throws IllegalAccessException if a required method is not accessible
+     * @throws InstantiationException if the bean class can not be instantiated
+     */
+    public List<Object> toBeans(final List<Entity> entities) throws InvocationTargetException,
+            NoSuchMethodException, InstantiationException, IllegalAccessException {
+      final List<Object> beans = new ArrayList<Object>(entities.size());
+      for (final Entity entity : entities) {
+        beans.add(toBean(entity));
+      }
+
+      return beans;
     }
   }
 }

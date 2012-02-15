@@ -253,27 +253,27 @@ public final class ServerMonitor {
   private EntityConnectionServerAdmin connectServer(final String serverName) throws RemoteException {
     final long time = System.currentTimeMillis();
     try {
-      final EntityConnectionServerAdmin db =
+      final EntityConnectionServerAdmin serverAdmin =
               (EntityConnectionServerAdmin) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
       //call to validate the remote connection
-      db.getServerPort();
+      serverAdmin.getServerPort();
       LOG.info("ServerMonitor connected to server: {}", serverName);
-      return db;
+      return serverAdmin;
     }
     catch (RemoteException e) {
-      LOG.error("Server \"" + serverName + "\" is unreachable", e);
+      LOG.error("Server \"" + serverName + "\" is unreachable, host: " + hostName + ", registry port: " + registryPort, e);
       throw e;
     }
     catch (NotBoundException e) {
       LOG.error(e.getMessage(), e);
-      throw new RemoteException("Server " + serverName + " is not bound", e);
+      throw new RemoteException("Server " + serverName + " is not bound to registry on host: " + hostName + ", port: " + registryPort, e);
     }
     finally {
       LOG.debug("Registry.lookup(\"{}\"): {}", serverName, System.currentTimeMillis() - time);
     }
   }
 
-  private void updateStats() throws RemoteException {
+  private void updateStatistics() throws RemoteException {
     final long time = System.currentTimeMillis();
     connectionCount = server.getConnectionCount();
     memoryUsage = server.getMemoryUsage();
@@ -301,7 +301,7 @@ public final class ServerMonitor {
       public void run() {
         try {
           if (!shutdown) {
-            updateStats();
+            updateStatistics();
           }
         }
         catch (RemoteException ignored) {}

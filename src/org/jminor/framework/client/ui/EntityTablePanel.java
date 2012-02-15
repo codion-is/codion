@@ -924,12 +924,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Adds a popup menu to <code>table</code>
+   * Adds a popup menu to <code>table</code>, null or an empty ControlSet mean no popup menu
    * @param table the table
    * @param popupControls a ControlSet specifying the controls in the popup menu
    */
   protected final void setTablePopupMenu(final JTable table, final ControlSet popupControls) {
-    if (popupControls.size() == 0) {
+    if (popupControls == null || popupControls.size() == 0) {
       return;
     }
 
@@ -1006,6 +1006,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return toolbarControls;
   }
 
+  /**
+   * Constructs a ControlSet containing the controls to include in the table popup menu.
+   * Returns null or an empty ControlSet to indicate that no popup menu should be included.
+   * @param additionalPopupControlSets any additional controls to include in the popup menu
+   * @return the ControlSet on which to base the table popup menu, null or an empty ControlSet
+   * if no popup menu should be included
+   */
   protected ControlSet getPopupControls(final List<ControlSet> additionalPopupControlSets) {
     final ControlSet popupControls = new ControlSet("");
     popupControls.add(controlMap.get(REFRESH));
