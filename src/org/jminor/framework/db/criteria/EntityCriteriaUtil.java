@@ -783,9 +783,9 @@ public final class EntityCriteriaUtil {
           return getLikeCondition(columnIdentifier, sqlValue);
         case NOT_LIKE:
           return getNotLikeCondition(columnIdentifier, sqlValue);
-        case AT_LEAST:
+        case LESS_THAN:
           return columnIdentifier + " <= " + sqlValue;
-        case AT_MOST:
+        case GREATER_THAN:
           return columnIdentifier + " >= " + sqlValue;
         case WITHIN_RANGE:
           return "(" + columnIdentifier + " >= " + sqlValue + " and " + columnIdentifier +  " <= " + sqlValue2 + ")";

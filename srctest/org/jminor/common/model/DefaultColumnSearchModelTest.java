@@ -118,9 +118,9 @@ public class DefaultColumnSearchModelTest {
     final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
     model.addSearchTypeListener(searchTypeListener);
     assertEquals(SearchType.LIKE, model.getSearchType());
-    model.setSearchType(SearchType.AT_LEAST);
+    model.setSearchType(SearchType.LESS_THAN);
     assertEquals(1, searchTypeCounter.size());
-    assertEquals(SearchType.AT_LEAST, model.getSearchType());
+    assertEquals(SearchType.LESS_THAN, model.getSearchType());
     try {
       model.setSearchType(null);
       fail();
@@ -181,5 +181,47 @@ public class DefaultColumnSearchModelTest {
       fail("Should not be able to set search type in a locked search model");
     }
     catch (IllegalStateException e) {}
+  }
+  
+  @Test
+  public void include() {
+    final DefaultColumnSearchModel<String> searchModel = new DefaultColumnSearchModel<String>("test", Types.INTEGER, "%");
+    searchModel.setUpperBound(10);
+    searchModel.setSearchType(SearchType.LIKE);
+    assertFalse(searchModel.include(9));
+    assertTrue(searchModel.include(10));
+    assertFalse(searchModel.include(11));
+
+    searchModel.setSearchType(SearchType.NOT_LIKE);
+    assertTrue(searchModel.include(9));
+    assertFalse(searchModel.include(10));
+    assertTrue(searchModel.include(11));
+
+    searchModel.setSearchType(SearchType.GREATER_THAN);
+    assertFalse(searchModel.include(9));
+    assertTrue(searchModel.include(10));
+    assertTrue(searchModel.include(11));
+
+    searchModel.setSearchType(SearchType.LESS_THAN);
+    assertTrue(searchModel.include(9));
+    assertTrue(searchModel.include(10));
+    assertFalse(searchModel.include(11));
+    
+    searchModel.setSearchType(SearchType.WITHIN_RANGE);
+    searchModel.setLowerBound(6);
+    assertTrue(searchModel.include(6));
+    assertTrue(searchModel.include(7));
+    assertTrue(searchModel.include(9));
+    assertTrue(searchModel.include(10));
+    assertFalse(searchModel.include(11));
+    assertFalse(searchModel.include(5));
+    
+    searchModel.setSearchType(SearchType.OUTSIDE_RANGE);
+    assertTrue(searchModel.include(6));
+    assertFalse(searchModel.include(7));
+    assertFalse(searchModel.include(9));
+    assertTrue(searchModel.include(10));
+    assertTrue(searchModel.include(11));
+    assertTrue(searchModel.include(5));
   }
 }

@@ -57,16 +57,13 @@ public final class DateUtil {
 
   /**
    * @param date the Date object to floor
-   * @return a Date object with the same time as <code>timestamp</code>
-   * except the Calendar.SECOND and Calendar.MILLISECOND fields are set to zero
+   * @return a Date object with the same date as <code>date</code>, except the Calendar.HOUR_OF_DAY,
+   * Calendar.MINUTE, Calendar.SECOND and Calendar.MILLISECOND fields are set to zero
    */
   public static Date floorDate(final Date date) {
     final Calendar cal = Calendar.getInstance();
     cal.setTime(date);
-    cal.set(Calendar.MILLISECOND, 0);
-    cal.set(Calendar.SECOND, 0);
-    cal.set(Calendar.MINUTE, 0);
-    cal.set(Calendar.HOUR_OF_DAY, 0);
+    floorFields(cal, Calendar.MILLISECOND, Calendar.SECOND, Calendar.MINUTE, Calendar.HOUR_OF_DAY);
 
     return cal.getTime();
   }
@@ -79,35 +76,60 @@ public final class DateUtil {
   public static Timestamp floorTimestamp(final Timestamp timestamp) {
     final Calendar cal = Calendar.getInstance();
     cal.setTime(timestamp);
-    cal.set(Calendar.SECOND, 0);
-    cal.set(Calendar.MILLISECOND, 0);
+    floorFields(cal, Calendar.SECOND, Calendar.MILLISECOND);
 
     return new Timestamp(cal.getTimeInMillis());
   }
 
   /**
+   * Floors the time fields in the given calendar, Calendar.HOUR_OF_DAY,
+   * Calendar.MINUTE, Calendar.SECOND and Calendar.MILLISECOND
+   * @param calendar the calendar in which to floor the time fields
+   */
+  public static void floorTimeFields(final Calendar calendar) {
+    floorFields(calendar, Calendar.MILLISECOND, Calendar.SECOND, Calendar.MINUTE, Calendar.HOUR_OF_DAY);
+  }
+
+  /**
+   * Floors the given fields in the given calendar instance, that is, sets them to zero, if no fields are specified
+   * the calendar is left unmodified
+   * @param calendar the calendar in which to floor fields
+   * @param fields the fields to floor
+   */
+  public static void floorFields(final Calendar calendar, final Integer... fields) {
+    Util.rejectNullValue(calendar, "calendar");
+    if (fields != null) {
+      for (final Integer field : fields) {
+        calendar.set(field, 0);
+      }
+    }
+  }
+
+  /**
    * @param year the year
-   * @param month the month
+   * @param month the month, note this is zero based, see {@link Calendar#MONTH}
    * @param day the day
    * @return a Date based on the given values
    */
   public static Date getDate(final int year, final int month, final int day) {
-    final Calendar cal = Calendar.getInstance();
-    cal.set(Calendar.YEAR, year);
-    cal.set(Calendar.MONTH, month);
-    cal.set(Calendar.DAY_OF_MONTH, day);
+    final Calendar calendar = Calendar.getInstance();
+    floorTimeFields(calendar);
+    calendar.set(Calendar.YEAR, year);
+    calendar.set(Calendar.MONTH, month);
+    calendar.set(Calendar.DAY_OF_MONTH, day);
 
-    return cal.getTime();
+    return calendar.getTime();
   }
 
   /**
    * @return yesterday
    */
   public static Date getYesterday() {
-    final Calendar c = Calendar.getInstance();
-    c.add(Calendar.DAY_OF_MONTH, -1);
+    final Calendar calendar = Calendar.getInstance();
+    floorTimeFields(calendar);
+    calendar.add(Calendar.DAY_OF_MONTH, -1);
 
-    return c.getTime();
+    return calendar.getTime();
   }
 
   /**
@@ -129,11 +151,12 @@ public final class DateUtil {
    * @return the first day of the month <code>toAdd</code> from the current month
    */
   public static Date getFirstDayOfMonth(final int toAdd) {
-    final Calendar c = Calendar.getInstance();
-    c.add(Calendar.MONTH, toAdd);
-    c.set(Calendar.DAY_OF_MONTH, 1);
+    final Calendar calendar = Calendar.getInstance();
+    floorTimeFields(calendar);
+    calendar.add(Calendar.MONTH, toAdd);
+    calendar.set(Calendar.DAY_OF_MONTH, 1);
 
-    return c.getTime();
+    return calendar.getTime();
   }
 
   /**
@@ -141,33 +164,36 @@ public final class DateUtil {
    * @return the last day of the month <code>toAdd</code> from the current month
    */
   public static Date getLastDayOfMonth(final int toAdd) {
-    final Calendar c = Calendar.getInstance();
-    c.add(Calendar.MONTH, toAdd);
-    c.set(Calendar.DAY_OF_MONTH, c.getActualMaximum(Calendar.DAY_OF_MONTH));
+    final Calendar calendar = Calendar.getInstance();
+    floorTimeFields(calendar);
+    calendar.add(Calendar.MONTH, toAdd);
+    calendar.set(Calendar.DAY_OF_MONTH, calendar.getActualMaximum(Calendar.DAY_OF_MONTH));
 
-    return c.getTime();
+    return calendar.getTime();
   }
 
   /**
    * @return the first day of the current year
    */
   public static Date getFirstDayOfYear() {
-    final Calendar c = Calendar.getInstance();
-    c.set(Calendar.MONTH, Calendar.JANUARY);
-    c.set(Calendar.DAY_OF_MONTH, 1);
+    final Calendar calendar = Calendar.getInstance();
+    floorTimeFields(calendar);
+    calendar.set(Calendar.MONTH, Calendar.JANUARY);
+    calendar.set(Calendar.DAY_OF_MONTH, 1);
 
-    return c.getTime();
+    return calendar.getTime();
   }
 
   /**
    * @return the last day of the current year
    */
   public static Date getLastDayOfYear() {
-    final Calendar c = Calendar.getInstance();
-    c.set(Calendar.MONTH, Calendar.DECEMBER);
-    c.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
+    final Calendar calendar = Calendar.getInstance();
+    floorTimeFields(calendar);
+    calendar.set(Calendar.MONTH, Calendar.DECEMBER);
+    calendar.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
 
-    return c.getTime();
+    return calendar.getTime();
   }
 
   /**
@@ -181,24 +207,25 @@ public final class DateUtil {
       throw new IllegalArgumentException("Quarter must be between 1 and 4");
     }
 
-    final Calendar c = Calendar.getInstance();
-    c.set(Calendar.DAY_OF_MONTH, 1);
+    final Calendar calendar = Calendar.getInstance();
+    floorTimeFields(calendar);
+    calendar.set(Calendar.DAY_OF_MONTH, 1);
     switch (quarter) {
       case 1: {
-        c.set(Calendar.MONTH, Calendar.JANUARY);
-        return c.getTime();
+        calendar.set(Calendar.MONTH, Calendar.JANUARY);
+        return calendar.getTime();
       }
       case 2: {
-        c.set(Calendar.MONTH, Calendar.APRIL);
-        return c.getTime();
+        calendar.set(Calendar.MONTH, Calendar.APRIL);
+        return calendar.getTime();
       }
       case 3: {
-        c.set(Calendar.MONTH, Calendar.JULY);
-        return c.getTime();
+        calendar.set(Calendar.MONTH, Calendar.JULY);
+        return calendar.getTime();
       }
       case 4: {
-        c.set(Calendar.MONTH, Calendar.OCTOBER);
-        return c.getTime();
+        calendar.set(Calendar.MONTH, Calendar.OCTOBER);
+        return calendar.getTime();
       }
     }
 
@@ -216,27 +243,28 @@ public final class DateUtil {
       throw new IllegalArgumentException("Quarter must be between 1 and 4");
     }
 
-    final Calendar c = Calendar.getInstance();
+    final Calendar calendar = Calendar.getInstance();
+    floorTimeFields(calendar);
     switch (quarter) {
       case 1: {
-        c.set(Calendar.MONTH, Calendar.MARCH);
-        c.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
-        return c.getTime();
+        calendar.set(Calendar.MONTH, Calendar.MARCH);
+        calendar.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
+        return calendar.getTime();
       }
       case 2: {
-        c.set(Calendar.MONTH, Calendar.JUNE);
-        c.set(Calendar.DAY_OF_MONTH, THIRTIETH);
-        return c.getTime();
+        calendar.set(Calendar.MONTH, Calendar.JUNE);
+        calendar.set(Calendar.DAY_OF_MONTH, THIRTIETH);
+        return calendar.getTime();
       }
       case 3: {
-        c.set(Calendar.MONTH, Calendar.SEPTEMBER);
-        c.set(Calendar.DAY_OF_MONTH, THIRTIETH);
-        return c.getTime();
+        calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
+        calendar.set(Calendar.DAY_OF_MONTH, THIRTIETH);
+        return calendar.getTime();
       }
       case 4: {
-        c.set(Calendar.MONTH, Calendar.DECEMBER);
-        c.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
-        return c.getTime();
+        calendar.set(Calendar.MONTH, Calendar.DECEMBER);
+        calendar.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
+        return calendar.getTime();
       }
     }
 

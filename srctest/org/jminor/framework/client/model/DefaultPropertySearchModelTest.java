@@ -28,15 +28,15 @@ public class DefaultPropertySearchModelTest {
     assertEquals(property.getPropertyID() + " like ?", model.getCriteria().asString());
     model.setSearchType(SearchType.NOT_LIKE);
     assertEquals(property.getPropertyID() + " not like ?", model.getCriteria().asString());
-    model.setSearchType(SearchType.AT_MOST);
+    model.setSearchType(SearchType.GREATER_THAN);
     assertEquals(property.getPropertyID() + " >= ?", model.getCriteria().asString());
-    model.setSearchType(SearchType.AT_LEAST);
+    model.setSearchType(SearchType.LESS_THAN);
     assertEquals(property.getPropertyID() + " <= ?", model.getCriteria().asString());
 
     model.setSearchType(SearchType.WITHIN_RANGE);
     assertTrue(model.isLowerBoundRequired());
     model.setLowerBound("lower");
-    List<Object> values = model.getCriteria().getValues();
+    List values = model.getCriteria().getValues();
     assertTrue(values.contains("upper"));
     assertTrue(values.contains("lower"));
     assertEquals("(" + property.getPropertyID() + " >= ? and " + property.getPropertyID() + " <= ?)", model.getCriteria().asString());

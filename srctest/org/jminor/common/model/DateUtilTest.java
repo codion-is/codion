@@ -5,12 +5,14 @@ package org.jminor.common.model;
 
 import org.jminor.common.model.formats.DateFormats;
 
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
 
 import java.sql.Timestamp;
+import java.text.ParseException;
+import java.util.Calendar;
 import java.util.Date;
+
+import static org.junit.Assert.*;
 
 public class DateUtilTest {
 
@@ -26,16 +28,52 @@ public class DateUtilTest {
     assertTrue("isDateValid should work with a date format specified",
             DateUtil.isDateValid("03.10.1975", false, DateFormats.getDateFormat(DateFormats.SHORT_DOT)));
   }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void isDateValidNullFormat() {
+    DateUtil.isDateValid("03-10-1975");
+  }
+  
+  @Test(expected = IllegalArgumentException.class)
+  public void floorFieldsNullCalendar() {
+    DateUtil.floorFields(null);
+  }
+  
+  @Test
+  public void getDate() throws ParseException {
+    final Date date = DateUtil.getDate(1975, Calendar.OCTOBER, 3);
+    assertEquals(DateFormats.getDateFormat(DateFormats.SHORT_DASH).parse("03-10-1975"), date);
+  }
+  
+  @Test
+  public void floorTimeFields() throws ParseException {
+    final Date dateWithTime = DateFormats.getDateFormat(DateFormats.EXACT_TIMESTAMP).parse("1975-10-03 10:45:42.123");
+    final Calendar calendar = Calendar.getInstance();
+    calendar.setTime(dateWithTime);
+    DateUtil.floorTimeFields(calendar);
+    assertEquals(0, calendar.get(Calendar.MILLISECOND));
+    assertEquals(0, calendar.get(Calendar.SECOND));
+    assertEquals(0, calendar.get(Calendar.MINUTE));
+    assertEquals(0, calendar.get(Calendar.HOUR_OF_DAY));
+  }
 
   @Test
   public void floorDate() {
-    final Date date = new Date();
-    assertFalse(DateUtil.floorDate(date).equals(date));
+    final Date date = DateUtil.floorDate(new Date());
+    final Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    assertEquals(0, calendar.get(Calendar.MILLISECOND));
+    assertEquals(0, calendar.get(Calendar.SECOND));
+    assertEquals(0, calendar.get(Calendar.MINUTE));
+    assertEquals(0, calendar.get(Calendar.HOUR_OF_DAY));
   }
 
   @Test
   public void floorTimestamp() {
-    final Timestamp timestamp = new Timestamp(System.currentTimeMillis());
-    assertFalse(DateUtil.floorTimestamp(timestamp).equals(timestamp));
+    final Timestamp timestamp = DateUtil.floorTimestamp(new Timestamp(System.currentTimeMillis()));
+    final Calendar calendar = Calendar.getInstance();
+    calendar.setTime(timestamp);
+    assertEquals(0, calendar.get(Calendar.MILLISECOND));
+    assertEquals(0, calendar.get(Calendar.SECOND));
   }
 }

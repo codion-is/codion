@@ -12,12 +12,13 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import java.sql.Types;
 import java.text.DateFormat;
 import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
 
 public class PropertyCriteriaTest {
 
@@ -237,7 +238,7 @@ public class PropertyCriteriaTest {
     assertEquals("Condition should fit", "colName is null", testCrit.asString());
 
     //string, =
-    Date value = dateFormat.parse("10-12-2004");
+    final Date value = dateFormat.parse("10-12-2004");
     testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.LIKE, value);
     String requiredValue = "colName = ?";
     assertEquals("Condition should fit", requiredValue, testCrit.asString());
@@ -248,7 +249,7 @@ public class PropertyCriteriaTest {
     assertEquals("Condition should fit", requiredValue, testCrit.asString());
 
     //string, between
-    Date value2 = dateFormat.parse("10-09-2001");
+    final Date value2 = dateFormat.parse("10-09-2001");
     testCrit = EntityCriteriaUtil.propertyCriteria(property, SearchType.WITHIN_RANGE, value, value2);
     requiredValue = "(colName >= ? and colName <= ?)";
     assertEquals("Condition should fit", requiredValue, testCrit.asString());
@@ -270,7 +271,7 @@ public class PropertyCriteriaTest {
     final Property.ColumnProperty property1 = Properties.columnProperty("colName1", Types.VARCHAR);
     final Property.ColumnProperty property2 = Properties.columnProperty("colName2", Types.INTEGER);
     final Criteria<Property.ColumnProperty> criteria1 = EntityCriteriaUtil.propertyCriteria(property1, SearchType.LIKE, "value");
-    final Criteria<Property.ColumnProperty> criteria2 = EntityCriteriaUtil.propertyCriteria(property2, SearchType.AT_LEAST, 10);
+    final Criteria<Property.ColumnProperty> criteria2 = EntityCriteriaUtil.propertyCriteria(property2, SearchType.LESS_THAN, 10);
     final CriteriaSet set = new CriteriaSet<Property.ColumnProperty>(Conjunction.OR, criteria1, criteria2);
     assertEquals("Set condition should fit", "(colName1 like ? or colName2 <= ?)", set.asString());
 

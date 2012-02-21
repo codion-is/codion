@@ -500,14 +500,14 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
         return includeLike(toCompare);
       case NOT_LIKE:
         return includeNotLike(toCompare);
-      case AT_LEAST:
-        return includeMax(toCompare);
-      case AT_MOST:
-        return includeMin(toCompare);
+      case LESS_THAN:
+        return includeLessThan(toCompare);
+      case GREATER_THAN:
+        return includeGreaterThan(toCompare);
       case WITHIN_RANGE:
-        return includeMinMaxInside(toCompare);
+        return includeWithinRange(toCompare);
       case OUTSIDE_RANGE:
-        return includeMinMaxOutside(toCompare);
+        return includeOutsideRange(toCompare);
     }
 
     throw new IllegalArgumentException("Undefined search type: " + searchType);
@@ -520,8 +520,8 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   public static int getValueCount(final SearchType searchType) {
     switch(searchType) {
       case LIKE:
-      case AT_LEAST:
-      case AT_MOST:
+      case LESS_THAN:
+      case GREATER_THAN:
       case NOT_LIKE:
         return 1;
       case WITHIN_RANGE:
@@ -599,15 +599,15 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     return string.replaceAll(wildcard, ".*").replaceAll("\\$", ".").replaceAll("\\]", "\\\\]").replaceAll("\\[", "\\\\[");
   }
 
-  private boolean includeMax(final Comparable comparable) {
+  private boolean includeLessThan(final Comparable comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) <= 0;
   }
 
-  private boolean includeMin(final Comparable comparable) {
+  private boolean includeGreaterThan(final Comparable comparable) {
     return getUpperBound() == null || comparable != null && comparable.compareTo(getUpperBound()) >= 0;
   }
 
-  private boolean includeMinMaxInside(final Comparable comparable) {
+  private boolean includeWithinRange(final Comparable comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
     }
@@ -630,7 +630,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     return lowerCompareResult >= 0 && upperCompareResult <= 0;
   }
 
-  private boolean includeMinMaxOutside(final Comparable comparable) {
+  private boolean includeOutsideRange(final Comparable comparable) {
     if (getLowerBound() == null && getUpperBound() == null) {
       return true;
     }

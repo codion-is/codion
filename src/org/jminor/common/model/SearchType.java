@@ -4,7 +4,7 @@
 package org.jminor.common.model;
 
 /**
- * Enumerating the possible ways of searching.
+ * Enumerating the possible ways of comparing values.
  */
 public enum SearchType {
 
@@ -20,13 +20,13 @@ public enum SearchType {
       return "  \u2260 ";
     }
   },
-  AT_LEAST {
+  LESS_THAN {
     @Override
     public String getCaption() {
       return "  \u2264 ";
     }
   },
-  AT_MOST {
+  GREATER_THAN {
     @Override
     public String getCaption() {
       return "  \u2265 ";

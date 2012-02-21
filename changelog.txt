@@ -2909,3 +2909,7 @@
   EntityTablePanel.setTablePopupMenu() handles a null controlSet parameter
   EntityTablePanel.getPopupControls() documented
   ServerMonitor.connectServer() error messages improved
+  DateUtil refactored, floors time fields in all returned dates, floorFields() and floorTimeFields() added, used throughout, tested
+  SearchType bug fixed, renamed AT_LEAST and AT_MOST to LESS_THAN and GREATER_THAN respectively, these were incorrect according to the signs used
+  DefaultColumnSearchModel, renamed a couple of methods mirroring the above changes
+  DefaultColumnSearchModelTest.include() added
