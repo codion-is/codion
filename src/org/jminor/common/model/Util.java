@@ -292,7 +292,7 @@ public final class Util {
    * @throws java.io.IOException in case the file can not be read
    */
   public static int countLines(final String filename) throws IOException {
-    return countLines(new File(filename));
+    return countLines(new File(filename), null);
   }
 
   /**
@@ -301,12 +301,26 @@ public final class Util {
    * @throws java.io.IOException in case the file can not be read
    */
   public static int countLines(final File file) throws IOException {
+    return countLines(file, null);
+  }
+
+  /**
+   * @param file the file
+   * @param excludePrefix lines are excluded from the count if they start with this string
+   * @return the number of lines in the given file
+   * @throws java.io.IOException in case the file can not be read
+   */
+  public static int countLines(final File file, final String excludePrefix) throws IOException {
     BufferedReader reader = null;
     try {
       reader = new BufferedReader(new FileReader(file));
       int lines = 0;
-      while (reader.readLine() != null) {
-        lines++;
+      String line = reader.readLine();
+      while (line != null) {
+        if (excludePrefix == null || !line.startsWith(excludePrefix)) {
+          lines++;
+        }
+        line = reader.readLine();
       }
 
       return lines;
@@ -883,7 +897,7 @@ public final class Util {
   /**
    * Parses the given configuration file adding the resulting properties via System.setProperty(key, value).
    * If a file with the given name is not found on the classpath we try to locate it on the filesystem,
-   * relative to user.dir, if the file is not found.
+   * relative to user.dir, if the file is not found a RuntimeException is thrown.
    * If the {@link #ADDITIONAL_CONFIGURATION_FILES} property is found, the files specified are parsed as well,
    * note that the actual property value is not added to the system properties.
    * @param filename the configuration filename

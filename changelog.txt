@@ -2913,3 +2913,8 @@
   SearchType bug fixed, renamed AT_LEAST and AT_MOST to LESS_THAN and GREATER_THAN respectively, these were incorrect according to the signs used
   DefaultColumnSearchModel, renamed a couple of methods mirroring the above changes
   DefaultColumnSearchModelTest.include() added
+  Util.countLines() overloaded with excludePrefix
+  Messages.SELECT_FILE and SELECT_DIRECTORY added
+  UiUtil.selectFile() and selectDirectory() use the above
+  UiUtil.selectDirectory() overloaded with dialogTitle parameter
+  Messages_is_IS.properties UTF-8 encoding fixed

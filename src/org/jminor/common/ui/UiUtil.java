@@ -140,7 +140,7 @@ public final class UiUtil {
   }
 
   public static File selectDirectory(final JComponent dialogParent, final String startDir) throws CancelException {
-    return selectDirectory(dialogParent, startDir, null);
+    return selectDirectory(dialogParent, startDir, Messages.get(Messages.SELECT_DIRECTORY));
   }
 
   public static File selectDirectory(final JComponent dialogParent, final String startDir,
@@ -173,6 +173,11 @@ public final class UiUtil {
   }
 
   public static File selectFile(final JComponent dialogParent, final String startDir) throws CancelException {
+    return selectFile(dialogParent, startDir, Messages.get(Messages.SELECT_FILE));
+  }
+
+  public static File selectFile(final JComponent dialogParent, final String startDir,
+                                final String dialogTitle) throws CancelException {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
@@ -187,6 +192,9 @@ public final class UiUtil {
     fileChooser.setMultiSelectionEnabled(false);
     if (!Util.nullOrEmpty(startDir)) {
       fileChooser.setCurrentDirectory(new File(startDir));
+    }
+    if (dialogTitle != null) {
+      fileChooser.setDialogTitle(dialogTitle);
     }
     final int option = fileChooser.showOpenDialog(dialogParent);
     if (option == JFileChooser.APPROVE_OPTION) {

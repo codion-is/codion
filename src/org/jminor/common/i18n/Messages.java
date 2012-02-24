@@ -69,6 +69,8 @@ public final class Messages {
   public static final String SELECT_DATE = "select_date";
   public static final String UNABLE_TO_OPEN_FILE = "unable_to_open_file";
   public static final String RECORD_MODIFIED_EXCEPTION = "record_modified_exception";
+  public static final String SELECT_FILE = "select_file";
+  public static final String SELECT_DIRECTORY = "select_directory";
   public static final String SELECT_VALUE = "select_value";
   public static final String SELECT_INPUT_FIELD = "select_input_field";
   public static final String SELECT_COLUMNS = "select_columns";
