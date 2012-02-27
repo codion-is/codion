@@ -101,7 +101,7 @@ public class EmpDeptMinimalApp {
       final EntityComboBoxModel comboBoxModel = super.createEntityComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
         comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(
-                "scott.emp", "job", SearchType.LIKE, "MANAGER"));
+                "scott.emp", "job", SearchType.LIKE, "MANAGER", "PRESIDENT"));
         comboBoxModel.refresh();
       }
 

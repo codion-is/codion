@@ -679,7 +679,7 @@ public final class Configuration {
   public static String getReportPath() {
     final String path = getStringValue(REPORT_PATH);
     if (Util.nullOrEmpty(path)) {
-      throw new IllegalArgumentException("jminor.report.path property is not speficied");
+      throw new IllegalArgumentException(REPORT_PATH + " property is not specified");
     }
 
     return path;

@@ -212,8 +212,6 @@
                 org/jminor/framework/server/*.class"
          excludes="org/jminor/framework/server/*Stub.class"/>
 
-    <copy file="${deploy.server.monitor.truststore}" todir="${build.base}"/>
-
     <jar jarfile="${dist}/${ant.project.name}-server-monitor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
@@ -224,8 +222,6 @@
 
     <jar jarfile="${dist}/${ant.project.name}-plugins.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
-
-    <copy file="${demos.truststore}" todir="${build.demos}"/>
 
     <jar jarfile="${dist}/${ant.project.name}-demos.jar" basedir="${build.demos}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
@@ -331,6 +327,10 @@
     </copy>
     <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.config.path}"/>
     <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.config.path}"/>
+    <zip file="${deploy.server.monitor.path}/lib/${ant.project.name}-server-monitor.jar" update="true">
+      <fileset file="${build.base}/logback.xml"/>
+      <fileset file="${deploy.server.monitor.truststore}"/>
+    </zip>
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
     <antcall target="sign_server_monitor_jars"/>
   </target>
@@ -371,7 +371,7 @@
   </target>
 
   <target name="deploy_demos" depends="recreate_h2_db, compile_demo_reports"
-          description="Deploys the demo applications to the path defined by the 'deploy.demos.path' property">
+          description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <mkdir dir="${deploy.demos.dir}"/>
     <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.demos.lib}"/>
     <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.demos.lib}"/>
@@ -391,12 +391,16 @@
     <copy file="${lib.jfreechart.base}" todir="${deploy.demos.lib}"/>
     <copy file="${lib.jfreechart.common}" todir="${deploy.demos.lib}"/>
     <copy todir="${deploy.demos.config.dir}">
-      <fileset dir="${demos.config}"/>
+      <fileset dir="${deploy.demos.config}"/>
     </copy>
-    <copy file="${demos.policy}" todir="${deploy.demos.config.dir}"/>
+    <copy file="${deploy.demos.policy}" todir="${deploy.demos.config.dir}"/>
     <copy file="${deploy.loadtest.policy}" todir="${deploy.demos.config.dir}"/>
     <copy file="${deploy.loadtest.server.policy}" todir="${deploy.demos.config.dir}"/>
-    <copy file="${demos.truststore}" todir="${deploy.demos.config.dir}"/>
+    <copy file="${deploy.demos.truststore}" todir="${deploy.demos.config.dir}"/>
+    <zip file="${deploy.demos.lib}/${ant.project.name}-demos.jar" update="true">
+      <fileset file="${build.base}/logback.xml"/>
+      <fileset file="${deploy.demos.truststore}"/>
+    </zip>
     <copy todir="${deploy.demos.dir}">
       <fileset dir="${basedir}/resources/demos/empdept/" excludes="**/*.jrxml,**/*.bak"/>
       <fileset dir="${basedir}/resources/demos/petstore/" excludes="**/*.jrxml,**/*.bak"/>
