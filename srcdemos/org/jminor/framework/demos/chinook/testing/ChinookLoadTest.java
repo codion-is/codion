@@ -8,10 +8,12 @@ import org.jminor.common.model.LoadTest;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.LoadTestPanel;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.reporting.EntityReportUtil;
+import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.db.provider.EntityConnectionProviders;
 import org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
@@ -153,36 +155,47 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
+    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(getUser(), ChinookLoadTest.class.getSimpleName());
     final EntityApplicationModel appModel = new ChinookAppPanel.ChinookApplicationModel(
-            EntityConnectionProviders.createConnectionProvider(getUser(), ChinookLoadTest.class.getSimpleName()));
+            connectionProvider);
     /* ARTIST
     *   ALBUM
     *     TRACK
+    * GENRE
+    *   GENRETRACK
     * PLAYLIST
     *   PLAYLISTTRACK
     * CUSTOMER
     *   INVOICE
     *     INVOICELINE
     */
-    final EntityModel artistModel = appModel.getEntityModel(Chinook.T_ARTIST);
-    final EntityModel albumModel = artistModel.getDetailModel(Chinook.T_ALBUM);
-    final EntityModel trackModel = albumModel.getDetailModel(Chinook.T_TRACK);
+    final EntityModel artistModel = new DefaultEntityModel(Chinook.T_ARTIST, connectionProvider);
+    final EntityModel albumModel = new DefaultEntityModel(Chinook.T_ALBUM, connectionProvider);
+    final EntityModel trackModel = new DefaultEntityModel(Chinook.T_TRACK, connectionProvider);
+    artistModel.addDetailModel(albumModel);
     artistModel.setLinkedDetailModels(albumModel);
+    albumModel.addDetailModel(trackModel);
     albumModel.setLinkedDetailModels(trackModel);
 
-    final EntityModel genreModel = appModel.getEntityModel(Chinook.T_GENRE);
-    final EntityModel genreTrackModel = genreModel.getDetailModel(Chinook.T_TRACK);
+    final EntityModel genreModel = new DefaultEntityModel(Chinook.T_GENRE, connectionProvider);
+    final EntityModel genreTrackModel = new DefaultEntityModel(Chinook.T_TRACK, connectionProvider);
+    genreModel.addDetailModel(genreTrackModel);
     genreModel.setLinkedDetailModels(genreTrackModel);
 
-    final EntityModel playlistModel = appModel.getEntityModel(Chinook.T_PLAYLIST);
-    final EntityModel playlistTrackModel = playlistModel.getDetailModel(Chinook.T_PLAYLISTTRACK);
+    final EntityModel playlistModel = new DefaultEntityModel(Chinook.T_PLAYLIST, connectionProvider);
+    final EntityModel playlistTrackModel = new DefaultEntityModel(Chinook.T_PLAYLISTTRACK, connectionProvider);
+    playlistModel.addDetailModel(playlistTrackModel);
     playlistModel.setLinkedDetailModels(playlistTrackModel);
 
-    final EntityModel customerModel = appModel.getEntityModel(Chinook.T_CUSTOMER);
-    final EntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
-    final EntityModel invoicelineModel = invoiceModel.getDetailModel(Chinook.T_INVOICELINE);
+    final EntityModel customerModel = new DefaultEntityModel(Chinook.T_CUSTOMER, connectionProvider);
+    final EntityModel invoiceModel = new DefaultEntityModel(Chinook.T_INVOICE, connectionProvider);
+    final EntityModel invoicelineModel = new DefaultEntityModel(Chinook.T_INVOICELINE, connectionProvider);
+    customerModel.addDetailModel(invoiceModel);
     customerModel.setLinkedDetailModels(invoiceModel);
+    invoiceModel.addDetailModel(invoicelineModel);
     invoiceModel.setLinkedDetailModels(invoicelineModel);
+
+    appModel.addEntityModels(artistModel, genreModel, playlistModel, customerModel);
 
     return appModel;
   }

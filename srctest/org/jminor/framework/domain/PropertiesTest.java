@@ -61,6 +61,18 @@ public final class PropertiesTest {
   public void timestampPropertyWithNumberFormat() {
     Properties.columnProperty("propertyID", Types.TIMESTAMP).setFormat(NumberFormat.getIntegerInstance());
   }
+  
+  @Test
+  public void foreignKeyPropertyNullable() {
+    final Property.ColumnProperty columnProperty = Properties.columnProperty("propertyID");
+    final Property.ColumnProperty columnProperty2 = Properties.columnProperty("propertyID2");
+    final Property.ForeignKeyProperty foreignKeyProperty= Properties.foreignKeyProperty("fkPropertyID", "fk", "referenceEntityID",
+            new Property.ColumnProperty[] {columnProperty, columnProperty2}, new String[] {"", ""});
+    foreignKeyProperty.setNullable(false);
+    assertFalse(columnProperty.isNullable());
+    assertFalse(columnProperty2.isNullable());
+    assertFalse(foreignKeyProperty.isNullable());
+  }
 
   @Test
   public void foreignKeyPropertyUpdatable() {

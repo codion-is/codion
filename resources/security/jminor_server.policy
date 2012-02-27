@@ -8,7 +8,7 @@ grant {
 
   //Web Start server port
   permission java.net.SocketPermission "*:80", "listen";
-  permission java.net.SocketPermission "*:80-", "connect";
+  permission java.net.SocketPermission "*:80-", "connect,listen,resolve";
   //Database port
   permission java.net.SocketPermission "*:3306", "connect";
   //Client service port
@@ -31,4 +31,6 @@ grant {
   permission java.lang.RuntimePermission "accessClassInPackage.sun.rmi.registry";
   permission java.lang.RuntimePermission "accessClassInPackage.sun.rmi.server";
   permission java.lang.RuntimePermission "accessClassInPackage.sun.rmi.transport.tcp";
+  permission java.lang.RuntimePermission "accessClassInPackage.sun.net.www.protocol.http";
+  permission java.lang.RuntimePermission "accessClassInPackage.sun.net.www.http";
 };

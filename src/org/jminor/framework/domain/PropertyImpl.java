@@ -647,26 +647,6 @@ class PropertyImpl implements Property, Serializable {
 
     /** {@inheritDoc} */
     @Override
-    public final Property setNullable(final boolean nullable) {
-      if (isForeignKeyProperty()) {
-        throw new IllegalStateException("Set the nullable status of the parent property instead: " + foreignKeyProperty);
-      }
-
-      return super.setNullable(nullable);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final boolean isNullable() {
-      if (isForeignKeyProperty()) {
-        return foreignKeyProperty.isNullable();
-      }
-
-      return super.isNullable();
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public final String getCaption() {
       final String superCaption = super.getCaption();
       if (superCaption == null && isForeignKeyProperty()) {
@@ -771,7 +751,7 @@ class PropertyImpl implements Property, Serializable {
 
     /** {@inheritDoc} */
     @Override
-    public boolean isUpdatable() {
+    public final boolean isUpdatable() {
       for (final ColumnProperty referenceProperty : referenceProperties) {
         if (!referenceProperty.isUpdatable()) {
           return false;
@@ -779,6 +759,16 @@ class PropertyImpl implements Property, Serializable {
       }
 
       return true;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final ForeignKeyProperty setNullable(final boolean nullable) {
+      for (final ColumnProperty columnProperty : referenceProperties) {
+        columnProperty.setNullable(nullable);
+      }
+
+      return (ForeignKeyProperty) super.setNullable(nullable);
     }
 
     /** {@inheritDoc} */

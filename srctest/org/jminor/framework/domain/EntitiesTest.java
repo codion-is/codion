@@ -4,6 +4,9 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.formats.DateFormats;
+import org.jminor.common.model.valuemap.ValueMapValidator;
+import org.jminor.common.model.valuemap.exception.NullValidationException;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
@@ -26,6 +29,36 @@ public class EntitiesTest {
       fail("Should not be able to re-define an entity");
     }
     catch (Exception e) {}
+  }
+  
+  @Test
+  public void nullValidation() {
+    Chinook.init();
+    final Entity invoiceLine = Entities.entity(Chinook.T_INVOICELINE);
+    invoiceLine.setValue(Chinook.INVOICELINE_INVOICELINEID, 1);
+    invoiceLine.setValue(Chinook.INVOICELINE_QUANTITY, 1);
+    invoiceLine.setValue(Chinook.INVOICELINE_UNITPRICE, 1.0);
+    invoiceLine.setValue(Chinook.INVOICELINE_TRACKID, 1);
+    
+    final Entities.Validator validator = new Entities.Validator(Chinook.T_INVOICELINE);
+    try {
+      validator.validate(invoiceLine, ValueMapValidator.UNKNOWN);
+      fail();
+    }
+    catch (ValidationException e) {
+      assertTrue(e instanceof NullValidationException);
+      assertEquals(Chinook.INVOICELINE_INVOICEID_FK, e.getKey());
+    }
+    invoiceLine.setValue(Chinook.INVOICELINE_UNITPRICE, null);
+    invoiceLine.setValue(Chinook.INVOICELINE_INVOICEID, 1);
+    try {
+      validator.validate(invoiceLine, ValueMapValidator.UNKNOWN);
+      fail();
+    }
+    catch (ValidationException e) {
+      assertTrue(e instanceof NullValidationException);
+      assertEquals(Chinook.INVOICELINE_UNITPRICE, e.getKey());
+    }
   }
 
   @Test

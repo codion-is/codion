@@ -2918,3 +2918,6 @@
   UiUtil.selectFile() and selectDirectory() use the above
   UiUtil.selectDirectory() overloaded with dialogTitle parameter
   Messages_is_IS.properties UTF-8 encoding fixed
+  ChinookLoadTest bugs fixed, relied on automatic model creation
+  Entities.Validator skips ForeignKeyProperty's when performing null validation instead of skipping the component properties
+  ForeignKeyPropertyImpl.setNullable() now sets the nullability of it's component properties
