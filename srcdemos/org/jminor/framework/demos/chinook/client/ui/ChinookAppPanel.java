@@ -32,7 +32,6 @@ import org.jminor.framework.demos.chinook.beans.ui.MediaTypeEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.PlaylistEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.PlaylistTrackEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.TrackEditPanel;
-import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entities;
 
 import javax.swing.JTable;
@@ -68,7 +67,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     final EntityPanelProvider playlistTrackProvider = new EntityPanelProvider(T_PLAYLISTTRACK);
     playlistTrackProvider.setEditPanelClass(PlaylistTrackEditPanel.class);
 
-    final EntityPanelProvider playlistProvider = new EntityPanelProvider(Chinook.T_PLAYLIST);
+    final EntityPanelProvider playlistProvider = new EntityPanelProvider(T_PLAYLIST);
     playlistProvider.setEditPanelClass(PlaylistEditPanel.class);
     playlistProvider.addDetailPanelProvider(playlistTrackProvider);
     playlistProvider.setDetailSplitPanelResizeWeight(0.3);
@@ -94,7 +93,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
         tablePanel.setIncludeSearchPanel(false);
         tablePanel.getJTable().setAutoResizeMode(JTable.AUTO_RESIZE_ALL_COLUMNS);
         tablePanel.setPreferredSize(new Dimension(360, 40));
-        tablePanel.getTableModel().setColumnVisible(Entities.getProperty(Chinook.T_INVOICELINE, Chinook.INVOICELINE_INVOICEID_FK), false);
+        tablePanel.getTableModel().setColumnVisible(Entities.getProperty(T_INVOICELINE, INVOICELINE_INVOICEID_FK), false);
       }
     };
     invoiceLineProvider.setEditPanelClass(InvoiceLineEditPanel.class);
@@ -104,9 +103,9 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
       @Override
       protected void configurePanel(final EntityPanel panel) {
         panel.setIncludeDetailPanelTabPane(false);
-        final EntityPanel invoiceLinePanel = panel.getDetailPanel(Chinook.T_INVOICELINE);
+        final EntityPanel invoiceLinePanel = panel.getDetailPanel(T_INVOICELINE);
         invoiceLinePanel.initializePanel();
-        panel.getModel().setLinkedDetailModels(panel.getModel().getDetailModel(Chinook.T_INVOICELINE));
+        panel.getModel().setLinkedDetailModels(panel.getModel().getDetailModel(T_INVOICELINE));
         ((InvoiceEditPanel) panel.getEditPanel()).setInvoiceLinePanel(invoiceLinePanel);
       }
     };
@@ -164,12 +163,12 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     }
 
     public void updateInvoiceTotals() throws DatabaseException {
-      getConnectionProvider().getConnection().executeProcedure(Chinook.P_UPDATE_TOTALS);
+      getConnectionProvider().getConnection().executeProcedure(P_UPDATE_TOTALS);
     }
 
     @Override
     protected void loadDomainModel() {
-      Chinook.init();
+      init();
     }
   }
 }

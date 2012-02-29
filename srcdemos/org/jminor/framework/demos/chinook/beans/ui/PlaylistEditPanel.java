@@ -5,10 +5,11 @@ package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
-import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLIST_NAME;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
+
+import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLIST_NAME;
 
 public class PlaylistEditPanel extends EntityEditPanel {
 

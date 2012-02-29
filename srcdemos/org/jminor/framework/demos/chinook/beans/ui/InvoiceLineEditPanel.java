@@ -5,14 +5,12 @@ package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
-import org.jminor.framework.demos.chinook.domain.Chinook;
 
 import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 
-import static org.jminor.framework.demos.chinook.domain.Chinook.INVOICELINE_QUANTITY;
-import static org.jminor.framework.demos.chinook.domain.Chinook.INVOICELINE_TRACKID_FK;
+import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public class InvoiceLineEditPanel extends EntityEditPanel {
 
@@ -20,7 +18,7 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
 
   public InvoiceLineEditPanel(final EntityEditModel editModel) {
     super(editModel);
-    editModel.setPersistValueOnClear(Chinook.INVOICELINE_TRACKID_FK, false);
+    editModel.setPersistValueOnClear(INVOICELINE_TRACKID_FK, false);
   }
 
   public void setTableSearchFeld(final JTextField tableSearchField) {

@@ -9,7 +9,6 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.ui.EntityTablePanel;
 import org.jminor.framework.client.ui.reporting.EntityReportUiUtil;
-import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 import org.jminor.framework.plugins.jasperreports.ui.JasperReportsUIWrapper;
@@ -17,6 +16,8 @@ import org.jminor.framework.plugins.jasperreports.ui.JasperReportsUIWrapper;
 import javax.swing.SwingWorker;
 import java.util.Collection;
 import java.util.HashMap;
+
+import static org.jminor.framework.demos.chinook.domain.Chinook.CUSTOMER_CUSTOMERID;
 
 public class CustomerTablePanel extends EntityTablePanel {
 
@@ -31,7 +32,7 @@ public class CustomerTablePanel extends EntityTablePanel {
 
     final String reportPath = Configuration.getReportPath() + "/customer_report.jasper";
     final Collection<Object> customerIDs =
-            EntityUtil.getDistinctPropertyValues(Chinook.CUSTOMER_CUSTOMERID, getEntityTableModel().getSelectedItems());
+            EntityUtil.getDistinctPropertyValues(CUSTOMER_CUSTOMERID, getEntityTableModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
     new SwingWorker() {

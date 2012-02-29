@@ -5,11 +5,12 @@ package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
-import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_PLAYLISTID_FK;
-import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_TRACKID_FK;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
+
+import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_PLAYLISTID_FK;
+import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_TRACKID_FK;
 
 public class PlaylistTrackEditPanel extends EntityEditPanel {
 

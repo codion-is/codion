@@ -2923,3 +2923,5 @@
   ForeignKeyPropertyImpl.setNullable() now sets the nullability of it's component properties
   Demo truststore files no longer added to demos and server monitor jar files during dist, done during deployment instead
   Deployed demo and server monitor jars now contain a logback configuration file, useful when running with webstart
+  minor changes in build.xml
+  Minor chinook demo code cleanup

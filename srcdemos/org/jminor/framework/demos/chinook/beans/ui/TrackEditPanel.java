@@ -8,12 +8,13 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
+
+import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public class TrackEditPanel extends EntityEditPanel {
 

@@ -8,9 +8,10 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 import javax.swing.JTextField;
+
+import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public class EmployeeEditPanel extends EntityEditPanel {
 

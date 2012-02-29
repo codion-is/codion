@@ -6,16 +6,12 @@ package org.jminor.framework.demos.chinook.testing;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.framework.demos.chinook.domain.Chinook;
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 import org.jminor.framework.tools.testing.EntityTestUnit;
 
 import org.junit.Test;
 
-/**
- * User: Björn Darri
- * Date: 18.4.2010
- * Time: 19:32:45
- */
+import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+
 public class ChinookTest extends EntityTestUnit {
 
   @Test

@@ -176,22 +176,22 @@
   <target name="dist" depends="clean, build, manifest"
           description="Builds all distribution jar files in the dist directory">
     <mkdir dir="${dist}"/>
-    <jar jarfile="${dist}/${ant.project.name}.jar" basedir="${build.base}"
+    <jar jarfile="${dist}/jminor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          excludes="org/jminor/framework/demos/**,logback.xml"/>
 
-    <jar jarfile="${dist}/${ant.project.name}-common.jar" basedir="${build.base}"
+    <jar jarfile="${dist}/jminor-common.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/common/**"/>
 
-    <jar jarfile="${dist}/${ant.project.name}-db.jar" basedir="${build.base}"
+    <jar jarfile="${dist}/jminor-db.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
                 org/jminor/framework/db/**,
                 org/jminor/framework/domain/*,
                 org/jminor/framework/i18n/**"/>
 
-    <jar jarfile="${dist}/${ant.project.name}-client.jar" basedir="${build.base}"
+    <jar jarfile="${dist}/jminor-client.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
                 org/jminor/framework/client/**,
@@ -203,7 +203,7 @@
                 org/jminor/framework/server/RemoteEntityConnection.class,
                 org/jminor/framework/server/RemoteEntityConnectionImpl_Stub.class"/>
 
-    <jar jarfile="${dist}/${ant.project.name}-server.jar" basedir="${build.base}"
+    <jar jarfile="${dist}/jminor-server.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
                 org/jminor/framework/db/**,
@@ -212,7 +212,7 @@
                 org/jminor/framework/server/*.class"
          excludes="org/jminor/framework/server/*Stub.class"/>
 
-    <jar jarfile="${dist}/${ant.project.name}-server-monitor.jar" basedir="${build.base}"
+    <jar jarfile="${dist}/jminor-server-monitor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
                 org/jminor/framework/domain/**,
@@ -220,19 +220,19 @@
                 org/jminor/framework/server/EntityConnectionServerAdmin.class,
                 org/jminor/framework/server/EntityConnectionServerAdmin_Stub.class"/>
 
-    <jar jarfile="${dist}/${ant.project.name}-plugins.jar" basedir="${build.plugins}"
+    <jar jarfile="${dist}/jminor-plugins.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
-    <jar jarfile="${dist}/${ant.project.name}-demos.jar" basedir="${build.demos}"
+    <jar jarfile="${dist}/jminor-demos.jar" basedir="${build.demos}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
-    <jar jarfile="${dist}/${ant.project.name}-src.jar" basedir="${src}"
+    <jar jarfile="${dist}/jminor-src.jar" basedir="${src}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="${dist}/${ant.project.name}-src-test.jar" basedir="${srctest}"
+    <jar jarfile="${dist}/jminor-src-test.jar" basedir="${srctest}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="${dist}/${ant.project.name}-src-demos.jar" basedir="${srcdemos}"
+    <jar jarfile="${dist}/jminor-src-demos.jar" basedir="${srcdemos}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="${dist}/${ant.project.name}-api-doc.jar" basedir="${docsapi}"
+    <jar jarfile="${dist}/jminor-api-doc.jar" basedir="${docsapi}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
     <copy file="${basedir}/changelog.txt" todir="${dist}"/>
@@ -281,10 +281,10 @@
 
   <target name="deploy_server" depends="recreate_h2_db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
-    <copy file="${dist}/${ant.project.name}-server.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-server.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-common.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-plugins.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-demos.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.slf4j.api}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.logback.classic}" todir="${deploy.server.path}/lib"/>
     <copy file="${lib.logback.core}" todir="${deploy.server.path}/lib"/>
@@ -314,8 +314,8 @@
   <target name="deploy_server_monitor"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}"/>
-    <copy file="${dist}/${ant.project.name}-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${dist}/jminor-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${dist}/jminor-common.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${lib.slf4j.api}" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${lib.logback.classic}" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${lib.logback.core}" todir="${deploy.server.monitor.path}/lib"/>
@@ -327,7 +327,7 @@
     </copy>
     <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.config.path}"/>
     <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.config.path}"/>
-    <zip file="${deploy.server.monitor.path}/lib/${ant.project.name}-server-monitor.jar" update="true">
+    <zip file="${deploy.server.monitor.path}/lib/jminor-server-monitor.jar" update="true">
       <fileset file="${build.base}/logback.xml"/>
       <fileset file="${deploy.server.monitor.truststore}"/>
     </zip>
@@ -345,8 +345,8 @@
   <target name="deploy_generator"
           description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">
     <mkdir dir="${deploy.generator.path}"/>
-    <copy file="${dist}/${ant.project.name}.jar" todir="${deploy.generator.path}/lib"/>
-    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.generator.path}/lib"/>
+    <copy file="${dist}/jminor.jar" todir="${deploy.generator.path}/lib"/>
+    <copy file="${dist}/jminor-common.jar" todir="${deploy.generator.path}/lib"/>
     <copy file="${lib.h2}" todir="${deploy.generator.path}/lib"/>
     <copy file="${lib.slf4j.api}" todir="${deploy.generator.path}/lib"/>
     <copy file="${lib.logback.classic}" todir="${deploy.generator.path}/lib"/>
@@ -373,10 +373,10 @@
   <target name="deploy_demos" depends="recreate_h2_db, compile_demo_reports"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <mkdir dir="${deploy.demos.dir}"/>
-    <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.demos.lib}"/>
-    <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.demos.lib}"/>
-    <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.demos.lib}"/>
-    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.demos.lib}"/>
+    <copy file="${dist}/jminor-client.jar" todir="${deploy.demos.lib}"/>
+    <copy file="${dist}/jminor-plugins.jar" todir="${deploy.demos.lib}"/>
+    <copy file="${dist}/jminor-demos.jar" todir="${deploy.demos.lib}"/>
+    <copy file="${dist}/jminor-common.jar" todir="${deploy.demos.lib}"/>
     <copy file="${lib.h2}" todir="${deploy.demos.lib}"/>
     <copy file="${lib.json}" todir="${deploy.demos.lib}"/>
     <copy file="${lib.jasperreports.base}" todir="${deploy.demos.lib}"/>
@@ -397,7 +397,7 @@
     <copy file="${deploy.loadtest.policy}" todir="${deploy.demos.config.dir}"/>
     <copy file="${deploy.loadtest.server.policy}" todir="${deploy.demos.config.dir}"/>
     <copy file="${deploy.demos.truststore}" todir="${deploy.demos.config.dir}"/>
-    <zip file="${deploy.demos.lib}/${ant.project.name}-demos.jar" update="true">
+    <zip file="${deploy.demos.lib}/jminor-demos.jar" update="true">
       <fileset file="${build.base}/logback.xml"/>
       <fileset file="${deploy.demos.truststore}"/>
     </zip>
@@ -474,27 +474,27 @@
 
   <target name="deploy_project"
           description="Creates a jminor-project.zip file in the base directory">
-    <delete file="${basedir}/${ant.project.name}-${version}-project.zip"/>
+    <delete file="${basedir}/jminor-${version}-project.zip"/>
     <delete file="${basedir}/derby.log"/>
-    <zip destfile="${basedir}/${ant.project.name}-${version}-project.zip">
+    <zip destfile="${basedir}/jminor-${version}-project.zip">
       <fileset dir="${basedir}"
                excludes="*.ser,*.log,target/**,test/**,dist/deployment/**,classes/**,derbydb/**,h2db/**"/>
     </zip>
   </target>
 
   <target name="deploy" depends="dist" >
-    <copy file="${dist}/${ant.project.name}.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/${ant.project.name}-common.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/${ant.project.name}-db.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/${ant.project.name}-client.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/${ant.project.name}-plugins.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/${ant.project.name}-demos.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/${ant.project.name}-server.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/${ant.project.name}-server-monitor.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/${ant.project.name}-src.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/${ant.project.name}-src-test.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/${ant.project.name}-src-demos.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/${ant.project.name}-api-doc.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/jminor.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/jminor-common.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/jminor-db.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/jminor-client.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/jminor-plugins.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/jminor-demos.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/jminor-server.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/jminor-server-monitor.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/jminor-src.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/jminor-src-test.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/jminor-src-demos.jar" todir="${deploy.path}" overwrite="true"/>
+    <copy file="${dist}/jminor-api-doc.jar" todir="${deploy.path}" overwrite="true"/>
     <copy file="${basedir}/changelog.txt" todir="${deploy.path}" overwrite="true"/>
   </target>
 

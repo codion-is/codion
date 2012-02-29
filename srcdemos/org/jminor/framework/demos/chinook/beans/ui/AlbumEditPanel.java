@@ -5,11 +5,12 @@ package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
-import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_ARTISTID_FK;
-import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_TITLE;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
+
+import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_ARTISTID_FK;
+import static org.jminor.framework.demos.chinook.domain.Chinook.ALBUM_TITLE;
 
 public class AlbumEditPanel extends EntityEditPanel {
 
@@ -20,8 +21,8 @@ public class AlbumEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setInitialFocusComponentKey(ALBUM_ARTISTID_FK);
-    final JTextField txtArtists = createEntityLookupField(ALBUM_ARTISTID_FK);
-    txtArtists.setColumns(18);
+    final JTextField txtArtist = createEntityLookupField(ALBUM_ARTISTID_FK);
+    txtArtist.setColumns(18);
     final JTextField txtTitle = createTextField(ALBUM_TITLE);
     txtTitle.setColumns(18);
 

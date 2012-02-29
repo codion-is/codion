@@ -28,18 +28,20 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 
+import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+
 public final class ChinookLoadTest extends EntityLoadTestModel {
 
   private static final LoadTest.UsageScenario UPDATE_TOTALS = new AbstractEntityUsageScenario("updateTotals") {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel customerModel = application.getEntityModel(Chinook.T_CUSTOMER);
+        final EntityModel customerModel = application.getEntityModel(T_CUSTOMER);
         customerModel.getTableModel().refresh();
         selectRandomRows(customerModel.getTableModel(), RANDOM.nextInt(6) + 2);
-        final EntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
+        final EntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
         selectRandomRows(invoiceModel.getTableModel(), RANDOM.nextInt(6) + 2);
-        final EntityTableModel invoiceLineTableModel = invoiceModel.getDetailModel(Chinook.T_INVOICELINE).getTableModel();
+        final EntityTableModel invoiceLineTableModel = invoiceModel.getDetailModel(T_INVOICELINE).getTableModel();
         final List<Entity> invoiceLines = invoiceLineTableModel.getAllItems();
         EntityUtil.setPropertyValue(Chinook.INVOICELINE_QUANTITY, RANDOM.nextInt(4) + 1, invoiceLines);
 
@@ -62,10 +64,10 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel genreModel = application.getEntityModel(Chinook.T_GENRE);
+        final EntityModel genreModel = application.getEntityModel(T_GENRE);
         genreModel.getTableModel().refresh();
         selectRandomRow(genreModel.getTableModel());
-        final EntityModel trackModel = genreModel.getDetailModel(Chinook.T_TRACK);
+        final EntityModel trackModel = genreModel.getDetailModel(T_TRACK);
         selectRandomRows(trackModel.getTableModel(), 2);
         genreModel.getConnectionProvider().getConnection().selectDependentEntities(trackModel.getTableModel().getSelectedItems());
       }
@@ -84,13 +86,13 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityTableModel customerModel = application.getEntityModel(Chinook.T_CUSTOMER).getTableModel();
+        final EntityTableModel customerModel = application.getEntityModel(T_CUSTOMER).getTableModel();
         customerModel.refresh();
         selectRandomRow(customerModel);
 
         final String reportPath = Configuration.getReportPath() + "/customer_report.jasper";
         final Collection<Object> customerIDs =
-                EntityUtil.getDistinctPropertyValues(Chinook.CUSTOMER_CUSTOMERID, customerModel.getSelectedItems());
+                EntityUtil.getDistinctPropertyValues(CUSTOMER_CUSTOMERID, customerModel.getSelectedItems());
         final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
         reportParameters.put("CUSTOMER_IDS", customerIDs);
         EntityReportUtil.fillReport(new JasperReportsWrapper(reportPath, reportParameters),
@@ -111,10 +113,10 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel customerModel = application.getEntityModel(Chinook.T_CUSTOMER);
+        final EntityModel customerModel = application.getEntityModel(T_CUSTOMER);
         customerModel.getTableModel().refresh();
         selectRandomRow(customerModel.getTableModel());
-        final EntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
+        final EntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
         selectRandomRow(invoiceModel.getTableModel());
       }
       catch (Exception e) {
@@ -132,10 +134,10 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel artistModel = application.getEntityModel(Chinook.T_ARTIST);
+        final EntityModel artistModel = application.getEntityModel(T_ARTIST);
         artistModel.getTableModel().refresh();
         selectRandomRow(artistModel.getTableModel());
-        final EntityModel albumModel = artistModel.getDetailModel(Chinook.T_ALBUM);
+        final EntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
         selectRandomRow(albumModel.getTableModel());
       }
       catch (Exception e) {
@@ -169,27 +171,27 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     *   INVOICE
     *     INVOICELINE
     */
-    final EntityModel artistModel = new DefaultEntityModel(Chinook.T_ARTIST, connectionProvider);
-    final EntityModel albumModel = new DefaultEntityModel(Chinook.T_ALBUM, connectionProvider);
-    final EntityModel trackModel = new DefaultEntityModel(Chinook.T_TRACK, connectionProvider);
+    final EntityModel artistModel = new DefaultEntityModel(T_ARTIST, connectionProvider);
+    final EntityModel albumModel = new DefaultEntityModel(T_ALBUM, connectionProvider);
+    final EntityModel trackModel = new DefaultEntityModel(T_TRACK, connectionProvider);
     artistModel.addDetailModel(albumModel);
     artistModel.setLinkedDetailModels(albumModel);
     albumModel.addDetailModel(trackModel);
     albumModel.setLinkedDetailModels(trackModel);
 
-    final EntityModel genreModel = new DefaultEntityModel(Chinook.T_GENRE, connectionProvider);
-    final EntityModel genreTrackModel = new DefaultEntityModel(Chinook.T_TRACK, connectionProvider);
+    final EntityModel genreModel = new DefaultEntityModel(T_GENRE, connectionProvider);
+    final EntityModel genreTrackModel = new DefaultEntityModel(T_TRACK, connectionProvider);
     genreModel.addDetailModel(genreTrackModel);
     genreModel.setLinkedDetailModels(genreTrackModel);
 
-    final EntityModel playlistModel = new DefaultEntityModel(Chinook.T_PLAYLIST, connectionProvider);
-    final EntityModel playlistTrackModel = new DefaultEntityModel(Chinook.T_PLAYLISTTRACK, connectionProvider);
+    final EntityModel playlistModel = new DefaultEntityModel(T_PLAYLIST, connectionProvider);
+    final EntityModel playlistTrackModel = new DefaultEntityModel(T_PLAYLISTTRACK, connectionProvider);
     playlistModel.addDetailModel(playlistTrackModel);
     playlistModel.setLinkedDetailModels(playlistTrackModel);
 
-    final EntityModel customerModel = new DefaultEntityModel(Chinook.T_CUSTOMER, connectionProvider);
-    final EntityModel invoiceModel = new DefaultEntityModel(Chinook.T_INVOICE, connectionProvider);
-    final EntityModel invoicelineModel = new DefaultEntityModel(Chinook.T_INVOICELINE, connectionProvider);
+    final EntityModel customerModel = new DefaultEntityModel(T_CUSTOMER, connectionProvider);
+    final EntityModel invoiceModel = new DefaultEntityModel(T_INVOICE, connectionProvider);
+    final EntityModel invoicelineModel = new DefaultEntityModel(T_INVOICELINE, connectionProvider);
     customerModel.addDetailModel(invoiceModel);
     customerModel.setLinkedDetailModels(invoiceModel);
     invoiceModel.addDetailModel(invoicelineModel);
