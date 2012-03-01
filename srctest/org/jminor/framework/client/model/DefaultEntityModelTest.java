@@ -7,10 +7,12 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.framework.client.ui.EntityUiUtil;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -18,6 +20,7 @@ import org.jminor.framework.domain.Entity;
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.swing.JComboBox;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
@@ -33,8 +36,26 @@ public final class DefaultEntityModelTest {
 
   public static class EmpModel extends DefaultEntityModel {
     public EmpModel(final EntityConnectionProvider connectionProvider) {
-      super(new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, connectionProvider),
-              new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, connectionProvider));
+      super(new EmployeeEditModel(connectionProvider));
+      getEditModel().initializeEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).refresh();
+      getEditModel().initializeEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
+    }
+  }
+
+  @Test
+  public void isModified() {
+    //here we're basically testing for the entity in the edit model being modified after
+    //being set when selected in the table model, this usually happens when combo box models
+    //are being filtered on property value change, see EmployeeEditModel.bindEvents()
+    final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
+    final EntityEditModel employeeEditModel = employeeModel.getEditModel();
+    final EntityTableModel employeeTableModel = employeeModel.getTableModel();
+    new EntityUiUtil.EntityComboBoxValueLink(new JComboBox(employeeEditModel.getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)),
+            employeeEditModel, Entities.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_MGR_FK));
+    employeeTableModel.refresh();
+    for (final Entity employee : employeeTableModel.getAllItems()) {
+      employeeTableModel.setSelectedItem(employee);
+      assertFalse(employeeEditModel.isModified());
     }
   }
 
@@ -43,7 +64,6 @@ public final class DefaultEntityModelTest {
     assertTrue(departmentModel.containsDetailModel(EmpModel.class));
     final EntityModel employeeModel = departmentModel.getDetailModel(EmpModel.class);
     assertNotNull(employeeModel);
-    departmentModel.setLinkedDetailModels(employeeModel);
     assertTrue(departmentModel.getLinkedDetailModels().contains(employeeModel));
     departmentModel.refresh();
     final EntityEditModel employeeEditModel = employeeModel.getEditModel();
@@ -177,7 +197,6 @@ public final class DefaultEntityModelTest {
     departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
     assertTrue("DepartmentModel should contain Employee detail", departmentModel.containsDetailModel(EmpDept.T_EMPLOYEE));
     assertEquals("Only one detail model should be in DepartmentModel", 1, departmentModel.getDetailModels().size());
-    departmentModel.setLinkedDetailModels(departmentModel.getDetailModels().iterator().next());
     assertTrue(departmentModel.getLinkedDetailModels().size() == 1);
     assertTrue("Employee model should be the linked detail model in DepartmentModel",
             departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE)));
@@ -202,6 +221,7 @@ public final class DefaultEntityModelTest {
     departmentModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     departmentModel.addDetailModel(employeeModel);
+    departmentModel.setLinkedDetailModels(employeeModel);
     employeeModel.getTableModel().setQueryCriteriaRequired(false);
   }
 

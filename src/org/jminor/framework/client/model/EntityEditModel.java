@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
@@ -20,7 +21,12 @@ import java.util.List;
 /**
  * Specifies a class for editing {@link Entity} instances.
  */
-public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>, EntityDataProvider {
+public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>, Refreshable, EntityDataProvider {
+
+  /**
+   * @return a value map containing the default values
+   */
+  Entity getDefaultEntity();
 
   /**
    * Copies the values from the given {@link Entity} into the underlying
@@ -391,6 +397,16 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   StateObserver getAllowInsertObserver();
 
   /**
+   * @param listener a listener notified each time the entity is set
+   */
+  void addEntitySetListener(final ActionListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeEntitySetListener(final ActionListener listener);
+
+  /**
    * @param listener a listener to be notified before an insert is performed
    */
   void addBeforeInsertListener(final ActionListener listener);
@@ -480,15 +496,4 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @param listener a listener to remove
    */
   void removeEntitiesChangedListener(final ActionListener listener);
-
-  /**
-   * @see #setEntity(org.jminor.framework.domain.Entity)
-   * @param listener a listener notified each time the entity instance is set
-   */
-  void addEntityListener(final ActionListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeEntityListener(final ActionListener listener);
 }

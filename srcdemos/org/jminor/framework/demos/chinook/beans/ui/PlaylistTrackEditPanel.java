@@ -20,7 +20,7 @@ public class PlaylistTrackEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusComponentKey(PLAYLISTTRACK_PLAYLISTID_FK);
+    setInitialFocusProperty(PLAYLISTTRACK_PLAYLISTID_FK);
     createEntityComboBox(PLAYLISTTRACK_PLAYLISTID_FK);
     final JTextField txtTrack = createEntityLookupField(PLAYLISTTRACK_TRACKID_FK);
     txtTrack.setColumns(30);

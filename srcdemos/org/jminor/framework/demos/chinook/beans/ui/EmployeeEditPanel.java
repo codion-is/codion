@@ -21,7 +21,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusComponentKey(EMPLOYEE_FIRSTNAME);
+    setInitialFocusProperty(EMPLOYEE_FIRSTNAME);
     final JTextField txtFirstName = createTextField(EMPLOYEE_FIRSTNAME);
     txtFirstName.setColumns(16);
     final JTextField txtLastName = createTextField(EMPLOYEE_LASTNAME);

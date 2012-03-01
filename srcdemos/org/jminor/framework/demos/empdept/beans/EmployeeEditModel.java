@@ -34,6 +34,7 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
     if (foreignKeyProperty.is(EMPLOYEE_MGR_FK)) {
       final EntityComboBoxModel managerModel = new DefaultEntityComboBoxModel(T_EMPLOYEE, getConnectionProvider());
       managerModel.setNullValueString(getString(NONE));
+      managerModel.setFilterSelectedItem(false);
       //Only show the president and managers
       managerModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(T_EMPLOYEE, EMPLOYEE_JOB,
               SearchType.LIKE, "MANAGER", "PRESIDENT"));

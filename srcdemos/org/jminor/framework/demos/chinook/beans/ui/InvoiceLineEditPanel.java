@@ -27,7 +27,7 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusComponentKey(INVOICELINE_TRACKID_FK);
+    setInitialFocusProperty(INVOICELINE_TRACKID_FK);
     final JTextField txtTrack = createEntityLookupField(INVOICELINE_TRACKID_FK);
     txtTrack.setColumns(25);
     final JTextField txtQuantity = createTextField(INVOICELINE_QUANTITY);

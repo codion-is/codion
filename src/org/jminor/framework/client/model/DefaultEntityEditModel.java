@@ -12,10 +12,10 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.common.model.valuemap.AbstractValueChangeMapEditModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
+import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.event.DeleteEvent;
@@ -54,7 +54,7 @@ import java.util.Map;
  * EntityEditPanel panel = new EntityEditPanel(editModel);
  * </pre>
  */
-public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<String, Object> implements EntityEditModel {
+public class DefaultEntityEditModel implements EntityEditModel {
 
   protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityEditModel.class);
 
@@ -105,6 +105,38 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   private final Map<String, Boolean> persistingValues = new HashMap<String, Boolean>();
 
   /**
+   * The entity instance edited by this edit model.
+   */
+  private final Entity entity;
+
+  /**
+   * Fired when the active entity is set.
+   * @see #setEntity(org.jminor.framework.domain.Entity)
+   */
+  private final Event evtEntitySet = Events.event();
+
+  /**
+   * Holds events signaling value changes made via the ui
+   */
+  private final Map<String, Event> valueSetEventMap = new HashMap<String, Event>();
+
+  /**
+   * Holds events signaling value changes made via the model or ui
+   */
+  private final Map<String, Event> valueChangeEventMap = new HashMap<String, Event>();
+
+  /**
+   * The validator used by this edit model
+   */
+  private final Entity.Validator validator;
+
+  /**
+   * A state indicating whether or not the entity being edited is in a valid state
+   * according the the validator
+   */
+  private final State stValid = States.state();
+
+  /**
    * Holds the read only status of this edit model
    */
   private boolean readOnly;
@@ -125,10 +157,12 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @param validator the validator to use
    */
   public DefaultEntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider, final Entity.Validator validator) {
-    super(Entities.entity(entityID), validator);
+    Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(connectionProvider, "connectionProvider");
     this.entityID = entityID;
+    this.entity = Entities.entity(entityID);
     this.connectionProvider = connectionProvider;
+    this.validator = validator;
     this.readOnly = Entities.isReadOnly(entityID);
     setEntity(null);
     bindEventsInternal();
@@ -228,6 +262,29 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
   /** {@inheritDoc} */
   @Override
+  public final EventObserver getValueChangeObserver(final String propertyID) {
+    Util.rejectNullValue(propertyID, "propertyID");
+    if (!valueChangeEventMap.containsKey(propertyID)) {
+      valueChangeEventMap.put(propertyID, Events.event());
+    }
+
+    return valueChangeEventMap.get(propertyID).getObserver();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final StateObserver getModifiedObserver() {
+    return entity.getModifiedState();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final StateObserver getValidObserver() {
+    return stValid.getObserver();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final StateObserver getAllowDeleteObserver() {
     return stAllowDelete.getObserver();
   }
@@ -241,7 +298,8 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   /** {@inheritDoc} */
   @Override
   public final void setEntity(final Entity entity) {
-    setValueMap(entity);
+    this.entity.setAs(entity == null ? getDefaultEntity() : entity);
+    evtEntitySet.fire();
   }
 
   /** {@inheritDoc} */
@@ -301,9 +359,76 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
   /** {@inheritDoc} */
   @Override
+  public final Entity.Validator getValidator() {
+    return validator;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isNullable(final String propertyID) {
+    return validator.isNullable(entity, propertyID);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void validate(final String propertyID, final int action) throws ValidationException {
+    validator.validate(entity, propertyID, action);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Object getValue(final String propertyID) {
+    return entity.getValue(propertyID);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setValue(final String propertyID, final Object value) {
+    Util.rejectNullValue(propertyID, "propertyID");
+    final boolean initialization = !entity.containsValue(propertyID);
+    final Object oldValue = entity.getValue(propertyID);
+    entity.setValue(propertyID, prepareNewValue(propertyID, value));
+    if (!Util.equal(value, oldValue)) {
+      notifyValueSet(propertyID, new ValueChangeEvent<String, Object>(this, entity, propertyID, value, oldValue, false, initialization));
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isValueNull(final String propertyID) {
+    return entity.isValueNull(propertyID);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isValid(final String propertyID, final int action) {
+    Util.rejectNullValue(propertyID, "propertyID");
+    try {
+      validator.validate(entity, propertyID, action);
+      return true;
+    }
+    catch (ValidationException e) {
+      return false;
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isModified() {
+    return getModifiedObserver().isActive();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isValid() {
+    return getValidObserver().isActive();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean isEntityNew() {
-    final Entity.Key key = ((Entity) getValueMap()).getPrimaryKey();
-    final Entity.Key originalKey = ((Entity) getValueMap()).getOriginalPrimaryKey();
+    final Entity.Key key = entity.getPrimaryKey();
+    final Entity.Key originalKey = entity.getOriginalPrimaryKey();
     return key.isNull() || originalKey.isNull();
   }
 
@@ -313,7 +438,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     final boolean includePrimaryKeyValues = !Entities.isPrimaryKeyAutoGenerated(entityID);
     final List<Entity.Key> insertedPrimaryKeys = insert(Arrays.asList(getEntityCopy(includePrimaryKeyValues)));
     final Entity.Key primaryKey = insertedPrimaryKeys.get(0);
-    final Entity entity = (Entity) getValueMap();
     for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKey.getProperties()) {
       entity.setValue(primaryKeyProperty, primaryKey.getValue(primaryKeyProperty.getPropertyID()));
       entity.saveValue(primaryKeyProperty.getPropertyID());
@@ -339,7 +463,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     LOG.debug("{} - insert {}", this, Util.getCollectionContentsAsString(entities, false));
 
     evtBeforeInsert.fire();
-    ((Entity.Validator) getValidator()).validate(entities, Entity.Validator.INSERT);
+    validator.validate(entities, Entity.Validator.INSERT);
 
     final List<Entity.Key> primaryKeys = doInsert(entities);
     evtAfterInsert.fire(new InsertEvent(this, primaryKeys));
@@ -375,7 +499,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     }
 
     evtBeforeUpdate.fire();
-    ((Entity.Validator) getValidator()).validate(modifiedEntities, Entity.Validator.UPDATE);
+    validator.validate(modifiedEntities, Entity.Validator.UPDATE);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
     final int index = updatedEntities.indexOf(getEntity());
@@ -604,7 +728,7 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
 
   /** {@inheritDoc} */
   @Override
-  public final Entity getDefaultValueMap() {
+  public final Entity getDefaultEntity() {
     final Entity defaultEntity = Entities.entity(entityID);
     final Collection<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID);
     for (final Property.ColumnProperty property : columnProperties) {
@@ -624,6 +748,42 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
   @Override
   public final ValueCollectionProvider<Object> getValueProvider(final Property property) {
     return new PropertyValueProvider(connectionProvider, entityID, property.getPropertyID());
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void removeValueSetListener(final String propertyID, final ActionListener listener) {
+    getValueSetEvent(propertyID).removeListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void addValueSetListener(final String propertyID, final ActionListener listener) {
+    getValueSetEvent(propertyID).addListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void removeValueListener(final String propertyID, final ActionListener listener) {
+    getValueChangeEvent(propertyID).removeListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void addValueListener(final String propertyID, final ActionListener listener) {
+    getValueChangeObserver(propertyID).addListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void removeEntitySetListener(final ActionListener listener) {
+    evtEntitySet.removeListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void addEntitySetListener(final ActionListener listener) {
+    evtEntitySet.addListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -734,18 +894,6 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
     evtRefreshDone.removeListener(listener);
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void addEntityListener(final ActionListener listener) {
-    addValueMapSetListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void removeEntityListener(final ActionListener listener) {
-    removeValueMapSetListener(listener);
-  }
-
   /**
    * Inserts the given entities into the database
    * @param entities the entities to insert
@@ -779,14 +927,60 @@ public class DefaultEntityEditModel extends AbstractValueChangeMapEditModel<Stri
    * @return the actual {@link Entity} instance being edited
    */
   protected final Entity getEntity() {
-    return (Entity) getValueMap();
+    return entity;
+  }
+
+  /**
+   * Provides a hook into the value setting mechanism, override to
+   * translate or otherwise manipulate the value being set
+   * @param propertyID the propertyID
+   * @param value the value
+   * @return the prepared value
+   */
+  protected Object prepareNewValue(final String propertyID, final Object value) {
+    return value;
+  }
+
+  /**
+   * Notifies that the value associated with the given propertyID has changed using the given event
+   * @param propertyID the propertyID
+   * @param event the event describing the value change
+   */
+  private void notifyValueSet(final String propertyID, final ValueChangeEvent event) {
+    getValueSetEvent(propertyID).fire(event);
+  }
+
+  private Event getValueSetEvent(final String propertyID) {
+    if (!valueSetEventMap.containsKey(propertyID)) {
+      valueSetEventMap.put(propertyID, Events.event());
+    }
+
+    return valueSetEventMap.get(propertyID);
+  }
+
+  private Event getValueChangeEvent(final String propertyID) {
+    if (!valueChangeEventMap.containsKey(propertyID)) {
+      valueChangeEventMap.put(propertyID, Events.event());
+    }
+
+    return valueChangeEventMap.get(propertyID);
   }
 
   private void bindEventsInternal() {
     evtAfterDelete.addListener(evtEntitiesChanged);
     evtAfterInsert.addListener(evtEntitiesChanged);
     evtAfterUpdate.addListener(evtEntitiesChanged);
-    addValueMapSetListener(new ActionListener() {
+    entity.addValueListener(new ValueChangeListener<String, Object>() {
+      @Override
+      protected void valueChanged(final ValueChangeEvent<String, Object> event) {
+        final Event valueChangeEvent = valueChangeEventMap.get(event.getKey());
+        if (valueChangeEvent != null) {
+          valueChangeEvent.fire(event);
+        }
+        stValid.setActive(validator.isValid(entity, ValueMapValidator.UNKNOWN));
+      }
+    });
+    addEntitySetListener(new ActionListener() {
       /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {

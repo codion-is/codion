@@ -123,7 +123,7 @@ public class EmpDeptMinimalApp {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusComponentKey("dname");
+      setInitialFocusProperty("dname");
 
       createTextField("dname");
       createTextField("loc");
@@ -146,7 +146,7 @@ public class EmpDeptMinimalApp {
 
     @Override
     protected void initializeUI() {
-      setInitialFocusComponentKey("ename");
+      setInitialFocusProperty("ename");
 
       createTextField("ename");
       createEntityComboBox("dept_fk");

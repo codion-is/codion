@@ -19,7 +19,7 @@ public class GenreEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusComponentKey(GENRE_NAME);
+    setInitialFocusProperty(GENRE_NAME);
     final JTextField txtName = createTextField(GENRE_NAME);
     txtName.setColumns(12);
 

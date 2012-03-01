@@ -583,7 +583,7 @@ public class DefaultEntityModel implements EntityModel {
       tableModel.addSelectionChangedListener(initializer);
     }
     else {
-      editModel.addValueMapSetListener(initializer);
+      editModel.addEntitySetListener(initializer);
     }
   }
 }

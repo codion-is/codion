@@ -24,7 +24,7 @@ public class TrackEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusComponentKey(TRACK_ALBUMID_FK);
+    setInitialFocusProperty(TRACK_ALBUMID_FK);
     final JTextField txtAlbum = createEntityLookupField(TRACK_ALBUMID_FK);
     txtAlbum.setColumns(18);
     final JTextField txtName = createTextField(TRACK_NAME);

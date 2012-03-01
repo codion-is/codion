@@ -19,7 +19,7 @@ public class ArtistEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusComponentKey(ARTIST_NAME);
+    setInitialFocusProperty(ARTIST_NAME);
     final JTextField txtName = createTextField(ARTIST_NAME);
     txtName.setColumns(18);
 

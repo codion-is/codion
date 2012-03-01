@@ -19,7 +19,7 @@ public class PlaylistEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    setInitialFocusComponentKey(PLAYLIST_NAME);
+    setInitialFocusProperty(PLAYLIST_NAME);
     final JTextField txtName = createTextField(PLAYLIST_NAME);
     txtName.setColumns(12);
 

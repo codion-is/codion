@@ -118,7 +118,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
         final Map<String, Entity> references = new HashMap<String, Entity>();
         references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectedItem());
-        employeeModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, references));
+        employeeModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, references));
         employeeModel.getEditModel().insert();
       }
       catch (Exception e) {
@@ -136,7 +136,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
         final EntityModel departmentModel = application.getEntityModel(EmpDept.T_DEPARTMENT);
-        departmentModel.getEditModel().setValueMap(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
+        departmentModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_DEPARTMENT, null));
         departmentModel.getEditModel().insert();
       }
       catch (Exception e) {

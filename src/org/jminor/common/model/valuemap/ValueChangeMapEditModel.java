@@ -4,7 +4,6 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
@@ -15,7 +14,7 @@ import java.awt.event.ActionListener;
  * @param <K> the type of the value map keys
  * @param <V> the type of the value map values
  */
-public interface ValueChangeMapEditModel<K, V> extends Refreshable {
+public interface ValueChangeMapEditModel<K, V> {
 
   /**
    * @return a StateObserver indicating if any values in this value map have been modified
@@ -43,16 +42,6 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
   void removeValueSetListener(final K key, final ActionListener listener);
 
   /**
-   * @param listener a listener notified each time the value map is set
-   */
-  void addValueMapSetListener(final ActionListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeValueMapSetListener(final ActionListener listener);
-
-  /**
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of <code>key</code> changes
    */
@@ -74,14 +63,6 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * @return the validatorAFTM
    */
   ValueMapValidator<K, V> getValidator();
-
-  /**
-   * Sets the active value map, that is, deep copies the value from the source map into the underlying map
-   * @param valueMap the map to set as active, if null then the default map value is set as active
-   * @see #getDefaultValueMap()
-   * @see #addValueMapSetListener(java.awt.event.ActionListener)
-   */
-  void setValueMap(final ValueChangeMap<K, V> valueMap);
 
   /**
    * @param key the key
@@ -108,11 +89,6 @@ public interface ValueChangeMapEditModel<K, V> extends Refreshable {
    * @return the value associated with the given key
    */
   V getValue(final K key);
-
-  /**
-   * @return a value map containing the default values
-   */
-  ValueChangeMap<K, V> getDefaultValueMap();
 
   /**
    * Checks if the value associated with the give key is valid, throws a ValidationException if not

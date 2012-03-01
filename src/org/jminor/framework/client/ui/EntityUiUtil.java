@@ -715,7 +715,6 @@ public final class EntityUiUtil {
     return createPropertyComboBox(property, editModel, refreshEvent, enabledState, nullValue, false);
   }
 
-
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
                                                        final EventObserver refreshEvent, final StateObserver enabledState,
                                                        final String nullValue, final boolean editable) {
