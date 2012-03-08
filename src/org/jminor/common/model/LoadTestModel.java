@@ -13,7 +13,6 @@ import org.slf4j.LoggerFactory;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -786,7 +785,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     @Override
     public List<ScenarioException> getExceptions() {
       synchronized (exceptions) {
-        return Collections.unmodifiableList(exceptions);
+        return new ArrayList<ScenarioException>(exceptions);
       }
     }
 

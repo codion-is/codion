@@ -2932,3 +2932,4 @@
   ValueChangeMapEditModel, some methods moved down to EntityEditModel
   EntityConnectionProvider.getHostName() added, tested
   Moved user specific targets from build.xml to user_build.xml and associated properties from build.properties to user.properties
+  LoadTestModel.getExceptions() now returns a copy of the exceptions list, to prevent a ConcurrentModificationException in LoadTestPanel$RefreshExceptionsAction
