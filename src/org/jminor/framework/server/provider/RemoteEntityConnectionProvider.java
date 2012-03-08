@@ -51,7 +51,9 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     Configuration.resolveTruststoreProperty(clientTypeID);
   }
 
-  /** {@inheritDoc} */
+  /**
+   * @return if no server connection has been established, 'serverHostName -
+   */
   @Override
   public String getDescription() {
     try {
@@ -64,6 +66,12 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     catch (RemoteException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getHostName() {
+    return serverHostName;
   }
 
   /** {@inheritDoc} */

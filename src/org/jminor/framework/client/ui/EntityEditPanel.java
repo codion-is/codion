@@ -82,8 +82,14 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   private final EntityEditModel editModel;
 
+  /**
+   * Input components mapped to their respective propertyIDs
+   */
   private final Map<String, JComponent> components = new HashMap<String, JComponent>();
 
+  /**
+   * Controls mapped to their respective control codes
+   */
   private final Map<String, Control> controlMap = new HashMap<String, Control>();
 
   /**
@@ -97,12 +103,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   private static final State.StateGroup ACTIVE_STATE_GROUP = States.stateGroup();
 
   /**
-   * The component that should receive focus when the UI is prepared for a new record
+   * The component that should receive focus when the UI is prepared
    */
   private JComponent initialFocusComponent;
 
   /**
-   * The propertyID for which component should receive the focus when the UI is prepared for a new record
+   * The propertyID for which component should receive the focus when the UI is prepared
    */
   private String initialFocusPropertyID;
 
@@ -213,7 +219,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * Defines the component associated with the given propertyID as the component
    * that should receive the initial focus in this edit panel.
    * This is overridden by setInitialFocusComponent().
-   * @param propertyID the component key
+   * @param propertyID the component propertyID
    * @see #setInitialFocusComponent(javax.swing.JComponent)
    */
   public final void setInitialFocusProperty(final String propertyID) {

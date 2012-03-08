@@ -25,6 +25,11 @@ public interface EntityConnectionProvider {
   String getDescription();
 
   /**
+   * @return the name of the host providing the connection
+   */
+  String getHostName();
+
+  /**
    * @return true if a connection has been established
    */
   boolean isConnected();

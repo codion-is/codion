@@ -4,6 +4,7 @@
 package org.jminor.framework.server.provider;
 
 import org.jminor.common.model.User;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.server.EntityConnectionServerTest;
 
@@ -13,6 +14,7 @@ import org.junit.Test;
 
 import java.util.UUID;
 
+import static junit.framework.Assert.assertEquals;
 import static junit.framework.Assert.assertFalse;
 import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
@@ -37,6 +39,9 @@ public class RemoteEntityConnectionProviderTest {
   @Test
   public void test() throws Exception {
     final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider(User.UNIT_TEST_USER, UUID.randomUUID(), "TestClient");
+    
+    assertEquals(Configuration.getStringValue(Configuration.SERVER_HOST_NAME), provider.getHostName());
+    
     final EntityConnection db = provider.getConnection();
     assertNotNull(db);
     assertTrue(db.isConnected());

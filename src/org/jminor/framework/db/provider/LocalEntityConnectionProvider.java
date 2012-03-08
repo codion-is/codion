@@ -50,7 +50,9 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     this.connectionProperties.put(Database.PASSWORD_PROPERTY, user.getPassword());
   }
 
-  /** {@inheritDoc} */
+  /**
+   * @return the service identifier (sid) of the underlying database or the hostname no sid is available
+   */
   @Override
   public String getDescription() {
     final String sid = database.getSid();
@@ -63,10 +65,16 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /** {@inheritDoc} */
   @Override
+  public String getHostName() {
+    return database.getHost();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public void disconnect() {
     if (getConnectionInternal() != null && getConnectionInternal().isValid()) {
       getConnectionInternal().disconnect();
-      if (getConnectionInternal().getPoolableConnection().getDatabase().isEmbedded()) {
+      if (getConnectionInternal().getPoolableConnection().getDatabase().isEmbedded()) {//todo is this proper?
         getConnectionInternal().getPoolableConnection().getDatabase().shutdownEmbedded(connectionProperties);
       }
       setConnection(null);

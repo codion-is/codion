@@ -2930,3 +2930,4 @@
   EntityEditPanel.get/setInitialFocusComponentKey() renamed to get/setInitialFocusProperty()
   AbstractValueChangeMapEditModel removed, functionality moved to DefaultEntityEditModel
   ValueChangeMapEditModel, some methods moved down to EntityEditModel
+  EntityConnectionProvider.getHostName() added, tested

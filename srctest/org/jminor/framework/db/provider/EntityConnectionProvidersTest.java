@@ -6,9 +6,10 @@ package org.jminor.framework.db.provider;
 import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 
-import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * User: Björn Darri

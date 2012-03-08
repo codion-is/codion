@@ -8,6 +8,8 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
+import org.jminor.common.model.valuemap.ValueChangeEvent;
+import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
@@ -32,6 +34,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Date;
 import java.util.List;
 
@@ -441,115 +444,85 @@ public final class DefaultEntityEditModelTest {
     assertNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_MGR_FK));
   }
 
-  /*todo work this in somehow
-  private final ValueChangeMap<String, Integer> valueMap = new ValueChangeMapImpl<String, Integer>();
-  private final AbstractValueChangeMapEditModel<String, Integer> model =
-          new AbstractValueChangeMapEditModel<String, Integer>(valueMap, new DefaultValueMapValidator<String, Integer>() {
-            @Override
-            public boolean isNullable(final ValueMap<String, Integer> valueMap, final String key) {
-              return super.isNullable(valueMap, key) && false;
-            }
-
-            @Override
-            public void validate(final ValueMap<String, Integer> valueMap, final String key, final int action) throws ValidationException {
-              super.validate(valueMap, key, action);
-              final Object value = valueMap.getValue(key);
-              if (value.equals(-1)) {
-                throw new ValidationException(key, -1, "nono");
-              }
-            }
-          }) {
-            @Override
-            public ValueChangeMap<String, Integer> getDefaultValueMap() {
-              return new ValueChangeMapImpl<String, Integer>();
-            }
-          };
-
-  private final Collection<Object> valueChangeCounter = new ArrayList<Object>();
-  private final Collection<Object> valueSetCounter = new ArrayList<Object>();
-  private final Collection<Object> valueMapSetCounter = new ArrayList<Object>();
-
-  private final ValueChangeListener valueChangeListener = new ValueChangeListener() {
-    @Override
-    protected void valueChanged(final ValueChangeEvent event) {
-      valueChangeCounter.add(new Object());
-    }
-  };
-  private final ActionListener valueSetListener = new ActionListener() {
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      valueSetCounter.add(new Object());
-    }
-  };
-  private final ActionListener valueMapSetListener = new ActionListener() {
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      valueMapSetCounter.add(new Object());
-    }
-  };
-
   @Test
-  public void test() throws Exception {
-    final String key = "key";
-    model.addValueListener(key, valueChangeListener);
-    model.addValueSetListener(key, valueSetListener);
-    model.addValueMapSetListener(valueMapSetListener);
+  public void testListeners() throws Exception {
+    final Collection<Object> valueChangeCounter = new ArrayList<Object>();
+    final Collection<Object> valueSetCounter = new ArrayList<Object>();
+    final Collection<Object> valueMapSetCounter = new ArrayList<Object>();
 
-    model.setValue(key, 1);
+    final ValueChangeListener valueChangeListener = new ValueChangeListener() {
+      @Override
+      protected void valueChanged(final ValueChangeEvent event) {
+        valueChangeCounter.add(new Object());
+      }
+    };
+    final ActionListener valueSetListener = new ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        valueSetCounter.add(new Object());
+      }
+    };
+    final ActionListener valueMapSetListener = new ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        valueMapSetCounter.add(new Object());
+      }
+    };
+
+    final DefaultEntityEditModel model = new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
+
+    model.addValueListener(EmpDept.DEPARTMENT_ID, valueChangeListener);
+    model.addValueSetListener(EmpDept.DEPARTMENT_ID, valueSetListener);
+    model.addEntitySetListener(valueMapSetListener);
+
+    model.setValue(EmpDept.DEPARTMENT_ID, 1);
     assertTrue(valueSetCounter.size() == 1);
     assertTrue(valueChangeCounter.size() == 1);
 
-    model.setValue(key, 1);
+    model.setValue(EmpDept.DEPARTMENT_ID, 1);
     assertTrue(valueSetCounter.size() == 1);
     assertTrue(valueChangeCounter.size() == 1);
 
-    assertFalse(model.isNullable(key));
-    assertTrue(!model.isValueNull(key));
-    assertEquals(Integer.valueOf(1), valueMap.getValue(key));
-    assertEquals(Integer.valueOf(1), model.getValue(key));
+    assertFalse(model.isNullable(EmpDept.DEPARTMENT_ID));
+    assertTrue(!model.isValueNull(EmpDept.DEPARTMENT_ID));
+    assertEquals(1, model.getValue(EmpDept.DEPARTMENT_ID));
 
-    model.setValue(key, null);
+    model.setValue(EmpDept.DEPARTMENT_ID, null);
     assertTrue(valueSetCounter.size() == 2);
     assertTrue(valueChangeCounter.size() == 2);
-    assertTrue(model.isValueNull(key));
+    assertTrue(model.isValueNull(EmpDept.DEPARTMENT_ID));
 
-    assertTrue(model.getModifiedObserver().isActive());
-
-    model.getValueMap();
+    model.getEntity();
     model.clear();
     model.refresh();
 
-    assertNotNull(model.getDefaultValueMap());
+    assertNotNull(model.getDefaultEntity());
 
-    final ValueChangeMap<String, Integer> newMap = new ValueChangeMapImpl<String, Integer>();
-    newMap.setValue(key, 1);
+    final Entity newEntity = Entities.entity(EmpDept.T_DEPARTMENT);
+    newEntity.setValue(EmpDept.DEPARTMENT_ID, 1);
+    newEntity.setValue(EmpDept.DEPARTMENT_LOCATION, "NY");
+    newEntity.setValue(EmpDept.DEPARTMENT_NAME, "a name");
 
-    model.setValueMap(newMap);
-    assertEquals(Integer.valueOf(1), model.getValue(key));
+    model.setEntity(newEntity);
+    assertEquals(1, model.getValue(EmpDept.DEPARTMENT_ID));
     assertTrue(valueMapSetCounter.size() == 1);
 
-    assertNotNull(model.getValidator());
-
-    model.setValue(key, -1);
+    model.setValue(EmpDept.DEPARTMENT_ID, null);
     try {
-      model.validate(key, ValueMapValidator.UNKNOWN);
+      model.validate(EmpDept.DEPARTMENT_ID, ValueMapValidator.UNKNOWN);
       fail();
     }
     catch (ValidationException e) {}
 
-    assertFalse(model.isValid(key, -1));
+    assertFalse(model.isValid(EmpDept.DEPARTMENT_ID, ValueMapValidator.UNKNOWN));
     assertFalse(model.isValid());
 
-    model.setValue(key, null);
-    assertFalse(model.isValid(key, -1));
-    assertFalse(model.isValid());
-
-    model.setValue(key, 2);
-    assertTrue(model.isValid(key, -1));
+    model.setValue(EmpDept.DEPARTMENT_ID, 1);
+    assertTrue(model.isValid(EmpDept.DEPARTMENT_ID, ValueMapValidator.UNKNOWN));
     assertTrue(model.isValid());
 
-    model.removeValueListener(key, valueChangeListener);
-    model.removeValueSetListener(key, valueSetListener);
-    model.removeValueMapSetListener(valueMapSetListener);
-  }*/
+    model.removeValueListener(EmpDept.DEPARTMENT_ID, valueChangeListener);
+    model.removeValueSetListener(EmpDept.DEPARTMENT_ID, valueSetListener);
+    model.removeEntitySetListener(valueMapSetListener);
+  }
 }
