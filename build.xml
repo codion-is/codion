@@ -433,45 +433,6 @@
     </zip>
   </target>
 
-  <target name="deploy_to_wiki" depends="javadoc, run_unit_tests_with_coverage, deploy_src_to_wiki"
-          description="Publishes non-source project files to the documentation wiki">
-    <delete dir="${wiki.media.project}/docs"/>
-    <delete dir="${wiki.media.project}/resources"/>
-    <delete dir="${wiki.media.project}/test"/>
-    <mkdir dir="${wiki.media.project}/docs"/>
-    <mkdir dir="${wiki.media.project}/resources"/>
-    <mkdir dir="${wiki.media.project}/test"/>
-    <copy todir="${wiki.media.project}/docs">
-      <fileset dir="${docs}"/>
-    </copy>
-    <copy todir="${wiki.media.project}/test">
-      <fileset dir="${test}"/>
-    </copy>
-    <chmod dir="${wiki.media.project}" perm="ugo+r" type="file" includes="**/*"/>
-    <chmod dir="${wiki.media.project}" perm="ugo+rx" type="dir" includes="**/*"/>
-    <chmod file="${wiki.media.project}" perm="ugo+rx" type="dir"/>
-  </target>
-
-  <target name="deploy_src_to_wiki"
-          description="Publishes the source files to the documentation wiki">
-    <delete dir="${wiki.media.project}/src"/>
-    <copy todir="${wiki.media.project}/src">
-      <fileset dir="${src}" />
-    </copy>
-    <copy todir="${wiki.media.project}/src">
-      <fileset dir="${srcplugins}"/>
-    </copy>
-    <copy todir="${wiki.media.project}/src">
-      <fileset dir="${srcdemos}"/>
-    </copy>
-    <copy todir="${wiki.media.project}/src/resources">
-      <fileset dir="${resources}"/>
-    </copy>
-    <chmod dir="${wiki.media.project}/src" perm="ugo+r" type="file" includes="**/*"/>
-    <chmod dir="${wiki.media.project}/src" perm="ugo+rx" type="dir" includes="**/*"/>
-    <chmod file="${wiki.media.project}/src" perm="ugo+rx" type="dir"/>
-  </target>
-
   <target name="deploy_project"
           description="Creates a jminor-project.zip file in the base directory">
     <delete file="${basedir}/jminor-${version}-project.zip"/>
@@ -480,22 +441,6 @@
       <fileset dir="${basedir}"
                excludes="*.ser,*.log,target/**,test/**,dist/deployment/**,classes/**,derbydb/**,h2db/**"/>
     </zip>
-  </target>
-
-  <target name="deploy" depends="dist" >
-    <copy file="${dist}/jminor.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/jminor-common.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/jminor-db.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/jminor-client.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/jminor-plugins.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/jminor-demos.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/jminor-server.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/jminor-server-monitor.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/jminor-src.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/jminor-src-test.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/jminor-src-demos.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${dist}/jminor-api-doc.jar" todir="${deploy.path}" overwrite="true"/>
-    <copy file="${basedir}/changelog.txt" todir="${deploy.path}" overwrite="true"/>
   </target>
 
   <target name="create_unit_test_report"
@@ -614,15 +559,6 @@
         <include name="**/*.java" />
       </fileset>
     </cobertura-report>
-  </target>
-
-  <target name="sonar_analysis_win_only" depends="clean, dist, run_unit_tests_with_coverage"
-          description="Runs the unit tests with coverage analysis and then command 'mvn sonar:sonar' via the cmd shell">
-    <exec executable="cmd">
-      <arg value="/c"/>
-      <arg value="mvn"/>
-      <arg value="sonar:sonar"/>
-    </exec>
   </target>
 
   <target name="run_demo_chinook_local" depends="build"
