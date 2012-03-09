@@ -447,7 +447,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public final List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
+  public List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
       getMethodLogger().logAccess("executeFunction: " + functionID, arguments);
@@ -476,7 +476,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public final void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
+  public void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
       getMethodLogger().logAccess("executeProcedure: " + procedureID, arguments);
