@@ -4,9 +4,9 @@
 package org.jminor.common.db.tools;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnections;
-import org.jminor.common.db.PoolableConnection;
-import org.jminor.common.db.PoolableConnectionProvider;
+import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPools;
@@ -116,7 +116,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
      */
     @Override
     protected final void performScenario(final QueryApplication application) throws ScenarioException {
-      PoolableConnection connection = null;
+      DatabaseConnection connection = null;
       PreparedStatement statement = null;
       ResultSet resultSet = null;
       try {
@@ -170,7 +170,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
     }
   }
 
-  private static class ConnectionProvider implements PoolableConnectionProvider {
+  private static class ConnectionProvider implements DatabaseConnectionProvider {
 
     private final Database database;
     private final User user;
@@ -182,13 +182,13 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
     /** {@inheritDoc} */
     @Override
-    public PoolableConnection createConnection() throws ClassNotFoundException, DatabaseException {
+    public DatabaseConnection createConnection() throws ClassNotFoundException, DatabaseException {
       return DatabaseConnections.createConnection(database, user);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void destroyConnection(final PoolableConnection connection) {
+    public void destroyConnection(final DatabaseConnection connection) {
       connection.disconnect();
     }
 

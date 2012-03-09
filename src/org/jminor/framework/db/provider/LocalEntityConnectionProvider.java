@@ -74,8 +74,8 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   public void disconnect() {
     if (getConnectionInternal() != null && getConnectionInternal().isValid()) {
       getConnectionInternal().disconnect();
-      if (getConnectionInternal().getPoolableConnection().getDatabase().isEmbedded()) {//todo is this proper?
-        getConnectionInternal().getPoolableConnection().getDatabase().shutdownEmbedded(connectionProperties);
+      if (getConnectionInternal().getDatabaseConnection().getDatabase().isEmbedded()) {//todo is this proper?
+        getConnectionInternal().getDatabaseConnection().getDatabase().shutdownEmbedded(connectionProperties);
       }
       setConnection(null);
     }

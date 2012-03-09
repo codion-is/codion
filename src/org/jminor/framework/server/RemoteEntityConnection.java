@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.db.PoolableConnection;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportException;
@@ -272,9 +272,10 @@ public interface RemoteEntityConnection extends Remote {
   byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws RemoteException, DatabaseException;
 
   /**
-   * @return nothing
+   * Unsupported method
+   * @return never
    * @throws UnsupportedOperationException always
    * @throws java.rmi.RemoteException in case of a remote exception
    */
-  PoolableConnection getPoolableConnection() throws RemoteException;
+  DatabaseConnection getDatabaseConnection() throws RemoteException;
 }

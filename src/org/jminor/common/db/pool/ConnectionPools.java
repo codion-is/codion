@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.db.PoolableConnectionProvider;
+import org.jminor.common.db.DatabaseConnectionProvider;
 
 /**
  * A factory class providing ConnectionPool instances
@@ -17,7 +17,7 @@ public final class ConnectionPools {
    * @param connectionProvider the connection provider
    * @return a new connection pool
    */
-  public static ConnectionPool createPool(final PoolableConnectionProvider connectionProvider) {
+  public static ConnectionPool createPool(final DatabaseConnectionProvider connectionProvider) {
     return new ConnectionPoolImpl(connectionProvider);
   }
 }

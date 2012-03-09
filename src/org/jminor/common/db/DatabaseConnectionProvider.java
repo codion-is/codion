@@ -7,26 +7,26 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 
 /**
- * Defines an interface responsible for creating and disposing of PoolableConnection instances.
+ * Defines an interface responsible for creating and disposing of DatabaseConnection instances.
  */
-public interface PoolableConnectionProvider {
+public interface DatabaseConnectionProvider {
 
   /**
-   * Creates a new PoolableConnection instance based on the given user.
-   * @return a new PoolableConnection instance
+   * Creates a new DatabaseConnection instance based on the given user.
+   * @return a new DatabaseConnection instance
    * @throws ClassNotFoundException in case the JDBC driver class was not found
    * @throws DatabaseException in case of a database exception
    */
-  PoolableConnection createConnection() throws ClassNotFoundException, DatabaseException;
+  DatabaseConnection createConnection() throws ClassNotFoundException, DatabaseException;
 
   /**
    * Disconnects the given connection and disposes of any resources it holds.
    * @param connection the connection to destroy
    */
-  void destroyConnection(final PoolableConnection connection);
+  void destroyConnection(final DatabaseConnection connection);
 
   /**
-   * @return the User this poolable connection provider is based on
+   * @return the User this connection provider is based on
    */
   User getUser();
 }

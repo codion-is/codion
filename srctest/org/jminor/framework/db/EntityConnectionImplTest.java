@@ -3,7 +3,10 @@
  */
 package org.jminor.framework.db;
 
+import org.jminor.common.db.AbstractFunction;
+import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.exception.DatabaseException;
@@ -210,6 +213,77 @@ public class EntityConnectionImplTest {
     assertNull(king.getValue(EmpDept.EMPLOYEE_MGR_FK));
   }
 
+  @Test
+  public void executeFunction() throws DatabaseException {
+    final DatabaseConnection.Function func = new AbstractFunction("executeFunction", "executeFunction") {
+      @Override
+      public List<Object> execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {
+        return null;
+      }
+    };
+    Databases.addOperation(func);
+    connection.executeFunction(func.getID());
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void executeFunctionOpenTransaction() throws DatabaseException {
+    final DatabaseConnection.Function func = new AbstractFunction("executeFunctionOpenTransaction", "executeFunctionOpenTransaction") {
+      @Override
+      public List<Object> execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {
+        return null;
+      }
+    };
+    Databases.addOperation(func);
+    connection.beginTransaction();
+    connection.executeFunction(func.getID());
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void executeFunctionUnclosedTransaction() throws DatabaseException {
+    final DatabaseConnection.Function func = new AbstractFunction("executeFunctionUnclosedTransaction", "executeFunctionUnclosedTransaction") {
+      @Override
+      public List<Object> execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {
+        connection.beginTransaction();
+        return null;
+      }
+    };
+    Databases.addOperation(func);
+    connection.executeFunction(func.getID());
+  }
+  
+  @Test
+  public void executeProcedure() throws DatabaseException {
+    final DatabaseConnection.Procedure proc = new AbstractProcedure("executeProcedure", "executeProcedure") {
+      @Override
+      public void execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {}
+    };
+    Databases.addOperation(proc);
+    connection.executeProcedure(proc.getID());
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void executeProcedureOpenTransaction() throws DatabaseException {
+    final DatabaseConnection.Procedure proc = new AbstractProcedure("executeProcedureOpenTransaction", "executeProcedureOpenTransaction") {
+      @Override
+      public void execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {}
+    };
+    Databases.addOperation(proc);
+    connection.beginTransaction();
+    connection.executeProcedure(proc.getID());
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void executeProcedureUnclosedTransaction() throws DatabaseException {
+    final DatabaseConnection.Procedure proc = new AbstractProcedure("executeProcedureUnclosedTransaction", "executeProcedureUnclosedTransaction") {
+      @Override
+      public void execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {
+        connection.beginTransaction();
+      }
+    };
+    Databases.addOperation(proc);
+    connection.executeProcedure(proc.getID());
+  }
+
   @Test(expected = RecordNotFoundException.class)
   public void selectSingleNotFound() throws Exception {
     connection.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "NO_NAME");
@@ -319,6 +393,35 @@ public class EntityConnectionImplTest {
       }
     }
   }
+
+  /*public void testBlob() throws Exception {
+    DatabaseConnection dbConnection = null;
+    try {
+      dbConnection = new DatabaseConnection(new User("ops$darri", ""));
+      dbConnection.execute("delete blob_test");
+      dbConnection.execute("insert into blob_test(id) values (1)");
+
+      File file = new File("/home/stofa/darri/data/downloads/NavigableImagePanel.zip");
+
+      dbConnection.writeBlobField(Util.getBytesFromFile(file), "blob_test", "data", "where id = 1");
+
+      final byte[] data = dbConnection.readBlobField("blob_test", "data", "where id = 1");
+
+      File file2 = new File("/home/stofa/darri/data/downloads/NavigableImagePanel2.zip");
+      file2.createNewFile();
+
+      FileOutputStream stream = new FileOutputStream(file2);
+      stream.write(data);
+      stream.flush();
+      stream.close();
+
+      dbConnection.rollback();
+    }
+    finally {
+      if (dbConnection != null)
+        dbConnection.disconnect();
+    }
+  }*/
 
   private static EntityConnectionImpl initializeConnection() throws ClassNotFoundException, DatabaseException {
     return new EntityConnectionImpl(Databases.createInstance(), User.UNIT_TEST_USER);

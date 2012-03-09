@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor;
 
-import org.jminor.common.db.PoolableConnection;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
@@ -286,11 +286,11 @@ public final class PoolMonitor {
 
     /** {@inheritDoc} */
     @Override
-    public void returnConnection(final PoolableConnection dbConnection) {}
+    public void returnConnection(final DatabaseConnection databaseConnection) {}
 
     /** {@inheritDoc} */
     @Override
-    public PoolableConnection getConnection() throws ClassNotFoundException, DatabaseException {return null;}
+    public DatabaseConnection getConnection() throws ClassNotFoundException, DatabaseException {return null;}
 
     /** {@inheritDoc} */
     @Override

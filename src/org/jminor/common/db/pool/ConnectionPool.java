@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.db.PoolableConnection;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 
@@ -21,14 +21,14 @@ public interface ConnectionPool {
    * @throws IllegalStateException if the pool is closed
    * @see #setMaximumCheckOutTime(int)
    */
-  PoolableConnection getConnection() throws ClassNotFoundException, DatabaseException;
+  DatabaseConnection getConnection() throws ClassNotFoundException, DatabaseException;
 
   /**
    * Return the given connection to the pool.
    * If the pool has been closed the connection is disconnected and discarded.
    * @param connection the database connection to return to the pool
    */
-  void returnConnection(final PoolableConnection connection);
+  void returnConnection(final DatabaseConnection connection);
 
   /**
    * @return the user this connection pool is based on.

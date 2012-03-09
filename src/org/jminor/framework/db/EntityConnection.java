@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.PoolableConnection;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportException;
@@ -242,7 +242,7 @@ public interface EntityConnection {
   byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException;
 
   /**
-   * @return the underlying poolable connection
+   * @return the underlying connection
    */
-  PoolableConnection getPoolableConnection();
+  DatabaseConnection getDatabaseConnection();
 }

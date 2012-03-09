@@ -4,8 +4,8 @@
 package org.jminor.common.db.pool;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.PoolableConnection;
-import org.jminor.common.db.PoolableConnectionProvider;
+import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 
@@ -41,9 +41,9 @@ final class ConnectionPoolImpl implements ConnectionPool {
   private static final int FINE_GRAINED_STATS_SIZE = 1000;
   private static final long NANO_IN_MILLI = 1000000;
 
-  private final PoolableConnectionProvider connectionProvider;
-  private final Deque<PoolableConnection> pool = new ArrayDeque<PoolableConnection>();
-  private final Collection<PoolableConnection> inUse = new ArrayList<PoolableConnection>();
+  private final DatabaseConnectionProvider connectionProvider;
+  private final Deque<DatabaseConnection> pool = new ArrayDeque<DatabaseConnection>();
+  private final Collection<DatabaseConnection> inUse = new ArrayList<DatabaseConnection>();
   private final Counter counter = new Counter();
   private final Random random = new Random();
 
@@ -69,7 +69,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
    * Instantiates a new ConnectionPoolImpl.
    * @param connectionProvider the connection provider
    */
-  ConnectionPoolImpl(final PoolableConnectionProvider connectionProvider) {
+  ConnectionPoolImpl(final DatabaseConnectionProvider connectionProvider) {
     this.connectionProvider = connectionProvider;
     for (int i = 0; i < FINE_GRAINED_STATS_SIZE; i++) {
       connectionPoolStatistics.add(new ConnectionPoolStateImpl());
@@ -79,7 +79,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
 
   /** {@inheritDoc} */
   @Override
-  public PoolableConnection getConnection() throws ClassNotFoundException, DatabaseException {
+  public DatabaseConnection getConnection() throws ClassNotFoundException, DatabaseException {
     if (!enabled || closed) {
       throw new IllegalStateException("ConnectionPool not enabled or closed");
     }
@@ -90,7 +90,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
       addPoolStatistics(System.currentTimeMillis());
     }
 
-    PoolableConnection connection = fetchFromPool();
+    DatabaseConnection connection = fetchFromPool();
     if (connection == null) {
       counter.incrementDelayedRequestCounter();
     }
@@ -123,7 +123,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
 
   /** {@inheritDoc} */
   @Override
-  public void returnConnection(final PoolableConnection connection) {
+  public void returnConnection(final DatabaseConnection connection) {
     if (connection.isTransactionOpen()) {
       throw new IllegalStateException("Open transaction");
     }
@@ -325,8 +325,8 @@ final class ConnectionPoolImpl implements ConnectionPool {
     this.newConnectionThreshold = value;
   }
 
-  private PoolableConnection fetchFromPool() {
-    PoolableConnection connection = null;
+  private DatabaseConnection fetchFromPool() {
+    DatabaseConnection connection = null;
     boolean destroyConnection = false;
     synchronized (pool) {
       if (pool.size() > 0) {
@@ -351,12 +351,12 @@ final class ConnectionPoolImpl implements ConnectionPool {
     return connection;
   }
 
-  private PoolableConnection createConnection() throws ClassNotFoundException, DatabaseException {
+  private DatabaseConnection createConnection() throws ClassNotFoundException, DatabaseException {
     synchronized (pool) {
       creatingConnection = true;
     }
     try {
-      final PoolableConnection connection = connectionProvider.createConnection();
+      final DatabaseConnection connection = connectionProvider.createConnection();
       counter.incrementConnectionsCreatedCounter();
       inUse.add(connection);
 
@@ -436,8 +436,8 @@ final class ConnectionPoolImpl implements ConnectionPool {
     final long currentTime = System.currentTimeMillis();
     synchronized (pool) {
       final int inUseCount = inUse.size();
-      final Collection<PoolableConnection> pooledConnections = new ArrayList<PoolableConnection>(pool);
-      for (final PoolableConnection connection : pooledConnections) {
+      final Collection<DatabaseConnection> pooledConnections = new ArrayList<DatabaseConnection>(pool);
+      for (final DatabaseConnection connection : pooledConnections) {
         if (pool.size() + inUseCount <= minimumPoolSize) {
           return;
         }

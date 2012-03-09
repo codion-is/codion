@@ -4,24 +4,18 @@
 package org.jminor.common.db;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.LogEntry;
+import org.jminor.common.model.MethodLogger;
+import org.jminor.common.model.User;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 import java.util.List;
 
 /**
- * Specifies a database connection, providing basic transaction control and helper functions for querying and manipulating data.
+ * Specifies a database connection, providing basic transaction control and pooling info
  */
-public interface DatabaseConnection extends PoolableConnection {
-
-  /**
-   * Performs the given sql query and returns the result in a List
-   * @param sql the query
-   * @param resultPacker a ResultPacker instance for creating the return List
-   * @param fetchCount the number of records to retrieve, use -1 to retrieve all
-   * @return the query result in a List
-   * @throws SQLException thrown if anything goes wrong during the query execution
-   */
-  List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException;
+public interface DatabaseConnection {
 
   /**
    * @return true if the connection is connected
@@ -29,103 +23,107 @@ public interface DatabaseConnection extends PoolableConnection {
   boolean isConnected();
 
   /**
-   * @param sql the query
-   * @param fetchCount the maximum number of records to return, -1 for all
-   * @return the result of this query, in a List of rows, with each row represented by
-   * a List of column values in the same order as in the query
-   * @throws SQLException thrown if anything goes wrong during the query execution
+   * @return the underlying connection object
    */
-  List<List> queryObjects(final String sql, final int fetchCount) throws SQLException;
+  Connection getConnection();
 
   /**
-   * Performs the given query and returns the result as an integer
-   * @param sql the query must select at least a single number column, any other
-   * subsequent columns are disregarded
-   * @return the first record in the result as a integer
+   * @return the time at which this connection was pooled
+   */
+  long getPoolTime();
+
+  /**
+   * Sets the time this connection was checked into a connection pool
+   * @param time the time this connection was pooled
+   */
+  void setPoolTime(final long time);
+
+  /**
+   * @param retryCount the number of retries used to retrieve this connection from the pool
+   */
+  void setRetryCount(final int retryCount);
+
+  /**
+   * @return the number of retries required to retrieve this connection from the pool
+   */
+  int getRetryCount();
+
+  /**
+   * @return true if the connection is valid
+   */
+  boolean isValid();
+
+  /**
+   * Begins a transaction on this connection
+   * @throws IllegalStateException in case a transaction is already open
+   */
+  void beginTransaction();
+
+  /**
+   * @return true if a transaction is open
+   */
+  boolean isTransactionOpen();
+
+  /**
+   * Performs a commit and ends the current transaction
+   * @throws IllegalStateException in case transaction is not open
+   */
+  void commitTransaction();
+
+  /**
+   * Performs a rollback and ends the current transaction
+   * @throws IllegalStateException in case transaction is not open
+   */
+  void rollbackTransaction();
+
+  /**
+   * Performs a commit
+   * @throws java.sql.SQLException thrown if anything goes wrong during the execution
+   * @throws IllegalStateException in case a transaction is open
+   */
+  void commit() throws SQLException;
+
+  /**
+   * Performs a rollback
    * @throws SQLException thrown if anything goes wrong during the execution
-   * @throws DatabaseException thrown if no record is found
+   * @throws IllegalStateException in case a transaction is open
    */
-  int queryInteger(final String sql) throws SQLException, DatabaseException;
+  void rollback() throws SQLException;
 
   /**
-   * Performs the given query and returns the result as a List of Integers
-   * @param sql the query, it must select at least a single number column, any other
-   * subsequent columns are disregarded
-   * @return a List of Integers representing the query result
-   * @throws SQLException thrown if anything goes wrong during the execution
+   * Disconnects this connection, if a transaction is open a rollback is performed
    */
-  List<Integer> queryIntegers(final String sql) throws SQLException;
+  void disconnect();
 
   /**
-   * Performs the given query and returns the result as a List of Strings
-   * @param sql the query, it must select at least a single string column, any other
-   * subsequent columns are disregarded
-   * @return a List of Strings representing the query result
-   * @throws SQLException thrown if anything goes wrong during the execution
+   * @return the log entries
    */
-  List<String> queryStrings(final String sql) throws SQLException;
+  List<LogEntry> getLogEntries();
 
   /**
-   * Returns the contents of the given blob field.
-   * @param tableName the table name
-   * @param columnName the name of the blob column
-   * @param whereClause the where clause
-   * @return the blob contents
-   * @throws SQLException thrown if anything goes wrong during the execution
+   * @return the MethodLogger being used by this db connection
    */
-  byte[] readBlobField(final String tableName, final String columnName, final String whereClause) throws SQLException;
+  MethodLogger getMethodLogger();
 
   /**
-   * Writes the given blob data into the given column.
-   * @param blobData the blob data
-   * @param tableName the table name
-   * @param columnName the blob column name
-   * @param whereClause the where clause
-   * @throws SQLException thrown if anything goes wrong during the execution
+   * @param enabled true to enable logging on this connection, false to disable
    */
-  void writeBlobField(final byte[] blobData, final String tableName, final String columnName,
-                      final String whereClause) throws SQLException;
+  void setLoggingEnabled(final boolean enabled);
 
   /**
-   * Executes the given statement, which can be anything except a select query.
-   * @param sql the statement to execute
-   * @throws SQLException thrown if anything goes wrong during execution
+   * @return true if logging is enabled, false otherwise
    */
-  void execute(final String sql) throws SQLException;
+  boolean isLoggingEnabled();
 
   /**
-   * Executes the statement.
-   * @param sqlStatement the statement to execute
-   * @param outParameterType the type of the out parameter, -1 if no out parameter, java.sql.Types.*
-   * @return the out parameter, null if none is specified
-   * @throws SQLException thrown if anything goes wrong during execution
+   * @return the connection user
    */
-  Object executeCallableStatement(final String sqlStatement, final int outParameterType) throws SQLException;
+  User getUser();
 
   /**
-   * Executes the given statements in a batch, statements which can be anything except a select query.
-   * @param statements the statements to execute
-   * @throws SQLException thrown if anything goes wrong during execution
+   * @return the database implementation this connection is based on
    */
-  void execute(final List<String> statements) throws SQLException;
-
-  /**
-   * Executes the function with the given id
-   * @param functionID the function ID
-   * @param arguments the arguments, if any
-   * @return the procedure return arguments, if any
-   * @throws DatabaseException in case anything goes wrong during the execution
-   */
-  List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException;
-
-  /**
-   * Executes the procedure with the given id
-   * @param procedureID the procedure ID
-   * @param arguments the arguments, if any
-   * @throws DatabaseException in case anything goes wrong during the execution
-   */
-  void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException;
-
+  Database getDatabase();
   /**
    * A database operation
    */

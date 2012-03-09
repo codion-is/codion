@@ -4,10 +4,10 @@
 package org.jminor.common.db.pool;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.Databases;
-import org.jminor.common.db.PoolableConnection;
-import org.jminor.common.db.PoolableConnectionProvider;
+import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.tools.QueryLoadTestModel;
 import org.jminor.common.model.User;
@@ -91,7 +91,7 @@ public class ConnectionPoolImplTest {
     assertEquals(0, statistics.getAvailable());
     assertEquals(0, statistics.getInUse());
 
-    final PoolableConnection dbConnectionOne = pool.getConnection();
+    final DatabaseConnection dbConnectionOne = pool.getConnection();
     assertTrue(dbConnectionOne.isValid());
     statistics = pool.getStatistics(startDate.getTime());
     assertEquals(1, statistics.getRequests());
@@ -100,7 +100,7 @@ public class ConnectionPoolImplTest {
     assertEquals(1, statistics.getInUse());
     assertEquals(1, statistics.getSize());
 
-    final PoolableConnection dbConnectionTwo = pool.getConnection();
+    final DatabaseConnection dbConnectionTwo = pool.getConnection();
     assertTrue(dbConnectionTwo.isValid());
     statistics = pool.getStatistics(startDate.getTime());
     assertEquals(2, statistics.getRequests());
@@ -129,7 +129,7 @@ public class ConnectionPoolImplTest {
     assertEquals(1, statistics.getInUse());
     assertEquals(2, statistics.getSize());
 
-    final PoolableConnection dbConnectionThree = pool.getConnection();
+    final DatabaseConnection dbConnectionThree = pool.getConnection();
     assertTrue(dbConnectionThree.isValid());
     statistics = pool.getStatistics(startDate.getTime());
     assertEquals(3, statistics.getRequests());
@@ -156,7 +156,7 @@ public class ConnectionPoolImplTest {
 
     assertTrue(statistics.getFineGrainedStatistics().size() > 0);
 
-    final PoolableConnection dbConnectionFour = pool.getConnection();
+    final DatabaseConnection dbConnectionFour = pool.getConnection();
     statistics = pool.getStatistics(startDate.getTime());
     assertEquals(4, statistics.getRequests());
     assertEquals(2, statistics.getCreated());
@@ -198,15 +198,15 @@ public class ConnectionPoolImplTest {
     catch (IllegalStateException e) {}
   }
 
-  private static PoolableConnectionProvider createConnectionProvider(final User user) {
-    return new PoolableConnectionProvider() {
+  private static DatabaseConnectionProvider createConnectionProvider(final User user) {
+    return new DatabaseConnectionProvider() {
       final Database database = Databases.createInstance();
       @Override
-      public PoolableConnection createConnection() throws ClassNotFoundException, DatabaseException {
+      public DatabaseConnection createConnection() throws ClassNotFoundException, DatabaseException {
         return DatabaseConnections.createConnection(database, user);
       }
       @Override
-      public void destroyConnection(final PoolableConnection connection) {
+      public void destroyConnection(final DatabaseConnection connection) {
         connection.disconnect();
       }
       @Override

@@ -4,12 +4,8 @@
 package org.jminor.common.db;
 
 import java.io.Serializable;
-import java.sql.ResultSet;
-import java.sql.SQLException;
-import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,40 +21,6 @@ public final class Databases {
    * A synchronized query counter
    */
   public static final QueryCounter QUERY_COUNTER = new QueryCounter();
-
-  /**
-   * A result packer for fetching integers from an result set containing a single integer column
-   */
-  public static final ResultPacker<Integer> INT_PACKER = new ResultPacker<Integer>() {
-    /** {@inheritDoc} */
-    @Override
-    public List<Integer> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Integer> integers = new ArrayList<Integer>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        integers.add(resultSet.getInt(1));
-      }
-
-      return integers;
-    }
-  };
-
-  /**
-   * A result packer for fetching strings from an result set containing a single string column
-   */
-  public static final ResultPacker<String> STRING_PACKER = new ResultPacker<String>() {
-    /** {@inheritDoc} */
-    @Override
-    public List<String> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<String> strings = new ArrayList<String>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        strings.add(resultSet.getString(1));
-      }
-
-      return strings;
-    }
-  };
 
   private Databases() {}
 

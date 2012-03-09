@@ -4,9 +4,9 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnectionImpl;
 import org.jminor.common.db.Databases;
-import org.jminor.common.db.PoolableConnection;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
@@ -32,10 +32,13 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.ByteArrayInputStream;
+import java.sql.Blob;
 import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -402,7 +405,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       selectSQL += " " + criteria.getWhereClause(!containsWhereClause(selectSQL));
       statement = getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
-      final List<Integer> result = Databases.INT_PACKER.pack(resultSet, -1);
+      final List<Integer> result = INT_PACKER.pack(resultSet, -1);
 
       if (result.isEmpty()) {
         throw new RecordNotFoundException("Record count query returned no value");
@@ -444,6 +447,62 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
+  public final List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
+    DatabaseException exception = null;
+    try {
+      getMethodLogger().logAccess("executeFunction: " + functionID, arguments);
+      if (isTransactionOpen()) {
+        throw new DatabaseException("Can not execute a function within an open transaction");
+      }
+      final List<Object> returnArguments = Databases.getFunction(functionID).execute(this, arguments);
+      if (isTransactionOpen()) {
+        rollbackTransaction();
+        throw new DatabaseException("Function with ID: " + functionID + " did not end its transaction, rollback was performed");
+      }
+
+      return returnArguments;
+    }
+    catch (DatabaseException e) {
+      exception = e;
+      throw e;
+    }
+    finally {
+      final LogEntry entry = getMethodLogger().logExit("executeFunction: " + functionID, exception, null);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), "", arguments == null ? null : Arrays.asList(arguments), exception, entry));
+      }
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
+    DatabaseException exception = null;
+    try {
+      getMethodLogger().logAccess("executeProcedure: " + procedureID, arguments);
+      if (isTransactionOpen()) {
+        throw new DatabaseException("Can not execute a procedure within an open transaction");
+      }
+      Databases.getProcedure(procedureID).execute(this, arguments);
+      if (isTransactionOpen()) {
+        rollbackTransaction();
+        throw new DatabaseException("Procedure with ID: " + procedureID + " did not end its transaction, rollback was performed");
+      }
+    }
+    catch (DatabaseException e) {
+      exception = e;
+      throw e;
+    }
+    finally {
+      final LogEntry entry = getMethodLogger().logExit("executeProcedure: " + procedureID, exception, null);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), "", arguments == null ? null : Arrays.asList(arguments), exception, entry));
+      }
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
     return reportWrapper.fillReport(getConnection());
   }
@@ -456,7 +515,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw new DatabaseException("Can not save blob within an open transaction");
     }
 
-    String statement = null;
+    String statementString = null;
+    Statement statement = null;
     try {
       boolean success = false;
       try {
@@ -466,10 +526,11 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
         final String whereCondition = createWhereCondition(primaryKey.getProperties());
 
-        statement = new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getColumnName())
+        statementString = new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getColumnName())
                 .append(" = '").append(dataDescription).append("' where ").append(whereCondition).toString();
 
-        execute(statement);
+        statement = getConnection().createStatement();
+        statement.executeUpdate(statementString);
 
         writeBlobField(blobData, Entities.getTableName(primaryKey.getEntityID()),
                 property.getBlobColumnName(), whereCondition);
@@ -482,11 +543,17 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         else {
           rollbackTransaction();
         }
+        try {
+          if (statement != null) {
+            statement.close();
+          }
+        }
+        catch (SQLException ignored) {}
       }
     }
     catch (SQLException e) {
       if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), statement, null, e, null));
+        LOG.debug(createLogMessage(getUser(), statementString, null, e, null));
       }
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
@@ -512,7 +579,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public PoolableConnection getPoolableConnection() {
+  public DatabaseConnection getDatabaseConnection() {
     return this;
   }
 
@@ -741,6 +808,102 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
   }
 
+  /**
+   * Performs the given query and returns the result as an integer
+   * @param sql the query must select at least a single number column, any other
+   * subsequent columns are disregarded
+   * @return the first record in the result as a integer
+   * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
+   */
+  private int queryInteger(final String sql) throws SQLException {
+    @SuppressWarnings("unchecked")
+    final List<Integer> integers = (List<Integer>) query(sql, INT_PACKER, -1);
+    if (!integers.isEmpty()) {
+      return integers.get(0);
+    }
+
+    throw new SQLException("No records returned when querying for an integer", sql);
+  }
+
+  private byte[] readBlobField(final String tableName, final String columnName, final String whereClause) throws SQLException {
+    //http://www.idevelopment.info/data/Programming/java/jdbc/LOBS/BLOBFileExample.java
+    final String sql = "select " + columnName + " from " + tableName + " where " + whereClause;
+
+    final List result = query(sql, new BlobResultPacker(), 1);
+
+    final Blob blob = (Blob) result.get(0);
+
+    return blob.getBytes(1, (int) blob.length());
+  }
+
+  /**
+   * Performs the given sql query and returns the result in a List
+   * @param sql the query
+   * @param resultPacker a ResultPacker instance for creating the return List
+   * @param fetchCount the number of records to retrieve, use -1 to retrieve all
+   * @return the query result in a List
+   * @throws SQLException thrown if anything goes wrong during the query execution
+   */
+  private List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException {
+    Databases.QUERY_COUNTER.count(sql);
+    getMethodLogger().logAccess("query", new Object[] {sql});
+    Statement statement = null;
+    SQLException exception = null;
+    ResultSet resultSet = null;
+    try {
+      statement = getConnection().createStatement();
+      resultSet = statement.executeQuery(sql);
+      final List result = resultPacker.pack(resultSet, fetchCount);
+
+      LOG.debug(sql);
+
+      return result;
+    }
+    catch (SQLException e) {
+      exception = e;
+      LOG.error(createLogMessage(getUser(), sql, null, e, null));
+      throw e;
+    }
+    finally {
+      try {
+        if (statement != null) {
+          statement.close();
+        }
+        if (resultSet != null) {
+          resultSet.close();
+        }
+      }
+      catch (SQLException ignored) {}
+      getMethodLogger().logExit("query", exception, null);
+    }
+  }
+
+  private void writeBlobField(final byte[] blobData, final String tableName, final String columnName,
+                              final String whereClause) throws SQLException {
+    final String sql = "update " + tableName + " set " + columnName + " = ? where " + whereClause;
+    Databases.QUERY_COUNTER.count(sql);
+    getMethodLogger().logAccess("writeBlobField", new Object[] {sql});
+    SQLException exception = null;
+    ByteArrayInputStream inputStream = null;
+    PreparedStatement statement = null;
+    try {
+      statement = getConnection().prepareStatement(sql);
+      inputStream = new ByteArrayInputStream(blobData);
+      statement.setBinaryStream(1, inputStream, blobData.length);
+      statement.execute();
+    }
+    catch (SQLException e) {
+      exception = e;
+      LOG.error(createLogMessage(getUser(), sql, null, e, null));
+      throw e;
+    }
+    finally {
+      Util.closeSilently(inputStream);
+      Util.closeSilently(statement);
+      getMethodLogger().logExit("writeBlobField", exception, null);
+    }
+  }
+
   private void rollbackQuietly() {
     try {
       rollback();
@@ -748,7 +911,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     catch (SQLException ignored) {}
   }
 
-  private static String createLogMessage(final User user, final String sqlStatement, final List<?> values, final SQLException exception, final LogEntry entry) {
+  private static String createLogMessage(final User user, final String sqlStatement, final List<?> values, final Exception exception, final LogEntry entry) {
     final StringBuilder logMessage = new StringBuilder(user.toString()).append("\n");
     if (entry == null) {
       logMessage.append(sqlStatement).append(", ").append(Util.getCollectionContentsAsString(values, false));
@@ -1052,7 +1215,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
   }
 
-  private static final class PropertyResultPacker implements ResultPacker {
+  private static final class PropertyResultPacker implements ResultPacker<Object> {
     private final Property property;
 
     private PropertyResultPacker(final Property property) {
@@ -1061,7 +1224,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
     /** {@inheritDoc} */
     @Override
-    public List pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+    public List<Object> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Object> result = new ArrayList<Object>(50);
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
@@ -1076,6 +1239,40 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         }
       }
       return result;
+    }
+  }
+
+  /**
+   * A result packer for fetching integers from an result set containing a single integer column
+   */
+  private static final ResultPacker<Integer> INT_PACKER = new ResultPacker<Integer>() {
+    /** {@inheritDoc} */
+    @Override
+    public List<Integer> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+      final List<Integer> integers = new ArrayList<Integer>();
+      int counter = 0;
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        integers.add(resultSet.getInt(1));
+      }
+
+      return integers;
+    }
+  };
+
+  /**
+   * A result packer for fetching blobs from an result set containing a single blob column
+   */
+  private static final class BlobResultPacker implements ResultPacker<Blob> {
+    /** {@inheritDoc} */
+    @Override
+    public List<Blob> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+      final List<Blob> blobs = new ArrayList<Blob>();
+      int counter = 0;
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        blobs.add(resultSet.getBlob(1));
+      }
+
+      return blobs;
     }
   }
 
