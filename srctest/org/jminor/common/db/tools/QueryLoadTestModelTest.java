@@ -4,6 +4,7 @@
 package org.jminor.common.db.tools;
 
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 
 import org.junit.Test;
@@ -25,7 +26,7 @@ public final class QueryLoadTestModelTest {
   private static final QueryLoadTestModel.QueryScenario SELECT_PRODUCTS =
           new QueryLoadTestModel.QueryScenario("selectProducts", "select * from petstore.product");
   @Test
-  public void test() {
+  public void test() throws ClassNotFoundException, DatabaseException {
     final QueryLoadTestModel loadTest = new QueryLoadTestModel(Databases.createInstance(), User.UNIT_TEST_USER,
             Arrays.asList(SELECT_ALBUMS, SELECT_CUSTOMERS, SELECT_DEPARTMENTS,
                     SELECT_EMPLOYEE, SELECT_PRODUCTS));

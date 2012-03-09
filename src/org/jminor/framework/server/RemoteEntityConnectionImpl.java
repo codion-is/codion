@@ -520,7 +520,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     RequestCounter.setWarningThreshold(threshold);
   }
 
-  static void initializeConnectionPools(final Database database) {
+  static void initializeConnectionPools(final Database database) throws ClassNotFoundException, DatabaseException {
     final String initialPoolUsers = Configuration.getStringValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
     if (!Util.nullOrEmpty(initialPoolUsers)) {
       for (final String commaSplit : initialPoolUsers.split(",")) {

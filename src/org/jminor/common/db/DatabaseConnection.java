@@ -124,6 +124,7 @@ public interface DatabaseConnection {
    * @return the database implementation this connection is based on
    */
   Database getDatabase();
+
   /**
    * A database operation
    */

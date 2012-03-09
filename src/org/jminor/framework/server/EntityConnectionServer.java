@@ -69,11 +69,13 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
    * @param sslEnabled if true then ssl is enabled
    * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
    * @throws java.rmi.RemoteException in case of a remote exception
-   * @throws ClassNotFoundException in case the domain model classes are not found on the classpath
+   * @throws ClassNotFoundException in case the domain model classes are not found on the classpath or
+   * if the jdbc driver class is not found
+   * @throws DatabaseException in case of an exception while constructing the initial pooled connections
    * @see Configuration#SERVER_DOMAIN_MODEL_CLASSES
    */
   EntityConnectionServer(final String serverName, final int serverPort, final int registryPort, final Database database,
-                         final boolean sslEnabled, final int connectionLimit) throws RemoteException, ClassNotFoundException {
+                         final boolean sslEnabled, final int connectionLimit) throws RemoteException, ClassNotFoundException, DatabaseException {
     super(serverPort, serverName,
             sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());

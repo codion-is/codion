@@ -68,12 +68,15 @@ final class ConnectionPoolImpl implements ConnectionPool {
   /**
    * Instantiates a new ConnectionPoolImpl.
    * @param connectionProvider the connection provider
+   * @throws ClassNotFoundException in case the jdbc class is not found when constructing the initial connections
+   * @throws DatabaseException in case of an exception while constructing the initial connections
    */
-  ConnectionPoolImpl(final DatabaseConnectionProvider connectionProvider) {
+  ConnectionPoolImpl(final DatabaseConnectionProvider connectionProvider) throws ClassNotFoundException, DatabaseException {
     this.connectionProvider = connectionProvider;
     for (int i = 0; i < FINE_GRAINED_STATS_SIZE; i++) {
       connectionPoolStatistics.add(new ConnectionPoolStateImpl());
     }
+    initializeConnections();
     startPoolCleaner();
   }
 
@@ -181,7 +184,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
       statistics.setRequestsFailedPerSecond(counter.getRequestsFailedPerSecond());
       statistics.setRequestsPerSecond(counter.getRequestsPerSecond());
       statistics.setAverageCheckOutTime(counter.getAverageCheckOutTime());
-      statistics.setMininumCheckOutTime(counter.getMinimumCheckOutTime());
+      statistics.setMinimumCheckOutTime(counter.getMinimumCheckOutTime());
       statistics.setMaximumCheckOutTime(counter.getMaximumCheckOutTime());
       statistics.setResetDate(counter.getResetDate());
       statistics.setTimestamp(System.currentTimeMillis());
@@ -372,6 +375,12 @@ final class ConnectionPoolImpl implements ConnectionPool {
     }
     finally {
       creatingConnection = false;
+    }
+  }
+  
+  private void initializeConnections() throws ClassNotFoundException, DatabaseException {
+    for (int i = 0; i < getMinimumPoolSize(); i++) {
+      returnConnection(createConnection());
     }
   }
 
@@ -664,7 +673,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
     private int requestsFailedPerSecond;
     private int poolSize;
     private long averageCheckOutTime;
-    private long mininumCheckOutTime;
+    private long minimumCheckOutTime;
     private long maximumCheckOutTime;
 
     /** {@inheritDoc} */
@@ -759,8 +768,8 @@ final class ConnectionPoolImpl implements ConnectionPool {
 
     /** {@inheritDoc} */
     @Override
-    public long getMininumCheckOutTime() {
-      return mininumCheckOutTime;
+    public long getMinimumCheckOutTime() {
+      return minimumCheckOutTime;
     }
 
     /** {@inheritDoc} */
@@ -833,8 +842,8 @@ final class ConnectionPoolImpl implements ConnectionPool {
       this.averageCheckOutTime = averageCheckOutTime;
     }
 
-    private void setMininumCheckOutTime(final long mininumCheckOutTime) {
-      this.mininumCheckOutTime = mininumCheckOutTime;
+    private void setMinimumCheckOutTime(final long minimumCheckOutTime) {
+      this.minimumCheckOutTime = minimumCheckOutTime;
     }
 
     private void setMaximumCheckOutTime(final long maximumCheckOutTime) {

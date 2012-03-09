@@ -247,7 +247,7 @@ public final class ConnectionPoolMonitor {
     delayedRequestsPerSecond.add(poolStatistics.getTimestamp(), poolStatistics.getDelayedRequestsPerSecond());
     failedRequestsPerSecond.add(poolStatistics.getTimestamp(), poolStatistics.getFailedRequestsPerSecond());
     averageCheckOutTime.add(poolStatistics.getTimestamp(), poolStatistics.getAverageGetTime(),
-            poolStatistics.getMininumCheckOutTime(), poolStatistics.getMaximumCheckOutTime());
+            poolStatistics.getMinimumCheckOutTime(), poolStatistics.getMaximumCheckOutTime());
     final List<ConnectionPoolState> stats = sortAndRemoveDuplicates(poolStatistics.getFineGrainedStatistics());
     if (!stats.isEmpty()) {
       final XYSeries fineGrainedInPoolSeries = new XYSeries("In pool");

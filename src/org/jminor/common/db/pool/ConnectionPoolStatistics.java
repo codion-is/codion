@@ -102,7 +102,7 @@ public interface ConnectionPoolStatistics {
   /**
    * @return the minimum check out time in ms
    */
-  long getMininumCheckOutTime();
+  long getMinimumCheckOutTime();
 
   /**
    * @return the maximum check out time in ms

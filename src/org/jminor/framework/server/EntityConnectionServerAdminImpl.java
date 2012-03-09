@@ -5,6 +5,7 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -489,7 +490,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
             + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
   }
 
-  private static void startServer() throws RemoteException, ClassNotFoundException {
+  private static void startServer() throws RemoteException, ClassNotFoundException, DatabaseException {
     final Integer serverPort = (Integer) Configuration.getValue(Configuration.SERVER_PORT);
     if (serverPort == null) {
       throw new IllegalArgumentException("Configuration property '" + Configuration.SERVER_PORT + "' is required");
@@ -535,9 +536,11 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
    * If the argument 'shutdown' is supplied the server, if running, is shut down.
    * @param arguments 'shutdown' causes a running server to be shut down
    * @throws RemoteException in case of a remote exception during service export
-   * @throws ClassNotFoundException in case the domain model classes required for the server is not found
+   * @throws ClassNotFoundException in case the domain model classes required for the server is not found or
+   * if the jdbc driver class is not found
+   * @throws DatabaseException in case of an exception while constructing the initial pooled connections
    */
-  public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException {
+  public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException, DatabaseException {
     if (arguments.length == 0) {
       startServer();
     }

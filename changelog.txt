@@ -2941,3 +2941,4 @@
   EntityConnection.getPoolableConnection() renamed to getDatabaseConnection()
   EntityRemoteConnection.getPoolableConnection() renamed to getDatabaseConnection()
   EntityConnectionImpl.executeProcedure() and executeFunction(), tests added to EntityConnectionImplTest
+  ConnectionPoolImpl now initializes minimumPoolSize connections on start
