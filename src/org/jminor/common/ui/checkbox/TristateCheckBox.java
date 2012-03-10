@@ -2,8 +2,8 @@ package org.jminor.common.ui.checkbox;
 
 /**
  * http://www.javaspecialists.eu/archive/Issue145.html
+ * @author Heinz M. Kabutz
  */
-
 import org.jminor.common.model.checkbox.TristateButtonModel;
 import org.jminor.common.model.checkbox.TristateState;
 

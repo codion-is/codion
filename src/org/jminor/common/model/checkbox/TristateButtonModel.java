@@ -3,6 +3,7 @@ package org.jminor.common.model.checkbox;
 /**
  * A CheckBox implementation which includes an undetermined state.
  * http://www.javaspecialists.eu/archive/Issue145.html
+ * @author Heinz M. Kabutz
  */
 import javax.swing.JToggleButton.ToggleButtonModel;
 import java.awt.event.ItemEvent;

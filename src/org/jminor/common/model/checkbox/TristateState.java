@@ -2,6 +2,7 @@ package org.jminor.common.model.checkbox;
 
 /**
  * http://www.javaspecialists.eu/archive/Issue145.html
+ * @author Heinz M. Kabutz
  */
 public enum TristateState {
   SELECTED {
