@@ -494,6 +494,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * underlying entity, for performing an update on the selected entities
    * @see #initializePanel()
    * @throws IllegalStateException in case the underlying model is read only or if updating is not allowed
+   * @see #includeUpdateSelectedProperty(org.jminor.framework.domain.Property)
    */
   public ControlSet getUpdateSelectedControlSet() {
     if (getEntityTableModel().isReadOnly() || !getEntityTableModel().isUpdateAllowed()
@@ -505,14 +506,16 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
     for (final Property property : EntityUtil.getUpdatableProperties(getEntityTableModel().getEntityID())) {
-      final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
-      controlSet.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
-        /** {@inheritDoc} */
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          updateSelectedEntities(property);
-        }
-      }));
+      if (includeUpdateSelectedProperty(property)) {
+        final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
+        controlSet.add(UiUtil.linkToEnabledState(enabled, new AbstractAction(caption) {
+          /** {@inheritDoc} */
+          @Override
+          public void actionPerformed(final ActionEvent e) {
+            updateSelectedEntities(property);
+          }
+        }));
+      }
     }
 
     return controlSet;
@@ -1109,6 +1112,17 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
+   * Override to exclude properties from the update selected menu.
+   * @param property the property
+   * @return true if the given property should be included in the update selected menu.
+   * @see #getUpdateSelectedControlSet()
+   */
+  @SuppressWarnings("UnusedParameters")
+  protected boolean includeUpdateSelectedProperty(final Property property) {
+    return true;
+  }
+
+  /**
    * Called before a delete is performed, if true is returned the delete action is performed otherwise it is canceled
    * @return true if the delete action should be performed
    */
@@ -1400,7 +1414,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final String keyName = keyStroke.toString().replace("pressed ", "");
     final Control refresh = Controls.methodControl(getEntityTableModel(), "refresh", null,
             getEntityTableModel().getSearchModel().getSearchStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
-                    + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
+            + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
     final InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
     final ActionMap actionMap = getActionMap();
