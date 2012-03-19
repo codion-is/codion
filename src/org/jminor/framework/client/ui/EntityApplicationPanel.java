@@ -215,10 +215,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   /**
    * Performs a login, fetching user information via <code>getUser</code>
    * @throws CancelException in case the login is cancelled
-   * @see #getUser(String, org.jminor.common.model.User, String, javax.swing.ImageIcon)
+   * @see #getUser(String, org.jminor.common.model.User, javax.swing.ImageIcon)
    */
   public final void login() throws CancelException {
-    applicationModel.login(getUser(Messages.get(Messages.LOGIN), null, getClass().getSimpleName(), null));
+    applicationModel.login(getUser(Messages.get(Messages.LOGIN), null, null));
   }
 
   /**
@@ -955,15 +955,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * Returns the user, either via a login dialog or via override, called during startup
    * @param frameCaption the application frame caption
    * @param defaultUser the default user
-   * @param applicationIdentifier the application identifier
    * @param applicationIcon the application icon
    * @return the application user
    * @throws CancelException in case a login dialog is cancelled
    */
-  protected User getUser(final String frameCaption, final User defaultUser, final String applicationIdentifier,
-                         final ImageIcon applicationIcon) throws CancelException {
+  protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon) throws CancelException {
     final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
-            new User(Configuration.getDefaultUsername(applicationIdentifier), null) : defaultUser,
+            new User(Configuration.getDefaultUsername(getApplicationIdentifier()), null) : defaultUser,
             applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
     if (Util.nullOrEmpty(user.getUsername())) {
       throw new IllegalArgumentException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
@@ -978,7 +976,16 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param user the user
    */
   protected void saveDefaultUser(final User user) {
-    Util.setDefaultUserName(getClass().getSimpleName(), user.getUsername());
+    Util.setDefaultUserName(getApplicationIdentifier(), user.getUsername());
+  }
+
+  /**
+   * Returns a String identifying the type of application this EntityApplicationPanel represents,
+   * by default the full class name is returned.
+   * @return a String identifying the application type this panel represents
+   */
+  protected String getApplicationIdentifier() {
+    return getClass().getName();
   }
 
   /**
@@ -1016,12 +1023,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
-      final User user = loginRequired ? getUser(frameCaption, defaultUser, getClass().getName(), applicationIcon) : new User("", "");
+      final User user = loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : new User("", "");
       if (startupDialog != null) {
         startupDialog.setVisible(true);
       }
-      final String clientTypeID = getClass().getName();
-      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, clientTypeID);
+      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
       try {
         connectionProvider.getConnection();//throws exception if the server is not reachable
         final long initializationStarted = System.currentTimeMillis();

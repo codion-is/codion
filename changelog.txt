@@ -2943,3 +2943,5 @@
   EntityConnectionImpl.executeProcedure() and executeFunction(), tests added to EntityConnectionImplTest
   ConnectionPoolImpl now initializes minimumPoolSize connections on start
   EntityTablePanel.includeUpdateSelectedProperty() added
+  EntityApplicationPanel.getApplicationIdentifier() added, fixed bug, EntityApplicationPanel did not use the same string identifier when saving the default login name and when retrieving it
+  EntityApplicationPanel.getUser(), applicationIdentifier parameter removed, uses the above

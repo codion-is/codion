@@ -105,7 +105,7 @@ public abstract class EntityTestUnit {
    * @throws CancelException in case the login was cancelled
    */
   protected EntityConnectionProvider initializeConnectionProvider() throws CancelException {
-    return EntityConnectionProviders.createConnectionProvider(getTestUser(), getClass().getSimpleName());
+    return EntityConnectionProviders.createConnectionProvider(getTestUser(), getClass().getName());
   }
 
   /**
