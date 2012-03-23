@@ -10,6 +10,9 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnection;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.util.Timer;
 import java.util.TimerTask;
 
@@ -18,8 +21,10 @@ import java.util.TimerTask;
  */
 public abstract class AbstractEntityConnectionProvider implements EntityConnectionProvider {
 
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
+
   /**
-   * The user used by this db provider when connecting to the database server
+   * The user used by this connection provider when connecting to the database server
    */
   private User user;
   private EntityConnection entityConnection;
@@ -77,7 +82,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   /**
-   * @return true if the connection is valid
+   * @return true if the connection is valid, false if it is invalid or has not been initialized
    */
   protected abstract boolean isConnectionValid();
 
@@ -95,7 +100,13 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   }
 
   private void validateConnection() {
-    if (entityConnection == null || !isConnectionValid()) {
+    if (entityConnection == null) {
+      entityConnection = connect();
+      startValidTimer();
+    }
+    else if (!isConnectionValid()) {
+      LOG.info("Previous connection invalid, reconnecting");
+      entityConnection.disconnect();
       entityConnection = connect();
       startValidTimer();
     }
@@ -116,6 +127,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
           validTimer.cancel();
         }
       }
-    }, 0, 1000);
+    }, 0, 10000);
   }
 }

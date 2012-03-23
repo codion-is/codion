@@ -29,13 +29,13 @@ public class PostgreSQLDatabaseTest {
   @Test
   public void getAutoIncrementValueSQL() {
     final PostgreSQLDatabase db = new PostgreSQLDatabase("host", "1234", "sid");
-    assertEquals("select currval(seq)", db.getAutoIncrementValueSQL("seq"));
+    assertEquals("select currval('seq')", db.getAutoIncrementValueSQL("seq"));
   }
   
   @Test
   public void getSequenceSQL() {
     final PostgreSQLDatabase db = new PostgreSQLDatabase("host", "1234", "sid");
-    assertEquals("select nextval(seq)", db.getSequenceSQL("seq"));
+    assertEquals("select nextval('seq')", db.getSequenceSQL("seq"));
   }
   
   @Test

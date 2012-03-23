@@ -2945,3 +2945,9 @@
   EntityTablePanel.includeUpdateSelectedProperty() added
   EntityApplicationPanel.getApplicationIdentifier() added, fixed bug, EntityApplicationPanel did not use the same string identifier when saving the default login name and when retrieving it
   EntityApplicationPanel.getUser(), applicationIdentifier parameter removed, uses the above
+  FilteredTableModel.addSelectedItem() and addSelectedItems() added, tested
+  FilteredTableModel.getSelectedIndexes() now returns a List instead of Collection
+  AbstractEntityConnectionProvider, logger added, logs when a connection is invalidated, disconnects an invalid connection
+  AbstractEntityConnectionProvider, validity time now runs every 10 seconds instead of every second
+  PostgreSQLDatabase bug fixed, select currval/nextval now surround the sequence name with single quotation marks
+  EntityTestUnit.connectionProvider field replaced with connection

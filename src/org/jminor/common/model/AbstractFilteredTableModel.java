@@ -379,7 +379,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<Integer> getSelectedIndexes() {
+  public final List<Integer> getSelectedIndexes() {
     return selectionModel.getSelectedIndexes();
   }
 
@@ -465,15 +465,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void setSelectedItems(final Collection<R> items) {
-    final List<Integer> indexes = new ArrayList<Integer>();
-    for (final R item : items) {
-      final int index = indexOf(item);
-      if (index >= 0) {
-        indexes.add(index);
-      }
+    if (!selectionModel.isSelectionEmpty()) {
+      selectionModel.clearSelection();
     }
-
-    selectionModel.setSelectedItemIndexes(indexes);
+    addSelectedItems(items);
   }
 
   /** {@inheritDoc} */
@@ -496,7 +491,26 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void addSelectedItemIndexes(final List<Integer> indexes) {
+  public void addSelectedItem(final R item) {
+    addSelectedItems(Arrays.asList(item));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void addSelectedItems(final Collection<R> items) {
+    final List<Integer> indexes = new ArrayList<Integer>();
+    for (final R item : items) {
+      final int index = indexOf(item);
+      if (index >= 0) {
+        indexes.add(index);
+      }
+    }
+    selectionModel.addSelectedItemIndexes(indexes);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void addSelectedItemIndexes(final Collection<Integer> indexes) {
     selectionModel.addSelectedItemIndexes(indexes);
   }
 
@@ -1249,8 +1263,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     /**
      * @return the selected indexes
      */
-    private Collection<Integer> getSelectedIndexes() {
-      final Collection<Integer> indexes = new ArrayList<Integer>();
+    private List<Integer> getSelectedIndexes() {
+      final List<Integer> indexes = new ArrayList<Integer>();
       final int min = getMinSelectionIndex();
       final int max = getMaxSelectionIndex();
       for (int i = min; i <= max; i++) {

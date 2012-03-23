@@ -311,15 +311,27 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   R getSelectedItem();
 
   /**
-   * @return the selected indexes, an empty collection if selection is empty
+   * @return the selected indexes, an empty list if selection is empty
    */
-  Collection<Integer> getSelectedIndexes();
+  List<Integer> getSelectedIndexes();
 
   /**
    * Sets the selected item
    * @param item the item to select
    */
   void setSelectedItem(final R item);
+
+  /**
+   * Adds the given item to the selection
+   * @param item the item to add to the selection
+   */
+  void addSelectedItem(final R item);
+
+  /**
+   * Adds the given items to the selection
+   * @param items the items to add to the selection
+   */
+  void addSelectedItems(final Collection<R> items);
 
   /**
    * Selects all visible entities
@@ -331,7 +343,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    * Adds these indexes to the selection
    * @param indexes the indexes to add to the selection
    */
-  void addSelectedItemIndexes(final List<Integer> indexes);
+  void addSelectedItemIndexes(final Collection<Integer> indexes);
 
   /**
    * @return the number of selected indexes in the underlying selection model.

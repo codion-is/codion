@@ -188,8 +188,8 @@ public class FilteredTablePanel<T, C> extends JPanel {
   }
 
   /**
-   * Scrolls the given row and column to the center of the view
-   * Assumes table is contained in a JScrollPane.
+   * Scrolls the given row and column to the center of the view.
+   * Calling this method has no effect if the table is not contained in a JScrollPane.
    * @param rowIndex the row
    * @param colIndex the column
    * Based on http://www.exampledepot.com/egs/javax.swing.table/VisCenter.html

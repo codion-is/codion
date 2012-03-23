@@ -44,14 +44,14 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   @Override
   public String getAutoIncrementValueSQL(final String idSource) {
     Util.rejectNullValue(idSource, "idSource");
-    return "select currval(" + idSource + ")";
+    return "select currval('" + idSource + "')";
   }
 
   /** {@inheritDoc} */
   @Override
   public String getSequenceSQL(final String sequenceName) {
     Util.rejectNullValue(sequenceName, "sequenceName");
-    return "select nextval(" + sequenceName + ")";
+    return "select nextval('" + sequenceName + "')";
   }
 
   /** {@inheritDoc} */
