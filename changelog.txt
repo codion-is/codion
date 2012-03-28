@@ -2951,3 +2951,4 @@
   AbstractEntityConnectionProvider, validity time now runs every 10 seconds instead of every second
   PostgreSQLDatabase bug fixed, select currval/nextval now surround the sequence name with single quotation marks
   EntityTestUnit.connectionProvider field replaced with connection
+  DefaultEntityTableModel.getPropertySummaryModel() now adds summary update event as a listener on afterInsert on the edit model, if available

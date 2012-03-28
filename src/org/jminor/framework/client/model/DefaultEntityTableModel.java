@@ -540,7 +540,10 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
         /** {@inheritDoc} */
         @Override
         public void bindValuesChangedEvent(final Event event) {
-          addFilteringListener(event);//todo summary is updated twice per refresh and should update on insert
+          if (editModel != null) {
+            editModel.addAfterInsertListener(event);
+          }
+          addFilteringListener(event);//todo summary is updated twice per refresh
           addRefreshDoneListener(event);
           addSelectionChangedListener(event);
         }
