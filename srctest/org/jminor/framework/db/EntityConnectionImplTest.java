@@ -250,7 +250,7 @@ public class EntityConnectionImplTest {
     Databases.addOperation(func);
     connection.executeFunction(func.getID());
   }
-  
+
   @Test
   public void executeProcedure() throws DatabaseException {
     final DatabaseConnection.Procedure proc = new AbstractProcedure("executeProcedure", "executeProcedure") {
@@ -317,17 +317,17 @@ public class EntityConnectionImplTest {
 
   @Test
   public void optimisticLocking() throws Exception {
-    final EntityConnectionImpl baseDb = initializeConnection();
-    final EntityConnectionImpl optimisticDb = initializeConnection();
-    optimisticDb.setOptimisticLocking(true);
+    final EntityConnectionImpl baseConnection = initializeConnection();
+    final EntityConnectionImpl optimisticConnection = initializeConnection();
+    optimisticConnection.setOptimisticLocking(true);
     String oldLocation = null;
     Entity updatedDepartment = null;
     try {
-      final Entity department = baseDb.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+      final Entity department = baseConnection.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
       oldLocation = (String) department.setValue(EmpDept.DEPARTMENT_LOCATION, "NEWLOC");
-      updatedDepartment = baseDb.update(Arrays.asList(department)).get(0);
+      updatedDepartment = baseConnection.update(Arrays.asList(department)).get(0);
       try {
-        optimisticDb.update(Arrays.asList(department));
+        optimisticConnection.update(Arrays.asList(department));
         fail("RecordModifiedException should have been thrown");
       }
       catch (RecordModifiedException e) {
@@ -340,14 +340,14 @@ public class EntityConnectionImplTest {
         try {
           if (updatedDepartment != null && oldLocation != null) {
             updatedDepartment.setValue(EmpDept.DEPARTMENT_LOCATION, oldLocation);
-            baseDb.update(Arrays.asList(updatedDepartment));
+            baseConnection.update(Arrays.asList(updatedDepartment));
           }
         }
         catch (DatabaseException e) {
           e.printStackTrace();
         }
-        baseDb.disconnect();
-        optimisticDb.disconnect();
+        baseConnection.disconnect();
+        optimisticConnection.disconnect();
       }
       catch (Exception e) {
         e.printStackTrace();

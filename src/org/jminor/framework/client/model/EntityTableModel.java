@@ -51,12 +51,20 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
 
   /**
    * Refreshes this table model according the the given values by finding the first foreign key property
-   * referencing the entity identified by <code>foreignKeyEntityID</code> and setting <code>foreignKeyValues</code>
-   * as the criteria values. If no foreign key property is found this method has no effect.
+   * referencing the entity identified by <code>foreignKeyEntityID</code>, setting <code>foreignKeyValues</code>
+   * as the criteria values and performing a refresh. If no foreign key property is found this method has no effect.
    * @param foreignKeyEntityID the ID of the master entity
    * @param foreignKeyValues the entities to use as criteria values
    */
   void setForeignKeySearchValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues);
+
+  /**
+   * Sets  <code>foreignKeyValues</code> as the search criteria values for the given foreignKeyProperty
+   * and refreshes this table model.
+   * @param foreignKeyProperty the ID of the foreign key property
+   * @param foreignKeyValues the entities to use as criteria values
+   */
+  void setForeignKeySearchValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues);
 
   /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary

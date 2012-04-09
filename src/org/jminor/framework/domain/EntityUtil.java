@@ -513,8 +513,7 @@ public final class EntityUtil {
   private static Object getRandomDouble(final Property property) {
     final double min = property.getMin() == null ? -10000000 : property.getMin();
     final double max = property.getMax() == null ? 10000000 : property.getMax();
-    //Min + (int)(Math.random() * ((Max - Min) + 1))
-    final double ret = min + (RANDOM.nextDouble() * ((max - min) + 1));
+    final double ret = (RANDOM.nextDouble() * ((max - min))) + min;
     if (property.getMaximumFractionDigits() > 0) {
       return Util.roundDouble(ret, property.getMaximumFractionDigits());
     }

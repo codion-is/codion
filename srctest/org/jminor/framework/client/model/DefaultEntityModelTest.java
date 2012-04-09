@@ -205,9 +205,9 @@ public final class DefaultEntityModelTest {
     departmentModel.refreshDetailModels();
     assertTrue(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getRowCount() > 0);
 
-    final EntityConnection db = departmentModel.getConnectionProvider().getConnection();
-    final Entity department = db.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
-    final List<Entity> salesEmployees = db.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE,
+    final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
+    final Entity department = connection.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+    final List<Entity> salesEmployees = connection.selectMany(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department));
     assertTrue("Number of employees for department should not be 0", salesEmployees.size() > 0);
     departmentModel.getTableModel().setSelectedItem(department);
@@ -221,6 +221,7 @@ public final class DefaultEntityModelTest {
     departmentModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     departmentModel.addDetailModel(employeeModel);
+    departmentModel.setDetailModelForeignKey(employeeModel, EmpDept.EMPLOYEE_DEPARTMENT_FK);
     departmentModel.setLinkedDetailModels(employeeModel);
     employeeModel.getTableModel().setQueryCriteriaRequired(false);
   }

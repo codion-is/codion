@@ -2952,3 +2952,9 @@
   PostgreSQLDatabase bug fixed, select currval/nextval now surround the sequence name with single quotation marks
   EntityTestUnit.connectionProvider field replaced with connection
   DefaultEntityTableModel.getPropertySummaryModel() now adds summary update event as a listener on afterInsert on the edit model, if available
+  EntityModel.initialize() overloaded with Property.ForeignKeyProperty
+  DefaultEntityModel.handleInitialization() signature changes, now takes Property.ForeignKeyProperty as parameter
+  EntityTableModel.setForeignKeySearchValues() overloaded with Property.ForeignKeyProperty
+  EntityModel.setDetailModelForeignKey() added
+  EntityConnectionImpl now performs commit/rollback for select queries as well as insert/update/delete, required by postgresql transaction handling
+  EntityUtil.getRandomDouble() bug fixed, + 1 removed

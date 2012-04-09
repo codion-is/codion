@@ -139,7 +139,7 @@
   </target>
 
   <target name="run_tests" depends="build">
-    <junit printsummary="yes" haltonfailure="on" haltonerror="on" >
+    <junit printsummary="yes" haltonfailure="on" haltonerror="on" fork="yes">
       <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
       <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
       <jvmarg value="-Djminor.db.port=${junit.db.port}"/>

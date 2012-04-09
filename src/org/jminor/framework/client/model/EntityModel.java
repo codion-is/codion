@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Refreshable;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionListener;
 import java.util.Collection;
@@ -43,12 +44,21 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   void setLinkedDetailModels(final EntityModel... detailModels);
 
   /**
-   * Initializes this {@link EntityModel} according to the given foreign key entities,
-   * sets the appropriate property value in the {@link EntityEditModel} and filters the {@link EntityTableModel}
+   * Initializes this {@link EntityModel} according to the given foreign key entities.
+   * It sets the value for the first available foreign key property representing the given entityID
+   * in the {@link EntityEditModel} and sets the search values in the {@link EntityTableModel}.
    * @param foreignKeyEntityID the ID of the master entity
    * @param foreignKeyValues the master entities
    */
   void initialize(final String foreignKeyEntityID, final List<Entity> foreignKeyValues);
+
+  /**
+   * Initializes this {@link EntityModel} according to the given foreign key entities,
+   * sets the appropriate property value in the {@link EntityEditModel} and filters the {@link EntityTableModel}
+   * @param foreignKeyProperty the ID of the foreign key
+   * @param foreignKeyValues the foreign key values
+   */
+  void initialize(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues);
 
   /**
    * Sets the model serving as master model
@@ -117,6 +127,18 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
    * @return an unmodifiable collection containing the detail models this model contains
    */
   Collection<? extends EntityModel> getDetailModels();
+
+  /**
+   * Indicates that the given detail model is based on the foreign key with the given ID, this becomes
+   * practical when a detail model is based on an entity which contains multiple foreign keys to the
+   * same master entity. When initializing this detail model only the value for that foreignKeyProperty is set.
+   * If <code>foreignKeyPropertyID</code> is null the association is removed.
+   * @param detailModel the detail model
+   * @param foreignKeyPropertyID the foreign key property ID
+   * @see #initialize(org.jminor.framework.domain.Property.ForeignKeyProperty, java.util.List)
+   * @throws IllegalArgumentException in case this EntityModel does not contain the given detail model
+   */
+  void setDetailModelForeignKey(final EntityModel detailModel, final String foreignKeyPropertyID);
 
   /**
    * Refreshes the detail models.

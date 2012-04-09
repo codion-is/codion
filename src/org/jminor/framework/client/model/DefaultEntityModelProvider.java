@@ -101,7 +101,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
   /** {@inheritDoc} */
   @Override
-  public boolean containsDetailModelProvider(final EntityModelProvider detailModelProvider) {
+  public final boolean containsDetailModelProvider(final EntityModelProvider detailModelProvider) {
     return detailModelProviders.contains(detailModelProvider);
   }
 
