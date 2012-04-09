@@ -429,6 +429,7 @@ public final class EntityUiUtil {
     checkProperty(foreignKeyProperty, editModel);
     final JTextField textField = new JTextField();
     textField.setEditable(false);
+    textField.setFocusable(false);
     if (foreignKeyProperty.hasDescription()) {
       textField.setToolTipText(foreignKeyProperty.getDescription());
     }
