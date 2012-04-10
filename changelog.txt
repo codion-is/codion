@@ -2959,3 +2959,4 @@
   EntityConnectionImpl now performs commit/rollback for select queries as well as insert/update/delete, required by postgresql transaction handling
   EntityUtil.getRandomDouble() bug fixed, + 1 removed
   EntityUiUtil.createEntityField(), field made unfocusable
+  ExceptionDialog.emailErrorReport() no longer windows specific, uses Desktop.browse(), errorReportEmailAddressTo removed and lastUsedEmailAddress added
