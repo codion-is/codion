@@ -30,6 +30,7 @@ import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
+import java.awt.Desktop;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.Font;
@@ -42,6 +43,8 @@ import java.awt.print.PrinterException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.net.URI;
+import java.net.URLEncoder;
 
 /**
  * A JDialog for displaying information on exceptions.
@@ -79,7 +82,7 @@ public final class ExceptionDialog extends JDialog {
   private final Event evtShowDetailsChanged = Events.event();
   private boolean showDetails = false;
 
-  private static String errorReportEmailAddressTo;
+  private static String lastUsedEmailAddress = "";
   private static String errorReportEmailSubjectPrefix = "";
 
   public ExceptionDialog(final Window owner) {
@@ -186,13 +189,6 @@ public final class ExceptionDialog extends JDialog {
   }
 
   /**
-   * @param errorReportEmailTo the email address to use when sending the error report
-   */
-  public static void setErrorReportEmailTo(final String errorReportEmailTo) {
-    errorReportEmailAddressTo = errorReportEmailTo;
-  }
-
-  /**
    * @param errorReportSubjectPrefix a string to prefix to the subject of the error report when emailed
    */
   public static void setErrorReportEmailSubjectPrefix(final String errorReportSubjectPrefix) {
@@ -222,24 +218,18 @@ public final class ExceptionDialog extends JDialog {
   }
 
   public void emailErrorReport() {
-    if (errorReportEmailAddressTo == null) {
-      final String address = JOptionPane.showInputDialog(Messages.get(Messages.INPUT_EMAIL_ADDRESS));
-      if (!Util.nullOrEmpty(address)) {
-        errorReportEmailAddressTo = address;
-      }
-      else {
-        return;
-      }
+    final String address = JOptionPane.showInputDialog(Messages.get(Messages.INPUT_EMAIL_ADDRESS), lastUsedEmailAddress);
+    if (Util.nullOrEmpty(address)) {
+      return;
     }
+    lastUsedEmailAddress = address;
     try {
-      final String ctr = "ctr.exe /C start mailto:" + errorReportEmailAddressTo +
-              "?subject=\"" + errorReportEmailSubjectPrefix + descriptionLabel.getText() + "\"";
-      copyErrorReport();
-      JOptionPane.showMessageDialog(this, Messages.get(Messages.EXC_DLG_EMAIL_INSTRUCTIONS),
-              Messages.get(Messages.MESSAGE), JOptionPane.INFORMATION_MESSAGE);
-      Runtime.getRuntime().exec(ctr);
+      final String uriStr = String.format("mailto:%s?subject=%s&body=%s", address,
+              URLEncoder.encode(errorReportEmailSubjectPrefix + descriptionLabel.getText(), "UTF-8").replace("+", "%20"),
+              URLEncoder.encode(detailsArea.getText(), "UTF-8").replace("+", "%20"));
+      Desktop.getDesktop().browse(new URI(uriStr));
     }
-    catch (IOException e) {
+    catch (Exception e) {
       throw new RuntimeException(e);
     }
   }

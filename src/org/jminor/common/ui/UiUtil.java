@@ -448,7 +448,7 @@ public final class UiUtil {
   /**
    * Creates a JFrame instance with the given icon which does nothing on close
    * @param icon used as a frame icon if specified
-   * @return a JFram instance
+   * @return a JFrame instance
    */
   public static JFrame createFrame(final Image icon) {
     final JFrame frame = new JFrame();
