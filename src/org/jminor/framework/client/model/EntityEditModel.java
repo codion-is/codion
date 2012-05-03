@@ -307,25 +307,25 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
 
   /**
    * Performs a insert on the active entity, sets the primary key values of the active entity
-   * according to the primary key returned by the method
-   * @return a list containing the primary key of the inserted entity
+   * according to the primary key of the inserted entity
+   * @return a list containing the inserted entity
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
-  List<Entity.Key> insert() throws DatabaseException, ValidationException;
+  List<Entity> insert() throws DatabaseException, ValidationException;
 
   /**
    * Performs an insert on the given entities, returns silently on receiving an empty list
    * @param entities the entities to insert
-   * @return a list containing the primary keys of the inserted entities
+   * @return a list containing the inserted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
    * @see #addBeforeInsertListener(java.awt.event.ActionListener)
    * @see #addAfterInsertListener(java.awt.event.ActionListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
-  List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException, ValidationException;
+  List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException;
 
   /**
    * Performs a update on the active entity
@@ -379,6 +379,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
 
   /**
    * @return a {@link StateObserver} indicating whether or not the active entity is null
+   * todo rename to getPrimaryKeyNullObserver
    */
   StateObserver getEntityNullObserver();
 

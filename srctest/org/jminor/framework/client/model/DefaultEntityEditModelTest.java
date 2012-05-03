@@ -188,9 +188,9 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void test() throws Exception {
-    final StateObserver entityNullState = employeeEditModel.getEntityNullObserver();
+    final StateObserver primaryKeyNullState = employeeEditModel.getEntityNullObserver();
 
-    assertTrue(entityNullState.isActive());
+    assertTrue(primaryKeyNullState.isActive());
 
     employeeEditModel.setReadOnly(false);
     assertFalse(employeeEditModel.isReadOnly());
@@ -222,7 +222,7 @@ public final class DefaultEntityEditModelTest {
 
     final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
     employeeEditModel.setEntity(employee);
-    assertFalse(entityNullState.isActive());
+    assertFalse(primaryKeyNullState.isActive());
 
     assertTrue("Active entity is not equal to the entity just set", employeeEditModel.getEntityCopy().propertyValuesEqual(employee));
     assertFalse("Active entity is new after an entity is set", employeeEditModel.isEntityNew());
@@ -230,10 +230,17 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(null);
     assertTrue("Active entity is new after entity is set to null", employeeEditModel.isEntityNew());
     assertFalse(employeeEditModel.getModifiedObserver().isActive());
-    assertTrue("Active entity is not null after entity is set to null", employeeEditModel.getEntityCopy().isPrimaryKeyNull());
+    assertTrue("Active entity primary key is not null after entity is set to null", employeeEditModel.getEntityCopy().isPrimaryKeyNull());
 
     employeeEditModel.setEntity(employee);
-    assertTrue("Active entity is null after selection is made", !employeeEditModel.getEntityCopy().isPrimaryKeyNull());
+    assertTrue("Active entity primary key is null after entity is set", !employeeEditModel.getEntityCopy().isPrimaryKeyNull());
+
+    final Integer originalEmployeeId = (Integer) employeeEditModel.getValue(EmpDept.EMPLOYEE_ID);
+    employeeEditModel.setValue(EmpDept.EMPLOYEE_ID, null);
+    assertTrue(primaryKeyNullState.isActive());
+    employeeEditModel.setValue(EmpDept.EMPLOYEE_ID, originalEmployeeId);
+    assertFalse(primaryKeyNullState.isActive());
+
     employeeEditModel.setEntity(null);
 
     final Double originalCommission = (Double) employeeEditModel.getValue(EmpDept.EMPLOYEE_COMMISSION);
@@ -329,13 +336,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.addAfterInsertListener(new InsertListener() {
         @Override
         protected void inserted(final InsertEvent event) {
-          try {
-            final Entity inserted = employeeEditModel.getConnectionProvider().getConnection().selectSingle(event.getInsertedKeys().get(0));
-            assertEquals(department, inserted.getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
-          }
-          catch (Exception ex) {
-            ex.printStackTrace();
-          }
+          assertEquals(department, event.getInsertedEntities().get(0).getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
         }
       });
       employeeEditModel.setInsertAllowed(false);

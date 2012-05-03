@@ -164,6 +164,9 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   @Override
   public void initializeValue(final Property property, final Object value) {
     Util.rejectNullValue(property, PROPERTY_PARAM);
+    if (property instanceof Property.PrimaryKeyProperty) {
+      primaryKey = null;
+    }
     super.initializeValue(property.getPropertyID(), value);
   }
 

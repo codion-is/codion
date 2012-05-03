@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
@@ -172,7 +171,11 @@ public class DefaultEntityModel implements EntityModel {
   /** {@inheritDoc} */
   @Override
   public final void setMasterModel(final EntityModel entityModel) {
+    if (this.masterModel != null) {
+      throw new IllegalStateException("Master model has already been set for " + this);
+    }
     this.masterModel = entityModel;
+    bindMasterModelEvents();
   }
 
   /** {@inheritDoc} */
@@ -384,10 +387,8 @@ public class DefaultEntityModel implements EntityModel {
       tableModel.setForeignKeySearchValues(foreignKeyProperty, foreignKeyValues);
     }
 
-    if (editModel.isEntityNew()) {
-      final Entity referencedEntity = foreignKeyValues == null || foreignKeyValues.isEmpty() ?
-              null : foreignKeyValues.get(0);
-      editModel.setValue(foreignKeyProperty.getPropertyID(), referencedEntity);
+    if (editModel.isEntityNew() && foreignKeyValues != null && !foreignKeyValues.isEmpty()) {
+      editModel.setValue(foreignKeyProperty.getPropertyID(), foreignKeyValues.get(0));
     }
     handleInitialization(foreignKeyProperty, foreignKeyValues);
   }
@@ -449,14 +450,11 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
-  private void handleInsert(final InsertEvent insertEvent) throws DatabaseException {
-    final List<Entity.Key> primaryKeys = insertEvent.getInsertedKeys();
+  private void handleInsert(final InsertEvent insertEvent) {
     if (containsTableModel()) {
       tableModel.clearSelection();
-      tableModel.addEntitiesByPrimaryKeys(primaryKeys, true);
+      tableModel.addEntities(insertEvent.getInsertedEntities(), true);
     }
-
-    refreshDetailModelsAfterInsert(primaryKeys);
   }
 
   private void handleUpdate(final UpdateEvent updateEvent) {
@@ -475,76 +473,62 @@ public class DefaultEntityModel implements EntityModel {
         tableModel.replaceEntities(updated);
       }
     }
-
-    refreshDetailModelsAfterUpdate(updatedEntities);
-  }
-
-  private void handleDelete(final DeleteEvent deleteEvent) {
-    refreshDetailModelsAfterDelete(deleteEvent.getDeletedEntities());
   }
 
   /**
-   * Removes the deleted entities from combobox models
-   * @param deletedEntities the deleted entities
+   * Adds the inserted entities to the EntityComboBoxModels based on the inserted entity type
+   * and sets the value of the master foreign key property
+   * @param insertEvent the insert event
    */
-  private void refreshDetailModelsAfterDelete(final List<Entity> deletedEntities) {
-    if (deletedEntities.isEmpty()) {
-      return;
-    }
-
-    for (final EntityModel detailModel : detailModels) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty :
-              Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
-        final EntityEditModel detailEditModel = detailModel.getEditModel();
-        if (detailEditModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
-          final EntityComboBoxModel comboModel = detailEditModel.getEntityComboBoxModel(foreignKeyProperty);
-          final Entity selectedEntity = comboModel.getSelectedValue();
-          for (final Entity deletedEntity : deletedEntities) {
-            comboModel.removeItem(deletedEntity);
-          }
-          if (comboModel.isVisible(selectedEntity)) {
-            comboModel.setSelectedItem(selectedEntity);
-          }//if the null value is selected we're fine, otherwise select topmost item
-          else if (!comboModel.isNullValueSelected() && comboModel.getSize() > 0) {
-            comboModel.setSelectedItem(comboModel.getElementAt(0));
-          }
-          else {
-            comboModel.setSelectedItem(null);
-          }
+  private void handleMasterInsert(final InsertEvent insertEvent) {
+    for (final Property.ForeignKeyProperty foreignKeyProperty :
+            Entities.getForeignKeyProperties(getEntityID(), masterModel.getEntityID())) {
+      if (editModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
+        for (final Entity entity : insertEvent.getInsertedEntities()) {
+          editModel.getEntityComboBoxModel(foreignKeyProperty).addItem(entity);
         }
       }
+      editModel.setValue(foreignKeyProperty.getPropertyID(), insertEvent.getInsertedEntities().get(0));
     }
   }
 
   /**
-   * Refreshes the EntityComboBoxModels based on the inserted entity type in the detail models
-   * and sets the value of the master property to the entity with the primary key found
-   * at index 0 in <code>insertedPrimaryKeys</code>
-   * @param insertedPrimaryKeys the primary keys of the inserted entities
-   * @throws DatabaseException in case of an exception while selecting the newly inserted entities
+   * Replaces the updated master entities wherever they are referenced
+   * @param updateEvent the update event
    */
-  private void refreshDetailModelsAfterInsert(final List<Entity.Key> insertedPrimaryKeys) throws DatabaseException {
-    if (detailModels.isEmpty()) {
-      return;
-    }
-    final Entity insertedEntity = connectionProvider.getConnection().selectSingle(insertedPrimaryKeys.get(0));
-    for (final EntityModel detailModel : detailModels) {
-      for (final Property.ForeignKeyProperty foreignKeyProperty :
-              Entities.getForeignKeyProperties(detailModel.getEntityID(), entityID)) {
-        final EntityEditModel detailEditModel = detailModel.getEditModel();
-        if (detailEditModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
-          detailEditModel.getEntityComboBoxModel(foreignKeyProperty).refresh();
-        }
-        detailEditModel.setValue(foreignKeyProperty.getPropertyID(), insertedEntity);
-      }
+  private void handleMasterUpdate(final UpdateEvent updateEvent) {
+    editModel.replaceForeignKeyValues(masterModel.getEntityID(), updateEvent.getUpdatedEntities());
+    if (containsTableModel()) {
+      getTableModel().replaceForeignKeyValues(masterModel.getEntityID(), updateEvent.getUpdatedEntities());
     }
   }
 
-  private void refreshDetailModelsAfterUpdate(final Collection<Entity> updatedEntities) {
-    for (final EntityModel detailModel : detailModels) {
-      detailModel.getEditModel().replaceForeignKeyValues(entityID, updatedEntities);
-      if (detailModel.containsTableModel()) {
-        detailModel.getTableModel().replaceForeignKeyValues(entityID, updatedEntities);
+  /**
+   * Removes the deleted entities from all ComboBox models based on that entity type
+   * @param deleteEvent the delete event
+   */
+  private void handleMasterDelete(final DeleteEvent deleteEvent) {
+    if (deleteEvent.getDeletedEntities().isEmpty()) {
+      return;
+    }
+
+    for (final Property.ForeignKeyProperty foreignKeyProperty :
+            Entities.getForeignKeyProperties(getEntityID(), masterModel.getEntityID())) {
+      if (editModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
+        final EntityComboBoxModel comboModel = editModel.getEntityComboBoxModel(foreignKeyProperty);
+        final Entity selectedEntity = comboModel.getSelectedValue();
+        for (final Entity deletedEntity : deleteEvent.getDeletedEntities()) {
+          comboModel.removeItem(deletedEntity);
+        }
+        if (comboModel.isVisible(selectedEntity)) {
+          comboModel.setSelectedItem(selectedEntity);
+        }//if the null value is selected we're fine, otherwise select topmost item
+        else if (!comboModel.isNullValueSelected() && comboModel.getSize() > 0) {
+          comboModel.setSelectedItem(comboModel.getElementAt(0));
+        }
+        else {
+          comboModel.setSelectedItem(null);
+        }
       }
     }
   }
@@ -586,12 +570,7 @@ public class DefaultEntityModel implements EntityModel {
       /** {@inheritDoc} */
       @Override
       public void inserted(final InsertEvent event) {
-        try {
-          handleInsert(event);
-        }
-        catch (DatabaseException e) {
-          throw new RuntimeException(e);
-        }
+        handleInsert(event);
       }
     });
     editModel.addAfterUpdateListener(new UpdateListener() {
@@ -599,13 +578,6 @@ public class DefaultEntityModel implements EntityModel {
       @Override
       protected void updated(final UpdateEvent event) {
         handleUpdate(event);
-      }
-    });
-    editModel.addAfterDeleteListener(new DeleteListener() {
-      /** {@inheritDoc} */
-      @Override
-      protected void deleted(final DeleteEvent event) {
-        handleDelete(event);
       }
     });
     final ActionListener initializer = new ActionListener() {
@@ -622,5 +594,26 @@ public class DefaultEntityModel implements EntityModel {
     else {
       editModel.addEntitySetListener(initializer);
     }
+  }
+
+  private void bindMasterModelEvents() {
+    masterModel.getEditModel().addAfterInsertListener(new InsertListener() {
+      @Override
+      protected void inserted(final InsertEvent insertEvent) {
+        handleMasterInsert(insertEvent);
+      }
+    });
+    masterModel.getEditModel().addAfterUpdateListener(new UpdateListener() {
+      @Override
+      protected void updated(final UpdateEvent updateEvent) {
+        handleMasterUpdate(updateEvent);
+      }
+    });
+    masterModel.getEditModel().addAfterDeleteListener(new DeleteListener() {
+      @Override
+      protected void deleted(final DeleteEvent deleteEvent) {
+        handleMasterDelete(deleteEvent);
+      }
+    });
   }
 }

@@ -76,11 +76,13 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues);
 
   /**
-   * Retrieves the entities identified by the given primary keys and adds them to this table model
-   * @param primaryKeys the primary keys
+   * Adds the given entities to this table model, it is recommended to only add entities
+   * directly to this table model after they have been inserted into the underlying table
+   * since otherwise they will disappear during the next table model refresh.
+   * @param entities the entities to add
    * @param atFront if true the entities are added to the front
    */
-  void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, final boolean atFront);
+  void addEntities(final List<Entity> entities, final boolean atFront);
 
   /**
    * Replaces the given entities in this table model

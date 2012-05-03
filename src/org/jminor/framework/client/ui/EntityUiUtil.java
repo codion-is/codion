@@ -945,7 +945,7 @@ public final class EntityUiUtil {
     private final JComponent component;
     private final EntityDataProvider dataProvider;
     private final EntityPanelProvider panelProvider;
-    private final List<Entity.Key> lastInsertedKeys = new ArrayList<Entity.Key>();
+    private final List<Entity> lastInsertedEntities = new ArrayList<Entity>();
 
     private CreateEntityAction(final JComponent component, final EntityPanelProvider panelProvider) {
       super("", Images.loadImage(Images.IMG_ADD_16));
@@ -969,8 +969,8 @@ public final class EntityUiUtil {
       ((EntityEditModel) editPanel.getEditModel()).addAfterInsertListener(new InsertListener() {
         @Override
         protected void inserted(final InsertEvent event) {
-          lastInsertedKeys.clear();
-          lastInsertedKeys.addAll(event.getInsertedKeys());
+          lastInsertedEntities.clear();
+          lastInsertedEntities.addAll(event.getInsertedEntities());
         }
       });
       final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
@@ -980,19 +980,13 @@ public final class EntityUiUtil {
       dialog.setVisible(true);
       if (pane.getValue() != null && pane.getValue().equals(0)) {
         final boolean insertPerformed = editPanel.insert();//todo exception during insert, f.ex validation failure not handled
-        if (insertPerformed && !lastInsertedKeys.isEmpty()) {
+        if (insertPerformed && !lastInsertedEntities.isEmpty()) {
           if (dataProvider instanceof EntityComboBoxModel) {
             ((EntityComboBoxModel) dataProvider).refresh();
-            ((EntityComboBoxModel) dataProvider).setSelectedEntityByPrimaryKey(lastInsertedKeys.get(0));
+            ((EntityComboBoxModel) dataProvider).setSelectedItem(lastInsertedEntities.get(0));
           }
           else if (dataProvider instanceof EntityLookupModel) {
-            try {
-              final List<Entity> insertedEntities = dataProvider.getConnectionProvider().getConnection().selectMany(lastInsertedKeys);
-              ((EntityLookupModel) dataProvider).setSelectedEntities(insertedEntities);
-            }
-            catch (DatabaseException ex) {
-              throw new RuntimeException(ex);
-            }
+            ((EntityLookupModel) dataProvider).setSelectedEntities(lastInsertedEntities);
           }
         }
       }

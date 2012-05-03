@@ -63,6 +63,7 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   /**
    * Sets the model serving as master model
    * @param entityModel the master entity model
+   * @throws IllegalStateException if the master model has already been set
    */
   void setMasterModel(final EntityModel entityModel);
 

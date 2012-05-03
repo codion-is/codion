@@ -292,9 +292,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
    */
   @Override
   protected final boolean vetoSelectionChange(final Object item) {
-    if (getSize() == 0) {
-      return true;
-    }
     final Object theItem = item instanceof String && ((String) item).isEmpty() ? null : item;
 
     return theItem != null && !theItem.equals(getNullValueString()) && !(theItem instanceof Entity);

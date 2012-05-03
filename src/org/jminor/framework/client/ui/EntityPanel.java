@@ -805,7 +805,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       else {
         add(editControlPanel, BorderLayout.NORTH);
       }
-      prepareUI(true, false);
     }
     else if (state == HIDDEN) {
       if (compactBase != null && !detailEntityPanels.isEmpty()) {
@@ -818,6 +817,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     else {
       showEditDialog();
     }
+    prepareUI(true, false);
 
     revalidate();
   }
@@ -1102,8 +1102,13 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /**
    * @param masterPanel the panel serving as master panel for this entity panel
+   * @throws IllegalStateException in case a master panel has already been set
    */
   protected final void setMasterPanel(final EntityPanel masterPanel) {
+    Util.rejectNullValue(masterPanel, "masterPanel");
+    if (this.masterPanel != null) {
+      throw new IllegalStateException("Master panel has already been set for " + this);
+    }
     this.masterPanel = masterPanel;
   }
 
@@ -1357,7 +1362,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         setEditPanelState(HIDDEN);
       }
     });
-    editPanel.prepareUI(true, false);
   }
 
   /**

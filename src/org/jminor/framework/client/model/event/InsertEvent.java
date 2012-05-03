@@ -13,22 +13,22 @@ import java.util.List;
  */
 public final class InsertEvent extends ActionEvent {
 
-  private final List<Entity.Key> insertedKeys;
+  private final List<Entity> insertedEntities;
 
   /**
    * Instantiates a new InsertEvent.
    * @param source the source of the insert
-   * @param insertedKeys the primary keys of the inserted entities
+   * @param insertedEntities the inserted entities
    */
-  public InsertEvent(final Object source, final List<Entity.Key> insertedKeys) {
+  public InsertEvent(final Object source, final List<Entity> insertedEntities) {
     super(source, 0, "insert");
-    this.insertedKeys = insertedKeys;
+    this.insertedEntities = insertedEntities;
   }
 
   /**
-   * @return the primary keys of the inserted entities
+   * @return the entities just inserted
    */
-  public List<Entity.Key> getInsertedKeys() {
-    return insertedKeys;
+  public List<Entity> getInsertedEntities() {
+    return insertedEntities;
   }
 }

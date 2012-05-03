@@ -387,13 +387,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final void addEntitiesByPrimaryKeys(final List<Entity.Key> primaryKeys, final boolean atFront) {
-    try {
-      addItems(connectionProvider.getConnection().selectMany(primaryKeys), atFront);
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
+  public final void addEntities(final List<Entity> entities, final boolean atFront) {
+    addItems(entities, atFront);
   }
 
   /** {@inheritDoc} */

@@ -2960,3 +2960,20 @@
   EntityUtil.getRandomDouble() bug fixed, + 1 removed
   EntityUiUtil.createEntityField(), field made unfocusable
   ExceptionDialog.emailErrorReport() no longer windows specific, uses Desktop.browse(), errorReportEmailAddressTo removed and lastUsedEmailAddress added
+  DefaultEntityEditModel.insert() refactored, it set the primary key values after doInsert() had fired evtAfterInsert, .insertEntities() added
+  EntityPanel.setEditPanelState() now calls initializeUI() at the end so the parent panel will get the focus when the edit panel dialog is hidden
+  EntityTableModel.addEntities() added
+  EntityTableModel.addEntitiesByPrimaryKeys() removed
+  DefaultEntityModel.handleInsert()/refreshDetailModels() after insert refactored
+  InsertEvent now takes a list of entities as constructor parameter instead of primary keys
+  InsertEvent.getInsertedEntities() added
+  EntityEditModel.insert() returns the inserted entities instead of only their primary keys
+  DefaultEntityComboBox.vetoSelectionChange() no longer vetos if model is empty
+  DefaultEntityModel.setMasterModel() can now only be called once
+  EntityPanel.setMasterPanel() can now only be called once
+  DefaultEntityModel.bindMasterModelEvents() added, called from setMasterModel()
+  DefaultEntityModel.handleInsert(), handleUpdate() and handleDelete() no longer take care of the detail models, handleDelete() removed
+  DefaultEntityModel.handleMasterInsert(), handleMasterUpdate() and handleMasterDelete() added
+  EntityImpl.initializeValue() nulls primary key in case of primary key properties
+  DefaultEntityEditModel.bindEventsInternal() stPrimaryKeyNull updated in valueSetListener instead of entitySet, valueChangeEvent fired after states are updated
+  DefaultEntityModel.initialize() now only sets the value in the edit model if foreign key values are specified, that is, no longer nulls the value when initialized with an empty list

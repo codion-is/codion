@@ -465,21 +465,21 @@ public final class Configuration {
 
   /**
    * Specifies whether the foreign key value graph should be fully populated instead of
-   * being limited by the foreign key fetch depth setting.
+   * being limited by the foreign key fetch depth setting.<br>
    * Value type: Boolean<br>
    * Default value: true<br>
    */
   public static final String LIMIT_FOREIGN_KEY_FETCH_DEPTH = "jminor.db.limitForeignKeyFetchDepth";
 
   /**
-   * Specifies the default look and feel classname
+   * Specifies the default look and feel classname<br>
    * Value type: String<br>
    * Default value: UIManager.getSystemLookAndFeelClassName()
    */
   public static final String DEFAULT_LOOK_AND_FEEL_CLASSNAME = "jminor.client.defaultLookAndFeelClassName";
 
   /**
-   * Specifies the default size of the divider for detail panel split panes.
+   * Specifies the default size of the divider for detail panel split panes.<br>
    * Value type: Integer<br>
    * Default value: 18<br>
    */

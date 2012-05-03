@@ -24,7 +24,6 @@ import javax.swing.JComboBox;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -81,13 +80,12 @@ public final class DefaultEntityModelTest {
       assertFalse(departmentsComboBoxModel.contains(operations, true));
       departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_ID, 99);
       departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, "nameit");
-      final Entity.Key insertedKey = departmentModel.getEditModel().insert().get(0);
-      final Entity inserted = departmentModel.getConnectionProvider().getConnection().selectSingle(insertedKey);
+      final Entity inserted = departmentModel.getEditModel().insert().get(0);
       assertTrue(departmentsComboBoxModel.contains(inserted, true));
-      departmentModel.getTableModel().setSelectedByPrimaryKeys(Arrays.asList(insertedKey));
+      departmentModel.getTableModel().setSelectedItem(inserted);
       departmentModel.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, "nameitagain");
       departmentModel.getEditModel().update();
-      assertEquals("nameitagain", departmentsComboBoxModel.getEntity(insertedKey).getValue(EmpDept.DEPARTMENT_NAME));
+      assertEquals("nameitagain", departmentsComboBoxModel.getEntity(inserted.getPrimaryKey()).getValue(EmpDept.DEPARTMENT_NAME));
 
       primaryKey.setValue(EmpDept.DEPARTMENT_ID, 20);//research
       departmentModel.getTableModel().setSelectedByPrimaryKeys(keys);

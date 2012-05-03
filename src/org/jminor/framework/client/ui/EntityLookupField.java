@@ -268,7 +268,7 @@ public final class EntityLookupField extends JTextField {
             model.setSelectedEntities(queryResult);
           }
           else if (promptUser) {
-            if (queryResult.isEmpty()) {
+            if (queryResult.isEmpty()) {//todo Enter performs lookup again
               JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
             }
             else {
