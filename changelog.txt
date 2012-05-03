@@ -2977,3 +2977,4 @@
   EntityImpl.initializeValue() nulls primary key in case of primary key properties
   DefaultEntityEditModel.bindEventsInternal() stPrimaryKeyNull updated in valueSetListener instead of entitySet, valueChangeEvent fired after states are updated
   DefaultEntityModel.initialize() now only sets the value in the edit model if foreign key values are specified, that is, no longer nulls the value when initialized with an empty list
+  EntityEditModel.getEntityNullObserver() renamed to getPrimaryKeyNullObserver()

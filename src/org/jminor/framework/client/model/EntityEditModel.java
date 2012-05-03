@@ -51,7 +51,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   /**
    * @return true if the active entity is new, that is, has a primary key with null value
    * or a original null value
-   * @see #getEntityNullObserver()
+   * @see #getPrimaryKeyNullObserver
    * @see org.jminor.framework.domain.Entity#isPrimaryKeyNull()
    */
   boolean isEntityNew();
@@ -378,10 +378,9 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   StateObserver getAllowDeleteObserver();
 
   /**
-   * @return a {@link StateObserver} indicating whether or not the active entity is null
-   * todo rename to getPrimaryKeyNullObserver
+   * @return a {@link StateObserver} indicating whether or not the primary key of the active entity is null
    */
-  StateObserver getEntityNullObserver();
+  StateObserver getPrimaryKeyNullObserver();
 
   /**
    * @return the {@link StateObserver} used to determine if updating should be enabled

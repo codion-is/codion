@@ -367,7 +367,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
             States.aggregateState(Conjunction.AND,
                     getActiveObserver(),
                     editModel.getAllowDeleteObserver(),
-                    editModel.getEntityNullObserver().getReversedObserver()),
+                    editModel.getPrimaryKeyNullObserver().getReversedObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0), null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -391,7 +391,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
             States.aggregateState(Conjunction.AND,
                     getActiveObserver(),
                     editModel.getAllowUpdateObserver(),
-                    editModel.getEntityNullObserver().getReversedObserver(),
+                    editModel.getPrimaryKeyNullObserver().getReversedObserver(),
                     editModel.getModifiedObserver()),
             FrameworkMessages.get(FrameworkMessages.UPDATE_TIP) + ALT_PREFIX + mnemonic + ")", mnemonic.charAt(0),
             null, Images.loadImage(Images.IMG_SAVE_16));

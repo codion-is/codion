@@ -290,7 +290,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final StateObserver getEntityNullObserver() {
+  public final StateObserver getPrimaryKeyNullObserver() {
     return stPrimaryKeyNull.getObserver();
   }
 

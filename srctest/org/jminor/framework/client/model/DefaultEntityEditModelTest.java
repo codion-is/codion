@@ -188,7 +188,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void test() throws Exception {
-    final StateObserver primaryKeyNullState = employeeEditModel.getEntityNullObserver();
+    final StateObserver primaryKeyNullState = employeeEditModel.getPrimaryKeyNullObserver();
 
     assertTrue(primaryKeyNullState.isActive());
 

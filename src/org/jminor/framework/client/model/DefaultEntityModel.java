@@ -431,7 +431,7 @@ public class DefaultEntityModel implements EntityModel {
 
   /**
    * @param foreignKeyProperty the foreign key referring to the master model doing the initialization
-   * @param foreignKeyValues the foreign key entities
+   * @param foreignKeyValues the foreign key entities selected or otherwise indicated as being active in the master model
    */
   @SuppressWarnings({"UnusedDeclaration"})
   protected void handleInitialization(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {}
