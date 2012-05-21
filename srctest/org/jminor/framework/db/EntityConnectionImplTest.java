@@ -316,7 +316,7 @@ public class EntityConnectionImplTest {
   }
 
   @Test
-  public void optimisticLocking() throws Exception {
+  public void selectForUpdate() throws Exception {
     final EntityConnectionImpl baseConnection = initializeConnection();
     final EntityConnectionImpl optimisticConnection = initializeConnection();
     optimisticConnection.setOptimisticLocking(true);
@@ -337,21 +337,16 @@ public class EntityConnectionImplTest {
     }
     finally {
       try {
-        try {
-          if (updatedDepartment != null && oldLocation != null) {
-            updatedDepartment.setValue(EmpDept.DEPARTMENT_LOCATION, oldLocation);
-            baseConnection.update(Arrays.asList(updatedDepartment));
-          }
+        if (updatedDepartment != null && oldLocation != null) {
+          updatedDepartment.setValue(EmpDept.DEPARTMENT_LOCATION, oldLocation);
+          baseConnection.update(Arrays.asList(updatedDepartment));
         }
-        catch (DatabaseException e) {
-          e.printStackTrace();
-        }
-        baseConnection.disconnect();
-        optimisticConnection.disconnect();
       }
-      catch (Exception e) {
+      catch (DatabaseException e) {
         e.printStackTrace();
       }
+      baseConnection.disconnect();
+      optimisticConnection.disconnect();
     }
   }
 

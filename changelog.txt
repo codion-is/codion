@@ -2978,3 +2978,8 @@
   DefaultEntityEditModel.bindEventsInternal() stPrimaryKeyNull updated in valueSetListener instead of entitySet, valueChangeEvent fired after states are updated
   DefaultEntityModel.initialize() now only sets the value in the edit model if foreign key values are specified, that is, no longer nulls the value when initialized with an empty list
   EntityEditModel.getEntityNullObserver() renamed to getPrimaryKeyNullObserver()
+  IntBeanSpinnerValueLink constructor overloaded with SpinnerNumberModel parameter
+  EntityConnectionImpl synchronized public methods
+  EntityConnectionImpl.getSelectSQL() now uses tableName instead of selectTableName in case of select for update
+  EntityConnectionImpl.selectForUpdate() added
+  EntityConnectionImpl.lockAndCheckForUpdate() uses the above since selecting from views with count(*) subqueries fails when selecting for update, so using the standard doSelectMany failed when the selectTableName for the entity was a problematic view, select for update should also use the underlying table, not selectTableName

@@ -100,7 +100,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
+  public synchronized List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     if (entities == null || entities.isEmpty()) {
       return new ArrayList<Entity.Key>();
     }
@@ -169,7 +169,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> update(final List<Entity> entities) throws DatabaseException {
+  public synchronized List<Entity> update(final List<Entity> entities) throws DatabaseException {
     if (entities == null || entities.isEmpty()) {
       return entities;
     }
@@ -239,7 +239,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public void delete(final EntityCriteria criteria) throws DatabaseException {
+  public synchronized void delete(final EntityCriteria criteria) throws DatabaseException {
     Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
     checkReadOnly(criteria.getEntityID());
 
@@ -269,7 +269,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public void delete(final List<Entity.Key> entityKeys) throws DatabaseException {
+  public synchronized void delete(final List<Entity.Key> entityKeys) throws DatabaseException {
     if (entityKeys == null || entityKeys.isEmpty()) {
       return;
     }
@@ -311,19 +311,19 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException {
+  public synchronized Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException {
     return selectSingle(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, value));
   }
 
   /** {@inheritDoc} */
   @Override
-  public Entity selectSingle(final Entity.Key key) throws DatabaseException {
+  public synchronized Entity selectSingle(final Entity.Key key) throws DatabaseException {
     return selectSingle(EntityCriteriaUtil.selectCriteria(key));
   }
 
   /** {@inheritDoc} */
   @Override
-  public Entity selectSingle(final EntitySelectCriteria criteria) throws DatabaseException {
+  public synchronized Entity selectSingle(final EntitySelectCriteria criteria) throws DatabaseException {
     final List<Entity> entities = selectMany(criteria);
     if (entities.isEmpty()) {
       throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
@@ -338,7 +338,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked"})
-  public List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
+  public synchronized List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
     if (keys == null || keys.isEmpty()) {
       return new ArrayList<Entity>(0);
     }
@@ -348,19 +348,19 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DatabaseException {
+  public synchronized List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DatabaseException {
     return selectMany(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, values));
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectAll(final String entityID) throws DatabaseException {
+  public synchronized List<Entity> selectAll(final String entityID) throws DatabaseException {
     return selectMany(EntityCriteriaUtil.selectCriteria(entityID, Entities.getOrderByClause(entityID)));
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException {
+  public synchronized List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException {
     try {
       final List<Entity> result = doSelectMany(criteria, 0);
       if (!isTransactionOpen()) {
@@ -379,7 +379,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws DatabaseException {
+  public synchronized List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws DatabaseException {
     String selectSQL = null;
     try {
       if (Entities.getSelectQuery(entityID) != null) {
@@ -413,7 +413,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
+  public synchronized int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
     Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
@@ -445,14 +445,14 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
     finally {
-      Util.closeSilently(statement);
       Util.closeSilently(resultSet);
+      Util.closeSilently(statement);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
+  public synchronized Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
     final Map<String, Collection<Entity>> dependencyMap = new HashMap<String, Collection<Entity>>();
     if (entities == null || entities.isEmpty()) {
       return dependencyMap;
@@ -472,7 +472,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
+  public synchronized List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
       getMethodLogger().logAccess("executeFunction: " + functionID, arguments);
@@ -501,7 +501,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
+  public synchronized void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
       getMethodLogger().logAccess("executeProcedure: " + procedureID, arguments);
@@ -528,7 +528,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
+  public synchronized ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
     try {
       final ReportResult result = reportWrapper.fillReport(getConnection());
       if (!isTransactionOpen()) {
@@ -547,7 +547,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
+  public synchronized void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
                         final byte[] blobData) throws DatabaseException {
     if (isTransactionOpen()) {
       throw new DatabaseException("Can not save blob within an open transaction");
@@ -599,7 +599,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException {//todo does not work as is
+  public synchronized byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException {//todo does not work as is
     try {
       final Property.BlobProperty property =
               (Property.BlobProperty) Entities.getProperty(primaryKey.getEntityID(), blobPropertyID);
@@ -692,7 +692,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     for (final Map.Entry<String, Collection<Entity>> entry : entities.entrySet()) {
       final List<Entity.Key> originalKeys = EntityUtil.getPrimaryKeys(entry.getValue(), true);
       final EntitySelectCriteria selectForUpdateCriteria = EntityCriteriaUtil.selectCriteria(originalKeys);
-      selectForUpdateCriteria.setSelectForUpdate(true).setForeignKeyFetchDepthLimit(0);
+      selectForUpdateCriteria.setForeignKeyFetchDepthLimit(0);
+      selectForUpdate(selectForUpdateCriteria);
       final List<Entity> currentValues = doSelectMany(selectForUpdateCriteria, 0);
       final Map<Entity.Key, Entity> hashedEntities = EntityUtil.hashByPrimaryKey(currentValues);
       for (final Entity entity : entry.getValue()) {
@@ -713,7 +714,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     String selectSQL = null;
     try {
       selectSQL = getSelectSQL(criteria, Entities.getSelectColumnsString(criteria.getEntityID()),
-              criteria.getOrderByClause(), Entities.getGroupByClause(criteria.getEntityID()));
+              criteria.getOrderByClause(), Entities.getGroupByClause(criteria.getEntityID()), false);
       statement = getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
       List<Entity> result = null;
@@ -741,8 +742,35 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw new DatabaseException(getDatabase().getErrorMessage(e), selectSQL);
     }
     finally {
-      Util.closeSilently(statement);
       Util.closeSilently(resultSet);
+      Util.closeSilently(statement);
+    }
+  }
+
+  /**
+   * Performs a select for update on the entities specified by the given criteria, does not parse the result set
+   * @param criteria the criteria
+   * @throws DatabaseException in case of an exception
+   */
+  private void selectForUpdate(final EntitySelectCriteria criteria) throws DatabaseException {
+    Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
+    String selectSQL = null;
+    try {
+      selectSQL = getSelectSQL(criteria, "*", null, null, true);
+      statement = getConnection().prepareStatement(selectSQL);
+      resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
+    }
+    catch (SQLException e) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
+      }
+      throw new DatabaseException(getDatabase().getErrorMessage(e), selectSQL);
+    }
+    finally {
+      Util.closeSilently(resultSet);
+      Util.closeSilently(statement);
     }
   }
 
@@ -1062,10 +1090,17 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   private String getSelectSQL(final EntitySelectCriteria criteria, final String columnsString, final String orderByClause,
-                              final String groupByClause) {
+                              final String groupByClause, final boolean selectForUpdate) {
     String selectSQL = Entities.getSelectQuery(criteria.getEntityID());
     if (selectSQL == null) {
-      selectSQL = createSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), columnsString, null, null);
+      final String tableName;
+      if (selectForUpdate) {
+        tableName = Entities.getTableName(criteria.getEntityID());
+      }
+      else {
+        tableName = Entities.getSelectTableName(criteria.getEntityID());
+      }
+      selectSQL = createSelectSQL(tableName, columnsString, null, null);
     }
 
     final StringBuilder queryBuilder = new StringBuilder(selectSQL);
@@ -1079,7 +1114,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     if (orderByClause != null) {
       queryBuilder.append(" order by ").append(orderByClause);
     }
-    if (criteria.isSelectForUpdate()) {
+    if (selectForUpdate) {
       queryBuilder.append(" for update");
       if (getDatabase().supportsNowait()) {
         queryBuilder.append(" nowait");
