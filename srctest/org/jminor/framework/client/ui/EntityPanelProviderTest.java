@@ -8,6 +8,8 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityModelProvider;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.chinook.domain.Chinook;
+import org.jminor.framework.domain.Entities;
+
 import org.junit.Test;
 
 import static org.junit.Assert.assertEquals;
@@ -27,7 +29,8 @@ public class EntityPanelProviderTest {
 
     final EntityModel customerModel = customerModelProvider.createModel(EntityConnectionImplTest.CONNECTION_PROVIDER, false);
 
-    final EntityPanelProvider customerPanelProvider = new EntityPanelProvider(Chinook.T_CUSTOMER);
+    final String customerCaption = "A customer caption";
+    final EntityPanelProvider customerPanelProvider = new EntityPanelProvider(Chinook.T_CUSTOMER, customerCaption);
     final EntityPanelProvider invoicePanelProvider = new EntityPanelProvider(Chinook.T_INVOICE);
     final EntityPanelProvider invoiceLinePanelProvider = new EntityPanelProvider(Chinook.T_INVOICELINE);
 
@@ -35,8 +38,10 @@ public class EntityPanelProviderTest {
     invoicePanelProvider.addDetailPanelProvider(invoiceLinePanelProvider);
 
     final EntityPanel customerPanel = customerPanelProvider.createPanel(customerModel);
+    assertEquals(customerCaption, customerPanel.getCaption());
     assertTrue(customerPanel.containsDetailPanel(Chinook.T_INVOICE));
     final EntityPanel invoicePanel = customerPanel.getDetailPanel(Chinook.T_INVOICE);
+    assertEquals(Entities.getCaption(Chinook.T_INVOICE), invoicePanel.getCaption());
     assertTrue(invoicePanel.containsDetailPanel(Chinook.T_INVOICELINE));
     final EntityPanel invoiceLinePanel = invoicePanel.getDetailPanel(Chinook.T_INVOICELINE);
 

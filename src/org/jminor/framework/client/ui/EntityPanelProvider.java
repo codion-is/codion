@@ -298,8 +298,8 @@ public class EntityPanelProvider implements Comparable {
           tablePanel = null;
         }
         final EntityEditPanel editPanel = editPanelClass == null ? null : initializeEditPanel(entityModel.getEditModel());
-        entityPanel = panelClass.getConstructor(EntityModel.class, EntityEditPanel.class, EntityTablePanel.class)
-                .newInstance(entityModel, editPanel, tablePanel);
+        entityPanel = panelClass.getConstructor(EntityModel.class, String.class, EntityEditPanel.class, EntityTablePanel.class)
+                .newInstance(entityModel, caption, editPanel, tablePanel);
       }
       else {
         entityPanel = panelClass.getConstructor(EntityModel.class).newInstance(entityModel);

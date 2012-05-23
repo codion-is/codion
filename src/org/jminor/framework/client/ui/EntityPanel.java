@@ -285,7 +285,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
                      final EntityTablePanel tablePanel) {
     Util.rejectNullValue(entityModel, "entityModel");
     this.entityModel = entityModel;
-    this.caption = caption == null ? entityModel.getEntityID() : caption;
+    this.caption = caption == null ? Entities.getCaption(entityModel.getEntityID()) : caption;
     this.editPanel = editPanel;
     if (tablePanel == null && entityModel.containsTableModel()) {
       this.tablePanel = new EntityTablePanel(entityModel.getTableModel());
