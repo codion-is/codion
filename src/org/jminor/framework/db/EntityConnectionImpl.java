@@ -999,7 +999,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   private static String createLogMessage(final User user, final String sqlStatement, final List<?> values, final Exception exception, final LogEntry entry) {
     final StringBuilder logMessage = new StringBuilder(user.toString()).append("\n");
     if (entry == null) {
-      logMessage.append(sqlStatement).append(", ").append(Util.getCollectionContentsAsString(values, false));
+      logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ").append(Util.getCollectionContentsAsString(values, false));
     }
     else {
       logMessage.append(entry.toString(1));
@@ -1259,7 +1259,12 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       }
     }
     if (properties.isEmpty()) {
-      throw new SQLException((inserting ? "Inserting " : "Updating ") + " entity " + entity.getEntityID() + ", no applicable properties found");
+      if (inserting) {
+        throw new SQLException("Unable to insert entity " + entity.getEntityID() + ", only null values found");
+      }
+      else {
+        throw new SQLException("Unable to update entity " + entity.getEntityID() + ", no modified values found");
+      }
     }
   }
 

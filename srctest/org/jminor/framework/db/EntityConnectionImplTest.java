@@ -294,6 +294,30 @@ public class EntityConnectionImplTest {
     connection.selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB, "MANAGER");
   }
 
+  @Test(expected = DatabaseException.class)
+  public void insertOnlyNullValues() throws DatabaseException {
+    try {
+      connection.beginTransaction();
+      final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
+      connection.insert(Arrays.asList(department));
+    }
+    finally {
+      connection.rollbackTransaction();
+    }
+  }
+
+  @Test(expected = DatabaseException.class)
+  public void updateNoModifiedValues() throws DatabaseException {
+    try {
+      connection.beginTransaction();
+      final Entity department = connection.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID, 10);
+      connection.update(Arrays.asList(department));
+    }
+    finally {
+      connection.rollbackTransaction();
+    }
+  }
+
   @Test
   public void insert() throws DatabaseException {
     final List<Entity.Key> pks = connection.insert(new ArrayList<Entity>());

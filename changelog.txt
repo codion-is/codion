@@ -2985,3 +2985,6 @@
   EntityConnectionImpl.lockAndCheckForUpdate() uses the above since selecting from views with count(*) subqueries fails when selecting for update, so using the standard doSelectMany failed when the selectTableName for the entity was a problematic view, select for update should also use the underlying table, not selectTableName
   EntityPanel constructor uses the default entity caption if the caption parameter is null
   EntityPanelProvider uses the EntityPanel constructor which includes a caption parameter
+  EntityConnectionImpl.populateStatementPropertiesAndValues() exception message improved
+  EntityConnectionImplTest.insertOnlyNullValues() and updateNoModifiedValues() added
+  EntityConnectionImpl.createLogMessage() no longer displays null when no sqlStatement is specified
