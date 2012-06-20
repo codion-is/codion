@@ -69,6 +69,11 @@ public class EntityUtilTest {
     assertEquals(manager, employeeBean.getMgr());
     assertEquals(name, employeeBean.getName());
     assertEquals(salary, employeeBean.getSalary());
+
+    assertNull(beanMapper.toBean(null));
+
+    final List<Object> empty = beanMapper.toBeans(null);
+    assertTrue(empty.isEmpty());
   }
 
   @Test
@@ -119,6 +124,65 @@ public class EntityUtilTest {
     assertEquals(manager, employee.getValue(EmpDept.EMPLOYEE_MGR));
     assertEquals(name, employee.getValue(EmpDept.EMPLOYEE_NAME));
     assertEquals(salary, employee.getValue(EmpDept.EMPLOYEE_SALARY));
+
+    assertNull(beanMapper.toEntity(null));
+
+    final List<Entity> empty = beanMapper.toEntities(null);
+    assertTrue(empty.isEmpty());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getBeanClassUndefinedEntity() {
+    final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
+    beanMapper.getBeanClass("entityID");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setEntityIDNullBeanClass() {
+    final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
+    beanMapper.setEntityID(null, "entityID");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setEntityIDNullEntityID() {
+    final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
+    beanMapper.setEntityID(EmployeeBean.class, null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getEntityIDNullBeanClass() {
+    final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
+    beanMapper.getEntityID(null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getBeanClassNullEntityID() {
+    final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
+    beanMapper.getBeanClass(null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getPropertyMapNullBeanClass() {
+    final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
+    beanMapper.getPropertyMap(null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setPropertyNullBeanClass() {
+    final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
+    beanMapper.setProperty(null, "", "");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setPropertyNullPropertyID() {
+    final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
+    beanMapper.setProperty(EmployeeBean.class, null, "");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setPropertyNullPropertyName() {
+    final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
+    beanMapper.setProperty(EmployeeBean.class, "", null);
   }
 
   @Test

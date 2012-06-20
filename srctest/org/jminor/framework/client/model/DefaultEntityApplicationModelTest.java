@@ -40,13 +40,13 @@ public final class DefaultEntityApplicationModelTest {
     node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_EMPLOYEE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
+    assertEquals(Chinook.T_EMPLOYEE, node.getUserObject());
+    node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_CUSTOMER, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_INVOICE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_INVOICELINE, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_EMPLOYEE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_GENRE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();

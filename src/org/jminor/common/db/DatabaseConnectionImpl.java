@@ -382,4 +382,35 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       throw new DatabaseException(e, "", "Exception while trying to retrieve username from meta data");
     }
   }
+
+  /**
+   * A base OperationImpl implementation
+   */
+  public static class OperationImpl implements DatabaseConnection.Operation {
+
+    private final String id;
+    private final String name;
+
+    /**
+     * Instantiates a new OperationImpl
+     * @param id a unique operation ID
+     * @param name the operation name
+     */
+    public OperationImpl(final String id, final String name) {
+      this.id = id;
+      this.name = name;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final String getID() {
+      return id;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final String getName() {
+      return this.name;
+    }
+  }
 }

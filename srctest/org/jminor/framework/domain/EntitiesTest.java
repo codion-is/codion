@@ -7,6 +7,7 @@ import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
@@ -30,7 +31,7 @@ public class EntitiesTest {
     }
     catch (Exception e) {}
   }
-  
+
   @Test
   public void nullValidation() {
     Chinook.init();
@@ -39,7 +40,7 @@ public class EntitiesTest {
     invoiceLine.setValue(Chinook.INVOICELINE_QUANTITY, 1);
     invoiceLine.setValue(Chinook.INVOICELINE_UNITPRICE, 1.0);
     invoiceLine.setValue(Chinook.INVOICELINE_TRACKID, 1);
-    
+
     final Entities.Validator validator = new Entities.Validator(Chinook.T_INVOICELINE);
     try {
       validator.validate(invoiceLine, ValueMapValidator.UNKNOWN);
@@ -130,5 +131,23 @@ public class EntitiesTest {
             .addFormattedValue(EmpDept.EMPLOYEE_HIREDATE, dateFormat).addText(")");
 
     assertEquals(" (department: , location: , hiredate: )", employeeToString.toString(employee));
+  }
+
+  @Test (expected = IllegalArgumentException.class)
+  public void foreignKeyReferencingUndefinedEntity() {
+    Entities.define("test.entity",
+            Properties.primaryKeyProperty("id"),
+            Properties.foreignKeyProperty("fk_id_fk", "caption", "test.referenced_entity",
+                    Properties.columnProperty("fk_id")));
+  }
+
+  @Test
+  public void foreignKeyReferencingUndefinedEntityNonStrict() {
+    Configuration.setValue(Configuration.STRICT_FOREIGN_KEYS, false);
+    Entities.define("test.entity",
+            Properties.primaryKeyProperty("id"),
+            Properties.foreignKeyProperty("fk_id_fk", "caption", "test.referenced_entity",
+                    Properties.columnProperty("fk_id")));
+    Configuration.setValue(Configuration.STRICT_FOREIGN_KEYS, true);
   }
 }

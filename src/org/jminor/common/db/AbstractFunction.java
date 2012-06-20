@@ -6,7 +6,7 @@ package org.jminor.common.db;
 /**
  * A base Function implementation
  */
-public abstract class AbstractFunction extends AbstractOperation implements DatabaseConnection.Function {
+public abstract class AbstractFunction extends DatabaseConnectionImpl.OperationImpl implements DatabaseConnection.Function {
 
   /**
    * Instantiates a new AbstractFunction.

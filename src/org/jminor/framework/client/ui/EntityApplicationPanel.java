@@ -739,9 +739,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
       }
     });
-    if (entityPanelProviders.isEmpty()) {
-      throw new IllegalStateException("No entity panels provided");
-    }
     for (final EntityPanelProvider provider : entityPanelProviders) {
       final EntityPanel entityPanel;
       if (applicationModel.containsEntityModel(provider.getEntityID())) {
@@ -767,7 +764,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       }
     }
     //initialize first panel
-    ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
+    if (applicationTabPane.getTabCount() > 0) {
+      ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
+    }
     add(applicationTabPane, BorderLayout.CENTER);
 
     final JPanel southPanel = initializeSouthPanel();

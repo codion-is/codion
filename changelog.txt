@@ -2988,3 +2988,14 @@
   EntityConnectionImpl.populateStatementPropertiesAndValues() exception message improved
   EntityConnectionImplTest.insertOnlyNullValues() and updateNoModifiedValues() added
   EntityConnectionImpl.createLogMessage() no longer displays null when no sqlStatement is specified
+  EntityApplicationPanel.initializeUI() no longer throws exception if no entity panel providers have been specified and only tries to initialize the selected panel if it exists
+  EntityDefinition.getPrimaryKeyProperties() now returns a list of primary key properties sorted by primary key column index
+  Entities.define() refactored, property related code moved to EntityDefinitionImpl.initializeProperties()
+  EntityDefinitionImpl.initializeProperty() throws exception if a foreign key property references an undefined entity
+  Configuration.STRICT_FOREIGN_KEYS added so the above restriction can be lifted in case of entities with circular dependencies
+  AbstractEntityConnectionProvider.validateConnection() now ignores any exceptions occurring when trying to disconnect an invalid connection, NoSuchObject exception was thrown when server had already disconnected
+  RemoteEntityConnectionProvider now includes special handling for isConnected(), failed if server had disconnected with NoSuchObject exception
+  EntityUtil.EntityBeanMapper null argument handling added, tests added
+  AbstractOperation made inner class of DatabaseConnectionImpl and renamed to OperationImpl
+  FilteredComboBoxModel.set/getSortComparator() added
+  DefaultFilteredComboBoxModel implements the above, tested

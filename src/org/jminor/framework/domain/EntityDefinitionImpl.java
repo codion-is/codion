@@ -5,6 +5,7 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Util;
+import org.jminor.framework.Configuration;
 
 import java.awt.Color;
 import java.util.ArrayList;
@@ -544,13 +545,6 @@ final class EntityDefinitionImpl implements Entity.Definition {
     return ENTITY_DEFINITIONS;
   }
 
-  /**
-   * Returns the Entity.Definition object associated with <code>entityID</code>
-   * @param entityID the entityID
-   * @param propertyDefinitions the property definitions
-   * @return the Entity.Definition for the given entityID
-   * @throws IllegalArgumentException in case the entity has not been defined
-   */
   private static Map<String, Property> initializeProperties(final String entityID, final Property... propertyDefinitions) {
     final Map<String, Property> properties = new LinkedHashMap<String, Property>(propertyDefinitions.length);
     for (final Property property : propertyDefinitions) {
@@ -559,23 +553,37 @@ final class EntityDefinitionImpl implements Entity.Definition {
                 + (property.getCaption() != null ? " (caption: " + property.getCaption() + ")" : "")
                 + " has already been defined as: " + properties.get(property.getPropertyID()) + " in entity: " + entityID);
       }
+      property.setEntityID(entityID);
       properties.put(property.getPropertyID(), property);
       if (property instanceof Property.ForeignKeyProperty) {
-        for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties()) {
-          if (!(referenceProperty instanceof Property.MirrorProperty)) {
-            if (properties.containsKey(referenceProperty.getPropertyID())) {
-              throw new IllegalArgumentException("Property with ID " + referenceProperty.getPropertyID()
-                      + (referenceProperty.getCaption() != null ? " (caption: " + referenceProperty.getCaption() + ")" : "")
-                      + " has already been defined as: " + properties.get(referenceProperty.getPropertyID()) + " in entity: " + entityID);
-            }
-            properties.put(referenceProperty.getPropertyID(), referenceProperty);
-          }
-        }
+        initializeForeignKeyProperty(entityID, properties, (Property.ForeignKeyProperty) property);
       }
     }
     checkForPrimaryKey(entityID, properties);
 
     return properties;
+  }
+
+  private static void initializeForeignKeyProperty(final String entityID, final Map<String, Property> properties,
+                                                   final Property.ForeignKeyProperty foreignKeyProperty) {
+    if (Configuration.getBooleanValue(Configuration.STRICT_FOREIGN_KEYS)
+            && !entityID.equals(foreignKeyProperty.getReferencedEntityID())
+            && !ENTITY_DEFINITIONS.containsKey(foreignKeyProperty.getReferencedEntityID())) {
+      throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getReferencedEntityID()
+              + "' referenced by entity '" + entityID + "' via foreign key property '"
+              + foreignKeyProperty.getPropertyID() + "' has not been defined");
+    }
+    for (final Property referenceProperty : foreignKeyProperty.getReferenceProperties()) {
+      if (!(referenceProperty instanceof Property.MirrorProperty)) {
+        if (properties.containsKey(referenceProperty.getPropertyID())) {
+          throw new IllegalArgumentException("Property with ID " + referenceProperty.getPropertyID()
+                  + (referenceProperty.getCaption() != null ? " (caption: " + referenceProperty.getCaption() + ")" : "")
+                  + " has already been defined as: " + properties.get(referenceProperty.getPropertyID()) + " in entity: " + entityID);
+        }
+        referenceProperty.setEntityID(entityID);
+        properties.put(referenceProperty.getPropertyID(), referenceProperty);
+      }
+    }
   }
 
   private static void checkForPrimaryKey(final String entityID, final Map<String, Property> propertyDefinitions) {
@@ -640,6 +648,15 @@ final class EntityDefinitionImpl implements Entity.Definition {
         primaryKeyProperties.add((Property.PrimaryKeyProperty) property);
       }
     }
+    Collections.sort(primaryKeyProperties, new Comparator<Property.PrimaryKeyProperty>() {
+      @Override
+      public int compare(final Property.PrimaryKeyProperty pk1, final Property.PrimaryKeyProperty pk2) {
+        final Integer index1 = pk1.getIndex();
+        final Integer index2 = pk2.getIndex();
+
+        return index1.compareTo(index2);
+      }
+    });
 
     return primaryKeyProperties;
   }

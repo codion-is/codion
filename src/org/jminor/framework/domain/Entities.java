@@ -99,14 +99,6 @@ public final class Entities {
     final EntityDefinitionImpl entityImpl = new EntityDefinitionImpl(entityID, tableName, propertyDefinitions);
     entityImpl.setValidator(new Validator(entityID));
     EntityDefinitionImpl.getDefinitionMap().put(entityID, entityImpl);
-    for (final Property property : propertyDefinitions) {
-      property.setEntityID(entityID);
-      if (property instanceof Property.ForeignKeyProperty) {
-        for (final Property.ColumnProperty referenceProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties()) {
-          referenceProperty.setEntityID(entityID);
-        }
-      }
-    }
 
     return entityImpl;
   }

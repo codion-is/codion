@@ -594,7 +594,7 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     Collection<String> getLinkedPropertyIDs(final String propertyID);
 
     /**
-     * @return the primary key properties of this entity type
+     * @return the primary key properties of this entity type, sorted by primary key column index
      */
     List<Property.PrimaryKeyProperty> getPrimaryKeyProperties();
 

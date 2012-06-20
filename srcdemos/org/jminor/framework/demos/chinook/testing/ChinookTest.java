@@ -45,7 +45,7 @@ public class ChinookTest extends EntityTestUnit {
   }
 
   @Test
-  public void invoiceLine() throws Exception{
+  public void invoiceLine() throws Exception {
     testEntity(T_INVOICELINE);
   }
 

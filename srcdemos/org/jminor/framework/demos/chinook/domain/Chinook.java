@@ -25,31 +25,15 @@ public class Chinook {
 
   public static final String DOMAIN_ID = Chinook.class.getName();
 
+  public static final String T_ARTIST = "chinook.artist";
+  public static final String ARTIST_ARTISTID = "artistid";
+  public static final String ARTIST_NAME = "name";
+
   public static final String T_ALBUM = "chinook.album";
   public static final String ALBUM_ALBUMID = "albumid";
   public static final String ALBUM_TITLE = "title";
   public static final String ALBUM_ARTISTID = "artistid";
   public static final String ALBUM_ARTISTID_FK = "artistid_fk";
-
-  public static final String T_ARTIST = "chinook.artist";
-  public static final String ARTIST_ARTISTID = "artistid";
-  public static final String ARTIST_NAME = "name";
-
-  public static final String T_CUSTOMER = "chinook.customer";
-  public static final String CUSTOMER_CUSTOMERID = "customerid";
-  public static final String CUSTOMER_FIRSTNAME = "firstname";
-  public static final String CUSTOMER_LASTNAME = "lastname";
-  public static final String CUSTOMER_COMPANY = "company";
-  public static final String CUSTOMER_ADDRESS = "address";
-  public static final String CUSTOMER_CITY = "city";
-  public static final String CUSTOMER_STATE = "state";
-  public static final String CUSTOMER_COUNTRY = "country";
-  public static final String CUSTOMER_POSTALCODE = "postalcode";
-  public static final String CUSTOMER_PHONE = "phone";
-  public static final String CUSTOMER_FAX = "fax";
-  public static final String CUSTOMER_EMAIL = "email";
-  public static final String CUSTOMER_SUPPORTREPID = "supportrepid";
-  public static final String CUSTOMER_SUPPORTREPID_FK = "supportrepid_fk";
 
   public static final String T_EMPLOYEE = "chinook.employee";
   public static final String EMPLOYEE_EMPLOYEEID = "employeeid";
@@ -68,6 +52,22 @@ public class Chinook {
   public static final String EMPLOYEE_PHONE = "phone";
   public static final String EMPLOYEE_FAX = "fax";
   public static final String EMPLOYEE_EMAIL = "email";
+
+  public static final String T_CUSTOMER = "chinook.customer";
+  public static final String CUSTOMER_CUSTOMERID = "customerid";
+  public static final String CUSTOMER_FIRSTNAME = "firstname";
+  public static final String CUSTOMER_LASTNAME = "lastname";
+  public static final String CUSTOMER_COMPANY = "company";
+  public static final String CUSTOMER_ADDRESS = "address";
+  public static final String CUSTOMER_CITY = "city";
+  public static final String CUSTOMER_STATE = "state";
+  public static final String CUSTOMER_COUNTRY = "country";
+  public static final String CUSTOMER_POSTALCODE = "postalcode";
+  public static final String CUSTOMER_PHONE = "phone";
+  public static final String CUSTOMER_FAX = "fax";
+  public static final String CUSTOMER_EMAIL = "email";
+  public static final String CUSTOMER_SUPPORTREPID = "supportrepid";
+  public static final String CUSTOMER_SUPPORTREPID_FK = "supportrepid_fk";
 
   public static final String T_GENRE = "chinook.genre";
   public static final String GENRE_GENREID = "genreid";
@@ -193,6 +193,18 @@ public class Chinook {
   static {
     Databases.addOperation(UPDATE_TOTALS_PROCEDURE);
 
+    Entities.define(T_ARTIST,
+            Properties.primaryKeyProperty(ARTIST_ARTISTID),
+            Properties.columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
+                    .setMaxLength(120)
+                    .setPreferredColumnWidth(160))
+            .setDomainID(DOMAIN_ID)
+            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ARTIST)
+            .setStringProvider(new Entities.StringProvider(ARTIST_NAME))
+            .setSearchPropertyIDs(ARTIST_NAME)
+            .setOrderByClause(ARTIST_NAME)
+            .setCaption("Artists");
+
     Entities.define(T_ALBUM,
             Properties.primaryKeyProperty(ALBUM_ALBUMID),
             Properties.foreignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
@@ -209,55 +221,6 @@ public class Chinook {
             .setSearchPropertyIDs(ALBUM_TITLE)
             .setOrderByClause(ALBUM_ARTISTID + ", " + ALBUM_TITLE)
             .setCaption("Albums");
-
-    Entities.define(T_ARTIST,
-            Properties.primaryKeyProperty(ARTIST_ARTISTID),
-            Properties.columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
-                    .setMaxLength(120)
-                    .setPreferredColumnWidth(160))
-            .setDomainID(DOMAIN_ID)
-            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ARTIST)
-            .setStringProvider(new Entities.StringProvider(ARTIST_NAME))
-            .setSearchPropertyIDs(ARTIST_NAME)
-            .setOrderByClause(ARTIST_NAME)
-            .setCaption("Artists");
-
-    Entities.define(T_CUSTOMER,
-            Properties.primaryKeyProperty(CUSTOMER_CUSTOMERID),
-            Properties.columnProperty(CUSTOMER_LASTNAME, Types.VARCHAR, "Last name")
-                    .setNullable(false)
-                    .setMaxLength(20),
-            Properties.columnProperty(CUSTOMER_FIRSTNAME, Types.VARCHAR, "First name")
-                    .setNullable(false)
-                    .setMaxLength(40),
-            Properties.columnProperty(CUSTOMER_COMPANY, Types.VARCHAR, "Company")
-                    .setMaxLength(80),
-            Properties.columnProperty(CUSTOMER_ADDRESS, Types.VARCHAR, "Address")
-                    .setMaxLength(70),
-            Properties.columnProperty(CUSTOMER_CITY, Types.VARCHAR, "City")
-                    .setMaxLength(40),
-            Properties.columnProperty(CUSTOMER_STATE, Types.VARCHAR, "State")
-                    .setMaxLength(40),
-            Properties.columnProperty(CUSTOMER_COUNTRY, Types.VARCHAR, "Country")
-                    .setMaxLength(40),
-            Properties.columnProperty(CUSTOMER_POSTALCODE, Types.VARCHAR, "Postal code")
-                    .setMaxLength(10),
-            Properties.columnProperty(CUSTOMER_PHONE, Types.VARCHAR, "Phone")
-                    .setMaxLength(24),
-            Properties.columnProperty(CUSTOMER_FAX, Types.VARCHAR, "Fax")
-                    .setMaxLength(24),
-            Properties.columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email")
-                    .setNullable(false)
-                    .setMaxLength(60),
-            Properties.foreignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
-                    Properties.columnProperty(CUSTOMER_SUPPORTREPID)))
-            .setDomainID(DOMAIN_ID)
-            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_CUSTOMER)
-            .setStringProvider(new Entities.StringProvider(CUSTOMER_LASTNAME)
-                    .addText(", ").addValue(CUSTOMER_FIRSTNAME))
-            .setSearchPropertyIDs(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
-            .setOrderByClause(CUSTOMER_LASTNAME + ", " + CUSTOMER_FIRSTNAME)
-            .setCaption("Customers");
 
     Entities.define(T_EMPLOYEE,
             Properties.primaryKeyProperty(EMPLOYEE_EMPLOYEEID),
@@ -296,6 +259,43 @@ public class Chinook {
             .setSearchPropertyIDs(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL)
             .setOrderByClause(EMPLOYEE_LASTNAME + ", " + EMPLOYEE_FIRSTNAME)
             .setCaption("Employees");
+
+    Entities.define(T_CUSTOMER,
+            Properties.primaryKeyProperty(CUSTOMER_CUSTOMERID),
+            Properties.columnProperty(CUSTOMER_LASTNAME, Types.VARCHAR, "Last name")
+                    .setNullable(false)
+                    .setMaxLength(20),
+            Properties.columnProperty(CUSTOMER_FIRSTNAME, Types.VARCHAR, "First name")
+                    .setNullable(false)
+                    .setMaxLength(40),
+            Properties.columnProperty(CUSTOMER_COMPANY, Types.VARCHAR, "Company")
+                    .setMaxLength(80),
+            Properties.columnProperty(CUSTOMER_ADDRESS, Types.VARCHAR, "Address")
+                    .setMaxLength(70),
+            Properties.columnProperty(CUSTOMER_CITY, Types.VARCHAR, "City")
+                    .setMaxLength(40),
+            Properties.columnProperty(CUSTOMER_STATE, Types.VARCHAR, "State")
+                    .setMaxLength(40),
+            Properties.columnProperty(CUSTOMER_COUNTRY, Types.VARCHAR, "Country")
+                    .setMaxLength(40),
+            Properties.columnProperty(CUSTOMER_POSTALCODE, Types.VARCHAR, "Postal code")
+                    .setMaxLength(10),
+            Properties.columnProperty(CUSTOMER_PHONE, Types.VARCHAR, "Phone")
+                    .setMaxLength(24),
+            Properties.columnProperty(CUSTOMER_FAX, Types.VARCHAR, "Fax")
+                    .setMaxLength(24),
+            Properties.columnProperty(CUSTOMER_EMAIL, Types.VARCHAR, "Email")
+                    .setNullable(false)
+                    .setMaxLength(60),
+            Properties.foreignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
+                    Properties.columnProperty(CUSTOMER_SUPPORTREPID)))
+            .setDomainID(DOMAIN_ID)
+            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_CUSTOMER)
+            .setStringProvider(new Entities.StringProvider(CUSTOMER_LASTNAME)
+                    .addText(", ").addValue(CUSTOMER_FIRSTNAME))
+            .setSearchPropertyIDs(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
+            .setOrderByClause(CUSTOMER_LASTNAME + ", " + CUSTOMER_FIRSTNAME)
+            .setCaption("Customers");
 
     Entities.define(T_GENRE,
             Properties.primaryKeyProperty(GENRE_GENREID),

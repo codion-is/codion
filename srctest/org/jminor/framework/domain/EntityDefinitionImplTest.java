@@ -1,6 +1,7 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.IdSource;
+import org.jminor.framework.Configuration;
 
 import org.junit.Test;
 
@@ -59,9 +60,11 @@ public class EntityDefinitionImplTest {
 
   @Test
   public void testForeignPrimaryKey() {
+    Configuration.setValue(Configuration.STRICT_FOREIGN_KEYS, false);
     new EntityDefinitionImpl("entityID", "tableName",
             Properties.foreignKeyProperty("fkPropertyID", "caption", "parent",
                     Properties.primaryKeyProperty("propertyID")));
+    Configuration.setValue(Configuration.STRICT_FOREIGN_KEYS, true);
   }
 
   @Test(expected = IllegalArgumentException.class)

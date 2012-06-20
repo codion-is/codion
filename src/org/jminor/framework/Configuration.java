@@ -447,6 +447,14 @@ public final class Configuration {
   public static final String PERFORM_NULL_VALIDATION = "jminor.client.performNullValidation";
 
   /**
+   * Specifies that it should not be possible to define foreign keys referencing entities that have
+   * not been defined, this can be disabled in case of entities with circular references<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final String STRICT_FOREIGN_KEYS = "jminor.strictForeignKeys";
+
+  /**
    * Specifies the default horizontal alignment used in labels<br>
    * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER)<br>
    * Default value: JLabel.LEFT
@@ -542,6 +550,7 @@ public final class Configuration {
     PROPERTIES.put(WEB_SERVER_PORT, 80);
     PROPERTIES.put(CACHE_REPORTS, true);
     PROPERTIES.put(DEFAULT_SPLIT_PANE_DIVIDER_SIZE, 18);
+    PROPERTIES.put(STRICT_FOREIGN_KEYS, true);
     parseSystemSettings();
   }
 
@@ -601,6 +610,7 @@ public final class Configuration {
     parseStringSetting(JAVAX_NET_NET_TRUSTSTORE);
     parseBooleanSetting(CACHE_REPORTS);
     parseIntegerSetting(DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
+    parseBooleanSetting(STRICT_FOREIGN_KEYS);
   }
 
   private static void parseIntegerSetting(final String setting) {

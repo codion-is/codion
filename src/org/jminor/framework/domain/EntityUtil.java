@@ -536,6 +536,8 @@ public final class EntityUtil {
      * @param entityID the ID of the entity represented by the given bean class
      */
     public final void setEntityID(final Class beanClass, final String entityID) {
+      Util.rejectNullValue(beanClass, "beanClass");
+      Util.rejectNullValue(entityID, "entityID");
       entityIDMap.put(beanClass, entityID);
     }
 
@@ -544,6 +546,7 @@ public final class EntityUtil {
      * @return the entityID of the entity represented by the given bean class, null if none is specified
      */
     public final String getEntityID(final Class beanClass) {
+      Util.rejectNullValue(beanClass, "beanClass");
       return entityIDMap.get(beanClass);
     }
 
@@ -553,6 +556,7 @@ public final class EntityUtil {
      * @throws IllegalArgumentException in case no bean class has been defined for the given entityID
      */
     public final Class getBeanClass(final String entityID) {
+      Util.rejectNullValue(entityID, "entityID");
       for (final Map.Entry<Class, String> entry : entityIDMap.entrySet()) {
         if (entry.getValue().equals(entityID)) {
           return entry.getKey();
@@ -569,6 +573,9 @@ public final class EntityUtil {
      * @param propertyName the name of the bean property
      */
     public final void setProperty(final Class beanClass, final String propertyID, final String propertyName) {
+      Util.rejectNullValue(beanClass, "beanClass");
+      Util.rejectNullValue(propertyID, "propertyID");
+      Util.rejectNullValue(propertyName, "propertyName");
       Map<String, String> beanPropertyMap = propertyMap.get(beanClass);
       if (beanPropertyMap == null) {
         beanPropertyMap = new HashMap<String, String>();
@@ -582,6 +589,7 @@ public final class EntityUtil {
      * @return a Map mapping bean property names to propertyIDs for the given bean class
      */
     public final Map<String, String> getPropertyMap(final Class beanClass) {
+      Util.rejectNullValue(beanClass, "beanClass");
       return propertyMap.get(beanClass);
     }
 
@@ -613,13 +621,16 @@ public final class EntityUtil {
     /**
      * Transforms the given beans into a Entities according to the information found in this EntityBeanMapper instance
      * @param beans the beans to transform
-     * @return a List containing the Entities derived from the given beans
+     * @return a List containing the Entities derived from the given beans, an empty List if <code>beans</code> is null or empty
      * @throws NoSuchMethodException if a required getter method is not found in the bean class
      * @throws java.lang.reflect.InvocationTargetException in case an exception is thrown during a bean method call
      * @throws IllegalAccessException if a required method is not accessible
      */
     public List<Entity> toEntities(final List<?> beans) throws InvocationTargetException,
             NoSuchMethodException, IllegalAccessException {
+      if (beans == null || beans.isEmpty()) {
+        return Collections.emptyList();
+      }
       final List<Entity> entities = new ArrayList<Entity>(beans.size());
       for (final Object bean : beans) {
         entities.add(toEntity(bean));
@@ -631,7 +642,7 @@ public final class EntityUtil {
     /**
      * Transforms the given entity into a bean according to the information found in this EntityBeanMapper instance
      * @param entity the entity to transform
-     * @return a bean derived from the given entity
+     * @return a bean derived from the given entity, null if <code>entity</code> is null
      * @throws NoSuchMethodException if a required setter method is not found in the bean class
      * @throws InvocationTargetException in case an exception is thrown during a bean method call
      * @throws IllegalAccessException if a required method is not accessible
@@ -658,7 +669,7 @@ public final class EntityUtil {
     /**
      * Transforms the given entities into beans according to the information found in this EntityBeanMapper instance
      * @param entities the entities to transform
-     * @return a List containing the beans derived from the given entities
+     * @return a List containing the beans derived from the given entities, an empty List if <code>entities</code> is null or empty
      * @throws NoSuchMethodException if a required setter method is not found in the bean class
      * @throws InvocationTargetException in case an exception is thrown during a bean method call
      * @throws IllegalAccessException if a required method is not accessible
@@ -666,6 +677,9 @@ public final class EntityUtil {
      */
     public List<Object> toBeans(final List<Entity> entities) throws InvocationTargetException,
             NoSuchMethodException, InstantiationException, IllegalAccessException {
+      if (entities == null || entities.isEmpty()) {
+        return Collections.emptyList();
+      }
       final List<Object> beans = new ArrayList<Object>(entities.size());
       for (final Entity entity : entities) {
         beans.add(toBean(entity));

@@ -31,13 +31,13 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   private final List<T> visibleItems = new ArrayList<T>();
   private final List<T> filteredItems = new ArrayList<T>();
-  private final Comparator<? super T> sortComparator;
 
   /**
    * set during setContents
    */
   private boolean cleared = true;
 
+  private Comparator<? super T> sortComparator;
   private T selectedItem = null;
   private String nullValueString;
   private FilterCriteria<T> filterCriteria = acceptAllCriteria;
@@ -125,7 +125,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
           itemIterator.remove();
         }
       }
-      sort(visibleItems);
+      sortVisibleItems();
       if (selectedItem != null && !visibleItems.contains(selectedItem) && filterSelectedItem) {
         setSelectedItem(null);
       }
@@ -241,6 +241,19 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     }
 
     return ret;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Comparator<? super T> getSortComparator() {
+    return sortComparator;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setSortComparator(final Comparator<? super T> sortComparator) {
+    this.sortComparator = sortComparator;
+    sortVisibleItems();
   }
 
   /** {@inheritDoc} */
@@ -410,25 +423,22 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /**
-   * Sorts the items in the given list, used when sorting
-   * the contents of this model. This method is responsible for calling
-   * {@link #fireContentsChanged()} when done sorting.
-   * @param items the items to sort
-   */
-  protected void sort(final List<T> items) {
-    if (sortComparator != null) {
-      Collections.sort(items, sortComparator);
-      fireContentsChanged();
-    }
-  }
-
-  /**
    * Fires a {@link ListDataEvent#CONTENTS_CHANGED} event on all registered listeners
    */
   protected final void fireContentsChanged() {
     final ListDataEvent event = new ListDataEvent(this, ListDataEvent.CONTENTS_CHANGED, 0, Integer.MAX_VALUE);
     for (final ListDataListener dataListener : listDataListeners) {
       dataListener.contentsChanged(event);
+    }
+  }
+
+  /**
+   * Sorts the items visible in this model
+   */
+  private void sortVisibleItems() {
+    if (sortComparator != null) {
+      Collections.sort(visibleItems, sortComparator);
+      fireContentsChanged();
     }
   }
 

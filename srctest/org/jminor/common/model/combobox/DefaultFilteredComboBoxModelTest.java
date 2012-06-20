@@ -15,6 +15,7 @@ import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -61,6 +62,39 @@ public class DefaultFilteredComboBoxModelTest {
     assertEquals(KALLI + " should be at index 3, got " + testModel.getElementAt(3), KALLI, testModel.getElementAt(3));
     assertEquals(SIGGI + " should be at index 4, got " + testModel.getElementAt(4), SIGGI, testModel.getElementAt(4));
     assertEquals(TOMAS + " should be at index 5, got " + testModel.getElementAt(5), TOMAS, testModel.getElementAt(5));
+
+    testModel.setSortComparator(null);
+    assertNull(testModel.getSortComparator());
+    final List<String> names = new ArrayList<String>();
+    names.add(ANNA);
+    names.add(KALLI);
+    names.add(SIGGI);
+    names.add(TOMAS);
+    names.add(BJORN);
+    testModel.setContents(names);
+
+    assertEquals(ANNA + " should be at index 1, got " + testModel.getElementAt(1), ANNA, testModel.getElementAt(1));
+    assertEquals(KALLI + " should be at index 2, got " + testModel.getElementAt(2), KALLI, testModel.getElementAt(2));
+    assertEquals(SIGGI + " should be at index 3, got " + testModel.getElementAt(3), SIGGI, testModel.getElementAt(3));
+    assertEquals(TOMAS + " should be at index 4, got " + testModel.getElementAt(4), TOMAS, testModel.getElementAt(4));
+    assertEquals(BJORN + " should be at index 5, got " + testModel.getElementAt(5), BJORN, testModel.getElementAt(5));
+
+    testModel.setSortComparator(new Comparator<String>() {
+      @Override
+      public int compare(final String o1, final String o2) {
+        if (o1 == null) {
+          return -1;
+        }
+        return o2.compareTo(o1);
+      }
+    });
+    assertNotNull(testModel.getSortComparator());
+
+    assertEquals(TOMAS + " should be at index 1, got " + testModel.getElementAt(1), TOMAS, testModel.getElementAt(1));
+    assertEquals(SIGGI + " should be at index 2, got " + testModel.getElementAt(2), SIGGI, testModel.getElementAt(2));
+    assertEquals(KALLI + " should be at index 3, got " + testModel.getElementAt(3), KALLI, testModel.getElementAt(3));
+    assertEquals(BJORN + " should be at index 4, got " + testModel.getElementAt(4), BJORN, testModel.getElementAt(4));
+    assertEquals(ANNA + " should be at index 5, got " + testModel.getElementAt(5), ANNA, testModel.getElementAt(5));
   }
 
   @Test

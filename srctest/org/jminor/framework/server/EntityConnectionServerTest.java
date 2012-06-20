@@ -32,6 +32,10 @@ public class EntityConnectionServerTest {
   private static EntityConnectionServer server;
   private static EntityConnectionServerAdminImpl admin;
 
+  public static EntityConnectionServerAdmin getServerAdmin() {
+    return admin;
+  }
+
   @BeforeClass
   public static void setUp() throws Exception {
     defaultManager = System.getSecurityManager();

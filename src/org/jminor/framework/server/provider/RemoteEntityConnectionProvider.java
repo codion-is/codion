@@ -19,6 +19,7 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.util.UUID;
@@ -29,6 +30,7 @@ import java.util.UUID;
 public final class RemoteEntityConnectionProvider extends AbstractEntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
+  private static final String IS_CONNECTED = "isConnected";
 
   private final String serverHostName;
   private final UUID clientID;
@@ -112,14 +114,11 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   /** {@inheritDoc} */
   @Override
   protected boolean isConnectionValid() {
-    if (!isConnected()) {
+    if (getConnectionInternal() == null) {
       return false;
     }
     try {
-      //could be a call to any method, simply checking if remote connection is valid
-      getConnectionInternal().isConnected();
-
-      return true;
+      return getConnectionInternal().isConnected();
     }
     catch (Exception e) {
       LOG.debug("Remote connection invalid", e);
@@ -173,12 +172,24 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     /** {@inheritDoc} */
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
+      if (method.getName().equals(IS_CONNECTED)) {
+        return isConnected();
+      }
       final Method remoteMethod = RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
       try {
         return remoteMethod.invoke(remote, args);
       }
       catch (Exception e) {
         throw Util.unwrapAndLog(e, InvocationTargetException.class, null);
+      }
+    }
+
+    private Object isConnected() throws RemoteException {
+      try {
+        return remote.isConnected();
+      }
+      catch (NoSuchObjectException e) {
+        return false;
       }
     }
   }

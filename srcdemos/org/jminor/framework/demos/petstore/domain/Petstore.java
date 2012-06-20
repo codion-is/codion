@@ -34,6 +34,20 @@ public class Petstore {
   public static final String CATEGORY_DESCRIPTION = "description";
   public static final String CATEGORY_IMAGE_URL = "imageurl";
 
+  public static final String T_PRODUCT = "product" + version;
+  public static final String PRODUCT_ID = "productid";
+  public static final String PRODUCT_CATEGORY_ID = "categoryid";
+  public static final String PRODUCT_CATEGORY_FK = "category_fk";
+  public static final String PRODUCT_NAME = "name";
+  public static final String PRODUCT_DESCRIPTION = "description";
+  public static final String PRODUCT_IMAGE_URL = "imageurl";
+
+  public static final String T_SELLER_CONTACT_INFO = "sellercontactinfo" + version;
+  public static final String SELLER_CONTACT_INFO_ID = "contactinfoid";
+  public static final String SELLER_CONTACT_INFO_FIRST_NAME = "firstname";
+  public static final String SELLER_CONTACT_INFO_LAST_NAME = "lastname";
+  public static final String SELLER_CONTACT_INFO_EMAIL = "email";
+
   public static final String T_ITEM = "item" + version;
   public static final String ITEM_ID = "itemid";
   public static final String ITEM_PRODUCT_ID = "productid";
@@ -48,20 +62,6 @@ public class Petstore {
   public static final String ITEM_C0NTACT_INFO_ID = "contactinfo_contactinfoid";
   public static final String ITEM_C0NTACT_INFO_FK = "contactinfo_fk";
   public static final String ITEM_DISABLED = "disabled";
-
-  public static final String T_PRODUCT = "product" + version;
-  public static final String PRODUCT_ID = "productid";
-  public static final String PRODUCT_CATEGORY_ID = "categoryid";
-  public static final String PRODUCT_CATEGORY_FK = "category_fk";
-  public static final String PRODUCT_NAME = "name";
-  public static final String PRODUCT_DESCRIPTION = "description";
-  public static final String PRODUCT_IMAGE_URL = "imageurl";
-
-  public static final String T_SELLER_CONTACT_INFO = "sellercontactinfo" + version;
-  public static final String SELLER_CONTACT_INFO_ID = "contactinfoid";
-  public static final String SELLER_CONTACT_INFO_FIRST_NAME = "firstname";
-  public static final String SELLER_CONTACT_INFO_LAST_NAME = "lastname";
-  public static final String SELLER_CONTACT_INFO_EMAIL = "email";
 
   public static final String T_TAG = "tag" + version;
   public static final String TAG_ID = "tagid";
@@ -101,25 +101,6 @@ public class Petstore {
             .setStringProvider(new Entities.StringProvider(CATEGORY_NAME))
             .setCaption("Categories");
 
-    Entities.define(T_ITEM, "petstore.item",
-            Properties.primaryKeyProperty(ITEM_ID),
-            Properties.foreignKeyProperty(ITEM_PRODUCT_FK, "Product", T_PRODUCT,
-                    Properties.columnProperty(ITEM_PRODUCT_ID)).setFetchDepth(2).setNullable(false),
-            Properties.columnProperty(ITEM_NAME, Types.VARCHAR, "Name").setMaxLength(30).setNullable(false),
-            Properties.columnProperty(ITEM_DESCRIPTION, Types.VARCHAR, "Description").setMaxLength(500).setNullable(false),
-            Properties.columnProperty(ITEM_IMAGE_URL, Types.VARCHAR, "Image URL").setMaxLength(55).setHidden(true),
-            Properties.columnProperty(ITEM_IMAGE_THUMB_URL, Types.VARCHAR, "Image thumbnail URL").setMaxLength(55).setHidden(true),
-            Properties.columnProperty(ITEM_PRICE, Types.DOUBLE, "Price").setNullable(false).setMaximumFractionDigits(2),
-            Properties.foreignKeyProperty(ITEM_C0NTACT_INFO_FK, "Contact info", T_SELLER_CONTACT_INFO,
-                    Properties.columnProperty(ITEM_C0NTACT_INFO_ID)).setNullable(false),
-            Properties.foreignKeyProperty(ITEM_ADDRESS_FK, "Address", T_ADDRESS,
-                    Properties.columnProperty(ITEM_ADDRESS_ID)).setNullable(false),
-            Properties.columnProperty(ITEM_DISABLED, Types.BOOLEAN, "Disabled").setDefaultValue(false))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
-            .setOrderByClause(ITEM_NAME)
-            .setStringProvider(new Entities.StringProvider(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME))
-            .setCaption("Items");
-
     Entities.define(T_PRODUCT, "petstore.product",
             Properties.primaryKeyProperty(PRODUCT_ID),
             Properties.foreignKeyProperty(PRODUCT_CATEGORY_FK, "Category", T_CATEGORY,
@@ -143,6 +124,25 @@ public class Petstore {
             .setStringProvider(new Entities.StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
             .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME))
             .setCaption("Seller info");
+
+    Entities.define(T_ITEM, "petstore.item",
+            Properties.primaryKeyProperty(ITEM_ID),
+            Properties.foreignKeyProperty(ITEM_PRODUCT_FK, "Product", T_PRODUCT,
+                    Properties.columnProperty(ITEM_PRODUCT_ID)).setFetchDepth(2).setNullable(false),
+            Properties.columnProperty(ITEM_NAME, Types.VARCHAR, "Name").setMaxLength(30).setNullable(false),
+            Properties.columnProperty(ITEM_DESCRIPTION, Types.VARCHAR, "Description").setMaxLength(500).setNullable(false),
+            Properties.columnProperty(ITEM_IMAGE_URL, Types.VARCHAR, "Image URL").setMaxLength(55).setHidden(true),
+            Properties.columnProperty(ITEM_IMAGE_THUMB_URL, Types.VARCHAR, "Image thumbnail URL").setMaxLength(55).setHidden(true),
+            Properties.columnProperty(ITEM_PRICE, Types.DOUBLE, "Price").setNullable(false).setMaximumFractionDigits(2),
+            Properties.foreignKeyProperty(ITEM_C0NTACT_INFO_FK, "Contact info", T_SELLER_CONTACT_INFO,
+                    Properties.columnProperty(ITEM_C0NTACT_INFO_ID)).setNullable(false),
+            Properties.foreignKeyProperty(ITEM_ADDRESS_FK, "Address", T_ADDRESS,
+                    Properties.columnProperty(ITEM_ADDRESS_ID)).setNullable(false),
+            Properties.columnProperty(ITEM_DISABLED, Types.BOOLEAN, "Disabled").setDefaultValue(false))
+            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setOrderByClause(ITEM_NAME)
+            .setStringProvider(new Entities.StringProvider(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME))
+            .setCaption("Items");
 
     Entities.define(T_TAG, "petstore.tag",
             Properties.primaryKeyProperty(TAG_ID),
