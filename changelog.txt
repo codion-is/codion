@@ -2999,3 +2999,4 @@
   AbstractOperation made inner class of DatabaseConnectionImpl and renamed to OperationImpl
   FilteredComboBoxModel.set/getSortComparator() added
   DefaultFilteredComboBoxModel implements the above, tested
+  EntityUtil, removed a couple of duplicate string literals

@@ -527,6 +527,11 @@ public final class EntityUtil {
    */
   public static class EntityBeanMapper {
 
+    private static final String BEAN_CLASS_PARAM = "beanClass";
+    private static final String ENTITY_ID_PARAM = "entityID";
+    private static final String PROPERTY_ID_PARAM = "propertyID";
+    private static final String PROPERTY_NAME_PARAM = "propertyName";
+
     private final Map<Class, String> entityIDMap = new HashMap<Class, String>();
     private final Map<Class, Map<String, String>> propertyMap = new HashMap<Class, Map<String, String>>();
 
@@ -536,8 +541,8 @@ public final class EntityUtil {
      * @param entityID the ID of the entity represented by the given bean class
      */
     public final void setEntityID(final Class beanClass, final String entityID) {
-      Util.rejectNullValue(beanClass, "beanClass");
-      Util.rejectNullValue(entityID, "entityID");
+      Util.rejectNullValue(beanClass, BEAN_CLASS_PARAM);
+      Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
       entityIDMap.put(beanClass, entityID);
     }
 
@@ -546,7 +551,7 @@ public final class EntityUtil {
      * @return the entityID of the entity represented by the given bean class, null if none is specified
      */
     public final String getEntityID(final Class beanClass) {
-      Util.rejectNullValue(beanClass, "beanClass");
+      Util.rejectNullValue(beanClass, BEAN_CLASS_PARAM);
       return entityIDMap.get(beanClass);
     }
 
@@ -556,7 +561,7 @@ public final class EntityUtil {
      * @throws IllegalArgumentException in case no bean class has been defined for the given entityID
      */
     public final Class getBeanClass(final String entityID) {
-      Util.rejectNullValue(entityID, "entityID");
+      Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
       for (final Map.Entry<Class, String> entry : entityIDMap.entrySet()) {
         if (entry.getValue().equals(entityID)) {
           return entry.getKey();
@@ -573,9 +578,9 @@ public final class EntityUtil {
      * @param propertyName the name of the bean property
      */
     public final void setProperty(final Class beanClass, final String propertyID, final String propertyName) {
-      Util.rejectNullValue(beanClass, "beanClass");
-      Util.rejectNullValue(propertyID, "propertyID");
-      Util.rejectNullValue(propertyName, "propertyName");
+      Util.rejectNullValue(beanClass, BEAN_CLASS_PARAM);
+      Util.rejectNullValue(propertyID, PROPERTY_ID_PARAM);
+      Util.rejectNullValue(propertyName, PROPERTY_NAME_PARAM);
       Map<String, String> beanPropertyMap = propertyMap.get(beanClass);
       if (beanPropertyMap == null) {
         beanPropertyMap = new HashMap<String, String>();
@@ -589,7 +594,7 @@ public final class EntityUtil {
      * @return a Map mapping bean property names to propertyIDs for the given bean class
      */
     public final Map<String, String> getPropertyMap(final Class beanClass) {
-      Util.rejectNullValue(beanClass, "beanClass");
+      Util.rejectNullValue(beanClass, BEAN_CLASS_PARAM);
       return propertyMap.get(beanClass);
     }
 
