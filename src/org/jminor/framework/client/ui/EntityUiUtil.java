@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
