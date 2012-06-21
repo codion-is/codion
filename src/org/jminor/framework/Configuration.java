@@ -493,6 +493,13 @@ public final class Configuration {
    */
   public static final String DEFAULT_SPLIT_PANE_DIVIDER_SIZE = "jminor.client.defaultSplitPaneDividerSize";
 
+  /**
+   * Specifies whether or not actions to hide detail panels or show them in a dialog are available to the user<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final String SHOW_DETAIL_PANEL_ACTIONS = "jminor.client.showDetailPanelActions";
+
   public static final String JAVAX_NET_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
   private static final Properties PROPERTIES = new Properties();
   private static final int INPUT_BUFFER_SIZE = 8192;
@@ -551,6 +558,7 @@ public final class Configuration {
     PROPERTIES.put(CACHE_REPORTS, true);
     PROPERTIES.put(DEFAULT_SPLIT_PANE_DIVIDER_SIZE, 18);
     PROPERTIES.put(STRICT_FOREIGN_KEYS, true);
+    PROPERTIES.put(SHOW_DETAIL_PANEL_ACTIONS, true);
     parseSystemSettings();
   }
 
@@ -611,6 +619,7 @@ public final class Configuration {
     parseBooleanSetting(CACHE_REPORTS);
     parseIntegerSetting(DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
     parseBooleanSetting(STRICT_FOREIGN_KEYS);
+    parseBooleanSetting(SHOW_DETAIL_PANEL_ACTIONS);
   }
 
   private static void parseIntegerSetting(final String setting) {

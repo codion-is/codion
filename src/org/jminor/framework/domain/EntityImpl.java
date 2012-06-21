@@ -1055,7 +1055,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
                   + definition.getEntityID() + ", "
                   + key + ", got " + value + "; " + value.getClass());
         }
-        setHashCode(value);
+        setHashCode((Integer) value);
       }
     }
 
@@ -1066,12 +1066,12 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
       hashCodeDirty = false;
     }
 
-    private void setHashCode(final Object value) {
+    private void setHashCode(final Integer value) {
       if (value == null) {
         hashCode = INTEGER_NULL_VALUE;
       }
       else {
-        hashCode = (Integer) value;
+        hashCode = value;
       }
       hashCodeDirty = false;
     }

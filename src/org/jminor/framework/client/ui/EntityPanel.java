@@ -954,19 +954,23 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       if (editPanel != null) {
         toolbarControls.add(getToggleEditPanelControl());
       }
-      if (!detailEntityPanels.isEmpty()) {
+      if (Configuration.getBooleanValue(Configuration.SHOW_DETAIL_PANEL_ACTIONS) && !detailEntityPanels.isEmpty()) {
         toolbarControls.add(getToggleDetailPanelControl());
       }
-      tablePanel.addToolbarControls(toolbarControls);
-      final ControlSet tablePopupControls = getDetailPanelControlSet();
-      if (tablePopupControls != null) {
-        tablePanel.addPopupControls(tablePopupControls);
+      if (toolbarControls.size() > 0) {
+        tablePanel.addToolbarControls(toolbarControls);
+      }
+      if (Configuration.getBooleanValue(Configuration.SHOW_DETAIL_PANEL_ACTIONS)) {
+        final ControlSet detailPanelControlSet = getDetailPanelControlSet();
+        if (detailPanelControlSet != null) {
+          tablePanel.addPopupControls(detailPanelControlSet);
+        }
       }
       if (tablePanel.getTableDoubleClickAction() == null) {
         tablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
       }
       tablePanel.initializePanel();
-      tablePanel.setMinimumSize(new Dimension(0,0));
+      tablePanel.setMinimumSize(new Dimension(0, 0));
     }
 
     setLayout(new BorderLayout(5,5));
@@ -1186,18 +1190,20 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         getTabbedDetailPanel().activatePanel();
       }
     });
-    tabbedPane.addMouseListener(new MouseAdapter() {
-      /** {@inheritDoc} */
-      @Override
-      public void mouseReleased(final MouseEvent e) {
-        if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-          setDetailPanelState(getDetailPanelState() == DIALOG ? EMBEDDED : DIALOG);
+    if (Configuration.getBooleanValue(Configuration.SHOW_DETAIL_PANEL_ACTIONS)) {
+      tabbedPane.addMouseListener(new MouseAdapter() {
+        /** {@inheritDoc} */
+        @Override
+        public void mouseReleased(final MouseEvent e) {
+          if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
+            setDetailPanelState(getDetailPanelState() == DIALOG ? EMBEDDED : DIALOG);
+          }
+          else if (e.getButton() == MouseEvent.BUTTON2) {
+            setDetailPanelState(getDetailPanelState() == EMBEDDED ? HIDDEN : EMBEDDED);
+          }
         }
-        else if (e.getButton() == MouseEvent.BUTTON2) {
-          setDetailPanelState(getDetailPanelState() == EMBEDDED ? HIDDEN : EMBEDDED);
-        }
-      }
-    });
+      });
+    }
 
     return tabbedPane;
   }

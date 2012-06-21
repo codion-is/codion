@@ -3006,3 +3006,5 @@
   DefaultEntityModelTest improved
   JaCoCo coverage targets added to build.xml
   build.xml removed cobertura coverage targets
+  Configuration.SHOW_DETAIL_PANEL_ACTIONS added
+  EntityPanel changed according to the above, ways for the user to hide or popup detail panels are included only if the above value is true
