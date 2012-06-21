@@ -196,6 +196,16 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private boolean includeDetailPanelTabPane = true;
 
   /**
+   * if true and an edit panel is available the actions to toggle it is included
+   */
+  private boolean showToggleEditPanelControl = Configuration.getBooleanValue(Configuration.SHOW_TOGGLE_EDIT_PANEL_CONTROL);
+
+  /**
+   * if true and detail panels are available the controls to hide and show detail panels are included
+   */
+  private boolean showDetailPanelControls = Configuration.getBooleanValue(Configuration.SHOW_DETAIL_PANEL_CONTROLS);
+
+  /**
    * True after <code>initializePanel()</code> has been called
    */
   private boolean panelInitialized = false;
@@ -679,6 +689,44 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
+   * @return true if the edit panel control should be shown
+   * @see Configuration#SHOW_TOGGLE_EDIT_PANEL_CONTROL
+   */
+  public final boolean isShowToggleEditPanelControl() {
+    return showToggleEditPanelControl;
+  }
+
+  /**
+   * @param showToggleEditPanelControl true if a control for toggling the edit panel should be shown
+   */
+  public final EntityPanel setShowToggleEditPanelControl(final boolean showToggleEditPanelControl) {
+    if (panelInitialized) {
+      throw new IllegalStateException("Can not set showToggleEditPanelControl after initialization");
+    }
+    this.showToggleEditPanelControl = showToggleEditPanelControl;
+    return this;
+  }
+
+  /**
+   * @return true if detail panel controls should be shown
+   * @see Configuration#SHOW_DETAIL_PANEL_CONTROLS
+   */
+  public final boolean isShowDetailPanelControls() {
+    return showDetailPanelControls;
+  }
+
+  /**
+   * @param showDetailPanelControls true if detail panel controls should be shown
+   */
+  public final EntityPanel setShowDetailPanelControls(final boolean showDetailPanelControls) {
+    if (panelInitialized) {
+      throw new IllegalStateException("Can not set showDetailPanelControls after initialization");
+    }
+    this.showDetailPanelControls = showDetailPanelControls;
+    return this;
+  }
+
+  /**
    * @return true if the control panel should be included
    */
   public final boolean isIncludeControlPanel() {
@@ -951,16 +999,16 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
     if (tablePanel != null) {
       final ControlSet toolbarControls = new ControlSet("");
-      if (editPanel != null) {
+      if (showToggleEditPanelControl && editPanel != null) {
         toolbarControls.add(getToggleEditPanelControl());
       }
-      if (Configuration.getBooleanValue(Configuration.SHOW_DETAIL_PANEL_ACTIONS) && !detailEntityPanels.isEmpty()) {
+      if (showDetailPanelControls && !detailEntityPanels.isEmpty()) {
         toolbarControls.add(getToggleDetailPanelControl());
       }
       if (toolbarControls.size() > 0) {
         tablePanel.addToolbarControls(toolbarControls);
       }
-      if (Configuration.getBooleanValue(Configuration.SHOW_DETAIL_PANEL_ACTIONS)) {
+      if (showDetailPanelControls) {
         final ControlSet detailPanelControlSet = getDetailPanelControlSet();
         if (detailPanelControlSet != null) {
           tablePanel.addPopupControls(detailPanelControlSet);
@@ -1141,8 +1189,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       return null;
     }
 
-    final JPanel panel = new JPanel(new BorderLayout(5,5));
-    panel.setMinimumSize(new Dimension(0,0));
+    final JPanel panel = new JPanel(new BorderLayout(5, 5));
+    panel.setMinimumSize(new Dimension(0, 0));
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
     final JPanel propertyBase = new JPanel(new FlowLayout(alignment, 5, 5));
     propertyBase.add(editPanel);
@@ -1190,7 +1238,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         getTabbedDetailPanel().activatePanel();
       }
     });
-    if (Configuration.getBooleanValue(Configuration.SHOW_DETAIL_PANEL_ACTIONS)) {
+    if (showDetailPanelControls) {
       tabbedPane.addMouseListener(new MouseAdapter() {
         /** {@inheritDoc} */
         @Override

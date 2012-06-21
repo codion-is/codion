@@ -12,13 +12,6 @@
     </fileset>
   </path>
 
-  <path id="cobertura.classpath">
-    <fileset dir="${cobertura.dir}">
-      <include name="cobertura.jar" />
-      <include name="lib/**/*.jar" />
-    </fileset>
-  </path>
-
   <path id="lib.client.remote">
     <pathelement location="${lib.jcalendar}"/>
     <pathelement location="${lib.json}"/>
@@ -68,8 +61,6 @@
   <path id="classes.demos">
     <pathelement path="${build.demos}"/>
   </path>
-
-  <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
 
   <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
     <classpath path="${jacoco.dir}/lib/jacocoant.jar" />

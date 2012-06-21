@@ -498,7 +498,14 @@ public final class Configuration {
    * Value type: Boolean<br>
    * Default value: true
    */
-  public static final String SHOW_DETAIL_PANEL_ACTIONS = "jminor.client.showDetailPanelActions";
+  public static final String SHOW_DETAIL_PANEL_CONTROLS = "jminor.client.showDetailPanelControls";
+
+  /**
+   * Specifies whether or not a control for toggling the edit panel is available to the user<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final String SHOW_TOGGLE_EDIT_PANEL_CONTROL = "jminor.client.showToggleEditPanelControl";
 
   public static final String JAVAX_NET_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
   private static final Properties PROPERTIES = new Properties();
@@ -558,7 +565,8 @@ public final class Configuration {
     PROPERTIES.put(CACHE_REPORTS, true);
     PROPERTIES.put(DEFAULT_SPLIT_PANE_DIVIDER_SIZE, 18);
     PROPERTIES.put(STRICT_FOREIGN_KEYS, true);
-    PROPERTIES.put(SHOW_DETAIL_PANEL_ACTIONS, true);
+    PROPERTIES.put(SHOW_DETAIL_PANEL_CONTROLS, true);
+    PROPERTIES.put(SHOW_TOGGLE_EDIT_PANEL_CONTROL, true);
     parseSystemSettings();
   }
 
@@ -619,7 +627,8 @@ public final class Configuration {
     parseBooleanSetting(CACHE_REPORTS);
     parseIntegerSetting(DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
     parseBooleanSetting(STRICT_FOREIGN_KEYS);
-    parseBooleanSetting(SHOW_DETAIL_PANEL_ACTIONS);
+    parseBooleanSetting(SHOW_DETAIL_PANEL_CONTROLS);
+    parseBooleanSetting(SHOW_TOGGLE_EDIT_PANEL_CONTROL);
   }
 
   private static void parseIntegerSetting(final String setting) {
