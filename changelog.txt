@@ -3005,3 +3005,4 @@
   DefaultEntityComboBoxModel.getFilteredIndexOfKey() bug fixed
   DefaultEntityModelTest improved
   JaCoCo coverage targets added to build.xml
+  build.xml removed cobertura coverage targets
