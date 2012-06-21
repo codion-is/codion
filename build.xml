@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="jminor" default="dist" basedir=".">
+<project name="jminor" default="dist" basedir="." xmlns:jacoco="antlib:org.jacoco.ant">
 
   <description>JMinor RAD Framework build file</description>
 
@@ -70,6 +70,10 @@
   </path>
 
   <taskdef classpathref="cobertura.classpath" resource="tasks.properties" />
+
+  <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
+    <classpath path="${jacoco.dir}/lib/jacocoant.jar" />
+  </taskdef>
 
   <fileset id="common_resources" dir="${src}" includes=
           "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt"/>
@@ -498,6 +502,59 @@
       </fileset>
     </cobertura-instrument>
   </target>
+
+  <target name="run_unit_tests_jacoco" depends="build, compile_demo_reports"
+          description="Runs the framework unit tests with JaCoCo coverage">
+    <delete dir="${test.reports}" includeEmptyDirs="true"/>
+    <mkdir dir="${test.reports}"/>
+    <jacoco:coverage destfile="${test.reports}/jacoco.exec">
+      <junit printsummary="yes" haltonfailure="false" haltonerror="false" fork="yes">
+        <formatter type="xml" usefile="true"/>
+        <classpath>
+          <path refid="classes.base"/>
+          <path refid="classes.test"/>
+          <path refid="lib.build"/>
+        </classpath>
+        <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
+        <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
+        <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
+        <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
+        <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
+        <jvmarg value="-Djminor.db.embeddedInMemory=${junit.db.embeddedInMemory}"/>
+        <jvmarg value="-Djminor.db.initScript=${junit.db.initScript}"/>
+        <batchtest todir="${test.reports}">
+          <fileset dir="${srctest}" includes="**/*Test.java"/>
+          <fileset dir="${srcdemos}" includes="**/*Test.java" excludes="**/*LoadTest.java"/>
+        </batchtest>
+      </junit>
+    </jacoco:coverage>
+  </target>
+
+  <target name="report_jacoco" depends="run_unit_tests_jacoco"
+          description="Run unit tests and create html coverage report">
+    <delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>
+    <delete dir="${test.coveragereport.xml}" includeEmptyDirs="true"/>
+    <mkdir dir="${test.coveragereport.html}"/>
+    <mkdir dir="${test.coveragereport.xml}"/>
+    <jacoco:report>
+      <executiondata>
+        <file file="${test.reports}/jacoco.exec" />
+      </executiondata>
+
+      <structure name="JMinor JaCoCo Results">
+        <classfiles>
+          <fileset dir="${build.base}"  excludes="org/jminor/framework/demos/**"/>
+        </classfiles>
+        <sourcefiles encoding="UTF-8">
+          <fileset dir="${src}"  excludes="org/jminor/framework/demos/**"/>
+        </sourcefiles>
+      </structure>
+
+      <html destdir="${test.coveragereport.html}" />
+      <xml destfile="${test.coveragereport.xml}/report.xml" />
+    </jacoco:report>
+  </target>
+
 
   <target name="run_unit_tests_with_coverage" depends="instrument, compile_demo_reports"
           description="Runs the framework unit tests with coverage reporting">

@@ -3000,3 +3000,8 @@
   FilteredComboBoxModel.set/getSortComparator() added
   DefaultFilteredComboBoxModel implements the above, tested
   EntityUtil, removed a couple of duplicate string literals
+  DefaultEntityTableModel now remembers the search state only after a successful refresh
+  DefaultEntityComboBoxModelTest improved
+  DefaultEntityComboBoxModel.getFilteredIndexOfKey() bug fixed
+  DefaultEntityModelTest improved
+  JaCoCo coverage targets added to build.xml

@@ -596,6 +596,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       LOG.debug("{} refreshing", this);
       clear();
       addItems(performQuery(getQueryCriteria()), false);
+      searchModel.rememberCurrentSearchState();
     }
     finally {
       LOG.debug("{} refreshing done", this);
@@ -660,13 +661,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       @Override
       public void actionPerformed(final ActionEvent e) {
         handleColumnHidden((Property) e.getSource());
-      }
-    });
-    addRefreshDoneListener(new ActionListener() {
-      /** {@inheritDoc} */
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        searchModel.rememberCurrentSearchState();
       }
     });
     searchModel.addSimpleSearchListener(new ActionListener() {

@@ -159,6 +159,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   /** {@inheritDoc} */
   @Override
   public final void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
+    Util.rejectNullValue(primaryKey, "primaryKey");
     final int indexOfKey = getIndexOfKey(primaryKey);
     if (indexOfKey >= 0) {
       setSelectedItem(getElementAt(indexOfKey));
@@ -345,7 +346,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   private int getFilteredIndexOfKey(final Entity.Key primaryKey) {
     final List<Entity> filteredItems = getFilteredItems();
     for (int index = 0; index < filteredItems.size(); index++) {
-      final Object item = filteredItems.get(0);
+      final Object item = filteredItems.get(index);
       if (item instanceof Entity && ((Entity) item).getPrimaryKey().equals(primaryKey)) {
         return index;
       }

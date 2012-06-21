@@ -61,6 +61,9 @@ public final class DefaultEntityModelTest {
   @Test
   public void testDetailModels() throws CancelException, DatabaseException, ValidationException {
     assertTrue(departmentModel.containsDetailModel(EmpModel.class));
+    assertNull(departmentModel.getDetailModel(DefaultEntityModel.class));
+    assertFalse(departmentModel.containsDetailModel("undefined"));
+    assertFalse(departmentModel.containsDetailModel(DefaultEntityModel.class));
     final EntityModel employeeModel = departmentModel.getDetailModel(EmpModel.class);
     assertNotNull(employeeModel);
     assertTrue(departmentModel.getLinkedDetailModels().contains(employeeModel));
@@ -100,6 +103,11 @@ public final class DefaultEntityModelTest {
     finally {
       departmentModel.getConnectionProvider().getConnection().rollbackTransaction();
     }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getDetailModelNotFound() {
+    departmentModel.getDetailModel("undefined");
   }
 
   @Test
@@ -212,6 +220,31 @@ public final class DefaultEntityModelTest {
     final List<Entity> employeesFromDetailModel =
             departmentModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().getAllItems();
     assertTrue("Filtered list should contain all employees for department", containsAll(salesEmployees, employeesFromDetailModel));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void addSameDetailModelTwice() {
+    departmentModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
+    departmentModel.addDetailModels(employeeModel, employeeModel);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void addDetailModelDetailModelAlreadyHasMasterModel() {
+    departmentModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
+    employeeModel.setMasterModel(departmentModel);
+    departmentModel.addDetailModel(employeeModel);
+  }
+
+  @Test
+  public void setLinkedDetailModelsNullValues() {
+    departmentModel.setLinkedDetailModels(null);
+    assertTrue(departmentModel.getLinkedDetailModels().isEmpty());
+    departmentModel.setLinkedDetailModels(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE));
+    assertFalse(departmentModel.getLinkedDetailModels().isEmpty());
+    departmentModel.setLinkedDetailModels(new EntityModel[] {null});
+    assertTrue(departmentModel.getLinkedDetailModels().isEmpty());
   }
 
   @Before

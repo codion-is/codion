@@ -43,8 +43,9 @@
   </build>
   <properties>
     <sonar.host.url>http://darri.myftp.org:9001</sonar.host.url>
+    <sonar.core.codeCoveragePlugin>jacoco</sonar.core.codeCoveragePlugin>
     <sonar.dynamicAnalysis>reuseReports</sonar.dynamicAnalysis>
-    <sonar.cobertura.reportPath >test/coveragereport/xml/coverage.xml</sonar.cobertura.reportPath>
+    <sonar.jacoco.reportPath>test/report/jacoco.exec</sonar.jacoco.reportPath>
     <sonar.surefire.reportsPath>test/report</sonar.surefire.reportsPath>
     <sonar.artifact.path>dist/jminor.jar</sonar.artifact.path>
   </properties>

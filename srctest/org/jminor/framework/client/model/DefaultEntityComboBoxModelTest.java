@@ -4,6 +4,8 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.SimpleCriteria;
+import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.FilterCriteria;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -12,7 +14,10 @@ import org.jminor.framework.domain.Property;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Iterator;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
@@ -89,7 +94,30 @@ public final class DefaultEntityComboBoxModelTest {
   }
 
   @Test
-  public void test() throws Exception {
+  public void setEntitySelectCriteriaNullValueDefaultCriteria() {
+    comboBoxModel.setEntitySelectCriteria(null);
+  }
+
+  @Test
+  public void setSelectedEntityByPrimaryKey() throws DatabaseException {
+    comboBoxModel.refresh();
+    final Entity clark = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "CLARK");
+    comboBoxModel.setSelectedEntityByPrimaryKey(clark.getPrimaryKey());
+    assertEquals(clark, comboBoxModel.getSelectedValue());
+    comboBoxModel.setSelectedItem(null);
+    assertNull(comboBoxModel.getSelectedValue());
+    comboBoxModel.setFilterCriteria(new FilterCriteria.RejectAllCriteria<org.jminor.framework.domain.Entity>());
+    comboBoxModel.setSelectedEntityByPrimaryKey(clark.getPrimaryKey());
+    assertEquals(clark, comboBoxModel.getSelectedValue());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setSelectedEntityByPrimaryKeyNullValue() {
+    comboBoxModel.setSelectedEntityByPrimaryKey(null);
+  }
+
+  @Test
+  public void test() throws DatabaseException {
     assertEquals(EmpDept.T_EMPLOYEE, comboBoxModel.getEntityID());
     comboBoxModel.setStaticData(false);
     comboBoxModel.toString();
@@ -104,9 +132,6 @@ public final class DefaultEntityComboBoxModelTest {
     assertEquals(clark, comboBoxModel.getSelectedValue());
     comboBoxModel.setSelectedItem("test");
     assertEquals("Selecting a string should not change the selection", clark, comboBoxModel.getSelectedValue());
-    comboBoxModel.setSelectedItem(null);
-    comboBoxModel.setSelectedEntityByPrimaryKey(clark.getPrimaryKey());
-    assertEquals(clark, comboBoxModel.getSelectedValue());
 
     comboBoxModel.clear();
     assertTrue(comboBoxModel.getSize() == 0);
@@ -117,5 +142,39 @@ public final class DefaultEntityComboBoxModelTest {
 
     comboBoxModel.forceRefresh();
     assertTrue(comboBoxModel.getSize() == 1);
+  }
+
+  @Test
+  public void staticData() throws DatabaseException {
+    comboBoxModel.refresh();
+    List<Entity> items = new ArrayList<Entity>(comboBoxModel.getVisibleItems());
+    comboBoxModel.refresh();
+    List<Entity> refreshedItems = comboBoxModel.getVisibleItems();
+
+    Iterator<Entity> itemIterator = items.iterator();
+    Iterator<Entity> refreshedIterator = refreshedItems.iterator();
+    while (itemIterator.hasNext()) {
+      final Entity item = itemIterator.next();
+      final Entity refreshedItem = refreshedIterator.next();
+      assertEquals(item, refreshedItem);
+      assertFalse(item == refreshedItem);
+    }
+
+    comboBoxModel.clear();
+    comboBoxModel.setStaticData(true);
+
+    comboBoxModel.refresh();
+    items = new ArrayList<Entity>(comboBoxModel.getVisibleItems());
+    comboBoxModel.refresh();
+    refreshedItems = comboBoxModel.getVisibleItems();
+
+    itemIterator = items.iterator();
+    refreshedIterator = refreshedItems.iterator();
+    while (itemIterator.hasNext()) {
+      final Entity item = itemIterator.next();
+      final Entity refreshedItem = refreshedIterator.next();
+      assertEquals(item, refreshedItem);
+      assertTrue(item == refreshedItem);
+    }
   }
 }
