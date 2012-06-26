@@ -41,7 +41,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
   /**
    * Instantiates a new RandomItemModel with the given items.
-   * @param defaultWeight the default weight to assign to each intial item
+   * @param defaultWeight the default weight to assign to each initial item
    * @param items the items to add to this model
    */
   public ItemRandomizerModel(final int defaultWeight, final T... items) {
