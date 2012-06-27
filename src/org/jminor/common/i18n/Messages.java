@@ -83,6 +83,13 @@ public final class Messages {
   public static final String NOT_CONNECTED = "not_connected";
   public static final String SERVER_FULL = "server_full";
 
+  public static final String LIKE = "like";
+  public static final String NOT_LIKE = "not_like";
+  public static final String LESS_THAN = "less_than";
+  public static final String GREATER_THAN = "greater_than";
+  public static final String WITHIN_RANGE = "within_range";
+  public static final String OUTSIDE_RANGE = "outside_range";
+
   static {
     UIManager.put("OptionPane.yesButtonText", get(YES));
     UIManager.put("OptionPane.noButtonText", get(NO));

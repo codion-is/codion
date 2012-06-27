@@ -27,15 +27,18 @@ import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 
+import javax.swing.DefaultListCellRenderer;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
+import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.JToggleButton;
 import java.awt.BorderLayout;
+import java.awt.Component;
 import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.GridLayout;
@@ -449,6 +452,17 @@ public class ColumnSearchPanel<K> extends JPanel {
     }
     final JComboBox comboBox = new SteppedComboBox(comboBoxModel);
     ControlProvider.bindItemSelector(comboBox, searchModel, "searchType", SearchType.class, searchModel.getSearchTypeObserver());
+    comboBox.setRenderer(new DefaultListCellRenderer() {
+      /** {@inheritDoc} */
+      @Override
+      public Component getListCellRendererComponent(final JList list, final Object value, final int index,
+                                                    final boolean isSelected, final boolean cellHasFocus) {
+        final JComponent component = (JComponent) super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
+        component.setToolTipText(((Item<SearchType>) value).getItem().getDescription());
+
+        return component;
+      }
+    });
 
     return comboBox;
   }

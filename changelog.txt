@@ -3014,3 +3014,7 @@
   Configuration.SHOW_TOGGLE_EDIT_PANEL_CONTROL added
   EntityPanel changed according to the above, a way for the user to hide or popup the edit panel is included only if the above value is true
   EntityPanel.showToggleEditPanelControl property added, setter and getter, defaults to Configuration.SHOW_TOGGLE_EDIT_PANEL_CONTROL
+  SearchType.getDescription() added
+  Messages, added strings for the above
+  ColumnSearchPanel.initializeSearchTypeCombo() adds tooltips to the search type items, using the above descriptions
+  EntityLookupField now uses a customized dialog for showing the no results from criteria message, due to the enter key loop bug in windows

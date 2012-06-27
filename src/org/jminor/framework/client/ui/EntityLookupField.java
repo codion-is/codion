@@ -4,6 +4,8 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.Event;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.TextBeanValueLink;
@@ -15,13 +17,13 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JList;
-import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
@@ -268,8 +270,8 @@ public final class EntityLookupField extends JTextField {
             model.setSelectedEntities(queryResult);
           }
           else if (promptUser) {
-            if (queryResult.isEmpty()) {//todo Enter performs lookup again
-              JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
+            if (queryResult.isEmpty()) {
+              showEmptyResultMessage();
             }
             else {
               selectEntities(queryResult);
@@ -297,6 +299,31 @@ public final class EntityLookupField extends JTextField {
     }
 
     return entityList;
+  }
+
+  /**
+   * Necessary due to a bug on windows, where pressing Enter to dismiss this message
+   * triggers another lookup, resulting in a loop
+   */
+  private void showEmptyResultMessage() {
+    final Event closeEvent = Events.event();
+    final JButton okButton = new JButton(Messages.get(Messages.OK));
+    UiUtil.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true, new AbstractAction(Messages.get(Messages.OK)) {
+      /** {@inheritDoc} */
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        okButton.doClick();
+        closeEvent.fire();
+      }
+    });
+    final JPanel btnBase = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    btnBase.add(okButton);
+    final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
+    messageLabel.setBorder(BorderFactory.createEmptyBorder(15, 15, 0, 15));
+    final JPanel messagePanel = new JPanel(new BorderLayout(5, 5));
+    messagePanel.add(messageLabel, BorderLayout.CENTER);
+    messagePanel.add(btnBase, BorderLayout.SOUTH);
+    UiUtil.showInDialog(this, messagePanel, true, Messages.get("OptionPane.messageDialogTitle"), null, null, closeEvent);
   }
 
   private static final class SettingsAction extends AbstractAction {

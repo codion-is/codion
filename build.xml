@@ -63,7 +63,7 @@
   </path>
 
   <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
-    <classpath path="${jacoco.dir}/lib/jacocoant.jar" />
+    <classpath path="${jacocoant.jar}" />
   </taskdef>
 
   <fileset id="common_resources" dir="${src}" includes=
@@ -430,7 +430,7 @@
     <delete file="${basedir}/derby.log"/>
     <zip destfile="${basedir}/jminor-${version}-project.zip">
       <fileset dir="${basedir}"
-               excludes="*.ser,*.log,target/**,test/**,dist/deployment/**,classes/**,derbydb/**,h2db/**"/>
+               excludes="*.log,target/**,test/**,dist/deployment/**,classes/**,derbydb/**,h2db/**"/>
     </zip>
   </target>
 
