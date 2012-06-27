@@ -544,22 +544,21 @@ public final class EntityUiUtil {
   }
 
   public static DateInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
-                                                    final SimpleDateFormat dateFormat, final LinkType linkType,
-                                                    final boolean includeButton) {
-    return createDateInputPanel(property, editModel, dateFormat, linkType, includeButton, null);
+                                                    final LinkType linkType, final boolean includeButton) {
+    return createDateInputPanel(property, editModel, linkType, includeButton, null);
   }
 
   public static DateInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
-                                                    final SimpleDateFormat dateFormat, final LinkType linkType,
-                                                    final boolean includeButton, final StateObserver enabledState) {
+                                                    final LinkType linkType, final boolean includeButton,
+                                                    final StateObserver enabledState) {
     Util.rejectNullValue(property,PROPERTY_PARAM_NAME);
     if (!property.isTime()) {
       throw new IllegalArgumentException("Property " + property + " is not a date property");
     }
 
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, editModel, linkType,
-            DateUtil.getDateMask(dateFormat), true, dateFormat, enabledState);
-    final DateInputPanel panel = new DateInputPanel(field, dateFormat, includeButton, enabledState);
+            DateUtil.getDateMask((SimpleDateFormat) property.getFormat()), true, enabledState);
+    final DateInputPanel panel = new DateInputPanel(field, (SimpleDateFormat) property.getFormat(), includeButton, enabledState);
     if (panel.getButton() != null && Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter(panel.getButton());
     }
@@ -622,26 +621,18 @@ public final class EntityUiUtil {
   public static JTextField createTextField(final Property property, final EntityEditModel editModel,
                                            final LinkType linkType, final String formatMaskString,
                                            final boolean immediateUpdate, final StateObserver enabledState) {
-    return createTextField(property, editModel, linkType, formatMaskString, immediateUpdate, null, enabledState);
+    return createTextField(property, editModel, linkType, formatMaskString, immediateUpdate, enabledState, false);
   }
 
   public static JTextField createTextField(final Property property, final EntityEditModel editModel,
                                            final LinkType linkType, final String formatMaskString,
-                                           final boolean immediateUpdate, final SimpleDateFormat dateFormat,
-                                           final StateObserver enabledState) {
-    return createTextField(property, editModel, linkType, formatMaskString, immediateUpdate, dateFormat,
-            enabledState, false);
-  }
-
-  public static JTextField createTextField(final Property property, final EntityEditModel editModel,
-                                           final LinkType linkType, final String formatMaskString,
-                                           final boolean immediateUpdate, final SimpleDateFormat dateFormat,//todo dateFormat?
-                                           final StateObserver enabledState, final boolean valueContainsLiteralCharacters) {
+                                           final boolean immediateUpdate, final StateObserver enabledState,
+                                           final boolean valueContainsLiteralCharacters) {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     Util.rejectNullValue(linkType, "linkType");
     checkProperty(property, editModel);
-    final JTextField textField = initializeTextField(property, editModel, enabledState, dateFormat, formatMaskString, valueContainsLiteralCharacters);
+    final JTextField textField = initializeTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     final String propertyID = property.getPropertyID();
     final TextValueLink<String> valueLink;
     if (property.isString()) {
@@ -661,10 +652,12 @@ public final class EntityUiUtil {
               linkType, (NumberFormat) property.getFormat());
     }
     else if (property.isDate()) {
-      valueLink = new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, false);
+      valueLink = new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType,
+              (SimpleDateFormat) property.getFormat(), false);
     }
     else if (property.isTimestamp()) {
-      valueLink = new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType, dateFormat, true);
+      valueLink = new DateValueLink<String>((JFormattedTextField) textField, editModel, propertyID, linkType,
+              (SimpleDateFormat) property.getFormat(), true);
     }
     else {
       throw new IllegalArgumentException("Not a text based property: " + property);
@@ -800,8 +793,8 @@ public final class EntityUiUtil {
   }
 
   private static JTextField initializeTextField(final Property property, final EntityEditModel editModel,
-                                                final StateObserver enabledState, final SimpleDateFormat dateFormat,
-                                                final String formatMaskString, final boolean valueContainsLiteralCharacters) {
+                                                final StateObserver enabledState, final String formatMaskString,
+                                                final boolean valueContainsLiteralCharacters) {
     final JTextField field;
     if (property.isInteger()) {
       field = new IntField(0);
@@ -810,7 +803,7 @@ public final class EntityUiUtil {
       field = new DoubleField(0);
     }
     else if (property.isTime()) {
-      field = UiUtil.createFormattedField(DateUtil.getDateMask(dateFormat), true);
+      field = UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) property.getFormat()), true);
     }
     else if (property.isString()) {
       if (formatMaskString == null) {
@@ -965,7 +958,7 @@ public final class EntityUiUtil {
     public void actionPerformed(final ActionEvent e) {
       final EntityEditPanel editPanel = panelProvider.createEditPanel(dataProvider.getConnectionProvider());
       editPanel.initializePanel();
-      ((EntityEditModel) editPanel.getEditModel()).addAfterInsertListener(new InsertListener() {
+      editPanel.getEditModel().addAfterInsertListener(new InsertListener() {
         @Override
         protected void inserted(final InsertEvent event) {
           lastInsertedEntities.clear();

@@ -49,7 +49,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.ActionListener;
-import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -529,7 +528,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     }
     else {//possibly update
       final int choiceIdx = JOptionPane.showOptionDialog(this, FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT),
-              FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT_TITLE), -1, JOptionPane.QUESTION_MESSAGE, null,
+              FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT_TITLE), JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
               new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_RECORD),
                       FrameworkMessages.get(FrameworkMessages.INSERT_NEW), Messages.get(Messages.CANCEL)},
               new String[] {FrameworkMessages.get(FrameworkMessages.UPDATE)});
@@ -1065,64 +1064,39 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property for which to create the panel
-   * @param dateFormat the format to use for masking the input field
-   * @return a DateInputPanel bound to the property
-   */
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final SimpleDateFormat dateFormat) {
-    return createDateInputPanel(propertyID, dateFormat, true);
-  }
-
-  /**
-   * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
-   * @param propertyID the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @return a DateInputPanel using the default short date format
    * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton) {
     final Property property = Entities.getProperty(editModel.getEntityID(), propertyID);
-    return createDateInputPanel(property, (SimpleDateFormat) property.getFormat(), includeButton, null);
+    return createDateInputPanel(property, includeButton, null);
   }
 
   /**
    * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property for which to create the panel
-   * @param dateFormat the format to use for masking the input field
-   * @param includeButton if true a button for visually editing the date is included
-   * @return a DateInputPanel bound to the property
-   */
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final SimpleDateFormat dateFormat,
-                                                      final boolean includeButton) {
-    return createDateInputPanel(propertyID, dateFormat, includeButton, null);
-  }
-
-  /**
-   * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
-   * @param propertyID the ID of the property for which to create the panel
-   * @param dateFormat the format to use for masking the input field
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final SimpleDateFormat dateFormat,
-                                                      final boolean includeButton, final StateObserver enabledState) {
-    return createDateInputPanel(propertyID, dateFormat, includeButton, enabledState, null);
+  protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton,
+                                                      final StateObserver enabledState) {
+    return createDateInputPanel(propertyID, includeButton, enabledState, null);
   }
 
   /**
    * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property for which to create the panel
-   * @param dateFormat the format to use for masking the input field
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param linkType the property link type
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final String propertyID, final SimpleDateFormat dateFormat,
-                                                      final boolean includeButton, final StateObserver enabledState,
-                                                      final LinkType linkType) {
+  protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton,
+                                                      final StateObserver enabledState, final LinkType linkType) {
     return createDateInputPanel(Entities.getProperty(editModel.getEntityID(), propertyID),
-            dateFormat, includeButton, enabledState, linkType);
+            includeButton, enabledState, linkType);
   }
 
   /**
@@ -1131,58 +1105,43 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return a DateInputPanel bound to the property
    */
   protected final DateInputPanel createDateInputPanel(final Property property) {
-    return createDateInputPanel(property, (SimpleDateFormat) property.getFormat());
+    return createDateInputPanel(property, true);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
+   * Creates a new DateInputPanel bound to the given property.
    * @param property the property for which to create the panel
-   * @param dateFormat the format to use for masking the input field
-   * @return a DateInputPanel bound to the property
-   */
-  protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat) {
-    return createDateInputPanel(property, dateFormat, true);
-  }
-
-  /**
-   * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
-   * @param property the property for which to create the panel
-   * @param dateFormat the format to use for masking the input field
    * @param includeButton if true a button for visually editing the date is included
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat,
-                                                      final boolean includeButton) {
-    return createDateInputPanel(property, dateFormat, includeButton, null);
+  protected final DateInputPanel createDateInputPanel(final Property property, final boolean includeButton) {
+    return createDateInputPanel(property, includeButton, null);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
+   * Creates a new DateInputPanel bound to the given property.
    * @param property the property for which to create the panel
-   * @param dateFormat the format to use for masking the input field
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat,
-                                                      final boolean includeButton, final StateObserver enabledState) {
-    return createDateInputPanel(property, dateFormat, includeButton, enabledState, null);
+  protected final DateInputPanel createDateInputPanel(final Property property, final boolean includeButton,
+                                                      final StateObserver enabledState) {
+    return createDateInputPanel(property, includeButton, enabledState, null);
   }
 
   /**
-   * Creates a new DateInputPanel bound to the property identified by <code>propertyID</code>.
+   * Creates a new DateInputPanel bound to the given property.
    * @param property the property for which to create the panel
-   * @param dateFormat the format to use for masking the input field
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
    * @param linkType the property link type
    * @return a DateInputPanel bound to the property
    */
-  protected final DateInputPanel createDateInputPanel(final Property property, final SimpleDateFormat dateFormat,
-                                                      final boolean includeButton, final StateObserver enabledState,
-                                                      final LinkType linkType) {
+  protected final DateInputPanel createDateInputPanel(final Property property, final boolean includeButton,
+                                                      final StateObserver enabledState, final LinkType linkType) {
     final LinkType actualLinkType = linkType == null ? getDefaultLinkType(property) : linkType;
-    final DateInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, dateFormat, actualLinkType, includeButton, enabledState);
+    final DateInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, actualLinkType, includeButton, enabledState);
     setComponent(property.getPropertyID(), panel.getInputField());
 
     return panel;
@@ -1333,7 +1292,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
                                              final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
     final LinkType actualLinkType = linkType == null ? getDefaultLinkType(property) : linkType;
     final JTextField txt = EntityUiUtil.createTextField(property, editModel, actualLinkType, maskString, immediateUpdate,
-            Configuration.getDefaultDateFormat(), enabledState, valueIncludesLiteralCharacters);
+            enabledState, valueIncludesLiteralCharacters);
     setComponent(property.getPropertyID(), txt);
 
     return txt;

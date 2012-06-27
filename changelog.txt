@@ -3018,3 +3018,5 @@
   Messages, added strings for the above
   ColumnSearchPanel.initializeSearchTypeCombo() adds tooltips to the search type items, using the above descriptions
   EntityLookupField now uses a customized dialog for showing the no results from criteria message, due to the enter key loop bug in windows
+  EntityUiUtil.createTextField() and createDateInputPanel() no longer take DateFormat as parameter, use the property format
+  EntityEditPanel.createDateInputPanel() no longer takes a DateFormat parameter
