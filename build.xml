@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <project name="jminor" default="dist" basedir="." xmlns:jacoco="antlib:org.jacoco.ant">
 
-  <description>JMinor RAD Framework build file</description>
+  <description>JMinor is a minimalistic Java rich client/server CRUD application framework, based solely on Java Standard Edition components, JDBC, RMI and Swing.</description>
 
   <property file="build.properties"/>
   <property file="user.properties"/>
@@ -84,10 +84,6 @@
     <delete dir="${build.plugins}" includeEmptyDirs="true"/>
     <delete dir="${build.test}" includeEmptyDirs="true"/>
     <delete dir="${build.root}" includeEmptyDirs="true"/>
-    <delete dir="${test.reports}" includeEmptyDirs="true"/>
-    <delete dir="${test.reports.html}" includeEmptyDirs="true"/>
-    <!--<delete dir="${test.coveragereport.xml}" includeEmptyDirs="true"/>-->
-    <!--<delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>-->
     <delete dir="${test}" includeEmptyDirs="true"/>
   </target>
 
@@ -441,6 +437,9 @@
   <target name="run_unit_tests_with_coverage_and_report" depends="build, compile_demo_reports"
           description="Runs the framework unit tests with JaCoCo coverage">
     <delete dir="${test.reports}" includeEmptyDirs="true"/>
+    <delete dir="${test.reports.html}" includeEmptyDirs="true"/>
+    <delete dir="${test.coveragereport.xml}" includeEmptyDirs="true"/>
+    <delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>
     <mkdir dir="${test.reports}"/>
     <jacoco:coverage destfile="${test.reports}/jacoco.exec">
       <junit printsummary="yes" haltonfailure="false" haltonerror="false" fork="yes">
