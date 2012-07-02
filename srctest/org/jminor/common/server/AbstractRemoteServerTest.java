@@ -65,6 +65,7 @@ public class AbstractRemoteServerTest {
     server.disconnect(clientInfo.getClientID());
     final RemoteServerTest connection3 = server.connect(clientInfo);
     assertFalse(connection == connection3);
+    assertNull(server.connect(User.UNIT_TEST_USER, null, "clientType"));
   }
 
   @Test

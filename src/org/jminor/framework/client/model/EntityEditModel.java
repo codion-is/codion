@@ -95,14 +95,6 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   EntityEditModel setReadOnly(final boolean readOnly);
 
   /**
-   * @param propertyID the property ID
-   * @param persistValueOnClear true if this model should persist the value of the given property on clear
-   * @return this edit model instance
-   * @see org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES
-   */
-  EntityEditModel setPersistValueOnClear(final String propertyID, final boolean persistValueOnClear);
-
-  /**
    * @return true if this model should allow records to be inserted
    */
   boolean isInsertAllowed();
@@ -284,12 +276,14 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * Returns the default value for the given property, used when initializing a new
    * default entity for this edit model. This does not apply to denormalized properties
    * nor properties that are wrapped in foreign key properties.
-   * If the default value of a property should be the last value used {@link #persistValueOnClear}
-   * should be overridden so that it returns <code>true</code> for that property.
+   * If the default value of a property should be the last value used, call {@link #setValuePersistent(String, boolean)}
+   * with <code>true</code> for the given property or override {@link #isValuePersistent} so that it
+   * returns <code>true</code> for that property in case the value should persist.
    * @param property the property
    * @return the default value for the property
    * @see Property#setDefaultValue(Object)
-   * @see #persistValueOnClear(org.jminor.framework.domain.Property)
+   * @see #setValuePersistent(String, boolean)
+   * @see #isValuePersistent(org.jminor.framework.domain.Property)
    */
   Object getDefaultValue(final Property property);
 
@@ -303,7 +297,15 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @return true if the given field value should be reset when the model is cleared
    * @see org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES
    */
-  boolean persistValueOnClear(final Property property);
+  boolean isValuePersistent(final Property property);
+
+  /**
+   * @param propertyID the property ID
+   * @param persistValueOnClear true if this model should persist the value of the given property on clear
+   * @return this edit model instance
+   * @see org.jminor.framework.Configuration#PERSIST_FOREIGN_KEY_VALUES
+   */
+  EntityEditModel setValuePersistent(final String propertyID, final boolean persistValueOnClear);
 
   /**
    * Performs a insert on the active entity, sets the primary key values of the active entity

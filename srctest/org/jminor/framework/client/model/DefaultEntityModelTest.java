@@ -237,6 +237,14 @@ public final class DefaultEntityModelTest {
     departmentModel.addDetailModel(employeeModel);
   }
 
+  @Test(expected = IllegalStateException.class)
+  public void setMasterModel() {
+    departmentModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
+    employeeModel.setMasterModel(departmentModel);
+    employeeModel.setMasterModel(new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER));
+  }
+
   @Test
   public void setLinkedDetailModelsNullValues() {
     departmentModel.setLinkedDetailModels(null);

@@ -9,6 +9,7 @@ import org.jminor.common.model.FilterCriteria;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -109,6 +110,10 @@ public final class DefaultEntityComboBoxModelTest {
     comboBoxModel.setFilterCriteria(new FilterCriteria.RejectAllCriteria<org.jminor.framework.domain.Entity>());
     comboBoxModel.setSelectedEntityByPrimaryKey(clark.getPrimaryKey());
     assertEquals(clark, comboBoxModel.getSelectedValue());
+    final Entity.Key nobodyPK = Entities.key(EmpDept.T_EMPLOYEE);
+    nobodyPK.setValue(EmpDept.EMPLOYEE_ID, -1);
+    comboBoxModel.setSelectedEntityByPrimaryKey(nobodyPK);
+    assertEquals(clark, comboBoxModel.getSelectedValue());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -161,7 +166,9 @@ public final class DefaultEntityComboBoxModelTest {
     }
 
     comboBoxModel.clear();
+    assertFalse(comboBoxModel.isStaticData());
     comboBoxModel.setStaticData(true);
+    assertTrue(comboBoxModel.isStaticData());
 
     comboBoxModel.refresh();
     items = new ArrayList<Entity>(comboBoxModel.getVisibleItems());
@@ -176,5 +183,16 @@ public final class DefaultEntityComboBoxModelTest {
       assertEquals(item, refreshedItem);
       assertTrue(item == refreshedItem);
     }
+  }
+
+  @Test
+  public void getEntity() {
+    comboBoxModel.refresh();
+    final Entity.Key allenPK = Entities.key(EmpDept.T_EMPLOYEE);
+    allenPK.setValue(EmpDept.EMPLOYEE_ID, 1);
+    assertNotNull(comboBoxModel.getEntity(allenPK));
+    final Entity.Key nobodyPK = Entities.key(EmpDept.T_EMPLOYEE);
+    nobodyPK.setValue(EmpDept.EMPLOYEE_ID, -1);
+    assertNull(comboBoxModel.getEntity(nobodyPK));
   }
 }

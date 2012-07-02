@@ -7,6 +7,8 @@ import org.junit.Test;
 
 import java.awt.Color;
 import java.sql.Types;
+import java.util.Collection;
+import java.util.Comparator;
 import java.util.Map;
 
 import static org.junit.Assert.*;
@@ -15,11 +17,19 @@ public class EntityDefinitionImplTest {
 
   @Test
   public void test() {
+    final Entities.StringProvider stringProvider = new Entities.StringProvider("name");
+    final Comparator<Entity> comparator = new Comparator<Entity>() {
+      @Override
+      public int compare(final Entity o1, final Entity o2) {
+        return 0;
+      }
+    };
     final Entity.Definition definition = new EntityDefinitionImpl("entityID", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR)).setIdSource(IdSource.NONE).setIdValueSource("idValueSource")
             .setSelectQuery("select * from dual").setOrderByClause("order by name")
-            .setReadOnly(true).setSelectTableName("selectTableName").setGroupByClause("name");
+            .setReadOnly(true).setSelectTableName("selectTableName").setGroupByClause("name")
+            .setStringProvider(stringProvider).setComparator(comparator);
     assertEquals("entityID", definition.toString());
     assertEquals("entityID", definition.getEntityID());
     assertEquals("tableName", definition.getTableName());
@@ -32,6 +42,53 @@ public class EntityDefinitionImplTest {
     assertEquals("selectTableName", definition.getSelectTableName());
     assertEquals("id, name", definition.getSelectColumnsString());
     assertEquals("name", definition.getGroupByClause());
+    assertEquals(stringProvider, definition.getStringProvider());
+    assertEquals(comparator, definition.getComparator());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void duplicatePropertyIDs() {
+    new EntityDefinitionImpl("entityID", "tableName",
+            Properties.primaryKeyProperty("id"),
+            Properties.columnProperty("name", Types.VARCHAR),
+            Properties.columnProperty("id"));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void duplicateForeignKeyPropertyIDs() {
+    new EntityDefinitionImpl("entityID", "tableName",
+            Properties.primaryKeyProperty("id"),
+            Properties.columnProperty("name", Types.VARCHAR),
+            Properties.foreignKeyProperty("fkProperty", null, "entityID",
+                    Properties.columnProperty("id")));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setSearchPropertyIDs() {
+    final Entity.Definition definition = new EntityDefinitionImpl("entityID", "tableName",
+            Properties.primaryKeyProperty("id"),
+            Properties.columnProperty("name", Types.VARCHAR));
+    definition.setSearchPropertyIDs("id");
+  }
+
+  @Test
+  public void derivedProperty() {
+    final Entity.Definition definition = new EntityDefinitionImpl("entityID", "tableName",
+            Properties.primaryKeyProperty("id"),
+            Properties.columnProperty("name", Types.VARCHAR),
+            Properties.columnProperty("info", Types.VARCHAR),
+            Properties.derivedProperty("derived", Types.VARCHAR, null, new Property.DerivedProperty.Provider() {
+              @Override
+              public Object getValue(final Map<String, Object> linkedValues) {
+                return ((String) linkedValues.get("name")) + linkedValues.get("info");
+              }
+            }, "name", "info"));
+    Collection<String> linked = definition.getLinkedPropertyIDs("name");
+    assertTrue(linked.contains("derived"));
+    assertEquals(1, linked.size());
+    linked = definition.getLinkedPropertyIDs("info");
+    assertTrue(linked.contains("derived"));
+    assertEquals(1, linked.size());
   }
 
   @Test
@@ -122,7 +179,7 @@ public class EntityDefinitionImplTest {
     final Entity entity = Entities.entity("entityToString");
     entity.setValue("propertyID", 1);
     assertEquals("entityToString: propertyID:1", entity.toString());
-    def.setToStringProvider(new Entity.ToString() {
+    def.setStringProvider(new Entity.ToString() {
       @Override
       public String toString(final Entity valueMap) {
         return "test";

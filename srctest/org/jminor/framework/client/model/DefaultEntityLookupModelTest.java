@@ -46,7 +46,8 @@ public final class DefaultEntityLookupModelTest {
 
   @Test
   public void theRest() {
-    assertNotNull(lookupModel.getDescription());
+    lookupModel.setDescription("description");
+    assertEquals("description", lookupModel.getDescription());
     assertNotNull(lookupModel.getConnectionProvider());
     assertTrue(lookupModel.getLookupProperties().containsAll(lookupProperties));
     assertTrue(lookupModel.isMultipleSelectionAllowed());
@@ -56,6 +57,13 @@ public final class DefaultEntityLookupModelTest {
     assertTrue(lookupModel.isWildcardPostfix());
     assertTrue(lookupModel.isWildcardPrefix());
     assertNotNull(lookupModel.getWildcard());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setSelectedEntitiesMultipleNotAllowed() {
+    lookupModel.setMultipleSelectionAllowed(false);
+    final Collection<Entity> entities = Arrays.asList(Entities.entity(EmpDept.T_EMPLOYEE), Entities.entity(EmpDept.T_EMPLOYEE));
+    lookupModel.setSelectedEntities(entities);
   }
 
   @Test

@@ -81,7 +81,7 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
    * @param listener a listener notified each time the OK button is clicked
    */
   public void addButtonClickListener(final ActionListener listener) {
-    evtButtonClicked.addListener(listener);
+    getButtonClickObserver().addListener(listener);
   }
 
   /**

@@ -398,7 +398,6 @@ final class EntityDefinitionImpl implements Entity.Definition {
     if (linked == null) {
       return Collections.emptyList();
     }
-
     return linked;
   }
 
@@ -488,13 +487,6 @@ final class EntityDefinitionImpl implements Entity.Definition {
   @Override
   public String toString() {
     return entityID;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Entity.Definition setToStringProvider(final Entity.ToString toString) {
-    this.stringProvider = toString;
-    return this;
   }
 
   /** {@inheritDoc} */

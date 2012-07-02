@@ -146,7 +146,7 @@ public final class DefaultEntityEditModelTest {
   public void getEntityLookupModel() {
     final EntityLookupModel model = employeeEditModel.initializeEntityLookupModel(deptProperty.getPropertyID());
     assertNotNull(model);
-    assertEquals(model, employeeEditModel.getEntityLookupModel(deptProperty));
+    assertEquals(model, employeeEditModel.getEntityLookupModel(deptProperty.getPropertyID()));
   }
 
   @Test
@@ -443,6 +443,20 @@ public final class DefaultEntityEditModelTest {
     king.setValue(EmpDept.EMPLOYEE_MGR_FK, null);
     employeeEditModel.setEntity(king);
     assertNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_MGR_FK));
+  }
+
+  @Test
+  public void setValuePersistent() throws Exception {
+    final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "KING");
+    employeeEditModel.setEntity(king);
+    assertNotNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_HIREDATE));
+    employeeEditModel.setValuePersistent(EmpDept.EMPLOYEE_HIREDATE, true);
+    employeeEditModel.setEntity(null);
+    assertNotNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_HIREDATE));
+    employeeEditModel.setEntity(king);
+    employeeEditModel.setValuePersistent(EmpDept.EMPLOYEE_HIREDATE, false);
+    employeeEditModel.setEntity(null);
+    assertNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_HIREDATE));
   }
 
   @Test

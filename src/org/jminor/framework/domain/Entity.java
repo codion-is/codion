@@ -391,12 +391,6 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
     Definition setDomainID(final String domainID);
 
     /**
-     * @param toString the to string provider
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setToStringProvider(final ToString toString);
-
-    /**
      * @param colorProvider the background color provider
      * @return this {@link Entity.Definition} instance
      */

@@ -99,9 +99,9 @@ public class DefaultEntityEditModel implements EntityEditModel {
           new HashMap<Property.ForeignKeyProperty, EntityLookupModel>();
 
   /**
-   * Contains true if values should be persisted for the given property when the model is cleared
+   * Contains true if values should persist for the given property when the model is cleared
    */
-  private final Map<String, Boolean> persistingValues = new HashMap<String, Boolean>();
+  private final Map<String, Boolean> persistentValues = new HashMap<String, Boolean>();
 
   /**
    * The entity instance edited by this edit model.
@@ -175,17 +175,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public Object getDefaultValue(final Property property) {
-    return persistValueOnClear(property) ? getValue(property.getPropertyID()) : property.getDefaultValue();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public boolean persistValueOnClear(final Property property) {
-    if (persistingValues.containsKey(property.getPropertyID())) {
-      return persistingValues.get(property.getPropertyID());
-    }
-    return property instanceof Property.ForeignKeyProperty &&
-            Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
+    return isValuePersistent(property) ? getValue(property.getPropertyID()) : property.getDefaultValue();
   }
 
   /** {@inheritDoc} */
@@ -203,8 +193,19 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final EntityEditModel setPersistValueOnClear(final String propertyID, final boolean persistValueOnClear) {
-    persistingValues.put(propertyID, persistValueOnClear);
+  public boolean isValuePersistent(final Property property) {
+    if (persistentValues.containsKey(property.getPropertyID())) {
+      return persistentValues.get(property.getPropertyID());
+    }
+
+    return property instanceof Property.ForeignKeyProperty &&
+            Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final EntityEditModel setValuePersistent(final String propertyID, final boolean persistValue) {
+    persistentValues.put(propertyID, persistValue);
     return this;
   }
 

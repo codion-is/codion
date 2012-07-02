@@ -18,7 +18,7 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
 
   public InvoiceLineEditPanel(final EntityEditModel editModel) {
     super(editModel);
-    editModel.setPersistValueOnClear(INVOICELINE_TRACKID_FK, false);
+    editModel.setValuePersistent(INVOICELINE_TRACKID_FK, false);
   }
 
   public void setTableSearchFeld(final JTextField tableSearchField) {

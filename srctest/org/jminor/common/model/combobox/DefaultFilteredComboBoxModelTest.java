@@ -132,6 +132,7 @@ public class DefaultFilteredComboBoxModelTest {
 
     testModel.setFilterCriteria(null);
     testModel.setFilterSelectedItem(false);
+    assertFalse(testModel.isFilterSelectedItem());
     testModel.setSelectedItem(BJORN);
     testModel.setFilterCriteria(new FilterCriteria<String>() {
       @Override

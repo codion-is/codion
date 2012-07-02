@@ -3020,3 +3020,7 @@
   EntityLookupField now uses a customized dialog for showing the no results from criteria message, due to the enter key loop bug in windows
   EntityUiUtil.createTextField() and createDateInputPanel() no longer take DateFormat as parameter, use the property format
   EntityEditPanel.createDateInputPanel() no longer takes a DateFormat parameter
+  EntityEditModel.persistValueOnClear() renamed to isValuePersistent(), .clear() does not clear the values from the edit model, so this was a misnomer
+  EntityEditModel.persistValue() renamed to isValuePersistent() for consistency
+  Entity.Definition.setToStringProvider() removed, duplicate of setStringProvider()
+  UnitTest coverage improved

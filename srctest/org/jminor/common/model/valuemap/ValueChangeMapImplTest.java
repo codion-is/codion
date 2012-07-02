@@ -38,14 +38,14 @@ public class ValueChangeMapImplTest {
 
   @Test
   public void test() {
-    final ValueChangeMap<String, Integer> model = new ValueChangeMapImpl<String, Integer>();
+    final ValueChangeMap<String, Integer> valueChangeMap = new ValueChangeMapImpl<String, Integer>();
     final String key = "key";
 
     final ValueChangeListener<String, Integer> valueListener = new ValueChangeListener<String, Integer>() {
       @Override
       protected void valueChanged(final ValueChangeEvent<String, Integer> event) {
         assertEquals(key, event.getKey());
-        assertEquals(model, event.getValueOwner());
+        assertEquals(valueChangeMap, event.getValueOwner());
         event.getOldValue();
         event.getNewValue();
         event.isInitialization();
@@ -62,66 +62,68 @@ public class ValueChangeMapImplTest {
       fail("ValueChangeListener only works with ValueChangeEvent");
     }
     catch (IllegalArgumentException e) {}
-    model.addValueListener(valueListener);
+    valueChangeMap.addValueListener(valueListener);
 
-    model.getModifiedState();
-    model.getValueChangeObserver();
+    valueChangeMap.getModifiedState();
+    valueChangeMap.getValueChangeObserver();
 
-    assertFalse(model.containsValue(key));
+    assertFalse(valueChangeMap.containsValue(key));
+    assertTrue(valueChangeMap.getOriginalValueKeys().isEmpty());
 
-    model.setValue(key, 1);
-    assertTrue(model.containsValue(key));
-    assertEquals(Integer.valueOf(1), model.getValue(key));
-    assertEquals(Integer.valueOf(1), model.getOriginalValue(key));
-    assertFalse(model.isValueNull(key));
-    assertFalse(model.isModified());
-    assertFalse(model.isModified(key));
+    valueChangeMap.setValue(key, 1);
+    assertTrue(valueChangeMap.containsValue(key));
+    assertEquals(Integer.valueOf(1), valueChangeMap.getValue(key));
+    assertEquals(Integer.valueOf(1), valueChangeMap.getOriginalValue(key));
+    assertFalse(valueChangeMap.isValueNull(key));
+    assertFalse(valueChangeMap.isModified());
+    assertFalse(valueChangeMap.isModified(key));
 
-    model.setValue(key, 1);
-    assertTrue(model.containsValue(key));
-    assertEquals(Integer.valueOf(1), model.getValue(key));
-    assertFalse(model.isModified());
-    assertFalse(model.isModified(key));
+    valueChangeMap.setValue(key, 1);
+    assertTrue(valueChangeMap.containsValue(key));
+    assertEquals(Integer.valueOf(1), valueChangeMap.getValue(key));
+    assertFalse(valueChangeMap.isModified());
+    assertFalse(valueChangeMap.isModified(key));
 
-    model.setValue(key, 2);
-    assertTrue(model.containsValue(key));
-    assertEquals(Integer.valueOf(2), model.getValue(key));
-    assertEquals(Integer.valueOf(1), model.getOriginalValue(key));
-    assertTrue(model.isModified());
-    assertTrue(model.isModified(key));
+    valueChangeMap.setValue(key, 2);
+    assertTrue(valueChangeMap.containsValue(key));
+    assertEquals(Integer.valueOf(2), valueChangeMap.getValue(key));
+    assertEquals(Integer.valueOf(1), valueChangeMap.getOriginalValue(key));
+    assertTrue(valueChangeMap.isModified());
+    assertTrue(valueChangeMap.isModified(key));
+    assertFalse(valueChangeMap.getOriginalValueKeys().isEmpty());
 
-    model.setValue(key, 3);
-    assertTrue(model.containsValue(key));
-    assertEquals(Integer.valueOf(3), model.getValue(key));
-    assertEquals(Integer.valueOf(1), model.getOriginalValue(key));
-    assertTrue(model.isModified());
-    assertTrue(model.isModified(key));
+    valueChangeMap.setValue(key, 3);
+    assertTrue(valueChangeMap.containsValue(key));
+    assertEquals(Integer.valueOf(3), valueChangeMap.getValue(key));
+    assertEquals(Integer.valueOf(1), valueChangeMap.getOriginalValue(key));
+    assertTrue(valueChangeMap.isModified());
+    assertTrue(valueChangeMap.isModified(key));
 
-    model.revertAll();
-    assertEquals(Integer.valueOf(1), model.getValue(key));
-    assertFalse(model.isModified());
-    assertFalse(model.isModified(key));
+    valueChangeMap.revertAll();
+    assertEquals(Integer.valueOf(1), valueChangeMap.getValue(key));
+    assertFalse(valueChangeMap.isModified());
+    assertFalse(valueChangeMap.isModified(key));
 
-    model.setValue(key, null);
-    assertTrue(model.isValueNull(key));
-    assertTrue(model.isModified());
-    assertTrue(model.isModified(key));
+    valueChangeMap.setValue(key, null);
+    assertTrue(valueChangeMap.isValueNull(key));
+    assertTrue(valueChangeMap.isModified());
+    assertTrue(valueChangeMap.isModified(key));
 
-    model.removeValue(key);
-    assertFalse(model.containsValue(key));
-    assertFalse(model.isModified());
+    valueChangeMap.removeValue(key);
+    assertFalse(valueChangeMap.containsValue(key));
+    assertFalse(valueChangeMap.isModified());
 
-    model.setValue(key, 0);
-    model.setValue(key, 1);
-    assertTrue(model.isModified());
-    assertTrue(model.isModified(key));
-    assertEquals(Integer.valueOf(0), model.getOriginalValue(key));
-    assertEquals(Integer.valueOf(0), model.getOriginalCopy().getValue(key));
-    model.saveAll();
-    assertFalse(model.isModified());
-    assertFalse(model.isModified(key));
+    valueChangeMap.setValue(key, 0);
+    valueChangeMap.setValue(key, 1);
+    assertTrue(valueChangeMap.isModified());
+    assertTrue(valueChangeMap.isModified(key));
+    assertEquals(Integer.valueOf(0), valueChangeMap.getOriginalValue(key));
+    assertEquals(Integer.valueOf(0), valueChangeMap.getOriginalCopy().getValue(key));
+    valueChangeMap.saveAll();
+    assertFalse(valueChangeMap.isModified());
+    assertFalse(valueChangeMap.isModified(key));
 
-    model.removeValueListener(valueListener);
+    valueChangeMap.removeValueListener(valueListener);
   }
 
   @Test
