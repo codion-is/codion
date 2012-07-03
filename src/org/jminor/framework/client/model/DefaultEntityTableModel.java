@@ -540,31 +540,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   @Override
   public final PropertySummaryModel getPropertySummaryModel(final Property property) {
     if (!propertySummaryModels.containsKey(property.getPropertyID())) {
-      final PropertySummaryModel.PropertyValueProvider valueProvider = new PropertySummaryModel.PropertyValueProvider() {
-        /** {@inheritDoc} */
-        @Override
-        public void bindValuesChangedEvent(final Event event) {
-          if (editModel != null) {
-            editModel.addAfterInsertListener(event);
-          }
-          addFilteringListener(event);//todo summary is updated twice per refresh
-          addRefreshDoneListener(event);
-          addSelectionChangedListener(event);
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public Collection<?> getValues() {
-          return DefaultEntityTableModel.this.getValues(property, isValueSubset());
-        }
-
-        /** {@inheritDoc} */
-        @Override
-        public boolean isValueSubset() {
-          return !isSelectionEmpty();
-        }
-      };
-      propertySummaryModels.put(property.getPropertyID(), new DefaultPropertySummaryModel(property, valueProvider));
+      propertySummaryModels.put(property.getPropertyID(),
+              new DefaultPropertySummaryModel(property, new SummaryValueProvider(editModel, this, property)));
     }
 
     return propertySummaryModels.get(property.getPropertyID());
@@ -734,5 +711,41 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
 
     return model;
+  }
+
+  private static final class SummaryValueProvider implements PropertySummaryModel.PropertyValueProvider {
+
+    private final EntityEditModel editModel;
+    private final EntityTableModel tableModel;
+    private final Property property;
+
+    private SummaryValueProvider(final EntityEditModel editModel, final EntityTableModel tableModel, final Property property) {
+      this.editModel = editModel;
+      this.tableModel = tableModel;
+      this.property = property;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void bindValuesChangedEvent(final Event event) {
+      if (editModel != null) {
+        editModel.addAfterInsertListener(event);
+      }
+      tableModel.addFilteringListener(event);//todo summary is updated twice per refresh
+      tableModel.addRefreshDoneListener(event);
+      tableModel.addSelectionChangedListener(event);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Collection<?> getValues() {
+      return tableModel.getValues(property, isValueSubset());
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isValueSubset() {
+      return !tableModel.isSelectionEmpty();
+    }
   }
 }

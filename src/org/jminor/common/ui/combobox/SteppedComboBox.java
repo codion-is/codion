@@ -59,10 +59,10 @@ public class SteppedComboBox extends JComboBox {
   }
 
   /**
-   * @param displaySize the display size provided by the UI
    * @return Value for property 'popupSize'.
    */
-  public final Dimension getPopupSize(final Dimension displaySize) {
+  public final Dimension getPopupSize() {
+    final Dimension displaySize = ((SteppedComboBoxUI) getUI()).getDisplaySize();
     final Dimension size = getSize();
 
     return new Dimension(Math.max(size.width, popupWidth <= 0 ? displaySize.width : popupWidth), size.height);
@@ -87,41 +87,46 @@ public class SteppedComboBox extends JComboBox {
   private static final class SteppedComboBoxUI extends MetalComboBoxUI {
     @Override
     protected ComboPopup createPopup() {
-      return new SteppedComboPopup(comboBox);
+      return new SteppedComboBoxPopup(comboBox);
     }
 
-    private final class SteppedComboPopup extends BasicComboPopup {
+    @Override
+    public Dimension getDisplaySize() {
+      return super.getDisplaySize();
+    }
+  }
 
-      private SteppedComboPopup(final JComboBox combo) {
-        super(combo);
-        getAccessibleContext().setAccessibleParent(combo);
-      }
+  private static final class SteppedComboBoxPopup extends BasicComboPopup {
 
-      /** {@inheritDoc} */
-      @Override
-      public void setVisible(final boolean visible) {
-        if (visible) {
-          final Dimension popupSize = ((SteppedComboBox)comboBox).getPopupSize(getDisplaySize());
-          popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
-          final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height,
-                  popupSize.width + new JScrollBar(JScrollBar.VERTICAL).getWidth(), popupSize.height);
-          scroller.setMaximumSize(popupBounds.getSize());
-          scroller.setPreferredSize(popupBounds.getSize());
-          scroller.setMinimumSize(popupBounds.getSize());
-          getList().invalidate();
-          final int selectedIndex = comboBox.getSelectedIndex();
-          if (selectedIndex == -1) {
-            getList().clearSelection();
-          }
-          else {
-            getList().setSelectedIndex(selectedIndex);
-          }
-          getList().ensureIndexIsVisible(getList().getSelectedIndex());
-          setLightWeightPopupEnabled(comboBox.isLightWeightPopupEnabled());
+    private SteppedComboBoxPopup(final JComboBox comboBox) {
+      super(comboBox);
+      getAccessibleContext().setAccessibleParent(comboBox);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setVisible(final boolean visible) {
+      if (visible) {
+        final Dimension popupSize = ((SteppedComboBox) comboBox).getPopupSize();
+        popupSize.setSize(popupSize.width, getPopupHeightForRowCount(comboBox.getMaximumRowCount()));
+        final Rectangle popupBounds = computePopupBounds(0, comboBox.getBounds().height,
+                popupSize.width + new JScrollBar(JScrollBar.VERTICAL).getWidth(), popupSize.height);
+        scroller.setMaximumSize(popupBounds.getSize());
+        scroller.setPreferredSize(popupBounds.getSize());
+        scroller.setMinimumSize(popupBounds.getSize());
+        getList().invalidate();
+        final int selectedIndex = comboBox.getSelectedIndex();
+        if (selectedIndex == -1) {
+          getList().clearSelection();
         }
-
-        super.setVisible(visible);
+        else {
+          getList().setSelectedIndex(selectedIndex);
+        }
+        getList().ensureIndexIsVisible(getList().getSelectedIndex());
+        setLightWeightPopupEnabled(comboBox.isLightWeightPopupEnabled());
       }
+
+      super.setVisible(visible);
     }
   }
 }

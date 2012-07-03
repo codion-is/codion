@@ -142,7 +142,7 @@ public class EntityDefinitionImplTest {
   }
 
   @Test
-  public void testLinkedPropertyies() {
+  public void testLinkedProperties() {
     final EntityDefinitionImpl def = new EntityDefinitionImpl("entityId",
             Properties.primaryKeyProperty("pk"),
             Properties.columnProperty("1"),

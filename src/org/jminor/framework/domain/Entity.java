@@ -157,13 +157,14 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
    * @return the value of the property identified by <code>propertyID</code>,
    * assuming it is an Entity
    * @throws IllegalArgumentException if the property is not a foreign key property
+   * @see #isLoaded(String)
    */
   Entity getForeignKeyValue(final String foreignKeyPropertyID);
 
   /**
-   * Returns the primary key of the entity referenced by the given ForeignKeyProperty,
+   * Returns the primary key of the entity referenced by the given {@link Property.ForeignKeyProperty},
    * if the reference is null this method returns null.
-   * @param foreignKeyProperty the foreign key property for which to retrieve the underlying EntityKey
+   * @param foreignKeyProperty the foreign key property for which to retrieve the underlying {@link Entity.Key}
    * @return the primary key of the underlying entity, null if no entity is referenced
    */
   Key getReferencedPrimaryKey(final Property.ForeignKeyProperty foreignKeyProperty);

@@ -470,14 +470,11 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     if (referencedPrimaryKey != null) {
       return referencedPrimaryKey;
     }
-    if (foreignKeyProperty.isCompositeReference()) {
-      referencedPrimaryKey = initializeCompositeKey(foreignKeyProperty, EntityDefinitionImpl.getDefinitionMap());
-    }
-    else {
-      referencedPrimaryKey = initializeSingleValueKey(foreignKeyProperty, EntityDefinitionImpl.getDefinitionMap());
-    }
 
-    cacheReferencedKey(foreignKeyProperty, referencedPrimaryKey);
+    referencedPrimaryKey = initializeReferencedKey(foreignKeyProperty);
+    if (referencedPrimaryKey != null) {
+      cacheReferencedKey(foreignKeyProperty, referencedPrimaryKey);
+    }
 
     return referencedPrimaryKey;
   }
@@ -654,40 +651,37 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     return valueOwner.getFormattedValue(denormalizedViewProperty.getDenormalizedProperty());
   }
 
-  private Key initializeSingleValueKey(final Property.ForeignKeyProperty foreignKeyProperty,
-                                       final Map<String, Definition> entityDefinitions) {
-    final Property referenceKeyProperty = foreignKeyProperty.getReferenceProperties().get(0);
-    final Object value = getValue(referenceKeyProperty);
-    if (value == null) {
-      return null;
+  private Key initializeReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
+    if (foreignKeyProperty.isCompositeReference()) {
+      final Key key = new KeyImpl(EntityDefinitionImpl.getDefinitionMap().get(foreignKeyProperty.getReferencedEntityID()));
+      for (final Property referenceKeyProperty : foreignKeyProperty.getReferenceProperties()) {
+        final Object value = getValue(referenceKeyProperty);
+        if (value == null) {
+          return null;
+        }
+        else {
+          key.setValue(foreignKeyProperty.getReferencedPropertyID(referenceKeyProperty), value);
+        }
+      }
+
+      return key;
     }
-
-    return new KeyImpl(entityDefinitions.get(foreignKeyProperty.getReferencedEntityID()), value);
-  }
-
-  private Key initializeCompositeKey(final Property.ForeignKeyProperty foreignKeyProperty,
-                                     final Map<String, Definition> entityDefinitions) {
-    final Key key = new KeyImpl(entityDefinitions.get(foreignKeyProperty.getReferencedEntityID()));
-    for (final Property referenceKeyProperty : foreignKeyProperty.getReferenceProperties()) {
+    else {
+      final Property referenceKeyProperty = foreignKeyProperty.getReferenceProperties().get(0);
       final Object value = getValue(referenceKeyProperty);
       if (value == null) {
         return null;
       }
-      else {
-        key.setValue(foreignKeyProperty.getReferencedPropertyID(referenceKeyProperty), value);
-      }
-    }
 
-    return key;
+      return new KeyImpl(EntityDefinitionImpl.getDefinitionMap().get(foreignKeyProperty.getReferencedEntityID()), value);
+    }
   }
 
   private void cacheReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty, final Key referencedPrimaryKey) {
-    if (referencedPrimaryKey != null) {
-      if (referencedPrimaryKeysCache == null) {
-        referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>();
-      }
-      referencedPrimaryKeysCache.put(foreignKeyProperty, referencedPrimaryKey);
+    if (referencedPrimaryKeysCache == null) {
+      referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>();
     }
+    referencedPrimaryKeysCache.put(foreignKeyProperty, referencedPrimaryKey);
   }
 
   private Key getCachedReferenceKey(final Property.ForeignKeyProperty foreignKeyProperty) {

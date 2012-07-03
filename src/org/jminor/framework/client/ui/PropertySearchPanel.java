@@ -25,7 +25,6 @@ import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.domain.Property;
 
 import javax.swing.AbstractAction;
-import javax.swing.Action;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JFormattedTextField;
@@ -91,7 +90,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       final JComponent field = initField();
       bindField(field, isUpperBound);
       if (field instanceof JTextField) { //enter button toggles the filter on/off
-        ((JTextField) field).addActionListener(getEnableAction());
+        ((JTextField) field).addActionListener(new EnableAction(getSearchModel()));
       }
 
       return field;
@@ -161,22 +160,28 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       }
     }
 
-    private Action getEnableAction() {
-      return new AbstractAction() {
-        /** {@inheritDoc} */
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          model.setEnabled(!model.isEnabled());
-        }
-      };
-    }
-
     private static JComponent initValueListField(final Property.ValueListProperty property) {
       final ItemComboBoxModel<Object> boxModel = new ItemComboBoxModel<Object>(property.getValues());
       final SteppedComboBox box = new SteppedComboBox(boxModel);
       MaximumMatch.enable(box);
 
       return box;
+    }
+  }
+
+  private static final class EnableAction extends AbstractAction {
+
+    private final ColumnSearchModel model;
+
+    private EnableAction(final ColumnSearchModel model) {
+      super("PropertySearchPanel.EnableAction");
+      this.model = model;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      model.setEnabled(!model.isEnabled());
     }
   }
 }

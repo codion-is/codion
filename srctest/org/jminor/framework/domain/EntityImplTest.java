@@ -81,36 +81,65 @@ public class EntityImplTest {
   }
 
   @Test
-  public void entity() throws Exception {
-    Entity referencedEntityValue = Entities.entity(EntityTestDomain.T_MASTER);
-
-    final int masterId = 2;
-    final int masterCode = 7;
-
-    referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, masterId);
+  public void setAs() {
+    final Entity referencedEntityValue = Entities.entity(EntityTestDomain.T_MASTER);
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, 2);
     referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, masterName);
-    referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, masterCode);
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, 7);
 
-    referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, -55);
+    final Entity test = Entities.entity(EntityTestDomain.T_DETAIL);
+    final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+            detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
+    test.setAs(testEntity);
+    assertTrue("Entities should be equal after .setAs()", Util.equal(test, testEntity));
+    assertTrue("Entity property values should be equal after .setAs()", test.propertyValuesEqual(testEntity));
+
+    //assure that no cached foreign key values linger
+    test.setValue(EntityTestDomain.DETAIL_ENTITY_FK, null);
+    testEntity.setAs(test);
+    assertNull(testEntity.getValue(EntityTestDomain.DETAIL_ENTITY_ID));
+    assertNull(testEntity.getValue(EntityTestDomain.DETAIL_ENTITY_FK));
+  }
+
+  @Test
+  public void saveRevertValue() {
+    final Entity entity = Entities.entity(EntityTestDomain.T_MASTER);
+    final String newName = "aname";
+
+    entity.setValue(EntityTestDomain.MASTER_ID, 2);
+    entity.setValue(EntityTestDomain.MASTER_NAME, masterName);
+    entity.setValue(EntityTestDomain.MASTER_CODE, 7);
+
+    entity.setValue(EntityTestDomain.MASTER_ID, -55);
     //the id is not updatable as it is part of the primary key, which is not updatable by default
-    assertFalse(referencedEntityValue.getModifiedState().isActive());
-    referencedEntityValue.saveValue(EntityTestDomain.MASTER_ID);
-    assertFalse(referencedEntityValue.getModifiedState().isActive());
+    assertFalse(entity.getModifiedState().isActive());
+    entity.saveValue(EntityTestDomain.MASTER_ID);
+    assertFalse(entity.getModifiedState().isActive());
 
-    referencedEntityValue = Entities.entity(EntityTestDomain.T_MASTER);
+    entity.setValue(EntityTestDomain.MASTER_NAME, newName);
+    assertTrue(entity.getModifiedState().isActive());
+    entity.revertValue(EntityTestDomain.MASTER_NAME);
+    assertEquals(masterName, entity.getValue(EntityTestDomain.MASTER_NAME));
+    assertFalse(entity.getModifiedState().isActive());
 
-    referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, masterId);
-    referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, masterName);
-    referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, masterCode);
+    entity.setValue(EntityTestDomain.MASTER_NAME, newName);
+    assertTrue(entity.isModified());
+    assertTrue(entity.isModified(EntityTestDomain.MASTER_NAME));
+    entity.saveValue(EntityTestDomain.MASTER_NAME);
+    assertEquals(newName, entity.getValue(EntityTestDomain.MASTER_NAME));
+    assertFalse(entity.isModified());
+    assertFalse(entity.isModified(EntityTestDomain.MASTER_NAME));
+  }
 
-    referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, "aname");
-    assertTrue(referencedEntityValue.getModifiedState().isActive());
-    referencedEntityValue.revertValue(EntityTestDomain.MASTER_NAME);
-    assertFalse(referencedEntityValue.getModifiedState().isActive());
-
-    Entity test = Entities.entity(EntityTestDomain.T_DETAIL);
+  @Test
+  public void entity() throws Exception {
+    final Entity referencedEntityValue = Entities.entity(EntityTestDomain.T_MASTER);
     //assert not modified
-    assertFalse(test.isModified());
+    assertFalse(referencedEntityValue.isModified());
+
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_ID, 2);
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_NAME, masterName);
+    referencedEntityValue.setValue(EntityTestDomain.MASTER_CODE, 7);
 
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
@@ -179,35 +208,10 @@ public class EntityImplTest {
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_BOOLEAN), detailBoolean);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_ENTITY_FK), referencedEntityValue);
     assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_NAME), masterName);
-    assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_CODE), masterCode);
+    assertEquals(testEntity.getValue(EntityTestDomain.DETAIL_MASTER_CODE), 7);
     assertFalse(testEntity.isValueNull(EntityTestDomain.DETAIL_ENTITY_ID));
-    try {
-      testEntity.setValue(EntityTestDomain.DETAIL_MASTER_NAME, "hello");
-      fail("Set value for a denormalized view property should cause an error");
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      testEntity.setValue(EntityTestDomain.DETAIL_MASTER_CODE, 2);
-      fail("Set value for a denormalized property should cause an error");
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      testEntity.setValue(EntityTestDomain.DETAIL_ID, "hello");
-      fail("Set string value for a single integer key should cause an error");
-    }
-    catch (IllegalArgumentException e) {}
-    //test setAs()
-    testEntity.getReferencedPrimaryKey(Entities.getForeignKeyProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_ENTITY_FK));
-    test = Entities.entity(EntityTestDomain.T_DETAIL);
-    test.setAs(testEntity);
-    assertTrue("Entities should be equal after .setAs()", Util.equal(test, testEntity));
-    assertTrue("Entity property values should be equal after .setAs()", test.propertyValuesEqual(testEntity));
 
-    //assure that no cached foreign key values linger
-    test.setValue(EntityTestDomain.DETAIL_ENTITY_FK, null);
-    testEntity.setAs(test);
-    assertNull(testEntity.getValue(EntityTestDomain.DETAIL_ENTITY_ID));
-    assertNull(testEntity.getValue(EntityTestDomain.DETAIL_ENTITY_FK));
+    testEntity.getReferencedPrimaryKey(Entities.getForeignKeyProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_ENTITY_FK));
 
     //test copy()
     final Entity test2 = (Entity) testEntity.getCopy();
@@ -316,6 +320,23 @@ public class EntityImplTest {
     try {
       employee.setValue(EmpDept.EMPLOYEE_SALARY, "test");
       fail();
+    }
+    catch (IllegalArgumentException e) {}
+    final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+            detailString, detailDate, detailTimestamp, detailBoolean, null);
+    try {
+      testEntity.setValue(EntityTestDomain.DETAIL_MASTER_NAME, "hello");
+      fail("Set value for a denormalized view property should cause an error");
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      testEntity.setValue(EntityTestDomain.DETAIL_MASTER_CODE, 2);
+      fail("Set value for a denormalized property should cause an error");
+    }
+    catch (IllegalArgumentException e) {}
+    try {
+      testEntity.setValue(EntityTestDomain.DETAIL_ID, "hello");
+      fail("Set string value for a single integer key should cause an error");
     }
     catch (IllegalArgumentException e) {}
 

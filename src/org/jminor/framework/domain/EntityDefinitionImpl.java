@@ -173,7 +173,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
     for (int idx = 0; idx < selectColumnNames.length; idx++) {
       ((Property.ColumnProperty) properties.get(selectColumnNames[idx])).setSelectIndex(idx + 1);
     }
-    initializeDerivedPropertyChangeLinks();
+    initializePropertyLinks();
   }
 
   /** {@inheritDoc} */
@@ -587,20 +587,20 @@ final class EntityDefinitionImpl implements Entity.Definition {
     throw new IllegalArgumentException("Entity is missing a primary key: " + entityID);
   }
 
-  private void initializeDerivedPropertyChangeLinks() {
+  private void initializePropertyLinks() {
     for (final Property property : properties.values()) {
       if (property instanceof Property.DerivedProperty) {
         final Collection<String> linked = ((Property.DerivedProperty) property).getLinkedPropertyIDs();
         if (linked != null && !linked.isEmpty()) {
           for (final String parentLinkPropertyID : linked) {
-            addDerivedPropertyChangeLink(parentLinkPropertyID, property.getPropertyID());
+            linkProperties(parentLinkPropertyID, property.getPropertyID());
           }
         }
       }
     }
   }
 
-  private void addDerivedPropertyChangeLink(final String parentPropertyID, final String transientPropertyID) {
+  private void linkProperties(final String parentPropertyID, final String transientPropertyID) {
     if (!linkedProperties.containsKey(parentPropertyID)) {
       linkedProperties.put(parentPropertyID, new HashSet<String>());
     }

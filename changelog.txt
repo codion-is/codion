@@ -3024,3 +3024,9 @@
   EntityEditModel.persistValue() renamed to isValuePersistent() for consistency
   Entity.Definition.setToStringProvider() removed, duplicate of setStringProvider()
   UnitTest coverage improved
+  EntityImplTest refactored
+  EntityImpl.getReferencedPrimaryKey() refactored
+  PropertySearchPanel refactored
+  SteppedComboBox refactored
+  EntityLookupField refactored
+  DefaultEntityTableModel refactored

@@ -54,7 +54,16 @@ public final class DefaultEntityEditModelTest {
     deptProperty = Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
     debugOutput = Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT);
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
-    employeeEditModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    employeeEditModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER) {
+      @Override
+      public Object getDefaultValue(final Property property) {
+        if (property.is(EmpDept.EMPLOYEE_HIREDATE)) {
+          return DateUtil.floorDate(new Date());
+        }
+
+        return super.getDefaultValue(property);
+      }
+    };
   }
 
   @After
@@ -443,20 +452,24 @@ public final class DefaultEntityEditModelTest {
     king.setValue(EmpDept.EMPLOYEE_MGR_FK, null);
     employeeEditModel.setEntity(king);
     assertNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_MGR_FK));
+    employeeEditModel.setEntity(null);
+    assertEquals(DateUtil.floorDate(new Date()), employeeEditModel.getValue(EmpDept.EMPLOYEE_HIREDATE));
+    assertFalse(employeeEditModel.getEntity().isModified(EmpDept.EMPLOYEE_HIREDATE));
+    assertFalse(employeeEditModel.getEntity().isModified());
   }
 
   @Test
   public void setValuePersistent() throws Exception {
     final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "KING");
     employeeEditModel.setEntity(king);
-    assertNotNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_HIREDATE));
-    employeeEditModel.setValuePersistent(EmpDept.EMPLOYEE_HIREDATE, true);
+    assertNotNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_JOB));
+    employeeEditModel.setValuePersistent(EmpDept.EMPLOYEE_JOB, true);
     employeeEditModel.setEntity(null);
-    assertNotNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_HIREDATE));
+    assertNotNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_JOB));
     employeeEditModel.setEntity(king);
-    employeeEditModel.setValuePersistent(EmpDept.EMPLOYEE_HIREDATE, false);
+    employeeEditModel.setValuePersistent(EmpDept.EMPLOYEE_JOB, false);
     employeeEditModel.setEntity(null);
-    assertNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_HIREDATE));
+    assertNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_JOB));
   }
 
   @Test

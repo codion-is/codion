@@ -308,14 +308,7 @@ public final class EntityLookupField extends JTextField {
   private void showEmptyResultMessage() {
     final Event closeEvent = Events.event();
     final JButton okButton = new JButton(Messages.get(Messages.OK));
-    UiUtil.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true, new AbstractAction(Messages.get(Messages.OK)) {
-      /** {@inheritDoc} */
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        okButton.doClick();
-        closeEvent.fire();
-      }
-    });
+    UiUtil.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true, new OKAction(okButton, closeEvent));
     final JPanel btnBase = new JPanel(new FlowLayout(FlowLayout.CENTER));
     btnBase.add(okButton);
     final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
@@ -402,6 +395,24 @@ public final class EntityLookupField extends JTextField {
       if (e.getClickCount() == 2) {
         okAction.actionPerformed(null);
       }
+    }
+  }
+
+  private static final class OKAction extends AbstractAction {
+
+    private final JButton okButton;
+    private final Event closeEvent;
+
+    private OKAction(final JButton okButton, final Event closeEvent) {
+      this.closeEvent = closeEvent;
+      this.okButton = okButton;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      okButton.doClick();
+      closeEvent.fire();
     }
   }
 }
