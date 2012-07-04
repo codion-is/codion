@@ -543,17 +543,6 @@ public interface Property extends Attribute {
   }
 
   /**
-   * A BLOB property, based on two columns, the actual BLOB column and a column containing the name of the BLOB object.
-   */
-  interface BlobProperty extends ColumnProperty {
-
-    /**
-     * @return the name of the actual blob column
-     */
-    String getBlobColumnName();
-  }
-
-  /**
    * A property representing an audit column
    */
   interface AuditProperty extends ColumnProperty {

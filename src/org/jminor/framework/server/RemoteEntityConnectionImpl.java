@@ -339,9 +339,8 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
 
   /** {@inheritDoc} */
   @Override
-  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
-                        final byte[] blobData) throws DatabaseException, RemoteException{
-    connectionProxy.writeBlob(primaryKey, blobPropertyID, dataDescription, blobData);
+  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws DatabaseException, RemoteException{
+    connectionProxy.writeBlob(primaryKey, blobPropertyID, blobData);
   }
 
   /** {@inheritDoc} */

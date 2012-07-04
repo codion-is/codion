@@ -33,6 +33,7 @@ import org.junit.Test;
 
 import java.sql.Connection;
 import java.sql.SQLException;
+import java.sql.Statement;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -413,34 +414,63 @@ public class EntityConnectionImplTest {
     }
   }
 
-  /*public void testBlob() throws Exception {
-    DatabaseConnection dbConnection = null;
+  @Test(expected = IllegalArgumentException.class)
+  public void writeBlobIncorrectType() throws DatabaseException {
+    connection.writeBlob(Entities.key(EmpDept.T_DEPARTMENT), EmpDept.DEPARTMENT_NAME, new byte[0]);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void readBlobIncorrectType() throws DatabaseException {
+    connection.readBlob(Entities.key(EmpDept.T_DEPARTMENT), EmpDept.DEPARTMENT_NAME);
+  }
+
+  @Test
+  public void readWriteBlob() throws SQLException, DatabaseException {
+    DatabaseConnection databaseConnection = null;
+    Statement statement = null;
     try {
-      dbConnection = new DatabaseConnection(new User("ops$darri", ""));
-      dbConnection.execute("delete blob_test");
-      dbConnection.execute("insert into blob_test(id) values (1)");
+      databaseConnection = connection.getDatabaseConnection();
+      statement = databaseConnection.getConnection().createStatement();
+      statement.execute("create table blob_test(id integer, data blob)");
 
-      File file = new File("/home/stofa/darri/data/downloads/NavigableImagePanel.zip");
+      final String entityID = "blob_test";
+      final String id = "id";
+      final String data = "data";
 
-      dbConnection.writeBlobField(Util.getBytesFromFile(file), "blob_test", "data", "where id = 1");
+      Entities.define(entityID,
+              Properties.primaryKeyProperty(id),
+              Properties.columnProperty(data, Types.BLOB));
 
-      final byte[] data = dbConnection.readBlobField("blob_test", "data", "where id = 1");
+      final Entity blobRecord = Entities.entity(entityID);
+      blobRecord.setValue(id, 1);
 
-      File file2 = new File("/home/stofa/darri/data/downloads/NavigableImagePanel2.zip");
-      file2.createNewFile();
+      final Entity.Key blobRecordKey = connection.insert(Arrays.asList(blobRecord)).get(0);
 
-      FileOutputStream stream = new FileOutputStream(file2);
-      stream.write(data);
-      stream.flush();
-      stream.close();
+      final byte one = 1;
+      final byte[] bytes = new byte[1024];
+      Arrays.fill(bytes, one);
 
-      dbConnection.rollback();
+      connection.writeBlob(blobRecordKey, data, bytes);
+
+      final byte[] fromDb = connection.readBlob(blobRecordKey, data);
+      assertEquals(bytes.length, fromDb.length);
+
+      final Entity blobRecordFromDb = connection.selectSingle(blobRecordKey);
+      assertNotNull(blobRecordFromDb);
+      assertNull(blobRecordFromDb.getValue(data));
     }
     finally {
-      if (dbConnection != null)
-        dbConnection.disconnect();
+      connection.rollback();
+      if (statement != null) {
+        statement.close();
+      }
+      if (databaseConnection != null) {
+        statement = databaseConnection.getConnection().createStatement();
+        statement.execute("drop table blob_test");
+        statement.close();
+      }
     }
-  }*/
+  }
 
   private static EntityConnectionImpl initializeConnection() throws ClassNotFoundException, DatabaseException {
     return new EntityConnectionImpl(Databases.createInstance(), User.UNIT_TEST_USER);

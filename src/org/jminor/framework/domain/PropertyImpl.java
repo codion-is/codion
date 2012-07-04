@@ -1160,25 +1160,6 @@ class PropertyImpl implements Property, Serializable {
     }
   }
 
-  static class BlobPropertyImpl extends ColumnPropertyImpl implements BlobProperty {
-
-    private static final long serialVersionUID = 1;
-
-    private final String blobColumnName;
-
-    BlobPropertyImpl(final String propertyID, final String blobColumnName, final String caption) {
-      super(propertyID, Types.VARCHAR, caption);
-      super.setHidden(true);
-      this.blobColumnName = blobColumnName;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final String getBlobColumnName() {
-      return blobColumnName;
-    }
-  }
-
   static class AuditPropertyImpl extends ColumnPropertyImpl implements AuditProperty {
 
     private static final long serialVersionUID = 1;

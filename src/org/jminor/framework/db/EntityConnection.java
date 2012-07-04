@@ -225,12 +225,10 @@ public interface EntityConnection {
    * for the given entity
    * @param primaryKey the primary key of the entity for which to write the blob field
    * @param blobPropertyID the ID of the blob property
-   * @param dataDescription the value to insert into the blob description column
    * @param blobData the blob data
    * @throws DatabaseException in case of a db exception
    */
-  void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
-                 final byte[] blobData) throws DatabaseException;
+  void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws DatabaseException;
 
   /**
    * Reads the blob specified by the property identified by <code>propertyID</code> from the given entity

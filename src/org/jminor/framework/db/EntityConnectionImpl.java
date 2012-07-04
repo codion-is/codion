@@ -547,79 +547,101 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
-                        final byte[] blobData) throws DatabaseException {
-    if (isTransactionOpen()) {
-      throw new DatabaseException("Can not save blob within an open transaction");
+  public synchronized void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws DatabaseException {
+    final Property.ColumnProperty property =
+            (Property.ColumnProperty) Entities.getProperty(primaryKey.getEntityID(), blobPropertyID);
+    if (property.getType() != Types.BLOB) {
+      throw new IllegalArgumentException("Property " + property.getPropertyID() + " in entity " + primaryKey.getEntityID() + "is not of type BLOB");
     }
-
-    String statementString = null;
-    Statement statement = null;
+    SQLException exception = null;
+    ByteArrayInputStream inputStream = null;
+    PreparedStatement statement = null;
+    final EntityCriteria criteria = EntityCriteriaUtil.criteria(primaryKey);
+    final String sql = "update " + Entities.getTableName(primaryKey.getEntityID()) + " set " + property.getColumnName() +
+            " = ? " + criteria.getWhereClause();
+    final List<Object> values = new ArrayList<Object>();
+    final List<Property.ColumnProperty> properties = new ArrayList<Property.ColumnProperty>();
+    Databases.QUERY_COUNTER.count(sql);
+    getMethodLogger().logAccess("writeBlob", new Object[] {sql});
     try {
-      boolean success = false;
-      try {
-        beginTransaction();
-        final Property.BlobProperty property =
-                (Property.BlobProperty) Entities.getProperty(primaryKey.getEntityID(), blobPropertyID);
+      values.add(null);
+      values.addAll(criteria.getValues());
+      properties.add(property);
+      properties.addAll(criteria.getValueProperties());
 
-        final String whereCondition = createWhereCondition(primaryKey.getProperties());
+      statement = getConnection().prepareStatement(sql);
+      setParameterValues(statement, values, properties);
+      inputStream = new ByteArrayInputStream(blobData);
+      statement.setBinaryStream(1, inputStream);
+      statement.executeUpdate();
 
-        statementString = new StringBuilder("update ").append(primaryKey.getEntityID()).append(" set ").append(property.getColumnName())
-                .append(" = '").append(dataDescription).append("' where ").append(whereCondition).toString();
-
-        statement = getConnection().createStatement();
-        statement.executeUpdate(statementString);
-
-        writeBlobField(blobData, Entities.getTableName(primaryKey.getEntityID()),
-                property.getBlobColumnName(), whereCondition);
-        success = true;
-      }
-      finally {
-        if (success) {
-          commitTransaction();
-        }
-        else {
-          rollbackTransaction();
-        }
-        try {
-          if (statement != null) {
-            statement.close();
-          }
-        }
-        catch (SQLException ignored) {}
+      if (!isTransactionOpen()) {
+        commit();
       }
     }
     catch (SQLException e) {
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), statementString, null, e, null));
+      exception = e;
+      if (!isTransactionOpen()) {
+        rollbackQuietly();
       }
       throw new DatabaseException(getDatabase().getErrorMessage(e));
+    }
+    finally {
+      Util.closeSilently(inputStream);
+      Util.closeSilently(statement);
+      final LogEntry logEntry = getMethodLogger().logExit("writeBlob", exception, null);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), sql, values, exception, logEntry));
+      }
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException {//todo does not work as is
+  public synchronized byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException {
+    final Property.ColumnProperty property =
+            (Property.ColumnProperty) Entities.getProperty(primaryKey.getEntityID(), blobPropertyID);
+    if (property.getType() != Types.BLOB) {
+      throw new IllegalArgumentException("Property " + property.getPropertyID() + " in entity " + primaryKey.getEntityID() + "is not of type BLOB");
+    }
+    PreparedStatement statement = null;
+    SQLException exception = null;
+    ResultSet resultSet = null;
+    final EntityCriteria criteria = EntityCriteriaUtil.criteria(primaryKey);
+    final String sql = "select " + property.getColumnName() + " from " +
+            Entities.getTableName(primaryKey.getEntityID()) + " " + criteria.getWhereClause();
+    Databases.QUERY_COUNTER.count(sql);
+    getMethodLogger().logAccess("readBlob", new Object[] {sql});
     try {
-      final Property.BlobProperty property =
-              (Property.BlobProperty) Entities.getProperty(primaryKey.getEntityID(), blobPropertyID);
+      statement = getConnection().prepareStatement(sql);
+      setParameterValues(statement, criteria.getValues(), criteria.getValueProperties());
 
-      final byte[] result = readBlobField(Entities.getTableName(primaryKey.getEntityID()), property.getBlobColumnName(),
-              createWhereCondition(primaryKey.getProperties()));
+      resultSet = statement.executeQuery();
+      final List<Blob> result = new BlobResultPacker().pack(resultSet, 1);
+      final Blob blob = result.get(0);
+
+      final byte[] byteResult = blob.getBytes(1, (int) blob.length());
+
       if (!isTransactionOpen()) {
         commit();
       }
 
-      return result;
+      return byteResult;
     }
     catch (SQLException e) {
+      exception = e;
       if (!isTransactionOpen()) {
         rollbackQuietly();
       }
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), null, null, e, null));
-      }
       throw new DatabaseException(getDatabase().getErrorMessage(e));
+    }
+    finally {
+      Util.closeSilently(statement);
+      Util.closeSilently(resultSet);
+      final LogEntry logEntry = getMethodLogger().logExit("readBlob", exception, null);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), sql, null, exception, logEntry));
+      }
     }
   }
 
@@ -899,17 +921,6 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     throw new SQLException("No records returned when querying for an integer", sql);
   }
 
-  private byte[] readBlobField(final String tableName, final String columnName, final String whereClause) throws SQLException {
-    //http://www.idevelopment.info/data/Programming/java/jdbc/LOBS/BLOBFileExample.java
-    final String sql = "select " + columnName + " from " + tableName + " where " + whereClause;
-
-    final List result = query(sql, new BlobResultPacker(), 1);
-
-    final Blob blob = (Blob) result.get(0);
-
-    return blob.getBytes(1, (int) blob.length());
-  }
-
   /**
    * Performs the given sql query and returns the result in a List
    * @param sql the query
@@ -949,32 +960,6 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       }
       catch (SQLException ignored) {}
       getMethodLogger().logExit("query", exception, null);
-    }
-  }
-
-  private void writeBlobField(final byte[] blobData, final String tableName, final String columnName,
-                              final String whereClause) throws SQLException {
-    final String sql = "update " + tableName + " set " + columnName + " = ? where " + whereClause;
-    Databases.QUERY_COUNTER.count(sql);
-    getMethodLogger().logAccess("writeBlobField", new Object[] {sql});
-    SQLException exception = null;
-    ByteArrayInputStream inputStream = null;
-    PreparedStatement statement = null;
-    try {
-      statement = getConnection().prepareStatement(sql);
-      inputStream = new ByteArrayInputStream(blobData);
-      statement.setBinaryStream(1, inputStream, blobData.length);
-      statement.execute();
-    }
-    catch (SQLException e) {
-      exception = e;
-      LOG.error(createLogMessage(getUser(), sql, null, e, null));
-      throw e;
-    }
-    finally {
-      Util.closeSilently(inputStream);
-      Util.closeSilently(statement);
-      getMethodLogger().logExit("writeBlobField", exception, null);
     }
   }
 
@@ -1483,6 +1468,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
           return getString(resultSet, selectIndex);
         case Types.BOOLEAN:
           return getBoolean(resultSet, selectIndex);
+        case Types.BLOB:
+          return null;
         case Types.CHAR: {
           final String val = getString(resultSet, selectIndex);
           if (!Util.nullOrEmpty(val)) {

@@ -253,13 +253,11 @@ public interface RemoteEntityConnection extends Remote {
    * for the given entity
    * @param primaryKey the primary key of the entity for which to write the blob field
    * @param blobPropertyID the ID of the blob property
-   * @param dataDescription the value to insert into the blob description column
    * @param blobData the blob data
    * @throws org.jminor.common.db.exception.DatabaseException in case of a db exception
    * @throws java.rmi.RemoteException in case of a remote exception
    */
-  void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final String dataDescription,
-                 final byte[] blobData) throws RemoteException, DatabaseException;
+  void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws RemoteException, DatabaseException;
 
   /**
    * Reads the blob specified by the property identified by <code>propertyID</code> from the given entity
