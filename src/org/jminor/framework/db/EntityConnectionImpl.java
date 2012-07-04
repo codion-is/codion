@@ -147,16 +147,12 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         statementProperties.clear();
         statementValues.clear();
       }
-      if (!isTransactionOpen()) {
-        commit();
-      }
+      commitIfTransactionIsNotOpen();
 
       return insertedKeys;
     }
     catch (SQLException e) {
-      if (!isTransactionOpen()) {
-        rollbackQuietly();
-      }
+      rollbackQuietlyIfTransactionIsNotOpen();
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), insertSQL, statementValues, e, null));
       }
@@ -211,9 +207,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
           statementValues.clear();
         }
       }
-      if (!isTransactionOpen()) {
-        commit();
-      }
+      commitIfTransactionIsNotOpen();
     }
     catch (RecordModifiedException e) {//thrown by lockAndCheckForUpdate
       if (optimisticLocking && !isTransactionOpen()) {
@@ -222,9 +216,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw e;
     }
     catch (SQLException e) {
-      if (!isTransactionOpen()) {
-        rollbackQuietly();
-      }
+      rollbackQuietlyIfTransactionIsNotOpen();
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), updateSQL, statementValues, e, null));
       }
@@ -249,14 +241,10 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       deleteSQL = createDeleteSQL(criteria);
       statement = getConnection().prepareStatement(deleteSQL);
       executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueProperties());
-      if (!isTransactionOpen()) {
-        commit();
-      }
+      commitIfTransactionIsNotOpen();
     }
     catch (SQLException e) {
-      if (!isTransactionOpen()) {
-        rollbackQuietly();
-      }
+      rollbackQuietlyIfTransactionIsNotOpen();
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), deleteSQL, criteria.getValues(), e, null));
       }
@@ -291,14 +279,10 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         statement.close();
         criteriaKeys.clear();
       }
-      if (!isTransactionOpen()) {
-        commit();
-      }
+      commitIfTransactionIsNotOpen();
     }
     catch (SQLException e) {
-      if (!isTransactionOpen()) {
-        rollbackQuietly();
-      }
+      rollbackQuietlyIfTransactionIsNotOpen();
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), deleteSQL, entityKeys, e, null));
       }
@@ -363,16 +347,18 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   public synchronized List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException {
     try {
       final List<Entity> result = doSelectMany(criteria, 0);
-      if (!isTransactionOpen()) {
-        commitQuietly();
-      }
+      commitIfTransactionIsNotOpen();
 
       return result;
     }
-    catch (DatabaseException dbe) {
-      if (!isTransactionOpen()) {
-        rollbackQuietly();
+    catch (SQLException e) {
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), null, null, e, null));
       }
+      throw new DatabaseException(getDatabase().getErrorMessage(e));
+    }
+    catch (DatabaseException dbe) {
+      rollbackQuietlyIfTransactionIsNotOpen();
       throw dbe;
     }
   }
@@ -394,16 +380,12 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
       //noinspection unchecked
       final List<Object> result = query(selectSQL, getPropertyResultPacker(property), -1);
-      if (!isTransactionOpen()) {
-        commit();
-      }
+      commitIfTransactionIsNotOpen();
 
       return result;
     }
     catch (SQLException e) {
-      if (!isTransactionOpen()) {
-        rollbackQuietly();
-      }
+      rollbackQuietlyIfTransactionIsNotOpen();
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), selectSQL, Arrays.asList(entityID, propertyID, order), e, null));
       }
@@ -426,9 +408,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       statement = getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
       final List<Integer> result = INT_PACKER.pack(resultSet, -1);
-      if (!isTransactionOpen()) {
-        commit();
-      }
+      commitIfTransactionIsNotOpen();
       if (result.isEmpty()) {
         throw new RecordNotFoundException("Record count query returned no value");
       }
@@ -436,9 +416,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       return result.get(0);
     }
     catch (SQLException e) {
-      if (!isTransactionOpen()) {
-        rollbackQuietly();
-      }
+      rollbackQuietlyIfTransactionIsNotOpen();
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
       }
@@ -529,7 +507,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   /** {@inheritDoc} */
   @Override
   public synchronized ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
+    ReportException exception = null;
     try {
+      getMethodLogger().logAccess("fillReport", new Object[] {reportWrapper.getReportName()});
       final ReportResult result = reportWrapper.fillReport(getConnection());
       if (!isTransactionOpen()) {
         commitQuietly();
@@ -537,11 +517,16 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
       return result;
     }
-    catch (ReportException rpe) {
-      if (!isTransactionOpen()) {
-        rollbackQuietly();
+    catch (ReportException e) {
+      exception = e;
+      rollbackQuietlyIfTransactionIsNotOpen();
+      throw e;
+    }
+    finally {
+      final LogEntry logEntry = getMethodLogger().logExit("fillReport", exception, null);
+      if (LOG.isDebugEnabled()) {
+        LOG.debug(createLogMessage(getUser(), null, null, exception, logEntry));
       }
-      throw rpe;
     }
   }
 
@@ -551,7 +536,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     final Property.ColumnProperty property =
             (Property.ColumnProperty) Entities.getProperty(primaryKey.getEntityID(), blobPropertyID);
     if (property.getType() != Types.BLOB) {
-      throw new IllegalArgumentException("Property " + property.getPropertyID() + " in entity " + primaryKey.getEntityID() + "is not of type BLOB");
+      throw new IllegalArgumentException("Property " + property.getPropertyID() + " in entity " +
+              primaryKey.getEntityID() + "is not of type BLOB");
     }
     SQLException exception = null;
     ByteArrayInputStream inputStream = null;
@@ -574,16 +560,11 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       inputStream = new ByteArrayInputStream(blobData);
       statement.setBinaryStream(1, inputStream);
       statement.executeUpdate();
-
-      if (!isTransactionOpen()) {
-        commit();
-      }
+      commitIfTransactionIsNotOpen();
     }
     catch (SQLException e) {
       exception = e;
-      if (!isTransactionOpen()) {
-        rollbackQuietly();
-      }
+      rollbackQuietlyIfTransactionIsNotOpen();
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -619,20 +600,14 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       resultSet = statement.executeQuery();
       final List<Blob> result = new BlobResultPacker().pack(resultSet, 1);
       final Blob blob = result.get(0);
-
       final byte[] byteResult = blob.getBytes(1, (int) blob.length());
-
-      if (!isTransactionOpen()) {
-        commit();
-      }
+      commitIfTransactionIsNotOpen();
 
       return byteResult;
     }
     catch (SQLException e) {
       exception = e;
-      if (!isTransactionOpen()) {
-        rollbackQuietly();
-      }
+      rollbackQuietlyIfTransactionIsNotOpen();
       throw new DatabaseException(getDatabase().getErrorMessage(e));
     }
     finally {
@@ -950,15 +925,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw e;
     }
     finally {
-      try {
-        if (statement != null) {
-          statement.close();
-        }
-        if (resultSet != null) {
-          resultSet.close();
-        }
-      }
-      catch (SQLException ignored) {}
+      Util.closeSilently(statement);
+      Util.closeSilently(resultSet);
       getMethodLogger().logExit("query", exception, null);
     }
   }
@@ -978,6 +946,18 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     catch (SQLException ignored) {
       LOG.error("Exception while performing a quiet rollback", ignored);
+    }
+  }
+
+  private void commitIfTransactionIsNotOpen() throws SQLException {
+    if (!isTransactionOpen()) {
+      commit();
+    }
+  }
+
+  private void rollbackQuietlyIfTransactionIsNotOpen() {
+    if (!isTransactionOpen()) {
+      rollbackQuietly();
     }
   }
 

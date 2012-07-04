@@ -3035,3 +3035,5 @@
   EntityConnectionImpl, RemoteEntityConnectionImpl changed according to the above
   EntityConnectionImpl.writeBlob() and readBlob() implemented correctly
   EntityConnectionImplTest, added tests for the above
+  EntityConnectionImpl refactored
+  EntityConnectionImpl, writeBlob() can now be executed within an open transaction
