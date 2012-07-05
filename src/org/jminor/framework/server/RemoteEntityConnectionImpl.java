@@ -33,6 +33,7 @@ import org.jminor.framework.domain.Property;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
+import org.slf4j.MDC;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
@@ -64,6 +65,11 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   private static final long serialVersionUID = 1;
 
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionImpl.class);
+
+  /**
+   * Identifies the log file being used for this connection
+   */
+  private final String logIdentifier;
 
   /**
    * Contains information about the client using this connection
@@ -155,6 +161,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
       this.connectionProxy = initializeProxy();
       this.methodLogger = new RemoteLogger();
       this.methodLogger.setEnabled(loggingEnabled);
+      this.logIdentifier = getUser().getUsername() +"@" + clientInfo.getClientTypeID();
       try {
         clientInfo.setClientHost(getClientHost());
       }
@@ -647,6 +654,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
       final boolean logMethod = methodLogger.isEnabled() && shouldMethodBeLogged(methodName);
       final long startTime = System.currentTimeMillis();
       try {
+        MDC.put("logIdentifier", logIdentifier);
         setActive();
         RequestCounter.incrementRequestsPerSecondCounter();
         if (connection == null) {
@@ -709,6 +717,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
             returnConnection(connection, logMethod);
           }
         }
+        MDC.remove("logIdentifier");
       }
     }
   }
