@@ -139,7 +139,7 @@ public abstract class AbstractDatabase implements Database {
       return DriverManager.getConnection(getURL(connectionProperties), addConnectionProperties(connectionProperties));
     }
     catch (SQLException e) {
-      throw new DatabaseException(e, null, getErrorMessage(e));
+      throw new DatabaseException(e, getErrorMessage(e));
     }
   }
 

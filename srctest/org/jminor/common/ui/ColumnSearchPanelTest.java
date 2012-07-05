@@ -2,6 +2,7 @@ package org.jminor.common.ui;
 
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.DefaultColumnSearchModel;
+import org.jminor.common.model.SearchType;
 
 import org.junit.Test;
 
@@ -31,6 +32,6 @@ public class ColumnSearchPanelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullSearchModel() {
-    new ColumnSearchPanel<String>(null, true, true, null);
+    new ColumnSearchPanel<String>(null, true, true, (SearchType) null);
   }
 }

@@ -94,7 +94,7 @@
     <mkdir dir="${build.demos}"/>
     <mkdir dir="${build.test}"/>
 
-    <javac destdir="${build.base}" debug="${build.debuginfo}">
+    <javac destdir="${build.base}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src}"/>
       <classpath refid="lib.build"/>
     </javac>
@@ -112,7 +112,7 @@
       <fileset refid="framework_resources"/>
     </copy>
 
-    <javac destdir="${build.plugins}" debug="${build.debuginfo}">
+    <javac destdir="${build.plugins}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${srcplugins}"/>
       <classpath>
         <path refid="lib.build"/>
@@ -124,7 +124,7 @@
       <fileset refid="plugins_resources"/>
     </copy>
 
-    <javac destdir="${build.demos}" debug="${build.debuginfo}">
+    <javac destdir="${build.demos}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${srcdemos}"/>
       <classpath>
         <path refid="lib.build"/>
@@ -137,7 +137,7 @@
       <fileset refid="demos_resources"/>
     </copy>
 
-    <javac destdir="${build.test}" debug="${build.debuginfo}">
+    <javac destdir="${build.test}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${srctest}"/>
       <classpath>
         <path refid="lib.build"/>

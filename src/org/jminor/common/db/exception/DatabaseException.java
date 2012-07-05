@@ -13,14 +13,14 @@ public class DatabaseException extends Exception  {
   /**
    * The sql statement being run when this exception occurred, if any
    */
-  private String statement;
+  private final String statement;
 
   /**
    * Constructs a new DatabaseException instance
    * @param message the exception message
    */
   public DatabaseException(final String message) {
-    super(message);
+    this(message, null);
   }
 
   /**
@@ -35,17 +35,29 @@ public class DatabaseException extends Exception  {
 
   /**
    * Constructs a new DatabaseException instance
-   * @param cause the cause of the exception
-   * @param statement the sql statement which caused the exception
+   * @param cause the root cause, the stack trace is copied and used
    * @param message the exception message
    */
-  public DatabaseException(final SQLException cause, final String statement, final String message) {
-    super(message, cause);
-    this.statement = statement;
+  public DatabaseException(final SQLException cause, final String message) {
+    this(cause, message, null);
   }
 
   /**
-   * @return the sql query which caused the exception
+   * Constructs a new DatabaseException instance
+   * @param cause the root cause, the stack trace is copied and used
+   * @param message the exception message
+   * @param statement the sql statement which caused the exception
+   */
+  public DatabaseException(final SQLException cause, final String message, final String statement) {
+    super(message);
+    this.statement = statement;
+    if (cause != null) {
+      setStackTrace(cause.getStackTrace());
+    }
+  }
+
+  /**
+   * @return the sql query which caused the exception, null if not applicable
    */
   public final String getStatement() {
     return this.statement;

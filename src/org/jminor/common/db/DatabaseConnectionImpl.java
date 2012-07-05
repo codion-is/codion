@@ -308,14 +308,14 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       connection.setAutoCommit(false);
     }
     catch (SQLException e) {
-      throw new DatabaseException(e, "", "Unable to disable auto commit on the given connection");
+      throw new DatabaseException(e, "Unable to disable auto commit on the given connection");
     }
     if (!database.supportsIsValid()) {
       try {
         this.checkConnectionStatement = connection.createStatement();
       }
       catch (SQLException e) {
-        throw new DatabaseException(e, "", "Unable to create a statement for validity checking");
+        throw new DatabaseException(e, "Unable to create a statement for validity checking");
       }
     }
   }
@@ -379,7 +379,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       return new User(connection.getMetaData().getUserName(), null);
     }
     catch (SQLException e) {
-      throw new DatabaseException(e, "", "Exception while trying to retrieve username from meta data");
+      throw new DatabaseException(e, "Exception while trying to retrieve username from meta data");
     }
   }
 

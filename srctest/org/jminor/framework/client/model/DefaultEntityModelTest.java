@@ -247,7 +247,7 @@ public final class DefaultEntityModelTest {
 
   @Test
   public void setLinkedDetailModelsNullValues() {
-    departmentModel.setLinkedDetailModels(null);
+    departmentModel.setLinkedDetailModels((EntityModel) null);
     assertTrue(departmentModel.getLinkedDetailModels().isEmpty());
     departmentModel.setLinkedDetailModels(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE));
     assertFalse(departmentModel.getLinkedDetailModels().isEmpty());

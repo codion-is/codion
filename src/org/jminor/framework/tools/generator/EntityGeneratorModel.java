@@ -95,7 +95,7 @@ public final class EntityGeneratorModel {
       });
     }
     catch (SQLException e) {
-      throw new DatabaseException(e, null, e.getMessage());
+      throw new DatabaseException(e, database.getErrorMessage(e));
     }
   }
 

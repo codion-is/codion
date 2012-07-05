@@ -3037,3 +3037,6 @@
   EntityConnectionImplTest, added tests for the above
   EntityConnectionImpl refactored
   EntityConnectionImpl, writeBlob() can now be executed within an open transaction
+  includeantruntime="false" added to javac targets in build.xml
+  EntityConnectionImpl, logging revised
+  DatabaseException now copies the stack trace of the root cause, minor refactoring

@@ -1,9 +1,10 @@
 package org.jminor.common.db.exception;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Test;
 
 import java.sql.SQLException;
+
+import static org.junit.Assert.assertEquals;
 
 public class DatabaseExceptionTest {
 
@@ -12,7 +13,8 @@ public class DatabaseExceptionTest {
     new DatabaseException("hello");
     DatabaseException dbException = new DatabaseException("hello", "statement");
     assertEquals("statement", dbException.getStatement());
-    dbException = new DatabaseException(new SQLException(), "statement", "message");
+    dbException = new DatabaseException(new SQLException(), "message", "statement");
     assertEquals("message", dbException.getMessage());
+    assertEquals("statement", dbException.getStatement());
   }
 }
