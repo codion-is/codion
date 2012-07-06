@@ -9,7 +9,8 @@ import org.junit.Test;
 
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class H2DatabaseTest {
 
@@ -17,13 +18,13 @@ public class H2DatabaseTest {
   public void getSequenceSQLNullSequence() {
     new H2Database("host", "1234", "sid").getSequenceSQL(null);
   }
-  
+
   @Test
   public void supportsIsValid() {
     final H2Database db = new H2Database("host", "1234", "sid");
     assertTrue(db.supportsIsValid());
   }
-  
+
   @Test
   public void getAuthenticationInfo() {
     final H2Database db = new H2Database("host", "1234", "sid");
@@ -32,13 +33,13 @@ public class H2DatabaseTest {
     props.put(Database.PASSWORD_PROPERTY, "tiger");
     assertEquals("user=scott;password=tiger", db.getAuthenticationInfo(props));
   }
-  
+
   @Test
   public void getAutoIncrementValueSQL()  {
     final H2Database db = new H2Database("host", "1234", "sid");
     assertEquals(H2Database.AUTO_INCREMENT_QUERY, db.getAutoIncrementValueSQL(null));
   }
-  
+
   @Test
   public void getSequenceSQL()  {
     final H2Database db = new H2Database("host", "1234", "sid");

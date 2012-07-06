@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
 
@@ -10,7 +11,6 @@ import javax.swing.JComponent;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * A factory class for adding validators to components.
@@ -66,10 +66,10 @@ public final class ValueLinkValidators {
       this.component = component;
       this.editModel = editModel;
       this.defaultToolTip = defaultToolTip;
-      editModel.addValueListener(link.getKey(), new ActionListener() {
+      editModel.addValueListener(link.getKey(), new EventListener() {
         /** {@inheritDoc} */
         @Override
-        public void actionPerformed(final ActionEvent e) {
+        public void eventOccurred(final ActionEvent e) {
           updateValidityInfo();
         }
       });

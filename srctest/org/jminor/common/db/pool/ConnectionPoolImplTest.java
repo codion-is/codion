@@ -5,9 +5,9 @@ package org.jminor.common.db.pool;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.Databases;
-import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.tools.QueryLoadTestModel;
 import org.jminor.common.model.User;

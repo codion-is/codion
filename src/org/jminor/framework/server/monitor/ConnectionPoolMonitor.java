@@ -7,6 +7,7 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolState;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
@@ -17,7 +18,6 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.data.xy.YIntervalSeries;
 import org.jfree.data.xy.YIntervalSeriesCollection;
 
-import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
@@ -211,11 +211,11 @@ public final class ConnectionPoolMonitor {
     }
   }
 
-  public void addStatisticsListener(final ActionListener listener) {
+  public void addStatisticsListener(final EventListener listener) {
     evtStatisticsUpdated.addListener(listener);
   }
 
-  public void removeStatisticsListener(final ActionListener listener) {
+  public void removeStatisticsListener(final EventListener listener) {
     evtStatisticsUpdated.removeListener(listener);
   }
 

@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
 
-import java.awt.event.ActionListener;
 import java.util.Collection;
 
 /**
@@ -86,10 +86,10 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
   /**
    * @param listener a listener to be notified each time this model is refreshed
    */
-  void addRefreshListener(final ActionListener listener);
+  void addRefreshListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeRefreshListener(final ActionListener listener);
+  void removeRefreshListener(final EventListener listener);
 }

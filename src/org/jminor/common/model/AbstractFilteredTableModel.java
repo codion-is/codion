@@ -16,7 +16,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -706,121 +705,121 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void addColumnHiddenListener(final ActionListener listener) {
+  public final void addColumnHiddenListener(final EventListener listener) {
     evtColumnHidden.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeColumnHiddenListener(final ActionListener listener) {
+  public final void removeColumnHiddenListener(final EventListener listener) {
     evtColumnHidden.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addColumnShownListener(final ActionListener listener) {
+  public final void addColumnShownListener(final EventListener listener) {
     evtColumnShown.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeColumnShownListener(final ActionListener listener) {
+  public final void removeColumnShownListener(final EventListener listener) {
     evtColumnShown.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addRefreshStartedListener(final ActionListener listener) {
+  public final void addRefreshStartedListener(final EventListener listener) {
     evtRefreshStarted.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeRefreshStartedListener(final ActionListener listener) {
+  public final void removeRefreshStartedListener(final EventListener listener) {
     evtRefreshStarted.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addRefreshDoneListener(final ActionListener listener) {
+  public final void addRefreshDoneListener(final EventListener listener) {
     evtRefreshDone.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeRefreshDoneListener(final ActionListener listener) {
+  public final void removeRefreshDoneListener(final EventListener listener) {
     evtRefreshDone.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addFilteringListener(final ActionListener listener) {
+  public final void addFilteringListener(final EventListener listener) {
     evtFilteringDone.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeFilteringListener(final ActionListener listener) {
+  public final void removeFilteringListener(final EventListener listener) {
     evtFilteringDone.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSortingListener(final ActionListener listener) {
+  public final void addSortingListener(final EventListener listener) {
     evtSortingDone.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSortingListener(final ActionListener listener) {
+  public final void removeSortingListener(final EventListener listener) {
     evtSortingDone.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSelectedIndexListener(final ActionListener listener) {
+  public final void addSelectedIndexListener(final EventListener listener) {
     selectionModel.addSelectedIndexListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSelectedIndexListener(final ActionListener listener) {
+  public final void removeSelectedIndexListener(final EventListener listener) {
     selectionModel.removeSelectedIndexListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSelectionChangedListener(final ActionListener listener) {
+  public final void addSelectionChangedListener(final EventListener listener) {
     selectionModel.addSelectionChangedListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSelectionChangedListener(final ActionListener listener) {
+  public final void removeSelectionChangedListener(final EventListener listener) {
     selectionModel.removeSelectionChangedListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addTableDataChangedListener(final ActionListener listener) {
+  public final void addTableDataChangedListener(final EventListener listener) {
     evtTableDataChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeTableDataChangedListener(final ActionListener listener) {
+  public final void removeTableDataChangedListener(final EventListener listener) {
     evtTableDataChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addTableModelClearedListener(final ActionListener listener) {
+  public final void addTableModelClearedListener(final EventListener listener) {
     evtTableModelCleared.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeTableModelClearedListener(final ActionListener listener) {
+  public final void removeTableModelClearedListener(final EventListener listener) {
     evtTableModelCleared.removeListener(listener);
   }
 
@@ -985,10 +984,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       }
     });
     for (final ColumnSearchModel searchModel : columnFilterModels.values()) {
-      searchModel.addSearchStateListener(new ActionListener() {
+      searchModel.addSearchStateListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
-        public void actionPerformed(final ActionEvent e) {
+        public void eventOccurred(final ActionEvent e) {
           filterContents();
         }
       });
@@ -1286,28 +1285,28 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     /**
      * @param listener a listener notified each time the topmost (lowest row index) selected index changes
      */
-    private void addSelectedIndexListener(final ActionListener listener) {
+    private void addSelectedIndexListener(final EventListener listener) {
       evtSelectedIndexChanged.addListener(listener);
     }
 
     /**
      * @param listener the listener to remove
      */
-    private void removeSelectedIndexListener(final ActionListener listener) {
+    private void removeSelectedIndexListener(final EventListener listener) {
       evtSelectedIndexChanged.addListener(listener);
     }
 
     /**
      * @param listener a listener notified each time the selection changes
      */
-    private void addSelectionChangedListener(final ActionListener listener) {
+    private void addSelectionChangedListener(final EventListener listener) {
       evtSelectionChanged.addListener(listener);
     }
 
     /**
      * @param listener the listener to remove
      */
-    private void removeSelectionChangedListener(final ActionListener listener) {
+    private void removeSelectionChangedListener(final EventListener listener) {
       evtSelectionChanged.addListener(listener);
     }
 

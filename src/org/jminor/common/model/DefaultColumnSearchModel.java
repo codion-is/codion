@@ -4,7 +4,6 @@
 package org.jminor.common.model;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Format;
@@ -389,85 +388,85 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final void addEnabledListener(final ActionListener listener) {
+  public final void addEnabledListener(final EventListener listener) {
     evtEnabledChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeEnabledListener(final ActionListener listener) {
+  public final void removeEnabledListener(final EventListener listener) {
     evtEnabledChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addUpperBoundListener(final ActionListener listener) {
+  public final void addUpperBoundListener(final EventListener listener) {
     evtUpperBoundChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeUpperBoundListener(final ActionListener listener) {
+  public final void removeUpperBoundListener(final EventListener listener) {
     evtUpperBoundChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addLowerBoundListener(final ActionListener listener) {
+  public final void addLowerBoundListener(final EventListener listener) {
     evtLowerBoundChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeLowerBoundListener(final ActionListener listener) {
+  public final void removeLowerBoundListener(final EventListener listener) {
     evtLowerBoundChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addLowerBoundRequiredListener(final ActionListener listener) {
+  public final void addLowerBoundRequiredListener(final EventListener listener) {
     stLowerBoundRequired.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeLowerBoundRequiredListener(final ActionListener listener) {
+  public final void removeLowerBoundRequiredListener(final EventListener listener) {
     stLowerBoundRequired.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addClearedListener(final ActionListener listener) {
+  public final void addClearedListener(final EventListener listener) {
     evtSearchModelCleared.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeClearedListener(final ActionListener listener) {
+  public final void removeClearedListener(final EventListener listener) {
     evtSearchModelCleared.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSearchStateListener(final ActionListener listener) {
+  public final void addSearchStateListener(final EventListener listener) {
     evtSearchStateChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSearchStateListener(final ActionListener listener) {
+  public final void removeSearchStateListener(final EventListener listener) {
     evtSearchStateChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSearchTypeListener(final ActionListener listener) {
+  public final void addSearchTypeListener(final EventListener listener) {
     evtSearchTypeChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSearchTypeListener(final ActionListener listener) {
+  public final void removeSearchTypeListener(final EventListener listener) {
     evtSearchTypeChanged.removeListener(listener);
   }
 
@@ -654,10 +653,10 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   private void bindEvents() {
-    final ActionListener autoEnableListener = new ActionListener() {
+    final EventListener autoEnableListener = new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         if (autoEnable) {
           final boolean upperBoundNull = upperBound == null;
           final boolean lowerBoundNull = lowerBound == null;
@@ -676,9 +675,9 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     evtLowerBoundChanged.addListener(evtSearchStateChanged);
     evtSearchTypeChanged.addListener(evtSearchStateChanged);
     evtEnabledChanged.addListener(evtSearchStateChanged);
-    evtSearchTypeChanged.addListener(new ActionListener() {
+    evtSearchTypeChanged.addListener(new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         stLowerBoundRequired.setActive(getSearchType() == SearchType.WITHIN_RANGE || getSearchType() == SearchType.OUTSIDE_RANGE);
       }
     });

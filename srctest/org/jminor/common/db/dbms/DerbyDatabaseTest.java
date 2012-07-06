@@ -9,7 +9,8 @@ import org.junit.Test;
 
 import java.util.Properties;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 public class DerbyDatabaseTest {
 
@@ -17,13 +18,13 @@ public class DerbyDatabaseTest {
   public void getSequenceSQL() {
     new DerbyDatabase("host", "1234", "sid").getSequenceSQL("seq");
   }
-  
+
   @Test
   public void supportsIsValid() {
     final DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
     assertTrue(db.supportsIsValid());
   }
-  
+
   @Test
   public void getAuthenticationInfo() {
     final DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
@@ -32,14 +33,14 @@ public class DerbyDatabaseTest {
     props.put(Database.PASSWORD_PROPERTY, "tiger");
     assertEquals("user=scott;password=tiger", db.getAuthenticationInfo(props));
   }
-  
+
   @Test
   public void getAutoIncrementValueSQL() {
     final DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
     final String idSource = "id_source";
     assertEquals(DerbyDatabase.AUTO_INCREMENT_QUERY + idSource, db.getAutoIncrementValueSQL(idSource));
   }
-  
+
   @Test
   public void getURL() {
     DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
@@ -51,7 +52,7 @@ public class DerbyDatabaseTest {
     db = new DerbyDatabase("dbname");
     assertEquals("jdbc:derby:dbname;user=scott;password=tiger", db.getURL(props));
   }
-  
+
   @Test(expected = RuntimeException.class)
   public void getURLMissingProperties() {
     final Database db = new DerbyDatabase(null, null, null);

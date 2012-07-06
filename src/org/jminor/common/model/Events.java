@@ -4,7 +4,6 @@
 package org.jminor.common.model;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -39,15 +38,15 @@ public final class Events {
     @Override
     public void fire(final ActionEvent event) {
       if (observer != null) {
-        for (final ActionListener listener : observer.getListeners()) {
-          listener.actionPerformed(event);
+        for (final EventListener listener : observer.getListeners()) {
+          listener.eventOccurred(event);
         }
       }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void eventOccurred(final ActionEvent e) {
       fire(e);
     }
 
@@ -65,13 +64,13 @@ public final class Events {
 
     /** {@inheritDoc} */
     @Override
-    public void addListener(final ActionListener listener) {
+    public void addListener(final EventListener listener) {
       getObserver().addListener(listener);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void removeListener(final ActionListener listener) {
+    public void removeListener(final EventListener listener) {
       if (observer != null) {
         observer.removeListener(listener);
       }
@@ -80,11 +79,11 @@ public final class Events {
 
   private static final class EventObserverImpl implements EventObserver {
 
-    private final Collection<ActionListener> listeners = new ArrayList<ActionListener>();
+    private final Collection<EventListener> listeners = new ArrayList<EventListener>();
 
     /** {@inheritDoc} */
     @Override
-    public void addListener(final ActionListener listener) {
+    public void addListener(final EventListener listener) {
       Util.rejectNullValue(listener, "listener");
       synchronized (listeners) {
         if (!listeners.contains(listener)) {
@@ -95,15 +94,15 @@ public final class Events {
 
     /** {@inheritDoc} */
     @Override
-    public synchronized void removeListener(final ActionListener listener) {
+    public synchronized void removeListener(final EventListener listener) {
       synchronized (listeners) {
         listeners.remove(listener);
       }
     }
 
-    private synchronized Collection<ActionListener> getListeners() {
+    private synchronized Collection<EventListener> getListeners() {
       synchronized (listeners) {
-        return new ArrayList<ActionListener>(listeners);
+        return new ArrayList<EventListener>(listeners);
       }
     }
   }

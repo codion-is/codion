@@ -3,12 +3,13 @@ package org.jminor.common.ui.input;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.formats.DateFormats;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertNull;
 import org.junit.Test;
 
 import java.text.SimpleDateFormat;
 import java.util.Date;
+
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNull;
 
 public class DateInputProviderTest {
 

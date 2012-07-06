@@ -3,13 +3,13 @@
  */
 package org.jminor.common.ui.control;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 
 import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * An abstract base class for linking a UI component to a model value.
@@ -65,10 +65,10 @@ public abstract class AbstractValueLink<T, V> extends Control {
     this.valueOwner = valueOwner;
     this.linkType = linkType;
     if (linkType != LinkType.WRITE_ONLY && modelValueChangeEvent != null) {
-      modelValueChangeEvent.addListener(new ActionListener() {
+      modelValueChangeEvent.addListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
-        public void actionPerformed(final ActionEvent e) {
+        public void eventOccurred(final ActionEvent e) {
           updateUI();
         }
       });

@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
@@ -30,7 +31,6 @@ import org.jminor.framework.domain.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -739,145 +739,145 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void removeValueSetListener(final String propertyID, final ActionListener listener) {
+  public final void removeValueSetListener(final String propertyID, final EventListener listener) {
     getValueSetEvent(propertyID).removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueSetListener(final String propertyID, final ActionListener listener) {
+  public final void addValueSetListener(final String propertyID, final EventListener listener) {
     getValueSetEvent(propertyID).addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeValueListener(final String propertyID, final ActionListener listener) {
+  public final void removeValueListener(final String propertyID, final EventListener listener) {
     getValueChangeEvent(propertyID).removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueListener(final String propertyID, final ActionListener listener) {
+  public final void addValueListener(final String propertyID, final EventListener listener) {
     getValueChangeObserver(propertyID).addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeEntitySetListener(final ActionListener listener) {
+  public final void removeEntitySetListener(final EventListener listener) {
     evtEntitySet.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addEntitySetListener(final ActionListener listener) {
+  public final void addEntitySetListener(final EventListener listener) {
     evtEntitySet.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeInsertListener(final ActionListener listener) {
+  public final void removeBeforeInsertListener(final EventListener listener) {
     evtBeforeInsert.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeInsertListener(final ActionListener listener) {
+  public final void addBeforeInsertListener(final EventListener listener) {
     evtBeforeInsert.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeAfterInsertListener(final ActionListener listener) {
+  public final void removeAfterInsertListener(final EventListener listener) {
     evtAfterInsert.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterInsertListener(final ActionListener listener) {
+  public final void addAfterInsertListener(final EventListener listener) {
     evtAfterInsert.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeUpdateListener(final ActionListener listener) {
+  public final void removeBeforeUpdateListener(final EventListener listener) {
     evtBeforeUpdate.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeUpdateListener(final ActionListener listener) {
+  public final void addBeforeUpdateListener(final EventListener listener) {
     evtBeforeUpdate.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeAfterUpdateListener(final ActionListener listener) {
+  public final void removeAfterUpdateListener(final EventListener listener) {
     evtAfterUpdate.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterUpdateListener(final ActionListener listener) {
+  public final void addAfterUpdateListener(final EventListener listener) {
     evtAfterUpdate.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeDeleteListener(final ActionListener listener) {
+  public final void addBeforeDeleteListener(final EventListener listener) {
     evtBeforeDelete.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeDeleteListener(final ActionListener listener) {
+  public final void removeBeforeDeleteListener(final EventListener listener) {
     evtBeforeDelete.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeAfterDeleteListener(final ActionListener listener) {
+  public final void removeAfterDeleteListener(final EventListener listener) {
     evtAfterDelete.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterDeleteListener(final ActionListener listener) {
+  public final void addAfterDeleteListener(final EventListener listener) {
     evtAfterDelete.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeEntitiesChangedListener(final ActionListener listener) {
+  public final void removeEntitiesChangedListener(final EventListener listener) {
     evtEntitiesChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addEntitiesChangedListener(final ActionListener listener) {
+  public final void addEntitiesChangedListener(final EventListener listener) {
     evtEntitiesChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeRefreshListener(final ActionListener listener) {
+  public final void addBeforeRefreshListener(final EventListener listener) {
     evtRefreshStarted.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeRefreshListener(final ActionListener listener) {
+  public final void removeBeforeRefreshListener(final EventListener listener) {
     evtRefreshStarted.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterRefreshListener(final ActionListener listener) {
+  public final void addAfterRefreshListener(final EventListener listener) {
     evtRefreshDone.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeAfterRefreshListener(final ActionListener listener) {
+  public final void removeAfterRefreshListener(final EventListener listener) {
     evtRefreshDone.removeListener(listener);
   }
 

@@ -6,6 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.Conjunction;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Refreshable;
@@ -13,7 +14,6 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 
@@ -187,10 +187,10 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   /**
    * @param listener a listener notified each time a simple search is performed
    */
-  void addSimpleSearchListener(final ActionListener listener);
+  void addSimpleSearchListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSimpleSearchListener(final ActionListener listener);
+  void removeSimpleSearchListener(final EventListener listener);
 }

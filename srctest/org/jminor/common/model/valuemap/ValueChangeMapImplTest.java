@@ -58,7 +58,7 @@ public class ValueChangeMapImplTest {
       }
     };
     try {
-      valueListener.actionPerformed(new ActionEvent(null, -1, null));
+      valueListener.eventOccurred(new ActionEvent(null, -1, null));
       fail("ValueChangeListener only works with ValueChangeEvent");
     }
     catch (IllegalArgumentException e) {}

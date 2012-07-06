@@ -2,9 +2,10 @@ package org.jminor.common.ui;
 
 import org.jminor.common.model.User;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
-import org.junit.Test;
 
 public class LoginPanelTest {
 

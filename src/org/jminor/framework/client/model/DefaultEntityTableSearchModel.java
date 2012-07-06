@@ -8,6 +8,7 @@ import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Refreshable;
@@ -23,7 +24,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -317,24 +317,23 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addSimpleSearchListener(final ActionListener listener) {
+  public final void addSimpleSearchListener(final EventListener listener) {
     evtSimpleSearchPerformed.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSimpleSearchListener(final ActionListener listener) {
+  public final void removeSimpleSearchListener(final EventListener listener) {
     evtSimpleSearchPerformed.removeListener(listener);
   }
 
   private void bindEvents() {
     for (final PropertySearchModel searchModel : propertySearchModels.values()) {
-      searchModel.addSearchStateListener(new ActionListener() {
+      searchModel.addSearchStateListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
-        public void actionPerformed(final ActionEvent e) {
+        public void eventOccurred(final ActionEvent e) {
           stSearchStateChanged.setActive(!rememberedSearchState.equals(getSearchModelState()));
-          stSearchStateChanged.notifyObservers();
         }
       });
     }

@@ -8,7 +8,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.Point;
-import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 
@@ -37,92 +36,92 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   /**
    * @param listener a listener to be notified each time the selection changes
    */
-  void addSelectionChangedListener(final ActionListener listener);
+  void addSelectionChangedListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectionChangedListener(final ActionListener listener);
+  void removeSelectionChangedListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the selected index changes
    */
-  void addSelectedIndexListener(final ActionListener listener);
+  void addSelectedIndexListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedIndexListener(final ActionListener listener);
+  void removeSelectedIndexListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a refresh is about to start
    */
-  void addRefreshStartedListener(final ActionListener listener);
+  void addRefreshStartedListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeRefreshStartedListener(final ActionListener listener);
+  void removeRefreshStartedListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a refresh has ended
    */
-  void addRefreshDoneListener(final ActionListener listener);
+  void addRefreshDoneListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeRefreshDoneListener(final ActionListener listener);
+  void removeRefreshDoneListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the model has been sorted or the sorting state has been cleared
    */
-  void addSortingListener(final ActionListener listener);
+  void addSortingListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSortingListener(final ActionListener listener);
+  void removeSortingListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a column is hidden
    */
-  void addColumnHiddenListener(final ActionListener listener);
+  void addColumnHiddenListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeColumnHiddenListener(final ActionListener listener);
+  void removeColumnHiddenListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a column is shown
    */
-  void addColumnShownListener(final ActionListener listener);
+  void addColumnShownListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeColumnShownListener(final ActionListener listener);
+  void removeColumnShownListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the table data changes
    */
-  void addTableDataChangedListener(final ActionListener listener);
+  void addTableDataChangedListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeTableDataChangedListener(final ActionListener listener);
+  void removeTableDataChangedListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the table model is cleared
    */
-  void addTableModelClearedListener(final ActionListener listener);
+  void addTableModelClearedListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeTableModelClearedListener(final ActionListener listener);
+  void removeTableModelClearedListener(final EventListener listener);
 
   /**
    * Returns the item found at the given index
@@ -284,7 +283,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
 
   /**
    * Clears the selection
-   * @see #addSelectionChangedListener(java.awt.event.ActionListener)
+   * @see #addSelectionChangedListener(EventListener
    */
   void clearSelection();
 
@@ -335,7 +334,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
 
   /**
    * Selects all visible entities
-   * @see #addSelectionChangedListener(java.awt.event.ActionListener)
+   * @see #addSelectionChangedListener(EventListener)
    */
   void selectAll();
 
@@ -352,13 +351,13 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
 
   /**
    * Moves all selected indexes down one index, wraps around
-   * @see #addSelectionChangedListener(java.awt.event.ActionListener)
+   * @see #addSelectionChangedListener(EventListener)
    */
   void moveSelectionDown();
 
   /**
    * Moves all selected indexes up one index, wraps around
-   * @see #addSelectionChangedListener(java.awt.event.ActionListener)
+   * @see #addSelectionChangedListener(EventListener)
    */
   void moveSelectionUp();
 

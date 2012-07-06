@@ -5,6 +5,7 @@ package org.jminor.common.ui.input;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
@@ -19,7 +20,6 @@ import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * A panel for presenting a InputProvider.
@@ -80,14 +80,14 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
   /**
    * @param listener a listener notified each time the OK button is clicked
    */
-  public void addButtonClickListener(final ActionListener listener) {
+  public void addButtonClickListener(final EventListener listener) {
     getButtonClickObserver().addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeButtonClickListener(final ActionListener listener) {
+  public void removeButtonClickListener(final EventListener listener) {
     evtButtonClicked.removeListener(listener);
   }
 

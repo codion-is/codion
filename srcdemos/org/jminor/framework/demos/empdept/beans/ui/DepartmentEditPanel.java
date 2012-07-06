@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityEditModel;
@@ -11,7 +12,6 @@ import org.jminor.framework.client.ui.EntityEditPanel;
 import javax.swing.JTextField;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 
@@ -31,9 +31,9 @@ public class DepartmentEditPanel extends EntityEditPanel {
     txtDepartmentNumber.setColumns(10);
 
     //we don't allow editing of the department number since it's a primary key
-    getEditModel().getPrimaryKeyNullObserver().addListener(new ActionListener() {
+    getEditModel().getPrimaryKeyNullObserver().addListener(new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         if (getEditModel().isEntityNew()) {
           txtDepartmentNumber.setEnabled(true);
           setInitialFocusComponent(txtDepartmentNumber);

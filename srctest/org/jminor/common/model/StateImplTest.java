@@ -5,10 +5,7 @@ package org.jminor.common.model;
 
 import org.junit.Test;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 import static org.junit.Assert.*;
 
@@ -18,15 +15,10 @@ public class StateImplTest {
 
   @Test
   public void test() {
-    final Action listeningAction = new AbstractAction("test") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {}
-    };
     final State state = new States.StateImpl();
-    state.addListeningAction(listeningAction);
-    final ActionListener listener = new ActionListener() {
+    final EventListener listener = new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         stateChanged++;
       }
     };
@@ -35,7 +27,7 @@ public class StateImplTest {
     assertFalse("State should be inactive when initialized", state.isActive());
     state.setActive(true);
     assertTrue("State should be active after activation", state.isActive());
-    assertTrue("Listening action should be active after activation", listeningAction.isEnabled());
+    //assertTrue("Listening action should be active after activation", listeningAction.isEnabled());
     assertEquals(States.StateImpl.ACTIVE, state.toString());
     assertFalse("Reversed state should be inactive after activation", state.getReversedObserver().isActive());
     assertTrue("evtStateChanged should have been fired when an inactive state was activated", stateChanged == 1);
@@ -43,7 +35,7 @@ public class StateImplTest {
     assertTrue("evtStateChanged should not have been fired when an active state was activated", stateChanged == 1);
     state.setActive(false);
     assertFalse("State should be inactive after deactivation", state.isActive());
-    assertFalse("Listening action should be inactive after deactivation", listeningAction.isEnabled());
+    //assertFalse("Listening action should be inactive after deactivation", listeningAction.isEnabled());
     assertEquals(States.StateImpl.INACTIVE, state.toString());
     assertTrue("Reversed state should be active after deactivation", state.getReversedObserver().isActive());
     assertTrue("evtStateChanged should have been fired when an inactive state was deactivated", stateChanged == 2);

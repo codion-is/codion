@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
@@ -15,7 +16,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -57,9 +57,9 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.addRefreshListener(new ActionListener() {
+    model.addRefreshListener(new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         try {
           refreshServerTabs();
         }
@@ -68,9 +68,9 @@ public final class HostMonitorPanel extends JPanel {
         }
       }
     });
-    model.addServerMonitorRemovedListener(new ActionListener() {
+    model.addServerMonitorRemovedListener(new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         try {
           refreshServerTabs();
         }

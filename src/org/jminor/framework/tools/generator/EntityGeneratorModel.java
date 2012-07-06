@@ -10,6 +10,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.DefaultColumnSearchModel;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -24,7 +25,6 @@ import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Connection;
 import java.sql.DatabaseMetaData;
 import java.sql.ResultSet;
@@ -128,28 +128,28 @@ public final class EntityGeneratorModel {
   /**
    * @param listener a listener notified each time a refresh has started
    */
-  public void addRefreshStartedListener(final ActionListener listener) {
+  public void addRefreshStartedListener(final EventListener listener) {
     evtRefreshStarted.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeRefreshStartedListener(final ActionListener listener) {
+  public void removeRefreshStartedListener(final EventListener listener) {
     evtRefreshStarted.removeListener(listener);
   }
 
   /**
    * @param listener a listener notified each time a refresh has ended
    */
-  public void addRefreshEndedListener(final ActionListener listener) {
+  public void addRefreshEndedListener(final EventListener listener) {
     evtRefreshEnded.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeRefreshEndedListener(final ActionListener listener) {
+  public void removeRefreshEndedListener(final EventListener listener) {
     evtRefreshEnded.removeListener(listener);
   }
 
@@ -179,9 +179,9 @@ public final class EntityGeneratorModel {
   }
 
   private void bindEvents() {
-    tableModel.addSelectionChangedListener(new ActionListener() {
+    tableModel.addSelectionChangedListener(new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         try {
           evtRefreshStarted.fire();
           refreshDocument(tableModel.getSelectedItems());

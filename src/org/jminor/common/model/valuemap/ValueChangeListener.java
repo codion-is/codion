@@ -3,15 +3,16 @@
  */
 package org.jminor.common.model.valuemap;
 
+import org.jminor.common.model.EventListener;
+
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * Used when listening to ValueChangeEvents.
  * @param <K> the type of the object used to identify the value, or the key type
  * @param <V> the type of the actual value
  */
-public abstract class ValueChangeListener<K, V> implements ActionListener {
+public abstract class ValueChangeListener<K, V> implements EventListener {
 
   /**
    * Calls <code>valueChanged()</code> assuming the given event is a ValueChangeEvent
@@ -20,7 +21,7 @@ public abstract class ValueChangeListener<K, V> implements ActionListener {
    */
   @Override
   @SuppressWarnings({"unchecked"})
-  public final void actionPerformed(final ActionEvent e) {
+  public final void eventOccurred(final ActionEvent e) {
     if (!(e instanceof ValueChangeEvent)) {
       throw new IllegalArgumentException("ValueChangeListener can only be used with ValueChangeEvent, " + e);
     }

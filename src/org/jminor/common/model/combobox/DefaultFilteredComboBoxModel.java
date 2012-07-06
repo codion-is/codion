@@ -4,13 +4,13 @@
 package org.jminor.common.model.combobox;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -369,25 +369,25 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   /** {@inheritDoc} */
   @Override
-  public final void addFilteringListener(final ActionListener listener) {
+  public final void addFilteringListener(final EventListener listener) {
     evtFilteringDone.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeFilteringListener(final ActionListener listener) {
+  public final void removeFilteringListener(final EventListener listener) {
     evtFilteringDone.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSelectionListener(final ActionListener listener) {
+  public final void addSelectionListener(final EventListener listener) {
     evtSelectionChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSelectionListener(final ActionListener listener) {
+  public final void removeSelectionListener(final EventListener listener) {
     evtSelectionChanged.removeListener(listener);
   }
 

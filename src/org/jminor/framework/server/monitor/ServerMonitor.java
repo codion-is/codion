@@ -4,6 +4,7 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.server.RemoteServer;
@@ -18,7 +19,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.table.DefaultTableModel;
 import javax.swing.table.TableModel;
-import java.awt.event.ActionListener;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
@@ -202,35 +202,35 @@ public final class ServerMonitor {
     return serverName;
   }
 
-  public void addServerShutDownListener(final ActionListener listener) {
+  public void addServerShutDownListener(final EventListener listener) {
     evtServerShutDown.addListener(listener);
   }
 
-  public void removeServerShutDownListener(final ActionListener listener) {
+  public void removeServerShutDownListener(final EventListener listener) {
     evtServerShutDown.removeListener(listener);
   }
 
-  public void addStatsUpdatedListener(final ActionListener listener) {
+  public void addStatsUpdatedListener(final EventListener listener) {
     evtStatsUpdated.addListener(listener);
   }
 
-  public void removeStatsUpdatedListener(final ActionListener listener) {
+  public void removeStatsUpdatedListener(final EventListener listener) {
     evtStatsUpdated.removeListener(listener);
   }
 
-  public void addWarningThresholdListener(final ActionListener listener) {
+  public void addWarningThresholdListener(final EventListener listener) {
     evtWarningThresholdChanged.addListener(listener);
   }
 
-  public void removeWarningThresholdListener(final ActionListener listener) {
+  public void removeWarningThresholdListener(final EventListener listener) {
     evtWarningThresholdChanged.removeListener(listener);
   }
 
-  public void addStatsUpdateIntervalListener(final ActionListener listener) {
+  public void addStatsUpdateIntervalListener(final EventListener listener) {
     evtStatsUpdateIntervalChanged.addListener(listener);
   }
 
-  public void removeStatsUpdateIntervalListener(final ActionListener listener) {
+  public void removeStatsUpdateIntervalListener(final EventListener listener) {
     evtStatsUpdateIntervalChanged.removeListener(listener);
   }
 

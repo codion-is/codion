@@ -3,8 +3,6 @@
  */
 package org.jminor.common.model;
 
-import java.awt.event.ActionListener;
-
 /**
  * Specifies an Event observer.
  */
@@ -16,11 +14,11 @@ public interface EventObserver {
    * @param listener the listener to add
    * @throws IllegalArgumentException in case listener is null
    */
-  void addListener(final ActionListener listener);
+  void addListener(final EventListener listener);
 
   /**
    * Removes <code>listener</code> from this EventObserver
    * @param listener the listener to remove
    */
-  void removeListener(final ActionListener listener);
+  void removeListener(final EventListener listener);
 }

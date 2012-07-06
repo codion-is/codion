@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.MasterDetailPanel;
 import org.jminor.common.ui.UiUtil;
@@ -43,7 +44,6 @@ import java.awt.KeyboardFocusManager;
 import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.KeyEvent;
@@ -1447,17 +1447,17 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   private void bindEvents() {
-    entityModel.addBeforeRefreshListener(new ActionListener() {
+    entityModel.addBeforeRefreshListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityPanel.this);
       }
     });
-    entityModel.addAfterRefreshListener(new ActionListener() {
+    entityModel.addAfterRefreshListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityPanel.this);
       }
     });

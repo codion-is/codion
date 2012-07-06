@@ -3,11 +3,10 @@
  */
 package org.jminor.common.model.valuemap;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
-
-import java.awt.event.ActionListener;
 
 /**
  * Specifies an object which facilitates the editing of values in a ValueChangeMap
@@ -33,25 +32,25 @@ public interface ValueChangeMapEditModel<K, V> {
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of <code>key</code> is set
    */
-  void addValueSetListener(final K key, final ActionListener listener);
+  void addValueSetListener(final K key, final EventListener listener);
 
   /**
    * @param key the key
    * @param listener the listener to remove
    */
-  void removeValueSetListener(final K key, final ActionListener listener);
+  void removeValueSetListener(final K key, final EventListener listener);
 
   /**
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of <code>key</code> changes
    */
-  void addValueListener(final K key, final ActionListener listener);
+  void addValueListener(final K key, final EventListener listener);
 
   /**
    * @param key the key
    * @param listener the listener to remove
    */
-  void removeValueListener(final K key, final ActionListener listener);
+  void removeValueListener(final K key, final EventListener listener);
 
   /**
    * @param key the key for which to retrieve the event

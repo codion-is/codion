@@ -10,7 +10,6 @@ import org.jfree.data.xy.YIntervalSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -524,7 +523,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   /**
    * @param listener a listener notified when this load test model has finished removing all applications
    */
-  protected void addExitListener(final ActionListener listener) {
+  protected void addExitListener(final EventListener listener) {
     evtDoneExiting.addListener(listener);
   }
 

@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.ui.AbstractTableColumnSyncPanel;
 import org.jminor.common.ui.ColumnSearchPanel;
@@ -28,7 +29,6 @@ import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Enumeration;
 
 /**
@@ -179,28 +179,28 @@ public final class EntityTableSearchPanel extends JPanel {
   /**
    * @param listener a listener notified each time the simple search state changes
    */
-  public void addSimpleSearchListener(final ActionListener listener) {
+  public void addSimpleSearchListener(final EventListener listener) {
     evtSimpleSearchChanged.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeSimpleSearchListener(final ActionListener listener) {
+  public void removeSimpleSearchListener(final EventListener listener) {
     evtAdvancedChanged.removeListener(listener);
   }
 
   /**
    * @param listener a listener notified each time the advanced search state changes
    */
-  public void addAdvancedListener(final ActionListener listener) {
+  public void addAdvancedListener(final EventListener listener) {
     evtAdvancedChanged.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeAdvancedListener(final ActionListener listener) {
+  public void removeAdvancedListener(final EventListener listener) {
     evtAdvancedChanged.removeListener(listener);
   }
 

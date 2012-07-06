@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model;
 
-import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -15,18 +14,18 @@ public interface FilteredModel<T> {
   /**
    * @param listener a listener notified each time this model is filtered
    */
-  void addFilteringListener(final ActionListener listener);
+  void addFilteringListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeFilteringListener(final ActionListener listener);
+  void removeFilteringListener(final EventListener listener);
 
   /**
    * Filters the table according to the criteria returned by <code>getFilterCriteria()</code>.
    * This method does not interfere with the internal ordering of the visible items.
    * @see #getFilterCriteria()
-   * @see #addFilteringListener(java.awt.event.ActionListener)
+   * @see #addFilteringListener(EventListener)
    */
   void filterContents();
 

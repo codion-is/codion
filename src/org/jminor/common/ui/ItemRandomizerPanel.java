@@ -4,6 +4,7 @@
 package org.jminor.common.ui;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.ItemRandomizer;
 import org.jminor.common.model.ItemRandomizerModel;
@@ -29,7 +30,6 @@ import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
 import java.awt.GridLayout;
-import java.awt.event.ActionListener;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
@@ -68,14 +68,14 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   /**
    * @param listener a listener notified each time the selected item changes
    */
-  public void addSelectedItemListener(final ActionListener listener) {
+  public void addSelectedItemListener(final EventListener listener) {
     evtSelectedItemChanged.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeSelectedItemListener(final ActionListener listener) {
+  public void removeSelectedItemListener(final EventListener listener) {
     evtSelectedItemChanged.removeListener(listener);
   }
 

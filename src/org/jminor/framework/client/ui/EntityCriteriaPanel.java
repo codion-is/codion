@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.common.ui.ColumnSearchPanel;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
@@ -28,7 +29,6 @@ import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -103,7 +103,7 @@ public final class EntityCriteriaPanel extends JPanel {
     return searchCriteria;
   }
 
-  private static final class RepaintListener implements ActionListener {
+  private static final class RepaintListener implements EventListener {
     private final JList propertyList;
 
     private RepaintListener(final JList propertyList) {
@@ -112,7 +112,7 @@ public final class EntityCriteriaPanel extends JPanel {
 
     /** {@inheritDoc} */
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void eventOccurred(final ActionEvent e) {
       propertyList.repaint();
     }
   }

@@ -4,7 +4,6 @@
 package org.jminor.common.model;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * A synchronous event class.
@@ -12,7 +11,7 @@ import java.awt.event.ActionListener;
  * <pre>
  * Event event = Events.event();
  *
- * event.addListener(new ActionListener...);
+ * event.addListener(new EventListener...);
  *
  * EventObserver observer = event.getObserver();
  *
@@ -21,7 +20,7 @@ import java.awt.event.ActionListener;
  * event.fire();
  * </pre>
  */
-public interface Event extends ActionListener, EventObserver {
+public interface Event extends EventListener, EventObserver {
 
   /**
    * Notifies all listeners
@@ -29,8 +28,8 @@ public interface Event extends ActionListener, EventObserver {
   void fire();
 
   /**
-   * Notifies all listeners
-   * @param event the ActionEvent to use when notifying
+   * Notifies all listeners with the given ActionEvent
+   * @param event the ActionEvent to propagate to listeners when notifying
    */
   void fire(final ActionEvent event);
 

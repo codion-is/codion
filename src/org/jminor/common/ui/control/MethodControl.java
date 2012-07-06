@@ -4,12 +4,12 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 
@@ -78,14 +78,14 @@ public final class MethodControl extends Control {
   /**
    * @param listener a listener notified each time action performed is called
    */
-  public void addActionPerformedListener(final ActionListener listener) {
+  public void addActionPerformedListener(final EventListener listener) {
     evtActionPerformed.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeActionPerformedListener(final ActionListener listener) {
+  public void removeActionPerformedListener(final EventListener listener) {
     evtActionPerformed.removeListener(listener);
   }
 }

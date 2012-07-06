@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.User;
@@ -61,7 +62,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
@@ -403,28 +403,28 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   /**
    * @param listener a listener notified each time the always on top status changes
    */
-  public final void addAlwaysOnTopListener(final ActionListener listener) {
+  public final void addAlwaysOnTopListener(final EventListener listener) {
     evtAlwaysOnTopChanged.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeAlwaysOnTopListener(final ActionListener listener) {
+  public final void removeAlwaysOnTopListener(final EventListener listener) {
     evtAlwaysOnTopChanged.removeListener(listener);
   }
 
   /**
    * @param listener a listener notified when to application has been successfully started
    */
-  public final void addApplicationStartedListener(final ActionListener listener) {
+  public final void addApplicationStartedListener(final EventListener listener) {
     evtApplicationStarted.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeApplicationStartedListener(final ActionListener listener) {
+  public final void removeApplicationStartedListener(final EventListener listener) {
     evtApplicationStarted.removeListener(listener);
   }
 
@@ -752,9 +752,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       final String caption = Util.nullOrEmpty(provider.getCaption()) ? entityPanel.getCaption() : provider.getCaption();
       applicationTabPane.addTab(caption, entityPanel);
       if (entityPanel.getEditPanel() != null) {
-        entityPanel.getEditPanel().getActiveObserver().addListener(new ActionListener() {
+        entityPanel.getEditPanel().getActiveObserver().addListener(new EventListener() {
           @Override
-          public void actionPerformed(final ActionEvent e) {
+          public void eventOccurred(final ActionEvent e) {
             if (entityPanel.getEditPanel().isActive()) {
               LOG.debug("{} selectApplicationTab", entityPanel.getEditModel().getEntityID());
               applicationTabPane.setSelectedComponent(entityPanel);
@@ -994,18 +994,18 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private void bindEventsInternal() {
     final StateObserver connected = applicationModel.getConnectionProvider().getConnectedObserver();
-    connected.addActivateListener(new ActionListener() {
+    connected.addActivateListener(new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         final Window parentWindow = getParentWindow();
         if (parentWindow instanceof JFrame) {
           ((JFrame) parentWindow).setTitle(frameTitle);
         }
       }
     });
-    connected.addDeactivateListener(new ActionListener() {
+    connected.addDeactivateListener(new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         final Window parentWindow = getParentWindow();
         if (parentWindow instanceof JFrame) {
           ((JFrame) parentWindow).setTitle(frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED));

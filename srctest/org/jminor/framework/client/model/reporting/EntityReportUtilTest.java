@@ -7,11 +7,12 @@ import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 
 import net.sf.jasperreports.engine.JasperPrint;
-import static org.junit.Assert.assertNotNull;
 import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.HashMap;
+
+import static org.junit.Assert.assertNotNull;
 
 public class EntityReportUtilTest {
 
@@ -19,7 +20,7 @@ public class EntityReportUtilTest {
   public void fillJdbcReport() throws Exception {
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
-    final JasperPrint print = (JasperPrint) EntityReportUtil.fillReport(
+    final JasperPrint print = EntityReportUtil.fillReport(
             new JasperReportsWrapper("resources/demos/empdept/reports/empdept_employees.jasper", reportParameters),
             EntityConnectionImplTest.CONNECTION_PROVIDER).getResult();
     assertNotNull(print);

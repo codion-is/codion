@@ -5,9 +5,10 @@ package org.jminor.common.model.combobox;
 
 import org.jminor.common.model.Item;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
-import org.junit.Test;
 
 public class BooleanComboBoxModelTest {
 

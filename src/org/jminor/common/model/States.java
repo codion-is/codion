@@ -3,9 +3,7 @@
  */
 package org.jminor.common.model;
 
-import javax.swing.Action;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -96,22 +94,22 @@ public final class States {
     }
 
     @Override
-    public void addActivateListener(final ActionListener listener) {
+    public void addActivateListener(final EventListener listener) {
       evtStateActivated.addListener(listener);
     }
 
     @Override
-    public void removeActivateListener(final ActionListener listener) {
+    public void removeActivateListener(final EventListener listener) {
       evtStateActivated.removeListener(listener);
     }
 
     @Override
-    public void addDeactivateListener(final ActionListener listener) {
+    public void addDeactivateListener(final EventListener listener) {
       evtStateDeactivated.addListener(listener);
     }
 
     @Override
-    public void removeDeactivateListener(final ActionListener listener) {
+    public void removeDeactivateListener(final EventListener listener) {
       evtStateDeactivated.removeListener(listener);
     }
 
@@ -136,35 +134,22 @@ public final class States {
     }
 
     @Override
-    public final void addListeningAction(final Action action) {
-      Util.rejectNullValue(action, "action");
-      action.setEnabled(isActive());
-      addListener(new ActionListener() {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          action.setEnabled(isActive());
-        }
-      });
-    }
-
-    @Override
-    public final void addListener(final ActionListener listener) {
+    public final void addListener(final EventListener listener) {
       evtStateChanged.addListener(listener);
     }
 
     @Override
-    public final void notifyObservers() {
-      evtStateChanged.fire();
-    }
-
-    @Override
-    public final void removeListener(final ActionListener listener) {
+    public final void removeListener(final EventListener listener) {
       evtStateChanged.removeListener(listener);
     }
 
     @Override
     public StateObserver getReversedObserver() {
       return getObserver().getReversedObserver();
+    }
+
+    protected final void notifyObservers() {
+      evtStateChanged.fire();
     }
   }
 
@@ -174,9 +159,9 @@ public final class States {
 
     ReverseState(final StateObserver referenceObserver) {
       this.referenceObserver = referenceObserver;
-      this.referenceObserver.addListener(new ActionListener() {
+      this.referenceObserver.addListener(new EventListener() {
         @Override
-        public void actionPerformed(final ActionEvent e) {
+        public void eventOccurred(final ActionEvent e) {
           notifyObservers();
         }
       });
@@ -206,9 +191,9 @@ public final class States {
   private static final class AggregateStateImpl extends StateImpl implements State.AggregateState {
 
     private final List<StateObserver> states = new ArrayList<StateObserver>();
-    private final ActionListener linkAction = new ActionListener() {
+    private final EventListener linkAction = new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         notifyObservers();
       }
     };
@@ -319,37 +304,32 @@ public final class States {
     }
 
     @Override
-    public void addListeningAction(final Action action) {
-      state.addListeningAction(action);
-    }
-
-    @Override
-    public void addListener(final ActionListener listener) {
+    public void addListener(final EventListener listener) {
       state.addListener(listener);
     }
 
     @Override
-    public void removeListener(final ActionListener listener) {
+    public void removeListener(final EventListener listener) {
       state.removeListener(listener);
     }
 
     @Override
-    public void addActivateListener(final ActionListener listener) {
+    public void addActivateListener(final EventListener listener) {
       state.addActivateListener(listener);
     }
 
     @Override
-    public void removeActivateListener(final ActionListener listener) {
+    public void removeActivateListener(final EventListener listener) {
       state.removeActivateListener(listener);
     }
 
     @Override
-    public void addDeactivateListener(final ActionListener listener) {
+    public void addDeactivateListener(final EventListener listener) {
       state.addDeactivateListener(listener);
     }
 
     @Override
-    public void removeDeactivateListener(final ActionListener listener) {
+    public void removeDeactivateListener(final EventListener listener) {
       state.removeDeactivateListener(listener);
     }
   }
@@ -370,9 +350,9 @@ public final class States {
         members.add(new WeakReference<State>(state));
       }
       updateAccordingToState(state);
-      state.addListener(new ActionListener() {
+      state.addListener(new EventListener() {
         @Override
-        public void actionPerformed(final ActionEvent e) {
+        public void eventOccurred(final ActionEvent e) {
           updateAccordingToState(state);
         }
       });

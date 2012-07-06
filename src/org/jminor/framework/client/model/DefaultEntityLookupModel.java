@@ -8,6 +8,7 @@ import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.SearchType;
@@ -22,7 +23,6 @@ import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -278,25 +278,25 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addSearchStringListener(final ActionListener listener) {
+  public final void addSearchStringListener(final EventListener listener) {
     evtSearchStringChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSelectedEntitiesListener(final ActionListener listener) {
+  public final void addSelectedEntitiesListener(final EventListener listener) {
     evtSelectedEntitiesChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSearchStringListener(final ActionListener listener) {
+  public final void removeSearchStringListener(final EventListener listener) {
     evtSearchStringChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSelectedEntitiesListener(final ActionListener listener) {
+  public final void removeSelectedEntitiesListener(final EventListener listener) {
     evtSelectedEntitiesChanged.removeListener(listener);
   }
 

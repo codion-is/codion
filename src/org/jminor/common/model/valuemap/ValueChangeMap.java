@@ -3,10 +3,10 @@
  */
 package org.jminor.common.model.valuemap;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 
-import java.awt.event.ActionListener;
 import java.util.Collection;
 
 /**
@@ -30,18 +30,18 @@ public interface ValueChangeMap<K, V> extends ValueMap<K, V> {
 
   /**
    * Adds a ActionListener, this listener will be notified each time a value changes,
-   * by calling actionPerformed() with a ValueChangeEvent argument.
+   * by calling eventOccurred() with a ValueChangeEvent argument.
    * Adding the same listener multiple times has no effect.
    * @param valueListener the ActionListener
    * @see org.jminor.common.model.valuemap.ValueChangeEvent
    */
-  void addValueListener(final ActionListener valueListener);
+  void addValueListener(final EventListener valueListener);
 
   /**
    * Removes the given value listener if it has been registered with this value map.
    * @param valueListener the ActionListener to remove
    */
-  void removeValueListener(final ActionListener valueListener);
+  void removeValueListener(final EventListener valueListener);
 
   /**
    * Initializes the value associated with the given key. This method assumes

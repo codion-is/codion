@@ -10,6 +10,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Serializer;
 import org.jminor.common.model.StateObserver;
@@ -79,7 +80,6 @@ import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
@@ -793,42 +793,42 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   /**
    * @param listener a listener notified each time the search panel visibility changes
    */
-  public final void addSearchPanelVisibleListener(final ActionListener listener) {
+  public final void addSearchPanelVisibleListener(final EventListener listener) {
     evtSearchPanelVisibilityChanged.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeSearchPanelVisibleListener(final ActionListener listener) {
+  public final void removeSearchPanelVisibleListener(final EventListener listener) {
     evtSearchPanelVisibilityChanged.removeListener(listener);
   }
 
   /**
    * @param listener a listener notified each time the summary panel visibility changes
    */
-  public final void addSummaryPanelVisibleListener(final ActionListener listener) {
+  public final void addSummaryPanelVisibleListener(final EventListener listener) {
     evtSummaryPanelVisibilityChanged.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeSummaryPanelVisibleListener(final ActionListener listener) {
+  public final void removeSummaryPanelVisibleListener(final EventListener listener) {
     evtSummaryPanelVisibilityChanged.removeListener(listener);
   }
 
   /**
    * @param listener a listener notified each time the table is double clicked
    */
-  public final void addTableDoubleClickListener(final ActionListener listener) {
+  public final void addTableDoubleClickListener(final EventListener listener) {
     evtTableDoubleClicked.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeTableDoubleClickListener(final ActionListener listener) {
+  public final void removeTableDoubleClickListener(final EventListener listener) {
     evtTableDoubleClicked.removeListener(listener);
   }
 
@@ -1365,10 +1365,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
       if (!searchPanel.isSimpleSearch()) {
         searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
-        searchPanel.addAdvancedListener(new ActionListener() {
+        searchPanel.addAdvancedListener(new EventListener() {
           /** {@inheritDoc} */
           @Override
-          public void actionPerformed(final ActionEvent e) {
+          public void eventOccurred(final ActionEvent e) {
             if (isSearchPanelVisible()) {
               revalidate();
             }
@@ -1470,10 +1470,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
       UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_DELETE, getDeleteSelectedControl());
     }
-    final ActionListener statusListener = new ActionListener() {
+    final EventListener statusListener = new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         updateStatusMessage();
       }
     };
@@ -1481,20 +1481,20 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     getEntityTableModel().addFilteringListener(statusListener);
     getEntityTableModel().addTableDataChangedListener(statusListener);
 
-    getEntityTableModel().getSearchModel().getSearchStateObserver().addListener(new ActionListener() {
+    getEntityTableModel().getSearchModel().getSearchStateObserver().addListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         getJTable().getTableHeader().repaint();
         getJTable().repaint();
       }
     });
 
     if (getEntityTableModel().hasEditModel()) {
-      getEntityTableModel().getEditModel().addEntitiesChangedListener(new ActionListener() {
+      getEntityTableModel().getEditModel().addEntitiesChangedListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
-        public void actionPerformed(final ActionEvent e) {
+        public void eventOccurred(final ActionEvent e) {
           getJTable().repaint();
         }
       });

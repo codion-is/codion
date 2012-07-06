@@ -5,6 +5,7 @@ package org.jminor.common.ui;
 
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.DateUtil;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
@@ -280,11 +281,11 @@ public class ColumnSearchPanel<K> extends JPanel {
     return lowerBoundField;
   }
 
-  public final void addAdvancedSearchListener(final ActionListener listener) {
+  public final void addAdvancedSearchListener(final EventListener listener) {
     stAdvancedSearch.addListener(listener);
   }
 
-  public final void removeAdvancedSearchListener(final ActionListener listener) {
+  public final void removeAdvancedSearchListener(final EventListener listener) {
     stAdvancedSearch.removeListener(listener);
   }
 
@@ -410,10 +411,10 @@ public class ColumnSearchPanel<K> extends JPanel {
    * Binds events to relevant GUI actions
    */
   private void bindEvents() {
-    stAdvancedSearch.addListener(new ActionListener() {
+    stAdvancedSearch.addListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         initializePanel();
         if (toggleSearchAdvanced != null) {
           toggleSearchAdvanced.requestFocusInWindow();
@@ -423,10 +424,10 @@ public class ColumnSearchPanel<K> extends JPanel {
         }
       }
     });
-    searchModel.addLowerBoundRequiredListener(new ActionListener() {
+    searchModel.addLowerBoundRequiredListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         initializePanel();
         revalidate();
         searchTypeCombo.requestFocusInWindow();
@@ -570,10 +571,10 @@ public class ColumnSearchPanel<K> extends JPanel {
     dialog.getContentPane().add(searchPanel);
     dialog.pack();
 
-    addAdvancedSearchListener(new ActionListener() {
+    addAdvancedSearchListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         dialog.pack();
       }
     });

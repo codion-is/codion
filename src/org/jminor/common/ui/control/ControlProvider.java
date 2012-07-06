@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
@@ -23,7 +24,6 @@ import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
 import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.List;
 
 /**
@@ -176,9 +176,9 @@ public final class ControlProvider {
       final StateObserver enabledState = controlSet.getEnabledObserver();
       if (enabledState != null) {
         menu.setEnabled(enabledState.isActive());
-        enabledState.addListener(new ActionListener() {
+        enabledState.addListener(new EventListener() {
           @Override
-          public void actionPerformed(final ActionEvent e) {
+          public void eventOccurred(final ActionEvent e) {
             menu.setEnabled(enabledState.isActive());
           }
         });

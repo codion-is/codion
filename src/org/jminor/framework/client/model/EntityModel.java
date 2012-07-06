@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Refreshable;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 
@@ -154,30 +154,30 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   /**
    * @param listener a listener to be notified before a refresh is performed
    */
-  void addBeforeRefreshListener(final ActionListener listener);
+  void addBeforeRefreshListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeBeforeRefreshListener(final ActionListener listener);
+  void removeBeforeRefreshListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a refresh has been performed
    */
-  void addAfterRefreshListener(final ActionListener listener);
+  void addAfterRefreshListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeAfterRefreshListener(final ActionListener listener);
+  void removeAfterRefreshListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the linked detail models change
    */
-  void addLinkedDetailModelsListener(final ActionListener listener);
+  void addLinkedDetailModelsListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeLinkedDetailModelsListener(final ActionListener listener);
+  void removeLinkedDetailModelsListener(final EventListener listener);
 }

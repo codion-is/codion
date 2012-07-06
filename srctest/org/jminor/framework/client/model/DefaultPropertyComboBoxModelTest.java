@@ -11,8 +11,9 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 
-import static org.junit.Assert.assertTrue;
 import org.junit.Test;
+
+import static org.junit.Assert.assertTrue;
 
 public final class DefaultPropertyComboBoxModelTest {
 

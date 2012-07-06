@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 
@@ -11,7 +12,6 @@ import javax.swing.Action;
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * A beefed up Action.
@@ -53,10 +53,10 @@ public class Control extends AbstractAction {
   public Control(final String name, final StateObserver enabledObserver, final Icon icon) {
     super(name);
     this.enabledObserver = enabledObserver == null ? States.state(true) : enabledObserver;
-    this.enabledObserver.addListener(new ActionListener() {
+    this.enabledObserver.addListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         firePropertyChange("enabled", !Control.this.enabledObserver.isActive(), Control.this.enabledObserver.isActive());
       }
     });

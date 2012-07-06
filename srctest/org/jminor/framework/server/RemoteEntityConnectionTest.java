@@ -4,6 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.framework.db.EntityConnection;
+
 import org.junit.Test;
 
 import java.lang.reflect.Method;

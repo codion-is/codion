@@ -5,6 +5,7 @@ package org.jminor.framework.tools.testing;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.ItemRandomizer;
 import org.jminor.common.model.LoadTest;
@@ -21,7 +22,6 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
 
-import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -160,7 +160,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
       if (method.getName().endsWith("Listener")) {
-        evtRefresh.addListener((ActionListener) args[0]);
+        evtRefresh.addListener((EventListener) args[0]);
         return null;
       }
       else if (method.getName().endsWith("Observer")) {
@@ -193,7 +193,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
         return null;
       }
       else if (method.getName().endsWith("Listener")) {
-        evtRefresh.addListener((ActionListener) args[0]);
+        evtRefresh.addListener((EventListener) args[0]);
         return null;
       }
       else if (method.getName().endsWith("Observer")) {

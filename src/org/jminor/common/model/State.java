@@ -27,8 +27,7 @@ public interface State extends StateObserver {
   void setActive(final boolean value);
 
   /**
-   * @return an StateObserver notified each time the state changes or <code>notifyObservers()</code> is called
-   * @see #notifyObservers()
+   * @return an StateObserver notified each time the state changes
    */
   StateObserver getObserver();
 
@@ -36,11 +35,6 @@ public interface State extends StateObserver {
    * @return an EventObserver notified each time the state changes
    */
   EventObserver getStateChangeObserver();
-
-  /**
-   * Notifies any observer that this state has been updated
-   */
-  void notifyObservers();
 
   /**
    * A state which behaves according to a set of states, either ANDing or ORing those together

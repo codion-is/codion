@@ -4,12 +4,12 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.framework.domain.Properties;
 
 import org.junit.Test;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Types;
 import java.text.Format;
 import java.text.NumberFormat;
@@ -57,9 +57,9 @@ public class DefaultPropertySummaryModelTest {
     assertEquals("TestProperty", testIntModel.getProperty().getPropertyID());
     assertEquals(PropertySummaryModel.SummaryType.SUM, testIntModel.getSummaryType());
     assertTrue(testIntModel.getSummaryTypes().size() > 0);
-    final ActionListener listener = new ActionListener() {
+    final EventListener listener = new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {}
+      public void eventOccurred(final ActionEvent e) {}
     };
     testIntModel.addSummaryListener(listener);
     testIntModel.addSummaryTypeListener(listener);

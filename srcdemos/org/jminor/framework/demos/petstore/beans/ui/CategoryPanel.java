@@ -6,9 +6,10 @@ package org.jminor.framework.demos.petstore.beans.ui;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
-import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 import javax.swing.JTextField;
+
+import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 public class CategoryPanel extends EntityEditPanel {
 

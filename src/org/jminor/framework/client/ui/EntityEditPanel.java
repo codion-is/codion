@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Conjunction;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
@@ -48,7 +49,6 @@ import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -2010,17 +2010,17 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   private void bindEvents() {
-    editModel.addBeforeRefreshListener(new ActionListener() {
+    editModel.addBeforeRefreshListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         UiUtil.setWaitCursor(true, EntityEditPanel.this);
       }
     });
-    editModel.addAfterRefreshListener(new ActionListener() {
+    editModel.addAfterRefreshListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         UiUtil.setWaitCursor(false, EntityEditPanel.this);
       }
     });

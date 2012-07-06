@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.framework.client.model.PropertySummaryModel;
 
 import javax.swing.AbstractAction;
@@ -13,7 +14,6 @@ import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 
@@ -30,10 +30,10 @@ public final class PropertySummaryPanel extends JPanel {
    */
   public PropertySummaryPanel(final PropertySummaryModel model) {
     this.model = model;
-    model.addSummaryListener(new ActionListener() {
+    model.addSummaryListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         final String summaryText = model.getSummaryText();
         txtSummary.setText(summaryText);
         txtSummary.setToolTipText(!summaryText.isEmpty() ? (model.getSummaryType() + ": " + summaryText) : summaryText);
@@ -76,10 +76,10 @@ public final class PropertySummaryPanel extends JPanel {
           model.setSummaryType(summaryType);
         }
       });
-      model.addSummaryTypeListener(new ActionListener() {
+      model.addSummaryTypeListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
-        public void actionPerformed(final ActionEvent e) {
+        public void eventOccurred(final ActionEvent e) {
           item.setSelected(model.getSummaryType() == summaryType);
         }
       });

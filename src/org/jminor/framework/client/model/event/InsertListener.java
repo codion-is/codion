@@ -1,18 +1,19 @@
 package org.jminor.framework.client.model.event;
 
 
+import org.jminor.common.model.EventListener;
+
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 
 /**
  * A listener for insert events.
  */
-public abstract class InsertListener implements ActionListener {
+public abstract class InsertListener implements EventListener {
 
   /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked"})
-  public final void actionPerformed(final ActionEvent e) {
+  public final void eventOccurred(final ActionEvent e) {
     if (!(e instanceof InsertEvent)) {
       throw new IllegalArgumentException("InsertListener can only be used with InsertEvent, " + e);
     }

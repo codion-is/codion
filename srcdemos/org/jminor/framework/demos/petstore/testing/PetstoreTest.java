@@ -6,10 +6,11 @@ package org.jminor.framework.demos.petstore.testing;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.framework.demos.petstore.domain.Petstore;
-import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 import org.jminor.framework.tools.testing.EntityTestUnit;
 
 import org.junit.Test;
+
+import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 public class PetstoreTest extends EntityTestUnit {
 

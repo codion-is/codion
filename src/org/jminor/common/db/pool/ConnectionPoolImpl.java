@@ -377,7 +377,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
       creatingConnection = false;
     }
   }
-  
+
   private void initializeConnections() throws ClassNotFoundException, DatabaseException {
     for (int i = 0; i < getMinimumPoolSize(); i++) {
       returnConnection(createConnection());

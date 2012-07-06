@@ -3,7 +3,6 @@
  */
 package org.jminor.common.ui.control;
 
-import static org.junit.Assert.assertEquals;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -16,6 +15,8 @@ import javax.swing.JPanel;
 import javax.swing.JToolBar;
 import java.util.ArrayList;
 import java.util.List;
+
+import static org.junit.Assert.assertEquals;
 
 public class ControlProviderTest {
 

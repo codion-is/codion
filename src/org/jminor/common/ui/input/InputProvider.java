@@ -11,7 +11,7 @@ import javax.swing.JComponent;
  * @param <K> the input component type
  */
 public interface InputProvider<T, K extends JComponent> {
-  
+
   /**
    * @return the input component
    */

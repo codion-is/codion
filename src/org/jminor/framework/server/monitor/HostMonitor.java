@@ -4,6 +4,7 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
@@ -14,7 +15,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -52,9 +52,9 @@ public final class HostMonitor {
       for (final String serverName : getRemoteEntityServers(hostName, registryPort)) {
         if (!containsServerMonitor(serverName)) {
           final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverName, registryPort);
-          serverMonitor.addServerShutDownListener(new ActionListener() {
+          serverMonitor.addServerShutDownListener(new EventListener() {
             @Override
-            public void actionPerformed(final ActionEvent e) {
+            public void eventOccurred(final ActionEvent e) {
               removeServer(serverMonitor);
             }
           });
@@ -77,19 +77,19 @@ public final class HostMonitor {
     stLiveUpdate.setActive(value);
   }
 
-  public void addRefreshListener(final ActionListener listener) {
+  public void addRefreshListener(final EventListener listener) {
     evtRefreshed.addListener(listener);
   }
 
-  public void removeRefreshListener(final ActionListener listener) {
+  public void removeRefreshListener(final EventListener listener) {
     evtRefreshed.removeListener(listener);
   }
 
-  public void addServerMonitorRemovedListener(final ActionListener listener) {
+  public void addServerMonitorRemovedListener(final EventListener listener) {
     evtServerMonitorRemoved.addListener(listener);
   }
 
-  public void removeServerMonitorRemovedListener(final ActionListener listener) {
+  public void removeServerMonitorRemovedListener(final EventListener listener) {
     evtServerMonitorRemoved.removeListener(listener);
   }
 

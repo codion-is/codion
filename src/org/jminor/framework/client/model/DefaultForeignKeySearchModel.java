@@ -5,13 +5,13 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.DefaultColumnSearchModel;
+import org.jminor.common.model.EventListener;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
@@ -132,10 +132,10 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
   }
 
   private void bindLookupModelEvents() {
-    entityLookupModel.addSelectedEntitiesListener(new ActionListener() {
+    entityLookupModel.addSelectedEntitiesListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         try {
           updatingModel = true;
           final Collection<Entity> selectedEntities = entityLookupModel.getSelectedEntities();
@@ -146,10 +146,10 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
         }
       }
     });
-    addUpperBoundListener(new ActionListener() {
+    addUpperBoundListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         if (!updatingModel) {//noinspection unchecked
           final Object upperBound = getUpperBound();
           if (upperBound instanceof Entity) {
@@ -164,19 +164,19 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
   }
 
   private void bindComboBoxEvents() {
-    entityComboBoxModel.addSelectionListener(new ActionListener() {
+    entityComboBoxModel.addSelectionListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         if (!updatingModel) {
           setUpperBound(entityComboBoxModel.getSelectedValue());
         }
       }
     });
-    addUpperBoundListener(new ActionListener() {
+    addUpperBoundListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         try {
           updatingModel = true;
           final Object upper = getUpperBound();
@@ -193,10 +193,10 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
       }
     });
 
-    entityComboBoxModel.addRefreshListener(new ActionListener() {
+    entityComboBoxModel.addRefreshListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         final Object upper = getUpperBound();
         if ((upper instanceof Collection && !((Collection) upper).isEmpty())) {
           entityComboBoxModel.setSelectedItem(((Collection) upper).iterator().next());

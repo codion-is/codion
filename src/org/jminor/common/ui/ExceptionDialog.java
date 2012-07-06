@@ -7,6 +7,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
@@ -37,7 +38,6 @@ import java.awt.Font;
 import java.awt.Point;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyEvent;
 import java.awt.print.PrinterException;
 import java.io.IOException;
@@ -280,9 +280,9 @@ public final class ExceptionDialog extends JDialog {
   }
 
   private void bindEvents() {
-    evtShowDetailsChanged.addListener(new ActionListener() {
+    evtShowDetailsChanged.addListener(new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         initDetailView(isShowDetails());
       }
     });

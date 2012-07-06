@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.framework.client.model.event.DeleteEvent;
@@ -21,7 +22,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -395,37 +395,37 @@ public class DefaultEntityModel implements EntityModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addLinkedDetailModelsListener(final ActionListener listener) {
+  public final void addLinkedDetailModelsListener(final EventListener listener) {
     evtLinkedDetailModelsChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeLinkedDetailModelsListener(final ActionListener listener) {
+  public final void removeLinkedDetailModelsListener(final EventListener listener) {
     evtLinkedDetailModelsChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeRefreshListener(final ActionListener listener) {
+  public final void addBeforeRefreshListener(final EventListener listener) {
     evtRefreshStarted.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeRefreshListener(final ActionListener listener) {
+  public final void removeBeforeRefreshListener(final EventListener listener) {
     evtRefreshStarted.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterRefreshListener(final ActionListener listener) {
+  public final void addAfterRefreshListener(final EventListener listener) {
     evtRefreshDone.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeAfterRefreshListener(final ActionListener listener) {
+  public final void removeAfterRefreshListener(final EventListener listener) {
     evtRefreshDone.removeListener(listener);
   }
 
@@ -580,10 +580,10 @@ public class DefaultEntityModel implements EntityModel {
         handleUpdate(event);
       }
     });
-    final ActionListener initializer = new ActionListener() {
+    final EventListener initializer = new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         initializeDetailModels();
       }
     };

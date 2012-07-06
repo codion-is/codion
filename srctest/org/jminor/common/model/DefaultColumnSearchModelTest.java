@@ -3,7 +3,6 @@ package org.jminor.common.model;
 import org.junit.Test;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -20,39 +19,39 @@ public class DefaultColumnSearchModelTest {
   final Collection<Object> enabledCounter = new ArrayList<Object>();
   final Collection<Object> clearCounter = new ArrayList<Object>();
 
-  final ActionListener upperBoundListener = new ActionListener() {
+  final EventListener upperBoundListener = new EventListener() {
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void eventOccurred(final ActionEvent e) {
       upperBoundCounter.add(new Object());
     }
   };
-  final ActionListener lowerBoundListener = new ActionListener() {
+  final EventListener lowerBoundListener = new EventListener() {
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void eventOccurred(final ActionEvent e) {
       lowerBoundCounter.add(new Object());
     }
   };
-  final ActionListener searchStateListener = new ActionListener() {
+  final EventListener searchStateListener = new EventListener() {
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void eventOccurred(final ActionEvent e) {
       searchStateCounter.add(new Object());
     }
   };
-  final ActionListener searchTypeListener = new ActionListener() {
+  final EventListener searchTypeListener = new EventListener() {
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void eventOccurred(final ActionEvent e) {
       searchTypeCounter.add(new Object());
     }
   };
-  final ActionListener enabledListener = new ActionListener() {
+  final EventListener enabledListener = new EventListener() {
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void eventOccurred(final ActionEvent e) {
       enabledCounter.add(new Object());
     }
   };
-  final ActionListener clearListener = new ActionListener() {
+  final EventListener clearListener = new EventListener() {
     @Override
-    public void actionPerformed(final ActionEvent e) {
+    public void eventOccurred(final ActionEvent e) {
       clearCounter.add(new Object());
     }
   };
@@ -182,7 +181,7 @@ public class DefaultColumnSearchModelTest {
     }
     catch (IllegalStateException e) {}
   }
-  
+
   @Test
   public void include() {
     final DefaultColumnSearchModel<String> searchModel = new DefaultColumnSearchModel<String>("test", Types.INTEGER, "%");
@@ -206,7 +205,7 @@ public class DefaultColumnSearchModelTest {
     assertTrue(searchModel.include(9));
     assertTrue(searchModel.include(10));
     assertFalse(searchModel.include(11));
-    
+
     searchModel.setSearchType(SearchType.WITHIN_RANGE);
     searchModel.setLowerBound(6);
     assertTrue(searchModel.include(6));
@@ -215,7 +214,7 @@ public class DefaultColumnSearchModelTest {
     assertTrue(searchModel.include(10));
     assertFalse(searchModel.include(11));
     assertFalse(searchModel.include(5));
-    
+
     searchModel.setSearchType(SearchType.OUTSIDE_RANGE);
     assertTrue(searchModel.include(6));
     assertFalse(searchModel.include(7));

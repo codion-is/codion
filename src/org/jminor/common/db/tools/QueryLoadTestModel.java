@@ -5,18 +5,18 @@ package org.jminor.common.db.tools;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.DatabaseConnectionProvider;
+import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,10 +47,10 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
   public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) throws ClassNotFoundException, DatabaseException {
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE, DEFAULT_QUERY_WARNING_TIME_MS);
     this.pool = ConnectionPools.createPool(new ConnectionProvider(database, user));
-    addExitListener(new ActionListener() {
+    addExitListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         pool.close();
       }
     });

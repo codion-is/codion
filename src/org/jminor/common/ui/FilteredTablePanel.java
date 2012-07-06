@@ -6,6 +6,7 @@ package org.jminor.common.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.DocumentAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilteredTableModel;
 import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.Util;
@@ -39,7 +40,6 @@ import java.awt.GridLayout;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
 import java.awt.event.MouseAdapter;
@@ -432,33 +432,33 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
   @SuppressWarnings({"unchecked"})
   private void bindEvents() {
-    tableModel.addSortingListener(new ActionListener() {
+    tableModel.addSortingListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         table.getTableHeader().repaint();
       }
     });
-    tableModel.addSelectedIndexListener(new ActionListener() {
+    tableModel.addSelectedIndexListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         if (scrollToSelectedItem && !tableModel.isSelectionEmpty()) {
           scrollToCoordinate(tableModel.getSelectedIndex(), table.getSelectedColumn());
         }
       }
     });
-    tableModel.addRefreshStartedListener(new ActionListener() {
+    tableModel.addRefreshStartedListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         UiUtil.setWaitCursor(true, FilteredTablePanel.this);
       }
     });
-    tableModel.addRefreshDoneListener(new ActionListener() {
+    tableModel.addRefreshDoneListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         UiUtil.setWaitCursor(false, FilteredTablePanel.this);
       }
     });
@@ -467,10 +467,10 @@ public class FilteredTablePanel<T, C> extends JPanel {
       final TableColumn column = columns.nextElement();
       final ColumnSearchModel model = tableModel.getFilterModel((C) column.getIdentifier());
       if (model != null) {
-        model.addSearchStateListener(new ActionListener() {
+        model.addSearchStateListener(new EventListener() {
           /** {@inheritDoc} */
           @Override
-          public void actionPerformed(final ActionEvent e) {
+          public void eventOccurred(final ActionEvent e) {
             if (model.isEnabled()) {
               addFilterIndicator(column);
             }

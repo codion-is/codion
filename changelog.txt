@@ -3044,3 +3044,7 @@
   resources/server/config/logback.xml modified to support log file per user@client
   RemoteEntityConnectionImpl method logging now logs the root LogEntry to the log file, not only the sublog entries
   RemoteEntityConnectionImpl uses log level ERROR to log method calls, hacky
+  State.notifyObservers() removed
+  StateImpl.notifyObservers() is no longer public
+  StateObserver.addListeningAction() removed
+  EventListener added, replaces ActionListener throughout

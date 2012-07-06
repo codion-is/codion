@@ -11,9 +11,10 @@ import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.client.ui.EntityUiUtil;
 import org.jminor.framework.demos.petstore.domain.Petstore;
-import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 import javax.swing.JTextField;
+
+import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 public class ItemPanel extends EntityEditPanel {
 

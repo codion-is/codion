@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
@@ -76,7 +77,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
@@ -225,9 +225,9 @@ public final class EntityUiUtil {
 
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
     entityTablePanel.initializePanel();
-    entityTablePanel.addTableDoubleClickListener(new ActionListener() {
+    entityTablePanel.addTableDoubleClickListener(new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         if (!entityTablePanel.getEntityTableModel().isSelectionEmpty()) {
           okAction.actionPerformed(e);
         }
@@ -866,9 +866,9 @@ public final class EntityUiUtil {
       super(editModel, foreignKeyPropertyID, LinkType.READ_WRITE);
       this.lookupModel = lookupModel;
       updateUI();
-      lookupModel.addSelectedEntitiesListener(new ActionListener() {
+      lookupModel.addSelectedEntitiesListener(new EventListener() {
         @Override
-        public void actionPerformed(final ActionEvent e) {
+        public void eventOccurred(final ActionEvent e) {
           updateModel();
         }
       });

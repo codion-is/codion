@@ -3,11 +3,11 @@
  */
 package org.jminor.common.model.combobox;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 
 import javax.swing.ComboBoxModel;
-import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.Comparator;
 
@@ -21,12 +21,12 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxMode
   /**
    * @param listener a listener notified each time the selection changes
    */
-  void addSelectionListener(final ActionListener listener);
+  void addSelectionListener(final EventListener listener);
 
   /**
    * @param listener a selection listener to remove
    */
-  void removeSelectionListener(final ActionListener listener);
+  void removeSelectionListener(final EventListener listener);
 
   /**
    * Resets the contents of this model using the values found in <code>contents</code>

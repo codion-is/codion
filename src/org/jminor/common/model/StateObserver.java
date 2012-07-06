@@ -1,8 +1,5 @@
 package org.jminor.common.model;
 
-import javax.swing.Action;
-import java.awt.event.ActionListener;
-
 /**
  * Specifies an observer for a {@link State} instance.
  */
@@ -14,12 +11,6 @@ public interface StateObserver extends EventObserver {
   boolean isActive();
 
   /**
-   * Links the enabled state of the given action to the active state of the state being observed
-   * @param action an action to link
-   */
-  void addListeningAction(final Action action);
-
-  /**
    * @return A StateObserver object that is always the reverse of the parent state
    */
   StateObserver getReversedObserver();
@@ -27,20 +18,20 @@ public interface StateObserver extends EventObserver {
   /**
    * @param listener a listener notified each time this state is activated
    */
-  void addActivateListener(final ActionListener listener);
+  void addActivateListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeActivateListener(final ActionListener listener);
+  void removeActivateListener(final EventListener listener);
 
   /**
    * @param listener a listener notified each time this state is deactivated
    */
-  void addDeactivateListener(final ActionListener listener);
+  void addDeactivateListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeDeactivateListener(final ActionListener listener);
+  void removeDeactivateListener(final EventListener listener);
 }

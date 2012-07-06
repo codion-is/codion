@@ -12,6 +12,7 @@ import org.jminor.common.db.pool.ConnectionPoolException;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.MethodLogger;
@@ -37,7 +38,6 @@ import org.slf4j.MDC;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
-import java.awt.event.ActionListener;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
@@ -403,11 +403,11 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     return ACTIVE_CONNECTIONS.contains(this);
   }
 
-  void addDisconnectListener(final ActionListener listener) {
+  void addDisconnectListener(final EventListener listener) {
     evtDisconnected.addListener(listener);
   }
 
-  void removeDisconnectListener(final ActionListener listener) {
+  void removeDisconnectListener(final EventListener listener) {
     evtDisconnected.removeListener(listener);
   }
 

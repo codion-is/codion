@@ -4,13 +4,13 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import javax.swing.DefaultListModel;
-import java.awt.event.ActionListener;
 import java.rmi.RemoteException;
 
 /**
@@ -75,11 +75,11 @@ public final class ClientUserMonitor {
     evtConnectionTimeoutChanged.fire();
   }
 
-  public void addConnectionTimeoutListener(final ActionListener listener) {
+  public void addConnectionTimeoutListener(final EventListener listener) {
     evtConnectionTimeoutChanged.addListener(listener);
   }
 
-  public void removeConnectionTimeoutListener(final ActionListener listener) {
+  public void removeConnectionTimeoutListener(final EventListener listener) {
     evtConnectionTimeoutChanged.removeListener(listener);
   }
 

@@ -6,11 +6,12 @@ package org.jminor.framework.demos.empdept.testing;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import static org.jminor.framework.demos.empdept.domain.EmpDept.T_DEPARTMENT;
-import static org.jminor.framework.demos.empdept.domain.EmpDept.T_EMPLOYEE;
 import org.jminor.framework.tools.testing.EntityTestUnit;
 
 import org.junit.Test;
+
+import static org.jminor.framework.demos.empdept.domain.EmpDept.T_DEPARTMENT;
+import static org.jminor.framework.demos.empdept.domain.EmpDept.T_EMPLOYEE;
 
 public class EmpDeptTest extends EntityTestUnit {
 

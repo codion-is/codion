@@ -8,9 +8,10 @@ import org.jminor.common.db.dbms.OracleDatabase;
 import org.jminor.common.db.dbms.PostgreSQLDatabase;
 import org.jminor.common.db.dbms.SQLServerDatabase;
 
+import org.junit.Test;
+
 import static org.junit.Assert.assertTrue;
 import static org.junit.Assert.fail;
-import org.junit.Test;
 
 public class DatabasesTest {
 

@@ -1,11 +1,12 @@
 package org.jminor.common.ui.input;
 
+import org.jminor.common.model.EventListener;
+
 import org.junit.Test;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -31,9 +32,9 @@ public class InputProviderPanelTest {
     assertEquals("hello", panel.getValue());
     assertFalse(panel.isInputAccepted());
     final Collection<Object> event = new ArrayList<Object>();
-    final ActionListener listener = new ActionListener() {
+    final EventListener listener = new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         event.add(new Object());
       }
     };

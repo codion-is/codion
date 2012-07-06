@@ -6,6 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
@@ -31,7 +32,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -207,9 +207,9 @@ public final class DefaultEntityEditModelTest {
     assertTrue(employeeEditModel.getAllowUpdateObserver().isActive());
     assertTrue(employeeEditModel.getAllowDeleteObserver().isActive());
 
-    final ActionListener listener = new ActionListener() {
+    final EventListener listener = new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {}
+      public void eventOccurred(final ActionEvent e) {}
     };
     employeeEditModel.addAfterDeleteListener(listener);
     employeeEditModel.addAfterInsertListener(listener);
@@ -484,15 +484,15 @@ public final class DefaultEntityEditModelTest {
         valueChangeCounter.add(new Object());
       }
     };
-    final ActionListener valueSetListener = new ActionListener() {
+    final EventListener valueSetListener = new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         valueSetCounter.add(new Object());
       }
     };
-    final ActionListener valueMapSetListener = new ActionListener() {
+    final EventListener valueMapSetListener = new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         valueMapSetCounter.add(new Object());
       }
     };

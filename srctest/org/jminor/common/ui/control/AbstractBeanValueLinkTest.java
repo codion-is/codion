@@ -5,6 +5,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
+
 import org.junit.Test;
 
 public class AbstractBeanValueLinkTest {
@@ -33,7 +34,7 @@ public class AbstractBeanValueLinkTest {
   public void constructorNullPropertyClass() {
     new BeanValueLink(this, "a", null, Events.event(), LinkType.READ_WRITE);
   }
-  
+
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullLinkType() {
     new BeanValueLink(this, "a", String.class, Events.event(), null);

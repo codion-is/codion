@@ -4,12 +4,12 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import java.awt.event.ActionListener;
 import java.text.Format;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -105,25 +105,25 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addSummaryListener(final ActionListener listener) {
+  public final void addSummaryListener(final EventListener listener) {
     evtSummaryChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSummaryTypeListener(final ActionListener listener) {
+  public final void addSummaryTypeListener(final EventListener listener) {
     evtSummaryTypeChanged.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSummaryListener(final ActionListener listener) {
+  public final void removeSummaryListener(final EventListener listener) {
     evtSummaryChanged.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSummaryTypeListener(final ActionListener listener) {
+  public final void removeSummaryTypeListener(final EventListener listener) {
     evtSummaryTypeChanged.removeListener(listener);
   }
 

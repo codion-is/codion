@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model;
 
-import java.awt.event.ActionListener;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.util.Date;
@@ -253,70 +252,70 @@ public interface ColumnSearchModel<K> {
   /**
    * @param listener a listener to be notified each time the enabled state changes
    */
-  void addEnabledListener(final ActionListener listener);
+  void addEnabledListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeEnabledListener(final ActionListener listener);
+  void removeEnabledListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the search type changes
    */
-  void addSearchTypeListener(final ActionListener listener);
+  void addSearchTypeListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSearchTypeListener(final ActionListener listener);
+  void removeSearchTypeListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the lower bound changes
    */
-  void addLowerBoundListener(final ActionListener listener);
+  void addLowerBoundListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeLowerBoundListener(final ActionListener listener);
+  void removeLowerBoundListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the lower bound required attribute changes
    */
-  void addLowerBoundRequiredListener(final ActionListener listener);
+  void addLowerBoundRequiredListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeLowerBoundRequiredListener(final ActionListener listener);
+  void removeLowerBoundRequiredListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the upper bound changes
    */
-  void addUpperBoundListener(final ActionListener listener);
+  void addUpperBoundListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeUpperBoundListener(final ActionListener listener);
+  void removeUpperBoundListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the model is cleared
    */
-  void addClearedListener(final ActionListener listener);
+  void addClearedListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeClearedListener(final ActionListener listener);
+  void removeClearedListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time the search state changes
    */
-  void addSearchStateListener(final ActionListener listener);
+  void addSearchStateListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSearchStateListener(final ActionListener listener);
+  void removeSearchStateListener(final EventListener listener);
 }

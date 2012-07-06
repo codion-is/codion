@@ -11,10 +11,11 @@ import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.client.ui.EntityUiUtil;
 import org.jminor.framework.demos.petstore.domain.Petstore;
-import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_ITEM_FK;
-import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_TAG_FK;
 
 import java.awt.Dimension;
+
+import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_ITEM_FK;
+import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_TAG_FK;
 
 public class TagItemPanel extends EntityEditPanel {
 

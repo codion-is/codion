@@ -4,12 +4,12 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 
@@ -161,12 +161,12 @@ public interface EntityLookupModel extends EntityDataProvider {
   /**
    * @param listener a listener to be notified each time the selected entities are changed
    */
-  void addSelectedEntitiesListener(final ActionListener listener);
+  void addSelectedEntitiesListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSelectedEntitiesListener(final ActionListener listener);
+  void removeSelectedEntitiesListener(final EventListener listener);
 
   /**
    * @return an EventObserver fired each time the search string changes
@@ -176,12 +176,12 @@ public interface EntityLookupModel extends EntityDataProvider {
   /**
    * @param listener a listener to be notified each time the search string changes
    */
-  void addSearchStringListener(final ActionListener listener);
+  void addSearchStringListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSearchStringListener(final ActionListener listener);
+  void removeSearchStringListener(final EventListener listener);
 
   /**
    * @return a StateObserver indicating whether or not the search string represents the selected entities

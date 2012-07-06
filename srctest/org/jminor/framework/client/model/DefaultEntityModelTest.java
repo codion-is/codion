@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.client.ui.EntityUiUtil;
@@ -22,7 +23,6 @@ import org.junit.Test;
 
 import javax.swing.JComboBox;
 import java.awt.event.ActionEvent;
-import java.awt.event.ActionListener;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -161,13 +161,13 @@ public final class DefaultEntityModelTest {
     assertNotNull(departmentModel.getTableModel());
     assertTrue(departmentModel.containsTableModel());
 
-    final ActionListener linkedListener = new ActionListener() {
+    final EventListener linkedListener = new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {}
+      public void eventOccurred(final ActionEvent e) {}
     };
-    final ActionListener listener = new ActionListener() {
+    final EventListener listener = new EventListener() {
       @Override
-      public void actionPerformed(final ActionEvent e) {
+      public void eventOccurred(final ActionEvent e) {
         eventCount++;
       }
     };

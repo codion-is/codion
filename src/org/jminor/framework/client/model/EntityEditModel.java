@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.StateObserver;
@@ -14,7 +15,6 @@ import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import java.awt.event.ActionListener;
 import java.util.Collection;
 import java.util.List;
 
@@ -205,7 +205,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   /**
    * @param property the property for which to get the ComboBoxModel
    * @param refreshEvent the combo box model is refreshed when this event fires,
-   * if none is specified the entities changed event is used ({@link #addEntitiesChangedListener(java.awt.event.ActionListener)}).
+   * if none is specified the entities changed event is used ({@link #addEntitiesChangedListener(EventListener)}).
    * @param nullValueString the value to use for representing the null item at the top of the list,
    * if this value is null then no such item is included
    * @return a ComboBoxModel representing <code>property</code>, if no combo box model
@@ -323,8 +323,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @return a list containing the inserted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
-   * @see #addBeforeInsertListener(java.awt.event.ActionListener)
-   * @see #addAfterInsertListener(java.awt.event.ActionListener)
+   * @see #addBeforeInsertListener(EventListener)
+   * @see #addAfterInsertListener(EventListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
   List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException;
@@ -347,8 +347,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
-   * @see #addBeforeUpdateListener(java.awt.event.ActionListener)
-   * @see #addAfterUpdateListener(java.awt.event.ActionListener)
+   * @see #addBeforeUpdateListener(EventListener)
+   * @see #addAfterUpdateListener(EventListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
    */
   List<Entity> update(final List<Entity> entities) throws DatabaseException, ValidationException;
@@ -357,8 +357,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * Deletes the active entity
    * @return the deleted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @see #addBeforeDeleteListener(java.awt.event.ActionListener)
-   * @see #addAfterDeleteListener(java.awt.event.ActionListener)
+   * @see #addBeforeDeleteListener(EventListener)
+   * @see #addAfterDeleteListener(EventListener)
    */
   List<Entity> delete() throws DatabaseException;
 
@@ -367,8 +367,8 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @param entities the entities to delete
    * @return the deleted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @see #addBeforeDeleteListener(java.awt.event.ActionListener)
-   * @see #addAfterDeleteListener(java.awt.event.ActionListener)
+   * @see #addBeforeDeleteListener(EventListener)
+   * @see #addAfterDeleteListener(EventListener)
    */
   List<Entity> delete(final List<Entity> entities) throws DatabaseException;
 
@@ -401,101 +401,101 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   /**
    * @param listener a listener notified each time the entity is set
    */
-  void addEntitySetListener(final ActionListener listener);
+  void addEntitySetListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeEntitySetListener(final ActionListener listener);
+  void removeEntitySetListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified before an insert is performed
    */
-  void addBeforeInsertListener(final ActionListener listener);
+  void addBeforeInsertListener(final EventListener listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeInsertListener(final ActionListener listener);
+  void removeBeforeInsertListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a insert has been performed
    */
-  void addAfterInsertListener(final ActionListener listener);
+  void addAfterInsertListener(final EventListener listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterInsertListener(final ActionListener listener);
+  void removeAfterInsertListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified before an update is performed
    */
-  void addBeforeUpdateListener(final ActionListener listener);
+  void addBeforeUpdateListener(final EventListener listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeUpdateListener(final ActionListener listener);
+  void removeBeforeUpdateListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time an update has been performed
    */
-  void addAfterUpdateListener(final ActionListener listener);
+  void addAfterUpdateListener(final EventListener listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterUpdateListener(final ActionListener listener);
+  void removeAfterUpdateListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified before a delete is performed
    */
-  void addBeforeDeleteListener(final ActionListener listener);
+  void addBeforeDeleteListener(final EventListener listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeDeleteListener(final ActionListener listener);
+  void removeBeforeDeleteListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a delete has been performed
    */
-  void addAfterDeleteListener(final ActionListener listener);
+  void addAfterDeleteListener(final EventListener listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterDeleteListener(final ActionListener listener);
+  void removeAfterDeleteListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified before a refresh is performed
    */
-  void addBeforeRefreshListener(final ActionListener listener);
+  void addBeforeRefreshListener(final EventListener listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeRefreshListener(final ActionListener listener);
+  void removeBeforeRefreshListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a refresh has been performed
    */
-  void addAfterRefreshListener(final ActionListener listener);
+  void addAfterRefreshListener(final EventListener listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterRefreshListener(final ActionListener listener);
+  void removeAfterRefreshListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a entity is modified via this model,
    * updated, inserted or deleted
    */
-  void addEntitiesChangedListener(final ActionListener listener);
+  void addEntitiesChangedListener(final EventListener listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeEntitiesChangedListener(final ActionListener listener);
+  void removeEntitiesChangedListener(final EventListener listener);
 }
