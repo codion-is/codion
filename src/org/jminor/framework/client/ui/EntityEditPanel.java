@@ -48,7 +48,6 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;

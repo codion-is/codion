@@ -283,7 +283,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
 
   /**
    * Clears the selection
-   * @see #addSelectionChangedListener(EventListener
+   * @see #addSelectionChangedListener(EventListener)
    */
   void clearSelection();
 

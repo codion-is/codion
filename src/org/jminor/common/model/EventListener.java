@@ -12,11 +12,11 @@ public interface EventListener<T> {
   /**
    * Called when an event this listener is registered for occurs
    */
-  public void eventOccurred();
+  void eventOccurred();
 
   /**
    * Called when an event this listener is registered for occurs
    * @param eventInfo information relating to the event
    */
-  public void eventOccurred(final T eventInfo);
+  void eventOccurred(final T eventInfo);
 }
