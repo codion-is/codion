@@ -47,6 +47,7 @@ import java.rmi.server.RMISocketFactory;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -65,6 +66,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   private static final long serialVersionUID = 1;
 
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionImpl.class);
+  private static final String LOG_IDENTIFIER_PROPERTY = "logIdentifier";
 
   /**
    * Identifies the log file being used for this connection
@@ -654,7 +656,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
       final boolean logMethod = methodLogger.isEnabled() && shouldMethodBeLogged(methodName);
       final long startTime = System.currentTimeMillis();
       try {
-        MDC.put("logIdentifier", logIdentifier);
+        MDC.put(LOG_IDENTIFIER_PROPERTY, logIdentifier);
         setActive();
         RequestCounter.incrementRequestsPerSecondCounter();
         if (connection == null) {
@@ -702,8 +704,8 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
           final LogEntry logEntry = methodLogger.logExit(methodName, exception, connection != null ? connection.getDatabaseConnection().getLogEntries() : null);
           if (methodLogger.isEnabled()) {
             final StringBuilder messageBuilder = new StringBuilder(client.toString()).append("\n");
-            appendLogEntries(messageBuilder, logEntry.getSubLog(), 1);
-            LOG.debug(messageBuilder.toString());
+            appendLogEntries(messageBuilder, Arrays.asList(logEntry), 1);
+            LOG.error(messageBuilder.toString());
           }
         }
         if (connection != null) {
@@ -717,7 +719,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
             returnConnection(connection, logMethod);
           }
         }
-        MDC.remove("logIdentifier");
+        MDC.remove(LOG_IDENTIFIER_PROPERTY);
       }
     }
   }

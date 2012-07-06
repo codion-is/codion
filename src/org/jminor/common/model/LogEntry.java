@@ -270,7 +270,7 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     if (exitTimeNano != 0) {
       stringBuilder.append(indentString).append(getEntryTimeFormatted()).append(" @ ").append(method).append(
               !Util.nullOrEmpty(entryMessage) ? (": " + entryMessage) : "").append("\n");
-      stringBuilder.append(indentString).append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms ")
+      stringBuilder.append(indentString).append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms")
               .append(exitMessage == null ? "" : " (" + exitMessage + ")");
       if (stackTrace != null) {
         stringBuilder.append(stackTrace);

@@ -205,10 +205,10 @@ public final class ServerMonitorPanel extends JPanel {
   private JComboBox initLoggingLevelField() {
     final DefaultComboBoxModel comboModel = new DefaultComboBoxModel();
     comboModel.addElement(Level.TRACE);
-    comboModel.addElement(Level.ERROR);
     comboModel.addElement(Level.DEBUG);
-    comboModel.addElement(Level.WARN);
     comboModel.addElement(Level.INFO);
+    comboModel.addElement(Level.WARN);
+    comboModel.addElement(Level.ERROR);
 
     final JComboBox box = new JComboBox(comboModel);
     new SelectedItemBeanValueLink(box, model, "loggingLevel", Level.class, model.getLoggingLevelObserver());

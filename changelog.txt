@@ -3040,5 +3040,7 @@
   includeantruntime="false" added to javac targets in build.xml
   EntityConnectionImpl, logging revised
   DatabaseException now copies the stack trace of the root cause, minor refactoring
-  RemoteEntityConnectionImpl, logIdentifier field added, used to identify logging statments during remote calls
+  RemoteEntityConnectionImpl, logIdentifier field added, used to identify logging statements during remote calls
   resources/server/config/logback.xml modified to support log file per user@client
+  RemoteEntityConnectionImpl method logging now logs the root LogEntry to the log file, not only the sublog entries
+  RemoteEntityConnectionImpl uses log level ERROR to log method calls, hacky

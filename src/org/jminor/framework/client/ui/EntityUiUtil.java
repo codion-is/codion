@@ -105,7 +105,7 @@ public final class EntityUiUtil {
    */
   public static void setLoggingLevel(final JComponent dialogParent) {
     final DefaultComboBoxModel model = new DefaultComboBoxModel(
-            new Object[] {Level.TRACE, Level.ERROR, Level.WARN, Level.INFO, Level.DEBUG});
+            new Object[] {Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR});
     final ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     model.setSelectedItem(rootLogger.getLevel());
     JOptionPane.showMessageDialog(dialogParent, new JComboBox(model),
