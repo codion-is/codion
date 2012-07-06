@@ -1,24 +1,19 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.client.model.event;
 
-
-import org.jminor.common.model.EventListener;
-
-import java.awt.event.ActionEvent;
+import org.jminor.common.model.EventAdapter;
 
 /**
  * A listener for insert events.
  */
-public abstract class InsertListener implements EventListener {
+public abstract class InsertListener extends EventAdapter<InsertEvent> {
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked"})
-  public final void eventOccurred(final ActionEvent e) {
-    if (!(e instanceof InsertEvent)) {
-      throw new IllegalArgumentException("InsertListener can only be used with InsertEvent, " + e);
-    }
-
-    inserted((InsertEvent) e);
+  public final void eventOccurred(final InsertEvent eventInfo) {
+    inserted(eventInfo);
   }
 
   /**

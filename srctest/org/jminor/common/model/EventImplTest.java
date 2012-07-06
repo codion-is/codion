@@ -5,7 +5,6 @@ package org.jminor.common.model;
 
 import org.junit.Test;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -17,16 +16,16 @@ public class EventImplTest {
   public void test() throws Exception {
     final Event event = new Events.EventImpl();
     final List<Object> res = new ArrayList<Object>();
-    final EventListener listener = new EventListener() {
+    final EventListener listener = new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         res.add(new Object());
       }
     };
     event.addListener(listener);
     event.fire();
     assertTrue("EventListener should have been notified on .fire()", res.size() == 1);
-    event.eventOccurred(new ActionEvent(new Object(), -1, ""));
+    event.eventOccurred();
     assertTrue("EventListener should have been notified on .eventOccurred", res.size() == 2);
     event.removeListener(listener);
     event.fire();

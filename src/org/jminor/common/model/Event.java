@@ -3,8 +3,6 @@
  */
 package org.jminor.common.model;
 
-import java.awt.event.ActionEvent;
-
 /**
  * A synchronous event class.
  * Listeners are notified in the order they were added.
@@ -23,15 +21,15 @@ import java.awt.event.ActionEvent;
 public interface Event extends EventListener, EventObserver {
 
   /**
-   * Notifies all listeners
+   * Notifies all listeners that this event has occurred
    */
   void fire();
 
   /**
-   * Notifies all listeners with the given ActionEvent
-   * @param event the ActionEvent to propagate to listeners when notifying
+   * Notifies all listeners that this event has occurred
+   * @param eventInfo information to propagate to listeners when notifying
    */
-  void fire(final ActionEvent event);
+  void fire(final Object eventInfo);
 
   /**
    * @return an observer notified each time this event fires

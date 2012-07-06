@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
@@ -21,7 +22,6 @@ import org.jminor.framework.domain.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -580,10 +580,10 @@ public class DefaultEntityModel implements EntityModel {
         handleUpdate(event);
       }
     });
-    final EventListener initializer = new EventListener() {
+    final EventListener initializer = new EventAdapter() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         initializeDetailModels();
       }
     };

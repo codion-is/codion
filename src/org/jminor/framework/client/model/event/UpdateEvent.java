@@ -5,25 +5,22 @@ package org.jminor.framework.client.model.event;
 
 import org.jminor.framework.domain.Entity;
 
-import java.awt.event.ActionEvent;
 import java.util.List;
 
 /**
  * An event describing a update action.
  */
-public final class UpdateEvent extends ActionEvent {
+public final class UpdateEvent {
 
   private final List<Entity> updatedEntities;
   private final boolean primaryKeyModified;
 
   /**
    * Instantiates a new UpdateEvent.
-   * @param source the source of the update
-   * @param updatedEntities the udpated entities
+   * @param updatedEntities the updated entities
    * @param primaryKeyModified true if primary key values were modified during the update
    */
-  public UpdateEvent(final Object source, final List<Entity> updatedEntities, final boolean primaryKeyModified) {
-    super(source, 0, "update");
+  public UpdateEvent(final List<Entity> updatedEntities, final boolean primaryKeyModified) {
     this.updatedEntities = updatedEntities;
     this.primaryKeyModified = primaryKeyModified;
   }

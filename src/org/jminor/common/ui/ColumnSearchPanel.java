@@ -5,6 +5,7 @@ package org.jminor.common.ui;
 
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.DateUtil;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.SearchType;
@@ -411,10 +412,10 @@ public class ColumnSearchPanel<K> extends JPanel {
    * Binds events to relevant GUI actions
    */
   private void bindEvents() {
-    stAdvancedSearch.addListener(new EventListener() {
+    stAdvancedSearch.addListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         initializePanel();
         if (toggleSearchAdvanced != null) {
           toggleSearchAdvanced.requestFocusInWindow();
@@ -424,10 +425,10 @@ public class ColumnSearchPanel<K> extends JPanel {
         }
       }
     });
-    searchModel.addLowerBoundRequiredListener(new EventListener() {
+    searchModel.addLowerBoundRequiredListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         initializePanel();
         revalidate();
         searchTypeCombo.requestFocusInWindow();
@@ -571,10 +572,10 @@ public class ColumnSearchPanel<K> extends JPanel {
     dialog.getContentPane().add(searchPanel);
     dialog.pack();
 
-    addAdvancedSearchListener(new EventListener() {
+    addAdvancedSearchListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         dialog.pack();
       }
     });

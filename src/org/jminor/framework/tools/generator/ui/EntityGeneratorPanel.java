@@ -4,7 +4,7 @@
 package org.jminor.framework.tools.generator.ui;
 
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.User;
 import org.jminor.common.ui.FilteredTablePanel;
 import org.jminor.common.ui.LoginPanel;
@@ -23,7 +23,6 @@ import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.awt.BorderLayout;
-import java.awt.event.ActionEvent;
 
 /**
  * A UI class based on the EntityGeneratorModel.
@@ -59,15 +58,17 @@ public class EntityGeneratorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.addRefreshStartedListener(new EventListener() {
+    model.addRefreshStartedListener(new EventAdapter() {
+      /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         UiUtil.setWaitCursor(true, EntityGeneratorPanel.this);
       }
     });
-    model.addRefreshEndedListener(new EventListener() {
+    model.addRefreshEndedListener(new EventAdapter() {
+      /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         UiUtil.setWaitCursor(false, EntityGeneratorPanel.this);
       }
     });

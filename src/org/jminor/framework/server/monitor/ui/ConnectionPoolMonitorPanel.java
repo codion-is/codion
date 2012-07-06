@@ -4,7 +4,7 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
@@ -31,7 +31,6 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.GridLayout;
-import java.awt.event.ActionEvent;
 import java.text.NumberFormat;
 
 /**
@@ -135,9 +134,10 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.addStatisticsListener(new EventListener() {
+    model.addStatisticsListener(new EventAdapter() {
+      /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         updateView();
       }
     });

@@ -8,7 +8,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
@@ -32,7 +32,6 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Color;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Enumeration;
@@ -633,16 +632,16 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   protected void handleDelete(final DeleteEvent event) {}
 
   private void bindEvents() {
-    addColumnHiddenListener(new EventListener() {
+    addColumnHiddenListener(new EventAdapter<Property>() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
-        handleColumnHidden((Property) e.getSource());
+      public void eventOccurred(final Property eventInfo) {
+        handleColumnHidden(eventInfo);
       }
     });
-    searchModel.addSimpleSearchListener(new EventListener() {
+    searchModel.addSimpleSearchListener(new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         refresh();
       }
     });
@@ -656,17 +655,17 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
         handleDeleteInternal(event);
       }
     });
-    editModel.addAfterRefreshListener(new EventListener() {
+    editModel.addAfterRefreshListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         refresh();
       }
     });
-    addSelectedIndexListener(new EventListener() {
+    addSelectedIndexListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         final Entity itemToSelect = isSelectionEmpty() ? null : getSelectedItem();
         editModel.setEntity(itemToSelect);
       }

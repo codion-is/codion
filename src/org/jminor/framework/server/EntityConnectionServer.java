@@ -5,7 +5,7 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.AbstractRemoteServer;
@@ -21,7 +21,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
-import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.util.ArrayList;
@@ -336,9 +335,10 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     try {
       final RemoteEntityConnectionImpl connection = new RemoteEntityConnectionImpl(database, clientInfo, getServerPort(),
               clientLoggingEnabled, sslEnabled);
-      connection.addDisconnectListener(new EventListener() {
-        @Override
-        public void eventOccurred(final ActionEvent e) {
+      connection.addDisconnectListener(new EventAdapter() {
+      /** {@inheritDoc} */
+      @Override
+        public void eventOccurred() {
           try {
             disconnect(connection.getClientInfo().getClientID());
           }

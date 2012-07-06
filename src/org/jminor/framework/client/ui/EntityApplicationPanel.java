@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.StateObserver;
@@ -752,9 +753,10 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       final String caption = Util.nullOrEmpty(provider.getCaption()) ? entityPanel.getCaption() : provider.getCaption();
       applicationTabPane.addTab(caption, entityPanel);
       if (entityPanel.getEditPanel() != null) {
-        entityPanel.getEditPanel().getActiveObserver().addListener(new EventListener() {
+        entityPanel.getEditPanel().getActiveObserver().addListener(new EventAdapter() {
+          /** {@inheritDoc} */
           @Override
-          public void eventOccurred(final ActionEvent e) {
+          public void eventOccurred() {
             if (entityPanel.getEditPanel().isActive()) {
               LOG.debug("{} selectApplicationTab", entityPanel.getEditModel().getEntityID());
               applicationTabPane.setSelectedComponent(entityPanel);
@@ -994,18 +996,20 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private void bindEventsInternal() {
     final StateObserver connected = applicationModel.getConnectionProvider().getConnectedObserver();
-    connected.addActivateListener(new EventListener() {
+    connected.addActivateListener(new EventAdapter() {
+      /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         final Window parentWindow = getParentWindow();
         if (parentWindow instanceof JFrame) {
           ((JFrame) parentWindow).setTitle(frameTitle);
         }
       }
     });
-    connected.addDeactivateListener(new EventListener() {
+    connected.addDeactivateListener(new EventAdapter() {
+      /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         final Window parentWindow = getParentWindow();
         if (parentWindow instanceof JFrame) {
           ((JFrame) parentWindow).setTitle(frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED));

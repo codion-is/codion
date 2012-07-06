@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.framework.client.model.PropertySummaryModel;
 
 import javax.swing.AbstractAction;
@@ -30,10 +30,10 @@ public final class PropertySummaryPanel extends JPanel {
    */
   public PropertySummaryPanel(final PropertySummaryModel model) {
     this.model = model;
-    model.addSummaryListener(new EventListener() {
+    model.addSummaryListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         final String summaryText = model.getSummaryText();
         txtSummary.setText(summaryText);
         txtSummary.setToolTipText(!summaryText.isEmpty() ? (model.getSummaryType() + ": " + summaryText) : summaryText);
@@ -76,10 +76,10 @@ public final class PropertySummaryPanel extends JPanel {
           model.setSummaryType(summaryType);
         }
       });
-      model.addSummaryTypeListener(new EventListener() {
+      model.addSummaryTypeListener(new EventAdapter() {
         /** {@inheritDoc} */
         @Override
-        public void eventOccurred(final ActionEvent e) {
+        public void eventOccurred() {
           item.setSelected(model.getSummaryType() == summaryType);
         }
       });

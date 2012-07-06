@@ -10,6 +10,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Serializer;
@@ -1365,10 +1366,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
       if (!searchPanel.isSimpleSearch()) {
         searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
-        searchPanel.addAdvancedListener(new EventListener() {
+        searchPanel.addAdvancedListener(new EventAdapter() {
           /** {@inheritDoc} */
           @Override
-          public void eventOccurred(final ActionEvent e) {
+          public void eventOccurred() {
             if (isSearchPanelVisible()) {
               revalidate();
             }
@@ -1470,10 +1471,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
       UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_DELETE, getDeleteSelectedControl());
     }
-    final EventListener statusListener = new EventListener() {
+    final EventListener statusListener = new EventAdapter() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         updateStatusMessage();
       }
     };
@@ -1481,20 +1482,20 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     getEntityTableModel().addFilteringListener(statusListener);
     getEntityTableModel().addTableDataChangedListener(statusListener);
 
-    getEntityTableModel().getSearchModel().getSearchStateObserver().addListener(new EventListener() {
+    getEntityTableModel().getSearchModel().getSearchStateObserver().addListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         getJTable().getTableHeader().repaint();
         getJTable().repaint();
       }
     });
 
     if (getEntityTableModel().hasEditModel()) {
-      getEntityTableModel().getEditModel().addEntitiesChangedListener(new EventListener() {
+      getEntityTableModel().getEditModel().addEntitiesChangedListener(new EventAdapter() {
         /** {@inheritDoc} */
         @Override
-        public void eventOccurred(final ActionEvent e) {
+        public void eventOccurred() {
           getJTable().repaint();
         }
       });

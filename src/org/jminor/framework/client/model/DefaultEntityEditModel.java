@@ -443,7 +443,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       entity.saveValue(primaryKeyProperty.getPropertyID());
     }
 
-    evtAfterInsert.fire(new InsertEvent(this, insertedEntities));
+    evtAfterInsert.fire(new InsertEvent(insertedEntities));
 
     return insertedEntities;
   }
@@ -453,7 +453,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   public final List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException {
     final List<Entity> insertedEntities = insertEntities(entities);
 
-    evtAfterInsert.fire(new InsertEvent(this, insertedEntities));
+    evtAfterInsert.fire(new InsertEvent(insertedEntities));
 
     return insertedEntities;
   }
@@ -494,7 +494,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       setEntity(updatedEntities.get(index));
     }
 
-    evtAfterUpdate.fire(new UpdateEvent(this, updatedEntities, EntityUtil.isPrimaryKeyModified(modifiedEntities)));
+    evtAfterUpdate.fire(new UpdateEvent(updatedEntities, EntityUtil.isPrimaryKeyModified(modifiedEntities)));
 
     return updatedEntities;
   }
@@ -525,7 +525,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
     doDelete(entities);
 
-    evtAfterDelete.fire(new DeleteEvent(this, entities));
+    evtAfterDelete.fire(new DeleteEvent(entities));
 
     return entities;
   }

@@ -5,17 +5,20 @@ package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.Util;
 
-import java.awt.event.ActionEvent;
-
 /**
  * Used when value change events are fired
  */
-public final class ValueChangeEvent<K, V> extends ActionEvent {
+public final class ValueChangeEvent<K, V> {
 
   /**
    * The value map owning the value
    */
   private final ValueChangeMap<K, V> valueOwner;
+
+  /**
+   * The source of the value change
+   */
+  private final Object source;
 
   /**
    * The key
@@ -55,8 +58,8 @@ public final class ValueChangeEvent<K, V> extends ActionEvent {
    */
   public ValueChangeEvent(final Object source, final ValueChangeMap<K, V> valueOwner, final K key, final V newValue,
                           final V oldValue, final boolean isModelChange, final boolean initialization) {
-    super(source, 0, key.toString());
     Util.rejectNullValue(key, "key");
+    this.source = source;
     this.valueOwner = valueOwner;
     this.key = key;
     this.newValue = newValue;
@@ -70,6 +73,13 @@ public final class ValueChangeEvent<K, V> extends ActionEvent {
    */
   public ValueChangeMap<K, V> getValueOwner() {
     return valueOwner;
+  }
+
+  /**
+   * @return the source of the value change
+   */
+  public Object getSource() {
+    return source;
   }
 
   /**

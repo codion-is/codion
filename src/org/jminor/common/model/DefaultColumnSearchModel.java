@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model;
 
-import java.awt.event.ActionEvent;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Format;
@@ -653,10 +652,10 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   private void bindEvents() {
-    final EventListener autoEnableListener = new EventListener() {
+    final EventListener autoEnableListener = new EventAdapter() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         if (autoEnable) {
           final boolean upperBoundNull = upperBound == null;
           final boolean lowerBoundNull = lowerBound == null;
@@ -675,9 +674,10 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     evtLowerBoundChanged.addListener(evtSearchStateChanged);
     evtSearchTypeChanged.addListener(evtSearchStateChanged);
     evtEnabledChanged.addListener(evtSearchStateChanged);
-    evtSearchTypeChanged.addListener(new EventListener() {
+    evtSearchTypeChanged.addListener(new EventAdapter() {
+      /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         stLowerBoundRequired.setActive(getSearchType() == SearchType.WITHIN_RANGE || getSearchType() == SearchType.OUTSIDE_RANGE);
       }
     });

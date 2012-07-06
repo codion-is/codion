@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model;
 
-import java.awt.event.ActionEvent;
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -159,9 +158,10 @@ public final class States {
 
     ReverseState(final StateObserver referenceObserver) {
       this.referenceObserver = referenceObserver;
-      this.referenceObserver.addListener(new EventListener() {
+      this.referenceObserver.addListener(new EventAdapter() {
+        /** {@inheritDoc} */
         @Override
-        public void eventOccurred(final ActionEvent e) {
+        public void eventOccurred() {
           notifyObservers();
         }
       });
@@ -191,9 +191,10 @@ public final class States {
   private static final class AggregateStateImpl extends StateImpl implements State.AggregateState {
 
     private final List<StateObserver> states = new ArrayList<StateObserver>();
-    private final EventListener linkAction = new EventListener() {
+    private final EventListener linkAction = new EventAdapter() {
+      /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         notifyObservers();
       }
     };
@@ -350,9 +351,10 @@ public final class States {
         members.add(new WeakReference<State>(state));
       }
       updateAccordingToState(state);
-      state.addListener(new EventListener() {
+      state.addListener(new EventAdapter() {
+        /** {@inheritDoc} */
         @Override
-        public void eventOccurred(final ActionEvent e) {
+        public void eventOccurred() {
           updateAccordingToState(state);
         }
       });

@@ -1,8 +1,10 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.common.model;
 
 import org.junit.Test;
 
-import java.awt.event.ActionEvent;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -19,39 +21,39 @@ public class DefaultColumnSearchModelTest {
   final Collection<Object> enabledCounter = new ArrayList<Object>();
   final Collection<Object> clearCounter = new ArrayList<Object>();
 
-  final EventListener upperBoundListener = new EventListener() {
+  final EventListener upperBoundListener = new EventAdapter() {
     @Override
-    public void eventOccurred(final ActionEvent e) {
+    public void eventOccurred() {
       upperBoundCounter.add(new Object());
     }
   };
-  final EventListener lowerBoundListener = new EventListener() {
+  final EventListener lowerBoundListener = new EventAdapter() {
     @Override
-    public void eventOccurred(final ActionEvent e) {
+    public void eventOccurred() {
       lowerBoundCounter.add(new Object());
     }
   };
-  final EventListener searchStateListener = new EventListener() {
+  final EventListener searchStateListener = new EventAdapter() {
     @Override
-    public void eventOccurred(final ActionEvent e) {
+    public void eventOccurred() {
       searchStateCounter.add(new Object());
     }
   };
-  final EventListener searchTypeListener = new EventListener() {
+  final EventListener searchTypeListener = new EventAdapter() {
     @Override
-    public void eventOccurred(final ActionEvent e) {
+    public void eventOccurred() {
       searchTypeCounter.add(new Object());
     }
   };
-  final EventListener enabledListener = new EventListener() {
+  final EventListener enabledListener = new EventAdapter() {
     @Override
-    public void eventOccurred(final ActionEvent e) {
+    public void eventOccurred() {
       enabledCounter.add(new Object());
     }
   };
-  final EventListener clearListener = new EventListener() {
+  final EventListener clearListener = new EventAdapter() {
     @Override
-    public void eventOccurred(final ActionEvent e) {
+    public void eventOccurred() {
       clearCounter.add(new Object());
     }
   };

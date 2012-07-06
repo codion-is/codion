@@ -5,8 +5,6 @@ package org.jminor.common.model;
 
 import org.junit.Test;
 
-import java.awt.event.ActionEvent;
-
 import static org.junit.Assert.*;
 
 public class StateImplTest {
@@ -16,9 +14,9 @@ public class StateImplTest {
   @Test
   public void test() {
     final State state = new States.StateImpl();
-    final EventListener listener = new EventListener() {
+    final EventListener listener = new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         stateChanged++;
       }
     };

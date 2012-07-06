@@ -3048,3 +3048,7 @@
   StateImpl.notifyObservers() is no longer public
   StateObserver.addListeningAction() removed
   EventListener added, replaces ActionListener throughout
+  Event.fire() parameter type changed from ActionEvent to Object
+  EventListener.eventOccurred() parameter changed from ActionEvent to Object
+  EventListener.eventOccurred() overloaded paremeterless
+  EventAdapter added

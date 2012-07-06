@@ -6,7 +6,7 @@ package org.jminor.common.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
@@ -411,9 +411,10 @@ public final class UiUtil {
   public static Action linkToEnabledState(final StateObserver enabledState, final Action action) {
     if (enabledState != null) {
       action.setEnabled(enabledState.isActive());
-      enabledState.addListener(new EventListener() {
+      enabledState.addListener(new EventAdapter() {
+        /** {@inheritDoc} */
         @Override
-        public void eventOccurred(final ActionEvent e) {
+        public void eventOccurred() {
           action.setEnabled(enabledState.isActive());
         }
       });
@@ -433,9 +434,10 @@ public final class UiUtil {
     if (enabledState != null) {
       component.setEnabled(enabledState.isActive());
       component.setFocusable(enabledState.isActive());
-      enabledState.addListener(new EventListener() {
+      enabledState.addListener(new EventAdapter() {
+        /** {@inheritDoc} */
         @Override
-        public void eventOccurred(final ActionEvent e) {
+        public void eventOccurred() {
           component.setEnabled(enabledState.isActive());
           component.setFocusable(enabledState.isActive());
         }
@@ -854,10 +856,11 @@ public final class UiUtil {
     final Action disposeActionListener = new DisposeWindowAction(dialog);
     addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, disposeActionListener);
     if (closeEvent != null) {
-      closeEvent.addListener(new EventListener() {
+      closeEvent.addListener(new EventAdapter() {
+        /** {@inheritDoc} */
         @Override
-        public void eventOccurred(final ActionEvent e) {
-          disposeActionListener.actionPerformed(e);
+        public void eventOccurred() {
+          disposeActionListener.actionPerformed(null);
         }
       });
     }

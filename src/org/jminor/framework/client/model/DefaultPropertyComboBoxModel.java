@@ -4,14 +4,13 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Property;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
@@ -57,10 +56,10 @@ public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel {
     super(nullValueString);
     this.valueProvider = valueProvider;
     if (refreshEvent != null) {
-      refreshEvent.addListener(new EventListener() {
+      refreshEvent.addListener(new EventAdapter() {
         /** {@inheritDoc} */
         @Override
-        public void eventOccurred(final ActionEvent e) {
+        public void eventOccurred() {
           refresh();
         }
       });

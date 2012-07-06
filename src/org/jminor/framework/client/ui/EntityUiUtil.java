@@ -6,7 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
@@ -206,6 +206,7 @@ public final class EntityUiUtil {
     final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogOwner), dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
+      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         final List<Entity> entities = lookupModel.getSelectedItems();
@@ -225,11 +226,12 @@ public final class EntityUiUtil {
 
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
     entityTablePanel.initializePanel();
-    entityTablePanel.addTableDoubleClickListener(new EventListener() {
+    entityTablePanel.addTableDoubleClickListener(new EventAdapter() {
+      /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         if (!entityTablePanel.getEntityTableModel().isSelectionEmpty()) {
-          okAction.actionPerformed(e);
+          okAction.actionPerformed(null);
         }
       }
     });
@@ -866,9 +868,10 @@ public final class EntityUiUtil {
       super(editModel, foreignKeyPropertyID, LinkType.READ_WRITE);
       this.lookupModel = lookupModel;
       updateUI();
-      lookupModel.addSelectedEntitiesListener(new EventListener() {
+      lookupModel.addSelectedEntitiesListener(new EventAdapter() {
+        /** {@inheritDoc} */
         @Override
-        public void eventOccurred(final ActionEvent e) {
+        public void eventOccurred() {
           updateModel();
         }
       });

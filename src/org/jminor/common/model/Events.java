@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -25,35 +24,40 @@ public final class Events {
 
   static final class EventImpl implements Event {
 
-    private final ActionEvent defaultActionEvent = new ActionEvent(this, ActionEvent.ACTION_PERFORMED, "");
     private volatile EventObserverImpl observer;
 
     /** {@inheritDoc} */
     @Override
     public void fire() {
-      fire(defaultActionEvent);
+      fire(null);
     }
 
     /** {@inheritDoc} */
     @Override
-    public void fire(final ActionEvent event) {
+    public void fire(final Object eventInfo) {
       if (observer != null) {
         for (final EventListener listener : observer.getListeners()) {
-          listener.eventOccurred(event);
+          listener.eventOccurred(eventInfo);
         }
       }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void eventOccurred(final ActionEvent e) {
-      fire(e);
+    public void eventOccurred() {
+      eventOccurred(null);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void eventOccurred(final Object eventInfo) {
+      fire(eventInfo);
     }
 
     /** {@inheritDoc} */
     @Override
     public EventObserver getObserver() {
-      synchronized (defaultActionEvent) {
+      synchronized (this) {
         if (observer == null) {
           observer = new EventObserverImpl();
         }

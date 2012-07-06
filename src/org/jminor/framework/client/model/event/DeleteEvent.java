@@ -5,23 +5,20 @@ package org.jminor.framework.client.model.event;
 
 import org.jminor.framework.domain.Entity;
 
-import java.awt.event.ActionEvent;
 import java.util.List;
 
 /**
  * An event describing a delete action.
  */
-public final class DeleteEvent extends ActionEvent {
+public final class DeleteEvent {
 
   private final List<Entity> deletedEntities;
 
   /**
    * Instantiates a new DeleteEvent.
-   * @param source the source of the delete
    * @param deletedEntities the deleted entities
    */
-  public DeleteEvent(final Object source, final List<Entity> deletedEntities) {
-    super(source, 0, "delete");
+  public DeleteEvent(final List<Entity> deletedEntities) {
     this.deletedEntities = deletedEntities;
   }
 

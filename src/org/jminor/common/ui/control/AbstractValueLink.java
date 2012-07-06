@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
@@ -65,10 +65,10 @@ public abstract class AbstractValueLink<T, V> extends Control {
     this.valueOwner = valueOwner;
     this.linkType = linkType;
     if (linkType != LinkType.WRITE_ONLY && modelValueChangeEvent != null) {
-      modelValueChangeEvent.addListener(new EventListener() {
+      modelValueChangeEvent.addListener(new EventAdapter() {
         /** {@inheritDoc} */
         @Override
-        public void eventOccurred(final ActionEvent e) {
+        public void eventOccurred() {
           updateUI();
         }
       });

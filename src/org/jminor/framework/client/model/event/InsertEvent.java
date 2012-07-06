@@ -5,23 +5,20 @@ package org.jminor.framework.client.model.event;
 
 import org.jminor.framework.domain.Entity;
 
-import java.awt.event.ActionEvent;
 import java.util.List;
 
 /**
  * An event describing a insert action.
  */
-public final class InsertEvent extends ActionEvent {
+public final class InsertEvent {
 
   private final List<Entity> insertedEntities;
 
   /**
    * Instantiates a new InsertEvent.
-   * @param source the source of the insert
    * @param insertedEntities the inserted entities
    */
-  public InsertEvent(final Object source, final List<Entity> insertedEntities) {
-    super(source, 0, "insert");
+  public InsertEvent(final List<Entity> insertedEntities) {
     this.insertedEntities = insertedEntities;
   }
 

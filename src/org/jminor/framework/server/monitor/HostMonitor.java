@@ -4,6 +4,7 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
@@ -14,7 +15,6 @@ import org.jminor.framework.Configuration;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.event.ActionEvent;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -52,9 +52,9 @@ public final class HostMonitor {
       for (final String serverName : getRemoteEntityServers(hostName, registryPort)) {
         if (!containsServerMonitor(serverName)) {
           final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverName, registryPort);
-          serverMonitor.addServerShutDownListener(new EventListener() {
+          serverMonitor.addServerShutDownListener(new EventAdapter() {
             @Override
-            public void eventOccurred(final ActionEvent e) {
+            public void eventOccurred() {
               removeServer(serverMonitor);
             }
           });

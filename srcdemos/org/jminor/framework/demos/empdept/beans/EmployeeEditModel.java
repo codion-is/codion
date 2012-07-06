@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.beans;
 
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
@@ -16,8 +16,6 @@ import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-
-import java.awt.event.ActionEvent;
 
 import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 
@@ -48,9 +46,9 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
   //keep event bindings in one place
   private void bindEvents() {
     //Refresh the manager ComboBoxModel when an employee is either added or updated
-    addEntitiesChangedListener(new EventListener() {
+    addEntitiesChangedListener(new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         if (containsComboBoxModel(EMPLOYEE_MGR_FK)) {
           getEntityComboBoxModel(EMPLOYEE_MGR_FK).refresh();
         }

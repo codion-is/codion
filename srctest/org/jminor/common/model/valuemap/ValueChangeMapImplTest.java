@@ -5,7 +5,6 @@ package org.jminor.common.model.valuemap;
 
 import org.junit.Test;
 
-import java.awt.event.ActionEvent;
 import java.util.HashMap;
 
 import static org.junit.Assert.*;
@@ -57,11 +56,6 @@ public class ValueChangeMapImplTest {
         event.isUIChange();
       }
     };
-    try {
-      valueListener.eventOccurred(new ActionEvent(null, -1, null));
-      fail("ValueChangeListener only works with ValueChangeEvent");
-    }
-    catch (IllegalArgumentException e) {}
     valueChangeMap.addValueListener(valueListener);
 
     valueChangeMap.getModifiedState();

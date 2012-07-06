@@ -15,7 +15,6 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -660,7 +659,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         hiddenColumns.remove(columnIdentifier);
         columnModel.addColumn(column);
         columnModel.moveColumn(columnModel.getColumnCount() - 1, 0);
-        evtColumnShown.fire(new ActionEvent(column.getIdentifier(), 0, "setColumnVisible"));
+        evtColumnShown.fire(column.getIdentifier());
       }
     }
     else {
@@ -668,7 +667,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         final TableColumn column = getTableColumn(columnIdentifier);
         columnModel.removeColumn(column);
         hiddenColumns.put((C) column.getIdentifier(), column);
-        evtColumnHidden.fire(new ActionEvent(column.getIdentifier(), 0, "setColumnVisible"));
+        evtColumnHidden.fire(column.getIdentifier());
       }
     }
   }
@@ -984,10 +983,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       }
     });
     for (final ColumnSearchModel searchModel : columnFilterModels.values()) {
-      searchModel.addSearchStateListener(new EventListener() {
+      searchModel.addSearchStateListener(new EventAdapter() {
         /** {@inheritDoc} */
         @Override
-        public void eventOccurred(final ActionEvent e) {
+        public void eventOccurred() {
           filterContents();
         }
       });

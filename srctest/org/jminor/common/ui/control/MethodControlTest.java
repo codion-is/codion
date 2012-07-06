@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
@@ -10,7 +11,6 @@ import org.jminor.common.model.States;
 import org.junit.Test;
 
 import javax.swing.JButton;
-import java.awt.event.ActionEvent;
 
 import static org.junit.Assert.*;
 
@@ -33,9 +33,9 @@ public class MethodControlTest {
     assertTrue("Button should be enabled", btn.isEnabled());
     btn.doClick();
     assertEquals("Button click should have resulted in a method call", 1, callCount);
-    final EventListener listener = new EventListener() {
+    final EventListener listener = new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         actionPerformedCount++;
       }
     };

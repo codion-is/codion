@@ -10,7 +10,6 @@ import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -92,15 +91,15 @@ public final class AbstractFilteredTableModelTest {
   public void refresh() {
     final Collection<Object> started = new ArrayList<Object>();
     final Collection<Object> done = new ArrayList<Object>();
-    final EventListener startListener = new EventListener() {
+    final EventListener startListener = new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         started.add(new Object());
       }
     };
-    final EventListener doneListener = new EventListener() {
+    final EventListener doneListener = new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         done.add(new Object());
       }
     };
@@ -117,9 +116,9 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void removeItems() {
     final Collection<Object> events = new ArrayList<Object>();
-    final EventListener listener = new EventListener() {
+    final EventListener listener = new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         events.add(new Object());
       }
     };
@@ -191,15 +190,15 @@ public final class AbstractFilteredTableModelTest {
   public void testColumnModel() {
     final Collection<Object> hidden = new ArrayList<Object>();
     final Collection<Object> shown = new ArrayList<Object>();
-    final EventListener hideListener = new EventListener() {
+    final EventListener hideListener = new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         hidden.add(new Object());
       }
     };
-    final EventListener showListener = new EventListener() {
+    final EventListener showListener = new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         shown.add(new Object());
       }
     };
@@ -225,9 +224,9 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void testSorting() {
     final Collection<Object> actionsPerformed = new ArrayList<Object>();
-    final EventListener listener = new EventListener() {
+    final EventListener listener = new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         actionsPerformed.add(new Object());
       }
     };
@@ -282,9 +281,9 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void testSelection() {
     final Collection<Object> events = new ArrayList<Object>();
-    final EventListener listener = new EventListener() {
+    final EventListener listener = new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         events.add(new Object());
       }
     };
@@ -454,9 +453,9 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void testFiltering() throws Exception {
     final Collection<Object> done = new ArrayList<Object>();
-    final EventListener listener = new EventListener() {
+    final EventListener listener = new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         done.add(new Object());
       }
     };

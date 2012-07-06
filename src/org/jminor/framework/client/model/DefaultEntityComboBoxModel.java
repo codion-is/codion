@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
@@ -17,7 +18,6 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -235,19 +235,19 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     if (filterEntities != null && !filterEntities.isEmpty()) {
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
     }
-    foreignKeyModel.addSelectionListener(new EventListener() {
+    foreignKeyModel.addSelectionListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         final Entity selectedEntity = foreignKeyModel.getSelectedValue();
         setForeignKeyFilterEntities(foreignKeyPropertyID,
                 selectedEntity == null ? new ArrayList<Entity>(0) : Arrays.asList(selectedEntity));
       }
     });
-    addSelectionListener(new EventListener() {
+    addSelectionListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         final Entity selected = getSelectedValue();
         if (selected != null) {
           foreignKeyModel.setSelectedEntityByPrimaryKey(selected.getReferencedPrimaryKey(foreignKeyProperty));
@@ -354,7 +354,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     return -1;
   }
 
-  private static final class ForeignKeyModelRefreshListener implements EventListener {
+  private static final class ForeignKeyModelRefreshListener extends EventAdapter {
 
     private final EntityComboBoxModel foreignKeyModel;
 
@@ -364,7 +364,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
 
     /** {@inheritDoc} */
     @Override
-    public void eventOccurred(final ActionEvent e) {
+    public void eventOccurred() {
       foreignKeyModel.forceRefresh();
     }
   }

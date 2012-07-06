@@ -1,24 +1,19 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.client.model.event;
 
-
-import org.jminor.common.model.EventListener;
-
-import java.awt.event.ActionEvent;
+import org.jminor.common.model.EventAdapter;
 
 /**
  * A listener for update events.
  */
-public abstract class UpdateListener implements EventListener {
+public abstract class UpdateListener extends EventAdapter<UpdateEvent> {
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked"})
-  public final void eventOccurred(final ActionEvent e) {
-    if (!(e instanceof UpdateEvent)) {
-      throw new IllegalArgumentException("UpdateListener can only be used with UpdateEvent, " + e);
-    }
-
-    updated((UpdateEvent) e);
+  public final void eventOccurred(final UpdateEvent eventInfo) {
+    updated(eventInfo);
   }
 
   /**

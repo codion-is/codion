@@ -1,12 +1,15 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.common.ui.input;
 
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 
 import org.junit.Test;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
-import java.awt.event.ActionEvent;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -32,9 +35,9 @@ public class InputProviderPanelTest {
     assertEquals("hello", panel.getValue());
     assertFalse(panel.isInputAccepted());
     final Collection<Object> event = new ArrayList<Object>();
-    final EventListener listener = new EventListener() {
+    final EventListener listener = new EventAdapter() {
       @Override
-      public void eventOccurred(final ActionEvent e) {
+      public void eventOccurred() {
         event.add(new Object());
       }
     };
