@@ -12,6 +12,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.RemoteServer;
 import org.jminor.common.server.ServerLog;
+import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 
 import ch.qos.logback.classic.Level;
@@ -64,7 +65,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
             server.isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
-    Util.getRegistry(server.getRegistryPort()).rebind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName(), this);
+    ServerUtil.getRegistry(server.getRegistryPort()).rebind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName(), this);
     Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));
   }
 
@@ -166,11 +167,11 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   @Override
   public void shutdown() throws RemoteException {
     try {
-      Util.getRegistry(server.getRegistryPort()).unbind(server.getServerName());
+      ServerUtil.getRegistry(server.getRegistryPort()).unbind(server.getServerName());
     }
     catch (NotBoundException ignored) {}
     try {
-      Util.getRegistry(server.getRegistryPort()).unbind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName());
+      ServerUtil.getRegistry(server.getRegistryPort()).unbind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName());
     }
     catch (NotBoundException ignored) {}
 
@@ -516,7 +517,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     final String serverName = RemoteServer.SERVER_ADMIN_PREFIX + initializeServerName(host, sid);
     Configuration.resolveTruststoreProperty(EntityConnectionServerAdminImpl.class.getSimpleName());
     try {
-      final Registry registry = Util.getRegistry(registryPort);
+      final Registry registry = ServerUtil.getRegistry(registryPort);
       final EntityConnectionServerAdmin serverAdmin = (EntityConnectionServerAdmin) registry.lookup(serverName);
       final String shutDownInfo = serverName + " found in registry on port: " + registryPort + ", shutting down";
       LOG.info(shutDownInfo);

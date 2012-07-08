@@ -25,23 +25,13 @@ public interface Column extends Attribute {
   int getSelectIndex();
 
   /**
-   * Specifies whether or not this column is updatable
+   * Indicates whether or not this column is updatable
    * @return true if this column is updatable
    */
   boolean isUpdatable();
 
   /**
-   * @return false if this column should not be searchable
+   * @return true if this column can be used in search criteria, or where clauses
    */
   boolean isSearchable();
-
-  /**
-   * @return true if this column is a denormalized column
-   */
-  boolean isDenormalized();
-
-  /**
-   * @return true if this column has a default value
-   */
-  boolean columnHasDefaultValue();
 }

@@ -339,7 +339,7 @@ public final class EntityUiUtil {
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     new BooleanValueLink<String>(checkBox.getModel(), editModel, property.getPropertyID());
     UiUtil.linkToEnabledState(enabledState, checkBox);
-    if (property.hasDescription()) {
+    if (property.getDescription() != null) {
       checkBox.setToolTipText(property.getDescription());
     }
     else {
@@ -364,7 +364,7 @@ public final class EntityUiUtil {
     final TristateCheckBox checkBox = new TristateCheckBox(includeCaption ? property.getCaption() : null);
     new TristateValueLink<String>((TristateButtonModel) checkBox.getModel(), editModel, property.getPropertyID());
     UiUtil.linkToEnabledState(enabledState, checkBox);
-    if (property.hasDescription()) {
+    if (property.getDescription() != null) {
       checkBox.setToolTipText(property.getDescription());
     }
     else {
@@ -405,7 +405,7 @@ public final class EntityUiUtil {
     new EntityComboBoxValueLink(comboBox, editModel, foreignKeyProperty);
     UiUtil.linkToEnabledState(enabledState, comboBox);
     MaximumMatch.enable(comboBox);
-    if (foreignKeyProperty.hasDescription()) {
+    if (foreignKeyProperty.getDescription() != null) {
       comboBox.setToolTipText(foreignKeyProperty.getDescription());
     }
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
@@ -431,7 +431,7 @@ public final class EntityUiUtil {
     final JTextField textField = new JTextField();
     textField.setEditable(false);
     textField.setFocusable(false);
-    if (foreignKeyProperty.hasDescription()) {
+    if (foreignKeyProperty.getDescription() != null) {
       textField.setToolTipText(foreignKeyProperty.getDescription());
     }
     editModel.addValueListener(foreignKeyProperty.getPropertyID(), new ValueChangeListener() {
@@ -483,7 +483,7 @@ public final class EntityUiUtil {
     }
     new LookupValueLink(lookupField.getModel(), editModel, foreignKeyProperty.getPropertyID());
     UiUtil.linkToEnabledState(enabledState, lookupField);
-    if (foreignKeyProperty.hasDescription()) {
+    if (foreignKeyProperty.getDescription() != null) {
       lookupField.setToolTipText(foreignKeyProperty.getDescription());
     }
     UiUtil.selectAllOnFocusGained(lookupField);
@@ -534,7 +534,7 @@ public final class EntityUiUtil {
     comboBox.setEditable(editable);
     new EntityComboBoxValueLink(comboBox, editModel, property);
     UiUtil.linkToEnabledState(enabledState, comboBox);
-    if (property.hasDescription()) {
+    if (property.getDescription() != null) {
       comboBox.setToolTipText(property.getDescription());
     }
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
@@ -603,7 +603,7 @@ public final class EntityUiUtil {
 
     final TextValueLink<String> valueLink = new TextValueLink<String>(textArea, editModel, property.getPropertyID(), true, linkType);
     ValueLinkValidators.addValidator(valueLink, textArea, editModel);
-    if (property.hasDescription()) {
+    if (property.getDescription() != null) {
       textArea.setToolTipText(property.getDescription());
     }
 
@@ -823,7 +823,7 @@ public final class EntityUiUtil {
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter(field);
     }
-    if (property.hasDescription()) {
+    if (property.getDescription() != null) {
       field.setToolTipText(property.getDescription());
     }
     if (property.getMaxLength() > 0 && field.getDocument() instanceof SizedDocument) {

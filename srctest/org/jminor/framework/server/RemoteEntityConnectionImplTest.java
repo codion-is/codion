@@ -8,6 +8,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 
@@ -48,7 +49,7 @@ public class RemoteEntityConnectionImplTest {
       final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", User.UNIT_TEST_USER);
       adapter = new RemoteEntityConnectionImpl(Databases.createInstance(), info, 2222, true, false);
 
-      Util.initializeRegistry(Registry.REGISTRY_PORT);
+      ServerUtil.initializeRegistry(Registry.REGISTRY_PORT);
 
       registry = LocateRegistry.getRegistry("localhost");
       registry.rebind(serviceName, adapter);

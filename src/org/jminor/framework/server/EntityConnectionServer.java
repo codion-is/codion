@@ -12,6 +12,7 @@ import org.jminor.common.server.AbstractRemoteServer;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.LoginProxy;
 import org.jminor.common.server.ServerLog;
+import org.jminor.common.server.ServerUtil;
 import org.jminor.common.server.web.WebStartServer;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
@@ -87,8 +88,8 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     setConnectionLimit(connectionLimit);
     startConnectionTimeoutTimer();
     startWebServer();
-    Util.initializeRegistry(registryPort);
-    Util.getRegistry(registryPort).rebind(getServerName(), this);
+    ServerUtil.initializeRegistry(registryPort);
+    ServerUtil.getRegistry(registryPort).rebind(getServerName(), this);
     final String connectInfo = getServerName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);

@@ -518,8 +518,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   /** {@inheritDoc} */
   @Override
   public synchronized void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws DatabaseException {
-    final Property.ColumnProperty property =
-            (Property.ColumnProperty) Entities.getProperty(primaryKey.getEntityID(), blobPropertyID);
+    final Property.ColumnProperty property = Entities.getColumnProperty(primaryKey.getEntityID(), blobPropertyID);
     if (property.getType() != Types.BLOB) {
       throw new IllegalArgumentException("Property " + property.getPropertyID() + " in entity " +
               primaryKey.getEntityID() + "is not of type BLOB");
@@ -535,7 +534,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     Databases.QUERY_COUNTER.count(sql);
     getMethodLogger().logAccess("writeBlob", new Object[] {sql});
     try {
-      values.add(null);
+      values.add(null);//the blob value, set explicitly later
       values.addAll(criteria.getValues());
       properties.add(property);
       properties.addAll(criteria.getValueProperties());
@@ -566,8 +565,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   /** {@inheritDoc} */
   @Override
   public synchronized byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException {
-    final Property.ColumnProperty property =
-            (Property.ColumnProperty) Entities.getProperty(primaryKey.getEntityID(), blobPropertyID);
+    final Property.ColumnProperty property = Entities.getColumnProperty(primaryKey.getEntityID(), blobPropertyID);
     if (property.getType() != Types.BLOB) {
       throw new IllegalArgumentException("Property " + property.getPropertyID() + " in entity " + primaryKey.getEntityID() + "is not of type BLOB");
     }
@@ -653,7 +651,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     return packer;
   }
 
-  private ResultPacker getPropertyResultPacker(final Property property) {
+  private ResultPacker getPropertyResultPacker(final Property.ColumnProperty property) {
     ResultPacker packer = propertyResultPackers.get(property.getType());
     if (packer == null) {
       packer  = new PropertyResultPacker(property);
@@ -974,7 +972,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   private static void setParameterValue(final PreparedStatement statement, final int parameterIndex,
-                                        final Object value, final Property property) throws SQLException {
+                                        final Object value, final Property.ColumnProperty property) throws SQLException {
     final int columnType = translateType(property);
     final Object columnValue = translateValue(property, value);
     try {
@@ -991,7 +989,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
   }
 
-  private static Object translateValue(final Property property, final Object value) {
+  private static Object translateValue(final Property.ColumnProperty property, final Object value) {
     if (property.isBoolean()) {
       if (property instanceof Property.BooleanProperty) {
         return ((Property.BooleanProperty) property).toSQLValue((Boolean) value);
@@ -1009,7 +1007,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     return value;
   }
 
-  private static int translateType(final Property property) {
+  private static int translateType(final Property.ColumnProperty property) {
     if (property.isBoolean()) {
       if (property instanceof Property.BooleanProperty) {
         return ((Property.BooleanProperty) property).getColumnType();
@@ -1259,9 +1257,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   private static final class PropertyResultPacker implements ResultPacker<Object> {
-    private final Property property;
+    private final Property.ColumnProperty property;
 
-    private PropertyResultPacker(final Property property) {
+    private PropertyResultPacker(final Property.ColumnProperty property) {
       this.property = property;
     }
 

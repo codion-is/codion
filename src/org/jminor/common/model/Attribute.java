@@ -19,11 +19,6 @@ public interface Attribute {
   String getDescription();
 
   /**
-   * @return true if this attribute has a description
-   */
-  boolean hasDescription();
-
-  /**
    * @return the Class representing the values of this attribute
    */
   Class<?> getTypeClass();

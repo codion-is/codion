@@ -214,7 +214,7 @@ public final class ExceptionDialog extends JDialog {
   }
 
   public void copyErrorReport() {
-    Util.setClipboard(detailsArea.getText());
+    UiUtil.setClipboard(detailsArea.getText());
   }
 
   public void emailErrorReport() {

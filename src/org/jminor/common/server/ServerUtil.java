@@ -26,6 +26,33 @@ public final class ServerUtil {
   private ServerUtil() {}
 
   /**
+   * Initializes a Registry if one is not running
+   * @param port the port on which to look for (or create) a registry
+   * @throws java.rmi.RemoteException in case of an exception
+   */
+  public static void initializeRegistry(final int port) throws RemoteException {
+    LOG.info("Initializing registry on port: {}", port);
+    final Registry localRegistry = getRegistry(port);
+    try {
+      localRegistry.list();
+    }
+    catch (Exception e) {
+      LOG.debug("Exception occurred while trying to locate registry", e);
+      LOG.info("Creating registry on port: {}", port);
+      LocateRegistry.createRegistry(port);
+    }
+  }
+
+  /**
+   * @param port the port on which to look for a registry
+   * @return the registry
+   * @throws java.rmi.RemoteException in case of an exception
+   */
+  public static Registry getRegistry(final int port) throws RemoteException {
+    return LocateRegistry.getRegistry(port);
+  }
+
+  /**
    * Retrieves a RemoteServer from a registry running on the given host, using the
    * given prefix as a criteria.
    * @param serverHostName the name of the host

@@ -3050,5 +3050,11 @@
   EventListener added, replaces ActionListener throughout
   Event.fire() parameter type changed from ActionEvent to Object
   EventListener.eventOccurred() parameter changed from ActionEvent to Object
-  EventListener.eventOccurred() overloaded paremeterless
+  EventListener.eventOccurred() overloaded parameterless
   EventAdapter added
+  Attribute.hasDescription() removed
+  Util.initializeRegistry() and getRegistry() moved to ServerUtil
+  Util.setClipboard() moved to UiUtil
+  EntityPanel.checkIfInitialized() added and used
+  EntityTablePanel.checkIfInitialized() added and used
+  Column.columnHasDefaultValue() and isDenormalized() pushed down to Property.ColumnProperty

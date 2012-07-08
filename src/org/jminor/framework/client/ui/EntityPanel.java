@@ -336,11 +336,10 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /**
    * @param controlPanelConstraints the control panel layout constraints (BorderLayout constraints)
    * @return this entity panel
+   * @throws IllegalStateException if the panel has been initialized
    */
   public final EntityPanel setControlPanelConstraints(final String controlPanelConstraints) {
-    if (panelInitialized) {
-      throw new IllegalStateException("Panel has already been initialized");
-    }
+    checkIfInitialized();
     this.controlPanelConstraints = controlPanelConstraints;
     return this;
   }
@@ -383,11 +382,10 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * to true
    * @param detailPanel the detail panel to add
    * @return this entity panel
+   * @throws IllegalStateException if the panel has been initialized
    */
   public final EntityPanel addDetailPanel(final EntityPanel detailPanel) {
-    if (panelInitialized) {
-      throw new IllegalStateException("Can not add detail panel after initialization");
-    }
+    checkIfInitialized();
     detailPanel.setMasterPanel(this);
     detailEntityPanels.add(detailPanel);
 
@@ -660,11 +658,10 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /**
    * @param detailSplitPanelResizeWeight the detail panel split size weight
    * @return this entity panel
+   * @throws IllegalStateException if the panel has been initialized
    */
   public final EntityPanel setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
-    if (panelInitialized) {
-      throw new IllegalStateException("Can not set detailSplitPanelResizeWeight after initialization");
-    }
+    checkIfInitialized();
     this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
     return this;
   }
@@ -679,11 +676,10 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /**
    * @param includeDetailPanelTabPane true if the detail panel tab pane should be included
    * @return this entity panel
+   * @throws IllegalStateException if the panel has been initialized
    */
   public final EntityPanel setIncludeDetailPanelTabPane(final boolean includeDetailPanelTabPane) {
-    if (panelInitialized) {
-      throw new IllegalStateException("Can not set includeDetailPanelTabPane after initialization");
-    }
+    checkIfInitialized();
     this.includeDetailPanelTabPane = includeDetailPanelTabPane;
     return this;
   }
@@ -698,11 +694,10 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /**
    * @param showToggleEditPanelControl true if a control for toggling the edit panel should be shown
+   * @throws IllegalStateException if the panel has been initialized
    */
   public final EntityPanel setShowToggleEditPanelControl(final boolean showToggleEditPanelControl) {
-    if (panelInitialized) {
-      throw new IllegalStateException("Can not set showToggleEditPanelControl after initialization");
-    }
+    checkIfInitialized();
     this.showToggleEditPanelControl = showToggleEditPanelControl;
     return this;
   }
@@ -717,11 +712,10 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /**
    * @param showDetailPanelControls true if detail panel controls should be shown
+   * @throws IllegalStateException if the panel has been initialized
    */
   public final EntityPanel setShowDetailPanelControls(final boolean showDetailPanelControls) {
-    if (panelInitialized) {
-      throw new IllegalStateException("Can not set showDetailPanelControls after initialization");
-    }
+    checkIfInitialized();
     this.showDetailPanelControls = showDetailPanelControls;
     return this;
   }
@@ -736,11 +730,10 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /**
    * @param includeControlPanel true if the control panel should be included
    * @return this entity panel
+   * @throws IllegalStateException if the panel has been initialized
    */
   public final EntityPanel setIncludeControlPanel(final boolean includeControlPanel) {
-    if (panelInitialized) {
-      throw new IllegalStateException("Can not set includeControlPanel after initialization");
-    }
+    checkIfInitialized();
     this.includeControlPanel = includeControlPanel;
     return this;
   }
@@ -1462,6 +1455,12 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       }
     });
     addComponentListener(new EntityPanelComponentAdapter());
+  }
+
+  private void checkIfInitialized() {
+    if (panelInitialized) {
+      throw new IllegalStateException("Method must be called before the panel is initialized");
+    }
   }
 
   private static final class NavigateAction extends AbstractAction {

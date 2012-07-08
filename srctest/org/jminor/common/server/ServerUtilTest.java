@@ -3,8 +3,6 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.model.Util;
-
 import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
@@ -25,7 +23,7 @@ public class ServerUtilTest {
 
   @Before
   public void setUp() throws RemoteException {
-    Util.initializeRegistry(Registry.REGISTRY_PORT);
+    ServerUtil.initializeRegistry(Registry.REGISTRY_PORT);
     server = new AbstractRemoteServer(12345, SERVER_NAME) {
       @Override
       protected Remote doConnect(final ClientInfo clientInfo) throws RemoteException {
@@ -38,13 +36,13 @@ public class ServerUtilTest {
         return 0;
       }
     };
-    Util.getRegistry(Registry.REGISTRY_PORT).rebind(SERVER_NAME, server);
+    ServerUtil.getRegistry(Registry.REGISTRY_PORT).rebind(SERVER_NAME, server);
   }
 
   @After
   public void tearDown() throws RemoteException, NotBoundException {
     server.shutdown();
-    Util.getRegistry(Registry.REGISTRY_PORT).unbind(SERVER_NAME);
+    ServerUtil.getRegistry(Registry.REGISTRY_PORT).unbind(SERVER_NAME);
   }
 
   @Test

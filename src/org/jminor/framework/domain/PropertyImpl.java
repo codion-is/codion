@@ -389,12 +389,6 @@ class PropertyImpl implements Property, Serializable {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean hasDescription() {
-    return description != null;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final Character getMnemonic() {
     return mnemonic;
   }

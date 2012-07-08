@@ -6,8 +6,6 @@ package org.jminor.common.model;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.awt.Toolkit;
-import java.awt.datatransfer.StringSelection;
 import java.io.BufferedReader;
 import java.io.BufferedWriter;
 import java.io.Closeable;
@@ -30,9 +28,6 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.rmi.RemoteException;
-import java.rmi.registry.LocateRegistry;
-import java.rmi.registry.Registry;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -409,10 +404,6 @@ public final class Util {
     }
 
     return propsString.toString();
-  }
-
-  public static void setClipboard(final String string) {
-    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(string), null);
   }
 
   public static String getDelimitedString(final String[][] headers, final String[][] data, final String delimiter) {
@@ -947,33 +938,6 @@ public final class Util {
         }
       }
     }
-  }
-
-  /**
-   * Initializes a Registry if one is not running
-   * @param port the port on which to look for (or create) a registry
-   * @throws RemoteException in case of an exception
-   */
-  public static void initializeRegistry(final int port) throws RemoteException {
-    LOG.info("Initializing registry on port: {}", port);
-    final Registry localRegistry = getRegistry(port);
-    try {
-      localRegistry.list();
-    }
-    catch (Exception e) {
-      LOG.debug("Exception occurred while trying to locate registry", e);
-      LOG.info("Creating registry on port: {}", port);
-      LocateRegistry.createRegistry(port);
-    }
-  }
-
-  /**
-   * @param port the port on which to look for a registry
-   * @return the registry
-   * @throws RemoteException in case of an exception
-   */
-  public static Registry getRegistry(final int port) throws RemoteException {
-    return LocateRegistry.getRegistry(port);
   }
 
   @SuppressWarnings({"unchecked"})

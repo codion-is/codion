@@ -317,6 +317,12 @@ public interface Property extends Attribute {
     boolean isAggregateColumn();
 
     /**
+     * @return true if this column is a denormalized column, one should which receives a value
+     * from a column in a table referenced via a foreign key
+     */
+    boolean isDenormalized();
+
+    /**
      * @return true if this property is part of a ForeignKeyProperty
      */
     boolean isForeignKeyProperty();
@@ -330,6 +336,11 @@ public interface Property extends Attribute {
      * @return the ForeignKeyProperty this property is part of, if any
      */
     ForeignKeyProperty getForeignKeyProperty();
+
+    /**
+     * @return true if the underlying column has a default value
+     */
+    boolean columnHasDefaultValue();
   }
 
   /**

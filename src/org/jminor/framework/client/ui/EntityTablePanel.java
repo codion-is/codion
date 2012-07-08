@@ -283,9 +283,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @throws IllegalStateException in case the panel has already been initialized
    */
   public final void setTableDoubleClickAction(final Action doubleClickAction) {
-    if (panelInitialized) {
-      throw new IllegalStateException("tableDoubleClickAction must be set before the panel is initialized");
-    }
+    checkIfInitialized();
     this.tableDoubleClickAction = doubleClickAction;
   }
 
@@ -302,9 +300,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @throws IllegalStateException in case the panel has already been initialized
    */
   public final void addPopupControls(final ControlSet additionalPopupControls) {
-    if (panelInitialized) {
-      throw new IllegalStateException("Additional popup controls must be set before the panel is initialized");
-    }
+    checkIfInitialized();
     this.additionalPopupControlSets.add(additionalPopupControls);
   }
 
@@ -314,9 +310,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @throws IllegalStateException in case the panel has already been initialized
    */
   public final void addToolbarControls(final ControlSet additionalToolbarControls) {
-    if (panelInitialized) {
-      throw new IllegalStateException("Additional toolbar controls must be set before the panel is initialized");
-    }
+    checkIfInitialized();
     this.additionalToolbarControlSets.add(additionalToolbarControls);
   }
 
@@ -327,9 +321,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @throws IllegalStateException in case the panel has already been initialized
    */
   public final void setIncludeSouthPanel(final boolean value) {
-    if (panelInitialized) {
-      throw new IllegalStateException("includeSouthPanel must be set before the panel is initialized");
-    }
+    checkIfInitialized();
     this.includeSouthPanel = value;
   }
 
@@ -339,9 +331,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @throws IllegalStateException in case the panel has already been initialized
    */
   public final void setIncludeSearchPanel(final boolean value) {
-    if (panelInitialized) {
-      throw new IllegalStateException("includeSearchPanel must be set before the panel is initialized");
-    }
+    checkIfInitialized();
     this.includeSearchPanel = value;
   }
 
@@ -1322,7 +1312,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       public void actionPerformed(final ActionEvent e) {
         final JTable table = getJTable();
         final Object value = table.getValueAt(table.getSelectedRow(), table.getSelectedColumn());
-        Util.setClipboard(value == null ? "" : value.toString());
+        UiUtil.setClipboard(value == null ? "" : value.toString());
       }
     };
   }
@@ -1358,7 +1348,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
       data[i] = line.toArray(new String[line.size()]);
     }
-    Util.setClipboard(Util.getDelimitedString(header, data, "\t"));
+    UiUtil.setClipboard(Util.getDelimitedString(header, data, "\t"));
   }
 
   private void initializeUI() {
@@ -1536,6 +1526,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       column.setResizable(true);
     }
     setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControlSets));
+  }
+
+  private void checkIfInitialized() {
+    if (panelInitialized) {
+      throw new IllegalStateException("Method must be called before the panel is initialized");
+    }
   }
 
   private static void showDependenciesDialog(final Map<String, Collection<Entity>> dependencies,

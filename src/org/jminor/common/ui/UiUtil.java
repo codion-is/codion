@@ -57,8 +57,10 @@ import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Point;
+import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
+import java.awt.datatransfer.StringSelection;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -1197,6 +1199,10 @@ public final class UiUtil {
         }
       }
     });
+  }
+
+  public static void setClipboard(final String string) {
+    Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(string), null);
   }
 
   private static JDialog initializeDialog(final JComponent parent, final NavigableImagePanel panel) {

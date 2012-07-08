@@ -3,9 +3,9 @@
  */
 package org.jminor.common.server.loadtest;
 
-import org.jminor.common.model.Util;
 import org.jminor.common.server.AbstractRemoteServer;
 import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.ServerUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -32,7 +32,7 @@ public final class RemoteLoadTestServer extends AbstractRemoteServer<RemoteLoadT
   static {
     System.setSecurityManager(new RMISecurityManager());
     try {
-      Util.initializeRegistry(Registry.REGISTRY_PORT);
+      ServerUtil.initializeRegistry(Registry.REGISTRY_PORT);
     }
     catch (RemoteException re) {
       throw new RuntimeException(re);
@@ -49,7 +49,7 @@ public final class RemoteLoadTestServer extends AbstractRemoteServer<RemoteLoadT
   public RemoteLoadTestServer(final int serverPort, final int loadTestPort, final String serverName) throws RemoteException {
     super(serverPort, serverName, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
     this.loadTestPort = loadTestPort;
-    Util.getRegistry(Registry.REGISTRY_PORT).rebind(serverName, this);
+    ServerUtil.getRegistry(Registry.REGISTRY_PORT).rebind(serverName, this);
   }
 
   /** {@inheritDoc} */
