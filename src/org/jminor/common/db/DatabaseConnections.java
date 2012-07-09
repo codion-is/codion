@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.common.db;
 
 import org.jminor.common.db.exception.DatabaseException;
@@ -10,7 +13,7 @@ public final class DatabaseConnections {
   private DatabaseConnections() {}
 
   /**
-   * Constructs a new DatabaseConnection instance, based on the given Connection object.
+   * Constructs a new DatabaseConnection instance, based on the given Database and User
    * @param database the database
    * @param user the user for the db-connection
    * @return a new DatabaseConnection instance

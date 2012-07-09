@@ -339,7 +339,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   public synchronized List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException {
     try {
       final List<Entity> result = doSelectMany(criteria, 0);
-      if (!isTransactionOpen()) {
+      if (!isTransactionOpen() && !criteria.isSelectForUpdate()) {
         commitQuietly();
       }
 
@@ -697,7 +697,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     String selectSQL = null;
     try {
       selectSQL = getSelectSQL(criteria, Entities.getSelectColumnsString(criteria.getEntityID()),
-              criteria.getOrderByClause(), Entities.getGroupByClause(criteria.getEntityID()), false);
+              criteria.getOrderByClause(), Entities.getGroupByClause(criteria.getEntityID()), criteria.isSelectForUpdate());
       statement = getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
       List<Entity> result = null;

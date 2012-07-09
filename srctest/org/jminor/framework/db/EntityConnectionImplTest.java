@@ -12,6 +12,7 @@ import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
+import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -342,6 +343,42 @@ public class EntityConnectionImplTest {
 
   @Test
   public void selectForUpdate() throws Exception {
+    final EntityConnection connection = initializeConnection();
+    final EntityConnection connection2 = initializeConnection();
+    final String originalLocation;
+    try {
+      final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, SearchType.LIKE, "SALES");
+      criteria.setSelectForUpdate(true);
+
+      Entity sales = connection.selectSingle(criteria);
+      originalLocation = sales.getStringValue(EmpDept.DEPARTMENT_LOCATION);
+
+      sales.setValue(EmpDept.DEPARTMENT_LOCATION, "Syracuse");
+      try {
+        connection2.update(Arrays.asList(sales));
+        fail("Should not be able to update record selected for update by another connection");
+      }
+      catch (DatabaseException ignored) {}
+
+      connection.selectAll(EmpDept.T_DEPARTMENT);//any query will do
+
+      try {
+        sales = connection2.update(Arrays.asList(sales)).get(0);
+        sales.setValue(EmpDept.DEPARTMENT_LOCATION, originalLocation);
+        connection2.update(Arrays.asList(sales));//revert changes to data
+      }
+      catch (DatabaseException ignored) {
+        fail("Should be able to update record after other connection released the select for update lock");
+      }
+    }
+    finally {
+      connection.disconnect();
+      connection2.disconnect();
+    }
+  }
+
+  @Test
+  public void optimisticLocking() throws Exception {
     final EntityConnectionImpl baseConnection = initializeConnection();
     final EntityConnectionImpl optimisticConnection = initializeConnection();
     optimisticConnection.setOptimisticLocking(true);

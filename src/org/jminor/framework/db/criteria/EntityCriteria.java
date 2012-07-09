@@ -24,26 +24,34 @@ public interface EntityCriteria {
   Criteria<Property.ColumnProperty> getCriteria();
 
   /**
-   * @return the where clause
+   * Returns a WHERE clause based on this EntityCriteria, note that this
+   * where clause contains the ? substitute character instead of the actual values
+   * @return a where clause based on this EntityCriteria
+   * @see #getValues()
    */
   String getWhereClause();
 
   /**
+   * Returns a WHERE clause based on this EntityCriteria, note that this
+   * where clause contains the ? substitute character instead of the actual values
    * @param includeWhereKeyword if true the returned string is prefixed with the WHERE keyword,
    * if false it is prefixed with the AND keyword
-   * @return a where clause based on this criteria
+   * @return a where clause based on this EntityCriteria
+   * @see #getValues()
    */
   String getWhereClause(final boolean includeWhereKeyword);
 
   /**
    * @return the values the underlying criteria is based on, if any, in the order
-   * their respective properties are returned by <code>getValueProperties()</code>
+   * they appear in the resulting where clause
+   * @see #getWhereClause()
    */
   List<Object> getValues();
 
   /**
    * @return the properties of the values the underlying criteria is based on, if any,
-   * in the order their respective values are returned by <code>getValues()</code>
+   * in the order they appear in the resulting where clause
+   * @see #getWhereClause()
    */
   List<Property.ColumnProperty> getValueProperties();
 }

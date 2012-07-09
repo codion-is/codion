@@ -19,15 +19,28 @@ public interface EntitySelectCriteria extends EntityCriteria {
   boolean isSelectForUpdate();
 
   /**
+   * Marks this criteria as a select for update query, this means the resulting records
+   * will be locked by the given connection until unlocked by running another (non - select for update)
+   * query on the same connection or performing an update
+   * @param selectForUpdate if true then the results should be locked for update
+   * @return this EntitySelectCriteria instance
+   */
+  EntitySelectCriteria setSelectForUpdate(final boolean selectForUpdate);
+
+  /**
    * @return the maximum number of records to fetch from the result
    */
   int getFetchCount();
 
+  /**
+   * Returns the number of levels of foreign key values to fetch, with 0 meaning no referenced entities
+   * should be fetched.
+   * @param foreignKeyPropertyID the foreign key property ID
+   * @return the number of levels of foreign key values to fetch
+   */
   int getForeignKeyFetchDepthLimit(final String foreignKeyPropertyID);
 
   EntitySelectCriteria setForeignKeyFetchDepthLimit(final String foreignKeyPropertyID, final int fetchDepthLimit);
 
   EntitySelectCriteria setForeignKeyFetchDepthLimit(final int fetchDepthLimit);
-
-  EntitySelectCriteria setSelectForUpdate(final boolean selectForUpdate);
 }

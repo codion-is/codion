@@ -116,24 +116,6 @@ class PropertyImpl implements Property, Serializable {
   private Class<?> typeClass;
 
   /**
-   * Instantiates a new property of the type Types.INTEGER
-   * @param propertyID the property ID, this is used as the underlying column name,
-   * override by calling setColumnName()
-   */
-  PropertyImpl(final String propertyID) {
-    this(propertyID, Types.INTEGER);
-  }
-
-  /**
-   * @param propertyID the property ID, this is used as the underlying column name,
-   * override by calling setColumnName()
-   * @param type the data type of this property
-   */
-  PropertyImpl(final String propertyID, final int type) {
-    this(propertyID, type, null);
-  }
-
-  /**
    * @param propertyID the property ID, this is used as the underlying column name
    * @param type the data type of this property
    * @param caption the caption of this property, if this is null then this property is defined as hidden
@@ -354,7 +336,7 @@ class PropertyImpl implements Property, Serializable {
   @Override
   public final Property setUseNumberFormatGrouping(final boolean useGrouping) {
     if (!(format instanceof NumberFormat)) {
-      throw new IllegalStateException("Grouping only good for number formats");
+      throw new IllegalStateException("Grouping can only be set for number formats");
     }
 
     ((NumberFormat) format).setGroupingUsed(useGrouping);
@@ -657,14 +639,6 @@ class PropertyImpl implements Property, Serializable {
 
     private int index = 0;
 
-    PrimaryKeyPropertyImpl(final String propertyID) {
-      this(propertyID, Types.INTEGER);
-    }
-
-    PrimaryKeyPropertyImpl(final String propertyID, final int type) {
-      this(propertyID, type, null);
-    }
-
     PrimaryKeyPropertyImpl(final String propertyID, final int type, final String caption) {
       super(propertyID, type, caption);
       setUpdatable(false);
@@ -842,17 +816,6 @@ class PropertyImpl implements Property, Serializable {
      * @param foreignKeyPropertyID the ID of the foreign key property which references the entity which owns
      * the denormalized property
      * @param denormalizedProperty the property from which this property should get its value
-     */
-    DenormalizedPropertyImpl(final String propertyID, final String foreignKeyPropertyID,
-                             final Property denormalizedProperty) {
-      this(propertyID, foreignKeyPropertyID, denormalizedProperty, null);
-    }
-
-    /**
-     * @param propertyID the property ID, in case of database properties this should be the underlying column name
-     * @param foreignKeyPropertyID the ID of the foreign key property which references the entity which owns
-     * the denormalized property
-     * @param denormalizedProperty the property from which this property should get its value
      * @param caption the caption if this property
      */
     DenormalizedPropertyImpl(final String propertyID, final String foreignKeyPropertyID,
@@ -886,16 +849,6 @@ class PropertyImpl implements Property, Serializable {
     private static final long serialVersionUID = 1;
 
     private final List<Item<Object>> values;
-
-    /**
-     * Instantiates a new hidden value list property
-     * @param propertyID the property ID
-     * @param type the data type of this property
-     * @param values the values to base this property on
-     */
-    ValueListPropertyImpl(final String propertyID, final int type, final List<Item<Object>> values) {
-      this(propertyID, type, null, values);
-    }
 
     /**
      * @param propertyID the property ID
@@ -937,15 +890,6 @@ class PropertyImpl implements Property, Serializable {
   static class TransientPropertyImpl extends PropertyImpl implements TransientProperty {
 
     private static final long serialVersionUID = 1;
-
-    /**
-     * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
-     * the property ID should not be column name, only be unique for this entity
-     * @param type the data type of this property
-     */
-    TransientPropertyImpl(final String propertyID, final int type) {
-      this(propertyID, type, null);
-    }
 
     /**
      * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
@@ -997,16 +941,6 @@ class PropertyImpl implements Property, Serializable {
 
     private final String foreignKeyPropertyID;
     private final Property denormalizedProperty;
-
-    /**
-     * @param propertyID the ID of the property, this should not be a column name since this property does not
-     * map to a table column
-     * @param foreignKeyPropertyID the ID of the foreign key property from which entity value this property gets its value
-     * @param property the property from which this property gets its value
-     */
-    DenormalizedViewPropertyImpl(final String propertyID, final String foreignKeyPropertyID, final Property property) {
-      this(propertyID, foreignKeyPropertyID, property, null);
-    }
 
     /**
      * @param propertyID the ID of the property, this should not be a column name since this property does not
@@ -1159,10 +1093,6 @@ class PropertyImpl implements Property, Serializable {
     private static final long serialVersionUID = 1;
     private final AuditAction auditAction;
 
-    AuditPropertyImpl(final String propertyID, final int type, final AuditAction auditAction) {
-      this(propertyID, type, auditAction, null);
-    }
-
     AuditPropertyImpl(final String propertyID, final int type, final AuditAction auditAction, final String caption) {
       super(propertyID, type, caption);
       this.auditAction = auditAction;
@@ -1180,10 +1110,6 @@ class PropertyImpl implements Property, Serializable {
 
     private static final long serialVersionUID = 1;
 
-    AuditTimePropertyImpl(final String propertyID, final AuditAction auditAction) {
-      this(propertyID, auditAction, null);
-    }
-
     AuditTimePropertyImpl(final String propertyID, final AuditAction auditAction, final String caption) {
       super(propertyID, Types.TIMESTAMP, auditAction, caption);
     }
@@ -1192,10 +1118,6 @@ class PropertyImpl implements Property, Serializable {
   static class AuditUserPropertyImpl extends AuditPropertyImpl implements AuditUserProperty {
 
     private static final long serialVersionUID = 1;
-
-    AuditUserPropertyImpl(final String propertyID, final AuditAction auditAction) {
-      this(propertyID, auditAction, null);
-    }
 
     AuditUserPropertyImpl(final String propertyID, final AuditAction auditAction, final String caption) {
       super(propertyID, Types.VARCHAR, auditAction, caption);

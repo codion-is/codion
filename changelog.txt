@@ -3063,3 +3063,6 @@
   InsertEvent, UpdateEvent and DeleteEvent made inner classes (interfaces) of EntityEditModel
   DefaultEntityEditModel.InsertEventImpl, UpdateEventImpl and DeleteEventImpl added
   FilteredTableModel.add/removeColumnHidden/ShownListener() generified
+  EntityConnectionImpl.selectMany() bug fixed, no longer commits if the criteria is marked as selectForUpdate, tested
+  EntityCriteria, EntitySelectCriteria, some javadoc improvements
+  PropertyImpl, unused constructors removed
