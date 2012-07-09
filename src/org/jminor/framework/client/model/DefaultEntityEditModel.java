@@ -19,9 +19,6 @@ import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.client.model.event.DeleteEvent;
-import org.jminor.framework.client.model.event.InsertEvent;
-import org.jminor.framework.client.model.event.UpdateEvent;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -443,7 +440,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       entity.saveValue(primaryKeyProperty.getPropertyID());
     }
 
-    evtAfterInsert.fire(new InsertEvent(insertedEntities));
+    evtAfterInsert.fire(new InsertEventImpl(insertedEntities));
 
     return insertedEntities;
   }
@@ -453,7 +450,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   public final List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException {
     final List<Entity> insertedEntities = insertEntities(entities);
 
-    evtAfterInsert.fire(new InsertEvent(insertedEntities));
+    evtAfterInsert.fire(new InsertEventImpl(insertedEntities));
 
     return insertedEntities;
   }
@@ -494,7 +491,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       setEntity(updatedEntities.get(index));
     }
 
-    evtAfterUpdate.fire(new UpdateEvent(updatedEntities, EntityUtil.isPrimaryKeyModified(modifiedEntities)));
+    evtAfterUpdate.fire(new UpdateEventImpl(updatedEntities, EntityUtil.isPrimaryKeyModified(modifiedEntities)));
 
     return updatedEntities;
   }
@@ -525,7 +522,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
     doDelete(entities);
 
-    evtAfterDelete.fire(new DeleteEvent(entities));
+    evtAfterDelete.fire(new DeleteEventImpl(entities));
 
     return entities;
   }
@@ -793,7 +790,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterInsertListener(final EventListener listener) {
+  public final void addAfterInsertListener(final EventListener<InsertEvent> listener) {
     evtAfterInsert.addListener(listener);
   }
 
@@ -817,7 +814,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterUpdateListener(final EventListener listener) {
+  public final void addAfterUpdateListener(final EventListener<UpdateEvent> listener) {
     evtAfterUpdate.addListener(listener);
   }
 
@@ -841,7 +838,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addAfterDeleteListener(final EventListener listener) {
+  public final void addAfterDeleteListener(final EventListener<DeleteEvent> listener) {
     evtAfterDelete.addListener(listener);
   }
 
@@ -1079,6 +1076,72 @@ public class DefaultEntityEditModel implements EntityEditModel {
       final String msg = getValueChangeDebugString(event);
       System.out.println(msg);
       LOG.debug(msg);
+    }
+  }
+
+  private static final class InsertEventImpl implements InsertEvent {
+
+    private final List<Entity> insertedEntities;
+
+    /**
+     * Instantiates a new InsertEventImpl.
+     * @param insertedEntities the inserted entities
+     */
+    private InsertEventImpl(final List<Entity> insertedEntities) {
+      this.insertedEntities = insertedEntities;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Entity> getInsertedEntities() {
+      return insertedEntities;
+    }
+  }
+
+  private static final class DeleteEventImpl implements DeleteEvent {
+
+    private final List<Entity> deletedEntities;
+
+    /**
+     * Instantiates a new DeleteEventImpl.
+     * @param deletedEntities the deleted entities
+     */
+    private DeleteEventImpl(final List<Entity> deletedEntities) {
+      this.deletedEntities = deletedEntities;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Entity> getDeletedEntities() {
+      return deletedEntities;
+    }
+  }
+
+  private static final class UpdateEventImpl implements UpdateEvent {
+
+    private final List<Entity> updatedEntities;
+    private final boolean primaryKeyModified;
+
+    /**
+     * Instantiates a new UpdateEventImpl.
+     * @param updatedEntities the updated entities
+     * @param primaryKeyModified true if primary key values were modified during the update
+     */
+    private UpdateEventImpl(final List<Entity> updatedEntities, final boolean primaryKeyModified) {
+      this.updatedEntities = updatedEntities;
+      this.primaryKeyModified = primaryKeyModified;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public List<Entity> getUpdatedEntities() {
+      return updatedEntities;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isPrimaryKeyModified() {
+      return primaryKeyModified;
     }
   }
 }

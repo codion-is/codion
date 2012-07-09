@@ -190,13 +190,13 @@ public final class AbstractFilteredTableModelTest {
   public void testColumnModel() {
     final Collection<Object> hidden = new ArrayList<Object>();
     final Collection<Object> shown = new ArrayList<Object>();
-    final EventListener hideListener = new EventAdapter() {
+    final EventListener<Integer> hideListener = new EventAdapter<Integer>() {
       @Override
       public void eventOccurred() {
         hidden.add(new Object());
       }
     };
-    final EventListener showListener = new EventAdapter() {
+    final EventListener<Integer> showListener = new EventAdapter<Integer>() {
       @Override
       public void eventOccurred() {
         shown.add(new Object());

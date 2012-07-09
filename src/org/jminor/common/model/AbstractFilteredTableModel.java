@@ -704,25 +704,25 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void addColumnHiddenListener(final EventListener listener) {
+  public final void addColumnHiddenListener(final EventListener<C> listener) {
     evtColumnHidden.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeColumnHiddenListener(final EventListener listener) {
+  public final void removeColumnHiddenListener(final EventListener<C> listener) {
     evtColumnHidden.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addColumnShownListener(final EventListener listener) {
+  public final void addColumnShownListener(final EventListener<C> listener) {
     evtColumnShown.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeColumnShownListener(final EventListener listener) {
+  public final void removeColumnShownListener(final EventListener<C> listener) {
     evtColumnShown.removeListener(listener);
   }
 

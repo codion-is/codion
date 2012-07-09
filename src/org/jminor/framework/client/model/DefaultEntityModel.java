@@ -8,12 +8,6 @@ import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
-import org.jminor.framework.client.model.event.DeleteEvent;
-import org.jminor.framework.client.model.event.DeleteListener;
-import org.jminor.framework.client.model.event.InsertEvent;
-import org.jminor.framework.client.model.event.InsertListener;
-import org.jminor.framework.client.model.event.UpdateEvent;
-import org.jminor.framework.client.model.event.UpdateListener;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -450,14 +444,14 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
-  private void handleInsert(final InsertEvent insertEvent) {
+  private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
     if (containsTableModel()) {
       tableModel.clearSelection();
       tableModel.addEntities(insertEvent.getInsertedEntities(), true);
     }
   }
 
-  private void handleUpdate(final UpdateEvent updateEvent) {
+  private void handleUpdate(final EntityEditModel.UpdateEvent updateEvent) {
     final List<Entity> updatedEntities = updateEvent.getUpdatedEntities();
     if (containsTableModel()) {
       if (updateEvent.isPrimaryKeyModified()) {
@@ -480,7 +474,7 @@ public class DefaultEntityModel implements EntityModel {
    * and sets the value of the master foreign key property
    * @param insertEvent the insert event
    */
-  private void handleMasterInsert(final InsertEvent insertEvent) {
+  private void handleMasterInsert(final EntityEditModel.InsertEvent insertEvent) {
     for (final Property.ForeignKeyProperty foreignKeyProperty :
             Entities.getForeignKeyProperties(getEntityID(), masterModel.getEntityID())) {
       if (editModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
@@ -496,7 +490,7 @@ public class DefaultEntityModel implements EntityModel {
    * Replaces the updated master entities wherever they are referenced
    * @param updateEvent the update event
    */
-  private void handleMasterUpdate(final UpdateEvent updateEvent) {
+  private void handleMasterUpdate(final EntityEditModel.UpdateEvent updateEvent) {
     editModel.replaceForeignKeyValues(masterModel.getEntityID(), updateEvent.getUpdatedEntities());
     if (containsTableModel()) {
       getTableModel().replaceForeignKeyValues(masterModel.getEntityID(), updateEvent.getUpdatedEntities());
@@ -507,7 +501,7 @@ public class DefaultEntityModel implements EntityModel {
    * Removes the deleted entities from all ComboBox models based on that entity type
    * @param deleteEvent the delete event
    */
-  private void handleMasterDelete(final DeleteEvent deleteEvent) {
+  private void handleMasterDelete(final EntityEditModel.DeleteEvent deleteEvent) {
     if (deleteEvent.getDeletedEntities().isEmpty()) {
       return;
     }
@@ -566,18 +560,18 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   private void bindEvents() {
-    editModel.addAfterInsertListener(new InsertListener() {
+    editModel.addAfterInsertListener(new EventAdapter<EntityEditModel.InsertEvent>() {
       /** {@inheritDoc} */
       @Override
-      public void inserted(final InsertEvent event) {
-        handleInsert(event);
+      public void eventOccurred(final EntityEditModel.InsertEvent eventInfo) {
+        handleInsert(eventInfo);
       }
     });
-    editModel.addAfterUpdateListener(new UpdateListener() {
+    editModel.addAfterUpdateListener(new EventAdapter<EntityEditModel.UpdateEvent>() {
       /** {@inheritDoc} */
       @Override
-      protected void updated(final UpdateEvent event) {
-        handleUpdate(event);
+      public void eventOccurred(final EntityEditModel.UpdateEvent eventInfo) {
+        handleUpdate(eventInfo);
       }
     });
     final EventListener initializer = new EventAdapter() {
@@ -597,22 +591,25 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   private void bindMasterModelEvents() {
-    masterModel.getEditModel().addAfterInsertListener(new InsertListener() {
+    masterModel.getEditModel().addAfterInsertListener(new EventAdapter<EntityEditModel.InsertEvent>() {
+      /** {@inheritDoc} */
       @Override
-      protected void inserted(final InsertEvent insertEvent) {
-        handleMasterInsert(insertEvent);
+      public void eventOccurred(final EntityEditModel.InsertEvent eventInfo) {
+        handleMasterInsert(eventInfo);
       }
     });
-    masterModel.getEditModel().addAfterUpdateListener(new UpdateListener() {
+    masterModel.getEditModel().addAfterUpdateListener(new EventAdapter<EntityEditModel.UpdateEvent>() {
+      /** {@inheritDoc} */
       @Override
-      protected void updated(final UpdateEvent updateEvent) {
-        handleMasterUpdate(updateEvent);
+      public void eventOccurred(final EntityEditModel.UpdateEvent eventInfo) {
+        handleMasterUpdate(eventInfo);
       }
     });
-    masterModel.getEditModel().addAfterDeleteListener(new DeleteListener() {
+    masterModel.getEditModel().addAfterDeleteListener(new EventAdapter<EntityEditModel.DeleteEvent>() {
+      /** {@inheritDoc} */
       @Override
-      protected void deleted(final DeleteEvent deleteEvent) {
-        handleMasterDelete(deleteEvent);
+      public void eventOccurred(final EntityEditModel.DeleteEvent eventInfo) {
+        handleMasterDelete(eventInfo);
       }
     });
   }

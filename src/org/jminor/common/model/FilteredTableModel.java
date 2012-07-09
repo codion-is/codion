@@ -86,22 +86,22 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   /**
    * @param listener a listener to be notified each time a column is hidden
    */
-  void addColumnHiddenListener(final EventListener listener);
+  void addColumnHiddenListener(final EventListener<C> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeColumnHiddenListener(final EventListener listener);
+  void removeColumnHiddenListener(final EventListener<C> listener);
 
   /**
    * @param listener a listener to be notified each time a column is shown
    */
-  void addColumnShownListener(final EventListener listener);
+  void addColumnShownListener(final EventListener<C> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeColumnShownListener(final EventListener listener);
+  void removeColumnShownListener(final EventListener<C> listener);
 
   /**
    * @param listener a listener to be notified each time the table data changes

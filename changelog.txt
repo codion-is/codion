@@ -3044,6 +3044,7 @@
   resources/server/config/logback.xml modified to support log file per user@client
   RemoteEntityConnectionImpl method logging now logs the root LogEntry to the log file, not only the sublog entries
   RemoteEntityConnectionImpl uses log level ERROR to log method calls, hacky
+0.6.6
   State.notifyObservers() removed
   StateImpl.notifyObservers() is no longer public
   StateObserver.addListeningAction() removed
@@ -3058,3 +3059,7 @@
   EntityPanel.checkIfInitialized() added and used
   EntityTablePanel.checkIfInitialized() added and used
   Column.columnHasDefaultValue() and isDenormalized() pushed down to Property.ColumnProperty
+  framework.client.model.event package removed, InsertEvent, InsertListener, UpdateEvent, UpdateListener, DeleteEvent and DeleteListener removed
+  InsertEvent, UpdateEvent and DeleteEvent made inner classes (interfaces) of EntityEditModel
+  DefaultEntityEditModel.InsertEventImpl, UpdateEventImpl and DeleteEventImpl added
+  FilteredTableModel.add/removeColumnHidden/ShownListener() generified

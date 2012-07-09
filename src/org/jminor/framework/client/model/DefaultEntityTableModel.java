@@ -13,8 +13,6 @@ import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.valuemap.exception.ValidationException;
-import org.jminor.framework.client.model.event.DeleteEvent;
-import org.jminor.framework.client.model.event.DeleteListener;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
@@ -629,7 +627,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
-  protected void handleDelete(final DeleteEvent event) {}
+  protected void handleDelete(final EntityEditModel.DeleteEvent event) {}
 
   private void bindEvents() {
     addColumnHiddenListener(new EventAdapter<Property>() {
@@ -648,11 +646,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   private void bindEditModelEvents() {
-    editModel.addAfterDeleteListener(new DeleteListener() {
+    editModel.addAfterDeleteListener(new EventAdapter<EntityEditModel.DeleteEvent>() {
       /** {@inheritDoc} */
       @Override
-      protected void deleted(final DeleteEvent event) {
-        handleDeleteInternal(event);
+      public void eventOccurred(final EntityEditModel.DeleteEvent eventInfo) {
+        handleDeleteInternal(eventInfo);
       }
     });
     editModel.addAfterRefreshListener(new EventAdapter() {
@@ -684,7 +682,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     });
   }
 
-  private void handleDeleteInternal(final DeleteEvent e) {
+  private void handleDeleteInternal(final EntityEditModel.DeleteEvent e) {
     if (removeItemsOnDelete) {
       removeItems(e.getDeletedEntities());
     }

@@ -421,7 +421,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   /**
    * @param listener a listener to be notified each time a insert has been performed
    */
-  void addAfterInsertListener(final EventListener listener);
+  void addAfterInsertListener(final EventListener<InsertEvent> listener);
 
   /**
    * @param listener a listener to remove
@@ -441,7 +441,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   /**
    * @param listener a listener to be notified each time an update has been performed
    */
-  void addAfterUpdateListener(final EventListener listener);
+  void addAfterUpdateListener(final EventListener<UpdateEvent> listener);
 
   /**
    * @param listener a listener to remove
@@ -461,7 +461,7 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
   /**
    * @param listener a listener to be notified each time a delete has been performed
    */
-  void addAfterDeleteListener(final EventListener listener);
+  void addAfterDeleteListener(final EventListener<DeleteEvent> listener);
 
   /**
    * @param listener a listener to remove
@@ -498,4 +498,39 @@ public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>
    * @param listener a listener to remove
    */
   void removeEntitiesChangedListener(final EventListener listener);
+
+  /**
+   * An event describing a insert action.
+   */
+  interface InsertEvent {
+    /**
+     * @return the entities just inserted
+     */
+    List<Entity> getInsertedEntities();
+  }
+
+  /**
+   * An event describing a delete action.
+   */
+  interface DeleteEvent {
+    /**
+     * @return the deleted entities
+     */
+    List<Entity> getDeletedEntities();
+  }
+
+  /**
+   * An event describing a update action.
+   */
+  interface UpdateEvent {
+    /**
+     * @return the updated entities
+     */
+    List<Entity> getUpdatedEntities();
+
+    /**
+     * @return true if primary key values were modified during the update
+     */
+    boolean isPrimaryKeyModified();
+  }
 }

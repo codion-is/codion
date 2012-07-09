@@ -15,12 +15,6 @@ import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.client.model.event.DeleteEvent;
-import org.jminor.framework.client.model.event.DeleteListener;
-import org.jminor.framework.client.model.event.InsertEvent;
-import org.jminor.framework.client.model.event.InsertListener;
-import org.jminor.framework.client.model.event.UpdateEvent;
-import org.jminor.framework.client.model.event.UpdateListener;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
@@ -342,10 +336,10 @@ public final class DefaultEntityEditModelTest {
 
       employeeEditModel.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
 
-      employeeEditModel.addAfterInsertListener(new InsertListener() {
+      employeeEditModel.addAfterInsertListener(new EventAdapter<EntityEditModel.InsertEvent>() {
         @Override
-        protected void inserted(final InsertEvent event) {
-          assertEquals(department, event.getInsertedEntities().get(0).getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+        public void eventOccurred(final EntityEditModel.InsertEvent eventInfo) {
+          assertEquals(department, eventInfo.getInsertedEntities().get(0).getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
         }
       });
       employeeEditModel.setInsertAllowed(false);
@@ -386,10 +380,10 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       employeeEditModel.setValue(EmpDept.EMPLOYEE_NAME, "BJORN");
       final List<Entity> toUpdate = Arrays.asList(employeeEditModel.getEntityCopy());
-      final UpdateListener listener = new UpdateListener() {
+      final EventListener<EntityEditModel.UpdateEvent> listener = new EventAdapter<EntityEditModel.UpdateEvent>() {
         @Override
-        protected void updated(final UpdateEvent event) {
-          assertEquals(toUpdate, event.getUpdatedEntities());
+        public void eventOccurred(final EntityEditModel.UpdateEvent eventInfo) {
+          assertEquals(toUpdate, eventInfo.getUpdatedEntities());
         }
       };
       employeeEditModel.addAfterUpdateListener(listener);
@@ -419,10 +413,10 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       final List<Entity> toDelete = Arrays.asList(employeeEditModel.getEntityCopy());
-      employeeEditModel.addAfterDeleteListener(new DeleteListener() {
+      employeeEditModel.addAfterDeleteListener(new EventAdapter<EntityEditModel.DeleteEvent>() {
         @Override
-        protected void deleted(final DeleteEvent event) {
-          assertEquals(toDelete, event.getDeletedEntities());
+        public void eventOccurred(final EntityEditModel.DeleteEvent eventInfo) {
+          assertEquals(toDelete, eventInfo.getDeletedEntities());
         }
       });
       employeeEditModel.setDeleteAllowed(false);

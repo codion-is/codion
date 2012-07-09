@@ -44,8 +44,6 @@ import org.jminor.framework.client.model.EntityDataProvider;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.client.model.event.InsertEvent;
-import org.jminor.framework.client.model.event.InsertListener;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -961,11 +959,12 @@ public final class EntityUiUtil {
     public void actionPerformed(final ActionEvent e) {
       final EntityEditPanel editPanel = panelProvider.createEditPanel(dataProvider.getConnectionProvider());
       editPanel.initializePanel();
-      editPanel.getEditModel().addAfterInsertListener(new InsertListener() {
+      editPanel.getEditModel().addAfterInsertListener(new EventAdapter<EntityEditModel.InsertEvent>() {
+        /** {@inheritDoc} */
         @Override
-        protected void inserted(final InsertEvent event) {
+        public void eventOccurred(final EntityEditModel.InsertEvent eventInfo) {
           lastInsertedEntities.clear();
-          lastInsertedEntities.addAll(event.getInsertedEntities());
+          lastInsertedEntities.addAll(eventInfo.getInsertedEntities());
         }
       });
       final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
