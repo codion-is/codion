@@ -13,7 +13,7 @@ import org.jminor.common.model.EventAdapter;
 public abstract class ValueChangeListener<K, V> extends EventAdapter<ValueChangeEvent<K, V>> {
 
   /**
-   * Calls <code>valueChanged()</code> assuming the given event is a ValueChangeEvent
+   * Calls <code>valueChanged()</code>
    * @param eventInfo the event info
    */
   @Override
