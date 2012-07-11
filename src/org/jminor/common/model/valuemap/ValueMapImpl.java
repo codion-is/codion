@@ -1,6 +1,3 @@
-/*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
- */
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.Event;
@@ -326,7 +323,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
 
   protected final void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
     if (evtValueChanged != null) {
-      evtValueChanged.fire(new ValueChangeEvent<K, V>(this, this, key, value, oldValue, true, initialization));
+      evtValueChanged.fire(new ValueChangeEvent<K, V>(this, key, value, oldValue, true, initialization));
     }
   }
 

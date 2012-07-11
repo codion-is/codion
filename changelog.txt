@@ -3071,3 +3071,5 @@
   ValueMap.initializeValue() removed, implementations appeared not to do anything but call setValue()
   Entity.initializeValue() removed, see above
   ValueMap.handleSetAs() removed, was overridden in EntityImpl only to copy the cached toString value from the source entity, not worth the complexity
+  CriteriaProvider removed, practically unused
+  ValueChangeEvent.valueOwner property removed, fixing a cyclical dependency

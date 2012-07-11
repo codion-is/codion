@@ -386,7 +386,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     final Object oldValue = entity.getValue(propertyID);
     entity.setValue(propertyID, prepareNewValue(propertyID, value));
     if (!Util.equal(value, oldValue)) {
-      notifyValueSet(propertyID, new ValueChangeEvent<String, Object>(this, entity, propertyID, value, oldValue, false, initialization));
+      notifyValueSet(propertyID, new ValueChangeEvent<String, Object>(this, propertyID, value, oldValue, false, initialization));
     }
   }
 
@@ -1001,7 +1001,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     return propertyComboBoxModels.containsKey(property);
   }
 
-  private static String getValueChangeDebugString(final ValueChangeEvent<String, Object> event) {
+  private String getValueChangeDebugString(final ValueChangeEvent<String, Object> event) {
     final StringBuilder stringBuilder = new StringBuilder();
     if (event.getSource() instanceof Entity) {
       stringBuilder.append("[entity] ");
@@ -1009,11 +1009,10 @@ public class DefaultEntityEditModel implements EntityEditModel {
     else {
       stringBuilder.append(event.isModelChange() ? "[model] " : "[ui] ");
     }
-    final Entity valueOwner = (Entity) event.getValueOwner();
-    final Property property = Entities.getProperty(valueOwner.getEntityID(), event.getKey());
+    final Property property = Entities.getProperty(getEntityID(), event.getKey());
     final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
             && ((Property.ColumnProperty) property).isForeignKeyProperty();
-    stringBuilder.append(valueOwner.getEntityID()).append(" : ").append(property).append(
+    stringBuilder.append(getEntityID()).append(" : ").append(property).append(
             isForeignKeyProperty ? " [fk]" : "").append("; ");
     if (!event.isInitialization()) {
       if (!event.isOldValueNull()) {
@@ -1045,6 +1044,16 @@ public class DefaultEntityEditModel implements EntityEditModel {
     return stringBuilder.toString();
   }
 
+  private final class StatusMessageListener extends ValueChangeListener<String, Object> {
+    /** {@inheritDoc} */
+    @Override
+    protected void valueChanged(final ValueChangeEvent<String, Object> event) {
+      final String msg = getValueChangeDebugString(event);
+      System.out.println(msg);
+      LOG.debug(msg);
+    }
+  }
+
   static final class PropertyValueProvider implements ValueCollectionProvider<Object> {
 
     private final EntityConnectionProvider connectionProvider;
@@ -1066,16 +1075,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
       catch (DatabaseException e) {
         throw new RuntimeException(e);
       }
-    }
-  }
-
-  private static final class StatusMessageListener extends ValueChangeListener<String, Object> {
-    /** {@inheritDoc} */
-    @Override
-    protected void valueChanged(final ValueChangeEvent<String, Object> event) {
-      final String msg = getValueChangeDebugString(event);
-      System.out.println(msg);
-      LOG.debug(msg);
     }
   }
 

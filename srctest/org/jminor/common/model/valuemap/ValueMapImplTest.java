@@ -51,7 +51,6 @@ public class ValueMapImplTest {
       @Override
       protected void valueChanged(final ValueChangeEvent<String, Integer> event) {
         Assert.assertEquals(key, event.getKey());
-        Assert.assertEquals(valueMap, event.getValueOwner());
         event.getOldValue();
         event.getNewValue();
         event.isInitialization();

@@ -108,9 +108,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
     return upperBound == null ? Collections.<Entity>emptyList() : (Collection<Entity>) upperBound;
   }
 
-  /**
-   * @return a Criteria based on the values in this search model.
-   */
+  /** {@inheritDoc} */
   @Override
   public final Criteria<Property.ColumnProperty> getCriteria() {
     return EntityCriteriaUtil.foreignKeyCriteria(getColumnIdentifier(), getSearchType(), getUpperBound());
