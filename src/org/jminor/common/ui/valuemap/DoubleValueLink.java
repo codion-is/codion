@@ -4,14 +4,14 @@
 package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.Util;
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
 
 import java.text.NumberFormat;
 
 /**
- * A class for linking a DoubleField to a ValueChangeMapEditModel double property value.
+ * A class for linking a DoubleField to a ValueMapEditModel double property value.
  */
 public final class DoubleValueLink<K> extends TextValueLink<K> {
 
@@ -23,7 +23,7 @@ public final class DoubleValueLink<K> extends TextValueLink<K> {
    * @param immediateUpdate if true the model value is update on each keystroke
    * @param linkType the link type
    */
-  public DoubleValueLink(final DoubleField textField, final ValueChangeMapEditModel<K, Object> editModel,
+  public DoubleValueLink(final DoubleField textField, final ValueMapEditModel<K, Object> editModel,
                          final K key, final boolean immediateUpdate, final LinkType linkType) {
     this(textField, editModel, key, immediateUpdate, linkType, Util.getNonGroupingNumberFormat());
   }
@@ -37,7 +37,7 @@ public final class DoubleValueLink<K> extends TextValueLink<K> {
    * @param linkType the link type
    * @param format the format to use when formatting a number before displaying it in the field
    */
-  public DoubleValueLink(final DoubleField textField, final ValueChangeMapEditModel<K, Object> editModel,
+  public DoubleValueLink(final DoubleField textField, final ValueMapEditModel<K, Object> editModel,
                          final K key, final boolean immediateUpdate, final LinkType linkType,
                          final NumberFormat format) {
     super(textField, editModel, key, immediateUpdate, linkType, format);

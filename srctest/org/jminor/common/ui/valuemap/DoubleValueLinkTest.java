@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
@@ -20,7 +20,7 @@ public class DoubleValueLinkTest {
 
   @Test
   public void test() throws Exception {
-    final ValueChangeMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final ValueMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(DoubleField.POINT);
     final NumberFormat format = NumberFormat.getNumberInstance();

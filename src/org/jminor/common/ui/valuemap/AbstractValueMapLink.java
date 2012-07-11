@@ -3,18 +3,18 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.control.AbstractValueLink;
 import org.jminor.common.ui.control.LinkType;
 
 /**
- * An abstract class for linking a UI component to a ValueChangeMapEditModel key value.
+ * An abstract class for linking a UI component to a ValueMapEditModel key value.
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<ValueChangeMapEditModel<K, V>, V> {
+public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<ValueMapEditModel<K, V>, V> {
 
   /**
    * The linked key
@@ -22,11 +22,11 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
   private final K key;
 
   /**
-   * @param editModel the ValueChangeMapEditModel instance
+   * @param editModel the ValueMapEditModel instance
    * @param key the key of the value to link
    * @param linkType the link type
    */
-  public AbstractValueMapLink(final ValueChangeMapEditModel<K, V> editModel, final K key, final LinkType linkType) {
+  public AbstractValueMapLink(final ValueMapEditModel<K, V> editModel, final K key, final LinkType linkType) {
     super(editModel, editModel.getValueChangeObserver(key), linkType);
     this.key = key;
   }
@@ -67,10 +67,10 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
   /**
    * If the current value is invalid this method should return a string describing the nature of
    * the invalidity, if the value is valid this method should return null
-   * @param editModel the underlying ValueChangeMapEditModel
+   * @param editModel the underlying ValueMapEditModel
    * @return a validation string if the value is invalid, null otherwise
    */
-  protected final String getValidationMessage(final ValueChangeMapEditModel<K, V> editModel) {
+  protected final String getValidationMessage(final ValueMapEditModel<K, V> editModel) {
     try {
       editModel.validate(key, ValueMapValidator.UNKNOWN);
       return null;
@@ -81,9 +81,9 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
   }
 
   /**
-   * @return the value owner, in this case a ValueChangeMapEditor
+   * @return the value owner, in this case a ValueMapEditModel
    */
-  protected final ValueChangeMapEditModel<K, V> getEditModel() {
+  protected final ValueMapEditModel<K, V> getEditModel() {
     return super.getValueOwner();
   }
 }

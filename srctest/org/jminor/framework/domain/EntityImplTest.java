@@ -356,9 +356,9 @@ public class EntityImplTest {
     employee.setValue(EmpDept.EMPLOYEE_NAME, "noname");
     assertEquals(employee.getValue(EmpDept.EMPLOYEE_NAME), "noname");
 
-    employee.addValueListener(new ValueChangeListener() {
+    employee.addValueListener(new ValueChangeListener<String, Object>() {
       @Override
-      protected void valueChanged(final ValueChangeEvent changeEvent) {
+      protected void valueChanged(final ValueChangeEvent<String, Object> changeEvent) {
         if (changeEvent.getKey().equals(EmpDept.EMPLOYEE_DEPARTMENT_FK)) {
           assertTrue(employee.isValueNull(EmpDept.EMPLOYEE_DEPARTMENT_FK));
           assertTrue(employee.isValueNull(EmpDept.EMPLOYEE_DEPARTMENT));

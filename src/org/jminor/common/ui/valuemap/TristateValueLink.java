@@ -4,7 +4,7 @@
 package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.checkbox.TristateButtonModel;
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
 import java.awt.event.ItemEvent;
@@ -23,7 +23,7 @@ public final class TristateValueLink<K> extends AbstractValueMapLink<K, Object>{
    * @param editModel the edit model
    * @param key the key of the property to link
    */
-  public TristateValueLink(final TristateButtonModel buttonModel, final ValueChangeMapEditModel<K, Object> editModel,
+  public TristateValueLink(final TristateButtonModel buttonModel, final ValueMapEditModel<K, Object> editModel,
                            final K key) {
     this(buttonModel, editModel, key, LinkType.READ_WRITE);
   }
@@ -35,7 +35,7 @@ public final class TristateValueLink<K> extends AbstractValueMapLink<K, Object>{
    * @param key the key of the property to link
    * @param linkType the link type
    */
-  public TristateValueLink(final TristateButtonModel buttonModel, final ValueChangeMapEditModel<K, Object> editModel,
+  public TristateValueLink(final TristateButtonModel buttonModel, final ValueMapEditModel<K, Object> editModel,
                            final K key, final LinkType linkType) {
     super(editModel, key, linkType);
     this.buttonModel = buttonModel;

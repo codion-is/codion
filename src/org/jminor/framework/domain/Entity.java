@@ -4,7 +4,6 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.IdSource;
-import org.jminor.common.model.valuemap.ValueChangeMap;
 import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
@@ -21,9 +20,9 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * Represents a row in a database table, providing access to the column values via the {@link org.jminor.common.model.valuemap.ValueMap} interface.
+ * Represents a row in a database table, providing access to the column values via the {@link ValueMap} interface.
  */
-public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entity> {
+public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
 
   /**
    * @return the entity ID
@@ -207,15 +206,6 @@ public interface Entity extends ValueChangeMap<String, Object>, Comparable<Entit
    * @return true if this entity contains a value for the given property
    */
   boolean containsValue(final Property property);
-
-  /**
-   * Initializes the given value assuming it has no previously set value.
-   * This method does not propagate foreign key values nor set denormalized values.
-   * This method should be used with care, if at all.
-   * @param property the property for which to initialize the value
-   * @param value the value
-   */
-  void initializeValue(final Property property, final Object value);
 
   /**
    * @param entityID the entityID

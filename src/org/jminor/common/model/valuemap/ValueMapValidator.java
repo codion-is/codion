@@ -51,7 +51,7 @@ public interface ValueMapValidator<K, V> {
    * @param valueMap the value map to validate
    * @param key the key the value is associated with
    * @param action describes the action requiring validation,
-   * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
+   * ValueMapEditModel.INSERT, ValueMapEditModel.UPDATE or ValueMapEditModel.UNKNOWN
    * @throws org.jminor.common.model.valuemap.exception.ValidationException if the given value is not valid for the given key
    */
   void validate(final ValueMap<K, V> valueMap, final K key, final int action) throws ValidationException;

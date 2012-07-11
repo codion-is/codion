@@ -7,7 +7,7 @@ import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.ComboBoxModel;
@@ -18,7 +18,7 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 /**
- * A class for linking a ComboBox to a ValueChangeMapEditModel property value.
+ * A class for linking a ComboBox to a ValueMapEditModel property value.
  */
 public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
 
@@ -30,10 +30,10 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
   /**
    * Instantiate a new ComboBoxValueLink
    * @param comboBox the combo box to link
-   * @param editModel the ValueChangeMapEditModel instance
+   * @param editModel the ValueMapEditModel instance
    * @param property the property to link to
    */
-  public ComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<K, Object> editModel,
+  public ComboBoxValueLink(final JComboBox comboBox, final ValueMapEditModel<K, Object> editModel,
                            final K property) {
     this(comboBox, editModel, property, LinkType.READ_WRITE, false);
   }
@@ -41,12 +41,12 @@ public class ComboBoxValueLink<K> extends AbstractValueMapLink<K, Object> {
   /**
    * Instantiate a new ComboBoxValueLink
    * @param comboBox the combo box to link
-   * @param editModel the ValueChangeMapEditModel instance
+   * @param editModel the ValueMapEditModel instance
    * @param property the property to link to
    * @param linkType the link type
    * @param isString true if the underlying value is string based
    */
-  public ComboBoxValueLink(final JComboBox comboBox, final ValueChangeMapEditModel<K, Object> editModel,
+  public ComboBoxValueLink(final JComboBox comboBox, final ValueMapEditModel<K, Object> editModel,
                            final K property, final LinkType linkType, final boolean isString) {
     super(editModel, property, linkType);
     this.boxModel = comboBox.getModel();

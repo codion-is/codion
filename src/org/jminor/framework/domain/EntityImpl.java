@@ -6,8 +6,6 @@ package org.jminor.framework.domain;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
-import org.jminor.common.model.valuemap.ValueChangeMap;
-import org.jminor.common.model.valuemap.ValueChangeMapImpl;
 import org.jminor.common.model.valuemap.ValueMapImpl;
 
 import java.awt.Color;
@@ -26,7 +24,7 @@ import java.util.Map;
 /**
  * Represents a row in a database table, providing access to the column values via the {@link org.jminor.common.model.valuemap.ValueMap} interface.
  */
-final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Entity, Serializable, Comparable<Entity> {
+final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, Serializable, Comparable<Entity> {
 
   private static final long serialVersionUID = 1;
 
@@ -86,10 +84,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   @Override
   public Key getPrimaryKey() {
     if (primaryKey == null) {
-      primaryKey = new KeyImpl(definition);
-      for (final Property.PrimaryKeyProperty property : definition.getPrimaryKeyProperties()) {
-        primaryKey.setValue(property.getPropertyID(), getValue(property));
-      }
+      primaryKey = initializePrimaryKey(false);
     }
 
     return primaryKey;
@@ -98,12 +93,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   /** {@inheritDoc} */
   @Override
   public Key getOriginalPrimaryKey() {
-    final Key key = new KeyImpl(definition);
-    for (final Property.PrimaryKeyProperty property : definition.getPrimaryKeyProperties()) {
-      key.setValue(property.getPropertyID(), getOriginalValue(property.getPropertyID()));
-    }
-
-    return key;
+    return initializePrimaryKey(true);
   }
 
   /** {@inheritDoc} */
@@ -146,28 +136,6 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   @Override
   public Object setValue(final Property property, final Object value) {
     return setValue(property, value, true, EntityDefinitionImpl.getDefinitionMap());
-  }
-
-  /**
-   * Initializes the given value assuming it has no previously set value.
-   * This method does not propagate foreign key values.
-   * This method should be used with care, if at all.
-   * @param key the ID of the property for which to initialize the value
-   * @param value the value
-   */
-  @Override
-  public void initializeValue(final String key, final Object value) {
-    initializeValue(getProperty(key), value);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void initializeValue(final Property property, final Object value) {
-    Util.rejectNullValue(property, PROPERTY_PARAM);
-    if (property instanceof Property.PrimaryKeyProperty) {
-      primaryKey = null;
-    }
-    super.initializeValue(property.getPropertyID(), value);
   }
 
   /**
@@ -529,6 +497,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
   protected void handleClear() {
     super.handleClear();
     primaryKey = null;
+    referencedPrimaryKeysCache = null;
     toString = null;
   }
 
@@ -548,23 +517,11 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     });
   }
 
-  /** {@inheritDoc} */
-  @Override
-  protected void handleSetAs(final ValueChangeMap<String, Object> sourceMap) {
-    super.handleSetAs(sourceMap);
-    primaryKey = null;
-    referencedPrimaryKeysCache = null;
-    toString = null;
-    if (sourceMap instanceof Entity) {
-      toString = sourceMap.toString();
-    }
-  }
-
   private void propagateForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue,
-                                         final boolean initialization, final Map<String, Definition> entityDefinitions) {
-    setForeignKeyValues(foreignKeyProperty, newValue, initialization, entityDefinitions);
+                                         final Map<String, Definition> entityDefinitions) {
+    setForeignKeyValues(foreignKeyProperty, newValue, entityDefinitions);
     if (definition.hasDenormalizedProperties()) {
-      setDenormalizedValues(foreignKeyProperty, newValue, initialization, entityDefinitions);
+      setDenormalizedValues(foreignKeyProperty, newValue, entityDefinitions);
     }
   }
 
@@ -575,11 +532,10 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * the corresponding reference values are set to null.
    * @param foreignKeyProperty the entity reference property
    * @param referencedEntity the referenced entity
-   * @param initialization true if the values are being initialized
    * @param entityDefinitions a global entity definition map
    */
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
-                                   final boolean initialization, final Map<String, Definition> entityDefinitions) {
+                                   final Map<String, Definition> entityDefinitions) {
     referencedPrimaryKeysCache = null;
     final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
             entityDefinitions.get(foreignKeyProperty.getReferencedEntityID()).getPrimaryKeyProperties();
@@ -593,12 +549,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
         else {
           value = referencedEntity.getValue(primaryKeyProperty);
         }
-        if (initialization) {
-          initializeValue(referenceProperty, value);
-        }
-        else {
-          setValue(referenceProperty, value, false, entityDefinitions);
-        }
+        setValue(referenceProperty, value, false, entityDefinitions);
       }
     }
   }
@@ -607,11 +558,10 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
    * Sets the denormalized property values
    * @param foreignKeyProperty the foreign key property referring to the value source
    * @param referencedEntity the entity value owning the denormalized values
-   * @param initialization true if the values are being initialized
    * @param entityDefinitions a global entity definition map
    */
   private void setDenormalizedValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
-                                     final boolean initialization, final Map<String, Definition> entityDefinitions) {
+                                     final Map<String, Definition> entityDefinitions) {
     final Collection<Property.DenormalizedProperty> denormalizedProperties =
             definition.getDenormalizedProperties(foreignKeyProperty.getPropertyID());
     if (denormalizedProperties != null) {
@@ -623,12 +573,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
         else {
           value = referencedEntity.getValue(denormalizedProperty.getDenormalizedProperty());
         }
-        if (initialization) {
-          initializeValue(denormalizedProperty, value);
-        }
-        else {
-          setValue(denormalizedProperty, value, false, entityDefinitions);
-        }
+        setValue(denormalizedProperty, value, false, entityDefinitions);
       }
     }
   }
@@ -692,6 +637,20 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     return referencedPrimaryKeysCache.get(foreignKeyProperty);
   }
 
+  /**
+   * Intializes a Key for this Entity instance
+   * @param originalValues if true then the original values of the properties involved are used
+   * @return a Key based on the values in this Entity instance
+   */
+  private Key initializePrimaryKey(final boolean originalValues) {
+    final Key key = new KeyImpl(definition);
+    for (final Property.PrimaryKeyProperty property : definition.getPrimaryKeyProperties()) {
+      key.setValue(property.getPropertyID(), originalValues ? getOriginalValue(property.getPropertyID()) : getValue(property));
+    }
+
+    return key;
+  }
+
   private Object getDerivedValue(final Property.DerivedProperty derivedProperty) {
     final Map<String, Object> values = new HashMap<String, Object>(derivedProperty.getLinkedPropertyIDs().size());
     for (final String linkedPropertyID : derivedProperty.getLinkedPropertyIDs()) {
@@ -751,7 +710,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
 
     toString = null;
     if (property instanceof Property.ForeignKeyProperty) {
-      propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) value, false, entityDefinitions);
+      propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) value, entityDefinitions);
     }
 
     return super.setValue(property.getPropertyID(), value);
@@ -786,7 +745,7 @@ final class EntityImpl extends ValueChangeMapImpl<String, Object> implements Ent
     for (final Property property : definition.getProperties().values()) {
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
         final String propertyID = property.getPropertyID();
-        super.initializeValue(propertyID, stream.readObject());
+        super.setValue(propertyID, stream.readObject());
         if (isModified && stream.readBoolean()) {
           setOriginalValue(propertyID, stream.readObject());
         }

@@ -4,7 +4,7 @@
 package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.DocumentAdapter;
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.event.DocumentEvent;
@@ -18,7 +18,7 @@ import java.text.Format;
 import java.text.ParsePosition;
 
 /**
- * A class for linking a text component to a ValueChangeMapEditModel text property value.
+ * A class for linking a text component to a ValueMapEditModel text property value.
  */
 public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
 
@@ -37,11 +37,11 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
   /**
    * Instantiates a new TextValueLink
    * @param textComponent the text component to link
-   * @param editModel the ValueChangeMapEditModel instance
+   * @param editModel the ValueMapEditModel instance
    * @param key the key to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    */
-  public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
+  public TextValueLink(final JTextComponent textComponent, final ValueMapEditModel<K, Object> editModel,
                        final K key, final boolean immediateUpdate) {
     this(textComponent, editModel, key, immediateUpdate, LinkType.READ_WRITE);
   }
@@ -49,13 +49,13 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
   /**
    * Instantiates a new TextValueLink
    * @param textComponent the text component to link
-   * @param editModel the ValueChangeMapEditModel instance
+   * @param editModel the ValueMapEditModel instance
    * @param key the key to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * otherwise it is updated on actionPerformed or focusLost
    * @param linkType the link type
    */
-  public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
+  public TextValueLink(final JTextComponent textComponent, final ValueMapEditModel<K, Object> editModel,
                        final K key, final boolean immediateUpdate, final LinkType linkType) {
     this(textComponent, editModel, key, immediateUpdate, linkType, null);
   }
@@ -63,7 +63,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
   /**
    * Instantiates a new TextValueLink
    * @param textComponent the text component to link
-   * @param editModel the ValueChangeMapEditModel instance
+   * @param editModel the ValueMapEditModel instance
    * @param key the key to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * otherwise it is updated on actionPerformed or focusLost
@@ -71,7 +71,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    * @param format the format to use when displaying the linked value,
    * null if no formatting should be performed
    */
-  public TextValueLink(final JTextComponent textComponent, final ValueChangeMapEditModel<K, Object> editModel,
+  public TextValueLink(final JTextComponent textComponent, final ValueMapEditModel<K, Object> editModel,
                        final K key, final boolean immediateUpdate, final LinkType linkType, final Format format) {
     super(editModel, key, linkType);
     this.document = textComponent.getDocument();

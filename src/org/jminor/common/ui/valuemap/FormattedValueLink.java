@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.JFormattedTextField;
@@ -11,7 +11,7 @@ import java.text.Format;
 import java.text.ParseException;
 
 /**
- * A class for linking a JFormattedTextField to a ValueChangeMapEditModel property value.
+ * A class for linking a JFormattedTextField to a ValueMapEditModel property value.
  */
 public class FormattedValueLink<K> extends TextValueLink<K> {
 
@@ -20,13 +20,13 @@ public class FormattedValueLink<K> extends TextValueLink<K> {
   /**
    * Instantiates a new FormattedValueLink
    * @param textComponent the text component to link
-   * @param editModel the ValueChangeMapEditModel instance
+   * @param editModel the ValueMapEditModel instance
    * @param key the key to link
    * @param format the format
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * @param linkType the link type
    */
-  public FormattedValueLink(final JFormattedTextField textComponent, final ValueChangeMapEditModel<K, Object> editModel,
+  public FormattedValueLink(final JFormattedTextField textComponent, final ValueMapEditModel<K, Object> editModel,
                             final K key, final Format format, final boolean immediateUpdate,
                             final LinkType linkType) {
     super(textComponent, editModel, key, immediateUpdate, linkType, format);

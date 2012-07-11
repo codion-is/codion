@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
@@ -18,7 +18,7 @@ public class IntValueLinkTest {
 
   @Test
   public void nullInitialValue() throws Exception {
-    final ValueChangeMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final ValueMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final IntField txt = new IntField();
     new IntValueLink<String>(txt, model, EmpDept.EMPLOYEE_ID, true, LinkType.READ_WRITE);
     assertNull("Initial Integer value should be null", model.getValue(EmpDept.EMPLOYEE_ID));
@@ -32,7 +32,7 @@ public class IntValueLinkTest {
 
   @Test
   public void nonNullInitialValue() {
-    final ValueChangeMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final ValueMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     model.setValue(EmpDept.EMPLOYEE_ID, 32);
     final IntField txt = new IntField();
     new IntValueLink<String>(txt, model, EmpDept.EMPLOYEE_ID, true, LinkType.READ_WRITE);

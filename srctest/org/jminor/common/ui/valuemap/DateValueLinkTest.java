@@ -5,7 +5,7 @@ package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
@@ -25,7 +25,7 @@ public class DateValueLinkTest {
 
   @Test
   public void test() throws Exception {
-    final ValueChangeMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final ValueMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
     final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format), true);
     new DateValueLink<String>(txtDate, model, EmpDept.EMPLOYEE_HIREDATE, LinkType.READ_WRITE, format, false);

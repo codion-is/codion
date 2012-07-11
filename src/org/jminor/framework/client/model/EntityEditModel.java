@@ -9,7 +9,7 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entity;
@@ -21,7 +21,7 @@ import java.util.List;
 /**
  * Specifies a class for editing {@link Entity} instances.
  */
-public interface EntityEditModel extends ValueChangeMapEditModel<String, Object>, Refreshable, EntityDataProvider {
+public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refreshable, EntityDataProvider {
 
   /**
    * @return a value map containing the default values

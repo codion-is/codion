@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
 import javax.swing.ButtonModel;
@@ -23,7 +23,7 @@ public final class BooleanValueLink<K> extends AbstractValueMapLink<K, Object> {
    * @param editModel the edit model
    * @param key the key of the property to link
    */
-  public BooleanValueLink(final ButtonModel buttonModel, final ValueChangeMapEditModel<K, Object> editModel,
+  public BooleanValueLink(final ButtonModel buttonModel, final ValueMapEditModel<K, Object> editModel,
                           final K key) {
     this(buttonModel, editModel, key, LinkType.READ_WRITE);
   }
@@ -35,7 +35,7 @@ public final class BooleanValueLink<K> extends AbstractValueMapLink<K, Object> {
    * @param key the key of the property to link
    * @param linkType the link type
    */
-  public BooleanValueLink(final ButtonModel buttonModel, final ValueChangeMapEditModel<K, Object> editModel,
+  public BooleanValueLink(final ButtonModel buttonModel, final ValueMapEditModel<K, Object> editModel,
                           final K key, final LinkType linkType) {
     super(editModel, key, linkType);
     this.buttonModel = buttonModel;

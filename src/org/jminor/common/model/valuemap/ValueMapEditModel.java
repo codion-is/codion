@@ -9,11 +9,11 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
 /**
- * Specifies an object which facilitates the editing of values in a ValueChangeMap
+ * Specifies an object which facilitates the editing of values in a ValueMap
  * @param <K> the type of the value map keys
  * @param <V> the type of the value map values
  */
-public interface ValueChangeMapEditModel<K, V> {
+public interface ValueMapEditModel<K, V> {
 
   /**
    * @return a StateObserver indicating if any values in this value map have been modified
@@ -102,7 +102,7 @@ public interface ValueChangeMapEditModel<K, V> {
    * Returns true if the given value is valid for the given key, using the <code>validate</code> method
    * @param key the key
    * @param action describes the action requiring validation,
-   * ValueChangeMapEditModel.INSERT, ValueChangeMapEditModel.UPDATE or ValueChangeMapEditModel.UNKNOWN
+   * ValueMapEditModel.INSERT, ValueMapEditModel.UPDATE or ValueMapEditModel.UNKNOWN
    * @return true if the value is valid
    * @see #validate(Object, int)
    * @see ValueMapValidator#validate(ValueMap, Object, int)

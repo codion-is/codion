@@ -13,7 +13,7 @@ public final class ValueChangeEvent<K, V> {
   /**
    * The value map owning the value
    */
-  private final ValueChangeMap<K, V> valueOwner;
+  private final ValueMap<K, V> valueOwner;
 
   /**
    * The source of the value change
@@ -56,7 +56,7 @@ public final class ValueChangeEvent<K, V> {
    * @param isModelChange true if the value change originates from the model, false if it originates in the UI
    * @param initialization true if the value was being initialized
    */
-  public ValueChangeEvent(final Object source, final ValueChangeMap<K, V> valueOwner, final K key, final V newValue,
+  public ValueChangeEvent(final Object source, final ValueMap<K, V> valueOwner, final K key, final V newValue,
                           final V oldValue, final boolean isModelChange, final boolean initialization) {
     Util.rejectNullValue(key, "key");
     this.source = source;
@@ -71,7 +71,7 @@ public final class ValueChangeEvent<K, V> {
   /**
    * @return the object owning the value
    */
-  public ValueChangeMap<K, V> getValueOwner() {
+  public ValueMap<K, V> getValueOwner() {
     return valueOwner;
   }
 

@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.db.EntityConnectionImplTest;
@@ -19,7 +19,7 @@ public class TextValueLinkTest {
 
   @Test
   public void nullInitialValue() throws Exception {
-    final ValueChangeMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final ValueMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final JTextField txt = new JTextField();
     new TextValueLink<String>(txt, model, EmpDept.EMPLOYEE_NAME, true, LinkType.READ_WRITE);
     assertTrue("String value should be empty", model.isValueNull(EmpDept.EMPLOYEE_NAME));
@@ -35,7 +35,7 @@ public class TextValueLinkTest {
 
   @Test
   public void noneNullInitialValue() throws Exception {
-    final ValueChangeMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final ValueMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final JTextField txt = new JTextField();
     model.setValue(EmpDept.EMPLOYEE_NAME, "name");
     new TextValueLink<String>(txt, model, EmpDept.EMPLOYEE_NAME, true, LinkType.READ_WRITE);

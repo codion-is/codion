@@ -775,7 +775,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         final List<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
         if (referencedPrimaryKeys.isEmpty()) {
           for (final Entity entity : entities) {
-            entity.initializeValue(foreignKeyProperty, null);
+            entity.setValue(foreignKeyProperty, null);
           }
         }
         else {
@@ -784,7 +784,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
           final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCriteria, currentForeignKeyFetchDepth + 1);
           final Map<Entity.Key, Entity> hashedReferencedEntities = EntityUtil.hashByPrimaryKey(referencedEntities);
           for (final Entity entity : entities) {
-            entity.initializeValue(foreignKeyProperty, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
+            entity.setValue(foreignKeyProperty, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
           }
         }
       }
@@ -1369,13 +1369,13 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         for (final Property.TransientProperty transientProperty : transientProperties) {
           if (!(transientProperty instanceof Property.DenormalizedViewProperty)
                   && !(transientProperty instanceof Property.DerivedProperty)) {
-            entity.initializeValue(transientProperty, null);
+            entity.setValue(transientProperty, null);
           }
         }
       }
       for (final Property.ColumnProperty property : properties) {
         try {
-          entity.initializeValue(property, getValue(resultSet, property));
+          entity.setValue(property, getValue(resultSet, property));
         }
         catch (Exception e) {
           throw new SQLException("Unable to load property: " + property + " for entity: " + entityID, e);

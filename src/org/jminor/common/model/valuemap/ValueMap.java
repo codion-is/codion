@@ -3,6 +3,9 @@
  */
 package org.jminor.common.model.valuemap;
 
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.StateObserver;
+
 import java.util.Collection;
 
 /**
@@ -34,6 +37,13 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
   void clear();
 
   /**
+   * After a call to this method this ValueMap contains the same values and original values as the given map.
+   * A null argument to this method clears the destination map of all values and original values.
+   * @param sourceMap the map to copy or null for clearing the destination map
+   */
+  void setAs(final ValueMap<K, V> sourceMap);
+
+  /**
    * Returns true if a null value is mapped to the given key.
    * @param key the key
    * @return true if the value mapped to the given key is null
@@ -54,9 +64,14 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
   Collection<V> getValues();
 
   /**
-   * @return an unmodifiable view of the keys mapping the values in this ValueChangeMap
+   * @return an unmodifiable view of the keys mapping the values in this ValueMap
    */
   Collection<K> getValueKeys();
+
+  /**
+   * @return an unmodifiable view of the keys mapping the original values in this ValueMap
+   */
+  Collection<K> getOriginalValueKeys();
 
   /**
    * @return the number of values in this map
@@ -69,6 +84,93 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
    * @return a deep copy of the given value, or the same instance in case the value is immutable
    */
   V copyValue(final V value);
+
+  /**
+   * Returns the original value associated with the given key or the current value if it has not been changed.
+   * @param key the key for which to retrieve the original value
+   * @return the original value
+   */
+  V getOriginalValue(final K key);
+
+  /**
+   * @return true if a value has been modified.
+   */
+  boolean isModified();
+
+  /**
+   * Returns true if the value associated with the given key has been modified..
+   * @param key the key
+   * @return true if the value has changed
+   */
+  boolean isModified(final K key);
+
+  /**
+   * Reverts the value associated with the given key to its original value.
+   * If the value has not been changed then calling this method has no effect.
+   * @param key the key for which to revert the value
+   */
+  void revertValue(final K key);
+
+  /**
+   * Reverts all value changes that have been made.
+   * This value map will be unmodified after a call to this method.
+   * If no changes have been made then calling this method has no effect.
+   */
+  void revertAll();
+
+  /**
+   * Saves the value associated with the given key, that is, removes the original value.
+   * If no original value exists calling this method has no effect.
+   * @param key the key for which to save the value
+   */
+  void saveValue(final K key);
+
+  /**
+   * Saves all the value changes that have been made.
+   * This value map will be unmodified after a call to this method.
+   */
+  void saveAll();
+
+  /**
+   * @return a deep copy of this value map in it's original state
+   */
+  ValueMap<K, V> getOriginalCopy();
+
+  /**
+   * @return a new ValueMap instance compatible with this instance
+   */
+  ValueMap<K, V> getInstance();
+
+  /**
+   * @return a deep copy of this value map
+   */
+  ValueMap<K, V> getCopy();
+
+  /**
+   * @return a StateObserver indicating if this value map has been modified.
+   */
+  StateObserver getModifiedState();
+
+  /**
+   * Returns an EventObserver notified each time a value changes, with a {@link ValueChangeEvent} argument.
+   * @return an EventObserver notified when a value changes.
+   * @see org.jminor.common.model.valuemap.ValueChangeEvent
+   */
+  EventObserver getValueChangeObserver();
+
+  /**
+   * Adds a ValueChangeListener, this listener will be notified each time a value changes
+   * Adding the same listener multiple times has no effect.
+   * @param valueListener the ValueChangeListener
+   * @see org.jminor.common.model.valuemap.ValueChangeEvent
+   */
+  void addValueListener(final ValueChangeListener<K, V> valueListener);
+
+  /**
+   * Removes the given value listener if it has been registered with this value map.
+   * @param valueListener the ValueChangeListener to remove
+   */
+  void removeValueListener(final ValueChangeListener valueListener);
 
   /**
    * Describes an object responsible for providing String representations of ValueMap instances

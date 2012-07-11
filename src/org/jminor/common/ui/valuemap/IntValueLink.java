@@ -4,14 +4,14 @@
 package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.Util;
-import org.jminor.common.model.valuemap.ValueChangeMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.textfield.IntField;
 
 import java.text.NumberFormat;
 
 /**
- * A class for linking a IntField to a ValueChangeMapEditor int key value.
+ * A class for linking a IntField to a ValueMapEditModel int key value.
  */
 public final class IntValueLink<K> extends TextValueLink<K> {
 
@@ -23,7 +23,7 @@ public final class IntValueLink<K> extends TextValueLink<K> {
    * @param immediateUpdate if true the model value is update on each keystroke
    * @param linkType the link type
    */
-  public IntValueLink(final IntField textField, final ValueChangeMapEditModel<K, Object> editModel,
+  public IntValueLink(final IntField textField, final ValueMapEditModel<K, Object> editModel,
                       final K key, final boolean immediateUpdate, final LinkType linkType) {
     this(textField, editModel, key, immediateUpdate, linkType, Util.getNonGroupingNumberFormat(true));
   }
@@ -37,7 +37,7 @@ public final class IntValueLink<K> extends TextValueLink<K> {
    * @param linkType the link type
    * @param format the format to use when formatting a number before displaying it in the field
    */
-  public IntValueLink(final IntField textField, final ValueChangeMapEditModel<K, Object> editModel,
+  public IntValueLink(final IntField textField, final ValueMapEditModel<K, Object> editModel,
                       final K key, final boolean immediateUpdate, final LinkType linkType, final NumberFormat format) {
     super(textField, editModel, key, immediateUpdate, linkType, format);
   }

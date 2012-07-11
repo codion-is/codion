@@ -3066,3 +3066,8 @@
   EntityConnectionImpl.selectMany() bug fixed, no longer commits if the criteria is marked as selectForUpdate, tested
   EntityCriteria, EntitySelectCriteria, some javadoc improvements
   PropertyImpl, unused constructors removed
+  ValueChangeMap.add/RemoveValueListener() parameter now ValueChangeListener
+  ValueChangeMap merged up into ValueMap, removed
+  ValueMap.initializeValue() removed, implementations appeared not to do anything but call setValue()
+  Entity.initializeValue() removed, see above
+  ValueMap.handleSetAs() removed, was overridden in EntityImpl only to copy the cached toString value from the source entity, not worth the complexity
