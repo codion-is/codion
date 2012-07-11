@@ -109,7 +109,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   /**
    * A cell renderer for doubles.
    */
-  public static final class DoubleRenderer extends DefaultTableCellRenderer {
+  public static final class DoubleRenderer extends AlignedRenderer {
     private final NumberFormat format;
 
     /**
@@ -125,8 +125,8 @@ public class EntityTableCellRenderer implements TableCellRenderer {
      * @param format the format
      */
     public DoubleRenderer(final NumberFormat format) {
+      super(JLabel.RIGHT);
       this.format = format;
-      setHorizontalAlignment(JLabel.RIGHT);
     }
 
     /** {@inheritDoc} */
@@ -148,7 +148,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   /**
    * A cell renderer for integers.
    */
-  public static final class IntegerRenderer extends DefaultTableCellRenderer {
+  public static final class IntegerRenderer extends AlignedRenderer {
     private final NumberFormat format;
 
     /**
@@ -164,8 +164,8 @@ public class EntityTableCellRenderer implements TableCellRenderer {
      * @param format the format
      */
     public IntegerRenderer(final NumberFormat format) {
+      super(JLabel.RIGHT);
       this.format = format;
-      setHorizontalAlignment(JLabel.RIGHT);
     }
 
     /** {@inheritDoc} */
@@ -187,7 +187,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   /**
    * A cell renderer for dates.
    */
-  public static final class DateRenderer extends DefaultTableCellRenderer {
+  public static final class DateRenderer extends AlignedRenderer {
     private final DateFormat format;
 
     /**
@@ -203,8 +203,8 @@ public class EntityTableCellRenderer implements TableCellRenderer {
      * @param format the format
      */
     public DateRenderer(final DateFormat format) {
+      super(JLabel.RIGHT);
       this.format =  format;
-      setHorizontalAlignment(JLabel.RIGHT);
     }
 
     /** {@inheritDoc} */
@@ -229,7 +229,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   /**
    * A cell renderer for timestamps.
    */
-  public static final class TimestampRenderer extends DefaultTableCellRenderer {
+  public static final class TimestampRenderer extends AlignedRenderer {
     private final DateFormat format;
 
     /**
@@ -245,8 +245,8 @@ public class EntityTableCellRenderer implements TableCellRenderer {
      * @param format the format
      */
     public TimestampRenderer(final DateFormat format) {
+      super(JLabel.RIGHT);
       this.format = format;
-      setHorizontalAlignment(JLabel.RIGHT);
     }
 
     /** {@inheritDoc} */
@@ -294,6 +294,15 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       setEnabled(value != null);
 
       return this;
+    }
+  }
+
+  /**
+   * An aligned TableCellRenderer
+   */
+  private static class AlignedRenderer extends DefaultTableCellRenderer {
+    private AlignedRenderer(final int horizontalAlignment) {
+      setHorizontalAlignment(horizontalAlignment);
     }
   }
 }

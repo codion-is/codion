@@ -17,7 +17,6 @@ import org.jminor.common.ui.textfield.SizedDocument;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
-import javax.swing.DefaultListModel;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
@@ -987,17 +986,12 @@ public final class UiUtil {
   }
 
   public static Object selectValue(final JComponent dialogOwner, final Collection<?> values, final String dialogTitle) {
-    final DefaultListModel listModel = new DefaultListModel();
-    for (final Object value : values) {
-      listModel.addElement(value);
-    }
-
     final JList list = new JList(values.toArray());
     final Window owner = getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new DisposeWindowAction(dialog);
     final Action cancelAction = new AbstractAction("UiUtil.cancel") {
+      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         list.clearSelection();
@@ -1005,18 +999,29 @@ public final class UiUtil {
       }
     };
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    final JButton btnOk  = new JButton(okAction);
-    btnOk.setText(Messages.get(Messages.OK));
-    final JButton btnCancel = new JButton(cancelAction);
-    btnCancel.setText(Messages.get(Messages.CANCEL));
-    final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
-    final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
-    btnOk.setMnemonic(okMnemonic.charAt(0));
-    btnCancel.setMnemonic(cancelMnemonic.charAt(0));
+    prepareScrollPanelDialog(dialog, dialogOwner, list, okAction, cancelAction);
+    if (dialog.getSize().width > 500) {
+      dialog.setSize(new Dimension(500, dialog.getSize().height));
+    }
+
+    return list.getSelectedValue();
+  }
+
+  /**
+   * Prepares the dialog.
+   * @param dialog the dialog
+   * @param dialogOwner the dialog owner
+   * @param toScroll added to a central scroll pane
+   * @param okAction the action for the OK button
+   * @param cancelAction the action for the cancel button
+   */
+  public static void prepareScrollPanelDialog(final JDialog dialog, JComponent dialogOwner,final JComponent toScroll,
+                                              final Action okAction, final Action cancelAction) {
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelAction);
-    list.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+    toScroll.getInputMap(JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
             KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    list.addMouseListener(new MouseAdapter() {
+    toScroll.addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {
         if (e.getClickCount() == 2) {
@@ -1024,8 +1029,15 @@ public final class UiUtil {
         }
       }
     });
+    final JButton btnOk  = new JButton(okAction);
+    final JButton btnCancel = new JButton(cancelAction);
+    btnCancel.setText(Messages.get(Messages.CANCEL));
+    final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
+    final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
+    btnOk.setMnemonic(okMnemonic.charAt(0));
+    btnCancel.setMnemonic(cancelMnemonic.charAt(0));
     dialog.setLayout(new BorderLayout());
-    final JScrollPane scroller = new JScrollPane(list);
+    final JScrollPane scroller = new JScrollPane(toScroll);
     dialog.add(scroller, BorderLayout.CENTER);
     final JPanel buttonPanel = new JPanel(new GridLayout(1,2,5,5));
     buttonPanel.add(btnOk);
@@ -1035,15 +1047,12 @@ public final class UiUtil {
     dialog.getRootPane().setDefaultButton(btnOk);
     dialog.add(buttonBasePanel, BorderLayout.SOUTH);
     dialog.pack();
-    if (dialog.getSize().width > 500) {
-      dialog.setSize(new Dimension(500, dialog.getSize().height));
+    if (dialogOwner != null) {
+      dialog.setLocationRelativeTo(getParentWindow(dialogOwner));
     }
-    dialog.setLocationRelativeTo(owner);
     dialog.setModal(true);
     dialog.setResizable(true);
     dialog.setVisible(true);
-
-    return list.getSelectedValue();
   }
 
   /**

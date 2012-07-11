@@ -3073,3 +3073,5 @@
   ValueMap.handleSetAs() removed, was overridden in EntityImpl only to copy the cached toString value from the source entity, not worth the complexity
   CriteriaProvider removed, practically unused
   ValueChangeEvent.valueOwner property removed, fixing a cyclical dependency
+  EntityTableCellRenderer, minor refactoring
+  EntityLookupField, duplicate code refactored into UiUtil.prepareScrollPanelDialog()

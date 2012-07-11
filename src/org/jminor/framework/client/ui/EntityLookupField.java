@@ -27,9 +27,7 @@ import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollPane;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -40,8 +38,6 @@ import java.awt.event.ActionEvent;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.awt.event.MouseAdapter;
-import java.awt.event.MouseEvent;
 import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
@@ -137,9 +133,8 @@ public final class EntityLookupField extends JTextField {
   private boolean selectEntities(final List<Entity> entities) {
     Collections.sort(entities, new EntityComparator());
     final JList list = new JList(entities.toArray());
-    final Window owner = UiUtil.getParentWindow(EntityLookupField.this);
+    final Window owner = UiUtil.getParentWindow(this);
     final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
       /** {@inheritDoc} */
       @Override
@@ -151,31 +146,7 @@ public final class EntityLookupField extends JTextField {
     final Action cancelAction = new UiUtil.DisposeWindowAction(dialog);
     list.setSelectionMode(model.isMultipleSelectionAllowed() ?
             ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
-    final JButton btnOk  = new JButton(okAction);
-    final JButton btnCancel = new JButton(cancelAction);
-    btnCancel.setText(Messages.get(Messages.CANCEL));
-    final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
-    final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
-    btnOk.setMnemonic(okMnemonic.charAt(0));
-    btnCancel.setMnemonic(cancelMnemonic.charAt(0));
-    UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelAction);
-    list.getInputMap(JComponent.WHEN_FOCUSED).put(KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    list.addMouseListener(new LookupFieldMouseListener(okAction));
-    dialog.setLayout(new BorderLayout());
-    final JScrollPane scroller = new JScrollPane(list);
-    dialog.add(scroller, BorderLayout.CENTER);
-    final JPanel buttonPanel = new JPanel(new GridLayout(1,2,5,5));
-    buttonPanel.add(btnOk);
-    buttonPanel.add(btnCancel);
-    final JPanel buttonBasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    buttonBasePanel.add(buttonPanel);
-    dialog.getRootPane().setDefaultButton(btnOk);
-    dialog.add(buttonBasePanel, BorderLayout.SOUTH);
-    dialog.pack();
-    dialog.setLocationRelativeTo(owner);
-    dialog.setModal(true);
-    dialog.setResizable(true);
-    dialog.setVisible(true);
+    UiUtil.prepareScrollPanelDialog(dialog, this, list, okAction, cancelAction);
 
     return model.searchStringRepresentsSelected();
   }
@@ -379,22 +350,6 @@ public final class EntityLookupField extends JTextField {
     @Override
     public int compare(final Entity o1, final Entity o2) {
       return o1.compareTo(o2);
-    }
-  }
-
-  private static final class LookupFieldMouseListener extends MouseAdapter {
-    private final Action okAction;
-
-    private LookupFieldMouseListener(final Action okAction) {
-      this.okAction = okAction;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void mouseClicked(final MouseEvent e) {
-      if (e.getClickCount() == 2) {
-        okAction.actionPerformed(null);
-      }
     }
   }
 
