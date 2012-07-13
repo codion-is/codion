@@ -1125,7 +1125,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   protected String[] getConfirmDeleteMessages() {
-    return FrameworkMessages.getDefaultConfirmDeleteMessages();
+    return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED),
+            FrameworkMessages.get(FrameworkMessages.DELETE)};
   }
 
   /**

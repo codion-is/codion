@@ -219,7 +219,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @see #getUser(String, org.jminor.common.model.User, javax.swing.ImageIcon)
    */
   public final void login() throws CancelException {
-    applicationModel.login(getUser(Messages.get(Messages.LOGIN), null, null));
+    applicationModel.login(getUser(frameTitle, null, null));
   }
 
   /**
@@ -1021,7 +1021,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private JFrame startApplicationInternal(final String frameCaption, final String iconName, final boolean maximize,
                                           final Dimension frameSize, final User defaultUser, final boolean showFrame) throws Exception {
     LOG.debug("{} application starting", frameCaption);
-    Messages.class.getName();//hack to load the class
+    FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
     UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
     final JDialog startupDialog = showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;

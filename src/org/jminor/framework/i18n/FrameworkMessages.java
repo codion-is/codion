@@ -3,6 +3,9 @@
  */
 package org.jminor.framework.i18n;
 
+import org.jminor.common.i18n.Messages;
+
+import javax.swing.UIManager;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -13,8 +16,7 @@ public final class FrameworkMessages {
 
   private FrameworkMessages() {}
 
-  private static final ResourceBundle BUNDLE =
-          ResourceBundle.getBundle("org.jminor.framework.i18n.FrameworkMessages", Locale.getDefault());
+  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(FrameworkMessages.class.getName(), Locale.getDefault());
 
   public static final String OPTION_PANE_INPUT_DIALOG_TITLE = "OptionPane.inputDialogTitle";
   public static final String OPTION_PANE_MESSAGE_DIALOG_TITLE = "OptionPane.messageDialogTitle";
@@ -142,19 +144,16 @@ public final class FrameworkMessages {
   public static final String PROPERTY_VALUE_TOO_LARGE = "property_value_too_large";
   public static final String PROPERTY_VALUE_TOO_SMALL = "property_value_too_small";
 
+  static {
+    UIManager.put("OptionPane.yesButtonText", Messages.get(Messages.YES));
+    UIManager.put("OptionPane.noButtonText", Messages.get(Messages.NO));
+    UIManager.put("OptionPane.cancelButtonText", Messages.get(Messages.CANCEL));
+    UIManager.put("OptionPane.okButtonText", Messages.get(Messages.OK));
+    UIManager.put("OptionPane.inputDialogTitle", FrameworkMessages.get(FrameworkMessages.OPTION_PANE_INPUT_DIALOG_TITLE));
+    UIManager.put("OptionPane.messageDialogTitle", FrameworkMessages.get(FrameworkMessages.OPTION_PANE_MESSAGE_DIALOG_TITLE));
+  }
+
   public static String get(final String key) {
     return BUNDLE.getString(key);
-  }
-
-  public static String[] getDefaultConfirmUpdateMessages() {
-    return new String[]{get(CONFIRM_UPDATE), get(UPDATE)};
-  }
-
-  public static String[] getDefaultConfirmInsertMessages() {
-    return new String[]{get(CONFIRM_INSERT), get(INSERT)};
-  }
-
-  public static String[] getDefaultConfirmDeleteMessages() {
-    return new String[]{get(CONFIRM_DELETE_SELECTED), get(DELETE)};
   }
 }

@@ -227,8 +227,8 @@ public final class EntityTableSearchPanel extends JPanel {
   }
 
   private AbstractTableColumnSyncPanel initializeFullSearchPanel(final EntityTableSearchModel searchModel,
-                                                               final TableColumnModel columnModel,
-                                                               final int verticalFillerWidth) {
+                                                                 final TableColumnModel columnModel,
+                                                                 final int verticalFillerWidth) {
     final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(columnModel) {
       /** {@inheritDoc} */
       @Override

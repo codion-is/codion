@@ -713,9 +713,11 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
         return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_ENTITY),
                 FrameworkMessages.get(FrameworkMessages.DELETE)};
       case CONFIRM_TYPE_INSERT:
-        return FrameworkMessages.getDefaultConfirmInsertMessages();
+        return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_INSERT),
+                FrameworkMessages.get(FrameworkMessages.INSERT)};
       case CONFIRM_TYPE_UPDATE:
-        return FrameworkMessages.getDefaultConfirmUpdateMessages();
+        return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE),
+                FrameworkMessages.get(FrameworkMessages.UPDATE)};
     }
 
     throw new IllegalArgumentException("Unknown confirmation type constant: " + type);

@@ -3075,3 +3075,5 @@
   ValueChangeEvent.valueOwner property removed, fixing a cyclical dependency
   EntityTableCellRenderer, minor refactoring
   EntityLookupField, duplicate code refactored into UiUtil.prepareScrollPanelDialog()
+  Messages, moved static initializer with UIManager dependency to FrameworkMessages
+  FrameworkMessages, removed getDefaultConfirm...() methods

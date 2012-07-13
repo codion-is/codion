@@ -3,7 +3,6 @@
  */
 package org.jminor.common.i18n;
 
-import javax.swing.UIManager;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -14,8 +13,7 @@ public final class Messages {
 
   private Messages() {}
 
-  private static final ResourceBundle BUNDLE =
-          ResourceBundle.getBundle("org.jminor.common.i18n.Messages", Locale.getDefault());
+  private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(Messages.class.getName(), Locale.getDefault());
 
   public static final String CANCEL = "cancel";
   public static final String CANCEL_MNEMONIC = "cancel_mnemonic";
@@ -89,15 +87,6 @@ public final class Messages {
   public static final String GREATER_THAN = "greater_than";
   public static final String WITHIN_RANGE = "within_range";
   public static final String OUTSIDE_RANGE = "outside_range";
-
-  static {
-    UIManager.put("OptionPane.yesButtonText", get(YES));
-    UIManager.put("OptionPane.noButtonText", get(NO));
-    UIManager.put("OptionPane.cancelButtonText", get(CANCEL));
-    UIManager.put("OptionPane.okButtonText", get(OK));
-    UIManager.put("OptionPane.inputDialogTitle", get("OptionPane.inputDialogTitle"));
-    UIManager.put("OptionPane.messageDialogTitle", get("OptionPane.messageDialogTitle"));
-  }
 
   public static String get(final String key) {
     return BUNDLE.getString(key);

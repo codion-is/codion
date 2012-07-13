@@ -164,7 +164,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
   }
 
   /**
-   * @return the text field used to enter a search critieria
+   * @return the text field used to enter a search criteria
    * @see #initializeSearchField()
    */
   public final JTextField getSearchField() {
@@ -573,6 +573,38 @@ public class FilteredTablePanel<T, C> extends JPanel {
     }
   }
 
+  private final class SortableHeaderRenderer implements TableCellRenderer {
+    private final TableCellRenderer tableCellRenderer;
+
+    private SortableHeaderRenderer(final TableCellRenderer tableCellRenderer) {
+      this.tableCellRenderer = tableCellRenderer;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    @SuppressWarnings({"unchecked"})
+    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+                                                   final boolean hasFocus, final int row, final int column) {
+      final Component component = tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+      if (component instanceof JLabel) {
+        final JLabel label = (JLabel) component;
+        final TableColumn tableColumn = table.getColumnModel().getColumn(column);
+        label.setIcon(getHeaderRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + 5));
+      }
+
+      return component;
+    }
+
+    private Icon getHeaderRendererIcon(final C columnIdentifier, final int iconSizePixels) {
+      final SortingDirective directive = tableModel.getSortingDirective(columnIdentifier);
+      if (directive == SortingDirective.UNSORTED) {
+        return null;
+      }
+
+      return new Arrow(directive == SortingDirective.DESCENDING, iconSizePixels, tableModel.getSortingPriority(columnIdentifier));
+    }
+  }
+
   private static final class Arrow implements Icon {
     private static final double PRIORITY_SIZE_RATIO = 0.8;
     private static final double PRIORITY_SIZE_CONST = 2.0;
@@ -631,39 +663,6 @@ public class FilteredTablePanel<T, C> extends JPanel {
     @Override
     public int getIconHeight() {
       return size;
-    }
-  }
-
-  private final class SortableHeaderRenderer implements TableCellRenderer {
-    private final TableCellRenderer tableCellRenderer;
-
-    private SortableHeaderRenderer(final TableCellRenderer tableCellRenderer) {
-      this.tableCellRenderer = tableCellRenderer;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    @SuppressWarnings({"unchecked"})
-    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
-                                                   final boolean hasFocus, final int row, final int column) {
-      final Component component = tableCellRenderer.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-      if (component instanceof JLabel) {
-        final JLabel label = (JLabel) component;
-        label.setHorizontalTextPosition(JLabel.LEFT);
-        final TableColumn tableColumn = table.getColumnModel().getColumn(column);
-        label.setIcon(getHeaderRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + 5));
-      }
-
-      return component;
-    }
-
-    private Icon getHeaderRendererIcon(final C columnIdentifier, final int size) {
-      final SortingDirective directive = tableModel.getSortingDirective(columnIdentifier);
-      if (directive == SortingDirective.UNSORTED) {
-        return null;
-      }
-
-      return new Arrow(directive == SortingDirective.DESCENDING, size, tableModel.getSortingPriority(columnIdentifier));
     }
   }
 }
