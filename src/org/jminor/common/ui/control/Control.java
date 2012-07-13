@@ -69,7 +69,10 @@ public class Control extends AbstractAction {
     return enabledObserver.isActive();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * Unsupported, the enabled state of Controls is based on their <code>enabledObserver</code>
+   * @throws UnsupportedOperationException always
+   */
   @Override
   public final void setEnabled(final boolean newValue) {
     throw new UnsupportedOperationException();

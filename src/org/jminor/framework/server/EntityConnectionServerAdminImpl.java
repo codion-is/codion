@@ -116,7 +116,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   /** {@inheritDoc} */
   @Override
   public void setLoggingLevel(final Level level) throws RemoteException {
-    LOG.info("setLogginLevel({})", level);
+    LOG.info("setLoggingLevel({})", level);
     final ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     rootLogger.setLevel(level);
   }

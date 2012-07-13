@@ -834,10 +834,10 @@ public final class Util {
 
   /**
    * @param strings the strings to check
-   * @return true if one of the given strings is null or empty, false otherwise
+   * @return true if one of the given strings is null or empty or if no arguments are provided, false otherwise
    */
   public static boolean nullOrEmpty(final String... strings) {
-    if (strings == null) {
+    if (strings == null || strings.length == 0) {
       return true;
     }
     for (final String string : strings) {

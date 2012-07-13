@@ -15,7 +15,7 @@ public final class RemoteLoadTests {
   private RemoteLoadTests() {}
 
   /**
-   * Instantiates a new RemoteLoadTestAdapter.
+   * Instantiates a new RemoteLoadTest.
    * @param clientInfo the client info
    * @param loadTestPort the port on which to register the service
    * @return a remote load test instance

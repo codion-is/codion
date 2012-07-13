@@ -3077,3 +3077,7 @@
   EntityLookupField, duplicate code refactored into UiUtil.prepareScrollPanelDialog()
   Messages, moved static initializer with UIManager dependency to FrameworkMessages
   FrameworkMessages, removed getDefaultConfirm...() methods
+  H2Database.createEmbeddedH2Database() no longer static, dynamically loads RunScript tool to get rid of compile time dependency to H2 codebase
+  H2Database refactored a bit
+  AbstractDatabase.getAuthenticationInfo() now allows empty passwords
+  Util.nullOrEmpty() now returns true if the no arguments are provided

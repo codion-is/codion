@@ -76,7 +76,7 @@ public final class MethodControl extends Control {
   }
 
   /**
-   * @param listener a listener notified each time action performed is called
+   * @param listener a listener notified each time actionPerformed() is called
    */
   public void addActionPerformedListener(final EventListener listener) {
     evtActionPerformed.addListener(listener);

@@ -46,6 +46,7 @@ public class DerbyDatabaseTest {
     DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
     final Properties props = new Properties();
     props.put(Database.USER_PROPERTY, "scott");
+    assertEquals("jdbc:derby://host:1234/sid;user=scott", db.getURL(props));
     props.put(Database.PASSWORD_PROPERTY, "tiger");
     assertEquals("jdbc:derby://host:1234/sid;user=scott;password=tiger", db.getURL(props));
 

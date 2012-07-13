@@ -52,10 +52,13 @@ public class H2DatabaseTest {
     H2Database db = new H2Database("host", "1234", "sid");
     final Properties props = new Properties();
     props.put(Database.USER_PROPERTY, "scott");
+    assertEquals(H2Database.URL_PREFIX + "//host:1234/sid;user=scott", db.getURL(props));
     props.put(Database.PASSWORD_PROPERTY, "tiger");
     assertEquals(H2Database.URL_PREFIX + "//host:1234/sid;user=scott;password=tiger", db.getURL(props));
-    db = new H2Database("dbname");
+    db = new H2Database("dbname", false);
     assertEquals(H2Database.URL_PREFIX + "dbname;user=scott;password=tiger", db.getURL(props));
+    db = new H2Database("dbname");
+    assertEquals(H2Database.URL_PREFIX + "mem:dbname;user=scott;password=tiger", db.getURL(props));
   }
 
   @Test(expected = RuntimeException.class)

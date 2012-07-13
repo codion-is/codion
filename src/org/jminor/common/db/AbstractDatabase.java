@@ -177,20 +177,25 @@ public abstract class AbstractDatabase implements Database {
    * This default implementation returns the following assuming that <code>connectionProperties</code>
    * contains values for both "user" and "password" keys:
    * user=scott;password=tiger
+   * The password clause is not included if no password is provided
    * @param connectionProperties the connection properties
    * @return a string containing authentication info to append to the connection URL
    */
   @Override
   public String getAuthenticationInfo(final Properties connectionProperties) {
+    String authenticationInfo = null;
     if (connectionProperties != null) {
       final String username = (String) connectionProperties.get(USER_PROPERTY);
       final String password = (String) connectionProperties.get(PASSWORD_PROPERTY);
-      if (!Util.nullOrEmpty(username, password)) {
-        return USER_PROPERTY + "=" + username + ";" + PASSWORD_PROPERTY + "=" + password;
+      if (!Util.nullOrEmpty(username)) {
+        authenticationInfo = USER_PROPERTY + "=" + username;
+        if (!Util.nullOrEmpty(password)) {
+          authenticationInfo += ";" + PASSWORD_PROPERTY + "=" + password;
+        }
       }
     }
 
-    return null;
+    return authenticationInfo;
   }
 
   /** {@inheritDoc} */

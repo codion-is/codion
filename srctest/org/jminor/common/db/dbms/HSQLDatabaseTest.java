@@ -52,6 +52,7 @@ public class HSQLDatabaseTest {
     HSQLDatabase db = new HSQLDatabase("host", "1234", "sid");
     final Properties props = new Properties();
     props.put(Database.USER_PROPERTY, "scott");
+    assertEquals("jdbc:hsqldb:hsql//host:1234/sid;user=scott", db.getURL(props));
     props.put(Database.PASSWORD_PROPERTY, "tiger");
     assertEquals("jdbc:hsqldb:hsql//host:1234/sid;user=scott;password=tiger", db.getURL(props));
     db = new HSQLDatabase("dbname");
