@@ -263,7 +263,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       for (final String entityID : hashedKeys.keySet()) {
         checkReadOnly(entityID);
       }
-      final ArrayList<Entity.Key> criteriaKeys = new ArrayList<Entity.Key>();
+      final List<Entity.Key> criteriaKeys = new ArrayList<Entity.Key>();
       for (final Map.Entry<String, Collection<Entity.Key>> hashedKeysEntry : hashedKeys.entrySet()) {
         criteriaKeys.addAll(hashedKeysEntry.getValue());
         final EntityCriteria criteria = EntityCriteriaUtil.criteria(criteriaKeys);
@@ -643,8 +643,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   private EntityResultPacker getEntityResultPacker(final String entityID) {
     EntityResultPacker packer = entityResultPackers.get(entityID);
     if (packer == null) {
-      packer = new EntityResultPacker(entityID, Entities.getColumnProperties(entityID),
-              Entities.getTransientProperties(entityID));
+      packer = new EntityResultPacker(entityID);
       entityResultPackers.put(entityID, packer);
     }
 
@@ -681,6 +680,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       final Map<Entity.Key, Entity> hashedEntities = EntityUtil.hashByPrimaryKey(currentValues);
       for (final Entity entity : entry.getValue()) {
         final Entity current = hashedEntities.get(entity.getOriginalPrimaryKey());
+        if (current == null) {
+          throw new RecordModifiedException(entity, null);
+        }
         for (final String propertyID : current.getValueKeys()) {
           if (!entity.containsValue(propertyID) || !Util.equal(current.getValue(propertyID), entity.getOriginalValue(propertyID))) {
             throw new RecordModifiedException(entity, current);
@@ -1330,16 +1332,12 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     /**
      * Instantiates a new EntityResultPacker.
      * @param entityID the ID of the entities this packer packs
-     * @param properties the column properties that should be packed by this packer
-     * @param transientProperties the transient properties associated with the entity ID
      */
-    private EntityResultPacker(final String entityID, final Collection<Property.ColumnProperty> properties,
-                               final Collection<Property.TransientProperty> transientProperties) {
+    private EntityResultPacker(final String entityID) {
       Util.rejectNullValue(entityID, "entityID");
-      Util.rejectNullValue(properties, "properties");
       this.entityID = entityID;
-      this.properties = properties;
-      this.transientProperties = transientProperties;
+      this.properties = Entities.getColumnProperties(entityID);
+      this.transientProperties = Entities.getTransientProperties(entityID);
     }
 
     /**

@@ -27,6 +27,7 @@ import java.util.Map;
  */
 public final class Entities {
 
+  private static final String ENTITY_PARAM = "entity";
   private static final String ENTITY_ID_PARAM = "entityID";
 
   private Entities() {}
@@ -637,6 +638,7 @@ public final class Entities {
     /** {@inheritDoc} */
     @Override
     public String toString(final Entity entity) {
+      Util.rejectNullValue(entity, ENTITY_PARAM);
       final StringBuilder builder = new StringBuilder();
       for (final ValueProvider valueProvider : valueProviders) {
         builder.append(valueProvider.toString(entity));
@@ -729,17 +731,12 @@ public final class Entities {
 
       /** {@inheritDoc} */
       @Override
-      @SuppressWarnings({"unchecked"})
       public String toString(final Entity entity) {
         if (entity.isValueNull(foreignKeyPropertyID)) {
           return "";
         }
-        final Entity referencedValue = entity.getForeignKeyValue(foreignKeyPropertyID);
-        if (referencedValue.isValueNull(propertyID)) {
-          return "";
-        }
 
-        return referencedValue.getValue(propertyID).toString();
+        return entity.getForeignKeyValue(foreignKeyPropertyID).getValueAsString(propertyID);
       }
     }
 
@@ -754,10 +751,6 @@ public final class Entities {
       /** {@inheritDoc} */
       @Override
       public String toString(final Entity entity) {
-        if (entity.isValueNull(propertyID)) {
-          return "";
-        }
-
         return entity.getValueAsString(propertyID);
       }
     }
@@ -791,7 +784,7 @@ public final class Entities {
      * @param entityID the ID of the entities to validate
      */
     public Validator(final String entityID) {
-      Util.rejectNullValue(entityID, "entityID");
+      Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
       this.entityID = entityID;
     }
 
@@ -830,7 +823,7 @@ public final class Entities {
     /** {@inheritDoc} */
     @Override
     public final void validate(final ValueMap<String, Object> valueMap, final int action) throws ValidationException {
-      Util.rejectNullValue(valueMap, "entity");
+      Util.rejectNullValue(valueMap, ENTITY_PARAM);
       for (final Property property : getProperties(entityID).values()) {
         validate(valueMap, property.getPropertyID(), action);
       }
@@ -850,7 +843,7 @@ public final class Entities {
     /** {@inheritDoc} */
     @Override
     public void validate(final Entity entity, final String propertyID, final int action) throws ValidationException {
-      Util.rejectNullValue(entity, "entity");
+      Util.rejectNullValue(entity, ENTITY_PARAM);
       final Property property = entity.getProperty(propertyID);
       if (performNullValidation && !(property instanceof Property.ForeignKeyProperty)) {
         performNullValidation(entity, property, action);
@@ -863,6 +856,8 @@ public final class Entities {
     /** {@inheritDoc} */
     @Override
     public final void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException {
+      Util.rejectNullValue(entity, ENTITY_PARAM);
+      Util.rejectNullValue(property, "property");
       if (entity.isValueNull(property.getPropertyID())) {
         return;
       }
@@ -882,6 +877,8 @@ public final class Entities {
     /** {@inheritDoc} */
     @Override
     public final void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException {
+      Util.rejectNullValue(entity, ENTITY_PARAM);
+      Util.rejectNullValue(property, "property");
       if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
         Property exceptionProperty = property;
         if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isForeignKeyProperty()) {

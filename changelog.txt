@@ -3082,3 +3082,7 @@
   AbstractDatabase.getAuthenticationInfo() now allows empty passwords
   Util.nullOrEmpty() now returns true if the no arguments are provided
   H2Database, bug fixed, did not initialize properly
+  EntityConnectionImpl.lockAndCheckForUpdate() now respects contract and throws an exception if a record has been deleted, tested
+  EntityConnectionImpl.EntityResultPacker, minor refactoring
+  Entities, minor refactoring in StringProvider classes
+  LoadTestModelTest main scenario no longer uses Random

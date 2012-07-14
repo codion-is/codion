@@ -6,7 +6,7 @@ package org.jminor.common.db.exception;
 import org.jminor.common.i18n.Messages;
 
 /**
- * An exception indicating that the row in question has been modified since it was loaded.
+ * An exception indicating that the row in question has been modifiedor deleted since it was loaded.
  */
 public final class RecordModifiedException extends DatabaseException {
 
@@ -17,7 +17,7 @@ public final class RecordModifiedException extends DatabaseException {
   /**
    * Instantiates a new RecordModifiedException
    * @param row the row being updated
-   * @param modifiedRow the current (modified) version of the row
+   * @param modifiedRow the current (modified) version of the row, null if it has been deleted
    */
   public RecordModifiedException(final Object row, final Object modifiedRow) {
     super(MESSAGE);
@@ -33,7 +33,7 @@ public final class RecordModifiedException extends DatabaseException {
   }
 
   /**
-   * @return the current (modified) version of the row
+   * @return the current (modified) version of the row, null if it has been deleted
    */
   public Object getModifiedRow() {
     return modifiedRow;

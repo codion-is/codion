@@ -112,7 +112,7 @@ public interface RemoteEntityConnection extends Remote {
    * @param entities the entities to update
    * @return the updated entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a db exception
-   * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity has been modified by another user
+   * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity has been modified or deleted by another user
    * @throws java.rmi.RemoteException in case of a remote exception
    */
   List<Entity> update(final List<Entity> entities) throws RemoteException, DatabaseException;

@@ -57,7 +57,7 @@ public class H2DatabaseTest {
     assertEquals(H2Database.URL_PREFIX + "//host:1234/sid;user=scott;password=tiger", db.getURL(props));
     db = new H2Database("dbname", false);
     assertEquals(H2Database.URL_PREFIX + "dbname;user=scott;password=tiger", db.getURL(props));
-    db = new H2Database("dbname");
+    db = new H2Database("dbname", true);
     assertEquals(H2Database.URL_PREFIX + "mem:dbname;user=scott;password=tiger", db.getURL(props));
   }
 

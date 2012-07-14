@@ -342,7 +342,7 @@ public class EntityConnectionImplTest {
   }
 
   @Test
-  public void selectForUpdate() throws Exception {
+  public void selectForUpdateModified() throws Exception {
     final EntityConnection connection = initializeConnection();
     final EntityConnection connection2 = initializeConnection();
     final String originalLocation;
@@ -378,7 +378,43 @@ public class EntityConnectionImplTest {
   }
 
   @Test
-  public void optimisticLocking() throws Exception {
+  public void optimisticLockingDeleted() throws Exception {
+    final EntityConnectionImpl connection = initializeConnection();
+    final EntityConnection connection2 = initializeConnection();
+    connection.setOptimisticLocking(true);
+    final Entity allen;
+    try {
+      final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, SearchType.LIKE, "ALLEN");
+
+      allen = connection.selectSingle(criteria);
+
+      connection2.delete(Arrays.asList(allen.getPrimaryKey()));
+
+      allen.setValue(EmpDept.EMPLOYEE_JOB, "A JOB");
+      try {
+        connection.update(Arrays.asList(allen));
+        fail("Should not be able to update record deleted by another connection");
+      }
+      catch (RecordModifiedException e) {
+        assertNotNull(e.getRow());
+        assertNull(e.getModifiedRow());
+      }
+
+      try {
+        connection2.insert(Arrays.asList(allen));//revert changes to data
+      }
+      catch (DatabaseException ignored) {
+        fail("Should be able to update record after other connection released the select for update lock");
+      }
+    }
+    finally {
+      connection.disconnect();
+      connection2.disconnect();
+    }
+  }
+
+  @Test
+  public void optimisticLockingModified() throws Exception {
     final EntityConnectionImpl baseConnection = initializeConnection();
     final EntityConnectionImpl optimisticConnection = initializeConnection();
     optimisticConnection.setOptimisticLocking(true);

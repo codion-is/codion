@@ -3,7 +3,6 @@ package org.jminor.common.model;
 import org.junit.Test;
 
 import java.util.Arrays;
-import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -12,10 +11,10 @@ public class LoadTestModelTest {
   private static final User USER = new User("hello", "world");
 
   private static final LoadTestModel.UsageScenario SCENARIO = new LoadTestModel.AbstractUsageScenario("test") {
-    final Random random = new Random();
+    int counter = 0;
     @Override
     protected void performScenario(final Object application) throws LoadTestModel.ScenarioException {
-      if (random.nextDouble() > 0.5) {
+      if (counter++ % 2 == 0) {
         throw new LoadTestModel.ScenarioException();
       }
     }
