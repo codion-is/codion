@@ -3081,3 +3081,4 @@
   H2Database refactored a bit
   AbstractDatabase.getAuthenticationInfo() now allows empty passwords
   Util.nullOrEmpty() now returns true if the no arguments are provided
+  H2Database, bug fixed, did not initialize properly
