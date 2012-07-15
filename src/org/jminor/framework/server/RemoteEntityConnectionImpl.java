@@ -23,7 +23,6 @@ import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionLogger;
 import org.jminor.framework.db.EntityConnections;
@@ -349,7 +348,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
 
   /**
    * @return a ServerLog instance containing information about this connections recent activity
-   * @see Configuration#SERVER_CONNECTION_LOG_SIZE
+   * @see org.jminor.framework.Configuration#SERVER_CONNECTION_LOG_SIZE
    */
   ServerLog getServerLog() {
     return new ServerLog(clientInfo.getClientID(), creationDate, methodLogger.getLogEntries(),

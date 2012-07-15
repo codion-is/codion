@@ -116,7 +116,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       final String methodName = method.getName();
       Exception exception = null;
       final boolean logMethod = methodLogger.isEnabled() && methodLogger.shouldMethodBeLogged(methodName);
