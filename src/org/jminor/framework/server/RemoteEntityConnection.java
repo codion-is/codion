@@ -89,7 +89,7 @@ public interface RemoteEntityConnection extends Remote {
    * Executes the procedure with the given id
    * @param procedureID the procedure ID
    * @param arguments the arguments, if any
-   * @throws org.jminor.common.db.exception.DatabaseException in case anyhing goes wrong during the execution
+   * @throws org.jminor.common.db.exception.DatabaseException in case anything goes wrong during the execution
    * @throws java.rmi.RemoteException in case of a remote exception
    */
   void executeProcedure(final String procedureID, final Object... arguments) throws RemoteException, DatabaseException;

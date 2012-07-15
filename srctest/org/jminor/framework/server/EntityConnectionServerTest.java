@@ -121,7 +121,7 @@ public class EntityConnectionServerTest {
 
     final LogEntry entry = log.getLog().get(0);
     assertEquals("getConnection", entry.getMethod());
-    assertNotNull(entry.getDelta());
+    assertTrue(entry.getDelta() >= 0);
     assertNotNull(entry.getEntryTimeFormatted());
     assertNotNull(entry.getExitTimeFormatted());
 

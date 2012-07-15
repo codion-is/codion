@@ -172,23 +172,18 @@ public class MethodLogger {
   private synchronized LogEntry addLogEntry(final String method, final String message, final long time,
                                             final long nanoTime, final boolean isExit,
                                             final Throwable exception, final List<LogEntry> subLog) {
-    if (!isExit) {
-      if (currentLogEntryIndex > logEntries.size()-1) {
+    final LogEntry currentEntry = logEntries.get(currentLogEntryIndex);
+    if (isExit) {
+      currentEntry.setExitInfo(message, exception, time, nanoTime, subLog);
+      if (++currentLogEntryIndex > logEntries.size() - 1) {
         currentLogEntryIndex = 0;
       }
-
-      final LogEntry entry = logEntries.get(currentLogEntryIndex);
-      entry.set(method, message, time, nanoTime, exception);
-
-      return entry;
     }
-    else {//add to last log entry
-      final LogEntry lastEntry = logEntries.get(currentLogEntryIndex);
-      assert lastEntry.getMethod().equals(method);
-      lastEntry.setSubLog(subLog);
-      currentLogEntryIndex++;
-      return lastEntry.setException(exception).setExitMessage(message).setExitTimeNano(nanoTime);
+    else {
+      currentEntry.initialize(method, message, time, nanoTime, exception);
     }
+
+    return currentEntry;
   }
 
   private List<LogEntry> initializeLogEntryList() {

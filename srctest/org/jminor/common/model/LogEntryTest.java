@@ -16,6 +16,7 @@ public class LogEntryTest {
 
     entry.setExitMessage("exit");
     entry.setExitTimeNano(1200000000);
+    entry.setExitTime(1200);
     assertTrue(entry.isComplete());
 
     final LogEntry newEntry = new LogEntry("method", "message", 1100, 1100000000, new Exception());
@@ -46,7 +47,7 @@ public class LogEntryTest {
 
     assertTrue(entry.getSubLog().contains(newEntry));
     assertEquals(-1, entry.compareTo(newEntry));
-    newEntry.set("method", "message", 900, 900000000, new Exception());
+    newEntry.initialize("method", "message", 900, 900000000, new Exception());
     assertEquals(1, entry.compareTo(newEntry));
   }
 }

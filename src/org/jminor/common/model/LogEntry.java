@@ -23,15 +23,14 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
 
   private static final long serialVersionUID = 1;
   private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);
-  private static final long NANO_IN_MILLI = 1000000;
 
   private String method;
   private String entryMessage;
   private String exitMessage;
   private long entryTime;
   private long entryTimeNano;
+  private long exitTime;
   private long exitTimeNano;
-  private long delta;
   private String stackTrace;
   private List<LogEntry> subLog;
 
@@ -51,9 +50,9 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     this.entryMessage = entry.entryMessage;
     this.exitMessage = entry.exitMessage;
     this.entryTime = entry.entryTime;
+    this.exitTime = entry.exitTime;
     this.entryTimeNano = entry.entryTimeNano;
     this.exitTimeNano = entry.exitTimeNano;
-    this.delta = entry.delta;
     this.stackTrace = entry.stackTrace;
     if (entry.subLog != null) {
       this.subLog = new ArrayList<LogEntry>();
@@ -73,7 +72,7 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
    */
   public LogEntry(final String method, final String entryMessage, final long time, final long nanoTime,
                   final Throwable exception) {
-    set(method, entryMessage, time, nanoTime, exception);
+    initialize(method, entryMessage, time, nanoTime, exception);
   }
 
   /**
@@ -84,24 +83,42 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
    * @param nanoTime the nano precision time at which to log the event
    * @param exception the exception thrown by the method execution if any
    */
-  public void set(final String method, final String entryMessage, final long time, final long nanoTime,
-                  final Throwable exception) {
+  public void initialize(final String method, final String entryMessage, final long time, final long nanoTime,
+                         final Throwable exception) {
     this.method = method;
     this.entryMessage = entryMessage;
     this.entryTime = time;
+    this.exitMessage = null;
+    this.exitTime = 0;
     this.entryTimeNano = nanoTime;
     this.exitTimeNano = 0;
-    this.delta = 0;
+    this.subLog = null;
     setException(exception);
+  }
+
+  /**
+   * Sets the exit info
+   * @param exitMessage the exit message
+   * @param exception the exception, if any
+   * @param exitTime the exit time in milliseconds
+   * @param exitTimeNano the exit time in nanoseconds
+   * @return this LogEntry instance
+   */
+  public LogEntry setExitInfo(final String exitMessage, final Throwable exception, final long exitTime,
+                              final long exitTimeNano, final List<LogEntry> subLog) {
+    this.exitMessage = exitMessage;
+    this.exitTime = exitTime;
+    this.exitTimeNano = exitTimeNano;
+    this.subLog = subLog;
+    setException(exception);
+    return this;
   }
 
   /**
    * Clears all info from this entry
    */
   public void reset() {
-    set(null, null, 0, 0, null);
-    this.exitMessage = null;
-    this.subLog = null;
+    initialize(null, null, 0, 0, null);
   }
 
   /**
@@ -112,14 +129,25 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
   }
 
   /**
+   * Sets the exit time in millisecond precision, after this a call
+   * to <code>getDelta()</code> will return the difference.
+   * @param exitTime the exit time
+   * @return this LogEntry instance
+   */
+  public LogEntry setExitTime(final long exitTime) {
+    this.exitTime = exitTime;
+
+    return this;
+  }
+
+  /**
    * Sets the exit time in nanosecond precision, after this a call
    * to <code>getDelta()</code> will return the difference.
    * @param exitTimeNano the exit time in nano precision
-   * @return the difference between the given exit time and the entry time
+   * @return this LogEntry instance
    */
   public LogEntry setExitTimeNano(final long exitTimeNano) {
     this.exitTimeNano = exitTimeNano;
-    this.delta = (this.exitTimeNano - this.entryTimeNano) / NANO_IN_MILLI;
 
     return this;
   }
@@ -128,17 +156,27 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
    * @return the exit time
    */
   public long getExitTime() {
-    return entryTime + delta;
+    return exitTime;
   }
 
   /**
    * Returns the duration of the method call this entry represents,
-   * this value is 0 or undefined until <code>setExitTimeNano()</code>
+   * this value is 0 or undefined until <code>setExitTime()</code>
    * has been called, this can be checked via <code>isComplete()</code>.
    * @return the duration of the method call this entry represents
    */
   public long getDelta() {
-    return delta;
+    return exitTime - entryTime;
+  }
+
+  /**
+   * Returns the duration of the method call this entry represents in nanoseconds,
+   * this value is 0 or undefined until <code>setExitTimeNano()</code>
+   * has been called, this can be checked via <code>isComplete()</code>.
+   * @return the duration of the method call this entry represents
+   */
+  public long getDeltaNano() {
+    return exitTimeNano - entryTimeNano;
   }
 
   /**
@@ -224,7 +262,7 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
    * @return true if this entry is complete, that is, has an exit time
    */
   public boolean isComplete() {
-    return exitTimeNano != 0;
+    return exitTime != 0;
   }
 
   /** {@inheritDoc} */
@@ -270,7 +308,7 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     if (exitTimeNano != 0) {
       stringBuilder.append(indentString).append(getEntryTimeFormatted()).append(" @ ").append(method).append(
               !Util.nullOrEmpty(entryMessage) ? (": " + entryMessage) : "").append("\n");
-      stringBuilder.append(indentString).append(getExitTimeFormatted()).append(" > ").append(delta).append(" ms")
+      stringBuilder.append(indentString).append(getExitTimeFormatted()).append(" > ").append(getDelta()).append(" ms")
               .append(exitMessage == null ? "" : " (" + exitMessage + ")");
       if (stackTrace != null) {
         stringBuilder.append(stackTrace);
@@ -296,9 +334,9 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     stream.writeObject(entryMessage);
     stream.writeObject(exitMessage);
     stream.writeLong(entryTime);
+    stream.writeLong(exitTime);
     stream.writeLong(entryTimeNano);
     stream.writeLong(exitTimeNano);
-    stream.writeLong(delta);
     stream.writeObject(stackTrace);
     stream.writeInt(subLog == null ? 0 : subLog.size());
     if (subLog != null) {
@@ -313,9 +351,9 @@ public final class LogEntry implements Serializable, Comparable<LogEntry> {
     this.entryMessage = (String) stream.readObject();
     this.exitMessage = (String) stream.readObject();
     this.entryTime = stream.readLong();
+    this.exitTime = stream.readLong();
     this.entryTimeNano = stream.readLong();
     this.exitTimeNano = stream.readLong();
-    this.delta = stream.readLong();
     this.stackTrace = (String) stream.readObject();
     final int subLogSize = stream.readInt();
     if (subLogSize > 0) {

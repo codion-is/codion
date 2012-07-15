@@ -4,7 +4,10 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -15,6 +18,7 @@ import org.jminor.common.server.ServerLog;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.common.server.web.WebStartServer;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.EntityConnections;
 import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
@@ -84,7 +88,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     this.sslEnabled = sslEnabled;
     loadDefaultDomainModels();
     loadLoginProxies();
-    RemoteEntityConnectionImpl.initializeConnectionPools(database);
+    initializeConnectionPools(database);
     setConnectionLimit(connectionLimit);
     startConnectionTimeoutTimer();
     startWebServer();
@@ -317,6 +321,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   @Override
   protected void handleShutdown() throws RemoteException {
     removeConnections(false);
+    ConnectionPools.closeConnectionPools();
     shutdownWebServer();
     if (database.isEmbedded()) {
       database.shutdownEmbedded(null);
@@ -404,6 +409,32 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     Class.forName(domainClassName);
   }
 
+  private static void initializeConnectionPools(final Database database) throws ClassNotFoundException, DatabaseException {
+    for (final User poolUser : getInitialPoolUsers()) {
+      ConnectionPools.createPool(new ConnectionProvider(database, poolUser));
+    }
+  }
+
+  private static Collection<User> getInitialPoolUsers() {
+    final String initialPoolUsers = Configuration.getStringValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
+    final Collection<User> users = new ArrayList<User>();
+    if (!Util.nullOrEmpty(initialPoolUsers)) {
+      for (final String commaSplit : initialPoolUsers.split(",")) {
+        final String usernamePassword = commaSplit.trim();
+        final int splitIndex = usernamePassword.indexOf(':');
+        if (splitIndex == -1) {
+          throw new IllegalArgumentException("Username and password for pooled connection should be separated by ':', " + usernamePassword);
+        }
+        final String username = usernamePassword.substring(0, splitIndex);
+        final String password = usernamePassword.substring(splitIndex + 1, usernamePassword.length());
+        final User poolUser = new User(username, password);
+        users.add(poolUser);
+      }
+    }
+
+    return users;
+  }
+
   private void startConnectionTimeoutTimer() {
     if (connectionTimeoutTimer != null) {
       connectionTimeoutTimer.cancel();
@@ -421,5 +452,34 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
         }
       }
     }, new Date(), maintenanceInterval);
+  }
+
+  private static final class ConnectionProvider implements DatabaseConnectionProvider {
+
+    private final Database database;
+    private final User user;
+
+    private ConnectionProvider(final Database database, final User user) {
+      this.database = database;
+      this.user = user;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public DatabaseConnection createConnection() throws ClassNotFoundException, DatabaseException {
+      return EntityConnections.createConnection(database, user).getDatabaseConnection();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void destroyConnection(final DatabaseConnection connection) {
+      connection.disconnect();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public User getUser() {
+      return user;
+    }
   }
 }

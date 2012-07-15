@@ -273,7 +273,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   /** {@inheritDoc} */
   @Override
   public List<User> getEnabledConnectionPools() throws RemoteException {
-    return RemoteEntityConnectionImpl.getEnabledConnectionPoolSettings();
+    return RemoteEntityConnectionImpl.getEnabledConnectionPools();
   }
 
   /** {@inheritDoc} */

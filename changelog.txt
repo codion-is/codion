@@ -3086,3 +3086,11 @@
   EntityConnectionImpl.EntityResultPacker, minor refactoring
   Entities, minor refactoring in StringProvider classes
   LoadTestModelTest main scenario no longer uses Random
+  LocalEntityConnectionProvider, now uses a proxy for logging method calls
+  EntityConnectionLogger added
+  ConnectionPools now manages available connection pools
+  EntityConnectionServer now handles initializing connection pools
+  RemoteEntityConnectionImpl, refactored a bit
+  RemoteEntityConnectionImpl, synchronized public methods
+  MethodLogger, minor refactoring
+  LogEntry.exitTime field added, some refactoring

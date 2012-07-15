@@ -4,15 +4,22 @@
 package org.jminor.framework.db.provider;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
+import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.EntityConnectionLogger;
 import org.jminor.framework.db.EntityConnections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.lang.reflect.InvocationHandler;
+import java.lang.reflect.InvocationTargetException;
+import java.lang.reflect.Method;
+import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -74,8 +81,9 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   public void disconnect() {
     if (getConnectionInternal() != null && getConnectionInternal().isValid()) {
       getConnectionInternal().disconnect();
-      if (getConnectionInternal().getDatabaseConnection().getDatabase().isEmbedded()) {//todo is this proper?
-        getConnectionInternal().getDatabaseConnection().getDatabase().shutdownEmbedded(connectionProperties);
+      final DatabaseConnection databaseConnection = getConnectionInternal().getDatabaseConnection();
+      if (databaseConnection.getDatabase().isEmbedded()) {//todo is this proper?
+        databaseConnection.getDatabase().shutdownEmbedded(connectionProperties);
       }
       setConnection(null);
     }
@@ -86,7 +94,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return EntityConnections.createConnection(database, getUser());
+      return Util.initializeProxy(EntityConnection.class, new LocalConnectionHandler(EntityConnections.createConnection(database, getUser())));
     }
     catch (Exception e) {
       throw new RuntimeException(e);
@@ -97,5 +105,44 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   @Override
   protected boolean isConnectionValid() {
     return isConnected() && getConnectionInternal().isValid();
+  }
+
+  private static final class LocalConnectionHandler implements InvocationHandler {
+    private final EntityConnection connection;
+    private final EntityConnectionLogger methodLogger = new EntityConnectionLogger();
+
+    private LocalConnectionHandler(final EntityConnection connection) {
+      this.connection = connection;
+    }
+
+    @Override
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+      final String methodName = method.getName();
+      Exception exception = null;
+      final boolean logMethod = methodLogger.isEnabled() && methodLogger.shouldMethodBeLogged(methodName);
+      connection.getDatabaseConnection().setLoggingEnabled(methodLogger.isEnabled());
+      try {
+        if (logMethod) {
+          methodLogger.logAccess(methodName, args);
+        }
+
+        return method.invoke(connection, args);
+      }
+      catch (Exception e) {
+        exception = Util.unwrapAndLog(e, InvocationTargetException.class, LOG);
+        throw exception;
+      }
+      finally {
+        if (logMethod) {
+          final LogEntry logEntry = methodLogger.logExit(methodName, exception, connection.getDatabaseConnection().getLogEntries());
+          if (methodLogger.isEnabled()) {
+            final StringBuilder messageBuilder = new StringBuilder(connection.getUser().toString()).append("\n");
+            EntityConnectionLogger.appendLogEntries(messageBuilder, Arrays.asList(logEntry), 1);
+            LOG.info(messageBuilder.toString());
+          }
+        }
+        connection.getDatabaseConnection().setLoggingEnabled(false);
+      }
+    }
   }
 }
