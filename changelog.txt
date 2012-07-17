@@ -3094,3 +3094,6 @@
   RemoteEntityConnectionImpl, synchronized public methods
   MethodLogger, minor refactoring
   LogEntry.exitTime field added, some refactoring
+  EntityTableModel.setForeignKeySearchValues(entityID, values) removed
+  DefaultEntityModel.detailModelForeignKeys map now contains the actual foreign key property as value, instead of the propertyID
+  DefaultEntityModel.setDetailModelForeignKey() fetches (and thereby validates) the actual foreign key

@@ -80,9 +80,9 @@ public class DefaultEntityModel implements EntityModel {
   private final Set<EntityModel> linkedDetailModels = new HashSet<EntityModel>();
 
   /**
-   * Maps detail models to the ID of the foreign key property they are based on
+   * Maps detail models to the foreign key property they are based on
    */
-  private final Map<EntityModel, String> detailModelForeignKeys = new HashMap<EntityModel, String>();
+  private final Map<EntityModel, Property.ForeignKeyProperty> detailModelForeignKeys = new HashMap<EntityModel, Property.ForeignKeyProperty>();
 
   /**
    * The master model, if any, so that detail models can refer to their masters
@@ -313,7 +313,7 @@ public class DefaultEntityModel implements EntityModel {
       detailModelForeignKeys.remove(detailModel);
     }
     else {
-      detailModelForeignKeys.put(detailModel, foreignKeyPropertyID);
+      detailModelForeignKeys.put(detailModel, Entities.getForeignKeyProperty(detailModel.getEntityID(), foreignKeyPropertyID));
     }
   }
 
@@ -434,9 +434,7 @@ public class DefaultEntityModel implements EntityModel {
     final List<Entity> activeEntities = getActiveEntities();
     for (final EntityModel detailModel : linkedDetailModels) {
       if (detailModelForeignKeys.containsKey(detailModel)) {
-        final Property.ForeignKeyProperty foreignKeyProperty =
-                Entities.getForeignKeyProperty(detailModel.getEntityID(), detailModelForeignKeys.get(detailModel));
-        detailModel.initialize(foreignKeyProperty, activeEntities);
+        detailModel.initialize(detailModelForeignKeys.get(detailModel), activeEntities);
       }
       else {
         detailModel.initialize(entityID, activeEntities);
