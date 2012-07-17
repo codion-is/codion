@@ -434,7 +434,7 @@
     </zip>
   </target>
 
-  <target name="run_unit_tests_with_coverage_and_report" depends="build, compile_demo_reports"
+  <target name="run_unit_tests_with_coverage_and_report" depends="clean, build, compile_demo_reports"
           description="Runs the framework unit tests with JaCoCo coverage">
     <delete dir="${test.reports}" includeEmptyDirs="true"/>
     <delete dir="${test.reports.html}" includeEmptyDirs="true"/>
@@ -442,7 +442,7 @@
     <delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>
     <mkdir dir="${test.reports}"/>
     <jacoco:coverage destfile="${test.reports}/jacoco.exec">
-      <junit printsummary="yes" haltonfailure="false" haltonerror="false" fork="yes">
+      <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once">
         <formatter type="xml" usefile="true"/>
         <classpath>
           <path refid="classes.base"/>
