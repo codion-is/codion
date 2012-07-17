@@ -782,7 +782,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
     /** {@inheritDoc} */
     @Override
-    public List<ScenarioException> getExceptions() {
+    public final List<ScenarioException> getExceptions() {
       synchronized (exceptions) {
         return new ArrayList<ScenarioException>(exceptions);
       }
@@ -797,7 +797,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
     /** {@inheritDoc} */
     @Override
-    public void clearExceptions() {
+    public final void clearExceptions() {
       synchronized (exceptions) {
         exceptions.clear();
       }

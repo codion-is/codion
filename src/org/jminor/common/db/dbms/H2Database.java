@@ -156,7 +156,7 @@ public final class H2Database extends AbstractDatabase {
         execute.invoke(runScriptToolClass.newInstance(), getURL(null), SYSADMIN_USERNAME, "", scriptPath, null, false);
       }
       catch (ClassNotFoundException cle) {
-        throw new RuntimeException(RUN_TOOL_CLASSNAME + " must be on classpath for creating an embedded H2 database");
+        throw new RuntimeException(RUN_TOOL_CLASSNAME + " must be on classpath for creating an embedded H2 database", cle);
       }
       catch (Exception e) {
         throw new RuntimeException(e);
