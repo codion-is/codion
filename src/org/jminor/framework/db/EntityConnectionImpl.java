@@ -393,7 +393,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       selectSQL += " " + criteria.getWhereClause(!containsWhereClause(selectSQL));
       statement = getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
-      final List<Integer> result = INT_PACKER.pack(resultSet, -1);
+      final List<Integer> result = INTEGER_RESULT_PACKER.pack(resultSet, -1);
       commitIfTransactionIsNotOpen();
       if (result.isEmpty()) {
         throw new SQLException("Record count query returned no value");
@@ -582,7 +582,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       setParameterValues(statement, criteria.getValues(), criteria.getValueProperties());
 
       resultSet = statement.executeQuery();
-      final List<Blob> result = new BlobResultPacker().pack(resultSet, 1);
+      final List<Blob> result = BLOB_RESULT_PACKER.pack(resultSet, 1);
       final Blob blob = result.get(0);
       final byte[] byteResult = blob.getBytes(1, (int) blob.length());
       commitIfTransactionIsNotOpen();
@@ -666,8 +666,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    * The calling method is responsible for releasing the select for update lock.
    * @param entities the entities to check, hashed by entityID
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @throws RecordNotFoundException in case a entity has been deleted
-   * @throws RecordModifiedException in case a entity has been modified
+   * @throws RecordModifiedException in case an entity has been modified, if an entity has been deleted,
+   * the <code>modifiedRow</code> provided by the exception is null
    * @throws SQLException in case of an exception
    */
   private void lockAndCheckForUpdate(final Map<String, Collection<Entity>> entities) throws DatabaseException, SQLException {
@@ -870,7 +870,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    */
   private int queryInteger(final String sql) throws SQLException {
     @SuppressWarnings("unchecked")
-    final List<Integer> integers = (List<Integer>) query(sql, INT_PACKER, -1);
+    final List<Integer> integers = (List<Integer>) query(sql, INTEGER_RESULT_PACKER, -1);
     if (!integers.isEmpty()) {
       return integers.get(0);
     }
@@ -1286,9 +1286,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   /**
-   * A result packer for fetching integers from an result set containing a single integer column
+   * A result packer for fetching integers from a result set containing a single integer column
    */
-  private static final ResultPacker<Integer> INT_PACKER = new ResultPacker<Integer>() {
+  private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = new ResultPacker<Integer>() {
     /** {@inheritDoc} */
     @Override
     public List<Integer> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
@@ -1303,9 +1303,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   };
 
   /**
-   * A result packer for fetching blobs from an result set containing a single blob column
+   * A result packer for fetching blobs from a result set containing a single blob column
    */
-  private static final class BlobResultPacker implements ResultPacker<Blob> {
+  private static final ResultPacker<Blob> BLOB_RESULT_PACKER = new ResultPacker<Blob>() {
     /** {@inheritDoc} */
     @Override
     public List<Blob> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
@@ -1317,7 +1317,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
       return blobs;
     }
-  }
+  };
 
   /**
    * Handles packing Entity query results.

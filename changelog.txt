@@ -3097,3 +3097,6 @@
   EntityTableModel.setForeignKeySearchValues(entityID, values) removed
   DefaultEntityModel.detailModelForeignKeys map now contains the actual foreign key property as value, instead of the propertyID
   DefaultEntityModel.setDetailModelForeignKey() fetches (and thereby validates) the actual foreign key
+  EntityConnectionImpl.BLOB_RESULT_PACKER added, BlobResultPacker class removed
+  EntityLoadTestModel sets the client connection type to remote during setup
+  ResultPacker.pack() javadoc improved

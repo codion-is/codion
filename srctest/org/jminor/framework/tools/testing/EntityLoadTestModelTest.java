@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.tools.testing;
 
+import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -20,14 +21,18 @@ import static org.junit.Assert.*;
 
 public class EntityLoadTestModelTest {
 
+  private static final String CONNECTION_TYPE_BEFORE_TEST = Configuration.getStringValue(Configuration.CLIENT_CONNECTION_TYPE);
+
   @BeforeClass
   public static void setUp() throws Exception {
     EntityConnectionServerTest.setUp();
+    Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, "remote");
   }
 
   @AfterClass
   public static void tearDown() throws Exception {
     EntityConnectionServerTest.tearDown();
+    Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_BEFORE_TEST);
   }
 
   @Test
