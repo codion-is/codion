@@ -6,7 +6,6 @@ package org.jminor.framework.domain;
 import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.DefaultValueMapValidator;
-import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -774,7 +773,7 @@ public final class Entities {
   /**
    * A default extensible {@link Entity.Validator} implementation.
    */
-  public static class Validator extends DefaultValueMapValidator<String, Object> implements Entity.Validator {
+  public static class Validator extends DefaultValueMapValidator<String, Entity> implements Entity.Validator {
 
     private final String entityID;
     private final boolean performNullValidation = Configuration.getBooleanValue(Configuration.PERFORM_NULL_VALIDATION);
@@ -802,51 +801,34 @@ public final class Entities {
      * @return true if the property accepts a null value
      */
     @Override
-    public boolean isNullable(final ValueMap<String,Object> valueMap, final String key) {
+    public boolean isNullable(final Entity valueMap, final String key) {
       return getProperty(entityID, key).isNullable();
     }
 
     /** {@inheritDoc} */
     @Override
-    public void validate(final Entity entity, final int action) throws ValidationException {
-      validate((ValueMap<String, Object>) entity, action);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final void validate(final Collection<Entity> entities, final int action) throws ValidationException {
+    public final void validate(final Collection<Entity> entities) throws ValidationException {
       for (final Entity entity : entities) {
-        validate(entity, action);
+        validate(entity);
       }
     }
 
     /** {@inheritDoc} */
     @Override
-    public final void validate(final ValueMap<String, Object> valueMap, final int action) throws ValidationException {
-      Util.rejectNullValue(valueMap, ENTITY_PARAM);
+    public void validate(final Entity entity) throws ValidationException {
+      Util.rejectNullValue(entity, ENTITY_PARAM);
       for (final Property property : getProperties(entityID).values()) {
-        validate(valueMap, property.getPropertyID(), action);
+        validate(entity, property.getPropertyID());
       }
     }
 
     /** {@inheritDoc} */
     @Override
-    public final void validate(final ValueMap<String, Object> valueMap, final String key, final int action) throws ValidationException {
-      if (valueMap instanceof Entity) {
-        validate((Entity) valueMap, key, action);
-      }
-      else {
-        super.validate(valueMap, key, action);
-      }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void validate(final Entity entity, final String propertyID, final int action) throws ValidationException {
+    public void validate(final Entity entity, final String propertyID) throws ValidationException {
       Util.rejectNullValue(entity, ENTITY_PARAM);
       final Property property = entity.getProperty(propertyID);
       if (performNullValidation && !(property instanceof Property.ForeignKeyProperty)) {
-        performNullValidation(entity, property, action);
+        performNullValidation(entity, property);
       }
       if (property.isNumerical()) {
         performRangeValidation(entity, property);
@@ -876,7 +858,7 @@ public final class Entities {
 
     /** {@inheritDoc} */
     @Override
-    public final void performNullValidation(final Entity entity, final Property property, final int action) throws NullValidationException {
+    public final void performNullValidation(final Entity entity, final Property property) throws NullValidationException {
       Util.rejectNullValue(entity, ENTITY_PARAM);
       Util.rejectNullValue(property, "property");
       if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
@@ -884,8 +866,10 @@ public final class Entities {
         if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isForeignKeyProperty()) {
           exceptionProperty = ((Property.ColumnProperty) property).getForeignKeyProperty();
         }
-        if (action == INSERT) {
-          final boolean columnPropertyWithoutDefaultValue = property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).columnHasDefaultValue();
+        if (entity.getPrimaryKey().isNull() || entity.getOriginalPrimaryKey().isNull()) {
+          //a new entity being inserted, allow null for columns with default values and auto generated primary key values
+          final boolean columnPropertyWithoutDefaultValue = property instanceof Property.ColumnProperty &&
+                  !((Property.ColumnProperty) property).columnHasDefaultValue();
           final boolean primaryKeyPropertyWithoutAutoGenerate = property instanceof Property.PrimaryKeyProperty &&
                   !getIdSource(entityID).isAutoGenerated();
           if (columnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {

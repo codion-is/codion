@@ -3100,3 +3100,11 @@
   EntityConnectionImpl.BLOB_RESULT_PACKER added, BlobResultPacker class removed
   EntityLoadTestModel sets the client connection type to remote during setup
   ResultPacker.pack() javadoc improved
+  ValueMapValidator renamed to Validator and made inner class of ValueMap, generics definition improved
+  ValueMap.Validator, action parameter removed from validation methods
+  ValueMap.Validator.INSERT, UPDATE, UNKNOWN constants removed
+  DefaultValueMapValidator changed according to the above
+  Entities.Validator changed according to the above, now uses the same strategy as DefaultEntityEditModel to determine if the entity being validated is new
+  Entity.Validator changed according to the above
+  Entities.DefaultEntityValidator changed according to the above
+  ValueMap.getValues() removed, already specified in ValueCollectionProvider

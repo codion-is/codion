@@ -11,19 +11,19 @@ import org.jminor.common.model.valuemap.exception.ValidationException;
 /**
  * A default value map validator implementation, which performs basic null validation.
  */
-public class DefaultValueMapValidator<K, V> implements ValueMapValidator<K, V> {
+public class DefaultValueMapValidator<K, V extends ValueMap<K, ?>> implements ValueMap.Validator<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public boolean isNullable(final ValueMap<K, V> valueMap, final K key) {
+  public boolean isNullable(final V valueMap, final K key) {
     return true;
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean isValid(final ValueMap<K, V> valueMap, final int action) {
+  public boolean isValid(final V valueMap) {
     try {
-      validate(valueMap, action);
+      validate(valueMap);
       return true;
     }
     catch (ValidationException e) {
@@ -33,16 +33,16 @@ public class DefaultValueMapValidator<K, V> implements ValueMapValidator<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public void validate(final ValueMap<K, V> valueMap, final int action) throws ValidationException {
+  public void validate(final V valueMap) throws ValidationException {
     Util.rejectNullValue(valueMap, "valueMap");
     for (final K key : valueMap.getValueKeys()) {
-      validate(valueMap, key, action);
+      validate(valueMap, key);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public void validate(final ValueMap<K, V> valueMap, final K key, final int action) throws ValidationException {
+  public void validate(final V valueMap, final K key) throws ValidationException {
     Util.rejectNullValue(valueMap, "valueMap");
     if (valueMap.isValueNull(key) && !isNullable(valueMap, key)) {
       throw new NullValidationException(key, Messages.get(Messages.VALUE_MISSING) + ": " + key);

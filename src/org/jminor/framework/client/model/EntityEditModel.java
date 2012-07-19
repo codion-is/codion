@@ -313,7 +313,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @return a list containing the inserted entity
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
-   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
+   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
   List<Entity> insert() throws DatabaseException, ValidationException;
 
@@ -325,7 +325,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @throws ValidationException in case validation fails
    * @see #addBeforeInsertListener(EventListener)
    * @see #addAfterInsertListener(EventListener)
-   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
+   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
   List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException;
 
@@ -335,7 +335,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws org.jminor.common.model.valuemap.exception.ValidationException in case validation fails
-   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
+   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
   List<Entity> update() throws DatabaseException, ValidationException;
 
@@ -349,7 +349,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @throws ValidationException in case validation fails
    * @see #addBeforeUpdateListener(EventListener)
    * @see #addAfterUpdateListener(EventListener)
-   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
+   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
   List<Entity> update(final List<Entity> entities) throws DatabaseException, ValidationException;
 

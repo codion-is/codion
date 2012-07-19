@@ -4,7 +4,6 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
@@ -43,7 +42,7 @@ public class EntitiesTest {
 
     final Entities.Validator validator = new Entities.Validator(Chinook.T_INVOICELINE);
     try {
-      validator.validate(invoiceLine, ValueMapValidator.UNKNOWN);
+      validator.validate(invoiceLine);
       fail();
     }
     catch (ValidationException e) {
@@ -53,7 +52,7 @@ public class EntitiesTest {
     invoiceLine.setValue(Chinook.INVOICELINE_UNITPRICE, null);
     invoiceLine.setValue(Chinook.INVOICELINE_INVOICEID, 1);
     try {
-      validator.validate(invoiceLine, ValueMapValidator.UNKNOWN);
+      validator.validate(invoiceLine);
       fail();
     }
     catch (ValidationException e) {

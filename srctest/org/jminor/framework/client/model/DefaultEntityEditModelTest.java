@@ -12,7 +12,6 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
-import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionImplTest;
@@ -273,7 +272,7 @@ public final class DefaultEntityEditModelTest {
     //test validation
     try {
       employeeEditModel.setValue(EmpDept.EMPLOYEE_COMMISSION, 50d);
-      employeeEditModel.validate(EmpDept.EMPLOYEE_COMMISSION, ValueMapValidator.INSERT);
+      employeeEditModel.validate(EmpDept.EMPLOYEE_COMMISSION);
       fail("Validation should fail on invalid commission value");
     }
     catch (ValidationException e) {
@@ -531,16 +530,16 @@ public final class DefaultEntityEditModelTest {
 
     model.setValue(EmpDept.DEPARTMENT_ID, null);
     try {
-      model.validate(EmpDept.DEPARTMENT_ID, ValueMapValidator.UNKNOWN);
+      model.validate(EmpDept.DEPARTMENT_ID);
       fail();
     }
     catch (ValidationException e) {}
 
-    assertFalse(model.isValid(EmpDept.DEPARTMENT_ID, ValueMapValidator.UNKNOWN));
+    assertFalse(model.isValid(EmpDept.DEPARTMENT_ID));
     assertFalse(model.isValid());
 
     model.setValue(EmpDept.DEPARTMENT_ID, 1);
-    assertTrue(model.isValid(EmpDept.DEPARTMENT_ID, ValueMapValidator.UNKNOWN));
+    assertTrue(model.isValid(EmpDept.DEPARTMENT_ID));
     assertTrue(model.isValid());
 
     model.removeValueListener(EmpDept.DEPARTMENT_ID, valueChangeListener);

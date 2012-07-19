@@ -61,7 +61,7 @@ public interface ValueMapEditModel<K, V> {
   /**
    * @return the validatorAFTM
    */
-  ValueMapValidator<K, V> getValidator();
+  ValueMap.Validator<K, ? extends ValueMap<K, V>> getValidator();
 
   /**
    * @param key the key
@@ -92,22 +92,18 @@ public interface ValueMapEditModel<K, V> {
   /**
    * Checks if the value associated with the given key is valid, throws a ValidationException if not
    * @param key the key the value is associated with
-   * @param action describes the action requiring validation,
-   * {@link ValueMapValidator#INSERT}, {@link ValueMapValidator#UPDATE} or {@link ValueMapValidator#UNKNOWN}
    * @throws org.jminor.common.model.valuemap.exception.ValidationException if the given value is not valid for the given key
    */
-  void validate(final K key, final int action) throws ValidationException;
+  void validate(final K key) throws ValidationException;
 
   /**
    * Returns true if the value associated with the given key is valid, using the <code>validate</code> method
    * @param key the key the value is associated with
-   * @param action describes the action requiring validation,
-   * ValueMapEditModel.INSERT, ValueMapEditModel.UPDATE or ValueMapEditModel.UNKNOWN
    * @return true if the value is valid
-   * @see #validate(Object, int)
-   * @see ValueMapValidator#validate(ValueMap, Object, int)
+   * @see #validate(K)
+   * @see ValueMap.Validator#validate(ValueMap)
    */
-  boolean isValid(final K key, final int action);
+  boolean isValid(final K key);
 
   /**
    * @return true if the underlying value map contains only valid values

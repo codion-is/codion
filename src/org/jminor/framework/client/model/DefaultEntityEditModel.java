@@ -16,7 +16,6 @@ import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
-import org.jminor.common.model.valuemap.ValueMapValidator;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
@@ -368,8 +367,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void validate(final String propertyID, final int action) throws ValidationException {
-    validator.validate(entity, propertyID, action);
+  public final void validate(final String propertyID) throws ValidationException {
+    validator.validate(entity, propertyID);
   }
 
   /** {@inheritDoc} */
@@ -398,10 +397,10 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isValid(final String propertyID, final int action) {
+  public final boolean isValid(final String propertyID) {
     Util.rejectNullValue(propertyID, "propertyID");
     try {
-      validator.validate(entity, propertyID, action);
+      validator.validate(entity, propertyID);
       return true;
     }
     catch (ValidationException e) {
@@ -483,7 +482,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     }
 
     evtBeforeUpdate.fire();
-    validator.validate(modifiedEntities, Entity.Validator.UPDATE);
+    validator.validate(modifiedEntities);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
     final int index = updatedEntities.indexOf(getEntity());
@@ -940,7 +939,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     LOG.debug("{} - insert {}", this, Util.getCollectionContentsAsString(entities, false));
 
     evtBeforeInsert.fire();
-    validator.validate(entities, Entity.Validator.INSERT);
+    validator.validate(entities);
 
     return connectionProvider.getConnection().selectMany(doInsert(entities));
   }
@@ -978,7 +977,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       @Override
       protected void valueChanged(final ValueChangeEvent<String, Object> event) {
         stPrimaryKeyNull.setActive(entity.isPrimaryKeyNull());
-        stValid.setActive(validator.isValid(entity, ValueMapValidator.UNKNOWN));
+        stValid.setActive(validator.isValid(entity));
         final Event valueChangeEvent = valueChangeEventMap.get(event.getKey());
         if (valueChangeEvent != null) {
           valueChangeEvent.fire(event);

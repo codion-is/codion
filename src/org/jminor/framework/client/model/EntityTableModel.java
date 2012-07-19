@@ -193,7 +193,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @throws IllegalStateException in case this table model has no edit model
-   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection, int)
+   * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
   void update(final List<Entity> entities) throws CancelException, ValidationException, DatabaseException;
 

@@ -5,6 +5,7 @@ package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import java.util.Collection;
 
@@ -56,12 +57,6 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
    * @return true if a value is mapped to this key
    */
   boolean containsValue(final K key);
-
-  /**
-   * @return an unmodifiable view of the values in this map.
-   */
-  @Override
-  Collection<V> getValues();
 
   /**
    * @return an unmodifiable view of the keys mapping the values in this ValueMap
@@ -184,5 +179,42 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
      * @return a string representation of the value map
      */
     String toString(final V valueMap);
+  }
+
+  /**
+   * A validator for ValueMaps
+   * @param <K> the type identifying the keys in the value map
+   * @param <V> the value map type
+   */
+  interface Validator<K, V extends ValueMap<K, ?>> {
+
+    /**
+     * @param valueMap the value map
+     * @param key the key
+     * @return true if this value is allowed to be null in the given value map
+     */
+    boolean isNullable(final V valueMap, final K key);
+
+    /**
+     * @param valueMap the value map
+     * @return true if the given value map contains only valid values
+     */
+    boolean isValid(final V valueMap);
+
+    /**
+     * Checks if the values in the given value map are valid
+     * @param valueMap the value map
+     * @throws ValidationException in case of an invalid value
+     */
+    void validate(final V valueMap) throws ValidationException;
+
+    /**
+     * Checks if the value associated with the give key is valid, throws a ValidationException if not
+     *
+     * @param valueMap the value map to validate
+     * @param key the key the value is associated with
+     * @throws ValidationException if the given value is not valid for the given key
+     */
+    void validate(final V valueMap, final K key) throws ValidationException;
   }
 }
