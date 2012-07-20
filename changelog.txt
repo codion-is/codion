@@ -3108,3 +3108,4 @@
   Entity.Validator changed according to the above
   Entities.DefaultEntityValidator changed according to the above
   ValueMap.getValues() removed, already specified in ValueCollectionProvider
+  Util.get/putUserPreference() incorrect static lazy initialization fixed

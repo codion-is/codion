@@ -105,18 +105,12 @@ public final class Util {
 
   public static String getUserPreference(final String key, final String defaultValue) {
     rejectNullValue(key, "key");
-    if (userPreferences == null) {
-      userPreferences = Preferences.userRoot();
-    }
-    return userPreferences.get(key, defaultValue);
+    return getUserPreferences().get(key, defaultValue);
   }
 
   public static void putUserPreference(final String key, final String value) {
     rejectNullValue(key, "key");
-    if (userPreferences == null) {
-      userPreferences = Preferences.userRoot();
-    }
-    userPreferences.put(key, value);
+    getUserPreferences().put(key, value);
   }
 
   public static String getDefaultUserName(final String applicationIdentifier, final String defaultName) {
@@ -1039,5 +1033,13 @@ public final class Util {
     }
 
     map.get(key).add(value);
+  }
+
+  private static synchronized Preferences getUserPreferences() {
+    if (userPreferences == null) {
+      userPreferences = Preferences.userRoot();
+    }
+
+    return userPreferences;
   }
 }

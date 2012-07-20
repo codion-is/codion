@@ -59,7 +59,7 @@ public interface ValueMapEditModel<K, V> {
   EventObserver getValueChangeObserver(K key);
 
   /**
-   * @return the validatorAFTM
+   * @return the validator
    */
   ValueMap.Validator<K, ? extends ValueMap<K, V>> getValidator();
 
@@ -100,7 +100,7 @@ public interface ValueMapEditModel<K, V> {
    * Returns true if the value associated with the given key is valid, using the <code>validate</code> method
    * @param key the key the value is associated with
    * @return true if the value is valid
-   * @see #validate(K)
+   * @see #validate(Object)
    * @see ValueMap.Validator#validate(ValueMap)
    */
   boolean isValid(final K key);

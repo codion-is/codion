@@ -391,8 +391,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final void replaceEntities(final Collection<Entity> entities) {
-    for (int i = 0; i < getVisibleItemCount(); i++) {
-      final Entity entity = getItemAt(i);
+    for (final Entity entity : getVisibleItems()) {
       for (final Entity newEntity : entities) {
         if (entity.getPrimaryKey().equals(newEntity.getPrimaryKey())) {
           entity.setAs(newEntity);
