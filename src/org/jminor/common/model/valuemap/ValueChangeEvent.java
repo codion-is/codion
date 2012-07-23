@@ -31,33 +31,24 @@ public final class ValueChangeEvent<K, V> {
   private final V oldValue;
 
   /**
-   * True if this change event is coming from the model, false if it is coming from the UI
-   */
-  private final boolean isModelChange;
-
-  /**
-   * True if this property change indicates an initialization, that is, the property did not
-   * have a value before this value change
+   * True if this value change indicates an initialization, that is, a value was not present before this value change
    */
   private final boolean initialization;
 
   /**
-   * Instantiates a new PropertyEvent
+   * Instantiates a new ValueChangeEvent
    * @param source the source of the value change
    * @param key the key associated with the value
    * @param newValue the new value
    * @param oldValue the old value
-   * @param isModelChange true if the value change originates from the model, false if it originates in the UI
    * @param initialization true if the value was being initialized
    */
-  public ValueChangeEvent(final Object source, final K key, final V newValue, final V oldValue,
-                          final boolean isModelChange, final boolean initialization) {
+  public ValueChangeEvent(final Object source, final K key, final V newValue, final V oldValue, final boolean initialization) {
     Util.rejectNullValue(key, "key");
     this.source = source;
     this.key = key;
     this.newValue = newValue;
     this.oldValue = oldValue;
-    this.isModelChange = isModelChange;
     this.initialization = initialization;
   }
 
@@ -119,22 +110,6 @@ public final class ValueChangeEvent<K, V> {
    */
   public boolean isOldValueNull() {
     return oldValue == null;
-  }
-
-  /**
-   * @return true if this property change is coming from the model,
-   * false if it is coming from the UI
-   */
-  public boolean isModelChange() {
-    return isModelChange;
-  }
-
-  /**
-   * @return true if this property change is coming from the UI,
-   * false if it is coming from the model
-   */
-  public boolean isUIChange() {
-    return !isModelChange;
   }
 
   /**

@@ -323,7 +323,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
 
   protected final void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
     if (evtValueChanged != null) {
-      evtValueChanged.fire(new ValueChangeEvent<K, V>(this, key, value, oldValue, true, initialization));
+      evtValueChanged.fire(new ValueChangeEvent<K, V>(this, key, value, oldValue, initialization));
     }
   }
 

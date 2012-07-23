@@ -54,12 +54,10 @@ public class ValueMapImplTest {
         event.getOldValue();
         event.getNewValue();
         event.isInitialization();
-        event.isModelChange();
         event.isNewValueEqual(null);
         event.isNewValueNull();
         event.isOldValueEqual(null);
         event.isOldValueNull();
-        event.isUIChange();
       }
     };
     valueMap.addValueListener(valueListener);

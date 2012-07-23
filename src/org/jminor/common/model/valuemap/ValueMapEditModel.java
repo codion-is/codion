@@ -29,8 +29,10 @@ public interface ValueMapEditModel<K, V> {
   StateObserver getValidObserver();
 
   /**
+   * Adds a listener notified each time the value associated with the given key is set via
+   * {@link ValueMapEditModel#setValue(Object, Object)}, note that this event is only fired when the the value changes
    * @param key the key for which to monitor value changes
-   * @param listener a listener notified each time the value of <code>key</code> is set
+   * @param listener a listener notified each time the value of <code>key</code> is set via this model
    */
   void addValueSetListener(final K key, final EventListener listener);
 
@@ -41,6 +43,7 @@ public interface ValueMapEditModel<K, V> {
   void removeValueSetListener(final K key, final EventListener listener);
 
   /**
+   * Adds a listener notified each time the value associated with the given key changes
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of <code>key</code> changes
    */

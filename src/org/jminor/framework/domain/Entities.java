@@ -796,12 +796,12 @@ public final class Entities {
     /**
      * Returns true if the given property accepts a null value for the given entity,
      * by default this method simply returns <code>property.isNullable()</code>
-     * @param valueMap the entity being validated
+     * @param entity the entity being validated
      * @param key the property ID
      * @return true if the property accepts a null value
      */
     @Override
-    public boolean isNullable(final Entity valueMap, final String key) {
+    public boolean isNullable(final Entity entity, final String key) {
       return getProperty(entityID, key).isNullable();
     }
 

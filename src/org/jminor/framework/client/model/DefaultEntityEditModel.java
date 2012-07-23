@@ -385,7 +385,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     final Object oldValue = entity.getValue(propertyID);
     entity.setValue(propertyID, prepareNewValue(propertyID, value));
     if (!Util.equal(value, oldValue)) {
-      notifyValueSet(propertyID, new ValueChangeEvent<String, Object>(this, propertyID, value, oldValue, false, initialization));
+      notifyValueSet(propertyID, new ValueChangeEvent<String, Object>(this, propertyID, value, oldValue, initialization));
     }
   }
 
@@ -1004,9 +1004,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
     final StringBuilder stringBuilder = new StringBuilder();
     if (event.getSource() instanceof Entity) {
       stringBuilder.append("[entity] ");
-    }
-    else {
-      stringBuilder.append(event.isModelChange() ? "[model] " : "[ui] ");
     }
     final Property property = Entities.getProperty(getEntityID(), event.getKey());
     final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
