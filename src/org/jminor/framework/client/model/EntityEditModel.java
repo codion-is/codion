@@ -24,13 +24,15 @@ import java.util.List;
 public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refreshable, EntityDataProvider {
 
   /**
-   * @return a value map containing the default values
+   * @return an Entity instance populated with default values for all properties
+   * @see #getDefaultValue(org.jminor.framework.domain.Property)
    */
   Entity getDefaultEntity();
 
   /**
    * Copies the values from the given {@link Entity} into the underlying
-   * {@link Entity} being edited by this edit model
+   * {@link Entity} being edited by this edit model. If <code>entity</code>
+   * is null then the entity being edited is populated with default values
    * @param entity the entity
    */
   void setEntity(final Entity entity);
@@ -129,7 +131,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
 
   /**
    * Creates a default {@link EntityComboBoxModel} for the given property, override to provide
-   * specific {@link EntityComboBoxModel} (filtered for example) for properties.
+   * a specific {@link EntityComboBoxModel} (filtered for example) for properties.
    * This method is called when creating a {@link EntityComboBoxModel} for entity properties, both
    * for the edit fields used when editing a single record and the edit field used
    * when updating multiple records.

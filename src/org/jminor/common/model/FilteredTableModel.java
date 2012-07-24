@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * Specifies a table model that can be filtered.
+ * Specifies a table model supporting selection as well as filtering
  * @param <R> the type representing the rows in this table model
  * @param <C> type type used to identify columns in this table model, Integer for simple indexed identification for example
  */

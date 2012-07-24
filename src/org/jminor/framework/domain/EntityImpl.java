@@ -148,7 +148,6 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   }
 
   /**
-   *
    * @param property the property for which to retrieve the value
    * @return the value associated with the given property.
    * {@link Property.ForeignKeyProperty}'s are handled in a specific way,
@@ -176,11 +175,10 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   /** {@inheritDoc} */
   @Override
   public void handleValueRemoved(final String key, final Object value) {
-    super.handleValueRemoved(key, value);
     final Property property = getProperty(key);
     if (property instanceof Property.ForeignKeyProperty) {
-      for (final Property fkProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties()) {
-        removeValue(fkProperty.getPropertyID());
+      for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties()) {
+        removeValue(referenceProperty.getPropertyID());
       }
     }
   }
@@ -387,12 +385,12 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   }
 
   /**
-   * @param o the entity to compare with
+   * @param entity the entity to compare with
    * @return the compare result from comparing <code>entity</code> with this Entity instance
    */
   @Override
-  public int compareTo(final Entity o) {
-    return definition.compareTo(this, o);
+  public int compareTo(final Entity entity) {
+    return definition.compareTo(this, entity);
   }
 
   /**
@@ -405,7 +403,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
 
   /**
    * @return a string representation of this entity
-   * @see org.jminor.framework.domain.Entity.Definition#toString(Entity)
+   * @see Definition#toString(Entity)
    */
   @Override
   public String toString() {
@@ -495,7 +493,6 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   /** {@inheritDoc} */
   @Override
   protected void handleClear() {
-    super.handleClear();
     primaryKey = null;
     referencedPrimaryKeysCache = null;
     toString = null;

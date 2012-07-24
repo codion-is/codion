@@ -95,7 +95,7 @@ public interface ValueMapEditModel<K, V> {
   /**
    * Checks if the value associated with the given key is valid, throws a ValidationException if not
    * @param key the key the value is associated with
-   * @throws org.jminor.common.model.valuemap.exception.ValidationException if the given value is not valid for the given key
+   * @throws ValidationException if the given value is not valid for the given key
    */
   void validate(final K key) throws ValidationException;
 

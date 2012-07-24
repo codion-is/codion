@@ -4,7 +4,7 @@
 package org.jminor.common.model;
 
 /**
- * Specifies an Event observer.
+ * Specifies an Event observer, responsible for notifying listeners when an event occurs.
  */
 public interface EventObserver {
 
