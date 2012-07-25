@@ -40,7 +40,6 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   private Event evtValueChanged;
 
   private static final int MAGIC_NUMBER = 23;
-  private static final String EMPTY_STRING = "";
 
   public ValueMapImpl() {}
 
@@ -78,7 +77,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   public String getValueAsString(final K key) {
     final V value = values.get(key);
     if (value == null) {
-      return EMPTY_STRING;
+      return "";
     }
 
     return value.toString();

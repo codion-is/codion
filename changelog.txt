@@ -3110,3 +3110,8 @@
   ValueMap.getValues() removed, already specified in ValueCollectionProvider
   Util.get/putUserPreference() incorrect static lazy initialization fixed
   ValueChangeEvent.isModelChange removed
+  DbUtil added
+  DbUtilTest added
+  Util.closeSilently(ResultSet) and closeSilently(Statement) moved to DbUtil
+  UtilTest, added a couple of tests
+  AbstractEntityConnectionProvider synchronized some public methods

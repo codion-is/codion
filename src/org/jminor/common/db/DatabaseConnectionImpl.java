@@ -131,18 +131,13 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public final void disconnect() {
-    if (!isConnected()) {
+    if (connection == null) {
       return;
     }
 
+    DbUtil.closeSilently(checkConnectionStatement);
     try {
-      if (checkConnectionStatement != null) {
-        checkConnectionStatement.close();
-      }
-    }
-    catch (Exception ignored) {}
-    try {
-      if (connection != null && !connection.isClosed()) {
+      if (!connection.isClosed()) {
         connection.rollback();
         connection.close();
       }
@@ -341,9 +336,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       return false;
     }
     finally {
-      if (temporaryStatement != null) {
-        Util.closeSilently(temporaryStatement);
-      }
+      DbUtil.closeSilently(temporaryStatement);
     }
   }
 
@@ -357,12 +350,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       return false;
     }
     finally {
-      try {
-        if (rs != null) {
-          rs.close();
-        }
-      }
-      catch (Exception ignored) {}
+      DbUtil.closeSilently(rs);
     }
   }
 

@@ -53,7 +53,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   private Key primaryKey;
 
   /**
-   * Instantiates a new Entity
+   * Instantiates a new EntityImpl
    * @param definition the definition of the entity type
    */
   EntityImpl(final Definition definition) {
@@ -61,7 +61,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   }
 
   /**
-   * Instantiates a new Entity
+   * Instantiates a new EntityImpl
    * @param definition the definition of the entity type
    * @param primaryKey the primary key
    */

@@ -33,7 +33,7 @@ public interface EntityConnection {
   boolean isConnected();
 
   /**
-   * Disconnects this connection
+   * Performs a rollback and disconnects this connection
    */
   void disconnect();
 

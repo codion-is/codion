@@ -210,4 +210,18 @@ public class ValueMapImplTest {
     assertFalse(map.isModified());
     assertFalse(map.isModified("2"));
   }
+
+  @Test
+  public void testHashCode() {
+    final ValueMap<String, Integer> map = new ValueMapImpl<String, Integer>();
+    map.setValue("1", 1);
+    map.setValue("2", 2);
+    map.setValue("3", 3);
+
+    assertEquals(29, map.hashCode());
+
+    map.setValue("2", null);
+
+    assertEquals(27, map.hashCode());
+  }
 }

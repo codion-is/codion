@@ -5,9 +5,11 @@ package org.jminor.common.model;
 
 import org.junit.Test;
 
+import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
@@ -219,5 +221,34 @@ public class UtilTest {
     assertFalse(Util.notNull(new Object(), null, new Object()));
     final Object ob = null;
     assertFalse(Util.notNull(ob));
+  }
+
+  @Test
+  public void closeSilently() {
+    Util.closeSilently((Closeable) null);
+    Util.closeSilently((Closeable[]) null);
+    Util.closeSilently(null, null);
+  }
+
+  @Test
+  public void collateSansSpaces() {
+    final String b = "Björn Darri";
+    final String bNoSpace = "BjörnDarri";
+    final String d = "Davíð Arnar";
+    final String dNoSpace = "DavíðArnar";
+    final String a = "Arnór Jón";
+    final List<String> items = Arrays.asList(b, d, a, bNoSpace, dNoSpace);
+    Util.collateSansSpaces(Collator.getInstance(), items);
+    assertEquals(0, items.indexOf(a));
+    assertEquals(1, items.indexOf(b));
+    assertEquals(2, items.indexOf(bNoSpace));
+    assertEquals(3, items.indexOf(d));
+    assertEquals(4, items.indexOf(dNoSpace));
+  }
+
+  @Test
+  public void onClasspath() {
+    assertTrue(Util.onClasspath(UtilTest.class.getName()));
+    assertFalse(Util.onClasspath("no.class.Here"));
   }
 }

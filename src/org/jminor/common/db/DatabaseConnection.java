@@ -91,7 +91,7 @@ public interface DatabaseConnection {
   void rollback() throws SQLException;
 
   /**
-   * Disconnects this connection, if a transaction is open a rollback is performed
+   * Performs a rollback and disconnects this connection
    */
   void disconnect();
 
