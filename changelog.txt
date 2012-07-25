@@ -3115,3 +3115,4 @@
   Util.closeSilently(ResultSet) and closeSilently(Statement) moved to DbUtil
   UtilTest, added a couple of tests
   AbstractEntityConnectionProvider synchronized some public methods
+  DatabaseConnectionImpl.beginTransaction() logging added

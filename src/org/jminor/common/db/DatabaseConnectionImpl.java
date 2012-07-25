@@ -180,6 +180,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       throw new IllegalStateException("Transaction already open");
     }
 
+    LOG.debug("{}: begin transaction;", user.getUsername());
     methodLogger.logAccess("beginTransaction", new Object[0]);
     transactionOpen = true;
     methodLogger.logExit("beginTransaction", null, null);
