@@ -12,6 +12,8 @@ import java.sql.Statement;
  */
 public class DbUtil {
 
+  private DbUtil() {}
+
   /**
    * Closes the given ResultSet instances, swallowing any SQLExceptions that occur
    * @param resultSets the result sets to close

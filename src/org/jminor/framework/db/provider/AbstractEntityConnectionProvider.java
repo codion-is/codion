@@ -43,19 +43,19 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   /** {@inheritDoc} */
   @Override
-  public final User getUser() {
-    return user;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final StateObserver getConnectedObserver() {
     return stConnectionValid.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized final void setUser(final User user) {
+  public final synchronized User getUser() {
+    return user;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final synchronized void setUser(final User user) {
     if (Util.equal(user, this.user)) {
       return;
     }
@@ -65,13 +65,13 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   /** {@inheritDoc} */
   @Override
-  public synchronized final boolean isConnected() {
+  public final synchronized boolean isConnected() {
     return entityConnection != null;
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized final EntityConnection getConnection() {
+  public final synchronized EntityConnection getConnection() {
     if (user == null) {
       throw new IllegalStateException("No user set");
     }

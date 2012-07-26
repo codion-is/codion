@@ -67,11 +67,8 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   public DatabaseConnectionImpl(final Database database, final Connection connection) throws DatabaseException {
     Util.rejectNullValue(database, "database");
     this.database = database;
-    if (!isValid(database, connection, null)) {
-      throw new IllegalArgumentException("Connection invalid during instantiation");
-    }
-    this.user = getUser(connection);
     setConnection(connection);
+    this.user = getUser(connection);
   }
 
   /** {@inheritDoc} */
@@ -125,7 +122,20 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public final boolean isValid() {
-    return isValid(database, connection, checkConnectionStatement);
+    if (connection == null) {
+      return false;
+    }
+    try {
+      if (database.supportsIsValid()) {
+        return connection.isValid(0);
+      }
+
+      return checkConnectionWithQuery();
+    }
+    catch (SQLException e) {
+      LOG.error(e.getMessage(), e);
+      return false;
+    }
   }
 
   /** {@inheritDoc} */
@@ -300,50 +310,24 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
 
     this.connection = connection;
+    if (!isValid()) {
+      throw new IllegalArgumentException("Connection invalid during instantiation");
+    }
     try {
       connection.setAutoCommit(false);
     }
     catch (SQLException e) {
       throw new DatabaseException(e, "Unable to disable auto commit on the given connection");
     }
-    if (!database.supportsIsValid()) {
-      try {
-        this.checkConnectionStatement = connection.createStatement();
-      }
-      catch (SQLException e) {
-        throw new DatabaseException(e, "Unable to create a statement for validity checking");
-      }
-    }
   }
 
-  private static boolean isValid(final Database database, final Connection connection, final Statement checkConnectionStatement) {
-    if (connection == null) {
-      return false;
-    }
-    Statement temporaryStatement = null;
-    try {
-      if (database.supportsIsValid()) {
-        return connection.isValid(0);
-      }
-
-      if (checkConnectionStatement == null) {
-        temporaryStatement = connection.createStatement();
-      }
-
-      return checkConnection(database, checkConnectionStatement == null ? temporaryStatement : checkConnectionStatement);
-    }
-    catch (SQLException e) {
-      LOG.error(e.getMessage(), e);
-      return false;
-    }
-    finally {
-      DbUtil.closeSilently(temporaryStatement);
-    }
-  }
-
-  private static boolean checkConnection(final Database database, final Statement checkConnectionStatement) {
+  private boolean checkConnectionWithQuery() {
     ResultSet rs = null;
     try {
+      if (checkConnectionStatement == null) {
+        checkConnectionStatement = connection.createStatement();
+      }
+
       rs = checkConnectionStatement.executeQuery(database.getCheckConnectionQuery());
       return true;
     }
