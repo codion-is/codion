@@ -3117,3 +3117,4 @@
   AbstractEntityConnectionProvider synchronized some public methods
   DatabaseConnectionImpl.beginTransaction() logging added
   DatabaseConnectionImpl, connection validation refactored
+  AbstractFilteredTableModel, some reordering, minor refactoring

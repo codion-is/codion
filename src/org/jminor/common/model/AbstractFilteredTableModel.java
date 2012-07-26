@@ -120,17 +120,17 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * true while the model data is being refreshed
    */
-  private boolean isRefreshing = false;
+  private boolean refreshing = false;
 
   /**
    * true while the model data is being filtered
    */
-  private boolean isFiltering = false;
+  private boolean filtering = false;
 
   /**
    * true while the model data is being sorted
    */
-  private boolean isSorting = false;
+  private boolean sorting = false;
 
   /**
    * the filter criteria used by this model
@@ -190,7 +190,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final int getVisibleItemCount() {
-    return getRowCount();
+    return visibleItems.size();
   }
 
   /** {@inheritDoc} */
@@ -208,7 +208,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final int getRowCount() {
-    return visibleItems.size();
+    return getVisibleItemCount();
   }
 
   /** {@inheritDoc} */
@@ -244,7 +244,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCriteria<Object> criteria) {
     if (forward) {
-      for (int row = fromIndex >= getRowCount() ? 0 : fromIndex; row < getRowCount(); row++) {
+      for (int row = fromIndex >= getVisibleItemCount() ? 0 : fromIndex; row < getVisibleItemCount(); row++) {
         final Point point = findColumnValue(columnModel.getColumns(), row, criteria);
         if (point != null) {
           return point;
@@ -252,7 +252,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       }
     }
     else {
-      for (int row = fromIndex < 0 ? getRowCount() - 1 : fromIndex; row >= 0; row--) {
+      for (int row = fromIndex < 0 ? getVisibleItemCount() - 1 : fromIndex; row >= 0; row--) {
         final Point point = findColumnValue(columnModel.getColumns(), row, criteria);
         if (point != null) {
           return point;
@@ -269,18 +269,18 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    */
   @Override
   public final void refresh() {
-    if (isRefreshing) {
+    if (refreshing) {
       return;
     }
     try {
-      isRefreshing = true;
+      refreshing = true;
       evtRefreshStarted.fire();
       final List<R> selectedItems = new ArrayList<R>(getSelectedItems());
       doRefresh();
       setSelectedItems(selectedItems);
     }
     finally {
-      isRefreshing = false;
+      refreshing = false;
       evtRefreshDone.fire();
     }
   }
@@ -421,31 +421,14 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void setSelectedItemIndex(final int index) {
-    if (index < 0 || index > getRowCount() - 1) {
-      throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getRowCount());
+  public final R getSelectedItem() {
+    final int index = selectionModel.getSelectedIndex();
+    if (index >= 0 && index < getVisibleItemCount()) {
+      return getItemAt(index);
     }
-    selectionModel.setSelectionInterval(index, index);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void addSelectedItemIndex(final int index) {
-    if (index < 0 || index > getRowCount() - 1) {
-      throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getRowCount());
+    else {
+      return null;
     }
-    selectionModel.addSelectionInterval(index, index);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void setSelectedItemIndexes(final Collection<Integer> indexes) {
-    for (final Integer index : indexes) {
-      if (index < 0 || index > getRowCount() - 1) {
-        throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getRowCount());
-      }
-    }
-    selectionModel.setSelectedItemIndexes(indexes);
   }
 
   /** {@inheritDoc} */
@@ -462,29 +445,37 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void setSelectedItems(final Collection<R> items) {
-    if (!selectionModel.isSelectionEmpty()) {
-      selectionModel.clearSelection();
+  public final void setSelectedItemIndex(final int index) {
+    if (index < 0 || index > getVisibleItemCount() - 1) {
+      throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getVisibleItemCount());
     }
-    addSelectedItems(items);
+    selectionModel.setSelectionInterval(index, index);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final R getSelectedItem() {
-    final int index = selectionModel.getSelectedIndex();
-    if (index >= 0 && index < getVisibleItemCount()) {
-      return getItemAt(index);
+  public final void setSelectedItemIndexes(final Collection<Integer> indexes) {
+    for (final Integer index : indexes) {
+      if (index < 0 || index > getVisibleItemCount() - 1) {
+        throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getVisibleItemCount());
+      }
     }
-    else {
-      return null;
-    }
+    selectionModel.setSelectedItemIndexes(indexes);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setSelectedItem(final R item) {
     setSelectedItems(Arrays.asList(item));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setSelectedItems(final Collection<R> items) {
+    if (!selectionModel.isSelectionEmpty()) {
+      selectionModel.clearSelection();
+    }
+    addSelectedItems(items);
   }
 
   /** {@inheritDoc} */
@@ -504,6 +495,15 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       }
     }
     selectionModel.addSelectedItemIndexes(indexes);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void addSelectedItemIndex(final int index) {
+    if (index < 0 || index > getVisibleItemCount() - 1) {
+      throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getVisibleItemCount());
+    }
+    selectionModel.addSelectionInterval(index, index);
   }
 
   /** {@inheritDoc} */
@@ -546,7 +546,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final void filterContents() {
     try {
-      isFiltering = true;
+      filtering = true;
       final List<R> selectedItems = getSelectedItems();
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
@@ -562,7 +562,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       setSelectedItems(selectedItems);
     }
     finally {
-      isFiltering = false;
+      filtering = false;
       evtFilteringDone.fire();
     }
   }
@@ -590,17 +590,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void removeItems(final Collection<R> items) {
-    final int visibleCount = visibleItems.size();
-    visibleItems.removeAll(items);
-    filteredItems.removeAll(items);
-    if (visibleItems.size() != visibleCount) {
-      fireTableDataChanged();
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final void removeItem(final R item) {
     if (visibleItems.contains(item)) {
       final int index = indexOf(item);
@@ -611,6 +600,17 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       if (filteredItems.contains(item)) {
         filteredItems.remove(item);
       }
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void removeItems(final Collection<R> items) {
+    final int visibleCount = visibleItems.size();
+    visibleItems.removeAll(items);
+    filteredItems.removeAll(items);
+    if (visibleItems.size() != visibleCount) {
+      fireTableDataChanged();
     }
   }
 
@@ -957,21 +957,21 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @return true while this table model is being filtered
    */
   protected final boolean isFiltering() {
-    return isFiltering;
+    return filtering;
   }
 
   /**
    * @return true while this table model is being sorted
    */
   protected final boolean isSorting() {
-    return isSorting;
+    return sorting;
   }
 
   /**
    * @return true while this table model is being refreshed
    */
   protected final boolean isRefreshing() {
-    return isRefreshing;
+    return refreshing;
   }
 
   private void bindEventsInternal() {
@@ -1051,7 +1051,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private void sortTableModel() {
     try {
-      isSorting = true;
+      sorting = true;
       evtSortingStarted.fire();
       final List<R> selectedItems = new ArrayList<R>(getSelectedItems());
       Collections.sort(visibleItems, rowComparator);
@@ -1059,7 +1059,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       setSelectedItems(selectedItems);
     }
     finally {
-      isSorting = false;
+      sorting = false;
       evtSortingDone.fire();
     }
   }
