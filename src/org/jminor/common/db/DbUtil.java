@@ -10,7 +10,7 @@ import java.sql.Statement;
 /**
  * A static utility class.
  */
-public class DbUtil {
+public final class DbUtil {
 
   private DbUtil() {}
 
