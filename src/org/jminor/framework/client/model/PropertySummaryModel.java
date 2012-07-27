@@ -71,7 +71,7 @@ public interface PropertySummaryModel {
   List<SummaryType> getSummaryTypes();
 
   /**
-   * @return a string represting the summary value
+   * @return a string representing the summary value
    */
   String getSummaryText();
 
