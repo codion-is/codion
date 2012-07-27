@@ -123,7 +123,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     this.tableScrollPane = new JScrollPane(table);
     this.searchField = initializeSearchField();
     this.columnFilterPanels = columnFilterPanels;
-    setupTableHeader();
+    initializeTableHeader();
     bindEvents();
   }
 
@@ -416,14 +416,14 @@ public class FilteredTablePanel<T, C> extends JPanel {
     return popupMenu;
   }
 
-  private void setupTableHeader() {
+  private void initializeTableHeader() {
     table.getTableHeader().addMouseListener(new MouseSortHandler());
     table.getTableHeader().setDefaultRenderer(new SortableHeaderRenderer(table.getTableHeader().getDefaultRenderer()));
     table.getTableHeader().addMouseListener(new MouseAdapter() {
       /** {@inheritDoc} */
       @Override
       public void mouseClicked(final MouseEvent e) {
-        if (e.isShiftDown() && e.isControlDown()) {
+        if (e.isAltDown() && e.isControlDown()) {
           toggleColumnFilterPanel(e);
         }
       }

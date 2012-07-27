@@ -3118,3 +3118,12 @@
   DatabaseConnectionImpl.beginTransaction() logging added
   DatabaseConnectionImpl, connection validation refactored
   AbstractFilteredTableModel, some reordering, minor refactoring
+  AbstractFilteredTableModel.convertColumnIndexToView() bug fixed, columnIndexCache was not initialized, columnIndexCache never used for index 0
+  EntityTableSearchModel.getPropertyFilterModelsOrdered() removed
+  FilteredTablePanel, ctr+alt+click toggles filter panel
+  DefaultEntityTableSearchModel, some refactoring
+  PropertySearchModel.toString() added, basically just for the javadoc
+  EntityTableSearchModel.getSearchableProperties() removed
+  EntityTableModel.getPrimaryKeysOfSelectedEntities() removed, unused
+  FilteredTableModel.clearSortingState() removed, unused
+  DefaultEntityModelProviderTest improved a bit

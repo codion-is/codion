@@ -24,12 +24,10 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
 
 /**
@@ -88,17 +86,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   /** {@inheritDoc} */
   @Override
-  public final List<Property.SearchableProperty> getSearchableProperties() {
-    final List<Property.SearchableProperty> searchProperties = new ArrayList<Property.SearchableProperty>();
-    for (final PropertySearchModel<? extends Property.SearchableProperty> searchModel : propertySearchModels.values()) {
-      searchProperties.add(searchModel.getColumnIdentifier());
-    }
-
-    return searchProperties;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final void rememberCurrentSearchState() {
     rememberedSearchState = getSearchModelState();
     stSearchStateChanged.setActive(false);
@@ -124,12 +111,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   @Override
   public final Collection<ColumnSearchModel<Property>> getPropertyFilterModels() {
     return Collections.unmodifiableCollection(propertyFilterModels.values());
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final List<ColumnSearchModel<Property>> getPropertyFilterModelsOrdered() {
-    return new ArrayList<ColumnSearchModel<Property>>(propertyFilterModels.values());
   }
 
   /** {@inheritDoc} */
@@ -267,8 +248,11 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   @Override
   public final void setSimpleSearchString(final String simpleSearchString) {
     this.simpleSearchString = simpleSearchString == null ? "" : simpleSearchString;
+    clearPropertySearchModels();
+    if (!this.simpleSearchString.isEmpty()) {
+      setSearchString(this.simpleSearchString);
+    }
     evtSimpleSearchStringChanged.fire();
-    updateSearchModels();
   }
 
   /** {@inheritDoc} */
@@ -339,19 +323,16 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     }
   }
 
-  private void updateSearchModels() {
-    clearPropertySearchModels();
-    if (!simpleSearchString.isEmpty()) {
-      final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
-      final String searchTextWithWildcards = wildcard + simpleSearchString + wildcard;
-      final Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(entityID);
-      for (final Property searchProperty : searchProperties) {
-        final PropertySearchModel propertySearchModel = getPropertySearchModel(searchProperty.getPropertyID());
-        propertySearchModel.setCaseSensitive(false);
-        propertySearchModel.setUpperBound(searchTextWithWildcards);
-        propertySearchModel.setSearchType(SearchType.LIKE);
-        propertySearchModel.setEnabled(true);
-      }
+  private void setSearchString(final String searchString) {
+    final String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
+    final String searchTextWithWildcards = wildcard + searchString + wildcard;
+    final Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(entityID);
+    for (final Property searchProperty : searchProperties) {
+      final PropertySearchModel propertySearchModel = getPropertySearchModel(searchProperty.getPropertyID());
+      propertySearchModel.setCaseSensitive(false);
+      propertySearchModel.setUpperBound(searchTextWithWildcards);
+      propertySearchModel.setSearchType(SearchType.LIKE);
+      propertySearchModel.setEnabled(true);
     }
   }
 

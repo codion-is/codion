@@ -132,7 +132,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    */
   public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider,
                                  final EntityTableSearchModel searchModel) {
-    super(initializeColumnModel(entityID), Util.rejectNullValue(searchModel, "searchModelModel").getPropertyFilterModelsOrdered());
+    super(initializeColumnModel(entityID), Util.rejectNullValue(searchModel, "searchModelModel").getPropertyFilterModels());
     if (!searchModel.getEntityID().equals(entityID)) {
       throw new IllegalArgumentException("Entity ID mismatch, searchModel: " + searchModel.getEntityID() + ", tableModel: " + entityID);
     }
@@ -438,12 +438,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     if (changed) {
       fireTableChanged(new TableModelEvent(this, 0, getRowCount() - 1));
     }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Collection<Entity.Key> getPrimaryKeysOfSelectedEntities() {
-    return EntityUtil.getPrimaryKeys(getSelectedItems());
   }
 
   /** {@inheritDoc} */

@@ -15,7 +15,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.util.Collection;
-import java.util.List;
 
 /**
  * This interface defines filtering functionality, which refers to showing/hiding entities already available
@@ -28,11 +27,6 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
    * @return the ID of the entity this table searcher is based on
    */
   String getEntityID();
-
-  /**
-   * @return the properties that are searchable via this searcher
-   */
-  List<Property.SearchableProperty> getSearchableProperties();
 
   /**
    * Sets the search criteria values of the search model associated with the property identified by <code>propertyID</code>
@@ -116,35 +110,31 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   boolean containsPropertySearchModel(final String propertyID);
 
   /**
-   * @return a list containing the PropertySearchModels configured in this table search model
+   * @return a Collection containing the PropertySearchModels available in this table search model
    */
   Collection<PropertySearchModel<? extends Property.SearchableProperty>> getPropertySearchModels();
 
   /**
    * @param propertyID the id of the property for which to retrieve the PropertySearchModel
-   * @return the PropertySearchModel associated with the property identified by <code>propertyID</code>
+   * @return the PropertySearchModel associated with the property identified by <code>propertyID</code>, null if none is found
    */
   PropertySearchModel<? extends Property.SearchableProperty> getPropertySearchModel(final String propertyID);
 
   /**
-   * Clears the state of all PropertySearchModels
+   * Clears the search state of all PropertySearchModels, disables them and
+   * resets the search type to {@link org.jminor.common.model.SearchType#LIKE}
    */
   void clearPropertySearchModels();
 
   /**
-   * @return the property filters configured in this table search model
+   * @return a Collection containing the ColumnSearchModels available in this table search model
    */
   Collection<ColumnSearchModel<Property>> getPropertyFilterModels();
 
   /**
-   * @return the PropertyFilterModels in the same order as the columns they represent
-   */
-  List<ColumnSearchModel<Property>> getPropertyFilterModelsOrdered();
-
-  /**
    * The PropertyFilterModel associated with the property identified by <code>propertyID</code>
    * @param propertyID the id of the property for which to retrieve the PropertyFilterModel
-   * @return the PropertyFilterModel for the property with id <code>propertyID</code>
+   * @return the PropertyFilterModel for the property with id <code>propertyID</code>, null if none is found
    */
   ColumnSearchModel<Property> getPropertyFilterModel(final String propertyID);
 

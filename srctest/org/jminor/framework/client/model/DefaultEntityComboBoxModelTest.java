@@ -5,6 +5,8 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -17,6 +19,7 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 
@@ -123,6 +126,14 @@ public final class DefaultEntityComboBoxModelTest {
 
   @Test
   public void test() throws DatabaseException {
+    final Collection<Object> refreshed = new ArrayList<Object>();
+    final EventListener refreshListener = new EventAdapter() {
+      @Override
+      public void eventOccurred() {
+        refreshed.add(new Object());
+      }
+    };
+    comboBoxModel.addRefreshListener(refreshListener);
     assertEquals(EmpDept.T_EMPLOYEE, comboBoxModel.getEntityID());
     comboBoxModel.setStaticData(false);
     comboBoxModel.toString();
@@ -147,6 +158,8 @@ public final class DefaultEntityComboBoxModelTest {
 
     comboBoxModel.forceRefresh();
     assertTrue(comboBoxModel.getSize() == 1);
+    assertEquals(2, refreshed.size());
+    comboBoxModel.removeRefreshListener(refreshListener);
   }
 
   @Test

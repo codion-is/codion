@@ -292,11 +292,12 @@ public final class DefaultEntityTableModelTest {
   }
 
   private static Entity[] initTestEntities(final Entity[] testEntities) {
+    final String[] stringValues = new String[]{"a", "b", "c", "d", "e"};
     for (int i = 0; i < testEntities.length; i++) {
       testEntities[i] = Entities.entity(EntityTestDomain.T_DETAIL);
       testEntities[i].setValue(EntityTestDomain.DETAIL_ID, i+1);
       testEntities[i].setValue(EntityTestDomain.DETAIL_INT, i+1);
-      testEntities[i].setValue(EntityTestDomain.DETAIL_STRING, new String[]{"a", "b", "c", "d", "e"}[i]);
+      testEntities[i].setValue(EntityTestDomain.DETAIL_STRING, stringValues[i]);
     }
 
     return testEntities;

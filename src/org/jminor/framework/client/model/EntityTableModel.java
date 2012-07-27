@@ -259,12 +259,6 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   Iterator<Entity> getSelectedEntitiesIterator();
 
   /**
-   * @return a Collection containing the primary keys of the selected entities,
-   * if none are selected an empty list is returned
-   */
-  Collection<Entity.Key> getPrimaryKeysOfSelectedEntities();
-
-  /**
    * @return the {@link ReportDataWrapper} specified for this table model
    * @see #setReportDataSource(ReportDataWrapper)
    * @see #getSelectedEntitiesIterator()

@@ -161,10 +161,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @throws IllegalArgumentException in case <code>columnModel</code> is null
    */
   public AbstractFilteredTableModel(final TableColumnModel columnModel,
-                                    final List<? extends ColumnSearchModel<C>> columnFilterModels) {
+                                    final Collection<? extends ColumnSearchModel<C>> columnFilterModels) {
     Util.rejectNullValue(columnModel, "columnModel");
     this.columnModel = columnModel;
     this.columnIndexCache = new int[columnModel.getColumnCount()];
+    Arrays.fill(this.columnIndexCache, -1);
     if (columnFilterModels != null) {
       for (final ColumnSearchModel<C> columnFilterModel : columnFilterModels) {
         this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
@@ -335,13 +336,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         sortingStates.put(columnIdentifier, new SortingStateImpl(directive, state.getPriority()));
       }
     }
-    sortTableModel();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void clearSortingState() {
-    resetSortingStates();
     sortTableModel();
   }
 
@@ -839,12 +833,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /**
-   * Maps the index of the column in the table model at
+   * Converts the index of the column in the table model at
    * <code>modelColumnIndex</code> to the index of the column
    * in the view.  Returns the index of the
    * corresponding column in the view; returns -1 if this column is not
    * being displayed.  If <code>modelColumnIndex</code> is less than zero,
-   * returns <code>modelColumnIndex</code>.
+   * this returns <code>modelColumnIndex</code>.
    * @param modelColumnIndex the index of the column in the model
    * @return the index of the corresponding column in the view
    */
@@ -854,7 +848,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
 
     final int cachedIndex = columnIndexCache[modelColumnIndex];
-    if (cachedIndex > 0) {
+    if (cachedIndex >= 0) {
       return cachedIndex;
     }
 

@@ -106,6 +106,25 @@ public final class DefaultEntityApplicationModelTest {
     model.login(null);
   }
 
+  @Test
+  public void containsEntityModel() {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionImplTest.CONNECTION_PROVIDER) {
+      @Override
+      protected void loadDomainModel() {
+        EmpDept.init();
+      }
+    };
+    final DeptModel departmentModel = new DeptModel(model.getConnectionProvider());
+    model.addEntityModels(departmentModel);
+
+    assertTrue(model.containsEntityModel(EmpDept.T_DEPARTMENT));
+    assertTrue(model.containsEntityModel(DeptModel.class));
+    assertTrue(model.containsEntityModel(departmentModel));
+
+    assertFalse(model.containsEntityModel(EmpDept.T_EMPLOYEE));
+    assertFalse(model.containsEntityModel(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE)));
+  }
+
   private static class DeptModel extends DefaultEntityModel {
     private DeptModel(final EntityConnectionProvider connectionProvider) {
       super(EmpDept.T_DEPARTMENT, connectionProvider);

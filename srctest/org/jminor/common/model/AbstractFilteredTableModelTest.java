@@ -91,6 +91,7 @@ public final class AbstractFilteredTableModelTest {
   public void refresh() {
     final Collection<Object> started = new ArrayList<Object>();
     final Collection<Object> done = new ArrayList<Object>();
+    final Collection<Object> cleared = new ArrayList<Object>();
     final EventListener startListener = new EventAdapter() {
       @Override
       public void eventOccurred() {
@@ -103,14 +104,23 @@ public final class AbstractFilteredTableModelTest {
         done.add(new Object());
       }
     };
+    final EventListener clearedListener = new EventAdapter() {
+      @Override
+      public void eventOccurred() {
+        cleared.add(new Object());
+      }
+    };
     tableModel.addRefreshStartedListener(startListener);
     tableModel.addRefreshDoneListener(doneListener);
+    tableModel.addTableModelClearedListener(clearedListener);
     tableModel.refresh();
     assertTrue(tableModel.getRowCount() > 0);
     assertEquals(1, started.size());
     assertEquals(1, done.size());
+    assertEquals(1, cleared.size());
     tableModel.removeRefreshStartedListener(startListener);
     tableModel.removeRefreshDoneListener(doneListener);
+    tableModel.removeTableModelClearedListener(clearedListener);
   }
 
   @Test

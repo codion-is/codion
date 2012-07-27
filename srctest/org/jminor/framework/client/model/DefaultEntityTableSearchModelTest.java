@@ -23,7 +23,6 @@ public class DefaultEntityTableSearchModelTest {
   @Test
   public void test() {
     assertEquals(EmpDept.T_EMPLOYEE, searchModel.getEntityID());
-    assertNotNull(searchModel.getSearchableProperties());
     searchModel.setSearchConjunction(Conjunction.OR);
     assertEquals(Conjunction.OR, searchModel.getSearchConjunction());
     assertEquals(9, searchModel.getPropertyFilterModels().size());
