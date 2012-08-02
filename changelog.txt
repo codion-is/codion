@@ -3134,3 +3134,4 @@
   RemoteEntityConnectionImpl, refactored connection pooling mechanism
   ConnectionPoolImpl.setEnabled() now sets closed = false when enabling, which means a pool can be closed and re-opened
   RemoteEntityConnectionImpl.getUser() and isConnected() no longer synchronized, blocked server monitor while the connection is active
+  RemoteEntityConnectionImpl.isConnected() synchronized yet again

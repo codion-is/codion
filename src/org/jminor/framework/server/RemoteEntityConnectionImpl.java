@@ -88,7 +88,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   /**
    * A local connection, managed by getConnection()/returnConnection()
    */
-  private EntityConnection localEntityConnection;
+  private transient EntityConnection localEntityConnection;
 
   /**
    * Indicates whether or not this remote connection has been disconnected
@@ -186,7 +186,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
 
   /** {@inheritDoc} */
   @Override
-  public boolean isConnected() throws RemoteException {
+  public synchronized boolean isConnected() throws RemoteException {
     return connected;
   }
 

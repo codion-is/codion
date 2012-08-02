@@ -467,12 +467,12 @@ class PropertyImpl implements Property, Serializable {
       }
     }
     else if (isNumerical()) {
-      final NumberFormat format = Util.getNonGroupingNumberFormat(isInteger());
+      final NumberFormat numberFormat = Util.getNonGroupingNumberFormat(isInteger());
       if (isDouble()) {
-        format.setMaximumFractionDigits(Configuration.getIntValue(Configuration.DEFAULT_MAXIMUM_FRACTION_DIGITS));
+        numberFormat.setMaximumFractionDigits(Configuration.getIntValue(Configuration.DEFAULT_MAXIMUM_FRACTION_DIGITS));
       }
 
-      return format;
+      return numberFormat;
     }
 
     return null;
