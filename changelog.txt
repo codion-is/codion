@@ -3139,3 +3139,4 @@
   server.monitor, removed unused methods and fields, renamed some methods for consistency
   ServerMonitor, bug fixed, resetStatistics() did not clear all series
   RemoteEntityConnectionImpl, static connection pool related admin methods removed, EntityConnectionServerAdminImpl calls pool directly
+  EntityImplTest, removed Chinook dependency

@@ -7,7 +7,6 @@ import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
-import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.Test;
@@ -447,8 +446,8 @@ public class EntityImplTest {
     employee.setValue(EmpDept.EMPLOYEE_COMMISSION, 1.1255);
     assertEquals(1.13, employee.getValue(EmpDept.EMPLOYEE_COMMISSION));
 
-    final Entity track = Entities.entity(Chinook.T_TRACK);
-    track.setValue(Chinook.TRACK_UNITPRICE, 1.123456789567);
-    assertEquals(1.1234567896, track.getValue(Chinook.TRACK_UNITPRICE));//default 10 fraction digits
+    final Entity detail = Entities.entity(EntityTestDomain.T_DETAIL);
+    detail.setValue(EntityTestDomain.DETAIL_DOUBLE, 1.123456789567);
+    assertEquals(1.1234567896, detail.getValue(EntityTestDomain.DETAIL_DOUBLE));//default 10 fraction digits
   }
 }
