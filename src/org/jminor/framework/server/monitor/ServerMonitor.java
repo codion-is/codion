@@ -55,13 +55,7 @@ public final class ServerMonitor {
   private boolean shutdown = false;
 
   private String memoryUsage;
-  private final DefaultTableModel domainListModel = new DefaultTableModel() {
-    /** {@inheritDoc} */
-    @Override
-    public boolean isCellEditable(final int row, final int column) {
-      return false;
-    }
-  };
+  private final DefaultTableModel domainListModel = new DomainTableModel();
   private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
   private final XYSeries warningTimeExceededSecondSeries = new XYSeries("Service calls exceeding warning time per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
@@ -301,5 +295,13 @@ public final class ServerMonitor {
     }
 
     return serverName;
+  }
+
+  private static final class DomainTableModel extends DefaultTableModel {
+    /** {@inheritDoc} */
+    @Override
+    public boolean isCellEditable(final int row, final int column) {
+      return false;
+    }
   }
 }
