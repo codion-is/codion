@@ -7,6 +7,7 @@ import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
+import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.Test;
@@ -436,5 +437,18 @@ public class EntityImplTest {
     assertNull(employee.getValue(EmpDept.EMPLOYEE_DEPARTMENT));
     assertFalse(employee.containsValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertFalse(employee.containsValue(Entities.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT)));
+  }
+
+  @Test
+  public void maximumFractionDigits() {
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_COMMISSION, 1.1234);
+    assertEquals(1.12, employee.getValue(EmpDept.EMPLOYEE_COMMISSION));
+    employee.setValue(EmpDept.EMPLOYEE_COMMISSION, 1.1255);
+    assertEquals(1.13, employee.getValue(EmpDept.EMPLOYEE_COMMISSION));
+
+    final Entity track = Entities.entity(Chinook.T_TRACK);
+    track.setValue(Chinook.TRACK_UNITPRICE, 1.123456789567);
+    assertEquals(1.1234567896, track.getValue(Chinook.TRACK_UNITPRICE));//default 10 fraction digits
   }
 }

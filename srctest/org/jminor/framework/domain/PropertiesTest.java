@@ -11,6 +11,7 @@ import java.sql.Types;
 import java.text.NumberFormat;
 import java.util.Map;
 
+import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -61,7 +62,42 @@ public final class PropertiesTest {
   public void timestampPropertyWithNumberFormat() {
     Properties.columnProperty("propertyID", Types.TIMESTAMP).setFormat(NumberFormat.getIntegerInstance());
   }
-  
+
+  @Test(expected = IllegalStateException.class)
+  public void setMaximumFractionDigitsNotNumerical() {
+    Properties.columnProperty("propertyID", Types.DATE).setMaximumFractionDigits(5);
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void getMaximumFractionDigitsNotNumerical() {
+    Properties.columnProperty("propertyID", Types.DATE).getMaximumFractionDigits();
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void setUserNumberFormatGroupingNotNumerical() {
+    Properties.columnProperty("propertyID", Types.DATE).setUseNumberFormatGrouping(false);
+  }
+
+  @Test
+  public void description() {
+    final String description = "Here is a description";
+    final Property property = Properties.columnProperty("propertyID").setDescription(description);
+    assertEquals(description, property.getDescription());
+  }
+
+  @Test
+  public void mnemonic() {
+    final Character mnemonic = 'M';
+    final Property property = Properties.columnProperty("propertyID").setMnemonic(mnemonic);
+    assertEquals(mnemonic, property.getMnemonic());
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void setEntityIDAlreadySet() {
+    final Property property = Properties.columnProperty("propertyID").setEntityID("entityID");
+    property.setEntityID("test");
+  }
+
   @Test
   public void foreignKeyPropertyNullable() {
     final Property.ColumnProperty columnProperty = Properties.columnProperty("propertyID");

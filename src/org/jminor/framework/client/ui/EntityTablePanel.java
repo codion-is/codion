@@ -1672,7 +1672,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
               && ((Property.ColumnProperty) property).isForeignKeyProperty();
       if (!isForeignKeyProperty && !(property instanceof Property.ForeignKeyProperty)) {
-        final String prefix = "[" + Util.getTypeClass(property.getType()).getSimpleName().substring(0, 1)
+        final String prefix = "[" + property.getTypeClass().getSimpleName().substring(0, 1)
                 + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
                 + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
         final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());

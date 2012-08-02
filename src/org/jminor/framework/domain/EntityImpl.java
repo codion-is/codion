@@ -269,18 +269,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   /** {@inheritDoc} */
   @Override
   public Double getDoubleValue(final String propertyID) {
-    final Property property = getProperty(propertyID);
-    final Double value = (Double) getValue(property);
-    if (value == null) {
-      return null;
-    }
-    final int maximumFractionDigits = property.getMaximumFractionDigits();
-    if (maximumFractionDigits > 0) {
-      return Util.roundDouble(value, maximumFractionDigits);
-    }
-    else {
-      return value;
-    }
+    return (Double) getValue(propertyID);
   }
 
   /** {@inheritDoc} */
@@ -403,6 +392,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
 
   /**
    * @return a string representation of this entity
+   * @see Definition#setStringProvider(org.jminor.framework.domain.Entity.ToString)
    * @see Definition#toString(Entity)
    */
   @Override
@@ -432,7 +422,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   @Override
   public Key getReferencedPrimaryKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
-    Key referencedPrimaryKey = getCachedReferenceKey(foreignKeyProperty);
+    Key referencedPrimaryKey = getCachedReferencedKey(foreignKeyProperty);
     if (referencedPrimaryKey != null) {
       return referencedPrimaryKey;
     }
@@ -626,7 +616,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
     referencedPrimaryKeysCache.put(foreignKeyProperty, referencedPrimaryKey);
   }
 
-  private Key getCachedReferenceKey(final Property.ForeignKeyProperty foreignKeyProperty) {
+  private Key getCachedReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     if (referencedPrimaryKeysCache == null) {
       return null;
     }
@@ -635,7 +625,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   }
 
   /**
-   * Intializes a Key for this Entity instance
+   * Initializes a Key for this Entity instance
    * @param originalValues if true then the original values of the properties involved are used
    * @return a Key based on the values in this Entity instance
    */
@@ -687,7 +677,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   }
 
   /**
-   * Sets the property value
+   * Sets the property value, propagates foreign key values and rounds floating point values
    * @param property the property
    * @param value the value
    * @param validateType if true then type validation is performed
@@ -709,8 +699,12 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
     if (property instanceof Property.ForeignKeyProperty) {
       propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) value, entityDefinitions);
     }
+    Object valueToSet = value;
+    if (value != null && property.isDouble()) {
+      valueToSet = Util.roundDouble((Double) value, property.getMaximumFractionDigits());
+    }
 
-    return super.setValue(property.getPropertyID(), value);
+    return super.setValue(property.getPropertyID(), valueToSet);
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -763,7 +757,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
       return value;
     }
 
-    final Class type = Util.getTypeClass(property.getType());
+    final Class type = property.getTypeClass();
     if (!type.equals(value.getClass()) && !type.isAssignableFrom(value.getClass())) {
       throw new IllegalArgumentException("Value of type " + type + " expected for property " + property + ", got: " + value.getClass());
     }
@@ -920,7 +914,6 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
      * @param obj the object to compare with
      * @return true if object is equal to this key
      */
-    @SuppressWarnings({"SimplifiableIfStatement"})
     @Override
     public boolean equals(final Object obj) {
       if (this == obj) {

@@ -8,12 +8,14 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
 import java.io.Serializable;
+import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Arrays;
 import java.util.Collections;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -222,11 +224,12 @@ class PropertyImpl implements Property, Serializable {
 
   /** {@inheritDoc} */
   @Override
-  public void setEntityID(final String entityID) {
+  public Property setEntityID(final String entityID) {
     if (this.entityID != null) {
       throw new IllegalStateException("entityID (" + this.entityID + ") has already been set for property: " + propertyID);
     }
     this.entityID = entityID;
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -448,7 +451,7 @@ class PropertyImpl implements Property, Serializable {
   @Override
   public final Class<?> getTypeClass() {
     if (typeClass == null) {
-      typeClass = Util.getTypeClass(type);
+      typeClass = getTypeClass(type);
     }
 
     return typeClass;
@@ -464,10 +467,41 @@ class PropertyImpl implements Property, Serializable {
       }
     }
     else if (isNumerical()) {
-      return Util.getNonGroupingNumberFormat();
+      final NumberFormat format = Util.getNonGroupingNumberFormat(isInteger());
+      if (isDouble()) {
+        format.setMaximumFractionDigits(Configuration.getIntValue(Configuration.DEFAULT_MAXIMUM_FRACTION_DIGITS));
+      }
+
+      return format;
     }
 
     return null;
+  }
+
+  /**
+   * @param sqlType the type
+   * @return the Class representing the given type
+   */
+  private static Class<?> getTypeClass(final int sqlType) {
+    switch (sqlType) {
+      case Types.INTEGER:
+        return Integer.class;
+      case Types.DOUBLE:
+        return Double.class;
+      case Types.DATE:
+        return Date.class;
+      case Types.TIMESTAMP:
+        return Timestamp.class;
+      case Types.VARCHAR:
+        return String.class;
+      case Types.BOOLEAN:
+        return Boolean.class;
+      case Types.CHAR:
+        return Character.class;
+
+      default:
+        return Object.class;
+    }
   }
 
   static class ColumnPropertyImpl extends PropertyImpl implements ColumnProperty {

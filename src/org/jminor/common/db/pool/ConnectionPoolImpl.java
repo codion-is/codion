@@ -224,7 +224,10 @@ final class ConnectionPoolImpl implements ConnectionPool {
   @Override
   public void setEnabled(final boolean enabled) {
     this.enabled = enabled;
-    if (!enabled) {
+    if (enabled) {
+      closed = false;
+    }
+    else {
       close();
     }
   }
@@ -293,7 +296,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   @Override
   public void setMaximumPoolSize(final int value) {
     if (value < minimumPoolSize || value < 1) {
-      throw new IllegalArgumentException("Maximum pool size must be larger than 1 and larger than minimum pool size");
+      throw new IllegalArgumentException("Maximum pool size must be at least 1 and larger than or equal to the minimum pool size");
     }
     this.maximumPoolSize = value;
   }

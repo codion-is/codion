@@ -24,8 +24,9 @@ public interface Property extends Attribute {
   /**
    * @param entityID the ID of the entity this property is associated with
    * @throws IllegalStateException in case the entityID has already been set
+   * @return this Property instance
    */
-  void setEntityID(final String entityID);
+  Property setEntityID(final String entityID);
 
   /**
    * The property identifier, should be unique within an Entity.
@@ -105,7 +106,7 @@ public interface Property extends Attribute {
   /**
    * Sets the default value for this property, overrides the underlying column default value, if any
    * @param defaultValue the value to use as default
-   * @return the property
+   * @return this Property instance
    */
   Property setDefaultValue(final Object defaultValue);
 
@@ -153,7 +154,7 @@ public interface Property extends Attribute {
 
   /**
    * Sets the maximum fraction digits to show for this property, only applicable to DOUBLE properties
-   * This setting is overridden during subsequent calls to <code>setFormat</code>
+   * Note that this setting is overridden during subsequent calls to {@link #setFormat(java.text.Format)}
    * @param maximumFractionDigits the maximum fraction digits
    * @return this Property instance
    */
@@ -572,12 +573,12 @@ public interface Property extends Attribute {
   }
 
   /**
-   * Specifiesa audit property with a timestamp value
+   * Specifies a audit property with a timestamp value
    */
   interface AuditTimeProperty extends AuditProperty {}
 
   /**
-   * Specifiesa audit property with a username value
+   * Specifies a audit property with a username value
    */
   interface AuditUserProperty extends AuditProperty {}
 }

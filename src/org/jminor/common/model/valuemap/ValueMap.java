@@ -11,6 +11,11 @@ import java.util.Collection;
 
 /**
  * An interface describing an object mapping values to keys, null values are allowed.
+ * A ValueMap keeps track of the first value associated with a given key, so that if a value
+ * is modified, {@link #getOriginalValue(Object)} returns that original value and
+ * {@link #isModified(Object)} returns true until the value is either saved via
+ * {@link #saveValue(Object)} or reverted to its original value via {@link #revertValue(Object)},
+ * note that setting the original value manually has the same effect as calling {@link #revertValue(Object)}
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
@@ -20,7 +25,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
    * Maps the given value to the given key, returning the old value if any.
    * @param key the key
    * @param value the value
-   * @return the previous value mapped to the given key, null if no such value existed
+   * @return the previous value mapped to the given key
    */
   V setValue(final K key, final V value);
 
@@ -88,7 +93,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
   V getOriginalValue(final K key);
 
   /**
-   * @return true if a value has been modified.
+   * @return true if one or more values have been modified.
    */
   boolean isModified();
 
@@ -142,7 +147,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
   ValueMap<K, V> getCopy();
 
   /**
-   * @return a StateObserver indicating if this value map has been modified.
+   * @return a StateObserver indicating if one or more values in this value map have been modified.
    */
   StateObserver getModifiedState();
 
@@ -210,7 +215,6 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
 
     /**
      * Checks if the value associated with the give key is valid, throws a ValidationException if not
-     *
      * @param valueMap the value map to validate
      * @param key the key the value is associated with
      * @throws ValidationException if the given value is not valid for the given key

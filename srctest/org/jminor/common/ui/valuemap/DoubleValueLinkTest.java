@@ -41,8 +41,8 @@ public class DoubleValueLinkTest {
     txt.setText("");
     assertNull("Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     model.setValue(EmpDept.EMPLOYEE_COMMISSION, 950.1234);
-    assertEquals("Text field should contain value", "950.1234", txt.getText());
-    model.setValue(EmpDept.EMPLOYEE_COMMISSION, 950.123456);
-    assertEquals("Text field should contain value", "950.1235", txt.getText());
+    assertEquals("Text field should contain value", "950.12", txt.getText());
+    model.setValue(EmpDept.EMPLOYEE_COMMISSION, 950.1256);
+    assertEquals("Text field should contain value", "950.13", txt.getText());
   }
 }

@@ -88,7 +88,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     this.sslEnabled = sslEnabled;
     loadDefaultDomainModels();
     loadLoginProxies();
-    initializeConnectionPools(database);
+    initializeConnectionPools(database, getInitialPoolUsers());
     setConnectionLimit(connectionLimit);
     startConnectionTimeoutTimer();
     startWebServer();
@@ -391,26 +391,8 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     }
   }
 
-  private static void loadDefaultDomainModels() throws ClassNotFoundException {
-    final String domainModelClasses = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
-    if (Util.nullOrEmpty(domainModelClasses)) {
-      return;
-    }
-
-    final String[] classes = domainModelClasses.split(",");
-    for (final String className : classes) {
-      loadDomainModel(className.trim());
-    }
-  }
-
-  private static void loadDomainModel(final String domainClassName) throws ClassNotFoundException {
-    final String message = "Server loading domain model class '" + domainClassName + "' from classpath";
-    LOG.info(message);
-    Class.forName(domainClassName);
-  }
-
-  private static void initializeConnectionPools(final Database database) throws ClassNotFoundException, DatabaseException {
-    for (final User poolUser : getInitialPoolUsers()) {
+  private static void initializeConnectionPools(final Database database, final Collection<User> users) throws ClassNotFoundException, DatabaseException {
+    for (final User poolUser : users) {
       ConnectionPools.createPool(new ConnectionProvider(database, poolUser));
     }
   }
@@ -433,6 +415,24 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     }
 
     return users;
+  }
+
+  private static void loadDefaultDomainModels() throws ClassNotFoundException {
+    final String domainModelClasses = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
+    if (Util.nullOrEmpty(domainModelClasses)) {
+      return;
+    }
+
+    final String[] classes = domainModelClasses.split(",");
+    for (final String className : classes) {
+      loadDomainModel(className.trim());
+    }
+  }
+
+  private static void loadDomainModel(final String domainClassName) throws ClassNotFoundException {
+    final String message = "Server loading domain model class '" + domainClassName + "' from classpath";
+    LOG.info(message);
+    Class.forName(domainClassName);
   }
 
   private void startConnectionTimeoutTimer() {

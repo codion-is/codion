@@ -254,7 +254,7 @@ public final class Configuration {
    * Value type: Integer (JTable.AUTO_RESIZE_*)<br>
    * Default value: JTable.AUTO_RESIZE_OFF
    */
-  public static final String TABLE_AUTO_RESIZE_MODE = "jminor.client.tableautoResizeMode";
+  public static final String TABLE_AUTO_RESIZE_MODE = "jminor.client.tableAutoResizeMode";
 
   /**
    * Indicates whether the application should ask for confirmation when exiting<br>
@@ -393,6 +393,14 @@ public final class Configuration {
    * Default value: %
    */
   public static final String WILDCARD_CHARACTER = "jminor.wildcardCharacter";
+
+  /**
+   * Specifies the default maximum number of fraction digits for double property values<br>
+   * Note that values are rounded when set.<br>
+   * Value type: Integer<br>
+   * Default value: 10
+   */
+  public static final String DEFAULT_MAXIMUM_FRACTION_DIGITS = "jminor.defaultMaximumFractionDigits";
 
   /**
    * Specifies the class providing remote db connections<br>
@@ -567,6 +575,7 @@ public final class Configuration {
     PROPERTIES.put(STRICT_FOREIGN_KEYS, true);
     PROPERTIES.put(SHOW_DETAIL_PANEL_CONTROLS, true);
     PROPERTIES.put(SHOW_TOGGLE_EDIT_PANEL_CONTROL, true);
+    PROPERTIES.put(DEFAULT_MAXIMUM_FRACTION_DIGITS, 10);
     parseSystemSettings();
   }
 
@@ -629,6 +638,7 @@ public final class Configuration {
     parseBooleanSetting(STRICT_FOREIGN_KEYS);
     parseBooleanSetting(SHOW_DETAIL_PANEL_CONTROLS);
     parseBooleanSetting(SHOW_TOGGLE_EDIT_PANEL_CONTROL);
+    parseIntegerSetting(DEFAULT_MAXIMUM_FRACTION_DIGITS);
   }
 
   private static void parseIntegerSetting(final String setting) {
@@ -730,22 +740,23 @@ public final class Configuration {
   }
 
   /**
-   * Resolves the "javax.net.ssl.trustStore" to a temporary file, assigning it to the property
+   * Reads the trust store specified by "javax.net.ssl.trustStore" from the classpath, copies it
+   * to a temporary file and sets the value of "javax.net.ssl.trustStore" so that it points to that file.
    * @param temporaryFileName the temp filename
    */
-  public static void resolveTruststoreProperty(final String temporaryFileName) {
+  public static void resolveTrustStoreProperty(final String temporaryFileName) {
     final String value = getStringValue(JAVAX_NET_NET_TRUSTSTORE);
     if (value == null || value.isEmpty()) {
-      LOG.debug("resolveTruststoreProperty: {} is empty", JAVAX_NET_NET_TRUSTSTORE);
+      LOG.debug("resolveTrustStoreProperty: {} is empty", JAVAX_NET_NET_TRUSTSTORE);
       return;
     }
     FileOutputStream out = null;
     InputStream in = null;
     try {
-      final ClassLoader loader = Util.class.getClassLoader();
+      final ClassLoader loader = Configuration.class.getClassLoader();
       in = loader.getResourceAsStream(value);
       if (in == null) {
-        LOG.debug("resolveTruststoreProperty: {} not found on classpath", value);
+        LOG.debug("resolveTrustStoreProperty: {} not found on classpath", value);
         return;
       }
       final File file = File.createTempFile(temporaryFileName, "tmp");
@@ -757,7 +768,7 @@ public final class Configuration {
         out.write(buf, 0, br);
         br = in.read(buf);
       }
-      LOG.debug("resolveTruststoreProperty: {} -> {}", JAVAX_NET_NET_TRUSTSTORE, file);
+      LOG.debug("resolveTrustStoreProperty: {} -> {}", JAVAX_NET_NET_TRUSTSTORE, file);
       setValue(JAVAX_NET_NET_TRUSTSTORE, file.getPath());
     }
     catch (IOException e) {

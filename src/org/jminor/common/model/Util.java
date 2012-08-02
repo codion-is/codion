@@ -28,8 +28,6 @@ import java.net.InetAddress;
 import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
-import java.sql.Timestamp;
-import java.sql.Types;
 import java.text.Collator;
 import java.text.NumberFormat;
 import java.util.ArrayList;
@@ -37,7 +35,6 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Date;
 import java.util.Enumeration;
 import java.util.LinkedHashMap;
 import java.util.List;
@@ -810,32 +807,6 @@ public final class Util {
     }
 
     return false;
-  }
-
-  /**
-   * @param sqlType the type
-   * @return the Class representing the given type
-   */
-  public static Class<?> getTypeClass(final int sqlType) {
-    switch (sqlType) {
-      case Types.INTEGER:
-        return Integer.class;
-      case Types.DOUBLE:
-        return Double.class;
-      case Types.DATE:
-        return Date.class;
-      case Types.TIMESTAMP:
-        return Timestamp.class;
-      case Types.VARCHAR:
-        return String.class;
-      case Types.BOOLEAN:
-        return Boolean.class;
-      case Types.CHAR:
-        return Character.class;
-
-      default:
-        return Object.class;
-    }
   }
 
   /**

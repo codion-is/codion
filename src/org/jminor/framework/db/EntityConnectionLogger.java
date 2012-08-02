@@ -79,6 +79,9 @@ public final class EntityConnectionLogger extends MethodLogger {
     else if (argument instanceof Entity) {
       builder.append(getEntityParameterString((Entity) argument));
     }
+    else if (argument instanceof Entity.Key) {
+      builder.append(getEntityKeyParameterString((Entity.Key) argument));
+    }
     else {
       builder.append(argument.toString());
     }
@@ -118,5 +121,9 @@ public final class EntityConnectionLogger extends MethodLogger {
     builder.deleteCharAt(builder.length() - 1);
 
     return builder.append("}").toString();
+  }
+
+  private static String getEntityKeyParameterString(final Entity.Key argument) {
+    return argument.getEntityID() + ", " + argument.toString();
   }
 }

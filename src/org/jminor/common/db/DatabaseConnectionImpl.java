@@ -198,7 +198,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
-  public final void rollbackTransaction(){
+  public final void rollbackTransaction() {
     SQLException exception = null;
     try {
       if (!transactionOpen) {
@@ -220,7 +220,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
-  public final void commitTransaction(){
+  public final void commitTransaction() {
     SQLException exception = null;
     try {
       if (!transactionOpen) {

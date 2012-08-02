@@ -124,6 +124,9 @@ public interface ConnectionPool {
   int getMaximumPoolSize();
 
   /**
+   * Sets the maximum number of connections to keep in this pool.
+   * Note that if the current number of connections exceeds this value when set, excess connections
+   * are not actively discarded.
    * @param value the maximum number of connections this pool can create
    * @throws IllegalArgumentException if value is less than 1 or less than minimum pool size
    */
