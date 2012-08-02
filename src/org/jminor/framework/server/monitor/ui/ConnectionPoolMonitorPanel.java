@@ -70,7 +70,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   public ConnectionPoolMonitorPanel(final ConnectionPoolMonitor model) {
     this.model = model;
     this.format.setMaximumFractionDigits(2);
-    initUI();
+    initializeUI();
     updateView();
     bindEvents();
   }
@@ -93,7 +93,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     }
   }
 
-  private void initUI() {
+  private void initializeUI() {
     initializeCharts(model);
     setLayout(new FlexibleGridLayout(1, 3, 5, 5, true, false));
 
@@ -134,7 +134,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.addStatisticsListener(new EventAdapter() {
+    model.getStatisticsObserver().addListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {

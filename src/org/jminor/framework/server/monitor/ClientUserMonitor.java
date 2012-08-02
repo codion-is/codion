@@ -4,7 +4,6 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
@@ -73,14 +72,6 @@ public final class ClientUserMonitor {
   public void setConnectionTimeout(final int timeout) throws RemoteException {
     server.setConnectionTimeout(timeout * 1000);
     evtConnectionTimeoutChanged.fire();
-  }
-
-  public void addConnectionTimeoutListener(final EventListener listener) {
-    evtConnectionTimeoutChanged.addListener(listener);
-  }
-
-  public void removeConnectionTimeoutListener(final EventListener listener) {
-    evtConnectionTimeoutChanged.removeListener(listener);
   }
 
   public EventObserver getConnectionTimeoutObserver() {

@@ -40,7 +40,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
    * @throws RemoteException in case of an exception
    */
   public ClientInstanceMonitorPanel() throws RemoteException {
-    initUI();
+    initializeUI();
     updateView();
   }
 
@@ -86,7 +86,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     }
   }
 
-  private void initUI() {
+  private void initializeUI() {
     setLayout(new BorderLayout(5,5));
     txtCreationDate.setEditable(false);
     final JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));

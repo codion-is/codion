@@ -73,7 +73,7 @@ public final class ServerMonitorPanel extends JPanel {
     setColors(requestsPerSecondChart);
     setColors(memoryUsageChart);
     setColors(connectionCountChart);
-    initUI();
+    initializeUI();
   }
 
   public ServerMonitor getModel() {
@@ -87,23 +87,33 @@ public final class ServerMonitorPanel extends JPanel {
     }
   }
 
-  private void initUI() throws RemoteException {
+  private void initializeUI() throws RemoteException {
     final JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     infoPanel.add(new JLabel("Connections", JLabel.RIGHT));
-    infoPanel.add(initConnectionCountField());
+    infoPanel.add(initializeConnectionCountField());
     infoPanel.add(new JLabel("limit", JLabel.RIGHT));
     final JSpinner spnConnectionLimit = new JSpinner(
             new IntBeanSpinnerValueLink(model, "connectionLimit", model.getConnectionLimitObserver()).getSpinnerModel());
     ((JSpinner.DefaultEditor) spnConnectionLimit.getEditor()).getTextField().setColumns(3);
     infoPanel.add(spnConnectionLimit);
     infoPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
-    infoPanel.add(initMemoryField());
+    infoPanel.add(initializeMemoryField());
     infoPanel.add(new JLabel("Logging", JLabel.RIGHT));
-    infoPanel.add(initLoggingLevelField());
+    infoPanel.add(initializeLoggingLevelField());
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "shutdownServer", "Shutdown")));
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(model, "performGC", "GC")));
 
     final JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 5, 5));
+
+    final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statisticsUpdateInterval",
+            model.getStatisticsUpdateIntervalObserver()).getSpinnerModel());
+
+    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);
+
+    controlPanel.add(new JLabel("Update interval (s)"));
+    controlPanel.add(spnUpdateInterval);
+
     controlPanel.add(new JLabel("Warning threshold (ms)"));
     final JSpinner spnWarningThreshold = new JSpinner(
             new IntBeanSpinnerValueLink(model, "warningThreshold", model.getWarningThresholdObserver()).getSpinnerModel());
@@ -113,7 +123,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel controlPanelBase = new JPanel(new BorderLayout(5, 5));
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
-    controlPanelBase.add(ControlProvider.createButton(Controls.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
+    controlPanelBase.add(ControlProvider.createButton(Controls.methodControl(model, "resetStatistics", "Reset")), BorderLayout.EAST);
 
     final JPanel chartPanel = new JPanel(new GridLayout(3, 1, 5, 5));
     chartPanel.add(requestsPerSecondChartPanel);
@@ -132,20 +142,20 @@ public final class ServerMonitorPanel extends JPanel {
     pane.addTab("Performance", performancePanel);
     pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
     pane.addTab("Clients/Users", new ClientUserMonitorPanel(model.getClientMonitor()));
-    pane.addTab("Environment", initEnvironmentPanel());
+    pane.addTab("Environment", initializeEnvironmentPanel());
 
     add(pane, BorderLayout.CENTER);
   }
 
-  private JTabbedPane initEnvironmentPanel() throws RemoteException {
+  private JTabbedPane initializeEnvironmentPanel() throws RemoteException {
     final JTabbedPane panel = new JTabbedPane();
-    panel.addTab("System", initEnvironmentInfoPanel());
-    panel.addTab("Entities", initDomainModelPanel());
+    panel.addTab("System", initializeEnvironmentInfoPanel());
+    panel.addTab("Entities", initializeDomainModelPanel());
 
     return panel;
   }
 
-  private JPanel initDomainModelPanel() {
+  private JPanel initializeDomainModelPanel() {
     final JPanel panel = new JPanel(new BorderLayout(5,5));
     final JTable table = new JTable(model.getDomainTableModel());
     table.setRowSorter(new TableRowSorter<TableModel>(model.getDomainTableModel()));
@@ -159,7 +169,7 @@ public final class ServerMonitorPanel extends JPanel {
     return panel;
   }
 
-  private JScrollPane initEnvironmentInfoPanel() throws RemoteException {
+  private JScrollPane initializeEnvironmentInfoPanel() throws RemoteException {
     final JTextArea infoArea = new JTextArea();
     infoArea.setAutoscrolls(false);
     infoArea.setEditable(false);
@@ -183,26 +193,26 @@ public final class ServerMonitorPanel extends JPanel {
     return new JScrollPane(infoArea);
   }
 
-  private JTextField initConnectionCountField() {
+  private JTextField initializeConnectionCountField() {
     final JTextField txtConnectionCount = new JTextField(6);
     txtConnectionCount.setEditable(false);
     txtConnectionCount.setHorizontalAlignment(JLabel.CENTER);
-    new TextBeanValueLink(txtConnectionCount, model, "connectionCount", Integer.class, model.getStatsUpdatedObserver(),
+    new TextBeanValueLink(txtConnectionCount, model, "connectionCount", Integer.class, model.getStatisticsUpdatedObserver(),
             LinkType.READ_ONLY);
 
     return txtConnectionCount;
   }
 
-  private JTextField initMemoryField() {
+  private JTextField initializeMemoryField() {
     final JTextField txtMemory = new JTextField(8);
     txtMemory.setEditable(false);
     txtMemory.setHorizontalAlignment(JLabel.CENTER);
-    new TextBeanValueLink(txtMemory, model, "memoryUsage", String.class, model.getStatsUpdatedObserver(), LinkType.READ_ONLY);
+    new TextBeanValueLink(txtMemory, model, "memoryUsage", String.class, model.getStatisticsUpdatedObserver(), LinkType.READ_ONLY);
 
     return txtMemory;
   }
 
-  private JComboBox initLoggingLevelField() {
+  private JComboBox initializeLoggingLevelField() {
     final DefaultComboBoxModel comboModel = new DefaultComboBoxModel();
     comboModel.addElement(Level.TRACE);
     comboModel.addElement(Level.DEBUG);

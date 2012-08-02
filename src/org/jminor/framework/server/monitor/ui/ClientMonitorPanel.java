@@ -38,7 +38,7 @@ public final class ClientMonitorPanel extends JPanel {
    */
   public ClientMonitorPanel() throws RemoteException {
     this.clientInstancePanel = new ClientInstanceMonitorPanel();
-    initUI();
+    initializeUI();
   }
 
   public void setModel(final ClientMonitor model) {
@@ -54,7 +54,7 @@ public final class ClientMonitorPanel extends JPanel {
     }
   }
 
-  private void initUI() {
+  private void initializeUI() {
     setLayout(new BorderLayout(5, 5));
     clientInstanceList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     clientInstanceList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {

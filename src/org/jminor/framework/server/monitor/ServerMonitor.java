@@ -4,7 +4,6 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.server.RemoteServer;
@@ -34,9 +33,9 @@ public final class ServerMonitor {
   private static final Logger LOG = LoggerFactory.getLogger(ServerMonitor.class);
   private static final double THOUSAND = 1000d;
 
-  private final Event evtStatsUpdateIntervalChanged = Events.event();
+  private final Event evtStatisticsUpdateIntervalChanged = Events.event();
   private final Event evtServerShutDown = Events.event();
-  private final Event evtStatsUpdated = Events.event();
+  private final Event evtStatisticsUpdated = Events.event();
   private final Event evtWarningThresholdChanged = Events.event();
   private final Event evtLoggingLevelChanged = Events.event();
   private final Event evtConnectionLimitChanged = Events.event();
@@ -47,7 +46,7 @@ public final class ServerMonitor {
   private final EntityConnectionServerAdmin server;
 
   private Timer updateTimer;
-  private int statsUpdateInterval;
+  private int statisticsUpdateInterval;
 
   private final DatabaseMonitor databaseMonitor;
   private final ClientUserMonitor clientMonitor;
@@ -56,7 +55,13 @@ public final class ServerMonitor {
   private boolean shutdown = false;
 
   private String memoryUsage;
-  private final DefaultTableModel domainListModel = new DefaultTableModel();
+  private final DefaultTableModel domainListModel = new DefaultTableModel() {
+    /** {@inheritDoc} */
+    @Override
+    public boolean isCellEditable(final int row, final int column) {
+      return false;
+    }
+  };
   private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
   private final XYSeries warningTimeExceededSecondSeries = new XYSeries("Service calls exceeding warning time per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
@@ -86,15 +91,19 @@ public final class ServerMonitor {
     databaseMonitor = new DatabaseMonitor(server);
     clientMonitor = new ClientUserMonitor(server);
     refreshDomainList();
-    setStatsUpdateInterval(2);
+    setStatisticsUpdateInterval(2);
   }
 
-  public void setStatsUpdateInterval(final int value) {
-    if (value != this.statsUpdateInterval) {
-      this.statsUpdateInterval = value;
-      evtStatsUpdateIntervalChanged.fire();
+  public void setStatisticsUpdateInterval(final int value) {
+    if (value != this.statisticsUpdateInterval) {
+      this.statisticsUpdateInterval = value;
+      evtStatisticsUpdateIntervalChanged.fire();
       startUpdateTimer(value * 1000);
     }
+  }
+
+  public int getStatisticsUpdateInterval() {
+    return statisticsUpdateInterval;
   }
 
   public void shutdown() {
@@ -168,17 +177,18 @@ public final class ServerMonitor {
     server.performGC();
   }
 
-  public void resetStats() {
+  public void resetStatistics() {
     connectionRequestsPerSecondSeries.clear();
     warningTimeExceededSecondSeries.clear();
     allocatedMemorySeries.clear();
     usedMemorySeries.clear();
     maxMemorySeries.clear();
     connectionCountSeries.clear();
+    connectionLimitSeries.clear();
   }
 
   public void refreshDomainList() throws RemoteException {
-    domainListModel.setDataVector(new Object[][]{}, new Object[] {"Entity ID", "Table name"});
+    domainListModel.setDataVector(new Object[][]{}, new Object[]{"Entity ID", "Table name"});
     final Map<String,String> definitions = server.getEntityDefinitions();
     for (final Map.Entry<String, String> definition : definitions.entrySet()) {
       domainListModel.addRow(new Object[] {definition.getKey(), definition.getValue()});
@@ -202,36 +212,8 @@ public final class ServerMonitor {
     return serverName;
   }
 
-  public void addServerShutDownListener(final EventListener listener) {
-    evtServerShutDown.addListener(listener);
-  }
-
-  public void removeServerShutDownListener(final EventListener listener) {
-    evtServerShutDown.removeListener(listener);
-  }
-
-  public void addStatsUpdatedListener(final EventListener listener) {
-    evtStatsUpdated.addListener(listener);
-  }
-
-  public void removeStatsUpdatedListener(final EventListener listener) {
-    evtStatsUpdated.removeListener(listener);
-  }
-
-  public void addWarningThresholdListener(final EventListener listener) {
-    evtWarningThresholdChanged.addListener(listener);
-  }
-
-  public void removeWarningThresholdListener(final EventListener listener) {
-    evtWarningThresholdChanged.removeListener(listener);
-  }
-
-  public void addStatsUpdateIntervalListener(final EventListener listener) {
-    evtStatsUpdateIntervalChanged.addListener(listener);
-  }
-
-  public void removeStatsUpdateIntervalListener(final EventListener listener) {
-    evtStatsUpdateIntervalChanged.removeListener(listener);
+  public EventObserver getServerShutDownObserver() {
+    return evtServerShutDown.getObserver();
   }
 
   public EventObserver getWarningThresholdObserver() {
@@ -242,8 +224,12 @@ public final class ServerMonitor {
     return evtConnectionLimitChanged.getObserver();
   }
 
-  public EventObserver getStatsUpdatedObserver() {
-    return evtStatsUpdated.getObserver();
+  public EventObserver getStatisticsUpdatedObserver() {
+    return evtStatisticsUpdated.getObserver();
+  }
+
+  public EventObserver getStatisticsUpdateIntervalObserver() {
+    return evtStatisticsUpdateIntervalChanged.getObserver();
   }
 
   public EventObserver getLoggingLevelObserver() {
@@ -284,7 +270,7 @@ public final class ServerMonitor {
     usedMemorySeries.add(time, server.getUsedMemory() / THOUSAND);
     connectionCountSeries.add(time, server.getConnectionCount());
     connectionLimitSeries.add(time, server.getConnectionLimit());
-    evtStatsUpdated.fire();
+    evtStatisticsUpdated.fire();
   }
 
   private void startUpdateTimer(final int delay) {

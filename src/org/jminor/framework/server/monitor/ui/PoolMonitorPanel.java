@@ -28,7 +28,7 @@ public final class PoolMonitorPanel extends JPanel {
    */
   public PoolMonitorPanel(final PoolMonitor model) throws RemoteException {
     this.model = model;
-    initUI();
+    initializeUI();
   }
 
   public void addConnectionPool() {
@@ -38,7 +38,7 @@ public final class PoolMonitorPanel extends JPanel {
     }
   }
 
-  private void initUI() throws RemoteException {
+  private void initializeUI() throws RemoteException {
     setLayout(new BorderLayout());
     final JTabbedPane connectionPoolPane = new JTabbedPane();
     connectionPoolPane.setUI(UiUtil.getBorderlessTabbedPaneUI());

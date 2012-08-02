@@ -21,7 +21,7 @@ import java.util.TimerTask;
  */
 public final class DatabaseMonitor {
 
-  private final Event evtStatsUpdateIntervalChanged = Events.event();
+  private final Event evtStatisticsUpdateIntervalChanged = Events.event();
 
   private final EntityConnectionServerAdmin server;
   private final PoolMonitor poolMonitor;
@@ -33,7 +33,7 @@ public final class DatabaseMonitor {
   private final XYSeriesCollection queriesPerSecondCollection = new XYSeriesCollection();
 
   private Timer updateTimer;
-  private int statsUpdateInterval;
+  private int statisticsUpdateInterval;
 
   public DatabaseMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
     this.server = server;
@@ -43,20 +43,20 @@ public final class DatabaseMonitor {
     this.queriesPerSecondCollection.addSeries(insertsPerSecond);
     this.queriesPerSecondCollection.addSeries(updatesPerSecond);
     this.queriesPerSecondCollection.addSeries(deletesPerSecond);
-    updateStats();
-    setStatsUpdateInterval(3);
+    updateStatistics();
+    setStatisticsUpdateInterval(3);
   }
 
-  public void setStatsUpdateInterval(final int value) {
-    if (value != this.statsUpdateInterval) {
-      this.statsUpdateInterval = value;
-      evtStatsUpdateIntervalChanged.fire();
+  public void setStatisticsUpdateInterval(final int value) {
+    if (value != this.statisticsUpdateInterval) {
+      this.statisticsUpdateInterval = value;
+      evtStatisticsUpdateIntervalChanged.fire();
       startUpdateTimer(value * 1000);
     }
   }
 
-  public int getStatsUpdateInterval() {
-    return statsUpdateInterval;
+  public int getStatisticsUpdateInterval() {
+    return statisticsUpdateInterval;
   }
 
   public PoolMonitor getConnectionPoolMonitor() {
@@ -70,7 +70,7 @@ public final class DatabaseMonitor {
     poolMonitor.shutdown();
   }
 
-  public void resetStats() {
+  public void resetStatistics() {
     queriesPerSecond.clear();
     selectsPerSecond.clear();
     insertsPerSecond.clear();
@@ -78,7 +78,7 @@ public final class DatabaseMonitor {
     deletesPerSecond.clear();
   }
 
-  public void updateStats() throws RemoteException {
+  public void updateStatistics() throws RemoteException {
     final Database.Statistics dbStats = server.getDatabaseStatistics();
     queriesPerSecond.add(dbStats.getTimestamp(), dbStats.getQueriesPerSecond());
     selectsPerSecond.add(dbStats.getTimestamp(), dbStats.getSelectsPerSecond());
@@ -91,8 +91,8 @@ public final class DatabaseMonitor {
     return queriesPerSecondCollection;
   }
 
-  public EventObserver getStatsUpdateIntervalObserver() {
-    return evtStatsUpdateIntervalChanged.getObserver();
+  public EventObserver getStatisticsUpdateIntervalObserver() {
+    return evtStatisticsUpdateIntervalChanged.getObserver();
   }
 
   private void startUpdateTimer(final int delay) {
@@ -108,7 +108,7 @@ public final class DatabaseMonitor {
       @Override
       public void run() {
         try {
-          updateStats();
+          updateStatistics();
         }
         catch (RemoteException ignored) {}
       }

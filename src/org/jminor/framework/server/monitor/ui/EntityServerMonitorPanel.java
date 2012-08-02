@@ -72,7 +72,7 @@ public final class EntityServerMonitorPanel extends JPanel {
    */
   public EntityServerMonitorPanel(final EntityServerMonitor model) throws RemoteException {
     this.model = model;
-    initUI();
+    initializeUI();
   }
 
   public EntityServerMonitor getModel() {
@@ -118,7 +118,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   public void showFrame() {
     monitorFrame = UiUtil.createFrame(Images.loadImage("jminor_logo_red24.png").getImage());
-    monitorFrame.setJMenuBar(ControlProvider.createMenuBar(initMainMenuControlSets()));
+    monitorFrame.setJMenuBar(ControlProvider.createMenuBar(initializeMainMenuControlSets()));
     monitorFrame.setTitle("JMinor Server Monitor");
     monitorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
     monitorFrame.getContentPane().add(this);
@@ -135,7 +135,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     catch (CancelException ignored) {}
   }
 
-  private void initUI() throws RemoteException {
+  private void initializeUI() throws RemoteException {
     setLayout(new BorderLayout());
     final JTabbedPane hostPane = new JTabbedPane();
     hostPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
@@ -146,32 +146,32 @@ public final class EntityServerMonitorPanel extends JPanel {
     add(initializeSouthPanel(), BorderLayout.SOUTH);
   }
 
-  private ControlSet initMainMenuControlSets() {
+  private ControlSet initializeMainMenuControlSets() {
     final ControlSet controlSet = new ControlSet();
     final ControlSet file = new ControlSet("File", 'F');
-    file.add(initExitControl());
+    file.add(initializeExitControl());
     controlSet.add(file);
     final ControlSet view = new ControlSet("View", 'V');
-    view.add(initRefreshControl());
+    view.add(initializeRefreshControl());
     view.addSeparator();
-    view.add(initAlwaysOnTopControl());
+    view.add(initializeAlwaysOnTopControl());
     controlSet.add(view);
     final ControlSet tools = new ControlSet("Tools", 'T');
-    tools.add(initSetJDKDirControl());
-    tools.add(initJConsoleControl());
+    tools.add(initializeSetJDKDirControl());
+    tools.add(initializeJConsoleControl());
     controlSet.add(tools);
 
     return controlSet;
   }
 
-  private Control initRefreshControl() {
+  private Control initializeRefreshControl() {
     final Control control = Controls.methodControl(model, "refresh", "Refresh");
     control.setMnemonic('R');
 
     return control;
   }
 
-  private Control initAlwaysOnTopControl() {
+  private Control initializeAlwaysOnTopControl() {
     final Control control =
             Controls.toggleControl(this, "alwaysOnTop", "Always on Top", evtAlwaysOnTopChanged);
     control.setMnemonic('A');
@@ -179,7 +179,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     return control;
   }
 
-  private Control initSetJDKDirControl() {
+  private Control initializeSetJDKDirControl() {
     final Control control =
             Controls.methodControl(this, "setJDKDir", "Set JDK home...");
     control.setMnemonic('S');
@@ -187,7 +187,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     return control;
   }
 
-  private Control initJConsoleControl() {
+  private Control initializeJConsoleControl() {
     final Control control =
             Controls.methodControl(this, "runJConsole", "Run JConsole");
     control.setMnemonic('J');
@@ -195,7 +195,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     return control;
   }
 
-  private Control initExitControl() {
+  private Control initializeExitControl() {
     return Controls.methodControl(this, "exit", "Exit", null, null, 'X');
   }
 

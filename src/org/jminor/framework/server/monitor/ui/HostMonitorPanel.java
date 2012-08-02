@@ -35,11 +35,11 @@ public final class HostMonitorPanel extends JPanel {
    */
   public HostMonitorPanel(final HostMonitor model) throws RemoteException {
     this.model = model;
-    initUI();
+    initializeUI();
     bindEvents();
   }
 
-  private void initUI() throws RemoteException {
+  private void initializeUI() throws RemoteException {
     setLayout(new BorderLayout(5,5));
     add(ControlProvider.createToolbar(getControls(), JToolBar.HORIZONTAL), BorderLayout.NORTH);
     serverPane = new JTabbedPane();
@@ -56,7 +56,7 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.addRefreshListener(new EventAdapter() {
+    model.getRefreshObserver().addListener(new EventAdapter() {
       @Override
       public void eventOccurred() {
         try {
@@ -67,7 +67,7 @@ public final class HostMonitorPanel extends JPanel {
         }
       }
     });
-    model.addServerMonitorRemovedListener(new EventAdapter() {
+    model.getServerMonitorRemovedObserver().addListener(new EventAdapter() {
       @Override
       public void eventOccurred() {
         try {

@@ -49,7 +49,7 @@ public final class ClientUserMonitorPanel extends JPanel {
    */
   public ClientUserMonitorPanel(final ClientUserMonitor model) throws RemoteException {
     this.model = model;
-    initUI();
+    initializeUI();
   }
 
   public void disconnectAll() throws RemoteException {
@@ -59,7 +59,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     }
   }
 
-  private void initUI() throws RemoteException {
+  private void initializeUI() throws RemoteException {
     final JList clientTypeList = new JList(model.getClientTypeListModel());
 
     clientTypeList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -94,7 +94,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     final JPanel actionBase = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
     actionBase.add(new JLabel("Reaper interval (s)", JLabel.RIGHT));
-    actionBase.add(initMaintenanceIntervalComponent());
+    actionBase.add(initializeMaintenanceIntervalComponent());
 
     actionBase.add(new JLabel("Connection timeout (s)"));
     final JSpinner spnConnectionTimeout = new JSpinner(
@@ -124,7 +124,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     add(splitPane, BorderLayout.CENTER);
   }
 
-  private JComponent initMaintenanceIntervalComponent() throws RemoteException {
+  private JComponent initializeMaintenanceIntervalComponent() throws RemoteException {
     cmbMaintenance = new JComboBox(new Integer[] {1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,120,180,340,6000,10000});
     cmbMaintenance.setSelectedItem(model.getMaintenanceInterval());
     cmbMaintenance.addItemListener(new ItemListener() {

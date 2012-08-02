@@ -45,10 +45,6 @@ public final class ClientMonitor {
     return clientTypeID;
   }
 
-  public EntityConnectionServerAdmin getServer() {
-    return server;
-  }
-
   @Override
   public String toString() {
     return clientTypeID == null ? user.toString() : clientTypeID;

@@ -6,7 +6,9 @@ package org.jminor.framework.server;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
+import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
@@ -28,6 +30,7 @@ import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashSet;
 import java.util.List;
@@ -217,20 +220,20 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   @Override
   public void resetConnectionPoolStatistics(final User user) throws RemoteException {
     LOG.info("resetConnectionPoolStatistics({})", user);
-    RemoteEntityConnectionImpl.resetPoolStatistics(user);
+    ConnectionPools.getConnectionPool(user).resetStatistics();
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isCollectFineGrainedPoolStatistics(final User user) throws RemoteException {
-    return RemoteEntityConnectionImpl.isCollectFineGrainedPoolStatistics(user);
+    return ConnectionPools.getConnectionPool(user).isCollectFineGrainedStatistics();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setCollectFineGrainedPoolStatistics(final User user, final boolean value) throws RemoteException {
     LOG.info("setCollectFineGrainedPoolStatistics({}, {})", user, value);
-    RemoteEntityConnectionImpl.setCollectFineGrainedPoolStatistics(user, value);
+    ConnectionPools.getConnectionPool(user).setCollectFineGrainedStatistics(value);
   }
 
   /** {@inheritDoc} */
@@ -261,7 +264,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   /** {@inheritDoc} */
   @Override
   public ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) throws RemoteException {
-    return RemoteEntityConnectionImpl.getPoolStatistics(user, since);
+    return ConnectionPools.getConnectionPool(user).getStatistics(since);
   }
 
   /** {@inheritDoc} */
@@ -273,111 +276,118 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   /** {@inheritDoc} */
   @Override
   public List<User> getEnabledConnectionPools() throws RemoteException {
-    return RemoteEntityConnectionImpl.getEnabledConnectionPools();
+    final List<User> enabledPoolUsers = new ArrayList<User>();
+    for (final ConnectionPool pool : ConnectionPools.getConnectionPools()) {
+      if (pool.isEnabled()) {
+        enabledPoolUsers.add(pool.getUser());
+      }
+    }
+
+    return enabledPoolUsers;
   }
 
   /** {@inheritDoc} */
   @Override
   public boolean isConnectionPoolEnabled(final User user) throws RemoteException {
-    return RemoteEntityConnectionImpl.isPoolEnabled(user);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException {
-    LOG.info("setConnectionPoolCleanupInterval({}, {})", user, poolCleanupInterval);
-    RemoteEntityConnectionImpl.setPoolCleanupInterval(user, poolCleanupInterval);
+    return ConnectionPools.getConnectionPool(user).isEnabled();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setConnectionPoolEnabled(final User user, final boolean enabled) throws RemoteException {
     LOG.info("setConnectionPoolEnabled({}, {})", user, enabled);
-    RemoteEntityConnectionImpl.setPoolEnabled(user, enabled);
+    ConnectionPools.getConnectionPool(user).setEnabled(enabled);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getConnectionPoolCleanupInterval(final User user) throws RemoteException {
-    return RemoteEntityConnectionImpl.getPoolCleanupInterval(user);
+    return ConnectionPools.getConnectionPool(user).getCleanupInterval();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException {
+    LOG.info("setConnectionPoolCleanupInterval({}, {})", user, poolCleanupInterval);
+    ConnectionPools.getConnectionPool(user).setCleanupInterval(poolCleanupInterval);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getMaximumConnectionPoolSize(final User user) throws RemoteException {
-    return RemoteEntityConnectionImpl.getMaximumPoolSize(user);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public int getMinimumConnectionPoolSize(final User user) throws RemoteException {
-    return RemoteEntityConnectionImpl.getMinimumPoolSize(user);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public int getPooledConnectionTimeout(final User user) throws RemoteException {
-    return RemoteEntityConnectionImpl.getPoolConnectionTimeout(user);
+    return ConnectionPools.getConnectionPool(user).getMaximumPoolSize();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMaximumConnectionPoolSize(final User user, final int value) throws RemoteException {
     LOG.info("setMaximumConnectionPoolSize({}, {})", user, value);
-    RemoteEntityConnectionImpl.setMaximumPoolSize(user, value);
+    ConnectionPools.getConnectionPool(user).setMaximumPoolSize(value);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int getMinimumConnectionPoolSize(final User user) throws RemoteException {
+    return ConnectionPools.getConnectionPool(user).getMinimumPoolSize();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMinimumConnectionPoolSize(final User user, final int value) throws RemoteException {
     LOG.info("setMinimumConnectionPoolSize({}, {})", user, value);
-    RemoteEntityConnectionImpl.setMinimumPoolSize(user, value);
+    ConnectionPools.getConnectionPool(user).setMinimumPoolSize(value);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getPoolConnectionThreshold(final User user) throws RemoteException {
-    return RemoteEntityConnectionImpl.getPoolConnectionThreshold(user);
+    return ConnectionPools.getConnectionPool(user).getNewConnectionThreshold();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPoolConnectionThreshold(final User user, final int value) throws RemoteException {
     LOG.info("setPoolConnectionThreshold({}, {})", user, value);
-    RemoteEntityConnectionImpl.setPoolConnectionThreshold(user, value);
+    ConnectionPools.getConnectionPool(user).setNewConnectionThreshold(value);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public int getPooledConnectionTimeout(final User user) throws RemoteException {
+    return ConnectionPools.getConnectionPool(user).getConnectionTimeout();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setPooledConnectionTimeout(final User user, final int timeout) throws RemoteException {
     LOG.info("setPooledConnectionTimeout({}, {})", user, timeout);
-    RemoteEntityConnectionImpl.setPoolConnectionTimeout(user, timeout);
+    ConnectionPools.getConnectionPool(user).setConnectionTimeout(timeout);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getMaximumPoolRetryWaitPeriod(final User user) throws RemoteException {
-    return RemoteEntityConnectionImpl.getMaximumPoolRetryWaitPeriod(user);
+    return ConnectionPools.getConnectionPool(user).getMaximumRetryWaitPeriod();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMaximumPoolRetryWaitPeriod(final User user, final int value) throws RemoteException {
     LOG.info("setMaximumPoolRetryWaitPeriod({}, {})", user, value);
-    RemoteEntityConnectionImpl.setMaximumPoolRetryWaitPeriod(user, value);
+    ConnectionPools.getConnectionPool(user).setMaximumRetryWaitPeriod(value);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getMaximumPoolCheckOutTime(final User user) throws RemoteException {
-    return RemoteEntityConnectionImpl.getMaximumPoolCheckOutTime(user);
+    return ConnectionPools.getConnectionPool(user).getMaximumCheckOutTime();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setMaximumPoolCheckOutTime(final User user, final int value) throws RemoteException {
     LOG.info("setMaximumPoolCheckOutTime({}, {})", user, value);
-    RemoteEntityConnectionImpl.setMaximumPoolCheckOutTime(user, value);
+    ConnectionPools.getConnectionPool(user).setMaximumCheckOutTime(value);
   }
 
   /** {@inheritDoc} */

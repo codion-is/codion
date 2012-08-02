@@ -7,7 +7,6 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolState;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
@@ -36,8 +35,7 @@ public final class ConnectionPoolMonitor {
 
   private final Event evtStatisticsUpdated = Events.event();
   private final Event evtStatisticsUpdateIntervalChanged = Events.event();
-  private final Event evtCollectFineGrainedStatsChanged = Events.event();
-  private final Event evtRefresh = Events.event();
+  private final Event evtCollectFineGrainedStatisticsChanged = Events.event();
 
   private final User user;
   private final ConnectionPool connectionPool;
@@ -186,7 +184,7 @@ public final class ConnectionPoolMonitor {
 
   public void setCollectFineGrainedStatistics(final boolean value) {
     connectionPool.setCollectFineGrainedStatistics(value);
-    evtCollectFineGrainedStatsChanged.fire();
+    evtCollectFineGrainedStatisticsChanged.fire();
   }
 
   public boolean isCollectFineGrainedStatistics() {
@@ -211,20 +209,8 @@ public final class ConnectionPoolMonitor {
     }
   }
 
-  public void addStatisticsListener(final EventListener listener) {
-    evtStatisticsUpdated.addListener(listener);
-  }
-
-  public void removeStatisticsListener(final EventListener listener) {
-    evtStatisticsUpdated.removeListener(listener);
-  }
-
   public EventObserver getCollectFineGrainedStatisticsObserver() {
-    return evtCollectFineGrainedStatsChanged.getObserver();
-  }
-
-  public EventObserver getRefreshObserver() {
-    return evtRefresh.getObserver();
+    return evtCollectFineGrainedStatisticsChanged.getObserver();
   }
 
   public EventObserver getStatisticsObserver() {

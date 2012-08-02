@@ -46,10 +46,10 @@ public final class DatabaseMonitorPanel extends JPanel {
     queriesPerSecondChart.getXYPlot().setDataset(model.getQueriesPerSecondCollection());
     queriesPerSecondChart.getXYPlot().setBackgroundPaint(Color.BLACK);
     queriesPerSecondChart.setBackgroundPaint(this.getBackground());
-    initUI();
+    initializeUI();
   }
 
-  private void initUI() throws RemoteException {
+  private void initializeUI() throws RemoteException {
     setLayout(new BorderLayout());
     final JTabbedPane tabPane = new JTabbedPane();
     tabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
@@ -60,8 +60,8 @@ public final class DatabaseMonitorPanel extends JPanel {
 
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
-    final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statsUpdateInterval",
-            model.getStatsUpdateIntervalObserver()).getSpinnerModel());
+    final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statisticsUpdateInterval",
+            model.getStatisticsUpdateIntervalObserver()).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);
@@ -72,7 +72,7 @@ public final class DatabaseMonitorPanel extends JPanel {
     final JPanel configBase = new JPanel(new BorderLayout(5,5));
     configBase.add(chartConfig, BorderLayout.CENTER);
     configBase.add(ControlProvider.createButton(
-            Controls.methodControl(model, "resetStats", "Reset")), BorderLayout.EAST);
+            Controls.methodControl(model, "resetStatistics", "Reset")), BorderLayout.EAST);
 
     final JPanel panel = new JPanel(new BorderLayout(5,5));
     queriesPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());
