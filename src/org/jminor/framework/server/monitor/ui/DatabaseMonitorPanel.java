@@ -7,7 +7,6 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.server.monitor.DatabaseMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -29,8 +28,6 @@ import java.rmi.RemoteException;
  * A DatabaseMonitorPanel
  */
 public final class DatabaseMonitorPanel extends JPanel {
-
-  private static final int GAP = Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP);
 
   private final DatabaseMonitor model;
 
@@ -62,7 +59,7 @@ public final class DatabaseMonitorPanel extends JPanel {
   }
 
   private JPanel getChartPanel() {
-    final JPanel chartConfig = new JPanel(new FlowLayout(FlowLayout.LEFT, GAP, GAP));
+    final JPanel chartConfig = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
     final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statisticsUpdateInterval",
             model.getStatisticsUpdateIntervalObserver()).getSpinnerModel());
 
@@ -72,12 +69,12 @@ public final class DatabaseMonitorPanel extends JPanel {
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(spnUpdateInterval);
 
-    final JPanel configBase = new JPanel(new BorderLayout(GAP, GAP));
+    final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
     configBase.add(chartConfig, BorderLayout.CENTER);
     configBase.add(ControlProvider.createButton(
             Controls.methodControl(model, "resetStatistics", "Reset")), BorderLayout.EAST);
 
-    final JPanel panel = new JPanel(new BorderLayout(GAP, GAP));
+    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     queriesPerSecondChartPanel.setBorder(BorderFactory.createEtchedBorder());
     panel.add(queriesPerSecondChartPanel, BorderLayout.CENTER);
     panel.add(configBase, BorderLayout.SOUTH);

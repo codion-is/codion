@@ -279,11 +279,11 @@ public final class EntityLookupField extends JTextField {
     final Event closeEvent = Events.event();
     final JButton okButton = new JButton(Messages.get(Messages.OK));
     UiUtil.addKeyEvent(okButton, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, true, new OKAction(okButton, closeEvent));
-    final JPanel btnBase = new JPanel(EntityUiUtil.createFlowLayout(FlowLayout.CENTER));
+    final JPanel btnBase = new JPanel(UiUtil.createFlowLayout(FlowLayout.CENTER));
     btnBase.add(okButton);
     final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
     messageLabel.setBorder(BorderFactory.createEmptyBorder(15, 15, 0, 15));
-    final JPanel messagePanel = new JPanel(EntityUiUtil.createBorderLayout());
+    final JPanel messagePanel = new JPanel(UiUtil.createBorderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     messagePanel.add(btnBase, BorderLayout.SOUTH);
     UiUtil.showInDialog(this, messagePanel, true, Messages.get("OptionPane.messageDialogTitle"), null, null, closeEvent);
@@ -301,7 +301,7 @@ public final class EntityLookupField extends JTextField {
     /** {@inheritDoc} */
     @Override
     public void actionPerformed(final ActionEvent e) {
-      final JPanel panel = new JPanel(EntityUiUtil.createGridLayout(5, 1));
+      final JPanel panel = new JPanel(UiUtil.createGridLayout(5, 1));
       final JCheckBox boxCaseSensitive =
               new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE), lookupPanel.getModel().isCaseSensitive());
       final JCheckBox boxPrefixWildcard =
@@ -320,7 +320,7 @@ public final class EntityLookupField extends JTextField {
       panel.add(boxPostfixWildcard);
       panel.add(boxAllowMultipleValues);
 
-      final JPanel pnlValueSeparator = new JPanel(EntityUiUtil.createBorderLayout());
+      final JPanel pnlValueSeparator = new JPanel(UiUtil.createBorderLayout());
       pnlValueSeparator.add(txtMultipleValueSeparator, BorderLayout.WEST);
       pnlValueSeparator.add(new JLabel(FrameworkMessages.get(FrameworkMessages.MULTIPLE_SEARCH_VALUE_SEPARATOR)), BorderLayout.CENTER);
 

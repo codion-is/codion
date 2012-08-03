@@ -207,7 +207,7 @@ public final class EntityTableSearchPanel extends JPanel {
   private JPanel initializeSimpleSearchPanel() {
     final JButton simpleSearchButton = new JButton(simpleSearchAction);
     simpleSearchTextField.addActionListener(simpleSearchAction);
-    final JPanel panel = new JPanel(EntityUiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     new TextBeanValueLink(simpleSearchTextField, searchModel, "simpleSearchString", searchModel.getSimpleSearchStringObserver());
     panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.CONDITION)));
     panel.add(simpleSearchTextField, BorderLayout.CENTER);

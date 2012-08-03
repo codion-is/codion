@@ -5,6 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.ui.ColumnSearchPanel;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.client.model.EntityTableModel;
@@ -51,7 +52,7 @@ public final class EntityCriteriaPanel extends JPanel {
    * @param tableModel the table model
    */
   public EntityCriteriaPanel(final EntityTableModel tableModel) {
-    setLayout(EntityUiUtil.createBorderLayout());
+    setLayout(UiUtil.createBorderLayout());
 
     final JPanel editPanel = new JPanel(new BorderLayout());
     editPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));

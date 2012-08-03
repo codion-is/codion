@@ -9,6 +9,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
+import org.jminor.common.ui.UiUtil;
 
 import javax.swing.AbstractAction;
 import javax.swing.BorderFactory;
@@ -18,7 +19,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 
 /**
@@ -92,7 +92,7 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
   }
 
   private void initUI(final String caption) {
-    setLayout(new BorderLayout(5,5));
+    setLayout(UiUtil.createBorderLayout());
     if (caption != null) {
       setBorder(BorderFactory.createTitledBorder(caption));
     }
@@ -103,7 +103,7 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
   }
 
   private JPanel createButtonPanel() {
-    final JPanel panel = new JPanel(new GridLayout(1,2,5,5));
+    final JPanel panel = new JPanel(UiUtil.createGridLayout(1, 2));
     okButton = createButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION);
     panel.add(okButton);
     panel.add(createButton(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION));

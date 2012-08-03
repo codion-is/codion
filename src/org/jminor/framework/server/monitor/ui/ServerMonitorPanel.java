@@ -11,7 +11,6 @@ import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.SelectedItemBeanValueLink;
 import org.jminor.common.ui.control.TextBeanValueLink;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.framework.server.monitor.ServerMonitor;
 
@@ -38,7 +37,6 @@ import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.rmi.RemoteException;
 import java.util.Date;
 
@@ -46,8 +44,6 @@ import java.util.Date;
  * A ServerMonitorPanel
  */
 public final class ServerMonitorPanel extends JPanel {
-
-  private static final int GAP = Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP);
 
   private final ServerMonitor model;
 
@@ -91,7 +87,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private void initializeUI() throws RemoteException {
-    final JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, GAP, GAP));
+    final JPanel infoPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
     infoPanel.add(new JLabel("Connections", JLabel.RIGHT));
     infoPanel.add(initializeConnectionCountField());
     infoPanel.add(new JLabel("limit", JLabel.RIGHT));
@@ -106,7 +102,7 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "shutdownServer", "Shutdown")));
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(model, "performGC", "GC")));
 
-    final JPanel controlPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, GAP, GAP));
+    final JPanel controlPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
 
     final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statisticsUpdateInterval",
             model.getStatisticsUpdateIntervalObserver()).getSpinnerModel());
@@ -124,11 +120,11 @@ public final class ServerMonitorPanel extends JPanel {
     ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setColumns(3);
     controlPanel.add(spnWarningThreshold);
 
-    final JPanel controlPanelBase = new JPanel(new BorderLayout(GAP, GAP));
+    final JPanel controlPanelBase = new JPanel(UiUtil.createBorderLayout());
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
     controlPanelBase.add(ControlProvider.createButton(Controls.methodControl(model, "resetStatistics", "Reset")), BorderLayout.EAST);
 
-    final JPanel chartPanel = new JPanel(new GridLayout(3, 1, GAP, GAP));
+    final JPanel chartPanel = new JPanel(UiUtil.createGridLayout(3, 1));
     chartPanel.add(requestsPerSecondChartPanel);
     chartPanel.add(connectionCountChartPanel);
     chartPanel.add(memoryUsageChartPanel);
@@ -159,7 +155,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JPanel initializeDomainModelPanel() {
-    final JPanel panel = new JPanel(new BorderLayout(GAP, GAP));
+    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     final JTable table = new JTable(model.getDomainTableModel());
     table.setRowSorter(new TableRowSorter<TableModel>(model.getDomainTableModel()));
     final JScrollPane scroller = new JScrollPane(table);

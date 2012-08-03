@@ -458,12 +458,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
       return null;
     }
     if (horizontal) {
-      final JPanel panel = new JPanel(EntityUiUtil.createFlowLayout(FlowLayout.CENTER));
+      final JPanel panel = new JPanel(UiUtil.createFlowLayout(FlowLayout.CENTER));
       panel.add(ControlProvider.createHorizontalButtonPanel(controlPanelControlSet));
       return panel;
     }
     else {
-      final JPanel panel = new JPanel(EntityUiUtil.createBorderLayout());
+      final JPanel panel = new JPanel(UiUtil.createBorderLayout());
       panel.add(ControlProvider.createVerticalButtonPanel(controlPanelControlSet), BorderLayout.NORTH);
       return panel;
     }
@@ -885,7 +885,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent,
                                              final boolean labelOnTop) {
     final JPanel panel = new JPanel(labelOnTop ?
-            EntityUiUtil.createBorderLayout() : EntityUiUtil.createFlowLayout(FlowLayout.LEADING));
+            UiUtil.createBorderLayout() : UiUtil.createFlowLayout(FlowLayout.LEADING));
     if (labelComponent instanceof JLabel) {
       ((JLabel) labelComponent).setLabelFor(inputComponent);
     }

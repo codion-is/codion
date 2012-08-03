@@ -6,7 +6,6 @@ package org.jminor.common.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.AbstractAction;
 import javax.swing.Icon;
@@ -91,7 +90,7 @@ public final class LoginPanel extends JPanel {
   }
 
   private void initUI(final boolean labelsOnTop, final String userLabel, final String passLabel) {
-    final JPanel retBase = new JPanel(new FlexibleGridLayout(labelsOnTop ? 4 : 2, labelsOnTop ? 1 : 2,5,5,true,false));
+    final JPanel retBase = new JPanel(UiUtil.createFlexibleGridLayout(labelsOnTop ? 4 : 2, labelsOnTop ? 1 : 2, true, false));
     lblUser.setHorizontalAlignment(labelsOnTop ? JLabel.LEADING : JLabel.RIGHT);
     lblPass.setHorizontalAlignment(labelsOnTop ? JLabel.LEADING : JLabel.RIGHT);
     lblUser.setText(userLabel == null ? Messages.get(Messages.USERNAME) : userLabel);

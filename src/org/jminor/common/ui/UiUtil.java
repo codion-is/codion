@@ -12,6 +12,7 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.ui.images.NavigableImagePanel;
+import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.SizedDocument;
 
 import javax.imageio.ImageIO;
@@ -113,6 +114,7 @@ public final class UiUtil {
           new Dimension(getPreferredTextFieldHeight(), getPreferredTextFieldHeight());
 
   private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<RootPaneContainer, Integer>();
+  private static int DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP = 5;
   /**
    * Caching the file chooser since the constructor is quite slow, especially on Win. with many mapped network drives
    */
@@ -124,6 +126,63 @@ public final class UiUtil {
   private static JScrollBar verticalScrollBar;
 
   private UiUtil() {}
+
+  /**
+   * Sets the default horizontal and vertical component gap, used by the layout factory methods
+   * @param gap the default horizontal and vertical gap
+   * @see #createBorderLayout()
+   * @see #createFlowLayout(int)
+   * @see #createGridLayout(int, int)
+   * @see #createFlexibleGridLayout(int, int, boolean, boolean)
+   */
+  public static void setDefaultHorizontalVerticalComponentGap(final int gap) {
+    DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP = gap;
+  }
+
+  /**
+   * Creates a BorderLayout using the default vertical and horizontal gap value
+   * @return a BorderLayout
+   * @see #setDefaultHorizontalVerticalComponentGap(int)
+   */
+  public static BorderLayout createBorderLayout() {
+    return new BorderLayout(DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP, DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP);
+  }
+
+  /**
+   * Creates a FlowLayout using the default vertical and horizontal gap value
+   * @param alignment the alignment
+   * @return a FlowLayout
+   * @see #setDefaultHorizontalVerticalComponentGap(int)
+   */
+  public static FlowLayout createFlowLayout(final int alignment) {
+    return new FlowLayout(alignment, DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP, DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP);
+  }
+
+  /**
+   * Creates a GridLayout using the default vertical and horizontal gap value
+   * @param rows the number of rows
+   * @param columns the number of columns
+   * @return a GridLayout
+   * @see #setDefaultHorizontalVerticalComponentGap(int)
+   */
+  public static GridLayout createGridLayout(final int rows, final int columns) {
+    return new GridLayout(rows, columns, DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP, DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP);
+  }
+
+  /**
+   * Creates a FlexibleGridLayout using the default vertical and horizontal gap value
+   * @param rows the number of rows
+   * @param columns the number of columns
+   * @param fixRowHeights if true then the height of the rows is fixed as the largest value
+   * @param fixColumnWidths if true then the width of the columns is fixed as the largest value
+   * @return a FlexibleGridLayout
+   * @see #setDefaultHorizontalVerticalComponentGap(int)
+   */
+  public static FlexibleGridLayout createFlexibleGridLayout(final int rows, final int columns,
+                                                            final boolean fixRowHeights, final boolean fixColumnWidths) {
+    return new FlexibleGridLayout(rows, columns, DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP,
+            DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP, fixRowHeights, fixColumnWidths);
+  }
 
   public static JTextField createMemoryUsageField(final int updateInterval) {
     final JTextField txt = new JTextField();
@@ -324,7 +383,7 @@ public final class UiUtil {
       txtField.setColumns(12);
       txtField.setValue(startDate);
 
-      final JPanel datePanel = new JPanel(new GridLayout(1, 1, 5, 5));
+      final JPanel datePanel = new JPanel(createGridLayout(1, 1));
       datePanel.add(txtField);
 
       showInDialog(getParentWindow(parent), datePanel, true, message, true, true, null);
@@ -665,7 +724,7 @@ public final class UiUtil {
    * @return a panel displaying the given components in the NORTH an CENTER positions in a BorderLayout
    */
   public static JPanel northCenterPanel(final JComponent north, final JComponent center) {
-    final JPanel panel = new JPanel(new BorderLayout(5, 5));
+    final JPanel panel = new JPanel(createBorderLayout());
     panel.add(north, BorderLayout.NORTH);
     panel.add(center, BorderLayout.CENTER);
 
@@ -781,7 +840,7 @@ public final class UiUtil {
                                      final boolean includeButtonPanel, final boolean disposeOnOk, final Action okAction,
                                      final Dimension size, final Point location, final Action closeAction) {
     final JDialog dialog = new JDialog(owner, title);
-    dialog.setLayout(new BorderLayout());
+    dialog.setLayout(createBorderLayout());
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     if (closeAction != null) {
       dialog.addWindowListener(new WindowAdapter() {
@@ -807,7 +866,7 @@ public final class UiUtil {
     addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
             new DisposeWindowAction(dialog));
     if (includeButtonPanel) {
-      final JPanel buttonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT,5,5));
+      final JPanel buttonPanel = new JPanel(createFlowLayout(FlowLayout.RIGHT));
       final JButton okButton = new JButton(ok);
       final Character okMnemonic;
       if (okAction != null && okAction.getValue(Action.MNEMONIC_KEY) != null) {
@@ -848,7 +907,7 @@ public final class UiUtil {
                                      final String title, final Dimension size, final JButton defaultButton,
                                      final EventObserver closeEvent) {
     final JDialog dialog = new JDialog(getParentWindow(owner), title);
-    dialog.setLayout(new BorderLayout());
+    dialog.setLayout(createBorderLayout());
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     if (defaultButton != null) {
       dialog.getRootPane().setDefaultButton(defaultButton);
@@ -1036,10 +1095,10 @@ public final class UiUtil {
     final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
     btnOk.setMnemonic(okMnemonic.charAt(0));
     btnCancel.setMnemonic(cancelMnemonic.charAt(0));
-    dialog.setLayout(new BorderLayout());
+    dialog.setLayout(createBorderLayout());
     final JScrollPane scroller = new JScrollPane(toScroll);
     dialog.add(scroller, BorderLayout.CENTER);
-    final JPanel buttonPanel = new JPanel(new GridLayout(1,2,5,5));
+    final JPanel buttonPanel = new JPanel(createGridLayout(1, 2));
     buttonPanel.add(btnOk);
     buttonPanel.add(btnCancel);
     final JPanel buttonBasePanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
@@ -1216,7 +1275,7 @@ public final class UiUtil {
 
   private static JDialog initializeDialog(final JComponent parent, final NavigableImagePanel panel) {
     final JDialog dialog =  new JDialog(getParentWindow(parent));
-    dialog.setLayout(new BorderLayout());
+    dialog.setLayout(createBorderLayout());
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
             new DisposeWindowAction(dialog));

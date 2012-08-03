@@ -29,7 +29,6 @@ import javax.swing.event.ChangeListener;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
-import java.awt.GridLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.util.ArrayList;
@@ -43,7 +42,7 @@ import java.util.List;
 public final class ItemRandomizerPanel<T> extends JPanel {
 
   private final ItemRandomizer<T> model;
-  private final JPanel configPanel = new JPanel(new GridLayout(0, 1, 5, 5));
+  private final JPanel configPanel = new JPanel(UiUtil.createGridLayout(0, 1));
   private final JList itemList = new JList(new DefaultListModel());
   private final Event evtSelectedItemChanged = Events.event();
 
@@ -115,7 +114,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
         evtSelectedItemChanged.fire();
       }
     });
-    setLayout(new BorderLayout(5, 5));
+    setLayout(UiUtil.createBorderLayout());
     add(new JScrollPane(itemList), BorderLayout.CENTER);
     add(configPanel, BorderLayout.SOUTH);
   }
@@ -134,7 +133,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @return a conrol panel for the item weight
    */
   private JPanel initializeWeightPanel(final ItemRandomizerModel.RandomItem<T> item) {
-    final JPanel panel = new JPanel(new BorderLayout(5, 5));
+    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     final JSpinner spinner = new JSpinner(createWeightSpinnerModel(item.getItem()));
     ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setColumns(3);
     spinner.setToolTipText(item.getItem().toString());

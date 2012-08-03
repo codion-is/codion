@@ -11,8 +11,6 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
-import org.jminor.common.ui.layout.FlexibleGridLayout;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -38,8 +36,6 @@ import java.text.NumberFormat;
  * A ConnectionPoolMonitorPanel
  */
 public final class ConnectionPoolMonitorPanel extends JPanel {
-
-  private static final int GAP = Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP);
 
   private final ConnectionPoolMonitor model;
 
@@ -98,7 +94,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private void initializeUI() {
     initializeCharts(model);
-    setLayout(new FlexibleGridLayout(1, 3, GAP, GAP, true, false));
+    setLayout(UiUtil.createFlexibleGridLayout(1, 3, true, false));
 
     add(getChartPanel());
     add(getStatisticsPanel());
@@ -147,7 +143,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getConfigurationPanel() {
-    final JPanel configBase = new JPanel(new GridLayout(0, 1, GAP, GAP));
+    final JPanel configBase = new JPanel(UiUtil.createGridLayout(0, 1));
 
     final JSpinner spnTimeout = new JSpinner(new IntBeanSpinnerValueLink(model, "pooledConnectionTimeout", null).getSpinnerModel());
     final JSpinner spnCleanupInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "poolCleanupInterval", null).getSpinnerModel());
@@ -172,7 +168,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     configBase.add(UiUtil.northCenterPanel(new JLabel("Idle timeout (s)"), spnTimeout));
     configBase.add(UiUtil.northCenterPanel(new JLabel("Cleanup interval (s)"), spnCleanupInterval));
 
-    final JPanel panel = new JPanel(new BorderLayout(GAP, GAP));
+    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Configuration"));
     panel.add(configBase, BorderLayout.NORTH);
 
@@ -180,7 +176,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getStatisticsPanel() {
-    final JPanel statisticsBase = new JPanel(new GridLayout(0, 1, GAP, GAP));
+    final JPanel statisticsBase = new JPanel(UiUtil.createGridLayout(0, 1));
     txtPoolSize.setEditable(false);
     txtPoolSize.setColumns(30);
     txtPoolSize.setHorizontalAlignment(JLabel.CENTER);
@@ -208,7 +204,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     statisticsBase.add(UiUtil.northCenterPanel(new JLabel("Connections destroyed"), txtDestroyed));
     statisticsBase.add(UiUtil.northCenterPanel(new JLabel("since"), txtResetTime));
 
-    final JPanel panel = new JPanel(new BorderLayout(GAP, GAP));
+    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Statistics"));
     panel.add(statisticsBase, BorderLayout.NORTH);
     panel.add(btnReset, BorderLayout.SOUTH);
@@ -217,7 +213,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getChartPanel() {
-    final JPanel chartConfig = new JPanel(new GridLayout(1, 2, GAP, GAP));
+    final JPanel chartConfig = new JPanel(UiUtil.createGridLayout(1, 2));
     final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statisticsUpdateInterval",
             model.getStatisticsUpdateIntervalObserver()).getSpinnerModel());
 
@@ -227,7 +223,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(spnUpdateInterval);
 
-    final JPanel configBase = new JPanel(new BorderLayout(GAP, GAP));
+    final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
     configBase.add(chartConfig, BorderLayout.WEST);
     final JButton btnReset = ControlProvider.createButton(
             Controls.methodControl(model, "resetInPoolStatistics", "Reset"));
@@ -238,8 +234,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chkCollectStatistics.setModel(new ToggleBeanValueLink(model, "collectFineGrainedStatistics", model.getCollectFineGrainedStatisticsObserver(), null).getButtonModel());
     chkCollectStatistics.setMaximumSize(UiUtil.getPreferredTextFieldSize());
 
-    final JPanel inPoolBase = new JPanel(new BorderLayout(GAP, GAP));
-    final JPanel checkBoxBase = new JPanel(new BorderLayout(GAP, GAP));
+    final JPanel inPoolBase = new JPanel(UiUtil.createBorderLayout());
+    final JPanel checkBoxBase = new JPanel(UiUtil.createBorderLayout());
     checkBoxBase.add(chkCollectStatistics, BorderLayout.EAST);
     inPoolBase.add(inPoolFineGrainedChartPanel, BorderLayout.CENTER);
     inPoolBase.add(checkBoxBase, BorderLayout.NORTH);
@@ -251,7 +247,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartBase.add(inPoolBase);
     chartBase.setBorder(BorderFactory.createEtchedBorder());
 
-    final JPanel panel = new JPanel(new BorderLayout(GAP, GAP));
+    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     panel.setBorder(BorderFactory.createTitledBorder("Status"));
     panel.add(chartBase, BorderLayout.CENTER);
     panel.add(configBase, BorderLayout.SOUTH);

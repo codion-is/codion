@@ -74,7 +74,6 @@ import javax.swing.ListSelectionModel;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
-import java.awt.GridLayout;
 import java.awt.event.ActionEvent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
@@ -97,42 +96,6 @@ public final class EntityUiUtil {
   private static final String EDIT_MODEL_PARAM_NAME = "editModel";
 
   private EntityUiUtil() {}
-
-  /**
-   * Creates a BorderLayout using the default vertical and horizontal gap value
-   * @return a BorderLayout
-   * @see Configuration#DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP
-   */
-  public static BorderLayout createBorderLayout() {
-    return new BorderLayout(
-            Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP),
-            Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP));
-  }
-
-  /**
-   * Creates a FlowLayout using the default vertical and horizontal gap value
-   * @param alignment the alignment
-   * @return a FlowLayout
-   * @see Configuration#DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP
-   */
-  public static FlowLayout createFlowLayout(final int alignment) {
-    return new FlowLayout(alignment,
-            Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP),
-            Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP));
-  }
-
-  /**
-   * Creates a GridLayout using the default vertical and horizontal gap value
-   * @param rows the number of rows
-   * @param columns the number of columns
-   * @return a GridLayout
-   * @see Configuration#DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP
-   */
-  public static GridLayout createGridLayout(final int rows, final int columns) {
-    return new GridLayout(rows, columns,
-            Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP),
-            Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP));
-  }
 
   /**
    * Shows a dialog for selecting the root logging level.
@@ -308,7 +271,7 @@ public final class EntityUiUtil {
       entityTablePanel.setPreferredSize(preferredSize);
     }
     dialog.add(entityTablePanel, BorderLayout.CENTER);
-    final JPanel buttonPanel = new JPanel(EntityUiUtil.createFlowLayout(FlowLayout.RIGHT));
+    final JPanel buttonPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.RIGHT));
     buttonPanel.add(btnSearch);
     buttonPanel.add(btnOk);
     buttonPanel.add(btnCancel);
@@ -934,7 +897,7 @@ public final class EntityUiUtil {
 
     public EntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
                             final EntityEditModel editModel, final EntityTableModel lookupModel) {
-      super(createBorderLayout());
+      super(UiUtil.createBorderLayout());
       Util.rejectNullValue(lookupModel, "lookupModel");
       textField = createEntityField(foreignKeyProperty, editModel);
       initializeUI(foreignKeyProperty, editModel, lookupModel);

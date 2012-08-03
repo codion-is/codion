@@ -1014,13 +1014,13 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       tablePanel.setMinimumSize(new Dimension(0, 0));
     }
 
-    setLayout(EntityUiUtil.createBorderLayout());
+    setLayout(UiUtil.createBorderLayout());
     if (detailPanelTabbedPane == null) { //no left right split pane
       add(tablePanel, BorderLayout.CENTER);
     }
     else {
       if (compactDetailLayout) {
-        compactBase = new JPanel(EntityUiUtil.createBorderLayout());
+        compactBase = new JPanel(UiUtil.createBorderLayout());
         compactBase.add(tablePanel, BorderLayout.CENTER);
         horizontalSplitPane.setLeftComponent(compactBase);
       }
@@ -1182,10 +1182,10 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       return null;
     }
 
-    final JPanel panel = new JPanel(EntityUiUtil.createBorderLayout());
+    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     panel.setMinimumSize(new Dimension(0, 0));
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
-    final JPanel propertyBase = new JPanel(EntityUiUtil.createFlowLayout(alignment));
+    final JPanel propertyBase = new JPanel(UiUtil.createFlowLayout(alignment));
     propertyBase.add(editPanel);
     panel.add(propertyBase, BorderLayout.CENTER);
     if (includeControlPanel) {

@@ -391,7 +391,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
   private JPopupMenu initializeSearchFieldPopupMenu() {
     final JCheckBox boxRegexp = new JCheckBox(Messages.get(Messages.REGULAR_EXPRESSION_SEARCH), tableModel.isRegularExpressionSearch());
-    final JPanel panel = new JPanel(new GridLayout(1,1,5,5));
+    final JPanel panel = new JPanel(UiUtil.createGridLayout(1, 1));
     panel.add(boxRegexp);
 
     final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {

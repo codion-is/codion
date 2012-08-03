@@ -7,6 +7,7 @@ import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
+import org.jminor.common.ui.UiUtil;
 
 import javax.swing.Action;
 import javax.swing.Icon;
@@ -22,7 +23,6 @@ import javax.swing.JPopupMenu;
 import javax.swing.JRadioButtonMenuItem;
 import javax.swing.JToggleButton;
 import javax.swing.JToolBar;
-import java.awt.GridLayout;
 import java.util.List;
 
 /**
@@ -46,7 +46,7 @@ public final class ControlProvider {
   }
 
   public static JPanel createVerticalButtonPanel(final ControlSet controlSet) {
-    final JPanel btnPanel = new JPanel(new GridLayout(0,1,5,5));
+    final JPanel btnPanel = new JPanel(UiUtil.createGridLayout(0, 1));
     iterate(new ButtonControlIterator(btnPanel, true), controlSet);
 
     return btnPanel;
@@ -57,7 +57,7 @@ public final class ControlProvider {
   }
 
   public static JPanel createHorizontalButtonPanel(final ControlSet controlSet) {
-    final JPanel btnPanel = new JPanel(new GridLayout(1,0,5,5));
+    final JPanel btnPanel = new JPanel(UiUtil.createGridLayout(1, 0));
     iterate(new ButtonControlIterator(btnPanel, false), controlSet);
 
     return btnPanel;

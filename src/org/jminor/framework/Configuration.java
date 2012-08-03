@@ -5,6 +5,7 @@ package org.jminor.framework;
 
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
+import org.jminor.common.ui.UiUtil;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -585,6 +586,7 @@ public final class Configuration {
     PROPERTIES.put(DEFAULT_MAXIMUM_FRACTION_DIGITS, 10);
     PROPERTIES.put(DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP, 5);
     parseSystemSettings();
+    setCommonSettings();
   }
 
   private static void parseSystemSettings() {
@@ -648,6 +650,10 @@ public final class Configuration {
     parseBooleanSetting(SHOW_TOGGLE_EDIT_PANEL_CONTROL);
     parseIntegerSetting(DEFAULT_MAXIMUM_FRACTION_DIGITS);
     parseIntegerSetting(DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP);
+  }
+
+  private static void setCommonSettings() {
+    UiUtil.setDefaultHorizontalVerticalComponentGap(getIntValue(DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP));
   }
 
   private static void parseIntegerSetting(final String setting) {
