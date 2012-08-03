@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Util;
 
 import javax.swing.JFormattedTextField;
 import javax.swing.text.MaskFormatter;
@@ -33,10 +34,7 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
                                     final EventObserver valueChangeEvent, final LinkType linkType,
                                     final Format format) {
     super(textComponent, owner, propertyName, valueClass, valueChangeEvent, linkType);
-    if (format == null) {
-      throw new IllegalArgumentException("Format is null");
-    }
-    this.format = format;
+    this.format = Util.rejectNullValue(format, "format");
     this.placeholder = Character.toString((((MaskFormatter) textComponent.getFormatter()).getPlaceholderCharacter()));
     updateUI();
   }

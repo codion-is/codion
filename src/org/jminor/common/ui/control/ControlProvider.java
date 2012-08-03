@@ -26,7 +26,7 @@ import java.awt.GridLayout;
 import java.util.List;
 
 /**
- * Provides UI controls based on the Control class and it's descendants.
+ * Provides UI controls based on the Control class and its descendants.
  */
 public final class ControlProvider {
 

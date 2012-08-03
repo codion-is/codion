@@ -16,7 +16,7 @@ import org.jminor.common.ui.control.LinkType;
 public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<ValueMapEditModel<K, V>, V> {
 
   /**
-   * The linked key
+   * The key identifying the value being linked
    */
   private final K key;
 
@@ -64,8 +64,8 @@ public abstract class AbstractValueMapLink<K, V> extends AbstractValueLink<Value
   }
 
   /**
-   * If the current value is invalid this method should return a string describing the nature of
-   * the invalidity, if the value is valid this method should return null
+   * If the current value is invalid this method returns a string describing the nature of
+   * the invalidity, if the value is valid this method returns null
    * @param editModel the underlying ValueMapEditModel
    * @return a validation string if the value is invalid, null otherwise
    */

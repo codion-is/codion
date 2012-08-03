@@ -59,10 +59,9 @@ public abstract class AbstractBeanValueLink extends AbstractValueLink<Object, Ob
                                final StateObserver enabledObserver) {
     super(valueOwner, valueChangeEvent, linkType, enabledObserver);
     try {
-      Util.rejectNullValue(propertyName, "propertyName");
       Util.rejectNullValue(valueClass, "valueClass");
-      if (propertyName.isEmpty()) {
-        throw new IllegalArgumentException("propertyName is empty");
+      if (Util.nullOrEmpty(propertyName)) {
+        throw new IllegalArgumentException("propertyName is null or an empty string");
       }
       this.propertyName = Character.toUpperCase(propertyName.charAt(0)) + propertyName.substring(1);
       this.valueClass = valueClass;

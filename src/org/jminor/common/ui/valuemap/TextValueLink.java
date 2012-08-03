@@ -25,11 +25,6 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
   private final Document document;
 
   /**
-   * If true the model value is updated on each keystroke, otherwise it is updated on focus lost and action performed
-   */
-  private final boolean immediateUpdate;
-
-  /**
    * The format to use when presenting values in the linked text field
    */
   private final Format format;
@@ -40,6 +35,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
    * @param editModel the ValueMapEditModel instance
    * @param key the key to link
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
+   * otherwise it is updated on actionPerformed or focusLost
    */
   public TextValueLink(final JTextComponent textComponent, final ValueMapEditModel<K, Object> editModel,
                        final K key, final boolean immediateUpdate) {
@@ -75,9 +71,8 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
                        final K key, final boolean immediateUpdate, final LinkType linkType, final Format format) {
     super(editModel, key, linkType);
     this.document = textComponent.getDocument();
-    this.immediateUpdate = immediateUpdate;
     this.format = format == null ? new NullFormat() : format;
-    if (!this.immediateUpdate) {
+    if (!immediateUpdate) {
       textComponent.addFocusListener(new FocusAdapter() {
         /** {@inheritDoc} */
         @Override
@@ -99,13 +94,6 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
         }
       }
     });
-  }
-
-  /**
-   * @return true if the underlying property should be updated on each keystroke
-   */
-  public final boolean isImmediateUpdate() {
-    return immediateUpdate;
   }
 
   /** {@inheritDoc} */
@@ -191,7 +179,6 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
     @Override
     public StringBuffer format(final Object obj, final StringBuffer toAppendTo, final FieldPosition pos) {
       toAppendTo.append(obj.toString());
-
       return toAppendTo;
     }
     /** {@inheritDoc} */

@@ -16,13 +16,13 @@ import org.jminor.common.model.valuemap.exception.ValidationException;
 public interface ValueMapEditModel<K, V> {
 
   /**
-   * @return a StateObserver indicating if any values in this value map have been modified
+   * @return a StateObserver indicating if any values in the underlying value map have been modified
    * @see #isModified()
    */
   StateObserver getModifiedObserver();
 
   /**
-   * @return a StateObserver indicating the valid status of this value map
+   * @return a StateObserver indicating the valid status of the underlying value map
    * @see #getValidator()
    * @see #isValid()
    */

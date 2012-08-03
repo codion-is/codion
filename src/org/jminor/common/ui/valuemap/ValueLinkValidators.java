@@ -65,7 +65,7 @@ public final class ValueLinkValidators {
       this.component = component;
       this.editModel = editModel;
       this.defaultToolTip = defaultToolTip;
-      editModel.addValueListener(link.getKey(), new EventAdapter() {
+      this.editModel.addValueListener(link.getKey(), new EventAdapter() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {

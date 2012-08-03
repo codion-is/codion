@@ -30,9 +30,8 @@ public final class DateValueLink<K> extends FormattedValueLink<K> {
    */
   public DateValueLink(final JFormattedTextField textField, final ValueMapEditModel<K, Object> editModel,
                        final K key, final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
-    super(textField, editModel, key, dateFormat, true, linkType);
+    super(textField, editModel, key, Util.rejectNullValue(dateFormat, "dateFormat"), true, linkType);
     this.isTimestamp = isTimestamp;
-    Util.rejectNullValue(dateFormat, "dateFormat");
   }
 
   /**
