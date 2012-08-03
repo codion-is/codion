@@ -114,7 +114,7 @@ public final class UiUtil {
           new Dimension(getPreferredTextFieldHeight(), getPreferredTextFieldHeight());
 
   private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<RootPaneContainer, Integer>();
-  private static int DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP = 5;
+  private static int defaultHorizontalVerticalComponentGap = 5;
   /**
    * Caching the file chooser since the constructor is quite slow, especially on Win. with many mapped network drives
    */
@@ -136,7 +136,7 @@ public final class UiUtil {
    * @see #createFlexibleGridLayout(int, int, boolean, boolean)
    */
   public static void setDefaultHorizontalVerticalComponentGap(final int gap) {
-    DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP = gap;
+    defaultHorizontalVerticalComponentGap = gap;
   }
 
   /**
@@ -145,7 +145,7 @@ public final class UiUtil {
    * @see #setDefaultHorizontalVerticalComponentGap(int)
    */
   public static BorderLayout createBorderLayout() {
-    return new BorderLayout(DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP, DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP);
+    return new BorderLayout(defaultHorizontalVerticalComponentGap, defaultHorizontalVerticalComponentGap);
   }
 
   /**
@@ -155,7 +155,7 @@ public final class UiUtil {
    * @see #setDefaultHorizontalVerticalComponentGap(int)
    */
   public static FlowLayout createFlowLayout(final int alignment) {
-    return new FlowLayout(alignment, DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP, DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP);
+    return new FlowLayout(alignment, defaultHorizontalVerticalComponentGap, defaultHorizontalVerticalComponentGap);
   }
 
   /**
@@ -166,7 +166,7 @@ public final class UiUtil {
    * @see #setDefaultHorizontalVerticalComponentGap(int)
    */
   public static GridLayout createGridLayout(final int rows, final int columns) {
-    return new GridLayout(rows, columns, DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP, DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP);
+    return new GridLayout(rows, columns, defaultHorizontalVerticalComponentGap, defaultHorizontalVerticalComponentGap);
   }
 
   /**
@@ -180,8 +180,8 @@ public final class UiUtil {
    */
   public static FlexibleGridLayout createFlexibleGridLayout(final int rows, final int columns,
                                                             final boolean fixRowHeights, final boolean fixColumnWidths) {
-    return new FlexibleGridLayout(rows, columns, DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP,
-            DEFAULT_HORIZONTAL_VERTICAL_COMPONENT_GAP, fixRowHeights, fixColumnWidths);
+    return new FlexibleGridLayout(rows, columns, defaultHorizontalVerticalComponentGap,
+            defaultHorizontalVerticalComponentGap, fixRowHeights, fixColumnWidths);
   }
 
   public static JTextField createMemoryUsageField(final int updateInterval) {
