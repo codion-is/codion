@@ -10,80 +10,26 @@ import org.jminor.common.i18n.Messages;
  */
 public enum SearchType {
 
-  LIKE {
-    @Override
-    public String getCaption() {
-      return "  = ";
-    }
+  LIKE("  = ", Messages.get(Messages.LIKE)),
+  NOT_LIKE("  \u2260 ", Messages.get(Messages.NOT_LIKE)),
+  LESS_THAN("  \u2264 ", Messages.get(Messages.LESS_THAN)),
+  GREATER_THAN("  \u2265 ", Messages.get(Messages.GREATER_THAN)),
+  WITHIN_RANGE("\u2265 \u2264", Messages.get(Messages.WITHIN_RANGE)),
+  OUTSIDE_RANGE("\u2264 \u2265", Messages.get(Messages.OUTSIDE_RANGE));
 
-    @Override
-    public String getDescription() {
-      return Messages.get(Messages.LIKE);
-    }
-  },
-  NOT_LIKE {
-    @Override
-    public String getCaption() {
-      return "  \u2260 ";
-    }
+  private final String caption;
+  private final String description;
 
-    @Override
-    public String getDescription() {
-      return Messages.get(Messages.NOT_LIKE);
-    }
-  },
-  LESS_THAN {
-    @Override
-    public String getCaption() {
-      return "  \u2264 ";
-    }
+  SearchType(final String caption, final String description) {
+    this.caption = caption;
+    this.description = description;
+  }
 
-    @Override
-    public String getDescription() {
-      return Messages.get(Messages.LESS_THAN);
-    }
-  },
-  GREATER_THAN {
-    @Override
-    public String getCaption() {
-      return "  \u2265 ";
-    }
+  public String getCaption() {
+    return caption;
+  }
 
-    @Override
-    public String getDescription() {
-      return Messages.get(Messages.GREATER_THAN);
-    }
-  },
-  WITHIN_RANGE {
-    @Override
-    public String getCaption() {
-      return "\u2265 \u2264";
-    }
-
-    @Override
-    public String getDescription() {
-      return Messages.get(Messages.WITHIN_RANGE);
-    }
-  },
-  OUTSIDE_RANGE {
-    @Override
-    public String getCaption() {
-      return "\u2264 \u2265";
-    }
-
-    @Override
-    public String getDescription() {
-      return Messages.get(Messages.OUTSIDE_RANGE);
-    }
-  };
-
-  /**
-   * @return the SearchType caption
-   */
-  public abstract String getCaption();
-
-  /**
-   * @return a description for this SearchType
-   */
-  public abstract String getDescription();
+  public String getDescription() {
+    return description;
+  }
 }

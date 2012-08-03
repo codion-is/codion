@@ -3143,3 +3143,4 @@
   Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP added
   EntityUiUtil.createBorderLayout(), createFlowLayout() and createGridLayout() added, used throughout
   EntityUiUtil.createBorderLayout(), createFlowLayout() and createGridLayout() moved to UiUtil
+  SearchType refactored
