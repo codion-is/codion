@@ -9,6 +9,7 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.server.monitor.ClientMonitor;
 import org.jminor.framework.server.monitor.ClientUserMonitor;
 
@@ -36,6 +37,8 @@ import java.rmi.RemoteException;
  * A ClientUserMonitorPanel
  */
 public final class ClientUserMonitorPanel extends JPanel {
+
+  private static final int GAP = Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP);
 
   private final ClientUserMonitor model;
 
@@ -80,19 +83,19 @@ public final class ClientUserMonitorPanel extends JPanel {
       }
     });
 
-    final JPanel clientTypeBase = new JPanel(new BorderLayout(5, 5));
+    final JPanel clientTypeBase = new JPanel(new BorderLayout(GAP, GAP));
     final JScrollPane clientTypeScroller = new JScrollPane(clientTypeList);
     final JScrollPane userScroller = new JScrollPane(userList);
     clientTypeScroller.setBorder(BorderFactory.createTitledBorder("Client types"));
     userScroller.setBorder(BorderFactory.createTitledBorder("Users"));
-    final JPanel clientUserBase = new JPanel(new GridLayout(2, 1, 5, 5));
+    final JPanel clientUserBase = new JPanel(new GridLayout(2, 1, GAP, GAP));
     clientUserBase.add(clientTypeScroller);
     clientUserBase.add(userScroller);
 
     clientTypeBase.add(clientUserBase, BorderLayout.CENTER);
     clientTypeBase.add(ControlProvider.createButton(Controls.methodControl(model, "refresh", "Refresh")), BorderLayout.SOUTH);
 
-    final JPanel actionBase = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+    final JPanel actionBase = new JPanel(new FlowLayout(FlowLayout.LEFT, GAP, GAP));
     actionBase.add(new JLabel("Reaper interval (s)", JLabel.RIGHT));
     actionBase.add(initializeMaintenanceIntervalComponent());
 
@@ -115,7 +118,7 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     splitPane.setLeftComponent(clientTypeBase);
 
-    final JPanel rightPanel = new JPanel(new BorderLayout(5, 5));
+    final JPanel rightPanel = new JPanel(new BorderLayout(GAP, GAP));
     rightPanel.add(actionBase, BorderLayout.NORTH);
     rightPanel.add(clientTypeMonitorPanel, BorderLayout.CENTER);
 

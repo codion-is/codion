@@ -329,6 +329,13 @@ public final class Configuration {
   public static final String TRANSFER_FOCUS_ON_ENTER = "jminor.client.transferFocusOnEnter";
 
   /**
+   * Specifies the default horizontal and vertical gap to use between components.<br>
+   * Value type: Integer<br>
+   * Default value: 5
+   */
+  public static final String DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP = "jminor.client.defaultHorizontalAndVerticalComponentGap";
+
+  /**
    * Specifies whether optimistic locking should be performed, that is, if entities should
    * be selected for update and checked for modification before being updated<br>
    * Value type: Boolean<br>
@@ -576,6 +583,7 @@ public final class Configuration {
     PROPERTIES.put(SHOW_DETAIL_PANEL_CONTROLS, true);
     PROPERTIES.put(SHOW_TOGGLE_EDIT_PANEL_CONTROL, true);
     PROPERTIES.put(DEFAULT_MAXIMUM_FRACTION_DIGITS, 10);
+    PROPERTIES.put(DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP, 5);
     parseSystemSettings();
   }
 
@@ -639,6 +647,7 @@ public final class Configuration {
     parseBooleanSetting(SHOW_DETAIL_PANEL_CONTROLS);
     parseBooleanSetting(SHOW_TOGGLE_EDIT_PANEL_CONTROL);
     parseIntegerSetting(DEFAULT_MAXIMUM_FRACTION_DIGITS);
+    parseIntegerSetting(DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP);
   }
 
   private static void parseIntegerSetting(final String setting) {

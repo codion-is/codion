@@ -3140,3 +3140,5 @@
   ServerMonitor, bug fixed, resetStatistics() did not clear all series
   RemoteEntityConnectionImpl, static connection pool related admin methods removed, EntityConnectionServerAdminImpl calls pool directly
   EntityImplTest, removed Chinook dependency
+  Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP added
+  EntityUiUtil.createBorderLayout(), createFlowLayout() and createGridLayout() added, used throughout

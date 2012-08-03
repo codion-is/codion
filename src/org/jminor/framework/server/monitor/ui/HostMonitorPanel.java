@@ -8,6 +8,7 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.Controls;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.server.monitor.HostMonitor;
 import org.jminor.framework.server.monitor.ServerMonitor;
 
@@ -23,6 +24,8 @@ import java.util.Collection;
  * A HostMonitorPanel
  */
 public final class HostMonitorPanel extends JPanel {
+
+  private static final int GAP = Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP);
 
   private final HostMonitor model;
 
@@ -40,7 +43,7 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private void initializeUI() throws RemoteException {
-    setLayout(new BorderLayout(5,5));
+    setLayout(new BorderLayout(GAP, GAP));
     add(ControlProvider.createToolbar(getControls(), JToolBar.HORIZONTAL), BorderLayout.NORTH);
     serverPane = new JTabbedPane();
     serverPane.setUI(UiUtil.getBorderlessTabbedPaneUI());

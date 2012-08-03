@@ -6,6 +6,7 @@ package org.jminor.framework.server.monitor.ui;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.Controls;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.server.monitor.ClientInstanceMonitor;
 import org.jminor.framework.server.monitor.ClientMonitor;
 
@@ -27,6 +28,8 @@ import java.rmi.RemoteException;
  * A ClientMonitorPanel
  */
 public final class ClientMonitorPanel extends JPanel {
+
+  private static final int GAP = Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP);
 
   private ClientMonitor model;
   private final ClientInstanceMonitorPanel clientInstancePanel;
@@ -55,7 +58,7 @@ public final class ClientMonitorPanel extends JPanel {
   }
 
   private void initializeUI() {
-    setLayout(new BorderLayout(5, 5));
+    setLayout(new BorderLayout(GAP, GAP));
     clientInstanceList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     clientInstanceList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
       @Override
@@ -74,7 +77,7 @@ public final class ClientMonitorPanel extends JPanel {
     });
     clientInstanceList.setComponentPopupMenu(initializePopupMenu());
 
-    final JPanel clientInstanceBase = new JPanel(new BorderLayout(5, 5));
+    final JPanel clientInstanceBase = new JPanel(new BorderLayout(GAP, GAP));
     final JScrollPane clientInstanceScroller = new JScrollPane(clientInstanceList);
     clientInstanceScroller.setBorder(BorderFactory.createTitledBorder("Clients"));
     clientInstanceBase.add(clientInstanceScroller, BorderLayout.CENTER);

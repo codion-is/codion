@@ -458,12 +458,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
       return null;
     }
     if (horizontal) {
-      final JPanel panel = new JPanel(new FlowLayout(FlowLayout.CENTER, 5, 5));
+      final JPanel panel = new JPanel(EntityUiUtil.createFlowLayout(FlowLayout.CENTER));
       panel.add(ControlProvider.createHorizontalButtonPanel(controlPanelControlSet));
       return panel;
     }
     else {
-      final JPanel panel = new JPanel(new BorderLayout(5, 5));
+      final JPanel panel = new JPanel(EntityUiUtil.createBorderLayout());
       panel.add(ControlProvider.createVerticalButtonPanel(controlPanelControlSet), BorderLayout.NORTH);
       return panel;
     }
@@ -845,7 +845,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent,
                                              final boolean labelOnTop) {
-    return createPropertyPanel(propertyID, inputComponent, labelOnTop, 5, 5);
+    return createPropertyPanel(propertyID, inputComponent, labelOnTop, JLabel.LEADING);
   }
 
   /**
@@ -855,32 +855,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param inputComponent a component bound to the property with id <code>propertyID</code>
    * @param labelOnTop if true then the label is positioned above <code>inputComponent</code>,
    * otherwise it uses FlowLayout.LEADING in a FlowLayout.
-   * @param hgap the horizontal gap between components
-   * @param vgap the vertical gap between components
    * @return a panel containing a label and a component
    */
   protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent,
-                                             final boolean labelOnTop, final int hgap, final int vgap) {
-    return createPropertyPanel(propertyID, inputComponent, labelOnTop, hgap, vgap, JLabel.LEADING);
-  }
-
-  /**
-   * Creates a panel containing a label and the given component.
-   * The label text is the caption of the property identified by <code>propertyID</code>.
-   * @param propertyID the id of the property from which to retrieve the label caption
-   * @param inputComponent a component bound to the property with id <code>propertyID</code>
-   * @param labelOnTop if true then the label is positioned above <code>inputComponent</code>,
-   * otherwise it uses FlowLayout.LEADING in a FlowLayout.
-   * @param hgap the horizontal gap between components
-   * @param vgap the vertical gap between components
-   * @param labelAlignment the text alignment to use for the label
-   * @return a panel containing a label and a component
-   */
-  protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent,
-                                             final boolean labelOnTop, final int hgap, final int vgap,
-                                             final int labelAlignment) {
+                                             final boolean labelOnTop, final int labelAlignment) {
     return createPropertyPanel(EntityUiUtil.createLabel(Entities.getProperty(editModel.getEntityID(),
-            propertyID), labelAlignment), inputComponent, labelOnTop, hgap, vgap);
+            propertyID), labelAlignment), inputComponent, labelOnTop);
   }
 
   /**
@@ -904,23 +884,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent,
                                              final boolean labelOnTop) {
-    return createPropertyPanel(labelComponent, inputComponent, labelOnTop, 5, 5);
-  }
-
-  /**
-   * Creates a panel containing a label component and the <code>inputComponent</code>.
-   * @param labelComponent the label component
-   * @param inputComponent a component bound to the property with id <code>propertyID</code>
-   * @param labelOnTop if true then the label is positioned above <code>inputComponent</code>,
-   * otherwise it uses FlowLayout.LEADING in a FlowLayout.
-   * @param hgap the horizontal gap between components
-   * @param vgap the vertical gap between components
-   * @return a panel containing a label and a component
-   */
-  protected final JPanel createPropertyPanel(final JComponent labelComponent, final JComponent inputComponent,
-                                             final boolean labelOnTop, final int hgap, final int vgap) {
     final JPanel panel = new JPanel(labelOnTop ?
-            new BorderLayout(hgap, vgap) : new FlowLayout(FlowLayout.LEADING, hgap, vgap));
+            EntityUiUtil.createBorderLayout() : EntityUiUtil.createFlowLayout(FlowLayout.LEADING));
     if (labelComponent instanceof JLabel) {
       ((JLabel) labelComponent).setLabelFor(inputComponent);
     }

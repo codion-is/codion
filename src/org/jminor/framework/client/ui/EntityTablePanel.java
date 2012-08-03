@@ -901,7 +901,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   protected JPanel initializeSouthPanel() {
     initializeStatusMessageLabel();
-    final JPanel centerPanel = new JPanel(new BorderLayout(5, 5));
+    final JPanel centerPanel = new JPanel(EntityUiUtil.createBorderLayout());
     final JTextField searchField = getSearchField();
     final JPanel searchFieldPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
     searchFieldPanel.add(searchField);
@@ -1385,7 +1385,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
     JPanel southPanel = null;
     if (includeSouthPanel) {
-      southPanel = new JPanel(new BorderLayout(5, 5));
+      southPanel = new JPanel(EntityUiUtil.createBorderLayout());
       final JPanel southPanelCenter = initializeSouthPanel();
       if (southPanelCenter != null) {
         final JToolBar southToolBar = initializeToolbar();

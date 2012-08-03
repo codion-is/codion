@@ -571,7 +571,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return the panel shown when Help -> About is selected
    */
   protected JPanel getAboutPanel() {
-    final JPanel panel = new JPanel(new BorderLayout(5,5));
+    final JPanel panel = new JPanel(EntityUiUtil.createBorderLayout());
     final String versionString = Util.getVersionAndBuildNumber();
     panel.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
     final JTextField txtVersionMemory = new JTextField(versionString + " (" + Util.getMemoryUsageString() + ")");
@@ -849,7 +849,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return an initialized startup progress panel
    */
   protected JPanel initializeStartupProgressPanel(final Icon icon) {
-    final JPanel panel = new JPanel(new BorderLayout(5, 5));
+    final JPanel panel = new JPanel(EntityUiUtil.createBorderLayout());
     final JProgressBar progressBar = new JProgressBar(JProgressBar.HORIZONTAL);
     progressBar.setIndeterminate(true);
     panel.add(progressBar, BorderLayout.CENTER);

@@ -51,7 +51,7 @@ public final class EntityCriteriaPanel extends JPanel {
    * @param tableModel the table model
    */
   public EntityCriteriaPanel(final EntityTableModel tableModel) {
-    setLayout(new BorderLayout(5,5));
+    setLayout(EntityUiUtil.createBorderLayout());
 
     final JPanel editPanel = new JPanel(new BorderLayout());
     editPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));

@@ -8,6 +8,7 @@ import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.server.ServerLog;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.BorderFactory;
@@ -28,6 +29,8 @@ import java.util.List;
  * A ClientInstanceMonitorPanel
  */
 public final class ClientInstanceMonitorPanel extends JPanel {
+
+  private static final int GAP = Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP);
 
   private final JTextField txtCreationDate = new JTextField();
   private final JTextArea txtLog = new JTextArea();
@@ -87,16 +90,16 @@ public final class ClientInstanceMonitorPanel extends JPanel {
   }
 
   private void initializeUI() {
-    setLayout(new BorderLayout(5,5));
+    setLayout(new BorderLayout(GAP, GAP));
     txtCreationDate.setEditable(false);
-    final JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+    final JPanel infoPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, GAP, GAP));
     infoPanel.add(new JLabel("Creation date"));
     infoPanel.add(txtCreationDate);
-    final JPanel infoBase = new JPanel(new BorderLayout(5,5));
+    final JPanel infoBase = new JPanel(new BorderLayout(GAP, GAP));
     infoBase.setBorder(BorderFactory.createTitledBorder("Connection info"));
     infoBase.add(infoPanel, BorderLayout.CENTER);
     chkLoggingEnabled = new JCheckBox("Logging enabled");
-    final JPanel pnlSettings = new JPanel(new FlowLayout(FlowLayout.LEFT,5,5));
+    final JPanel pnlSettings = new JPanel(new FlowLayout(FlowLayout.LEFT, GAP, GAP));
     pnlSettings.add(chkLoggingEnabled);
     pnlSettings.add(ControlProvider.createButton(
             Controls.methodControl(this, "updateView", "Refresh log")));
