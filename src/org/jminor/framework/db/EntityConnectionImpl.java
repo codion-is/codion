@@ -1003,7 +1003,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
                 Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE));
       }
     }
-    else if (property.isDate() && value instanceof java.util.Date) {//todo always true
+    else if (property.isDate() && !(value instanceof java.sql.Date)) {
       return new java.sql.Date(((java.util.Date) value).getTime());
     }
 

@@ -3144,3 +3144,4 @@
   EntityUiUtil.createBorderLayout(), createFlowLayout() and createGridLayout() added, used throughout
   EntityUiUtil.createBorderLayout(), createFlowLayout() and createGridLayout() moved to UiUtil
   SearchType refactored
+  EntityConnectionImpl.translateValue() bug fixed
