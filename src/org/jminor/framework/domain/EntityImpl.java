@@ -172,17 +172,6 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
     return super.getValue(property.getPropertyID());
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public void handleValueRemoved(final String key, final Object value) {
-    final Property property = getProperty(key);
-    if (property instanceof Property.ForeignKeyProperty) {
-      for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties()) {
-        removeValue(referenceProperty.getPropertyID());
-      }
-    }
-  }
-
   /**
    * Returns true if the value associated with the given property is null.
    * In case of {@link Property.ForeignKeyProperty}'s the value is considered
@@ -326,13 +315,13 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   }
 
   /**
-   * @param key the ID of the property for which to retrieve the value
+   * @param propertyID the ID of the property for which to retrieve the value
    * @return a String representation of the value of the property identified by <code>propertyID</code>
    * @see #getFormattedValue(Property, java.text.Format)
    */
   @Override
-  public String getValueAsString(final String key) {
-    return getValueAsString(getProperty(key));
+  public String getValueAsString(final String propertyID) {
+    return getValueAsString(getProperty(propertyID));
   }
 
   /** {@inheritDoc} */
@@ -376,6 +365,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   /**
    * @param entity the entity to compare with
    * @return the compare result from comparing <code>entity</code> with this Entity instance
+   * @see Definition#setComparator(java.util.Comparator)
    */
   @Override
   public int compareTo(final Entity entity) {
@@ -482,10 +472,31 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
 
   /** {@inheritDoc} */
   @Override
+  protected Object copyValue(final Object value) {
+    if (value instanceof Entity) {
+      return ((Entity) value).getCopy();
+    }
+
+    return super.copyValue(value);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   protected void handleClear() {
     primaryKey = null;
     referencedPrimaryKeysCache = null;
     toString = null;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected void handleValueRemoved(final String key, final Object value) {
+    final Property property = getProperty(key);
+    if (property instanceof Property.ForeignKeyProperty) {
+      for (final Property referenceProperty : ((Property.ForeignKeyProperty) property).getReferenceProperties()) {
+        removeValue(referenceProperty.getPropertyID());
+      }
+    }
   }
 
   /** {@inheritDoc} */

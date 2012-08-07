@@ -3146,3 +3146,6 @@
   SearchType refactored
   EntityConnectionImpl.translateValue() bug fixed
   TextValueLink, immediateUpdate field removed, unused
+  ValueMap.copyValue() removed
+  ValueMapImpl.copyValue() protected
+  EntityImpl now overrides copyValue(), tested

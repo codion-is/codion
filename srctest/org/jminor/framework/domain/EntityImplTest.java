@@ -218,6 +218,8 @@ public class EntityImplTest {
     assertFalse("Entity copy should not be == the original", test2 == testEntity);
     assertTrue("Entities should be equal after .getCopy()", Util.equal(test2, testEntity));
     assertTrue("Entity property values should be equal after .getCopy()", test2.propertyValuesEqual(testEntity));
+    assertFalse("This should be a deep copy",
+            testEntity.getForeignKeyValue(EntityTestDomain.DETAIL_ENTITY_FK) == test2.getForeignKeyValue(EntityTestDomain.DETAIL_ENTITY_FK));
 
     test2.setValue(EntityTestDomain.DETAIL_DOUBLE, 2.1);
     assertTrue(test2.isModified());

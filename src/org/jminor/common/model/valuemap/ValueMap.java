@@ -79,14 +79,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
   int size();
 
   /**
-   * Returns a deep copy of the given value, immutable values are simply returned.
-   * @param value the value to copy
-   * @return a deep copy of the given value, or the same instance in case the value is immutable
-   */
-  V copyValue(final V value);
-
-  /**
-   * Returns the original value associated with the given key or the current value if it has not been changed.
+   * Returns the original value associated with the given key or the current value if it has not been modified.
    * @param key the key for which to retrieve the original value
    * @return the original value
    */
@@ -106,15 +99,15 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
 
   /**
    * Reverts the value associated with the given key to its original value.
-   * If the value has not been changed then calling this method has no effect.
+   * If the value has not been modified then calling this method has no effect.
    * @param key the key for which to revert the value
    */
   void revertValue(final K key);
 
   /**
-   * Reverts all value changes that have been made.
+   * Reverts all value modifications that have been made.
    * This value map will be unmodified after a call to this method.
-   * If no changes have been made then calling this method has no effect.
+   * If no modifications have been made then calling this method has no effect.
    */
   void revertAll();
 
@@ -126,7 +119,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
   void saveValue(final K key);
 
   /**
-   * Saves all the value changes that have been made.
+   * Saves all the value modifications that have been made.
    * This value map will be unmodified after a call to this method.
    */
   void saveAll();

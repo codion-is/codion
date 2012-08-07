@@ -83,12 +83,6 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
     return value.toString();
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public V copyValue(final V value) {
-    return value;
-  }
-
   /**
    * Two ValueMapImpl objects are equal if they contain the
    * same number of values and all their values are equal.
@@ -343,6 +337,15 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
         originalValues = null;
       }
     }
+  }
+
+  /**
+   * Returns a deep copy of the given value, immutable values are simply returned.
+   * @param value the value to copy
+   * @return a deep copy of the given value, or the same instance in case the value is immutable
+   */
+  protected V copyValue(final V value) {
+    return value;
   }
 
   /**
