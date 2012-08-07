@@ -3,6 +3,9 @@
  */
 package org.jminor.common.model.valuemap;
 
+import org.jminor.common.model.valuemap.exception.NullValidationException;
+import org.jminor.common.model.valuemap.exception.ValidationException;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -223,5 +226,37 @@ public class ValueMapImplTest {
     map.setValue("2", null);
 
     assertEquals(27, map.hashCode());
+  }
+
+  @Test(expected = NullValidationException.class)
+  public void nullValidation() throws ValidationException {
+    final ValueMap.Validator<String, ValueMap<String, Integer>> validator = new DefaultValueMapValidator<String, ValueMap<String, Integer>>() {
+      @Override
+      public boolean isNullable(final ValueMap<String, Integer> valueMap, final String key) {
+        return super.isNullable(valueMap, key) && !key.equals("1");
+      }
+    };
+    final ValueMap<String, Integer> map = new ValueMapImpl<String, Integer>();
+    map.setValue("1", null);
+    validator.validate(map);
+    map.setValue("1", 1);
+    validator.validate(map);
+    map.setValue("2", null);
+    validator.validate(map);
+  }
+
+  @Test(expected = ValidationException.class)
+  public void validator() throws ValidationException {
+    final DefaultValueMapValidator<String, ValueMap<String, Integer>> validator = new DefaultValueMapValidator<String, ValueMap<String, Integer>>() {
+      @Override
+      public void validate(final ValueMap<String, Integer> valueMap, final String key) throws ValidationException {
+        super.validate(valueMap, key);
+        throw new ValidationException("1", valueMap.getValue("1"), "Invalid");
+      }
+    };
+    final ValueMap<String, Integer> map = new ValueMapImpl<String, Integer>();
+    map.setValue("1", 1);
+
+    validator.validate(map);
   }
 }
