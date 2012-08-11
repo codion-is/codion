@@ -288,7 +288,7 @@ public final class States {
       evtStateDeactivated.removeListener(listener);
     }
 
-    protected final void notifyObservers() {
+    protected void notifyObservers() {
       evtStateChanged.fire();
     }
 
