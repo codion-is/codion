@@ -3152,3 +3152,4 @@
   EntityImplTest refactored
   States refactored
   StateImplTest improved
+  States.ReversedStateObserver removed, merged into StateObserverImpl with reversed attribute

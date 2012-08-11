@@ -54,8 +54,8 @@ public final class States {
 
   private static class StateImpl implements State {
 
-    private volatile StateObserver observer;
-    private volatile boolean active = false;
+    private StateObserver observer;
+    private boolean active = false;
 
     StateImpl() {
       this(false);
@@ -71,10 +71,10 @@ public final class States {
     }
 
     @Override
-    public synchronized void setActive(final boolean value) {
-      final boolean oldValue = active;
-      active = value;
-      ((StateObserverImpl) getObserver()).notifyObservers(oldValue, value);
+    public synchronized void setActive(final boolean active) {
+      final boolean previousValue = this.active;
+      this.active = active;
+      ((StateObserverImpl) getObserver()).notifyObservers(previousValue, active);
     }
 
     @Override
@@ -85,7 +85,7 @@ public final class States {
     @Override
     public final synchronized StateObserver getObserver() {
       if (observer == null) {
-        observer = new StateObserverImpl(this);
+        observer = new StateObserverImpl(this, false);
       }
 
       return observer;
@@ -218,28 +218,30 @@ public final class States {
     }
 
     @Override
-    public synchronized void setActive(final boolean value) {
+    public synchronized void setActive(final boolean active) {
       throw new UnsupportedOperationException("The state of aggregate states can't be set");
     }
   }
 
-  private static class StateObserverImpl implements StateObserver {
+  private static final class StateObserverImpl implements StateObserver {
 
     private final StateObserver stateObserver;
+    private final boolean reversed;
 
     private final Event evtStateChanged = Events.event();
     private final Event evtStateActivated = Events.event();
     private final Event evtStateDeactivated = Events.event();
 
-    private volatile ReverseStateObserver reverseStateObserver = null;
+    private StateObserver reverseStateObserver = null;
 
-    private StateObserverImpl(final StateObserver stateObserver) {
+    private StateObserverImpl(final StateObserver stateObserver, final boolean reversed) {
       this.stateObserver = stateObserver;
+      this.reversed = reversed;
     }
 
     @Override
     public boolean isActive() {
-      return stateObserver.isActive();
+      return reversed ? !stateObserver.isActive() : stateObserver.isActive();
     }
 
     @Override
@@ -250,7 +252,7 @@ public final class States {
     @Override
     public synchronized StateObserver getReversedObserver() {
       if (reverseStateObserver == null) {
-        reverseStateObserver = new ReverseStateObserver(this);
+        reverseStateObserver = new StateObserverImpl(this, true);
       }
 
       return reverseStateObserver;
@@ -290,28 +292,16 @@ public final class States {
       evtStateChanged.fire();
     }
 
-    void notifyObservers(boolean oldValue, boolean value) {
-      if (oldValue != value) {
+    void notifyObservers(boolean previousValue, boolean active) {
+      if (previousValue != active) {
         evtStateChanged.fire();
-        if (value) {
+        if (active) {
           evtStateActivated.fire();
         }
         else {
           evtStateDeactivated.fire();
         }
       }
-    }
-  }
-
-  private static final class ReverseStateObserver extends StateObserverImpl {
-
-    private ReverseStateObserver(final StateObserver referenceObserver) {
-      super(referenceObserver);
-    }
-
-    @Override
-    public boolean isActive() {
-      return !super.isActive();
     }
   }
 
