@@ -3149,3 +3149,4 @@
   ValueMap.copyValue() removed
   ValueMapImpl.copyValue() protected
   EntityImpl now overrides copyValue(), tested
+  EntityImplTest refactored

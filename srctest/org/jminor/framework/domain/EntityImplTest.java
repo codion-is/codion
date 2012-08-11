@@ -32,22 +32,6 @@ public class EntityImplTest {
 
   private final String masterName = "master";
 
-  public static Entity getDetailEntity(final int id, final Integer intValue, final Double doubleValue,
-                                       final String stringValue, final Date dateValue, final Timestamp timestampValue,
-                                       final Boolean booleanValue, final Entity entityValue) {
-    final Entity entity = Entities.entity(EntityTestDomain.T_DETAIL);
-    entity.setValue(EntityTestDomain.DETAIL_ID, id);
-    entity.setValue(EntityTestDomain.DETAIL_INT, intValue);
-    entity.setValue(EntityTestDomain.DETAIL_DOUBLE, doubleValue);
-    entity.setValue(EntityTestDomain.DETAIL_STRING, stringValue);
-    entity.setValue(EntityTestDomain.DETAIL_DATE, dateValue);
-    entity.setValue(EntityTestDomain.DETAIL_TIMESTAMP, timestampValue);
-    entity.setValue(EntityTestDomain.DETAIL_BOOLEAN, booleanValue);
-    entity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, entityValue);
-
-    return entity;
-  }
-
   public EntityImplTest() {
     EntityTestDomain.init();
     EmpDept.init();
@@ -131,6 +115,12 @@ public class EntityImplTest {
     assertFalse(entity.isModified(EntityTestDomain.MASTER_NAME));
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void getPropertyWrongEntityType() {
+    final Entity testEntity = Entities.entity(EntityTestDomain.T_DETAIL);
+    testEntity.getProperty(EntityTestDomain.MASTER_CODE);
+  }
+
   @Test
   public void entity() throws Exception {
     final Entity referencedEntityValue = Entities.entity(EntityTestDomain.T_MASTER);
@@ -143,12 +133,6 @@ public class EntityImplTest {
 
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
-    try {
-      testEntity.getProperty(EntityTestDomain.MASTER_CODE);
-      fail("Trying to retrieve a property from the wrong entity type");
-    }
-    catch (IllegalArgumentException e) {}
-
     //assert types
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ID).getType(), Types.INTEGER);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).getType(), Types.INTEGER);
@@ -265,12 +249,16 @@ public class EntityImplTest {
     final Entity referencedEntityValue = Entities.entity(EntityTestDomain.T_MASTER);
     Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
+    testEntity.setValue(EntityTestDomain.DETAIL_STRING, "TestString");
+    assertTrue(testEntity.isModified());
+
     testEntity.clear();
     assertTrue(testEntity.getPrimaryKey().isNull());
     assertTrue(testEntity.isPrimaryKeyNull());
     assertFalse(testEntity.containsValue(EntityTestDomain.DETAIL_DATE));
     assertFalse(testEntity.containsValue(EntityTestDomain.DETAIL_STRING));
     assertFalse(testEntity.containsValue(EntityTestDomain.DETAIL_BOOLEAN));
+    assertFalse(testEntity.isModified());
 
     testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
@@ -283,64 +271,84 @@ public class EntityImplTest {
     assertTrue(testEntity.containsValue(EntityTestDomain.DETAIL_BOOLEAN));
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void setStringValueInt() {
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_NAME, 1);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setStringValueDouble() {
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_NAME, 1d);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setStringValueBoolean() {
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_NAME, false);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setStringValueChar() {
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_NAME, 'c');
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setStringValueEntity() {
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
+    department.setValue(EmpDept.DEPARTMENT_ID, -10);
+
+    employee.setValue(EmpDept.EMPLOYEE_NAME, department);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setStringValueDate() {
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_NAME, new Date());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setStringValueTimestamp() {
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_NAME, new Timestamp(System.currentTimeMillis()));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setDoubleValueString() {
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_SALARY, "test");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setDenormalizedViewValue() {
+    final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+            detailString, detailDate, detailTimestamp, detailBoolean, null);
+    testEntity.setValue(EntityTestDomain.DETAIL_MASTER_NAME, "hello");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setDenormalizedValue() {
+    final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+            detailString, detailDate, detailTimestamp, detailBoolean, null);
+    testEntity.setValue(EntityTestDomain.DETAIL_MASTER_CODE, 2);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setIntegerKeyString() {
+    final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
+            detailString, detailDate, detailTimestamp, detailBoolean, null);
+    testEntity.setValue(EntityTestDomain.DETAIL_ID, "hello");
+  }
+
   @Test
   public void setValue() {
     final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
     department.setValue(EmpDept.DEPARTMENT_ID, -10);
 
     final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
-    try {
-      employee.setValue(EmpDept.EMPLOYEE_NAME, 1);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      employee.setValue(EmpDept.EMPLOYEE_NAME, 1d);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      employee.setValue(EmpDept.EMPLOYEE_NAME, false);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      employee.setValue(EmpDept.EMPLOYEE_NAME, 'c');
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      employee.setValue(EmpDept.EMPLOYEE_NAME, department);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      employee.setValue(EmpDept.EMPLOYEE_NAME, new Timestamp(System.currentTimeMillis()));
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      employee.setValue(EmpDept.EMPLOYEE_SALARY, "test");
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
-            detailString, detailDate, detailTimestamp, detailBoolean, null);
-    try {
-      testEntity.setValue(EntityTestDomain.DETAIL_MASTER_NAME, "hello");
-      fail("Set value for a denormalized view property should cause an error");
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      testEntity.setValue(EntityTestDomain.DETAIL_MASTER_CODE, 2);
-      fail("Set value for a denormalized property should cause an error");
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      testEntity.setValue(EntityTestDomain.DETAIL_ID, "hello");
-      fail("Set string value for a single integer key should cause an error");
-    }
-    catch (IllegalArgumentException e) {}
 
     employee.setValue(EmpDept.EMPLOYEE_COMMISSION, 1200d);
     assertEquals(employee.getValue(EmpDept.EMPLOYEE_COMMISSION), 1200d);
@@ -451,5 +459,21 @@ public class EntityImplTest {
     final Entity detail = Entities.entity(EntityTestDomain.T_DETAIL);
     detail.setValue(EntityTestDomain.DETAIL_DOUBLE, 1.123456789567);
     assertEquals(1.1234567896, detail.getValue(EntityTestDomain.DETAIL_DOUBLE));//default 10 fraction digits
+  }
+
+  private static Entity getDetailEntity(final int id, final Integer intValue, final Double doubleValue,
+                                        final String stringValue, final Date dateValue, final Timestamp timestampValue,
+                                        final Boolean booleanValue, final Entity entityValue) {
+    final Entity entity = Entities.entity(EntityTestDomain.T_DETAIL);
+    entity.setValue(EntityTestDomain.DETAIL_ID, id);
+    entity.setValue(EntityTestDomain.DETAIL_INT, intValue);
+    entity.setValue(EntityTestDomain.DETAIL_DOUBLE, doubleValue);
+    entity.setValue(EntityTestDomain.DETAIL_STRING, stringValue);
+    entity.setValue(EntityTestDomain.DETAIL_DATE, dateValue);
+    entity.setValue(EntityTestDomain.DETAIL_TIMESTAMP, timestampValue);
+    entity.setValue(EntityTestDomain.DETAIL_BOOLEAN, booleanValue);
+    entity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, entityValue);
+
+    return entity;
   }
 }
