@@ -4,20 +4,7 @@
 package org.jminor.common.model;
 
 /**
- * A class encapsulating a simple boolean state, providing a change event.
- * <pre>
- * State state = States.state();
- *
- * Action action = ...;
- *
- * state.addListeningAction(action);
- *
- * //action is now disabled since states are inactive by default
- *
- * state.setActive(true);
- *
- * //action is now enabled
- * </pre>
+ * A class encapsulating a simple boolean state.
  */
 public interface State extends StateObserver {
 
@@ -30,11 +17,6 @@ public interface State extends StateObserver {
    * @return an StateObserver notified each time the state changes
    */
   StateObserver getObserver();
-
-  /**
-   * @return an EventObserver notified each time the state changes
-   */
-  EventObserver getStateChangeObserver();
 
   /**
    * A state which behaves according to a set of states, either ANDing or ORing those together

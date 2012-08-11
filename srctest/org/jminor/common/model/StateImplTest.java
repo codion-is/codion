@@ -5,52 +5,109 @@ package org.jminor.common.model;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import static org.junit.Assert.*;
 
 public class StateImplTest {
 
-  private int stateChanged = 0;
+  @Test
+  public void listeners() {
+    final State state = States.state();
+    state.getStateChangeObserver();
+    final Collection<Object> stateChangeCounter = new ArrayList<Object>();
+    final EventListener stateChangeListener = new EventAdapter() {
+      @Override
+      public void eventOccurred() {
+        stateChangeCounter.add(new Object());
+      }
+    };
+    final Collection<Object> activationCounter = new ArrayList<Object>();
+    final EventListener activationListener = new EventAdapter() {
+      @Override
+      public void eventOccurred() {
+        activationCounter.add(new Object());
+      }
+    };
+    final Collection<Object> deactivationCounter = new ArrayList<Object>();
+    final EventListener deactivationListener = new EventAdapter() {
+      @Override
+      public void eventOccurred() {
+        deactivationCounter.add(new Object());
+      }
+    };
+    state.addListener(stateChangeListener);
+    state.addActivateListener(activationListener);
+    state.addDeactivateListener(deactivationListener);
+    //these have no effect, coverage whoring
+    state.getObserver().addListener(stateChangeListener);
+    state.getObserver().addActivateListener(activationListener);
+    state.getObserver().addDeactivateListener(deactivationListener);
+
+    state.setActive(true);
+    assertEquals(1, activationCounter.size());
+    assertEquals(1, stateChangeCounter.size());
+    state.setActive(false);
+    assertEquals(2, stateChangeCounter.size());
+    assertEquals(1, activationCounter.size());
+    assertEquals(1, deactivationCounter.size());
+    state.setActive(true);
+    assertEquals(3, stateChangeCounter.size());
+    assertEquals(2, activationCounter.size());
+    state.setActive(false);
+    assertEquals(2, deactivationCounter.size());
+    state.removeActivateListener(activationListener);
+    state.removeDeactivateListener(activationListener);
+    state.removeListener(stateChangeListener);
+    //these have no effect, coverage whoring
+    state.getObserver().removeActivateListener(activationListener);
+    state.getObserver().removeDeactivateListener(activationListener);
+    state.getObserver().removeListener(stateChangeListener);
+
+    state.setActive(false);
+    state.setActive(true);
+    assertEquals(2, activationCounter.size());
+    assertEquals(2, deactivationCounter.size());
+    assertEquals(4, stateChangeCounter.size());
+  }
+
+  @Test
+  public void reversedState() {
+    final State state = States.state();
+    final StateObserver reversed = state.getReversedObserver();
+    final StateObserver reversedReversed = reversed.getReversedObserver();
+    assertTrue(state.isActive() != reversed.isActive());
+    assertTrue(state.isActive() == reversedReversed.isActive());
+    state.setActive(true);
+    assertTrue(state.isActive() != reversed.isActive());
+    assertTrue(state.isActive() == reversedReversed.isActive());
+  }
 
   @Test
   public void test() {
-    final State state = new States.StateImpl();
-    final EventListener listener = new EventAdapter() {
-      @Override
-      public void eventOccurred() {
-        stateChanged++;
-      }
-    };
-    state.addListener(listener);
-
+    final State state = States.state();
     assertFalse("State should be inactive when initialized", state.isActive());
     state.setActive(true);
     assertTrue("State should be active after activation", state.isActive());
-    //assertTrue("Listening action should be active after activation", listeningAction.isEnabled());
-    assertEquals(States.StateImpl.ACTIVE, state.toString());
+    assertEquals("active", state.toString());
     assertFalse("Reversed state should be inactive after activation", state.getReversedObserver().isActive());
-    assertTrue("evtStateChanged should have been fired when an inactive state was activated", stateChanged == 1);
     state.setActive(true);
-    assertTrue("evtStateChanged should not have been fired when an active state was activated", stateChanged == 1);
     state.setActive(false);
     assertFalse("State should be inactive after deactivation", state.isActive());
-    //assertFalse("Listening action should be inactive after deactivation", listeningAction.isEnabled());
-    assertEquals(States.StateImpl.INACTIVE, state.toString());
+    assertEquals("inactive", state.toString());
     assertTrue("Reversed state should be active after deactivation", state.getReversedObserver().isActive());
-    assertTrue("evtStateChanged should have been fired when an inactive state was deactivated", stateChanged == 2);
-    state.setActive(false);
-    assertTrue("evtStateChanged should not have been fired when an inactive state was deactivated", stateChanged == 2);
-
-    state.removeListener(listener);
   }
 
   @Test
   public void stateGroup() throws Exception {
-    final State stateOne = new States.StateImpl(true);
-    final State stateTwo = new States.StateImpl(true);
-    final State stateThree = new States.StateImpl(true);
+    final State stateOne = States.state(true);
+    final State stateTwo = States.state(true);
+    final State stateThree = States.state(true);
     final State.StateGroup stateGroup = new States.StateGroupImpl();
 
     stateGroup.addState(stateOne);
+    stateGroup.addState(stateOne);//has no effect
     stateGroup.addState(stateTwo);
     assertFalse(stateOne.isActive());
     assertTrue(stateTwo.isActive());

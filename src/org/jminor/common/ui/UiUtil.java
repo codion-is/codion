@@ -463,7 +463,7 @@ public final class UiUtil {
 
   /**
    * Links the given action to the given StateObserver, so that the action is enabled
-   * only when the state is active
+   * only when the observed state is active
    * @param enabledState the StateObserver with which to link the action
    * @param action the action
    * @return the linked action
@@ -485,7 +485,7 @@ public final class UiUtil {
 
   /**
    * Links the given component to the given StateObserver, so that the component is enabled and focusable
-   * only when the state is active
+   * only when the observed state is active
    * @param enabledState the StateObserver with which to link the component
    * @param component the component
    * @return the linked component

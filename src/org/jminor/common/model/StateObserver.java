@@ -11,12 +11,17 @@ public interface StateObserver extends EventObserver {
   boolean isActive();
 
   /**
+   * @return an EventObserver notified each time the observed state changes
+   */
+  EventObserver getStateChangeObserver();
+
+  /**
    * @return A StateObserver object that is always the reverse of the parent state
    */
   StateObserver getReversedObserver();
 
   /**
-   * @param listener a listener notified each time this state is activated
+   * @param listener a listener notified each time the observed state is activated
    */
   void addActivateListener(final EventListener listener);
 
@@ -26,7 +31,7 @@ public interface StateObserver extends EventObserver {
   void removeActivateListener(final EventListener listener);
 
   /**
-   * @param listener a listener notified each time this state is deactivated
+   * @param listener a listener notified each time the observed state is deactivated
    */
   void addDeactivateListener(final EventListener listener);
 

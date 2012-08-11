@@ -17,7 +17,7 @@ public final class States {
   private States() {}
 
   /**
-   * Instantiates a new State object.
+   * Instantiates a new inactive State object.
    * @return a new State
    */
   public static State state() {
@@ -52,14 +52,7 @@ public final class States {
     return new StateGroupImpl();
   }
 
-  static class StateImpl implements State {
-
-    static final String ACTIVE = "active";
-    static final String INACTIVE = "inactive";
-
-    private final Event evtStateChanged = Events.event();
-    private final Event evtStateActivated = Events.event();
-    private final Event evtStateDeactivated = Events.event();
+  private static class StateImpl implements State {
 
     private volatile StateObserver observer;
     private volatile boolean active = false;
@@ -74,57 +67,14 @@ public final class States {
 
     @Override
     public String toString() {
-      return active ? ACTIVE : INACTIVE;
-    }
-
-    @Override
-    public final StateObserver getObserver() {
-      if (observer == null) {
-        synchronized (evtStateChanged) {
-          observer = new StateObserverImpl(this);
-        }
-      }
-      return observer;
-    }
-
-    @Override
-    public final EventObserver getStateChangeObserver() {
-      return evtStateChanged.getObserver();
-    }
-
-    @Override
-    public void addActivateListener(final EventListener listener) {
-      evtStateActivated.addListener(listener);
-    }
-
-    @Override
-    public void removeActivateListener(final EventListener listener) {
-      evtStateActivated.removeListener(listener);
-    }
-
-    @Override
-    public void addDeactivateListener(final EventListener listener) {
-      evtStateDeactivated.addListener(listener);
-    }
-
-    @Override
-    public void removeDeactivateListener(final EventListener listener) {
-      evtStateDeactivated.removeListener(listener);
+      return active ? "active" : "inactive";
     }
 
     @Override
     public synchronized void setActive(final boolean value) {
       final boolean oldValue = active;
       active = value;
-      if (oldValue != value) {
-        evtStateChanged.fire();
-        if (active) {
-          evtStateActivated.fire();
-        }
-        else {
-          evtStateDeactivated.fire();
-        }
-      }
+      ((StateObserverImpl) getObserver()).notifyObservers(oldValue, value);
     }
 
     @Override
@@ -133,69 +83,63 @@ public final class States {
     }
 
     @Override
+    public final synchronized StateObserver getObserver() {
+      if (observer == null) {
+        observer = new StateObserverImpl(this);
+      }
+
+      return observer;
+    }
+
+    @Override
+    public final EventObserver getStateChangeObserver() {
+      return getObserver().getStateChangeObserver();
+    }
+
+    @Override
+    public void addActivateListener(final EventListener listener) {
+      getObserver().addActivateListener(listener);
+    }
+
+    @Override
+    public void removeActivateListener(final EventListener listener) {
+      getObserver().removeActivateListener(listener);
+    }
+
+    @Override
+    public void addDeactivateListener(final EventListener listener) {
+      getObserver().addDeactivateListener(listener);
+    }
+
+    @Override
+    public void removeDeactivateListener(final EventListener listener) {
+      getObserver().removeDeactivateListener(listener);
+    }
+
+    @Override
     public final void addListener(final EventListener listener) {
-      evtStateChanged.addListener(listener);
+      getObserver().addListener(listener);
     }
 
     @Override
     public final void removeListener(final EventListener listener) {
-      evtStateChanged.removeListener(listener);
+      getObserver().removeListener(listener);
     }
 
     @Override
     public StateObserver getReversedObserver() {
       return getObserver().getReversedObserver();
     }
-
-    protected final void notifyObservers() {
-      evtStateChanged.fire();
-    }
-  }
-
-  private static final class ReverseState extends StateImpl {
-
-    private final StateObserver referenceObserver;
-
-    ReverseState(final StateObserver referenceObserver) {
-      this.referenceObserver = referenceObserver;
-      this.referenceObserver.addListener(new EventAdapter() {
-        /** {@inheritDoc} */
-        @Override
-        public void eventOccurred() {
-          notifyObservers();
-        }
-      });
-    }
-
-    @Override
-    public boolean isActive() {
-      return !referenceObserver.isActive();
-    }
-
-    @Override
-    public StateObserver getReversedObserver() {
-      return referenceObserver;
-    }
-
-    @Override
-    public synchronized void setActive(final boolean value) {
-      throw new UnsupportedOperationException("Cannot set the state of a reversed state");
-    }
-
-    @Override
-    public String toString() {
-      return isActive() ? "active reversed" : "inactive reversed";
-    }
   }
 
   private static final class AggregateStateImpl extends StateImpl implements State.AggregateState {
 
     private final List<StateObserver> states = new ArrayList<StateObserver>();
-    private final EventListener linkAction = new EventAdapter() {
+    private final EventListener listener = new EventAdapter() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
-        notifyObservers();
+        ((StateObserverImpl) getObserver()).notifyObservers();
       }
     };
     private final Conjunction conjunction;
@@ -215,8 +159,8 @@ public final class States {
 
     @Override
     public synchronized String toString() {
-      final StringBuilder stringBuilder = new StringBuilder("Aggregate ");
-      stringBuilder.append(conjunction.toString()).append(isActive() ? ACTIVE : INACTIVE);
+      final StringBuilder stringBuilder = new StringBuilder("Aggregate");
+      stringBuilder.append(conjunction.toString()).append(super.toString());
       for (final StateObserver state : states) {
         stringBuilder.append(", ").append(state);
       }
@@ -234,9 +178,9 @@ public final class States {
       Util.rejectNullValue(state, "state");
       final boolean wasActive = isActive();
       states.add(state);
-      state.addListener(linkAction);
+      state.addListener(listener);
       if (wasActive != isActive()) {
-        notifyObservers();
+        ((StateObserverImpl) getObserver()).notifyObservers();
       }
     }
 
@@ -244,10 +188,10 @@ public final class States {
     public synchronized void removeState(final StateObserver state) {
       Util.rejectNullValue(state, "state");
       final boolean wasActive = isActive();
-      state.removeListener(linkAction);
+      state.removeListener(listener);
       states.remove(state);
       if (wasActive != isActive()) {
-        notifyObservers();
+        ((StateObserverImpl) getObserver()).notifyObservers();
       }
     }
 
@@ -279,59 +223,95 @@ public final class States {
     }
   }
 
-  static final class StateObserverImpl implements StateObserver {
+  private static class StateObserverImpl implements StateObserver {
 
-    private final State state;
+    private final StateObserver stateObserver;
 
-    private volatile ReverseState reversedState = null;
+    private final Event evtStateChanged = Events.event();
+    private final Event evtStateActivated = Events.event();
+    private final Event evtStateDeactivated = Events.event();
 
-    private StateObserverImpl(final State state) {
-      this.state = state;
+    private volatile ReverseStateObserver reverseStateObserver = null;
+
+    private StateObserverImpl(final StateObserver stateObserver) {
+      this.stateObserver = stateObserver;
     }
 
     @Override
     public boolean isActive() {
-      return state.isActive();
+      return stateObserver.isActive();
     }
 
     @Override
-    public StateObserver getReversedObserver() {
-      if (reversedState == null) {
-        synchronized (state) {
-          reversedState = new ReverseState(this);
-        }
+    public EventObserver getStateChangeObserver() {
+      return evtStateChanged.getObserver();
+    }
+
+    @Override
+    public synchronized StateObserver getReversedObserver() {
+      if (reverseStateObserver == null) {
+        reverseStateObserver = new ReverseStateObserver(this);
       }
-      return reversedState.getObserver();
+
+      return reverseStateObserver;
     }
 
     @Override
     public void addListener(final EventListener listener) {
-      state.addListener(listener);
+      evtStateChanged.addListener(listener);
     }
 
     @Override
     public void removeListener(final EventListener listener) {
-      state.removeListener(listener);
+      evtStateChanged.removeListener(listener);
     }
 
     @Override
     public void addActivateListener(final EventListener listener) {
-      state.addActivateListener(listener);
+      evtStateActivated.addListener(listener);
     }
 
     @Override
     public void removeActivateListener(final EventListener listener) {
-      state.removeActivateListener(listener);
+      evtStateActivated.removeListener(listener);
     }
 
     @Override
     public void addDeactivateListener(final EventListener listener) {
-      state.addDeactivateListener(listener);
+      evtStateDeactivated.addListener(listener);
     }
 
     @Override
     public void removeDeactivateListener(final EventListener listener) {
-      state.removeDeactivateListener(listener);
+      evtStateDeactivated.removeListener(listener);
+    }
+
+    protected final void notifyObservers() {
+      evtStateChanged.fire();
+    }
+
+    void notifyObservers(boolean oldValue, boolean value) {
+      if (oldValue != value) {
+        evtStateChanged.fire();
+        if (value) {
+          evtStateActivated.fire();
+        }
+        else {
+          evtStateDeactivated.fire();
+        }
+      }
+    }
+  }
+
+  private static final class ReverseStateObserver extends StateObserverImpl {
+
+    private ReverseStateObserver(final StateObserver referenceObserver) {
+      super(referenceObserver);
+    }
+
+    @Override
+    public boolean isActive() {
+      return !super.isActive();
     }
   }
 

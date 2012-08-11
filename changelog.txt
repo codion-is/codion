@@ -3150,3 +3150,5 @@
   ValueMapImpl.copyValue() protected
   EntityImpl now overrides copyValue(), tested
   EntityImplTest refactored
+  States refactored
+  StateImplTest improved

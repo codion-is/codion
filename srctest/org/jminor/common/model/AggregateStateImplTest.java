@@ -21,7 +21,7 @@ public final class AggregateStateImplTest {
 
     State.AggregateState andState = States.aggregateState(Conjunction.AND, stateOne, stateTwo, stateThree);
     assertEquals(Conjunction.AND, andState.getConjunction());
-    assertEquals("Aggregate  and inactive, inactive, inactive, inactive", andState.toString());
+    assertEquals("Aggregate and inactive, inactive, inactive, inactive", andState.toString());
 
     assertFalse("Or state should be inactive", orState.isActive());
     assertFalse("And state should be inactive", andState.isActive());
@@ -63,7 +63,7 @@ public final class AggregateStateImplTest {
     orState.addState(stateTwo);
     orState.addState(stateThree);
     andState = States.aggregateState(Conjunction.AND, stateOne, stateTwo, stateThree);
-    assertEquals("Aggregate  and inactive, inactive, inactive, inactive", andState.toString());
+    assertEquals("Aggregate and inactive, inactive, inactive, inactive", andState.toString());
 
     assertFalse("Or state should be inactive", orState.isActive());
     assertFalse("And state should be inactive", andState.isActive());
