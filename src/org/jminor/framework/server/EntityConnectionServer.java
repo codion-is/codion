@@ -16,21 +16,23 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.LoginProxy;
 import org.jminor.common.server.ServerLog;
 import org.jminor.common.server.ServerUtil;
-import org.jminor.common.server.web.WebStartServer;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnections;
 import org.jminor.framework.domain.Entities;
 
+import Acme.Serve.Serve;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
+import java.io.File;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -342,8 +344,8 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
       final RemoteEntityConnectionImpl connection = new RemoteEntityConnectionImpl(database, clientInfo, getServerPort(),
               clientLoggingEnabled, sslEnabled);
       connection.addDisconnectListener(new EventAdapter() {
-      /** {@inheritDoc} */
-      @Override
+        /** {@inheritDoc} */
+        @Override
         public void eventOccurred() {
           try {
             disconnect(connection.getClientInfo().getClientID());
@@ -480,6 +482,42 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     @Override
     public User getUser() {
       return user;
+    }
+  }
+
+  /**
+   * A simple web server for serving files.
+   * <pre>
+   * WebStartServer server = new WebStartServer("c:\webstart");
+   * server.serve();
+   * </pre>
+   */
+  private static final class WebStartServer extends Serve {
+
+    /**
+     * Instantiates a new WebStartServer on the given port.
+     * @param documentRoot the document root
+     * @param port the port on which to serve files
+     */
+    private WebStartServer(final String documentRoot, final int port) {
+      final PathTreeDictionary aliases = new PathTreeDictionary();
+      aliases.put("/*", new File(documentRoot));
+
+      setMappingTable(aliases);
+
+      // setting properties for the server, and exchangeable Acceptors
+      final Map<String, Object> properties = new HashMap<String, Object>();
+      properties.put("port", port);
+      properties.put(Acme.Serve.Serve.ARG_NOHUP, "nohup");
+
+      arguments = properties;
+
+      addDefaultServlets(null); //file servlet
+    }
+
+    public void stop() {
+      notifyStop();
+      destroyAllServlets();
     }
   }
 }

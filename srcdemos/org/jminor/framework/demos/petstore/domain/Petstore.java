@@ -4,7 +4,6 @@
 package org.jminor.framework.demos.petstore.domain;
 
 import org.jminor.common.model.IdSource;
-import org.jminor.common.model.Version;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
 
@@ -15,9 +14,9 @@ public class Petstore {
   private Petstore() {}
   public static void init() {}
 
-  public static final Version version = new Version(Petstore.class.getPackage().getName(), "1");
+  public static final String VERSION = "@petstore-v1";
 
-  public static final String T_ADDRESS = "address" + version;
+  public static final String T_ADDRESS = "address" + VERSION;
   public static final String ADDRESS_ID = "addressid";
   public static final String ADDRESS_STREET_1 = "street1";
   public static final String ADDRESS_STREET_2 = "street2";
@@ -28,13 +27,13 @@ public class Petstore {
   public static final String ADDRESS_LATITUDE = "latitude";
   public static final String ADDRESS_LONGITUDE = "longitude";
 
-  public static final String T_CATEGORY = "category" + version;
+  public static final String T_CATEGORY = "category" + VERSION;
   public static final String CATEGORY_ID = "categoryid";
   public static final String CATEGORY_NAME = "name";
   public static final String CATEGORY_DESCRIPTION = "description";
   public static final String CATEGORY_IMAGE_URL = "imageurl";
 
-  public static final String T_PRODUCT = "product" + version;
+  public static final String T_PRODUCT = "product" + VERSION;
   public static final String PRODUCT_ID = "productid";
   public static final String PRODUCT_CATEGORY_ID = "categoryid";
   public static final String PRODUCT_CATEGORY_FK = "category_fk";
@@ -42,13 +41,13 @@ public class Petstore {
   public static final String PRODUCT_DESCRIPTION = "description";
   public static final String PRODUCT_IMAGE_URL = "imageurl";
 
-  public static final String T_SELLER_CONTACT_INFO = "sellercontactinfo" + version;
+  public static final String T_SELLER_CONTACT_INFO = "sellercontactinfo" + VERSION;
   public static final String SELLER_CONTACT_INFO_ID = "contactinfoid";
   public static final String SELLER_CONTACT_INFO_FIRST_NAME = "firstname";
   public static final String SELLER_CONTACT_INFO_LAST_NAME = "lastname";
   public static final String SELLER_CONTACT_INFO_EMAIL = "email";
 
-  public static final String T_ITEM = "item" + version;
+  public static final String T_ITEM = "item" + VERSION;
   public static final String ITEM_ID = "itemid";
   public static final String ITEM_PRODUCT_ID = "productid";
   public static final String ITEM_PRODUCT_FK = "product_fk";
@@ -63,12 +62,12 @@ public class Petstore {
   public static final String ITEM_C0NTACT_INFO_FK = "contactinfo_fk";
   public static final String ITEM_DISABLED = "disabled";
 
-  public static final String T_TAG = "tag" + version;
+  public static final String T_TAG = "tag" + VERSION;
   public static final String TAG_ID = "tagid";
   public static final String TAG_TAG = "tag";
   public static final String TAG_REFCOUNT = "refcount";
 
-  public static final String T_TAG_ITEM = "tag_item" + version;
+  public static final String T_TAG_ITEM = "tag_item" + VERSION;
   public static final String TAG_ITEM_TAG_ID = "tagid";
   public static final String TAG_ITEM_TAG_FK = "tag_fk";
   public static final String TAG_ITEM_ITEM_ID = "itemid";

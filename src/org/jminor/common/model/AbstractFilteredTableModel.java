@@ -26,6 +26,7 @@ import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
+import java.util.regex.Pattern;
 
 /**
  * A TableModel implementation that supports filtering, searching and sorting.
@@ -1135,6 +1136,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   private static final class SortingStateImpl implements SortingState {
+
     private final SortingDirective direction;
     private final int priority;
 
@@ -1322,6 +1324,29 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
      */
     private StateObserver getSelectionEmptyObserver() {
       return stSelectionEmpty.getObserver();
+    }
+  }
+
+  private static final class RegexFilterCriteria<T> implements FilterCriteria<T> {
+
+    private final Pattern pattern;
+
+    /**
+     * Instantiates a new RegexFilterCriteria.
+     * @param patternString the regex pattern
+     */
+    public RegexFilterCriteria(final String patternString) {
+      this.pattern = Pattern.compile(patternString);
+    }
+
+    /**
+     * Returns true if the regex pattern is valid and the given item passes the criteria.
+     * @param item the item
+     * @return true if the item should be included
+     */
+    @Override
+    public boolean include(final T item) {
+      return item != null && pattern.matcher(item.toString()).find();
     }
   }
 }

@@ -7,6 +7,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.LoginProxy;
 import org.jminor.common.server.ServerException;
@@ -20,6 +21,10 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.Collection;
 import java.util.UUID;
@@ -45,6 +50,8 @@ public class EntityConnectionServerTest {
     Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
     Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept");
     Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.demos.empdept.server.EmpDeptLoginProxy");
+    Configuration.setValue(Configuration.WEB_SERVER_DOCUMENT_ROOT, System.getProperty("user.dir") + System.getProperty("file.separator") + "resources");
+    Configuration.setValue(Configuration.WEB_SERVER_PORT, 12345);
     Configuration.setValue("java.rmi.server.hostname", "localhost");
     Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
     Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
@@ -174,6 +181,18 @@ public class EntityConnectionServerTest {
     assertEquals(1, server.getConnectionCount());
     empDeptProviderHelen.disconnect();
     assertEquals(0, server.getConnectionCount());
+  }
+
+  @Test
+  public void testWebServer() throws URISyntaxException, IOException {
+    InputStream input = null;
+    try {
+      input = new URL("http://localhost:12345/file_templates/EntityEditPanel.template").openStream();
+      assertTrue(input.read() > 0);
+    }
+    finally {
+      Util.closeSilently(input);
+    }
   }
 
   @Test

@@ -20,6 +20,7 @@ public class BooleanValueLinkTest {
 
   @Test
   public void test() throws Exception {
+    Petstore.init();
     final ValueMapEditModel<String, Object> model = new DefaultEntityModel(Petstore.T_ITEM, EntityConnectionImplTest.CONNECTION_PROVIDER).getEditModel();
     final JCheckBox chkBox = new JCheckBox();
     final ButtonModel buttonModel = chkBox.getModel();

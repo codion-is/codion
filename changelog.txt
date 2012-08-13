@@ -3154,3 +3154,7 @@
   StateImplTest improved
   States.ReversedStateObserver removed, merged into StateObserverImpl with reversed attribute
   Tests refactored, minimizing the use of fail() within test methods
+  Version removed
+  WeakPropertyChangeListener removed
+  RegexFilterCriteria removed
+  WebStartServer removed
