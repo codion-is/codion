@@ -288,11 +288,11 @@ public final class States {
       evtStateDeactivated.removeListener(listener);
     }
 
-    protected void notifyObservers() {
+    private void notifyObservers() {
       evtStateChanged.fire();
     }
 
-    void notifyObservers(boolean previousValue, boolean active) {
+    private void notifyObservers(final boolean previousValue, final boolean active) {
       if (previousValue != active) {
         evtStateChanged.fire();
         if (active) {
