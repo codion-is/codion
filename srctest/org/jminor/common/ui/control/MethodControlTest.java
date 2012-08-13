@@ -23,6 +23,11 @@ public class MethodControlTest {
     callCount++;
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorMethodNotFound() {
+    new MethodControl("test", this, "none");
+  }
+
   @Test
   public void test() throws Exception {
     final State stEnabled = States.state();
@@ -44,11 +49,6 @@ public class MethodControlTest {
     assertEquals("Action performed should have resulted in a method call", 2, callCount);
     assertEquals("Action performed should have resulted in a action performed count", 1, actionPerformedCount);
     control.removeActionPerformedListener(listener);
-    try {
-      new MethodControl("test", this, "none");
-      fail();
-    }
-    catch (Exception e) {}
     new MethodControl("test", this, "method");
   }
 }

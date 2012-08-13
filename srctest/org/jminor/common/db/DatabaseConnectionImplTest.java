@@ -11,6 +11,7 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.sql.Connection;
+import java.sql.SQLException;
 
 import static org.junit.Assert.*;
 
@@ -50,13 +51,24 @@ public class DatabaseConnectionImplTest {
       assertTrue(databaseConnection.isValid());
       assertNotNull(databaseConnection.getUser());
       assertTrue(User.UNIT_TEST_USER.getUsername().equalsIgnoreCase(databaseConnection.getUser().getUsername()));
-
-      connection.close();
-      try {
-        new DatabaseConnectionImpl(DATABASE, connection);
-        fail("Should not be able to create a connection with a closed connection");
+    }
+    finally {
+      if (connection != null) {
+        try {
+          connection.close();
+        }
+        catch (Exception ignored) {}
       }
-      catch (IllegalArgumentException ignored) {}
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructionWithClosedConnection() throws ClassNotFoundException, DatabaseException, SQLException {
+    Connection connection = null;
+    try {
+      connection = DATABASE.createConnection(User.UNIT_TEST_USER);
+      connection.close();
+      new DatabaseConnectionImpl(DATABASE, connection);
     }
     finally {
       if (connection != null) {
@@ -113,25 +125,36 @@ public class DatabaseConnectionImplTest {
     assertNotNull(dbConnection.getConnection());
   }
 
-  @Test
-  public void beginTransaction() throws Exception {
+  @Test(expected = IllegalStateException.class)
+  public void beginTransactionAlreadyOpen() {
     dbConnection.beginTransaction();
-    assertTrue(dbConnection.isTransactionOpen());
-    try {
-      dbConnection.beginTransaction();
-      fail("IllegalStateException should have been thrown");
-    }
-    catch (IllegalStateException e) {}
-    try {
-      dbConnection.commit();
-      fail("IllegalStateException should have been thrown");
-    }
-    catch (IllegalStateException e) {}
-    try {
-      dbConnection.rollback();
-      fail("IllegalStateException should have been thrown");
-    }
-    catch (IllegalStateException e) {}
+    dbConnection.beginTransaction();
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void commitWithinTransaction() throws SQLException {
+    dbConnection.beginTransaction();
+    dbConnection.commit();
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void rollbackWithinTransaction() throws SQLException {
+    dbConnection.beginTransaction();
+    dbConnection.rollback();
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void commitTransactionAlreadyCommitted() {
+    dbConnection.beginTransaction();
+    dbConnection.commitTransaction();
+    dbConnection.commitTransaction();
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void rollbaclTransactionAlreadyRollbacked() {
+    dbConnection.beginTransaction();
+    dbConnection.rollbackTransaction();
+    dbConnection.rollbackTransaction();
   }
 
   @Test
@@ -140,11 +163,6 @@ public class DatabaseConnectionImplTest {
     assertTrue(dbConnection.isTransactionOpen());
     dbConnection.commitTransaction();
     assertFalse(dbConnection.isTransactionOpen());
-    try {
-      dbConnection.commitTransaction();
-      fail("IllegalStateException should have been thrown");
-    }
-    catch (IllegalStateException e) {}
   }
 
   @Test
@@ -153,10 +171,5 @@ public class DatabaseConnectionImplTest {
     assertTrue(dbConnection.isTransactionOpen());
     dbConnection.rollbackTransaction();
     assertFalse(dbConnection.isTransactionOpen());
-    try {
-      dbConnection.rollbackTransaction();
-      fail("IllegalStateException should have been thrown");
-    }
-    catch (IllegalStateException e) {}
   }
 }

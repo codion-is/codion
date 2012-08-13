@@ -161,27 +161,34 @@ public class DefaultColumnSearchModelTest {
     model.setLocked(true);
     assertTrue(model.isLocked());
     assertTrue(model.getLockedObserver().isActive());
+  }
 
-    try {
-      model.setUpperBound("test");
-      fail("Should not be able to set upper bound in a locked search model");
-    }
-    catch (IllegalStateException e) {}
-    try {
-      model.setLowerBound("test");
-      fail("Should not be able to set lower bound in a locked search model");
-    }
-    catch (IllegalStateException e) {}
-    try {
-      model.setEnabled(true);
-      fail("Should not be able to set search enabled in a locked search model");
-    }
-    catch (IllegalStateException e) {}
-    try {
-      model.setSearchType(SearchType.NOT_LIKE);
-      fail("Should not be able to set search type in a locked search model");
-    }
-    catch (IllegalStateException e) {}
+  @Test(expected = IllegalStateException.class)
+  public void setUpperBoundLocked() {
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
+    model.setLocked(true);
+    model.setUpperBound("test");
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void setLowerBoundLocked() {
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
+    model.setLocked(true);
+    model.setLowerBound("test");
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void setEnabledLocked() {
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
+    model.setLocked(true);
+    model.setEnabled(true);
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void setSearchTypeLocked() {
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
+    model.setLocked(true);
+    model.setSearchType(SearchType.NOT_LIKE);
   }
 
   @Test

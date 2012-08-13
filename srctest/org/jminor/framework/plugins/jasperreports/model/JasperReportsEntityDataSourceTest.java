@@ -18,14 +18,14 @@ import static org.junit.Assert.*;
 
 public class JasperReportsEntityDataSourceTest {
 
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNullIterator() {
+    new JasperReportsEntityDataSource(null);
+  }
+
   @Test
-  public void test() throws Exception {
+  public void iterator() throws Exception {
     final List<Entity> entities = EntityConnectionImplTest.CONNECTION_PROVIDER.getConnection().selectAll(EmpDept.T_DEPARTMENT);
-    try {
-      new JasperReportsEntityDataSource(null);
-      fail();
-    }
-    catch (Exception e) {}
     final JasperReportsEntityDataSource source = new JasperReportsEntityDataSource(entities.iterator());
     while (source.next()) {
       final Entity dept = source.getCurrentEntity();

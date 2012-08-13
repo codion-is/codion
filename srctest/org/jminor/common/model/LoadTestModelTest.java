@@ -25,32 +25,72 @@ public class LoadTestModelTest {
     protected void performScenario(final Object application) throws LoadTestModel.ScenarioException {}
   };
 
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNegativeThinkTime() {
+    new TestLoadTestModel(USER, -100, 2, 5, 1000);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNegativeLoginDelayFactor() {
+    new TestLoadTestModel(USER, 100, -2, 5, 1000);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNegativeApplicationBatchSize() {
+    new TestLoadTestModel(USER, 100, 2, -5, 1000);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNegativeWarningTime() {
+    new TestLoadTestModel(USER, 100, 2, 5, -1000);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setApplicationBatchSizeNegative() {
+    final LoadTestModel model = new TestLoadTestModel(new User("test", "hello"), 50, 2, 2, 1000);
+    model.setApplicationBatchSize(-5);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setUpdateIntervalNegative() {
+    final LoadTestModel model = new TestLoadTestModel(new User("test", "hello"), 50, 2, 2, 1000);
+    model.setUpdateInterval(-1);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setLoginDelayFactorNegative() {
+    final LoadTestModel model = new TestLoadTestModel(new User("test", "hello"), 50, 2, 2, 1000);
+    model.setLoginDelayFactor(-1);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setWarningTimeNegative() {
+    final LoadTestModel model = new TestLoadTestModel(new User("test", "hello"), 50, 2, 2, 1000);
+    model.setWarningTime(-1);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setMinimumThinkTimeNegative() {
+    final LoadTestModel model = new TestLoadTestModel(new User("test", "hello"), 50, 2, 2, 1000);
+    model.setMinimumThinkTime(-1);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setMaximumThinkTimeNegative() {
+    final LoadTestModel model = new TestLoadTestModel(new User("test", "hello"), 50, 2, 2, 1000);
+    model.setMaximumThinkTime(-1);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getUnknownUsageScenario() {
+    final LoadTestModel model = new TestLoadTestModel(new User("test", "hello"), 50, 2, 2, 1000);
+    model.getUsageScenario("bla");
+  }
+
   @Test
   public void test() throws Exception {
-    try {
-      new TestLoadTestModel(USER, -100, 2, 5, 1000);
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new TestLoadTestModel(USER, 100, -2, 5, 1000);
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new TestLoadTestModel(USER, 100, 2, -5, 1000);
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new TestLoadTestModel(USER, 100, 2, 5, -1000);
-    }
-    catch (IllegalArgumentException e) {}
-
     final LoadTestModel model = new TestLoadTestModel(new User("test", "hello"), 50, 2, 2, 1000);
     assertEquals(2, model.getApplicationBatchSize());
-    try {
-      model.setApplicationBatchSize(-5);
-    }
-    catch (IllegalArgumentException e) {}
-
     model.setCollectChartData(true);
 
     assertNotNull(model.applicationBatchSizeObserver());
@@ -81,37 +121,6 @@ public class LoadTestModelTest {
     model.setMinimumThinkTime(20);
     assertEquals(20, model.getMinimumThinkTime());
     assertEquals(40, model.getMaximumThinkTime());
-    try {
-      model.setLoginDelayFactor(-1);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      model.setUpdateInterval(-1);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      model.setWarningTime(-1);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      model.setMinimumThinkTime(-1);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      model.setMaximumThinkTime(-1);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-
-    try {
-      model.getUsageScenario("bla");
-      fail();
-    }
-    catch (RuntimeException e) {}
 
     model.setApplicationBatchSize(5);
     assertTrue(model.getUsageScenarios().contains(SCENARIO.getName()));
@@ -146,6 +155,7 @@ public class LoadTestModelTest {
                       final int warningTime) {
       super(user, Arrays.asList(SCENARIO, SCENARIO_II), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
     }
+
     @Override
     protected Object initializeApplication() throws CancelException {
       return new Object();

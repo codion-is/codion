@@ -11,7 +11,6 @@ import org.jminor.common.db.dbms.SQLServerDatabase;
 import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
-import static org.junit.Assert.fail;
 
 public class DatabasesTest {
 
@@ -25,7 +24,6 @@ public class DatabasesTest {
     final String type = System.getProperty(Database.DATABASE_TYPE);
     final String host = System.getProperty(Database.DATABASE_HOST);
     final String embedded = System.getProperty(Database.DATABASE_EMBEDDED);
-
     try {
       System.setProperty(Database.DATABASE_TYPE, Database.DERBY);
       System.setProperty(Database.DATABASE_HOST, "host");
@@ -68,24 +66,35 @@ public class DatabasesTest {
       System.setProperty(Database.DATABASE_SID, "sid");
       database = Databases.createInstance();
       assertTrue(database instanceof SQLServerDatabase);
-
-      try {
-        System.setProperty(Database.DATABASE_TYPE, "what");
-        Databases.createInstance();
-        fail();
-      }
-      catch (IllegalArgumentException e) {}
-      try {
-        System.clearProperty(Database.DATABASE_TYPE);
-        Databases.createInstance();
-        fail();
-      }
-      catch (IllegalArgumentException e) {}
     }
     finally {
       System.setProperty(Database.DATABASE_TYPE, type);
       System.setProperty(Database.DATABASE_HOST, host);
       System.setProperty(Database.DATABASE_EMBEDDED, embedded);
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void createInstanceUnknownDatabaseType() {
+    final String type = System.getProperty(Database.DATABASE_TYPE);
+    try {
+      System.setProperty(Database.DATABASE_TYPE, "what");
+      Databases.createInstance();
+    }
+    finally {
+      System.setProperty(Database.DATABASE_TYPE, type);
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void createInstanceNoDatabaseType() {
+    final String type = System.getProperty(Database.DATABASE_TYPE);
+    try {
+      System.clearProperty(Database.DATABASE_TYPE);
+      Databases.createInstance();
+    }
+    finally {
+      System.setProperty(Database.DATABASE_TYPE, type);
     }
   }
 }

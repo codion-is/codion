@@ -20,15 +20,11 @@ import static org.junit.Assert.*;
 
 public class EntitiesTest {
 
-  @Test
-  public void define() {
+  @Test(expected = IllegalArgumentException.class)
+  public void redefine() {
     final String entityID = "entityID";
     Entities.define(entityID, Properties.primaryKeyProperty("propertyID"));
-    try {
-      Entities.define(entityID, Properties.primaryKeyProperty("propertyID"));
-      fail("Should not be able to re-define an entity");
-    }
-    catch (Exception e) {}
+    Entities.define(entityID, Properties.primaryKeyProperty("propertyID"));
   }
 
   @Test

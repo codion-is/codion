@@ -35,6 +35,18 @@ public class EntityLoadTestModelTest {
     Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_BEFORE_TEST);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void setLoginDelayFactorNegative() {
+    final EmpDeptLoadTest loadTest = new EmpDeptLoadTest();
+    loadTest.setLoginDelayFactor(-1);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setUpdateIntervalNegative() {
+    final EmpDeptLoadTest loadTest = new EmpDeptLoadTest();
+    loadTest.setUpdateInterval(-1);
+  }
+
   @Test
   public void testLoadTesting() throws Exception {
     final EmpDeptLoadTest loadTest = new EmpDeptLoadTest();
@@ -42,17 +54,6 @@ public class EntityLoadTestModelTest {
     loadTest.setCollectChartData(true);
     loadTest.setUpdateInterval(350);
     loadTest.setLoginDelayFactor(0);
-
-    try {
-      loadTest.setLoginDelayFactor(-1);
-      fail();
-    }
-    catch (Exception e) {}
-    try {
-      loadTest.setUpdateInterval(-1);
-      fail();
-    }
-    catch (Exception e) {}
 
     assertTrue(loadTest.isCollectChartData());
     assertEquals(350, loadTest.getUpdateInterval());

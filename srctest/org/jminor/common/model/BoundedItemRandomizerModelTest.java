@@ -17,41 +17,38 @@ public class BoundedItemRandomizerModelTest {
   private final Object two = "two";
   private final Object three = "three";
 
-  @Test
-  public void testConstructors() {
-    BoundedItemRandomizerModel<Object> model = new BoundedItemRandomizerModel<Object>(10, one, two, three);
-    assertTrue(model.getItemCount() == 3);
-    assertTrue(model.getWeightBounds() == 10);
-    try {
-      new BoundedItemRandomizerModel<Object>(10);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new BoundedItemRandomizerModel<Object>();
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      new BoundedItemRandomizerModel<Object>(-10);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
+  @Test(expected = IllegalArgumentException.class)
+  public void constructWithoutObjects() {
+    new BoundedItemRandomizerModel<Object>(10);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructWithoutParemeters() {
+    new BoundedItemRandomizerModel<Object>();
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructNegativeWeight() {
+    new BoundedItemRandomizerModel<Object>(-10);
   }
 
   @Test
-  public void testExceptionals() {
+  public void construct() {
     final BoundedItemRandomizerModel<Object> model = new BoundedItemRandomizerModel<Object>(10, one, two, three);
-    try {
-      model.setWeight(one, 10);
-      fail();
-    }
-    catch (UnsupportedOperationException e) {}
-    try {
-      model.addItem("four");
-      fail();
-    }
-    catch (UnsupportedOperationException e) {}
+    assertTrue(model.getItemCount() == 3);
+    assertTrue(model.getWeightBounds() == 10);
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void setWeight() {
+    final BoundedItemRandomizerModel<Object> model = new BoundedItemRandomizerModel<Object>(10, one, two, three);
+    model.setWeight(one, 10);
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void addItem() {
+    final BoundedItemRandomizerModel<Object> model = new BoundedItemRandomizerModel<Object>(10, one, two, three);
+    model.addItem("four");
   }
 
   @Test

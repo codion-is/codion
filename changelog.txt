@@ -3153,3 +3153,4 @@
   States refactored
   StateImplTest improved
   States.ReversedStateObserver removed, merged into StateObserverImpl with reversed attribute
+  Tests refactored, minimizing the use of fail() within test methods

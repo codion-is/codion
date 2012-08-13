@@ -259,17 +259,6 @@ public final class AbstractFilteredTableModelTest {
     assertEquals("e", tableModel.getItemAt(0));
     tableModel.setSortingDirective(0, SortingDirective.ASCENDING, false);
 
-    try {
-      tableModel.getSortingDirective(1);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-    try {
-      tableModel.getSortingPriority(1);
-      fail();
-    }
-    catch (IllegalArgumentException e) {}
-
     final List<String> items = new ArrayList<String>();
     items.add(null);
     tableModel.addItems(items, true);
@@ -286,6 +275,16 @@ public final class AbstractFilteredTableModelTest {
     tableModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals(tableModel.getRowCount() - 2, tableModel.indexOf(null));
     tableModel.removeSortingListener(listener);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getSortingDirectiveInvalidColumn() {
+    tableModel.getSortingDirective(1);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getSortingPriorityInvalidColumn() {
+    tableModel.getSortingPriority(1);
   }
 
   @Test
@@ -460,6 +459,16 @@ public final class AbstractFilteredTableModelTest {
     assertEquals("selected item should fit", ITEMS[3], tableModel.getSelectedItem());
   }
 
+  @Test(expected = UnsupportedOperationException.class)
+  public void setFilterCriteria() {
+    tableModel.setFilterCriteria(new FilterCriteria<String>() {
+      @Override
+      public boolean include(final String item) {
+        return false;
+      }
+    });
+  }
+
   @Test
   public void testFiltering() throws Exception {
     final Collection<Object> done = new ArrayList<Object>();
@@ -474,17 +483,6 @@ public final class AbstractFilteredTableModelTest {
     tableModel.refresh();
     assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));
     assertNotNull(tableModel.getFilterCriteria());
-
-    try {
-      tableModel.setFilterCriteria(new FilterCriteria<String>() {
-        @Override
-        public boolean include(final String item) {
-          return false;
-        }
-      });
-      fail();
-    }
-    catch (UnsupportedOperationException e) {}
 
     //test filters
     tableModel.getFilterModel(0).setLikeValue("a");

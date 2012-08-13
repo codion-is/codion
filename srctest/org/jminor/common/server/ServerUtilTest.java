@@ -46,7 +46,7 @@ public class ServerUtilTest {
   }
 
   @Test
-  public void test() throws RemoteException {
+  public void getServer() throws RemoteException {
     try {
       final RemoteServer remoteServer = ServerUtil.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, -1);
       assertNotNull(remoteServer);

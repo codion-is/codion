@@ -9,6 +9,12 @@ import static org.junit.Assert.*;
 
 public final class AggregateStateImplTest {
 
+  @Test(expected = UnsupportedOperationException.class)
+  public void setActive() {
+    final State.AggregateState orState = States.aggregateState(Conjunction.OR);
+    orState.setActive(true);
+  }
+
   @Test
   public void test() {
     State.AggregateState orState = States.aggregateState(Conjunction.OR);
@@ -48,12 +54,6 @@ public final class AggregateStateImplTest {
 
     andState.removeState(stateOne);
     assertTrue(andState.isActive());
-
-    try {
-      andState.setActive(false);
-      fail("Can not set active on an aggregate state");
-    }
-    catch (UnsupportedOperationException e) {}
 
     stateOne.setActive(false);
     stateTwo.setActive(false);

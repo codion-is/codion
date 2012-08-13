@@ -272,12 +272,11 @@ public final class DefaultEntityTableModelTest {
     propValues.put(EntityTestDomain.DETAIL_STRING, "b");
     final Collection<Entity> byPropertyValues = testModel.getEntitiesByPropertyValues(propValues);
     assertEquals(1, byPropertyValues.size());
+  }
 
-    try {
-      testModel.setValueAt("hello", 0, 0);
-      fail();
-    }
-    catch (Exception e) {}
+  @Test(expected = UnsupportedOperationException.class)
+  public void setValueAt() {
+    testModel.setValueAt("hello", 0, 0);
   }
 
   public static final class EntityTableModelTmp extends DefaultEntityTableModel {
