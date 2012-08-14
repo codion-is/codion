@@ -10,9 +10,9 @@ import java.sql.Statement;
 /**
  * A static utility class.
  */
-public final class DbUtil {
+public final class DatabaseUtil {
 
-  private DbUtil() {}
+  private DatabaseUtil() {}
 
   /**
    * Closes the given ResultSet instances, swallowing any SQLExceptions that occur

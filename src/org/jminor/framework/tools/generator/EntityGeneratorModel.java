@@ -142,14 +142,14 @@ public final class EntityGeneratorModel {
   /**
    * @param listener a listener notified each time a refresh has ended
    */
-  public void addRefreshEndedListener(final EventListener listener) {
+  public void addRefreshDoneListener(final EventListener listener) {
     evtRefreshEnded.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeRefreshEndedListener(final EventListener listener) {
+  public void removeRefreshDoneListener(final EventListener listener) {
     evtRefreshEnded.removeListener(listener);
   }
 
@@ -691,8 +691,8 @@ public final class EntityGeneratorModel {
     }
 
     @Override
-    protected Comparable getComparable(final Object object, final Integer columnIdentifier) {
-      return ((Table) object).tableName;
+    protected Comparable getComparable(final Table object, final Integer columnIdentifier) {
+      return object.tableName;
     }
   }
 }

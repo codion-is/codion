@@ -231,5 +231,10 @@ public class DefaultColumnSearchModelTest {
     assertTrue(searchModel.include(10));
     assertTrue(searchModel.include(11));
     assertTrue(searchModel.include(5));
+
+    searchModel.setEnabled(false);
+    assertTrue(searchModel.include(5));
+    assertTrue(searchModel.include(6));
+    assertTrue(searchModel.include(7));
   }
 }

@@ -67,7 +67,7 @@ public class EntityGeneratorPanel extends JPanel {
         UiUtil.setWaitCursor(true, EntityGeneratorPanel.this);
       }
     });
-    model.addRefreshEndedListener(new EventAdapter() {
+    model.addRefreshDoneListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {

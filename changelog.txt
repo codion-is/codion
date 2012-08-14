@@ -3158,3 +3158,9 @@
   WeakPropertyChangeListener removed
   RegexFilterCriteria removed
   WebStartServer removed
+  DbUtil renamed to DatabaseUtil, for package consistency
+  FilteredTableModel.getTableColumn() throws IllegalArgumentException instead of returning null when column is not found
+  FilteredTableModel.setSelectedItemIndexes() renamed to setSelectedIndexes(), 'Item' removed from set/add selection method names
+  AbstractFilteredTableModel.refreshing and filtering fields removed
+  DocumentAdapter made abstract, insertOrRemoveUpdate() renamed to contentsChanged()
+  TristateButtonModelTest added

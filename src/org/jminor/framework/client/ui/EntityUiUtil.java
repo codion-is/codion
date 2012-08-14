@@ -243,7 +243,7 @@ public final class EntityUiUtil {
       public void actionPerformed(final ActionEvent e) {
         lookupModel.refresh();
         if (lookupModel.getRowCount() > 0) {
-          lookupModel.setSelectedItemIndexes(Arrays.asList(0));
+          lookupModel.setSelectedIndexes(Arrays.asList(0));
           entityTablePanel.getJTable().requestFocusInWindow();
         }
         else {

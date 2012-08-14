@@ -13,6 +13,7 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTestDomain;
+import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
 import org.junit.Test;
@@ -92,7 +93,7 @@ public final class DefaultEntityTableModelTest {
     try {
       tableModel.getConnectionProvider().getConnection().beginTransaction();
       tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk1));
-      tableModel.setSelectedItemIndex(0);
+      tableModel.setSelectedIndex(0);
       Entity selected = tableModel.getSelectedItem();
       tableModel.setRemoveItemsOnDelete(true);
       tableModel.deleteSelected();
@@ -211,6 +212,12 @@ public final class DefaultEntityTableModelTest {
     assertEquals(6, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_ENTITY_FK));
     assertEquals(7, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_MASTER_NAME));
     assertEquals(8, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_MASTER_CODE));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getTableColumnNotFound() {
+    final Property property = Properties.columnProperty("testProperty");
+    testModel.getTableColumn(property);
   }
 
   @Test

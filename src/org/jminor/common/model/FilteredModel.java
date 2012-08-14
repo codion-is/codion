@@ -6,7 +6,7 @@ package org.jminor.common.model;
 import java.util.List;
 
 /**
- * Specifies a data model that can be filtered.
+ * Specifies a data model that can be filtered to hide some or all of the items it contains.
  * @param <T> the type of data in the model.
  */
 public interface FilteredModel<T> {
@@ -30,8 +30,8 @@ public interface FilteredModel<T> {
   void filterContents();
 
   /**
-   * Returns the filter criteria defined by this model, this method should return
-   * a "accept all" criteria instead of null, if no criteria is defined.
+   * Returns the filter criteria defined by this model, this returns
+   * a "accept all" criteria if no criteria is defined.
    * @return the filter criteria
    * @see FilterCriteria.AcceptAllCriteria
    */
@@ -71,19 +71,19 @@ public interface FilteredModel<T> {
    * Returns true if this model contains the given item, visible or filtered.
    * @param item the item
    * @param includeFiltered if true then the filtered items are included
-   * @return true if this combo box model contains the item
+   * @return true if this model contains the item
    */
   boolean contains(final T item, final boolean includeFiltered);
 
   /**
-   * Returns true if the given item is visible in this combo box model
+   * Returns true if the given item is visible, that is, not filtered in this model
    * @param item the item
    * @return true if the given item is visible
    */
   boolean isVisible(final T item);
 
   /**
-   * Returns true if the given item is filtered in this combo box model
+   * Returns true if the given item is being filtered in this model, that is, is not visible
    * @param item the item
    * @return true if the given item is filtered
    */

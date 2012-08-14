@@ -145,7 +145,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       return;
     }
 
-    DbUtil.closeSilently(checkConnectionStatement);
+    DatabaseUtil.closeSilently(checkConnectionStatement);
     try {
       if (!connection.isClosed()) {
         connection.rollback();
@@ -335,7 +335,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       return false;
     }
     finally {
-      DbUtil.closeSilently(rs);
+      DatabaseUtil.closeSilently(rs);
     }
   }
 

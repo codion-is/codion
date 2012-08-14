@@ -11,13 +11,11 @@ public enum Conjunction {
    */
   @Override
   public String toString() {
-    switch (this) {
-      case AND:
-        return " and ";
-      case OR:
-        return " or ";
-      default:
-        throw new IllegalArgumentException("Unknown org.jminor.common.model.Conjunction enum");
+    if (equals(AND)) {
+      return " and ";
+    }
+    else {
+      return " or ";
     }
   }
 }

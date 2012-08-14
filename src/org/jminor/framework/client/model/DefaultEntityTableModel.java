@@ -453,7 +453,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       }
     }
 
-    setSelectedItemIndexes(indexes);
+    setSelectedIndexes(indexes);
   }
 
   /** {@inheritDoc} */
@@ -589,8 +589,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  protected final Comparable getComparable(final Object object, final Property columnIdentifier) {
-    return (Comparable) ((Entity) object).getValue(columnIdentifier);
+  protected final Comparable getComparable(final Entity rowObject, final Property columnIdentifier) {
+    return (Comparable) rowObject.getValue(columnIdentifier);
   }
 
   /** {@inheritDoc} */

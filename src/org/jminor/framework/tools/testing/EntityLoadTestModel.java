@@ -60,7 +60,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
       return;
     }
 
-    tableModel.setSelectedItemIndex(RANDOM.nextInt(tableModel.getRowCount()));
+    tableModel.setSelectedIndex(RANDOM.nextInt(tableModel.getRowCount()));
   }
 
   /**
@@ -82,7 +82,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
         indexes.add(i);
       }
 
-      tableModel.setSelectedItemIndexes(indexes);
+      tableModel.setSelectedIndexes(indexes);
     }
   }
 
@@ -102,7 +102,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
       indexes.add(i);
     }
 
-    tableModel.setSelectedItemIndexes(indexes);
+    tableModel.setSelectedIndexes(indexes);
   }
 
   /** {@inheritDoc} */

@@ -150,9 +150,10 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   void removeItem(final R item);
 
   /**
-   * Removes from this table model all of the elements whose index is between fromIndex, inclusive and toIndex, exclusive
+   * Removes from this table model all visible elements whose index is between fromIndex, inclusive and toIndex, exclusive
    * @param fromIndex index of first row to be removed
    * @param toIndex index after last row to be removed
+   * @throws IndexOutOfBoundsException in case the indexes are out of bounds
    */
   void removeItems(final int fromIndex, final int toIndex);
 
@@ -164,7 +165,8 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   /**
    * Returns the TableColumn with the given identifier
    * @param identifier the column identifier
-   * @return the TableColumn with the given identifier, null if none is found
+   * @return the TableColumn with the given identifier
+   * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
    */
   TableColumn getTableColumn(final C identifier);
 
@@ -273,13 +275,13 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    * Selects the item at <code>index</code>
    * @param index the index
    */
-  void addSelectedItemIndex(final int index);
+  void addSelectedIndex(final int index);
 
   /**
    * Clears the selection and selects the item at <code>index</code>
    * @param index the index
    */
-  void setSelectedItemIndex(final int index);
+  void setSelectedIndex(final int index);
 
   /**
    * Clears the selection
@@ -291,7 +293,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    * Selects the given indexes
    * @param indexes the indexes to select
    */
-  void setSelectedItemIndexes(final Collection<Integer> indexes);
+  void setSelectedIndexes(final Collection<Integer> indexes);
 
   /**
    * Selects the given items
@@ -342,7 +344,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    * Adds these indexes to the selection
    * @param indexes the indexes to add to the selection
    */
-  void addSelectedItemIndexes(final Collection<Integer> indexes);
+  void addSelectedIndexes(final Collection<Integer> indexes);
 
   /**
    * @return the number of selected indexes in the underlying selection model.
@@ -350,13 +352,15 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   int getSelectionCount();
 
   /**
-   * Moves all selected indexes down one index, wraps around
+   * Moves all selected indexes down one index, wraps around.
+   * If the selection is empty the first item in this model is selected.
    * @see #addSelectionChangedListener(EventListener)
    */
   void moveSelectionDown();
 
   /**
-   * Moves all selected indexes up one index, wraps around
+   * Moves all selected indexes up one index, wraps around.
+   * If the selection is empty the last item in this model is selected.
    * @see #addSelectionChangedListener(EventListener)
    */
   void moveSelectionUp();

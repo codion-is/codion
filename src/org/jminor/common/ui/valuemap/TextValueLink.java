@@ -88,7 +88,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
     this.document.addDocumentListener(new DocumentAdapter() {
       /** {@inheritDoc} */
       @Override
-      public final void insertOrRemoveUpdate(final DocumentEvent e) {
+      public final void contentsChanged(final DocumentEvent e) {
         if (immediateUpdate) {
           updateModel();
         }

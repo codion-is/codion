@@ -248,6 +248,11 @@ public final class Util {
     return stringBuilder.toString();
   }
 
+  /**
+   * Prints memory usage at regular intervals to the standard output
+   * @param interval the interval in milliseconds
+   * @see #getMemoryUsageString()
+   */
   public static void printMemoryUsage(final long interval) {
     new Timer(true).scheduleAtFixedRate(new TimerTask() {
       @Override

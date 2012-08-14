@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.DbUtil;
+import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnectionImpl;
@@ -158,7 +158,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
     finally {
-      DbUtil.closeSilently(statement);
+      DatabaseUtil.closeSilently(statement);
     }
   }
 
@@ -220,7 +220,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
     finally {
-      DbUtil.closeSilently(statement);
+      DatabaseUtil.closeSilently(statement);
     }
 
     return selectMany(EntityUtil.getPrimaryKeys(entities));
@@ -246,7 +246,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
     finally {
-      DbUtil.closeSilently(statement);
+      DatabaseUtil.closeSilently(statement);
     }
   }
 
@@ -282,7 +282,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
     finally {
-      DbUtil.closeSilently(statement);
+      DatabaseUtil.closeSilently(statement);
     }
   }
 
@@ -408,8 +408,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
     finally {
-      DbUtil.closeSilently(resultSet);
-      DbUtil.closeSilently(statement);
+      DatabaseUtil.closeSilently(resultSet);
+      DatabaseUtil.closeSilently(statement);
     }
   }
 
@@ -555,7 +555,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     finally {
       Util.closeSilently(inputStream);
-      DbUtil.closeSilently(statement);
+      DatabaseUtil.closeSilently(statement);
       final LogEntry logEntry = getMethodLogger().logExit("writeBlob", exception, null);
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), sql, values, exception, logEntry));
@@ -597,8 +597,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
     finally {
-      DbUtil.closeSilently(statement);
-      DbUtil.closeSilently(resultSet);
+      DatabaseUtil.closeSilently(statement);
+      DatabaseUtil.closeSilently(resultSet);
       final LogEntry logEntry = getMethodLogger().logExit("readBlob", exception, null);
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), sql, criteria.getValues(), exception, logEntry));
@@ -726,8 +726,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw new DatabaseException(e, getDatabase().getErrorMessage(e), selectSQL);
     }
     finally {
-      DbUtil.closeSilently(resultSet);
-      DbUtil.closeSilently(statement);
+      DatabaseUtil.closeSilently(resultSet);
+      DatabaseUtil.closeSilently(statement);
     }
   }
 
@@ -751,8 +751,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw e;
     }
     finally {
-      DbUtil.closeSilently(resultSet);
-      DbUtil.closeSilently(statement);
+      DatabaseUtil.closeSilently(resultSet);
+      DatabaseUtil.closeSilently(statement);
     }
   }
 
@@ -904,8 +904,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw e;
     }
     finally {
-      DbUtil.closeSilently(statement);
-      DbUtil.closeSilently(resultSet);
+      DatabaseUtil.closeSilently(statement);
+      DatabaseUtil.closeSilently(resultSet);
       final LogEntry logEntry = getMethodLogger().logExit("query", exception, null);
       if (LOG.isDebugEnabled()) {
         LOG.debug(createLogMessage(getUser(), sql, null, exception, logEntry));

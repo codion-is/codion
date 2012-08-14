@@ -83,9 +83,9 @@ public class FilteredTablePanel<T, C> extends JPanel {
   private final JScrollPane tableScrollPane;
 
   /**
-   * Represents the index of the last search result
+   * The coordinate of the last search result
    */
-  private Point lastSearchResultIndex = NULL_POINT;
+  private Point lastSearchResultCoordinate = NULL_POINT;
 
   /**
    * The text field used for entering the search criteria
@@ -332,8 +332,8 @@ public class FilteredTablePanel<T, C> extends JPanel {
     txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
       /** {@inheritDoc} */
       @Override
-      public void insertOrRemoveUpdate(final DocumentEvent e) {
-        doSearch(false, lastSearchResultIndex.y == -1 ? 0 : lastSearchResultIndex.y, true, txtSearch.getText());
+      public void contentsChanged(final DocumentEvent e) {
+        doSearch(false, lastSearchResultCoordinate.y == -1 ? 0 : lastSearchResultCoordinate.y, true, txtSearch.getText());
       }
     });
     txtSearch.addKeyListener(new KeyAdapter() {
@@ -344,10 +344,10 @@ public class FilteredTablePanel<T, C> extends JPanel {
           return;
         }
         if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
-          doSearch(e.isShiftDown(), lastSearchResultIndex.y + 1, true, txtSearch.getText());
+          doSearch(e.isShiftDown(), lastSearchResultCoordinate.y + 1, true, txtSearch.getText());
         }
         else if (e.getKeyCode() == KeyEvent.VK_UP) {
-          doSearch(e.isShiftDown(), lastSearchResultIndex.y - 1, false, txtSearch.getText());
+          doSearch(e.isShiftDown(), lastSearchResultCoordinate.y - 1, false, txtSearch.getText());
         }
       }
     });
@@ -368,24 +368,24 @@ public class FilteredTablePanel<T, C> extends JPanel {
   private void doSearch(final boolean addToSelection, final int fromIndex, final boolean forward,
                         final String searchText) {
     if (!searchText.isEmpty()) {
-      final Point viewIndex = tableModel.findNextItemCoordinate(fromIndex, forward, searchText);
-      if (viewIndex != null) {
-        lastSearchResultIndex = viewIndex;
+      final Point coordinate = tableModel.findNextItemCoordinate(fromIndex, forward, searchText);
+      if (coordinate != null) {
+        lastSearchResultCoordinate = coordinate;
         if (addToSelection) {
-          tableModel.addSelectedItemIndex(viewIndex.y);
+          tableModel.addSelectedIndex(coordinate.y);
         }
         else {
-          tableModel.setSelectedItemIndex(viewIndex.y);
-          table.setColumnSelectionInterval(viewIndex.x, viewIndex.x);
+          tableModel.setSelectedIndex(coordinate.y);
+          table.setColumnSelectionInterval(coordinate.x, coordinate.x);
         }
-        scrollToCenter(viewIndex.y, viewIndex.x);
+        scrollToCenter(coordinate.y, coordinate.x);
       }
       else {
-        lastSearchResultIndex = NULL_POINT;
+        lastSearchResultCoordinate = NULL_POINT;
       }
     }
     else {
-      lastSearchResultIndex = NULL_POINT;
+      lastSearchResultCoordinate = NULL_POINT;
     }
   }
 

@@ -30,6 +30,7 @@ public class LogEntryTest {
     assertNotNull(entry.getEntryTimeFormatted());
     assertNotNull(entry.getExitTimeFormatted());
     assertEquals(200, entry.getDelta());
+    assertEquals(200000000, entry.getDeltaNano());
 
     final LogEntry copy = new LogEntry(entry);
     assertEquals(entry, copy);

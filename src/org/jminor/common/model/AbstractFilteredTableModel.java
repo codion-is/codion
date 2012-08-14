@@ -119,16 +119,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final int[] columnIndexCache;
 
   /**
-   * true while the model data is being refreshed
-   */
-  private boolean refreshing = false;
-
-  /**
-   * true while the model data is being filtered
-   */
-  private boolean filtering = false;
-
-  /**
    * true while the model data is being sorted
    */
   private boolean sorting = false;
@@ -271,18 +261,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    */
   @Override
   public final void refresh() {
-    if (refreshing) {
-      return;
-    }
     try {
-      refreshing = true;
       evtRefreshStarted.fire();
       final List<R> selectedItems = new ArrayList<R>(getSelectedItems());
       doRefresh();
       setSelectedItems(selectedItems);
     }
     finally {
-      refreshing = false;
       evtRefreshDone.fire();
     }
   }
@@ -337,7 +322,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         sortingStates.put(columnIdentifier, new SortingStateImpl(directive, state.getPriority()));
       }
     }
-    sortTableModel();
+    sortVisibleItems();
   }
 
   /** {@inheritDoc} */
@@ -389,8 +374,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         for (final Integer index : selected) {
           newSelected.add(index == 0 ? visibleItems.size() - 1 : index - 1);
         }
-
-        setSelectedItemIndexes(newSelected);
+        setSelectedIndexes(newSelected);
       }
     }
   }
@@ -408,8 +392,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         for (final Integer index : selected) {
           newSelected.add(index == visibleItems.size() - 1 ? 0 : index + 1);
         }
-
-        setSelectedItemIndexes(newSelected);
+        setSelectedIndexes(newSelected);
       }
     }
   }
@@ -440,7 +423,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void setSelectedItemIndex(final int index) {
+  public final void setSelectedIndex(final int index) {
     if (index < 0 || index > getVisibleItemCount() - 1) {
       throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getVisibleItemCount());
     }
@@ -449,13 +432,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void setSelectedItemIndexes(final Collection<Integer> indexes) {
+  public final void setSelectedIndexes(final Collection<Integer> indexes) {
     for (final Integer index : indexes) {
       if (index < 0 || index > getVisibleItemCount() - 1) {
         throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getVisibleItemCount());
       }
     }
-    selectionModel.setSelectedItemIndexes(indexes);
+    selectionModel.setSelectedIndexes(indexes);
   }
 
   /** {@inheritDoc} */
@@ -489,12 +472,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         indexes.add(index);
       }
     }
-    selectionModel.addSelectedItemIndexes(indexes);
+    selectionModel.addSelectedIndexes(indexes);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSelectedItemIndex(final int index) {
+  public final void addSelectedIndex(final int index) {
     if (index < 0 || index > getVisibleItemCount() - 1) {
       throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getVisibleItemCount());
     }
@@ -503,8 +486,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void addSelectedItemIndexes(final Collection<Integer> indexes) {
-    selectionModel.addSelectedItemIndexes(indexes);
+  public final void addSelectedIndexes(final Collection<Integer> indexes) {
+    selectionModel.addSelectedIndexes(indexes);
   }
 
   /** {@inheritDoc} */
@@ -541,7 +524,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final void filterContents() {
     try {
-      filtering = true;
       final List<R> selectedItems = getSelectedItems();
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
@@ -557,7 +539,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       setSelectedItems(selectedItems);
     }
     finally {
-      filtering = false;
       evtFilteringDone.fire();
     }
   }
@@ -634,7 +615,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       }
     }
 
-    return null;
+    throw new IllegalArgumentException("Column not found: " + identifier);
   }
 
   /** {@inheritDoc} */
@@ -825,18 +806,18 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   protected abstract void doRefresh();
 
   /**
-   * @param object the value
+   * @param rowObject the object representing a given row
    * @param columnIdentifier the column identifier
-   * @return a Comparable for the given value and column index
+   * @return a Comparable for the given row and column
    */
-  protected Comparable getComparable(final Object object, final C columnIdentifier) {
-    return (Comparable) object;
+  protected Comparable getComparable(final R rowObject, final C columnIdentifier) {
+    return (Comparable) rowObject;
   }
 
   /**
    * Converts the index of the column in the table model at
    * <code>modelColumnIndex</code> to the index of the column
-   * in the view.  Returns the index of the
+   * in the view. Returns the index of the
    * corresponding column in the view; returns -1 if this column is not
    * being displayed.  If <code>modelColumnIndex</code> is less than zero,
    * this returns <code>modelColumnIndex</code>.
@@ -864,10 +845,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /**
-   * Adds the given items to this table model, filtering on the fly and respecting the current sorting state
+   * Adds the given items to this table model, filtering on the fly and sorting if sorting is enabled and
+   * the items are not being added at the front.
    * @param items the items to add
-   * @param atFront if true then the items are added at the front (topmost), otherwise they are added last or
-   * at their position according to the sorting state
+   * @param atFront if true then the items are added at the front (topmost), otherwise they are added last
    */
   protected final void addItems(final List<R> items, final boolean atFront) {
     for (final R item : items) {
@@ -890,7 +871,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /**
-   * Adds the given items to this table model, non-filtered items are added at the given index
+   * Adds the given items to this table model, non-filtered items are added at the given index. If sorting
+   * is enabled this model is sorted after the items have been added
    * @param items the items to add
    * @param index the index at which to add the items
    */
@@ -949,24 +931,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /**
-   * @return true while this table model is being filtered
-   */
-  protected final boolean isFiltering() {
-    return filtering;
-  }
-
-  /**
    * @return true while this table model is being sorted
    */
   protected final boolean isSorting() {
     return sorting;
-  }
-
-  /**
-   * @return true while this table model is being refreshed
-   */
-  protected final boolean isRefreshing() {
-    return refreshing;
   }
 
   private void bindEventsInternal() {
@@ -1044,7 +1012,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return maxPriority + 1;
   }
 
-  private void sortTableModel() {
+  private void sortVisibleItems() {
     try {
       sorting = true;
       evtSortingStarted.fire();
@@ -1225,7 +1193,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
      * Adds these indexes to the selection
      * @param indexes the indexes to add to the selection
      */
-    private void addSelectedItemIndexes(final Collection<Integer> indexes) {
+    private void addSelectedIndexes(final Collection<Integer> indexes) {
       if (indexes.isEmpty()) {
         return;
       }
@@ -1249,9 +1217,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     /**
      * @param indexes the indexes to select
      */
-    private void setSelectedItemIndexes(final Collection<Integer> indexes) {
+    private void setSelectedIndexes(final Collection<Integer> indexes) {
       clearSelection();
-      addSelectedItemIndexes(indexes);
+      addSelectedIndexes(indexes);
     }
 
     /**

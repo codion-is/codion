@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db.tools;
 
-import org.jminor.common.db.DbUtil;
+import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnectionProvider;
@@ -156,8 +156,8 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
         if (connection != null) {
           application.pool.returnConnection(connection);
         }
-        DbUtil.closeSilently(resultSet);
-        DbUtil.closeSilently(statement);
+        DatabaseUtil.closeSilently(resultSet);
+        DatabaseUtil.closeSilently(statement);
       }
     }
 
