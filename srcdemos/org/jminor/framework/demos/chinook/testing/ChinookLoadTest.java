@@ -211,17 +211,8 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     public void run() {
       try {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
-        final LoadTest loadTest;
-        if (Configuration.getBooleanValue(Configuration.LOAD_TEST_REMOTE)) {
-          final String serverHost = Configuration.getStringValue(Configuration.LOAD_TEST_REMOTE_HOSTNAME);
-          final String loadTestClassName = ChinookLoadTest.class.getName();
-          loadTest = getRemoteLoadTest(serverHost, loadTestClassName, User.UNIT_TEST_USER);
-        }
-        else {
-          loadTest = new ChinookLoadTest();
-        }
 
-        new LoadTestPanel(loadTest).showFrame();
+        new LoadTestPanel(new ChinookLoadTest()).showFrame();
       }
       catch (Exception e) {
         e.printStackTrace();

@@ -4,36 +4,15 @@
 package org.jminor.framework.tools.testing;
 
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventListener;
-import org.jminor.common.model.Events;
-import org.jminor.common.model.ItemRandomizer;
-import org.jminor.common.model.LoadTest;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
-import org.jminor.common.server.ClientInfo;
-import org.jminor.common.server.RemoteServer;
-import org.jminor.common.server.ServerException;
-import org.jminor.common.server.ServerUtil;
-import org.jminor.common.server.loadtest.RemoteLoadTest;
-import org.jminor.common.server.loadtest.RemoteLoadTestServer;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
 
-import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.InvocationTargetException;
-import java.lang.reflect.Method;
-import java.rmi.NotBoundException;
-import java.rmi.RemoteException;
-import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
-import java.util.UUID;
 
 /**
  * A class for running multiple EntityApplicationModel instances for load testing purposes.
@@ -123,94 +102,6 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
 
     public AbstractEntityUsageScenario(final String name) {
       super(name);
-    }
-  }
-
-  public static LoadTest getRemoteLoadTest(final String serverHost, final String loadTestClassName, final User user) throws RemoteException, NotBoundException,
-          ServerException.ServerFullException, ServerException.LoginException {
-    final RemoteServer server = ServerUtil.getServer(serverHost, RemoteLoadTestServer.SERVER_NAME, Registry.REGISTRY_PORT, -1);
-
-    final ClientInfo info = new ClientInfo(UUID.randomUUID(), loadTestClassName, user);
-
-    return initializeProxy((RemoteLoadTest) server.connect(info));
-  }
-
-  private static LoadTest initializeProxy(final RemoteLoadTest loadTest) {
-    final Event evtRefresh = Events.event();
-    new Timer(true).schedule(new TimerTask() {
-      @Override
-      public void run() {
-        evtRefresh.fire();
-      }
-    }, 0, 500);
-    final ItemRandomizer randomizerProxy = Util.initializeProxy(ItemRandomizer.class, new RemoteRandomizerHandler(loadTest, evtRefresh));
-
-    return Util.initializeProxy(LoadTest.class, new RemoteLoadTestHandler(loadTest, randomizerProxy, evtRefresh));
-  }
-
-  private static final class RemoteRandomizerHandler implements InvocationHandler {
-    private final Event evtRefresh;
-    private final RemoteLoadTest loadTest;
-
-    private RemoteRandomizerHandler(final RemoteLoadTest loadTest, final Event refreshEvent) {
-      this.loadTest = loadTest;
-      this.evtRefresh = refreshEvent;
-    }
-
-    @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-      if (method.getName().endsWith("Listener")) {
-        evtRefresh.addListener((EventListener) args[0]);
-        return null;
-      }
-      else if (method.getName().endsWith("Observer")) {
-        return evtRefresh.getObserver();
-      }
-      try {
-        final Method remoteMethod = RemoteLoadTest.class.getMethod(method.getName(), method.getParameterTypes());
-        return remoteMethod.invoke(loadTest, args);
-      }
-      catch (Exception e) {
-        throw Util.unwrapAndLog(e, InvocationTargetException.class, null);
-      }
-    }
-  }
-
-  private static final class RemoteLoadTestHandler implements InvocationHandler {
-    private final Event evtRefresh;
-    private final RemoteLoadTest loadTest;
-    private final ItemRandomizer randomizer;
-
-    private RemoteLoadTestHandler(final RemoteLoadTest loadTest, final ItemRandomizer randomizer, final Event refreshEvent) {
-      this.loadTest = loadTest;
-      this.randomizer = randomizer;
-      this.evtRefresh = refreshEvent;
-    }
-
-    @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-      if (method.getName().equals("addExitListener")) {
-        return null;
-      }
-      else if (method.getName().endsWith("Listener")) {
-        evtRefresh.addListener((EventListener) args[0]);
-        return null;
-      }
-      else if (method.getName().endsWith("Observer")) {
-        return evtRefresh.getObserver();
-      }
-      else if (method.getName().equals("getScenarioChooser")) {
-        return randomizer;
-      }
-      else {
-        try {
-          final Method remoteMethod = RemoteLoadTest.class.getMethod(method.getName(), method.getParameterTypes());
-          return remoteMethod.invoke(loadTest, args);
-        }
-        catch (Exception e) {
-          throw Util.unwrapAndLog(e, InvocationTargetException.class, null);
-        }
-      }
     }
   }
 }

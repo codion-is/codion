@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.tools.generator;
 
+import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -11,7 +12,11 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertNotNull;
 
 public class EntityGeneratorModelTest {
 
@@ -107,7 +112,8 @@ public class EntityGeneratorModelTest {
   @Before
   public void setUp() throws Exception{
     model = new EntityGeneratorModel(new User("scott", "tiger"), "PETSTORE");
-    model.getTableModel().setSortingDirective(EntityGeneratorModel.TABLE_COLUMN_ID, SortingDirective.ASCENDING, false);
+    model.getTableModel().setSortingDirective(EntityGeneratorModel.SCHEMA_COLUMN_ID, SortingDirective.ASCENDING, false);
+    model.getTableModel().setSortingDirective(EntityGeneratorModel.TABLE_COLUMN_ID, SortingDirective.ASCENDING, true);
   }
 
   @After
@@ -117,9 +123,24 @@ public class EntityGeneratorModelTest {
 
   @Test
   public void address() {
+    assertNotNull(model.getDocument());
+    final Collection<Object> counter = new ArrayList<Object>();
+    final EventAdapter listener = new EventAdapter() {
+      @Override
+      public void eventOccurred() {
+        counter.add(new Object());
+      }
+    };
+    model.addRefreshStartedListener(listener);
+    model.addRefreshDoneListener(listener);
+
     model.getTableModel().setSelectedIndex(0);
+    assertEquals(2, counter.size());
     final String addressDef = model.getDocumentText();
     assertEquals(ADDRESS_DEF, addressDef);
+
+    model.removeRefreshStartedListener(listener);
+    model.removeRefreshDoneListener(listener);
   }
 
   @Test

@@ -405,7 +405,7 @@ public final class EntityGeneratorModel {
       try {
         clear();
         final Set<Table> items = new HashSet<Table>();
-        final List<Table> tables = new TablePacker(null, schema).pack(metaData.getTables(catalog, schema, null, null), -1);
+        final List<Table> tables = new TablePacker(schema).pack(metaData.getTables(catalog, schema, null, null), -1);
         for (final Table table : tables) {
           populateTable(table);
           for (final ForeignKeyColumn foreignKeyColumn : table.getForeignKeyColumns()) {
@@ -512,12 +512,6 @@ public final class EntityGeneratorModel {
 
       return result;
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-      return schemaName + "." + tableName;
-    }
   }
 
   private static final class Column {
@@ -552,12 +546,6 @@ public final class EntityGeneratorModel {
       this.foreignKeyColumn = foreignKeyColumn;
       this.primaryKeyColumn = primaryKeyColumn;
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-      return schemaName + "." + tableName + "." + columnName;
-    }
   }
 
   private static final class PrimaryKeyColumn {
@@ -572,12 +560,6 @@ public final class EntityGeneratorModel {
       this.pkTableName = pkTableName;
       this.pkColumnName = pkColumnName;
       this.keySeq = keySeq;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-      return pkSchemaName + "." + pkTableName + "." + pkColumnName;
     }
 
     private int getKeySeq() {
@@ -611,43 +593,6 @@ public final class EntityGeneratorModel {
       return new Table(pkSchemaName, pkTableName);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public String toString() {
-      return fkSchemaName + "." + fkTableName + "." + fkColumnName + " -> " + pkSchemaName + "." + pkTableName + "." + pkColumnName + " (" + keySeq + ")";
-    }
-
-    @Override
-    public boolean equals(final Object o) {
-      if (this == o) {
-        return true;
-      }
-      if (o == null || getClass() != o.getClass()) {
-        return false;
-      }
-
-      final ForeignKeyColumn that = (ForeignKeyColumn) o;
-
-      return Util.equal(this.fkSchemaName, that.fkSchemaName) &&
-              Util.equal(this.fkTableName, that.fkTableName) &&
-              Util.equal(this.fkColumnName, that.fkColumnName) &&
-              Util.equal(this.pkSchemaName, that.pkSchemaName) &&
-              Util.equal(this.pkTableName, that.pkTableName) &&
-              Util.equal(this.pkColumnName, that.pkColumnName);
-    }
-
-    @Override
-    public int hashCode() {
-      int result = pkSchemaName != null ? pkSchemaName.hashCode() : 0;
-      result = 31 * result + (pkTableName != null ? pkTableName.hashCode() : 0);
-      result = 31 * result + (pkColumnName != null ? pkColumnName.hashCode() : 0);
-      result = 31 * result + (fkSchemaName != null ? fkSchemaName.hashCode() : 0);
-      result = 31 * result + (fkTableName != null ? fkTableName.hashCode() : 0);
-      result = 31 * result + (fkColumnName != null ? fkColumnName.hashCode() : 0);
-
-      return result;
-    }
-
     private int getKeySeq() {
       return keySeq;
     }
@@ -655,11 +600,9 @@ public final class EntityGeneratorModel {
 
   private static final class TablePacker implements ResultPacker<Table> {
 
-    private final Collection<String> tablesToInclude;
     private final String schema;
 
-    private TablePacker(final String tablesToInclude, final String schema) {
-      this.tablesToInclude = !Util.nullOrEmpty(tablesToInclude) ? getTablesToInclude(tablesToInclude) : null;
+    private TablePacker(final String schema) {
       this.schema = schema;
     }
 
@@ -670,27 +613,16 @@ public final class EntityGeneratorModel {
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         final String tableName = resultSet.getString("TABLE_NAME");
-        if (tablesToInclude == null || tablesToInclude.contains(tableName)) {
-          String dbSchema = resultSet.getString(TABLE_SCHEMA);
-          if (dbSchema == null) {
-            dbSchema = this.schema;
-          }
-          tables.add(new Table(dbSchema, tableName));
+        String dbSchema = resultSet.getString(TABLE_SCHEMA);
+        if (dbSchema == null) {
+          dbSchema = this.schema;
         }
+        tables.add(new Table(dbSchema, tableName));
       }
 
       resultSet.close();
 
       return tables;
-    }
-
-    private static List<String> getTablesToInclude(final String tablesToInclude) {
-      final List<String> ret = new ArrayList<String>();
-      for (final String tableName : tablesToInclude.split(",")) {
-        ret.add(tableName.trim());
-      }
-
-      return ret;
     }
   }
 

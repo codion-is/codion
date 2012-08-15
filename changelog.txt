@@ -3165,3 +3165,6 @@
   DocumentAdapter made abstract, insertOrRemoveUpdate() renamed to contentsChanged()
   TristateButtonModelTest added
   EntityGeneratorModel, refactored, now includes tables referenced via foreign keys
+  EntityGeneratorModel, removed some unused methods, test coverage improved
+  EntityConnectionServer.setMaintenanceInterval() bug fixed, did not restart the maintenance timer
+  org.jminor.common.server.loadtest.* removed, had not been maintained for some time, never used

@@ -199,6 +199,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   void setMaintenanceInterval(final int maintenanceInterval) {
     if (this.maintenanceInterval != maintenanceInterval) {
       this.maintenanceInterval = maintenanceInterval <= 0 ? 1 : maintenanceInterval;
+      startConnectionTimeoutTimer();
     }
   }
 
