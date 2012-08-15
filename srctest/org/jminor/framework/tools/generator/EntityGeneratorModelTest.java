@@ -1,12 +1,11 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.tools;
+package org.jminor.framework.tools.generator;
 
 import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.framework.tools.generator.EntityGeneratorModel;
 
 import org.junit.After;
 import org.junit.Before;
@@ -108,7 +107,7 @@ public class EntityGeneratorModelTest {
   @Before
   public void setUp() throws Exception{
     model = new EntityGeneratorModel(new User("scott", "tiger"), "PETSTORE");
-    model.getTableModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
+    model.getTableModel().setSortingDirective(EntityGeneratorModel.TABLE_COLUMN_ID, SortingDirective.ASCENDING, false);
   }
 
   @After

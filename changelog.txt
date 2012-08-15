@@ -3164,3 +3164,4 @@
   AbstractFilteredTableModel.refreshing and filtering fields removed
   DocumentAdapter made abstract, insertOrRemoveUpdate() renamed to contentsChanged()
   TristateButtonModelTest added
+  EntityGeneratorModel, refactored, now includes tables referenced via foreign keys
