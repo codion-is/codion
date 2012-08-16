@@ -13,12 +13,54 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.junit.Test;
 
 import java.text.DateFormat;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Date;
+import java.util.List;
 
 import static org.junit.Assert.*;
 
 public class EntitiesTest {
+
+  @Test
+  public void entity() {
+    Chinook.init();
+    final Entity.Key key = Entities.key(Chinook.T_ALBUM);
+    key.setValue(Chinook.ALBUM_ALBUMID, 10);
+
+    final Entity album = Entities.entity(key);
+    assertEquals(Chinook.T_ALBUM, album.getEntityID());
+    assertTrue(album.containsValue(Chinook.ALBUM_ALBUMID));
+    assertEquals(10, album.getValue(Chinook.ALBUM_ALBUMID));
+  }
+
+  @Test
+  public void getProperties() {
+    EmpDept.init();
+    final Property id = Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID);
+    final Property location = Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_LOCATION);
+    final Property name = Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
+    final List<Property> properties = Entities.getProperties(EmpDept.T_DEPARTMENT, Arrays.asList(EmpDept.DEPARTMENT_LOCATION, EmpDept.DEPARTMENT_NAME));
+    assertEquals(2, properties.size());
+    assertFalse(properties.contains(id));
+    assertTrue(properties.contains(location));
+    assertTrue(properties.contains(name));
+
+    final Collection<Property> visibleProperties = Entities.getProperties(EmpDept.T_DEPARTMENT, false);
+    assertEquals(3, visibleProperties.size());
+    assertTrue(visibleProperties.contains(id));
+    assertTrue(visibleProperties.contains(location));
+    assertTrue(visibleProperties.contains(name));
+
+    final Collection<Property> allProperties = Entities.getProperties(EmpDept.T_DEPARTMENT, true);
+    assertTrue(visibleProperties.containsAll(allProperties));
+  }
+
+  @Test
+  public void getStringProvider() {
+    EmpDept.init();
+    assertNotNull(Entities.getStringProvider(EmpDept.T_DEPARTMENT));
+  }
 
   @Test(expected = IllegalArgumentException.class)
   public void redefine() {

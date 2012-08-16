@@ -71,7 +71,7 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
       final Map<String, Object> propertyValueMap = new HashMap<String, Object>();
       final String entityID = entityObject.getString("entityID");
       if (!Entities.isDefined(entityID)) {
-        throw new RuntimeException("Unidentified entity type found in JSON file: '" + entityID + "'");
+        throw new RuntimeException("Undefined entity found in JSON string: '" + entityID + "'");
       }
 
       final JSONObject propertyValues = entityObject.getJSONObject("propertyValues");

@@ -3169,3 +3169,10 @@
   EntityConnectionServer.setMaintenanceInterval() bug fixed, did not restart the maintenance timer
   org.jminor.common.server.loadtest.* removed, had not been maintained for some time, never used
   EntityGeneratorModel, refactored some more
+  EntityApplet removed
+  EntityCriteriaUtil.getInList() no longer adds parenthesis around the whole clause, tested
+  EntityGeneratorPanelTest added
+  DefaultEntityApplicationModel, unused methods removed
+  DefaultEntityApplicationModelTest, some tests added
+  DefaultEntityTableModelTest, some tests added
+  EntitiesTest, some tests added

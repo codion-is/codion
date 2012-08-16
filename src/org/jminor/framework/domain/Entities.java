@@ -372,7 +372,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @param propertyIDs the property IDs of the properties to retrieve
+   * @param propertyIDs the IDs of the properties to retrieve
    * @return a list containing the properties identified by <code>propertyIDs</code>, found in
    * the entity identified by <code>entityID</code>
    */
@@ -383,7 +383,7 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
-   * @param propertyIDs the property IDs of the properties to retrieve
+   * @param propertyIDs the IDs of the properties to retrieve
    * @return a list containing the properties identified by <code>propertyIDs</code>, found in
    * the entity identified by <code>entityID</code>
    */

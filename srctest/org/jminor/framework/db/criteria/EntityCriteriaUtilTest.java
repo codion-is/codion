@@ -81,9 +81,19 @@ public class EntityCriteriaUtilTest {
   public void foreignKeyCriteriaEntity() {
     final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
     department.setValue(EmpDept.DEPARTMENT_ID, 10);
-    final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
+    Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department);
     assertEquals("deptno = ?", criteria.asString());
+
+    final Entity department2 = Entities.entity(EmpDept.T_DEPARTMENT);
+    department2.setValue(EmpDept.DEPARTMENT_ID, 11);
+    criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
+            EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department, department2);
+    assertEquals("deptno in (?, ?)", criteria.asString());
+
+    criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
+            EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.NOT_LIKE, department, department2);
+    assertEquals("deptno not in (?, ?)", criteria.asString());
   }
 
   @Test

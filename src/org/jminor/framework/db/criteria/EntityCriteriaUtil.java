@@ -1023,7 +1023,7 @@ public final class EntityCriteriaUtil {
     }
 
     private String getInList(final Property.ColumnProperty property, final boolean notIn) {
-      final StringBuilder stringBuilder = new StringBuilder("(").append(property.getColumnName()).append((notIn ? " not in (" : IN_PREFIX));
+      final StringBuilder stringBuilder = new StringBuilder(property.getColumnName()).append((notIn ? " not in (" : IN_PREFIX));
       int cnt = 1;
       for (int i = 0; i < getValues().size(); i++) {
         stringBuilder.append("?");
@@ -1035,7 +1035,7 @@ public final class EntityCriteriaUtil {
           stringBuilder.append(", ");
         }
       }
-      stringBuilder.append("))");
+      stringBuilder.append(")");
 
       return stringBuilder.toString();
     }

@@ -418,6 +418,7 @@ public class EntityConnectionImplTest {
     final EntityConnectionImpl baseConnection = initializeConnection();
     final EntityConnectionImpl optimisticConnection = initializeConnection();
     optimisticConnection.setOptimisticLocking(true);
+    assertTrue(optimisticConnection.isOptimisticLocking());
     String oldLocation = null;
     Entity updatedDepartment = null;
     try {

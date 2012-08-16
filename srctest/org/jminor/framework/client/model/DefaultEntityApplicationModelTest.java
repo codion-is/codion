@@ -106,6 +106,54 @@ public final class DefaultEntityApplicationModelTest {
     model.login(null);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void getEntityModelByEntityIDNotFound() {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionImplTest.CONNECTION_PROVIDER) {
+      @Override
+      protected void loadDomainModel() {
+        EmpDept.init();
+      }
+    };
+    model.getEntityModel(EmpDept.T_DEPARTMENT);
+  }
+
+  @Test
+  public void getEntityModelByEntityID() {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionImplTest.CONNECTION_PROVIDER) {
+      @Override
+      protected void loadDomainModel() {
+        EmpDept.init();
+      }
+    };
+    final DeptModel departmentModel = new DeptModel(model.getConnectionProvider());
+    model.addEntityModels(departmentModel);
+    assertEquals(departmentModel, model.getEntityModel(EmpDept.T_DEPARTMENT));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getEntityModelByClassNotFound() {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionImplTest.CONNECTION_PROVIDER) {
+      @Override
+      protected void loadDomainModel() {
+        EmpDept.init();
+      }
+    };
+    model.getEntityModel(DeptModel.class);
+  }
+
+  @Test
+  public void getEntityModelByClass() {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionImplTest.CONNECTION_PROVIDER) {
+      @Override
+      protected void loadDomainModel() {
+        EmpDept.init();
+      }
+    };
+    final DeptModel departmentModel = new DeptModel(model.getConnectionProvider());
+    model.addEntityModels(departmentModel);
+    assertEquals(departmentModel, model.getEntityModel(DeptModel.class));
+  }
+
   @Test
   public void containsEntityModel() {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionImplTest.CONNECTION_PROVIDER) {

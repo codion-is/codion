@@ -7,7 +7,9 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.ColumnSearchModel;
+import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.reports.ReportDataWrapper;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
@@ -23,6 +25,7 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
+import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
@@ -81,6 +84,32 @@ public final class DefaultEntityTableModelTest {
   }
 
   @Test
+  public void getSelectedEntitiesIterator() {
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
+    tableModel.refresh();
+
+    tableModel.setSelectedIndexes(Arrays.asList(0, 3, 5));
+    final Iterator<Entity> iterator = tableModel.getSelectedEntitiesIterator();
+    assertEquals(tableModel.getItemAt(0), iterator.next());
+    assertEquals(tableModel.getItemAt(3), iterator.next());
+    assertEquals(tableModel.getItemAt(5), iterator.next());
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void updateNoEditModel() throws CancelException, ValidationException, DatabaseException {
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
+    tableModel.update(new ArrayList<Entity>());
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void deleteSelectedNoEditModel() throws CancelException, DatabaseException {
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
+    tableModel.refresh();
+    tableModel.setSelectedIndex(0);
+    tableModel.deleteSelected();
+  }
+
+  @Test
   public void removeOnDelete() throws CancelException, DatabaseException {
     final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
     tableModel.setEditModel(new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider()));
@@ -96,18 +125,50 @@ public final class DefaultEntityTableModelTest {
       tableModel.setSelectedIndex(0);
       Entity selected = tableModel.getSelectedItem();
       tableModel.setRemoveItemsOnDelete(true);
+      assertTrue(tableModel.isRemoveItemsOnDelete());
       tableModel.deleteSelected();
       assertFalse(tableModel.contains(selected, false));
 
       tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk2));
       selected = tableModel.getSelectedItem();
       tableModel.setRemoveItemsOnDelete(false);
+      assertFalse(tableModel.isRemoveItemsOnDelete());
       tableModel.deleteSelected();
       assertTrue(tableModel.contains(selected, false));
     }
     finally {
       tableModel.getConnectionProvider().getConnection().rollbackTransaction();
     }
+  }
+
+  @Test
+  public void getEntityByPrimaryKey() {
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
+    tableModel.refresh();
+
+    final Entity.Key pk1 = Entities.key(EmpDept.T_EMPLOYEE);
+    pk1.setValue(EmpDept.EMPLOYEE_ID, 1);
+    assertNotNull(tableModel.getEntityByPrimaryKey(pk1));
+
+    final Entity.Key pk2 = Entities.key(EmpDept.T_EMPLOYEE);
+    pk2.setValue(EmpDept.EMPLOYEE_ID, -66);
+    assertNull(tableModel.getEntityByPrimaryKey(pk2));
+  }
+
+  @Test
+  public void indexOf() {
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
+    tableModel.refresh();
+    tableModel.setSortingDirective(EmpDept.EMPLOYEE_NAME, SortingDirective.ASCENDING, false);
+    assertEquals(SortingDirective.ASCENDING, tableModel.getSortingDirective(EmpDept.EMPLOYEE_NAME));
+
+    final Entity.Key pk1 = Entities.key(EmpDept.T_EMPLOYEE);
+    pk1.setValue(EmpDept.EMPLOYEE_ID, 10);//ADAMS
+    assertEquals(0, tableModel.indexOf(pk1));
+
+    final Entity.Key pk2 = Entities.key(EmpDept.T_EMPLOYEE);
+    pk2.setValue(EmpDept.EMPLOYEE_ID, -66);
+    assertEquals(-1, tableModel.indexOf(pk2));
   }
 
   @Test(expected = IllegalArgumentException.class)

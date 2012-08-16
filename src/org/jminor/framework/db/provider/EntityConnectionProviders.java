@@ -61,13 +61,13 @@ public final class EntityConnectionProviders {
         throw (RuntimeException) ite.getTargetException();
       }
 
-      throw new RuntimeException("Exception while initializing db provider", ite);
+      throw new RuntimeException("Exception while initializing connection provider", ite);
     }
     catch (RuntimeException re) {
       throw re;
     }
     catch (Exception e) {
-      throw new RuntimeException("Exception while initializing db provider", e);
+      throw new RuntimeException("Exception while initializing connection provider", e);
     }
   }
 }

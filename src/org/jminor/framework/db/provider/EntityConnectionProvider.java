@@ -45,14 +45,13 @@ public interface EntityConnectionProvider {
   void disconnect();
 
   /**
-   * Sets the user for this db provider, this invalidates and disconnects the previous
-   * connection if any.
+   * Sets the user for this connection provider, this invalidates and disconnects the previous connection if any.
    * @param user the user
    */
   void setUser(final User user);
 
   /**
-   * @return the user used by this db provider
+   * @return the user used by this connection provider
    */
   User getUser();
 }

@@ -230,39 +230,12 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
 
     /** {@inheritDoc} */
     @Override
-    public String toString() {
-      return getEntityID();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int hashCode() {
-      return getEntityID().hashCode();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(final Object obj) {
-      return obj instanceof EntityDependencyTreeNode && getEntityID().equals(((EntityDependencyTreeNode) obj).getEntityID());
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void setParent(final MutableTreeNode newParent) {
       super.setParent(newParent);
       removeAllChildren();
       for (final EntityDependencyTreeNode child : initializeChildren()) {
         add(child);
       }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setUserObject(final Object userObject) {
-      if (!(userObject instanceof String)) {
-        throw new IllegalArgumentException("entityID required, got: " + userObject);
-      }
-      super.setUserObject(userObject);
     }
 
     private List<EntityDependencyTreeNode> initializeChildren() {
