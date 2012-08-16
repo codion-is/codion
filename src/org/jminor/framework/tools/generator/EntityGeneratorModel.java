@@ -57,7 +57,7 @@ public final class EntityGeneratorModel {
   private final String catalog;
   private final DatabaseMetaData metaData;
   private final AbstractFilteredTableModel<Table, Integer> tableModel;
-  private final Document document = new DefaultStyledDocument();;
+  private final Document document = new DefaultStyledDocument();
   private final Event evtRefreshStarted = Events.event();
   private final Event evtRefreshEnded = Events.event();
 
@@ -242,15 +242,17 @@ public final class EntityGeneratorModel {
   }
 
   private static String getConstants(final Table table) {
-    final String schemaName = table.schemaName;
-    final StringBuilder builder = new StringBuilder("public static final String ").append(getEntityID(table)).append(
-            " = \"").append(schemaName.toLowerCase()).append(".").append(table.tableName.toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
+    final String schemaName = table.getSchemaName();
+    final StringBuilder builder = new StringBuilder("public static final String ").append(getEntityID(table))
+            .append(" = \"").append(schemaName.toLowerCase()).append(".").append(table.getTableName().toLowerCase())
+            .append("\";").append(Util.LINE_SEPARATOR);
     for (final Column column : table.getColumns()) {
       builder.append("public static final String ").append(getPropertyID(table, column, false))
-              .append(" = \"").append(column.columnName.toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
+              .append(" = \"").append(column.getColumnName().toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
       if (column.foreignKeyColumn != null) {
         builder.append("public static final String ").append(getPropertyID(table, column, true))
-                .append(" = \"").append(column.columnName.toLowerCase()).append(FOREIGN_KEY_PROPERTY_SUFFIX.toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
+                .append(" = \"").append(column.getColumnName().toLowerCase())
+                .append(FOREIGN_KEY_PROPERTY_SUFFIX.toLowerCase()).append("\";").append(Util.LINE_SEPARATOR);
       }
     }
 
@@ -258,7 +260,7 @@ public final class EntityGeneratorModel {
   }
 
   private static String getPropertyDefinition(final Table table, final Column column) {
-    if (column.foreignKeyColumn != null) {
+    if (column.getForeignKeyColumn() != null) {
       return getForeignKeyPropertyDefinition(table, column);
     }
 
@@ -270,74 +272,78 @@ public final class EntityGeneratorModel {
     final StringBuilder builder = new StringBuilder();
     final String foreignKeyID = getPropertyID(table, column, true);
     final String caption = getCaption(column);
-    builder.append("        Properties.foreignKeyProperty(").append(foreignKeyID).append(", \"").append(caption).append("\", ").append(
-            getEntityID(column.foreignKeyColumn.getReferencedTable())).append(",").append(Util.LINE_SEPARATOR);
+    builder.append("        Properties.foreignKeyProperty(").append(foreignKeyID).append(", \"").append(caption)
+            .append("\", ").append(getEntityID(column.getForeignKeyColumn().getReferencedTable()))
+            .append(",").append(Util.LINE_SEPARATOR);
     builder.append("        ").append(columnPropertyDefinition).append(")");
 
-    if (column.nullable == DatabaseMetaData.columnNoNulls) {
+    if (column.getNullable() == DatabaseMetaData.columnNoNulls) {
       builder.append(Util.LINE_SEPARATOR).append("                .setNullable(false)");
     }
 
     return builder.toString();
   }
 
-  private static String getColumnPropertyDefinition(final Table table, final Column column, final boolean foreignKey) {
+  private static String getColumnPropertyDefinition(final Table table, final Column column, final boolean foreignKeyColumn) {
     final StringBuilder builder = new StringBuilder();
     final String propertyID = getPropertyID(table, column, false);
     final String caption = getCaption(column);
-    if (column.primaryKeyColumn != null) {
-      if (column.columnType == Types.INTEGER) {
+    if (column.getKeySeq() != -1) {
+      if (column.getColumnType() == Types.INTEGER) {
         builder.append("        Properties.primaryKeyProperty(").append(propertyID).append(")");
       }
       else {
-        builder.append("        Properties.primaryKeyProperty(").append(propertyID).append(", ").append(column.columnTypeName).append(")");
+        builder.append("        Properties.primaryKeyProperty(").append(propertyID).append(", ")
+                .append(column.getColumnTypeName()).append(")");
       }
-      if (column.primaryKeyColumn.getKeySeq() > 1) {
+      if (column.getKeySeq() > 1) {
         builder.append(Util.LINE_SEPARATOR);
-        if (foreignKey) {
+        if (foreignKeyColumn) {
           builder.append("        ");
         }
-        builder.append("                .setIndex(").append(column.primaryKeyColumn.getKeySeq() - 1).append(")");
+        builder.append("                .setIndex(").append(column.getKeySeq() - 1).append(")");
       }
     }
     else {
-      if (column.foreignKeyColumn != null && column.columnType == Types.INTEGER) {
+      if (column.getForeignKeyColumn() != null && column.getColumnType() == Types.INTEGER) {
         builder.append("        Properties.columnProperty(").append(propertyID).append(")");
       }
       else {
-        builder.append("        Properties.columnProperty(").append(propertyID).append(", ").append(column.columnTypeName).append(", \"").append(caption).append("\")");
+        builder.append("        Properties.columnProperty(").append(propertyID).append(", ")
+                .append(column.getColumnTypeName()).append(", \"").append(caption).append("\")");
       }
     }
 
-    if (column.foreignKeyColumn == null && column.hasDefaultValue) {
+    if (column.getForeignKeyColumn() == null && column.hasDefaultValue()) {
       builder.append(Util.LINE_SEPARATOR).append("                .setColumnHasDefaultValue(true)");
     }
-    if (column.nullable == DatabaseMetaData.columnNoNulls && column.primaryKeyColumn == null && column.foreignKeyColumn == null) {
+    if (column.getNullable() == DatabaseMetaData.columnNoNulls && column.getKeySeq() == -1 && column.getForeignKeyColumn() == null) {
       builder.append(Util.LINE_SEPARATOR).append("                .setNullable(false)");
     }
-    if (column.columnTypeName.equals("Types.VARCHAR")) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setMaxLength(").append(column.columnSize).append(")");
+    if (column.getColumnTypeName().equals("Types.VARCHAR")) {
+      builder.append(Util.LINE_SEPARATOR).append("                .setMaxLength(").append(column.getColumnSize()).append(")");
     }
-    if (column.columnTypeName.equals("Types.DOUBLE") && column.decimalDigits >= 1) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setMaximumFractionDigits(").append(column.decimalDigits).append(")");
+    if (column.getColumnTypeName().equals("Types.DOUBLE") && column.getDecimalDigits() >= 1) {
+      builder.append(Util.LINE_SEPARATOR).append("                .setMaximumFractionDigits(").append(column.getDecimalDigits()).append(")");
     }
-    if (!Util.nullOrEmpty(column.comment)) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setDescription(").append(column.comment).append(")");
+    if (!Util.nullOrEmpty(column.getComment())) {
+      builder.append(Util.LINE_SEPARATOR).append("                .setDescription(").append(column.getComment()).append(")");
     }
 
     return builder.toString();
   }
 
   private static String getEntityID(final Table table) {
-    return ENTITY_ID_PREFIX + table.tableName.toUpperCase();
+    return ENTITY_ID_PREFIX + table.getTableName().toUpperCase();
   }
 
   private static String getPropertyID(final Table table, final Column column, final boolean isForeignKey) {
-    return table.tableName.toUpperCase() + "_" + column.columnName.toUpperCase() + (isForeignKey ? FOREIGN_KEY_PROPERTY_SUFFIX : "");
+    return table.getTableName().toUpperCase() + "_" + column.getColumnName().toUpperCase()
+            + (isForeignKey ? FOREIGN_KEY_PROPERTY_SUFFIX : "");
   }
 
   private static String getCaption(final Column column) {
-    final String columnName = column.columnName.toLowerCase().replaceAll("_", " ");
+    final String columnName = column.getColumnName().toLowerCase().replaceAll("_", " ");
 
     return columnName.substring(0, 1).toUpperCase() + columnName.substring(1, columnName.length());
   }
@@ -347,10 +353,6 @@ public final class EntityGeneratorModel {
     appendEntityDefinition(builder, table);
 
     return builder.toString();
-  }
-
-  private static Collection<ForeignKeyColumn> getForeignKeys(final DatabaseMetaData metaData, final Table table) throws SQLException {
-    return new ForeignKeyColumnPacker().pack(metaData.getImportedKeys(null, table.schemaName, table.tableName), -1);//todo catalog
   }
 
   private static String translateType(final int sqlType) {
@@ -424,32 +426,29 @@ public final class EntityGeneratorModel {
     }
 
     private void populateTable(final Table table) throws SQLException {
-      final Collection<ForeignKeyColumn> foreignKeys = getForeignKeys(metaData, table);
-      table.setForeignKeys(foreignKeys);
-      final List<PrimaryKeyColumn> primaryKeyColumns = new PrimaryKeyColumnPacker().pack(metaData.getPrimaryKeys(catalog, table.schemaName, table.tableName), -1);
-      table.setPrimaryKeyColumns(primaryKeyColumns);
-      final List<Column> columns = new ColumnPacker(table).pack(metaData.getColumns(catalog, table.schemaName, table.tableName, null), -1);
-      table.setColumns(columns);
+      table.setForeignKeys(new ForeignKeyColumnPacker().pack(metaData.getImportedKeys(catalog, table.getSchemaName(), table.getTableName()), -1));
+      table.setPrimaryKeyColumns(new PrimaryKeyColumnPacker().pack(metaData.getPrimaryKeys(catalog, table.getSchemaName(), table.getTableName()), -1));
+      table.setColumns(new ColumnPacker(table).pack(metaData.getColumns(catalog, table.getSchemaName(), table.getTableName(), null), -1));
     }
 
     @Override
     public Object getValueAt(final int rowIndex, final int columnIndex) {
       final Table table = getItemAt(rowIndex);
       if (columnIndex == 0) {
-        return table.schemaName;
+        return table.getSchemaName();
       }
       else {
-        return table.tableName;
+        return table.getTableName();
       }
     }
 
     @Override
     protected Comparable getComparable(final Table object, final Integer columnIdentifier) {
       if (columnIdentifier.equals(SCHEMA_COLUMN_ID)) {
-        return object.schemaName;
+        return object.getSchemaName();
       }
       else {
-        return object.tableName;
+        return object.getTableName();
       }
     }
   }
@@ -502,7 +501,7 @@ public final class EntityGeneratorModel {
 
       final Table table = (Table) o;
 
-      return Util.equal(schemaName, table.schemaName) && Util.equal(tableName, table.tableName);
+      return Util.equal(schemaName, table.getSchemaName()) && Util.equal(tableName, table.getTableName());
     }
 
     @Override
@@ -512,12 +511,18 @@ public final class EntityGeneratorModel {
 
       return result;
     }
+
+    public String getTableName() {
+      return tableName;
+    }
+
+    public String getSchemaName() {
+      return schemaName;
+    }
   }
 
   private static final class Column {
 
-    private final String schemaName;
-    private final String tableName;
     private final String columnName;
     private final int columnType;
     private final String columnTypeName;
@@ -526,15 +531,12 @@ public final class EntityGeneratorModel {
     private final int nullable;
     private final boolean hasDefaultValue;
     private final String comment;
+    private final int keySeq;
     private ForeignKeyColumn foreignKeyColumn;
-    private PrimaryKeyColumn primaryKeyColumn;
 
-    public Column(final String schemaName, final String tableName, final String columnName, final int columnType,
-                  final String columnTypeName, final int columnSize, final int decimalDigits, final int nullable,
-                  final boolean hasDefaultValue, final String comment, final ForeignKeyColumn foreignKeyColumn,
-                  final PrimaryKeyColumn primaryKeyColumn) {
-      this.schemaName = schemaName;
-      this.tableName = tableName;
+    public Column(final String columnName, final int columnType, final String columnTypeName, final int columnSize,
+                  final int decimalDigits, final int nullable, final boolean hasDefaultValue, final String comment,
+                  final ForeignKeyColumn foreignKeyColumn, final int keySeq) {
       this.columnName = columnName;
       this.columnType = columnType;
       this.columnTypeName = columnTypeName;
@@ -544,25 +546,65 @@ public final class EntityGeneratorModel {
       this.hasDefaultValue = hasDefaultValue;
       this.comment = comment;
       this.foreignKeyColumn = foreignKeyColumn;
-      this.primaryKeyColumn = primaryKeyColumn;
+      this.keySeq = keySeq;
+    }
+
+    public String getColumnName() {
+      return columnName;
+    }
+
+    public int getKeySeq() {
+      return keySeq;
+    }
+
+    public int getColumnType() {
+      return columnType;
+    }
+
+    public String getColumnTypeName() {
+      return columnTypeName;
+    }
+
+    public boolean hasDefaultValue() {
+      return hasDefaultValue;
+    }
+
+    public int getNullable() {
+      return nullable;
+    }
+
+    public int getColumnSize() {
+      return columnSize;
+    }
+
+    public int getDecimalDigits() {
+      return decimalDigits;
+    }
+
+    public String getComment() {
+      return comment;
+    }
+
+    public ForeignKeyColumn getForeignKeyColumn() {
+      return foreignKeyColumn;
     }
   }
 
   private static final class PrimaryKeyColumn {
 
-    private final String pkSchemaName;
-    private final String pkTableName;
-    private final String pkColumnName;
+    private final String columnName;
     private final int keySeq;
 
-    public PrimaryKeyColumn(final String pkSchemaName, final String pkTableName, final String pkColumnName, final int keySeq) {
-      this.pkSchemaName = pkSchemaName;
-      this.pkTableName = pkTableName;
-      this.pkColumnName = pkColumnName;
+    public PrimaryKeyColumn(final String columnName, final int keySeq) {
+      this.columnName = columnName;
       this.keySeq = keySeq;
     }
 
-    private int getKeySeq() {
+    public String getColumnName() {
+      return columnName;
+    }
+
+    public int getKeySeq() {
       return keySeq;
     }
   }
@@ -571,19 +613,14 @@ public final class EntityGeneratorModel {
 
     private final String pkSchemaName;
     private final String pkTableName;
-    private final String pkColumnName;
-    private final String fkSchemaName;
     private final String fkTableName;
     private final String fkColumnName;
     private final int keySeq;
 
-    public ForeignKeyColumn(final String pkSchemaName, final String pkTableName, final String pkColumnName,
-                            final String fkSchemaName, final String fkTableName, final String fkColumnName,
-                            final int keySeq) {
+    public ForeignKeyColumn(final String pkSchemaName, final String pkTableName, final String fkTableName,
+                            final String fkColumnName, final int keySeq) {
       this.pkSchemaName = pkSchemaName;
       this.pkTableName = pkTableName;
-      this.pkColumnName = pkColumnName;
-      this.fkSchemaName = fkSchemaName;
       this.fkTableName = fkTableName;
       this.fkColumnName = fkColumnName;
       this.keySeq = keySeq;
@@ -593,7 +630,15 @@ public final class EntityGeneratorModel {
       return new Table(pkSchemaName, pkTableName);
     }
 
-    private int getKeySeq() {
+    public String getFkTableName() {
+      return fkTableName;
+    }
+
+    public String getFkColumnName() {
+      return fkColumnName;
+    }
+
+    public int getKeySeq() {
       return keySeq;
     }
   }
@@ -606,12 +651,10 @@ public final class EntityGeneratorModel {
       this.schema = schema;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<Table> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Table> tables = new ArrayList<Table>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+      while (resultSet.next()) {
         final String tableName = resultSet.getString("TABLE_NAME");
         String dbSchema = resultSet.getString(TABLE_SCHEMA);
         if (dbSchema == null) {
@@ -634,12 +677,10 @@ public final class EntityGeneratorModel {
       this.table = table;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<Column> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Column> columns = new ArrayList<Column>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+      while (resultSet.next()) {
         final int dataType = resultSet.getInt("DATA_TYPE");
         final String translatedType = translateType(dataType);
         if (translatedType != null) {
@@ -650,11 +691,10 @@ public final class EntityGeneratorModel {
 
           final String tableName = resultSet.getString("TABLE_NAME");
           final String columnName = resultSet.getString("COLUMN_NAME");
-          columns.add(new Column(resultSet.getString(TABLE_SCHEMA), tableName,
-                  columnName, dataType, translatedType,
+          columns.add(new Column(columnName, dataType, translatedType,
                   resultSet.getInt("COLUMN_SIZE"), decimalDigits, resultSet.getInt("NULLABLE"),
                   resultSet.getObject("COLUMN_DEF") != null, resultSet.getString("REMARKS"),
-                  getForeignKeyColumn(tableName, columnName), getPrimaryKeyColumn(columnName)));
+                  getForeignKeyColumn(tableName, columnName), getPrimaryKeyColumnIndex(columnName)));
         }
       }
 
@@ -663,19 +703,19 @@ public final class EntityGeneratorModel {
       return columns;
     }
 
-    private PrimaryKeyColumn getPrimaryKeyColumn(final String columnName) {
+    private int getPrimaryKeyColumnIndex(final String columnName) {
       for (final PrimaryKeyColumn primaryKeyColumn : table.getPrimaryKeyColumns()) {
-        if (columnName.equals(primaryKeyColumn.pkColumnName)) {
-          return primaryKeyColumn;
+        if (columnName.equals(primaryKeyColumn.getColumnName())) {
+          return primaryKeyColumn.getKeySeq();
         }
       }
 
-      return null;
+      return -1;
     }
 
     private ForeignKeyColumn getForeignKeyColumn(final String tableName, final String columnName) {
       for (final ForeignKeyColumn foreignKeyColumn : table.getForeignKeyColumns()) {
-        if (foreignKeyColumn.fkTableName.equals(tableName) && foreignKeyColumn.fkColumnName.equals(columnName)) {
+        if (foreignKeyColumn.getFkTableName().equals(tableName) && foreignKeyColumn.getFkColumnName().equals(columnName)) {
           return foreignKeyColumn;
         }
       }
@@ -685,16 +725,12 @@ public final class EntityGeneratorModel {
   }
 
   private static final class ForeignKeyColumnPacker implements ResultPacker<ForeignKeyColumn> {
-    /** {@inheritDoc} */
     @Override
     public List<ForeignKeyColumn> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<ForeignKeyColumn> foreignKeys = new ArrayList<ForeignKeyColumn>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+      while (resultSet.next()) {
         foreignKeys.add(new ForeignKeyColumn(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
-                resultSet.getString("PKCOLUMN_NAME"), resultSet.getString("FKTABLE_SCHEM"),
-                resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME"),
-                resultSet.getShort("KEY_SEQ")));
+                resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME"), resultSet.getShort("KEY_SEQ")));
       }
 
       resultSet.close();
@@ -704,14 +740,11 @@ public final class EntityGeneratorModel {
   }
 
   private static final class PrimaryKeyColumnPacker implements ResultPacker<PrimaryKeyColumn> {
-    /** {@inheritDoc} */
     @Override
     public List<PrimaryKeyColumn> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<PrimaryKeyColumn> primaryKeys = new ArrayList<PrimaryKeyColumn>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        primaryKeys.add(new PrimaryKeyColumn(resultSet.getString(TABLE_SCHEMA), resultSet.getString("TABLE_NAME"),
-                resultSet.getString("COLUMN_NAME"), resultSet.getInt("KEY_SEQ")));
+      while (resultSet.next()) {
+        primaryKeys.add(new PrimaryKeyColumn(resultSet.getString("COLUMN_NAME"), resultSet.getInt("KEY_SEQ")));
       }
 
       resultSet.close();
