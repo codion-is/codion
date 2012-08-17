@@ -866,12 +866,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Initializes the UI
+   * Initializes the UI, while presenting a wait cursor to the user.
+   * Note that calling this method more than once has no effect.
    * @return this EntityTablePanel instance
    */
   public final EntityTablePanel initializePanel() {
     if (!panelInitialized) {
       try {
+        UiUtil.setWaitCursor(true, this);
         setupControlsInternal();
         setupControls();
         initializeTable();

@@ -3177,3 +3177,4 @@
   DefaultEntityTableModelTest, some tests added
   EntitiesTest, some tests added
   States.StateObserverImpl, bug fixed, reversedStateObserver was not notified on state change, tested
+  EntityTablePanel.initializePanel(), bug fixed, did not enable wait cursor
