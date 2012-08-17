@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.ui.ColumnSearchPanel;
+import org.jminor.common.model.table.ColumnSearchModel;
+import org.jminor.common.ui.table.ColumnSearchPanel;
 import org.jminor.framework.domain.Property;
 
 /**

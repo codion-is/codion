@@ -3,12 +3,11 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
-import org.jminor.common.ui.ColumnSearchPanel;
+import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
@@ -19,6 +18,7 @@ import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.SelectedItemBeanValueLink;
 import org.jminor.common.ui.control.TextBeanValueLink;
 import org.jminor.common.ui.control.TimestampBeanValueLink;
+import org.jminor.common.ui.table.ColumnSearchPanel;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.client.model.PropertySearchModel;

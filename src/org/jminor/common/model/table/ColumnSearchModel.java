@@ -1,7 +1,12 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.common.model.table;
+
+import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.SearchType;
+import org.jminor.common.model.StateObserver;
 
 import java.sql.Timestamp;
 import java.text.Format;

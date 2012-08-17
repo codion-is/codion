@@ -1,9 +1,9 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.ui;
+package org.jminor.common.ui.table;
 
-import org.jminor.common.model.AbstractFilteredTableModelTest;
+import org.jminor.common.model.table.AbstractFilteredTableModelTest;
 
 import org.junit.Test;
 

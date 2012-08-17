@@ -1,4 +1,7 @@
-package org.jminor.common.ui;
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package org.jminor.common.ui.table;
 
 import org.junit.Test;
 

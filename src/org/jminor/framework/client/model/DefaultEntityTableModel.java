@@ -5,13 +5,13 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.AbstractFilteredTableModel;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventAdapter;
-import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
+import org.jminor.common.model.table.AbstractFilteredTableModel;
+import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityConnectionProvider;

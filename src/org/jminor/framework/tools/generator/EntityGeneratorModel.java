@@ -7,14 +7,14 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.AbstractFilteredTableModel;
-import org.jminor.common.model.DefaultColumnSearchModel;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.table.AbstractFilteredTableModel;
+import org.jminor.common.model.table.DefaultColumnSearchModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

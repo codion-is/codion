@@ -1,7 +1,11 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.common.model.table;
+
+import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
+import org.jminor.common.model.FilterCriteria;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -468,6 +472,9 @@ public final class AbstractFilteredTableModelTest {
     tableModel.addSelectedItem(ITEMS[4]);
     assertEquals(4, tableModel.getSelectionCount());
     assertEquals("current index should fit", 0, tableModel.getSelectionModel().getMinSelectionIndex());
+
+    tableModel.clearSelection();
+    assertNull(tableModel.getSelectedItem());
 
     tableModel.removeSelectedIndexListener(listener);
     tableModel.removeSelectionChangedListener(listener);

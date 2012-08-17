@@ -5,9 +5,9 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.FilteredTableModel;
-import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.reports.ReportDataWrapper;
+import org.jminor.common.model.table.FilteredTableModel;
+import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;

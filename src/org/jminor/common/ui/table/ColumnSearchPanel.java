@@ -1,9 +1,8 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.ui;
+package org.jminor.common.ui.table;
 
-import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
@@ -14,6 +13,8 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
+import org.jminor.common.model.table.ColumnSearchModel;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;

@@ -1,15 +1,16 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.ui;
+package org.jminor.common.ui.table;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.ColumnSearchModel;
 import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.EventAdapter;
-import org.jminor.common.model.FilteredTableModel;
-import org.jminor.common.model.SortingDirective;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.table.ColumnSearchModel;
+import org.jminor.common.model.table.FilteredTableModel;
+import org.jminor.common.model.table.SortingDirective;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.textfield.TextFieldHint;

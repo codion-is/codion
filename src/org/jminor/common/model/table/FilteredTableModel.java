@@ -1,7 +1,13 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.common.model.table;
+
+import org.jminor.common.model.EventListener;
+import org.jminor.common.model.FilterCriteria;
+import org.jminor.common.model.FilteredModel;
+import org.jminor.common.model.Refreshable;
+import org.jminor.common.model.StateObserver;
 
 import javax.swing.ListSelectionModel;
 import javax.swing.table.TableColumn;
@@ -227,7 +233,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    * @param searchText the text to search by
    * @return the search result coordinate, null if nothing was found
    * @see #isRegularExpressionSearch()
-   * @see FilterCriteria#include(Object)
+   * @see org.jminor.common.model.FilterCriteria#include(Object)
    */
   Point findNextItemCoordinate(final int fromIndex, final boolean forward, final String searchText);
 
@@ -239,7 +245,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    * @param forward if true then the search is forward (towards higher row indexes), backwards otherwise
    * @param criteria the search criteria
    * @return the search result coordinate, null if nothing was found
-   * @see FilterCriteria#include(Object)
+   * @see org.jminor.common.model.FilterCriteria#include(Object)
    */
   Point findNextItemCoordinate(final int fromIndex, final boolean forward, final FilterCriteria<Object> criteria);
 

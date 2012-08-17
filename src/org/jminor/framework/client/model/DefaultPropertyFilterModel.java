@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.model.DefaultColumnSearchModel;
+import org.jminor.common.model.table.DefaultColumnSearchModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;

@@ -1,8 +1,11 @@
-package org.jminor.common.ui;
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package org.jminor.common.ui.table;
 
-import org.jminor.common.model.ColumnSearchModel;
-import org.jminor.common.model.DefaultColumnSearchModel;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.table.ColumnSearchModel;
+import org.jminor.common.model.table.DefaultColumnSearchModel;
 
 import org.junit.Test;
 

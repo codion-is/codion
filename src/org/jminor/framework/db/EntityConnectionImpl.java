@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnectionImpl;
+import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;

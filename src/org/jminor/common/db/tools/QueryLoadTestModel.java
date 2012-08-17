@@ -3,11 +3,11 @@
  */
 package org.jminor.common.db.tools;
 
-import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.DatabaseConnections;
+import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPools;

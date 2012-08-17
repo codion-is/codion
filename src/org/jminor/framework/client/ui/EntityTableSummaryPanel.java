@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.ui.AbstractTableColumnSyncPanel;
+import org.jminor.common.ui.table.AbstractTableColumnSyncPanel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.domain.Property;
