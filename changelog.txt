@@ -3179,3 +3179,4 @@
   States.StateObserverImpl, bug fixed, reversedStateObserver was not notified on state change, tested
   EntityTablePanel.initializePanel(), bug fixed, did not enable wait cursor
   common.model.table, common.ui.table packages added, table related classes moved there
+  DatabaseConnectionsTest added

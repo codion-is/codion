@@ -10,7 +10,6 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.sql.Connection;
 import java.sql.SQLException;
 
 import static org.junit.Assert.*;
@@ -38,45 +37,6 @@ public class DatabaseConnectionImplTest {
     }
     catch (Exception e) {
       e.printStackTrace();
-    }
-  }
-
-  @Test
-  public void construction() throws Exception {
-    Connection connection = null;
-    try {
-      connection = DATABASE.createConnection(User.UNIT_TEST_USER);
-      final DatabaseConnectionImpl databaseConnection = new DatabaseConnectionImpl(DATABASE, connection);
-      assertTrue(databaseConnection.isConnected());
-      assertTrue(databaseConnection.isValid());
-      assertNotNull(databaseConnection.getUser());
-      assertTrue(User.UNIT_TEST_USER.getUsername().equalsIgnoreCase(databaseConnection.getUser().getUsername()));
-    }
-    finally {
-      if (connection != null) {
-        try {
-          connection.close();
-        }
-        catch (Exception ignored) {}
-      }
-    }
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void constructionWithClosedConnection() throws ClassNotFoundException, DatabaseException, SQLException {
-    Connection connection = null;
-    try {
-      connection = DATABASE.createConnection(User.UNIT_TEST_USER);
-      connection.close();
-      new DatabaseConnectionImpl(DATABASE, connection);
-    }
-    finally {
-      if (connection != null) {
-        try {
-          connection.close();
-        }
-        catch (Exception ignored) {}
-      }
     }
   }
 
