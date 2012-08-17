@@ -3176,3 +3176,4 @@
   DefaultEntityApplicationModelTest, some tests added
   DefaultEntityTableModelTest, some tests added
   EntitiesTest, some tests added
+  States.StateObserverImpl, bug fixed, reversedStateObserver was not notified on state change, tested

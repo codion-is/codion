@@ -232,7 +232,7 @@ public final class States {
     private final Event evtStateActivated = Events.event();
     private final Event evtStateDeactivated = Events.event();
 
-    private StateObserver reverseStateObserver = null;
+    private StateObserverImpl reversedStateObserver = null;
 
     private StateObserverImpl(final StateObserver stateObserver, final boolean reversed) {
       this.stateObserver = stateObserver;
@@ -251,11 +251,11 @@ public final class States {
 
     @Override
     public synchronized StateObserver getReversedObserver() {
-      if (reverseStateObserver == null) {
-        reverseStateObserver = new StateObserverImpl(this, true);
+      if (reversedStateObserver == null) {
+        reversedStateObserver = new StateObserverImpl(this, true);
       }
 
-      return reverseStateObserver;
+      return reversedStateObserver;
     }
 
     @Override
@@ -290,12 +290,15 @@ public final class States {
 
     private void notifyObservers() {
       evtStateChanged.fire();
+      if (reversedStateObserver != null) {
+        reversedStateObserver.notifyObservers();
+      }
     }
 
-    private void notifyObservers(final boolean previousValue, final boolean active) {
-      if (previousValue != active) {
-        evtStateChanged.fire();
-        if (active) {
+    private void notifyObservers(final boolean previousValue, final boolean newValue) {
+      if (previousValue != newValue) {
+        notifyObservers();
+        if (newValue) {
           evtStateActivated.fire();
         }
         else {

@@ -74,12 +74,45 @@ public class StateImplTest {
 
   @Test
   public void reversedState() {
+    final Collection<Object> stateCounter = new ArrayList<Object>();
+    final EventListener listener = new EventAdapter() {
+      @Override
+      public void eventOccurred() {
+        stateCounter.add(new Object());
+      }
+    };
+    final Collection<Object> reversedStateCounter = new ArrayList<Object>();
+    final EventListener reversedListener = new EventAdapter() {
+      @Override
+      public void eventOccurred() {
+        reversedStateCounter.add(new Object());
+      }
+    };
+    final Collection<Object> reversedReversedStateCounter = new ArrayList<Object>();
+    final EventListener reversedReversedListener = new EventAdapter() {
+      @Override
+      public void eventOccurred() {
+        reversedReversedStateCounter.add(new Object());
+      }
+    };
     final State state = States.state();
     final StateObserver reversed = state.getReversedObserver();
     final StateObserver reversedReversed = reversed.getReversedObserver();
+    state.addListener(listener);
+    reversed.addListener(reversedListener);
+    reversedReversed.addListener(reversedReversedListener);
     assertTrue(state.isActive() != reversed.isActive());
     assertTrue(state.isActive() == reversedReversed.isActive());
     state.setActive(true);
+    assertEquals(1, stateCounter.size());
+    assertEquals(1, reversedStateCounter.size());
+    assertEquals(1, reversedReversedStateCounter.size());
+    assertTrue(state.isActive() != reversed.isActive());
+    assertTrue(state.isActive() == reversedReversed.isActive());
+    state.setActive(false);
+    assertEquals(2, stateCounter.size());
+    assertEquals(2, reversedStateCounter.size());
+    assertEquals(2, reversedReversedStateCounter.size());
     assertTrue(state.isActive() != reversed.isActive());
     assertTrue(state.isActive() == reversedReversed.isActive());
   }
