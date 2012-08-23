@@ -101,7 +101,6 @@
 
     <rmic base="${build.base}" stubversion="1.2"
           includes="org/jminor/common/server/AbstractRemoteServer.class,
-                                         org/jminor/common/server/loadtest/RemoteLoadTestImpl.class
                                          org/jminor/framework/server/RemoteEntityConnectionImpl.class,
                                          org/jminor/framework/server/EntityConnectionServerAdminImpl.class">
       <classpath refid="lib.build"/>

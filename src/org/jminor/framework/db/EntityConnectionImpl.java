@@ -314,7 +314,6 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked"})
   public synchronized List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
     if (keys == null || keys.isEmpty()) {
       return new ArrayList<Entity>(0);
@@ -363,9 +362,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
       final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(entityID, propertyID);
       final String columnName = property.getColumnName();
-      selectSQL = createSelectSQL(Entities.getSelectTableName(entityID),
-              new StringBuilder("distinct ").append(columnName).toString(),
-              new StringBuilder("where ").append(columnName).append(" is not null").toString(), order ? columnName : null);
+      selectSQL = createSelectSQL(Entities.getSelectTableName(entityID), "distinct " + columnName,
+              "where " + columnName + " is not null", order ? columnName : null);
 
       //noinspection unchecked
       final List<Object> result = query(selectSQL, getPropertyResultPacker(property), -1);
@@ -775,7 +773,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       final int criteriaFetchDepthLimit = criteria.getForeignKeyFetchDepthLimit(foreignKeyProperty.getPropertyID());
       if (!limitForeignKeyFetchDepth || currentForeignKeyFetchDepth < criteriaFetchDepthLimit) {
-        final List<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
+        final Collection<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
         if (referencedPrimaryKeys.isEmpty()) {
           for (final Entity entity : entities) {
             entity.setValue(foreignKeyProperty, null);
@@ -799,8 +797,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     final String sql;
     switch (idSource) {
       case MAX_PLUS_ONE:
-        sql = new StringBuilder("select max(").append(primaryKeyProperty.getColumnName())
-                .append(") + 1 from ").append(Entities.getTableName(entityID)).toString();
+        sql = "select max(" + primaryKeyProperty.getColumnName() + ") + 1 from " + Entities.getTableName(entityID);
         break;
       case QUERY:
         sql = idValueSource;
@@ -1023,7 +1020,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     return property.getType();
   }
 
-  private static List<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,
+  private static Collection<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,
                                                            final Property.ForeignKeyProperty foreignKeyProperty) {
     final Set<Entity.Key> keySet = new HashSet<Entity.Key>(entities.size());
     for (final Entity entity : entities) {
@@ -1033,7 +1030,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       }
     }
 
-    return new ArrayList<Entity.Key>(keySet);
+    return keySet;
   }
 
   private String getSelectSQL(final EntitySelectCriteria criteria, final String columnsString, final String orderByClause,
@@ -1135,8 +1132,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    */
   private static String createDeleteSQL(final EntityCriteria criteria) {
     Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
-    return new StringBuilder("delete from ").append(Entities.getTableName(criteria.getEntityID())).append(" ")
-            .append(criteria.getWhereClause()).toString();
+    return "delete from " + Entities.getTableName(criteria.getEntityID()) + " " + criteria.getWhereClause();
   }
 
   /**

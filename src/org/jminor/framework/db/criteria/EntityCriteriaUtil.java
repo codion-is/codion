@@ -46,7 +46,7 @@ public final class EntityCriteriaUtil {
    * @param keys the keys
    * @return a select criteria based on the given keys
    */
-  public static EntitySelectCriteria selectCriteria(final List<Entity.Key> keys) {
+  public static EntitySelectCriteria selectCriteria(final Collection<Entity.Key> keys) {
     final EntityKeyCriteria keyCriteria = new EntityKeyCriteria(keys);
     return new DefaultEntitySelectCriteria(keyCriteria.getEntityID(), keyCriteria);
   }
@@ -587,7 +587,7 @@ public final class EntityCriteriaUtil {
      * Instantiates a new EntityKeyCriteria comprised of the given keys
      * @param keys the keys
      */
-    private EntityKeyCriteria(final List<Entity.Key> keys) {
+    private EntityKeyCriteria(final Collection<Entity.Key> keys) {
       this(null, keys);
     }
 
@@ -597,17 +597,18 @@ public final class EntityCriteriaUtil {
      * @param properties the properties to use for column names when constructing the criteria string
      * @param keys the keys
      */
-    private EntityKeyCriteria(final List<Property.ColumnProperty> properties, final List<Entity.Key> keys) {
+    private EntityKeyCriteria(final List<Property.ColumnProperty> properties, final Collection<Entity.Key> keys) {
       criteria = new CriteriaSet<Property.ColumnProperty>(Conjunction.OR);
       Util.rejectNullValue(keys, "keys");
       if (keys.isEmpty()) {
         throw new IllegalArgumentException("EntityKeyCriteria requires at least one key");
       }
-      if (properties != null && properties.size() != keys.get(0).getPropertyCount()) {
+      final Entity.Key firstKey = keys.iterator().next();
+      if (properties != null && properties.size() != firstKey.getPropertyCount()) {
         throw new IllegalArgumentException("Reference property count mismatch");
       }
-      entityID = keys.get(0).getEntityID();
-      setupCriteria(properties, keys);
+      entityID = firstKey.getEntityID();
+      setupCriteria(properties, keys, firstKey);
     }
 
     /** {@inheritDoc} */
@@ -635,9 +636,10 @@ public final class EntityCriteriaUtil {
       return entityID;
     }
 
-    private void setupCriteria(final List<Property.ColumnProperty> properties, final List<Entity.Key> keys) {
-      if (keys.get(0).isCompositeKey()) {//multiple column key
-        final List<Property.PrimaryKeyProperty> pkProperties = keys.get(0).getProperties();
+    private void setupCriteria(final List<Property.ColumnProperty> properties, final Collection<Entity.Key> keys,
+                               final Entity.Key firstKey) {
+      if (firstKey.isCompositeKey()) {//multiple column key
+        final List<Property.PrimaryKeyProperty> pkProperties = firstKey.getProperties();
         final List<? extends Property.ColumnProperty> propertyList = properties == null ? pkProperties : properties;
         //(a = b and c = d) or (a = g and c = d)
         for (final Entity.Key key : keys) {
@@ -651,12 +653,11 @@ public final class EntityCriteriaUtil {
         }
       }
       else {
-        final Property.ColumnProperty property = properties == null ? keys.get(0).getFirstKeyProperty() : properties.get(0);
-        final Property primaryKeyProperty = properties == null ? property : keys.get(0).getFirstKeyProperty();
+        final Property.ColumnProperty property = properties == null ? firstKey.getFirstKeyProperty() : properties.get(0);
+        final Property primaryKeyProperty = properties == null ? property : firstKey.getFirstKeyProperty();
         //a = b
         if (keys.size() == 1) {
-          final Entity.Key key = keys.get(0);
-          criteria.add(new PropertyCriteria(property, SearchType.LIKE, key.getValue(primaryKeyProperty.getPropertyID())));
+          criteria.add(new PropertyCriteria(property, SearchType.LIKE, firstKey.getValue(primaryKeyProperty.getPropertyID())));
         }
         else { //a in (c, v, d, s)
           criteria.add(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getPropertyValues(keys)));

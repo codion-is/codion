@@ -3180,3 +3180,5 @@
   EntityTablePanel.initializePanel(), bug fixed, did not enable wait cursor
   common.model.table, common.ui.table packages added, table related classes moved there
   DatabaseConnectionsTest added
+  EntityCriteriaUtil.selectCriteria() takes Collection instead of List
+  EntityConnectionImpl, removed a couple of unnecessary StringBuilder usages
