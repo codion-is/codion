@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server.provider;
 
+import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
@@ -63,6 +64,12 @@ public class RemoteEntityConnectionProviderTest {
 
     db3 = provider.getConnection();
     assertTrue(db3.isConnected());
+    db3.disconnect();
+
+    provider.disconnect();
+    assertEquals("localhost" + " - " + Messages.get(Messages.NOT_CONNECTED), provider.getDescription());
+    db3 = provider.getConnection();
+    assertEquals(EntityConnectionServerTest.getServerAdmin().getServerName() + "@localhost", provider.getDescription());
     db3.disconnect();
   }
 }

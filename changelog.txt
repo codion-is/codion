@@ -3182,3 +3182,6 @@
   DatabaseConnectionsTest added
   EntityCriteriaUtil.selectCriteria() takes Collection instead of List
   EntityConnectionImpl, removed a couple of unnecessary StringBuilder usages
+  EntityApplicationPanel.setParentWindowTitle() added, handles both JFrame and JDialog
+  RemoteEntityConnectionProviderTest improved a bit
+  EntityApplicationPanel.getEntityPanel() with Class parameter removed, unused

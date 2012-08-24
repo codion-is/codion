@@ -59,7 +59,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   @Override
   public String getDescription() {
     try {
-      if (server == null) {
+      if (!isConnectionValid()) {
         return serverHostName + " - " + Messages.get(Messages.NOT_CONNECTED);
       }
 

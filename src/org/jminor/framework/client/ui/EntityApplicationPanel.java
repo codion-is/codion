@@ -167,7 +167,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /**
    * @param entityID the entity ID
-   * @return the entity panel based on the given entity type, null if none is found
+   * @return the first entity panel found based on the given entity type, null if none is found
    */
   public final EntityPanel getEntityPanel(final String entityID) {
     for (final EntityPanel entityPanel : entityPanels) {
@@ -254,7 +254,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param frameCaption the caption to display on the frame
    * @param iconName the name of the icon to use
    * @param maximize if true the application frame is maximized on startup
-   * @param frameSize the frame size when unmaximized
+   * @param frameSize the frame size when not maximized
    * @return the JFrame instance containing this application panel
    */
   public final JFrame startApplication(final String frameCaption, final String iconName, final boolean maximize,
@@ -281,7 +281,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param frameCaption the caption to display on the frame
    * @param iconName the name of the icon to use
    * @param maximize if true the application frame is maximized on startup
-   * @param frameSize the frame size when it is not maximized
+   * @param frameSize the frame size when not maximized
    * @param defaultUser the default user to display in the login dialog
    * @param showFrame if true the frame is set visible
    * @return the JFrame instance containing this application panel
@@ -579,20 +579,6 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     panel.add(txtVersionMemory, BorderLayout.CENTER);
 
     return panel;
-  }
-
-  /**
-   * @param entityPanelClass the entity panel class
-   * @return the main entity panel of the given type, null if none is found
-   */
-  protected final EntityPanel getEntityPanel(final Class<? extends EntityPanel> entityPanelClass) {
-    for (final EntityPanel entityPanel : entityPanels) {
-      if (entityPanel.getClass().equals(entityPanelClass)) {
-        return entityPanel;
-      }
-    }
-
-    return null;
   }
 
   /**
@@ -1000,20 +986,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
-        final Window parentWindow = getParentWindow();
-        if (parentWindow instanceof JFrame) {
-          ((JFrame) parentWindow).setTitle(frameTitle);
-        }
+        setParentWindowTitle(frameTitle);
       }
     });
     connected.addDeactivateListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
-        final Window parentWindow = getParentWindow();
-        if (parentWindow instanceof JFrame) {
-          ((JFrame) parentWindow).setTitle(frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED));
-        }
+        setParentWindowTitle(frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED));
       }
     });
   }
@@ -1054,7 +1034,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
           }
         }
         catch (Exception ex) {
-          LOG.debug("Exception while disconnecting on startup error", ex);
+          LOG.debug("Exception while disconnecting after a failed startup", ex);
         }
         handleException(e, null);
         if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
@@ -1086,6 +1066,16 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     UiUtil.expandAll(tree, new TreePath(tree.getModel().getRoot()), true);
 
     return new JScrollPane(tree, JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_AS_NEEDED);
+  }
+
+  private void setParentWindowTitle(final String title) {
+    final Window parentWindow = UiUtil.getParentWindow(this);
+    if (parentWindow instanceof JFrame) {
+      ((JFrame) parentWindow).setTitle(title);
+    }
+    else if (parentWindow instanceof JDialog) {
+      ((JDialog) parentWindow).setTitle(title);
+    }
   }
 
   private static DefaultTreeModel createApplicationTree(final Collection<? extends EntityPanel> entityPanels) {
