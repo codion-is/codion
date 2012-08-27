@@ -22,7 +22,7 @@ public final class Events {
     return new EventImpl();
   }
 
-  static final class EventImpl implements Event {
+  private static final class EventImpl implements Event {
 
     private volatile EventObserverImpl observer;
 

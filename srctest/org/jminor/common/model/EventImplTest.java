@@ -14,7 +14,7 @@ public class EventImplTest {
 
   @Test
   public void test() throws Exception {
-    final Event event = new Events.EventImpl();
+    final Event event = Events.event();
     final List<Object> res = new ArrayList<Object>();
     final EventListener listener = new EventAdapter() {
       @Override

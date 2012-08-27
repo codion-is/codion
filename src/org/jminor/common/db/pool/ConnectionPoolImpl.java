@@ -326,7 +326,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   @Override
   public void setNewConnectionThreshold(final int value) {
     if (value < 0 || value >= maximumCheckOutTime) {
-      throw new IllegalArgumentException("Wait time before new connection must be larger than zero and smaller than maximumCheckOutTime");
+      throw new IllegalArgumentException("Wait time before new connection must be larger than zero and less than or equal to maximumCheckOutTime");
     }
     this.newConnectionThreshold = value;
   }
@@ -407,9 +407,8 @@ final class ConnectionPoolImpl implements ConnectionPool {
     synchronized (pool) {
       if (currentPoolStatisticsIndex == FINE_GRAINED_STATS_SIZE) {
         currentPoolStatisticsIndex = 0;
-      }
-      final int inUseCount = inUse.size();
-      connectionPoolStatistics.get(currentPoolStatisticsIndex).set(currentTime, pool.size(), inUseCount);
+      }//todo shouldnt the below be synchronized
+      connectionPoolStatistics.get(currentPoolStatisticsIndex).set(currentTime, pool.size(), inUse.size());
       currentPoolStatisticsIndex++;
     }
   }
