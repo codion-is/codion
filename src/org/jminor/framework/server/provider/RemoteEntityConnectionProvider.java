@@ -50,7 +50,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     this.serverHostName = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;
-    Configuration.resolveTrustStoreProperty(clientTypeID);
+    Util.resolveTrustStore(clientTypeID);
   }
 
   /**

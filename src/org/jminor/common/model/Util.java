@@ -54,12 +54,14 @@ public final class Util {
 
   public static final String PREF_DEFAULT_USERNAME = "jminor.username";
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+  public static final String JAVAX_NET_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
 
   private static final Logger LOG = LoggerFactory.getLogger(Util.class);
   private static final Random RANDOM = new Random();
   private static final int K = 1024;
   private static final String SPACE = " ";
   private static final String UNDERSCORE = "_";
+  private static final int INPUT_BUFFER_SIZE = 8192;
   private static Preferences userPreferences;
 
   private Util() {}
@@ -991,6 +993,47 @@ public final class Util {
     }
 
     return valueOwner.getClass().getMethod("get" + propertyName);
+  }
+
+  /**
+   * Reads the trust store specified by "javax.net.ssl.trustStore" from the classpath, copies it
+   * to a temporary file and sets the trust store property so that it points to that temporary file
+   * @param temporaryFileNamePrefix the prefix to use for the temporary filename
+   */
+  public static void resolveTrustStore(final String temporaryFileNamePrefix) {
+    final String value = System.getProperty(JAVAX_NET_NET_TRUSTSTORE);
+    if (nullOrEmpty(value)) {
+      LOG.debug("resolveTrustStoreProperty: {} is empty", JAVAX_NET_NET_TRUSTSTORE);
+      return;
+    }
+    FileOutputStream out = null;
+    InputStream in = null;
+    try {
+      final ClassLoader loader = Util.class.getClassLoader();
+      in = loader.getResourceAsStream(value);
+      if (in == null) {
+        LOG.debug("resolveTrustStoreProperty: {} not found on classpath", value);
+        return;
+      }
+      final File file = File.createTempFile(temporaryFileNamePrefix, "tmp");
+      file.deleteOnExit();
+      out = new FileOutputStream(file);
+      final byte[] buf = new byte[INPUT_BUFFER_SIZE];
+      int br = in.read(buf);
+      while (br > 0) {
+        out.write(buf, 0, br);
+        br = in.read(buf);
+      }
+      LOG.debug("resolveTrustStoreProperty: {} -> {}", JAVAX_NET_NET_TRUSTSTORE, file);
+
+      System.setProperty(JAVAX_NET_NET_TRUSTSTORE, file.getPath());
+    }
+    catch (IOException e) {
+      throw new RuntimeException(e);
+    }
+    finally {
+      closeSilently(out, in);
+    }
   }
 
   /**

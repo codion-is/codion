@@ -7,19 +7,11 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import java.awt.Color;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.InputStream;
-import java.rmi.registry.Registry;
 import java.text.SimpleDateFormat;
 import java.util.Properties;
 
@@ -31,8 +23,6 @@ import java.util.Properties;
  * override and use it to set configuration properties.
  */
 public final class Configuration {
-
-  private static final Logger LOG = LoggerFactory.getLogger(Configuration.class);
 
   /**
    * A convenience method for loading this class so that it parses configuration files and such
@@ -516,9 +506,7 @@ public final class Configuration {
    */
   public static final String SHOW_TOGGLE_EDIT_PANEL_CONTROL = "jminor.client.showToggleEditPanelControl";
 
-  public static final String JAVAX_NET_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
   private static final Properties PROPERTIES = new Properties();
-  private static final int INPUT_BUFFER_SIZE = 8192;
 
   static {
     Util.parseConfigurationFile();
@@ -535,7 +523,7 @@ public final class Configuration {
     PROPERTIES.put(SERVER_CONNECTION_SSL_ENABLED, true);
     PROPERTIES.put(SERVER_ADMIN_PORT, 3333);
     PROPERTIES.put(SERVER_HOST_NAME, "localhost");
-    PROPERTIES.put(REGISTRY_PORT_NUMBER, Registry.REGISTRY_PORT);
+    PROPERTIES.put(REGISTRY_PORT_NUMBER, 1099);
     PROPERTIES.put(DEFAULT_TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
     PROPERTIES.put(DEFAULT_DATE_FORMAT, "dd-MM-yyyy");
     PROPERTIES.put(ALL_PANELS_ACTIVE, false);
@@ -633,7 +621,7 @@ public final class Configuration {
     parseStringSetting(DEFAULT_LOOK_AND_FEEL_CLASSNAME);
     parseStringSetting(WEB_SERVER_DOCUMENT_ROOT);
     parseIntegerSetting(WEB_SERVER_PORT);
-    parseStringSetting(JAVAX_NET_NET_TRUSTSTORE);
+    parseStringSetting(Util.JAVAX_NET_NET_TRUSTSTORE);
     parseBooleanSetting(CACHE_REPORTS);
     parseIntegerSetting(DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
     parseBooleanSetting(STRICT_FOREIGN_KEYS);
@@ -743,45 +731,5 @@ public final class Configuration {
   public static boolean entityDeserializerAvailable() {
     final String deserializerClass = getStringValue(ENTITY_DESERIALIZER_CLASS);
     return deserializerClass != null && Util.onClasspath(deserializerClass);
-  }
-
-  /**
-   * Reads the trust store specified by "javax.net.ssl.trustStore" from the classpath, copies it
-   * to a temporary file and sets the value of "javax.net.ssl.trustStore" so that it points to that file.
-   * @param temporaryFileName the temp filename
-   */
-  public static void resolveTrustStoreProperty(final String temporaryFileName) {
-    final String value = getStringValue(JAVAX_NET_NET_TRUSTSTORE);
-    if (Util.nullOrEmpty(value)) {
-      LOG.debug("resolveTrustStoreProperty: {} is empty", JAVAX_NET_NET_TRUSTSTORE);
-      return;
-    }
-    FileOutputStream out = null;
-    InputStream in = null;
-    try {
-      final ClassLoader loader = Configuration.class.getClassLoader();
-      in = loader.getResourceAsStream(value);
-      if (in == null) {
-        LOG.debug("resolveTrustStoreProperty: {} not found on classpath", value);
-        return;
-      }
-      final File file = File.createTempFile(temporaryFileName, "tmp");
-      file.deleteOnExit();
-      out = new FileOutputStream(file);
-      final byte[] buf = new byte[INPUT_BUFFER_SIZE];
-      int br = in.read(buf);
-      while (br > 0) {
-        out.write(buf, 0, br);
-        br = in.read(buf);
-      }
-      LOG.debug("resolveTrustStoreProperty: {} -> {}", JAVAX_NET_NET_TRUSTSTORE, file);
-      setValue(JAVAX_NET_NET_TRUSTSTORE, file.getPath());
-    }
-    catch (IOException e) {
-      throw new RuntimeException(e);
-    }
-    finally {
-      Util.closeSilently(out, in);
-    }
   }
 }

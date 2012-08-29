@@ -3189,3 +3189,5 @@
   EntityJSONParser improved quite a bit, refactored
   Util.nullOrEmpty() overloaded for Collections and Maps
   EntityConnectionImpl.update() refactored
+  Configuration.resolveTrustStoreProperty() moved to Util and renamed to resolveTrustStore()
+  EntityConnectionServerTest improved a bit, setUp()/tearDown() now use EntityConnectionServerAdminImpl.startServer/shutdownServer() respectively

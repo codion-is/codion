@@ -47,6 +47,8 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   private static final long serialVersionUID = 1;
 
+  static volatile EntityConnectionServerAdminImpl adminInstance;
+
   static {
     Configuration.init();
     System.setSecurityManager(new RMISecurityManager());
@@ -478,6 +480,13 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     return EntityConnectionServer.getEntityDefinitions();
   }
 
+  /**
+   * @return the server instance being administered
+   */
+  EntityConnectionServer getServer() {
+    return server;
+  }
+
   private Runnable getShutdownHook() {
     return new Runnable() {
       /** {@inheritDoc} */
@@ -501,7 +510,11 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
             + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
   }
 
-  private static void startServer() throws RemoteException, ClassNotFoundException, DatabaseException {
+  static synchronized void startServer() throws RemoteException, ClassNotFoundException, DatabaseException {
+    if (adminInstance != null) {
+      throw new IllegalStateException("Server admin instance already running");
+    }
+
     final Integer serverPort = (Integer) Configuration.getValue(Configuration.SERVER_PORT);
     if (serverPort == null) {
       throw new IllegalArgumentException("Configuration property '" + Configuration.SERVER_PORT + "' is required");
@@ -514,18 +527,18 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     final String serverName = initializeServerName(database.getHost(), database.getSid());
     final EntityConnectionServer server = new EntityConnectionServer(serverName, serverPort, registryPort, database,
             sslEnabled, connectionLimit);
-    new EntityConnectionServerAdminImpl(server, serverAdminPort);
+    EntityConnectionServerAdminImpl.adminInstance = new EntityConnectionServerAdminImpl(server, serverAdminPort);
   }
 
   /**
    * Connects to the server and shuts it down
    */
-  private static void shutdownServer() {
+  static synchronized void shutdownServer() {
     final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
     final String sid = System.getProperty(Database.DATABASE_SID);
     final String host = System.getProperty(Database.DATABASE_HOST);
     final String serverName = RemoteServer.SERVER_ADMIN_PREFIX + initializeServerName(host, sid);
-    Configuration.resolveTrustStoreProperty(EntityConnectionServerAdminImpl.class.getSimpleName());
+    Util.resolveTrustStore(EntityConnectionServerAdminImpl.class.getSimpleName());
     try {
       final Registry registry = ServerUtil.getRegistry(registryPort);
       final EntityConnectionServerAdmin serverAdmin = (EntityConnectionServerAdmin) registry.lookup(serverName);
@@ -540,6 +553,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     catch (NotBoundException e) {
       System.out.println(serverName + " not bound to registry on port: " + registryPort);
     }
+    EntityConnectionServerAdminImpl.adminInstance = null;
   }
 
   /**

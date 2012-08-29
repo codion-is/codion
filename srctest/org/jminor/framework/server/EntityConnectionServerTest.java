@@ -4,7 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.Databases;
 import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -57,30 +56,15 @@ public class EntityConnectionServerTest {
   }
 
   @BeforeClass
-  public static void setUp() throws Exception {
-    final String testServerName = Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX) + " unit test server";
-    if (server != null) {
-      throw new RuntimeException("Server not torn down after last run");
-    }
-    try {
-      server = new EntityConnectionServer(testServerName, 2222, 1099, Databases.createInstance(), true, -1);
-    }
-    catch (Exception e) {
-      e.printStackTrace();
-      throw e;
-    }
-    if (admin != null) {
-      throw new RuntimeException("Server admin not torn down after last run");
-    }
-    admin = new EntityConnectionServerAdminImpl(server, 3334);
+  public static synchronized void setUp() throws Exception {
+    EntityConnectionServerAdminImpl.startServer();
+    EntityConnectionServerTest.admin = EntityConnectionServerAdminImpl.adminInstance;
+    EntityConnectionServerTest.server = admin.getServer();
   }
 
   @AfterClass
-  public static void tearDown() throws Exception {
-    if (admin != null) {
-      admin.shutdown();
-    }
-    Thread.sleep(300);
+  public static synchronized void tearDown() throws Exception {
+    EntityConnectionServerAdminImpl.shutdownServer();
     admin = null;
     server = null;
   }
@@ -94,20 +78,39 @@ public class EntityConnectionServerTest {
   public void test() throws Exception {
     final RemoteEntityConnectionProvider providerOne = new RemoteEntityConnectionProvider(User.UNIT_TEST_USER,
             UUID.randomUUID(), getClass().getSimpleName());
-    final EntityConnection remoteDbOne = providerOne.getConnection();
-    assertTrue(remoteDbOne.isValid());
-    assertEquals(1, server.getConnectionCount());
+    final EntityConnection remoteConnectionOne = providerOne.getConnection();
+    assertTrue(remoteConnectionOne.isValid());
+    assertEquals(1, admin.getConnectionCount());
+    admin.setPoolConnectionThreshold(User.UNIT_TEST_USER, 505);
+    assertEquals(505, admin.getPoolConnectionThreshold(User.UNIT_TEST_USER));
+    assertTrue(admin.isConnectionPoolEnabled(User.UNIT_TEST_USER));
+    admin.setConnectionPoolEnabled(User.UNIT_TEST_USER, false);
+    assertFalse(admin.isConnectionPoolEnabled(User.UNIT_TEST_USER));
+    admin.setConnectionPoolEnabled(User.UNIT_TEST_USER, true);
+    admin.setPooledConnectionTimeout(User.UNIT_TEST_USER, 60005);
+    assertEquals(60005, admin.getPooledConnectionTimeout(User.UNIT_TEST_USER));
+    admin.setMaximumPoolCheckOutTime(User.UNIT_TEST_USER, 2005);
+    assertEquals(2005, admin.getMaximumPoolCheckOutTime(User.UNIT_TEST_USER));
 
     final RemoteEntityConnectionProvider providerTwo = new RemoteEntityConnectionProvider(User.UNIT_TEST_USER,
             UUID.randomUUID(), getClass().getSimpleName());
-    final EntityConnection remoteDbTwo = providerTwo.getConnection();
-    server.setLoggingEnabled(providerTwo.getClientID(), true);
-    assertTrue(server.isLoggingEnabled(providerTwo.getClientID()));
-    assertTrue(remoteDbTwo.isValid());
-    assertEquals(2, server.getConnectionCount());
+    final EntityConnection remoteConnectionTwo = providerTwo.getConnection();
+    admin.setLoggingEnabled(providerOne.getClientID(), true);
+    assertTrue(admin.isLoggingEnabled(providerOne.getClientID()));
+    assertTrue(remoteConnectionTwo.isValid());
+    assertEquals(2, admin.getConnectionCount());
 
-    final Collection<ClientInfo> clients = admin.getClients(new User(User.UNIT_TEST_USER.getUsername(), null));
+    Collection<ClientInfo> clients = admin.getClients(new User(User.UNIT_TEST_USER.getUsername(), null));
     assertEquals(2, clients.size());
+    clients = admin.getClients(getClass().getSimpleName());
+    assertEquals(2, clients.size());
+    final Collection<String> clientTypes = admin.getClientTypes();
+    assertEquals(1, clientTypes.size());
+    assertTrue(clientTypes.contains(getClass().getSimpleName()));
+
+    final Collection<User> users = admin.getUsers();
+    assertEquals(1, users.size());
+    assertEquals(User.UNIT_TEST_USER, users.iterator().next());
 
     providerTwo.getConnection().selectAll(EmpDept.T_EMPLOYEE);
 
@@ -115,7 +118,7 @@ public class EntityConnectionServerTest {
     assertNotNull(stats.getTimestamp());
     assertNotNull(stats.getQueriesPerSecond());
 
-    final ServerLog log = server.getServerLog(providerTwo.getClientID());
+    final ServerLog log = admin.getServerLog(providerTwo.getClientID());
     assertEquals("returnConnection", log.getLastAccessedMethod());
     assertEquals("returnConnection", log.getLastExitedMethod());
     assertTrue(log.getLastDelta() >= 0);
@@ -133,10 +136,10 @@ public class EntityConnectionServerTest {
     assertNotNull(entry.getExitTimeFormatted());
 
     providerOne.disconnect();
-    assertEquals(1, server.getConnectionCount());
+    assertEquals(1, admin.getConnectionCount());
 
     providerTwo.disconnect();
-    assertEquals(0, server.getConnectionCount());
+    assertEquals(0, admin.getConnectionCount());
 
     server.setConnectionLimit(1);
     providerOne.getConnection();
@@ -146,18 +149,19 @@ public class EntityConnectionServerTest {
     }
     catch (RuntimeException e) {}
 
-    assertEquals(1, server.getConnectionCount());
-    server.setConnectionLimit(2);
+    assertEquals(1, admin.getConnectionCount());
+    admin.setConnectionLimit(2);
     providerTwo.getConnection();
-    assertEquals(2, server.getConnectionCount());
+    assertEquals(2, admin.getConnectionCount());
 
     providerOne.disconnect();
-    assertEquals(1, server.getConnectionCount());
+    assertEquals(1, admin.getConnectionCount());
     providerTwo.disconnect();
-    assertEquals(0, server.getConnectionCount());
+    assertEquals(0, admin.getConnectionCount());
 
     //testing with the EmpDeptLoginProxy
-    server.setConnectionLimit(3);
+    admin.setConnectionLimit(3);
+    assertEquals(3, admin.getConnectionLimit());
     final String empDeptClientTypeID = "org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel";
     final RemoteEntityConnectionProvider empDeptProviderJohn = new RemoteEntityConnectionProvider(new User("john", "hello"),
             UUID.randomUUID(), empDeptClientTypeID);
@@ -172,15 +176,15 @@ public class EntityConnectionServerTest {
       fail("Should not be able to connect with an invalid user");
     }
     catch (Exception e) {}
-    final Collection<ClientInfo> empDeptClients = server.getClients(empDeptClientTypeID);
+    final Collection<ClientInfo> empDeptClients = admin.getClients(empDeptClientTypeID);
     assertEquals(2, empDeptClients.size());
     for (final ClientInfo empDeptClient : empDeptClients) {
       assertEquals(User.UNIT_TEST_USER, empDeptClient.getDatabaseUser());
     }
     empDeptProviderJohn.disconnect();
-    assertEquals(1, server.getConnectionCount());
+    assertEquals(1, admin.getConnectionCount());
     empDeptProviderHelen.disconnect();
-    assertEquals(0, server.getConnectionCount());
+    assertEquals(0, admin.getConnectionCount());
   }
 
   @Test
@@ -251,13 +255,10 @@ public class EntityConnectionServerTest {
   @Test
   public void coverAdmin() throws RemoteException {
     final EntityConnectionServerAdmin admin = getServerAdmin();
+    admin.setWarningTimeThreshold(300);
+    assertEquals(300, admin.getWarningTimeThreshold());
     admin.getActiveConnectionCount();
     admin.getAllocatedMemory();
-    admin.getClients();
-    admin.getClientTypes();
-    admin.getConnectionCount();
-    admin.setConnectionLimit(10);
-    assertEquals(10, admin.getConnectionLimit());
     admin.setConnectionTimeout(30);
     assertEquals(30, admin.getConnectionTimeout());
     admin.getDatabaseStatistics();
