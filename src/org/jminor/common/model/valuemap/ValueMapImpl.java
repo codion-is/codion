@@ -196,7 +196,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public boolean isModified() {
-    return originalValues != null && !originalValues.isEmpty();
+    return !Util.nullOrEmpty(originalValues);
   }
 
   /** {@inheritDoc} */

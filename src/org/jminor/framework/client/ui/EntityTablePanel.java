@@ -831,7 +831,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities,
                                                               final EntityConnectionProvider connectionProvider) {
-    if (entities == null || entities.isEmpty()) {
+    if (Util.nullOrEmpty(entities)) {
       throw new IllegalArgumentException("Cannot create a static EntityTablePanel without the entities");
     }
 

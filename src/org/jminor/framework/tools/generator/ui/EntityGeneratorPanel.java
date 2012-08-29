@@ -6,6 +6,7 @@ package org.jminor.framework.tools.generator.ui;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.images.Images;
@@ -93,7 +94,7 @@ public class EntityGeneratorPanel extends JPanel {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
         String schemaName = JOptionPane.showInputDialog("Schema name");
-        if (schemaName == null || schemaName.isEmpty()) {
+        if (Util.nullOrEmpty(schemaName)) {
           return;
         }
 

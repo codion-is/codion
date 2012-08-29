@@ -623,8 +623,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     @Override
     public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
       final Color color = c == null ? Color.GRAY : c.getBackground();
-      // In a compound sort, make each successive triangle 20%
-      // smaller than the previous one.
+      // In a compound sort, make each successive triangle 20% smaller than the previous one.
       final int dx = (int)(size/PRIORITY_SIZE_CONST * Math.pow(PRIORITY_SIZE_RATIO, priority));
       final int dy = descending ? dx : -dx;
       // Align icon (roughly) with font baseline.
@@ -645,7 +644,8 @@ public class FilteredTablePanel<T, C> extends JPanel {
       // Horizontal line.
       if (descending) {
         g.setColor(color.darker().darker());
-      } else {
+      }
+      else {
         g.setColor(color.brighter().brighter());
       }
       g.drawLine(dx, 0, 0, 0);

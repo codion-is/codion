@@ -798,6 +798,40 @@ public final class Util {
   }
 
   /**
+   * @param maps the collections to check
+   * @return true if one of the given collections is null or empty or if no arguments are provided, false otherwise
+   */
+  public static boolean nullOrEmpty(final Map... maps) {
+    if (maps == null) {
+      return true;
+    }
+    for (final Map map : maps) {
+      if (map == null || map.isEmpty()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
+   * @param collections the collections to check
+   * @return true if one of the given collections is null or empty or if no arguments are provided, false otherwise
+   */
+  public static boolean nullOrEmpty(final Collection... collections) {
+    if (collections == null) {
+      return true;
+    }
+    for (final Collection collection : collections) {
+      if (collection == null || collection.isEmpty()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /**
    * @param strings the strings to check
    * @return true if one of the given strings is null or empty or if no arguments are provided, false otherwise
    */

@@ -591,7 +591,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
     for (final Property property : properties.values()) {
       if (property instanceof Property.DerivedProperty) {
         final Collection<String> linked = ((Property.DerivedProperty) property).getLinkedPropertyIDs();
-        if (linked != null && !linked.isEmpty()) {
+        if (!Util.nullOrEmpty(linked)) {
           for (final String parentLinkPropertyID : linked) {
             linkProperties(parentLinkPropertyID, property.getPropertyID());
           }

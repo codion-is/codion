@@ -29,11 +29,10 @@ public final class TextFieldHint {
    */
   private TextFieldHint(final JTextField txtField, final String hintText, final Color hintForegroundColor) {
     Util.rejectNullValue(txtField, "txtField");
-    Util.rejectNullValue(hintText, "hintText");
-    Util.rejectNullValue(hintForegroundColor, "hintForegroundColor");
-    if (hintText.isEmpty()) {
+    if (Util.nullOrEmpty(hintText)) {
       throw new IllegalArgumentException("Hint text is null or empty");
     }
+    Util.rejectNullValue(hintForegroundColor, "hintForegroundColor");
     this.txtField = txtField;
     this.hintText = hintText;
     this.defaultForegroundColor = txtField.getForeground();

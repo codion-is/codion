@@ -752,7 +752,7 @@ public final class Configuration {
    */
   public static void resolveTrustStoreProperty(final String temporaryFileName) {
     final String value = getStringValue(JAVAX_NET_NET_TRUSTSTORE);
-    if (value == null || value.isEmpty()) {
+    if (Util.nullOrEmpty(value)) {
       LOG.debug("resolveTrustStoreProperty: {} is empty", JAVAX_NET_NET_TRUSTSTORE);
       return;
     }

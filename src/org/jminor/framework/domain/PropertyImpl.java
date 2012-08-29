@@ -1093,22 +1093,6 @@ class PropertyImpl implements Property, Serializable {
 
     /** {@inheritDoc} */
     @Override
-    public final String toSQLString(final Boolean value) {
-      final Object result = toSQLValue(value);
-      if (columnType == Types.VARCHAR) {
-        return "'" + result + "'";
-      }
-      else {
-        if (result == null) {
-          return "null";
-        }
-
-        return result.toString();
-      }
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public final Object toSQLValue(final Boolean value) {
       if (value == null) {
         return null;

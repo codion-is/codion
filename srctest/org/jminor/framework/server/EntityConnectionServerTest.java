@@ -17,6 +17,7 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.server.provider.RemoteEntityConnectionProvider;
 
+import ch.qos.logback.classic.Level;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -33,18 +34,10 @@ import static org.junit.Assert.*;
 
 public class EntityConnectionServerTest {
 
-  private static SecurityManager defaultManager;
   private static EntityConnectionServer server;
   private static EntityConnectionServerAdminImpl admin;
 
-  public static EntityConnectionServerAdmin getServerAdmin() {
-    return admin;
-  }
-
-  @BeforeClass
-  public static void setUp() throws Exception {
-    defaultManager = System.getSecurityManager();
-    Configuration.init();
+  static {
     Configuration.setValue(Configuration.SERVER_PORT, 2222);
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
     Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
@@ -57,6 +50,14 @@ public class EntityConnectionServerTest {
     Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
     Configuration.setValue("javax.net.ssl.keyStore", "resources/security/JMinorServerKeystore");
     Configuration.setValue("javax.net.ssl.keyStorePassword", "jminor");
+  }
+
+  public static EntityConnectionServerAdmin getServerAdmin() {
+    return admin;
+  }
+
+  @BeforeClass
+  public static void setUp() throws Exception {
     final String testServerName = Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX) + " unit test server";
     if (server != null) {
       throw new RuntimeException("Server not torn down after last run");
@@ -82,7 +83,6 @@ public class EntityConnectionServerTest {
     Thread.sleep(300);
     admin = null;
     server = null;
-    System.setSecurityManager(defaultManager);
   }
 
   @Test(expected = RuntimeException.class)
@@ -246,5 +246,39 @@ public class EntityConnectionServerTest {
 
     server.disconnect(clientOne.getClientID());
     server.disconnect(clientTwo.getClientID());
+  }
+
+  @Test
+  public void coverAdmin() throws RemoteException {
+    final EntityConnectionServerAdmin admin = getServerAdmin();
+    admin.getActiveConnectionCount();
+    admin.getAllocatedMemory();
+    admin.getClients();
+    admin.getClientTypes();
+    admin.getConnectionCount();
+    admin.setConnectionLimit(10);
+    assertEquals(10, admin.getConnectionLimit());
+    admin.setConnectionTimeout(30);
+    assertEquals(30, admin.getConnectionTimeout());
+    admin.getDatabaseStatistics();
+    admin.getDatabaseURL();
+    admin.getEnabledConnectionPools();
+    admin.getEntityDefinitions();
+    admin.setLoggingLevel(Level.INFO);
+    assertEquals(Level.INFO, admin.getLoggingLevel());
+    admin.setMaintenanceInterval(500);
+    assertEquals(500, admin.getMaintenanceInterval());
+    admin.getMaxMemory();
+    admin.getMemoryUsage();
+    admin.getRequestsPerSecond();
+    admin.getServerName();
+    admin.getServerPort();
+    admin.getServerVersion();
+    admin.getStartDate();
+    admin.getSystemProperties();
+    admin.getUsedMemory();
+    admin.getUsers();
+    admin.getWarningTimeExceededPerSecond();
+    admin.getWarningTimeThreshold();
   }
 }

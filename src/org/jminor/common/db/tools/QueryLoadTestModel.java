@@ -15,6 +15,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
@@ -124,7 +125,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
         connection = application.pool.getConnection();
         statement = connection.getConnection().prepareCall(query);
         final List<Object> parameters = getParameters();
-        if (parameters != null && !parameters.isEmpty()) {
+        if (!Util.nullOrEmpty(parameters)) {
           int index = 1;
           for (final Object parameter : getParameters()) {
             statement.setObject(index++, parameter);

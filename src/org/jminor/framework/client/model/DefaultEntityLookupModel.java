@@ -136,7 +136,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   @Override
   public final void setSelectedEntities(final Collection<Entity> entities) {
-    if ((entities == null || entities.isEmpty()) && this.selectedEntities.isEmpty()) {
+    if (Util.nullOrEmpty(entities) && this.selectedEntities.isEmpty()) {
       return;
     }//no change
     if (entities != null && entities.size() > 1 && !multipleSelectionAllowed) {

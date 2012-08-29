@@ -193,7 +193,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     final String searchState = getSearchModelState();
     if (containsPropertySearchModel(propertyID)) {
       final PropertySearchModel searchModel = getPropertySearchModel(propertyID);
-      searchModel.setEnabled(values != null && !values.isEmpty());
+      searchModel.setEnabled(!Util.nullOrEmpty(values));
       searchModel.setUpperBound((Object) null);//because the upperBound could be a reference to the active entity which changes accordingly
       searchModel.setUpperBound(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
     }

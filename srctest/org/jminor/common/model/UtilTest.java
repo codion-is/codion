@@ -12,9 +12,12 @@ import java.io.IOException;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Properties;
 
 import static org.junit.Assert.*;
@@ -250,5 +253,30 @@ public class UtilTest {
   public void onClasspath() {
     assertTrue(Util.onClasspath(UtilTest.class.getName()));
     assertFalse(Util.onClasspath("no.class.Here"));
+  }
+
+  @Test
+  public void nullOrEmpty() {
+    assertTrue(Util.nullOrEmpty((Collection[]) null));
+    assertTrue(Util.nullOrEmpty(Arrays.asList(""), null));
+    assertTrue(Util.nullOrEmpty(Arrays.asList(""), Collections.emptyList()));
+
+    final Map<Integer, String> map = new HashMap<Integer, String>();
+    map.put(1, "1");
+    assertTrue(Util.nullOrEmpty((Map[]) null));
+    assertTrue(Util.nullOrEmpty(map, null));
+    assertTrue(Util.nullOrEmpty(map, Collections.emptyMap()));
+
+    assertTrue(Util.nullOrEmpty((String[]) null));
+    assertTrue(Util.nullOrEmpty("sadf", null));
+    assertTrue(Util.nullOrEmpty("asdf", ""));
+
+    assertFalse(Util.nullOrEmpty(Arrays.asList("1")));
+    assertFalse(Util.nullOrEmpty(Arrays.asList("1", "2")));
+
+    assertFalse(Util.nullOrEmpty("asdf"));
+    assertFalse(Util.nullOrEmpty("asdf", "wefs"));
+
+    assertFalse(Util.nullOrEmpty(map));
   }
 }

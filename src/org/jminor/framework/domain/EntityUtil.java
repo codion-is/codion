@@ -127,7 +127,7 @@ public final class EntityUtil {
    */
   public static Collection<Object> getPropertyValues(final String propertyID, final Collection<Entity> entities,
                                                      final boolean includeNullValues) {
-    if (entities == null || entities.isEmpty()) {
+    if (Util.nullOrEmpty(entities)) {
       return new ArrayList<Object>(0);
     }
 
@@ -269,7 +269,7 @@ public final class EntityUtil {
    * @return a list containing the properties identified by the given propertyIDs
    */
   public static Collection<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
-    if (propertyIDs == null || propertyIDs.isEmpty()) {
+    if (Util.nullOrEmpty(propertyIDs)) {
       return new ArrayList<Property>(0);
     }
 
@@ -336,7 +336,7 @@ public final class EntityUtil {
 
   /**
    * @param entities the entities to copy
-   * @return deep copies of the entities
+   * @return deep copies of the entities, in the same order as the are received
    */
   public static List<Entity> copyEntities(final List<Entity> entities) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
@@ -484,7 +484,7 @@ public final class EntityUtil {
    * @return true if any of the given entities has a modified primary key
    */
   public static boolean isPrimaryKeyModified(final Collection<Entity> entities) {
-    if (entities == null || entities.isEmpty()) {
+    if (Util.nullOrEmpty(entities)) {
       return false;
     }
     for (final Entity entity : entities) {
@@ -633,7 +633,7 @@ public final class EntityUtil {
      */
     public List<Entity> toEntities(final List<?> beans) throws InvocationTargetException,
             NoSuchMethodException, IllegalAccessException {
-      if (beans == null || beans.isEmpty()) {
+      if (Util.nullOrEmpty(beans)) {
         return Collections.emptyList();
       }
       final List<Entity> entities = new ArrayList<Entity>(beans.size());
@@ -682,7 +682,7 @@ public final class EntityUtil {
      */
     public List<Object> toBeans(final List<Entity> entities) throws InvocationTargetException,
             NoSuchMethodException, InstantiationException, IllegalAccessException {
-      if (entities == null || entities.isEmpty()) {
+      if (Util.nullOrEmpty(entities)) {
         return Collections.emptyList();
       }
       final List<Object> beans = new ArrayList<Object>(entities.size());

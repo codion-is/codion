@@ -974,7 +974,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
           usageScenarioFailures.put(scenario.getName(), failures);
           synchronized (scenarioDurations) {
             final Collection<Integer> durations = scenarioDurations.get(scenario.getName());
-            if (durations != null && !durations.isEmpty()) {
+            if (!Util.nullOrEmpty(durations)) {
               int totalDuration = 0;
               int minDuration = -1;
               int maxDuration = -1;

@@ -250,6 +250,40 @@ public class EntityUtilTest {
     assertEquals(5, propertyValues.size());
     values.add(null);
     assertTrue(propertyValues.containsAll(values));
+
+    assertEquals(0, EntityUtil.getDistinctPropertyValues(EmpDept.DEPARTMENT_ID, null, true).size());
+    assertEquals(0, EntityUtil.getDistinctPropertyValues(EmpDept.DEPARTMENT_ID, new ArrayList<Entity>(), true).size());
+  }
+
+  @Test
+  public void getSortedProperties() {
+    Chinook.init();
+    final List<Property> properties = EntityUtil.getSortedProperties(Chinook.T_CUSTOMER,
+            Arrays.asList(Chinook.CUSTOMER_EMAIL, Chinook.CUSTOMER_ADDRESS,
+                    Chinook.CUSTOMER_LASTNAME, Chinook.CUSTOMER_PHONE));
+    assertEquals(Chinook.CUSTOMER_ADDRESS, properties.get(0).getPropertyID());
+    assertEquals(Chinook.CUSTOMER_EMAIL, properties.get(1).getPropertyID());
+    assertEquals(Chinook.CUSTOMER_LASTNAME, properties.get(2).getPropertyID());
+    assertEquals(Chinook.CUSTOMER_PHONE, properties.get(3).getPropertyID());
+  }
+
+  @Test
+  public void copyEntities() {
+    EmpDept.init();
+    final Entity dept1 = Entities.entity(EmpDept.T_DEPARTMENT);
+    dept1.setValue(EmpDept.DEPARTMENT_ID, 1);
+    dept1.setValue(EmpDept.DEPARTMENT_LOCATION, "location");
+    dept1.setValue(EmpDept.DEPARTMENT_NAME, "name");
+    final Entity dept2 = Entities.entity(EmpDept.T_DEPARTMENT);
+    dept2.setValue(EmpDept.DEPARTMENT_ID, 2);
+    dept2.setValue(EmpDept.DEPARTMENT_LOCATION, "location2");
+    dept2.setValue(EmpDept.DEPARTMENT_NAME, "name2");
+
+    final List<Entity> copies = EntityUtil.copyEntities(Arrays.asList(dept1, dept2));
+    assertFalse(copies.get(0) == dept1);
+    assertTrue(copies.get(0).propertyValuesEqual(dept1));
+    assertFalse(copies.get(1) == dept2);
+    assertTrue(copies.get(1).propertyValuesEqual(dept2));
   }
 
   @Test

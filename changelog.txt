@@ -3185,3 +3185,7 @@
   EntityApplicationPanel.setParentWindowTitle() added, handles both JFrame and JDialog
   RemoteEntityConnectionProviderTest improved a bit
   EntityApplicationPanel.getEntityPanel() with Class parameter removed, unused
+  BooleanProperty.getSQLString() removed, unused
+  EntityJSONParser improved quite a bit, refactored
+  Util.nullOrEmpty() overloaded for Collections and Maps
+  EntityConnectionImpl.update() refactored

@@ -5,6 +5,7 @@ package org.jminor.framework.tools;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.ProgressReporter;
+import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
@@ -52,7 +53,7 @@ public final class EntityDataUtil {
   public static void batchInsert(final EntityConnection connection, final List<Entity> entities,
                                  final List<Entity.Key> committed, final int batchSize,
                                  final ProgressReporter progressReporter) throws DatabaseException {
-    if (entities == null || entities.isEmpty()) {
+    if (Util.nullOrEmpty(entities)) {
       return;
     }
     int insertedCount = 0;

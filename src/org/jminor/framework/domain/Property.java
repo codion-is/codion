@@ -541,12 +541,6 @@ public interface Property extends Attribute {
     Boolean toBoolean(final Object object);
 
     /**
-     * @param value the Boolean value to translate into a sql string value
-     * @return the sql string value of <code>value</code>
-     */
-    String toSQLString(final Boolean value);
-
-    /**
      * Translates the given Boolean value into a sql value
      * @param value the value to translate
      * @return the actual value used to represent the given boolean value

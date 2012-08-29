@@ -232,7 +232,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
               + ", should be: " + foreignKeyProperty.getReferencedEntityID());
     }
     final Collection<Entity> filterEntities = getForeignKeyFilterEntities(foreignKeyPropertyID);
-    if (filterEntities != null && !filterEntities.isEmpty()) {
+    if (!Util.nullOrEmpty(filterEntities)) {
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
     }
     foreignKeyModel.addSelectionListener(new EventAdapter() {

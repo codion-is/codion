@@ -47,7 +47,7 @@ public final class EntityConnectionLogger extends MethodLogger {
    * @param indentation the indentation to use for the given log entries
    */
   public static void appendLogEntries(final StringBuilder log, final List<LogEntry> logEntries, final int indentation) {
-    if (logEntries != null && !logEntries.isEmpty()) {
+    if (!Util.nullOrEmpty(logEntries)) {
       Collections.sort(logEntries);
       for (final LogEntry logEntry : logEntries) {
         log.append(logEntry.toString(indentation)).append("\n");

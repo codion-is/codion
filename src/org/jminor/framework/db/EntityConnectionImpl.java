@@ -102,7 +102,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   /** {@inheritDoc} */
   @Override
   public synchronized List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
-    if (entities == null || entities.isEmpty()) {
+    if (Util.nullOrEmpty(entities)) {
       return new ArrayList<Entity.Key>();
     }
     checkReadOnly(entities);
@@ -165,7 +165,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   /** {@inheritDoc} */
   @Override
   public synchronized List<Entity> update(final List<Entity> entities) throws DatabaseException {
-    if (entities == null || entities.isEmpty()) {
+    if (Util.nullOrEmpty(entities)) {
       return entities;
     }
     checkReadOnly(entities);
@@ -176,7 +176,13 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     try {
       final Map<String, Collection<Entity>> hashedEntities = EntityUtil.hashByEntityID(entities);
       if (optimisticLocking) {
-        lockAndCheckForUpdate(hashedEntities);
+        try {
+          lockAndCheckForUpdate(hashedEntities);
+        }
+        catch (RecordModifiedException e) {
+          rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
+          throw e;
+        }
       }
 
       final List<Property.ColumnProperty> statementProperties = new ArrayList<Property.ColumnProperty>();
@@ -207,12 +213,6 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         }
       }
       commitIfTransactionIsNotOpen();
-    }
-    catch (RecordModifiedException e) {//thrown by lockAndCheckForUpdate
-      if (optimisticLocking && !isTransactionOpen()) {
-        rollbackQuietly();//releasing the select for update lock
-      }
-      throw e;
     }
     catch (SQLException e) {
       rollbackQuietlyIfTransactionIsNotOpen();
@@ -253,7 +253,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   /** {@inheritDoc} */
   @Override
   public synchronized void delete(final List<Entity.Key> entityKeys) throws DatabaseException {
-    if (entityKeys == null || entityKeys.isEmpty()) {
+    if (Util.nullOrEmpty(entityKeys)) {
       return;
     }
 
@@ -315,7 +315,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   /** {@inheritDoc} */
   @Override
   public synchronized List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
-    if (keys == null || keys.isEmpty()) {
+    if (Util.nullOrEmpty(keys)) {
       return new ArrayList<Entity>(0);
     }
 
@@ -415,7 +415,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   @Override
   public synchronized Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
     final Map<String, Collection<Entity>> dependencyMap = new HashMap<String, Collection<Entity>>();
-    if (entities == null || entities.isEmpty()) {
+    if (Util.nullOrEmpty(entities)) {
       return dependencyMap;
     }
 
@@ -766,7 +766,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setForeignKeyFetchDepthLimit(int)
    */
   private void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria, final int currentForeignKeyFetchDepth) throws DatabaseException {
-    if (entities == null || entities.isEmpty()) {
+    if (Util.nullOrEmpty(entities)) {
       return;
     }
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entities.get(0).getEntityID());
@@ -957,7 +957,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   private static void setParameterValues(final PreparedStatement statement, final List<?> values,
                                          final List<Property.ColumnProperty> parameterProperties) throws SQLException {
-    if (values == null || values.isEmpty() || statement.getParameterMetaData().getParameterCount() == 0) {
+    if (Util.nullOrEmpty(values) || statement.getParameterMetaData().getParameterCount() == 0) {
       return;
     }
     if (parameterProperties == null || parameterProperties.size() != values.size()) {
@@ -1021,7 +1021,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   }
 
   private static Collection<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,
-                                                           final Property.ForeignKeyProperty foreignKeyProperty) {
+                                                                 final Property.ForeignKeyProperty foreignKeyProperty) {
     final Set<Entity.Key> keySet = new HashSet<Entity.Key>(entities.size());
     for (final Entity entity : entities) {
       final Entity.Key key = entity.getReferencedPrimaryKey(foreignKeyProperty);
@@ -1360,7 +1360,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
     private Entity loadEntity(final ResultSet resultSet) throws SQLException {
       final Entity entity = Entities.entity(entityID);
-      if (transientProperties != null && !transientProperties.isEmpty()) {
+      if (!Util.nullOrEmpty(transientProperties)) {
         for (final Property.TransientProperty transientProperty : transientProperties) {
           if (!(transientProperty instanceof Property.DenormalizedViewProperty)
                   && !(transientProperty instanceof Property.DerivedProperty)) {

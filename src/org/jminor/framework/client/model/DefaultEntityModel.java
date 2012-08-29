@@ -381,7 +381,7 @@ public class DefaultEntityModel implements EntityModel {
       tableModel.setForeignKeySearchValues(foreignKeyProperty, foreignKeyValues);
     }
 
-    if (editModel.isEntityNew() && foreignKeyValues != null && !foreignKeyValues.isEmpty()) {
+    if (editModel.isEntityNew() && !Util.nullOrEmpty(foreignKeyValues)) {
       editModel.setValue(foreignKeyProperty.getPropertyID(), foreignKeyValues.get(0));
     }
     handleInitialization(foreignKeyProperty, foreignKeyValues);
