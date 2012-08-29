@@ -54,7 +54,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   /**
-   * @return if no server connection has been established, 'serverHostName -
+   * @return a string describing the server connection
    */
   @Override
   public String getDescription() {

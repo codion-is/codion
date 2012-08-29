@@ -47,7 +47,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   private static final long serialVersionUID = 1;
 
-  static volatile EntityConnectionServerAdminImpl adminInstance;
+  private static EntityConnectionServerAdminImpl adminInstance;
 
   static {
     Configuration.init();
@@ -527,7 +527,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     final String serverName = initializeServerName(database.getHost(), database.getSid());
     final EntityConnectionServer server = new EntityConnectionServer(serverName, serverPort, registryPort, database,
             sslEnabled, connectionLimit);
-    EntityConnectionServerAdminImpl.adminInstance = new EntityConnectionServerAdminImpl(server, serverAdminPort);
+    adminInstance = new EntityConnectionServerAdminImpl(server, serverAdminPort);
   }
 
   /**
@@ -553,7 +553,11 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     catch (NotBoundException e) {
       System.out.println(serverName + " not bound to registry on port: " + registryPort);
     }
-    EntityConnectionServerAdminImpl.adminInstance = null;
+    adminInstance = null;
+  }
+
+  static EntityConnectionServerAdminImpl getInstance() {
+    return adminInstance;
   }
 
   /**

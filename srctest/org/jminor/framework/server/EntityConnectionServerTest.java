@@ -36,35 +36,22 @@ public class EntityConnectionServerTest {
   private static EntityConnectionServer server;
   private static EntityConnectionServerAdminImpl admin;
 
-  static {
-    Configuration.setValue(Configuration.SERVER_PORT, 2222);
-    Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
-    Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
-    Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept");
-    Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.demos.empdept.server.EmpDeptLoginProxy");
-    Configuration.setValue(Configuration.WEB_SERVER_DOCUMENT_ROOT, System.getProperty("user.dir") + System.getProperty("file.separator") + "resources");
-    Configuration.setValue(Configuration.WEB_SERVER_PORT, 12345);
-    Configuration.setValue("java.rmi.server.hostname", "localhost");
-    Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
-    Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
-    Configuration.setValue("javax.net.ssl.keyStore", "resources/security/JMinorServerKeystore");
-    Configuration.setValue("javax.net.ssl.keyStorePassword", "jminor");
-  }
-
   public static EntityConnectionServerAdmin getServerAdmin() {
     return admin;
   }
 
   @BeforeClass
   public static synchronized void setUp() throws Exception {
+    configure();
     EntityConnectionServerAdminImpl.startServer();
-    EntityConnectionServerTest.admin = EntityConnectionServerAdminImpl.adminInstance;
+    EntityConnectionServerTest.admin = EntityConnectionServerAdminImpl.getInstance();
     EntityConnectionServerTest.server = admin.getServer();
   }
 
   @AfterClass
   public static synchronized void tearDown() throws Exception {
     EntityConnectionServerAdminImpl.shutdownServer();
+    deconfigure();
     admin = null;
     server = null;
   }
@@ -281,5 +268,35 @@ public class EntityConnectionServerTest {
     admin.getUsers();
     admin.getWarningTimeExceededPerSecond();
     admin.getWarningTimeThreshold();
+  }
+
+  private static void configure() {
+    Configuration.setValue(Configuration.SERVER_PORT, 2222);
+    Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
+    Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
+    Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept");
+    Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.demos.empdept.server.EmpDeptLoginProxy");
+    Configuration.setValue(Configuration.WEB_SERVER_DOCUMENT_ROOT, System.getProperty("user.dir") + System.getProperty("file.separator") + "resources");
+    Configuration.setValue(Configuration.WEB_SERVER_PORT, 12345);
+    Configuration.setValue("java.rmi.server.hostname", "localhost");
+    Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
+    Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
+    Configuration.setValue("javax.net.ssl.keyStore", "resources/security/JMinorServerKeystore");
+    Configuration.setValue("javax.net.ssl.keyStorePassword", "jminor");
+  }
+
+  private static void deconfigure() {
+    Configuration.clearValue(Configuration.SERVER_PORT);
+    Configuration.clearValue(Configuration.SERVER_HOST_NAME);
+    Configuration.clearValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
+    Configuration.clearValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
+    Configuration.clearValue(Configuration.SERVER_LOGIN_PROXY_CLASSES);
+    Configuration.clearValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
+    Configuration.clearValue(Configuration.WEB_SERVER_PORT);
+    Configuration.clearValue("java.rmi.server.hostname");
+    Configuration.clearValue("java.security.policy");
+    Configuration.clearValue("javax.net.ssl.trustStore");
+    Configuration.clearValue("javax.net.ssl.keyStore");
+    Configuration.clearValue("javax.net.ssl.keyStorePassword");
   }
 }

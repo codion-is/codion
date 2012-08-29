@@ -3192,3 +3192,5 @@
   Configuration.resolveTrustStoreProperty() moved to Util and renamed to resolveTrustStore()
   EntityConnectionServerTest improved a bit, setUp()/tearDown() now use EntityConnectionServerAdminImpl.startServer/shutdownServer() respectively
   EntityConnectionImpl.PropertyResultPacker now handles null values correctly
+  EntityConnectionServerTest refactored
+  EntityConnectionServerAdminImpl.adminInstance privatized
