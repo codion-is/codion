@@ -1268,7 +1268,10 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       final List<Object> result = new ArrayList<Object>(50);
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        if (property.isInteger()) {
+        if (resultSet.wasNull()) {
+          result.add(null);
+        }
+        else if (property.isInteger()) {
           result.add(resultSet.getInt(1));
         }
         else if (property.isDouble()) {
