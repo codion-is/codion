@@ -7405,7 +7405,6 @@ INSERT INTO Chinook.Playlist (PlaylistId, Name) VALUES (3, 'TV Shows');
 INSERT INTO Chinook.Playlist (PlaylistId, Name) VALUES (4, 'Audiobooks');
 INSERT INTO Chinook.Playlist (PlaylistId, Name) VALUES (5, '90''s Music');
 INSERT INTO Chinook.Playlist (PlaylistId, Name) VALUES (9, 'Music Videos');
-INSERT INTO Chinook.Playlist (PlaylistId, Name) VALUES (10, 'TV Shows');
 INSERT INTO Chinook.Playlist (PlaylistId, Name) VALUES (11, 'Brazilian Music');
 INSERT INTO Chinook.Playlist (PlaylistId, Name) VALUES (12, 'Classical');
 INSERT INTO Chinook.Playlist (PlaylistId, Name) VALUES (13, 'Classical 101 - Deep Cuts');
@@ -12426,11 +12425,6 @@ INSERT INTO Chinook.PlaylistTrack (PlaylistId, TrackId) VALUES (9, 3402);
 
 commit;
 
-INSERT INTO Chinook.PlaylistTrack (PlaylistId, TrackId) VALUES (10, 3220);
-INSERT INTO Chinook.PlaylistTrack (PlaylistId, TrackId) VALUES (10, 3221);
-INSERT INTO Chinook.PlaylistTrack (PlaylistId, TrackId) VALUES (10, 3222);
-INSERT INTO Chinook.PlaylistTrack (PlaylistId, TrackId) VALUES (10, 3428);
-INSERT INTO Chinook.PlaylistTrack (PlaylistId, TrackId) VALUES (10, 3429);
 INSERT INTO Chinook.PlaylistTrack (PlaylistId, TrackId) VALUES (11, 391);
 INSERT INTO Chinook.PlaylistTrack (PlaylistId, TrackId) VALUES (11, 516);
 INSERT INTO Chinook.PlaylistTrack (PlaylistId, TrackId) VALUES (11, 523);

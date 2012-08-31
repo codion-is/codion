@@ -601,6 +601,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected final void initialize(final EntityApplicationModel applicationModel) throws CancelException {
     Util.rejectNullValue(applicationModel, "applicationModel");
     this.applicationModel = applicationModel;
+    this.entityPanels.addAll(initializeEntityPanels(applicationModel));
     initializeUI();
     bindEventsInternal();
     bindEvents();
@@ -726,18 +727,8 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         ((EntityPanel) applicationTabPane.getSelectedComponent()).initializePanel();
       }
     });
-    for (final EntityPanelProvider provider : entityPanelProviders) {
-      final EntityPanel entityPanel;
-      if (applicationModel.containsEntityModel(provider.getEntityID())) {
-        entityPanel = provider.createPanel(applicationModel.getEntityModel(provider.getEntityID()));
-      }
-      else {
-        entityPanel = provider.createPanel(applicationModel.getConnectionProvider());
-        applicationModel.addEntityModel(entityPanel.getModel());
-      }
-      entityPanels.add(entityPanel);
-      final String caption = Util.nullOrEmpty(provider.getCaption()) ? entityPanel.getCaption() : provider.getCaption();
-      applicationTabPane.addTab(caption, entityPanel);
+    for (final EntityPanel entityPanel : entityPanels) {
+      applicationTabPane.addTab(entityPanel.getCaption(), entityPanel);
       if (entityPanel.getEditPanel() != null) {
         entityPanel.getEditPanel().getActiveObserver().addListener(new EventAdapter() {
           /** {@inheritDoc} */
@@ -761,6 +752,29 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     if (southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
     }
+  }
+
+  /**
+   * By default this method returns the panels defined by the available {@link EntityPanelProvider}s.
+   * @param applicationModel the application model responsible for providing EntityModels for the panels
+   * @return a List containing the {@link EntityPanel}s to include in this application panel
+   * @see #addEntityPanelProvider(EntityPanelProvider)
+   */
+  protected List<EntityPanel> initializeEntityPanels(final EntityApplicationModel applicationModel) {
+    final List<EntityPanel> panels = new ArrayList<EntityPanel>();
+    for (final EntityPanelProvider provider : entityPanelProviders) {
+      final EntityPanel entityPanel;
+      if (applicationModel.containsEntityModel(provider.getEntityID())) {
+        entityPanel = provider.createPanel(applicationModel.getEntityModel(provider.getEntityID()));
+      }
+      else {
+        entityPanel = provider.createPanel(applicationModel.getConnectionProvider());
+        applicationModel.addEntityModel(entityPanel.getModel());
+      }
+      panels.add(entityPanel);
+    }
+
+    return panels;
   }
 
   /**

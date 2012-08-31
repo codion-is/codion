@@ -3194,3 +3194,5 @@
   EntityConnectionImpl.PropertyResultPacker now handles null values correctly
   EntityConnectionServerTest refactored
   EntityConnectionServerAdminImpl.adminInstance privatized
+  EntityConnectionImpl.PropertyResultPacker, bug introduced above fixed, null values handled correctly
+  EntityApplicationPanel.initializeEntityPanels() added
