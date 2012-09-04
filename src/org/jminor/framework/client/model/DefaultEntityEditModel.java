@@ -47,6 +47,7 @@ import java.util.Map;
  * EntityEditModel editModel = new DefaultEntityEditModel(entityID, connectionProvider);
  *
  * EntityEditPanel panel = new EntityEditPanel(editModel);
+ * panel.initializePanel();
  * </pre>
  */
 public class DefaultEntityEditModel implements EntityEditModel {

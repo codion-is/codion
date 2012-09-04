@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model.valuemap;
 
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -213,5 +214,23 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
      * @throws ValidationException if the given value is not valid for the given key
      */
     void validate(final V valueMap, final K key) throws ValidationException;
+
+    /**
+     * Notifies all re-validation listeners that a re-validation is called for, for example
+     * due to modified validation settings
+     * @see #addRevalidationListener(org.jminor.common.model.EventListener)
+     */
+    void revalidate();
+
+    /**
+     * @param listener a listener notified each time a re-validation of all values is required, for example
+     * when the validation settings have changed and need to be reflected in the UI
+     */
+    void addRevalidationListener(final EventListener listener);
+
+    /**
+     * @param listener a listener to remove
+     */
+    void removeRevalidationListener(final EventListener listener);
   }
 }

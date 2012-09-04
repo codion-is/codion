@@ -1441,8 +1441,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   private Property getPropertyToUpdate() {
     final JComboBox box = new JComboBox(EntityUtil.getUpdatableProperties(getEntityTableModel().getEntityID()).toArray());
-    final int ret = JOptionPane.showOptionDialog(this, box,
-            FrameworkMessages.get(FrameworkMessages.SELECT_PROPERTY_FOR_UPDATE),
+    final int ret = JOptionPane.showOptionDialog(this, box, FrameworkMessages.get(FrameworkMessages.SELECT_PROPERTY_FOR_UPDATE),
             JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
 
     if (ret == JOptionPane.OK_OPTION) {
@@ -1637,17 +1636,15 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
             entity.setValue(property, referencedEntity);
             queried = true;
           }
-          final StringBuilder text = new StringBuilder("[FK").append(queried ? "+" : "")
-                  .append("] ").append(property.getCaption()).append(": ");
-          text.append(referencedEntity.toString());
-          final JMenu foreignKeyMenu = new JMenu(text.toString());
+          final String text = "[FK" + (queried ? "+] " : "] ") + property.getCaption() + ": " + referencedEntity.toString();
+          final JMenu foreignKeyMenu = new JMenu(text);
           foreignKeyMenu.setToolTipText(toolTipText);
           populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), connectionProvider);
           rootMenu.add(foreignKeyMenu);
         }
         else {
-          final StringBuilder text = new StringBuilder("[FK] ").append(property.getCaption()).append(": <null>");
-          final JMenuItem menuItem = new JMenuItem(text.toString());
+          final String text = "[FK] " + property.getCaption() + ": <null>";
+          final JMenuItem menuItem = new JMenuItem(text);
           menuItem.setToolTipText(toolTipText);
           rootMenu.add(menuItem);
         }

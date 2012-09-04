@@ -3196,3 +3196,11 @@
   EntityConnectionServerAdminImpl.adminInstance privatized
   EntityConnectionImpl.PropertyResultPacker, bug introduced above fixed, null values handled correctly
   EntityApplicationPanel.initializeEntityPanels() added
+  EntityLookupField, bug fixed, OKAction did not call super constructor with a name
+  Configuration.getDefaultUsername() removed
+  EntityApplicationPanel.getUser() uses Util.getDefaultUserName() instead of the above
+  ValueLinkValidators.AbstractValidator.updateValidityInfo() renamed to validate()
+  ValueMap.Validator, revalidate(), addRevalidationListener() and removeRevalidationListener() added
+  ValueLinkValidators.AbstractValidator listens to re-validation events using the above
+  DefaultValueMapValidatorTest added, some methods moved from ValueMapImplTest
+  Some minor improvements

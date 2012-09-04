@@ -4,6 +4,9 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -12,6 +15,8 @@ import org.jminor.common.model.valuemap.exception.ValidationException;
  * A default value map validator implementation, which performs basic null validation.
  */
 public class DefaultValueMapValidator<K, V extends ValueMap<K, ?>> implements ValueMap.Validator<K, V> {
+
+  private final Event evtRevalidate = Events.event();
 
   /** {@inheritDoc} */
   @Override
@@ -47,5 +52,23 @@ public class DefaultValueMapValidator<K, V extends ValueMap<K, ?>> implements Va
     if (valueMap.isValueNull(key) && !isNullable(valueMap, key)) {
       throw new NullValidationException(key, Messages.get(Messages.VALUE_MISSING) + ": " + key);
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void revalidate() {
+    evtRevalidate.fire();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void addRevalidationListener(final EventListener listener) {
+    evtRevalidate.addListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void removeRevalidationListener(final EventListener listener) {
+    evtRevalidate.removeListener(listener);
   }
 }

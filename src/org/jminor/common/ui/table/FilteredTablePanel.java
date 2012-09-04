@@ -305,8 +305,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     }
     final JScrollPane scroller = new JScrollPane(togglePanel);
     final int result = JOptionPane.showOptionDialog(this, scroller,
-            Messages.get(Messages.SELECT_COLUMNS), JOptionPane.OK_CANCEL_OPTION,
-            JOptionPane.QUESTION_MESSAGE, null,
+            Messages.get(Messages.SELECT_COLUMNS), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
             new String[] {Messages.get(Messages.SHOW_ALL_COLUMNS), Messages.get(Messages.CANCEL), Messages.get(Messages.OK)}, Messages.get(Messages.OK));
     if (result != 1) {
       if (result == 0) {

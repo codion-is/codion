@@ -23,6 +23,7 @@ import javax.swing.JSplitPane;
 import javax.swing.JTextArea;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 
 /**
@@ -93,21 +94,18 @@ public class EntityGeneratorPanel extends JPanel {
         Configuration.init();
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
 
-        String schemaName = JOptionPane.showInputDialog("Schema name");
+        final String schemaName = JOptionPane.showInputDialog("Schema name");
         if (Util.nullOrEmpty(schemaName)) {
           return;
         }
 
-//        schemaName = schemaName.toUpperCase();
-
-        final String username = schemaName;
-        final User user = LoginPanel.getUser(null, new User(username, null));
+        final User user = LoginPanel.getUser(null, new User(schemaName, null));
         final EntityGeneratorModel model = new EntityGeneratorModel(user, schemaName);
         final EntityGeneratorPanel panel = new EntityGeneratorPanel(model);
         final ImageIcon icon = Images.loadImage("jminor_logo32.gif");
         final JFrame frame = new JFrame("JMinor Entity Generator");
         frame.setIconImage(icon.getImage());
-        frame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+        frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
         frame.add(panel);
 
         frame.pack();

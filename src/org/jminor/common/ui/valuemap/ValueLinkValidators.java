@@ -41,13 +41,13 @@ public final class ValueLinkValidators {
    * @param <K> the type of the edit model value keys
    */
   public static <K> void addValidator(final TextValueLink<K> valueLink, final JTextComponent textComponent,
-                                      final ValueMapEditModel<K, Object> editModel,
-                                      final Color validBackgroundColor, final Color invalidBackgroundColor, final String defaultToolTip) {
+                                      final ValueMapEditModel<K, Object> editModel, final Color validBackgroundColor,
+                                      final Color invalidBackgroundColor, final String defaultToolTip) {
     if (valueLink instanceof FormattedValueLink) {
-      new FormattedTextValidator<K>((FormattedValueLink<K>) valueLink, textComponent, editModel).updateValidityInfo();
+      new FormattedTextValidator<K>((FormattedValueLink<K>) valueLink, textComponent, editModel).validate();
     }
     else {
-      new TextValidator<K>(valueLink, textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip).updateValidityInfo();
+      new TextValidator<K>(valueLink, textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip).validate();
     }
   }
 
@@ -59,19 +59,20 @@ public final class ValueLinkValidators {
     private final String defaultToolTip;
 
     private AbstractValidator(final AbstractValueMapLink<K, Object> link, final JComponent component,
-                              final ValueMapEditModel<K, Object> editModel,
-                              final String defaultToolTip) {
+                              final ValueMapEditModel<K, Object> editModel, final String defaultToolTip) {
       this.link = link;
       this.component = component;
       this.editModel = editModel;
       this.defaultToolTip = defaultToolTip;
-      this.editModel.addValueListener(link.getKey(), new EventAdapter() {
+      final EventAdapter listener = new EventAdapter() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
-          updateValidityInfo();
+          validate();
         }
-      });
+      };
+      this.editModel.getValidator().addRevalidationListener(listener);
+      this.editModel.addValueListener(link.getKey(), listener);
     }
 
     /**
@@ -105,7 +106,7 @@ public final class ValueLinkValidators {
     /**
      * Updates the underlying component indicating the validity of the value being shown
      */
-    protected abstract void updateValidityInfo();
+    protected abstract void validate();
   }
 
   private static class TextValidator<K> extends AbstractValidator<K> {
@@ -136,7 +137,7 @@ public final class ValueLinkValidators {
                             final Color validBackgroundColor, final Color invalidBackgroundColor, final String defaultToolTip) {
       super(link, textComponent, editModel, defaultToolTip);
       if (invalidBackgroundColor.equals(validBackgroundColor)) {
-        throw new IllegalArgumentException("Invalid background color is the same as the current text component background");
+        throw new IllegalArgumentException("Invalid background color is the same as the valid background color");
       }
       this.validBackgroundColor = validBackgroundColor;
       this.invalidBackgroundColor = invalidBackgroundColor;
@@ -158,7 +159,7 @@ public final class ValueLinkValidators {
 
     /** {@inheritDoc} */
     @Override
-    protected void updateValidityInfo() {
+    protected void validate() {
       final String validationMessage = getValueLink().getValidationMessage(getEditModel());
       getComponent().setBackground(validationMessage == null ? validBackgroundColor : invalidBackgroundColor);
       getComponent().setToolTipText(validationMessage == null ? getDefaultToolTip() :
@@ -178,7 +179,7 @@ public final class ValueLinkValidators {
 
     /** {@inheritDoc} */
     @Override
-    protected void updateValidityInfo() {
+    protected void validate() {
       final JTextComponent textComponent = (JTextComponent) getComponent();
       final TextValueLink<K> valueLink = (TextValueLink<K>) getValueLink();
       final boolean stringEqualsMask = textComponent.getText().equals(maskString);

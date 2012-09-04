@@ -9,7 +9,6 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.LoginPanel;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
@@ -115,7 +114,7 @@ public abstract class EntityTestUnit {
    * @throws CancelException in case the user cancels the login
    */
   protected User getTestUser() throws CancelException {
-    return LoginPanel.getUser(null, new User(Configuration.getDefaultUsername(getClass().getName()), null));
+    return LoginPanel.getUser(null, null);
   }
 
   /**

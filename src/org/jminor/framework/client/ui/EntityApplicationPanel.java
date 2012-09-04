@@ -374,7 +374,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   public final void showHelp() {
     final JOptionPane pane = new JOptionPane(getHelpPanel(), JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.NO_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
+            JOptionPane.DEFAULT_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
             FrameworkMessages.get(FrameworkMessages.HELP));
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -391,7 +391,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    */
   public final void showAbout() {
     final JOptionPane pane = new JOptionPane(getAboutPanel(), JOptionPane.PLAIN_MESSAGE,
-            JOptionPane.NO_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
+            JOptionPane.DEFAULT_OPTION, null, new String[] {Messages.get(Messages.CLOSE)});
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
             FrameworkMessages.get(FrameworkMessages.ABOUT));
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -576,6 +576,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     panel.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
     final JTextField txtVersionMemory = new JTextField(versionString + " (" + Util.getMemoryUsageString() + ")");
     txtVersionMemory.setEditable(false);
+    txtVersionMemory.setFocusable(false);
     panel.add(txtVersionMemory, BorderLayout.CENTER);
 
     return panel;
@@ -961,9 +962,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @throws CancelException in case a login dialog is cancelled
    */
   protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon) throws CancelException {
-    final User user = LoginPanel.showLoginPanel(null, defaultUser == null ?
-            new User(Configuration.getDefaultUsername(getApplicationIdentifier()), null) : defaultUser,
-            applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
+    final String defaultUserName = Configuration.getValue(Configuration.USERNAME_PREFIX) + System.getProperty("user.name");
+    final User user = LoginPanel.showLoginPanel(null, defaultUser == null ? new User(Util.getDefaultUserName(getApplicationIdentifier(),
+            defaultUserName), null) : defaultUser, applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
     if (Util.nullOrEmpty(user.getUsername())) {
       throw new IllegalArgumentException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
     }

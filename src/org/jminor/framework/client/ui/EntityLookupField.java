@@ -358,6 +358,7 @@ public final class EntityLookupField extends JTextField {
     private final Event closeEvent;
 
     private OKAction(final JButton okButton, final Event closeEvent) {
+      super("EntityLookupField.emptyResultOK");
       this.closeEvent = closeEvent;
       this.okButton = okButton;
     }

@@ -18,9 +18,7 @@ import java.util.Properties;
 /**
  * Settings used throughout the framework.
  * These settings are used during initialization and should be set before
- * the application is initialized, before EntityApplicationPanel.startApplication is called.
- * EntityApplicationPanel.initializeSettings() is a convenience method for this purpose,
- * override and use it to set configuration properties.
+ * the application is initialized, before EntityApplicationPanel.startApplication().
  */
 public final class Configuration {
 
@@ -67,11 +65,6 @@ public final class Configuration {
    * Default value: true
    */
   public static final String CACHE_REPORTS = "jminor.report.cacheReports";
-
-  /**
-   * Default username for the login panel
-   */
-  public static final String DEFAULT_USERNAME = "jminor.client.defaultUser";
 
   /**
    * The host on which to locate the server<br>
@@ -581,7 +574,6 @@ public final class Configuration {
     parseIntegerSetting(DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
     parseIntegerSetting(DEFAULT_LABEL_TEXT_ALIGNMENT);
     parseBooleanSetting(DEFAULT_SEARCH_PANEL_STATE);
-    parseStringSetting(DEFAULT_USERNAME);
     parseStringSetting(DEFAULT_TIMESTAMP_FORMAT);
     parseBooleanSetting(LIMIT_FOREIGN_KEY_FETCH_DEPTH);
     parseIntegerSetting(LOAD_TEST_THINKTIME);
@@ -680,16 +672,6 @@ public final class Configuration {
 
   public static String getStringValue(final String key) {
     return (String) getValue(key);
-  }
-
-  /**
-   * @param applicationIdentifier the application identifier name
-   * @return the default username
-   */
-  public static String getDefaultUsername(final String applicationIdentifier) {
-    final String preferredUserName = Util.getDefaultUserName(applicationIdentifier,
-            getValue(USERNAME_PREFIX) + System.getProperty("user.name"));
-    return System.getProperty(DEFAULT_USERNAME, preferredUserName);
   }
 
   /**
