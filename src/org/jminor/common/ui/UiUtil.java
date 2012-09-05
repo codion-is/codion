@@ -93,8 +93,8 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A static utility class.
@@ -184,17 +184,18 @@ public final class UiUtil {
             defaultHorizontalVerticalComponentGap, fixRowHeights, fixColumnWidths);
   }
 
-  public static JTextField createMemoryUsageField(final int updateInterval) {
+  public static JTextField createMemoryUsageField(final int updateIntervalMilliseconds) {
     final JTextField txt = new JTextField();
     txt.setColumns(8);
     txt.setEditable(false);
     txt.setHorizontalAlignment(JTextField.CENTER);
-    new Timer(true).schedule(new TimerTask() {
+    Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory()).scheduleWithFixedDelay(new Runnable() {
+      /** {@inheritDoc} */
       @Override
       public void run() {
         txt.setText(Util.getMemoryUsageString());
       }
-    }, new Date(), updateInterval);
+    }, 0, updateIntervalMilliseconds, TimeUnit.MILLISECONDS);
 
     return txt;
   }

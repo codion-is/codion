@@ -19,6 +19,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Properties;
+import java.util.concurrent.ThreadFactory;
 
 import static org.junit.Assert.*;
 
@@ -278,5 +279,15 @@ public class UtilTest {
     assertFalse(Util.nullOrEmpty("asdf", "wefs"));
 
     assertFalse(Util.nullOrEmpty(map));
+  }
+
+  @Test
+  public void daemonThreadFactory() {
+    final ThreadFactory factory = new Util.DaemonThreadFactory();
+    final Thread thread = factory.newThread(new Runnable() {
+      @Override
+      public void run() {}
+    });
+    assertTrue(thread.isDaemon());
   }
 }

@@ -10,6 +10,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -23,8 +24,9 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A ConnectionPoolMonitor
@@ -57,7 +59,7 @@ public final class ConnectionPoolMonitor {
 
   private long lastStatisticsUpdateTime = 0;
 
-  private Timer updateTimer;
+  private ScheduledExecutorService updateStatisticsService;
   private int statisticsUpdateInterval;
 
   public ConnectionPoolMonitor(final ConnectionPool connectionPool) throws RemoteException {
@@ -192,10 +194,13 @@ public final class ConnectionPoolMonitor {
   }
 
   public void setStatisticsUpdateInterval(final int value) {
+    if (value < 0) {
+      throw new IllegalArgumentException("Statistics update interval must be a positive integer");
+    }
     if (value != this.statisticsUpdateInterval) {
-      statisticsUpdateInterval = value;
+      this.statisticsUpdateInterval = value;
       evtStatisticsUpdateIntervalChanged.fire();
-      startUpdateTimer(value * 1000);
+      startUpdateStatisticsService();
     }
   }
 
@@ -204,8 +209,8 @@ public final class ConnectionPoolMonitor {
   }
 
   public void shutdown() {
-    if (updateTimer != null) {
-      updateTimer.cancel();
+    if (updateStatisticsService != null) {
+      updateStatisticsService.shutdownNow();
     }
   }
 
@@ -266,21 +271,17 @@ public final class ConnectionPoolMonitor {
     return poolStates;
   }
 
-  private void startUpdateTimer(final int delay) {
-    if (delay <= 0) {
-      return;
+  private void startUpdateStatisticsService() {
+    if (updateStatisticsService != null) {
+      updateStatisticsService.shutdownNow();
     }
-
-    if (updateTimer != null) {
-      updateTimer.cancel();
-    }
-    updateTimer = new Timer(true);
-    updateTimer.schedule(new TimerTask() {
+    updateStatisticsService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
+    updateStatisticsService.scheduleWithFixedDelay(new Runnable() {
       @Override
       public void run() {
         updateStatistics();
       }
-    }, delay, delay);
+    }, statisticsUpdateInterval, statisticsUpdateInterval, TimeUnit.SECONDS);
   }
 
   private static final class StateComparator implements Comparator<ConnectionPoolState>, Serializable {

@@ -6,6 +6,7 @@ package org.jminor.framework.server.monitor;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
+import org.jminor.common.model.Util;
 import org.jminor.common.server.RemoteServer;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
@@ -22,8 +23,9 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A ServerMonitor
@@ -45,14 +47,14 @@ public final class ServerMonitor {
   private final int registryPort;
   private final EntityConnectionServerAdmin server;
 
-  private Timer updateTimer;
+  private ScheduledExecutorService updateStatisticsService;
   private int statisticsUpdateInterval;
 
   private final DatabaseMonitor databaseMonitor;
   private final ClientUserMonitor clientMonitor;
 
   private int connectionCount = 0;
-  private boolean shutdown = false;
+  private volatile boolean shutdown = false;
 
   private String memoryUsage;
   private final DefaultTableModel domainListModel = new DomainTableModel();
@@ -89,10 +91,13 @@ public final class ServerMonitor {
   }
 
   public void setStatisticsUpdateInterval(final int value) {
+    if (value < 0) {
+      throw new IllegalArgumentException("Statistics update interval must be a positive integer");
+    }
     if (value != this.statisticsUpdateInterval) {
       this.statisticsUpdateInterval = value;
       evtStatisticsUpdateIntervalChanged.fire();
-      startUpdateTimer(value * 1000);
+      startUpdateStatisticsService();
     }
   }
 
@@ -102,8 +107,8 @@ public final class ServerMonitor {
 
   public void shutdown() {
     shutdown = true;
-    if (updateTimer != null) {
-      updateTimer.cancel();
+    if (updateStatisticsService != null) {
+      updateStatisticsService.shutdownNow();
     }
     databaseMonitor.shutdown();
   }
@@ -267,16 +272,12 @@ public final class ServerMonitor {
     evtStatisticsUpdated.fire();
   }
 
-  private void startUpdateTimer(final int delay) {
-    if (delay <= 0) {
-      return;
+  private void startUpdateStatisticsService() {
+    if (updateStatisticsService != null) {
+      updateStatisticsService.shutdownNow();
     }
-
-    if (updateTimer != null) {
-      updateTimer.cancel();
-    }
-    updateTimer = new Timer(true);
-    updateTimer.schedule(new TimerTask() {
+    updateStatisticsService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
+    updateStatisticsService.scheduleWithFixedDelay(new Runnable() {
       @Override
       public void run() {
         try {
@@ -286,7 +287,7 @@ public final class ServerMonitor {
         }
         catch (RemoteException ignored) {}
       }
-    }, delay, delay);
+    }, this.statisticsUpdateInterval, this.statisticsUpdateInterval, TimeUnit.SECONDS);
   }
 
   private static String removeAdminPrefix(final String serverName) {

@@ -41,8 +41,9 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ThreadFactory;
+import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
 /**
@@ -256,12 +257,13 @@ public final class Util {
    * @see #getMemoryUsageString()
    */
   public static void printMemoryUsage(final long interval) {
-    new Timer(true).scheduleAtFixedRate(new TimerTask() {
+    Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory()).scheduleWithFixedDelay(new Runnable() {
+      /** {@inheritDoc} */
       @Override
       public void run() {
         System.out.println(getMemoryUsageString());
       }
-    }, 0, interval);
+    }, 0, interval, TimeUnit.MILLISECONDS);
   }
 
   public static long getAllocatedMemory() {
@@ -1063,5 +1065,19 @@ public final class Util {
     }
 
     return userPreferences;
+  }
+
+  /**
+   * A ThreadFactory implementation producing daemon threads
+   */
+  public static final class DaemonThreadFactory implements ThreadFactory {
+   /** {@inheritDoc} */
+   @Override
+    public Thread newThread(final Runnable runnable) {
+      final Thread thread = new Thread(runnable);
+      thread.setDaemon(true);
+
+      return thread;
+    }
   }
 }

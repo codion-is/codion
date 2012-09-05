@@ -13,8 +13,9 @@ import org.jminor.framework.db.EntityConnection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An abstract EntityConnectionProvider implementation.
@@ -29,7 +30,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private User user;
   private EntityConnection entityConnection;
   private final State stConnectionValid = States.state();
-  private Timer validTimer;
+  private ScheduledExecutorService validityCheckService;
 
   /**
    * Instantiates a new AbstractEntityConnectionProvider.
@@ -38,7 +39,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   public AbstractEntityConnectionProvider(final User user) {
     Util.rejectNullValue(user, "user");
     this.user = user;
-    startValidTimer();
+    startValidityCheckService();
   }
 
   /** {@inheritDoc} */
@@ -102,7 +103,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private void validateConnection() {
     if (entityConnection == null) {
       entityConnection = connect();
-      startValidTimer();
+      startValidityCheckService();
     }
     else if (!isConnectionValid()) {
       LOG.info("Previous connection invalid, reconnecting");
@@ -111,25 +112,25 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       }
       catch (Exception ignored) {}
       entityConnection = connect();
-      startValidTimer();
+      startValidityCheckService();
     }
   }
 
-  private void startValidTimer() {
-    if (validTimer != null) {
-      validTimer.cancel();
+  private void startValidityCheckService() {
+    if (validityCheckService != null) {
+      validityCheckService.shutdownNow();
     }
-    validTimer = new Timer(true);
-    validTimer.schedule(new TimerTask() {
+    validityCheckService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
+    validityCheckService.scheduleWithFixedDelay(new Runnable() {
       /** {@inheritDoc} */
       @Override
       public void run() {
         final boolean valid = isConnectionValid();
         stConnectionValid.setActive(valid);
         if (!valid) {
-          validTimer.cancel();
+          validityCheckService.shutdown();
         }
       }
-    }, 0, 10000);
+    }, 0, 10, TimeUnit.SECONDS);
   }
 }

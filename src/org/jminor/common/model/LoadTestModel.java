@@ -12,16 +12,15 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
 import java.util.Stack;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A default LoadTest implementation.
@@ -55,9 +54,9 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private int applicationBatchSize;
   private int updateInterval;
 
-  private boolean shuttingDown = false;
-  private boolean paused = false;
-  private boolean collectChartData = false;
+  private volatile boolean shuttingDown = false;
+  private volatile boolean paused = false;
+  private volatile boolean collectChartData = false;
 
   private final Stack<ApplicationRunner<T>> applications = new Stack<ApplicationRunner<T>>();
   private final Collection<? extends UsageScenario<T>> usageScenarios;
@@ -66,7 +65,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private User user;
 
   private final Counter counter;
-  private Timer updateTimer;
+  private ScheduledExecutorService updateChartDataService;
   private volatile int warningTime;
 
   private final XYSeries scenariosRunSeries = new XYSeries("Total");
@@ -317,11 +316,10 @@ public abstract class LoadTestModel<T> implements LoadTest {
     if (updateInterval < 0) {
       throw new IllegalArgumentException("Update interval must be a positive integer");
     }
-
     if (this.updateInterval != updateInterval) {
       this.updateInterval = updateInterval;
-      scheduleUpdateTime(updateInterval);
       evtUpdateIntervalChanged.fire();
+      startUpdateChartDataService();
     }
   }
 
@@ -400,7 +398,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   @Override
   public final void exit() {
     shuttingDown = true;
-    updateTimer.cancel();
+    updateChartDataService.shutdownNow();
     executor.shutdown();
     paused = false;
     synchronized (applications) {
@@ -581,13 +579,12 @@ public abstract class LoadTestModel<T> implements LoadTest {
     return model;
   }
 
-  private void scheduleUpdateTime(final int intervalMs) {
-    if (updateTimer != null) {
-      updateTimer.cancel();
+  private void startUpdateChartDataService() {
+    if (updateChartDataService != null) {
+      updateChartDataService.shutdownNow();
     }
-
-    updateTimer = new Timer(true);
-    updateTimer.schedule(new TimerTask() {
+    updateChartDataService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
+    updateChartDataService.scheduleWithFixedDelay(new Runnable() {
       /** {@inheritDoc} */
       @Override
       public void run() {
@@ -599,7 +596,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
           updateChartData();
         }
       }
-    }, new Date(), intervalMs);
+    }, 0, this.updateInterval, TimeUnit.MILLISECONDS);
   }
 
   private void initializeChartData() {

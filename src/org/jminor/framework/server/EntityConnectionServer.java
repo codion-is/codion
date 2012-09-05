@@ -31,17 +31,16 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Date;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
-import java.util.Timer;
-import java.util.TimerTask;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * The remote server class, responsible for handling requests for RemoteEntityConnections.
@@ -62,7 +61,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   private final long startDate = System.currentTimeMillis();
 
   private WebStartServer webServer;
-  private Timer connectionTimeoutTimer;
+  private ScheduledExecutorService connectionTimeoutService;
   private int maintenanceInterval = DEFAULT_CHECK_INTERVAL_MS;
   private int connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
 
@@ -92,7 +91,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     loadLoginProxies();
     initializeConnectionPools(database, getInitialPoolUsers());
     setConnectionLimit(connectionLimit);
-    startConnectionTimeoutTimer();
+    startConnectionTimeoutService();
     startWebServer();
     ServerUtil.initializeRegistry(registryPort);
     ServerUtil.getRegistry(registryPort).rebind(getServerName(), this);
@@ -199,7 +198,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   void setMaintenanceInterval(final int maintenanceInterval) {
     if (this.maintenanceInterval != maintenanceInterval) {
       this.maintenanceInterval = maintenanceInterval <= 0 ? 1 : maintenanceInterval;
-      startConnectionTimeoutTimer();
+      startConnectionTimeoutService();
     }
   }
 
@@ -323,6 +322,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   /** {@inheritDoc} */
   @Override
   protected void handleShutdown() throws RemoteException {
+    connectionTimeoutService.shutdownNow();
     removeConnections(false);
     ConnectionPools.closeConnectionPools();
     shutdownWebServer();
@@ -438,13 +438,13 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     Class.forName(domainClassName);
   }
 
-  private void startConnectionTimeoutTimer() {
-    if (connectionTimeoutTimer != null) {
-      connectionTimeoutTimer.cancel();
+  private void startConnectionTimeoutService() {
+    if (connectionTimeoutService != null) {
+      connectionTimeoutService.shutdownNow();
     }
-
-    connectionTimeoutTimer = new Timer(true);
-    connectionTimeoutTimer.schedule(new TimerTask() {
+    connectionTimeoutService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
+    connectionTimeoutService.scheduleWithFixedDelay(new Runnable() {
+      /** {@inheritDoc} */
       @Override
       public void run() {
         try {
@@ -454,7 +454,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
           throw new RuntimeException(e);
         }
       }
-    }, new Date(), maintenanceInterval);
+    }, 0, maintenanceInterval, TimeUnit.MILLISECONDS);
   }
 
   private static final class ConnectionProvider implements DatabaseConnectionProvider {

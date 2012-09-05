@@ -7,14 +7,16 @@ import org.jminor.common.db.Database;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
+import org.jminor.common.model.Util;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.rmi.RemoteException;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A DatabaseMonitor
@@ -32,7 +34,7 @@ public final class DatabaseMonitor {
   private final XYSeries deletesPerSecond = new XYSeries("Deletes per second");
   private final XYSeriesCollection queriesPerSecondCollection = new XYSeriesCollection();
 
-  private Timer updateTimer;
+  private ScheduledExecutorService updateStatisticsService;
   private int statisticsUpdateInterval;
 
   public DatabaseMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
@@ -48,10 +50,13 @@ public final class DatabaseMonitor {
   }
 
   public void setStatisticsUpdateInterval(final int value) {
+    if (value < 0) {
+      throw new IllegalArgumentException("Statistics update interval must be a positive integer");
+    }
     if (value != this.statisticsUpdateInterval) {
       this.statisticsUpdateInterval = value;
       evtStatisticsUpdateIntervalChanged.fire();
-      startUpdateTimer(value * 1000);
+      startUpdateStatisticsService();
     }
   }
 
@@ -64,8 +69,8 @@ public final class DatabaseMonitor {
   }
 
   public void shutdown() {
-    if (updateTimer != null) {
-      updateTimer.cancel();
+    if (updateStatisticsService != null) {
+      updateStatisticsService.shutdownNow();
     }
     poolMonitor.shutdown();
   }
@@ -95,16 +100,12 @@ public final class DatabaseMonitor {
     return evtStatisticsUpdateIntervalChanged.getObserver();
   }
 
-  private void startUpdateTimer(final int delay) {
-    if (delay <= 0) {
-      return;
+  private void startUpdateStatisticsService() {
+    if (updateStatisticsService != null) {
+      updateStatisticsService.shutdownNow();
     }
-
-    if (updateTimer != null) {
-      updateTimer.cancel();
-    }
-    updateTimer = new Timer(true);
-    updateTimer.schedule(new TimerTask() {
+    updateStatisticsService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
+    updateStatisticsService.scheduleWithFixedDelay(new Runnable() {
       @Override
       public void run() {
         try {
@@ -112,6 +113,6 @@ public final class DatabaseMonitor {
         }
         catch (RemoteException ignored) {}
       }
-    }, delay, delay);
+    }, this.statisticsUpdateInterval, this.statisticsUpdateInterval, TimeUnit.SECONDS);
   }
 }

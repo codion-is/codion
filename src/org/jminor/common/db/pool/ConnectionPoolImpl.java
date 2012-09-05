@@ -8,6 +8,7 @@ import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -17,12 +18,12 @@ import java.util.ArrayDeque;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.Deque;
 import java.util.List;
 import java.util.Random;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.ScheduledExecutorService;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A simple connection pool implementation, pools connections on username basis.
@@ -47,7 +48,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   private final Counter counter = new Counter();
   private final Random random = new Random();
 
-  private Timer cleanupTimer;
+  private ScheduledExecutorService poolCleanupService;
 
   private volatile int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
   private volatile int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
@@ -77,7 +78,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
       connectionPoolStatistics.add(new ConnectionPoolStateImpl());
     }
     initializeConnections();
-    startPoolCleaner();
+    startPoolCleanupService();
   }
 
   /** {@inheritDoc} */
@@ -156,6 +157,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   @Override
   public void close() {
     closed = true;
+    poolCleanupService.shutdownNow();
     synchronized (pool) {
       while (!pool.isEmpty()) {
         connectionProvider.destroyConnection(pool.pop());
@@ -168,6 +170,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   @Override
   public ConnectionPoolStatistics getStatistics(final long since) {
     final ConnectionPoolStatisticsImpl statistics = new ConnectionPoolStatisticsImpl(getUser());
+    counter.updateStatistics();
     synchronized (pool) {
       final int inPool = pool.size();
       final int inUseCount = inUse.size();
@@ -243,7 +246,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   public void setCleanupInterval(final int poolCleanupInterval) {
     if (poolCleanupInterval != this.poolCleanupInterval) {
       this.poolCleanupInterval = poolCleanupInterval;
-      startPoolCleaner();
+      startPoolCleanupService();
     }
   }
 
@@ -430,17 +433,17 @@ final class ConnectionPoolImpl implements ConnectionPool {
     return poolStates;
   }
 
-  private void startPoolCleaner() {
-    if (cleanupTimer != null) {
-      cleanupTimer.cancel();
+  private void startPoolCleanupService() {
+    if (poolCleanupService != null) {
+      poolCleanupService.shutdownNow();
     }
-    cleanupTimer = new Timer(true);
-    cleanupTimer.schedule(new TimerTask() {
+    poolCleanupService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
+    poolCleanupService.scheduleWithFixedDelay(new Runnable() {
       @Override
       public void run() {
         cleanPool();
       }
-    }, 0, this.poolCleanupInterval);
+    }, 0, this.poolCleanupInterval, TimeUnit.MILLISECONDS);
   }
 
   private void cleanPool() {
@@ -463,7 +466,6 @@ final class ConnectionPoolImpl implements ConnectionPool {
 
   private static final class Counter {
     private static final double THOUSAND = 1000d;
-    private static final int DEFAULT_STATS_UPDATE_INTERVAL = 1000;
 
     private final long creationDate = System.currentTimeMillis();
     private long resetDate = creationDate;
@@ -483,15 +485,6 @@ final class ConnectionPoolImpl implements ConnectionPool {
     private long maximumCheckOutTime = 0;
     private final List<Long> checkOutTimes = new ArrayList<Long>();
     private long requestsPerSecondTime = creationDate;
-
-    private Counter() {
-      new Timer(true).schedule(new TimerTask() {
-        @Override
-        public void run() {
-          updateStatistics();
-        }
-      }, new Date(), DEFAULT_STATS_UPDATE_INTERVAL);
-    }
 
     private synchronized long getCreationDate() {
       return creationDate;

@@ -3204,3 +3204,5 @@
   ValueLinkValidators.AbstractValidator listens to re-validation events using the above
   DefaultValueMapValidatorTest added, some methods moved from ValueMapImplTest
   Some minor improvements
+  Timer replaced with ScheduledExecutorService throughout, some related refactoring
+  Util.DaemonThreadFactory added, tested

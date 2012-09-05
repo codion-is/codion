@@ -29,6 +29,7 @@ import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.io.File;
@@ -47,7 +48,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   private static String jdkDir = Util.getUserPreference(JDK_PREFERENCE_KEY, null);
 
   private final Event evtAlwaysOnTopChanged = Events.event();
-  private static final int MEMORY_USAGE_UPDATE_INTERVAL = 2000;
+  private static final int MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private final EntityServerMonitor model;
   private JFrame monitorFrame;
 
@@ -120,7 +121,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     monitorFrame = UiUtil.createFrame(Images.loadImage("jminor_logo_red24.png").getImage());
     monitorFrame.setJMenuBar(ControlProvider.createMenuBar(initializeMainMenuControlSets()));
     monitorFrame.setTitle("JMinor Server Monitor");
-    monitorFrame.setDefaultCloseOperation(JFrame.EXIT_ON_CLOSE);
+    monitorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     monitorFrame.getContentPane().add(this);
     UiUtil.resizeWindow(monitorFrame, 0.75);
     UiUtil.centerWindow(monitorFrame);
@@ -203,7 +204,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.TRAILING));
     southPanel.setBorder(BorderFactory.createEtchedBorder());
     southPanel.add(new JLabel("Memory usage:"));
-    southPanel.add(UiUtil.createMemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL));
+    southPanel.add(UiUtil.createMemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS));
 
     return southPanel;
   }

@@ -22,6 +22,8 @@ grant {
   permission java.util.PropertyPermission "*", "read, write";
 
   permission java.lang.RuntimePermission "shutdownHooks";
+  //for shutting down ExecutorService instances
+  permission java.lang.RuntimePermission "modifyThread";
   //for JasperReports report generation and domain class loading
   permission java.lang.RuntimePermission "createClassLoader";
   permission java.lang.RuntimePermission "getProtectionDomain";

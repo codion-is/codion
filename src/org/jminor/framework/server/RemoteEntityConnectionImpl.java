@@ -47,11 +47,10 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Date;
 import java.util.List;
 import java.util.Map;
-import java.util.Timer;
-import java.util.TimerTask;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 /**
  * An implementation of the RemoteEntityConnection interface, provides the logging of service calls
@@ -117,12 +116,12 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   private final Event evtDisconnected = Events.event();
 
   static {
-    new Timer(true).schedule(new TimerTask() {
+    Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory()).scheduleWithFixedDelay(new Runnable() {
       @Override
       public void run() {
         RequestCounter.updateRequestsPerSecond();
       }
-    }, new Date(), DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL);
+    }, 0, DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL, TimeUnit.MILLISECONDS);
   }
 
   /**
