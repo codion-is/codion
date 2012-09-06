@@ -87,27 +87,21 @@ public final class Events {
 
     /** {@inheritDoc} */
     @Override
-    public void addListener(final EventListener listener) {
+    public synchronized void addListener(final EventListener listener) {
       Util.rejectNullValue(listener, "listener");
-      synchronized (listeners) {
-        if (!listeners.contains(listener)) {
-          listeners.add(listener);
-        }
+      if (!listeners.contains(listener)) {
+        listeners.add(listener);
       }
     }
 
     /** {@inheritDoc} */
     @Override
     public synchronized void removeListener(final EventListener listener) {
-      synchronized (listeners) {
-        listeners.remove(listener);
-      }
+      listeners.remove(listener);
     }
 
     private synchronized Collection<EventListener> getListeners() {
-      synchronized (listeners) {
-        return new ArrayList<EventListener>(listeners);
-      }
+      return new ArrayList<EventListener>(listeners);
     }
   }
 }

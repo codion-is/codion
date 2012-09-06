@@ -48,7 +48,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
           validityCheckScheduler.stop();
         }
       }
-    }, 10, 0, TimeUnit.SECONDS);
+    }, 10, 0, TimeUnit.SECONDS).start();
   }
 
   /** {@inheritDoc} */

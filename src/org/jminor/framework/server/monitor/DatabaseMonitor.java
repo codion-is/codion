@@ -35,7 +35,7 @@ public final class DatabaseMonitor {
       }
       catch (RemoteException ignored) {}
     }
-  }, 2, 2, TimeUnit.SECONDS);
+  }, 2, 2, TimeUnit.SECONDS).start();
 
   public DatabaseMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
     this.server = server;

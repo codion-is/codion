@@ -3207,3 +3207,7 @@
   Timer replaced with ScheduledExecutorService throughout, some related refactoring
   Util.DaemonThreadFactory added, tested
   TaskScheduler added, ScheduledExecutorService usages refactored to use that class
+  TaskScheduler.setInterval() synchronization bug fixed
+  TaskScheduler no longer started on construction, start() returns instance to facilitate startup on construction
+  Events.EventObserverImpl redundant synchronization removed
+  TaskSchedulerTest added

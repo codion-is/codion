@@ -51,7 +51,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
     public void run() {
       cleanPool();
     }
-  }, DEFAULT_CLEANUP_INTERVAL_MS, TimeUnit.MILLISECONDS);
+  }, DEFAULT_CLEANUP_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
 
   private volatile int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
   private volatile int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;

@@ -59,7 +59,7 @@ public final class ConnectionPoolMonitor {
     public void run() {
       updateStatistics();
     }
-  }, 2, 2, TimeUnit.SECONDS);
+  }, 2, 2, TimeUnit.SECONDS).start();
 
   private long lastStatisticsUpdateTime = 0;
 

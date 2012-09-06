@@ -68,7 +68,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
         throw new RuntimeException(e);
       }
     }
-  }, DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS);
+  }, DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
 
   private final long startDate = System.currentTimeMillis();
 

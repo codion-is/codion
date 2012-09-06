@@ -172,7 +172,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
           updateChartData();
         }
       }
-    }, DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS);
+    }, DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
   }
 
   /** {@inheritDoc} */
