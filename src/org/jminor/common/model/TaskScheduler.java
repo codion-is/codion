@@ -51,7 +51,7 @@ public final class TaskScheduler {
   /**
    * @return the interval
    */
-  public int getInterval() {
+  public synchronized int getInterval() {
     return interval;
   }
 
