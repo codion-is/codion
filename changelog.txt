@@ -3206,3 +3206,4 @@
   Some minor improvements
   Timer replaced with ScheduledExecutorService throughout, some related refactoring
   Util.DaemonThreadFactory added, tested
+  TaskScheduler added, ScheduledExecutorService usages refactored to use that class

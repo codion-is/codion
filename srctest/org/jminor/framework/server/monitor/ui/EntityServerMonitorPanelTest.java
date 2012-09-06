@@ -31,12 +31,12 @@ public class EntityServerMonitorPanelTest {
   public void test() throws Exception {
     final EntityServerMonitorPanel panel = new EntityServerMonitorPanel(new EntityServerMonitor("localhost", new int[] {Registry.REGISTRY_PORT}));
     final ServerMonitor serverMonitor = panel.getModel().getHostMonitors().iterator().next().getServerMonitors().iterator().next();
-    serverMonitor.setStatisticsUpdateInterval(350);
+    serverMonitor.getUpdateScheduler().setInterval(350);
     final DatabaseMonitor databaseMonitor = serverMonitor.getDatabaseMonitor();
-    databaseMonitor.setStatisticsUpdateInterval(350);
+    databaseMonitor.getUpdateScheduler().setInterval(350);
     final ConnectionPoolMonitor poolMonitor = databaseMonitor.getConnectionPoolMonitor().getConnectionPoolInstanceMonitors().iterator().next();
     poolMonitor.setCollectFineGrainedStatistics(true);
-    poolMonitor.setStatisticsUpdateInterval(300);
+    poolMonitor.getUpdateScheduler().setInterval(300);
 
     Thread.sleep(1000);
     poolMonitor.resetStatistics();

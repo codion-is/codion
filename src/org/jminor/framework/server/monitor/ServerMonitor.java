@@ -6,7 +6,7 @@ package org.jminor.framework.server.monitor;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.server.RemoteServer;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
@@ -23,8 +23,6 @@ import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.util.Map;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -35,7 +33,6 @@ public final class ServerMonitor {
   private static final Logger LOG = LoggerFactory.getLogger(ServerMonitor.class);
   private static final double THOUSAND = 1000d;
 
-  private final Event evtStatisticsUpdateIntervalChanged = Events.event();
   private final Event evtServerShutDown = Events.event();
   private final Event evtStatisticsUpdated = Events.event();
   private final Event evtWarningThresholdChanged = Events.event();
@@ -47,8 +44,17 @@ public final class ServerMonitor {
   private final int registryPort;
   private final EntityConnectionServerAdmin server;
 
-  private ScheduledExecutorService updateStatisticsService;
-  private int statisticsUpdateInterval;
+  private final TaskScheduler updateScheduler = new TaskScheduler(new Runnable() {
+    @Override
+    public void run() {
+      try {
+        if (!shutdown) {
+          updateStatistics();
+        }
+      }
+      catch (RemoteException ignored) {}
+    }
+  }, 2, 2, TimeUnit.SECONDS);
 
   private final DatabaseMonitor databaseMonitor;
   private final ClientUserMonitor clientMonitor;
@@ -87,29 +93,12 @@ public final class ServerMonitor {
     databaseMonitor = new DatabaseMonitor(server);
     clientMonitor = new ClientUserMonitor(server);
     refreshDomainList();
-    setStatisticsUpdateInterval(2);
-  }
-
-  public void setStatisticsUpdateInterval(final int value) {
-    if (value < 0) {
-      throw new IllegalArgumentException("Statistics update interval must be a positive integer");
-    }
-    if (value != this.statisticsUpdateInterval) {
-      this.statisticsUpdateInterval = value;
-      evtStatisticsUpdateIntervalChanged.fire();
-      startUpdateStatisticsService();
-    }
-  }
-
-  public int getStatisticsUpdateInterval() {
-    return statisticsUpdateInterval;
+    updateStatistics();
   }
 
   public void shutdown() {
     shutdown = true;
-    if (updateStatisticsService != null) {
-      updateStatisticsService.shutdownNow();
-    }
+    updateScheduler.stop();
     databaseMonitor.shutdown();
   }
 
@@ -211,6 +200,10 @@ public final class ServerMonitor {
     return serverName;
   }
 
+  public TaskScheduler getUpdateScheduler() {
+    return updateScheduler;
+  }
+
   public EventObserver getServerShutDownObserver() {
     return evtServerShutDown.getObserver();
   }
@@ -225,10 +218,6 @@ public final class ServerMonitor {
 
   public EventObserver getStatisticsUpdatedObserver() {
     return evtStatisticsUpdated.getObserver();
-  }
-
-  public EventObserver getStatisticsUpdateIntervalObserver() {
-    return evtStatisticsUpdateIntervalChanged.getObserver();
   }
 
   public EventObserver getLoggingLevelObserver() {
@@ -270,24 +259,6 @@ public final class ServerMonitor {
     connectionCountSeries.add(time, server.getConnectionCount());
     connectionLimitSeries.add(time, server.getConnectionLimit());
     evtStatisticsUpdated.fire();
-  }
-
-  private void startUpdateStatisticsService() {
-    if (updateStatisticsService != null) {
-      updateStatisticsService.shutdownNow();
-    }
-    updateStatisticsService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
-    updateStatisticsService.scheduleWithFixedDelay(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          if (!shutdown) {
-            updateStatistics();
-          }
-        }
-        catch (RemoteException ignored) {}
-      }
-    }, this.statisticsUpdateInterval, this.statisticsUpdateInterval, TimeUnit.SECONDS);
   }
 
   private static String removeAdminPrefix(final String serverName) {

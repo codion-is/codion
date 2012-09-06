@@ -7,8 +7,8 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,8 +21,6 @@ import java.util.Collections;
 import java.util.Deque;
 import java.util.List;
 import java.util.Random;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -48,12 +46,16 @@ final class ConnectionPoolImpl implements ConnectionPool {
   private final Counter counter = new Counter();
   private final Random random = new Random();
 
-  private ScheduledExecutorService poolCleanupService;
+  private final TaskScheduler poolCleanupScheduler = new TaskScheduler(new Runnable() {
+    @Override
+    public void run() {
+      cleanPool();
+    }
+  }, DEFAULT_CLEANUP_INTERVAL_MS, TimeUnit.MILLISECONDS);
 
   private volatile int minimumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE / 2;
   private volatile int maximumPoolSize = DEFAULT_MAXIMUM_POOL_SIZE;
   private volatile int maximumRetryWaitPeriod = DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS;
-  private volatile int poolCleanupInterval = DEFAULT_CLEANUP_INTERVAL_MS;
   private volatile int pooledConnectionTimeout = DEFAULT_CONNECTION_TIMEOUT_MS;
   private volatile int maximumCheckOutTime = DEFAULT_MAXIMUM_CHECK_OUT_TIME;
   private volatile int newConnectionThreshold = DEFAULT_NEW_CONNECTION_THRESHOLD;
@@ -78,7 +80,6 @@ final class ConnectionPoolImpl implements ConnectionPool {
       connectionPoolStatistics.add(new ConnectionPoolStateImpl());
     }
     initializeConnections();
-    startPoolCleanupService();
   }
 
   /** {@inheritDoc} */
@@ -157,7 +158,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   @Override
   public void close() {
     closed = true;
-    poolCleanupService.shutdownNow();
+    poolCleanupScheduler.stop();
     synchronized (pool) {
       while (!pool.isEmpty()) {
         connectionProvider.destroyConnection(pool.pop());
@@ -238,16 +239,13 @@ final class ConnectionPoolImpl implements ConnectionPool {
   /** {@inheritDoc} */
   @Override
   public int getCleanupInterval() {
-    return poolCleanupInterval;
+    return poolCleanupScheduler.getInterval();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setCleanupInterval(final int poolCleanupInterval) {
-    if (poolCleanupInterval != this.poolCleanupInterval) {
-      this.poolCleanupInterval = poolCleanupInterval;
-      startPoolCleanupService();
-    }
+    poolCleanupScheduler.setInterval(poolCleanupInterval);
   }
 
   /** {@inheritDoc} */
@@ -431,19 +429,6 @@ final class ConnectionPoolImpl implements ConnectionPool {
     }
 
     return poolStates;
-  }
-
-  private void startPoolCleanupService() {
-    if (poolCleanupService != null) {
-      poolCleanupService.shutdownNow();
-    }
-    poolCleanupService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
-    poolCleanupService.scheduleWithFixedDelay(new Runnable() {
-      @Override
-      public void run() {
-        cleanPool();
-      }
-    }, 0, this.poolCleanupInterval, TimeUnit.MILLISECONDS);
   }
 
   private void cleanPool() {

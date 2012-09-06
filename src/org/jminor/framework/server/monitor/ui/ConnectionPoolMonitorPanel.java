@@ -5,6 +5,7 @@ package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
@@ -214,8 +215,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(UiUtil.createGridLayout(1, 2));
-    final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "statisticsUpdateInterval",
-            model.getStatisticsUpdateIntervalObserver()).getSpinnerModel());
+    final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model.getUpdateScheduler(),
+            TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()).getSpinnerModel());
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);

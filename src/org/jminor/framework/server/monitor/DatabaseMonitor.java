@@ -4,26 +4,19 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.Events;
-import org.jminor.common.model.Util;
+import org.jminor.common.model.TaskScheduler;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
 
 import java.rmi.RemoteException;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
  * A DatabaseMonitor
  */
 public final class DatabaseMonitor {
-
-  private final Event evtStatisticsUpdateIntervalChanged = Events.event();
 
   private final EntityConnectionServerAdmin server;
   private final PoolMonitor poolMonitor;
@@ -34,8 +27,15 @@ public final class DatabaseMonitor {
   private final XYSeries deletesPerSecond = new XYSeries("Deletes per second");
   private final XYSeriesCollection queriesPerSecondCollection = new XYSeriesCollection();
 
-  private ScheduledExecutorService updateStatisticsService;
-  private int statisticsUpdateInterval;
+  private final TaskScheduler updateScheduler = new TaskScheduler(new Runnable() {
+    @Override
+    public void run() {
+      try {
+        updateStatistics();
+      }
+      catch (RemoteException ignored) {}
+    }
+  }, 2, 2, TimeUnit.SECONDS);
 
   public DatabaseMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
     this.server = server;
@@ -46,22 +46,6 @@ public final class DatabaseMonitor {
     this.queriesPerSecondCollection.addSeries(updatesPerSecond);
     this.queriesPerSecondCollection.addSeries(deletesPerSecond);
     updateStatistics();
-    setStatisticsUpdateInterval(3);
-  }
-
-  public void setStatisticsUpdateInterval(final int value) {
-    if (value < 0) {
-      throw new IllegalArgumentException("Statistics update interval must be a positive integer");
-    }
-    if (value != this.statisticsUpdateInterval) {
-      this.statisticsUpdateInterval = value;
-      evtStatisticsUpdateIntervalChanged.fire();
-      startUpdateStatisticsService();
-    }
-  }
-
-  public int getStatisticsUpdateInterval() {
-    return statisticsUpdateInterval;
   }
 
   public PoolMonitor getConnectionPoolMonitor() {
@@ -69,9 +53,7 @@ public final class DatabaseMonitor {
   }
 
   public void shutdown() {
-    if (updateStatisticsService != null) {
-      updateStatisticsService.shutdownNow();
-    }
+    updateScheduler.stop();
     poolMonitor.shutdown();
   }
 
@@ -96,23 +78,7 @@ public final class DatabaseMonitor {
     return queriesPerSecondCollection;
   }
 
-  public EventObserver getStatisticsUpdateIntervalObserver() {
-    return evtStatisticsUpdateIntervalChanged.getObserver();
-  }
-
-  private void startUpdateStatisticsService() {
-    if (updateStatisticsService != null) {
-      updateStatisticsService.shutdownNow();
-    }
-    updateStatisticsService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
-    updateStatisticsService.scheduleWithFixedDelay(new Runnable() {
-      @Override
-      public void run() {
-        try {
-          updateStatistics();
-        }
-        catch (RemoteException ignored) {}
-      }
-    }, this.statisticsUpdateInterval, this.statisticsUpdateInterval, TimeUnit.SECONDS);
+  public TaskScheduler getUpdateScheduler() {
+    return updateScheduler;
   }
 }

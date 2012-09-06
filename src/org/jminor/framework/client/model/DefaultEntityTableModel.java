@@ -335,14 +335,14 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final void setValueAt(final Object aValue, final int rowIndex, final int columnIndex) {
+  public final void setValueAt(final Object value, final int rowIndex, final int columnIndex) {
     throw new UnsupportedOperationException("setValueAt is not supported");
   }
 
   /** {@inheritDoc} */
   @Override
-  public Color getPropertyBackgroundColor(final int row, final Property columnProperty) {
-    return getItemAt(row).getBackgroundColor(columnProperty);
+  public Color getPropertyBackgroundColor(final int row, final Property property) {
+    return getItemAt(row).getBackgroundColor(property);
   }
 
   /** {@inheritDoc} */

@@ -9,6 +9,7 @@ import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.AbstractRemoteServer;
@@ -39,7 +40,6 @@ import java.util.Set;
 import java.util.UUID;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -51,18 +51,28 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionServer.class);
 
-  private static final int DEFAULT_CHECK_INTERVAL_MS = 30000;
+  private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
 
   private final int registryPort;
   private final Database database;
   private final boolean sslEnabled;
   private final boolean clientLoggingEnabled = Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
+  private final TaskScheduler connectionTimeoutScheduler = new TaskScheduler(new Runnable() {
+    /** {@inheritDoc} */
+    @Override
+    public void run() {
+      try {
+        removeConnections(true);
+      }
+      catch (RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
+  }, DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS);
 
   private final long startDate = System.currentTimeMillis();
 
   private WebStartServer webServer;
-  private ScheduledExecutorService connectionTimeoutService;
-  private int maintenanceInterval = DEFAULT_CHECK_INTERVAL_MS;
   private int connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
 
   /**
@@ -91,7 +101,6 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     loadLoginProxies();
     initializeConnectionPools(database, getInitialPoolUsers());
     setConnectionLimit(connectionLimit);
-    startConnectionTimeoutService();
     startWebServer();
     ServerUtil.initializeRegistry(registryPort);
     ServerUtil.getRegistry(registryPort).rebind(getServerName(), this);
@@ -189,17 +198,14 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
    * @return the maintenance check interval in ms
    */
   int getMaintenanceInterval() {
-    return maintenanceInterval;
+    return connectionTimeoutScheduler.getInterval();
   }
 
   /**
    * @param maintenanceInterval the new maintenance interval in ms
    */
   void setMaintenanceInterval(final int maintenanceInterval) {
-    if (this.maintenanceInterval != maintenanceInterval) {
-      this.maintenanceInterval = maintenanceInterval <= 0 ? 1 : maintenanceInterval;
-      startConnectionTimeoutService();
-    }
+    connectionTimeoutScheduler.setInterval(maintenanceInterval);
   }
 
   /**
@@ -322,7 +328,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   /** {@inheritDoc} */
   @Override
   protected void handleShutdown() throws RemoteException {
-    connectionTimeoutService.shutdownNow();
+    connectionTimeoutScheduler.stop();
     removeConnections(false);
     ConnectionPools.closeConnectionPools();
     shutdownWebServer();
@@ -436,25 +442,6 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     final String message = "Server loading domain model class '" + domainClassName + "' from classpath";
     LOG.info(message);
     Class.forName(domainClassName);
-  }
-
-  private void startConnectionTimeoutService() {
-    if (connectionTimeoutService != null) {
-      connectionTimeoutService.shutdownNow();
-    }
-    connectionTimeoutService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
-    connectionTimeoutService.scheduleWithFixedDelay(new Runnable() {
-      /** {@inheritDoc} */
-      @Override
-      public void run() {
-        try {
-          removeConnections(true);
-        }
-        catch (RemoteException e) {
-          throw new RuntimeException(e);
-        }
-      }
-    }, 0, maintenanceInterval, TimeUnit.MILLISECONDS);
   }
 
   private static final class ConnectionProvider implements DatabaseConnectionProvider {

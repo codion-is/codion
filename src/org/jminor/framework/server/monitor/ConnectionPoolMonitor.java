@@ -9,8 +9,8 @@ import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
+import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -24,8 +24,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
-import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -36,7 +34,6 @@ public final class ConnectionPoolMonitor {
   private static final int THOUSAND = 1000;
 
   private final Event evtStatisticsUpdated = Events.event();
-  private final Event evtStatisticsUpdateIntervalChanged = Events.event();
   private final Event evtCollectFineGrainedStatisticsChanged = Events.event();
 
   private final User user;
@@ -57,10 +54,14 @@ public final class ConnectionPoolMonitor {
   private final YIntervalSeries averageCheckOutTime = new YIntervalSeries("Average check out time");
   private final YIntervalSeriesCollection checkOutTimeCollection = new YIntervalSeriesCollection();
 
-  private long lastStatisticsUpdateTime = 0;
+  private final TaskScheduler updateScheduler = new TaskScheduler(new Runnable() {
+    @Override
+    public void run() {
+      updateStatistics();
+    }
+  }, 2, 2, TimeUnit.SECONDS);
 
-  private ScheduledExecutorService updateStatisticsService;
-  private int statisticsUpdateInterval;
+  private long lastStatisticsUpdateTime = 0;
 
   public ConnectionPoolMonitor(final ConnectionPool connectionPool) throws RemoteException {
     this.user = connectionPool.getUser();
@@ -75,7 +76,6 @@ public final class ConnectionPoolMonitor {
     this.connectionRequestsPerSecondCollection.addSeries(failedRequestsPerSecond);
     this.checkOutTimeCollection.addSeries(averageCheckOutTime);
     updateStatistics();
-    setStatisticsUpdateInterval(3);
   }
 
   public User getUser() {
@@ -193,25 +193,8 @@ public final class ConnectionPoolMonitor {
     return connectionPool.isCollectFineGrainedStatistics();
   }
 
-  public void setStatisticsUpdateInterval(final int value) {
-    if (value < 0) {
-      throw new IllegalArgumentException("Statistics update interval must be a positive integer");
-    }
-    if (value != this.statisticsUpdateInterval) {
-      this.statisticsUpdateInterval = value;
-      evtStatisticsUpdateIntervalChanged.fire();
-      startUpdateStatisticsService();
-    }
-  }
-
-  public int getStatisticsUpdateInterval() {
-    return statisticsUpdateInterval;
-  }
-
   public void shutdown() {
-    if (updateStatisticsService != null) {
-      updateStatisticsService.shutdownNow();
-    }
+    updateScheduler.stop();
   }
 
   public EventObserver getCollectFineGrainedStatisticsObserver() {
@@ -222,8 +205,8 @@ public final class ConnectionPoolMonitor {
     return evtStatisticsUpdated.getObserver();
   }
 
-  public EventObserver getStatisticsUpdateIntervalObserver() {
-    return evtStatisticsUpdateIntervalChanged.getObserver();
+  public TaskScheduler getUpdateScheduler() {
+    return updateScheduler;
   }
 
   private void updateStatistics() {
@@ -269,19 +252,6 @@ public final class ConnectionPoolMonitor {
     }
 
     return poolStates;
-  }
-
-  private void startUpdateStatisticsService() {
-    if (updateStatisticsService != null) {
-      updateStatisticsService.shutdownNow();
-    }
-    updateStatisticsService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
-    updateStatisticsService.scheduleWithFixedDelay(new Runnable() {
-      @Override
-      public void run() {
-        updateStatistics();
-      }
-    }, statisticsUpdateInterval, statisticsUpdateInterval, TimeUnit.SECONDS);
   }
 
   private static final class StateComparator implements Comparator<ConnectionPoolState>, Serializable {

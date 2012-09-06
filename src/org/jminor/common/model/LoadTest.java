@@ -71,12 +71,12 @@ public interface LoadTest {
   void setWarningTime(final int warningTime);
 
   /**
-   * @return the chart data update interval
+   * @return the chart data update interval in milliseconds
    */
   int getUpdateInterval();
 
   /**
-   * @param updateInterval the chart data update interval
+   * @param updateInterval the chart data update interval in milliseconds
    */
   void setUpdateInterval(final int updateInterval);
 

@@ -19,7 +19,6 @@ import java.util.Random;
 import java.util.Stack;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
-import java.util.concurrent.ScheduledExecutorService;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -46,13 +45,12 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private final Event evtApplicationCountChanged = Events.event();
   private final Event evtApplicationBatchSizeChanged = Events.event();
   private final Event evtDoneExiting = Events.event();
-  private final Event evtUpdateIntervalChanged = Events.event();
 
   private int maximumThinkTime;
   private int minimumThinkTime;
   private int loginDelayFactor;
   private int applicationBatchSize;
-  private int updateInterval;
+  private User user;
 
   private volatile boolean shuttingDown = false;
   private volatile boolean paused = false;
@@ -62,10 +60,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private final Collection<? extends UsageScenario<T>> usageScenarios;
   private final ItemRandomizer<UsageScenario> scenarioChooser;
   private final ExecutorService executor = Executors.newCachedThreadPool();
-  private User user;
-
   private final Counter counter;
-  private ScheduledExecutorService updateChartDataService;
+  private final TaskScheduler updateChartDataScheduler;
   private volatile int warningTime;
 
   private final XYSeries scenariosRunSeries = new XYSeries("Total");
@@ -164,7 +160,19 @@ public abstract class LoadTestModel<T> implements LoadTest {
     this.scenarioChooser = initializeScenarioChooser();
     this.counter = new Counter(this.usageScenarios);
     initializeChartData();
-    setUpdateInterval(DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS);
+    this.updateChartDataScheduler = new TaskScheduler(new Runnable() {
+      /** {@inheritDoc} */
+      @Override
+      public void run() {
+        if (shuttingDown || paused) {
+          return;
+        }
+        counter.updateRequestsPerSecond();
+        if (collectChartData && !paused) {
+          updateChartData();
+        }
+      }
+    }, DEFAULT_CHART_DATA_UPDATE_INTERVAL_MS, TimeUnit.MILLISECONDS);
   }
 
   /** {@inheritDoc} */
@@ -307,20 +315,13 @@ public abstract class LoadTestModel<T> implements LoadTest {
   /** {@inheritDoc} */
   @Override
   public final int getUpdateInterval() {
-    return updateInterval;
+    return updateChartDataScheduler.getInterval();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setUpdateInterval(final int updateInterval) {
-    if (updateInterval < 0) {
-      throw new IllegalArgumentException("Update interval must be a positive integer");
-    }
-    if (this.updateInterval != updateInterval) {
-      this.updateInterval = updateInterval;
-      evtUpdateIntervalChanged.fire();
-      startUpdateChartDataService();
-    }
+    updateChartDataScheduler.setInterval(updateInterval);
   }
 
   /** {@inheritDoc} */
@@ -398,7 +399,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   @Override
   public final void exit() {
     shuttingDown = true;
-    updateChartDataService.shutdownNow();
+    updateChartDataScheduler.stop();
     executor.shutdown();
     paused = false;
     synchronized (applications) {
@@ -577,26 +578,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     return model;
-  }
-
-  private void startUpdateChartDataService() {
-    if (updateChartDataService != null) {
-      updateChartDataService.shutdownNow();
-    }
-    updateChartDataService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
-    updateChartDataService.scheduleWithFixedDelay(new Runnable() {
-      /** {@inheritDoc} */
-      @Override
-      public void run() {
-        if (shuttingDown || paused) {
-          return;
-        }
-        counter.updateRequestsPerSecond();
-        if (collectChartData && !paused) {
-          updateChartData();
-        }
-      }
-    }, 0, this.updateInterval, TimeUnit.MILLISECONDS);
   }
 
   private void initializeChartData() {
