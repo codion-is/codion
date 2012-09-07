@@ -5,24 +5,27 @@ package org.jminor.common.model;
 
 import org.junit.Test;
 
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.concurrent.TimeUnit;
+
+import static org.junit.Assert.*;
 
 public class TaskSchedulerTest {
 
+  private final Runnable runnable = new Runnable() {
+    @Override
+    public void run() {}
+  };
+
   @Test(expected = IllegalArgumentException.class)
   public void constructorNegativeInterval() {
-    new TaskScheduler(new Runnable() {
-      @Override
-      public void run() {}
-    }, -1, TimeUnit.SECONDS);
+    new TaskScheduler(runnable, -1, TimeUnit.SECONDS);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNegativeInitialDelay() {
-    new TaskScheduler(new Runnable() {
-      @Override
-      public void run() {}
-    }, 1, -1, TimeUnit.SECONDS);
+    new TaskScheduler(runnable, 1, -1, TimeUnit.SECONDS);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -32,25 +35,45 @@ public class TaskSchedulerTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullTimUnit() {
-    new TaskScheduler(new Runnable() {
-      @Override
-      public void run() {}
-    }, 1, 1, null);
+    new TaskScheduler(runnable, 1, 1, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullThreadFactory() {
-    new TaskScheduler(new Runnable() {
-      @Override
-      public void run() {}
-    }, 1, 1, TimeUnit.SECONDS, null);
+    new TaskScheduler(runnable, 1, 1, TimeUnit.SECONDS, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setIntervalNegative() {
-    new TaskScheduler(new Runnable() {
+    new TaskScheduler(runnable, 1, TimeUnit.SECONDS).setInterval(-1);
+  }
+
+  @Test
+  public void startStop() throws InterruptedException {
+    final Collection<Object> counter = new ArrayList<Object>();
+    final TaskScheduler scheduler = new TaskScheduler(new Runnable() {
       @Override
-      public void run() {}
-    }, 1, TimeUnit.SECONDS).setInterval(-1);
+      public void run() {
+        counter.add(new Object());
+      }
+    }, 5, TimeUnit.MILLISECONDS);
+    assertFalse(scheduler.isRunning());
+    scheduler.start();
+    assertTrue(scheduler.isRunning());
+    Thread.sleep(25);
+    assertTrue(scheduler.isRunning());
+    assertFalse(counter.isEmpty());
+    scheduler.stop();
+    final int currentSize = counter.size();
+    assertFalse(scheduler.isRunning());
+    Thread.sleep(25);
+    assertEquals(currentSize, counter.size());
+    scheduler.start();
+    assertTrue(scheduler.isRunning());
+    Thread.sleep(25);
+    assertTrue(scheduler.isRunning());
+    assertTrue(counter.size() > currentSize);
+    scheduler.stop();
+    assertFalse(scheduler.isRunning());
   }
 }

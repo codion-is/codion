@@ -44,7 +44,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityServerMonitorPanel.class);
 
-  private static final String JDK_PREFERENCE_KEY = EntityServerMonitorPanel.class.getName() + ".jdkPathPreferenceKey";
+  private static final String JDK_PREFERENCE_KEY = EntityServerMonitorPanel.class.getSimpleName() + ".jdkPathPreferenceKey";
   private static String jdkDir = Util.getUserPreference(JDK_PREFERENCE_KEY, null);
 
   private final Event evtAlwaysOnTopChanged = Events.event();

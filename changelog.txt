@@ -3188,7 +3188,7 @@
   BooleanProperty.getSQLString() removed, unused
   EntityJSONParser improved quite a bit, refactored
   Util.nullOrEmpty() overloaded for Collections and Maps
-  EntityConnectionImpl.update() refactored
+  EntityConnectionImpl.update() refactoredE
   Configuration.resolveTrustStoreProperty() moved to Util and renamed to resolveTrustStore()
   EntityConnectionServerTest improved a bit, setUp()/tearDown() now use EntityConnectionServerAdminImpl.startServer/shutdownServer() respectively
   EntityConnectionImpl.PropertyResultPacker now handles null values correctly
@@ -3211,3 +3211,6 @@
   TaskScheduler no longer started on construction, start() returns instance to facilitate startup on construction
   Events.EventObserverImpl redundant synchronization removed
   TaskSchedulerTest added
+  TaskSchedulerTest improved
+  ConnectionPoolMonitorPanel, fine grained statistics checkbox moved
+  EntityServerMonitorPanel bug fixed, JDK_PREFERENCE_KEY was too long

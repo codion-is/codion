@@ -214,7 +214,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   }
 
   private JPanel getChartPanel() {
-    final JPanel chartConfig = new JPanel(UiUtil.createGridLayout(1, 2));
+    final JPanel chartConfig = new JPanel(UiUtil.createFlexibleGridLayout(1, 3, true, false));
     final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()).getSpinnerModel());
 
@@ -224,6 +224,13 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(spnUpdateInterval);
 
+    final JCheckBox chkCollectStatistics = new JCheckBox("Fine grained statistics");
+    chkCollectStatistics.setModel(new ToggleBeanValueLink(model, "collectFineGrainedStatistics",
+            model.getCollectFineGrainedStatisticsObserver(), null).getButtonModel());
+    chkCollectStatistics.setMaximumSize(UiUtil.getPreferredTextFieldSize());
+
+    chartConfig.add(chkCollectStatistics);
+
     final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
     configBase.add(chartConfig, BorderLayout.WEST);
     final JButton btnReset = ControlProvider.createButton(
@@ -231,21 +238,11 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     btnReset.setMaximumSize(UiUtil.getPreferredTextFieldSize());
     configBase.add(btnReset, BorderLayout.EAST);
 
-    final JCheckBox chkCollectStatistics = new JCheckBox("Fine grained statistics");
-    chkCollectStatistics.setModel(new ToggleBeanValueLink(model, "collectFineGrainedStatistics", model.getCollectFineGrainedStatisticsObserver(), null).getButtonModel());
-    chkCollectStatistics.setMaximumSize(UiUtil.getPreferredTextFieldSize());
-
-    final JPanel inPoolBase = new JPanel(UiUtil.createBorderLayout());
-    final JPanel checkBoxBase = new JPanel(UiUtil.createBorderLayout());
-    checkBoxBase.add(chkCollectStatistics, BorderLayout.EAST);
-    inPoolBase.add(inPoolFineGrainedChartPanel, BorderLayout.CENTER);
-    inPoolBase.add(checkBoxBase, BorderLayout.NORTH);
-
     final JPanel chartBase = new JPanel(new GridLayout(2,2));
     chartBase.add(requestsPerSecondChartPanel);
     chartBase.add(inPoolChartPanel);
     chartBase.add(checkOutTimePanel);
-    chartBase.add(inPoolBase);
+    chartBase.add(inPoolFineGrainedChartPanel);
     chartBase.setBorder(BorderFactory.createEtchedBorder());
 
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
