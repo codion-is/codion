@@ -21,6 +21,8 @@ import java.util.concurrent.TimeUnit;
  *
  *   scheduler.start();
  *   ...
+ *   scheduler.setInterval(1);//task restarted using the new interval
+ *   ...
  *   scheduler.stop();
  * </pre>
  */
@@ -51,7 +53,7 @@ public final class TaskScheduler {
    * Instantiates a new TaskScheduler instance with a daemon thread.
    * @param task the task to run
    * @param interval the interval
-   * @param initialDelay the delay before the task is run for the first time
+   * @param initialDelay the initial start delay, used on restarts as well
    * @param timeUnit the time unit to use
    */
   public TaskScheduler(final Runnable task, final int interval, final int initialDelay, final TimeUnit timeUnit) {
@@ -62,7 +64,7 @@ public final class TaskScheduler {
    * Instantiates a new TaskScheduler instance.
    * @param task the task to run
    * @param interval the interval
-   * @param initialDelay the delay before the task is run for the first time
+   * @param initialDelay the initial start delay, used on restarts as well
    * @param timeUnit the time unit to use
    * @param threadFactory the thread factory to use
    */
@@ -89,7 +91,8 @@ public final class TaskScheduler {
   }
 
   /**
-   * Sets the new task interval and re-schedules the task
+   * Sets the new task interval and re-schedules the task, not that if the scheduler was
+   * stopped it will be restarted.
    * @param interval the interval
    * @throws IllegalArgumentException in case <code>interval</code> isn't a positive integer
    */
@@ -114,10 +117,15 @@ public final class TaskScheduler {
   }
 
   /**
-   * @return true if this TaskScheduler is running
+   * Starts this TaskScheduler, if it is running it is restarted, using the initial delay specified during construction.
+   * @return this TaskScheduler instance
    */
-  public synchronized boolean isRunning() {
-    return executorService != null && !executorService.isShutdown();
+  public synchronized TaskScheduler start() {
+    stop();
+    executorService = Executors.newSingleThreadScheduledExecutor(threadFactory);
+    executorService.scheduleAtFixedRate(task, initialDelay, interval, timeUnit);
+
+    return this;
   }
 
   /**
@@ -131,14 +139,9 @@ public final class TaskScheduler {
   }
 
   /**
-   * Starts this TaskScheduler, if it is running it is restarted, using the initial delay specified during construction.
-   * @return this TaskScheduler instance
+   * @return true if this TaskScheduler is running
    */
-  public synchronized TaskScheduler start() {
-    stop();
-    executorService = Executors.newSingleThreadScheduledExecutor(threadFactory);
-    executorService.scheduleAtFixedRate(task, initialDelay, interval, timeUnit);
-
-    return this;
+  public synchronized boolean isRunning() {
+    return executorService != null && !executorService.isShutdown();
   }
 }

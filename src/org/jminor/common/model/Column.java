@@ -20,7 +20,7 @@ public interface Column extends Attribute {
   int getType();
 
   /**
-   * @return the index of this property in a select query
+   * @return the index of this column in a select query
    */
   int getSelectIndex();
 

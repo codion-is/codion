@@ -1,7 +1,11 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.common.model.tools;
+
+import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 
 import java.util.ArrayList;
 import java.util.List;

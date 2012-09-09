@@ -1,7 +1,9 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.common.model.tools;
+
+import org.jminor.common.model.EventAdapter;
 
 import org.junit.Test;
 

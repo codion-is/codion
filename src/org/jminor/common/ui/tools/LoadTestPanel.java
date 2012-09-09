@@ -1,14 +1,15 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.ui;
+package org.jminor.common.ui.tools;
 
 import org.jminor.common.model.EventAdapter;
-import org.jminor.common.model.ItemRandomizer;
-import org.jminor.common.model.LoadTest;
-import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.tools.ItemRandomizer;
+import org.jminor.common.model.tools.LoadTest;
+import org.jminor.common.model.tools.LoadTestModel;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
@@ -54,7 +55,7 @@ import java.util.List;
 
 /**
  * A default UI component for the LoadTestModel class.
- * @see org.jminor.common.model.LoadTestModel
+ * @see org.jminor.common.model.tools.LoadTestModel
  */
 public final class LoadTestPanel extends JPanel {
 

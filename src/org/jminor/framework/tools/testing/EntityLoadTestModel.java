@@ -4,8 +4,8 @@
 package org.jminor.framework.tools.testing;
 
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
+import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;

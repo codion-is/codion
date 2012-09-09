@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.ui;
+package org.jminor.common.ui.tools;
 
-import org.jminor.common.model.ItemRandomizer;
-import org.jminor.common.model.ItemRandomizerModel;
+import org.jminor.common.model.tools.ItemRandomizer;
+import org.jminor.common.model.tools.ItemRandomizerModel;
 
 import org.junit.Test;
 

@@ -1,7 +1,16 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.common.model.tools;
+
+import org.jminor.common.model.CancelException;
+import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
+import org.jminor.common.model.TaskScheduler;
+import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 
 import org.jfree.data.xy.XYSeries;
 import org.jfree.data.xy.XYSeriesCollection;
@@ -528,7 +537,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   /**
    * @return an initialized application.
-   * @throws CancelException in case the initialization was cancelled
+   * @throws org.jminor.common.model.CancelException in case the initialization was cancelled
    */
   protected abstract T initializeApplication() throws CancelException;
 

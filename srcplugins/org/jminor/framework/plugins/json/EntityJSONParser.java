@@ -54,7 +54,7 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
   }
 
   /**
-   * Parses the given JSON string into a list of Entity instances
+   * Deserializes the given JSON string into a list of Entity instances
    * @param jsonString the JSON string to parse
    * @return a List containing the Entity instances represented by the given JSON string
    * @throws DeserializeException in case of an exception
@@ -62,7 +62,7 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
   @Override
   public List<Entity> deserialize(final String jsonString) throws DeserializeException {
     try {
-      return parseEntities(jsonString);
+      return deserializeEntities(jsonString);
     }
     catch (Exception e) {
       throw new DeserializeException(e.getMessage(), e);
@@ -92,13 +92,13 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
   }
 
   /**
-   * Parses the given JSON string into a list of Entity instances
+   * Deserializes the given JSON string into a list of Entity instances
    * @param jsonString the JSON string to parse
    * @return a List containing the Entity instances represented by the given JSON string
    * @throws ParseException in case of an exception
    * @throws JSONException in case of an exception
    */
-  public static List<Entity> parseEntities(final String jsonString) throws JSONException, ParseException {
+  public static List<Entity> deserializeEntities(final String jsonString) throws JSONException, ParseException {
     if (Util.nullOrEmpty(jsonString)) {
       return Collections.emptyList();
     }
@@ -135,13 +135,13 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
   }
 
   /**
-   * Parses the given JSON string into a list of Entity.Key instances
+   * Deserializes the given JSON string into a list of Entity.Key instances
    * @param jsonString the JSON string to parse
    * @return a List containing the Entity.Key instances represented by the given JSON string
    * @throws ParseException in case of an exception
    * @throws JSONException in case of an exception
    */
-  public static List<Entity.Key> parseKeys(final String jsonString) throws JSONException, ParseException {
+  public static List<Entity.Key> deserializeKeys(final String jsonString) throws JSONException, ParseException {
     if (Util.nullOrEmpty(jsonString)) {
       return Collections.emptyList();
     }

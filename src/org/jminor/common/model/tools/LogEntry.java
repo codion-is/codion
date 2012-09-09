@@ -1,8 +1,10 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
+package org.jminor.common.model.tools;
 
+import org.jminor.common.model.DateUtil;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
 
 import java.io.IOException;

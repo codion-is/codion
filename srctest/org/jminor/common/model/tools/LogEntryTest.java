@@ -1,4 +1,4 @@
-package org.jminor.common.model;
+package org.jminor.common.model.tools;
 
 import org.junit.Test;
 

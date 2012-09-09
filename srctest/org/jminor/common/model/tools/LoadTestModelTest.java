@@ -1,4 +1,7 @@
-package org.jminor.common.model;
+package org.jminor.common.model.tools;
+
+import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 
 import org.junit.Test;
 

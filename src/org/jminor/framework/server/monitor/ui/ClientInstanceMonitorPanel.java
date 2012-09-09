@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.model.LogEntry;
 import org.jminor.common.model.formats.DateFormats;
+import org.jminor.common.model.tools.LogEntry;
 import org.jminor.common.server.ServerLog;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;

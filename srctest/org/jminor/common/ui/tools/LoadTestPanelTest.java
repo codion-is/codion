@@ -1,8 +1,8 @@
-package org.jminor.common.ui;
+package org.jminor.common.ui.tools;
 
-import org.jminor.common.model.LoadTestModel;
-import org.jminor.common.model.LoadTestModelTest;
 import org.jminor.common.model.User;
+import org.jminor.common.model.tools.LoadTestModel;
+import org.jminor.common.model.tools.LoadTestModelTest;
 
 import org.junit.Test;
 

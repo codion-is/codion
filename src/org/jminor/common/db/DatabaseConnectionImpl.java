@@ -4,10 +4,10 @@
 package org.jminor.common.db;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.LogEntry;
-import org.jminor.common.model.MethodLogger;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.tools.LogEntry;
+import org.jminor.common.model.tools.MethodLogger;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

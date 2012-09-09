@@ -1,14 +1,15 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.ui;
+package org.jminor.common.ui.tools;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
-import org.jminor.common.model.ItemRandomizer;
-import org.jminor.common.model.ItemRandomizerModel;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.tools.ItemRandomizer;
+import org.jminor.common.model.tools.ItemRandomizerModel;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.AbstractValueLink;
 import org.jminor.common.ui.control.LinkType;
 

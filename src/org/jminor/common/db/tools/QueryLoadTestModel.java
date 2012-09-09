@@ -13,9 +13,9 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventAdapter;
-import org.jminor.common.model.LoadTestModel;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.tools.LoadTestModel;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
