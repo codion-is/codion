@@ -3224,3 +3224,5 @@
   Configuration.INVALID_VALUE_BACKGROUND_COLOR removed, unused
   EntityConnectionServer, domainModelClassNames, loginProxyClassNames, initialPoolUsers, webDocumentRoot, webServerPort and clientLoggingEnabled added as constructor parameters
   EntityConnectionServer.logShutdownAndReturn() added and used
+  Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP removed
+  Configuration.DEFAULT_LOOK_AND_FEEL_CLASSNAME removed, Configuration no longer depends on UiUtil

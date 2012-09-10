@@ -32,8 +32,6 @@ import java.awt.BorderLayout;
  */
 public class EntityGeneratorPanel extends JPanel {
 
-  private static final int GAP = Configuration.getIntValue(Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP);
-
   private final EntityGeneratorModel model;
 
   /**
@@ -55,7 +53,7 @@ public class EntityGeneratorPanel extends JPanel {
 
     splitPane.setResizeWeight(0.2);
 
-    setLayout(new BorderLayout(GAP, GAP));
+    setLayout(UiUtil.createBorderLayout());
     add(splitPane, BorderLayout.CENTER);
 
     bindEvents();

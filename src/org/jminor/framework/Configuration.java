@@ -5,12 +5,7 @@ package org.jminor.framework;
 
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.ui.UiUtil;
 
-import javax.swing.JLabel;
-import javax.swing.JTabbedPane;
-import javax.swing.JTable;
-import javax.swing.UIManager;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -307,13 +302,6 @@ public final class Configuration {
   public static final String TRANSFER_FOCUS_ON_ENTER = "jminor.client.transferFocusOnEnter";
 
   /**
-   * Specifies the default horizontal and vertical gap to use between components.<br>
-   * Value type: Integer<br>
-   * Default value: 5
-   */
-  public static final String DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP = "jminor.client.defaultHorizontalAndVerticalComponentGap";
-
-  /**
    * Specifies whether optimistic locking should be performed, that is, if entities should
    * be selected for update and checked for modification before being updated<br>
    * Value type: Boolean<br>
@@ -444,9 +432,6 @@ public final class Configuration {
    * Specifies the default horizontal alignment used in labels<br>
    * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER)<br>
    * Default value: JLabel.LEFT
-   * @see JLabel#LEFT
-   * @see JLabel#RIGHT
-   * @see JLabel#CENTER
    */
   public static final String DEFAULT_LABEL_TEXT_ALIGNMENT = "jminor.client.defaultLabelTextAlignment";
 
@@ -464,13 +449,6 @@ public final class Configuration {
    * Default value: true<br>
    */
   public static final String LIMIT_FOREIGN_KEY_FETCH_DEPTH = "jminor.db.limitForeignKeyFetchDepth";
-
-  /**
-   * Specifies the default look and feel classname<br>
-   * Value type: String<br>
-   * Default value: UIManager.getSystemLookAndFeelClassName()
-   */
-  public static final String DEFAULT_LOOK_AND_FEEL_CLASSNAME = "jminor.client.defaultLookAndFeelClassName";
 
   /**
    * Specifies the default size of the divider for detail panel split panes.<br>
@@ -517,10 +495,10 @@ public final class Configuration {
     PROPERTIES.put(COMPACT_ENTITY_PANEL_LAYOUT, true);
     PROPERTIES.put(USE_KEYBOARD_NAVIGATION, true);
     PROPERTIES.put(USE_FOCUS_ACTIVATION, true);
-    PROPERTIES.put(TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_OFF);
+    PROPERTIES.put(TABLE_AUTO_RESIZE_MODE, 0);//JTable.AUTO_RESIZE_OFF
     PROPERTIES.put(CONFIRM_EXIT, false);
     PROPERTIES.put(PROPERTY_DEBUG_OUTPUT, false);
-    PROPERTIES.put(TAB_PLACEMENT, JTabbedPane.TOP);
+    PROPERTIES.put(TAB_PLACEMENT, 1);//JTabbedPane.TOP
     PROPERTIES.put(TOOLBAR_BUTTONS, false);
     PROPERTIES.put(PERSIST_FOREIGN_KEY_VALUES, true);
     PROPERTIES.put(USERNAME_PREFIX, "");
@@ -538,11 +516,10 @@ public final class Configuration {
     PROPERTIES.put(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.provider.LocalEntityConnectionProvider");
     PROPERTIES.put(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM, "-");
     PROPERTIES.put(PERFORM_NULL_VALIDATION, true);
-    PROPERTIES.put(DEFAULT_LABEL_TEXT_ALIGNMENT, JLabel.LEFT);
+    PROPERTIES.put(DEFAULT_LABEL_TEXT_ALIGNMENT, 2);//JLabel.LEFT
     PROPERTIES.put(ALLOW_COLUMN_REORDERING, true);
     PROPERTIES.put(DEFAULT_FOREIGN_KEY_FETCH_DEPTH, 1);
     PROPERTIES.put(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
-    PROPERTIES.put(DEFAULT_LOOK_AND_FEEL_CLASSNAME, UIManager.getSystemLookAndFeelClassName());
     PROPERTIES.put(WEB_SERVER_PORT, 80);
     PROPERTIES.put(CACHE_REPORTS, true);
     PROPERTIES.put(DEFAULT_SPLIT_PANE_DIVIDER_SIZE, 18);
@@ -550,9 +527,7 @@ public final class Configuration {
     PROPERTIES.put(SHOW_DETAIL_PANEL_CONTROLS, true);
     PROPERTIES.put(SHOW_TOGGLE_EDIT_PANEL_CONTROL, true);
     PROPERTIES.put(DEFAULT_MAXIMUM_FRACTION_DIGITS, 10);
-    PROPERTIES.put(DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP, 5);
     parseSystemSettings();
-    setCommonSettings();
   }
 
   private static void parseSystemSettings() {
@@ -603,7 +578,6 @@ public final class Configuration {
     parseBooleanSetting(USE_OPTIMISTIC_LOCKING);
     parseStringSetting(USERNAME_PREFIX);
     parseStringSetting(WILDCARD_CHARACTER);
-    parseStringSetting(DEFAULT_LOOK_AND_FEEL_CLASSNAME);
     parseStringSetting(WEB_SERVER_DOCUMENT_ROOT);
     parseIntegerSetting(WEB_SERVER_PORT);
     parseStringSetting(Util.JAVAX_NET_NET_TRUSTSTORE);
@@ -613,11 +587,6 @@ public final class Configuration {
     parseBooleanSetting(SHOW_DETAIL_PANEL_CONTROLS);
     parseBooleanSetting(SHOW_TOGGLE_EDIT_PANEL_CONTROL);
     parseIntegerSetting(DEFAULT_MAXIMUM_FRACTION_DIGITS);
-    parseIntegerSetting(DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP);
-  }
-
-  private static void setCommonSettings() {
-    UiUtil.setDefaultHorizontalVerticalComponentGap(getIntValue(DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP));
   }
 
   private static void parseIntegerSetting(final String setting) {

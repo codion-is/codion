@@ -811,10 +811,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /**
    * @return the look and feel class name to use
-   * @see org.jminor.framework.Configuration#DEFAULT_LOOK_AND_FEEL_CLASSNAME
    */
   protected String getDefaultLookAndFeelClassName() {
-    return Configuration.getStringValue(Configuration.DEFAULT_LOOK_AND_FEEL_CLASSNAME);
+    return UIManager.getSystemLookAndFeelClassName();
   }
 
   /**
