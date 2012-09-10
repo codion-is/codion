@@ -3223,3 +3223,4 @@
   Entity.BackgroundColorProvider.getBackgroundColor() now returns Object instead of java.awt.Color to get rid of awt dependency
   Configuration.INVALID_VALUE_BACKGROUND_COLOR removed, unused
   EntityConnectionServer, domainModelClassNames, loginProxyClassNames, initialPoolUsers, webDocumentRoot, webServerPort and clientLoggingEnabled added as constructor parameters
+  EntityConnectionServer.logShutdownAndReturn() added and used

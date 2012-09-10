@@ -114,24 +114,16 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
       System.out.println(connectInfo);
     }
     catch (ClassNotFoundException e) {
-      LOG.error("Exception on server startup", e);
-      shutdown();
-      throw e;
+      throw logShutdownAndReturn(e, this);
     }
     catch (DatabaseException e) {
-      LOG.error("Exception on server startup", e);
-      shutdown();
-      throw e;
+      throw logShutdownAndReturn(e, this);
     }
     catch (RemoteException e) {
-      LOG.error("Exception on server startup", e);
-      shutdown();
-      throw e;
+      throw logShutdownAndReturn(e, this);
     }
     catch (Error e) {
-      LOG.error("Exception on server startup", e);
-      shutdown();
-      throw e;
+      throw logShutdownAndReturn(e, this);
     }
   }
 
@@ -435,6 +427,16 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
         Class.forName(className);
       }
     }
+  }
+
+  private static <T> T logShutdownAndReturn(final T exception, final EntityConnectionServer server) {
+    LOG.error("Exception on server startup", exception);
+    try {
+      server.shutdown();
+    }
+    catch (RemoteException ignored) {}
+
+    return exception;
   }
 
   private static final class ConnectionProvider implements DatabaseConnectionProvider {
