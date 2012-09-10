@@ -3216,3 +3216,10 @@
   EntityServerMonitorPanel bug fixed, JDK_PREFERENCE_KEY was too long
   LoadTest, MethodLogger and related classed moved to common.model.tools
   ItemRandomizerPanel and LoadTest panel moved to common.ui.tools
+  DefaultEntityTableModel.doRefresh() now performs the query before clearing the model, so that exceptions during refresh do not result in an empty model
+  DefaultEntityTableModel.getValue() added, allows the overriding of the getValueAt() mechanism
+  EntityConnectionServer, constructor now handles errors and un-exports the server
+  EntityConnectionServerAdminImpl, constructor now handles errors and un-exports the server admin
+  Entity.BackgroundColorProvider.getBackgroundColor() now returns Object instead of java.awt.Color to get rid of awt dependency
+  Configuration.INVALID_VALUE_BACKGROUND_COLOR removed, unused
+  EntityConnectionServer, domainModelClassNames, loginProxyClassNames, initialPoolUsers, webDocumentRoot, webServerPort and clientLoggingEnabled added as constructor parameters

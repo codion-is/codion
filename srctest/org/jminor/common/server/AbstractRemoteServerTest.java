@@ -111,6 +111,32 @@ public class AbstractRemoteServerTest {
     assertTrue(!closeIndicator.isEmpty());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void setLoginProxyAgain() throws RemoteException {
+    final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
+    try {
+      final LoginProxy proxy = new LoginProxy() {
+        @Override
+        public String getClientTypeID() {
+          return null;
+        }
+
+        @Override
+        public ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException {
+          return null;
+        }
+
+        @Override
+        public void close() {}
+      };
+      server.setLoginProxy("testClientType", proxy);
+      server.setLoginProxy("testClientType", proxy);
+    }
+    finally {
+      server.shutdown();
+    }
+  }
+
   private static class RemoteServerTestImpl implements RemoteServerTest {
 
     private final ClientInfo clientInfo;

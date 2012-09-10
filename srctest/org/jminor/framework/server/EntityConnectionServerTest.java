@@ -172,6 +172,12 @@ public class EntityConnectionServerTest {
     assertEquals(1, admin.getConnectionCount());
     empDeptProviderHelen.disconnect();
     assertEquals(0, admin.getConnectionCount());
+
+    try {
+      admin.setConnectionTimeout(-1);
+      fail();
+    }
+    catch (IllegalArgumentException ignored) {}
   }
 
   @Test
