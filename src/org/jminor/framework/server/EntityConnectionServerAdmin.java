@@ -207,6 +207,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * Sets the connection timeout in ms
    * @param timeout the timeout in ms
    * @throws RemoteException in case of a communication error
+   * @throws IllegalArgumentException in case timeout is less than zero
    */
   void setConnectionTimeout(final int timeout) throws RemoteException;
 

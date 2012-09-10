@@ -9,7 +9,6 @@ import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
-import java.awt.Color;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.util.Collection;
@@ -229,7 +228,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
    * @param property the property for which to retrieve the background color
    * @return the background color to use when displaying this property in a table
    */
-  Color getBackgroundColor(final Property property);
+  Object getBackgroundColor(final Property property);
 
   /**
    * A class representing a primary key.
@@ -287,7 +286,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
      * @param property the property
      * @return the background color to use for this entity and property
      */
-    Color getBackgroundColor(final Entity entity, final Property property);
+    Object getBackgroundColor(final Entity entity, final Property property);
   }
 
   /**
@@ -622,6 +621,6 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
      * @param property the property
      * @return the background color to use for this entity and property
      */
-    Color getBackgroundColor(final Entity entity, final Property property);
+    Object getBackgroundColor(final Entity entity, final Property property);
   }
 }

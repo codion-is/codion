@@ -319,12 +319,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   @Override
   public final Object getValueAt(final int rowIndex, final int columnIndex) {
     final Property property = getColumnIdentifier(columnIndex);
-    final Entity rowEntity = getItemAt(rowIndex);
-    if (property instanceof Property.ValueListProperty || property instanceof Property.ForeignKeyProperty) {
-      return rowEntity.getValueAsString(property);
-    }
+    final Entity entity = getItemAt(rowIndex);
 
-    return rowEntity.getValue(property);
+    return getValue(entity, property);
   }
 
   /** {@inheritDoc} */
@@ -342,7 +339,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public Color getPropertyBackgroundColor(final int row, final Property property) {
-    return getItemAt(row).getBackgroundColor(property);
+    return (Color) getItemAt(row).getBackgroundColor(property);
   }
 
   /** {@inheritDoc} */
@@ -375,11 +372,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   public final String getStatusMessage() {
     final int filteredItemCount = getFilteredItemCount();
 
-    return new StringBuilder(Integer.toString(getRowCount())).append(" (").append(
-            Integer.toString(getSelectionCount())).append(" ").append(
-            FrameworkMessages.get(FrameworkMessages.SELECTED)).append(
-            filteredItemCount > 0 ? ", " + filteredItemCount + " "
-                    + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")").toString();
+    return Integer.toString(getRowCount()) + " (" + Integer.toString(getSelectionCount()) + " " +
+            FrameworkMessages.get(FrameworkMessages.SELECTED) + (filteredItemCount > 0 ? ", " +
+            filteredItemCount + " " + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")");
   }
 
   /** {@inheritDoc} */
@@ -552,8 +547,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   protected final void doRefresh() {
     try {
       LOG.debug("{} refreshing", this);
+      final List<Entity> queryResult = performQuery(getQueryCriteria());
       clear();
-      addItems(performQuery(getQueryCriteria()), false);
+      addItems(queryResult, false);
       searchModel.rememberCurrentSearchState();
     }
     finally {
@@ -579,6 +575,25 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     catch (DatabaseException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Return the value to display in a table cell for the given property of the given entity.
+   * Note that this method is responsible for providing a "human readable" version of the value,
+   * such as the caption for value list properties and string versions of foreign key values.
+   * @param entity the entity
+   * @param property the property
+   * @return the value of the given property for the given entity for display
+   * @throws IllegalArgumentException in case entity or property is null
+   */
+  protected Object getValue(final Entity entity, final Property property) {
+    Util.rejectNullValue(entity, "entity");
+    Util.rejectNullValue(property, "property");
+    if (property instanceof Property.ValueListProperty || property instanceof Property.ForeignKeyProperty) {
+      return entity.getValueAsString(property);
+    }
+
+    return entity.getValue(property);
   }
 
   /** {@inheritDoc} */

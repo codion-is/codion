@@ -7,7 +7,6 @@ import org.jminor.common.model.IdSource;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -95,7 +94,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
     @Override
     public String toString(final Entity entity) {
       Util.rejectNullValue(entity, "entity");
-      return new StringBuilder(entityID).append(": ").append(entity.getPrimaryKey()).toString();
+      return entityID + ": " + entity.getPrimaryKey();
     }
   };
 
@@ -525,7 +524,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Color getBackgroundColor(final Entity entity, final Property property) {
+  public Object getBackgroundColor(final Entity entity, final Property property) {
     if (backgroundColorProvider == null) {
       return null;
     }

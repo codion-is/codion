@@ -11,8 +11,9 @@ import javax.swing.JLabel;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.UIManager;
-import java.awt.Color;
 import java.text.SimpleDateFormat;
+import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Properties;
 
 /**
@@ -423,13 +424,6 @@ public final class Configuration {
   public static final String DEFAULT_COMBO_BOX_NULL_VALUE_ITEM = "jminor.client.defaultComboBoxNullValueItem";
 
   /**
-   * Specifies the color to use as background in input fields containing invalid values<br>
-   * Value type: Color<br>
-   * Default value: Color.LIGHT_GRAY
-   */
-  public static final String INVALID_VALUE_BACKGROUND_COLOR = "jminor.client.invalidValueBackgroundColor";
-
-  /**
    * Specifies whether the client layer should perform null validation on entities
    * before update/insert actions are performed<br>
    * Value type: Boolean<br>
@@ -543,7 +537,6 @@ public final class Configuration {
     PROPERTIES.put(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.provider.RemoteEntityConnectionProvider");
     PROPERTIES.put(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.provider.LocalEntityConnectionProvider");
     PROPERTIES.put(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM, "-");
-    PROPERTIES.put(INVALID_VALUE_BACKGROUND_COLOR, Color.LIGHT_GRAY);
     PROPERTIES.put(PERFORM_NULL_VALIDATION, true);
     PROPERTIES.put(DEFAULT_LABEL_TEXT_ALIGNMENT, JLabel.LEFT);
     PROPERTIES.put(ALLOW_COLUMN_REORDERING, true);
@@ -713,5 +706,25 @@ public final class Configuration {
   public static boolean entityDeserializerAvailable() {
     final String deserializerClass = getStringValue(ENTITY_DESERIALIZER_CLASS);
     return deserializerClass != null && Util.onClasspath(deserializerClass);
+  }
+
+  /**
+   * Parses the value associated with the given property, splitting it by comma,
+   * returning the trimmed String values.
+   * Returns an empty Collection in case the given property has no value.
+   * @param propertyName the name of the property
+   * @return trimmed String values
+   */
+  public static Collection<String> parseCommaSeparatedValues(final String propertyName) {
+    final Collection<String> values = new ArrayList<String>();
+    final String commaSeparatedValues = Configuration.getStringValue(propertyName);
+    if (!Util.nullOrEmpty(commaSeparatedValues)) {
+      final String[] classNames = commaSeparatedValues.split(",");
+      for (final String className : classNames) {
+        values.add(className.trim());
+      }
+    }
+
+    return values;
   }
 }

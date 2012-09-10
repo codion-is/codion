@@ -69,9 +69,16 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     super(serverAdminPort,
             server.isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    this.server = server;
-    ServerUtil.getRegistry(server.getRegistryPort()).rebind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName(), this);
-    Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));
+    try {
+      this.server = server;
+      ServerUtil.getRegistry(server.getRegistryPort()).rebind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName(), this);
+      Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));
+    }
+    catch (RemoteException e) {
+      LOG.error("Exception on server admin startup", e);
+      shutdown();
+      throw e;
+    }
   }
 
   /** {@inheritDoc} */
@@ -525,8 +532,17 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     final int connectionLimit = Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT);
     final Database database = Databases.createInstance();
     final String serverName = initializeServerName(database.getHost(), database.getSid());
+
+    final Collection<String> domainModelClassNames = Configuration.parseCommaSeparatedValues(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
+    final Collection<String> loginProxyClassNames = Configuration.parseCommaSeparatedValues(Configuration.SERVER_LOGIN_PROXY_CLASSES);
+    final Collection<String> initialPoolUsers = Configuration.parseCommaSeparatedValues(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
+    final String webDocumentRoot = Configuration.getStringValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
+    final int webServerPort = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
+    final boolean clientLoggingEnabled = Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
+    final int connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
     final EntityConnectionServer server = new EntityConnectionServer(serverName, serverPort, registryPort, database,
-            sslEnabled, connectionLimit);
+            sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, getPoolUsers(initialPoolUsers),
+            webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout);
     adminInstance = new EntityConnectionServerAdminImpl(server, serverAdminPort);
   }
 
@@ -558,6 +574,21 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   static EntityConnectionServerAdminImpl getInstance() {
     return adminInstance;
+  }
+
+  private static Collection<User> getPoolUsers(final Collection<String> poolUsers) {
+    final Collection<User> users = new ArrayList<User>();
+    for (final String usernamePassword : poolUsers) {
+      final int splitIndex = usernamePassword.indexOf(':');
+      if (splitIndex == -1) {
+        throw new IllegalArgumentException("Username and password for pooled connection should be separated by ':', " + usernamePassword);
+      }
+      final String username = usernamePassword.substring(0, splitIndex);
+      final String password = usernamePassword.substring(splitIndex + 1, usernamePassword.length());
+      users.add(new User(username, password));
+    }
+
+    return users;
   }
 
   /**

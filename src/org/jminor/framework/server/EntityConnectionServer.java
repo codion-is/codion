@@ -17,7 +17,6 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.LoginProxy;
 import org.jminor.common.server.ServerLog;
 import org.jminor.common.server.ServerUtil;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnections;
 import org.jminor.framework.domain.Entities;
 
@@ -56,7 +55,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   private final int registryPort;
   private final Database database;
   private final boolean sslEnabled;
-  private final boolean clientLoggingEnabled = Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
+  private final boolean clientLoggingEnabled;
   private final TaskScheduler connectionTimeoutScheduler = new TaskScheduler(new Runnable() {
     /** {@inheritDoc} */
     @Override
@@ -73,7 +72,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   private final long startDate = System.currentTimeMillis();
 
   private WebStartServer webServer;
-  private int connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
+  private int connectionTimeout;
 
   /**
    * Constructs a new EntityConnectionServer and binds it to a registry on the given port
@@ -83,30 +82,57 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
    * @param database the Database implementation
    * @param sslEnabled if true then ssl is enabled
    * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
-   * @throws java.rmi.RemoteException in case of a remote exception
+   * @throws RemoteException in case of a remote exception
    * @throws ClassNotFoundException in case the domain model classes are not found on the classpath or
    * if the jdbc driver class is not found
    * @throws DatabaseException in case of an exception while constructing the initial pooled connections
-   * @see Configuration#SERVER_DOMAIN_MODEL_CLASSES
    */
   EntityConnectionServer(final String serverName, final int serverPort, final int registryPort, final Database database,
-                         final boolean sslEnabled, final int connectionLimit) throws RemoteException, ClassNotFoundException, DatabaseException {
+                         final boolean sslEnabled, final int connectionLimit, final Collection<String> domainModelClassNames,
+                         final Collection<String> loginProxyClassNames, final Collection<User> initialPoolUsers,
+                         final String webDocumentRoot, final int webServerPort, final boolean clientLoggingEnabled,
+                         final int connectionTimeout)
+          throws RemoteException, ClassNotFoundException, DatabaseException {
     super(serverPort, serverName,
             sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    this.database = database;
-    this.registryPort = registryPort;
-    this.sslEnabled = sslEnabled;
-    loadDefaultDomainModels();
-    loadLoginProxies();
-    initializeConnectionPools(database, getInitialPoolUsers());
-    setConnectionLimit(connectionLimit);
-    startWebServer();
-    ServerUtil.initializeRegistry(registryPort);
-    ServerUtil.getRegistry(registryPort).rebind(getServerName(), this);
-    final String connectInfo = getServerName() + " bound to registry on port: " + registryPort;
-    LOG.info(connectInfo);
-    System.out.println(connectInfo);
+    try {
+      this.database = Util.rejectNullValue(database, "database");
+      this.registryPort = registryPort;
+      this.sslEnabled = sslEnabled;
+      this.clientLoggingEnabled = clientLoggingEnabled;
+      setConnectionTimeout(connectionTimeout);
+      loadDomainModels(domainModelClassNames);
+      initializeConnectionPools(database, initialPoolUsers);
+      loadLoginProxies(loginProxyClassNames);
+      setConnectionLimit(connectionLimit);
+      startWebServer(webDocumentRoot, webServerPort);
+      ServerUtil.initializeRegistry(registryPort);
+      ServerUtil.getRegistry(registryPort).rebind(getServerName(), this);
+      final String connectInfo = getServerName() + " bound to registry on port: " + registryPort;
+      LOG.info(connectInfo);
+      System.out.println(connectInfo);
+    }
+    catch (ClassNotFoundException e) {
+      LOG.error("Exception on server startup", e);
+      shutdown();
+      throw e;
+    }
+    catch (DatabaseException e) {
+      LOG.error("Exception on server startup", e);
+      shutdown();
+      throw e;
+    }
+    catch (RemoteException e) {
+      LOG.error("Exception on server startup", e);
+      shutdown();
+      throw e;
+    }
+    catch (Error e) {
+      LOG.error("Exception on server startup", e);
+      shutdown();
+      throw e;
+    }
   }
 
   /** {@inheritDoc} */
@@ -130,9 +156,13 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   }
 
   /**
-   * @param timeout the new timeout value
+   * @param timeout the new timeout value in milliseconds
+   * @throws IllegalArgumentException in case timeout is less than zero
    */
   void setConnectionTimeout(final int timeout) {
+    if (timeout < 0) {
+      throw new IllegalArgumentException("Connection timeout must be a positive integer");
+    }
     this.connectionTimeout = timeout;
   }
 
@@ -292,15 +322,12 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
   }
 
   /**
-   * Starts the web server in case a web document root is specified
-   * @see Configuration#WEB_SERVER_DOCUMENT_ROOT
+   * Starts the web server in case the web document root is specified
    */
-  private void startWebServer() {
-    final String webDocumentRoot = Configuration.getStringValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
-    if (webDocumentRoot != null) {
-      final int port = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
-      LOG.info("Starting web server on port: {}, document root: {}", port, webDocumentRoot);
-      webServer = new WebStartServer(webDocumentRoot, port);
+  private void startWebServer(final String webDocumentRoot, final int webServerPort) {
+    if (!Util.nullOrEmpty(webDocumentRoot)) {
+      LOG.info("Starting web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
+      webServer = new WebStartServer(webDocumentRoot, webServerPort);
       final ExecutorService executor = Executors.newSingleThreadExecutor();
       executor.execute(new Runnable() {
         @Override
@@ -374,74 +401,40 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     }
   }
 
-  private void loadLoginProxies() throws ClassNotFoundException {
-    final String loginProxyClasses = Configuration.getStringValue(Configuration.SERVER_LOGIN_PROXY_CLASSES);
-    if (Util.nullOrEmpty(loginProxyClasses)) {
-      return;
-    }
-
-    final String[] classes = loginProxyClasses.split(",");
-    for (final String className : classes) {
-      loadLoginProxy(className.trim());
-    }
-  }
-
-  private void loadLoginProxy(final String loginProxyClassName) throws ClassNotFoundException {
-    final String message = "Server loading login proxy class '" + loginProxyClassName + "' from classpath";
-    LOG.info(message);
-    final Class loginProxyClass = Class.forName(loginProxyClassName);
-    try {
-      final LoginProxy proxy = (LoginProxy) loginProxyClass.getConstructor().newInstance();
-      setLoginProxy(proxy.getClientTypeID(), proxy);
-    }
-    catch (Exception ex) {
-      LOG.error("Exception while instantiating LoginProxy: " + loginProxyClassName, ex);
-      throw new RuntimeException(ex);
+  private void loadLoginProxies(final Collection<String> loginProxyClassNames) throws ClassNotFoundException {
+    if (loginProxyClassNames != null) {
+      for (final String loginProxyClassName : loginProxyClassNames) {
+        final String message = "Server loading login proxy class '" + loginProxyClassName + "' from classpath";
+        LOG.info(message);
+        final Class loginProxyClass = Class.forName(loginProxyClassName);
+        try {
+          final LoginProxy proxy = (LoginProxy) loginProxyClass.getConstructor().newInstance();
+          setLoginProxy(proxy.getClientTypeID(), proxy);
+        }
+        catch (Exception ex) {
+          LOG.error("Exception while instantiating LoginProxy: " + loginProxyClassName, ex);
+          throw new RuntimeException(ex);
+        }
+      }
     }
   }
 
   private static void initializeConnectionPools(final Database database, final Collection<User> users) throws ClassNotFoundException, DatabaseException {
-    for (final User poolUser : users) {
-      ConnectionPools.createPool(new ConnectionProvider(database, poolUser));
-    }
-  }
-
-  private static Collection<User> getInitialPoolUsers() {
-    final String initialPoolUsers = Configuration.getStringValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
-    final Collection<User> users = new ArrayList<User>();
-    if (!Util.nullOrEmpty(initialPoolUsers)) {
-      for (final String commaSplit : initialPoolUsers.split(",")) {
-        final String usernamePassword = commaSplit.trim();
-        final int splitIndex = usernamePassword.indexOf(':');
-        if (splitIndex == -1) {
-          throw new IllegalArgumentException("Username and password for pooled connection should be separated by ':', " + usernamePassword);
-        }
-        final String username = usernamePassword.substring(0, splitIndex);
-        final String password = usernamePassword.substring(splitIndex + 1, usernamePassword.length());
-        final User poolUser = new User(username, password);
-        users.add(poolUser);
+    if (users != null) {
+      for (final User poolUser : users) {
+        ConnectionPools.createPool(new ConnectionProvider(database, poolUser));
       }
     }
-
-    return users;
   }
 
-  private static void loadDefaultDomainModels() throws ClassNotFoundException {
-    final String domainModelClasses = Configuration.getStringValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
-    if (Util.nullOrEmpty(domainModelClasses)) {
-      return;
+  private static void loadDomainModels(final Collection<String> domainModelClassNames) throws ClassNotFoundException {
+    if (domainModelClassNames != null) {
+      for (final String className : domainModelClassNames) {
+        final String message = "Server loading domain model class '" + className + "' from classpath";
+        LOG.info(message);
+        Class.forName(className);
+      }
     }
-
-    final String[] classes = domainModelClasses.split(",");
-    for (final String className : classes) {
-      loadDomainModel(className.trim());
-    }
-  }
-
-  private static void loadDomainModel(final String domainClassName) throws ClassNotFoundException {
-    final String message = "Server loading domain model class '" + domainClassName + "' from classpath";
-    LOG.info(message);
-    Class.forName(domainClassName);
   }
 
   private static final class ConnectionProvider implements DatabaseConnectionProvider {

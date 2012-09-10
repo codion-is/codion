@@ -8,7 +8,6 @@ import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueMapImpl;
 
-import java.awt.Color;
 import java.io.IOException;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
@@ -396,7 +395,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
 
   /** {@inheritDoc} */
   @Override
-  public Color getBackgroundColor(final Property property) {
+  public Object getBackgroundColor(final Property property) {
     return definition.getBackgroundColor(this, property);
   }
 

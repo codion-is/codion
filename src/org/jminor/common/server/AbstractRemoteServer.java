@@ -25,6 +25,21 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
 
   private final Map<ClientInfo, T> connections = Collections.synchronizedMap(new HashMap<ClientInfo, T>());
   private final Map<String, LoginProxy> loginProxies = new HashMap<String, LoginProxy>();
+  private final LoginProxy defaultLoginProxy = new LoginProxy() {
+    /** {@inheritDoc} */
+    @Override
+    public String getClientTypeID() {
+      return "defaultClient";
+    }
+    /** {@inheritDoc} */
+    @Override
+    public ClientInfo doLogin(final ClientInfo clientInfo) {
+      return clientInfo;
+    }
+    /** {@inheritDoc} */
+    @Override
+    public void close() {}
+  };
 
   private final String serverName;
   private final int serverPort;
@@ -180,15 +195,20 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   }
 
   /**
+   * Sets the LoginProxy for the given client type id, if <code>loginProxy</code> is null
+   * the login proxy is removed.
    * @param clientTypeID the client type ID with which to associate the given login proxy
    * @param loginProxy the login proxy
    */
   public final void setLoginProxy(final String clientTypeID, final LoginProxy loginProxy) {
     synchronized (loginProxies) {
       if (loginProxy == null) {
-        loginProxies.put(clientTypeID, createDefaultLoginProxy(clientTypeID));
+        loginProxies.remove(clientTypeID);
       }
       else {
+        if (loginProxies.containsKey(clientTypeID)) {
+          throw new IllegalArgumentException("Login proxy has already been set for: " + clientTypeID);
+        }
         loginProxies.put(clientTypeID, loginProxy);
       }
     }
@@ -251,28 +271,12 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
 
   private LoginProxy getLoginProxy(final ClientInfo clientInfo) {
     synchronized (loginProxies) {
-      LoginProxy loginProxy = loginProxies.get(clientInfo.getClientTypeID());
-      if (loginProxy == null) {//initialize a default proxy
-        loginProxy = createDefaultLoginProxy(clientInfo.getClientTypeID());
-        loginProxies.put(clientInfo.getClientTypeID(), loginProxy);
+      final LoginProxy loginProxy = loginProxies.get(clientInfo.getClientTypeID());
+      if (loginProxy == null) {
+        return defaultLoginProxy;
       }
 
       return loginProxy;
     }
-  }
-
-  private static LoginProxy createDefaultLoginProxy(final String clientTypeID) {
-    return new LoginProxy() {
-      @Override
-      public String getClientTypeID() {
-        return clientTypeID;
-      }
-      @Override
-      public ClientInfo doLogin(final ClientInfo clientInfo) {
-        return clientInfo;
-      }
-      @Override
-      public void close() {}
-    };
   }
 }
