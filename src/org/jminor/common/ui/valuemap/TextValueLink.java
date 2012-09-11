@@ -4,6 +4,7 @@
 package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.DocumentAdapter;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
@@ -13,9 +14,7 @@ import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
 import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
-import java.text.FieldPosition;
 import java.text.Format;
-import java.text.ParsePosition;
 
 /**
  * A class for linking a text component to a ValueMapEditModel text property value.
@@ -71,7 +70,7 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
                        final K key, final boolean immediateUpdate, final LinkType linkType, final Format format) {
     super(editModel, key, linkType);
     this.document = textComponent.getDocument();
-    this.format = format == null ? new NullFormat() : format;
+    this.format = format == null ? new Util.NullFormat() : format;
     if (!immediateUpdate) {
       textComponent.addFocusListener(new FocusAdapter() {
         /** {@inheritDoc} */
@@ -166,26 +165,5 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
     }
 
     return text;
-  }
-
-  /**
-   * A simple null format, which performs no formatting
-   */
-  private static final class NullFormat extends Format {
-
-    private static final long serialVersionUID = 1;
-
-    /** {@inheritDoc} */
-    @Override
-    public StringBuffer format(final Object obj, final StringBuffer toAppendTo, final FieldPosition pos) {
-      toAppendTo.append(obj.toString());
-      return toAppendTo;
-    }
-    /** {@inheritDoc} */
-    @Override
-    public Object parseObject(final String source, final ParsePosition pos) {
-      pos.setIndex(source.length());
-      return source;
-    }
   }
 }

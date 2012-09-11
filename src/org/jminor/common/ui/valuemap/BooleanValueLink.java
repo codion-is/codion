@@ -13,7 +13,7 @@ import java.awt.event.ItemListener;
 /**
  * A class for linking a UI component to a boolean value.
  */
-public final class BooleanValueLink<K> extends AbstractValueMapLink<K, Object> {
+public class BooleanValueLink<K> extends AbstractValueMapLink<K, Object> {
 
   private final ButtonModel buttonModel;
 
@@ -59,5 +59,9 @@ public final class BooleanValueLink<K> extends AbstractValueMapLink<K, Object> {
   @Override
   protected void setUIValue(final Object value) {
     buttonModel.setSelected(value != null && (Boolean) value);
+  }
+
+  protected final ButtonModel getButtonModel() {
+    return buttonModel;
   }
 }

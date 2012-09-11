@@ -7,15 +7,10 @@ import org.jminor.common.model.checkbox.TristateButtonModel;
 import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
 
-import java.awt.event.ItemEvent;
-import java.awt.event.ItemListener;
-
 /**
  * A class for linking a UI component to a boolean value.
  */
-public final class TristateValueLink<K> extends AbstractValueMapLink<K, Object>{
-
-  private final TristateButtonModel buttonModel;
+public final class TristateValueLink<K> extends BooleanValueLink<K> {
 
   /**
    * Instantiates a new TristateValueLink.
@@ -37,36 +32,28 @@ public final class TristateValueLink<K> extends AbstractValueMapLink<K, Object>{
    */
   public TristateValueLink(final TristateButtonModel buttonModel, final ValueMapEditModel<K, Object> editModel,
                            final K key, final LinkType linkType) {
-    super(editModel, key, linkType);
-    this.buttonModel = buttonModel;
-    this.buttonModel.addItemListener(new ItemListener() {
-      /** {@inheritDoc} */
-      @Override
-      public void itemStateChanged(final ItemEvent e) {
-        updateModel();
-      }
-    });
+    super(buttonModel, editModel, key, linkType);
     updateUI();
   }
 
   /** {@inheritDoc} */
   @Override
   protected Object getUIValue() {
-    if (buttonModel.isIndeterminate()) {
+    if (((TristateButtonModel) getButtonModel()).isIndeterminate()) {
       return null;
     }
 
-    return buttonModel.isSelected();
+    return super.getUIValue();
   }
 
   /** {@inheritDoc} */
   @Override
   protected void setUIValue(final Object value) {
     if (value == null) {
-      buttonModel.setIndeterminate();
+      ((TristateButtonModel) getButtonModel()).setIndeterminate();
     }
     else {
-      buttonModel.setSelected((Boolean) value);
+      super.setUIValue(value);
     }
   }
 }

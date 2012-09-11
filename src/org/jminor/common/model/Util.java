@@ -29,7 +29,10 @@ import java.net.URI;
 import java.net.URISyntaxException;
 import java.nio.charset.Charset;
 import java.text.Collator;
+import java.text.FieldPosition;
+import java.text.Format;
 import java.text.NumberFormat;
+import java.text.ParsePosition;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1078,6 +1081,28 @@ public final class Util {
       thread.setDaemon(true);
 
       return thread;
+    }
+  }
+
+  /**
+   * A simple null format, which performs no formatting
+   */
+  public static final class NullFormat extends Format {
+
+    private static final long serialVersionUID = 1;
+
+    /** {@inheritDoc} */
+    @Override
+    public StringBuffer format(final Object obj, final StringBuffer toAppendTo, final FieldPosition pos) {
+      toAppendTo.append(obj.toString());
+      return toAppendTo;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object parseObject(final String source, final ParsePosition pos) {
+      pos.setIndex(source.length());
+      return source;
     }
   }
 }

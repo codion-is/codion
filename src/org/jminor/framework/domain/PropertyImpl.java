@@ -394,6 +394,7 @@ class PropertyImpl implements Property, Serializable {
   /** {@inheritDoc} */
   @Override
   public final Property setFormat(final Format format) {
+    Util.rejectNullValue(format, "format");
     if (isNumerical() && !(format instanceof NumberFormat)) {
       throw new IllegalArgumentException("NumberFormat expected for numerical property: " + propertyID);
     }
@@ -475,7 +476,7 @@ class PropertyImpl implements Property, Serializable {
       return numberFormat;
     }
 
-    return null;
+    return new Util.NullFormat();
   }
 
   /**

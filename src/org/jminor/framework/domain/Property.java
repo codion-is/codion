@@ -248,7 +248,7 @@ public interface Property extends Attribute {
    * Sets the Format to use when presenting property values
    * @param format the format to use
    * @return this Property instance
-   * @throws IllegalArgumentException in case the format does not fit the property type,
+   * @throws IllegalArgumentException in case the format is null or if it does not fit the property type,
    * f.ex. NumberFormat is expected for numerical properties and DateFormat for date properties
    */
   Property setFormat(final Format format);

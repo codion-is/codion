@@ -3229,3 +3229,8 @@
 0.6.7
   Entity.KeyGenerator added, implementations added to EntityDefinitionImpl, factory methods to Entities
   IdSource removed
+  EntityTableCellRenderer refactored
+  TextValueLink.NullFormat moved to Util
+  PropertyImpl.setFormat() no longer accepts null values
+  PropertyImpl.initializeDefaultFormat() returns Util.NullFormat by default
+  TristateValueLink now extends BooleanValueLink
