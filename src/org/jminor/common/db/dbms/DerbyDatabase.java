@@ -18,8 +18,6 @@ import java.util.Properties;
  */
 public final class DerbyDatabase extends AbstractDatabase {
 
-  static final String EMBEDDED_DRIVER_NAME = "org.apache.derby.jdbc.EmbeddedDriver";
-  static final String NETWORKED_DRIVER_NAME = "org.apache.derby.jdbc.ClientDriver";
   static final String AUTO_INCREMENT_QUERY = "select IDENTITY_VAL_LOCAL() from ";
   static final String URL_PREFIX = "jdbc:derby:";
 
@@ -48,12 +46,6 @@ public final class DerbyDatabase extends AbstractDatabase {
    */
   public DerbyDatabase(final String host, final String port, final String sid) {
     super(DERBY, host, port, sid, false);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void loadDriver() throws ClassNotFoundException {
-    Class.forName(isEmbedded() ? EMBEDDED_DRIVER_NAME : NETWORKED_DRIVER_NAME);
   }
 
   /** {@inheritDoc} */

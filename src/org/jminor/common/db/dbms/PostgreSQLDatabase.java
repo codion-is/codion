@@ -13,7 +13,6 @@ import java.util.Properties;
  */
 public final class PostgreSQLDatabase extends AbstractDatabase {
 
-  static final String DRIVER_NAME = "org.postgresql.Driver";
   static final String URL_PREFIX = "jdbc:postgresql://";
   static final String CHECK_QUERY = "select 1";
 
@@ -32,12 +31,6 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
    */
   public PostgreSQLDatabase(final String host, final String port, final String database) {
     super(POSTGRESQL, host, port, database, false);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void loadDriver() throws ClassNotFoundException {
-    Class.forName(DRIVER_NAME);
   }
 
   /** {@inheritDoc} */

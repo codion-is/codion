@@ -13,7 +13,6 @@ import java.util.Properties;
  */
 public final class SQLServerDatabase extends AbstractDatabase {
 
-  static final String DRIVER_NAME = "com.microsoft.sqlserver.jdbc.SQLServerDriver";
   static final String AUTO_INCREMENT_QUERY = "SELECT SCOPE_IDENTITY()";
   static final String URL_PREFIX = "jdbc:sqlserver://";
 
@@ -32,12 +31,6 @@ public final class SQLServerDatabase extends AbstractDatabase {
    */
   public SQLServerDatabase(final String host, final String port, final String databaseName) {
     super(SQLSERVER, host, port, databaseName, false);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void loadDriver() throws ClassNotFoundException {
-    Class.forName(DRIVER_NAME);
   }
 
   /** {@inheritDoc} */

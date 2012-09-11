@@ -13,7 +13,6 @@ import java.util.Properties;
  */
 public final class HSQLDatabase extends AbstractDatabase {
 
-  static final String DRIVER_NAME = "org.hsqldb.jdbcDriver";
   static final String AUTO_INCREMENT_QUERY = "IDENTITY()";
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
   static final String EMBEDDED_URL_PREFIX = "jdbc:hsqldb:file:";
@@ -42,12 +41,6 @@ public final class HSQLDatabase extends AbstractDatabase {
    */
   public HSQLDatabase(final String host, final String port, final String sid) {
     super(HSQL, host, port, sid, false);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void loadDriver() throws ClassNotFoundException {
-    Class.forName(DRIVER_NAME);
   }
 
   /** {@inheritDoc} */

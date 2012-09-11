@@ -27,7 +27,6 @@ public final class H2Database extends AbstractDatabase {
    */
   public static final String DATABASE_INIT_SCRIPT = "jminor.db.initScript";
 
-  static final String DRIVER_NAME = "org.h2.Driver";
   static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
   static final String SYSADMIN_USERNAME = "sa";
@@ -93,12 +92,6 @@ public final class H2Database extends AbstractDatabase {
   public H2Database setUrlAppend(final String urlAppend) {
     this.urlAppend = urlAppend;
     return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void loadDriver() throws ClassNotFoundException {
-    Class.forName(DRIVER_NAME);
   }
 
   /** {@inheritDoc} */

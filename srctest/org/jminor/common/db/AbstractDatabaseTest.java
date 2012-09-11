@@ -10,8 +10,6 @@ import static org.junit.Assert.assertTrue;
 
 public final class AbstractDatabaseTest {
   private final AbstractDatabase database = new AbstractDatabase("h2") {
-    @Override
-    public void loadDriver() throws ClassNotFoundException {}
 
     @Override
     public String getAutoIncrementValueSQL(final String idSource) {
@@ -44,8 +42,6 @@ public final class AbstractDatabaseTest {
       public String getURL(final Properties connectionProperties) {
         return null;
       }
-      @Override
-      public void loadDriver() throws ClassNotFoundException {}
     };
   }
 }

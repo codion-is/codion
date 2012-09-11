@@ -13,7 +13,6 @@ import java.util.Properties;
  */
 public final class MySQLDatabase extends AbstractDatabase {
 
-  static final String DRIVER_NAME = "com.mysql.jdbc.Driver";
   static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
   static final String URL_PREFIX = "jdbc:mysql://";
 
@@ -32,12 +31,6 @@ public final class MySQLDatabase extends AbstractDatabase {
    */
   public MySQLDatabase(final String host, final String port, final String dbname) {
     super(MYSQL, host, port, dbname);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void loadDriver() throws ClassNotFoundException {
-    Class.forName(DRIVER_NAME);
   }
 
   /** {@inheritDoc} */

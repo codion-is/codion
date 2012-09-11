@@ -120,12 +120,6 @@ public interface Database {
   int DEFAULT_LOGIN_TIMEOUT = 2;
 
   /**
-   * Loads the database driver
-   * @throws ClassNotFoundException in case the driver class in not found
-   */
-  void loadDriver() throws ClassNotFoundException;
-
-  /**
    * @return the name of the dbms in use
    */
   String getDatabaseType();

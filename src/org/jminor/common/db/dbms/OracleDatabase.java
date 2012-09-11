@@ -17,7 +17,6 @@ import java.util.Properties;
  */
 public final class OracleDatabase extends AbstractDatabase {
 
-  static final String DRIVER_NAME = "oracle.jdbc.OracleDriver";
   static final String URL_PREFIX = "jdbc:oracle:thin:@";
   static final String CHECK_QUERY = "select 1 from dual";
 
@@ -66,12 +65,6 @@ public final class OracleDatabase extends AbstractDatabase {
    */
   public OracleDatabase(final String host, final String port, final String sid) {
     super(ORACLE, host, port, sid);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void loadDriver() throws ClassNotFoundException {
-    Class.forName(DRIVER_NAME);
   }
 
   /** {@inheritDoc} */

@@ -129,7 +129,6 @@ public abstract class AbstractDatabase implements Database {
     Util.rejectNullValue(user, "user");
     Util.rejectNullValue(user.getUsername(), "Username must be provided");
     Util.rejectNullValue(user.getPassword(), "Password must be provided");
-    loadDriver();
     final Properties connectionProperties = new Properties();
     connectionProperties.put(USER_PROPERTY, user.getUsername());
     connectionProperties.put(PASSWORD_PROPERTY, user.getPassword());

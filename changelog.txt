@@ -3234,3 +3234,4 @@
   PropertyImpl.setFormat() no longer accepts null values
   PropertyImpl.initializeDefaultFormat() returns Util.NullFormat by default
   TristateValueLink now extends BooleanValueLink
+  Database.loadDriver() removed, no longer required, jdbc.drivers system property can be used to specify the driver
