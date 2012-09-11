@@ -1,7 +1,6 @@
 package org.jminor.framework.demos.empdept.minimal;
 
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.IdSource;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
@@ -46,7 +45,7 @@ public class EmpDeptMinimalApp {
                       .setMaxLength(14),
               Properties.columnProperty("loc", Types.VARCHAR, "Department location")
                       .setMaxLength(13))
-              .setIdSource(IdSource.MAX_PLUS_ONE)
+              .setKeyGenerator(Entities.incrementKeyGenerator("scott.dept", "deptno"))
               .setCaption("Departments")
               .setStringProvider(new Entities.StringProvider("dname"));
       /**
@@ -75,7 +74,7 @@ public class EmpDeptMinimalApp {
                       Properties.columnProperty("mgr")),
               Properties.columnProperty("hiredate", Types.DATE, "Hiredate")
                       .setNullable(false))
-              .setIdSource(IdSource.MAX_PLUS_ONE)
+              .setKeyGenerator(Entities.incrementKeyGenerator("scott.emp", "empno"))
               .setCaption("Employees")
               .setStringProvider(new Entities.StringProvider("ename"));
     }

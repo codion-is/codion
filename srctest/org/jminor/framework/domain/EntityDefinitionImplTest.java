@@ -1,6 +1,8 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.framework.domain;
 
-import org.jminor.common.model.IdSource;
 import org.jminor.framework.Configuration;
 
 import org.junit.Test;
@@ -26,15 +28,14 @@ public class EntityDefinitionImplTest {
     };
     final Entity.Definition definition = new EntityDefinitionImpl("entityID", "tableName",
             Properties.primaryKeyProperty("id"),
-            Properties.columnProperty("name", Types.VARCHAR)).setIdSource(IdSource.NONE).setIdValueSource("idValueSource")
+            Properties.columnProperty("name", Types.VARCHAR))
             .setSelectQuery("select * from dual").setOrderByClause("order by name")
             .setReadOnly(true).setSelectTableName("selectTableName").setGroupByClause("name")
             .setStringProvider(stringProvider).setComparator(comparator);
     assertEquals("entityID", definition.toString());
     assertEquals("entityID", definition.getEntityID());
     assertEquals("tableName", definition.getTableName());
-    assertEquals(IdSource.NONE, definition.getIdSource());
-    assertEquals("idValueSource", definition.getIdValueSource());
+    assertNotNull(definition.getKeyGenerator());
     assertEquals("select * from dual", definition.getSelectQuery());
     assertEquals(false, definition.isSmallDataset());
     assertEquals("order by name", definition.getOrderByClause());

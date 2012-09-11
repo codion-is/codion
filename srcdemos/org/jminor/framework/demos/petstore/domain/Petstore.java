@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.petstore.domain;
 
-import org.jminor.common.model.IdSource;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
 
@@ -83,7 +82,7 @@ public class Petstore {
             Properties.columnProperty(ADDRESS_ZIP, Types.INTEGER, "Zip").setNullable(false),
             Properties.columnProperty(ADDRESS_LATITUDE, Types.DOUBLE, "Latitude").setNullable(false).setMaximumFractionDigits(2),
             Properties.columnProperty(ADDRESS_LONGITUDE, Types.DOUBLE, "Longitude").setNullable(false).setMaximumFractionDigits(2))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setKeyGenerator(Entities.incrementKeyGenerator("petstore.address", ADDRESS_ID))
             .setOrderByClause(ADDRESS_CITY + ", " + ADDRESS_STREET_1 + ", " + ADDRESS_STREET_2)
             .setStringProvider(new Entities.StringProvider(ADDRESS_STREET_1).addText(" ")
             .addValue(ADDRESS_STREET_2).addText(", ").addValue(ADDRESS_CITY).addText(" ")
@@ -95,7 +94,7 @@ public class Petstore {
             Properties.columnProperty(CATEGORY_NAME, Types.VARCHAR, "Name").setMaxLength(25).setNullable(false),
             Properties.columnProperty(CATEGORY_DESCRIPTION, Types.VARCHAR, "Description").setMaxLength(255).setNullable(false),
             Properties.columnProperty(CATEGORY_IMAGE_URL, Types.VARCHAR, "Image URL").setHidden(true))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setKeyGenerator(Entities.incrementKeyGenerator("petstore.category", CATEGORY_ID))
             .setOrderByClause(CATEGORY_NAME)
             .setStringProvider(new Entities.StringProvider(CATEGORY_NAME))
             .setCaption("Categories");
@@ -107,7 +106,7 @@ public class Petstore {
             Properties.columnProperty(PRODUCT_NAME, Types.VARCHAR, "Name").setMaxLength(25).setNullable(false),
             Properties.columnProperty(PRODUCT_DESCRIPTION, Types.VARCHAR, "Description").setMaxLength(255).setNullable(false),
             Properties.columnProperty(PRODUCT_IMAGE_URL, Types.VARCHAR, "Image URL").setMaxLength(55).setHidden(true))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setKeyGenerator(Entities.incrementKeyGenerator("petstore.product", PRODUCT_ID))
             .setOrderByClause(PRODUCT_NAME)
             .setStringProvider(new Entities.StringProvider(PRODUCT_CATEGORY_FK)
             .addText(" - ").addValue(PRODUCT_NAME))
@@ -118,7 +117,7 @@ public class Petstore {
             Properties.columnProperty(SELLER_CONTACT_INFO_FIRST_NAME, Types.VARCHAR, "First name").setMaxLength(24).setNullable(false),
             Properties.columnProperty(SELLER_CONTACT_INFO_LAST_NAME, Types.VARCHAR, "Last name").setMaxLength(24).setNullable(false),
             Properties.columnProperty(SELLER_CONTACT_INFO_EMAIL, Types.VARCHAR, "Email").setMaxLength(24).setNullable(false))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setKeyGenerator(Entities.incrementKeyGenerator("petstore.sellercontactinfo", SELLER_CONTACT_INFO_ID))
             .setOrderByClause(SELLER_CONTACT_INFO_LAST_NAME + ", "+ SELLER_CONTACT_INFO_FIRST_NAME)
             .setStringProvider(new Entities.StringProvider(SELLER_CONTACT_INFO_LAST_NAME)
             .addText(", ").addValue(SELLER_CONTACT_INFO_FIRST_NAME))
@@ -138,7 +137,7 @@ public class Petstore {
             Properties.foreignKeyProperty(ITEM_ADDRESS_FK, "Address", T_ADDRESS,
                     Properties.columnProperty(ITEM_ADDRESS_ID)).setNullable(false),
             Properties.columnProperty(ITEM_DISABLED, Types.BOOLEAN, "Disabled").setDefaultValue(false))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setKeyGenerator(Entities.incrementKeyGenerator("petstore.item", ITEM_ID))
             .setOrderByClause(ITEM_NAME)
             .setStringProvider(new Entities.StringProvider(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME))
             .setCaption("Items");
@@ -148,7 +147,7 @@ public class Petstore {
             Properties.columnProperty(TAG_TAG, Types.VARCHAR, "Tag").setMaxLength(30).setNullable(false),
             Properties.subqueryProperty(TAG_REFCOUNT, Types.INTEGER, "Reference count",
                     "select count(*) from petstore.tag_item  where " + TAG_ITEM_TAG_ID + " = tag." + TAG_ID))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setKeyGenerator(Entities.incrementKeyGenerator("petstore.tag", TAG_ID))
             .setOrderByClause(TAG_TAG)
             .setSelectTableName("petstore.tag tag")
             .setStringProvider(new Entities.StringProvider(TAG_TAG))

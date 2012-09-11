@@ -3,12 +3,13 @@
  */
 package org.jminor.framework.domain;
 
-import org.jminor.common.model.IdSource;
+import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.RangeValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.text.Format;
 import java.util.Collection;
@@ -277,6 +278,51 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
   }
 
   /**
+   * Generates primary key values for entities on insert.
+   * PrimaryKeyGenerators fall into two categories, one in which the primary key value is
+   * fetched or generated before the record is inserted and one where the underlying database
+   * automatically sets the primary key value on insert, f.ex. with a table trigger.
+   * Implementations should implement either <code>beforeInsert()</code> or <code>afterInsert()</code>
+   * and leave the other one empty. <code>isAutoIncrement()</code> returns true if the database
+   * generates primary key values automatically, this implies that <code>afterInsert()</code>
+   * should be used.
+   */
+  interface KeyGenerator {
+
+    /**
+     * Prepares the given entity for insert, that is, generates and fetches any required primary key values
+     * and populates the entity's primary key
+     * @param entity the entity to prepare
+     * @param primaryKeyProperty the primary key property for which the value is being generated
+     * @param connection the connection to use
+     * @throws SQLException in case of an exception
+     */
+    void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+                      final DatabaseConnection connection) throws SQLException;
+
+    /**
+     * Prepares the given entity after insert, that is, fetches automatically generated primary
+     * key values and populates the entity's primary key
+     * @param entity the entity to prepare
+     * @param primaryKeyProperty the primary key property for which the value is being generated
+     * @param connection the connection to use
+     * @throws SQLException in case of an exception
+     */
+    void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+                     final DatabaseConnection connection) throws SQLException;
+
+    /**
+     * @return true if the underlying database automatically sets the primary key value during insert
+     */
+    boolean isAutomatic();
+
+    /**
+     * @return true if the primary key values must be set manually before insert
+     */
+    boolean isManual();
+  }
+
+  /**
    * Provides background colors for entities.
    */
   interface BackgroundColorProvider {
@@ -412,30 +458,16 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
     Definition setReadOnly(final boolean readOnly);
 
     /**
-     * @return the IdSource specified for this entity type
+     * @return the object responsible for generating primary key values for entities of this type
      */
-    IdSource getIdSource();
+    KeyGenerator getKeyGenerator();
 
     /**
-     * Sets the id source for this entity type, which specifies the primary key
-     * generation strategy to use.
-     * @param idSource the idSource
+     * Sets the primary key generator
+     * @param keyGenerator the primary key generator
      * @return this {@link Entity.Definition} instance
      */
-    Definition setIdSource(final IdSource idSource);
-
-    /**
-     * @return the id value source
-     */
-    String getIdValueSource();
-
-    /**
-     * Sets the id value source for this entity type, such as sequence or table name,
-     * depending on the underlying primary key generation strategy.
-     * @param idValueSource the id value source
-     * @return this {@link Entity.Definition} instance
-     */
-    Definition setIdValueSource(final String idValueSource);
+    Definition setKeyGenerator(final KeyGenerator keyGenerator);
 
     /**
      * @return the order by clause to use when querying entities of this type,

@@ -3226,3 +3226,6 @@
   EntityConnectionServer.logShutdownAndReturn() added and used
   Configuration.DEFAULT_HORIZONTAL_AND_VERTICAL_COMPONENT_GAP removed
   Configuration.DEFAULT_LOOK_AND_FEEL_CLASSNAME removed, Configuration no longer depends on UiUtil
+0.6.7
+  Entity.KeyGenerator added, implementations added to EntityDefinitionImpl, factory methods to Entities
+  IdSource removed

@@ -4,7 +4,6 @@ import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.IdSource;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
@@ -199,7 +198,7 @@ public class Chinook {
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
-            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ARTIST)
+            .setKeyGenerator(Entities.automaticKeyGenerator(T_ARTIST))
             .setStringProvider(new Entities.StringProvider(ARTIST_NAME))
             .setSearchPropertyIDs(ARTIST_NAME)
             .setOrderByClause(ARTIST_NAME)
@@ -216,7 +215,7 @@ public class Chinook {
                     .setMaxLength(160)
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
-            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_ALBUM)
+            .setKeyGenerator(Entities.automaticKeyGenerator(T_ALBUM))
             .setStringProvider(new Entities.StringProvider(ALBUM_TITLE))
             .setSearchPropertyIDs(ALBUM_TITLE)
             .setOrderByClause(ALBUM_ARTISTID + ", " + ALBUM_TITLE)
@@ -253,7 +252,7 @@ public class Chinook {
             Properties.columnProperty(EMPLOYEE_EMAIL, Types.VARCHAR, "Email")
                     .setMaxLength(60))
             .setDomainID(DOMAIN_ID)
-            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_EMPLOYEE)
+            .setKeyGenerator(Entities.automaticKeyGenerator(T_EMPLOYEE))
             .setStringProvider(new Entities.StringProvider(EMPLOYEE_LASTNAME)
                     .addText(", ").addValue(EMPLOYEE_FIRSTNAME))
             .setSearchPropertyIDs(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL)
@@ -290,7 +289,7 @@ public class Chinook {
             Properties.foreignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
                     Properties.columnProperty(CUSTOMER_SUPPORTREPID)))
             .setDomainID(DOMAIN_ID)
-            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_CUSTOMER)
+            .setKeyGenerator(Entities.automaticKeyGenerator(T_CUSTOMER))
             .setStringProvider(new Entities.StringProvider(CUSTOMER_LASTNAME)
                     .addText(", ").addValue(CUSTOMER_FIRSTNAME))
             .setSearchPropertyIDs(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
@@ -303,7 +302,7 @@ public class Chinook {
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
-            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_GENRE)
+            .setKeyGenerator(Entities.automaticKeyGenerator(T_GENRE))
             .setStringProvider(new Entities.StringProvider(GENRE_NAME))
             .setSearchPropertyIDs(GENRE_NAME)
             .setOrderByClause(GENRE_NAME)
@@ -315,7 +314,7 @@ public class Chinook {
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
-            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_MEDIATYPE)
+            .setKeyGenerator(Entities.automaticKeyGenerator(T_MEDIATYPE))
             .setStringProvider(new Entities.StringProvider(MEDIATYPE_NAME))
             .setOrderByClause(MEDIATYPE_NAME)
             .setCaption("Media types");
@@ -349,7 +348,7 @@ public class Chinook {
             Properties.columnProperty(TRACK_UNITPRICE, Types.DOUBLE, "Price")
                     .setNullable(false))
             .setDomainID(DOMAIN_ID)
-            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_TRACK)
+            .setKeyGenerator(Entities.automaticKeyGenerator(T_TRACK))
             .setStringProvider(new Entities.StringProvider(TRACK_NAME))
             .setSearchPropertyIDs(TRACK_NAME)
             .setOrderByClause(TRACK_NAME)
@@ -361,7 +360,7 @@ public class Chinook {
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
-            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_PLAYLIST)
+            .setKeyGenerator(Entities.automaticKeyGenerator(T_PLAYLIST))
             .setStringProvider(new Entities.StringProvider(PLAYLIST_NAME))
             .setSearchPropertyIDs(PLAYLIST_NAME)
             .setOrderByClause(PLAYLIST_NAME)
@@ -387,7 +386,6 @@ public class Chinook {
                     Entities.getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album")
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
-            .setIdSource(IdSource.NONE)
             .setStringProvider(new Entities.StringProvider(PLAYLISTTRACK_PLAYLISTID_FK)
                     .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
             .setCaption("Playlist tracks");
@@ -418,7 +416,7 @@ public class Chinook {
             Properties.subqueryProperty(INVOICE_TOTAL_SUB, Types.DOUBLE, "Calculated total", INVOICE_TOTAL_SUBQUERY)
                     .setMaximumFractionDigits(2))
             .setDomainID(DOMAIN_ID)
-            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICE)
+            .setKeyGenerator(Entities.automaticKeyGenerator(T_INVOICE))
             .setStringProvider(new Entities.StringProvider(INVOICE_INVOICEID))
             .setSearchPropertyIDs(INVOICE_INVOICEID_AS_STRING)
             .setOrderByClause(INVOICE_CUSTOMERID + ", " + INVOICE_INVOICEDATE + " desc")
@@ -442,7 +440,7 @@ public class Chinook {
             Properties.derivedProperty(INVOICELINE_TOTAL, Types.DOUBLE, "Total", INVOICELINE_TOTAL_PROVIDER,
                     INVOICELINE_QUANTITY, INVOICELINE_UNITPRICE))
             .setDomainID(DOMAIN_ID)
-            .setIdSource(IdSource.AUTO_INCREMENT).setIdValueSource(T_INVOICELINE)
+            .setKeyGenerator(Entities.automaticKeyGenerator(T_INVOICELINE))
             .setCaption("Invoice lines");
   }
 }

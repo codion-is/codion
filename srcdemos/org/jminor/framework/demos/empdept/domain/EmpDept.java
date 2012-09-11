@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.empdept.domain;
 
-import org.jminor.common.model.IdSource;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
@@ -77,7 +76,6 @@ public class EmpDept {
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
             Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))
                     .setPreferredColumnWidth(150).setMaxLength(13))
-            .setIdSource(IdSource.NONE)
             .setSmallDataset(true)
             .setOrderByClause(DEPARTMENT_NAME)
             .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
@@ -104,7 +102,7 @@ public class EmpDept {
             Properties.denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
                     Entities.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     getString(DEPARTMENT_LOCATION)).setPreferredColumnWidth(100))
-            .setIdSource(IdSource.MAX_PLUS_ONE)
+            .setKeyGenerator(Entities.incrementKeyGenerator(T_EMPLOYEE, EMPLOYEE_ID))
             .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
             .setStringProvider(new Entities.StringProvider(EMPLOYEE_NAME))
             .setCaption(getString(EMPLOYEE))

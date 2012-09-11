@@ -12,7 +12,6 @@ import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.model.IdSource;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -39,7 +38,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -116,19 +114,12 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       for (final Entity entity : entities) {
         final String entityID = entity.getEntityID();
         final Property.PrimaryKeyProperty firstPrimaryKeyProperty = Entities.getPrimaryKeyProperties(entityID).get(0);
-        final IdSource idSource = Entities.getIdSource(entityID);
-        final String idValueSource = Entities.getIdValueSource(entityID);
-        final boolean includePrimaryKeyProperties = !idSource.isAutoIncrement();
+        final Entity.KeyGenerator keyGenerator = Entities.getKeyGenerator(entityID);
         final boolean includeReadOnly = false;
         final boolean includeNonUpdatable = true;
         final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
-                includePrimaryKeyProperties, includeReadOnly, includeNonUpdatable);
-
-        final boolean queryPrimaryKeyValue = idSource.isQueried() && entity.isValueNull(firstPrimaryKeyProperty);
-        if (queryPrimaryKeyValue) {
-          final int primaryKeyValue = queryNewPrimaryKeyValue(entityID, idSource, idValueSource, firstPrimaryKeyProperty);
-          entity.setValue(firstPrimaryKeyProperty, primaryKeyValue);
-        }
+                !keyGenerator.isAutomatic(), includeReadOnly, includeNonUpdatable);
+        keyGenerator.beforeInsert(entity, firstPrimaryKeyProperty, this);
 
         final boolean inserting = true;
         populateStatementPropertiesAndValues(inserting, entity, columnProperties, statementProperties, statementValues);
@@ -136,11 +127,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         insertSQL = createInsertSQL(entityID, statementProperties);
         statement = getConnection().prepareStatement(insertSQL);
         executePreparedUpdate(statement, insertSQL, statementValues, statementProperties);
-
-        if (idSource.isAutoIncrement()) {
-          final int primaryKeyValue = queryInteger(getDatabase().getAutoIncrementValueSQL(idValueSource));
-          entity.setValue(firstPrimaryKeyProperty, primaryKeyValue);
-        }
+        keyGenerator.afterInsert(entity, firstPrimaryKeyProperty, this);
 
         insertedKeys.add(entity.getPrimaryKey());
 
@@ -154,7 +141,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     catch (SQLException e) {
       rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(createLogMessage(getUser(), insertSQL, statementValues, e, null));
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), insertSQL, statementValues, e, null));
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -216,7 +203,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     catch (SQLException e) {
       rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(createLogMessage(getUser(), updateSQL, statementValues, e, null));
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), updateSQL, statementValues, e, null));
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -242,7 +229,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     catch (SQLException e) {
       rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(createLogMessage(getUser(), deleteSQL, criteria.getValues(), e, null));
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), deleteSQL, criteria.getValues(), e, null));
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -278,7 +265,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     catch (SQLException e) {
       rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(createLogMessage(getUser(), deleteSQL, entityKeys, e, null));
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), deleteSQL, entityKeys, e, null));
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -366,14 +353,14 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
               "where " + columnName + " is not null", order ? columnName : null);
 
       //noinspection unchecked
-      final List<Object> result = query(selectSQL, getPropertyResultPacker(property), -1);
+      final List<Object> result = DatabaseUtil.query(this, selectSQL, getPropertyResultPacker(property), -1, LOG);
       commitIfTransactionIsNotOpen();
 
       return result;
     }
     catch (SQLException e) {
       rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(createLogMessage(getUser(), selectSQL, Arrays.asList(entityID, propertyID, order), e, null));
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, Arrays.asList(entityID, propertyID, order), e, null));
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
   }
@@ -392,7 +379,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       selectSQL += " " + criteria.getWhereClause(!containsWhereClause(selectSQL));
       statement = getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
-      final List<Integer> result = INTEGER_RESULT_PACKER.pack(resultSet, -1);
+      final List<Integer> result = DatabaseUtil.INTEGER_RESULT_PACKER.pack(resultSet, -1);
       commitIfTransactionIsNotOpen();
       if (result.isEmpty()) {
         throw new SQLException("Record count query returned no value");
@@ -402,7 +389,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     catch (SQLException e) {
       rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -455,7 +442,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     finally {
       final LogEntry entry = getMethodLogger().logExit("executeFunction: " + functionID, exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), "", arguments == null ? null : Arrays.asList(arguments), exception, entry));
+        LOG.debug(DatabaseUtil.createLogMessage(getUser(), "", arguments == null ? null : Arrays.asList(arguments), exception, entry));
       }
     }
   }
@@ -482,7 +469,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     finally {
       final LogEntry entry = getMethodLogger().logExit("executeProcedure: " + procedureID, exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), "", arguments == null ? null : Arrays.asList(arguments), exception, entry));
+        LOG.debug(DatabaseUtil.createLogMessage(getUser(), "", arguments == null ? null : Arrays.asList(arguments), exception, entry));
       }
     }
   }
@@ -492,7 +479,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   public synchronized ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
     ReportException exception = null;
     try {
-      getMethodLogger().logAccess("fillReport", new Object[] {reportWrapper.getReportName()});
+      getMethodLogger().logAccess("fillReport", new Object[]{reportWrapper.getReportName()});
       final ReportResult result = reportWrapper.fillReport(getConnection());
       if (!isTransactionOpen()) {
         commitQuietly();
@@ -503,13 +490,13 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     catch (ReportException e) {
       exception = e;
       rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(createLogMessage(getUser(), null, Arrays.asList(reportWrapper.getReportName()), e, null));
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), null, Arrays.asList(reportWrapper.getReportName()), e, null));
       throw e;
     }
     finally {
       final LogEntry logEntry = getMethodLogger().logExit("fillReport", exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), null, Arrays.asList(reportWrapper.getReportName()), exception, logEntry));
+        LOG.debug(DatabaseUtil.createLogMessage(getUser(), null, Arrays.asList(reportWrapper.getReportName()), exception, logEntry));
       }
     }
   }
@@ -548,7 +535,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     catch (SQLException e) {
       exception = e;
       rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(createLogMessage(getUser(), sql, values, exception, null));
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), sql, values, exception, null));
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -556,7 +543,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       DatabaseUtil.closeSilently(statement);
       final LogEntry logEntry = getMethodLogger().logExit("writeBlob", exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), sql, values, exception, logEntry));
+        LOG.debug(DatabaseUtil.createLogMessage(getUser(), sql, values, exception, logEntry));
       }
     }
   }
@@ -591,7 +578,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     catch (SQLException e) {
       exception = e;
       rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(createLogMessage(getUser(), sql, criteria.getValues(), exception, null));
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), sql, criteria.getValues(), exception, null));
       throw new DatabaseException(e, getDatabase().getErrorMessage(e));
     }
     finally {
@@ -599,7 +586,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       DatabaseUtil.closeSilently(resultSet);
       final LogEntry logEntry = getMethodLogger().logExit("readBlob", exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), sql, criteria.getValues(), exception, logEntry));
+        LOG.debug(DatabaseUtil.createLogMessage(getUser(), sql, criteria.getValues(), exception, logEntry));
       }
     }
   }
@@ -720,7 +707,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       return result;
     }
     catch (SQLException e) {
-      LOG.error(createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
       throw new DatabaseException(e, getDatabase().getErrorMessage(e), selectSQL);
     }
     finally {
@@ -745,7 +732,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
     }
     catch (SQLException e) {
-      LOG.error(createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
       throw e;
     }
     finally {
@@ -792,31 +779,6 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
   }
 
-  private int queryNewPrimaryKeyValue(final String entityID, final IdSource idSource, final String idValueSource,
-                                      final Property.PrimaryKeyProperty primaryKeyProperty) throws SQLException {
-    final String sql;
-    switch (idSource) {
-      case MAX_PLUS_ONE:
-        sql = "select max(" + primaryKeyProperty.getColumnName() + ") + 1 from " + Entities.getTableName(entityID);
-        break;
-      case QUERY:
-        sql = idValueSource;
-        break;
-      case SEQUENCE:
-        sql = getDatabase().getSequenceSQL(idValueSource);
-        break;
-      default:
-        throw new IllegalArgumentException(idSource + " does not represent a queried ID source");
-    }
-    try {
-      return queryInteger(sql);
-    }
-    catch (SQLException e) {
-      LOG.error(createLogMessage(getUser(), sql, Arrays.asList(entityID, idSource, idValueSource), e, null));
-      throw e;
-    }
-  }
-
   private void executePreparedUpdate(final PreparedStatement statement, final String sqlStatement,
                                      final List<?> values, final List<Property.ColumnProperty> properties) throws SQLException {
     SQLException exception = null;
@@ -833,7 +795,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     finally {
       final LogEntry entry = getMethodLogger().logExit("executePreparedUpdate", exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), sqlStatement, values, exception, entry));
+        LOG.debug(DatabaseUtil.createLogMessage(getUser(), sqlStatement, values, exception, entry));
       }
     }
   }
@@ -854,58 +816,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     finally {
       final LogEntry entry = getMethodLogger().logExit("executePreparedSelect", exception, null);
       if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), sqlStatement, values, exception, entry));
-      }
-    }
-  }
-
-  /**
-   * Performs the given query and returns the result as an integer
-   * @param sql the query must select at least a single number column, any other
-   * subsequent columns are disregarded
-   * @return the first record in the result as a integer
-   * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
-   */
-  private int queryInteger(final String sql) throws SQLException {
-    @SuppressWarnings("unchecked")
-    final List<Integer> integers = (List<Integer>) query(sql, INTEGER_RESULT_PACKER, -1);
-    if (!integers.isEmpty()) {
-      return integers.get(0);
-    }
-
-    throw new SQLException("No records returned when querying for an integer", sql);
-  }
-
-  /**
-   * Performs the given sql query and returns the result in a List
-   * @param sql the query
-   * @param resultPacker a ResultPacker instance for creating the return List
-   * @param fetchCount the number of records to retrieve, use -1 to retrieve all
-   * @return the query result in a List
-   * @throws SQLException thrown if anything goes wrong during the query execution
-   */
-  private List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException {
-    Databases.QUERY_COUNTER.count(sql);
-    getMethodLogger().logAccess("query", new Object[] {sql});
-    Statement statement = null;
-    SQLException exception = null;
-    ResultSet resultSet = null;
-    try {
-      statement = getConnection().createStatement();
-      resultSet = statement.executeQuery(sql);
-
-      return resultPacker.pack(resultSet, fetchCount);
-    }
-    catch (SQLException e) {
-      exception = e;
-      throw e;
-    }
-    finally {
-      DatabaseUtil.closeSilently(statement);
-      DatabaseUtil.closeSilently(resultSet);
-      final LogEntry logEntry = getMethodLogger().logExit("query", exception, null);
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(createLogMessage(getUser(), sql, null, exception, logEntry));
+        LOG.debug(DatabaseUtil.createLogMessage(getUser(), sqlStatement, values, exception, entry));
       }
     }
   }
@@ -938,21 +849,6 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     if (!isTransactionOpen()) {
       rollbackQuietly();
     }
-  }
-
-  private static String createLogMessage(final User user, final String sqlStatement, final List<?> values, final Exception exception, final LogEntry entry) {
-    final StringBuilder logMessage = new StringBuilder(user.toString()).append("\n");
-    if (entry == null) {
-      logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ").append(Util.getCollectionContentsAsString(values, false));
-    }
-    else {
-      logMessage.append(entry.toString(1));
-    }
-    if (exception != null) {
-      logMessage.append("\n").append(" [Exception: ").append(exception.getMessage()).append("]");
-    }
-
-    return logMessage.toString();
   }
 
   private static void setParameterValues(final PreparedStatement statement, final List<?> values,
@@ -1283,23 +1179,6 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       return result;
     }
   }
-
-  /**
-   * A result packer for fetching integers from a result set containing a single integer column
-   */
-  private static final ResultPacker<Integer> INTEGER_RESULT_PACKER = new ResultPacker<Integer>() {
-    /** {@inheritDoc} */
-    @Override
-    public List<Integer> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Integer> integers = new ArrayList<Integer>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        integers.add(resultSet.getInt(1));
-      }
-
-      return integers;
-    }
-  };
 
   /**
    * A result packer for fetching blobs from a result set containing a single blob column
