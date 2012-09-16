@@ -18,10 +18,17 @@ import java.util.Properties;
  */
 public final class DerbyDatabase extends AbstractDatabase {
 
+  static final String DRIVER_CLASS_NAME = "org.apache.derby.jdbc.ClientDriver";
+  static final String EMBEDDED_DRIVER_CLASS_NAME = "org.apache.derby.jdbc.EmbeddedDriver";
   static final String AUTO_INCREMENT_QUERY = "select IDENTITY_VAL_LOCAL() from ";
   static final String URL_PREFIX = "jdbc:derby:";
 
   private static final Logger LOG = LoggerFactory.getLogger(DerbyDatabase.class);
+
+  static {
+    final boolean embedded = System.getProperty(DATABASE_EMBEDDED, "false").equals("true");
+    loadDriver(embedded ? EMBEDDED_DRIVER_CLASS_NAME : DRIVER_CLASS_NAME);
+  }
 
   /**
    * Instantiates a new DerbyDatabase.

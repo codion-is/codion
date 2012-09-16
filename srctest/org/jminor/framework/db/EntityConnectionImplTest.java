@@ -546,7 +546,7 @@ public class EntityConnectionImplTest {
     }
   }
 
-  private static EntityConnectionImpl initializeConnection() throws ClassNotFoundException, DatabaseException {
+  private static EntityConnectionImpl initializeConnection() throws DatabaseException {
     return new EntityConnectionImpl(Databases.createInstance(), User.UNIT_TEST_USER);
   }
 }

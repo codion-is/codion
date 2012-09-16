@@ -13,8 +13,13 @@ import java.util.Properties;
  */
 public final class MySQLDatabase extends AbstractDatabase {
 
+  static final String DRIVER_CLASS_NAME = "com.mysql.jdbc.Driver";
   static final String AUTO_INCREMENT_QUERY = "select last_insert_id() from dual";
   static final String URL_PREFIX = "jdbc:mysql://";
+
+  static {
+    loadDriver(DRIVER_CLASS_NAME);
+  }
 
   /**
    * Instantiates a new MySQLDatabase.

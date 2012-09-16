@@ -451,7 +451,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
 
     /** {@inheritDoc} */
     @Override
-    public DatabaseConnection createConnection() throws ClassNotFoundException, DatabaseException {
+    public DatabaseConnection createConnection() throws DatabaseException {
       return EntityConnections.createConnection(database, user).getDatabaseConnection();
     }
 

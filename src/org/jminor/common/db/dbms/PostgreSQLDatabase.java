@@ -13,8 +13,13 @@ import java.util.Properties;
  */
 public final class PostgreSQLDatabase extends AbstractDatabase {
 
+  static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
   static final String URL_PREFIX = "jdbc:postgresql://";
   static final String CHECK_QUERY = "select 1";
+
+  static {
+    loadDriver(DRIVER_CLASS_NAME);
+  }
 
   /**
    * Instantiates a new PostgreSQLDatabase.

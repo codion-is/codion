@@ -77,10 +77,9 @@ public final class EntityGeneratorModel {
    * @param database the database
    * @param user the user
    * @param schema the schema name
-   * @throws ClassNotFoundException in case the JDBC driver class was not found on the classpath
    * @throws DatabaseException in case of an exception while connecting to the database
    */
-  public EntityGeneratorModel(final Database database, final User user, final String schema) throws ClassNotFoundException, DatabaseException {
+  public EntityGeneratorModel(final Database database, final User user, final String schema) throws DatabaseException {
     try {
       this.schema = schema;
       this.catalog = database.getDatabaseType().equals(Database.MYSQL) ? schema : null;

@@ -17,6 +17,7 @@ import java.util.Properties;
  */
 public final class OracleDatabase extends AbstractDatabase {
 
+  static final String DRIVER_CLASS_NAME = "oracle.jdbc.OracleDriver";
   static final String URL_PREFIX = "jdbc:oracle:thin:@";
   static final String CHECK_QUERY = "select 1 from dual";
 
@@ -36,6 +37,7 @@ public final class OracleDatabase extends AbstractDatabase {
   private static final int VIEW_HAS_ERRORS_ERROR = 4063;
 
   static {
+    loadDriver(DRIVER_CLASS_NAME);
     ERROR_CODE_MAP.put(UNIQUE_KEY_ERROR, Messages.get(Messages.UNIQUE_KEY_ERROR));
     ERROR_CODE_MAP.put(CHILD_RECORD_ERROR, Messages.get(Messages.CHILD_RECORD_ERROR));
     ERROR_CODE_MAP.put(NULL_VALUE_ERROR, Messages.get(Messages.NULL_VALUE_ERROR));

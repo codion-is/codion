@@ -290,7 +290,7 @@ public final class PoolMonitor {
 
     /** {@inheritDoc} */
     @Override
-    public DatabaseConnection getConnection() throws ClassNotFoundException, DatabaseException {return null;}
+    public DatabaseConnection getConnection() throws DatabaseException {return null;}
 
     /** {@inheritDoc} */
     @Override

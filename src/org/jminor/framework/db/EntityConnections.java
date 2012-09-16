@@ -22,9 +22,8 @@ public final class EntityConnections {
    * @param user the user used for connecting to the database
    * @return a new EntityConnection instance
    * @throws DatabaseException in case there is a problem connecting to the database
-   * @throws ClassNotFoundException in case the JDBC driver class is not found
    */
-  public static EntityConnection createConnection(final Database database, final User user) throws DatabaseException, ClassNotFoundException {
+  public static EntityConnection createConnection(final Database database, final User user) throws DatabaseException {
     return new EntityConnectionImpl(database, user);
   }
 

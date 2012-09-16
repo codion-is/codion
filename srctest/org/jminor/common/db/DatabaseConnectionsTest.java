@@ -40,7 +40,7 @@ public class DatabaseConnectionsTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void createConnectionWithClosedConnection() throws ClassNotFoundException, DatabaseException, SQLException {
+  public void createConnectionWithClosedConnection() throws DatabaseException, SQLException {
     Connection connection = null;
     try {
       connection = DATABASE.createConnection(User.UNIT_TEST_USER);

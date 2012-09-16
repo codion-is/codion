@@ -18,9 +18,8 @@ public final class DatabaseConnections {
    * @param user the user for the db-connection
    * @return a new DatabaseConnection instance
    * @throws DatabaseException in case there is a problem connecting to the database
-   * @throws ClassNotFoundException in case the JDBC driver class was not found
    */
-  public static DatabaseConnection createConnection(final Database database, final User user) throws ClassNotFoundException, DatabaseException {
+  public static DatabaseConnection createConnection(final Database database, final User user) throws DatabaseException {
     return new DatabaseConnectionImpl(database, user);
   }
 

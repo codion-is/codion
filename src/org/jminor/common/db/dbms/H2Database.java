@@ -27,6 +27,7 @@ public final class H2Database extends AbstractDatabase {
    */
   public static final String DATABASE_INIT_SCRIPT = "jminor.db.initScript";
 
+  static final String DRIVER_CLASS_NAME = "org.h2.Driver";
   static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
   static final String SYSADMIN_USERNAME = "sa";
@@ -37,6 +38,7 @@ public final class H2Database extends AbstractDatabase {
   static final String URL_PREFIX = "jdbc:h2:";
 
   static {
+    loadDriver(DRIVER_CLASS_NAME);
     if (EMBEDDED_IN_MEMORY) {
       try {
         new H2Database().createEmbeddedH2Database(System.getProperty(DATABASE_INIT_SCRIPT));

@@ -16,12 +16,11 @@ public interface ConnectionPool {
    * Fetches a connection from the pool.
    * @return a database connection retrieved from the pool
    * @throws ConnectionPoolException.NoConnectionAvailable in case the maximum check out time is exceeded
-   * @throws ClassNotFoundException in case the JDBC driver class is not found
    * @throws DatabaseException in case of a database exception
    * @throws IllegalStateException if the pool is closed
    * @see #setMaximumCheckOutTime(int)
    */
-  DatabaseConnection getConnection() throws ClassNotFoundException, DatabaseException;
+  DatabaseConnection getConnection() throws DatabaseException;
 
   /**
    * Return the given connection to the pool.

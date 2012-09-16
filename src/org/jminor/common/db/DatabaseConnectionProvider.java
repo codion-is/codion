@@ -14,10 +14,9 @@ public interface DatabaseConnectionProvider {
   /**
    * Creates a new DatabaseConnection instance based on the given user.
    * @return a new DatabaseConnection instance
-   * @throws ClassNotFoundException in case the JDBC driver class was not found
    * @throws DatabaseException in case of a database exception
    */
-  DatabaseConnection createConnection() throws ClassNotFoundException, DatabaseException;
+  DatabaseConnection createConnection() throws DatabaseException;
 
   /**
    * Disconnects the given connection and disposes of any resources it holds.

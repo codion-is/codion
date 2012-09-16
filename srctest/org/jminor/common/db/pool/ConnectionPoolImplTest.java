@@ -66,7 +66,7 @@ public class ConnectionPoolImplTest {
   }
 
   @Test(expected = IllegalStateException.class)
-  public void returnConnectionOpenTransaction() throws ClassNotFoundException, DatabaseException {
+  public void returnConnectionOpenTransaction() throws DatabaseException {
     final ConnectionPool pool = new ConnectionPoolImpl(createConnectionProvider(User.UNIT_TEST_USER));
     final DatabaseConnection connection = pool.getConnection();
     try {
@@ -80,7 +80,7 @@ public class ConnectionPoolImplTest {
   }
 
   @Test(expected = IllegalStateException.class)
-  public void getConnectionClosedPool() throws ClassNotFoundException, DatabaseException {
+  public void getConnectionClosedPool() throws DatabaseException {
     final ConnectionPool pool = new ConnectionPoolImpl(createConnectionProvider(User.UNIT_TEST_USER));
     try {
       pool.setEnabled(false);
@@ -219,7 +219,7 @@ public class ConnectionPoolImplTest {
     return new DatabaseConnectionProvider() {
       final Database database = Databases.createInstance();
       @Override
-      public DatabaseConnection createConnection() throws ClassNotFoundException, DatabaseException {
+      public DatabaseConnection createConnection() throws DatabaseException {
         return DatabaseConnections.createConnection(database, user);
       }
       @Override

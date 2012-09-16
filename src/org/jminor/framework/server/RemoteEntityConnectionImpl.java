@@ -170,10 +170,6 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
       disconnect();
       throw e;
     }
-    catch (ClassNotFoundException e) {
-      disconnect();
-      throw e;
-    }
   }
 
   /** {@inheritDoc} */
@@ -461,7 +457,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     }
   }
 
-  private EntityConnection getConnection(final boolean logMethod) throws ClassNotFoundException, DatabaseException {
+  private EntityConnection getConnection(final boolean logMethod) throws DatabaseException {
     Exception exception = null;
     try {
       if (logMethod) {
@@ -491,10 +487,6 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
       }
 
       return localEntityConnection;
-    }
-    catch (ClassNotFoundException ex) {
-      exception = ex;
-      throw ex;
     }
     catch (DatabaseException ex) {
       exception = ex;

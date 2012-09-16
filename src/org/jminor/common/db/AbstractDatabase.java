@@ -7,6 +7,9 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -16,6 +19,8 @@ import java.util.Properties;
  * A default abstract implementation of the Database interface.
  */
 public abstract class AbstractDatabase implements Database {
+
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractDatabase.class);
 
   private final String databaseType;
   private final String host;
@@ -125,7 +130,7 @@ public abstract class AbstractDatabase implements Database {
 
   /** {@inheritDoc} */
   @Override
-  public final Connection createConnection(final User user) throws ClassNotFoundException, DatabaseException {
+  public final Connection createConnection(final User user) throws DatabaseException {
     Util.rejectNullValue(user, "user");
     Util.rejectNullValue(user.getUsername(), "Username must be provided");
     Util.rejectNullValue(user.getPassword(), "Password must be provided");
@@ -133,7 +138,6 @@ public abstract class AbstractDatabase implements Database {
     connectionProperties.put(USER_PROPERTY, user.getUsername());
     connectionProperties.put(PASSWORD_PROPERTY, user.getPassword());
     DriverManager.setLoginTimeout(getLoginTimeout());
-
     try {
       return DriverManager.getConnection(getURL(connectionProperties), addConnectionProperties(connectionProperties));
     }
@@ -215,5 +219,15 @@ public abstract class AbstractDatabase implements Database {
    */
   protected int getLoginTimeout() {
     return Database.DEFAULT_LOGIN_TIMEOUT;
+  }
+
+  protected static void loadDriver(final String driverClassName) {
+    Util.rejectNullValue(driverClassName, "driverClassName");
+    try {
+      Class.forName(driverClassName);
+    }
+    catch (ClassNotFoundException e) {
+      LOG.warn(driverClassName + " not found on classpath", e);
+    }
   }
 }

@@ -184,7 +184,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
     /** {@inheritDoc} */
     @Override
-    public DatabaseConnection createConnection() throws ClassNotFoundException, DatabaseException {
+    public DatabaseConnection createConnection() throws DatabaseException {
       return DatabaseConnections.createConnection(database, user);
     }
 

@@ -71,10 +71,9 @@ final class ConnectionPoolImpl implements ConnectionPool {
   /**
    * Instantiates a new ConnectionPoolImpl.
    * @param connectionProvider the connection provider
-   * @throws ClassNotFoundException in case the jdbc class is not found when constructing the initial connections
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
-  ConnectionPoolImpl(final DatabaseConnectionProvider connectionProvider) throws ClassNotFoundException, DatabaseException {
+  ConnectionPoolImpl(final DatabaseConnectionProvider connectionProvider) throws DatabaseException {
     this.connectionProvider = connectionProvider;
     for (int i = 0; i < FINE_GRAINED_STATS_SIZE; i++) {
       connectionPoolStatistics.add(new ConnectionPoolStateImpl());
@@ -84,7 +83,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
 
   /** {@inheritDoc} */
   @Override
-  public DatabaseConnection getConnection() throws ClassNotFoundException, DatabaseException {
+  public DatabaseConnection getConnection() throws DatabaseException {
     if (!enabled || closed) {
       throw new IllegalStateException("ConnectionPool not enabled or closed");
     }
@@ -358,7 +357,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
     return connection;
   }
 
-  private DatabaseConnection createConnection() throws ClassNotFoundException, DatabaseException {
+  private DatabaseConnection createConnection() throws DatabaseException {
     synchronized (pool) {
       creatingConnection = true;
     }
@@ -373,16 +372,12 @@ final class ConnectionPoolImpl implements ConnectionPool {
       LOG.error("Database error while creating a new connection", dbe);
       throw dbe;
     }
-    catch (ClassNotFoundException e) {
-      LOG.error("JDBC Driver class not found", e);
-      throw e;
-    }
     finally {
       creatingConnection = false;
     }
   }
 
-  private void initializeConnections() throws ClassNotFoundException, DatabaseException {
+  private void initializeConnections() throws DatabaseException {
     for (int i = 0; i < getMinimumPoolSize(); i++) {
       returnConnection(createConnection());
     }

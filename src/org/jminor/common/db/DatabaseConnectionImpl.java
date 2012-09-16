@@ -45,9 +45,8 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
    * @param database the database
    * @param user the user to base this database connection on
    * @throws DatabaseException in case there is a problem connecting to the database
-   * @throws ClassNotFoundException in case the database driver was not found
    */
-  public DatabaseConnectionImpl(final Database database, final User user) throws ClassNotFoundException, DatabaseException {
+  public DatabaseConnectionImpl(final Database database, final User user) throws DatabaseException {
     Util.rejectNullValue(database, "database");
     Util.rejectNullValue(user, "user");
     this.database = database;

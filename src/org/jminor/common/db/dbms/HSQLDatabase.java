@@ -13,10 +13,15 @@ import java.util.Properties;
  */
 public final class HSQLDatabase extends AbstractDatabase {
 
+  static final String DRIVER_CLASS_NAME = "org.hsqldb.jdbcDriver";
   static final String AUTO_INCREMENT_QUERY = "IDENTITY()";
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
   static final String EMBEDDED_URL_PREFIX = "jdbc:hsqldb:file:";
   static final String NETWORKED_URL_PREFIX = "jdbc:hsqldb:hsql//";
+
+  static {
+    loadDriver(DRIVER_CLASS_NAME);
+  }
 
   /**
    * Instantiates a new H2Database.
