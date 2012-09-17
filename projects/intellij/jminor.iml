@@ -29,13 +29,11 @@
     <orderEntry type="module-library">
       <library name="jminor-lib">
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../lib" />
-          <root url="file://$MODULE_DIR$/../../lib/jasperreports" />
+          <root url="file://$MODULE_DIR$/../../lib/build" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../../lib" recursive="false" />
-        <jarDirectory url="file://$MODULE_DIR$/../../lib/jasperreports" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../../lib/build" recursive="false" />
       </library>
     </orderEntry>
   </component>

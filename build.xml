@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="jminor" default="dist" basedir="." xmlns:jacoco="antlib:org.jacoco.ant">
+<project name="jminor" default="dist" basedir="." xmlns:jacoco="antlib:org.jacoco.ant" xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <description>JMinor is a minimalistic Java rich client/server CRUD application framework, based solely on Java Standard Edition components, JDBC, RMI and Swing.</description>
 
@@ -7,45 +7,23 @@
   <property file="user.properties"/>
 
   <path id="lib.build">
-    <fileset dir="${lib}">
-      <include name="**/*.jar"/>
-    </fileset>
+    <fileset dir="${lib}/build"/>
   </path>
 
-  <path id="lib.client.remote">
-    <pathelement location="${lib.jcalendar}"/>
-    <pathelement location="${lib.json}"/>
-    <pathelement location="${lib.slf4j.api}"/>
-    <pathelement location="${lib.logback.classic}"/>
-    <pathelement location="${lib.logback.core}"/>
-    <pathelement location="${lib.jasperreports.base}"/>
-    <pathelement location="${lib.jasperreports.logging}"/>
-    <pathelement location="${lib.jasperreports.collections}"/>
+  <path id="lib.test">
+    <fileset dir="${lib}/test"/>
   </path>
 
-  <path id="lib.client.local">
-    <path refid="lib.client.remote"/>
-    <pathelement location="${lib.h2}"/>
+  <path id="lib.client.runtime">
+    <fileset dir="${lib}/client.runtime"/>
   </path>
 
-  <path id="lib.server">
-    <pathelement location="${lib.h2}"/>
-    <pathelement location="${lib.json}"/>
-    <pathelement location="${lib.slf4j.api}"/>
-    <pathelement location="${lib.logback.classic}"/>
-    <pathelement location="${lib.logback.core}"/>
-    <pathelement location="${lib.jasperreports.base}"/>
-    <pathelement location="${lib.jasperreports.logging}"/>
-    <pathelement location="${lib.jasperreports.collections}"/>
+  <path id="lib.server.runtime">
+    <fileset dir="${lib}/server.runtime"/>
   </path>
 
-  <path id="lib.server.monitor">
-    <pathelement location="${lib.jcalendar}"/>
-    <pathelement location="${lib.slf4j.api}"/>
-    <pathelement location="${lib.logback.classic}"/>
-    <pathelement location="${lib.logback.core}"/>
-    <pathelement location="${lib.jfreechart.base}"/>
-    <pathelement location="${lib.jfreechart.common}"/>
+  <path id="lib.server.monitor.runtime">
+    <fileset dir="${lib}/server.monitor.runtime"/>
   </path>
 
   <path id="classes.base">
@@ -66,6 +44,10 @@
     <classpath path="${jacocoant.jar}" />
   </taskdef>
 
+  <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant">
+    <classpath path="${ivy.jar}" />
+  </taskdef>
+
   <fileset id="common_resources" dir="${src}" includes=
           "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt"/>
   <fileset id="framework_resources" dir="${src}" includes=
@@ -77,6 +59,14 @@
   <fileset id="plugins_resources" dir="${srcplugins}" includes=
           "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt"/>
 
+  <target name="resolve_libraries"
+          description="Resolves all libraries according to ivy.xml">
+    <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]"/>
+    <copy file="lib/webserver.jar" todir="${lib}/build"/>
+    <copy file="lib/webserver.jar" todir="${lib}/server.runtime"/>
+    <copy file="lib/webserver.jar" todir="${lib}/test"/>
+  </target>
+
   <target name="clean"
           description="Clean all output and generated dirs">
     <delete dir="${build.base}" includeEmptyDirs="true"/>
@@ -87,7 +77,7 @@
     <delete dir="${test}" includeEmptyDirs="true"/>
   </target>
 
-  <target name="build"
+  <target name="build" depends="resolve_libraries"
           description="Compiles all source files">
     <mkdir dir="${build.base}"/>
     <mkdir dir="${build.plugins}"/>
@@ -156,7 +146,8 @@
     <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
   </target>
 
-  <target name="compile_demo_reports" description="Compile the demo jasper reports">
+  <target name="compile_demo_reports" depends="resolve_libraries"
+          description="Compile the demo jasper reports">
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
       <classpath refid="lib.build"/>
     </taskdef>
@@ -275,16 +266,9 @@
     <copy file="${dist}/jminor-common.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-plugins.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-demos.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${lib.slf4j.api}" todir="${deploy.server.path}/lib"/>
-    <copy file="${lib.logback.classic}" todir="${deploy.server.path}/lib"/>
-    <copy file="${lib.logback.core}" todir="${deploy.server.path}/lib"/>
-    <copy file="${lib.h2}" todir="${deploy.server.path}/lib"/>
-    <copy file="${lib.webserver}" todir="${deploy.server.path}/lib"/>
-    <copy file="${lib.servlet}" todir="${deploy.server.path}/lib"/>
-    <copy file="${lib.json}" todir="${deploy.server.path}/lib"/>
-    <copy file="${lib.jasperreports.base}" todir="${deploy.server.path}/lib"/>
-    <copy file="${lib.jasperreports.collections}" todir="${deploy.server.path}/lib"/>
-    <copy file="${lib.jasperreports.logging}" todir="${deploy.server.path}/lib"/>
+    <copy todir="${deploy.server.path}/lib">
+      <fileset dir="${lib}/server.runtime"/>
+    </copy>
     <copy todir="${deploy.server.path}">
       <fileset dir="${basedir}/resources/server/"/>
     </copy>
@@ -306,12 +290,9 @@
     <mkdir dir="${deploy.server.monitor.path}"/>
     <copy file="${dist}/jminor-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${dist}/jminor-common.jar" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${lib.slf4j.api}" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${lib.logback.classic}" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${lib.logback.core}" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${lib.jfreechart.base}" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${lib.jfreechart.common}" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${lib.jcalendar}" todir="${deploy.server.monitor.path}/lib"/>
+    <copy todir="${deploy.server.monitor.path}/lib">
+      <fileset dir="${lib}/server.monitor.runtime"/>
+    </copy>
     <copy todir="${deploy.server.monitor.path}">
       <fileset dir="${basedir}/resources/server_monitor/"/>
     </copy>
@@ -337,11 +318,9 @@
     <mkdir dir="${deploy.generator.path}"/>
     <copy file="${dist}/jminor.jar" todir="${deploy.generator.path}/lib"/>
     <copy file="${dist}/jminor-common.jar" todir="${deploy.generator.path}/lib"/>
-    <copy file="${lib.h2}" todir="${deploy.generator.path}/lib"/>
-    <copy file="${lib.slf4j.api}" todir="${deploy.generator.path}/lib"/>
-    <copy file="${lib.logback.classic}" todir="${deploy.generator.path}/lib"/>
-    <copy file="${lib.logback.core}" todir="${deploy.generator.path}/lib"/>
-    <copy file="${lib.jcalendar}" todir="${deploy.generator.path}/lib"/>
+    <copy todir="${deploy.generator.path}/lib">
+      <fileset dir="${lib}/client.runtime"/>
+    </copy>
     <copy todir="${deploy.generator.path}">
       <fileset dir="${basedir}/resources/entity_generator/"/>
     </copy>
@@ -367,19 +346,9 @@
     <copy file="${dist}/jminor-plugins.jar" todir="${deploy.demos.lib}"/>
     <copy file="${dist}/jminor-demos.jar" todir="${deploy.demos.lib}"/>
     <copy file="${dist}/jminor-common.jar" todir="${deploy.demos.lib}"/>
-    <copy file="${lib.h2}" todir="${deploy.demos.lib}"/>
-    <copy file="${lib.json}" todir="${deploy.demos.lib}"/>
-    <copy file="${lib.jasperreports.base}" todir="${deploy.demos.lib}"/>
-    <copy file="${lib.jasperreports.collections}" todir="${deploy.demos.lib}"/>
-    <copy file="${lib.jasperreports.itext}" todir="${deploy.demos.lib}"/>
-    <copy file="${lib.jasperreports.logging}" todir="${deploy.demos.lib}"/>
-    <copy file="${lib.slf4j.api}" todir="${deploy.demos.lib}"/>
-    <copy file="${lib.logback.classic}" todir="${deploy.demos.lib}"/>
-    <copy file="${lib.logback.core}" todir="${deploy.demos.lib}"/>
-    <copy file="${lib.jcalendar}" todir="${deploy.demos.lib}"/>
-    <copy file="${lib.h2}" todir="${deploy.demos.lib}"/>
-    <copy file="${lib.jfreechart.base}" todir="${deploy.demos.lib}"/>
-    <copy file="${lib.jfreechart.common}" todir="${deploy.demos.lib}"/>
+    <copy todir="${deploy.demos.lib}">
+      <fileset dir="${lib}/client.runtime"/>
+    </copy>
     <copy todir="${deploy.demos.config.dir}">
       <fileset dir="${deploy.demos.config}"/>
     </copy>
@@ -446,7 +415,7 @@
         <classpath>
           <path refid="classes.base"/>
           <path refid="classes.test"/>
-          <path refid="lib.build"/>
+          <path refid="lib.test"/>
         </classpath>
         <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
         <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
@@ -504,7 +473,7 @@
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
         <path refid="classes.base"/>
-        <path refid="lib.client.local"/>
+        <path refid="lib.client.runtime"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
       <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
@@ -522,7 +491,7 @@
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
         <path refid="classes.base"/>
-        <path refid="lib.client.remote"/>
+        <path refid="lib.client.runtime"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
@@ -537,9 +506,7 @@
     <java classname="org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest" fork="yes">
       <classpath>
         <path refid="classes.base"/>
-        <path refid="lib.client.remote"/>
-        <pathelement location="${lib.jfreechart.base}"/>
-        <pathelement location="${lib.jfreechart.common}"/>
+        <path refid="lib.client.runtime"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
@@ -555,7 +522,7 @@
       <classpath>
         <path refid="classes.base"/>
         <path refid="classes.demos"/>
-        <path refid="lib.server"/>
+        <path refid="lib.server.runtime"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
       <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
@@ -578,10 +545,10 @@
 
   <target name="run_rmi_server_monitor" depends="build"
           description="Runs the RMI server monitor">
-    <java classname="org.jminor.framework.server.monitor.ui.EntityServerMonitorPanelMonitorPanel" fork="yes">
+    <java classname="org.jminor.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
       <classpath>
         <path refid="classes.base"/>
-        <path refid="lib.server.monitor"/>
+        <path refid="lib.server.monitor.runtime"/>
       </classpath>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorServerMonitorTruststore"/>
@@ -594,7 +561,7 @@
     <java classname="sun.rmi.registry.RegistryImpl" fork="yes">
       <classpath>
         <path refid="classes.base"/>
-        <path refid="lib.server"/>
+        <path refid="lib.server.runtime"/>
       </classpath>
       <jvmarg value="-Djava.security.policy=${resources.security}/all_permissions.policy"/>
     </java>

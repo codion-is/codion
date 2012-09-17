@@ -3237,3 +3237,5 @@
   Database.loadDriver() removed, no longer required, jdbc.drivers system property can be used to specify the driver
   Database implementations load driver classes statically
   Database.createConnection() no longer throws ClassNotFoundException
+  ivy configuration added, handles all libraries except for tjws, project 3rd party libraries updated
+  ConnectionPools methods synchronized

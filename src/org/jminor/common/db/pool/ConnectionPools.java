@@ -32,7 +32,7 @@ public final class ConnectionPools {
    * @throws ClassNotFoundException in case the jdbc class is not found when constructing the initial connections
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
-  public static ConnectionPool createPool(final DatabaseConnectionProvider connectionProvider) throws ClassNotFoundException, DatabaseException {
+  public static synchronized ConnectionPool createPool(final DatabaseConnectionProvider connectionProvider) throws ClassNotFoundException, DatabaseException {
     final ConnectionPool connectionPool = new ConnectionPoolImpl(connectionProvider);
     CONNECTION_POOLS.put(connectionProvider.getUser(), connectionPool);
 
@@ -42,8 +42,8 @@ public final class ConnectionPools {
   /**
    * Closes and removes all available connection pools
    */
-  public static void closeConnectionPools() {
-    for (final ConnectionPool pool : new ArrayList<ConnectionPool>(ConnectionPools.getConnectionPools())) {
+  public static synchronized void closeConnectionPools() {
+    for (final ConnectionPool pool : getConnectionPools()) {
       removeConnectionPool(pool.getUser());
     }
   }
@@ -52,7 +52,7 @@ public final class ConnectionPools {
    * Closes and removes the pool associated with the given user
    * @param user the user whos pool should be removed
    */
-  public static void removeConnectionPool(final User user) {
+  public static synchronized void removeConnectionPool(final User user) {
     if (containsConnectionPool(user)) {
       CONNECTION_POOLS.remove(user).close();
     }
@@ -63,7 +63,7 @@ public final class ConnectionPools {
    * @return the connection pool for the given user, null if none exists
    * @see #containsConnectionPool(org.jminor.common.model.User)
    */
-  public static ConnectionPool getConnectionPool(final User user) {
+  public static synchronized ConnectionPool getConnectionPool(final User user) {
     return CONNECTION_POOLS.get(user);
   }
 
@@ -71,14 +71,14 @@ public final class ConnectionPools {
    * @param user user
    * @return true if a connection pool is available for the given user
    */
-  public static boolean containsConnectionPool(final User user) {
+  public static synchronized boolean containsConnectionPool(final User user) {
     return CONNECTION_POOLS.containsKey(user);
   }
 
   /**
    * @return all available connection pools
    */
-  public static Collection<ConnectionPool> getConnectionPools() {
-    return CONNECTION_POOLS.values();
+  public static synchronized Collection<ConnectionPool> getConnectionPools() {
+    return new ArrayList<ConnectionPool>(CONNECTION_POOLS.values());
   }
 }

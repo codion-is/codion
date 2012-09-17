@@ -436,6 +436,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     catch (DatabaseException e) {
       exception = e;
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), functionID, arguments == null ? null : Arrays.asList(arguments), e, null));
       throw e;
     }
     finally {
@@ -463,6 +464,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     }
     catch (DatabaseException e) {
       exception = e;
+      LOG.error(DatabaseUtil.createLogMessage(getUser(), procedureID, arguments == null ? null : Arrays.asList(arguments), e, null));
       throw e;
     }
     finally {
@@ -481,7 +483,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       getMethodLogger().logAccess("fillReport", new Object[]{reportWrapper.getReportName()});
       final ReportResult result = reportWrapper.fillReport(getConnection());
       if (!isTransactionOpen()) {
-        commitQuietly();
+        commitQuietly();//todo seems to mess up method logger, haven't exited last method
       }
 
       return result;
