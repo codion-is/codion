@@ -15,15 +15,15 @@
   </path>
 
   <path id="lib.client.runtime">
-    <fileset dir="${lib}/client.runtime"/>
+    <fileset dir="${lib}/runtime.client"/>
   </path>
 
   <path id="lib.server.runtime">
-    <fileset dir="${lib}/server.runtime"/>
+    <fileset dir="${lib}/runtime.server"/>
   </path>
 
   <path id="lib.server.monitor.runtime">
-    <fileset dir="${lib}/server.monitor.runtime"/>
+    <fileset dir="${lib}/runtime.server-monitor"/>
   </path>
 
   <path id="classes.base">
@@ -63,7 +63,7 @@
           description="Resolves all libraries according to ivy.xml">
     <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]"/>
     <copy file="lib/webserver.jar" todir="${lib}/build"/>
-    <copy file="lib/webserver.jar" todir="${lib}/server.runtime"/>
+    <copy file="lib/webserver.jar" todir="${lib}/runtime.server"/>
     <copy file="lib/webserver.jar" todir="${lib}/test"/>
   </target>
 
@@ -267,7 +267,7 @@
     <copy file="${dist}/jminor-plugins.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-demos.jar" todir="${deploy.server.path}/lib"/>
     <copy todir="${deploy.server.path}/lib">
-      <fileset dir="${lib}/server.runtime"/>
+      <fileset dir="${lib}/runtime.server"/>
     </copy>
     <copy todir="${deploy.server.path}">
       <fileset dir="${basedir}/resources/server/"/>
@@ -291,7 +291,7 @@
     <copy file="${dist}/jminor-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${dist}/jminor-common.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy todir="${deploy.server.monitor.path}/lib">
-      <fileset dir="${lib}/server.monitor.runtime"/>
+      <fileset dir="${lib}/runtime.server-monitor"/>
     </copy>
     <copy todir="${deploy.server.monitor.path}">
       <fileset dir="${basedir}/resources/server_monitor/"/>
@@ -319,7 +319,7 @@
     <copy file="${dist}/jminor.jar" todir="${deploy.generator.path}/lib"/>
     <copy file="${dist}/jminor-common.jar" todir="${deploy.generator.path}/lib"/>
     <copy todir="${deploy.generator.path}/lib">
-      <fileset dir="${lib}/client.runtime"/>
+      <fileset dir="${lib}/runtime.client"/>
     </copy>
     <copy todir="${deploy.generator.path}">
       <fileset dir="${basedir}/resources/entity_generator/"/>
@@ -347,7 +347,7 @@
     <copy file="${dist}/jminor-demos.jar" todir="${deploy.demos.lib}"/>
     <copy file="${dist}/jminor-common.jar" todir="${deploy.demos.lib}"/>
     <copy todir="${deploy.demos.lib}">
-      <fileset dir="${lib}/client.runtime"/>
+      <fileset dir="${lib}/runtime.client"/>
     </copy>
     <copy todir="${deploy.demos.config.dir}">
       <fileset dir="${deploy.demos.config}"/>

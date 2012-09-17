@@ -3239,3 +3239,4 @@
   Database.createConnection() no longer throws ClassNotFoundException
   ivy configuration added, handles all libraries except for tjws, project 3rd party libraries updated
   ConnectionPools methods synchronized
+  Renamed ivy runtime configurations
