@@ -14,15 +14,15 @@
     <fileset dir="${lib}/test"/>
   </path>
 
-  <path id="lib.client.runtime">
+  <path id="lib.runtime.client">
     <fileset dir="${lib}/runtime.client"/>
   </path>
 
-  <path id="lib.server.runtime">
+  <path id="lib.runtime.server">
     <fileset dir="${lib}/runtime.server"/>
   </path>
 
-  <path id="lib.server.monitor.runtime">
+  <path id="lib.runtime.server-monitor">
     <fileset dir="${lib}/runtime.server-monitor"/>
   </path>
 
@@ -473,7 +473,7 @@
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
         <path refid="classes.base"/>
-        <path refid="lib.client.runtime"/>
+        <path refid="lib.runtime.client"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
       <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
@@ -491,7 +491,7 @@
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
         <path refid="classes.base"/>
-        <path refid="lib.client.runtime"/>
+        <path refid="lib.runtime.client"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
@@ -506,7 +506,7 @@
     <java classname="org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest" fork="yes">
       <classpath>
         <path refid="classes.base"/>
-        <path refid="lib.client.runtime"/>
+        <path refid="lib.runtime.client"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
@@ -522,7 +522,7 @@
       <classpath>
         <path refid="classes.base"/>
         <path refid="classes.demos"/>
-        <path refid="lib.server.runtime"/>
+        <path refid="lib.runtime.server"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
       <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
@@ -548,7 +548,7 @@
     <java classname="org.jminor.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
       <classpath>
         <path refid="classes.base"/>
-        <path refid="lib.server.monitor.runtime"/>
+        <path refid="lib.runtime.server-monitor"/>
       </classpath>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorServerMonitorTruststore"/>
@@ -561,7 +561,7 @@
     <java classname="sun.rmi.registry.RegistryImpl" fork="yes">
       <classpath>
         <path refid="classes.base"/>
-        <path refid="lib.server.runtime"/>
+        <path refid="lib.runtime.server"/>
       </classpath>
       <jvmarg value="-Djava.security.policy=${resources.security}/all_permissions.policy"/>
     </java>
