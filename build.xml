@@ -574,13 +574,4 @@
       <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -showResults -script ${db.init.h2}"/>
     </java>
   </target>
-
-  <target name="recreate_derby_db"
-          description="Recreates the demo derby database. The demo database includes the EmpDept, Petstore and Chinook schemas, used by unit tests and demo applications">
-    <delete dir="${db.derby.dir}"/>
-    <java fork="true" classname="org.apache.derby.tools.ij" classpathref="lib.build">
-      <sysproperty key="ij.connection.demo" value="jdbc:derby:${db.derby.dir}/${db.derby.name};create=true"/>
-      <arg value="${db.init.derby}"/>
-    </java>
-  </target>
 </project>
