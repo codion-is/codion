@@ -252,7 +252,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     final ClientInfo client = new ClientInfo(clientID);
     for (final RemoteEntityConnection connection : getConnections().values()) {
       if (((RemoteEntityConnectionImpl) connection).getClientInfo().equals(client)) {
-        return ((RemoteEntityConnectionImpl) connection).getMethodLogger().isEnabled();
+        return ((RemoteEntityConnectionImpl) connection).isLoggingEnabled();
       }
     }
 
@@ -267,7 +267,7 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     final ClientInfo client = new ClientInfo(clientID);
     for (final RemoteEntityConnection connection : getConnections().values()) {
       if (((RemoteEntityConnectionImpl) connection).getClientInfo().equals(client)) {
-        ((RemoteEntityConnectionImpl) connection).getMethodLogger().setEnabled(status);
+        ((RemoteEntityConnectionImpl) connection).setLoggingEnabled(status);
         return;
       }
     }

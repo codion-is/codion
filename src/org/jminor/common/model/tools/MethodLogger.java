@@ -3,49 +3,179 @@
  */
 package org.jminor.common.model.tools;
 
-import java.util.ArrayList;
+import org.jminor.common.model.DateUtil;
+import org.jminor.common.model.Util;
+import org.jminor.common.model.formats.DateFormats;
+
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.io.PrintWriter;
+import java.io.Serializable;
+import java.io.StringWriter;
+import java.text.DateFormat;
+import java.util.Collections;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.Stack;
 
 /**
  * A cyclical method call logger.
  */
-public class MethodLogger {
+public class MethodLogger implements Serializable {
 
-  private final int logSize;
-  private final List<LogEntry> logEntries;
-  private volatile boolean enabled = false;
-  private int currentLogEntryIndex = 0;
+  private static final long serialVersionUID = 1;
 
-  private long lastAccessDate = System.currentTimeMillis();
-  private long lastExitDate = System.currentTimeMillis();
+  private transient final Stack<Entry> callStack = new Stack<Entry>();
+  private LinkedList<Entry> entries = new LinkedList<Entry>();
+  private int maxSize;
+  private boolean enabled = false;
+  private long lastAccessTime = System.currentTimeMillis();
+  private long lastExitTime = System.currentTimeMillis();
   private String lastAccessedMethod;
   private String lastAccessMessage;
   private String lastExitedMethod;
 
   /**
    * Instantiates a new MethodLogger.
-   * @param logSize the log size
+   * @param maxSize the maximum log size
    */
-  public MethodLogger(final int logSize) {
-    this(logSize, false);
+  public MethodLogger(final int maxSize) {
+    this(maxSize, false);
   }
 
   /**
    * Instantiates a new MethodLogger.
-   * @param logSize the log size
+   * @param maxSize the maximum log size
    * @param enabled true if this logger should be enabled
    */
-  public MethodLogger(final int logSize, final boolean enabled) {
-    this.logSize = logSize;
-    this.logEntries = initializeLogEntryList();
-    setEnabled(enabled);
+  public MethodLogger(final int maxSize, final boolean enabled) {
+    this.maxSize = maxSize;
+    this.enabled = enabled;
   }
 
   /**
-   * @return last access date
+   * @param method the method being accessed
    */
-  public final long getLastAccessDate() {
-    return lastAccessDate;
+  public final void logAccess(final String method) {
+    logAccess(method, null);
+  }
+
+  /**
+   * @param method the method being accessed
+   * @param arguments the method arguments
+   */
+  public final void logAccess(final String method, final Object[] arguments) {
+    if (shouldMethodBeLogged(method)) {
+      final Entry entry = new Entry(method, argumentArrayToString(arguments));
+      lastAccessTime = entry.getAccessTime();
+      lastAccessedMethod = method;
+      lastAccessMessage = entry.getAccessMessage();
+      callStack.push(entry);
+    }
+  }
+
+  /**
+   * @param method the method being exited
+   * @return the Entry
+   */
+  public final Entry logExit(final String method) {
+    return logExit(method, null);
+  }
+
+  /**
+   * @param method the method being exited
+   * @param exception the exception, if any
+   * @return the Entry
+   */
+  public final Entry logExit(final String method, final Throwable exception) {
+    return logExit(method, exception, null);
+  }
+
+  /**
+   * @param method the method being exited
+   * @param exception the exception, if any
+   * @param exitMessage the message to associate with exiting the method
+   * @return the Entry
+   */
+  public final Entry logExit(final String method, final Throwable exception, final String exitMessage) {
+    if (shouldMethodBeLogged(method)) {
+      if (callStack.isEmpty()) {
+        throw new IllegalStateException("Call stack is empty when trying to log method exit");
+      }
+      final Entry entry = callStack.pop();
+      if (!entry.getMethod().equals(method)) {
+        throw new IllegalStateException("Expecting method " + entry.getMethod() + " but got " + method + " when trying to log method exit");
+      }
+      entry.setExitTime();
+      entry.setException(exception);
+      entry.setExitMessage(exitMessage);
+      lastExitedMethod = method;
+      lastExitTime = entry.getExitTime();
+      if (callStack.empty()) {
+        if (entries.size() == maxSize) {
+          entries.removeFirst();
+        }
+        entries.addLast(entry);
+      }
+      else {
+        callStack.peek().addSubEntry(entry);
+      }
+
+      return entry;
+    }
+
+    return null;
+  }
+
+  /**
+   * @return true if this logger is enabled
+   */
+  public final boolean isEnabled() {//todo put this to use
+    return enabled;
+  }
+
+  /**
+   * @param enabled true to enable this logger
+   */
+  public final void setEnabled(final boolean enabled) {
+    this.enabled = enabled;
+  }
+
+  /**
+   * @return the number of log entries
+   */
+  public final int size() {
+    return entries.size();
+  }
+
+  /**
+   * @param index the index
+   * @return the entry at the given index
+   */
+  public final Entry getEntryAt(final int index) {
+    return entries.get(index);
+  }
+
+  /**
+   * @return the last log entry
+   */
+  public final Entry getLastEntry() {
+    return entries.getLast();
+  }
+
+  /**
+   * @return the first log entry
+   */
+  public final Entry getFirstEntry() {
+    return entries.getFirst();
+  }
+
+  /**
+   * @return the time of last access
+   */
+  public final long getLastAccessTime() {
+    return lastAccessTime;
   }
 
   /**
@@ -65,8 +195,8 @@ public class MethodLogger {
   /**
    * @return the last exit message
    */
-  public final long getLastExitDate() {
-    return lastExitDate;
+  public final long getLastExitTime() {
+    return lastExitTime;
   }
 
   /**
@@ -77,122 +207,28 @@ public class MethodLogger {
   }
 
   /**
-   * Resets this log
+   * @return an unmodifiable view of the log entries
    */
-  public final synchronized void reset() {
-    for (final LogEntry entry : logEntries) {
-      entry.reset();
-    }
-    currentLogEntryIndex = 0;
+  public final List<Entry> getEntries() {//todo synchronize
+    return Collections.unmodifiableList(entries);
   }
 
   /**
-   * @return the log entries
+   * Override to exclude certain methods from being logged
+   * @param method the method
+   * @return true if the given method should be logged
    */
-  public final synchronized List<LogEntry> getLogEntries() {
-    final ArrayList<LogEntry> entries = new ArrayList<LogEntry>();
-    if (!enabled) {
-      entries.add(new LogEntry("Logging is not enabled", "", System.currentTimeMillis(), 0, null));
-    }
-    else {
-      for (final LogEntry entry : logEntries) {
-        if (entry.isComplete()) {
-          entries.add(new LogEntry(entry));
-        }
-      }
-    }
-
-    return entries;
+  protected boolean shouldMethodBeLogged(final String method) {
+    return true;
   }
 
   /**
-   * @param method the method being accessed
-   * @param arguments the method arguments
-   */
-  public final void logAccess(final String method, final Object[] arguments) {
-    this.lastAccessDate = System.currentTimeMillis();
-    this.lastAccessedMethod = method;
-    if (enabled) {
-      this.lastAccessMessage = argumentArrayToString(arguments);
-      addLogEntry(lastAccessedMethod, lastAccessMessage, lastAccessDate, System.nanoTime(), false, null, null);
-    }
-  }
-
-  /**
-   * @param method the method being exited
-   * @param exception the exception, if any
-   * @param subLog the sub-log, if any
-   * @return the LogEntry
-   */
-  public final LogEntry logExit(final String method, final Throwable exception, final List<LogEntry> subLog) {
-    return logExit(method, exception, subLog, null);
-  }
-
-  /**
-   * @param method the method being exited
-   * @param exception the exception, if any
-   * @param subLog the sub-log, if any
-   * @param exitMessage the exit message
-   * @return the LogEntry
-   */
-  public final LogEntry logExit(final String method, final Throwable exception,
-                                final List<LogEntry> subLog, final String exitMessage) {
-    this.lastExitDate = System.currentTimeMillis();
-    this.lastExitedMethod = method;
-    if (enabled) {
-      return addLogEntry(lastExitedMethod, exitMessage, lastExitDate, System.nanoTime(), true, exception, subLog);
-    }
-
-    return null;
-  }
-
-  /**
-   * @return true if this logger is enabled
-   */
-  public final boolean isEnabled() {
-    return enabled;
-  }
-
-  /**
-   * @param enabled true to enable this logger
-   */
-  public final void setEnabled(final boolean enabled) {
-    this.enabled = enabled;
-    reset();
-  }
-
-  /**
+   * Override to provide specific string representations of method arguments
    * @param argument the argument
    * @return a String representation of the given argument
    */
   protected String getMethodArgumentAsString(final Object argument) {
     return String.valueOf(argument);
-  }
-
-  private synchronized LogEntry addLogEntry(final String method, final String message, final long time,
-                                            final long nanoTime, final boolean isExit,
-                                            final Throwable exception, final List<LogEntry> subLog) {
-    final LogEntry currentEntry = logEntries.get(currentLogEntryIndex);
-    if (isExit) {
-      currentEntry.setExitInfo(message, exception, time, nanoTime, subLog);
-      if (++currentLogEntryIndex > logEntries.size() - 1) {
-        currentLogEntryIndex = 0;
-      }
-    }
-    else {
-      currentEntry.initialize(method, message, time, nanoTime, exception);
-    }
-
-    return currentEntry;
-  }
-
-  private List<LogEntry> initializeLogEntryList() {
-    final List<LogEntry> entries = new ArrayList<LogEntry>(logSize);
-    for (int i = 0; i < logSize; i++) {
-      entries.add(new LogEntry());
-    }
-
-    return entries;
   }
 
   protected final String argumentArrayToString(final Object[] arguments) {
@@ -209,5 +245,251 @@ public class MethodLogger {
     }
 
     return stringBuilder.toString();
+  }
+
+  private void writeObject(final ObjectOutputStream stream) throws IOException {
+    stream.writeInt(maxSize);
+    stream.writeBoolean(enabled);
+    stream.writeLong(lastAccessTime);
+    stream.writeLong(lastExitTime);
+    stream.writeObject(lastAccessedMethod);
+    stream.writeObject(lastAccessMessage);
+    stream.writeObject(lastExitedMethod);
+    stream.writeInt(entries.size());
+    for (final Entry entry : entries) {
+      stream.writeObject(entry);
+    }
+  }
+
+  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+    this.maxSize = stream.readInt();
+    this.enabled = stream.readBoolean();
+    this.lastAccessTime = stream.readLong();
+    this.lastExitTime = stream.readLong();
+    this.lastAccessedMethod = (String) stream.readObject();
+    this.lastAccessMessage = (String) stream.readObject();
+    this.lastExitedMethod = (String) stream.readObject();
+    this.entries = new LinkedList<Entry>();
+    final int entryCount = stream.readInt();
+    for (int i = 0; i < entryCount; i++) {
+      entries.add((Entry) stream.readObject());
+    }
+  }
+
+  /**
+   * A log entry
+   */
+  public static final class Entry implements Serializable {
+
+    private static final long serialVersionUID = 1;
+    private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);
+
+    private String method;
+    private String accessMessage;
+    private long accessTime;
+    private long accessTimeNano;
+    private String exitMessage;
+    private long exitTime;
+    private long exitTimeNano;
+    private String stackTrace;
+    private LinkedList<Entry> subEntries = new LinkedList<Entry>();
+
+    /**
+     * Instantiates a new Entry, using the current time
+     * @param method the method being logged
+     * @param accessMessage the message associated with accessing the method
+     */
+    public Entry(final String method, final String accessMessage) {
+      this(method, accessMessage, System.currentTimeMillis(), System.nanoTime());
+    }
+
+    /**
+     * Instantiates a new Entry
+     * @param method the method being logged
+     * @param accessMessage the message associated with accessing the method
+     * @param accessTime the time to associate with accessing the method
+     * @param accessTimeNano the nano time to associate with accessing the method
+     */
+    public Entry(final String method, final String accessMessage, final long accessTime, final long accessTimeNano) {
+      this.method = method;
+      this.accessTime = accessTime;
+      this.accessTimeNano = accessTimeNano;
+      this.accessMessage = accessMessage;
+    }
+
+    /**
+     * @return true if this log entry contains sub log entries
+     */
+    public boolean containsSubLog() {
+      return subEntries.size() > 0;
+    }
+
+    /**
+     * @return the sub log entries
+     */
+    public List<Entry> getSubLog() {
+      return Collections.unmodifiableList(subEntries);
+    }
+
+    public void addSubEntry(final Entry subEntry) {
+      this.subEntries.addLast(subEntry);
+    }
+
+    /**
+     * @return the name of the method logged by this entry
+     */
+    public String getMethod() {
+      return method;
+    }
+
+    /**
+     * @return true if the exit time has been set for this entry
+     */
+    public boolean isComplete() {
+      return exitTime != 0;
+    }
+
+    /**
+     * Sets the exit time using the current time
+     */
+    public void setExitTime() {
+      setExitTime(System.currentTimeMillis(), System.nanoTime());
+    }
+
+    /**
+     * @param exitTime the exit time
+     * @param exitTimeNano the exit time in nanoseconds
+     */
+    public void setExitTime(final long exitTime, final long exitTimeNano) {
+      this.exitTime = exitTime;
+      this.exitTimeNano = exitTimeNano;
+    }
+
+    /**
+     * @param exception the exception that occurred during the method call logged by this entry
+     */
+    public void setException(final Throwable exception) {
+      this.stackTrace = getStackTrace(exception);
+    }
+
+    /**
+     * @return the method access time
+     */
+    public long getAccessTime() {
+      return accessTime;
+    }
+
+    /**
+     * @return the exit time
+     */
+    public long getExitTime() {
+      return exitTime;
+    }
+
+    /**
+     * @return the access message
+     */
+    public String getAccessMessage() {
+      return accessMessage;
+    }
+
+    /**
+     * @param exitMessage the exit message
+     */
+    public void setExitMessage(final String exitMessage) {
+      this.exitMessage = exitMessage;
+    }
+
+    /**
+     * Returns the duration of the method call this entry represents,
+     * this value is 0 or undefined until <code>setExitTime()</code>
+     * has been called, this can be checked via <code>isComplete()</code>.
+     * @return the duration of the method call this entry represents
+     */
+    public long getDelta() {
+      return exitTime - accessTime;
+    }
+
+    /**
+     * Returns the duration of the method call this entry represents in nanoseconds,
+     * this value is 0 or undefined until <code>setExitTime()</code>
+     * has been called, this can be checked via <code>isComplete()</code>.
+     * @return the duration of the method call this entry represents
+     */
+    public long getDeltaNano() {
+      return exitTimeNano - accessTimeNano;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public String toString() {
+      return toString(0);
+    }
+
+    /**
+     * Returns a string representation of this log entry.
+     * @param indentation the number of tab indents to prefix the string with
+     * @return a string representation of this log entry
+     */
+    public String toString(final int indentation) {
+      final String indentString = indentation > 0 ? Util.padString("", indentation, '\t', false) : "";
+      final StringBuilder stringBuilder = new StringBuilder();
+      if (isComplete()) {
+        stringBuilder.append(indentString).append(TIMESTAMP_FORMAT.get().format(accessTime)).append(" @ ").append(method).append(
+                !Util.nullOrEmpty(accessMessage) ? (": " + accessMessage) : "").append("\n");
+        stringBuilder.append(indentString).append(TIMESTAMP_FORMAT.get().format(exitTime)).append(" > ").append(getDelta()).append(" ms")
+                .append(exitMessage == null ? "" : " (" + exitMessage + ")");
+        if (stackTrace != null) {
+          stringBuilder.append("\n").append(stackTrace);
+        }
+      }
+      else {
+        stringBuilder.append(indentString).append(TIMESTAMP_FORMAT.get().format(accessTime)).append(" @ ").append(method).append(
+                !Util.nullOrEmpty(accessMessage) ? (": " + accessMessage) : "");
+      }
+
+      return stringBuilder.toString();
+    }
+
+    private void writeObject(final ObjectOutputStream stream) throws IOException {
+      stream.writeObject(method);
+      stream.writeObject(accessMessage);
+      stream.writeObject(exitMessage);
+      stream.writeLong(accessTime);
+      stream.writeLong(exitTime);
+      stream.writeLong(accessTimeNano);
+      stream.writeLong(exitTimeNano);
+      stream.writeObject(stackTrace);
+      stream.writeInt(subEntries.size());
+      for (final Entry subEntry : subEntries) {
+        stream.writeObject(subEntry);
+      }
+    }
+
+    private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
+      this.method = (String) stream.readObject();
+      this.accessMessage = (String) stream.readObject();
+      this.exitMessage = (String) stream.readObject();
+      this.accessTime = stream.readLong();
+      this.exitTime = stream.readLong();
+      this.accessTimeNano = stream.readLong();
+      this.exitTimeNano = stream.readLong();
+      this.stackTrace = (String) stream.readObject();
+      final int subLogSize = stream.readInt();
+      this.subEntries = new LinkedList<Entry>();
+      for (int i = 0; i < subLogSize; i++) {
+        this.subEntries.addLast((Entry) stream.readObject());
+      }
+    }
+
+    private static String getStackTrace(final Throwable exception) {
+      if (exception == null) {
+        return null;
+      }
+      final StringWriter sw = new StringWriter();
+      exception.printStackTrace(new PrintWriter(sw));
+
+      return sw.toString();
+    }
   }
 }

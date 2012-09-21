@@ -6,7 +6,6 @@ package org.jminor.common.db;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.tools.LogEntry;
 import org.jminor.common.model.tools.MethodLogger;
 
 import org.slf4j.Logger;
@@ -16,7 +15,6 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
-import java.util.List;
 
 /**
  * A default DatabaseConnection implementation, which wraps a standard JDBC Connection object.
@@ -35,10 +33,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   private long poolTime = -1;
   private int poolRetryCount = 0;
 
-  /**
-   * The object containing the method call log
-   */
-  private final MethodLogger methodLogger = new MethodLogger(100, true);
+  private MethodLogger methodLogger;
 
   /**
    * Constructs a new DatabaseConnectionImpl instance, initialized and ready for usage
@@ -108,14 +103,8 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
-  public final void setLoggingEnabled(final boolean enabled) {
-    methodLogger.setEnabled(enabled);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isLoggingEnabled() {
-    return methodLogger.isEnabled();
+  public final void setMethodLogger(final MethodLogger methodLogger) {
+    this.methodLogger = methodLogger;
   }
 
   /** {@inheritDoc} */
@@ -190,9 +179,9 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
 
     LOG.debug("{}: begin transaction;", user.getUsername());
-    methodLogger.logAccess("beginTransaction", new Object[0]);
+    logAccess("beginTransaction", new Object[0]);
     transactionOpen = true;
-    methodLogger.logExit("beginTransaction", null, null);
+    logExit("beginTransaction", null, null);
   }
 
   /** {@inheritDoc} */
@@ -205,7 +194,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       }
 
       LOG.debug("{}: rollback transaction;", user.getUsername());
-      methodLogger.logAccess("rollbackTransaction", new Object[0]);
+      logAccess("rollbackTransaction", new Object[0]);
       connection.rollback();
     }
     catch (SQLException e) {
@@ -213,7 +202,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
     finally {
       transactionOpen = false;
-      methodLogger.logExit("rollbackTransaction", exception, null);
+      logExit("rollbackTransaction", exception, null);
     }
   }
 
@@ -227,7 +216,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       }
 
       LOG.debug("{}: commit transaction;", user.getUsername());
-      methodLogger.logAccess("commitTransaction", new Object[0]);
+      logAccess("commitTransaction", new Object[0]);
       connection.commit();
     }
     catch (SQLException e) {
@@ -235,7 +224,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
     finally {
       transactionOpen = false;
-      methodLogger.logExit("commitTransaction", exception, null);
+      logExit("commitTransaction", exception, null);
     }
   }
 
@@ -253,7 +242,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
 
     LOG.debug("{}: commit;", user.getUsername());
-    methodLogger.logAccess("commit", new Object[0]);
+    logAccess("commit", new Object[0]);
     SQLException exception = null;
     try {
       connection.commit();
@@ -264,7 +253,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       throw e;
     }
     finally {
-      methodLogger.logExit("commit", exception, null);
+      logExit("commit", exception, null);
     }
   }
 
@@ -276,7 +265,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
 
     LOG.debug("{}: rollback;", user.getUsername());
-    methodLogger.logAccess("rollback", new Object[0]);
+    logAccess("rollback", new Object[0]);
     SQLException exception = null;
     try {
       connection.rollback();
@@ -287,20 +276,22 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       throw e;
     }
     finally {
-      methodLogger.logExit("rollback", exception, null);
+      logExit("rollback", exception, null);
     }
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final List<LogEntry> getLogEntries() {
-    return methodLogger.getLogEntries();
+  protected MethodLogger.Entry logExit(final String method, final Throwable exception, final String exitMessage) {
+    if (methodLogger != null) {
+      return methodLogger.logExit(method, exception, exitMessage);
+    }
+
+    return null;
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final MethodLogger getMethodLogger() {
-    return methodLogger;
+  protected void logAccess(final String method, final Object[] arguments) {
+    if (methodLogger != null) {
+      methodLogger.logAccess(method, arguments);
+    }
   }
 
   private void setConnection(final Connection connection) throws DatabaseException {

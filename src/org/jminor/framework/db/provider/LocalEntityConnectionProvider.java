@@ -8,7 +8,7 @@ import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.tools.LogEntry;
+import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionLogger;
 import org.jminor.framework.db.EntityConnections;
@@ -19,7 +19,6 @@ import org.slf4j.LoggerFactory;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.util.Arrays;
 import java.util.Properties;
 
 /**
@@ -109,22 +108,19 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   private static final class LocalConnectionHandler implements InvocationHandler {
     private final EntityConnection connection;
-    private final EntityConnectionLogger methodLogger = new EntityConnectionLogger();
+    private final MethodLogger methodLogger = new EntityConnectionLogger();
 
     private LocalConnectionHandler(final EntityConnection connection) {
       this.connection = connection;
+      this.connection.setMethodLogger(methodLogger);
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
+    public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       final String methodName = method.getName();
       Exception exception = null;
-      final boolean logMethod = methodLogger.isEnabled() && methodLogger.shouldMethodBeLogged(methodName);
-      connection.getDatabaseConnection().setLoggingEnabled(methodLogger.isEnabled());
       try {
-        if (logMethod) {
-          methodLogger.logAccess(methodName, args);
-        }
+        methodLogger.logAccess(methodName, args);
 
         return method.invoke(connection, args);
       }
@@ -133,15 +129,12 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
         throw exception;
       }
       finally {
-        if (logMethod) {
-          final LogEntry logEntry = methodLogger.logExit(methodName, exception, connection.getDatabaseConnection().getLogEntries());
-          if (methodLogger.isEnabled()) {
-            final StringBuilder messageBuilder = new StringBuilder(connection.getUser().toString()).append("\n");
-            EntityConnectionLogger.appendLogEntries(messageBuilder, Arrays.asList(logEntry), 1);
-            LOG.info(messageBuilder.toString());
-          }
+        final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
+        if (methodLogger.isEnabled()) {
+          final StringBuilder messageBuilder = new StringBuilder(connection.getUser().toString()).append("\n");
+          EntityConnectionLogger.appendLogEntry(messageBuilder, entry, 0);
+          LOG.info(messageBuilder.toString());
         }
-        connection.getDatabaseConnection().setLoggingEnabled(false);
       }
     }
   }

@@ -5,7 +5,6 @@ package org.jminor.common.db;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
-import org.jminor.common.model.tools.LogEntry;
 import org.jminor.common.model.tools.MethodLogger;
 
 import java.sql.Connection;
@@ -96,26 +95,6 @@ public interface DatabaseConnection {
   void disconnect();
 
   /**
-   * @return the log entries
-   */
-  List<LogEntry> getLogEntries();
-
-  /**
-   * @return the MethodLogger being used by this db connection
-   */
-  MethodLogger getMethodLogger();
-
-  /**
-   * @param enabled true to enable logging on this connection, false to disable
-   */
-  void setLoggingEnabled(final boolean enabled);
-
-  /**
-   * @return true if logging is enabled, false otherwise
-   */
-  boolean isLoggingEnabled();
-
-  /**
    * @return the connection user
    */
   User getUser();
@@ -124,6 +103,11 @@ public interface DatabaseConnection {
    * @return the database implementation this connection is based on
    */
   Database getDatabase();
+
+  /**
+   * @param methodLogger the MethodLogger to use
+   */
+  void setMethodLogger(final MethodLogger methodLogger);
 
   /**
    * A database operation

@@ -25,7 +25,6 @@ public class DatabaseConnectionImplTest {
   @Before
   public void before() throws Exception {
     dbConnection = new DatabaseConnectionImpl(DATABASE, User.UNIT_TEST_USER);
-    dbConnection.setLoggingEnabled(true);
   }
 
   @After
@@ -57,11 +56,6 @@ public class DatabaseConnectionImplTest {
     assertEquals(10, dbConnection.getPoolTime());
     dbConnection.setRetryCount(2);
     assertEquals(2, dbConnection.getRetryCount());
-  }
-
-  @Test
-  public void isLoggingEnabled() {
-    assertTrue(dbConnection.isLoggingEnabled());
   }
 
   @Test

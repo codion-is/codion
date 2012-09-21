@@ -5,7 +5,7 @@ package org.jminor.common.db;
 
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.tools.LogEntry;
+import org.jminor.common.model.tools.MethodLogger;
 
 import org.slf4j.Logger;
 
@@ -105,7 +105,7 @@ public final class DatabaseUtil {
   public static List query(final DatabaseConnection connection, final String sql, final ResultPacker resultPacker,
                            final int fetchCount, final Logger log) throws SQLException {
     Databases.QUERY_COUNTER.count(sql);
-    connection.getMethodLogger().logAccess("query", new Object[] {sql});
+//    connection.getMethodLogger().logAccess("query", new Object[] {sql});
     Statement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;
@@ -122,14 +122,14 @@ public final class DatabaseUtil {
     finally {
       closeSilently(statement);
       closeSilently(resultSet);
-      final LogEntry logEntry = connection.getMethodLogger().logExit("query", exception, null);
+//      final MethodLogger.Entry logEntry = connection.getMethodLogger().logExit("query", exception, null);
       if (log != null && log.isDebugEnabled()) {
-        log.debug(createLogMessage(connection.getUser(), sql, null, exception, logEntry));
+        log.debug(createLogMessage(connection.getUser(), sql, null, exception, null));
       }
     }
   }
 
-  public static String createLogMessage(final User user, final String sqlStatement, final List<?> values, final Exception exception, final LogEntry entry) {
+  public static String createLogMessage(final User user, final String sqlStatement, final List<?> values, final Exception exception, final MethodLogger.Entry entry) {
     final StringBuilder logMessage = new StringBuilder(user.toString()).append("\n");
     if (entry == null) {
       logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ").append(Util.getCollectionContentsAsString(values, false));

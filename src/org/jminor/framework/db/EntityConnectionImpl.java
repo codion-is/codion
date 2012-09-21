@@ -18,7 +18,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
-import org.jminor.common.model.tools.LogEntry;
+import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -422,7 +422,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   public synchronized List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
-      getMethodLogger().logAccess("executeFunction: " + functionID, arguments);
+      logAccess("executeFunction: " + functionID, arguments);
       if (isTransactionOpen()) {
         throw new DatabaseException("Can not execute a function within an open transaction");
       }
@@ -440,7 +440,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw e;
     }
     finally {
-      final LogEntry entry = getMethodLogger().logExit("executeFunction: " + functionID, exception, null);
+      final MethodLogger.Entry entry = logExit("executeFunction: " + functionID, exception, null);
       if (LOG.isDebugEnabled()) {
         LOG.debug(DatabaseUtil.createLogMessage(getUser(), "", arguments == null ? null : Arrays.asList(arguments), exception, entry));
       }
@@ -452,7 +452,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   public synchronized void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
-      getMethodLogger().logAccess("executeProcedure: " + procedureID, arguments);
+      logAccess("executeProcedure: " + procedureID, arguments);
       if (isTransactionOpen()) {
         throw new DatabaseException("Can not execute a procedure within an open transaction");
       }
@@ -468,7 +468,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw e;
     }
     finally {
-      final LogEntry entry = getMethodLogger().logExit("executeProcedure: " + procedureID, exception, null);
+      final MethodLogger.Entry entry = logExit("executeProcedure: " + procedureID, exception, null);
       if (LOG.isDebugEnabled()) {
         LOG.debug(DatabaseUtil.createLogMessage(getUser(), "", arguments == null ? null : Arrays.asList(arguments), exception, entry));
       }
@@ -480,10 +480,10 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   public synchronized ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
     ReportException exception = null;
     try {
-      getMethodLogger().logAccess("fillReport", new Object[]{reportWrapper.getReportName()});
+      logAccess("fillReport", new Object[]{reportWrapper.getReportName()});
       final ReportResult result = reportWrapper.fillReport(getConnection());
       if (!isTransactionOpen()) {
-        commitQuietly();//todo seems to mess up method logger, haven't exited last method
+        commitQuietly();
       }
 
       return result;
@@ -495,7 +495,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw e;
     }
     finally {
-      final LogEntry logEntry = getMethodLogger().logExit("fillReport", exception, null);
+      final MethodLogger.Entry logEntry = logExit("fillReport", exception, null);
       if (LOG.isDebugEnabled()) {
         LOG.debug(DatabaseUtil.createLogMessage(getUser(), null, Arrays.asList(reportWrapper.getReportName()), exception, logEntry));
       }
@@ -519,7 +519,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     final List<Object> values = new ArrayList<Object>();
     final List<Property.ColumnProperty> properties = new ArrayList<Property.ColumnProperty>();
     Databases.QUERY_COUNTER.count(sql);
-    getMethodLogger().logAccess("writeBlob", new Object[] {sql});
+    logAccess("writeBlob", new Object[]{sql});
     try {
       values.add(null);//the blob value, set explicitly later
       values.addAll(criteria.getValues());
@@ -542,7 +542,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     finally {
       Util.closeSilently(inputStream);
       DatabaseUtil.closeSilently(statement);
-      final LogEntry logEntry = getMethodLogger().logExit("writeBlob", exception, null);
+      final MethodLogger.Entry logEntry = logExit("writeBlob", exception, null);
       if (LOG.isDebugEnabled()) {
         LOG.debug(DatabaseUtil.createLogMessage(getUser(), sql, values, exception, logEntry));
       }
@@ -563,7 +563,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     final String sql = "select " + property.getColumnName() + " from " +
             Entities.getTableName(primaryKey.getEntityID()) + " " + criteria.getWhereClause();
     Databases.QUERY_COUNTER.count(sql);
-    getMethodLogger().logAccess("readBlob", new Object[] {sql});
+    logAccess("readBlob", new Object[]{sql});
     try {
       statement = getConnection().prepareStatement(sql);
       setParameterValues(statement, criteria.getValues(), criteria.getValueProperties());
@@ -585,7 +585,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     finally {
       DatabaseUtil.closeSilently(statement);
       DatabaseUtil.closeSilently(resultSet);
-      final LogEntry logEntry = getMethodLogger().logExit("readBlob", exception, null);
+      final MethodLogger.Entry logEntry = logExit("readBlob", exception, null);
       if (LOG.isDebugEnabled()) {
         LOG.debug(DatabaseUtil.createLogMessage(getUser(), sql, criteria.getValues(), exception, logEntry));
       }
@@ -692,7 +692,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       List<Entity> result = null;
       SQLException packingException = null;
       try {
-        getMethodLogger().logAccess("packResult", new Object[0]);
+        logAccess("packResult", new Object[0]);
         result = getEntityResultPacker(criteria.getEntityID()).pack(resultSet, criteria.getFetchCount());
       }
       catch (SQLException e) {
@@ -701,7 +701,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       }
       finally {
         final String message = result != null ? "row count: " + result.size() : "";
-        getMethodLogger().logExit("packResult", packingException, null, message);
+        logExit("packResult", packingException, message);
       }
       setForeignKeyValues(result, criteria, currentForeignKeyFetchDepth);
 
@@ -785,7 +785,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     SQLException exception = null;
     try {
       Databases.QUERY_COUNTER.count(sqlStatement);
-      getMethodLogger().logAccess("executePreparedUpdate", new Object[] {sqlStatement, values});
+      logAccess("executePreparedUpdate", new Object[]{sqlStatement, values});
       setParameterValues(statement, values, properties);
       statement.executeUpdate();
     }
@@ -794,7 +794,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw e;
     }
     finally {
-      final LogEntry entry = getMethodLogger().logExit("executePreparedUpdate", exception, null);
+      final MethodLogger.Entry entry = logExit("executePreparedUpdate", exception, null);
       if (LOG.isDebugEnabled()) {
         LOG.debug(DatabaseUtil.createLogMessage(getUser(), sqlStatement, values, exception, entry));
       }
@@ -806,7 +806,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     SQLException exception = null;
     try {
       Databases.QUERY_COUNTER.count(sqlStatement);
-      getMethodLogger().logAccess("executePreparedSelect", values == null ? new Object[] {sqlStatement} : new Object[] {sqlStatement, values});
+      logAccess("executePreparedSelect", values == null ? new Object[]{sqlStatement} : new Object[]{sqlStatement, values});
       setParameterValues(statement, values, properties);
       return statement.executeQuery();
     }
@@ -815,7 +815,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       throw e;
     }
     finally {
-      final LogEntry entry = getMethodLogger().logExit("executePreparedSelect", exception, null);
+      final MethodLogger.Entry entry = logExit("executePreparedSelect", exception, null);
       if (LOG.isDebugEnabled()) {
         LOG.debug(DatabaseUtil.createLogMessage(getUser(), sqlStatement, values, exception, entry));
       }

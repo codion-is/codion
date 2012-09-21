@@ -4,7 +4,6 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.model.Util;
-import org.jminor.common.model.tools.LogEntry;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteria;
@@ -13,7 +12,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.util.Collection;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -23,7 +21,6 @@ public final class EntityConnectionLogger extends MethodLogger {
 
   private static final String IS_CONNECTED = "isConnected";
   private static final String CONNECTION_VALID = "isValid";
-  private static final String GET_ACTIVE_USER = "getActiveUser";
 
   /**
    * Instatiates a new EntityConnectionLogger
@@ -33,30 +30,42 @@ public final class EntityConnectionLogger extends MethodLogger {
   }
 
   /**
-   * @param methodName the method name
-   * @return true if this method logger should log the given method
+   * Appends  the given log entries to the log
+   * @param log the log
+   * @param entry the log entry to append
+   * @param indentation the indentation to use for the given log entries
    */
-  public boolean shouldMethodBeLogged(final String methodName) {
-    return !(methodName.equals(IS_CONNECTED) || methodName.equals(CONNECTION_VALID) || methodName.equals(GET_ACTIVE_USER));
+  public static void appendLogEntry(final StringBuilder log, final Entry entry, final int indentation) {
+    if (entry != null) {
+      log.append(entry.toString(indentation)).append("\n");
+      final List<Entry> subLog = entry.getSubLog();
+      appendLogEntries(log, subLog, indentation + 1);
+    }
   }
 
   /**
    * Appends  the given log entries to the log
    * @param log the log
-   * @param logEntries the log entries to append
+   * @param logger the log containing the entries to append
    * @param indentation the indentation to use for the given log entries
    */
-  public static void appendLogEntries(final StringBuilder log, final List<LogEntry> logEntries, final int indentation) {
-    if (!Util.nullOrEmpty(logEntries)) {
-      Collections.sort(logEntries);
-      for (final LogEntry logEntry : logEntries) {
+  public static void appendLogEntries(final StringBuilder log, final List<Entry> logger, final int indentation) {
+    if (logger != null) {
+      for (final MethodLogger.Entry logEntry : logger) {
         log.append(logEntry.toString(indentation)).append("\n");
-        final List<LogEntry> subLog = logEntry.getSubLog();
-        if (subLog != null) {
-          appendLogEntries(log, subLog, indentation + 1);
-        }
+        final List<Entry> subLog = logEntry.getSubLog();
+        appendLogEntries(log, subLog, indentation + 1);
       }
     }
+  }
+
+  /**
+   * @param methodName the method name
+   * @return true if this method logger should log the given method
+   */
+  @Override
+  protected boolean shouldMethodBeLogged(final String methodName) {
+    return !(methodName.equals(IS_CONNECTED) || methodName.equals(CONNECTION_VALID));
   }
 
   /** {@inheritDoc} */

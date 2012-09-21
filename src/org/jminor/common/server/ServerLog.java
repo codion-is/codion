@@ -3,14 +3,9 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.model.tools.LogEntry;
+import org.jminor.common.model.tools.MethodLogger;
 
 import java.io.Serializable;
-import java.text.DateFormat;
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 /**
@@ -21,46 +16,26 @@ public final class ServerLog implements Serializable {
   private static final long serialVersionUID = 1;
 
   private final long logCreationDate = System.currentTimeMillis();
-  private final List<LogEntry> log;
   private final UUID clientID;
-  private final long lastAccessDate;
-  private final long lastExitDate;
-  private final String lastAccessedMethod;
-  private final String lastAccessMessage;
-  private final String lastExitedMethod;
   private final long connectionCreationDate;
-
-  private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);
+  private final MethodLogger logger;
 
   /**
    * Instantiates a new ServerLog instance.
    * @param clientID the ID of the client this log represents
    * @param connectionCreationDate the date this client connection was created
-   * @param log the log entries
-   * @param lastAccessDate the last access date
-   * @param lastExitDate the last exit date
-   * @param lastAccessedMethod the last accessed method
-   * @param lastAccessedMessage the last access message
-   * @param lastExitedMethod the last exited method
    */
-  public ServerLog(final UUID clientID, final long connectionCreationDate, final List<LogEntry> log,
-                   final long lastAccessDate, final long lastExitDate, final String lastAccessedMethod,
-                   final String lastAccessedMessage, final String lastExitedMethod) {
+  public ServerLog(final UUID clientID, final long connectionCreationDate, final MethodLogger logger) {
     this.clientID = clientID;
     this.connectionCreationDate = connectionCreationDate;
-    this.log = log == null ? new ArrayList<LogEntry>(0) : log;
-    this.lastAccessDate = lastAccessDate;
-    this.lastExitDate = lastExitDate;
-    this.lastAccessedMethod = lastAccessedMethod;
-    this.lastAccessMessage = lastAccessedMessage;
-    this.lastExitedMethod = lastExitedMethod;
+    this.logger = logger;
   }
 
   /**
    * @return the log entry list
    */
-  public List<LogEntry> getLog() {
-    return log;
+  public MethodLogger getLogger() {
+    return logger;
   }
 
   /**
@@ -83,68 +58,11 @@ public final class ServerLog implements Serializable {
   public long getConnectionCreationDate() {
     return connectionCreationDate;
   }
-
-  /**
-   * @return the name of the last exited method
-   */
-  public String getLastExitedMethod() {
-    return lastExitedMethod;
-  }
-
-  /**
-   * @return the name of the last accessed method
-   */
-  public String getLastAccessedMethod() {
-    return lastAccessedMethod;
-  }
-
-  /**
-   * @return the message from the last access
-   */
-  public String getLastAccessMessage() {
-    return lastAccessMessage;
-  }
-
-  /**
-   * @return the last access date
-   */
-  public long getLastAccessDate() {
-    return lastAccessDate;
-  }
-
-  /**
-   * @return the last exit date
-   */
-  public long getLastExitDate() {
-    return lastExitDate;
-  }
-
-  /**
-   * @return the time since last access
-   */
-  public long getTimeSinceLastAccess() {
-    return System.currentTimeMillis() - lastAccessDate;
-  }
-
   /**
    * @return the duration of the last method call
    */
   public long getLastDelta() {
-    return lastExitDate - lastAccessDate;
-  }
-
-  /**
-   * @return a formatted last access date
-   */
-  public String getLastAccessDateFormatted() {
-    return TIMESTAMP_FORMAT.get().format(lastAccessDate);
-  }
-
-  /**
-   * @return a formatted last exit date
-   */
-  public String getLastExitDateFormatted() {
-    return TIMESTAMP_FORMAT.get().format(lastExitDate);
+    return logger.getLastExitTime() - logger.getLastAccessTime();
   }
 
   /** {@inheritDoc} */

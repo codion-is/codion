@@ -16,13 +16,13 @@
                 test->master;
                 runtime.client->master;
                 runtime.server->master"/>
-    <dependency org="commons-beanutils" name="commons-beanutils-core" rev="1.8.0" transitive="false"
+    <dependency org="commons-beanutils" name="commons-beanutils" rev="1.8.0" transitive="false"
                 conf="
                 build->master;
                 test->master;
                 runtime.client->master;
                 runtime.server->master"/>
-    <dependency org="commons-collections" name="commons-collections" rev="2.1.1" transitive="false"
+    <dependency org="commons-collections" name="commons-collections" rev="2.1" transitive="false"
                 conf="
                 build->master;
                 test->master;
@@ -34,13 +34,13 @@
                 test->master;
                 runtime.client->master;
                 runtime.server->master"/>
-    <dependency org="commons-logging" name="commons-logging" rev="1.0.4" transitive="false"
+    <dependency org="commons-logging" name="commons-logging" rev="1.0.2" transitive="false"
                 conf="
                 build->master;
                 test->master;
                 runtime.client->master;
                 runtime.server->master"/>
-    <dependency org="org.eclipse.jdt.core.compiler" name="ecj" rev="3.7.2" transitive="false"
+    <dependency org="eclipse" name="jdtcore" rev="3.1.0" transitive="false"
                 conf="
                 build->master"/>
 
@@ -94,7 +94,7 @@
                 build->master;
                 test->master;
                 runtime.client->master"/>
-    <dependency org="org.apache.tomcat" name="servlet-api" rev="6.0.29" transitive="false"
+    <dependency org="javax.servlet" name="servlet-api" rev="2.3" transitive="false"
                 conf="
                 build->master;
                 test->master;

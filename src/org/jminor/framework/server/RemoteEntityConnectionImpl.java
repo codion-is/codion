@@ -18,7 +18,6 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
-import org.jminor.common.model.tools.LogEntry;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerLog;
@@ -44,7 +43,6 @@ import java.rmi.server.RMISocketFactory;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -180,6 +178,12 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
 
   /** {@inheritDoc} */
   @Override
+  public void setMethodLogger(final MethodLogger methodLogger) throws RemoteException{
+    throw new UnsupportedOperationException("setMethodLogger is not supported on remote connections");
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public synchronized boolean isConnected() throws RemoteException {
     return connected;
   }
@@ -202,7 +206,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
       if (localEntityConnection.isTransactionOpen()) {
         localEntityConnection.rollbackTransaction();
       }
-      returnConnection(false);
+      returnConnection();
     }
     evtDisconnected.fire();
   }
@@ -371,16 +375,9 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
    * @see org.jminor.framework.Configuration#SERVER_CONNECTION_LOG_SIZE
    */
   ServerLog getServerLog() {
-    return new ServerLog(clientInfo.getClientID(), creationDate, methodLogger.getLogEntries(),
-            methodLogger.getLastAccessDate(), methodLogger.getLastExitDate(), methodLogger.getLastAccessedMethod(),
-            methodLogger.getLastAccessMessage(), methodLogger.getLastExitedMethod());
-  }
-
-  /**
-   * @return the object containing the method call log
-   */
-  MethodLogger getMethodLogger() {
-    return methodLogger;
+    synchronized (methodLogger) {
+      return new ServerLog(clientInfo.getClientID(), creationDate, methodLogger);
+    }
   }
 
   /**
@@ -388,7 +385,15 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
    * @return true if this connection has been inactive for <code>timeout</code> milliseconds or longer
    */
   boolean hasBeenInactive(final int timeout) {
-    return System.currentTimeMillis() - methodLogger.getLastAccessDate() > timeout;
+    return System.currentTimeMillis() - methodLogger.getLastAccessTime() > timeout;
+  }
+
+  void setLoggingEnabled(final boolean status) {
+    methodLogger.setEnabled(status);
+  }
+
+  boolean isLoggingEnabled() {
+    return methodLogger.isEnabled();
   }
 
   /**
@@ -448,7 +453,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
         if (localEntityConnection.isTransactionOpen()) {
           localEntityConnection.rollbackTransaction();
         }
-        returnConnection(false);
+        returnConnection();
       }
       else {
         localEntityConnection.disconnect();
@@ -457,12 +462,10 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     }
   }
 
-  private EntityConnection getConnection(final boolean logMethod) throws DatabaseException {
+  private EntityConnection getConnection() throws DatabaseException {
     Exception exception = null;
     try {
-      if (logMethod) {
-        methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
-      }
+      methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
       final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(clientInfo.getDatabaseUser());
       final boolean poolEnabled = connectionPool != null && connectionPool.isEnabled();
       if (localEntityConnection != null) {//pool not enabled or a transaction is open
@@ -474,6 +477,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
         else if (!localEntityConnection.isValid()) {//dead connection, no pool
           localEntityConnection.disconnect();
           localEntityConnection = EntityConnections.createConnection(database, clientInfo.getDatabaseUser());
+          localEntityConnection.setMethodLogger(methodLogger);
         }
 
         return localEntityConnection;
@@ -482,9 +486,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
         throw new DatabaseException("No connection pool available or enabled for user: " + clientInfo.getDatabaseUser());
       }
       localEntityConnection = (EntityConnection) connectionPool.getConnection();
-      if (methodLogger.isEnabled()) {
-        localEntityConnection.getDatabaseConnection().setLoggingEnabled(methodLogger.isEnabled());
-      }
+      localEntityConnection.setMethodLogger(methodLogger);
 
       return localEntityConnection;
     }
@@ -493,22 +495,19 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
       throw ex;
     }
     finally {
-      if (logMethod) {
-        String message = null;
-        if (localEntityConnection != null && localEntityConnection.getDatabaseConnection().getRetryCount() > 0) {
-          message = "retries: " + localEntityConnection.getDatabaseConnection().getRetryCount();
-        }
-        methodLogger.logExit(GET_CONNECTION, exception, null, message);
+      String message = null;
+      if (localEntityConnection != null && localEntityConnection.getDatabaseConnection().getRetryCount() > 0) {
+        message = "retries: " + localEntityConnection.getDatabaseConnection().getRetryCount();
       }
+      methodLogger.logExit(GET_CONNECTION, exception, message);
     }
   }
 
   /**
    * Returns the local connection to a connection pool if one is available and the connection
    * is not within an open transaction
-   * @param logMethod if true then this method call is logged with the method logger
    */
-  private void returnConnection(final boolean logMethod) {
+  private void returnConnection() {
     if (localEntityConnection == null || localEntityConnection.isTransactionOpen()) {
       return;
     }
@@ -516,20 +515,13 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     final boolean poolEnabled = connectionPool != null && connectionPool.isEnabled();
     if (poolEnabled) {
       try {
-        if (logMethod) {
-          methodLogger.logAccess(RETURN_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
-        }
-        if (methodLogger.isEnabled()) {
-          //we turned logging on when we fetched the connection, turn it off again
-          localEntityConnection.getDatabaseConnection().setLoggingEnabled(false);
-        }
+        methodLogger.logAccess(RETURN_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
+        localEntityConnection.setMethodLogger(null);
         connectionPool.returnConnection(localEntityConnection.getDatabaseConnection());
         localEntityConnection = null;
       }
       finally {
-        if (logMethod) {
-          methodLogger.logExit(RETURN_CONNECTION, null, null);
-        }
+        methodLogger.logExit(RETURN_CONNECTION, null, null);
       }
     }
   }
@@ -562,18 +554,16 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       final String methodName = method.getName();
       Exception exception = null;
-      final boolean logMethod = methodLogger.isEnabled() && methodLogger.shouldMethodBeLogged(methodName);
       final long startTime = System.currentTimeMillis();
       try {
         MDC.put(LOG_IDENTIFIER_PROPERTY, remoteEntityConnection.logIdentifier);
         remoteEntityConnection.setActive();
         RequestCounter.incrementRequestsPerSecondCounter();
-        remoteEntityConnection.getConnection(logMethod);
-        if (logMethod) {
-          methodLogger.logAccess(methodName, args);
-        }
+        methodLogger.logAccess(methodName, args);
 
-        return method.invoke(remoteEntityConnection.localEntityConnection, args);
+        final EntityConnection connection = remoteEntityConnection.getConnection();
+
+        return method.invoke(connection, args);
       }
       catch (Exception e) {
         exception = Util.unwrapAndLog(e, InvocationTargetException.class, LOG,
@@ -586,16 +576,13 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
         if (currentTime - startTime > RequestCounter.warningThreshold) {
           RequestCounter.incrementWarningTimeExceededCounter();
         }
-        if (logMethod) {
-          final LogEntry logEntry = methodLogger.logExit(methodName, exception, remoteEntityConnection.localEntityConnection != null
-                  ? remoteEntityConnection.localEntityConnection.getDatabaseConnection().getLogEntries() : null);
-          if (methodLogger.isEnabled()) {
-            final StringBuilder messageBuilder = new StringBuilder(remoteEntityConnection.getClientInfo().toString()).append("\n");
-            EntityConnectionLogger.appendLogEntries(messageBuilder, Arrays.asList(logEntry), 1);
-            LOG.info(messageBuilder.toString());
-          }
+        remoteEntityConnection.returnConnection();
+        final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
+        if (methodLogger.isEnabled()) {
+          final StringBuilder messageBuilder = new StringBuilder(remoteEntityConnection.getClientInfo().toString()).append("\n");
+          EntityConnectionLogger.appendLogEntry(messageBuilder, entry, 0);
+          LOG.info(messageBuilder.toString());
         }
-        remoteEntityConnection.returnConnection(logMethod);
         MDC.remove(LOG_IDENTIFIER_PROPERTY);
       }
     }

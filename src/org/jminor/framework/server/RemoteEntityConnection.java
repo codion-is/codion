@@ -9,6 +9,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
+import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
@@ -23,6 +24,11 @@ import java.util.Map;
  * An interface specifying a remote EntityConnection implementation.
  */
 public interface RemoteEntityConnection extends Remote {
+
+  /**
+   * @throws UnsupportedOperationException always
+   */
+  void setMethodLogger(final MethodLogger methodLogger) throws RemoteException;
 
   /**
    * @return the user being used by this connection

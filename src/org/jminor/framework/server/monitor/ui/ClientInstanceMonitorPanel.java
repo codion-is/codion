@@ -4,11 +4,11 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.model.tools.LogEntry;
 import org.jminor.common.server.ServerLog;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
+import org.jminor.framework.db.EntityConnectionLogger;
 import org.jminor.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.BorderFactory;
@@ -21,9 +21,7 @@ import javax.swing.JTextField;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
-import java.util.Collections;
 import java.util.Date;
-import java.util.List;
 
 /**
  * A ClientInstanceMonitorPanel
@@ -62,8 +60,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     if (model != null) {
       final ServerLog serverLog = model.getLog();
       if (serverLog != null) {
-        final List<LogEntry> logEntries = serverLog.getLog();
-        appendLogEntries(log, logEntries, 0);
+        EntityConnectionLogger.appendLogEntries(log, serverLog.getLogger().getEntries(), 0);
       }
       else {
         log.append("Disconnected!");
@@ -109,16 +106,5 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     scrollPane.setBorder(BorderFactory.createTitledBorder("Connection log"));
 
     add(scrollPane, BorderLayout.CENTER);
-  }
-
-  private static void appendLogEntries(final StringBuilder log, final List<LogEntry> logEntries, final int indentation) {
-    Collections.sort(logEntries);
-    for (final LogEntry logEntry : logEntries) {
-      log.append(logEntry.toString(indentation)).append("\n");
-      final List<LogEntry> subLog = logEntry.getSubLog();
-      if (subLog != null) {
-        appendLogEntries(log, subLog, indentation + 1);
-      }
-    }
   }
 }

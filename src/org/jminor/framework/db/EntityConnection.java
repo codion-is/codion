@@ -9,6 +9,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
+import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
@@ -21,6 +22,11 @@ import java.util.Map;
  * Defines the database methods the database layer offers.
  */
 public interface EntityConnection {
+
+  /**
+   * @param methodLogger the MethodLogger to use
+   */
+  void setMethodLogger(final MethodLogger methodLogger);
 
   /**
    * @return the user being used by this connection
