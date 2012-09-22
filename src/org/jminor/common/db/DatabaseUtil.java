@@ -105,7 +105,6 @@ public final class DatabaseUtil {
   public static List query(final DatabaseConnection connection, final String sql, final ResultPacker resultPacker,
                            final int fetchCount, final Logger log) throws SQLException {
     Databases.QUERY_COUNTER.count(sql);
-//    connection.getMethodLogger().logAccess("query", new Object[] {sql});
     Statement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;
@@ -122,7 +121,6 @@ public final class DatabaseUtil {
     finally {
       closeSilently(statement);
       closeSilently(resultSet);
-//      final MethodLogger.Entry logEntry = connection.getMethodLogger().logExit("query", exception, null);
       if (log != null && log.isDebugEnabled()) {
         log.debug(createLogMessage(connection.getUser(), sql, null, exception, null));
       }

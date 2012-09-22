@@ -3242,3 +3242,4 @@
   Renamed ivy runtime configurations
   MethodLogger refactored and improved
   LogEntry removed
+  MethodLogger synchronized, enable/disable implemented

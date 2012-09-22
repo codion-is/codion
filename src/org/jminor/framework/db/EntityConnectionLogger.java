@@ -19,6 +19,8 @@ import java.util.List;
  */
 public final class EntityConnectionLogger extends MethodLogger {
 
+  private static final long serialVersionUID = 1;
+
   private static final String IS_CONNECTED = "isConnected";
   private static final String CONNECTION_VALID = "isValid";
 

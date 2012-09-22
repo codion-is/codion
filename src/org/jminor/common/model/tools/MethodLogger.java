@@ -26,7 +26,7 @@ public class MethodLogger implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private transient final Stack<Entry> callStack = new Stack<Entry>();
+  private final transient Stack<Entry> callStack = new Stack<Entry>();
   private LinkedList<Entry> entries = new LinkedList<Entry>();
   private int maxSize;
   private boolean enabled = false;
@@ -65,13 +65,17 @@ public class MethodLogger implements Serializable {
    * @param method the method being accessed
    * @param arguments the method arguments
    */
-  public final void logAccess(final String method, final Object[] arguments) {
+  public final synchronized void logAccess(final String method, final Object[] arguments) {
     if (shouldMethodBeLogged(method)) {
-      final Entry entry = new Entry(method, argumentArrayToString(arguments));
-      lastAccessTime = entry.getAccessTime();
-      lastAccessedMethod = method;
-      lastAccessMessage = entry.getAccessMessage();
-      callStack.push(entry);
+      final String accessMessage = argumentArrayToString(arguments);
+      if (enabled) {
+        final Entry entry = new Entry(method, accessMessage);
+        setLastAccessInfo(method, entry.getAccessTime(), entry.getAccessMessage());
+        callStack.push(entry);
+      }
+      else {
+        setLastAccessInfo(method, System.currentTimeMillis(), accessMessage);
+      }
     }
   }
 
@@ -98,31 +102,35 @@ public class MethodLogger implements Serializable {
    * @param exitMessage the message to associate with exiting the method
    * @return the Entry
    */
-  public final Entry logExit(final String method, final Throwable exception, final String exitMessage) {
+  public final synchronized Entry logExit(final String method, final Throwable exception, final String exitMessage) {
     if (shouldMethodBeLogged(method)) {
-      if (callStack.isEmpty()) {
-        throw new IllegalStateException("Call stack is empty when trying to log method exit");
-      }
-      final Entry entry = callStack.pop();
-      if (!entry.getMethod().equals(method)) {
-        throw new IllegalStateException("Expecting method " + entry.getMethod() + " but got " + method + " when trying to log method exit");
-      }
-      entry.setExitTime();
-      entry.setException(exception);
-      entry.setExitMessage(exitMessage);
-      lastExitedMethod = method;
-      lastExitTime = entry.getExitTime();
-      if (callStack.empty()) {
-        if (entries.size() == maxSize) {
-          entries.removeFirst();
+      if (enabled) {
+        if (callStack.isEmpty()) {
+          throw new IllegalStateException("Call stack is empty when trying to log method exit");
         }
-        entries.addLast(entry);
+        final Entry entry = callStack.pop();
+        if (!entry.getMethod().equals(method)) {
+          throw new IllegalStateException("Expecting method " + entry.getMethod() + " but got " + method + " when trying to log method exit");
+        }
+        entry.setExitTime();
+        entry.setException(exception);
+        entry.setExitMessage(exitMessage);
+        setLastExitInfo(method, entry.getExitTime());
+        if (callStack.empty()) {
+          if (entries.size() == maxSize) {
+            entries.removeFirst();
+          }
+          entries.addLast(entry);
+        }
+        else {
+          callStack.peek().addSubEntry(entry);
+        }
+
+        return entry;
       }
       else {
-        callStack.peek().addSubEntry(entry);
+        setLastExitInfo(method, System.currentTimeMillis());
       }
-
-      return entry;
     }
 
     return null;
@@ -131,21 +139,25 @@ public class MethodLogger implements Serializable {
   /**
    * @return true if this logger is enabled
    */
-  public final boolean isEnabled() {//todo put this to use
+  public final synchronized boolean isEnabled() {
     return enabled;
   }
 
   /**
    * @param enabled true to enable this logger
    */
-  public final void setEnabled(final boolean enabled) {
+  public final synchronized void setEnabled(final boolean enabled) {
     this.enabled = enabled;
+    if (!enabled) {
+      entries.clear();
+      callStack.clear();
+    }
   }
 
   /**
    * @return the number of log entries
    */
-  public final int size() {
+  public final synchronized int size() {
     return entries.size();
   }
 
@@ -153,21 +165,21 @@ public class MethodLogger implements Serializable {
    * @param index the index
    * @return the entry at the given index
    */
-  public final Entry getEntryAt(final int index) {
+  public final synchronized Entry getEntryAt(final int index) {
     return entries.get(index);
   }
 
   /**
    * @return the last log entry
    */
-  public final Entry getLastEntry() {
+  public final synchronized Entry getLastEntry() {
     return entries.getLast();
   }
 
   /**
    * @return the first log entry
    */
-  public final Entry getFirstEntry() {
+  public final synchronized Entry getFirstEntry() {
     return entries.getFirst();
   }
 
@@ -209,7 +221,7 @@ public class MethodLogger implements Serializable {
   /**
    * @return an unmodifiable view of the log entries
    */
-  public final List<Entry> getEntries() {//todo synchronize
+  public final synchronized List<Entry> getEntries() {
     return Collections.unmodifiableList(entries);
   }
 
@@ -245,6 +257,17 @@ public class MethodLogger implements Serializable {
     }
 
     return stringBuilder.toString();
+  }
+
+  private void setLastAccessInfo(final String method, final long accessTime, final String accessMessage) {
+    lastAccessTime = accessTime;
+    lastAccessedMethod = method;
+    lastAccessMessage = accessMessage;
+  }
+
+  private void setLastExitInfo(final String method, final long exitTime) {
+    lastExitedMethod = method;
+    lastExitTime = exitTime;
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -331,6 +354,10 @@ public class MethodLogger implements Serializable {
       return Collections.unmodifiableList(subEntries);
     }
 
+    /**
+     * Adds a sub entry to this log entry
+     * @param subEntry the sub entry to add
+     */
     public void addSubEntry(final Entry subEntry) {
       this.subEntries.addLast(subEntry);
     }
@@ -475,8 +502,8 @@ public class MethodLogger implements Serializable {
       this.accessTimeNano = stream.readLong();
       this.exitTimeNano = stream.readLong();
       this.stackTrace = (String) stream.readObject();
-      final int subLogSize = stream.readInt();
       this.subEntries = new LinkedList<Entry>();
+      final int subLogSize = stream.readInt();
       for (int i = 0; i < subLogSize; i++) {
         this.subEntries.addLast((Entry) stream.readObject());
       }

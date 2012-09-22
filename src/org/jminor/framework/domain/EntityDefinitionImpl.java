@@ -809,7 +809,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
       this.query = query;
     }
 
-    protected String getQuery() {
+    protected final String getQuery() {
       return query;
     }
   }
