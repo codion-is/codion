@@ -7,7 +7,8 @@ import org.jminor.common.model.Item;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
-import java.io.Serializable;
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.DateFormat;
@@ -23,9 +24,7 @@ import java.util.Map;
 /**
  * A default Property implementation
  */
-class PropertyImpl implements Property, Serializable {
-
-  private static final long serialVersionUID = 1;
+class PropertyImpl implements Property {
 
   /**
    * The ID of the entity this property is associated with
@@ -499,7 +498,6 @@ class PropertyImpl implements Property, Serializable {
         return Boolean.class;
       case Types.CHAR:
         return Character.class;
-
       default:
         return Object.class;
     }
@@ -507,9 +505,8 @@ class PropertyImpl implements Property, Serializable {
 
   static class ColumnPropertyImpl extends PropertyImpl implements ColumnProperty {
 
-    private static final long serialVersionUID = 1;
-
     private final String columnName;
+    private transient final PropertyValueFetcher valueFetcher;
     private int selectIndex;
     private boolean columnHasDefaultValue = false;
     private boolean updatable = true;
@@ -521,6 +518,7 @@ class PropertyImpl implements Property, Serializable {
     ColumnPropertyImpl(final String propertyID, final int type, final String caption) {
       super(propertyID, type, caption);
       this.columnName = propertyID;
+      this.valueFetcher = initializeValueFetcher(this);
     }
 
     /** {@inheritDoc} */
@@ -666,11 +664,141 @@ class PropertyImpl implements Property, Serializable {
 
       return superCaption;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object fetchValue(final ResultSet resultSet) throws SQLException {
+      return valueFetcher.fetchValue(resultSet);
+    }
+
+    private static PropertyValueFetcher initializeValueFetcher(final ColumnProperty property) {
+      switch (property.getType()) {
+        case Types.INTEGER:
+          return new PropertyValueFetcher() {
+            /** {@inheritDoc} */
+            @Override
+            public Object fetchValue(final ResultSet resultSet) throws SQLException {
+              return getInteger(resultSet, property.getSelectIndex());
+            }
+          };
+        case Types.DOUBLE:
+          return new PropertyValueFetcher() {
+            /** {@inheritDoc} */
+            @Override
+            public Object fetchValue(final ResultSet resultSet) throws SQLException {
+              return getDouble(resultSet, property.getSelectIndex());
+            }
+          };
+        case Types.DATE:
+          return new PropertyValueFetcher() {
+            /** {@inheritDoc} */
+            @Override
+            public Object fetchValue(final ResultSet resultSet) throws SQLException {
+              return getDate(resultSet, property.getSelectIndex());
+            }
+          };
+        case Types.TIMESTAMP:
+          return new PropertyValueFetcher() {
+            /** {@inheritDoc} */
+            @Override
+            public Object fetchValue(final ResultSet resultSet) throws SQLException {
+              return getTimestamp(resultSet, property.getSelectIndex());
+            }
+          };
+        case Types.VARCHAR:
+          return new PropertyValueFetcher() {
+            /** {@inheritDoc} */
+            @Override
+            public Object fetchValue(final ResultSet resultSet) throws SQLException {
+              return getString(resultSet, property.getSelectIndex());
+            }
+          };
+        case Types.BOOLEAN:
+          return new PropertyValueFetcher() {
+            /** {@inheritDoc} */
+            @Override
+            public Object fetchValue(final ResultSet resultSet) throws SQLException {
+              return getBoolean(property, resultSet);
+            }
+          };
+        case Types.CHAR:
+          return new PropertyValueFetcher() {
+            /** {@inheritDoc} */
+            @Override
+            public Object fetchValue(final ResultSet resultSet) throws SQLException {
+              return getCharacter(resultSet, property.getSelectIndex());
+            }
+          };
+        case Types.BLOB:
+          return new PropertyValueFetcher() {
+            /** {@inheritDoc} */
+            @Override
+            public Object fetchValue(final ResultSet resultSet) throws SQLException {
+              return null;//blob columns are handled specifically
+            }
+          };
+      }
+
+      throw new IllegalArgumentException("Unsupported value type: " + property.getType());
+    }
+
+    private static Boolean getBoolean(final ColumnProperty property, final ResultSet resultSet) throws SQLException {
+      if (property instanceof Property.BooleanProperty) {
+        final Object value = resultSet.getObject(property.getSelectIndex());
+        return ((Property.BooleanProperty) property).toBoolean(value);
+      }
+      else {
+        final Integer result = getInteger(resultSet, property.getSelectIndex());
+        if (result == null) {
+          return null;
+        }
+
+        switch (result) {
+          case 0: return false;
+          case 1: return true;
+          default: return null;
+        }
+      }
+    }
+
+    private static Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      final int value = resultSet.getInt(columnIndex);
+
+      return resultSet.wasNull() ? null : value;
+    }
+
+    private static Double getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      final double value = resultSet.getDouble(columnIndex);
+
+      return resultSet.wasNull() ? null : value;
+    }
+
+    private static String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      final String string = resultSet.getString(columnIndex);
+
+      return resultSet.wasNull() ? null : string;
+    }
+
+    private static java.util.Date getDate(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      return resultSet.getDate(columnIndex);
+    }
+
+    private static Timestamp getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      return resultSet.getTimestamp(columnIndex);
+    }
+
+    private static Character getCharacter(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      final String val = getString(resultSet, columnIndex);
+      if (!Util.nullOrEmpty(val)) {
+        return val.charAt(0);
+      }
+      else {
+        return null;
+      }
+    }
   }
 
   static class PrimaryKeyPropertyImpl extends ColumnPropertyImpl implements PrimaryKeyProperty {
-
-    private static final long serialVersionUID = 1;
 
     private int index = 0;
 
@@ -697,8 +825,6 @@ class PropertyImpl implements Property, Serializable {
   }
 
   static class ForeignKeyPropertyImpl extends PropertyImpl implements Property.ForeignKeyProperty {
-
-    private static final long serialVersionUID = 1;
 
     private final String referencedEntityID;
     private final List<ColumnProperty> referenceProperties;
@@ -829,8 +955,6 @@ class PropertyImpl implements Property, Serializable {
 
   static class MirrorPropertyImpl extends ColumnPropertyImpl implements MirrorProperty {
 
-    private static final long serialVersionUID = 1;
-
     MirrorPropertyImpl(final String propertyID) {
       super(propertyID, -1, null);
     }
@@ -840,8 +964,6 @@ class PropertyImpl implements Property, Serializable {
    * A property representing a column that should get its value automatically from a column in a referenced table
    */
   static class DenormalizedPropertyImpl extends ColumnPropertyImpl implements DenormalizedProperty {
-
-    private static final long serialVersionUID = 1;
 
     private final String foreignKeyPropertyID;
     private final Property denormalizedProperty;
@@ -880,8 +1002,6 @@ class PropertyImpl implements Property, Serializable {
   }
 
   static class ValueListPropertyImpl extends ColumnPropertyImpl implements ValueListProperty {
-
-    private static final long serialVersionUID = 1;
 
     private final List<Item<Object>> values;
 
@@ -924,8 +1044,6 @@ class PropertyImpl implements Property, Serializable {
 
   static class TransientPropertyImpl extends PropertyImpl implements TransientProperty {
 
-    private static final long serialVersionUID = 1;
-
     /**
      * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
      * the property ID should not be column name, only be unique for this entity
@@ -938,8 +1056,6 @@ class PropertyImpl implements Property, Serializable {
   }
 
   static class DerivedPropertyImpl extends TransientPropertyImpl implements DerivedProperty {
-
-    private static final long serialVersionUID = 1;
 
     private final Provider valueProvider;
     private final List<String> linkedPropertyIDs;
@@ -971,8 +1087,6 @@ class PropertyImpl implements Property, Serializable {
   }
 
   static class DenormalizedViewPropertyImpl extends TransientPropertyImpl implements DenormalizedViewProperty {
-
-    private static final long serialVersionUID = 1;
 
     private final String foreignKeyPropertyID;
     private final Property denormalizedProperty;
@@ -1006,8 +1120,6 @@ class PropertyImpl implements Property, Serializable {
 
   static class SubqueryPropertyImpl extends ColumnPropertyImpl implements SubqueryProperty {
 
-    private static final long serialVersionUID = 1;
-
     private final String subquery;
 
     /**
@@ -1032,8 +1144,6 @@ class PropertyImpl implements Property, Serializable {
   }
 
   static class BooleanPropertyImpl extends ColumnPropertyImpl implements BooleanProperty {
-
-    private static final long serialVersionUID = 1;
 
     private final int columnType;
     private final Object trueValue;
@@ -1109,7 +1219,6 @@ class PropertyImpl implements Property, Serializable {
 
   static class AuditPropertyImpl extends ColumnPropertyImpl implements AuditProperty {
 
-    private static final long serialVersionUID = 1;
     private final AuditAction auditAction;
 
     AuditPropertyImpl(final String propertyID, final int type, final AuditAction auditAction, final String caption) {
@@ -1127,16 +1236,12 @@ class PropertyImpl implements Property, Serializable {
 
   static class AuditTimePropertyImpl extends AuditPropertyImpl implements AuditTimeProperty {
 
-    private static final long serialVersionUID = 1;
-
     AuditTimePropertyImpl(final String propertyID, final AuditAction auditAction, final String caption) {
       super(propertyID, Types.TIMESTAMP, auditAction, caption);
     }
   }
 
   static class AuditUserPropertyImpl extends AuditPropertyImpl implements AuditUserProperty {
-
-    private static final long serialVersionUID = 1;
 
     AuditUserPropertyImpl(final String propertyID, final AuditAction auditAction, final String caption) {
       super(propertyID, Types.VARCHAR, auditAction, caption);

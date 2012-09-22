@@ -38,7 +38,6 @@ import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -352,7 +351,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
               "where " + columnName + " is not null", order ? columnName : null);
 
       //noinspection unchecked
-      final List<Object> result = DatabaseUtil.query(this, selectSQL, getPropertyResultPacker(property), -1, LOG);
+      final List<Object> result = query(selectSQL, getPropertyResultPacker(property), -1);
       commitIfTransactionIsNotOpen();
 
       return result;
@@ -1252,102 +1251,14 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       }
       for (final Property.ColumnProperty property : properties) {
         try {
-          entity.setValue(property, getValue(resultSet, property));
+          entity.setValue(property, property.fetchValue(resultSet));
         }
         catch (Exception e) {
-          throw new SQLException("Unable to load property: " + property + " for entity: " + entityID, e);
+          throw new SQLException("Unable to fetch value for: " + property + ", entityID: " + entityID, e);
         }
       }
 
       return entity;
-    }
-
-    private static Object getValue(final ResultSet resultSet, final Property.ColumnProperty property) throws SQLException {
-      if (property.isBoolean()) {
-        return getBoolean(resultSet, property);
-      }
-      else {
-        return getValue(resultSet, property.getType(), property.getSelectIndex());
-      }
-    }
-
-    private static Boolean getBoolean(final ResultSet resultSet, final Property.ColumnProperty property) throws SQLException {
-      if (property instanceof Property.BooleanProperty) {
-        return ((Property.BooleanProperty) property).toBoolean(
-                getValue(resultSet, ((Property.BooleanProperty) property).getColumnType(), property.getSelectIndex()));
-      }
-      else {
-        final Integer result = getInteger(resultSet, property.getSelectIndex());
-        if (result == null) {
-          return null;
-        }
-
-        switch (result) {
-          case 0: return false;
-          case 1: return true;
-          default: return null;
-        }
-      }
-    }
-
-    private static Object getValue(final ResultSet resultSet, final int sqlType, final int selectIndex) throws SQLException {
-      switch (sqlType) {
-        case Types.INTEGER:
-          return getInteger(resultSet, selectIndex);
-        case Types.DOUBLE:
-          return getDouble(resultSet, selectIndex);
-        case Types.DATE:
-          return getDate(resultSet, selectIndex);
-        case Types.TIMESTAMP:
-          return getTimestamp(resultSet, selectIndex);
-        case Types.VARCHAR:
-          return getString(resultSet, selectIndex);
-        case Types.BOOLEAN:
-          return getBoolean(resultSet, selectIndex);
-        case Types.BLOB:
-          return null;
-        case Types.CHAR: {
-          final String val = getString(resultSet, selectIndex);
-          if (!Util.nullOrEmpty(val)) {
-            return val.charAt(0);
-          }
-          else {
-            return null;
-          }
-        }
-      }
-
-      throw new IllegalArgumentException("Unsupported value type: " + sqlType);
-    }
-
-    private static Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
-      final int value = resultSet.getInt(columnIndex);
-
-      return resultSet.wasNull() ? null : value;
-    }
-
-    private static Double getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
-      final double value = resultSet.getDouble(columnIndex);
-
-      return resultSet.wasNull() ? null : value;
-    }
-
-    private static String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {
-      final String string = resultSet.getString(columnIndex);
-
-      return resultSet.wasNull() ? null : string;
-    }
-
-    private static Boolean getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {
-      return resultSet.getBoolean(columnIndex);
-    }
-
-    private static java.util.Date getDate(final ResultSet resultSet, final int columnIndex) throws SQLException {
-      return resultSet.getDate(columnIndex);
-    }
-
-    private static Timestamp getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {
-      return resultSet.getTimestamp(columnIndex);
     }
   }
 }

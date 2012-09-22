@@ -15,6 +15,7 @@ import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
+import java.util.List;
 
 /**
  * A default DatabaseConnection implementation, which wraps a standard JDBC Connection object.
@@ -169,6 +170,34 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   @Override
   public final Database getDatabase() {
     return database;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException {
+    Databases.QUERY_COUNTER.count(sql);
+    Statement statement = null;
+    SQLException exception = null;
+    ResultSet resultSet = null;
+    try {
+      logAccess("query", new Object[] {sql});
+      statement = getConnection().createStatement();
+      resultSet = statement.executeQuery(sql);
+
+      return resultPacker.pack(resultSet, fetchCount);
+    }
+    catch (SQLException e) {
+      exception = e;
+      throw e;
+    }
+    finally {
+      DatabaseUtil.closeSilently(statement);
+      DatabaseUtil.closeSilently(resultSet);
+      final MethodLogger.Entry logEntry = logExit("query", exception, null);
+      if (LOG != null && LOG.isDebugEnabled()) {
+        LOG.debug(DatabaseUtil.createLogMessage(getUser(), sql, null, exception, logEntry));
+      }
+    }
   }
 
   /** {@inheritDoc} */

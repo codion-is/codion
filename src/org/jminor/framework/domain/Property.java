@@ -7,6 +7,8 @@ import org.jminor.common.model.Attribute;
 import org.jminor.common.model.Column;
 import org.jminor.common.model.Item;
 
+import java.sql.ResultSet;
+import java.sql.SQLException;
 import java.text.Format;
 import java.util.List;
 import java.util.Map;
@@ -342,6 +344,14 @@ public interface Property extends Attribute {
      * @return true if the underlying column has a default value
      */
     boolean columnHasDefaultValue();
+
+    /**
+     * Fetches a value for this property from a ResultSet
+     * @param resultSet the ResultSet
+     * @return a single value fetched from the given ResultSet
+     * @throws java.sql.SQLException in case of an exception
+     */
+    Object fetchValue(final ResultSet resultSet) throws SQLException;
   }
 
   /**
@@ -575,4 +585,18 @@ public interface Property extends Attribute {
    * Specifies a audit property with a username value
    */
   interface AuditUserProperty extends AuditProperty {}
+
+  /**
+   * Fetches a single value from a result set
+   */
+  interface PropertyValueFetcher {
+
+    /**
+     * Fetches a single value from a ResultSet
+     * @param resultSet the ResultSet
+     * @return a single value fetched from the given ResultSet
+     * @throws SQLException in case of an exception
+     */
+    Object fetchValue(final ResultSet resultSet) throws SQLException;
+  }
 }

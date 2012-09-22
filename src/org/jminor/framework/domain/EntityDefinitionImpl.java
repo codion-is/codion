@@ -772,7 +772,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
     }
   }
 
-  static class QueriedKeyGenerator extends DefaultKeyGenerator {
+  static class QueriedKeyGenerator extends DefaultKeyGenerator {//todo a queried generator can not both be before and after insert
 
     private String query;
 
@@ -786,7 +786,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
     @Override
     public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {
-      final int primaryKeyValue = DatabaseUtil.queryInteger(connection, getQuery(), null);
+      final int primaryKeyValue = DatabaseUtil.queryInteger(connection, getQuery());
       entity.setValue(primaryKeyProperty, primaryKeyValue);
     }
 
@@ -794,7 +794,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
     @Override
     public void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                             final DatabaseConnection connection) throws SQLException {
-      final int primaryKeyValue = DatabaseUtil.queryInteger(connection, getQuery(), null);
+      final int primaryKeyValue = DatabaseUtil.queryInteger(connection, getQuery());
       entity.setValue(primaryKeyProperty, primaryKeyValue);
     }
 

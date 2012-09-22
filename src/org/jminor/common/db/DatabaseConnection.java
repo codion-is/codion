@@ -110,6 +110,16 @@ public interface DatabaseConnection {
   void setMethodLogger(final MethodLogger methodLogger);
 
   /**
+   * Executes the given sql query and returns the result in a List
+   * @param sql the query
+   * @param resultPacker a ResultPacker instance responsible for packing the result
+   * @param fetchCount the number of records to retrieve, use -1 to retrieve all
+   * @return the query result in a List
+   * @throws SQLException thrown if anything goes wrong during the query execution
+   */
+  List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException;
+
+  /**
    * A database operation
    */
   interface Operation {

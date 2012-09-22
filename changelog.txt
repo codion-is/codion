@@ -3243,3 +3243,6 @@
   MethodLogger refactored and improved
   LogEntry removed
   MethodLogger synchronized, enable/disable implemented
+  DatabaseUtil.query() moved back to DatabaseConnection
+  PropertyImpl no longer implements Serializable
+  Property.PropertyValueFetcher added

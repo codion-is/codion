@@ -7,8 +7,6 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.MethodLogger;
 
-import org.slf4j.Logger;
-
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -83,9 +81,9 @@ public final class DatabaseUtil {
    * @return the first record in the result as a integer
    * @throws java.sql.SQLException thrown if anything goes wrong during the execution or if no record is returned
    */
-  public static int queryInteger(final DatabaseConnection connection,final String sql, final Logger log) throws SQLException {
+  public static int queryInteger(final DatabaseConnection connection,final String sql) throws SQLException {
     @SuppressWarnings("unchecked")
-    final List<Integer> integers = (List<Integer>) query(connection, sql, INTEGER_RESULT_PACKER, -1, log);
+    final List<Integer> integers = (List<Integer>) connection.query(sql, INTEGER_RESULT_PACKER, -1);
     if (!integers.isEmpty()) {
       return integers.get(0);
     }
@@ -93,41 +91,8 @@ public final class DatabaseUtil {
     throw new SQLException("No records returned when querying for an integer", sql);
   }
 
-  /**
-   * Executes the given sql query and returns the result in a List
-   * @param connection the connection
-   * @param sql the query
-   * @param resultPacker a ResultPacker instance for creating the return List
-   * @param fetchCount the number of records to retrieve, use -1 to retrieve all
-   * @return the query result in a List
-   * @throws java.sql.SQLException thrown if anything goes wrong during the query execution
-   */
-  public static List query(final DatabaseConnection connection, final String sql, final ResultPacker resultPacker,
-                           final int fetchCount, final Logger log) throws SQLException {
-    Databases.QUERY_COUNTER.count(sql);
-    Statement statement = null;
-    SQLException exception = null;
-    ResultSet resultSet = null;
-    try {
-      statement = connection.getConnection().createStatement();
-      resultSet = statement.executeQuery(sql);
-
-      return resultPacker.pack(resultSet, fetchCount);
-    }
-    catch (SQLException e) {
-      exception = e;
-      throw e;
-    }
-    finally {
-      closeSilently(statement);
-      closeSilently(resultSet);
-      if (log != null && log.isDebugEnabled()) {
-        log.debug(createLogMessage(connection.getUser(), sql, null, exception, null));
-      }
-    }
-  }
-
-  public static String createLogMessage(final User user, final String sqlStatement, final List<?> values, final Exception exception, final MethodLogger.Entry entry) {
+  public static String createLogMessage(final User user, final String sqlStatement, final List<?> values,
+                                        final Exception exception, final MethodLogger.Entry entry) {
     final StringBuilder logMessage = new StringBuilder(user.toString()).append("\n");
     if (entry == null) {
       logMessage.append(sqlStatement == null ? "no sql statement" : sqlStatement).append(", ").append(Util.getCollectionContentsAsString(values, false));
