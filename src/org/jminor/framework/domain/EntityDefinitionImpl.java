@@ -786,14 +786,18 @@ final class EntityDefinitionImpl implements Entity.Definition {
     @Override
     public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {
-      final int primaryKeyValue = DatabaseUtil.queryInteger(connection, getQuery());
-      entity.setValue(primaryKeyProperty, primaryKeyValue);
+      queryAndSet(entity, primaryKeyProperty, connection);
     }
 
     /** {@inheritDoc} */
     @Override
     public void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                             final DatabaseConnection connection) throws SQLException {
+      queryAndSet(entity, primaryKeyProperty, connection);
+    }
+
+    private void queryAndSet(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+                             final DatabaseConnection connection) throws SQLException {
       final int primaryKeyValue = DatabaseUtil.queryInteger(connection, getQuery());
       entity.setValue(primaryKeyProperty, primaryKeyValue);
     }

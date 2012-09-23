@@ -44,6 +44,11 @@ class PropertyImpl implements Property {
   private final int type;
 
   /**
+   * The class representing the values associated with this property
+   */
+  private final Class<?> typeClass;
+
+  /**
    * The caption to use when this property is presented
    */
   private final String caption;
@@ -112,11 +117,6 @@ class PropertyImpl implements Property {
   private Format format;
 
   /**
-   * Caching this frequently referenced attribute
-   */
-  private Class<?> typeClass;
-
-  /**
    * @param propertyID the property ID, this is used as the underlying column name
    * @param type the data type of this property
    * @param caption the caption of this property, if this is null then this property is defined as hidden
@@ -127,6 +127,7 @@ class PropertyImpl implements Property {
     this.hashCode = propertyID.hashCode();
     this.type = type;
     this.caption = caption;
+    this.typeClass = getTypeClass(type);
     setHidden(caption == null);
     setFormat(initializeDefaultFormat());
   }
@@ -450,10 +451,6 @@ class PropertyImpl implements Property {
   /** {@inheritDoc} */
   @Override
   public final Class<?> getTypeClass() {
-    if (typeClass == null) {
-      typeClass = getTypeClass(type);
-    }
-
     return typeClass;
   }
 
@@ -506,7 +503,7 @@ class PropertyImpl implements Property {
   static class ColumnPropertyImpl extends PropertyImpl implements ColumnProperty {
 
     private final String columnName;
-    private transient final PropertyValueFetcher valueFetcher;
+    private final transient PropertyValueFetcher valueFetcher;
     private int selectIndex;
     private boolean columnHasDefaultValue = false;
     private boolean updatable = true;
@@ -774,9 +771,7 @@ class PropertyImpl implements Property {
     }
 
     private static String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {
-      final String string = resultSet.getString(columnIndex);
-
-      return resultSet.wasNull() ? null : string;
+      return resultSet.getString(columnIndex);
     }
 
     private static java.util.Date getDate(final ResultSet resultSet, final int columnIndex) throws SQLException {
