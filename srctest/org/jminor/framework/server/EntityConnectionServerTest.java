@@ -8,9 +8,9 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.LoginProxy;
 import org.jminor.common.server.ServerException;
-import org.jminor.common.server.ServerLog;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -105,16 +105,10 @@ public class EntityConnectionServerTest {
     assertNotNull(stats.getTimestamp());
     assertNotNull(stats.getQueriesPerSecond());
 
-    final ServerLog log = admin.getServerLog(providerTwo.getClientID());
-    assertEquals("returnConnection", log.getLogger().getLastAccessedMethod());
-    assertEquals("selectAll", log.getLogger().getLastExitedMethod());
-    assertTrue(log.getLastDelta() >= 0);
+    final ClientLog log = admin.getClientLog(providerTwo.getClientID());
     assertNotNull(log.getConnectionCreationDate());
-    assertTrue(log.getLogger().getLastAccessTime() > 0);
-    assertNotNull(log.getLogger().getLastAccessMessage());
-    assertTrue(log.getLogger().getLastExitTime() > 0);
 
-    final MethodLogger.Entry entry = log.getLogger().getFirstEntry();
+    final MethodLogger.Entry entry = log.getEntries().get(0);
     assertEquals("getConnection", entry.getMethod());
     assertTrue(entry.getDelta() >= 0);
 

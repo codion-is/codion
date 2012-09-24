@@ -3246,3 +3246,5 @@
   DatabaseUtil.query() moved back to DatabaseConnection
   PropertyImpl no longer implements Serializable
   Property.PropertyValueFetcher added
+  ServerLog now contains the MethodLogger entries instead of the logger itself
+  ServerLog renamed ClientLog

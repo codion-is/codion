@@ -12,8 +12,8 @@ import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.RemoteServer;
-import org.jminor.common.server.ServerLog;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 
@@ -451,8 +451,8 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public ServerLog getServerLog(final UUID clientID) {
-    return server.getServerLog(clientID);
+  public ClientLog getClientLog(final UUID clientID) {
+    return server.getClientLog(clientID);
   }
 
   /** {@inheritDoc} */

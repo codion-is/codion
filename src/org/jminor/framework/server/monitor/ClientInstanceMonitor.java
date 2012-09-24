@@ -6,7 +6,7 @@ package org.jminor.framework.server.monitor;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.server.ClientInfo;
-import org.jminor.common.server.ServerLog;
+import org.jminor.common.server.ClientLog;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
@@ -38,12 +38,12 @@ public final class ClientInstanceMonitor {
   }
 
   public long getCreationDate() throws RemoteException {
-    final ServerLog log = server.getServerLog(client.getClientID());
+    final ClientLog log = server.getClientLog(client.getClientID());
     return log != null ? log.getConnectionCreationDate() : 0;
   }
 
-  public ServerLog getLog() throws RemoteException {
-    return server.getServerLog(client.getClientID());
+  public ClientLog getLog() throws RemoteException {
+    return server.getClientLog(client.getClientID());
   }
 
   public boolean isLoggingEnabled() throws RemoteException {

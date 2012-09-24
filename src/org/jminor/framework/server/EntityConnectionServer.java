@@ -14,8 +14,8 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.AbstractRemoteServer;
 import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.LoginProxy;
-import org.jminor.common.server.ServerLog;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.db.EntityConnections;
 import org.jminor.framework.domain.Entities;
@@ -235,10 +235,10 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
    * @param clientID the UUID identifying the client
    * @return the server log for the given connection
    */
-  ServerLog getServerLog(final UUID clientID) {
+  ClientLog getClientLog(final UUID clientID) {
     final ClientInfo client = new ClientInfo(clientID);
     if (containsConnection(client)) {
-      return ((RemoteEntityConnectionImpl) getConnection(client)).getServerLog();
+      return ((RemoteEntityConnectionImpl) getConnection(client)).getClientLog();
     }
 
     return null;

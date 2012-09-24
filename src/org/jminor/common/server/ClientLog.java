@@ -6,43 +6,36 @@ package org.jminor.common.server;
 import org.jminor.common.model.tools.MethodLogger;
 
 import java.io.Serializable;
+import java.util.List;
 import java.util.UUID;
 
 /**
  * A class encapsulating a simple collection of server access log entries and basic connection access info.
  */
-public final class ServerLog implements Serializable {
+public final class ClientLog implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final long logCreationDate = System.currentTimeMillis();
   private final UUID clientID;
   private final long connectionCreationDate;
-  private final MethodLogger logger;
+  private final List<MethodLogger.Entry> entries;
 
   /**
-   * Instantiates a new ServerLog instance.
+   * Instantiates a new ClientLog instance.
    * @param clientID the ID of the client this log represents
    * @param connectionCreationDate the date this client connection was created
    */
-  public ServerLog(final UUID clientID, final long connectionCreationDate, final MethodLogger logger) {
+  public ClientLog(final UUID clientID, final long connectionCreationDate, final List<MethodLogger.Entry> entries) {
     this.clientID = clientID;
     this.connectionCreationDate = connectionCreationDate;
-    this.logger = logger;
+    this.entries = entries;
   }
 
   /**
    * @return the log entry list
    */
-  public MethodLogger getLogger() {
-    return logger;
-  }
-
-  /**
-   * @return the date this log was created
-   */
-  public long getLogCreationDate() {
-    return logCreationDate;
+  public List<MethodLogger.Entry> getEntries() {
+    return entries;
   }
 
   /**
@@ -58,18 +51,12 @@ public final class ServerLog implements Serializable {
   public long getConnectionCreationDate() {
     return connectionCreationDate;
   }
-  /**
-   * @return the duration of the last method call
-   */
-  public long getLastDelta() {
-    return logger.getLastExitTime() - logger.getLastAccessTime();
-  }
 
   /** {@inheritDoc} */
   @Override
   public boolean equals(final Object obj) {
     return this == obj || !((obj == null) || (obj.getClass() != this.getClass()))
-            && clientID.equals(((ServerLog) obj).clientID);
+            && clientID.equals(((ClientLog) obj).clientID);
   }
 
   /** {@inheritDoc} */

@@ -7,7 +7,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
-import org.jminor.common.server.ServerLog;
+import org.jminor.common.server.ClientLog;
 
 import ch.qos.logback.classic.Level;
 
@@ -96,7 +96,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @return the log for the given connection
    * @throws RemoteException in case of a communication error
    */
-  ServerLog getServerLog(final UUID clientID) throws RemoteException;
+  ClientLog getClientLog(final UUID clientID) throws RemoteException;
 
   /**
    * @return the number of active connections
