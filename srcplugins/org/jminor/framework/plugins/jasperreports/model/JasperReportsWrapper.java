@@ -30,15 +30,15 @@ import java.util.Map;
 public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JRDataSource>, Serializable {
   private static final long serialVersionUID = 1;
   private final String reportPath;
-  private final Map reportParameters;
+  private final Map<String, Object> reportParameters;
   private static final boolean cacheReports = Configuration.getBooleanValue(Configuration.CACHE_REPORTS);
   private static final Map<String, JasperReport> reportCache = Collections.synchronizedMap(new HashMap<String, JasperReport>());
 
   public JasperReportsWrapper(final String reportPath) {
-    this(reportPath, new HashMap());
+    this(reportPath, new HashMap<String, Object>());
   }
 
-  public JasperReportsWrapper(final String reportPath, final Map reportParameters) {
+  public JasperReportsWrapper(final String reportPath, final Map<String, Object> reportParameters) {
     Util.rejectNullValue(reportPath, "reportPath");
     Util.rejectNullValue(reportParameters, "reportParameters");
     this.reportPath = reportPath;
@@ -108,7 +108,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
         report = (JasperReport) JRLoader.loadObject(new URL(reportPath));
       }
       else {
-        report = (JasperReport) JRLoader.loadObject(reportPath);
+        report = (JasperReport) JRLoader.loadObjectFromFile(reportPath);
       }
       if (cacheReports) {
         reportCache.put(reportPath, report);

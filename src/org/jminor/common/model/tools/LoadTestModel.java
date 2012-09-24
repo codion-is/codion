@@ -297,6 +297,9 @@ public abstract class LoadTestModel<T> implements LoadTest {
     for (final XYSeries series : usageSeries) {
       series.clear();
     }
+    for (final XYSeries series : failureSeries) {
+      series.clear();
+    }
     for (final YIntervalSeries series : durationSeries.values()) {
       series.clear();
     }

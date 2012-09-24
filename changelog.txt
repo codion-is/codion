@@ -3248,3 +3248,9 @@
   Property.PropertyValueFetcher added
   ServerLog now contains the MethodLogger entries instead of the logger itself
   ServerLog renamed ClientLog
+  ConnectionPoolImpl.connectionPoolStatistics is now a LinkedList
+  JasperReportsWrapper, replaced usage of deprecated method
+  LoadTestModel.resetChartData() did not reset failed runs
+  EntityImpl, minor optimizations, minimizing the usage of Property.getPropertyID() where possible
+  Entity.setValue() overloaded with a validateType parameter, again
+  EntityResultPacker calls the above method with false, no need to validate the types coming from the database

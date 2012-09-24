@@ -1245,13 +1245,13 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         for (final Property.TransientProperty transientProperty : transientProperties) {
           if (!(transientProperty instanceof Property.DenormalizedViewProperty)
                   && !(transientProperty instanceof Property.DerivedProperty)) {
-            entity.setValue(transientProperty, null);
+            entity.setValue(transientProperty, null, false);
           }
         }
       }
       for (final Property.ColumnProperty property : properties) {
         try {
-          entity.setValue(property, property.fetchValue(resultSet));
+          entity.setValue(property, property.fetchValue(resultSet), false);
         }
         catch (Exception e) {
           throw new SQLException("Unable to fetch value for: " + property + ", entityID: " + entityID, e);

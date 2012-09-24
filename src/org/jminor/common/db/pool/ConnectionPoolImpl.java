@@ -19,7 +19,9 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Deque;
+import java.util.LinkedList;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Random;
 import java.util.concurrent.TimeUnit;
 
@@ -64,8 +66,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   private boolean enabled = true;
   private boolean closed = false;
 
-  private final List<ConnectionPoolStateImpl> connectionPoolStatistics = new ArrayList<ConnectionPoolStateImpl>(1000);
-  private int currentPoolStatisticsIndex = 0;
+  private final LinkedList<ConnectionPoolStateImpl> connectionPoolStatistics = new LinkedList<ConnectionPoolStateImpl>();
   private boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "false").equalsIgnoreCase("true");
 
   /**
@@ -213,8 +214,8 @@ final class ConnectionPoolImpl implements ConnectionPool {
 
   /** {@inheritDoc} */
   @Override
-  public void setCollectFineGrainedStatistics(final boolean value) {
-    this.collectFineGrainedStatistics = value;
+  public void setCollectFineGrainedStatistics(final boolean collectFineGrainedStatistics) {
+    this.collectFineGrainedStatistics = collectFineGrainedStatistics;
   }
 
   /** {@inheritDoc} */
@@ -395,32 +396,30 @@ final class ConnectionPoolImpl implements ConnectionPool {
       return false;
     }
     synchronized (pool) {
-      return !creatingConnection && (pool.size() + inUse.size() ) < maximumPoolSize;
+      return !creatingConnection && (pool.size() + inUse.size()) < maximumPoolSize;
     }
   }
 
   private void addPoolStatistics(final long currentTime) {
     synchronized (pool) {
-      if (currentPoolStatisticsIndex == FINE_GRAINED_STATS_SIZE) {
-        currentPoolStatisticsIndex = 0;
-      }//todo shouldnt the below be synchronized
-      connectionPoolStatistics.get(currentPoolStatisticsIndex).set(currentTime, pool.size(), inUse.size());
-      currentPoolStatisticsIndex++;
+      final ConnectionPoolStateImpl state = connectionPoolStatistics.removeFirst();
+      state.set(currentTime, pool.size(), inUse.size());
+      connectionPoolStatistics.addLast(state);
     }
   }
 
   /**
    * @param since the time
-   * @return stats collected since <code>since</code>, the results are not guaranteed to be ordered
+   * @return stats collected since <code>since</code>
    */
   private List<ConnectionPoolState> getFineGrainedStatistics(final long since) {
-    final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>();
+    final List<ConnectionPoolState> poolStates;
     synchronized (pool) {
-      for (final ConnectionPoolStateImpl state : connectionPoolStatistics) {//NB. the stat log is circular, result should be sorted
-        if (state.getTimestamp() >= since) {
-          poolStates.add(state);
-        }
-      }
+      poolStates = new LinkedList<ConnectionPoolState>(connectionPoolStatistics);
+    }
+    final ListIterator<ConnectionPoolState> iterator = poolStates.listIterator();
+    while (iterator.hasNext() && iterator.next().getTimestamp() < since) {
+      iterator.remove();
     }
 
     return poolStates;

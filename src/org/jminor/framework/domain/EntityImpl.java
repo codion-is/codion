@@ -39,7 +39,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   /**
    * Caches the result of <code>getReferencedPrimaryKey</code> method
    */
-  private Map<Property.ForeignKeyProperty, Key> referencedPrimaryKeysCache;
+  private Map<String, Key> referencedPrimaryKeysCache;
 
   /**
    * Keep a reference to this frequently referenced object
@@ -134,7 +134,13 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   /** {@inheritDoc} */
   @Override
   public Object setValue(final Property property, final Object value) {
-    return setValue(property, value, true, EntityDefinitionImpl.getDefinitionMap());
+    return setValue(property, value, true);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Object setValue(final Property property, final Object value, final boolean validateType) {
+    return setValue(property, value, validateType, EntityDefinitionImpl.getDefinitionMap());
   }
 
   /**
@@ -411,14 +417,15 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   @Override
   public Key getReferencedPrimaryKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
-    Key referencedPrimaryKey = getCachedReferencedKey(foreignKeyProperty);
+    final String propertyID = foreignKeyProperty.getPropertyID();
+    Key referencedPrimaryKey = getCachedReferencedKey(propertyID);
     if (referencedPrimaryKey != null) {
       return referencedPrimaryKey;
     }
 
     referencedPrimaryKey = initializeReferencedKey(foreignKeyProperty);
     if (referencedPrimaryKey != null) {
-      cacheReferencedKey(foreignKeyProperty, referencedPrimaryKey);
+      cacheReferencedKey(propertyID, referencedPrimaryKey);
     }
 
     return referencedPrimaryKey;
@@ -597,7 +604,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
     if (foreignKeyProperty.isCompositeReference()) {
       final Key key = new KeyImpl(EntityDefinitionImpl.getDefinitionMap().get(foreignKeyProperty.getReferencedEntityID()));
       for (final Property referenceKeyProperty : foreignKeyProperty.getReferenceProperties()) {
-        final Object value = getValue(referenceKeyProperty);
+        final Object value = super.getValue(referenceKeyProperty.getPropertyID());
         if (value == null) {
           return null;
         }
@@ -610,7 +617,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
     }
     else {
       final Property referenceKeyProperty = foreignKeyProperty.getReferenceProperties().get(0);
-      final Object value = getValue(referenceKeyProperty);
+      final Object value = super.getValue(referenceKeyProperty.getPropertyID());
       if (value == null) {
         return null;
       }
@@ -619,19 +626,19 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
     }
   }
 
-  private void cacheReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty, final Key referencedPrimaryKey) {
+  private void cacheReferencedKey(final String fkPropertyID, final Key referencedPrimaryKey) {
     if (referencedPrimaryKeysCache == null) {
-      referencedPrimaryKeysCache = new HashMap<Property.ForeignKeyProperty, Key>();
+      referencedPrimaryKeysCache = new HashMap<String, Key>();
     }
-    referencedPrimaryKeysCache.put(foreignKeyProperty, referencedPrimaryKey);
+    referencedPrimaryKeysCache.put(fkPropertyID, referencedPrimaryKey);
   }
 
-  private Key getCachedReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
+  private Key getCachedReferencedKey(final String fkPropertyID) {
     if (referencedPrimaryKeysCache == null) {
       return null;
     }
 
-    return referencedPrimaryKeysCache.get(foreignKeyProperty);
+    return referencedPrimaryKeysCache.get(fkPropertyID);
   }
 
   /**
@@ -642,7 +649,8 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   private Key initializePrimaryKey(final boolean originalValues) {
     final Key key = new KeyImpl(definition);
     for (final Property.PrimaryKeyProperty property : definition.getPrimaryKeyProperties()) {
-      key.setValue(property.getPropertyID(), originalValues ? getOriginalValue(property.getPropertyID()) : getValue(property));
+      final String propertyID = property.getPropertyID();
+      key.setValue(propertyID, originalValues ? getOriginalValue(propertyID) : super.getValue(propertyID));
     }
 
     return key;
