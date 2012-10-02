@@ -136,7 +136,7 @@ public class Petstore {
                     Properties.columnProperty(ITEM_C0NTACT_INFO_ID)).setNullable(false),
             Properties.foreignKeyProperty(ITEM_ADDRESS_FK, "Address", T_ADDRESS,
                     Properties.columnProperty(ITEM_ADDRESS_ID)).setNullable(false),
-            Properties.columnProperty(ITEM_DISABLED, Types.BOOLEAN, "Disabled").setDefaultValue(false))
+            Properties.booleanProperty(ITEM_DISABLED, Types.INTEGER, "Disabled", 1, 0).setDefaultValue(false))
             .setKeyGenerator(Entities.incrementKeyGenerator("petstore.item", ITEM_ID))
             .setOrderByClause(ITEM_NAME)
             .setStringProvider(new Entities.StringProvider(ITEM_PRODUCT_FK).addText(" - ").addValue(ITEM_NAME))
