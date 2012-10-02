@@ -172,7 +172,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
     }
   }
 
-  private static class ConnectionProvider implements DatabaseConnectionProvider {
+  private static final class ConnectionProvider implements DatabaseConnectionProvider {
 
     private final Database database;
     private final User user;

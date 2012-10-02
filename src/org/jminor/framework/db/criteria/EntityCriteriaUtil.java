@@ -23,6 +23,7 @@ import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A factory class for query criteria implementations.
@@ -393,7 +394,7 @@ public final class EntityCriteriaUtil {
     private static final long serialVersionUID = 1;
 
     private EntityCriteria criteria;
-    private HashMap<String, Integer> foreignKeyFetchDepthLimits;
+    private Map<String, Integer> foreignKeyFetchDepthLimits;
 
     private String orderByClause;
     private int fetchCount;
