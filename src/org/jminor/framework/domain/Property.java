@@ -272,6 +272,21 @@ public interface Property extends Attribute {
   interface ColumnProperty extends SearchableProperty, Column {
 
     /**
+     * @return the data type of the underlying column, usually the same as {@link #getType()}
+     * but can differ in cases such as for {@link BooleanProperty}
+     */
+    int getColumnType();
+
+    /**
+     * Translates the given value into a sql value, usually this is not required
+     * but for certain types this may be necessary, such as {@link BooleanProperty}
+     * values represented by a non-boolean data type in the underlying database
+     * @param value the value to translate
+     * @return the sql value used to represent the given value
+     */
+    Object toSQLValue(final Object value);
+
+    /**
      * @param updatable specifies whether this property is updatable
      * @return this Property instance
      */
@@ -534,28 +549,18 @@ public interface Property extends Attribute {
   }
 
   /**
-   * A boolean property, with special handling since different values
-   * are used for representing boolean values in different systems
+   * A boolean property, with special handling since different value types
+   * are used for representing boolean values in different database systems.
+   * For systems with native handling of boolean values, use a {@link ColumnProperty}
+   * with type {@link java.sql.Types#BOOLEAN}
    */
   interface BooleanProperty extends ColumnProperty {
-
-    /**
-     * @return the data type of the underlying column
-     */
-    int getColumnType();
 
     /**
      * @param object the Object value to translate into a Boolean value
      * @return the Boolean value of <code>object</code>
      */
     Boolean toBoolean(final Object object);
-
-    /**
-     * Translates the given Boolean value into a sql value
-     * @param value the value to translate
-     * @return the actual value used to represent the given boolean value
-     */
-    Object toSQLValue(final Boolean value);
   }
 
   /**

@@ -30,7 +30,6 @@ import java.util.UUID;
 public final class RemoteEntityConnectionProvider extends AbstractEntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
-  private static final String IS_CONNECTED = "isConnected";
 
   private final String serverHostName;
   private final UUID clientID;

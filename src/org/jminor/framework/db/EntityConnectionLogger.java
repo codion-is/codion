@@ -22,7 +22,7 @@ public final class EntityConnectionLogger extends MethodLogger {
   private static final long serialVersionUID = 1;
 
   private static final String IS_CONNECTED = "isConnected";
-  private static final String CONNECTION_VALID = "isValid";
+  private static final String IS_VALID = "isValid";
 
   /**
    * Instatiates a new EntityConnectionLogger
@@ -67,7 +67,7 @@ public final class EntityConnectionLogger extends MethodLogger {
    */
   @Override
   protected boolean shouldMethodBeLogged(final String methodName) {
-    return !(methodName.equals(IS_CONNECTED) || methodName.equals(CONNECTION_VALID));
+    return !(methodName.equals(IS_CONNECTED) || methodName.equals(IS_VALID));
   }
 
   /** {@inheritDoc} */

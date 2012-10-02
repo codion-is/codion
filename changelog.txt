@@ -3254,3 +3254,7 @@
   EntityImpl, minor optimizations, minimizing the usage of Property.getPropertyID() where possible
   Entity.setValue() overloaded with a validateType parameter, again
   EntityResultPacker calls the above method with false, no need to validate the types coming from the database
+  BooleanProperty.toSQLValue() and getColumnType() moved up to ColumnProperty
+  EntityConnectionImpl.setParameterValue() simplified, using the above
+  PropertyImpl, value fetcher bug fixed, now handles BooleanProperty correctly
+  LocalEntityConnectionProvider no longer logs calls to isConnected and isValid

@@ -869,51 +869,19 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   private static void setParameterValue(final PreparedStatement statement, final int parameterIndex,
                                         final Object value, final Property.ColumnProperty property) throws SQLException {
-    final int columnType = translateType(property);
-    final Object columnValue = translateValue(property, value);
+    final Object columnValue = property.toSQLValue(value);
     try {
       if (columnValue == null) {
-        statement.setNull(parameterIndex, columnType);
+        statement.setNull(parameterIndex, property.getColumnType());
       }
       else {
-        statement.setObject(parameterIndex, columnValue, columnType);
+        statement.setObject(parameterIndex, columnValue, property.getColumnType());
       }
     }
     catch (SQLException e) {
       LOG.debug("Unable to set parameter: " + property + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()), e);
       throw e;
     }
-  }
-
-  private static Object translateValue(final Property.ColumnProperty property, final Object value) {
-    if (property.isBoolean()) {
-      if (property instanceof Property.BooleanProperty) {
-        return ((Property.BooleanProperty) property).toSQLValue((Boolean) value);
-      }
-      else {
-        return value == null ? null : ((Boolean) value ?
-                Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE) :
-                Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE));
-      }
-    }
-    else if (property.isDate() && !(value instanceof java.sql.Date)) {
-      return new java.sql.Date(((java.util.Date) value).getTime());
-    }
-
-    return value;
-  }
-
-  private static int translateType(final Property.ColumnProperty property) {
-    if (property.isBoolean()) {
-      if (property instanceof Property.BooleanProperty) {
-        return ((Property.BooleanProperty) property).getColumnType();
-      }
-      else {
-        return Types.INTEGER;
-      }
-    }
-
-    return property.getType();
   }
 
   private static Collection<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,

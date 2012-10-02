@@ -113,11 +113,19 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     private LocalConnectionHandler(final EntityConnection connection) {
       this.connection = connection;
       this.connection.setMethodLogger(methodLogger);
+      this.methodLogger.setEnabled(true);
     }
 
     @Override
     public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       final String methodName = method.getName();
+      if (methodName.equals(IS_CONNECTED)) {
+        return connection.isConnected();
+      }
+      if (methodName.equals(IS_VALID)) {
+        return connection.isValid();
+      }
+
       Exception exception = null;
       try {
         methodLogger.logAccess(methodName, args);

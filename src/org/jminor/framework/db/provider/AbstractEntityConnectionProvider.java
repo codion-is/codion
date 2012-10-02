@@ -22,6 +22,8 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractEntityConnectionProvider implements EntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
+  protected static final String IS_CONNECTED = "isConnected";
+  protected static final String IS_VALID = "isValid";
   private final State stConnectionValid = States.state();
   private final TaskScheduler validityCheckScheduler;
 

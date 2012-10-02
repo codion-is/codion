@@ -503,6 +503,7 @@ class PropertyImpl implements Property {
   static class ColumnPropertyImpl extends PropertyImpl implements ColumnProperty {
 
     private final String columnName;
+    private final int columnType;
     private final transient PropertyValueFetcher valueFetcher;
     private int selectIndex;
     private boolean columnHasDefaultValue = false;
@@ -513,8 +514,13 @@ class PropertyImpl implements Property {
     private ForeignKeyProperty foreignKeyProperty = null;
 
     ColumnPropertyImpl(final String propertyID, final int type, final String caption) {
+      this(propertyID, type, caption, type);
+    }
+
+    ColumnPropertyImpl(final String propertyID, final int type, final String caption, final int columnType) {
       super(propertyID, type, caption);
       this.columnName = propertyID;
+      this.columnType = columnType;
       this.valueFetcher = initializeValueFetcher(this);
     }
 
@@ -522,6 +528,22 @@ class PropertyImpl implements Property {
     @Override
     public final String getColumnName() {
       return this.columnName;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final int getColumnType() {
+      return columnType;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object toSQLValue(final Object value) {
+      if (isDate() && !(value instanceof java.sql.Date)) {
+        return new java.sql.Date(((java.util.Date) value).getTime());
+      }
+
+      return value;
     }
 
     /** {@inheritDoc} */
@@ -669,7 +691,15 @@ class PropertyImpl implements Property {
     }
 
     private static PropertyValueFetcher initializeValueFetcher(final ColumnProperty property) {
-      switch (property.getType()) {
+      if (property instanceof BooleanProperty) {
+        return initializeBooleanValueFetcher((BooleanProperty) property);
+      }
+
+      return initializeValueFetcher(property.getColumnType(), property);
+    }
+
+    private static PropertyValueFetcher initializeValueFetcher(final int columnType, final ColumnProperty property) {
+      switch (columnType) {
         case Types.INTEGER:
           return new PropertyValueFetcher() {
             /** {@inheritDoc} */
@@ -715,7 +745,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getBoolean(property, resultSet);
+              return getBoolean(resultSet, property.getSelectIndex());
             }
           };
         case Types.CHAR:
@@ -736,26 +766,26 @@ class PropertyImpl implements Property {
           };
       }
 
-      throw new IllegalArgumentException("Unsupported value type: " + property.getType());
+      throw new IllegalArgumentException("Unsupported value type: " + columnType);
     }
 
-    private static Boolean getBoolean(final ColumnProperty property, final ResultSet resultSet) throws SQLException {
-      if (property instanceof Property.BooleanProperty) {
-        final Object value = resultSet.getObject(property.getSelectIndex());
-        return ((Property.BooleanProperty) property).toBoolean(value);
-      }
-      else {
-        final Integer result = getInteger(resultSet, property.getSelectIndex());
-        if (result == null) {
-          return null;
-        }
+    private static PropertyValueFetcher initializeBooleanValueFetcher(final BooleanProperty property) {
+      return new PropertyValueFetcher() {
+        private final PropertyValueFetcher columnValueFetcher = initializeValueFetcher(property.getColumnType(), property);
+        /** {@inheritDoc} */
+        @Override
+        public Object fetchValue(final ResultSet resultSet) throws SQLException {
+          final Object columnValue = columnValueFetcher.fetchValue(resultSet);
 
-        switch (result) {
-          case 0: return false;
-          case 1: return true;
-          default: return null;
+          return property.toBoolean(columnValue);
         }
-      }
+      };
+    }
+
+    private static Boolean getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      final boolean value = resultSet.getBoolean(columnIndex);
+
+      return resultSet.wasNull() ? null : value;
     }
 
     private static Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
@@ -1060,7 +1090,7 @@ class PropertyImpl implements Property {
       super(propertyID, type, caption);
       this.valueProvider = valueProvider;
       if (linkedPropertyIDs == null || linkedPropertyIDs.length == 0) {
-        throw new IllegalArgumentException("No linked propertyIDs, a derived property must be derived from one or more properties");
+        throw new IllegalArgumentException("No linked propertyIDs, a derived property must be derived from one or more existing properties");
       }
       else {
         this.linkedPropertyIDs = Arrays.asList(linkedPropertyIDs);
@@ -1139,8 +1169,6 @@ class PropertyImpl implements Property {
   }
 
   static class BooleanPropertyImpl extends ColumnPropertyImpl implements BooleanProperty {
-
-    private final int columnType;
     private final Object trueValue;
     private final Object falseValue;
 
@@ -1172,16 +1200,9 @@ class PropertyImpl implements Property {
      */
     BooleanPropertyImpl(final String propertyID, final int columnType, final String caption,
                         final Object trueValue, final Object falseValue) {
-      super(propertyID, Types.BOOLEAN, caption);
-      this.columnType = columnType;
+      super(propertyID, Types.BOOLEAN, caption, columnType);
       this.trueValue = trueValue;
       this.falseValue = falseValue;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final int getColumnType() {
-      return columnType;
     }
 
     /** {@inheritDoc} */
@@ -1199,12 +1220,12 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public final Object toSQLValue(final Boolean value) {
+    public final Object toSQLValue(final Object value) {
       if (value == null) {
         return null;
       }
 
-      if (value) {
+      if ((Boolean) value) {
         return trueValue;
       }
 
