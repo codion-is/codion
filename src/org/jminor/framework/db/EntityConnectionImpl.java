@@ -116,7 +116,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         final boolean includeReadOnly = false;
         final boolean includeNonUpdatable = true;
         final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
-                !keyGenerator.isAutomatic(), includeReadOnly, includeNonUpdatable);
+                !keyGenerator.isAutoIncrement(), includeReadOnly, includeNonUpdatable);
         keyGenerator.beforeInsert(entity, firstPrimaryKeyProperty, this);
 
         final boolean inserting = true;

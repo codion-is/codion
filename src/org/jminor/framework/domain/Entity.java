@@ -292,11 +292,11 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
    * Generates primary key values for entities on insert.
    * PrimaryKeyGenerators fall into two categories, one in which the primary key value is
    * fetched or generated before the record is inserted and one where the underlying database
-   * automatically sets the primary key value on insert, f.ex. with a table trigger.
+   * automatically sets the primary key value on insert, f.ex. with a table trigger or identity columns.
    * Implementations should implement either <code>beforeInsert()</code> or <code>afterInsert()</code>
    * and leave the other one empty. <code>isAutoIncrement()</code> returns true if the database
    * generates primary key values automatically, this implies that <code>afterInsert()</code>
-   * should be used.
+   * should be used, fetching the generated primary key value and updating the entity instance accordingly..
    */
   interface KeyGenerator {
 
@@ -325,7 +325,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
     /**
      * @return true if the underlying database automatically sets the primary key value during insert
      */
-    boolean isAutomatic();
+    boolean isAutoIncrement();
 
     /**
      * @return true if the primary key values must be set manually before insert

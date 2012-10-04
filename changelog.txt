@@ -3259,3 +3259,4 @@
   PropertyImpl, value fetcher bug fixed, now handles BooleanProperty correctly
   LocalEntityConnectionProvider no longer logs calls to isConnected and isValid
   Petstore demo now uses BooleanProperty
+  EntityDefinitionImpl.KeyGenerator implementations refactored

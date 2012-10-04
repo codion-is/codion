@@ -5,6 +5,7 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseUtil;
+import org.jminor.common.db.Databases;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
@@ -600,6 +601,17 @@ final class EntityDefinitionImpl implements Entity.Definition {
     return definition;
   }
 
+  static Entity.KeyGenerator queriedKeyGenerator(final String query) {
+    return new QueriedKeyGenerator(query) {
+      /** {@inheritDoc} */
+      @Override
+      public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+                               final DatabaseConnection connection) throws SQLException {
+        queryAndSet(entity, primaryKeyProperty, connection);
+      }
+    };
+  }
+
   private static Map<String, Collection<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
     final Map<String, Collection<Property.DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<String, Collection<Property.DenormalizedProperty>>(properties.size());
     for (final Property property : properties) {
@@ -747,7 +759,19 @@ final class EntityDefinitionImpl implements Entity.Definition {
     return stringBuilder.toString();
   }
 
-  static class DefaultKeyGenerator implements Entity.KeyGenerator {
+  private static class DefaultKeyGenerator implements Entity.KeyGenerator {
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isAutoIncrement() {
+      return false;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean isManual() {
+      return true;
+    }
 
     /** {@inheritDoc} */
     @Override
@@ -758,63 +782,28 @@ final class EntityDefinitionImpl implements Entity.Definition {
     @Override
     public void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                             final DatabaseConnection connection) throws SQLException {}
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isAutomatic() {
-      return false;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean isManual() {
-      return true;
-    }
   }
 
-  static class QueriedKeyGenerator extends DefaultKeyGenerator {//todo a queried generator can not both be before and after insert
+  static class QueriedKeyGenerator extends DefaultKeyGenerator {
 
-    private String query;
-
-    private QueriedKeyGenerator() {}
+    private final String query;
 
     QueriedKeyGenerator(final String query) {
-      setQuery(query);
+      this.query = Util.rejectNullValue(query, "query");
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
-                             final DatabaseConnection connection) throws SQLException {
-      queryAndSet(entity, primaryKeyProperty, connection);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
-                            final DatabaseConnection connection) throws SQLException {
-      queryAndSet(entity, primaryKeyProperty, connection);
-    }
-
-    private void queryAndSet(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
-                             final DatabaseConnection connection) throws SQLException {
-      final int primaryKeyValue = DatabaseUtil.queryInteger(connection, getQuery());
-      entity.setValue(primaryKeyProperty, primaryKeyValue);
-    }
-
-    /** {@inheritDoc} */
+    /**
+     * @return false, since generating the primary key value is handled by the framework
+     */
     @Override
     public boolean isManual() {
       return false;
     }
 
-    protected final void setQuery(final String query) {
-      Util.rejectNullValue(query, "query");
-      this.query = query;
-    }
-
-    protected final String getQuery() {
-      return query;
+    protected void queryAndSet(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+                               final DatabaseConnection connection) throws SQLException {
+      final int primaryKeyValue = DatabaseUtil.queryInteger(connection, query);
+      entity.setValue(primaryKeyProperty, primaryKeyValue);
     }
   }
 
@@ -826,61 +815,43 @@ final class EntityDefinitionImpl implements Entity.Definition {
 
     /** {@inheritDoc} */
     @Override
-    public void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
-                            final DatabaseConnection connection) throws SQLException {}
+    public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+                             final DatabaseConnection connection) throws SQLException {
+      queryAndSet(entity, primaryKeyProperty, connection);
+    }
   }
 
   static final class SequenceKeyGenerator extends QueriedKeyGenerator {
 
-    private final String sequenceName;
-
     SequenceKeyGenerator(final String sequenceName) {
-      this.sequenceName = sequenceName;
+      super(Databases.createInstance().getSequenceSQL(sequenceName));
     }
 
     /** {@inheritDoc} */
     @Override
     public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {
-      if (getQuery() == null) {
-        setQuery(connection.getDatabase().getSequenceSQL(sequenceName));
-      }
-      super.beforeInsert(entity, primaryKeyProperty, connection);
+      queryAndSet(entity, primaryKeyProperty, connection);
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
-                            final DatabaseConnection connection) throws SQLException {}
   }
 
   static final class AutomaticKeyGenerator extends QueriedKeyGenerator {
 
-    private final String valueSource;
-
     AutomaticKeyGenerator(final String valueSource) {
-      this.valueSource = valueSource;
+      super(Databases.createInstance().getAutoIncrementValueSQL(valueSource));
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean isAutomatic() {
+    public boolean isAutoIncrement() {
       return true;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
-                             final DatabaseConnection connection) throws SQLException {}
-
-    /** {@inheritDoc} */
-    @Override
     public void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                             final DatabaseConnection connection) throws SQLException {
-      if (getQuery() == null) {
-        setQuery(connection.getDatabase().getAutoIncrementValueSQL(valueSource));
-      }
-      super.afterInsert(entity, primaryKeyProperty, connection);
+      queryAndSet(entity, primaryKeyProperty, connection);
     }
   }
 }

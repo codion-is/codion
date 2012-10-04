@@ -25,11 +25,6 @@ import java.util.Map;
  */
 public final class Entities {
 
-  /**
-   * The default key generator
-   */
-  public static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = EntityDefinitionImpl.DEFAULT_KEY_GENERATOR;
-
   private static final String ENTITY_PARAM = "entity";
   private static final String ENTITY_ID_PARAM = "entityID";
 
@@ -133,7 +128,7 @@ public final class Entities {
    * @return a query based primary key generator
    */
   public static Entity.KeyGenerator queriedKeyGenerator(final String query) {
-    return new EntityDefinitionImpl.QueriedKeyGenerator(query);
+    return EntityDefinitionImpl.queriedKeyGenerator(query);
   }
 
   /**
@@ -316,7 +311,8 @@ public final class Entities {
 
   /**
    * Returns true if the value for the primary key of this entity is automatically generated, either by the framework,
-   * such as values queried from sequences or set by triggers
+   * such as values queried from sequences or set by triggers. If not the primary key value must be set manually
+   * before the entity is inserted.
    * @param entityID the entity ID
    * @return true if the value for the primary key is automatically generated
    */
