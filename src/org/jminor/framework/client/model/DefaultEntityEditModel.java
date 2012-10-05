@@ -83,8 +83,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   private final EntityConnectionProvider connectionProvider;
 
   /**
-   * Holds the ComboBoxModels used by this {@link EntityEditModel}, those that implement Refreshable
-   * are refreshed when {@link #refreshComboBoxModels()} is called
+   * Holds the ComboBoxModels used by this {@link EntityEditModel},
    * @see org.jminor.common.model.Refreshable
    */
   private final Map<Property, FilteredComboBoxModel> propertyComboBoxModels = new HashMap<Property, FilteredComboBoxModel>();
@@ -259,6 +258,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
+  public final StateObserver getAllowDeleteObserver() {
+    return stAllowDelete.getObserver();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final EventObserver getValueChangeObserver(final String propertyID) {
     Util.rejectNullValue(propertyID, "propertyID");
     if (!valueChangeEventMap.containsKey(propertyID)) {
@@ -278,12 +283,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final StateObserver getValidObserver() {
     return stValid.getObserver();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final StateObserver getAllowDeleteObserver() {
-    return stAllowDelete.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -309,12 +308,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Entity getForeignKeyValue(final String foreignKeyPropertyID) {
-    return (Entity) getValue(foreignKeyPropertyID);
   }
 
   /** {@inheritDoc} */
@@ -376,6 +369,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final Object getValue(final String propertyID) {
     return entity.getValue(propertyID);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Entity getForeignKeyValue(final String foreignKeyPropertyID) {
+    return (Entity) getValue(foreignKeyPropertyID);
   }
 
   /** {@inheritDoc} */
