@@ -273,18 +273,25 @@ public interface Property extends Attribute {
 
     /**
      * @return the data type of the underlying column, usually the same as {@link #getType()}
-     * but can differ in cases such as for {@link BooleanProperty}
+     * but can differ when the database system does not have native support for the given data type,
+     * such as boolean
      */
     int getColumnType();
 
     /**
      * Translates the given value into a sql value, usually this is not required
-     * but for certain types this may be necessary, such as {@link BooleanProperty}
-     * values represented by a non-boolean data type in the underlying database
+     * but for certain types this may be necessary, such as boolean values
+     * represented by a non-boolean data type in the underlying database
      * @param value the value to translate
      * @return the sql value used to represent the given value
      */
-    Object toSQLValue(final Object value);
+    Object toColumnValue(final Object value);
+
+    /**
+     * @param value the SQL value Object to translate from
+     * @return the value of SQL <code>value</code>
+     */
+    Object fromColumnValue(final Object value);
 
     /**
      * @param updatable specifies whether this property is updatable
@@ -367,6 +374,11 @@ public interface Property extends Attribute {
      * @throws java.sql.SQLException in case of an exception
      */
     Object fetchValue(final ResultSet resultSet) throws SQLException;
+
+    /**
+     * Set a value converter, for converting to and from a sql representation of the value
+     */
+    ColumnProperty setColumnValueConverter(final ColumnValueConverter columnValueConverter);
   }
 
   /**
@@ -549,21 +561,6 @@ public interface Property extends Attribute {
   }
 
   /**
-   * A boolean property, with special handling since different value types
-   * are used for representing boolean values in different database systems.
-   * For systems with native handling of boolean values, use a {@link ColumnProperty}
-   * with type {@link java.sql.Types#BOOLEAN}
-   */
-  interface BooleanProperty extends ColumnProperty {
-
-    /**
-     * @param object the Object value to translate into a Boolean value
-     * @return the Boolean value of <code>object</code>
-     */
-    Boolean toBoolean(final Object object);
-  }
-
-  /**
    * A property representing an audit column
    */
   interface AuditProperty extends ColumnProperty {
@@ -592,9 +589,31 @@ public interface Property extends Attribute {
   interface AuditUserProperty extends AuditProperty {}
 
   /**
+   * Converts to and from SQL values, such as integers being used
+   * to represent booleans in a database
+   */
+  interface ColumnValueConverter {
+
+    /**
+     * Translates the given value into a sql value, usually this is not required
+     * but for certain types this may be necessary, such as boolean values where
+     * the values are represented by a non-boolean data type in the underlying database
+     * @param value the value to translate
+     * @return the sql value used to represent the given value
+     */
+    Object toColumnValue(final Object value);
+
+    /**
+     * @param columnValue the SQL value to translate from
+     * @return the value of SQL <code>columnValue</code>
+     */
+    Object fromColumnValue(final Object columnValue);
+  }
+
+  /**
    * Fetches a single value from a result set
    */
-  interface PropertyValueFetcher {
+  interface ValueFetcher {
 
     /**
      * Fetches a single value from a ResultSet

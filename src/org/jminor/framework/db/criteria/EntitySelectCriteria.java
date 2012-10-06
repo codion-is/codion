@@ -16,16 +16,16 @@ public interface EntitySelectCriteria extends EntityCriteria {
   /**
    * @return true if this select should lock to result for update
    */
-  boolean isSelectForUpdate();
+  boolean isForUpdate();
 
   /**
    * Marks this criteria as a select for update query, this means the resulting records
    * will be locked by the given connection until unlocked by running another (non - select for update)
    * query on the same connection or performing an update
-   * @param selectForUpdate if true then the results should be locked for update
+   * @param forUpdate if true then the results should be locked for update
    * @return this EntitySelectCriteria instance
    */
-  EntitySelectCriteria setSelectForUpdate(final boolean selectForUpdate);
+  EntitySelectCriteria setForUpdate(final boolean forUpdate);
 
   /**
    * @return the maximum number of records to fetch from the result

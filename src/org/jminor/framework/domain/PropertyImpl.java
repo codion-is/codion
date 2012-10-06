@@ -504,7 +504,8 @@ class PropertyImpl implements Property {
 
     private final String columnName;
     private final int columnType;
-    private final transient PropertyValueFetcher valueFetcher;
+    private final ValueFetcher valueFetcher;
+    private ColumnValueConverter columnValueConverter;
     private int selectIndex;
     private boolean columnHasDefaultValue = false;
     private boolean updatable = true;
@@ -521,6 +522,7 @@ class PropertyImpl implements Property {
       super(propertyID, type, caption);
       this.columnName = propertyID;
       this.columnType = columnType;
+      this.columnValueConverter = initializeValueConverter(this);
       this.valueFetcher = initializeValueFetcher(this);
     }
 
@@ -538,12 +540,14 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public Object toSQLValue(final Object value) {
-      if (isDate() && !(value instanceof java.sql.Date)) {
-        return new java.sql.Date(((java.util.Date) value).getTime());
-      }
+    public final Object toColumnValue(final Object value) {
+      return columnValueConverter.toColumnValue(value);
+    }
 
-      return value;
+    /** {@inheritDoc} */
+    @Override
+    public final Object fromColumnValue(final Object object) {
+      return columnValueConverter.fromColumnValue(object);
     }
 
     /** {@inheritDoc} */
@@ -690,18 +694,36 @@ class PropertyImpl implements Property {
       return valueFetcher.fetchValue(resultSet);
     }
 
-    private static PropertyValueFetcher initializeValueFetcher(final ColumnProperty property) {
-      if (property instanceof BooleanProperty) {
-        return initializeBooleanValueFetcher((BooleanProperty) property);
-      }
-
-      return initializeValueFetcher(property.getColumnType(), property);
+    @Override
+    public final ColumnProperty setColumnValueConverter(final ColumnValueConverter columnValueConverter) {
+      Util.rejectNullValue(columnValueConverter, "columnValueConverter");
+      this.columnValueConverter = columnValueConverter;
+      return this;
     }
 
-    private static PropertyValueFetcher initializeValueFetcher(final int columnType, final ColumnProperty property) {
+    private static ColumnValueConverter initializeValueConverter(final ColumnProperty property) {
+      if (property.isDate()) {
+        return new DateColumnValueConverter();
+      }
+
+      return new DefaultColumnValueConverter();
+    }
+
+    private static ValueFetcher initializeValueFetcher(final ColumnProperty property) {
+      return new ValueFetcher() {
+        private final ValueFetcher columnValueFetcher = initializeColumnValueFetcher(property.getColumnType(), property);
+        /** {@inheritDoc} */
+        @Override
+        public Object fetchValue(final ResultSet resultSet) throws SQLException {
+          return property.fromColumnValue(columnValueFetcher.fetchValue(resultSet));
+        }
+      };
+    }
+
+    private static ValueFetcher initializeColumnValueFetcher(final int columnType, final ColumnProperty property) {
       switch (columnType) {
         case Types.INTEGER:
-          return new PropertyValueFetcher() {
+          return new ValueFetcher() {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
@@ -709,7 +731,7 @@ class PropertyImpl implements Property {
             }
           };
         case Types.DOUBLE:
-          return new PropertyValueFetcher() {
+          return new ValueFetcher() {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
@@ -717,7 +739,7 @@ class PropertyImpl implements Property {
             }
           };
         case Types.DATE:
-          return new PropertyValueFetcher() {
+          return new ValueFetcher() {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
@@ -725,7 +747,7 @@ class PropertyImpl implements Property {
             }
           };
         case Types.TIMESTAMP:
-          return new PropertyValueFetcher() {
+          return new ValueFetcher() {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
@@ -733,7 +755,7 @@ class PropertyImpl implements Property {
             }
           };
         case Types.VARCHAR:
-          return new PropertyValueFetcher() {
+          return new ValueFetcher() {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
@@ -741,7 +763,7 @@ class PropertyImpl implements Property {
             }
           };
         case Types.BOOLEAN:
-          return new PropertyValueFetcher() {
+          return new ValueFetcher() {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
@@ -749,7 +771,7 @@ class PropertyImpl implements Property {
             }
           };
         case Types.CHAR:
-          return new PropertyValueFetcher() {
+          return new ValueFetcher() {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
@@ -757,7 +779,7 @@ class PropertyImpl implements Property {
             }
           };
         case Types.BLOB:
-          return new PropertyValueFetcher() {
+          return new ValueFetcher() {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
@@ -767,19 +789,6 @@ class PropertyImpl implements Property {
       }
 
       throw new IllegalArgumentException("Unsupported value type: " + columnType);
-    }
-
-    private static PropertyValueFetcher initializeBooleanValueFetcher(final BooleanProperty property) {
-      return new PropertyValueFetcher() {
-        private final PropertyValueFetcher columnValueFetcher = initializeValueFetcher(property.getColumnType(), property);
-        /** {@inheritDoc} */
-        @Override
-        public Object fetchValue(final ResultSet resultSet) throws SQLException {
-          final Object columnValue = columnValueFetcher.fetchValue(resultSet);
-
-          return property.toBoolean(columnValue);
-        }
-      };
     }
 
     private static Boolean getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {
@@ -1168,71 +1177,6 @@ class PropertyImpl implements Property {
     }
   }
 
-  static class BooleanPropertyImpl extends ColumnPropertyImpl implements BooleanProperty {
-    private final Object trueValue;
-    private final Object falseValue;
-
-    /**
-     * Instantiates a BooleanProperty based on the INT data type
-     * @param propertyID the property ID, in case of database properties this should be the underlying column name
-     * @param caption the caption of this property
-     */
-    BooleanPropertyImpl(final String propertyID, final String caption) {
-      this(propertyID, Types.INTEGER, caption);
-    }
-
-    /**
-     * @param propertyID the property ID, in case of database properties this should be the underlying column name
-     * @param columnType the data type of the underlying column
-     * @param caption the caption of this property
-     */
-    BooleanPropertyImpl(final String propertyID, final int columnType, final String caption) {
-      this(propertyID, columnType, caption, Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE),
-              Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE));
-    }
-
-    /**
-     * @param propertyID the property ID, in case of database properties this should be the underlying column name
-     * @param columnType the data type of the underlying column
-     * @param caption the caption of this property
-     * @param trueValue the Object value representing 'true' in the underlying column
-     * @param falseValue the Object value representing 'false' in the underlying column
-     */
-    BooleanPropertyImpl(final String propertyID, final int columnType, final String caption,
-                        final Object trueValue, final Object falseValue) {
-      super(propertyID, Types.BOOLEAN, caption, columnType);
-      this.trueValue = trueValue;
-      this.falseValue = falseValue;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final Boolean toBoolean(final Object object) {
-      if (Util.equal(trueValue, object)) {
-        return true;
-      }
-      else if (Util.equal(falseValue, object)) {
-        return false;
-      }
-
-      return null;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public final Object toSQLValue(final Object value) {
-      if (value == null) {
-        return null;
-      }
-
-      if ((Boolean) value) {
-        return trueValue;
-      }
-
-      return falseValue;
-    }
-  }
-
   static class AuditPropertyImpl extends ColumnPropertyImpl implements AuditProperty {
 
     private final AuditAction auditAction;
@@ -1261,6 +1205,80 @@ class PropertyImpl implements Property {
 
     AuditUserPropertyImpl(final String propertyID, final AuditAction auditAction, final String caption) {
       super(propertyID, Types.VARCHAR, auditAction, caption);
+    }
+  }
+
+  static final class BooleanColumnValueConverter implements ColumnValueConverter {
+
+    private final Object trueValue;
+    private final Object falseValue;
+
+    BooleanColumnValueConverter() {
+      this(Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE),
+              Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE));
+    }
+
+    BooleanColumnValueConverter(final Object trueValue, final Object falseValue) {
+      this.trueValue = trueValue;
+      this.falseValue = falseValue;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Boolean fromColumnValue(final Object columnValue) {
+      if (Util.equal(trueValue, columnValue)) {
+        return true;
+      }
+      else if (Util.equal(falseValue, columnValue)) {
+        return false;
+      }
+
+      return null;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object toColumnValue(final Object value) {
+      if (value == null) {
+        return null;
+      }
+
+      if ((Boolean) value) {
+        return trueValue;
+      }
+
+      return falseValue;
+    }
+  }
+
+  private static final class DefaultColumnValueConverter implements ColumnValueConverter {
+    /** {@inheritDoc} */
+    @Override
+    public Object toColumnValue(final Object value) {
+      return value;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object fromColumnValue(final Object columnValue) {
+      return columnValue;
+    }
+  }
+
+  private static final class DateColumnValueConverter implements ColumnValueConverter {
+    /** {@inheritDoc} */
+    @Override
+    public Object toColumnValue(final Object value) {
+      if (!(value instanceof java.sql.Date)) {
+        return new java.sql.Date(((java.util.Date) value).getTime());
+      }
+      return value;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object fromColumnValue(final Object columnValue) {
+      return columnValue;
     }
   }
 }

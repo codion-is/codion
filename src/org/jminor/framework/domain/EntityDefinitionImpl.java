@@ -5,7 +5,6 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseUtil;
-import org.jminor.common.db.Databases;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
@@ -602,7 +601,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
   }
 
   static Entity.KeyGenerator queriedKeyGenerator(final String query) {
-    return new QueriedKeyGenerator(query) {
+    final QueriedKeyGenerator keyGenerator = new QueriedKeyGenerator() {
       /** {@inheritDoc} */
       @Override
       public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
@@ -610,6 +609,9 @@ final class EntityDefinitionImpl implements Entity.Definition {
         queryAndSet(entity, primaryKeyProperty, connection);
       }
     };
+    keyGenerator.setQuery(query);
+
+    return keyGenerator;
   }
 
   private static Map<String, Collection<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
@@ -786,31 +788,35 @@ final class EntityDefinitionImpl implements Entity.Definition {
 
   static class QueriedKeyGenerator extends DefaultKeyGenerator {
 
-    private final String query;
-
-    QueriedKeyGenerator(final String query) {
-      this.query = Util.rejectNullValue(query, "query");
-    }
+    private String query;
 
     /**
      * @return false, since generating the primary key value is handled by the framework
      */
     @Override
-    public boolean isManual() {
+    public final boolean isManual() {
       return false;
     }
 
-    protected void queryAndSet(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
-                               final DatabaseConnection connection) throws SQLException {
+    protected final void queryAndSet(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+                                     final DatabaseConnection connection) throws SQLException {
       final int primaryKeyValue = DatabaseUtil.queryInteger(connection, query);
       entity.setValue(primaryKeyProperty, primaryKeyValue);
+    }
+
+    protected final String getQuery() {
+      return query;
+    }
+
+    protected final void setQuery(final String query) {
+      this.query = Util.rejectNullValue(query, "query");
     }
   }
 
   static final class IncrementKeyGenerator extends QueriedKeyGenerator {
 
     IncrementKeyGenerator(final String tableName, final String columnName) {
-      super("select max(" + columnName + ") + 1 from " + tableName);
+      setQuery("select max(" + columnName + ") + 1 from " + tableName);
     }
 
     /** {@inheritDoc} */
@@ -823,22 +829,29 @@ final class EntityDefinitionImpl implements Entity.Definition {
 
   static final class SequenceKeyGenerator extends QueriedKeyGenerator {
 
+    private final String sequenceName;
+
     SequenceKeyGenerator(final String sequenceName) {
-      super(Databases.createInstance().getSequenceSQL(sequenceName));
+      this.sequenceName = sequenceName;
     }
 
     /** {@inheritDoc} */
     @Override
     public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {
+      if (getQuery() == null) {
+        setQuery(connection.getDatabase().getSequenceSQL(sequenceName));
+      }
       queryAndSet(entity, primaryKeyProperty, connection);
     }
   }
 
   static final class AutomaticKeyGenerator extends QueriedKeyGenerator {
 
+    private final String valueSource;
+
     AutomaticKeyGenerator(final String valueSource) {
-      super(Databases.createInstance().getAutoIncrementValueSQL(valueSource));
+      this.valueSource = valueSource;
     }
 
     /** {@inheritDoc} */
@@ -851,6 +864,9 @@ final class EntityDefinitionImpl implements Entity.Definition {
     @Override
     public void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                             final DatabaseConnection connection) throws SQLException {
+      if (getQuery() == null) {
+        setQuery(connection.getDatabase().getAutoIncrementValueSQL(valueSource));
+      }
       queryAndSet(entity, primaryKeyProperty, connection);
     }
   }

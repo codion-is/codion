@@ -348,7 +348,7 @@ public class EntityConnectionImplTest {
     final String originalLocation;
     try {
       final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, SearchType.LIKE, "SALES");
-      criteria.setSelectForUpdate(true);
+      criteria.setForUpdate(true);
 
       Entity sales = connection.selectSingle(criteria);
       originalLocation = sales.getStringValue(EmpDept.DEPARTMENT_LOCATION);

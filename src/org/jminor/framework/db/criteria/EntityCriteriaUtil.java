@@ -398,7 +398,7 @@ public final class EntityCriteriaUtil {
 
     private String orderByClause;
     private int fetchCount;
-    private boolean selectForUpdate;
+    private boolean forUpdate;
 
     /**
      * Instantiates a new DefaultEntityCriteria, which includes all the underlying entities
@@ -545,21 +545,21 @@ public final class EntityCriteriaUtil {
 
     /** {@inheritDoc} */
     @Override
-    public boolean isSelectForUpdate() {
-      return selectForUpdate;
+    public boolean isForUpdate() {
+      return forUpdate;
     }
 
     /** {@inheritDoc} */
     @Override
-    public EntitySelectCriteria setSelectForUpdate(final boolean selectForUpdate) {
-      this.selectForUpdate = selectForUpdate;
+    public EntitySelectCriteria setForUpdate(final boolean forUpdate) {
+      this.forUpdate = forUpdate;
       return this;
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
       stream.writeObject(orderByClause);
       stream.writeInt(fetchCount);
-      stream.writeBoolean(selectForUpdate);
+      stream.writeBoolean(forUpdate);
       stream.writeObject(foreignKeyFetchDepthLimits);
       stream.writeObject(criteria);
     }
@@ -568,7 +568,7 @@ public final class EntityCriteriaUtil {
     private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
       orderByClause = (String) stream.readObject();
       fetchCount = stream.readInt();
-      selectForUpdate = stream.readBoolean();
+      forUpdate = stream.readBoolean();
       foreignKeyFetchDepthLimits = (HashMap<String, Integer>) stream.readObject();
       criteria = (EntityCriteria) stream.readObject();
     }

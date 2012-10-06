@@ -3260,3 +3260,11 @@
   LocalEntityConnectionProvider no longer logs calls to isConnected and isValid
   Petstore demo now uses BooleanProperty
   EntityDefinitionImpl.KeyGenerator implementations refactored
+  Property.PropertyValueFetcher renamed to ValueFetcher
+  Property.ColumnProperty.toSQLValue() renamed to toColumnValue()
+  Property.ColumnValueConverter added
+  Property.ColumnProperty.fromColumnValue() added
+  Property.ColumnProperty.setColumnValueConverter() added
+  BooleanProperty removed
+  Previous KeyGenerator refactoring broke it, needs to lazily load the query due to remote connections
+  EntitySelectCriteria.selectForUpdate field renamed to forUpdate along with accessors

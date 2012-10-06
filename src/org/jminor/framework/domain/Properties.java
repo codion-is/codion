@@ -197,35 +197,38 @@ public final class Properties {
   }
 
   /**
-   * @param propertyID the property ID, in case of database properties this should be the underlying column name
+   * @param propertyID the property ID
    * @param caption the caption of this property
    * @return a new boolean property
    */
-  public static Property.BooleanProperty booleanProperty(final String propertyID, final String caption) {
-    return new PropertyImpl.BooleanPropertyImpl(propertyID, caption);
+  public static Property.ColumnProperty booleanProperty(final String propertyID, final String caption) {
+    return new PropertyImpl.ColumnPropertyImpl(propertyID, Types.BOOLEAN, caption)
+            .setColumnValueConverter(booleanColumnValueConverter());
   }
 
   /**
-   * @param propertyID the property ID, in case of database properties this should be the underlying column name
+   * @param propertyID the property ID
    * @param columnType the data type of the underlying column
    * @param caption the caption of this property
    * @return a new boolean property
    */
-  public static Property.BooleanProperty booleanProperty(final String propertyID, final int columnType, final String caption) {
-    return new PropertyImpl.BooleanPropertyImpl(propertyID, columnType, caption);
+  public static Property.ColumnProperty booleanProperty(final String propertyID, final int columnType, final String caption) {
+    return new PropertyImpl.ColumnPropertyImpl(propertyID, Types.BOOLEAN, caption, columnType)
+            .setColumnValueConverter(booleanColumnValueConverter());
   }
 
   /**
-   * @param propertyID the property ID, in case of database properties this should be the underlying column name
+   * @param propertyID the property ID
    * @param columnType the data type of the underlying column
    * @param caption the caption of this property
-   * @param trueValue the Object value representing 'true' in the underlying column
-   * @param falseValue the Object value representing 'false' in the underlying column
+   * @param trueValue the value representing 'true' in the underlying column
+   * @param falseValue the value representing 'false' in the underlying column
    * @return a new boolean property
    */
-  public static Property.BooleanProperty booleanProperty(final String propertyID, final int columnType, final String caption,
-                                                         final Object trueValue, final Object falseValue) {
-    return new PropertyImpl.BooleanPropertyImpl(propertyID, columnType, caption, trueValue, falseValue);
+  public static Property.ColumnProperty booleanProperty(final String propertyID, final int columnType, final String caption,
+                                                        final Object trueValue, final Object falseValue) {
+    return new PropertyImpl.ColumnPropertyImpl(propertyID, Types.BOOLEAN, caption, columnType)
+            .setColumnValueConverter(booleanColumnValueConverter(trueValue, falseValue));
   }
 
   /**
@@ -302,5 +305,24 @@ public final class Properties {
    */
   public static Property.MirrorProperty mirrorProperty(final String propertyID) {
     return new PropertyImpl.MirrorPropertyImpl(propertyID);
+  }
+  /**
+   * @return a value converter which converts an underlying database representation
+   * of a boolean value into an actual Boolean
+   * @see org.jminor.framework.Configuration#SQL_BOOLEAN_VALUE_TRUE
+   * @see org.jminor.framework.Configuration#SQL_BOOLEAN_VALUE_FALSE
+   */
+  public static Property.ColumnValueConverter booleanColumnValueConverter() {
+    return new PropertyImpl.BooleanColumnValueConverter();
+  }
+
+  /**
+   * @param trueValue the value used to represent 'true' in the underlying database
+   * @param falseValue the value used to represent 'false' in the underlying database
+   * @return a value converter which converts an underlying database representation
+   * of a boolean value into an actual Boolean
+   */
+  public static Property.ColumnValueConverter booleanColumnValueConverter(final Object trueValue, final Object falseValue) {
+    return new PropertyImpl.BooleanColumnValueConverter(trueValue, falseValue);
   }
 }

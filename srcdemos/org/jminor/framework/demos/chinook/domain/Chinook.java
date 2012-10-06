@@ -168,7 +168,7 @@ public class Chinook {
       try {
         entityConnection.beginTransaction();
         final EntitySelectCriteria selectCriteria = EntityCriteriaUtil.selectCriteria(T_INVOICE);
-        selectCriteria.setSelectForUpdate(true);
+        selectCriteria.setForUpdate(true);
         selectCriteria.setForeignKeyFetchDepthLimit(0);
         final List<Entity> invoices = entityConnection.selectMany(selectCriteria);
         for (final Entity invoice : invoices) {

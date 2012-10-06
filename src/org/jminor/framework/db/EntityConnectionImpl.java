@@ -324,7 +324,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   public synchronized List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException {
     try {
       final List<Entity> result = doSelectMany(criteria, 0);
-      if (!isTransactionOpen() && !criteria.isSelectForUpdate()) {
+      if (!isTransactionOpen() && !criteria.isForUpdate()) {
         commitQuietly();
       }
 
@@ -685,7 +685,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     String selectSQL = null;
     try {
       selectSQL = getSelectSQL(criteria, Entities.getSelectColumnsString(criteria.getEntityID()),
-              criteria.getOrderByClause(), Entities.getGroupByClause(criteria.getEntityID()), criteria.isSelectForUpdate());
+              criteria.getOrderByClause(), Entities.getGroupByClause(criteria.getEntityID()), criteria.isForUpdate());
       statement = getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
       List<Entity> result = null;
@@ -869,7 +869,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   private static void setParameterValue(final PreparedStatement statement, final int parameterIndex,
                                         final Object value, final Property.ColumnProperty property) throws SQLException {
-    final Object columnValue = property.toSQLValue(value);
+    final Object columnValue = property.toColumnValue(value);
     try {
       if (columnValue == null) {
         statement.setNull(parameterIndex, property.getColumnType());
@@ -879,7 +879,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       }
     }
     catch (SQLException e) {
-      LOG.debug("Unable to set parameter: " + property + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()), e);
+      LOG.error("Unable to set parameter: " + property + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()), e);
       throw e;
     }
   }
