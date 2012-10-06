@@ -161,7 +161,7 @@ public final class Properties {
    */
   public static Property.SubqueryProperty subqueryProperty(final String propertyID, final int type, final String caption,
                                                            final String subquery) {
-    return new PropertyImpl.SubqueryPropertyImpl(propertyID, type, caption, subquery);
+    return subqueryProperty(propertyID, type, caption, subquery, type);
   }
 
   /**
