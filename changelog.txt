@@ -3268,3 +3268,4 @@
   BooleanProperty removed
   Previous KeyGenerator refactoring broke it, needs to lazily load the query due to remote connections
   EntitySelectCriteria.selectForUpdate field renamed to forUpdate along with accessors
+  SubQueryProperty constructor overloaded with columnType parameter

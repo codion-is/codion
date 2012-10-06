@@ -1164,7 +1164,20 @@ class PropertyImpl implements Property {
      * @param subquery the sql query
      */
     SubqueryPropertyImpl(final String propertyID, final int type, final String caption, final String subquery) {
-      super(propertyID, type, caption);
+      this(propertyID, type, caption, subquery, type);
+    }
+
+    /**
+     * @param propertyID the property ID, since SubqueryProperties do not map to underlying table columns,
+     * the property ID should not be column name, only be unique for this entity
+     * @param type the data type of this property
+     * @param caption the caption of this property
+     * @param subquery the sql query
+     * @param columnType the actual column type
+     */
+    SubqueryPropertyImpl(final String propertyID, final int type, final String caption, final String subquery,
+                         final int columnType) {
+      super(propertyID, type, caption, columnType);
       setReadOnly(true);
       setUpdatable(false);
       this.subquery = subquery;
