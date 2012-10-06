@@ -14,7 +14,7 @@ public interface EntitySelectCriteria extends EntityCriteria {
   String getOrderByClause();
 
   /**
-   * @return true if this select should lock to result for update
+   * @return true if this select should lock the result for update
    */
   boolean isForUpdate();
 

@@ -332,6 +332,11 @@ public class EntityConnectionImplTest {
     assertTrue(updated.isEmpty());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void selectPropertyValuesNonColumnProperty() throws Exception {
+    connection.selectPropertyValues(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_LOCATION, false);
+  }
+
   @Test
   public void selectPropertyValues() throws Exception {
     final List<Object> result = connection.selectPropertyValues(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, false);

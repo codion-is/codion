@@ -85,10 +85,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   /**
    * Constructs a new EntityConnectionImpl instance
    * @param database the Database instance
-   * @param connection the connection object to base this entity db connection on
+   * @param connection the connection object to base this entity connection on
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
-   * @throws org.jminor.common.db.exception.DatabaseException in case a validation statement is required
-   * but could not be created
+   * @throws DatabaseException in case a validation statement is required but could not be created
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
   EntityConnectionImpl(final Database database, final Connection connection) throws DatabaseException {
@@ -345,7 +344,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         throw new UnsupportedOperationException("selectPropertyValues is not implemented for entities with custom select queries");
       }
 
-      final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(entityID, propertyID);
+      final Property.ColumnProperty property = Entities.getColumnProperty(entityID, propertyID);
       final String columnName = property.getColumnName();
       selectSQL = createSelectSQL(Entities.getSelectTableName(entityID), "distinct " + columnName,
               "where " + columnName + " is not null", order ? columnName : null);
@@ -505,9 +504,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   @Override
   public synchronized void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws DatabaseException {
     final Property.ColumnProperty property = Entities.getColumnProperty(primaryKey.getEntityID(), blobPropertyID);
-    if (property.getType() != Types.BLOB) {
+    if (property.getColumnType() != Types.BLOB) {
       throw new IllegalArgumentException("Property " + property.getPropertyID() + " in entity " +
-              primaryKey.getEntityID() + "is not of type BLOB");
+              primaryKey.getEntityID() + " does not have column type BLOB");
     }
     SQLException exception = null;
     ByteArrayInputStream inputStream = null;
@@ -518,8 +517,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     final List<Object> values = new ArrayList<Object>();
     final List<Property.ColumnProperty> properties = new ArrayList<Property.ColumnProperty>();
     Databases.QUERY_COUNTER.count(sql);
-    logAccess("writeBlob", new Object[]{sql});
     try {
+      logAccess("writeBlob", new Object[]{sql});
       values.add(null);//the blob value, set explicitly later
       values.addAll(criteria.getValues());
       properties.add(property);
@@ -552,8 +551,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   @Override
   public synchronized byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException {
     final Property.ColumnProperty property = Entities.getColumnProperty(primaryKey.getEntityID(), blobPropertyID);
-    if (property.getType() != Types.BLOB) {
-      throw new IllegalArgumentException("Property " + property.getPropertyID() + " in entity " + primaryKey.getEntityID() + "is not of type BLOB");
+    if (property.getColumnType() != Types.BLOB) {
+      throw new IllegalArgumentException("Property " + property.getPropertyID() + " in entity " +
+              primaryKey.getEntityID() + " does not have column type BLOB");
     }
     PreparedStatement statement = null;
     SQLException exception = null;
@@ -562,8 +562,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     final String sql = "select " + property.getColumnName() + " from " +
             Entities.getTableName(primaryKey.getEntityID()) + " " + criteria.getWhereClause();
     Databases.QUERY_COUNTER.count(sql);
-    logAccess("readBlob", new Object[]{sql});
     try {
+      logAccess("readBlob", new Object[]{sql});
       statement = getConnection().prepareStatement(sql);
       setParameterValues(statement, criteria.getValues(), criteria.getValueProperties());
 
@@ -782,8 +782,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   private void executePreparedUpdate(final PreparedStatement statement, final String sqlStatement,
                                      final List<?> values, final List<Property.ColumnProperty> properties) throws SQLException {
     SQLException exception = null;
+    Databases.QUERY_COUNTER.count(sqlStatement);
     try {
-      Databases.QUERY_COUNTER.count(sqlStatement);
       logAccess("executePreparedUpdate", new Object[]{sqlStatement, values});
       setParameterValues(statement, values, properties);
       statement.executeUpdate();
@@ -803,8 +803,8 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   private ResultSet executePreparedSelect(final PreparedStatement statement, final String sqlStatement,
                                           final List<?> values, final List<Property.ColumnProperty> properties) throws SQLException {
     SQLException exception = null;
+    Databases.QUERY_COUNTER.count(sqlStatement);
     try {
-      Databases.QUERY_COUNTER.count(sqlStatement);
       logAccess("executePreparedSelect", values == null ? new Object[]{sqlStatement} : new Object[]{sqlStatement, values});
       setParameterValues(statement, values, properties);
       return statement.executeQuery();

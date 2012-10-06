@@ -386,9 +386,11 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
       return connection;
     }
     catch (DatabaseException e) {
+      LOG.debug(clientInfo + " unable to connect", e);
       throw new RemoteException(e.getMessage(), e);
     }
     catch (ClassNotFoundException e) {
+      LOG.debug(clientInfo + " unable to connect", e);
       throw new RemoteException(e.getMessage(), e);
     }
   }

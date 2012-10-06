@@ -3271,3 +3271,5 @@
   SubqueryPropertyImpl constructor overloaded with columnType parameter
   SubqueryPropertyImpl, removed unused constructor
   empdept ddl script simplified a bit
+  EntityConnectionServer, added logging of unsuccessful login attempts
+  EntityConnectionImpl.selectPropertyValues() now throws IllegalArgumentException if not a column based property, tested

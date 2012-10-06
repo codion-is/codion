@@ -148,6 +148,7 @@ public interface RemoteEntityConnection extends Remote {
    * @param order if true then the result is ordered
    * @return the values in the given column (Property) in the given table (Entity)
    * @throws org.jminor.common.db.exception.DatabaseException in case of a db exception
+   * @throws IllegalArgumentException in case the given property is not a column based property
    * @throws java.rmi.RemoteException in case of a remote exception
    */
   List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order)
