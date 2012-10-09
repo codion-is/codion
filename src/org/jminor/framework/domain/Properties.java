@@ -213,16 +213,6 @@ public final class Properties {
 
   /**
    * @param propertyID the property ID
-   * @param caption the caption of this property
-   * @return a new boolean property
-   */
-  public static Property.ColumnProperty booleanProperty(final String propertyID, final String caption) {
-    return new PropertyImpl.ColumnPropertyImpl(propertyID, Types.BOOLEAN, caption)
-            .setColumnValueConverter(booleanColumnValueConverter());
-  }
-
-  /**
-   * @param propertyID the property ID
    * @param columnType the data type of the underlying column
    * @param caption the caption of this property
    * @return a new boolean property

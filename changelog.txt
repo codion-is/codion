@@ -3276,3 +3276,4 @@
   DoubleField.set/GetMaximumFractionDigits() added, a rather clumsy implementation
   SizedDocument.postInsert() added to accommodate the above
   EntityUiUtil.initializeTextField() uses the above
+  Properties.columnProperty() method without columnType parameter removed
