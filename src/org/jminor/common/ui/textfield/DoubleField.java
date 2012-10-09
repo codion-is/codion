@@ -5,6 +5,7 @@ package org.jminor.common.ui.textfield;
 
 import org.jminor.common.model.Util;
 
+import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import java.text.NumberFormat;
 
@@ -39,6 +40,14 @@ public final class DoubleField extends IntField {
     ((DoubleFieldDocument) getDocument()).setDecimalSymbol(decimalSymbol);
   }
 
+  public int getMaximumFractionDigits() {
+    return ((DoubleFieldDocument) getDocument()).getMaximumFractionDigits();
+  }
+
+  public void setMaximumFractionDigits(final int maximumFractionDigits) {
+    ((DoubleFieldDocument) getDocument()).setMaximumFractionDigits(maximumFractionDigits);
+  }
+
   /**
    * @return the value
    */
@@ -69,6 +78,18 @@ public final class DoubleField extends IntField {
   private class DoubleFieldDocument extends SizedDocument {
 
     private String decimalSymbol = COMMA;
+    private int maximumFractionDigits = -1;
+
+    public int getMaximumFractionDigits() {
+      return maximumFractionDigits;
+    }
+
+    public void setMaximumFractionDigits(final int maximumFractionDigits) {
+      if (maximumFractionDigits < 1 && maximumFractionDigits != -1) {
+        throw new IllegalArgumentException("Maximum fraction digits must be larger than 0, or -1 for no maximum");
+      }
+      this.maximumFractionDigits = maximumFractionDigits;
+    }
 
     public String getDecimalSymbol() {
       return decimalSymbol;
@@ -146,6 +167,38 @@ public final class DoubleField extends IntField {
       }
 
       return valueOk;
+    }
+
+    @Override
+    protected void postInsert() {//not exactly elegant :(
+      try {
+        final String text = getText(0, getLength());
+        //silently remove fraction digits exceeding the maximum
+        if (maximumFractionDigits != -1) {
+          final String fixedText = removeFractionDigits(text);
+          if (!text.equals(fixedText)) {
+            setText(fixedText);
+          }
+        }
+      }
+      catch (BadLocationException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    private String removeFractionDigits(final String preparedString) {
+      final String[] splitResult = preparedString.split(getDecimalSymbol());
+      if (splitResult.length < 2) {//no decimal symbol
+        return preparedString;
+      }
+
+      final int fractionDigits = splitResult[1].length();
+      if (fractionDigits > maximumFractionDigits) {
+        final int digitsToRemove = fractionDigits - maximumFractionDigits;
+        return preparedString.substring(0, preparedString.length() - digitsToRemove);
+      }
+
+      return preparedString;
     }
   }
 

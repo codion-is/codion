@@ -797,10 +797,13 @@ public final class EntityUiUtil {
                                                 final boolean valueContainsLiteralCharacters) {
     final JTextField field;
     if (property.isInteger()) {
-      field = new IntField(0);
+      field = new IntField();
     }
     else if (property.isDouble()) {
-      field = new DoubleField(0);
+      field = new DoubleField();
+      if (property.getMaximumFractionDigits() > 0) {
+        ((DoubleField) field).setMaximumFractionDigits(property.getMaximumFractionDigits());
+      }
     }
     else if (property.isTime()) {
       field = UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) property.getFormat()), true);

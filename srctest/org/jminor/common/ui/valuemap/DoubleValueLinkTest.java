@@ -12,8 +12,6 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.Test;
 
-import java.text.NumberFormat;
-
 import static org.junit.Assert.*;
 
 public class DoubleValueLinkTest {
@@ -23,10 +21,7 @@ public class DoubleValueLinkTest {
     final ValueMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(DoubleField.POINT);
-    final NumberFormat format = NumberFormat.getNumberInstance();
-    format.setMaximumFractionDigits(4);
-    final TextValueLink<String> valueLink = new DoubleValueLink<String>(txt, model, EmpDept.EMPLOYEE_COMMISSION, true,
-            LinkType.READ_WRITE, format);
+    final TextValueLink<String> valueLink = new DoubleValueLink<String>(txt, model, EmpDept.EMPLOYEE_COMMISSION, true, LinkType.READ_WRITE);
     ValueLinkValidators.addValidator(valueLink, txt, model);/*Range 100 - 2000*/
     assertNull("Initial Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setDouble(1000.5);

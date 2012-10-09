@@ -79,7 +79,10 @@ public class SizedDocument extends PlainDocument {
     if (validValue(toInsert, documentText, offset)) {
       super.insertString(offset, toInsert, attributeSet);
     }
+    postInsert();
   }
+
+  protected void postInsert() {}
 
   /**
    * @param string the string to check

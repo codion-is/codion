@@ -3273,3 +3273,6 @@
   empdept ddl script simplified a bit
   EntityConnectionServer, added logging of unsuccessful login attempts
   EntityConnectionImpl.selectPropertyValues() now throws IllegalArgumentException if not a column based property, tested
+  DoubleField.set/GetMaximumFractionDigits() added, a rather clumsy implementation
+  SizedDocument.postInsert() added to accommodate the above
+  EntityUiUtil.initializeTextField() uses the above
