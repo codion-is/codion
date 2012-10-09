@@ -3277,3 +3277,4 @@
   SizedDocument.postInsert() added to accommodate the above
   EntityUiUtil.initializeTextField() uses the above
   Properties.columnProperty() method without columnType parameter removed
+  RemoteEntityConnectionImpl, bug fixed, did not set method logger for non-pooled connections

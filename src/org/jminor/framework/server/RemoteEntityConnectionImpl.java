@@ -150,6 +150,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
       }
       else {
         localEntityConnection = EntityConnections.createConnection(database, clientInfo.getDatabaseUser());
+        localEntityConnection.setMethodLogger(methodLogger);
       }
       addDisconnectListener(new EventAdapter() {
         /** {@inheritDoc} */
