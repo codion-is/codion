@@ -1251,7 +1251,7 @@ public final class UiUtil {
 
   /**
    * http://bugs.sun.com/bugdatabase/view_bug.do?bug_id=5018574
-   * @param component the component, in case of text fields the caret is moved to the end of the text
+   * @param component the component
    * @param onFocusAction the action to run when the focus has been requested
    */
   public static void addInitialFocusHack(final JComponent component, final Action onFocusAction) {

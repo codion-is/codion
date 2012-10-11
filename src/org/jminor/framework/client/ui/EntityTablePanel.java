@@ -54,7 +54,6 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.InputMap;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -566,19 +565,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final String printCaption = FrameworkMessages.get(FrameworkMessages.PRINT_TABLE);
     return Controls.methodControl(this, "printTable", printCaption, null,
             printCaption, printCaption.charAt(0), null, Images.loadImage("Print16.gif"));
-  }
-
-  /**
-   * Queries the user on which property to update, after which it calls the
-   * <code>updateSelectedEntities(property)</code> with that property
-   * @see #updateSelectedEntities(org.jminor.framework.domain.Property)
-   * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List)
-   */
-  public final void updateSelectedEntities() {
-    final Property toUpdate = getPropertyToUpdate();
-    if (toUpdate != null) {//null if cancelled
-      updateSelectedEntities(toUpdate);
-    }
   }
 
   /**
@@ -1157,7 +1143,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param property the property for which to get the InputProvider
    * @param toUpdate the entities that are about to be updated
    * @return the InputProvider handling input for <code>property</code>
-   * @see #updateSelectedEntities
+   * @see #updateSelectedEntities(org.jminor.framework.domain.Property)
    */
   @SuppressWarnings({"UnusedDeclaration"})
   protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
@@ -1437,18 +1423,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       populateEntityMenu(popupMenu, (Entity) entity.getCopy(), getEntityTableModel().getConnectionProvider());
       popupMenu.show(getTableScrollPane(), location.x, (int) location.getY() - (int) getTableScrollPane().getViewport().getViewPosition().getY());
     }
-  }
-
-  private Property getPropertyToUpdate() {
-    final JComboBox box = new JComboBox(EntityUtil.getUpdatableProperties(getEntityTableModel().getEntityID()).toArray());
-    final int ret = JOptionPane.showOptionDialog(this, box, FrameworkMessages.get(FrameworkMessages.SELECT_PROPERTY_FOR_UPDATE),
-            JOptionPane.OK_CANCEL_OPTION, JOptionPane.PLAIN_MESSAGE, null, null, null);
-
-    if (ret == JOptionPane.OK_OPTION) {
-      return (Property) box.getSelectedItem();
-    }
-
-    return null;
   }
 
   private void updateStatusMessage() {

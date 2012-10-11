@@ -3282,3 +3282,4 @@
   UiUtil.addKeyEvent() now removes key binding if action parameter is null
   DefaultEntityTableModel.bindEditModelEvents() renamed to bindEditModelEventsInternal()
   DefaultEntityTableModel.bindEditModelEvents() added for overriding
+  EntityTablePanel, removed unused parameterless updateSelectedEntities() along with getPropertyToUpdate()
