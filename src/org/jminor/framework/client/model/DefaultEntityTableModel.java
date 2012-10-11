@@ -159,6 +159,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityID() + ", tableModel: " + entityID);
     }
     this.editModel = editModel;
+    bindEditModelEventsInternal();
     bindEditModelEvents();
   }
 
@@ -628,6 +629,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   @SuppressWarnings({"UnusedDeclaration"})
   protected void handleDelete(final EntityEditModel.DeleteEvent event) {}
 
+  /**
+   * Override to bind events using the edit model, called after the edit model has been set
+   */
+  protected void bindEditModelEvents() {}
+
   private void bindEvents() {
     addColumnHiddenListener(new EventAdapter<Property>() {
       /** {@inheritDoc} */
@@ -644,7 +650,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     });
   }
 
-  private void bindEditModelEvents() {
+  private void bindEditModelEventsInternal() {
     editModel.addAfterDeleteListener(new EventAdapter<EntityEditModel.DeleteEvent>() {
       /** {@inheritDoc} */
       @Override

@@ -1002,26 +1002,28 @@ public final class UiUtil {
 
   /**
    * Links the given action to the given key event on the given component via inputMap/actionMap, using the name
-   * of the action as key for the actionMap
+   * of the action as key for the actionMap, if <code>action</code> is null the binding is removed
    * @param component the component
    * @param keyEvent the key event
    * @param modifiers the modifiers
    * @param condition the condition
    * @param onKeyRelease the onKeyRelease condition
-   * @param action the action
-   * @throws IllegalArgumentException in case <code>component</code>, <code>action</code> or the action name is null
+   * @param action the action, if null then the action binding is removed
+   * @throws IllegalArgumentException in case <code>component</code> or the action name is null
    * @see KeyStroke#getKeyStroke(int, int, boolean)
    */
   public static void addKeyEvent(final JComponent component, final int keyEvent, final int modifiers, final int condition,
                                  final boolean onKeyRelease, final Action action) {
     Util.rejectNullValue(component, "component");
-    Util.rejectNullValue(action, "action");
-    final Object name = action.getValue(Action.NAME);
-    if (name == null) {
-      throw new IllegalArgumentException("Action name must be specified");
+    Object actionName = null;
+    if (action != null) {
+      actionName = action.getValue(Action.NAME);
+      if (actionName == null) {
+        throw new IllegalArgumentException("Action name must be specified");
+      }
+      component.getActionMap().put(actionName, action);
     }
-    component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease), name);
-    component.getActionMap().put(name, action);
+    component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease), actionName);
   }
 
   public static void addLookupDialog(final JTextField txtField, final ValueCollectionProvider valueCollectionProvider) {
@@ -1075,7 +1077,7 @@ public final class UiUtil {
    * @param okAction the action for the OK button
    * @param cancelAction the action for the cancel button
    */
-  public static void prepareScrollPanelDialog(final JDialog dialog, JComponent dialogOwner,final JComponent toScroll,
+  public static void prepareScrollPanelDialog(final JDialog dialog, final JComponent dialogOwner, final JComponent toScroll,
                                               final Action okAction, final Action cancelAction) {
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelAction);
@@ -1091,6 +1093,7 @@ public final class UiUtil {
     });
     final JButton btnOk  = new JButton(okAction);
     final JButton btnCancel = new JButton(cancelAction);
+    btnOk.setText(Messages.get(Messages.OK));
     btnCancel.setText(Messages.get(Messages.CANCEL));
     final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
     final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);

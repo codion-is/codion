@@ -3278,3 +3278,7 @@
   EntityUiUtil.initializeTextField() uses the above
   Properties.columnProperty() method without columnType parameter removed
   RemoteEntityConnectionImpl, bug fixed, did not set method logger for non-pooled connections
+  UiUtil.prepareScrollPaneDialog(), bug fixed, did not set OK button caption
+  UiUtil.addKeyEvent() now removes key binding if action parameter is null
+  DefaultEntityTableModel.bindEditModelEvents() renamed to bindEditModelEventsInternal()
+  DefaultEntityTableModel.bindEditModelEvents() added for overriding
