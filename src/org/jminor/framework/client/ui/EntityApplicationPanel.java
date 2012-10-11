@@ -430,6 +430,15 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /**
+   * Returns the JTabbedPane used by the default UI, note that this can be null if the default UI
+   * initialization has been overridden. Returns null until {@link #initializeUI()} has been called
+   * @return the default application tab pane
+   */
+  protected final JTabbedPane getApplicationTabPane() {
+    return applicationTabPane;
+  }
+
+  /**
    * @return the control set on which to base the main menu
    * @see #getFileControlSet()
    * @see #getSettingsControlSet()
