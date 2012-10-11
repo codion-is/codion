@@ -205,6 +205,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
     }
     if (localEntityConnection != null) {
       if (localEntityConnection.isTransactionOpen()) {
+        LOG.info("Rollback open transaction on disconnect: {}", clientInfo);
         localEntityConnection.rollbackTransaction();
       }
       returnConnection();

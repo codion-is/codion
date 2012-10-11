@@ -3284,3 +3284,4 @@
   DefaultEntityTableModel.bindEditModelEvents() added for overriding
   EntityTablePanel, removed unused parameterless updateSelectedEntities() along with getPropertyToUpdate()
   EntityApplicationPanel.getApplicationTabPane() added
+  RemoteEntityConnectionImpl, added logging of rollback of an open transaction on disconnect
