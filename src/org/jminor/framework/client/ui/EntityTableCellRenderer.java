@@ -107,7 +107,15 @@ public class EntityTableCellRenderer implements TableCellRenderer {
      * @param property the property to base this renderer on
      */
     public NumberRenderer(final Property property) {
-      super(property.getFormat(), JLabel.RIGHT);
+      this(property.getFormat());
+    }
+
+    /**
+     * Instantiates a new NumberRenderer.
+     * @param format the format to use when rendering
+     */
+    public NumberRenderer(final Format format) {
+      super(format, JLabel.RIGHT);
     }
 
     /** {@inheritDoc} */
@@ -131,7 +139,15 @@ public class EntityTableCellRenderer implements TableCellRenderer {
      * @param property the property to base this renderer on
      */
     public DateRenderer(final Property property) {
-      super(property.getFormat(), JLabel.RIGHT);
+      this(property.getFormat());
+    }
+
+    /**
+     * Instantiates a new DateRenderer.
+     * @param format the format to use when rendering
+     */
+    public DateRenderer(final Format format) {
+      super(format, JLabel.RIGHT);
     }
 
     /** {@inheritDoc} */

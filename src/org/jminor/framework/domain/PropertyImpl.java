@@ -710,6 +710,9 @@ class PropertyImpl implements Property {
     }
 
     private static ValueFetcher initializeValueFetcher(final ColumnProperty property) {
+      if (property instanceof MirrorProperty) {
+        return null;
+      }
       return new ValueFetcher() {
         private final ValueFetcher columnValueFetcher = initializeColumnValueFetcher(property.getColumnType(), property);
         /** {@inheritDoc} */

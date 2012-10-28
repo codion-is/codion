@@ -3285,3 +3285,7 @@
   EntityTablePanel, removed unused parameterless updateSelectedEntities() along with getPropertyToUpdate()
   EntityApplicationPanel.getApplicationTabPane() added
   RemoteEntityConnectionImpl, added logging of rollback of an open transaction on disconnect
+  PropertyImpl no longer initializes a ValueFetcher for MirrorProperty
+  Entities.DEFAULT_KEY_GENERATOR added, useful for checking if an entity is using the default one
+  EntityDefinitionImpl.SequenceKeyGenerator only queries a primary key value if it is not already specified for the entity
+  EntityTableCellRenderer.NumberRenderer and DateRenderer overloaded constructor with format parameter

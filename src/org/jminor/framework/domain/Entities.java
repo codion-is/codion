@@ -25,6 +25,8 @@ import java.util.Map;
  */
 public final class Entities {
 
+  public static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = EntityDefinitionImpl.DEFAULT_KEY_GENERATOR;
+
   private static final String ENTITY_PARAM = "entity";
   private static final String ENTITY_ID_PARAM = "entityID";
 

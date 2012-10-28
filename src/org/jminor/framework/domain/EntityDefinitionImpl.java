@@ -839,10 +839,12 @@ final class EntityDefinitionImpl implements Entity.Definition {
     @Override
     public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {
-      if (getQuery() == null) {
-        setQuery(connection.getDatabase().getSequenceSQL(sequenceName));
+      if (entity.isValueNull(primaryKeyProperty)) {
+        if (getQuery() == null) {
+          setQuery(connection.getDatabase().getSequenceSQL(sequenceName));
+        }
+        queryAndSet(entity, primaryKeyProperty, connection);
       }
-      queryAndSet(entity, primaryKeyProperty, connection);
     }
   }
 
