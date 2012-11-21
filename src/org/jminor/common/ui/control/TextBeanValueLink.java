@@ -3,21 +3,27 @@
  */
 package org.jminor.common.ui.control;
 
+import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Util;
 
 import javax.swing.event.DocumentEvent;
-import javax.swing.event.DocumentListener;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
+import java.text.Format;
 
 /**
  * Binds a JTextComponent to a text based bean property.
  */
-public class TextBeanValueLink extends AbstractBeanValueLink implements DocumentListener {
+public class TextBeanValueLink extends AbstractBeanValueLink {
 
   private final Document document;
+
+  /**
+   * The format to use when presenting values in the linked text field
+   */
+  private final Format format;
 
   /**
    * Instantiates a new TextBeanValueLink, with String as value class.
@@ -55,50 +61,45 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
    */
   public TextBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
                            final Class<?> valueClass, final EventObserver valueChangeEvent, final LinkType linkType) {
+    this(textComponent, owner, propertyName, valueClass, valueChangeEvent, linkType, null);
+  }
+
+  /**
+   * Instantiates a new TextBeanValueLink.
+   * @param textComponent the text component to link with the value
+   * @param owner the value owner
+   * @param propertyName the property name
+   * @param valueClass the value class
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param linkType the link type
+   * @param format the format to use when displaying the linked value,
+   * null if no formatting should be performed
+   */
+  public TextBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
+                           final Class<?> valueClass, final EventObserver valueChangeEvent, final LinkType linkType,
+                           final Format format) {
     super(owner, propertyName, valueClass, valueChangeEvent, linkType);
     this.document = textComponent.getDocument();
+    this.format = format == null ? new Util.NullFormat() : format;
     if (linkType == LinkType.READ_ONLY) {
       textComponent.setEditable(false);
     }
-    this.document.addDocumentListener(this);
+    updateUI();
+    this.document.addDocumentListener(new DocumentAdapter() {
+      /** {@inheritDoc} */
+      @Override
+      public final void contentsChanged(final DocumentEvent e) {
+        updateModel();
+      }
+    });
   }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void insertUpdate(final DocumentEvent e) {
-    updateModel();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void removeUpdate(final DocumentEvent e) {
-    updateModel();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void changedUpdate(final DocumentEvent e) {}
 
   /**
    * @return the value from the UI component
    */
   @Override
-  protected Object getUIValue() {
-    final String text = getText();
-
-    return Util.nullOrEmpty(text) ? null : text;
-  }
-
-  /**
-   * Returns a String representation of the given value, used when setting the value in the UI.
-   * This default implementation simply returns value.toString() or null if the value is null.
-   * Override to provide specific (such as formatted) string representations of the model value
-   * when setting the value in the UI.
-   * @param value the value
-   * @return the value as a string
-   */
-  protected String getValueAsString(final Object value) {
-    return value != null ? value.toString() : null;
+  protected final Object getUIValue() {
+    return getValueFromText(getText());
   }
 
   /** {@inheritDoc} */
@@ -108,7 +109,7 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
       synchronized (document) {
         document.remove(0, document.getLength());
         if (value != null) {
-          document.insertString(0, getValueAsString(value), null);
+          document.insertString(0, getValueAsText(value), null);
         }
       }
       handleSetUIValue(value);
@@ -119,17 +120,55 @@ public class TextBeanValueLink extends AbstractBeanValueLink implements Document
   }
 
   /**
-   * @return the text from the input component
+   * @return the text from the linked text component
    */
   protected final String getText() {
     try {
-      synchronized (document) {
-        return document.getText(0, document.getLength());
-      }
+      return translate(document.getText(0, document.getLength()));
     }
     catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Returns a String representation of the given value object, using the format,
+   * an empty string is returned in case of a null value
+   * @param value the value to return as String
+   * @return a formatted String representation of the given value, an empty string if the value is null
+   */
+  protected final String getValueAsText(final Object value) {
+    return value == null ? "" : format.format(value);
+  }
+
+  /**
+   * @return the format object being used by this value link
+   */
+  protected final Format getFormat() {
+    return format;
+  }
+
+  /**
+   * Provides a hook into the value setting mechanism.
+   * @param text the value returned from the UI component
+   * @return the translated value
+   */
+  protected String translate(final String text) {
+    return text;
+  }
+
+  /**
+   * Returns a property value based on the given text, if the text can not
+   * be parsed into a valid value, null is returned
+   * @param text the text from which to parse a value
+   * @return a value from the given text, or null if the parsing did not yield a valid value
+   */
+  protected Object getValueFromText(final String text) {
+    if (text != null && text.isEmpty()) {
+      return null;
+    }
+
+    return text;
   }
 
   /**

@@ -44,11 +44,11 @@ public final class PetstoreLoadTest extends EntityLoadTestModel {
       }
     };
     final EntityModel categoryModel = applicationModel.getEntityModels().iterator().next();
-    categoryModel.setLinkedDetailModels(categoryModel.getDetailModels().iterator().next());
+    categoryModel.addLinkedDetailModel(categoryModel.getDetailModels().iterator().next());
     final EntityModel productModel = categoryModel.getDetailModels().iterator().next();
-    productModel.setLinkedDetailModels(productModel.getDetailModels().iterator().next());
+    productModel.addLinkedDetailModel(productModel.getDetailModels().iterator().next());
     final EntityModel itemModel = productModel.getDetailModels().iterator().next();
-    itemModel.setLinkedDetailModels(itemModel.getDetailModels().iterator().next());
+    itemModel.addLinkedDetailModel(itemModel.getDetailModels().iterator().next());
 
     return applicationModel;
   }

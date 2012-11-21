@@ -62,17 +62,15 @@ public class DoubleBeanValueLink extends TextBeanValueLink {
   public DoubleBeanValueLink(final DoubleField doubleField, final Object owner, final String propertyName,
                              final EventObserver valueChangeEvent, final LinkType linkType, final boolean usePrimitive) {
     super(doubleField, owner, propertyName, usePrimitive ? double.class : Double.class, valueChangeEvent, linkType);
-    updateUI();
   }
 
   /** {@inheritDoc} */
   @Override
-  protected final Object getUIValue() {
-    final String text = getText();
+  protected final Object getValueFromText(final String text) {
     if (text.isEmpty() && getValueClass().equals(double.class)) {
       return 0;
     }
 
-    return Util.getDouble(getText());
+    return Util.getDouble(text);
   }
 }

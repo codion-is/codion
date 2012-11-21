@@ -64,17 +64,15 @@ public class IntBeanValueLink extends TextBeanValueLink {
   public IntBeanValueLink(final IntField intField, final Object owner, final String propertyName,
                           final EventObserver valueChangeEvent, final LinkType linkType, final boolean usePrimitive) {
     super(intField, owner, propertyName, usePrimitive ? int.class : Integer.class, valueChangeEvent, linkType);
-    updateUI();
   }
 
   /** {@inheritDoc} */
   @Override
-  protected final Object getUIValue() {
-    final String text = getText();
+  protected final Object getValueFromText(final String text) {
     if (text.isEmpty() && getValueClass().equals(int.class)) {
       return 0;
     }
 
-    return Util.getInt(getText());
+    return Util.getInt(text);
   }
 }

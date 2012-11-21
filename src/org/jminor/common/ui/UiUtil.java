@@ -406,12 +406,12 @@ public final class UiUtil {
 
   /**
    * Creates a JFormattedTextField with the given mask, using '_' as a placeholder character, disallowing invalid values,
-   * with JFormattedTextField.COMMIT as focus lost behaviour.
+   * with JFormattedTextField.COMMIT as focus lost behaviour. By default the value contains the literal characters.
    * @param mask the format mask
    * @return a JFormattedTextField
    */
   public static JFormattedTextField createFormattedField(final String mask) {
-    return createFormattedField(mask, false);
+    return createFormattedField(mask, true);
   }
 
   /**

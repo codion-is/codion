@@ -4,10 +4,8 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.Util;
 
 import javax.swing.JFormattedTextField;
-import javax.swing.text.MaskFormatter;
 import java.text.Format;
 import java.text.ParseException;
 
@@ -16,8 +14,7 @@ import java.text.ParseException;
  */
 public class FormattedTextBeanValueLink extends TextBeanValueLink {
 
-  private final Format format;
-  private final String placeholder;
+  private final JFormattedTextField.AbstractFormatter formatter;
 
   /**
    * Instantiates a new FormattedTextBeanValueLink.
@@ -33,44 +30,43 @@ public class FormattedTextBeanValueLink extends TextBeanValueLink {
                                     final String propertyName, final Class<?> valueClass,
                                     final EventObserver valueChangeEvent, final LinkType linkType,
                                     final Format format) {
-    super(textComponent, owner, propertyName, valueClass, valueChangeEvent, linkType);
-    this.format = Util.rejectNullValue(format, "format");
-    this.placeholder = Character.toString((((MaskFormatter) textComponent.getFormatter()).getPlaceholderCharacter()));
-    updateUI();
+    super(textComponent, owner, propertyName, valueClass, valueChangeEvent, linkType, format);
+    this.formatter = textComponent.getFormatter();
   }
 
   /** {@inheritDoc} */
   @Override
-  protected final String getValueAsString(final Object value) {
-    return value == null ? null : format.format(value);
-  }
-
-  /**
-   * This is a very strict implementation, formatted values are considered
-   * invalid until all placeholder characters have been replaced, resulting in a null return value
-   * @return the value, if a formatter is present, the formatted value is returned
-   */
-  @Override
-  protected final Object getUIValue() {
-    final String text = getText();
-    if (text != null && text.contains(placeholder)) {
+  protected final Object getValueFromText(final String text) {
+    if (text == null) {
       return null;
     }
 
     try {
-      return text != null ? translate(format.parseObject(text)) : null;
+      return translate(getFormat().parseObject(text));
     }
     catch (ParseException nf) {
       return null;
     }
   }
 
+  /** {@inheritDoc} */
+  @Override
+  protected final String translate(final String text) {
+    try {
+      return (String) formatter.stringToValue(text);
+    }
+    catch (ParseException e) {
+      return null;
+    }
+  }
+
   /**
-   * Provides a hook into the UI value retrieval.
-   * Override to manipulate the value coming from the UI before it
-   * is set in the model.
-   * @param parsedValue the value returned directly from the UI component
-   * @return the translated value
+   * Allows for a hook into the value parsing mechanism, so that
+   * a value returned by the format parsing can be replaced with, say
+   * a subclass, or some more appropriate value.
+   * By default this simple returns the value.
+   * @param parsedValue the value to translate
+   * @return a translated value
    */
   protected Object translate(final Object parsedValue) {
     return parsedValue;

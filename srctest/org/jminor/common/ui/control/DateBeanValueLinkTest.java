@@ -12,6 +12,7 @@ import org.jminor.common.ui.UiUtil;
 import org.junit.Test;
 
 import javax.swing.JFormattedTextField;
+import java.sql.Timestamp;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -21,19 +22,21 @@ import static org.junit.Assert.assertNull;
 public class DateBeanValueLinkTest {
 
   private Date dateValue;
+  private Timestamp timestamp;
   private final Event evtDateValueChanged = Events.event();
+  private final Event evtTimestampValueChanged = Events.event();
 
   @Test
-  public void test() throws Exception {
+  public void testDate() throws Exception {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
 
     final JFormattedTextField txtString = UiUtil.createFormattedField(DateUtil.getDateMask(format));
-    new DateBeanValueLink(txtString, this, "dateValue", evtDateValueChanged, LinkType.READ_WRITE, format);
+    new DateBeanValueLink(txtString, this, "date", evtDateValueChanged, LinkType.READ_WRITE, format, false);
     assertEquals("String value should be empty on initialization", "__.__.____", txtString.getText());
 
     final Date date = format.parse("03.10.1975");
 
-    setDateValue(date);
+    setDate(date);
     assertEquals("String value should be '03.10.1975'", "03.10.1975", txtString.getText());
     txtString.setText("03.03.1983");
     assertEquals("String value should be 03.03.1983", format.parse("03.03.1983"), dateValue);
@@ -41,11 +44,38 @@ public class DateBeanValueLinkTest {
     assertNull("String value should be empty", dateValue);
   }
 
-  public Date getDateValue() {
+  @Test
+  public void testTimestamp() throws Exception {
+    final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_TIMESTAMP);
+
+    final JFormattedTextField txtString = UiUtil.createFormattedField(DateUtil.getDateMask(format));
+    new DateBeanValueLink(txtString, this, "timestamp", evtTimestampValueChanged, LinkType.READ_WRITE, format, true);
+    assertEquals("String value should be empty on initialization", "__-__-__ __:__", txtString.getText());
+
+    final Timestamp date = new Timestamp(format.parse("03-10-75 10:34").getTime());
+
+    setTimestamp(date);
+    assertEquals("String value should be '03-10-75 10:34'", "03-10-75 10:34", txtString.getText());
+    txtString.setText("03-03-83 11:42");
+    assertEquals("String value should be 03-03-83 11:42", new Timestamp(format.parse("03-03-83 11:42").getTime()), timestamp);
+    txtString.setText("");
+    assertNull("String value should be empty", timestamp);
+  }
+
+  public Timestamp getTimestamp() {
+    return timestamp;
+  }
+
+  public void setTimestamp(final Timestamp timestamp) {
+    this.timestamp = timestamp;
+    evtTimestampValueChanged.fire();
+  }
+
+  public Date getDate() {
     return dateValue;
   }
 
-  public void setDateValue(final Date dateValue) {
+  public void setDate(final Date dateValue) {
     this.dateValue = dateValue;
     evtDateValueChanged.fire();
   }

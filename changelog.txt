@@ -3289,3 +3289,7 @@
   Entities.DEFAULT_KEY_GENERATOR added, useful for checking if an entity is using the default one
   EntityDefinitionImpl.SequenceKeyGenerator only queries a primary key value if it is not already specified for the entity
   EntityTableCellRenderer.NumberRenderer and DateRenderer overloaded constructor with format parameter
+  EntityModel.setLinkedDetailModels() replaced by addLinkedDetailModel() and removeLinkedDetailModel()
+  TextBeanValueLink refactored to mirror TextValueLink
+  TimestampBeanValueLink removed, DateBeanValueLink refactored to accommodate
+  UiUtil.createFormattedField() now has valueContainsLiteralCharacters as true by default

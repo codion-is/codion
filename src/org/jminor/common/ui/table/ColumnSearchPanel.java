@@ -23,7 +23,6 @@ import org.jminor.common.ui.control.DoubleBeanValueLink;
 import org.jminor.common.ui.control.IntBeanValueLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.TextBeanValueLink;
-import org.jminor.common.ui.control.TimestampBeanValueLink;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
@@ -394,13 +393,13 @@ public class ColumnSearchPanel<K> extends JPanel {
         return new DateBeanValueLink((JFormattedTextField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(),
-                LinkType.READ_WRITE, (DateFormat) searchModel.getFormat());
+                LinkType.READ_WRITE, (DateFormat) searchModel.getFormat(), false);
       }
       if (searchModel.getType() == Types.TIMESTAMP) {
-        return new TimestampBeanValueLink((JFormattedTextField) component, searchModel,
+        return new DateBeanValueLink((JFormattedTextField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(),
-                LinkType.READ_WRITE, (DateFormat) searchModel.getFormat());
+                LinkType.READ_WRITE, (DateFormat) searchModel.getFormat(), true);
       }
 
       return new TextBeanValueLink((JTextField) component, searchModel,

@@ -37,11 +37,20 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   Collection<EntityModel> getLinkedDetailModels();
 
   /**
-   * Sets the currently linked detail models. Linked models are updated and filtered according
-   * to the entity/entities selected in this (the master) model
-   * @param detailModels the detail models to link
+   * Adds the given model to the currently linked detail models. Linked models are updated and filtered according
+   * to the entity/entities selected in this (the master) model.
+   * Calling this method with a null argument or a model which is already linked is safe.
+   * @param detailModel links the given detail model to this model
    */
-  void setLinkedDetailModels(final EntityModel... detailModels);
+  void addLinkedDetailModel(final EntityModel detailModel);
+
+  /**
+   * Removes the given model from the currently linked detail models. Linked models are updated and filtered according
+   * to the entity/entities selected in this (the master) model.
+   * Calling this method with a null argument or a model which is not linked is safe.
+   * @param detailModel unlinks the given detail model from this model
+   */
+  void removeLinkedDetailModel(final EntityModel detailModel);
 
   /**
    * Initializes this {@link EntityModel} according to the given foreign key entities.

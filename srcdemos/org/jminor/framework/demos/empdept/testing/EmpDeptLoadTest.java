@@ -45,7 +45,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     applicationModel.addEntityModel(deptModel);
 
     final EntityModel model = applicationModel.getEntityModel(EmpDept.T_DEPARTMENT);
-    model.setLinkedDetailModels(model.getDetailModel(EmpDept.T_EMPLOYEE));
+    model.addLinkedDetailModel(model.getDetailModel(EmpDept.T_EMPLOYEE));
     try {
       model.refresh();
     }

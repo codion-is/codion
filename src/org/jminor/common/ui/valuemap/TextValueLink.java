@@ -84,15 +84,15 @@ public class TextValueLink<K> extends AbstractValueMapLink<K, Object> {
       textComponent.setEditable(false);
     }
     updateUI();
-    this.document.addDocumentListener(new DocumentAdapter() {
-      /** {@inheritDoc} */
-      @Override
-      public final void contentsChanged(final DocumentEvent e) {
-        if (immediateUpdate) {
+    if (immediateUpdate) {
+      this.document.addDocumentListener(new DocumentAdapter() {
+        /** {@inheritDoc} */
+        @Override
+        public final void contentsChanged(final DocumentEvent e) {
           updateModel();
         }
-      }
-    });
+      });
+    }
   }
 
   /** {@inheritDoc} */

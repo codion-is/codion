@@ -255,18 +255,16 @@ public class DefaultEntityModel implements EntityModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void setLinkedDetailModels(final EntityModel... detailModels) {
-    final Set<EntityModel> linked = new HashSet<EntityModel>(linkedDetailModels);
-    linkedDetailModels.clear();
-    if (detailModels != null) {
-      for (final EntityModel detailModel : detailModels) {
-        if (detailModel != null) {
-          linkedDetailModels.add(detailModel);
-        }
-      }
+  public final void addLinkedDetailModel(final EntityModel detailModel) {
+    if (detailModel != null && linkedDetailModels.add(detailModel)) {
+      evtLinkedDetailModelsChanged.fire();
     }
+  }
 
-    if (!linkedDetailModels.equals(linked)) {
+  /** {@inheritDoc} */
+  @Override
+  public final void removeLinkedDetailModel(final EntityModel detailModel) {
+    if (detailModel != null && linkedDetailModels.remove(detailModel)) {
       evtLinkedDetailModelsChanged.fire();
     }
   }

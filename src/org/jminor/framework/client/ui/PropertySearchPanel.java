@@ -17,7 +17,6 @@ import org.jminor.common.ui.control.IntBeanValueLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.SelectedItemBeanValueLink;
 import org.jminor.common.ui.control.TextBeanValueLink;
-import org.jminor.common.ui.control.TimestampBeanValueLink;
 import org.jminor.common.ui.table.ColumnSearchPanel;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
@@ -125,18 +124,12 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 Object.class, isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
       }
-      else if (property.isDate()) {
+      else if (property.isTime()) {
         new DateBeanValueLink((JFormattedTextField) field, model,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
-                LinkType.READ_WRITE, (SimpleDateFormat) model.getFormat());
+                LinkType.READ_WRITE, (SimpleDateFormat) model.getFormat(), property.isTimestamp());
 
-      }
-      else if (property.isTimestamp()) {
-        new TimestampBeanValueLink((JFormattedTextField) field, model,
-                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
-                LinkType.READ_WRITE, (SimpleDateFormat) model.getFormat());
       }
       else if (property.isDouble()) {
         new DoubleBeanValueLink((DoubleField) field, model,

@@ -27,7 +27,7 @@ public class DateValueLinkTest {
   public void test() throws Exception {
     final ValueMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
-    final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format), true);
+    final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format));
     new DateValueLink<String>(txtDate, model, EmpDept.EMPLOYEE_HIREDATE, LinkType.READ_WRITE, format, false);
     assertNull("Initial Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));
     final Date dateValue = format.parse("03-10-1975");

@@ -246,13 +246,12 @@ public final class DefaultEntityModelTest {
   }
 
   @Test
-  public void setLinkedDetailModelsNullValues() {
-    departmentModel.setLinkedDetailModels((EntityModel) null);
+  public void addRemoveLinkedDetailModel() {
+    departmentModel.removeLinkedDetailModel(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE));
     assertTrue(departmentModel.getLinkedDetailModels().isEmpty());
-    departmentModel.setLinkedDetailModels(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE));
+    departmentModel.addLinkedDetailModel(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE));
     assertFalse(departmentModel.getLinkedDetailModels().isEmpty());
-    departmentModel.setLinkedDetailModels(new EntityModel[] {null});
-    assertTrue(departmentModel.getLinkedDetailModels().isEmpty());
+    assertTrue(departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE)));
   }
 
   @Before
@@ -261,7 +260,7 @@ public final class DefaultEntityModelTest {
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     departmentModel.addDetailModel(employeeModel);
     departmentModel.setDetailModelForeignKey(employeeModel, EmpDept.EMPLOYEE_DEPARTMENT_FK);
-    departmentModel.setLinkedDetailModels(employeeModel);
+    departmentModel.addLinkedDetailModel(employeeModel);
     employeeModel.getTableModel().setQueryCriteriaRequired(false);
   }
 

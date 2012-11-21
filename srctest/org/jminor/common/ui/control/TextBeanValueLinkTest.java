@@ -30,8 +30,11 @@ public class TextBeanValueLinkTest {
     txtString.setText("");
     assertNull("String value should be null", stringValue);
 
-    new TextBeanValueLink(txtString, this, "stringValue", String.class, evtStringValueChanged, LinkType.READ_ONLY);
-    assertFalse(txtString.isEditable());
+    final JTextField txtString2 = new JTextField();
+    stringValue = "test";
+    new TextBeanValueLink(txtString2, this, "stringValue", String.class, evtStringValueChanged, LinkType.READ_ONLY);
+    assertEquals("test", txtString2.getText());
+    assertFalse(txtString2.isEditable());
   }
 
   public String getStringValue() {

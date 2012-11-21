@@ -806,7 +806,7 @@ public final class EntityUiUtil {
       }
     }
     else if (property.isTime()) {
-      field = UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) property.getFormat()), true);
+      field = UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) property.getFormat()));
     }
     else if (property.isString()) {
       if (formatMaskString == null) {
