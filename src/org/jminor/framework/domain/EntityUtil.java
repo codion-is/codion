@@ -173,7 +173,7 @@ public final class EntityUtil {
    * @param entities the entities from which to retrieve the values
    * @return a Collection containing the distinct property values, excluding null values
    */
-  public static Collection<Object> getDistinctPropertyValues(final String propertyID, final Collection<Entity> entities) {
+  public static Collection getDistinctPropertyValues(final String propertyID, final Collection<Entity> entities) {
     return getDistinctPropertyValues(propertyID, entities, false);
   }
 
@@ -185,9 +185,9 @@ public final class EntityUtil {
    * @param includeNullValue if true then null is considered a value
    * @return a Collection containing the distinct property values
    */
-  public static Collection<Object> getDistinctPropertyValues(final String propertyID, final Collection<Entity> entities,
-                                                             final boolean includeNullValue) {
-    final Set<Object> values = new HashSet<Object>();
+  public static Collection getDistinctPropertyValues(final String propertyID, final Collection<Entity> entities,
+                                                     final boolean includeNullValue) {
+    final Set values = new HashSet();
     if (entities == null) {
       return values;
     }

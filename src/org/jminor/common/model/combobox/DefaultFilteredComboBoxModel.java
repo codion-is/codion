@@ -18,6 +18,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.CopyOnWriteArrayList;
 
 /**
  * A default {@link FilteredComboBoxModel} implementation.
@@ -43,7 +44,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private FilterCriteria<T> filterCriteria = acceptAllCriteria;
   private boolean filterSelectedItem = true;
 
-  private final List<ListDataListener> listDataListeners = new ArrayList<ListDataListener>();
+  private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<ListDataListener>();
 
   /**
    * Instantiates a new DefaultFilteredComboBoxModel, without a nullValueString.
@@ -340,14 +341,16 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   /** {@inheritDoc} */
   @Override
-  public final void addListDataListener(final ListDataListener l) {
-    listDataListeners.add(l);
+  public final void addListDataListener(final ListDataListener listener) {
+    Util.rejectNullValue(listener, "listener");
+    listDataListeners.add(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeListDataListener(final ListDataListener l) {
-    listDataListeners.remove(l);
+  public final void removeListDataListener(final ListDataListener listener) {
+    Util.rejectNullValue(listener, "listener");
+    listDataListeners.remove(listener);
   }
 
   /** {@inheritDoc} */

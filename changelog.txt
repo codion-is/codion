@@ -3293,3 +3293,4 @@
   TextBeanValueLink refactored to mirror TextValueLink
   TimestampBeanValueLink removed, DateBeanValueLink refactored to accommodate
   UiUtil.createFormattedField() now has valueContainsLiteralCharacters as true by default
+  DefaultFilteredComboBoxModel, listDataListeners now a CopyOnWriteArrayList, due to a java.util.ConcurrentModificationException in OSX, null check added to add/removeListDataListener
