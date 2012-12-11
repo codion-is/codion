@@ -64,7 +64,7 @@ public class EntityCriteriaUtilTest {
 
   @Test
   public void propertyCriteria() {
-    final Criteria<Property.ColumnProperty> critOne = EntityCriteriaUtil.propertyCriteria(EmpDept.T_DEPARTMENT,
+    final Criteria<Property.ColumnProperty> critOne = EntityCriteriaUtil.<String>propertyCriteria(EmpDept.T_DEPARTMENT,
             EmpDept.DEPARTMENT_LOCATION, SearchType.LIKE, true, "New York");
     assertEquals("loc like ?", critOne.asString());
     assertNotNull(critOne);
@@ -73,7 +73,7 @@ public class EntityCriteriaUtilTest {
   @Test
   public void foreignKeyCriteriaNull() {
     final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
-            EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, (Object) null);
+            EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, (Entity.Key) null);
     assertEquals("deptno is null", criteria.asString());
   }
 
@@ -103,12 +103,6 @@ public class EntityCriteriaUtilTest {
     final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department.getPrimaryKey());
     assertEquals("deptno = ?", criteria.asString());
-  }
-
-  @Test (expected = IllegalArgumentException.class)
-  public void foreignKeyCriteriaInvalidType() {
-    final String department = "department no 10";
-    EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department);
   }
 
   @Test

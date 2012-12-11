@@ -111,7 +111,14 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
   /** {@inheritDoc} */
   @Override
   public final Criteria<Property.ColumnProperty> getCriteria() {
-    return EntityCriteriaUtil.foreignKeyCriteria(getColumnIdentifier(), getSearchType(), getUpperBound());
+    final Object upperBound = getUpperBound();
+    if (upperBound instanceof Collection) {
+      //noinspection unchecked
+      return EntityCriteriaUtil.foreignKeyCriteria(getColumnIdentifier(), getSearchType(),
+              ((Collection<Entity>) upperBound).toArray(new Entity[((Collection) upperBound).size()]));
+    }
+
+    return EntityCriteriaUtil.foreignKeyCriteria(getColumnIdentifier(), getSearchType(), (Entity) upperBound);
   }
 
   private String toString(final Object object) {
