@@ -116,6 +116,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   private boolean clearAfterInsert = true;
 
   /**
+   * Indicates whether or not the UI should request focus after insert has been performed
+   * @see #setInitialFocus()
+   */
+  private boolean requestFocusAfterInsert = true;
+
+  /**
    * True after <code>initializePanel()</code> has been called
    */
   private boolean panelInitialized = false;
@@ -331,6 +337,22 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   public final void setClearAfterInsert(final boolean clearAfterInsert) {
     this.clearAfterInsert = clearAfterInsert;
+  }
+
+  /**
+   * @return true if the UI should request focus after insert has been performed
+   * @see #setInitialFocus()
+   */
+  public final boolean isRequestFocusAfterInsert() {
+    return requestFocusAfterInsert;
+  }
+
+  /**
+   * @param requestFocusAfterInsert true if the UI should request focus after insert has been performed
+   * @see #setInitialFocus()
+   */
+  public final void setRequestFocusAfterInsert(final boolean requestFocusAfterInsert) {
+    this.requestFocusAfterInsert = requestFocusAfterInsert;
   }
 
   /**
@@ -564,7 +586,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
         finally {
           UiUtil.setWaitCursor(false, this);
         }
-        prepareUI(true, clearAfterInsert);
+        prepareUI(requestFocusAfterInsert, clearAfterInsert);
         return true;
       }
     }

@@ -3296,3 +3296,4 @@
   DefaultFilteredComboBoxModel, listDataListeners now a CopyOnWriteArrayList, due to a java.util.ConcurrentModificationException in OSX, null check added to add/removeListDataListener
   EntityCriteriaUtil.propertyCriteria() and foreignKeyCriteria() generified
   DefaultForeignKeySearchModel.getCriteria() modified to accommodate the above
+  EntityEditPanel.requestFocusAfterInsert property added
