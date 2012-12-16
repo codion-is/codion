@@ -3297,3 +3297,5 @@
   EntityCriteriaUtil.propertyCriteria() and foreignKeyCriteria() generified
   DefaultForeignKeySearchModel.getCriteria() modified to accommodate the above
   EntityEditPanel.requestFocusAfterInsert property added
+  EntityPanelProvider uses default entity caption if none is specified
+  EntityApplicationPanel.setupEntityPanelProviders() added for overriding

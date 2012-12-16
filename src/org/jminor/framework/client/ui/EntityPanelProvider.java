@@ -12,6 +12,7 @@ import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityModelProvider;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.domain.Entities;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -50,7 +51,7 @@ public class EntityPanelProvider implements Comparable {
    * @param entityID the entity ID
    */
   public EntityPanelProvider(final String entityID) {
-    this(entityID, null);
+    this(entityID, Entities.getCaption(entityID));
   }
 
   /**
@@ -70,7 +71,7 @@ public class EntityPanelProvider implements Comparable {
    */
   public EntityPanelProvider(final String entityID, final Class<? extends EntityModel> entityModelClass,
                              final Class<? extends EntityPanel> entityPanelClass) {
-    this(entityID, null, entityModelClass, entityPanelClass);
+    this(entityID, Entities.getCaption(entityID), entityModelClass, entityPanelClass);
   }
 
   /**
@@ -91,7 +92,7 @@ public class EntityPanelProvider implements Comparable {
   }
 
   public EntityPanelProvider (final EntityModelProvider modelProvider) {
-    this(modelProvider, null);
+    this(modelProvider, Entities.getCaption(modelProvider.getEntityID()));
   }
 
   public EntityPanelProvider (final EntityModelProvider modelProvider, final String caption) {

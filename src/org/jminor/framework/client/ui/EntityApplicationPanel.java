@@ -611,6 +611,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected final void initialize(final EntityApplicationModel applicationModel) throws CancelException {
     Util.rejectNullValue(applicationModel, "applicationModel");
     this.applicationModel = applicationModel;
+    setupEntityPanelProviders();
     this.entityPanels.addAll(initializeEntityPanels(applicationModel));
     initializeUI();
     bindEventsInternal();
@@ -722,6 +723,12 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   protected JToolBar getNorthToolBar() {
     return null;
   }
+
+  /**
+   * Called during initialization, after the application model has been initialized,
+   * override to keep all entity panel provider definitions in one place
+   */
+  protected void setupEntityPanelProviders() {}
 
   /**
    * Initializes this EntityApplicationPanel
