@@ -24,6 +24,7 @@ import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.input.InputProviderPanel;
+import org.jminor.common.ui.textfield.DocumentSizeFilter;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.common.ui.textfield.SizedDocument;
@@ -71,6 +72,7 @@ import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
+import javax.swing.text.AbstractDocument;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
@@ -505,12 +507,12 @@ public final class EntityUiUtil {
 
   public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel,
                                                         final boolean sortItems, final StateObserver enabledState) {
-    final ItemComboBoxModel<Object> model;
+    final ItemComboBoxModel model;
     if (sortItems) {
-      model = new ItemComboBoxModel<Object>(property.getValues());
+      model = new ItemComboBoxModel(property.getValues());
     }
     else {
-      model = new ItemComboBoxModel<Object>(null, property.getValues());
+      model = new ItemComboBoxModel(null, property.getValues());
     }
     final SteppedComboBox comboBox = createComboBox(property, editModel, model, enabledState);
     MaximumMatch.enable(comboBox);
@@ -598,6 +600,9 @@ public final class EntityUiUtil {
     final JTextArea textArea = rows > 0 && columns > 0 ? new JTextArea(rows, columns) : new JTextArea();
     textArea.setLineWrap(true);
     textArea.setWrapStyleWord(true);
+    if (property.getMaxLength() > 0) {
+      ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new DocumentSizeFilter(property.getMaxLength()));
+    }
 
     final TextValueLink<String> valueLink = new TextValueLink<String>(textArea, editModel, property.getPropertyID(), true, linkType);
     ValueLinkValidators.addValidator(valueLink, textArea, editModel);

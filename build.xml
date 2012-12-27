@@ -230,6 +230,14 @@
     </manifest>
   </target>
 
+  <target name="publish"
+          description="Publish the dist files into a local repository">
+    <ivy:resolve/>
+    <ivy:publish pubrevision="${version}" status="release" resolver="local" overwrite="true" >
+      <artifacts pattern="${dist}/[artifact].[ext]"/>
+    </ivy:publish>
+  </target>
+
   <target name="javadoc" depends="build"
           description="Generates framework javadocs">
     <delete dir="${docsapi}" includeEmptyDirs="true"/>

@@ -154,7 +154,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
     }
 
     private static JComponent initValueListField(final Property.ValueListProperty property) {
-      final ItemComboBoxModel<Object> boxModel = new ItemComboBoxModel<Object>(property.getValues());
+      final ItemComboBoxModel boxModel = new ItemComboBoxModel(property.getValues());
       final SteppedComboBox box = new SteppedComboBox(boxModel);
       MaximumMatch.enable(box);
 

@@ -18,7 +18,8 @@ import javax.swing.JTable;
 
 public class SchemaBrowserAppPanel extends EntityApplicationPanel {
 
-  public SchemaBrowserAppPanel() {
+  @Override
+  protected void setupEntityPanelProviders() {
     final EntityPanelProvider columnConstraintProvider = new EntityPanelProvider(SchemaBrowser.T_COLUMN_CONSTRAINT);
     final EntityPanelProvider constraintProvider = new EntityPanelProvider(SchemaBrowser.T_CONSTRAINT);
     constraintProvider.addDetailPanelProvider(columnConstraintProvider);

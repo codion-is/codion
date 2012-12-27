@@ -1038,9 +1038,9 @@ class PropertyImpl implements Property {
     }
   }
 
-  static class ValueListPropertyImpl extends ColumnPropertyImpl implements ValueListProperty {
+  static class ValueListPropertyImpl<T> extends ColumnPropertyImpl implements ValueListProperty<T> {
 
-    private final List<Item<Object>> values;
+    private final List<Item<T>> values;
 
     /**
      * @param propertyID the property ID
@@ -1049,27 +1049,27 @@ class PropertyImpl implements Property {
      * @param values the values to base this property on
      */
     ValueListPropertyImpl(final String propertyID, final int type, final String caption,
-                          final List<Item<Object>> values) {
+                          final List<Item<T>> values) {
       super(propertyID, type, caption);
       this.values = Collections.unmodifiableList(values);
     }
 
     /** {@inheritDoc} */
     @Override
-    public final boolean isValid(final Object value) {
-      return values.contains(new Item<Object>(value, ""));
+    public final boolean isValid(final T value) {
+      return values.contains(new Item<T>(value, ""));
     }
 
     /** {@inheritDoc} */
     @Override
-    public final List<Item<Object>> getValues() {
+    public final List<Item<T>> getValues() {
       return values;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final String getCaption(final Object value) {
-      final Item item = new Item<Object>(value, "");
+    public final String getCaption(final T value) {
+      final Item<T> item = new Item<T>(value, "");
       final int index = values.indexOf(item);
       if (index >= 0) {
         return values.get(index).getCaption();

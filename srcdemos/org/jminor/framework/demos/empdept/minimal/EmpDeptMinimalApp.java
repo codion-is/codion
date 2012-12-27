@@ -186,10 +186,27 @@ public class EmpDeptMinimalApp {
 
   /**
    * And finally we extend the EntityApplicationPanel class, which is our
-   * main application panel, implementing the initializeApplicationModel function
-   * by returning an instance of the application model class we defined above.
+   * main application panel. We implement setupEntityPanelProviders, in which
+   * we assemble the application from the parts we have defined, and we also
+   * implement the initializeApplicationModel function by returning an instance
+   * of the application model class we defined above.
    */
   private static final class EmpDeptApplicationPanel extends EntityApplicationPanel {
+
+    @Override
+    protected void setupEntityPanelProviders() {
+      //now, let's assemble our application
+      final EntityPanelProvider departmentProvider = new EntityPanelProvider("scott.dept")
+              .setEditPanelClass(DepartmentEditPanel.class);
+      final EntityModelProvider employeeModelProvider = new DefaultEntityModelProvider("scott.emp")
+              .setEditModelClass(EmployeeEditModel.class);
+      final EntityPanelProvider employeeProvider = new EntityPanelProvider(employeeModelProvider)
+              .setEditPanelClass(EmployeeEditPanel.class);
+      departmentProvider.addDetailPanelProvider(employeeProvider);
+
+      //the department panel is the main (or root) application panel
+      addEntityPanelProvider(departmentProvider);
+    }
 
     @Override
     protected EntityApplicationModel initializeApplicationModel(
@@ -199,8 +216,7 @@ public class EmpDeptMinimalApp {
   }
 
   /*
-   * All that is left is assembling the application from the parts we have defined,
-   * setting the required environment variables and starting the application.
+   * All that is left is setting the required environment variables and starting the application.
    */
   public static void main(final String[] args) {
     //Let's set the locale, otherwise the application would be in icelandic
@@ -212,19 +228,8 @@ public class EmpDeptMinimalApp {
     //we're using Secure Sockets Layer so we need to specify a truststore
     System.setProperty("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
 
-    //now, let's assemble our application
+    //we create an instance of our application panel
     final EntityApplicationPanel mainPanel = new EmpDeptApplicationPanel();
-
-    final EntityPanelProvider departmentProvider = new EntityPanelProvider("scott.dept")
-            .setEditPanelClass(DepartmentEditPanel.class);
-    final EntityModelProvider employeeModelProvider = new DefaultEntityModelProvider("scott.emp")
-            .setEditModelClass(EmployeeEditModel.class);
-    final EntityPanelProvider employeeProvider = new EntityPanelProvider(employeeModelProvider)
-            .setEditPanelClass(EmployeeEditPanel.class);
-    departmentProvider.addDetailPanelProvider(employeeProvider);
-
-    //the department panel is the main (or root) application panel
-    mainPanel.addEntityPanelProvider(departmentProvider);
 
     //and then we start the application
     mainPanel.startApplication("EmpDept Minimal", null, false,

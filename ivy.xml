@@ -9,6 +9,21 @@
     <conf name="runtime.server-monitor" description="used for running a server monitor instance" />
   </configurations>
 
+  <publications>
+    <artifact name="jminor" type="jar" ext="jar"/>
+    <artifact name="jminor-client" type="jar" ext="jar"/>
+    <artifact name="jminor-common" type="jar" ext="jar"/>
+    <artifact name="jminor-db" type="jar" ext="jar"/>
+    <artifact name="jminor-demos" type="jar" ext="jar"/>
+    <artifact name="jminor-plugins" type="jar" ext="jar"/>
+    <artifact name="jminor-server" type="jar" ext="jar"/>
+    <artifact name="jminor-server-monitor" type="jar" ext="jar"/>
+    <artifact name="jminor-api-doc" type="javadoc" ext="jar"/>
+    <artifact name="jminor-src" type="source" ext="jar"/>
+    <artifact name="jminor-src-demos" type="source" ext="jar"/>
+    <artifact name="jminor-src-test" type="source" ext="jar"/>
+  </publications>
+
   <dependencies>
     <dependency org="net.sf.jasperreports" name="jasperreports" rev="4.1.2" transitive="false"
                 conf="

@@ -158,8 +158,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(getUser(), ChinookLoadTest.class.getSimpleName());
-    final EntityApplicationModel appModel = new ChinookAppPanel.ChinookApplicationModel(
-            connectionProvider);
+    final EntityApplicationModel appModel = new ChinookAppPanel.ChinookApplicationModel(connectionProvider);
     /* ARTIST
     *   ALBUM
     *     TRACK
@@ -171,33 +170,28 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     *   INVOICE
     *     INVOICELINE
     */
-    final EntityModel artistModel = new DefaultEntityModel(T_ARTIST, connectionProvider);
-    final EntityModel albumModel = new DefaultEntityModel(T_ALBUM, connectionProvider);
-    final EntityModel trackModel = new DefaultEntityModel(T_TRACK, connectionProvider);
-    artistModel.addDetailModel(albumModel);
-    artistModel.setLinkedDetailModels(albumModel);
-    albumModel.addDetailModel(trackModel);
-    albumModel.setLinkedDetailModels(trackModel);
+    final EntityModel artistModel = appModel.getEntityModel(T_ARTIST);
+    final EntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
+    final EntityModel trackModel = albumModel.getDetailModel(T_TRACK);
+    artistModel.addLinkedDetailModel(albumModel);
+    albumModel.addLinkedDetailModel(trackModel);
+
+    final EntityModel playlistModel = appModel.getEntityModel(T_PLAYLIST);
+    final EntityModel playlistTrackModel = playlistModel.getDetailModel(T_PLAYLISTTRACK);
+    playlistModel.addLinkedDetailModel(playlistTrackModel);
+
+    final EntityModel customerModel = appModel.getEntityModel(T_CUSTOMER);
+    final EntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
+    final EntityModel invoicelineModel = invoiceModel.getDetailModel(T_INVOICELINE);
+    customerModel.addLinkedDetailModel(invoiceModel);
+    invoiceModel.addLinkedDetailModel(invoicelineModel);
 
     final EntityModel genreModel = new DefaultEntityModel(T_GENRE, connectionProvider);
     final EntityModel genreTrackModel = new DefaultEntityModel(T_TRACK, connectionProvider);
     genreModel.addDetailModel(genreTrackModel);
-    genreModel.setLinkedDetailModels(genreTrackModel);
+    genreModel.addLinkedDetailModel(genreTrackModel);
 
-    final EntityModel playlistModel = new DefaultEntityModel(T_PLAYLIST, connectionProvider);
-    final EntityModel playlistTrackModel = new DefaultEntityModel(T_PLAYLISTTRACK, connectionProvider);
-    playlistModel.addDetailModel(playlistTrackModel);
-    playlistModel.setLinkedDetailModels(playlistTrackModel);
-
-    final EntityModel customerModel = new DefaultEntityModel(T_CUSTOMER, connectionProvider);
-    final EntityModel invoiceModel = new DefaultEntityModel(T_INVOICE, connectionProvider);
-    final EntityModel invoicelineModel = new DefaultEntityModel(T_INVOICELINE, connectionProvider);
-    customerModel.addDetailModel(invoiceModel);
-    customerModel.setLinkedDetailModels(invoiceModel);
-    invoiceModel.addDetailModel(invoicelineModel);
-    invoiceModel.setLinkedDetailModels(invoicelineModel);
-
-    appModel.addEntityModels(artistModel, genreModel, playlistModel, customerModel);
+    appModel.addEntityModel(genreModel);
 
     return appModel;
   }

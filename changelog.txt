@@ -3299,3 +3299,9 @@
   EntityEditPanel.requestFocusAfterInsert property added
   EntityPanelProvider uses default entity caption if none is specified
   EntityApplicationPanel.setupEntityPanelProviders() added for overriding
+  DocumentSizeFilter added
+  EntityUiUtil.createTextArea() uses the above when a property has a maximum length defined
+  ValueListProperty generified
+  ValueListInputProvider generified further
+  Demos fixed according to recent framework changes
+  publish target added to ant build file and publications clause to ivy config

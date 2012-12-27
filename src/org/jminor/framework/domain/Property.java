@@ -474,25 +474,26 @@ public interface Property extends Attribute {
 
   /**
    * A property based on a list of values, each with a displayable caption.
+   * @param <T> the value type
    */
-  interface ValueListProperty extends ColumnProperty {
+  interface ValueListProperty<T> extends ColumnProperty {
 
     /**
      * @param value the value to validate
      * @return true if the given value exists in this value list
      */
-    boolean isValid(final Object value);
+    boolean isValid(final T value);
 
     /**
      * @return an unmodifiable view of the available values
      */
-    List<Item<Object>> getValues();
+    List<Item<T>> getValues();
 
     /**
      * @param value the value
      * @return the caption associated with the given value
      */
-    String getCaption(final Object value);
+    String getCaption(final T value);
   }
 
   /**

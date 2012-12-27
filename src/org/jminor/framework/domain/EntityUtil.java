@@ -416,7 +416,7 @@ public final class EntityUtil {
       return referenceEntities == null ? null : referenceEntities.get(referenceEntityID);
     }
     if (property instanceof Property.ValueListProperty) {
-      final List<Item<Object>> items = ((Property.ValueListProperty) property).getValues();
+      final List<Item> items = ((Property.ValueListProperty) property).getValues();
       final Item item = items.get(RANDOM.nextInt(items.size()));
 
       return item.getItem();

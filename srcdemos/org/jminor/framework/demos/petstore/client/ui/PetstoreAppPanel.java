@@ -26,7 +26,8 @@ import java.util.Locale;
 
 public final class PetstoreAppPanel extends EntityApplicationPanel {
 
-  public PetstoreAppPanel() {
+  @Override
+  protected void setupEntityPanelProviders() {
    /* CATEGORY
     *   PRODUCT
     *     ITEM
@@ -64,12 +65,12 @@ public final class PetstoreAppPanel extends EntityApplicationPanel {
   }
 
   private static final class PetstoreApplicationModel extends DefaultEntityApplicationModel {
-    private PetstoreApplicationModel(EntityConnectionProvider connectionProvider) {
+    private PetstoreApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
     }
 
     @Override
-      protected void loadDomainModel() {
+    protected void loadDomainModel() {
       Petstore.init();
     }
   }
