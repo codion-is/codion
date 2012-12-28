@@ -16,19 +16,19 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 /**
- * Binds a JComboBox to an Object based bean property.
+ * Binds a JComboBox to an Object based property.
  */
-final class SelectedItemBeanValueLink extends AbstractValueLink {
+final class SelectedItemValueLink extends AbstractValueLink {
 
   private final ComboBoxModel comboBoxModel;
 
   /**
-   * Instantiates a new SelectedItemBeanValueLink.
+   * Instantiates a new SelectedItemValueLink.
    * @param box the combo box to link with the value
    * @param modelValue the model value
    * @param linkType the link type
    */
-  SelectedItemBeanValueLink(final JComboBox box, final ModelValue modelValue, final LinkType linkType) {
+  SelectedItemValueLink(final JComboBox box, final ModelValue modelValue, final LinkType linkType) {
     super(modelValue, linkType);
     this.comboBoxModel = box.getModel();
     updateUI();

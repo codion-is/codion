@@ -13,7 +13,7 @@ import javax.swing.JComboBox;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class SelectedItemBeanValueLinkTest {
+public class SelectedItemValueLinkTest {
 
   private String selectedItem;
   private final Event evtSelectedItemChanged = Events.event();

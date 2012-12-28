@@ -12,7 +12,7 @@ import javax.swing.JTextField;
 
 import static org.junit.Assert.*;
 
-public class TextBeanValueLinkTest {
+public class TextValueLinkTest {
 
   private String stringValue;
   private final Event evtStringValueChanged = Events.event();

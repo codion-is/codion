@@ -10,22 +10,22 @@ import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
 /**
- * Binds a ButtonModel to a boolean based bean property.
+ * Binds a ButtonModel to a boolean based property.
  */
-public class ToggleBeanValueLink extends AbstractValueLink {
+public class ToggleValueLink extends AbstractValueLink {
 
   private final ButtonModel buttonModel;
 
   /**
-   * Instantiates a new ToggleBeanValueLink.
+   * Instantiates a new ToggleValueLink.
    * @param buttonModel the button model to link with the value
    * @param modelValue the model value
    * @param caption the check box caption, if any
    * @param linkType the link type
    * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
    */
-  ToggleBeanValueLink(final ButtonModel buttonModel, final ModelValue modelValue, final String caption,
-                      final LinkType linkType, final StateObserver enabledObserver) {
+  ToggleValueLink(final ButtonModel buttonModel, final ModelValue modelValue, final String caption,
+                  final LinkType linkType, final StateObserver enabledObserver) {
     super(modelValue, linkType, enabledObserver);
     this.buttonModel = buttonModel;
     this.buttonModel.addItemListener(new ItemListener() {

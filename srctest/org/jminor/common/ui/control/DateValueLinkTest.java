@@ -19,7 +19,7 @@ import java.util.Date;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class DateBeanValueLinkTest {
+public class DateValueLinkTest {
 
   private Date dateValue;
   private Timestamp timestamp;

@@ -8,21 +8,21 @@ import java.text.Format;
 import java.text.ParseException;
 
 /**
- * Binds a JFormattedField to a string based bean property.
+ * Binds a JFormattedField to a string based property.
  */
-class FormattedTextBeanValueLink extends TextBeanValueLink {
+class FormattedTextValueLink extends TextValueLink {
 
   private final JFormattedTextField.AbstractFormatter formatter;
 
   /**
-   * Instantiates a new FormattedTextBeanValueLink.
+   * Instantiates a new FormattedTextValueLink.
    * @param textComponent the text component to link with the value
    * @param modelValue the model value
    * @param linkType the link type
    * @param format the format
    */
-  FormattedTextBeanValueLink(final JFormattedTextField textComponent, final ModelValue modelValue,
-                             final LinkType linkType, final Format format) {
+  FormattedTextValueLink(final JFormattedTextField textComponent, final ModelValue modelValue,
+                         final LinkType linkType, final Format format) {
     super(textComponent, modelValue, linkType, format, true);
     this.formatter = textComponent.getFormatter();
   }

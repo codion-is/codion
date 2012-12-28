@@ -12,7 +12,7 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNull;
 
-public class IntBeanValueLinkTest {
+public class IntValueLinkTest {
 
   private Integer integerValue;
   private final Event evtIntegerValueChanged = Events.event();

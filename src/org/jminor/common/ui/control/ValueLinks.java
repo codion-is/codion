@@ -23,6 +23,9 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.util.Date;
 
+/**
+ * A factory class for binding values to UI components
+ */
 public final class ValueLinks {
 
   public static void dateBeanValueLink(final JFormattedTextField textComponent, final Object owner,
@@ -34,7 +37,7 @@ public final class ValueLinks {
 
   public static void dateValueLink(final JFormattedTextField textComponent, final AbstractValueLink.ModelValue modelValue,
                                    final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
-    new DateBeanValueLink(textComponent, modelValue, linkType, dateFormat, isTimestamp);
+    new DateValueLink(textComponent, modelValue, linkType, dateFormat, isTimestamp);
   }
 
   /**
@@ -94,7 +97,7 @@ public final class ValueLinks {
    */
   public static void intValueLink(final IntField intField, final AbstractValueLink.ModelValue modelValue,
                                   final LinkType linkType, final boolean usePrimitive, final NumberFormat format) {
-    new IntBeanValueLink(intField, modelValue, linkType, usePrimitive, format);
+    new IntValueLink(intField, modelValue, linkType, usePrimitive, format);
   }
 
   /**
@@ -131,7 +134,7 @@ public final class ValueLinks {
    */
   public static void doubleValueLink(final DoubleField doubleField, final AbstractValueLink.ModelValue modelValue,
                                      final LinkType linkType, final boolean usePrimitive, final NumberFormat format) {
-    new DoubleBeanValueLink(doubleField, modelValue, linkType, usePrimitive, format);
+    new DoubleValueLink(doubleField, modelValue, linkType, usePrimitive, format);
   }
 
   /**
@@ -215,7 +218,7 @@ public final class ValueLinks {
    */
   public static void textValueLink(final JTextComponent textComponent, final AbstractValueLink.ModelValue modelValue, final LinkType linkType,
                                    final Format format, final boolean immediateUpdate) {
-    new TextBeanValueLink(textComponent, modelValue, linkType, format, immediateUpdate);
+    new TextValueLink(textComponent, modelValue, linkType, format, immediateUpdate);
   }
 
   /**
@@ -226,7 +229,7 @@ public final class ValueLinks {
    */
   public static void formattedTextValueLink(final JFormattedTextField textComponent, final AbstractValueLink.ModelValue modelValue,
                                             final LinkType linkType, final Format format) {
-    new FormattedTextBeanValueLink(textComponent, modelValue, linkType, format);
+    new FormattedTextValueLink(textComponent, modelValue, linkType, format);
   }
 
   /**
@@ -338,30 +341,30 @@ public final class ValueLinks {
    */
   public static void toggleValueLink(final ButtonModel buttonModel, final AbstractValueLink.ModelValue modelValue,
                                      final String caption, final LinkType linkType, final StateObserver enabledObserver) {
-    new ToggleBeanValueLink(buttonModel, modelValue, caption, linkType, enabledObserver);
+    new ToggleValueLink(buttonModel, modelValue, caption, linkType, enabledObserver);
   }
 
-  public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
-                                                  final EventObserver changeEvent) {
+  public static ToggleValueLink toggleControl(final Object owner, final String propertyName, final String caption,
+                                              final EventObserver changeEvent) {
     return toggleControl(owner, propertyName, caption, changeEvent, (StateObserver) null);
   }
 
-  public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
-                                                  final EventObserver changeEvent, final StateObserver enabledObserver) {
-    return new ToggleBeanValueLink(new JToggleButton.ToggleButtonModel(), new BeanModelValue(owner, propertyName, boolean.class, LinkType.READ_WRITE, changeEvent),
-            caption, LinkType.READ_WRITE, enabledObserver);
+  public static ToggleValueLink toggleControl(final Object owner, final String propertyName, final String caption,
+                                              final EventObserver changeEvent, final StateObserver enabledObserver) {
+    return new ToggleValueLink(new JToggleButton.ToggleButtonModel(), new BeanModelValue(owner, propertyName, boolean.class,
+            LinkType.READ_WRITE, changeEvent), caption, LinkType.READ_WRITE, enabledObserver);
   }
 
-  public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
-                                                  final EventObserver changeEvent, final String description) {
-    return (ToggleBeanValueLink) new ToggleBeanValueLink(new JToggleButton.ToggleButtonModel(),
+  public static ToggleValueLink toggleControl(final Object owner, final String propertyName, final String caption,
+                                              final EventObserver changeEvent, final String description) {
+    return (ToggleValueLink) new ToggleValueLink(new JToggleButton.ToggleButtonModel(),
             new BeanModelValue(owner, propertyName, boolean.class, LinkType.READ_WRITE, changeEvent), caption,
             LinkType.READ_WRITE, null).setDescription(description);
   }
 
   public static void tristateValueLink(final TristateButtonModel buttonModel, final AbstractValueLink.ModelValue modelValue,
                                        final LinkType linkType, final StateObserver enabledObserver) {
-    new TristateBeanValueLink(buttonModel, modelValue, null, linkType, enabledObserver);
+    new TristateValueLink(buttonModel, modelValue, null, linkType, enabledObserver);
   }
 
   /**
@@ -396,7 +399,7 @@ public final class ValueLinks {
    * @param linkType the link type
    */
   public static void selectedItemValueLink(final JComboBox box, final AbstractValueLink.ModelValue modelValue, final LinkType linkType) {
-    new SelectedItemBeanValueLink(box, modelValue, linkType);
+    new SelectedItemValueLink(box, modelValue, linkType);
   }
 
   /**
@@ -404,7 +407,8 @@ public final class ValueLinks {
    * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    */
-  public static SpinnerNumberModel intBeanSpinnerValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent) {
+  public static SpinnerNumberModel intBeanSpinnerValueLink(final Object owner, final String propertyName,
+                                                           final EventObserver valueChangeEvent) {
     return intBeanSpinnerValueLink(owner, propertyName, valueChangeEvent, LinkType.READ_WRITE);
   }
 
@@ -414,8 +418,8 @@ public final class ValueLinks {
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param linkType the link type
    */
-  public static SpinnerNumberModel intBeanSpinnerValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent,
-                                                           final LinkType linkType) {
+  public static SpinnerNumberModel intBeanSpinnerValueLink(final Object owner, final String propertyName,
+                                                           final EventObserver valueChangeEvent, final LinkType linkType) {
     final SpinnerNumberModel numberModel = new SpinnerNumberModel();
     intBeanSpinnerValueLink(owner, propertyName, valueChangeEvent, linkType, numberModel);
 
@@ -431,7 +435,7 @@ public final class ValueLinks {
    */
   public static void intBeanSpinnerValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent,
                                              final LinkType linkType, final SpinnerNumberModel spinnerModel) {
-    new IntBeanSpinnerValueLink(new BeanModelValue(owner, propertyName, int.class, linkType, valueChangeEvent), linkType, spinnerModel);
+    new IntSpinnerValueLink(new BeanModelValue(owner, propertyName, int.class, linkType, valueChangeEvent), linkType, spinnerModel);
   }
 
   private static final class BeanModelValue implements AbstractValueLink.ModelValue {

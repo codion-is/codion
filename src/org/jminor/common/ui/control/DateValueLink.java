@@ -11,21 +11,21 @@ import java.text.DateFormat;
 import java.util.Date;
 
 /**
- * Binds a JFormattedField to a date based bean property.
+ * Binds a JFormattedField to a date based property.
  */
-final class DateBeanValueLink extends FormattedTextBeanValueLink {
+final class DateValueLink extends FormattedTextValueLink {
 
   private final boolean isTimestamp;
 
   /**
-   * Instantiates a new DateBeanValueLink.
+   * Instantiates a new DateValueLink.
    * @param textComponent the text component to link with the value
    * @param modelValue the model value
    * @param linkType the link type
    * @param dateFormat the date format
    */
-  DateBeanValueLink(final JFormattedTextField textComponent, final ModelValue modelValue,
-                    final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
+  DateValueLink(final JFormattedTextField textComponent, final ModelValue modelValue,
+                final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
     super(textComponent, modelValue, linkType, Util.rejectNullValue(dateFormat, "dateFormat"));
     this.isTimestamp = isTimestamp;
   }

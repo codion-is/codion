@@ -15,9 +15,9 @@ import java.awt.event.FocusEvent;
 import java.text.Format;
 
 /**
- * Binds a JTextComponent to a text based bean property.
+ * Binds a JTextComponent to a text based property.
  */
-class TextBeanValueLink extends AbstractValueLink<Object> {
+class TextValueLink extends AbstractValueLink<Object> {
 
   private final Document document;
 
@@ -27,7 +27,7 @@ class TextBeanValueLink extends AbstractValueLink<Object> {
   private final Format format;
 
   /**
-   * Instantiates a new TextBeanValueLink.
+   * Instantiates a new TextValueLink.
    * @param textComponent the text component to link with the value
    * @param linkType the link type
    * @param format the format to use when displaying the linked value,
@@ -35,8 +35,8 @@ class TextBeanValueLink extends AbstractValueLink<Object> {
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * otherwise it is updated on actionPerformed or focusLost
    */
-  TextBeanValueLink(final JTextComponent textComponent, final ModelValue modelValue, final LinkType linkType,
-                    final Format format, final boolean immediateUpdate) {
+  TextValueLink(final JTextComponent textComponent, final ModelValue modelValue, final LinkType linkType,
+                final Format format, final boolean immediateUpdate) {
     super(modelValue, linkType, null);
     this.document = textComponent.getDocument();
     this.format = format == null ? new Util.NullFormat() : format;
