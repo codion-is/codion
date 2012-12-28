@@ -9,7 +9,9 @@ import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.valuemap.exception.ValidationException;
-import org.jminor.framework.client.ui.EntityUiUtil;
+import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.control.ValueLinks;
+import org.jminor.framework.client.ui.EditModelValue;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -49,8 +51,8 @@ public final class DefaultEntityModelTest {
     final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
     final EntityEditModel employeeEditModel = employeeModel.getEditModel();
     final EntityTableModel employeeTableModel = employeeModel.getTableModel();
-    new EntityUiUtil.EntityComboBoxValueLink(new JComboBox(employeeEditModel.getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)),
-            employeeEditModel, Entities.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_MGR_FK));
+    ValueLinks.selectedItemValueLink(new JComboBox(employeeEditModel.getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)),
+            new EditModelValue(employeeEditModel, EmpDept.EMPLOYEE_MGR_FK), LinkType.READ_WRITE);
     employeeTableModel.refresh();
     for (final Entity employee : employeeTableModel.getAllItems()) {
       employeeTableModel.setSelectedItem(employee);

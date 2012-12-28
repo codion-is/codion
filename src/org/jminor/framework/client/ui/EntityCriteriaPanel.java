@@ -6,7 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.Controls;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.table.ColumnSearchPanel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
@@ -75,7 +75,7 @@ public final class EntityCriteriaPanel extends JPanel {
   private JPanel initializeShowAllPanel(final EntityTableModel tableModel) {
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.FILTER_SETTINGS)));
-    panel.add(ControlProvider.createCheckBox(Controls.toggleControl(tableModel,
+    panel.add(ControlProvider.createCheckBox(ValueLinks.toggleControl(tableModel,
             "queryCriteriaRequired", FrameworkMessages.get(FrameworkMessages.REQUIRE_QUERY_CRITERIA), null)));
 
     return panel;

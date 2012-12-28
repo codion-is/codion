@@ -10,7 +10,8 @@ import org.junit.Test;
 
 import javax.swing.JCheckBox;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertFalse;
+import static org.junit.Assert.assertTrue;
 
 public class ToggleBeanValueLinkTest {
 
@@ -20,15 +21,12 @@ public class ToggleBeanValueLinkTest {
   @Test
   public void test() throws Exception {
     final JCheckBox checkBox = new JCheckBox();
-    final ToggleBeanValueLink link = new ToggleBeanValueLink(checkBox.getModel(), this, "booleanValue", evtBooleanValueChanged);
-    assertEquals(checkBox.getModel(), link.getButtonModel());
+    ValueLinks.toggleBeanValueLink(checkBox.getModel(), this, "booleanValue", evtBooleanValueChanged);
     assertFalse("Boolean value should be false on initialization", checkBox.isSelected());
     setBooleanValue(true);
     assertTrue("Boolean value should be true", checkBox.isSelected());
     checkBox.doClick();
     assertFalse("Boolean value should be false", booleanValue);
-
-    new ToggleBeanValueLink(this, "booleanValue", evtBooleanValueChanged);
   }
 
   public boolean isBooleanValue() {

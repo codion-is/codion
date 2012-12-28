@@ -4,19 +4,20 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.DocumentAdapter;
-import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Util;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
 import javax.swing.text.JTextComponent;
+import java.awt.event.FocusAdapter;
+import java.awt.event.FocusEvent;
 import java.text.Format;
 
 /**
  * Binds a JTextComponent to a text based bean property.
  */
-public class TextBeanValueLink extends AbstractBeanValueLink {
+class TextBeanValueLink extends AbstractValueLink<Object> {
 
   private final Document document;
 
@@ -26,72 +27,41 @@ public class TextBeanValueLink extends AbstractBeanValueLink {
   private final Format format;
 
   /**
-   * Instantiates a new TextBeanValueLink, with String as value class.
-   * @param textComponent the text component to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   */
-  public TextBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                           final EventObserver valueChangeEvent) {
-    this(textComponent, owner, propertyName, String.class, valueChangeEvent, LinkType.READ_WRITE);
-  }
-
-  /**
    * Instantiates a new TextBeanValueLink.
    * @param textComponent the text component to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueClass the value class
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   */
-  public TextBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                           final Class<?> valueClass, final EventObserver valueChangeEvent) {
-    this(textComponent, owner, propertyName, valueClass, valueChangeEvent, LinkType.READ_WRITE);
-  }
-
-  /**
-   * Instantiates a new TextBeanValueLink.
-   * @param textComponent the text component to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueClass the value class
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param linkType the link type
-   */
-  public TextBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                           final Class<?> valueClass, final EventObserver valueChangeEvent, final LinkType linkType) {
-    this(textComponent, owner, propertyName, valueClass, valueChangeEvent, linkType, null);
-  }
-
-  /**
-   * Instantiates a new TextBeanValueLink.
-   * @param textComponent the text component to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueClass the value class
-   * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param linkType the link type
    * @param format the format to use when displaying the linked value,
    * null if no formatting should be performed
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
+   * otherwise it is updated on actionPerformed or focusLost
    */
-  public TextBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
-                           final Class<?> valueClass, final EventObserver valueChangeEvent, final LinkType linkType,
-                           final Format format) {
-    super(owner, propertyName, valueClass, valueChangeEvent, linkType);
+  TextBeanValueLink(final JTextComponent textComponent, final ModelValue modelValue, final LinkType linkType,
+                    final Format format, final boolean immediateUpdate) {
+    super(modelValue, linkType, null);
     this.document = textComponent.getDocument();
     this.format = format == null ? new Util.NullFormat() : format;
     if (linkType == LinkType.READ_ONLY) {
       textComponent.setEditable(false);
     }
     updateUI();
-    this.document.addDocumentListener(new DocumentAdapter() {
-      /** {@inheritDoc} */
-      @Override
-      public final void contentsChanged(final DocumentEvent e) {
-        updateModel();
-      }
-    });
+    if (immediateUpdate) {
+      this.document.addDocumentListener(new DocumentAdapter() {
+        /** {@inheritDoc} */
+        @Override
+        public final void contentsChanged(final DocumentEvent e) {
+          updateModel();
+        }
+      });
+    }
+    else {
+      textComponent.addFocusListener(new FocusAdapter() {
+        /** {@inheritDoc} */
+        @Override
+        public void focusLost(final FocusEvent e) {
+          updateModel();
+        }
+      });
+    }
   }
 
   /**
@@ -112,7 +82,6 @@ public class TextBeanValueLink extends AbstractBeanValueLink {
           document.insertString(0, getValueAsText(value), null);
         }
       }
-      handleSetUIValue(value);
     }
     catch (BadLocationException e) {
       throw new RuntimeException(e);
@@ -170,10 +139,4 @@ public class TextBeanValueLink extends AbstractBeanValueLink {
 
     return text;
   }
-
-  /**
-   * Called after the values has been set in the UI
-   * @param value the value
-   */
-  protected void handleSetUIValue(final Object value) {}
 }

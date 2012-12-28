@@ -10,8 +10,7 @@ import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
-import org.jminor.common.ui.control.ToggleBeanValueLink;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -146,13 +145,13 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getConfigurationPanel() {
     final JPanel configBase = new JPanel(UiUtil.createGridLayout(0, 1));
 
-    final JSpinner spnTimeout = new JSpinner(new IntBeanSpinnerValueLink(model, "pooledConnectionTimeout", null).getSpinnerModel());
-    final JSpinner spnCleanupInterval = new JSpinner(new IntBeanSpinnerValueLink(model, "poolCleanupInterval", null).getSpinnerModel());
-    final JSpinner spnMaximumSize = new JSpinner(new IntBeanSpinnerValueLink(model, "maximumPoolSize", null).getSpinnerModel());
-    final JSpinner spnMinimumSize = new JSpinner(new IntBeanSpinnerValueLink(model, "minimumPoolSize", null).getSpinnerModel());
-    final JSpinner spnMaximumRetryWait = new JSpinner(new IntBeanSpinnerValueLink(model, "maximumRetryWaitPeriod", null).getSpinnerModel());
-    final JSpinner spnMaximumCheckOutTime = new JSpinner(new IntBeanSpinnerValueLink(model, "maximumCheckOutTime", null).getSpinnerModel());
-    final JSpinner spnNewConnectionThreshold = new JSpinner(new IntBeanSpinnerValueLink(model, "newConnectionThreshold", null).getSpinnerModel());
+    final JSpinner spnTimeout = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "pooledConnectionTimeout", null));
+    final JSpinner spnCleanupInterval = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "poolCleanupInterval", null));
+    final JSpinner spnMaximumSize = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "maximumPoolSize", null));
+    final JSpinner spnMinimumSize = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "minimumPoolSize", null));
+    final JSpinner spnMaximumRetryWait = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "maximumRetryWaitPeriod", null));
+    final JSpinner spnMaximumCheckOutTime = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "maximumCheckOutTime", null));
+    final JSpinner spnNewConnectionThreshold = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "newConnectionThreshold", null));
 
     ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setEditable(false);
@@ -215,8 +214,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(UiUtil.createFlexibleGridLayout(1, 3, true, false));
-    final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model.getUpdateScheduler(),
-            TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()).getSpinnerModel());
+    final JSpinner spnUpdateInterval = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model.getUpdateScheduler(),
+            TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);
@@ -225,8 +224,8 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartConfig.add(spnUpdateInterval);
 
     final JCheckBox chkCollectStatistics = new JCheckBox("Fine grained statistics");
-    chkCollectStatistics.setModel(new ToggleBeanValueLink(model, "collectFineGrainedStatistics",
-            model.getCollectFineGrainedStatisticsObserver(), null).getButtonModel());
+    chkCollectStatistics.setModel(ValueLinks.toggleBeanValueLink(model, "collectFineGrainedStatistics",
+            model.getCollectFineGrainedStatisticsObserver(), null));
     chkCollectStatistics.setMaximumSize(UiUtil.getPreferredTextFieldSize());
 
     chartConfig.add(chkCollectStatistics);

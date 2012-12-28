@@ -5,6 +5,7 @@ package org.jminor.common.ui.tools;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.ItemRandomizer;
@@ -174,15 +175,31 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     return spinnerModel;
   }
 
-  private final class WeightValueLink extends AbstractValueLink<ItemRandomizerPanel, Integer> {
+  private final class WeightValueLink extends AbstractValueLink<Integer> {
 
     private final SpinnerNumberModel spinnerModel;
-    private final T item;
 
     private WeightValueLink(final SpinnerNumberModel spinnerModel, final T item) {
-      super(ItemRandomizerPanel.this, model.getWeightsObserver(), LinkType.READ_WRITE);
+      super(new ModelValue<Integer>() {
+        /** {@inheritDoc} */
+        @Override
+        public void set(final Integer value) {
+          getModel().setWeight(item, value);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public Integer get() {
+          return getModel().getWeight(item);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public EventObserver getChangeEvent() {
+          return getModel().getWeightsObserver();
+        }
+      }, LinkType.READ_WRITE);
       this.spinnerModel = spinnerModel;
-      this.item = item;
       updateUI();
       spinnerModel.addChangeListener(new ChangeListener() {
         /** {@inheritDoc} */
@@ -191,18 +208,6 @@ public final class ItemRandomizerPanel<T> extends JPanel {
           updateModel();
         }
       });
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Integer getModelValue() {
-      return getModel().getWeight(item);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setModelValue(final Integer value) {
-      getModel().setWeight(item, value);
     }
 
     /** {@inheritDoc} */
@@ -218,15 +223,31 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     }
   }
 
-  private final class EnabledValueLink extends AbstractValueLink<ItemRandomizerPanel, Boolean> {
+  private final class EnabledValueLink extends AbstractValueLink<Boolean> {
 
     private final ButtonModel buttonModel;
-    private final T item;
 
     private EnabledValueLink(final ButtonModel buttonModel, final T item) {
-      super(ItemRandomizerPanel.this, model.getEnabledObserver(), LinkType.READ_WRITE);
+      super(new ModelValue<Boolean>() {
+        /** {@inheritDoc} */
+        @Override
+        public void set(final Boolean value) {
+          getModel().setItemEnabled(item, value);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public Boolean get() {
+          return getModel().isItemEnabled(item);
+        }
+
+        /** {@inheritDoc} */
+        @Override
+        public EventObserver getChangeEvent() {
+          return getModel().getEnabledObserver();
+        }
+      }, LinkType.READ_WRITE);
       this.buttonModel = buttonModel;
-      this.item = item;
       updateUI();
       this.buttonModel.addItemListener(new ItemListener() {
         /** {@inheritDoc} */
@@ -235,18 +256,6 @@ public final class ItemRandomizerPanel<T> extends JPanel {
           updateModel();
         }
       });
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Boolean getModelValue() {
-      return getModel().isItemEnabled(item);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setModelValue(final Boolean value) {
-      getModel().setItemEnabled(item, value);
     }
 
     /** {@inheritDoc} */

@@ -3,8 +3,11 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ValueMapEditModel;
+import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.framework.client.model.DefaultEntityModel;
+import org.jminor.framework.client.model.EntityEditModel;
+import org.jminor.framework.client.ui.EditModelValue;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 
@@ -21,10 +24,10 @@ public class BooleanValueLinkTest {
   @Test
   public void test() throws Exception {
     Petstore.init();
-    final ValueMapEditModel<String, Object> model = new DefaultEntityModel(Petstore.T_ITEM, EntityConnectionImplTest.CONNECTION_PROVIDER).getEditModel();
+    final EntityEditModel model = new DefaultEntityModel(Petstore.T_ITEM, EntityConnectionImplTest.CONNECTION_PROVIDER).getEditModel();
     final JCheckBox chkBox = new JCheckBox();
     final ButtonModel buttonModel = chkBox.getModel();
-    new BooleanValueLink<String>(buttonModel, model, Petstore.ITEM_DISABLED);
+    ValueLinks.toggleValueLink(buttonModel, new EditModelValue(model, Petstore.ITEM_DISABLED), null, LinkType.READ_WRITE, null);
     assertFalse(buttonModel.isSelected());
     model.setValue(Petstore.ITEM_DISABLED, true);
     assertTrue(buttonModel.isSelected());

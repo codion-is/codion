@@ -7,7 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
-import org.jminor.common.ui.control.ToggleBeanValueLink;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import javax.swing.ButtonModel;
@@ -31,7 +31,7 @@ public final class ClientInstanceMonitor {
 
   public ButtonModel getLoggingEnabledButtonModel() {
     if (loggingEnabledButtonModel == null) {
-      loggingEnabledButtonModel = new ToggleBeanValueLink(this, "loggingEnabled", evtLoggingStatusChanged, null).getButtonModel();
+      loggingEnabledButtonModel = ValueLinks.toggleBeanValueLink(this, "loggingEnabled", evtLoggingStatusChanged, null);
     }
 
     return loggingEnabledButtonModel;

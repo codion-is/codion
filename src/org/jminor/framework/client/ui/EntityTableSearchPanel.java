@@ -9,7 +9,7 @@ import org.jminor.common.model.Events;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.control.TextBeanValueLink;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.table.AbstractTableColumnSyncPanel;
 import org.jminor.common.ui.table.ColumnSearchPanel;
@@ -152,7 +152,7 @@ public final class EntityTableSearchPanel extends JPanel {
   public ControlSet getControls() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
     controlSet.setIcon(Images.loadImage(Images.IMG_FILTER_16));
-    controlSet.add(Controls.toggleControl(this, "advanced",
+    controlSet.add(ValueLinks.toggleControl(this, "advanced",
             FrameworkMessages.get(FrameworkMessages.ADVANCED), evtAdvancedChanged));
     controlSet.add(Controls.methodControl(searchModel, "clearPropertySearchModels", FrameworkMessages.get(FrameworkMessages.CLEAR)));
 
@@ -208,7 +208,7 @@ public final class EntityTableSearchPanel extends JPanel {
     final JButton simpleSearchButton = new JButton(simpleSearchAction);
     simpleSearchTextField.addActionListener(simpleSearchAction);
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
-    new TextBeanValueLink(simpleSearchTextField, searchModel, "simpleSearchString", searchModel.getSimpleSearchStringObserver());
+    ValueLinks.textBeanValueLink(simpleSearchTextField, searchModel, "simpleSearchString", searchModel.getSimpleSearchStringObserver());
     panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.CONDITION)));
     panel.add(simpleSearchTextField, BorderLayout.CENTER);
     panel.add(simpleSearchButton, BorderLayout.EAST);

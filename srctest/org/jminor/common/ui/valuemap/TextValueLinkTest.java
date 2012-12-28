@@ -3,9 +3,11 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
+import org.jminor.framework.client.model.EntityEditModel;
+import org.jminor.framework.client.ui.EditModelValue;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
@@ -19,9 +21,9 @@ public class TextValueLinkTest {
 
   @Test
   public void nullInitialValue() throws Exception {
-    final ValueMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final EntityEditModel model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final JTextField txt = new JTextField();
-    new TextValueLink<String>(txt, model, EmpDept.EMPLOYEE_NAME, true, LinkType.READ_WRITE);
+    ValueLinks.textValueLink(txt, new EditModelValue(model, EmpDept.EMPLOYEE_NAME), LinkType.READ_WRITE, null, true);
     assertTrue("String value should be empty", model.isValueNull(EmpDept.EMPLOYEE_NAME));
     assertNull("Initial String value should be null", model.getValue(EmpDept.EMPLOYEE_NAME));
     txt.setText("darri");
@@ -35,10 +37,10 @@ public class TextValueLinkTest {
 
   @Test
   public void noneNullInitialValue() throws Exception {
-    final ValueMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final EntityEditModel model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final JTextField txt = new JTextField();
     model.setValue(EmpDept.EMPLOYEE_NAME, "name");
-    new TextValueLink<String>(txt, model, EmpDept.EMPLOYEE_NAME, true, LinkType.READ_WRITE);
+    ValueLinks.textValueLink(txt, new EditModelValue(model, EmpDept.EMPLOYEE_NAME), LinkType.READ_WRITE, null, true);
     assertFalse("String value should not be empty", model.isValueNull(EmpDept.EMPLOYEE_NAME));
     assertEquals("name", model.getValue(EmpDept.EMPLOYEE_NAME));
     txt.setText("darri");

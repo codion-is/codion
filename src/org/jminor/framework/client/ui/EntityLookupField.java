@@ -4,12 +4,13 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.TextBeanValueLink;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.textfield.SizedDocument;
 import org.jminor.common.ui.textfield.TextFieldHint;
 import org.jminor.framework.client.model.EntityLookupModel;
@@ -29,6 +30,7 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.event.DocumentEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -102,6 +104,13 @@ public final class EntityLookupField extends JTextField {
   }
 
   /**
+   * @return the TextFieldHint instance used by this lookup field
+   */
+  public TextFieldHint getSearchHint() {
+    return searchHint;
+  }
+
+  /**
    * @param validBackgroundColor the background color to use when the text represents the selected items
    * @return this lookup field
    */
@@ -151,14 +160,13 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void linkToModel() {
-    new TextBeanValueLink(this, getModel(), "searchString", String.class, getModel().getSearchStringObserver()) {
-      /** {@inheritDoc} */
+    ValueLinks.textBeanValueLink(this, getModel(), "searchString", String.class, getModel().getSearchStringObserver());
+    getDocument().addDocumentListener(new DocumentAdapter() {
       @Override
-      protected void handleSetUIValue(final Object value) {
+      public void contentsChanged(final DocumentEvent e) {
         updateColors();
-        searchHint.updateState();
       }
-    };
+    });
     model.addSearchStringListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
@@ -166,6 +174,7 @@ public final class EntityLookupField extends JTextField {
         updateColors();
       }
     });
+    searchHint.updateState();
   }
 
   private void addEscapeListener() {

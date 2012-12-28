@@ -3,7 +3,6 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 
 import javax.swing.Icon;
@@ -15,22 +14,6 @@ import javax.swing.KeyStroke;
 public final class Controls {
 
   private Controls() {}
-
-  public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
-                                                  final EventObserver changeEvent) {
-    return toggleControl(owner, propertyName, caption, changeEvent, (StateObserver) null);
-  }
-
-  public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
-                                                  final EventObserver changeEvent, final StateObserver enabledObserver) {
-    return new ToggleBeanValueLink(owner, propertyName, changeEvent, caption, LinkType.READ_WRITE, enabledObserver);
-  }
-
-  public static ToggleBeanValueLink toggleControl(final Object owner, final String propertyName, final String caption,
-                                                  final EventObserver changeEvent, final String description) {
-    return (ToggleBeanValueLink) new ToggleBeanValueLink(owner, propertyName, changeEvent, caption,
-            LinkType.READ_WRITE).setDescription(description);
-  }
 
   public static MethodControl methodControl(final Object owner, final String method, final Icon icon) {
     return methodControl(owner, method, null, null, null, -1, null, icon);

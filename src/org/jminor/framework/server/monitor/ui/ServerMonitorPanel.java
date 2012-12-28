@@ -8,10 +8,8 @@ import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.control.SelectedItemBeanValueLink;
-import org.jminor.common.ui.control.TextBeanValueLink;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.framework.server.monitor.ServerMonitor;
 
@@ -93,7 +91,7 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(initializeConnectionCountField());
     infoPanel.add(new JLabel("limit", JLabel.RIGHT));
     final JSpinner spnConnectionLimit = new JSpinner(
-            new IntBeanSpinnerValueLink(model, "connectionLimit", model.getConnectionLimitObserver()).getSpinnerModel());
+            ValueLinks.intBeanSpinnerValueLink(model, "connectionLimit", model.getConnectionLimitObserver()));
     ((JSpinner.DefaultEditor) spnConnectionLimit.getEditor()).getTextField().setColumns(3);
     infoPanel.add(spnConnectionLimit);
     infoPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
@@ -105,8 +103,8 @@ public final class ServerMonitorPanel extends JPanel {
 
     final JPanel controlPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
 
-    final JSpinner spnUpdateInterval = new JSpinner(new IntBeanSpinnerValueLink(model.getUpdateScheduler(),
-            TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()).getSpinnerModel());
+    final JSpinner spnUpdateInterval = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model.getUpdateScheduler(),
+            TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);
@@ -116,7 +114,7 @@ public final class ServerMonitorPanel extends JPanel {
 
     controlPanel.add(new JLabel("Warning threshold (ms)"));
     final JSpinner spnWarningThreshold = new JSpinner(
-            new IntBeanSpinnerValueLink(model, "warningThreshold", model.getWarningThresholdObserver()).getSpinnerModel());
+            ValueLinks.intBeanSpinnerValueLink(model, "warningThreshold", model.getWarningThresholdObserver()));
     ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setColumns(3);
     controlPanel.add(spnWarningThreshold);
@@ -197,7 +195,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField txtConnectionCount = new JTextField(6);
     txtConnectionCount.setEditable(false);
     txtConnectionCount.setHorizontalAlignment(JLabel.CENTER);
-    new TextBeanValueLink(txtConnectionCount, model, "connectionCount", Integer.class, model.getStatisticsUpdatedObserver(),
+    ValueLinks.textBeanValueLink(txtConnectionCount, model, "connectionCount", Integer.class, model.getStatisticsUpdatedObserver(),
             LinkType.READ_ONLY);
 
     return txtConnectionCount;
@@ -207,7 +205,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField txtMemory = new JTextField(8);
     txtMemory.setEditable(false);
     txtMemory.setHorizontalAlignment(JLabel.CENTER);
-    new TextBeanValueLink(txtMemory, model, "memoryUsage", String.class, model.getStatisticsUpdatedObserver(), LinkType.READ_ONLY);
+    ValueLinks.textBeanValueLink(txtMemory, model, "memoryUsage", String.class, model.getStatisticsUpdatedObserver(), LinkType.READ_ONLY);
 
     return txtMemory;
   }
@@ -221,7 +219,7 @@ public final class ServerMonitorPanel extends JPanel {
     comboModel.addElement(Level.ERROR);
 
     final JComboBox box = new JComboBox(comboModel);
-    new SelectedItemBeanValueLink(box, model, "loggingLevel", Level.class, model.getLoggingLevelObserver());
+    ValueLinks.selectedItemBeanValueLink(box, model, "loggingLevel", Level.class, model.getLoggingLevelObserver());
 
     return box;
   }

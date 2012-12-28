@@ -8,7 +8,6 @@ import org.junit.Test;
 
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
 import javax.swing.JMenuBar;
 import javax.swing.JMenuItem;
 import javax.swing.JPanel;
@@ -45,7 +44,7 @@ public class ControlProviderTest {
     set = new ControlSet("hello");
     set.add(new Control("one"));
     set.add(new Control("two"));
-    set.add(Controls.toggleControl(this, "booleanValue", "three", null));
+    set.add(ValueLinks.toggleControl(this, "booleanValue", "three", null));
   }
 
   @Test
@@ -56,13 +55,13 @@ public class ControlProviderTest {
 
   @Test
   public void createCheckBox() {
-    final JCheckBox box = ControlProvider.createCheckBox(new ToggleBeanValueLink(this, "booleanValue", null, "Test"));
+    final JCheckBox box = ControlProvider.createCheckBox(ValueLinks.toggleControl(this, "booleanValue", "Test", null));
     assertEquals("Test", box.getText());
   }
 
   @Test
   public void createCheckBoxMenuItem() {
-    final JMenuItem item = ControlProvider.createCheckBoxMenuItem(new ToggleBeanValueLink(this, "booleanValue", null, "Test"));
+    final JMenuItem item = ControlProvider.createCheckBoxMenuItem(ValueLinks.toggleControl(this, "booleanValue", "Test", null));
     assertEquals("Test", item.getText());
   }
 
@@ -71,7 +70,7 @@ public class ControlProviderTest {
     final ControlSet base = new ControlSet();
     base.add(set);
 
-    JMenuBar menu = ControlProvider.createMenuBar(base);
+    final JMenuBar menu = ControlProvider.createMenuBar(base);
     assertEquals(1, menu.getMenuCount());
     assertEquals(3, menu.getMenu(0).getItemCount());
     assertEquals("one", menu.getMenu(0).getItem(0).getText());
@@ -104,12 +103,6 @@ public class ControlProviderTest {
     ControlProvider.createVerticalButtonPanel(set);
     final JPanel base = new JPanel();
     ControlProvider.createVerticalButtonPanel(base, set);
-  }
-
-  @Test
-  public void bindItemSelector() {
-    final JComboBox box = new JComboBox();
-    ControlProvider.bindItemSelector(box, this, "selectedValue", Object.class,  null);
   }
 
   @Test

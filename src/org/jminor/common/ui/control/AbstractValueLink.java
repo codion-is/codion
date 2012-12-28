@@ -13,15 +13,14 @@ import java.awt.event.ActionEvent;
 
 /**
  * An abstract base class for linking a UI component to a model value.
- * @param <T> the type of the value owner
  * @param <V> the type of the value
  */
-public abstract class AbstractValueLink<T, V> extends Control {
+public abstract class AbstractValueLink<V> extends Control {
 
   /**
-   * The Object that owns the linked property
+   * The Object wrapping the model value
    */
-  private final T valueOwner;
+  private final ModelValue<V> modelValue;
 
   /**
    * The link type
@@ -40,32 +39,27 @@ public abstract class AbstractValueLink<T, V> extends Control {
 
   /**
    * Instantiates a new AbstractValueLink
-   * @param valueOwner the owner of the property value
-   * @param modelValueChangeEvent an EventObserver notified each time the UI should be updated to reflect changes
-   * to the value in the model
+   * @param modelValue the ModelValue wrapper for the property
    * @param linkType the link Type
    */
-  public AbstractValueLink(final T valueOwner, final EventObserver modelValueChangeEvent, final LinkType linkType) {
-    this(valueOwner,  modelValueChangeEvent, linkType, null);
+  public AbstractValueLink(final ModelValue<V> modelValue, final LinkType linkType) {
+    this(modelValue, linkType, null);
   }
 
   /**
    * Instantiates a new AbstractValueLink
-   * @param valueOwner the owner of the property value
-   * @param modelValueChangeEvent an EventObserver notified each time the UI should be updated to reflect changes
-   * to the value in the model
+   * @param modelValue the ModelValue wrapper for the property
    * @param linkType the link Type
    * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
    */
-  public AbstractValueLink(final T valueOwner, final EventObserver modelValueChangeEvent, final LinkType linkType,
-                           final StateObserver enabledObserver) {
+  public AbstractValueLink(final ModelValue<V> modelValue, final LinkType linkType, final StateObserver enabledObserver) {
     super(null, enabledObserver);
-    Util.rejectNullValue(valueOwner, "valueOwner");
+    Util.rejectNullValue(modelValue, "modelValue");
     Util.rejectNullValue(linkType, "linkType");
-    this.valueOwner = valueOwner;
+    this.modelValue = modelValue;
     this.linkType = linkType;
-    if (linkType != LinkType.WRITE_ONLY && modelValueChangeEvent != null) {
-      modelValueChangeEvent.addListener(new EventAdapter() {
+    if (linkType != LinkType.WRITE_ONLY && modelValue.getChangeEvent() != null) {
+      modelValue.getChangeEvent().addListener(new EventAdapter() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
@@ -82,27 +76,27 @@ public abstract class AbstractValueLink<T, V> extends Control {
   }
 
   /**
-   * @return the owner of the linked property, the model
+   * @return true if the underlying model value is null
    */
-  public final T getValueOwner() {
-    return valueOwner;
+  public final boolean isModelValueNull() {
+    return modelValue.get() == null;
   }
 
   /**
    * @return the type of this link
    */
-  public final LinkType getLinkType() {
+  protected final LinkType getLinkType() {
     return linkType;
   }
 
   /**
    * Updates the model according to the UI.
    */
-  public final void updateModel() {
+  protected final void updateModel() {
     if (linkType != LinkType.READ_ONLY && !isUpdatingModel && !isUpdatingUI) {
       try {
         isUpdatingModel = true;
-        setModelValue(getUIValue());
+        modelValue.set(getUIValue());
       }
       finally {
         isUpdatingModel = false;
@@ -113,7 +107,7 @@ public abstract class AbstractValueLink<T, V> extends Control {
   /**
    * Updates the UI according to the model.
    */
-  public final void updateUI() {
+  protected final void updateUI() {
     if (linkType != LinkType.WRITE_ONLY && !isUpdatingModel) {
       try {
         isUpdatingUI = true;
@@ -123,7 +117,7 @@ public abstract class AbstractValueLink<T, V> extends Control {
               /** {@inheritDoc} */
               @Override
               public void run() {
-                setUIValue(getModelValue());
+                setUIValue(modelValue.get());
               }
             });
           }
@@ -132,7 +126,7 @@ public abstract class AbstractValueLink<T, V> extends Control {
           }
         }
         else {
-          setUIValue(getModelValue());
+          setUIValue(modelValue.get());
         }
       }
       finally {
@@ -140,17 +134,6 @@ public abstract class AbstractValueLink<T, V> extends Control {
       }
     }
   }
-
-  /**
-   * @return the model value of the linked property
-   */
-  public abstract V getModelValue();
-
-  /**
-   * Sets the value in the model
-   * @param value the value to set for property
-   */
-  public abstract void setModelValue(final V value);
 
   /**
    * @return the value according to the UI
@@ -162,4 +145,27 @@ public abstract class AbstractValueLink<T, V> extends Control {
    * @param value the value to represent in the UI
    */
   protected abstract void setUIValue(final V value);
+
+  /**
+   * A wrapper class for setting and getting a model value
+   * @param <V> the type of the value
+   */
+  public interface ModelValue<V> {
+
+    /**
+     * Sets the value in the model
+     * @param value the value
+     */
+    void set(final V value);
+
+    /**
+     * @return the value from the model
+     */
+    V get();
+
+    /**
+     * @return an event observer notified when the model value changes
+     */
+    EventObserver getChangeEvent();
+  }
 }

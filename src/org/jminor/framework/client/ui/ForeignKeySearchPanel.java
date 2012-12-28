@@ -66,6 +66,7 @@ public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.Fore
       else {
         final EntityLookupField field = new EntityLookupField(((ForeignKeySearchModel) model).getEntityLookupModel());
         field.getModel().refreshSearchText();
+        field.getSearchHint().updateState();
 
         return field;
       }

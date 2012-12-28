@@ -13,6 +13,7 @@ import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.Controls;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.monitor.EntityServerMonitor;
@@ -174,7 +175,7 @@ public final class EntityServerMonitorPanel extends JPanel {
 
   private Control initializeAlwaysOnTopControl() {
     final Control control =
-            Controls.toggleControl(this, "alwaysOnTop", "Always on Top", evtAlwaysOnTopChanged);
+            ValueLinks.toggleControl(this, "alwaysOnTop", "Always on Top", evtAlwaysOnTopChanged);
     control.setMnemonic('A');
 
     return control;

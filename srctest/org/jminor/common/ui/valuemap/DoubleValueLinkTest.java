@@ -3,10 +3,12 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
+import org.jminor.framework.client.model.EntityEditModel;
+import org.jminor.framework.client.ui.EditModelValue;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
@@ -18,11 +20,11 @@ public class DoubleValueLinkTest {
 
   @Test
   public void test() throws Exception {
-    final ValueMapEditModel<String, Object> model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final EntityEditModel model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(DoubleField.POINT);
-    final TextValueLink<String> valueLink = new DoubleValueLink<String>(txt, model, EmpDept.EMPLOYEE_COMMISSION, true, LinkType.READ_WRITE);
-    ValueLinkValidators.addValidator(valueLink, txt, model);/*Range 100 - 2000*/
+    ValueLinks.doubleValueLink(txt, new EditModelValue(model, EmpDept.EMPLOYEE_COMMISSION), LinkType.READ_WRITE, false, null);
+    ValueLinkValidators.addValidator(EmpDept.EMPLOYEE_COMMISSION, txt, model);/*Range 100 - 2000*/
     assertNull("Initial Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setDouble(1000.5);
     assertEquals("Double value should be 1000.5", 1000.5, model.getValue(EmpDept.EMPLOYEE_COMMISSION));

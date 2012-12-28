@@ -13,10 +13,9 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.control.IntBeanSpinnerValueLink;
-import org.jminor.common.ui.control.IntBeanValueLink;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.IntField;
@@ -201,13 +200,13 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntField applicationCountField = new IntField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    new IntBeanValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.applicationCountObserver(), LinkType.READ_ONLY);
+    ValueLinks.intBeanValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.applicationCountObserver(), LinkType.READ_ONLY);
 
     final JPanel applicationPanel = new JPanel(UiUtil.createBorderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 
-    final JSpinner spnBatchSize = new JSpinner(new IntBeanSpinnerValueLink(loadTestModel, "applicationBatchSize",
-            loadTestModel.applicationBatchSizeObserver()).getSpinnerModel());
+    final JSpinner spnBatchSize = new JSpinner(ValueLinks.intBeanSpinnerValueLink(loadTestModel, "applicationBatchSize",
+            loadTestModel.applicationBatchSizeObserver()));
     spnBatchSize.setToolTipText("Application batch size");
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
@@ -257,7 +256,7 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeChartControlPanel() {
     final JPanel controlPanel = new JPanel(UiUtil.createFlexibleGridLayout(1, 2, true, false));
     controlPanel.setBorder(BorderFactory.createTitledBorder("Charts"));
-    controlPanel.add(ControlProvider.createCheckBox(Controls.toggleControl(loadTestModel, "collectChartData",
+    controlPanel.add(ControlProvider.createCheckBox(ValueLinks.toggleControl(loadTestModel, "collectChartData",
             "Collect chart data", loadTestModel.collectChartDataObserver())));
     controlPanel.add(ControlProvider.createButton(Controls.methodControl(loadTestModel, "resetChartData", "Reset")));
 
@@ -328,26 +327,26 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeActivityPanel() {
-    final SpinnerNumberModel maxSpinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "maximumThinkTime",
-            loadTestModel.maximumThinkTimeObserver()).getSpinnerModel();
+    final SpinnerNumberModel maxSpinnerModel = ValueLinks.intBeanSpinnerValueLink(loadTestModel, "maximumThinkTime",
+            loadTestModel.maximumThinkTimeObserver());
     maxSpinnerModel.setStepSize(10);
     final JSpinner spnMaxThinkTime = new JSpinner(maxSpinnerModel);
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
 
-    final SpinnerNumberModel minSpinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "minimumThinkTime",
-            loadTestModel.getMinimumThinkTimeObserver()).getSpinnerModel();
+    final SpinnerNumberModel minSpinnerModel = ValueLinks.intBeanSpinnerValueLink(loadTestModel, "minimumThinkTime",
+            loadTestModel.getMinimumThinkTimeObserver());
     minSpinnerModel.setStepSize(10);
     final JSpinner spnMinThinkTimeField = new JSpinner(minSpinnerModel);
     ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(3);
 
-    final SpinnerNumberModel warningSpinnerModel = new IntBeanSpinnerValueLink(loadTestModel, "warningTime",
-            loadTestModel.getWarningTimeObserver()).getSpinnerModel();
+    final SpinnerNumberModel warningSpinnerModel = ValueLinks.intBeanSpinnerValueLink(loadTestModel, "warningTime",
+            loadTestModel.getWarningTimeObserver());
     warningSpinnerModel.setStepSize(10);
     final JSpinner spnWarningTime = new JSpinner(warningSpinnerModel);
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
     spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
-    final ToggleBeanValueLink pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());
+    final ToggleBeanValueLink pauseControl = ValueLinks.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());
     pauseControl.setMnemonic('P');
 
     final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(4, 2, true, false);

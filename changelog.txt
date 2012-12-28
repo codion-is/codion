@@ -3305,3 +3305,4 @@
   ValueListInputProvider generified further
   Demos fixed according to recent framework changes
   publish target added to ant build file and publications clause to ivy config
+  common.ui.valuemap merged with common.ui.control

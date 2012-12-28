@@ -3,8 +3,6 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.EventObserver;
-
 import javax.swing.JFormattedTextField;
 import java.text.Format;
 import java.text.ParseException;
@@ -12,25 +10,20 @@ import java.text.ParseException;
 /**
  * Binds a JFormattedField to a string based bean property.
  */
-public class FormattedTextBeanValueLink extends TextBeanValueLink {
+class FormattedTextBeanValueLink extends TextBeanValueLink {
 
   private final JFormattedTextField.AbstractFormatter formatter;
 
   /**
    * Instantiates a new FormattedTextBeanValueLink.
    * @param textComponent the text component to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueClass the value class
-   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param modelValue the model value
    * @param linkType the link type
    * @param format the format
    */
-  public FormattedTextBeanValueLink(final JFormattedTextField textComponent, final Object owner,
-                                    final String propertyName, final Class<?> valueClass,
-                                    final EventObserver valueChangeEvent, final LinkType linkType,
-                                    final Format format) {
-    super(textComponent, owner, propertyName, valueClass, valueChangeEvent, linkType, format);
+  FormattedTextBeanValueLink(final JFormattedTextField textComponent, final ModelValue modelValue,
+                             final LinkType linkType, final Format format) {
+    super(textComponent, modelValue, linkType, format, true);
     this.formatter = textComponent.getFormatter();
   }
 

@@ -17,13 +17,8 @@ import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.control.DateBeanValueLink;
-import org.jminor.common.ui.control.DoubleBeanValueLink;
-import org.jminor.common.ui.control.IntBeanValueLink;
 import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.control.TextBeanValueLink;
-import org.jminor.common.ui.control.ToggleBeanValueLink;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.DoubleField;
@@ -152,7 +147,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     this.lowerBoundField = lowerBoundField;
     if (includeToggleSearchEnabledButton) {
       this.toggleSearchEnabled = ControlProvider.createToggleButton(
-            Controls.toggleControl(searchModel, "enabled", null, searchModel.getEnabledObserver()));
+            ValueLinks.toggleControl(searchModel, "enabled", null, searchModel.getEnabledObserver()));
       toggleSearchEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     }
     else {
@@ -160,7 +155,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     }
     if (includeToggleAdvancedSearchButton) {
       this.toggleSearchAdvanced = ControlProvider.createToggleButton(
-              Controls.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.getObserver()));
+              ValueLinks.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.getObserver()));
       toggleSearchAdvanced.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
     }
     else {
@@ -373,36 +368,36 @@ public class ColumnSearchPanel<K> extends JPanel {
     }
 
     private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
-      new ToggleBeanValueLink(checkBox.getModel(), searchModel,
+      ValueLinks.toggleBeanValueLink(checkBox.getModel(), searchModel,
               isUpperBound ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
               isUpperBound ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver());
     }
 
-    private TextBeanValueLink createTextProperty(final JComponent component, final boolean isUpper) {
+    private void createTextProperty(final JComponent component, final boolean isUpper) {
       if (searchModel.getType() == Types.INTEGER) {
-        return new IntBeanValueLink((IntField) component, searchModel,
+        ValueLinks.intBeanValueLink((IntField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false);
       }
       if (searchModel.getType() == Types.DOUBLE) {
-        return new DoubleBeanValueLink((DoubleField) component, searchModel,
+        ValueLinks.doubleBeanValueLink((DoubleField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false);
       }
       if (searchModel.getType() == Types.DATE) {
-        return new DateBeanValueLink((JFormattedTextField) component, searchModel,
+        ValueLinks.dateBeanValueLink((JFormattedTextField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(),
                 LinkType.READ_WRITE, (DateFormat) searchModel.getFormat(), false);
       }
       if (searchModel.getType() == Types.TIMESTAMP) {
-        return new DateBeanValueLink((JFormattedTextField) component, searchModel,
+        ValueLinks.dateBeanValueLink((JFormattedTextField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(),
                 LinkType.READ_WRITE, (DateFormat) searchModel.getFormat(), true);
       }
 
-      return new TextBeanValueLink((JTextField) component, searchModel,
+      ValueLinks.textBeanValueLink((JTextField) component, searchModel,
               isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
               String.class, isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver());
     }
@@ -453,7 +448,7 @@ public class ColumnSearchPanel<K> extends JPanel {
       }
     }
     final JComboBox comboBox = new SteppedComboBox(comboBoxModel);
-    ControlProvider.bindItemSelector(comboBox, searchModel, "searchType", SearchType.class, searchModel.getSearchTypeObserver());
+    ValueLinks.selectedItemBeanValueLink(comboBox, searchModel, "searchType", SearchType.class, searchModel.getSearchTypeObserver());
     comboBox.setRenderer(new DefaultListCellRenderer() {
       /** {@inheritDoc} */
       @Override

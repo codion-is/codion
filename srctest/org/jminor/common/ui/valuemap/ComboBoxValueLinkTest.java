@@ -3,9 +3,12 @@
  */
 package org.jminor.common.ui.valuemap;
 
+import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;
+import org.jminor.framework.client.ui.EditModelValue;
 import org.jminor.framework.client.ui.EntityComboBox;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -27,7 +30,7 @@ public class ComboBoxValueLinkTest {
     final EntityComboBoxModel comboBoxModel = model.createEntityComboBoxModel(fkProperty);
     final EntityComboBox comboBox = new EntityComboBox(comboBoxModel);
     comboBoxModel.refresh();
-    new ComboBoxValueLink<String>(comboBox, model, fkProperty.getPropertyID());
+    ValueLinks.selectedItemValueLink(comboBox, new EditModelValue(model, EmpDept.EMPLOYEE_DEPARTMENT_FK), LinkType.READ_WRITE);
     assertTrue(comboBox.getSelectedItem() == null);
     Entity department = model.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     model.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);

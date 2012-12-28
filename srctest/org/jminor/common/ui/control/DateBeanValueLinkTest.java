@@ -31,7 +31,7 @@ public class DateBeanValueLinkTest {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
 
     final JFormattedTextField txtString = UiUtil.createFormattedField(DateUtil.getDateMask(format));
-    new DateBeanValueLink(txtString, this, "date", evtDateValueChanged, LinkType.READ_WRITE, format, false);
+    ValueLinks.dateBeanValueLink(txtString, this, "date", evtDateValueChanged, LinkType.READ_WRITE, format, false);
     assertEquals("String value should be empty on initialization", "__.__.____", txtString.getText());
 
     final Date date = format.parse("03.10.1975");
@@ -49,7 +49,7 @@ public class DateBeanValueLinkTest {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_TIMESTAMP);
 
     final JFormattedTextField txtString = UiUtil.createFormattedField(DateUtil.getDateMask(format));
-    new DateBeanValueLink(txtString, this, "timestamp", evtTimestampValueChanged, LinkType.READ_WRITE, format, true);
+    ValueLinks.dateBeanValueLink(txtString, this, "timestamp", evtTimestampValueChanged, LinkType.READ_WRITE, format, true);
     assertEquals("String value should be empty on initialization", "__-__-__ __:__", txtString.getText());
 
     final Timestamp date = new Timestamp(format.parse("03-10-75 10:34").getTime());

@@ -25,6 +25,7 @@ import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.ToggleBeanValueLink;
+import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.input.BooleanInputProvider;
 import org.jminor.common.ui.input.DateInputProvider;
@@ -703,7 +704,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a summary panel toggle button
    */
   public final Control getToggleSummaryPanelControl() {
-    final ToggleBeanValueLink toggle = Controls.toggleControl(this, "summaryPanelVisible", null,
+    final ToggleBeanValueLink toggle = ValueLinks.toggleControl(this, "summaryPanelVisible", null,
             evtSummaryPanelVisibilityChanged);
     toggle.setIcon(Images.loadImage("Sum16.gif"));
     toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_SUMMARY_TIP));
@@ -1082,7 +1083,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   protected final ToggleBeanValueLink getSearchPanelControl() {
-    return Controls.toggleControl(this, "searchPanelVisible",
+    return ValueLinks.toggleControl(this, "searchPanelVisible",
             FrameworkMessages.get(FrameworkMessages.SHOW), evtSearchPanelVisibilityChanged);
   }
 

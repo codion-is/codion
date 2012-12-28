@@ -3,73 +3,35 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.textfield.IntField;
+
+import java.text.NumberFormat;
 
 /**
  * Binds a DoubleField to a int based bean property.
  */
-public class IntBeanValueLink extends TextBeanValueLink {
+final class IntBeanValueLink extends TextBeanValueLink {
+
+  private final boolean usePrimitive;
 
   /**
    * Instantiates a new IntBeanValueLink.
    * @param intField the int field to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   */
-  public IntBeanValueLink(final IntField intField, final Object owner, final String propertyName,
-                          final EventObserver valueChangeEvent) {
-    this(intField, owner, propertyName, valueChangeEvent, LinkType.READ_WRITE);
-  }
-
-  /**
-   * Instantiates a new IntBeanValueLink.
-   * @param intField the int field to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param linkType the link type
-   */
-  public IntBeanValueLink(final IntField intField, final Object owner, final String propertyName,
-                          final EventObserver valueChangeEvent, final LinkType linkType) {
-    this(intField, owner, propertyName, valueChangeEvent, linkType, true);
-  }
-
-
-
-  /**
-   * Instantiates a new IntBeanValueLink.
-   * @param intField the int field to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
-   */
-  public IntBeanValueLink(final IntField intField, final Object owner, final String propertyName,
-                          final EventObserver valueChangeEvent, final boolean usePrimitive) {
-    this(intField, owner, propertyName, valueChangeEvent, LinkType.READ_WRITE, usePrimitive);
-  }
-
-  /**
-   * Instantiates a new IntBeanValueLink.
-   * @param intField the int field to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param modelValue the model value
    * @param linkType the link type
    * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
    */
-  public IntBeanValueLink(final IntField intField, final Object owner, final String propertyName,
-                          final EventObserver valueChangeEvent, final LinkType linkType, final boolean usePrimitive) {
-    super(intField, owner, propertyName, usePrimitive ? int.class : Integer.class, valueChangeEvent, linkType);
+  IntBeanValueLink(final IntField intField, final ModelValue modelValue, final LinkType linkType, final boolean usePrimitive,
+                   final NumberFormat format) {
+    super(intField, modelValue, linkType, format, true);
+    this.usePrimitive = usePrimitive;
   }
 
   /** {@inheritDoc} */
   @Override
-  protected final Object getValueFromText(final String text) {
-    if (text.isEmpty() && getValueClass().equals(int.class)) {
+  protected Object getValueFromText(final String text) {
+    if (text.isEmpty() && usePrimitive) {
       return 0;
     }
 

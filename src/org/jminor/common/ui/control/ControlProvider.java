@@ -4,7 +4,6 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.EventAdapter;
-import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 
@@ -13,7 +12,6 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
@@ -31,11 +29,6 @@ import java.util.List;
 public final class ControlProvider {
 
   private ControlProvider() {}
-
-  public static void bindItemSelector(final JComboBox combo, final Object owner, final String property,
-                                      final Class propertyClass, final EventObserver changedEvent) {
-    new SelectedItemBeanValueLink(combo, owner, property, propertyClass, changedEvent, LinkType.READ_WRITE);
-  }
 
   public static JButton createButton(final Control control) {
     return new JButton(control);
