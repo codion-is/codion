@@ -527,7 +527,7 @@ public final class ValueLinks {
     }
   }
 
-  private static abstract class UIValue implements Value {
+  private abstract static class UIValue implements Value {
     protected final Event changeEvent = Events.event();
 
     /** {@inheritDoc} */
@@ -760,7 +760,7 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    public Boolean get() {
+    public Object get() {
       return buttonModel.isSelected();
     }
 
@@ -788,7 +788,7 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    public Boolean get() {
+    public Object get() {
       if (((TristateButtonModel) getButtonModel()).isIndeterminate()) {
         return null;
       }
@@ -812,15 +812,8 @@ public final class ValueLinks {
         }
       });
       if (comboBox.isEditable()) {
-        ((JTextField) comboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentAdapter() {
-          /** {@inheritDoc} */
-          @Override
-          public void contentsChanged(final DocumentEvent e) {
-            comboBox.getModel().setSelectedItem(comboBox.getEditor().getItem());
-          }
-        });
+        ((JTextField) comboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener(comboBox));
       }
-
     }
 
     /** {@inheritDoc} */
@@ -841,6 +834,20 @@ public final class ValueLinks {
       }
 
       return comboBoxModel.getSelectedItem();
+    }
+
+    private static final class DocumentListener extends DocumentAdapter {
+      private final JComboBox comboBox;
+
+      private DocumentListener(final JComboBox comboBox) {
+        this.comboBox = comboBox;
+      }
+
+      /** {@inheritDoc} */
+      @Override
+      public void contentsChanged(final DocumentEvent e) {
+        comboBox.getModel().setSelectedItem(comboBox.getEditor().getItem());
+      }
     }
   }
 

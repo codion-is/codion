@@ -33,7 +33,7 @@ public final class ToggleValueLink extends ValueLink {
   /**
    * @return the button model
    */
-  public final ButtonModel getButtonModel() {
+  public ButtonModel getButtonModel() {
     return buttonModel;
   }
 }
