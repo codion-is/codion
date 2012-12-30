@@ -15,12 +15,17 @@ import java.awt.event.ActionEvent;
  * An abstract base class for linking a UI component to a model value.
  * @param <V> the type of the value
  */
-public abstract class AbstractValueLink<V> extends Control {
+public class ValueLink<V> extends Control {
 
   /**
    * The Object wrapping the model value
    */
   private final Value<V> modelValue;
+
+  /**
+   * The Object wrapping the ui value
+   */
+  private final Value<V> uiValue;
 
   /**
    * The link type
@@ -38,35 +43,30 @@ public abstract class AbstractValueLink<V> extends Control {
   private boolean isUpdatingModel = false;
 
   /**
-   * Instantiates a new AbstractValueLink
+   * Instantiates a new ValueLink
    * @param modelValue the value wrapper for the linked value
    * @param linkType the link Type
    */
-  public AbstractValueLink(final Value<V> modelValue, final LinkType linkType) {
-    this(modelValue, linkType, null);
+  public ValueLink(final Value<V> modelValue, final Value<V> uiValue, final LinkType linkType) {
+    this(modelValue, uiValue, linkType, null);
   }
 
   /**
-   * Instantiates a new AbstractValueLink
+   * Instantiates a new ValueLink
    * @param modelValue the value wrapper for the linked value
    * @param linkType the link Type
    * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
    */
-  public AbstractValueLink(final Value<V> modelValue, final LinkType linkType, final StateObserver enabledObserver) {
+  public ValueLink(final Value<V> modelValue, final Value<V> uiValue, final LinkType linkType, final StateObserver enabledObserver) {
     super(null, enabledObserver);
     Util.rejectNullValue(modelValue, "modelValue");
+    Util.rejectNullValue(uiValue, "uiValue");
     Util.rejectNullValue(linkType, "linkType");
     this.modelValue = modelValue;
+    this.uiValue = uiValue;
     this.linkType = linkType;
-    if (linkType != LinkType.WRITE_ONLY && modelValue.getChangeEvent() != null) {
-      modelValue.getChangeEvent().addListener(new EventAdapter() {
-        /** {@inheritDoc} */
-        @Override
-        public void eventOccurred() {
-          updateUI();
-        }
-      });
-    }
+    updateUI();
+    bindEvents(modelValue, uiValue, linkType);
   }
 
   /** {@inheritDoc} */
@@ -76,27 +76,13 @@ public abstract class AbstractValueLink<V> extends Control {
   }
 
   /**
-   * @return true if the underlying model value is null
-   */
-  public final boolean isModelValueNull() {
-    return modelValue.get() == null;
-  }
-
-  /**
-   * @return the type of this link
-   */
-  protected final LinkType getLinkType() {
-    return linkType;
-  }
-
-  /**
    * Updates the model according to the UI.
    */
   protected final void updateModel() {
     if (linkType != LinkType.READ_ONLY && !isUpdatingModel && !isUpdatingUI) {
       try {
         isUpdatingModel = true;
-        modelValue.set(getUIValue());
+        modelValue.set(uiValue.get());
       }
       finally {
         isUpdatingModel = false;
@@ -117,7 +103,7 @@ public abstract class AbstractValueLink<V> extends Control {
               /** {@inheritDoc} */
               @Override
               public void run() {
-                setUIValue(modelValue.get());
+                uiValue.set(modelValue.get());
               }
             });
           }
@@ -126,7 +112,7 @@ public abstract class AbstractValueLink<V> extends Control {
           }
         }
         else {
-          setUIValue(modelValue.get());
+          uiValue.set(modelValue.get());
         }
       }
       finally {
@@ -135,14 +121,24 @@ public abstract class AbstractValueLink<V> extends Control {
     }
   }
 
-  /**
-   * @return the value according to the UI
-   */
-  protected abstract V getUIValue();
-
-  /**
-   * Sets the value in the UI
-   * @param value the value to represent in the UI
-   */
-  protected abstract void setUIValue(final V value);
+  private void bindEvents(final Value<V> modelValue, final Value<V> uiValue, final LinkType linkType) {
+    if (linkType != LinkType.WRITE_ONLY && modelValue.getChangeEvent() != null) {
+      modelValue.getChangeEvent().addListener(new EventAdapter() {
+        /** {@inheritDoc} */
+        @Override
+        public void eventOccurred() {
+          updateUI();
+        }
+      });
+    }
+    if (linkType != LinkType.READ_ONLY && uiValue.getChangeEvent() != null) {
+      uiValue.getChangeEvent().addListener(new EventAdapter() {
+        /** {@inheritDoc} */
+        @Override
+        public void eventOccurred() {
+          updateModel();
+        }
+      });
+    }
+  }
 }

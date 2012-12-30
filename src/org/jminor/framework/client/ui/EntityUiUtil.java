@@ -6,10 +6,13 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
+import org.jminor.common.model.Event;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Value;
 import org.jminor.common.model.checkbox.TristateButtonModel;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
@@ -23,8 +26,8 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.checkbox.TristateCheckBox;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
-import org.jminor.common.ui.control.AbstractValueLink;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.control.ValueLink;
 import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.input.InputProviderPanel;
@@ -477,7 +480,7 @@ public final class EntityUiUtil {
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       lookupField.setTransferFocusOnEnter();
     }
-    new LookupValueLink(lookupField.getModel(), editModel, foreignKeyProperty.getPropertyID());
+    new ValueLink(new EditModelValue(editModel, foreignKeyProperty.getPropertyID()), new LookupUIValue(lookupField.getModel()), LinkType.READ_WRITE);
     UiUtil.linkToEnabledState(enabledState, lookupField);
     if (foreignKeyProperty.getDescription() != null) {
       lookupField.setToolTipText(foreignKeyProperty.getDescription());
@@ -850,46 +853,42 @@ public final class EntityUiUtil {
     }
   }
 
-  /**
-   * A class for linking an EntityLookupModel to a EntityEditModel foreign key property value.
-   */
-  public static final class LookupValueLink extends AbstractValueLink<Object> {
-
+  public static final class LookupUIValue implements Value {
+    private final Event changeEvent = Events.event();
     private final EntityLookupModel lookupModel;
 
-    /**
-     * Instantiates a new LookupModelValueLink
-     * @param lookupModel the lookup model to link
-     * @param editModel the EntityEditModel instance
-     * @param foreignKeyPropertyID the foreign key property ID to link
-     */
-    public LookupValueLink(final EntityLookupModel lookupModel, final EntityEditModel editModel,
-                           final String foreignKeyPropertyID) {
-      super(new EditModelValue(editModel, foreignKeyPropertyID), LinkType.READ_WRITE);
+    public LookupUIValue(final EntityLookupModel lookupModel) {
       this.lookupModel = lookupModel;
-      updateUI();
       lookupModel.addSelectedEntitiesListener(new EventAdapter() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
-          updateModel();
+          changeEvent.fire();
         }
       });
     }
 
+    /** {@inheritDoc} */
     @Override
-    protected Object getUIValue() {
+    public void set(final Object value) {
+      final List<Entity> valueList = new ArrayList<Entity>();
+      if (value != null) {//todo !modelValueNull
+        valueList.add((Entity) value);
+      }
+      lookupModel.setSelectedEntities(valueList);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Object get() {
       final Collection<Entity> selectedEntities = lookupModel.getSelectedEntities();
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 
+    /** {@inheritDoc} */
     @Override
-    protected void setUIValue(final Object value) {
-      final List<Entity> valueList = new ArrayList<Entity>();
-      if (!isModelValueNull()) {
-        valueList.add((Entity) value);
-      }
-      lookupModel.setSelectedEntities(valueList);
+    public EventObserver getChangeEvent() {
+      return changeEvent.getObserver();
     }
   }
 

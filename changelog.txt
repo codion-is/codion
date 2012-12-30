@@ -3309,3 +3309,5 @@
   'Bean' removed from common.ui.control value link classnames
   AbstractValueLink.ModelValue moved to common.model.Value
   EditModelValue moved to common.model.valuemap.ValueMapValue
+  AbstractValueLink renamed to ValueLink, no longer abstract, uses the Value mechanism for the ui value as well as the model value
+  AbstractValueLink descendants removed
