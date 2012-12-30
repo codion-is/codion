@@ -336,7 +336,7 @@ public final class EntityUiUtil {
 
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     ValueLinks.toggleValueLink(checkBox.getModel(),
-            new EditModelValue(editModel, property.getPropertyID()), null, LinkType.READ_WRITE, null);
+            new EditModelValue(editModel, property.getPropertyID()), LinkType.READ_WRITE, null);
     UiUtil.linkToEnabledState(enabledState, checkBox);
     if (property.getDescription() != null) {
       checkBox.setToolTipText(property.getDescription());

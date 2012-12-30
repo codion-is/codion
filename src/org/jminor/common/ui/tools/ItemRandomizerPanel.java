@@ -159,7 +159,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private JCheckBox createEnabledCheckBox(final T item) {
     final JCheckBox enabledBox = new JCheckBox("Enabled");
-    new EnabledValueLink(enabledBox.getModel(), item);
+    new ValueLink<Boolean>(new EnabledModelValue(item), new EnabledUIValue(enabledBox.getModel()), LinkType.READ_WRITE);
 
     return enabledBox;
   }
@@ -171,113 +171,128 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private SpinnerModel createWeightSpinnerModel(final T item) {
     final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(model.getWeight(item), 0, Integer.MAX_VALUE, 1);
-    new WeightValueLink(spinnerModel, item);
+    new ValueLink<Integer>(new WeightModelValue(item), new WeightUIValue(spinnerModel), LinkType.READ_WRITE);
 
     return spinnerModel;
   }
 
-  private final class WeightValueLink extends ValueLink<Integer> {
+  private final class EnabledModelValue implements Value<Boolean> {
+    private final T item;
 
-    private WeightValueLink(final SpinnerNumberModel spinnerModel, final T item) {
-      super(new Value<Integer>() {
-              /** {@inheritDoc} */
-              @Override
-              public void set(final Integer value) {
-                getModel().setWeight(item, value);
-              }
+    private EnabledModelValue(final T item) {
+      this.item = item;
+    }
 
-              /** {@inheritDoc} */
-              @Override
-              public Integer get() {
-                return getModel().getWeight(item);
-              }
+    /** {@inheritDoc} */
+    @Override
+    public void set(final Boolean value) {
+      getModel().setItemEnabled(item, value);
+    }
 
-              /** {@inheritDoc} */
-              @Override
-              public EventObserver getChangeEvent() {
-                return getModel().getWeightsObserver();
-              }
-            }, new Value<Integer>() {
-              /** {@inheritDoc} */
-              @Override
-              public void set(final Integer value) {
-                spinnerModel.setValue(value);
-              }
+    /** {@inheritDoc} */
+    @Override
+    public Boolean get() {
+      return getModel().isItemEnabled(item);
+    }
 
-              /** {@inheritDoc} */
-              @Override
-              public Integer get() {
-                return (Integer) spinnerModel.getValue();
-              }
-
-              /** {@inheritDoc} */
-              @Override
-              public EventObserver getChangeEvent() {
-                final Event changeEvent = Events.event();
-                spinnerModel.addChangeListener(new ChangeListener() {
-                  /** {@inheritDoc} */
-                  @Override
-                  public void stateChanged(final ChangeEvent e) {
-                    changeEvent.fire();
-                  }
-                });
-                return changeEvent.getObserver();
-              }
-            }, LinkType.READ_WRITE
-      );
+    /** {@inheritDoc} */
+    @Override
+    public EventObserver getChangeEvent() {
+      return getModel().getEnabledObserver();
     }
   }
 
-  private final class EnabledValueLink extends ValueLink<Boolean> {
+  private final class EnabledUIValue implements Value<Boolean> {
+    private final Event changeEvent = Events.event();
+    private final ButtonModel buttonModel;
 
-    private EnabledValueLink(final ButtonModel buttonModel, final T item) {
-      super(new Value<Boolean>() {
-              /** {@inheritDoc} */
-              @Override
-              public void set(final Boolean value) {
-                getModel().setItemEnabled(item, value);
-              }
+    private EnabledUIValue(final ButtonModel buttonModel) {
+      this.buttonModel = buttonModel;
+      buttonModel.addItemListener(new ItemListener() {
+        /** {@inheritDoc} */
+        @Override
+        public void itemStateChanged(final ItemEvent e) {
+          changeEvent.fire();
+        }
+      });
+    }
 
-              /** {@inheritDoc} */
-              @Override
-              public Boolean get() {
-                return getModel().isItemEnabled(item);
-              }
+    /** {@inheritDoc} */
+    @Override
+    public void set(final Boolean value) {
+      buttonModel.setSelected(value);
+    }
 
-              /** {@inheritDoc} */
-              @Override
-              public EventObserver getChangeEvent() {
-                return getModel().getEnabledObserver();
-              }
-            }, new Value<Boolean>() {
-              /** {@inheritDoc} */
-              @Override
-              public void set(final Boolean value) {
-                buttonModel.setSelected(value);
-              }
+    /** {@inheritDoc} */
+    @Override
+    public Boolean get() {
+      return buttonModel.isSelected();
+    }
 
-              /** {@inheritDoc} */
-              @Override
-              public Boolean get() {
-                return buttonModel.isSelected();
-              }
+    /** {@inheritDoc} */
+    @Override
+    public EventObserver getChangeEvent() {
+      return changeEvent.getObserver();
+    }
+  }
 
-              /** {@inheritDoc} */
-              @Override
-              public EventObserver getChangeEvent() {
-                final Event changeEvent = Events.event();
-                buttonModel.addItemListener(new ItemListener() {
-                  /** {@inheritDoc} */
-                  @Override
-                  public void itemStateChanged(final ItemEvent e) {
-                    changeEvent.fire();
-                  }
-                });
+  private final class WeightModelValue implements Value<Integer> {
+    private final T item;
 
-                return changeEvent.getObserver();
-              }
-            }, LinkType.READ_WRITE
-      );
+    private WeightModelValue(final T item) {
+      this.item = item;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void set(final Integer value) {
+      getModel().setWeight(item, value);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Integer get() {
+      return getModel().getWeight(item);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public EventObserver getChangeEvent() {
+      return getModel().getWeightsObserver();
+    }
+  }
+
+  private final class WeightUIValue implements Value<Integer> {
+    private final Event changeEvent = Events.event();
+    private final SpinnerNumberModel spinnerModel;
+
+    private WeightUIValue(final SpinnerNumberModel spinnerModel) {
+      this.spinnerModel = spinnerModel;
+      spinnerModel.addChangeListener(new ChangeListener() {
+        /** {@inheritDoc} */
+        @Override
+        public void stateChanged(final ChangeEvent e) {
+          changeEvent.fire();
+        }
+      });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void set(final Integer value) {
+      spinnerModel.setValue(value);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Integer get() {
+      return (Integer) spinnerModel.getValue();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public EventObserver getChangeEvent() {
+      return changeEvent.getObserver();
     }
   }
 }

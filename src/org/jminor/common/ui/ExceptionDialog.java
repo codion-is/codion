@@ -13,8 +13,6 @@ import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.control.ToggleValueLink;
-import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 
 import javax.swing.AbstractAction;
@@ -73,7 +71,7 @@ public final class ExceptionDialog extends JDialog {
   private JButton btnCopy;
   private JButton btnEmail;
   //controls
-  private ToggleValueLink ctrDetails;
+  private Control.Toggle ctrDetails;
   private Control ctrClose;
   private Control ctrPrint;
   private Control ctrSave;
@@ -236,7 +234,7 @@ public final class ExceptionDialog extends JDialog {
   }
 
   private void setupControls() {
-    ctrDetails = ValueLinks.toggleControl(this, "showDetails",
+    ctrDetails = Controls.toggleControl(this, "showDetails",
             Messages.get(Messages.DETAILS), null,
             Messages.get(Messages.SHOW_DETAILS));
     ctrPrint = Controls.methodControl(this, "printErrorReport",

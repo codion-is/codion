@@ -3,9 +3,12 @@
  */
 package org.jminor.common.ui.control;
 
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 
+import javax.swing.ButtonModel;
 import javax.swing.Icon;
+import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 
 /**
@@ -47,5 +50,26 @@ public final class Controls {
                                             final StateObserver state, final String description, final int mnemonic,
                                             final KeyStroke ks, final Icon icon) {
     return (MethodControl) methodControl(owner, method, name, state, description, mnemonic, ks).setIcon(icon);
+  }
+
+  public static Control.Toggle toggleControl(final Object owner, final String propertyName, final String caption,
+                                             final EventObserver changeEvent) {
+    return toggleControl(owner, propertyName, caption, changeEvent, (StateObserver) null);
+  }
+
+  public static Control.Toggle toggleControl(final Object owner, final String propertyName, final String caption,
+                                             final EventObserver changeEvent, final StateObserver enabledObserver) {
+    final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
+    ValueLinks.toggleBeanValueLink(buttonModel, owner, propertyName, changeEvent, LinkType.READ_WRITE, enabledObserver);
+
+    return new Control.Toggle(caption, buttonModel);
+  }
+
+  public static Control.Toggle toggleControl(final Object owner, final String propertyName, final String caption,
+                                             final EventObserver changeEvent, final String description) {
+    final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
+    ValueLinks.toggleBeanValueLink(buttonModel, owner, propertyName, changeEvent, LinkType.READ_WRITE);
+
+    return (Control.Toggle) new Control.Toggle(caption, buttonModel).setDescription(description);
   }
 }

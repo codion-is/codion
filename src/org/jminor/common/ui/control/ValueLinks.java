@@ -47,6 +47,8 @@ import java.util.Date;
  */
 public final class ValueLinks {
 
+  private ValueLinks() {}
+
   public static void dateBeanValueLink(final JFormattedTextField textComponent, final Object owner,
                                        final String propertyName, final EventObserver valueChangeEvent,
                                        final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
@@ -260,44 +262,31 @@ public final class ValueLinks {
    * @param valueChangeEvent an EventObserver notified each time the value changes
    */
   public static ButtonModel toggleBeanValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent) {
-    return toggleBeanValueLink(owner, propertyName, valueChangeEvent, null);
+    return toggleBeanValueLink(owner, propertyName, valueChangeEvent, LinkType.READ_WRITE);
   }
 
   /**
    * @param owner the value owner
    * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param caption the check box caption, if any
-   */
-  public static ButtonModel toggleBeanValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent,
-                                                final String caption) {
-    return toggleBeanValueLink(owner, propertyName, valueChangeEvent, caption, LinkType.READ_WRITE);
-  }
-
-  /**
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param caption the check box caption, if any
    * @param linkType the link type
    */
   public static ButtonModel toggleBeanValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent,
-                                                final String caption, final LinkType linkType) {
-    return toggleBeanValueLink(owner, propertyName, valueChangeEvent, caption, linkType, null);
+                                                final LinkType linkType) {
+    return toggleBeanValueLink(owner, propertyName, valueChangeEvent, linkType, null);
   }
 
   /**
    * @param owner the value owner
    * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param caption the check box caption, if any
    * @param linkType the link type
    * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
    */
   public static ButtonModel toggleBeanValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent,
-                                                final String caption, final LinkType linkType, final StateObserver enabledObserver) {
+                                                final LinkType linkType, final StateObserver enabledObserver) {
     final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
-    toggleBeanValueLink(buttonModel, owner, propertyName, valueChangeEvent, caption, linkType, enabledObserver);
+    toggleBeanValueLink(buttonModel, owner, propertyName, valueChangeEvent, linkType, enabledObserver);
 
     return buttonModel;
   }
@@ -310,7 +299,7 @@ public final class ValueLinks {
    */
   public static void toggleBeanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
                                          final EventObserver valueChangeEvent) {
-    toggleBeanValueLink(buttonModel, owner, propertyName, valueChangeEvent, null);
+    toggleBeanValueLink(buttonModel, owner, propertyName, valueChangeEvent, LinkType.READ_WRITE);
   }
 
   /**
@@ -318,24 +307,11 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param caption the check box caption, if any
-   */
-  public static void toggleBeanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
-                                         final EventObserver valueChangeEvent, final String caption) {
-    toggleBeanValueLink(buttonModel, owner, propertyName, valueChangeEvent, caption, LinkType.READ_WRITE);
-  }
-
-  /**
-   * @param buttonModel the button model to link with the value
-   * @param owner the value owner
-   * @param propertyName the property name
-   * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param caption the check box caption, if any
    * @param linkType the link type
    */
   public static void toggleBeanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
-                                         final EventObserver valueChangeEvent, final String caption, final LinkType linkType) {
-    toggleBeanValueLink(buttonModel, owner, propertyName, valueChangeEvent, caption, linkType, null);
+                                         final EventObserver valueChangeEvent, final LinkType linkType) {
+    toggleBeanValueLink(buttonModel, owner, propertyName, valueChangeEvent, linkType, null);
   }
 
   /**
@@ -343,47 +319,24 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param caption the check box caption, if any
    * @param linkType the link type
    * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
    */
   public static void toggleBeanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
-                                         final EventObserver valueChangeEvent, final String caption, final LinkType linkType,
-                                         final StateObserver enabledObserver) {
+                                         final EventObserver valueChangeEvent, final LinkType linkType, final StateObserver enabledObserver) {
     toggleValueLink(buttonModel, new BeanModelValue(owner, propertyName, boolean.class, linkType, valueChangeEvent),
-            caption, linkType, enabledObserver);
+            linkType, enabledObserver);
   }
 
   /**
    * @param buttonModel the button model to link with the value
    * @param modelValue the model value
-   * @param caption the check box caption, if any
    * @param linkType the link type
    * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
    */
   public static void toggleValueLink(final ButtonModel buttonModel, final Value modelValue,
-                                     final String caption, final LinkType linkType, final StateObserver enabledObserver) {
-    new ToggleValueLink(buttonModel, modelValue, new ToggleUIValue(buttonModel), caption, linkType, enabledObserver);
-  }
-
-  public static ToggleValueLink toggleControl(final Object owner, final String propertyName, final String caption,
-                                              final EventObserver changeEvent) {
-    return toggleControl(owner, propertyName, caption, changeEvent, (StateObserver) null);
-  }
-
-  public static ToggleValueLink toggleControl(final Object owner, final String propertyName, final String caption,
-                                              final EventObserver changeEvent, final StateObserver enabledObserver) {
-    final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
-    return new ToggleValueLink(buttonModel, new BeanModelValue(owner, propertyName, boolean.class,
-            LinkType.READ_WRITE, changeEvent), new ToggleUIValue(buttonModel), caption, LinkType.READ_WRITE, enabledObserver);
-  }
-
-  public static ToggleValueLink toggleControl(final Object owner, final String propertyName, final String caption,
-                                              final EventObserver changeEvent, final String description) {
-    final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
-    return (ToggleValueLink) new ToggleValueLink(buttonModel,
-            new BeanModelValue(owner, propertyName, boolean.class, LinkType.READ_WRITE, changeEvent),
-            new ToggleUIValue(buttonModel), caption, LinkType.READ_WRITE, null).setDescription(description);
+                                     final LinkType linkType, final StateObserver enabledObserver) {
+    new ValueLink(modelValue, new ToggleUIValue(buttonModel), linkType, enabledObserver);
   }
 
   public static void tristateValueLink(final TristateButtonModel buttonModel, final Value modelValue,

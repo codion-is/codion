@@ -14,8 +14,6 @@ public interface ControlIterator {
 
   void handleControl(final Control control);
 
-  void handleToggleControl(final ToggleValueLink control);
-
   void handleControlSet(final ControlSet controlSet);
 
   void handleAction(final Action action);

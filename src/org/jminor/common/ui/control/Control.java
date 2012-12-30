@@ -9,6 +9,7 @@ import org.jminor.common.model.States;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.ButtonModel;
 import javax.swing.Icon;
 import javax.swing.KeyStroke;
 import java.awt.event.ActionEvent;
@@ -160,5 +161,29 @@ public class Control extends AbstractAction {
    */
   public final Icon getIcon() {
     return (Icon) getValue(SMALL_ICON);
+  }
+
+  /**
+   * A Control based on a boolean property
+   */
+  public static final class Toggle extends Control {
+
+    private final ButtonModel buttonModel;
+
+    /**
+     * @param name the name
+     * @param buttonModel the button model
+     */
+    public Toggle(final String name, final ButtonModel buttonModel) {
+      super(name);
+      this.buttonModel = buttonModel;
+    }
+
+    /**
+     * @return the button model
+     */
+    public ButtonModel getButtonModel() {
+      return buttonModel;
+    }
   }
 }

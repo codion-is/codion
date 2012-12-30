@@ -225,7 +225,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
     final JCheckBox chkCollectStatistics = new JCheckBox("Fine grained statistics");
     chkCollectStatistics.setModel(ValueLinks.toggleBeanValueLink(model, "collectFineGrainedStatistics",
-            model.getCollectFineGrainedStatisticsObserver(), null));
+            model.getCollectFineGrainedStatisticsObserver()));
     chkCollectStatistics.setMaximumSize(UiUtil.getPreferredTextFieldSize());
 
     chartConfig.add(chkCollectStatistics);

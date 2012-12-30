@@ -3311,3 +3311,6 @@
   EditModelValue moved to common.model.valuemap.ValueMapValue
   AbstractValueLink renamed to ValueLink, no longer abstract, uses the Value mechanism for the ui value as well as the model value
   AbstractValueLink descendants removed
+  ToggleValueLink removed
+  Control.Toggle added
+  createToggleControl() moved back to Controls

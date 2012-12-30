@@ -44,7 +44,7 @@ public class ControlProviderTest {
     set = new ControlSet("hello");
     set.add(new Control("one"));
     set.add(new Control("two"));
-    set.add(ValueLinks.toggleControl(this, "booleanValue", "three", null));
+    set.add(Controls.toggleControl(this, "booleanValue", "three", null));
   }
 
   @Test
@@ -55,13 +55,13 @@ public class ControlProviderTest {
 
   @Test
   public void createCheckBox() {
-    final JCheckBox box = ControlProvider.createCheckBox(ValueLinks.toggleControl(this, "booleanValue", "Test", null));
+    final JCheckBox box = ControlProvider.createCheckBox(Controls.toggleControl(this, "booleanValue", "Test", null));
     assertEquals("Test", box.getText());
   }
 
   @Test
   public void createCheckBoxMenuItem() {
-    final JMenuItem item = ControlProvider.createCheckBoxMenuItem(ValueLinks.toggleControl(this, "booleanValue", "Test", null));
+    final JMenuItem item = ControlProvider.createCheckBoxMenuItem(Controls.toggleControl(this, "booleanValue", "Test", null));
     assertEquals("Test", item.getText());
   }
 

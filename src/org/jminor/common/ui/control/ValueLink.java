@@ -15,7 +15,7 @@ import java.awt.event.ActionEvent;
  * An abstract base class for linking a UI component to a model value.
  * @param <V> the type of the value
  */
-public class ValueLink<V> extends Control {
+public final class ValueLink<V> extends Control {
 
   /**
    * The Object wrapping the model value
@@ -71,14 +71,14 @@ public class ValueLink<V> extends Control {
 
   /** {@inheritDoc} */
   @Override
-  public final void actionPerformed(final ActionEvent e) {
+  public void actionPerformed(final ActionEvent e) {
     updateModel();
   }
 
   /**
    * Updates the model according to the UI.
    */
-  protected final void updateModel() {
+  protected void updateModel() {
     if (linkType != LinkType.READ_ONLY && !isUpdatingModel && !isUpdatingUI) {
       try {
         isUpdatingModel = true;
@@ -93,7 +93,7 @@ public class ValueLink<V> extends Control {
   /**
    * Updates the UI according to the model.
    */
-  protected final void updateUI() {
+  protected void updateUI() {
     if (linkType != LinkType.WRITE_ONLY && !isUpdatingModel) {
       try {
         isUpdatingUI = true;

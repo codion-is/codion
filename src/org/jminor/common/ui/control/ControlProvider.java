@@ -67,16 +67,16 @@ public final class ControlProvider {
     return iterator.getMenu();
   }
 
-  public static JCheckBoxMenuItem createCheckBoxMenuItem(final ToggleValueLink propertyLink) {
-    final JCheckBoxMenuItem box = new JCheckBoxMenuItem(propertyLink);
-    box.setModel(propertyLink.getButtonModel());
+  public static JCheckBoxMenuItem createCheckBoxMenuItem(final Control.Toggle toggle) {
+    final JCheckBoxMenuItem box = new JCheckBoxMenuItem(toggle);
+    box.setModel(toggle.getButtonModel());
 
     return box;
   }
 
-  public static JRadioButtonMenuItem createRadioButtonMenuItem(final ToggleValueLink propertyLink) {
-    final JRadioButtonMenuItem box = new JRadioButtonMenuItem(propertyLink);
-    box.setModel(propertyLink.getButtonModel());
+  public static JRadioButtonMenuItem createRadioButtonMenuItem(final Control.Toggle toggle) {
+    final JRadioButtonMenuItem box = new JRadioButtonMenuItem(toggle);
+    box.setModel(toggle.getButtonModel());
 
     return box;
   }
@@ -131,12 +131,12 @@ public final class ControlProvider {
 
     @Override
     public void handleControl(final Control control) {
-      btnPanel.add(createButton(control));
-    }
-
-    @Override
-    public void handleToggleControl(final ToggleValueLink control) {
-      btnPanel.add(createCheckBox(control));
+      if (control instanceof Control.Toggle) {
+        btnPanel.add(createCheckBox((Control.Toggle) control));
+      }
+      else {
+        btnPanel.add(createButton(control));
+      }
     }
 
     @Override
@@ -200,12 +200,12 @@ public final class ControlProvider {
 
     @Override
     public void handleControl(final Control control) {
-      menu.add(control);
-    }
-
-    @Override
-    public void handleToggleControl(final ToggleValueLink control) {
-      menu.add(createCheckBoxMenuItem(control));
+      if (control instanceof Control.Toggle) {
+        menu.add(createCheckBoxMenuItem((Control.Toggle) control));
+      }
+      else {
+        menu.add(control);
+      }
     }
 
     @Override
@@ -242,12 +242,12 @@ public final class ControlProvider {
 
     @Override
     public void handleControl(final Control control) {
-      toolbar.add(control);
-    }
-
-    @Override
-    public void handleToggleControl(final ToggleValueLink control) {
-      toolbar.add(createToggleButton(control, includeCaption));
+      if (control instanceof Control.Toggle) {
+        toolbar.add(createToggleButton((Control.Toggle) control, includeCaption));
+      }
+      else {
+        toolbar.add(control);
+      }
     }
 
     @Override
@@ -261,21 +261,21 @@ public final class ControlProvider {
     }
   }
 
-  public static JCheckBox createCheckBox(final ToggleValueLink propertyLink) {
-    final JCheckBox checkBox = new JCheckBox(propertyLink);
-    checkBox.setModel(propertyLink.getButtonModel());
+  public static JCheckBox createCheckBox(final Control.Toggle toggle) {
+    final JCheckBox checkBox = new JCheckBox(toggle);
+    checkBox.setModel(toggle.getButtonModel());
 
     return checkBox;
   }
 
-  public static JToggleButton createToggleButton(final ToggleValueLink propertyLink) {
-    return createToggleButton(propertyLink, true);
+  public static JToggleButton createToggleButton(final Control.Toggle toggle) {
+    return createToggleButton(toggle, true);
   }
 
-  public static JToggleButton createToggleButton(final ToggleValueLink propertyLink, final boolean includeCaption) {
-    final JToggleButton toggleButton = new JToggleButton(propertyLink);
-    toggleButton.setModel(propertyLink.getButtonModel());
-    toggleButton.setText(includeCaption ? propertyLink.getName() : null);
+  public static JToggleButton createToggleButton(final Control.Toggle toggle, final boolean includeCaption) {
+    final JToggleButton toggleButton = new JToggleButton(toggle);
+    toggleButton.setModel(toggle.getButtonModel());
+    toggleButton.setText(includeCaption ? toggle.getName() : null);
 
     return toggleButton;
   }
@@ -285,9 +285,6 @@ public final class ControlProvider {
     for (final Action action : controlSet.getActions()) {
       if (action == null) {
         controlIterator.handleSeparator();
-      }
-      else if (action instanceof ToggleValueLink) {
-        controlIterator.handleToggleControl((ToggleValueLink) action);
       }
       else if (action instanceof ControlSet) {
         controlIterator.handleControlSet((ControlSet) action);
