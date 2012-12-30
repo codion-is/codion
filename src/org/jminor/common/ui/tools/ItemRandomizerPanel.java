@@ -8,6 +8,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Value;
 import org.jminor.common.model.tools.ItemRandomizer;
 import org.jminor.common.model.tools.ItemRandomizerModel;
 import org.jminor.common.ui.UiUtil;
@@ -180,7 +181,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     private final SpinnerNumberModel spinnerModel;
 
     private WeightValueLink(final SpinnerNumberModel spinnerModel, final T item) {
-      super(new ModelValue<Integer>() {
+      super(new Value<Integer>() {
         /** {@inheritDoc} */
         @Override
         public void set(final Integer value) {
@@ -228,7 +229,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     private final ButtonModel buttonModel;
 
     private EnabledValueLink(final ButtonModel buttonModel, final T item) {
-      super(new ModelValue<Boolean>() {
+      super(new Value<Boolean>() {
         /** {@inheritDoc} */
         @Override
         public void set(final Boolean value) {

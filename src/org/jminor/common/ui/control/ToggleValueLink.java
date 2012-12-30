@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.Value;
 
 import javax.swing.ButtonModel;
 import java.awt.event.ItemEvent;
@@ -24,7 +25,7 @@ public class ToggleValueLink extends AbstractValueLink {
    * @param linkType the link type
    * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
    */
-  ToggleValueLink(final ButtonModel buttonModel, final ModelValue modelValue, final String caption,
+  ToggleValueLink(final ButtonModel buttonModel, final Value modelValue, final String caption,
                   final LinkType linkType, final StateObserver enabledObserver) {
     super(modelValue, linkType, enabledObserver);
     this.buttonModel = buttonModel;

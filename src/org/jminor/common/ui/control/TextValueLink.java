@@ -5,6 +5,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Value;
 
 import javax.swing.event.DocumentEvent;
 import javax.swing.text.BadLocationException;
@@ -35,7 +36,7 @@ class TextValueLink extends AbstractValueLink<Object> {
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * otherwise it is updated on actionPerformed or focusLost
    */
-  TextValueLink(final JTextComponent textComponent, final ModelValue modelValue, final LinkType linkType,
+  TextValueLink(final JTextComponent textComponent, final Value modelValue, final LinkType linkType,
                 final Format format, final boolean immediateUpdate) {
     super(modelValue, linkType, null);
     this.document = textComponent.getDocument();

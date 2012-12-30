@@ -4,11 +4,12 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.Value;
 import org.jminor.common.model.checkbox.TristateButtonModel;
 
 final class TristateValueLink extends ToggleValueLink {
 
-  TristateValueLink(final TristateButtonModel buttonModel, final ModelValue modelValue, final String caption,
+  TristateValueLink(final TristateButtonModel buttonModel, final Value modelValue, final String caption,
                     final LinkType linkType, final StateObserver enabledObserver) {
     super(buttonModel, modelValue, caption, linkType, enabledObserver);
   }

@@ -5,6 +5,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.Item;
+import org.jminor.common.model.Value;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 
@@ -28,7 +29,7 @@ final class SelectedItemValueLink extends AbstractValueLink {
    * @param modelValue the model value
    * @param linkType the link type
    */
-  SelectedItemValueLink(final JComboBox box, final ModelValue modelValue, final LinkType linkType) {
+  SelectedItemValueLink(final JComboBox box, final Value modelValue, final LinkType linkType) {
     super(modelValue, linkType);
     this.comboBoxModel = box.getModel();
     updateUI();

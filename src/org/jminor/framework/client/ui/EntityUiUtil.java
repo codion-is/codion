@@ -15,6 +15,8 @@ import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
+import org.jminor.common.model.valuemap.ValueMapEditModel;
+import org.jminor.common.model.valuemap.ValueMapValue;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.UiUtil;
@@ -839,6 +841,12 @@ public final class EntityUiUtil {
   private static void checkProperty(final Property property, final EntityEditModel editModel) {
     if (!property.getEntityID().equals(editModel.getEntityID())) {
       throw new IllegalArgumentException("Entity type mismatch: " + property.getEntityID() + ", should be: " + editModel.getEntityID());
+    }
+  }
+
+  private static final class EditModelValue extends ValueMapValue<String, Object> {
+    private EditModelValue(final ValueMapEditModel<String, Object> editModel, final String key) {
+      super(editModel, key);
     }
   }
 

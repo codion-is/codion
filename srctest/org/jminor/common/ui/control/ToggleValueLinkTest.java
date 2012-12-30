@@ -13,7 +13,7 @@ import javax.swing.JCheckBox;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
-public class ToggleBeanValueLinkTest {
+public class ToggleValueLinkTest {
 
   private boolean booleanValue;
   private final Event evtBooleanValueChanged = Events.event();

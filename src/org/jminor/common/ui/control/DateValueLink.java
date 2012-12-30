@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Value;
 
 import javax.swing.JFormattedTextField;
 import java.sql.Timestamp;
@@ -24,7 +25,7 @@ final class DateValueLink extends FormattedTextValueLink {
    * @param linkType the link type
    * @param dateFormat the date format
    */
-  DateValueLink(final JFormattedTextField textComponent, final ModelValue modelValue,
+  DateValueLink(final JFormattedTextField textComponent, final Value modelValue,
                 final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
     super(textComponent, modelValue, linkType, Util.rejectNullValue(dateFormat, "dateFormat"));
     this.isTimestamp = isTimestamp;

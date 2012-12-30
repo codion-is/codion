@@ -3,6 +3,8 @@
  */
 package org.jminor.common.ui.control;
 
+import org.jminor.common.model.Value;
+
 import javax.swing.JFormattedTextField;
 import java.text.Format;
 import java.text.ParseException;
@@ -21,7 +23,7 @@ class FormattedTextValueLink extends TextValueLink {
    * @param linkType the link type
    * @param format the format
    */
-  FormattedTextValueLink(final JFormattedTextField textComponent, final ModelValue modelValue,
+  FormattedTextValueLink(final JFormattedTextField textComponent, final Value modelValue,
                          final LinkType linkType, final Format format) {
     super(textComponent, modelValue, linkType, format, true);
     this.formatter = textComponent.getFormatter();

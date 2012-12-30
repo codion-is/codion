@@ -3,6 +3,8 @@
  */
 package org.jminor.common.ui.control;
 
+import org.jminor.common.model.Value;
+
 import javax.swing.SpinnerNumberModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -20,7 +22,7 @@ final class IntSpinnerValueLink extends AbstractValueLink {
    * @param linkType the link type
    * @param spinnerModel the spinner model to use
    */
-  IntSpinnerValueLink(final ModelValue modelValue, final LinkType linkType, final SpinnerNumberModel spinnerModel) {
+  IntSpinnerValueLink(final Value modelValue, final LinkType linkType, final SpinnerNumberModel spinnerModel) {
     super(modelValue, linkType);
     this.spinnerModel = spinnerModel;
     this.spinnerModel.addChangeListener(new ChangeListener() {

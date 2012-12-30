@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Value;
 import org.jminor.common.ui.textfield.DoubleField;
 
 import java.text.NumberFormat;
@@ -22,7 +23,7 @@ final class DoubleValueLink extends TextValueLink {
    * @param linkType the link type
    * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
    */
-  DoubleValueLink(final DoubleField doubleField, final ModelValue modelValue, final LinkType linkType, final boolean usePrimitive,
+  DoubleValueLink(final DoubleField doubleField, final Value modelValue, final LinkType linkType, final boolean usePrimitive,
                   final NumberFormat format) {
     super(doubleField, modelValue, linkType, format, true);
     this.usePrimitive = usePrimitive;

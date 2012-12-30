@@ -6,6 +6,7 @@ package org.jminor.common.ui.control;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Value;
 import org.jminor.common.model.checkbox.TristateButtonModel;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
@@ -35,7 +36,7 @@ public final class ValueLinks {
             linkType, dateFormat, isTimestamp);
   }
 
-  public static void dateValueLink(final JFormattedTextField textComponent, final AbstractValueLink.ModelValue modelValue,
+  public static void dateValueLink(final JFormattedTextField textComponent, final Value modelValue,
                                    final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
     new DateValueLink(textComponent, modelValue, linkType, dateFormat, isTimestamp);
   }
@@ -95,7 +96,7 @@ public final class ValueLinks {
    * @param linkType the link type
    * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
    */
-  public static void intValueLink(final IntField intField, final AbstractValueLink.ModelValue modelValue,
+  public static void intValueLink(final IntField intField, final Value modelValue,
                                   final LinkType linkType, final boolean usePrimitive, final NumberFormat format) {
     new IntValueLink(intField, modelValue, linkType, usePrimitive, format);
   }
@@ -132,7 +133,7 @@ public final class ValueLinks {
    * @param linkType the link type
    * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
    */
-  public static void doubleValueLink(final DoubleField doubleField, final AbstractValueLink.ModelValue modelValue,
+  public static void doubleValueLink(final DoubleField doubleField, final Value modelValue,
                                      final LinkType linkType, final boolean usePrimitive, final NumberFormat format) {
     new DoubleValueLink(doubleField, modelValue, linkType, usePrimitive, format);
   }
@@ -216,7 +217,7 @@ public final class ValueLinks {
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * otherwise it is updated on actionPerformed or focusLost
    */
-  public static void textValueLink(final JTextComponent textComponent, final AbstractValueLink.ModelValue modelValue, final LinkType linkType,
+  public static void textValueLink(final JTextComponent textComponent, final Value modelValue, final LinkType linkType,
                                    final Format format, final boolean immediateUpdate) {
     new TextValueLink(textComponent, modelValue, linkType, format, immediateUpdate);
   }
@@ -227,7 +228,7 @@ public final class ValueLinks {
    * @param linkType the link type
    * @param format the format
    */
-  public static void formattedTextValueLink(final JFormattedTextField textComponent, final AbstractValueLink.ModelValue modelValue,
+  public static void formattedTextValueLink(final JFormattedTextField textComponent, final Value modelValue,
                                             final LinkType linkType, final Format format) {
     new FormattedTextValueLink(textComponent, modelValue, linkType, format);
   }
@@ -339,7 +340,7 @@ public final class ValueLinks {
    * @param linkType the link type
    * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
    */
-  public static void toggleValueLink(final ButtonModel buttonModel, final AbstractValueLink.ModelValue modelValue,
+  public static void toggleValueLink(final ButtonModel buttonModel, final Value modelValue,
                                      final String caption, final LinkType linkType, final StateObserver enabledObserver) {
     new ToggleValueLink(buttonModel, modelValue, caption, linkType, enabledObserver);
   }
@@ -362,7 +363,7 @@ public final class ValueLinks {
             LinkType.READ_WRITE, null).setDescription(description);
   }
 
-  public static void tristateValueLink(final TristateButtonModel buttonModel, final AbstractValueLink.ModelValue modelValue,
+  public static void tristateValueLink(final TristateButtonModel buttonModel, final Value modelValue,
                                        final LinkType linkType, final StateObserver enabledObserver) {
     new TristateValueLink(buttonModel, modelValue, null, linkType, enabledObserver);
   }
@@ -398,7 +399,7 @@ public final class ValueLinks {
    * @param modelValue the model value
    * @param linkType the link type
    */
-  public static void selectedItemValueLink(final JComboBox box, final AbstractValueLink.ModelValue modelValue, final LinkType linkType) {
+  public static void selectedItemValueLink(final JComboBox box, final Value modelValue, final LinkType linkType) {
     new SelectedItemValueLink(box, modelValue, linkType);
   }
 
@@ -438,7 +439,7 @@ public final class ValueLinks {
     new IntSpinnerValueLink(new BeanModelValue(owner, propertyName, int.class, linkType, valueChangeEvent), linkType, spinnerModel);
   }
 
-  private static final class BeanModelValue implements AbstractValueLink.ModelValue {
+  private static final class BeanModelValue implements Value {
 
     private final Object valueOwner;
     private final Method getMethod;

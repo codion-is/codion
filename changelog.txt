@@ -3307,3 +3307,5 @@
   publish target added to ant build file and publications clause to ivy config
   common.ui.valuemap merged with common.ui.control
   'Bean' removed from common.ui.control value link classnames
+  AbstractValueLink.ModelValue moved to common.model.Value
+  EditModelValue moved to common.model.valuemap.ValueMapValue

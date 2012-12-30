@@ -4,6 +4,7 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Value;
 import org.jminor.common.ui.textfield.IntField;
 
 import java.text.NumberFormat;
@@ -22,7 +23,7 @@ final class IntValueLink extends TextValueLink {
    * @param linkType the link type
    * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
    */
-  IntValueLink(final IntField intField, final ModelValue modelValue, final LinkType linkType, final boolean usePrimitive,
+  IntValueLink(final IntField intField, final Value modelValue, final LinkType linkType, final boolean usePrimitive,
                final NumberFormat format) {
     super(intField, modelValue, linkType, format, true);
     this.usePrimitive = usePrimitive;

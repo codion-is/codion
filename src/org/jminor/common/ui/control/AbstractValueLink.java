@@ -4,9 +4,9 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.EventAdapter;
-import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Value;
 
 import javax.swing.SwingUtilities;
 import java.awt.event.ActionEvent;
@@ -20,7 +20,7 @@ public abstract class AbstractValueLink<V> extends Control {
   /**
    * The Object wrapping the model value
    */
-  private final ModelValue<V> modelValue;
+  private final Value<V> modelValue;
 
   /**
    * The link type
@@ -39,20 +39,20 @@ public abstract class AbstractValueLink<V> extends Control {
 
   /**
    * Instantiates a new AbstractValueLink
-   * @param modelValue the ModelValue wrapper for the property
+   * @param modelValue the value wrapper for the linked value
    * @param linkType the link Type
    */
-  public AbstractValueLink(final ModelValue<V> modelValue, final LinkType linkType) {
+  public AbstractValueLink(final Value<V> modelValue, final LinkType linkType) {
     this(modelValue, linkType, null);
   }
 
   /**
    * Instantiates a new AbstractValueLink
-   * @param modelValue the ModelValue wrapper for the property
+   * @param modelValue the value wrapper for the linked value
    * @param linkType the link Type
    * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
    */
-  public AbstractValueLink(final ModelValue<V> modelValue, final LinkType linkType, final StateObserver enabledObserver) {
+  public AbstractValueLink(final Value<V> modelValue, final LinkType linkType, final StateObserver enabledObserver) {
     super(null, enabledObserver);
     Util.rejectNullValue(modelValue, "modelValue");
     Util.rejectNullValue(linkType, "linkType");
@@ -145,27 +145,4 @@ public abstract class AbstractValueLink<V> extends Control {
    * @param value the value to represent in the UI
    */
   protected abstract void setUIValue(final V value);
-
-  /**
-   * A wrapper class for setting and getting a model value
-   * @param <V> the type of the value
-   */
-  public interface ModelValue<V> {
-
-    /**
-     * Sets the value in the model
-     * @param value the value
-     */
-    void set(final V value);
-
-    /**
-     * @return the value from the model
-     */
-    V get();
-
-    /**
-     * @return an event observer notified when the model value changes
-     */
-    EventObserver getChangeEvent();
-  }
 }
