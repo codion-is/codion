@@ -3314,3 +3314,5 @@
   ToggleValueLink removed
   Control.Toggle added
   createToggleControl() moved back to Controls
+  Control.Toggle moved up to ToggleControl
+  ValueLinks, EntityUiUtil, some generification

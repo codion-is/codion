@@ -14,6 +14,7 @@ import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.LinkType;
+import org.jminor.common.ui.control.ToggleControl;
 import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
@@ -345,7 +346,7 @@ public final class LoadTestPanel extends JPanel {
     ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
     spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
-    final Control.Toggle pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());
+    final ToggleControl pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());
     pauseControl.setMnemonic('P');
 
     final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(4, 2, true, false);

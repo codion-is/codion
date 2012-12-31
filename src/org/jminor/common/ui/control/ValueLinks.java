@@ -52,13 +52,13 @@ public final class ValueLinks {
   public static void dateBeanValueLink(final JFormattedTextField textComponent, final Object owner,
                                        final String propertyName, final EventObserver valueChangeEvent,
                                        final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
-    dateValueLink(textComponent, new BeanModelValue(owner, propertyName, isTimestamp ? Timestamp.class : Date.class, linkType, valueChangeEvent),
+    dateValueLink(textComponent, new BeanModelValue<Date>(owner, propertyName, isTimestamp ? Timestamp.class : Date.class, linkType, valueChangeEvent),
             linkType, dateFormat, isTimestamp);
   }
 
-  public static void dateValueLink(final JFormattedTextField textComponent, final Value modelValue,
+  public static void dateValueLink(final JFormattedTextField textComponent, final Value<Date> modelValue,
                                    final LinkType linkType, final DateFormat dateFormat, final boolean isTimestamp) {
-    new ValueLink(modelValue, new DateUIValue(textComponent, dateFormat, isTimestamp), linkType);
+    new ValueLink<Date>(modelValue, new DateUIValue(textComponent, dateFormat, isTimestamp), linkType);
   }
 
   /**
@@ -106,7 +106,7 @@ public final class ValueLinks {
    */
   public static void intBeanValueLink(final IntField intField, final Object owner, final String propertyName,
                                       final EventObserver valueChangeEvent, final LinkType linkType, final boolean usePrimitive) {
-    intValueLink(intField, new BeanModelValue(owner, propertyName, usePrimitive ? int.class : Integer.class, linkType, valueChangeEvent),
+    intValueLink(intField, new BeanModelValue<Integer>(owner, propertyName, usePrimitive ? int.class : Integer.class, linkType, valueChangeEvent),
             linkType, usePrimitive, Util.getNonGroupingNumberFormat(true));
   }
 
@@ -116,9 +116,9 @@ public final class ValueLinks {
    * @param linkType the link type
    * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
    */
-  public static void intValueLink(final IntField intField, final Value modelValue,
+  public static void intValueLink(final IntField intField, final Value<Integer> modelValue,
                                   final LinkType linkType, final boolean usePrimitive, final NumberFormat format) {
-    new ValueLink(modelValue, new IntUIValue(intField, format, usePrimitive), linkType);
+    new ValueLink<Integer>(modelValue, new IntUIValue(intField, format, usePrimitive), linkType);
   }
 
   /**
@@ -143,7 +143,7 @@ public final class ValueLinks {
    */
   public static void doubleBeanValueLink(final DoubleField doubleField, final Object owner, final String propertyName,
                                          final EventObserver valueChangeEvent, final LinkType linkType, final boolean usePrimitive) {
-    doubleValueLink(doubleField, new BeanModelValue(owner, propertyName, usePrimitive ? double.class : Double.class, linkType, valueChangeEvent),
+    doubleValueLink(doubleField, new BeanModelValue<Double>(owner, propertyName, usePrimitive ? double.class : Double.class, linkType, valueChangeEvent),
             linkType, usePrimitive, Util.getNonGroupingNumberFormat());
   }
 
@@ -153,9 +153,9 @@ public final class ValueLinks {
    * @param linkType the link type
    * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
    */
-  public static void doubleValueLink(final DoubleField doubleField, final Value modelValue,
+  public static void doubleValueLink(final DoubleField doubleField, final Value<Double> modelValue,
                                      final LinkType linkType, final boolean usePrimitive, final NumberFormat format) {
-    new ValueLink(modelValue, new DoubleUIValue(doubleField, format, usePrimitive), linkType);
+    new ValueLink<Double>(modelValue, new DoubleUIValue(doubleField, format, usePrimitive), linkType);
   }
 
   /**
@@ -225,7 +225,7 @@ public final class ValueLinks {
   public static void textBeanValueLink(final JTextComponent textComponent, final Object owner, final String propertyName,
                                        final Class<?> valueClass, final EventObserver valueChangeEvent, final LinkType linkType,
                                        final Format format, final boolean immediateUpdate) {
-    textValueLink(textComponent, new BeanModelValue(owner, propertyName, valueClass, linkType, valueChangeEvent),
+    textValueLink(textComponent, new BeanModelValue<String>(owner, propertyName, valueClass, linkType, valueChangeEvent),
             linkType, format, immediateUpdate);
   }
 
@@ -237,12 +237,12 @@ public final class ValueLinks {
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
    * otherwise it is updated on actionPerformed or focusLost
    */
-  public static void textValueLink(final JTextComponent textComponent, final Value modelValue, final LinkType linkType,
+  public static void textValueLink(final JTextComponent textComponent, final Value<String> modelValue, final LinkType linkType,
                                    final Format format, final boolean immediateUpdate) {
     if (linkType == LinkType.READ_ONLY) {//todo side effect?
       textComponent.setEditable(false);
     }
-    new ValueLink(modelValue, new TextUIValue(textComponent, format, immediateUpdate), linkType);
+    new ValueLink<String>(modelValue, new TextUIValue<String>(textComponent, format, immediateUpdate), linkType);
   }
 
   /**
@@ -251,9 +251,9 @@ public final class ValueLinks {
    * @param linkType the link type
    * @param format the format
    */
-  public static void formattedTextValueLink(final JFormattedTextField textComponent, final Value modelValue,
+  public static void formattedTextValueLink(final JFormattedTextField textComponent, final Value<String> modelValue,
                                             final LinkType linkType, final Format format) {
-    new ValueLink(modelValue, new FormattedTextUIValue(textComponent, format, true), linkType);
+    new ValueLink<String>(modelValue, new FormattedTextUIValue<String>(textComponent, format, true), linkType);
   }
 
   /**
@@ -324,7 +324,7 @@ public final class ValueLinks {
    */
   public static void toggleBeanValueLink(final ButtonModel buttonModel, final Object owner, final String propertyName,
                                          final EventObserver valueChangeEvent, final LinkType linkType, final StateObserver enabledObserver) {
-    toggleValueLink(buttonModel, new BeanModelValue(owner, propertyName, boolean.class, linkType, valueChangeEvent),
+    toggleValueLink(buttonModel, new BeanModelValue<Boolean>(owner, propertyName, boolean.class, linkType, valueChangeEvent),
             linkType, enabledObserver);
   }
 
@@ -334,12 +334,12 @@ public final class ValueLinks {
    * @param linkType the link type
    * @param enabledObserver the state observer dictating the enable state of the control associated with this value link
    */
-  public static void toggleValueLink(final ButtonModel buttonModel, final Value modelValue,
+  public static void toggleValueLink(final ButtonModel buttonModel, final Value<Boolean> modelValue,
                                      final LinkType linkType, final StateObserver enabledObserver) {
-    new ValueLink(modelValue, new ToggleUIValue(buttonModel), linkType, enabledObserver);
+    new ValueLink<Boolean>(modelValue, new ToggleUIValue(buttonModel), linkType, enabledObserver);
   }
 
-  public static void tristateValueLink(final TristateButtonModel buttonModel, final Value modelValue,
+  public static void tristateValueLink(final TristateButtonModel buttonModel, final Value<Boolean> modelValue,
                                        final LinkType linkType, final StateObserver enabledObserver) {
     new ValueLink<Boolean>(modelValue, new TristateUIValue(buttonModel), linkType, enabledObserver);
   }
@@ -367,7 +367,7 @@ public final class ValueLinks {
   public static void selectedItemBeanValueLink(final JComboBox box, final Object owner, final String propertyName,
                                                final Class valueClass, final EventObserver valueChangeEvent,
                                                final LinkType linkType) {
-    selectedItemValueLink(box, new BeanModelValue(owner, propertyName, valueClass, linkType, valueChangeEvent), linkType);
+    selectedItemValueLink(box, new BeanModelValue<Object>(owner, propertyName, valueClass, linkType, valueChangeEvent), linkType);
   }
 
   /**
@@ -375,8 +375,8 @@ public final class ValueLinks {
    * @param modelValue the model value
    * @param linkType the link type
    */
-  public static void selectedItemValueLink(final JComboBox box, final Value modelValue, final LinkType linkType) {
-    new ValueLink(modelValue, new SelectedItemUIValue(box), linkType);
+  public static void selectedItemValueLink(final JComboBox box, final Value<Object> modelValue, final LinkType linkType) {
+    new ValueLink<Object>(modelValue, new SelectedItemUIValue(box), linkType);
   }
 
   /**
@@ -412,10 +412,10 @@ public final class ValueLinks {
    */
   public static void intBeanSpinnerValueLink(final Object owner, final String propertyName, final EventObserver valueChangeEvent,
                                              final LinkType linkType, final SpinnerNumberModel spinnerModel) {
-    new ValueLink(new BeanModelValue(owner, propertyName, int.class, linkType, valueChangeEvent), new IntSpinnerUIValue(spinnerModel), linkType);
+    new ValueLink<Integer>(new BeanModelValue<Integer>(owner, propertyName, int.class, linkType, valueChangeEvent), new IntSpinnerUIValue(spinnerModel), linkType);
   }
 
-  private static final class BeanModelValue implements Value {
+  private static final class BeanModelValue<V> implements Value<V> {
 
     private final Object valueOwner;
     private final Method getMethod;
@@ -447,9 +447,9 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    public Object get() {
+    public V get() {
       try {
-        return getMethod.invoke(valueOwner);
+        return (V) getMethod.invoke(valueOwner);
       }
       catch (RuntimeException re) {
         throw re;
@@ -461,7 +461,7 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    public void set(final Object value) {
+    public void set(final V value) {
       try {
         setMethod.invoke(valueOwner, value);
       }
@@ -480,7 +480,7 @@ public final class ValueLinks {
     }
   }
 
-  private abstract static class UIValue implements Value {
+  private abstract static class UIValue<V> implements Value<V> {
     protected final Event changeEvent = Events.event();
 
     /** {@inheritDoc} */
@@ -490,7 +490,7 @@ public final class ValueLinks {
     }
   }
 
-  private static class TextUIValue extends UIValue {
+  private static class TextUIValue<V> extends UIValue<V> {
     private final JTextComponent textComponent;
     private final Format format;
 
@@ -519,7 +519,7 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    public void set(final Object value) {
+    public void set(final V value) {
       try {
         synchronized (textComponent) {
           final Document document = textComponent.getDocument();
@@ -536,7 +536,7 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    public Object get() {
+    public V get() {
       return valueFromText(getText());
     }
 
@@ -546,7 +546,7 @@ public final class ValueLinks {
      * @param value the value to return as String
      * @return a formatted String representation of the given value, an empty string if the value is null
      */
-    protected String textFromValue(final Object value) {
+    protected String textFromValue(final V value) {
       return value == null ? "" : format.format(value);
     }
 
@@ -556,12 +556,12 @@ public final class ValueLinks {
      * @param text the text from which to parse a value
      * @return a value from the given text, or null if the parsing did not yield a valid value
      */
-    protected Object valueFromText(final String text) {
+    protected V valueFromText(final String text) {
       if (text != null && text.isEmpty()) {
         return null;
       }
 
-      return text;
+      return (V) text;
     }
 
     /**
@@ -590,7 +590,7 @@ public final class ValueLinks {
     }
   }
 
-  private static final class IntUIValue extends TextUIValue {
+  private static final class IntUIValue extends TextUIValue<Integer> {
     private final boolean usePrimitive;
 
     private IntUIValue(final JTextComponent textComponent, final NumberFormat format, final boolean usePrimitive) {
@@ -600,7 +600,7 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    protected Object valueFromText(final String text) {
+    protected Integer valueFromText(final String text) {
       if (text.isEmpty() && usePrimitive) {
         return 0;
       }
@@ -609,7 +609,7 @@ public final class ValueLinks {
     }
   }
 
-  private static final class DoubleUIValue extends TextUIValue {
+  private static final class DoubleUIValue extends TextUIValue<Double> {
     private final boolean usePrimitive;
 
     private DoubleUIValue(final JTextComponent textComponent, final NumberFormat format, final boolean usePrimitive) {
@@ -619,16 +619,16 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    protected Object valueFromText(final String text) {
+    protected Double valueFromText(final String text) {
       if (text.isEmpty() && usePrimitive) {
-        return 0;
+        return 0d;
       }
 
       return Util.getDouble(text);
     }
   }
 
-  private static class FormattedTextUIValue extends TextUIValue {
+  private static class FormattedTextUIValue<V> extends TextUIValue<V> {
     private final JFormattedTextField.AbstractFormatter formatter;
 
     private FormattedTextUIValue(final JFormattedTextField textComponent, final Format format, final boolean immediateUpdate) {
@@ -638,7 +638,7 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    protected Object valueFromText(final String text) {
+    protected V valueFromText(final String text) {
       if (text == null) {
         return null;
       }
@@ -670,12 +670,12 @@ public final class ValueLinks {
      * @param parsedValue the value to translate
      * @return a translated value
      */
-    protected Object translateParsedValue(final Object parsedValue) {
-      return parsedValue;
+    protected V translateParsedValue(final Object parsedValue) {
+      return (V) parsedValue;
     }
   }
 
-  private static final class DateUIValue extends FormattedTextUIValue {
+  private static final class DateUIValue extends FormattedTextUIValue<Date> {
     private final boolean isTimestamp;
 
     private DateUIValue(final JFormattedTextField textComponent, final Format format, final boolean isTimestamp) {
@@ -685,13 +685,13 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    protected Object translateParsedValue(final Object parsedValue) {
+    protected Date translateParsedValue(final Object parsedValue) {
       final Date formatted = (Date) parsedValue;
       return formatted == null ? null : isTimestamp ? new Timestamp(formatted.getTime()) : new Date(formatted.getTime());
     }
   }
 
-  private static class ToggleUIValue extends UIValue {
+  private static class ToggleUIValue extends UIValue<Boolean> {
     private final ButtonModel buttonModel;
 
     private ToggleUIValue(final ButtonModel buttonModel) {
@@ -707,13 +707,13 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    public void set(final Object value) {
-      buttonModel.setSelected(value != null && (Boolean) value);
+    public void set(final Boolean value) {
+      buttonModel.setSelected(value != null && value);
     }
 
     /** {@inheritDoc} */
     @Override
-    public Object get() {
+    public Boolean get() {
       return buttonModel.isSelected();
     }
 
@@ -730,18 +730,18 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    public void set(final Object value) {
+    public void set(final Boolean value) {
       if (value == null) {
         ((TristateButtonModel) getButtonModel()).setIndeterminate();
       }
       else {
-        getButtonModel().setSelected((Boolean) value);
+        getButtonModel().setSelected(value);
       }
     }
 
     /** {@inheritDoc} */
     @Override
-    public Object get() {
+    public Boolean get() {
       if (((TristateButtonModel) getButtonModel()).isIndeterminate()) {
         return null;
       }
@@ -750,7 +750,7 @@ public final class ValueLinks {
     }
   }
 
-  private static final class SelectedItemUIValue extends UIValue {
+  private static final class SelectedItemUIValue extends UIValue<Object> {
     private final JComboBox comboBox;
 
     private SelectedItemUIValue(final JComboBox comboBox) {
@@ -804,7 +804,7 @@ public final class ValueLinks {
     }
   }
 
-  private static final class IntSpinnerUIValue extends UIValue {
+  private static final class IntSpinnerUIValue extends UIValue<Integer> {
     private final SpinnerNumberModel spinnerModel;
 
     private IntSpinnerUIValue(final SpinnerNumberModel spinnerModel) {
@@ -820,7 +820,7 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    public void set(final Object value) {
+    public void set(final Integer value) {
       spinnerModel.setValue(value);
     }
 

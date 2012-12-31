@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.valuemap.ValueMapValue;
+import org.jminor.common.model.valuemap.EditModelValue;
 import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.textfield.DoubleField;
@@ -23,7 +23,7 @@ public class DoubleValueLinkTest {
     final EntityEditModel model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(DoubleField.POINT);
-    ValueLinks.doubleValueLink(txt, new ValueMapValue<String, Object>(model, EmpDept.EMPLOYEE_COMMISSION), LinkType.READ_WRITE, false, null);
+    ValueLinks.doubleValueLink(txt, new EditModelValue<String, Double>(model, EmpDept.EMPLOYEE_COMMISSION), LinkType.READ_WRITE, false, null);
     ValueLinkValidators.addValidator(EmpDept.EMPLOYEE_COMMISSION, txt, model);/*Range 100 - 2000*/
     assertNull("Initial Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setDouble(1000.5);

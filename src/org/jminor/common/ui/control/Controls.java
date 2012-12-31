@@ -52,24 +52,16 @@ public final class Controls {
     return (MethodControl) methodControl(owner, method, name, state, description, mnemonic, ks).setIcon(icon);
   }
 
-  public static Control.Toggle toggleControl(final Object owner, final String propertyName, final String caption,
+  public static ToggleControl toggleControl(final Object owner, final String propertyName, final String caption,
                                              final EventObserver changeEvent) {
-    return toggleControl(owner, propertyName, caption, changeEvent, (StateObserver) null);
+    return toggleControl(owner, propertyName, caption, changeEvent, null);
   }
 
-  public static Control.Toggle toggleControl(final Object owner, final String propertyName, final String caption,
+  public static ToggleControl toggleControl(final Object owner, final String propertyName, final String caption,
                                              final EventObserver changeEvent, final StateObserver enabledObserver) {
     final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
     ValueLinks.toggleBeanValueLink(buttonModel, owner, propertyName, changeEvent, LinkType.READ_WRITE, enabledObserver);
 
-    return new Control.Toggle(caption, buttonModel);
-  }
-
-  public static Control.Toggle toggleControl(final Object owner, final String propertyName, final String caption,
-                                             final EventObserver changeEvent, final String description) {
-    final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
-    ValueLinks.toggleBeanValueLink(buttonModel, owner, propertyName, changeEvent, LinkType.READ_WRITE);
-
-    return (Control.Toggle) new Control.Toggle(caption, buttonModel).setDescription(description);
+    return new ToggleControl(caption, buttonModel);
   }
 }

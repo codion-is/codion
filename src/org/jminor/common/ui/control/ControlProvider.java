@@ -67,16 +67,16 @@ public final class ControlProvider {
     return iterator.getMenu();
   }
 
-  public static JCheckBoxMenuItem createCheckBoxMenuItem(final Control.Toggle toggle) {
-    final JCheckBoxMenuItem box = new JCheckBoxMenuItem(toggle);
-    box.setModel(toggle.getButtonModel());
+  public static JCheckBoxMenuItem createCheckBoxMenuItem(final ToggleControl toggleControl) {
+    final JCheckBoxMenuItem box = new JCheckBoxMenuItem(toggleControl);
+    box.setModel(toggleControl.getButtonModel());
 
     return box;
   }
 
-  public static JRadioButtonMenuItem createRadioButtonMenuItem(final Control.Toggle toggle) {
-    final JRadioButtonMenuItem box = new JRadioButtonMenuItem(toggle);
-    box.setModel(toggle.getButtonModel());
+  public static JRadioButtonMenuItem createRadioButtonMenuItem(final ToggleControl toggleControl) {
+    final JRadioButtonMenuItem box = new JRadioButtonMenuItem(toggleControl);
+    box.setModel(toggleControl.getButtonModel());
 
     return box;
   }
@@ -131,8 +131,8 @@ public final class ControlProvider {
 
     @Override
     public void handleControl(final Control control) {
-      if (control instanceof Control.Toggle) {
-        btnPanel.add(createCheckBox((Control.Toggle) control));
+      if (control instanceof ToggleControl) {
+        btnPanel.add(createCheckBox((ToggleControl) control));
       }
       else {
         btnPanel.add(createButton(control));
@@ -200,8 +200,8 @@ public final class ControlProvider {
 
     @Override
     public void handleControl(final Control control) {
-      if (control instanceof Control.Toggle) {
-        menu.add(createCheckBoxMenuItem((Control.Toggle) control));
+      if (control instanceof ToggleControl) {
+        menu.add(createCheckBoxMenuItem((ToggleControl) control));
       }
       else {
         menu.add(control);
@@ -242,8 +242,8 @@ public final class ControlProvider {
 
     @Override
     public void handleControl(final Control control) {
-      if (control instanceof Control.Toggle) {
-        toolbar.add(createToggleButton((Control.Toggle) control, includeCaption));
+      if (control instanceof ToggleControl) {
+        toolbar.add(createToggleButton((ToggleControl) control, includeCaption));
       }
       else {
         toolbar.add(control);
@@ -261,21 +261,21 @@ public final class ControlProvider {
     }
   }
 
-  public static JCheckBox createCheckBox(final Control.Toggle toggle) {
-    final JCheckBox checkBox = new JCheckBox(toggle);
-    checkBox.setModel(toggle.getButtonModel());
+  public static JCheckBox createCheckBox(final ToggleControl toggleControl) {
+    final JCheckBox checkBox = new JCheckBox(toggleControl);
+    checkBox.setModel(toggleControl.getButtonModel());
 
     return checkBox;
   }
 
-  public static JToggleButton createToggleButton(final Control.Toggle toggle) {
-    return createToggleButton(toggle, true);
+  public static JToggleButton createToggleButton(final ToggleControl toggleControl) {
+    return createToggleButton(toggleControl, true);
   }
 
-  public static JToggleButton createToggleButton(final Control.Toggle toggle, final boolean includeCaption) {
-    final JToggleButton toggleButton = new JToggleButton(toggle);
-    toggleButton.setModel(toggle.getButtonModel());
-    toggleButton.setText(includeCaption ? toggle.getName() : null);
+  public static JToggleButton createToggleButton(final ToggleControl toggleControl, final boolean includeCaption) {
+    final JToggleButton toggleButton = new JToggleButton(toggleControl);
+    toggleButton.setModel(toggleControl.getButtonModel());
+    toggleButton.setText(includeCaption ? toggleControl.getName() : null);
 
     return toggleButton;
   }

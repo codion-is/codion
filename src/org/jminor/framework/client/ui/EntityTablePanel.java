@@ -702,12 +702,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a summary panel toggle button
    */
   public final Control getToggleSummaryPanelControl() {
-    final Control.Toggle toggle = Controls.toggleControl(this, "summaryPanelVisible", null,
+    final Control toggleControl = Controls.toggleControl(this, "summaryPanelVisible", null,
             evtSummaryPanelVisibilityChanged);
-    toggle.setIcon(Images.loadImage("Sum16.gif"));
-    toggle.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_SUMMARY_TIP));
+    toggleControl.setIcon(Images.loadImage("Sum16.gif"));
+    toggleControl.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_SUMMARY_TIP));
 
-    return toggle;
+    return toggleControl;
   }
 
   /**
@@ -1080,7 +1080,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return printControls;
   }
 
-  protected final Control.Toggle getSearchPanelControl() {
+  protected final Control getSearchPanelControl() {
     return Controls.toggleControl(this, "searchPanelVisible",
             FrameworkMessages.get(FrameworkMessages.SHOW), evtSearchPanelVisibilityChanged);
   }

@@ -20,7 +20,7 @@ import java.util.Collection;
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
-public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvider<K>, ValueCollectionProvider<V> {
+public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProvider<V> {
 
   /**
    * Maps the given value to the given key, returning the old value if any.
@@ -37,6 +37,13 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueAsStringProvid
    * @return the value that was removed
    */
   V removeValue(final K key);
+
+  /**
+   * Retrieves a string representation of the value mapped to the given key
+   * @param key the key
+   * @return the value mapped to the given key as a string, an empty string if no such mapping exists
+   */
+  String getValueAsString(final K key);
 
   /**
    * Removes all values from this map.
