@@ -158,8 +158,6 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     ((JSpinner.DefaultEditor) spnMinimumSize.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnMaximumSize.getEditor()).getTextField().setEditable(false);
 
-    ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setColumns(30);
-
     configBase.add(UiUtil.northCenterPanel(new JLabel("Min size"), spnMinimumSize));
     configBase.add(UiUtil.northCenterPanel(new JLabel("Max size"), spnMaximumSize));
     configBase.add(UiUtil.northCenterPanel(new JLabel("Max retry wait (ms)"), spnMaximumRetryWait));
@@ -178,7 +176,6 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getStatisticsPanel() {
     final JPanel statisticsBase = new JPanel(UiUtil.createGridLayout(0, 1));
     txtPoolSize.setEditable(false);
-    txtPoolSize.setColumns(30);
     txtPoolSize.setHorizontalAlignment(JLabel.CENTER);
     txtCreated.setEditable(false);
     txtCreated.setHorizontalAlignment(JLabel.CENTER);

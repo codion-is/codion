@@ -31,7 +31,7 @@ public final class ClientInstanceMonitor {
 
   public ButtonModel getLoggingEnabledButtonModel() {
     if (loggingEnabledButtonModel == null) {
-      loggingEnabledButtonModel = ValueLinks.toggleBeanValueLink(this, "loggingEnabled", evtLoggingStatusChanged, null);
+      loggingEnabledButtonModel = ValueLinks.toggleBeanValueLink(this, "loggingEnabled", evtLoggingStatusChanged);
     }
 
     return loggingEnabledButtonModel;

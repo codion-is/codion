@@ -874,7 +874,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     private final Map<String, Double> usageScenarioFailures = new HashMap<String, Double>();
     private final Map<String, Collection<Integer>> scenarioDurations = new HashMap<String, Collection<Integer>>();
 
-    private int workRequestsPerSecond = 0;
+    private double workRequestsPerSecond = 0;
     private int workRequestCounter = 0;
     private int delayedWorkRequestsPerSecond = 0;
     private int delayedWorkRequestCounter = 0;
@@ -884,7 +884,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
       this.usageScenarios = usageScenarios;
     }
 
-    private int getWorkRequestsPerSecond() {
+    private double getWorkRequestsPerSecond() {
       return workRequestsPerSecond;
     }
 
@@ -956,7 +956,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
         usageScenarioAvgDurations.clear();
         usageScenarioMinDurations.clear();
         usageScenarioMaxDurations.clear();
-        workRequestsPerSecond = (int) (workRequestCounter / elapsedSeconds);
+        workRequestsPerSecond = workRequestCounter / elapsedSeconds;
         delayedWorkRequestsPerSecond = (int) (delayedWorkRequestCounter / elapsedSeconds);
         for (final UsageScenario scenario : usageScenarios) {
           usageScenarioRates.put(scenario.getName(), (int) (scenario.getTotalRunCount() / elapsedSeconds));

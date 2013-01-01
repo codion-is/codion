@@ -793,7 +793,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
     if (property instanceof Property.ValueListProperty && value != null && !((Property.ValueListProperty) property).isValid(value)) {
       throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getPropertyID());
     }
-    if (value instanceof Entity && value.equals(entity)) {
+    if (value instanceof Entity && value.equals(entity)) {//todo costs a lot in allocations, primary key initialized during equals
       throw new IllegalArgumentException("Circular entity reference detected: " + entity + "->" + property.getPropertyID());
     }
   }

@@ -405,9 +405,7 @@ public final class EntityUiUtil {
     ValueLinks.selectedItemValueLink(comboBox, new EditModelValue<String, Object>(editModel, foreignKeyProperty.getPropertyID()), LinkType.READ_WRITE);
     UiUtil.linkToEnabledState(enabledState, comboBox);
     MaximumMatch.enable(comboBox);
-    if (foreignKeyProperty.getDescription() != null) {
-      comboBox.setToolTipText(foreignKeyProperty.getDescription());
-    }
+    comboBox.setToolTipText(foreignKeyProperty.getDescription());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       //getEditor().getEditorComponent() only required because the combo box is editable, due to MaximumMatch.enable() above
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
@@ -431,9 +429,7 @@ public final class EntityUiUtil {
     final JTextField textField = new JTextField();
     textField.setEditable(false);
     textField.setFocusable(false);
-    if (foreignKeyProperty.getDescription() != null) {
-      textField.setToolTipText(foreignKeyProperty.getDescription());
-    }
+    textField.setToolTipText(foreignKeyProperty.getDescription());
     editModel.addValueListener(foreignKeyProperty.getPropertyID(), new ValueChangeListener() {
       @Override
       public void valueChanged(final ValueChangeEvent event) {
@@ -481,12 +477,10 @@ public final class EntityUiUtil {
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       lookupField.setTransferFocusOnEnter();
     }
-    new ValueLink<Object>(new EditModelValue<String, Object>(editModel, foreignKeyProperty.getPropertyID()),
+    new ValueLink<Entity>(new EditModelValue<String, Entity>(editModel, foreignKeyProperty.getPropertyID()),
             new LookupUIValue(lookupField.getModel()), LinkType.READ_WRITE);
     UiUtil.linkToEnabledState(enabledState, lookupField);
-    if (foreignKeyProperty.getDescription() != null) {
-      lookupField.setToolTipText(foreignKeyProperty.getDescription());
-    }
+    lookupField.setToolTipText(foreignKeyProperty.getDescription());
     UiUtil.selectAllOnFocusGained(lookupField);
 
     return lookupField;
@@ -535,9 +529,7 @@ public final class EntityUiUtil {
     comboBox.setEditable(editable);
     ValueLinks.selectedItemValueLink(comboBox, new EditModelValue<String, Object>(editModel, property.getPropertyID()), LinkType.READ_WRITE);
     UiUtil.linkToEnabledState(enabledState, comboBox);
-    if (property.getDescription() != null) {
-      comboBox.setToolTipText(property.getDescription());
-    }
+    comboBox.setToolTipText(property.getDescription());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
       UiUtil.transferFocusOnEnter(comboBox);
@@ -607,9 +599,7 @@ public final class EntityUiUtil {
 
     ValueLinks.textValueLink(textArea, new EditModelValue<String, String>(editModel, property.getPropertyID()), linkType, null, true);
     ValueLinkValidators.addValidator(property.getPropertyID(), textArea, editModel);
-    if (property.getDescription() != null) {
-      textArea.setToolTipText(property.getDescription());
-    }
+    textArea.setToolTipText(property.getDescription());
 
     return textArea;
   }
@@ -830,13 +820,11 @@ public final class EntityUiUtil {
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter(field);
     }
-    if (property.getDescription() != null) {
-      field.setToolTipText(property.getDescription());
-    }
+    field.setToolTipText(property.getDescription());
     if (property.getMaxLength() > 0 && field.getDocument() instanceof SizedDocument) {
       ((SizedDocument) field.getDocument()).setMaxLength(property.getMaxLength());
     }
-    if (property instanceof Property.ColumnProperty) {
+    if (property instanceof Property.ColumnProperty) {//todo property.allowLookup()?
       UiUtil.addLookupDialog(field, editModel.getValueProvider(property));
     }
 
@@ -846,39 +834,6 @@ public final class EntityUiUtil {
   private static void checkProperty(final Property property, final EntityEditModel editModel) {
     if (!property.getEntityID().equals(editModel.getEntityID())) {
       throw new IllegalArgumentException("Entity type mismatch: " + property.getEntityID() + ", should be: " + editModel.getEntityID());
-    }
-  }
-
-  public static final class LookupUIValue implements Value<Object> {
-    private final Event changeEvent = Events.event();
-    private final EntityLookupModel lookupModel;
-
-    public LookupUIValue(final EntityLookupModel lookupModel) {
-      this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(changeEvent);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void set(final Object value) {
-      final List<Entity> valueList = new ArrayList<Entity>();
-      if (value != null) {//todo !modelValueNull
-        valueList.add((Entity) value);
-      }
-      lookupModel.setSelectedEntities(valueList);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Object get() {
-      final Collection<Entity> selectedEntities = lookupModel.getSelectedEntities();
-      return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public EventObserver getChangeEvent() {
-      return changeEvent.getObserver();
     }
   }
 
@@ -921,6 +876,35 @@ public final class EntityUiUtil {
 
       add(textField, BorderLayout.CENTER);
       add(btn, BorderLayout.EAST);
+    }
+  }
+
+  private  static final class LookupUIValue implements Value<Entity> {
+    private final Event changeEvent = Events.event();
+    private final EntityLookupModel lookupModel;
+
+    private LookupUIValue(final EntityLookupModel lookupModel) {
+      this.lookupModel = lookupModel;
+      this.lookupModel.addSelectedEntitiesListener(changeEvent);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void set(final Entity value) {
+      lookupModel.setSelectedEntity(value);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Entity get() {
+      final Collection<Entity> selectedEntities = lookupModel.getSelectedEntities();
+      return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public EventObserver getChangeEvent() {
+      return changeEvent.getObserver();
     }
   }
 
