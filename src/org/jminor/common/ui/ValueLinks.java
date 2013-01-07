@@ -266,18 +266,6 @@ public final class ValueLinks {
   }
 
   /**
-   * @param textComponent the text component to link with the value
-   * @param modelValue the model value
-   * @param linkType the link type
-   * @param format the format
-   */
-  public static void formattedTextValueLink(final JFormattedTextField textComponent, final Value<String> modelValue,
-                                            final LinkType linkType, final Format format) {
-    setEditableDefault(textComponent, linkType);
-    valueLink(modelValue, new FormattedTextUIValue<String>(textComponent, format, true), linkType);
-  }
-
-  /**
    * @param owner the value owner
    * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
@@ -621,10 +609,17 @@ public final class ValueLinks {
 
   private static class TextUIValue<V> extends UIValue<V> {
     private final JTextComponent textComponent;
+    private final JFormattedTextField.AbstractFormatter formatter;
     private final Format format;
 
     private TextUIValue(final JTextComponent textComponent, final Format format, final boolean immediateUpdate) {
       this.textComponent = textComponent;
+      if (textComponent instanceof JFormattedTextField) {
+        this.formatter = ((JFormattedTextField) textComponent).getFormatter();
+      }
+      else {
+        this.formatter = null;
+      }
       this.format = format == null ? new Util.NullFormat() : format;
       if (immediateUpdate) {
         textComponent.getDocument().addDocumentListener(new DocumentAdapter() {
@@ -650,11 +645,12 @@ public final class ValueLinks {
     @Override
     public void set(final V value) {
       try {
+        final String text = textFromValue(value);
         synchronized (textComponent) {
           final Document document = textComponent.getDocument();
           document.remove(0, document.getLength());
           if (value != null) {
-            document.insertString(0, textFromValue(value), null);
+            document.insertString(0, text, null);
           }
         }
       }
@@ -686,11 +682,16 @@ public final class ValueLinks {
      * @return a value from the given text, or null if the parsing did not yield a valid value
      */
     protected V valueFromText(final String text) {
-      if (text != null && text.isEmpty()) {
+      if (Util.nullOrEmpty(text)) {
         return null;
       }
 
-      return (V) text;
+      try {
+        return (V) format.parseObject(text);
+      }
+      catch (ParseException e) {
+        return null;
+      }
     }
 
     /**
@@ -698,20 +699,20 @@ public final class ValueLinks {
      */
     protected final String getText() {
       try {
-        return translate(textComponent.getDocument().getText(0, textComponent.getDocument().getLength()));
+        final String text = textComponent.getDocument().getText(0, textComponent.getDocument().getLength());
+        if (formatter == null) {
+          return text;
+        }
+        try {
+          return (String) formatter.stringToValue(text);
+        }
+        catch (ParseException e) {
+          return null;
+        }
       }
       catch (BadLocationException e) {
         throw new RuntimeException(e);
       }
-    }
-
-    /**
-     * Provides a hook into the value getting mechanism.
-     * @param text the value returned from the UI component
-     * @return the translated value
-     */
-    protected String translate(final String text) {
-      return text;
     }
 
     protected Format getFormat() {
@@ -757,66 +758,19 @@ public final class ValueLinks {
     }
   }
 
-  private static class FormattedTextUIValue<V> extends TextUIValue<V> {
-    private final JFormattedTextField.AbstractFormatter formatter;
-
-    private FormattedTextUIValue(final JFormattedTextField textComponent, final Format format, final boolean immediateUpdate) {
-      super(textComponent, format, immediateUpdate);
-      this.formatter = textComponent.getFormatter();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected V valueFromText(final String text) {
-      if (text == null) {
-        return null;
-      }
-
-      try {
-        return translateParsedValue(getFormat().parseObject(text));
-      }
-      catch (ParseException nf) {
-        return null;
-      }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected final String translate(final String text) {
-      try {
-        return (String) formatter.stringToValue(text);
-      }
-      catch (ParseException e) {
-        return null;
-      }
-    }
-
-    /**
-     * Allows for a hook into the value parsing mechanism, so that
-     * a value returned by the format parsing can be replaced with, say
-     * a subclass, or some more appropriate value.
-     * By default this simple returns the value.
-     * @param parsedValue the value to translate
-     * @return a translated value
-     */
-    protected V translateParsedValue(final Object parsedValue) {
-      return (V) parsedValue;
-    }
-  }
-
-  private static final class DateUIValue extends FormattedTextUIValue<Date> {
+  private static final class DateUIValue extends TextUIValue<Date> {
     private final boolean isTimestamp;
 
     private DateUIValue(final JFormattedTextField textComponent, final Format format, final boolean isTimestamp) {
       super(textComponent, format, true);
+      Util.rejectNullValue(format, "format");
       this.isTimestamp = isTimestamp;
     }
 
-    /** {@inheritDoc} */
     @Override
-    protected Date translateParsedValue(final Object parsedValue) {
-      final Date formatted = (Date) parsedValue;
-      return formatted == null ? null : isTimestamp ? new Timestamp(formatted.getTime()) : new Date(formatted.getTime());
+    protected Date valueFromText(final String text) {
+      final Date parsedValue = super.valueFromText(text);
+      return parsedValue == null ? null : isTimestamp ? new Timestamp(parsedValue.getTime()) : new Date(parsedValue.getTime());
     }
   }
 

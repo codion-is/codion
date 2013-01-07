@@ -630,12 +630,7 @@ public final class EntityUiUtil {
     final JTextField textField = initializeTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     final String propertyID = property.getPropertyID();
     if (property.isString()) {
-      if (formatMaskString != null) {
-        ValueLinks.formattedTextValueLink((JFormattedTextField) textField, new EditModelValue<String, String>(editModel, propertyID), linkType, null);
-      }
-      else {
-        ValueLinks.textValueLink(textField, new EditModelValue<String, String>(editModel, propertyID), linkType, null, immediateUpdate);
-      }
+      ValueLinks.textValueLink(textField, new EditModelValue<String, String>(editModel, propertyID), linkType, null, immediateUpdate);
     }
     else if (property.isInteger()) {
       ValueLinks.intValueLink((IntField) textField, new EditModelValue<String, Integer>(editModel, propertyID), linkType, false, (NumberFormat) property.getFormat());

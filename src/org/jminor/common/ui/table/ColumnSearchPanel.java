@@ -380,27 +380,28 @@ public class ColumnSearchPanel<K> extends JPanel {
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false);
       }
-      if (searchModel.getType() == Types.DOUBLE) {
+      else if (searchModel.getType() == Types.DOUBLE) {
         ValueLinks.doubleValueLink((DoubleField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false);
       }
-      if (searchModel.getType() == Types.DATE) {
+      else if (searchModel.getType() == Types.DATE) {
         ValueLinks.dateValueLink((JFormattedTextField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(),
                 LinkType.READ_WRITE, (DateFormat) searchModel.getFormat(), false);
       }
-      if (searchModel.getType() == Types.TIMESTAMP) {
+      else if (searchModel.getType() == Types.TIMESTAMP) {
         ValueLinks.dateValueLink((JFormattedTextField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(),
                 LinkType.READ_WRITE, (DateFormat) searchModel.getFormat(), true);
       }
-
-      ValueLinks.textValueLink((JTextField) component, searchModel,
-              isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-              String.class, isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver());
+      else {
+        ValueLinks.textValueLink((JTextField) component, searchModel,
+                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
+                String.class, isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver());
+      }
     }
   }
 
