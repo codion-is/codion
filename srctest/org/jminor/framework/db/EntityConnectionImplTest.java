@@ -53,6 +53,10 @@ public class EntityConnectionImplTest {
 
   private static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
 
+  private static final String ENTITY_ID = "blob_test";
+  private static final String ID = "id";
+  private static final String DATA = "data";
+
   private EntityConnectionImpl connection;
 
   static {
@@ -61,6 +65,10 @@ public class EntityConnectionImplTest {
             Properties.primaryKeyProperty("empno"),
             Properties.columnProperty("deptno", Types.INTEGER))
             .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno");
+
+    Entities.define(ENTITY_ID,
+            Properties.primaryKeyProperty(ID),
+            Properties.columnProperty(DATA, Types.BLOB));
   }
 
   public EntityConnectionImplTest() throws ClassNotFoundException, SQLException {
@@ -594,15 +602,5 @@ public class EntityConnectionImplTest {
 
   private static EntityConnectionImpl initializeConnection() throws DatabaseException {
     return new EntityConnectionImpl(Databases.createInstance(), User.UNIT_TEST_USER);
-  }
-
-  private static final String ENTITY_ID = "blob_test";
-  private static final String ID = "id";
-  private static final String DATA = "data";
-
-  static {
-    Entities.define(ENTITY_ID,
-            Properties.primaryKeyProperty(ID),
-            Properties.columnProperty(DATA, Types.BLOB));
   }
 }
