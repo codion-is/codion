@@ -4,7 +4,6 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.Events;
@@ -30,7 +29,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.DocumentEvent;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
@@ -161,12 +159,6 @@ public final class EntityLookupField extends JTextField {
 
   private void linkToModel() {
     ValueLinks.textBeanValueLink(this, getModel(), "searchString", String.class, getModel().getSearchStringObserver());
-    getDocument().addDocumentListener(new DocumentAdapter() {
-      @Override
-      public void contentsChanged(final DocumentEvent e) {
-        updateColors();
-      }
-    });
     model.addSearchStringListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
@@ -178,7 +170,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void addEscapeListener() {
-    final AbstractAction escapeAction = new AbstractAction("EntityLookupField.cancel") {
+    final AbstractAction escapeAction = new AbstractAction("EntityLookupField.escape") {
       /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -203,7 +195,7 @@ public final class EntityLookupField extends JTextField {
         if (getText().isEmpty()) {
           getModel().setSelectedEntity(null);
         }
-        else if (!getText().equals(searchHint.getHintText()) && !performingLookup && !model.searchStringRepresentsSelected()) {
+        else if (!searchHint.isHintTextVisible() && !performingLookup && !model.searchStringRepresentsSelected()) {
           performLookup(false);
         }
         updateColors();

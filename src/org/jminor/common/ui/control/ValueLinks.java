@@ -771,7 +771,7 @@ public final class ValueLinks {
 
     /** {@inheritDoc} */
     @Override
-    public void set(Object value) {
+    public void set(final Object value) {
       comboBox.getModel().setSelectedItem(value);
     }
 

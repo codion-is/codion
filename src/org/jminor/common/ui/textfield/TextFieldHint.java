@@ -3,9 +3,11 @@
  */
 package org.jminor.common.ui.textfield;
 
+import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.Util;
 
 import javax.swing.JTextField;
+import javax.swing.event.DocumentEvent;
 import java.awt.Color;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
@@ -38,6 +40,7 @@ public final class TextFieldHint {
     this.defaultForegroundColor = txtField.getForeground();
     this.hintForegroundColor = hintForegroundColor;
     this.txtField.addFocusListener(initializeFocusListener());
+    this.txtField.getDocument().addDocumentListener(initializeDocumentListener());
     updateState();
   }
 
@@ -63,8 +66,7 @@ public final class TextFieldHint {
     else if (showHint) {
       txtField.setText(hintText);
     }
-    final boolean specificForeground = !hasFocus && isHintTextVisible();
-    txtField.setForeground(specificForeground ? hintForegroundColor : defaultForegroundColor);
+    updateColor();
   }
 
   /**
@@ -109,5 +111,20 @@ public final class TextFieldHint {
         updateState();
       }
     };
+  }
+
+  private DocumentAdapter initializeDocumentListener() {
+    return new DocumentAdapter() {
+      /** {@inheritDoc} */
+      @Override
+      public void contentsChanged(final DocumentEvent e) {
+        updateColor();
+      }
+    };
+  }
+
+  private void updateColor() {
+    final boolean hintForeground = !txtField.hasFocus() && isHintTextVisible();
+    txtField.setForeground(hintForeground ? hintForegroundColor : defaultForegroundColor);
   }
 }
