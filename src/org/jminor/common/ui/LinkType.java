@@ -1,10 +1,10 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.ui.control;
+package org.jminor.common.ui;
 
 /**
- * Describes the possible ways to link property values to components.
+ * Describes the possible ways to link a property value to a ui component.
  */
 public enum LinkType {
   /**

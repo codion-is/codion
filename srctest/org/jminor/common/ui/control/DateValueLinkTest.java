@@ -7,7 +7,9 @@ import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.formats.DateFormats;
+import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.ValueLinks;
 
 import org.junit.Test;
 
@@ -31,7 +33,7 @@ public class DateValueLinkTest {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
 
     final JFormattedTextField txtString = UiUtil.createFormattedField(DateUtil.getDateMask(format));
-    ValueLinks.dateBeanValueLink(txtString, this, "date", evtDateValueChanged, LinkType.READ_WRITE, format, false);
+    ValueLinks.dateValueLink(txtString, this, "date", evtDateValueChanged, LinkType.READ_WRITE, format, false);
     assertEquals("String value should be empty on initialization", "__.__.____", txtString.getText());
 
     final Date date = format.parse("03.10.1975");
@@ -49,7 +51,7 @@ public class DateValueLinkTest {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_TIMESTAMP);
 
     final JFormattedTextField txtString = UiUtil.createFormattedField(DateUtil.getDateMask(format));
-    ValueLinks.dateBeanValueLink(txtString, this, "timestamp", evtTimestampValueChanged, LinkType.READ_WRITE, format, true);
+    ValueLinks.dateValueLink(txtString, this, "timestamp", evtTimestampValueChanged, LinkType.READ_WRITE, format, true);
     assertEquals("String value should be empty on initialization", "__-__-__ __:__", txtString.getText());
 
     final Timestamp date = new Timestamp(format.parse("03-10-75 10:34").getTime());

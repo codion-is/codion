@@ -14,12 +14,12 @@ import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.table.ColumnSearchModel;
+import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.DoubleField;
@@ -369,36 +369,36 @@ public class ColumnSearchPanel<K> extends JPanel {
     }
 
     private void createToggleProperty(final JCheckBox checkBox, final boolean isUpperBound) {
-      ValueLinks.toggleBeanValueLink(checkBox.getModel(), searchModel,
+      ValueLinks.toggleValueLink(checkBox.getModel(), searchModel,
               isUpperBound ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
               isUpperBound ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver());
     }
 
     private void createTextProperty(final JComponent component, final boolean isUpper) {
       if (searchModel.getType() == Types.INTEGER) {
-        ValueLinks.intBeanValueLink((IntField) component, searchModel,
+        ValueLinks.intValueLink((IntField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false);
       }
       if (searchModel.getType() == Types.DOUBLE) {
-        ValueLinks.doubleBeanValueLink((DoubleField) component, searchModel,
+        ValueLinks.doubleValueLink((DoubleField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false);
       }
       if (searchModel.getType() == Types.DATE) {
-        ValueLinks.dateBeanValueLink((JFormattedTextField) component, searchModel,
+        ValueLinks.dateValueLink((JFormattedTextField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(),
                 LinkType.READ_WRITE, (DateFormat) searchModel.getFormat(), false);
       }
       if (searchModel.getType() == Types.TIMESTAMP) {
-        ValueLinks.dateBeanValueLink((JFormattedTextField) component, searchModel,
+        ValueLinks.dateValueLink((JFormattedTextField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(),
                 LinkType.READ_WRITE, (DateFormat) searchModel.getFormat(), true);
       }
 
-      ValueLinks.textBeanValueLink((JTextField) component, searchModel,
+      ValueLinks.textValueLink((JTextField) component, searchModel,
               isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
               String.class, isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver());
     }
@@ -449,7 +449,7 @@ public class ColumnSearchPanel<K> extends JPanel {
       }
     }
     final JComboBox comboBox = new SteppedComboBox(comboBoxModel);
-    ValueLinks.selectedItemBeanValueLink(comboBox, searchModel, "searchType", SearchType.class, searchModel.getSearchTypeObserver());
+    ValueLinks.selectedItemValueLink(comboBox, searchModel, "searchType", SearchType.class, searchModel.getSearchTypeObserver());
     comboBox.setRenderer(new DefaultListCellRenderer() {
       /** {@inheritDoc} */
       @Override

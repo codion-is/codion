@@ -5,6 +5,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
+import org.jminor.common.ui.ValueLinks;
 
 import org.junit.Test;
 
@@ -21,7 +22,7 @@ public class SelectedItemValueLinkTest {
   @Test
   public void test() throws Exception {
     final JComboBox box = new JComboBox(new String[] {"b", "d", "s"});
-    ValueLinks.selectedItemBeanValueLink(box, this, "selectedItem", String.class, evtSelectedItemChanged);
+    ValueLinks.selectedItemValueLink(box, this, "selectedItem", String.class, evtSelectedItemChanged);
     assertNull("selected item should be null", selectedItem);
     setSelectedItem("s");
     assertEquals("selected item should be 's'", "s", box.getSelectedItem());

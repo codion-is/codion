@@ -5,6 +5,8 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
+import org.jminor.common.ui.LinkType;
+import org.jminor.common.ui.ValueLinks;
 
 import org.junit.Test;
 
@@ -21,7 +23,7 @@ public class TextValueLinkTest {
   public void testNullInitialValue() throws Exception {
     stringValue = null;
     final JTextField txtString = new JTextField();
-    ValueLinks.textBeanValueLink(txtString, this, "stringValue", String.class, evtStringValueChanged);
+    ValueLinks.textValueLink(txtString, this, "stringValue", String.class, evtStringValueChanged);
     assertNull("String value should be null", stringValue);
     assertEquals("String value should be empty on initialization", "", txtString.getText());
     setStringValue("hello");
@@ -33,7 +35,7 @@ public class TextValueLinkTest {
 
     final JTextField txtString2 = new JTextField();
     stringValue = "test";
-    ValueLinks.textBeanValueLink(txtString2, this, "stringValue", String.class, evtStringValueChanged, LinkType.READ_ONLY);
+    ValueLinks.textValueLink(txtString2, this, "stringValue", String.class, evtStringValueChanged, LinkType.READ_ONLY);
     assertEquals("test", txtString2.getText());
     assertFalse(txtString2.isEditable());
   }
@@ -42,7 +44,7 @@ public class TextValueLinkTest {
   public void testNonNullInitialValue() throws Exception {
     stringValue = "name";
     final JTextField txtString = new JTextField();
-    ValueLinks.textBeanValueLink(txtString, this, "stringValue", String.class, evtStringValueChanged);
+    ValueLinks.textValueLink(txtString, this, "stringValue", String.class, evtStringValueChanged);
     assertEquals("name", txtString.getText());
     txtString.setText("darri");
     assertFalse("String value should not be empty", getStringValue().isEmpty());

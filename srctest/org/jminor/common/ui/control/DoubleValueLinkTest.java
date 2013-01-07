@@ -5,6 +5,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
+import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.textfield.DoubleField;
 
 import org.junit.Test;
@@ -23,7 +24,7 @@ public class DoubleValueLinkTest {
   public void testDouble() throws Exception {
     final DoubleField txtDouble = new DoubleField();
     txtDouble.setDecimalSymbol(DoubleField.POINT);
-    ValueLinks.doubleBeanValueLink(txtDouble, this, "doubleValue", evtDoubleValueChanged, false);
+    ValueLinks.doubleValueLink(txtDouble, this, "doubleValue", evtDoubleValueChanged, false);
     assertNull("Double value should be null on initialization", txtDouble.getDouble());
     setDoubleValue(2.2);
     assertEquals("Double value should be 2.2", new Double(2.2), txtDouble.getDouble());
@@ -37,7 +38,7 @@ public class DoubleValueLinkTest {
   public void testDoublePrimitive() throws Exception {
     final DoubleField txtDouble = new DoubleField();
     txtDouble.setDecimalSymbol(DoubleField.POINT);
-    ValueLinks.doubleBeanValueLink(txtDouble, this, "doublePrimitiveValue", evtDoublePrimitiveValueValueChanged, true);
+    ValueLinks.doubleValueLink(txtDouble, this, "doublePrimitiveValue", evtDoublePrimitiveValueValueChanged, true);
     assertEquals("Double value should be 0 on initialization", (Double) 0.0, txtDouble.getDouble());
     setDoublePrimitiveValue(2.2);
     assertEquals("Double value should be 2.2", new Double(2.2), txtDouble.getDouble());

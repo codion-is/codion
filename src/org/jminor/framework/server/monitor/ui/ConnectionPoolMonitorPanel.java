@@ -8,9 +8,9 @@ import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;
@@ -145,13 +145,13 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private JPanel getConfigurationPanel() {
     final JPanel configBase = new JPanel(UiUtil.createGridLayout(0, 1));
 
-    final JSpinner spnTimeout = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "pooledConnectionTimeout", null));
-    final JSpinner spnCleanupInterval = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "poolCleanupInterval", null));
-    final JSpinner spnMaximumSize = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "maximumPoolSize", null));
-    final JSpinner spnMinimumSize = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "minimumPoolSize", null));
-    final JSpinner spnMaximumRetryWait = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "maximumRetryWaitPeriod", null));
-    final JSpinner spnMaximumCheckOutTime = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "maximumCheckOutTime", null));
-    final JSpinner spnNewConnectionThreshold = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model, "newConnectionThreshold", null));
+    final JSpinner spnTimeout = new JSpinner(ValueLinks.intSpinnerValueLink(model, "pooledConnectionTimeout", null));
+    final JSpinner spnCleanupInterval = new JSpinner(ValueLinks.intSpinnerValueLink(model, "poolCleanupInterval", null));
+    final JSpinner spnMaximumSize = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumPoolSize", null));
+    final JSpinner spnMinimumSize = new JSpinner(ValueLinks.intSpinnerValueLink(model, "minimumPoolSize", null));
+    final JSpinner spnMaximumRetryWait = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumRetryWaitPeriod", null));
+    final JSpinner spnMaximumCheckOutTime = new JSpinner(ValueLinks.intSpinnerValueLink(model, "maximumCheckOutTime", null));
+    final JSpinner spnNewConnectionThreshold = new JSpinner(ValueLinks.intSpinnerValueLink(model, "newConnectionThreshold", null));
 
     ((JSpinner.DefaultEditor) spnTimeout.getEditor()).getTextField().setEditable(false);
     ((JSpinner.DefaultEditor) spnCleanupInterval.getEditor()).getTextField().setEditable(false);
@@ -211,7 +211,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private JPanel getChartPanel() {
     final JPanel chartConfig = new JPanel(UiUtil.createFlexibleGridLayout(1, 3, true, false));
-    final JSpinner spnUpdateInterval = new JSpinner(ValueLinks.intBeanSpinnerValueLink(model.getUpdateScheduler(),
+    final JSpinner spnUpdateInterval = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
@@ -221,7 +221,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     chartConfig.add(spnUpdateInterval);
 
     final JCheckBox chkCollectStatistics = new JCheckBox("Fine grained statistics");
-    chkCollectStatistics.setModel(ValueLinks.toggleBeanValueLink(model, "collectFineGrainedStatistics",
+    chkCollectStatistics.setModel(ValueLinks.toggleValueLink(model, "collectFineGrainedStatistics",
             model.getCollectFineGrainedStatisticsObserver()));
     chkCollectStatistics.setMaximumSize(UiUtil.getPreferredTextFieldSize());
 

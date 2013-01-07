@@ -5,6 +5,7 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
+import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.textfield.IntField;
 
 import org.junit.Test;
@@ -22,7 +23,7 @@ public class IntValueLinkTest {
   @Test
   public void testInteger() throws Exception {
     final IntField txtInt = new IntField();
-    ValueLinks.intBeanValueLink(txtInt, this, "integerValue", evtIntegerValueChanged, false);
+    ValueLinks.intValueLink(txtInt, this, "integerValue", evtIntegerValueChanged, false);
     assertNull("Integer value should be null on initialization", txtInt.getInt());
     setIntegerValue(2);
     assertEquals("Integer value should be 2", 2, txtInt.getInt().intValue());
@@ -35,7 +36,7 @@ public class IntValueLinkTest {
   @Test
   public void testInt() throws Exception {
     final IntField txtInt = new IntField();
-    ValueLinks.intBeanValueLink(txtInt, this, "intValue", evtIntValueChanged, true);
+    ValueLinks.intValueLink(txtInt, this, "intValue", evtIntValueChanged, true);
     assertEquals("Int value should be 0 on initialization", (Integer) 0, txtInt.getInt());
     setIntValue(2);
     assertEquals("Int value should be 2", 2, txtInt.getInt().intValue());

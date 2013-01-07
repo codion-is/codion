@@ -20,14 +20,13 @@ import org.jminor.common.model.valuemap.EditModelValue;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.ui.DateInputPanel;
+import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.checkbox.TristateCheckBox;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
-import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.control.ValueLink;
-import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.input.InputProviderPanel;
 import org.jminor.common.ui.textfield.DocumentSizeFilter;
@@ -336,7 +335,7 @@ public final class EntityUiUtil {
 
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     ValueLinks.toggleValueLink(checkBox.getModel(),
-            new EditModelValue<String, Boolean>(editModel, property.getPropertyID()), LinkType.READ_WRITE, null);
+            new EditModelValue<String, Boolean>(editModel, property.getPropertyID()), LinkType.READ_WRITE);
     UiUtil.linkToEnabledState(enabledState, checkBox);
     if (property.getDescription() != null) {
       checkBox.setToolTipText(property.getDescription());
@@ -362,7 +361,7 @@ public final class EntityUiUtil {
 
     final TristateCheckBox checkBox = new TristateCheckBox(includeCaption ? property.getCaption() : null);
     ValueLinks.tristateValueLink((TristateButtonModel) checkBox.getModel(),
-            new EditModelValue<String, Boolean>(editModel, property.getPropertyID()), LinkType.READ_WRITE, null);
+            new EditModelValue<String, Boolean>(editModel, property.getPropertyID()), LinkType.READ_WRITE);
     UiUtil.linkToEnabledState(enabledState, checkBox);
     if (property.getDescription() != null) {
       checkBox.setToolTipText(property.getDescription());
@@ -477,7 +476,7 @@ public final class EntityUiUtil {
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       lookupField.setTransferFocusOnEnter();
     }
-    new ValueLink<Entity>(new EditModelValue<String, Entity>(editModel, foreignKeyProperty.getPropertyID()),
+    ValueLinks.valueLink(new EditModelValue<String, Entity>(editModel, foreignKeyProperty.getPropertyID()),
             new LookupUIValue(lookupField.getModel()), LinkType.READ_WRITE);
     UiUtil.linkToEnabledState(enabledState, lookupField);
     lookupField.setToolTipText(foreignKeyProperty.getDescription());

@@ -9,7 +9,7 @@ import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ValueLinks;
+import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.textfield.SizedDocument;
 import org.jminor.common.ui.textfield.TextFieldHint;
 import org.jminor.framework.client.model.EntityLookupModel;
@@ -158,7 +158,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void linkToModel() {
-    ValueLinks.textBeanValueLink(this, getModel(), "searchString", String.class, getModel().getSearchStringObserver());
+    ValueLinks.textValueLink(this, getModel(), "searchString", String.class, getModel().getSearchStringObserver());
     model.addSearchStringListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override

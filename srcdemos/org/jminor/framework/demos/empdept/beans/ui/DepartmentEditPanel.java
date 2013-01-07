@@ -4,8 +4,8 @@
 package org.jminor.framework.demos.empdept.beans.ui;
 
 import org.jminor.common.model.EventAdapter;
+import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.LinkType;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 

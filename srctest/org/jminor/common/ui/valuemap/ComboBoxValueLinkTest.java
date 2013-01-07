@@ -4,8 +4,8 @@
 package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.valuemap.EditModelValue;
-import org.jminor.common.ui.control.LinkType;
-import org.jminor.common.ui.control.ValueLinks;
+import org.jminor.common.ui.LinkType;
+import org.jminor.common.ui.ValueLinks;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityEditModel;

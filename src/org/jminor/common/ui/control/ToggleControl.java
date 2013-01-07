@@ -3,6 +3,8 @@
  */
 package org.jminor.common.ui.control;
 
+import org.jminor.common.model.StateObserver;
+
 import javax.swing.ButtonModel;
 
 /**
@@ -16,8 +18,8 @@ public final class ToggleControl extends Control {
    * @param name the name
    * @param buttonModel the button model
    */
-  public ToggleControl(final String name, final ButtonModel buttonModel) {
-    super(name);
+  public ToggleControl(final String name, final ButtonModel buttonModel, final StateObserver enabledObserver) {
+    super(name, enabledObserver);
     this.buttonModel = buttonModel;
   }
 

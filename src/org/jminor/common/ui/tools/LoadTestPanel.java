@@ -9,13 +9,13 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.ItemRandomizer;
 import org.jminor.common.model.tools.LoadTest;
 import org.jminor.common.model.tools.LoadTestModel;
+import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.control.LinkType;
 import org.jminor.common.ui.control.ToggleControl;
-import org.jminor.common.ui.control.ValueLinks;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.IntField;
@@ -200,12 +200,12 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntField applicationCountField = new IntField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    ValueLinks.intBeanValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.applicationCountObserver(), LinkType.READ_ONLY);
+    ValueLinks.intValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.applicationCountObserver(), LinkType.READ_ONLY);
 
     final JPanel applicationPanel = new JPanel(UiUtil.createBorderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));
 
-    final JSpinner spnBatchSize = new JSpinner(ValueLinks.intBeanSpinnerValueLink(loadTestModel, "applicationBatchSize",
+    final JSpinner spnBatchSize = new JSpinner(ValueLinks.intSpinnerValueLink(loadTestModel, "applicationBatchSize",
             loadTestModel.applicationBatchSizeObserver()));
     spnBatchSize.setToolTipText("Application batch size");
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
@@ -327,19 +327,19 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeActivityPanel() {
-    final SpinnerNumberModel maxSpinnerModel = ValueLinks.intBeanSpinnerValueLink(loadTestModel, "maximumThinkTime",
+    final SpinnerNumberModel maxSpinnerModel = ValueLinks.intSpinnerValueLink(loadTestModel, "maximumThinkTime",
             loadTestModel.maximumThinkTimeObserver());
     maxSpinnerModel.setStepSize(10);
     final JSpinner spnMaxThinkTime = new JSpinner(maxSpinnerModel);
     ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
 
-    final SpinnerNumberModel minSpinnerModel = ValueLinks.intBeanSpinnerValueLink(loadTestModel, "minimumThinkTime",
+    final SpinnerNumberModel minSpinnerModel = ValueLinks.intSpinnerValueLink(loadTestModel, "minimumThinkTime",
             loadTestModel.getMinimumThinkTimeObserver());
     minSpinnerModel.setStepSize(10);
     final JSpinner spnMinThinkTimeField = new JSpinner(minSpinnerModel);
     ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(3);
 
-    final SpinnerNumberModel warningSpinnerModel = ValueLinks.intBeanSpinnerValueLink(loadTestModel, "warningTime",
+    final SpinnerNumberModel warningSpinnerModel = ValueLinks.intSpinnerValueLink(loadTestModel, "warningTime",
             loadTestModel.getWarningTimeObserver());
     warningSpinnerModel.setStepSize(10);
     final JSpinner spnWarningTime = new JSpinner(warningSpinnerModel);
