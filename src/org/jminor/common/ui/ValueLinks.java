@@ -9,11 +9,13 @@ import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Item;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.checkbox.TristateButtonModel;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
+import org.jminor.common.ui.control.ToggleControl;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 
@@ -317,9 +319,25 @@ public final class ValueLinks {
    * @param modelValue the model value
    * @param linkType the link type
    */
-  public static void toggleValueLink(final ButtonModel buttonModel, final Value<Boolean> modelValue,
-                                     final LinkType linkType) {
+  public static void toggleValueLink(final ButtonModel buttonModel, final Value<Boolean> modelValue, final LinkType linkType) {
     valueLink(modelValue, new ToggleUIValue(buttonModel), linkType);
+  }
+
+  public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption) {
+    return toggleControl(owner, beanPropertyName, caption, null);
+  }
+
+  public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
+                                            final EventObserver changeEvent) {
+    return toggleControl(owner, beanPropertyName, caption, changeEvent, null);
+  }
+
+  public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
+                                            final EventObserver changeEvent, final StateObserver enabledObserver) {
+    final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
+    toggleValueLink(buttonModel, owner, beanPropertyName, changeEvent, LinkType.READ_WRITE);
+
+    return new ToggleControl(caption, buttonModel, enabledObserver);
   }
 
   /**

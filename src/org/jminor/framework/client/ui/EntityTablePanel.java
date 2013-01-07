@@ -20,6 +20,7 @@ import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
@@ -702,7 +703,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a summary panel toggle button
    */
   public final Control getToggleSummaryPanelControl() {
-    final Control toggleControl = Controls.toggleControl(this, "summaryPanelVisible", null,
+    final Control toggleControl = ValueLinks.toggleControl(this, "summaryPanelVisible", null,
             evtSummaryPanelVisibilityChanged);
     toggleControl.setIcon(Images.loadImage("Sum16.gif"));
     toggleControl.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_SUMMARY_TIP));
@@ -1081,7 +1082,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   protected final Control getSearchPanelControl() {
-    return Controls.toggleControl(this, "searchPanelVisible",
+    return ValueLinks.toggleControl(this, "searchPanelVisible",
             FrameworkMessages.get(FrameworkMessages.SHOW), evtSearchPanelVisibilityChanged);
   }
 

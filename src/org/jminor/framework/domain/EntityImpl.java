@@ -1044,7 +1044,6 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
       }
     }
 
-    @SuppressWarnings({"SuspiciousMethodCalls"})
     private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
       final String entityID = (String) stream.readObject();
       definition = EntityDefinitionImpl.getDefinitionMap().get(entityID);

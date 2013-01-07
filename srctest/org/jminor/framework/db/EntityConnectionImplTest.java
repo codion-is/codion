@@ -42,6 +42,7 @@ import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Random;
 
 import static org.junit.Assert.*;
 
@@ -537,6 +538,62 @@ public class EntityConnectionImplTest {
       final Entity blobRecordFromDb = connection.selectSingle(blobRecordKey);
       assertNotNull(blobRecordFromDb);
       assertNull(blobRecordFromDb.getValue(data));
+    }
+    finally {
+      connection.rollback();
+      if (statement != null) {
+        statement.close();
+      }
+      if (databaseConnection != null) {
+        statement = databaseConnection.getConnection().createStatement();
+        statement.execute("drop table blob_test");
+        statement.close();
+      }
+    }
+  }
+
+  @Test
+  public void readWriteBlob2() throws SQLException, DatabaseException {
+    DatabaseConnection databaseConnection = null;
+    Statement statement = null;
+    try {
+      databaseConnection = connection.getDatabaseConnection();
+      statement = databaseConnection.getConnection().createStatement();
+      statement.execute("create table blob_test(id integer, data blob)");
+
+      final String entityID = "blob_test";
+      final String id = "id";
+      final String data = "data";
+
+      Entities.define(entityID,
+              Properties.primaryKeyProperty(id),
+              Properties.columnProperty(data, Types.BLOB));
+
+      final byte[] bytes = new byte[1024];
+      new Random().nextBytes(bytes);
+
+      final Entity blobRecord = Entities.entity(entityID);
+      blobRecord.setValue(id, 1);
+      blobRecord.setValue("data", bytes);
+
+      final Entity.Key blobRecordKey = connection.insert(Arrays.asList(blobRecord)).get(0);
+
+      byte[] fromDb = connection.readBlob(blobRecordKey, data);
+      assertTrue(Arrays.equals(bytes, fromDb));
+
+      final Entity blobRecordFromDb = connection.selectSingle(blobRecordKey);
+      assertNotNull(blobRecordFromDb);
+      assertNull(blobRecordFromDb.getValue(data));
+
+      final byte[] newBytes = new byte[2048];
+      new Random().nextBytes(newBytes);
+
+      blobRecord.setValue("data", newBytes);
+
+      connection.update(Arrays.asList(blobRecord)).get(0);
+
+      fromDb = connection.readBlob(blobRecordKey, data);
+      assertTrue(Arrays.equals(newBytes, fromDb));
     }
     finally {
       connection.rollback();

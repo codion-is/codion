@@ -3324,3 +3324,4 @@
   ValueLink no longer extends Action
   LinkType, ValueLinks moved from common.ui.control to common.ui
   ColumnSearchPanel.DefaultInputFieldProvider.createTextProperty() bug fixed, missing conditional
+  Controls.toggle... methods moved to ValueLinks, due to cyclical dependency

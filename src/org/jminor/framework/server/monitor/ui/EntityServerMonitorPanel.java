@@ -9,6 +9,7 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
@@ -173,7 +174,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   private Control initializeAlwaysOnTopControl() {
-    final Control control = Controls.toggleControl(this, "alwaysOnTop", "Always on Top", evtAlwaysOnTopChanged);
+    final Control control = ValueLinks.toggleControl(this, "alwaysOnTop", "Always on Top", evtAlwaysOnTopChanged);
     control.setMnemonic('A');
 
     return control;
