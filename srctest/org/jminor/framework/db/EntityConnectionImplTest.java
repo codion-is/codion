@@ -513,16 +513,8 @@ public class EntityConnectionImplTest {
       statement = databaseConnection.getConnection().createStatement();
       statement.execute("create table blob_test(id integer, data blob)");
 
-      final String entityID = "blob_test";
-      final String id = "id";
-      final String data = "data";
-
-      Entities.define(entityID,
-              Properties.primaryKeyProperty(id),
-              Properties.columnProperty(data, Types.BLOB));
-
-      final Entity blobRecord = Entities.entity(entityID);
-      blobRecord.setValue(id, 1);
+      final Entity blobRecord = Entities.entity(ENTITY_ID);
+      blobRecord.setValue(ID, 1);
 
       final Entity.Key blobRecordKey = connection.insert(Arrays.asList(blobRecord)).get(0);
 
@@ -530,14 +522,14 @@ public class EntityConnectionImplTest {
       final byte[] bytes = new byte[1024];
       Arrays.fill(bytes, one);
 
-      connection.writeBlob(blobRecordKey, data, bytes);
+      connection.writeBlob(blobRecordKey, DATA, bytes);
 
-      final byte[] fromDb = connection.readBlob(blobRecordKey, data);
+      final byte[] fromDb = connection.readBlob(blobRecordKey, DATA);
       assertEquals(bytes.length, fromDb.length);
 
       final Entity blobRecordFromDb = connection.selectSingle(blobRecordKey);
       assertNotNull(blobRecordFromDb);
-      assertNull(blobRecordFromDb.getValue(data));
+      assertNull(blobRecordFromDb.getValue(DATA));
     }
     finally {
       connection.rollback();
@@ -561,29 +553,21 @@ public class EntityConnectionImplTest {
       statement = databaseConnection.getConnection().createStatement();
       statement.execute("create table blob_test(id integer, data blob)");
 
-      final String entityID = "blob_test";
-      final String id = "id";
-      final String data = "data";
-
-      Entities.define(entityID,
-              Properties.primaryKeyProperty(id),
-              Properties.columnProperty(data, Types.BLOB));
-
       final byte[] bytes = new byte[1024];
       new Random().nextBytes(bytes);
 
-      final Entity blobRecord = Entities.entity(entityID);
-      blobRecord.setValue(id, 1);
+      final Entity blobRecord = Entities.entity(ENTITY_ID);
+      blobRecord.setValue(ID, 1);
       blobRecord.setValue("data", bytes);
 
       final Entity.Key blobRecordKey = connection.insert(Arrays.asList(blobRecord)).get(0);
 
-      byte[] fromDb = connection.readBlob(blobRecordKey, data);
+      byte[] fromDb = connection.readBlob(blobRecordKey, DATA);
       assertTrue(Arrays.equals(bytes, fromDb));
 
       final Entity blobRecordFromDb = connection.selectSingle(blobRecordKey);
       assertNotNull(blobRecordFromDb);
-      assertNull(blobRecordFromDb.getValue(data));
+      assertNull(blobRecordFromDb.getValue(DATA));
 
       final byte[] newBytes = new byte[2048];
       new Random().nextBytes(newBytes);
@@ -592,7 +576,7 @@ public class EntityConnectionImplTest {
 
       connection.update(Arrays.asList(blobRecord)).get(0);
 
-      fromDb = connection.readBlob(blobRecordKey, data);
+      fromDb = connection.readBlob(blobRecordKey, DATA);
       assertTrue(Arrays.equals(newBytes, fromDb));
     }
     finally {
@@ -610,5 +594,15 @@ public class EntityConnectionImplTest {
 
   private static EntityConnectionImpl initializeConnection() throws DatabaseException {
     return new EntityConnectionImpl(Databases.createInstance(), User.UNIT_TEST_USER);
+  }
+
+  private static final String ENTITY_ID = "blob_test";
+  private static final String ID = "id";
+  private static final String DATA = "data";
+
+  static {
+    Entities.define(ENTITY_ID,
+            Properties.primaryKeyProperty(ID),
+            Properties.columnProperty(DATA, Types.BLOB));
   }
 }
