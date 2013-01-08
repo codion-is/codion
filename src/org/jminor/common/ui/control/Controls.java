@@ -3,10 +3,20 @@
  */
 package org.jminor.common.ui.control;
 
+import org.jminor.common.model.Event;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.Value;
+import org.jminor.common.model.Values;
 
+import javax.swing.ButtonModel;
 import javax.swing.Icon;
+import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
+import javax.swing.SwingUtilities;
+import java.awt.event.ItemEvent;
+import java.awt.event.ItemListener;
 
 /**
  * A factory class for Control objects.
@@ -47,5 +57,75 @@ public final class Controls {
                                             final StateObserver state, final String description, final int mnemonic,
                                             final KeyStroke ks, final Icon icon) {
     return (MethodControl) methodControl(owner, method, methodName, state, description, mnemonic, ks).setIcon(icon);
+  }
+
+  public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption) {
+    return toggleControl(owner, beanPropertyName, caption, null);
+  }
+
+  public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
+                                            final EventObserver changeEvent) {
+    return toggleControl(owner, beanPropertyName, caption, changeEvent, null);
+  }
+
+  public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
+                                            final EventObserver changeEvent, final StateObserver enabledObserver) {
+    final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
+    Values.link(Values.<Boolean>beanValue(owner, beanPropertyName, boolean.class, changeEvent,
+            false), new BooleanValue(buttonModel), false);
+
+    return new ToggleControl(caption, buttonModel, enabledObserver);
+  }
+
+  /**
+   * So as to not introduce a dependency to common.ui
+   */
+  private static final class BooleanValue implements Value<Boolean> {
+    private final ButtonModel buttonModel;
+    private final Event changeEvent = Events.event();
+
+    private BooleanValue(final ButtonModel buttonModel) {
+      this.buttonModel = buttonModel;
+      buttonModel.addItemListener(new ItemListener() {
+        /** {@inheritDoc} */
+        @Override
+        public void itemStateChanged(final ItemEvent e) {
+          changeEvent.fire();
+        }
+      });
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Boolean get() {
+      return buttonModel.isSelected();
+    }
+
+    @Override
+    public final void set(final Boolean value) {
+      if (SwingUtilities.isEventDispatchThread()) {
+        buttonModel.setSelected(value != null && value);
+      }
+      else {
+        try {
+          SwingUtilities.invokeAndWait(new Runnable() {
+            /** {@inheritDoc} */
+            @Override
+            public void run() {
+              buttonModel.setSelected(value != null && value);
+            }
+          });
+        }
+        catch (Exception e) {
+          throw new RuntimeException(e);
+        }
+      }
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public final EventObserver getChangeEvent() {
+      return changeEvent.getObserver();
+    }
   }
 }

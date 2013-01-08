@@ -19,6 +19,7 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.DoubleField;
@@ -147,7 +148,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     this.lowerBoundField = lowerBoundField;
     if (includeToggleSearchEnabledButton) {
       this.toggleSearchEnabled = ControlProvider.createToggleButton(
-            ValueLinks.toggleControl(searchModel, "enabled", null, searchModel.getEnabledObserver()));
+              Controls.toggleControl(searchModel, "enabled", null, searchModel.getEnabledObserver()));
       toggleSearchEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     }
     else {
@@ -155,7 +156,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     }
     if (includeToggleAdvancedSearchButton) {
       this.toggleSearchAdvanced = ControlProvider.createToggleButton(
-              ValueLinks.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.getObserver()));
+              Controls.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.getObserver()));
       toggleSearchAdvanced.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
     }
     else {

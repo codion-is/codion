@@ -235,7 +235,7 @@ public final class ExceptionDialog extends JDialog {
   }
 
   private void setupControls() {
-    ctrDetails = ValueLinks.toggleControl(this, "showDetails",
+    ctrDetails = Controls.toggleControl(this, "showDetails",
             Messages.get(Messages.DETAILS), null);
     ctrDetails.setDescription(Messages.get(Messages.SHOW_DETAILS));
     ctrPrint = Controls.methodControl(this, "printErrorReport",

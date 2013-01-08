@@ -17,7 +17,6 @@ import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.LoginPanel;
 import org.jminor.common.ui.MasterDetailPanel;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
@@ -522,7 +521,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     controlSet.add(Controls.methodControl(this, "viewDependencyTree",
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), null, null));
     controlSet.addSeparator();
-    final Control ctrAlwaysOnTop = ValueLinks.toggleControl(this,
+    final Control ctrAlwaysOnTop = Controls.toggleControl(this,
             "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), evtAlwaysOnTopChanged);
     controlSet.add(ctrAlwaysOnTop);
 
