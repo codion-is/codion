@@ -3328,3 +3328,4 @@
   ValueLinks.toggle... methods moved back to Controls
   common.Values refactored from ValueLinks
   common.ui.UiValues refactored from ValueLinks
+  LinkType deprecated

@@ -6,7 +6,6 @@ package org.jminor.common.ui.valuemap;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.model.valuemap.EditModelValue;
-import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
@@ -30,7 +29,7 @@ public class DateValueLinkTest {
     final EntityEditModel model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
     final JFormattedTextField txtDate = UiUtil.createFormattedField(DateUtil.getDateMask(format));
-    ValueLinks.dateValueLink(txtDate, new EditModelValue<String, Date>(model, EmpDept.EMPLOYEE_HIREDATE), LinkType.READ_WRITE, format, false);
+    ValueLinks.dateValueLink(txtDate, new EditModelValue<String, Date>(model, EmpDept.EMPLOYEE_HIREDATE), false, format, false);
     assertNull("Initial Date value should be null", model.getValue(EmpDept.EMPLOYEE_HIREDATE));
     final Date dateValue = format.parse("03-10-1975");
     txtDate.setText(format.format(dateValue));

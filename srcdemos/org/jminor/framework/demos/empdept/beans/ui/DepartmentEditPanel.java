@@ -4,7 +4,6 @@
 package org.jminor.framework.demos.empdept.beans.ui;
 
 import org.jminor.common.model.EventAdapter;
-import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
@@ -22,7 +21,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
 
   @Override
   protected void initializeUI() {
-    final JTextField txtDepartmentNumber = createTextField(DEPARTMENT_ID, LinkType.READ_WRITE);
+    final JTextField txtDepartmentNumber = createTextField(DEPARTMENT_ID);
     final JTextField txtDepartmentName = (JTextField) UiUtil.makeUpperCase(createTextField(DEPARTMENT_NAME));
     UiUtil.makeUpperCase(createTextField(DEPARTMENT_LOCATION));
 

@@ -15,7 +15,6 @@ import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.ExceptionHandler;
-import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.checkbox.TristateCheckBox;
@@ -940,21 +939,20 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return a JTextArea bound to the property
    */
   protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns) {
-    return createTextArea(propertyID, null, rows, columns);
+    return createTextArea(propertyID, readOnly(propertyID), rows, columns);
   }
 
   /**
    * Creates a JTextArea component bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property to bind
-   * @param linkType the link type
+   * @param readOnly if true the component will be read only
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final String propertyID, final LinkType linkType, final int rows, final int columns) {
+  protected final JTextArea createTextArea(final String propertyID, final boolean readOnly, final int rows, final int columns) {
     final Property property = Entities.getProperty(editModel.getEntityID(), propertyID);
-    final LinkType actualLinkType = linkType == null ? getDefaultLinkType(property) : linkType;
-    final JTextArea textArea = EntityUiUtil.createTextArea(property, editModel, actualLinkType, rows, columns);
+    final JTextArea textArea = EntityUiUtil.createTextArea(property, editModel, readOnly, rows, columns);
     setComponent(propertyID, textArea);
 
     return textArea;
@@ -966,73 +964,72 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return a TextInputPanel bound to the property
    */
   protected final TextInputPanel createTextInputPanel(final String propertyID) {
-    return createTextInputPanel(propertyID, null);
+    return createTextInputPanel(propertyID, readOnly(propertyID));
   }
 
   /**
    * Creates a TextInputPanel bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property to bind
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final String propertyID, final LinkType linkType) {
-    return createTextInputPanel(propertyID, linkType, true);
+  protected final TextInputPanel createTextInputPanel(final String propertyID, final boolean readOnly) {
+    return createTextInputPanel(propertyID, readOnly, true);
   }
 
   /**
    * Creates a TextInputPanel bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property to bind
-   * @param linkType the property LinkType
+   * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final String propertyID, final LinkType linkType,
+  protected final TextInputPanel createTextInputPanel(final String propertyID, final boolean readOnly,
                                                       final boolean immediateUpdate) {
-    return createTextInputPanel(propertyID, linkType, immediateUpdate, true);
+    return createTextInputPanel(propertyID, readOnly, immediateUpdate, true);
   }
 
   /**
    * Creates a TextInputPanel bound to the property identified by <code>propertyID</code>.
    * @param propertyID the ID of the property to bind
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @param buttonFocusable specifies whether the edit button should be focusable.
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final String propertyID, final LinkType linkType,
+  protected final TextInputPanel createTextInputPanel(final String propertyID, final boolean readOnly,
                                                       final boolean immediateUpdate, final boolean buttonFocusable) {
-    return createTextInputPanel(Entities.getProperty(editModel.getEntityID(), propertyID), linkType,
+    return createTextInputPanel(Entities.getProperty(editModel.getEntityID(), propertyID), readOnly,
             immediateUpdate, buttonFocusable);
   }
 
   /**
    * Creates a TextInputPanel bound to the property identified by <code>propertyID</code>.
    * @param property the property to bind
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final Property property, final LinkType linkType,
+  protected final TextInputPanel createTextInputPanel(final Property property, final boolean readOnly,
                                                       final boolean immediateUpdate) {
-    return createTextInputPanel(property, linkType, immediateUpdate, true);
+    return createTextInputPanel(property, readOnly, immediateUpdate, true);
   }
 
   /**
    * Creates a TextInputPanel bound to the property identified by <code>propertyID</code>.
    * @param property the property to bind
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @param buttonFocusable specifies whether the edit button should be focusable.
    * @return a TextInputPanel bound to the property
    */
-  protected final TextInputPanel createTextInputPanel(final Property property, final LinkType linkType,
+  protected final TextInputPanel createTextInputPanel(final Property property, final boolean readOnly,
                                                       final boolean immediateUpdate, final boolean buttonFocusable) {
-    final LinkType actualLinkType = linkType == null ? getDefaultLinkType(property) : linkType;
-    final TextInputPanel ret = EntityUiUtil.createTextInputPanel(property, editModel, actualLinkType, immediateUpdate, buttonFocusable);
+    final TextInputPanel ret = EntityUiUtil.createTextInputPanel(property, editModel, readOnly, immediateUpdate, buttonFocusable);
     setComponent(property.getPropertyID(), ret.getTextComponent());
 
     return ret;
@@ -1070,7 +1067,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton,
                                                       final StateObserver enabledState) {
-    return createDateInputPanel(propertyID, includeButton, enabledState, null);
+    return createDateInputPanel(propertyID, includeButton, enabledState, readOnly(propertyID));
   }
 
   /**
@@ -1078,13 +1075,13 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param propertyID the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @return a DateInputPanel bound to the property
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton,
-                                                      final StateObserver enabledState, final LinkType linkType) {
+                                                      final StateObserver enabledState, final boolean readOnly) {
     return createDateInputPanel(Entities.getProperty(editModel.getEntityID(), propertyID),
-            includeButton, enabledState, linkType);
+            includeButton, enabledState, readOnly);
   }
 
   /**
@@ -1115,7 +1112,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   protected final DateInputPanel createDateInputPanel(final Property property, final boolean includeButton,
                                                       final StateObserver enabledState) {
-    return createDateInputPanel(property, includeButton, enabledState, null);
+    return createDateInputPanel(property, includeButton, enabledState, readOnly(property.getPropertyID()));
   }
 
   /**
@@ -1123,13 +1120,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param property the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @param enabledState a state for controlling the enabled state of the input component
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @return a DateInputPanel bound to the property
    */
   protected final DateInputPanel createDateInputPanel(final Property property, final boolean includeButton,
-                                                      final StateObserver enabledState, final LinkType linkType) {
-    final LinkType actualLinkType = linkType == null ? getDefaultLinkType(property) : linkType;
-    final DateInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, actualLinkType, includeButton, enabledState);
+                                                      final StateObserver enabledState, final boolean readOnly) {
+    final DateInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, readOnly, includeButton, enabledState);
     setComponent(property.getPropertyID(), panel.getInputField());
 
     return panel;
@@ -1141,66 +1137,66 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final String propertyID) {
-    return createTextField(propertyID, null);
+    return createTextField(propertyID, readOnly(propertyID));
   }
 
   /**
    * Creates a JTextField bound to the property identified by <code>propertyID</code>
    * @param propertyID the ID of the property to bind
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyID, final LinkType linkType) {
-    return createTextField(propertyID, linkType, true);
+  protected final JTextField createTextField(final String propertyID, final boolean readOnly) {
+    return createTextField(propertyID, readOnly, true);
   }
 
   /**
    * Creates a JTextField bound to the property identified by <code>propertyID</code>
    * @param propertyID the ID of the property to bind
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyID, final LinkType linkType,
+  protected final JTextField createTextField(final String propertyID, final boolean readOnly,
                                              final boolean immediateUpdate) {
-    return createTextField(propertyID, linkType, immediateUpdate, null);
+    return createTextField(propertyID, readOnly, immediateUpdate, null);
   }
 
   /**
    * Creates a JTextField bound to the property identified by <code>propertyID</code>
    * @param propertyID the ID of the property to bind
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyID, final LinkType linkType,
+  protected final JTextField createTextField(final String propertyID, final boolean readOnly,
                                              final boolean immediateUpdate, final String maskString) {
-    return createTextField(propertyID, linkType, immediateUpdate, maskString, null);
+    return createTextField(propertyID, readOnly, immediateUpdate, maskString, null);
   }
 
   /**
    * Creates a JTextField bound to the property identified by <code>propertyID</code>
    * @param propertyID the ID of the property to bind
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyID, final LinkType linkType,
+  protected final JTextField createTextField(final String propertyID, final boolean readOnly,
                                              final boolean immediateUpdate, final String maskString,
                                              final StateObserver enabledState) {
-    return createTextField(propertyID, linkType, immediateUpdate, maskString, enabledState, false);
+    return createTextField(propertyID, readOnly, immediateUpdate, maskString, enabledState, false);
   }
 
   /**
    * Creates a JTextField bound to the property identified by <code>propertyID</code>
    * @param propertyID the ID of the property to bind
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
@@ -1208,11 +1204,11 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param valueIncludesLiteralCharacters only applicable if <code>maskString</code> is specified
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final String propertyID, final LinkType linkType,
+  protected final JTextField createTextField(final String propertyID, final boolean readOnly,
                                              final boolean immediateUpdate, final String maskString,
                                              final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
     return createTextField(Entities.getProperty(editModel.getEntityID(), propertyID),
-            linkType, maskString, immediateUpdate, enabledState, valueIncludesLiteralCharacters);
+            readOnly, maskString, immediateUpdate, enabledState, valueIncludesLiteralCharacters);
   }
 
   /**
@@ -1221,53 +1217,53 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return a text field bound to the property
    */
   protected final JTextField createTextField(final Property property) {
-    return createTextField(property, null);
+    return createTextField(property, readOnly(property.getPropertyID()));
   }
 
   /**
    * Creates a JTextField bound to the given property
    * @param property the property to bind
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final LinkType linkType) {
-    return createTextField(property, linkType, null, true);
+  protected final JTextField createTextField(final Property property, final boolean readOnly) {
+    return createTextField(property, readOnly, null, true);
   }
 
   /**
    * Creates a JTextField bound to the given property
    * @param property the property to bind
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final LinkType linkType,
+  protected final JTextField createTextField(final Property property, final boolean readOnly,
                                              final String maskString, final boolean immediateUpdate) {
-    return createTextField(property, linkType, maskString, immediateUpdate, null);
+    return createTextField(property, readOnly, maskString, immediateUpdate, null);
   }
 
   /**
    * Creates a JTextField bound to the given property
    * @param property the ID of the property to bind
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
    * @param enabledState a state for controlling the enabled state of the component
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final LinkType linkType,
+  protected final JTextField createTextField(final Property property, final boolean readOnly,
                                              final String maskString, final boolean immediateUpdate,
                                              final StateObserver enabledState) {
-    return createTextField(property, linkType, maskString, immediateUpdate, enabledState, false);
+    return createTextField(property, readOnly, maskString, immediateUpdate, enabledState, false);
   }
 
   /**
    * Creates a JTextField bound to the given property
    * @param property the property to bind
-   * @param linkType the property link type
+   * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying property value is updated on each keystroke,
    * otherwise it is updated when the component looses focus.
    * @param maskString if specified then a JFormattedTextField with the given mask is returned
@@ -1275,11 +1271,10 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param valueIncludesLiteralCharacters only applicable if <code>maskString</code> is specified
    * @return a text field bound to the property
    */
-  protected final JTextField createTextField(final Property property, final LinkType linkType,
+  protected final JTextField createTextField(final Property property, final boolean readOnly,
                                              final String maskString, final boolean immediateUpdate,
                                              final StateObserver enabledState, final boolean valueIncludesLiteralCharacters) {
-    final LinkType actualLinkType = linkType == null ? getDefaultLinkType(property) : linkType;
-    final JTextField txt = EntityUiUtil.createTextField(property, editModel, actualLinkType, maskString, immediateUpdate,
+    final JTextField txt = EntityUiUtil.createTextField(property, editModel, readOnly, maskString, immediateUpdate,
             enabledState, valueIncludesLiteralCharacters);
     setComponent(property.getPropertyID(), txt);
 
@@ -2014,14 +2009,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     });
   }
 
-  private static LinkType getDefaultLinkType(final Property property) {
-    final boolean nonUpdatable = property.isReadOnly() ||
-            (property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isUpdatable());
-    if (nonUpdatable) {
-      return LinkType.READ_ONLY;
-    }
-    else {
-      return LinkType.READ_WRITE;
-    }
+  private boolean readOnly(final String propertyID) {
+    final Property property = Entities.getProperty(editModel.getEntityID(), propertyID);
+    return property.isReadOnly() || (property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).isUpdatable());
   }
 }

@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
-import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
@@ -38,7 +37,7 @@ public class TrackEditPanel extends EntityEditPanel {
     txtBytes.setColumns(18);
     final JTextField txtUnitPrice = createTextField(TRACK_UNITPRICE);
     txtUnitPrice.setColumns(18);
-    final JTextField txtDuration = createTextField(TRACK_MINUTES_SECONDS_DERIVED, LinkType.READ_ONLY);
+    final JTextField txtDuration = createTextField(TRACK_MINUTES_SECONDS_DERIVED, true);
     final JPanel durationPanel = new JPanel(new GridLayout(1, 2, 5, 5));
     durationPanel.add(createPropertyPanel(TRACK_MILLISECONDS, txtMilliseconds));
     durationPanel.add(createPropertyPanel(new JLabel("(min/sec)"), txtDuration, true));

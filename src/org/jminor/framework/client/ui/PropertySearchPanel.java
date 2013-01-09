@@ -8,7 +8,6 @@ import org.jminor.common.model.SearchType;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.table.ColumnSearchModel;
-import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.combobox.MaximumMatch;
@@ -124,7 +123,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
         ValueLinks.dateValueLink((JFormattedTextField) field, model,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
-                LinkType.READ_WRITE, (SimpleDateFormat) model.getFormat(), property.isTimestamp());
+                false, (SimpleDateFormat) model.getFormat(), property.isTimestamp());
 
       }
       else if (property.isDouble()) {
@@ -135,7 +134,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       else if (property.isInteger()) {
         ValueLinks.intValueLink((IntField) field, model,
                 isUpper ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false);
+                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false, false);
       }
       else if (property.isBoolean()) {
         ValueLinks.selectedItemValueLink((JComboBox) field, model,

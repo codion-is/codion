@@ -5,6 +5,7 @@ package org.jminor.common.ui;
 
 /**
  * Describes the possible ways to link a property value to a ui component.
+ * @deprecated
  */
 public enum LinkType {
   /**

@@ -5,7 +5,6 @@ package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.control.ControlProvider;
@@ -195,8 +194,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField txtConnectionCount = new JTextField(6);
     txtConnectionCount.setEditable(false);
     txtConnectionCount.setHorizontalAlignment(JLabel.CENTER);
-    ValueLinks.textValueLink(txtConnectionCount, model, "connectionCount", Integer.class, model.getStatisticsUpdatedObserver(),
-            LinkType.READ_ONLY);
+    ValueLinks.textValueLink(txtConnectionCount, model, "connectionCount", Integer.class, model.getStatisticsUpdatedObserver(), true);
 
     return txtConnectionCount;
   }
@@ -205,7 +203,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField txtMemory = new JTextField(8);
     txtMemory.setEditable(false);
     txtMemory.setHorizontalAlignment(JLabel.CENTER);
-    ValueLinks.textValueLink(txtMemory, model, "memoryUsage", String.class, model.getStatisticsUpdatedObserver(), LinkType.READ_ONLY);
+    ValueLinks.textValueLink(txtMemory, model, "memoryUsage", String.class, model.getStatisticsUpdatedObserver(), true);
 
     return txtMemory;
   }

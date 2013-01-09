@@ -4,7 +4,6 @@
 package org.jminor.common.ui.valuemap;
 
 import org.jminor.common.model.valuemap.EditModelValue;
-import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
@@ -22,7 +21,7 @@ public class IntValueLinkTest {
   public void nullInitialValue() throws Exception {
     final EntityEditModel model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final IntField txt = new IntField();
-    ValueLinks.intValueLink(txt, new EditModelValue<String, Integer>(model, EmpDept.EMPLOYEE_ID), LinkType.READ_WRITE, false, null);
+    ValueLinks.intValueLink(txt, new EditModelValue<String, Integer>(model, EmpDept.EMPLOYEE_ID), null, false, false);
     assertNull("Initial Integer value should be null", model.getValue(EmpDept.EMPLOYEE_ID));
     txt.setInt(42);
     assertEquals("Integer value should be 42", 42, model.getValue(EmpDept.EMPLOYEE_ID));
@@ -37,7 +36,7 @@ public class IntValueLinkTest {
     final EntityEditModel model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     model.setValue(EmpDept.EMPLOYEE_ID, 32);
     final IntField txt = new IntField();
-    ValueLinks.intValueLink(txt, new EditModelValue<String, Integer>(model, EmpDept.EMPLOYEE_ID), LinkType.READ_WRITE, false, null);
+    ValueLinks.intValueLink(txt, new EditModelValue<String, Integer>(model, EmpDept.EMPLOYEE_ID), null, false, false);
     assertNotNull("Initial Integer value should not be null", model.getValue(EmpDept.EMPLOYEE_ID));
     assertEquals("32", txt.getText());
     assertEquals(Integer.valueOf(32), txt.getInt());

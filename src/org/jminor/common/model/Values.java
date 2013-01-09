@@ -10,15 +10,25 @@ public final class Values {
   private Values() {}
 
   public static <V> Value<V> beanValue(final Object owner, final String beanPropertyName, final Class valueClass,
-                                       final EventObserver valueChangeEvent, final boolean readOnly) {
-    return new BeanValue<V>(owner, beanPropertyName, valueClass, readOnly, valueChangeEvent);
+                                       final EventObserver valueChangeEvent) {
+    return new BeanValue<V>(owner, beanPropertyName, valueClass, valueChangeEvent);
   }
 
   /**
    * Links the two values together
    * @param modelValue the model value
    * @param uiValue the ui value
-   * @param readOnly if true this link will be read only
+   * @param <V> the value type
+   */
+  public static <V> void link(final Value<V> modelValue, final Value<V> uiValue) {
+    link(modelValue, uiValue, false);
+  }
+
+  /**
+   * Links the two values together
+   * @param modelValue the model value
+   * @param uiValue the ui value
+   * @param readOnly if true the model value is not updated if the ui value changes
    * @param <V> the value type
    */
   public static <V> void link(final Value<V> modelValue, final Value<V> uiValue, final boolean readOnly) {
@@ -29,11 +39,10 @@ public final class Values {
 
     private final Object valueOwner;
     private final Method getMethod;
-    private final Method setMethod;
+    private Method setMethod;
     private final EventObserver changeEvent;
 
-    private BeanValue(final Object valueOwner, final String propertyName, final Class<?> valueClass, final boolean readOnly,
-                      final EventObserver changeEvent) {
+    private BeanValue(final Object valueOwner, final String propertyName, final Class<?> valueClass, final EventObserver changeEvent) {
       Util.rejectNullValue(valueOwner, "valueOwner");
       Util.rejectNullValue(valueClass, "valueClass");
       if (Util.nullOrEmpty(propertyName)) {
@@ -43,15 +52,15 @@ public final class Values {
         this.valueOwner = valueOwner;
         this.changeEvent = changeEvent;
         this.getMethod = Util.getGetMethod(valueClass, propertyName, valueOwner);
-        if (readOnly) {
-          this.setMethod = null;
-        }
-        else {
-          this.setMethod = Util.getSetMethod(valueClass, propertyName, valueOwner);
-        }
       }
       catch (NoSuchMethodException e) {
-        throw new IllegalArgumentException("Bean property methods for " + propertyName + ", type: " + valueClass + " not found in class " + valueOwner.getClass().getName(), e);
+        throw new IllegalArgumentException("Bean property get method for " + propertyName + ", type: " + valueClass + " not found in class " + valueOwner.getClass().getName(), e);
+      }
+      try {
+        this.setMethod = Util.getSetMethod(valueClass, propertyName, valueOwner);
+      }
+      catch (NoSuchMethodException ignored) {
+        this.setMethod = null;
       }
     }
 
@@ -72,6 +81,9 @@ public final class Values {
     /** {@inheritDoc} */
     @Override
     public void set(final V value) {
+      if (setMethod == null) {
+        throw new IllegalStateException("Trying to set a readOnly value");
+      }
       try {
         setMethod.invoke(valueOwner, value);
       }

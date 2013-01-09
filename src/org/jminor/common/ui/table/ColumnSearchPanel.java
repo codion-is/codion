@@ -14,7 +14,6 @@ import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.table.ColumnSearchModel;
-import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.combobox.SteppedComboBox;
@@ -378,24 +377,24 @@ public class ColumnSearchPanel<K> extends JPanel {
       if (searchModel.getType() == Types.INTEGER) {
         ValueLinks.intValueLink((IntField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false);
+                isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false, false);
       }
       else if (searchModel.getType() == Types.DOUBLE) {
         ValueLinks.doubleValueLink((DoubleField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false);
+                isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false, false);
       }
       else if (searchModel.getType() == Types.DATE) {
         ValueLinks.dateValueLink((JFormattedTextField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(),
-                LinkType.READ_WRITE, (DateFormat) searchModel.getFormat(), false);
+                false, (DateFormat) searchModel.getFormat(), false);
       }
       else if (searchModel.getType() == Types.TIMESTAMP) {
         ValueLinks.dateValueLink((JFormattedTextField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(),
-                LinkType.READ_WRITE, (DateFormat) searchModel.getFormat(), true);
+                false, (DateFormat) searchModel.getFormat(), true);
       }
       else {
         ValueLinks.textValueLink((JTextField) component, searchModel,

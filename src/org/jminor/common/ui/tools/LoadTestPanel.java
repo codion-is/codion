@@ -9,7 +9,6 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.ItemRandomizer;
 import org.jminor.common.model.tools.LoadTest;
 import org.jminor.common.model.tools.LoadTestModel;
-import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.control.Control;
@@ -200,7 +199,7 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntField applicationCountField = new IntField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    ValueLinks.intValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.applicationCountObserver(), LinkType.READ_ONLY);
+    ValueLinks.intValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.applicationCountObserver(), true, true);
 
     final JPanel applicationPanel = new JPanel(UiUtil.createBorderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));

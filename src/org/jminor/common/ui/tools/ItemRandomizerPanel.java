@@ -9,11 +9,10 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
+import org.jminor.common.model.Values;
 import org.jminor.common.model.tools.ItemRandomizer;
 import org.jminor.common.model.tools.ItemRandomizerModel;
-import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.ValueLinks;
 
 import javax.swing.ButtonModel;
 import javax.swing.DefaultListModel;
@@ -159,7 +158,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private JCheckBox createEnabledCheckBox(final T item) {
     final JCheckBox enabledBox = new JCheckBox("Enabled");
-    ValueLinks.valueLink(new EnabledModelValue(item), new EnabledUIValue(enabledBox.getModel()), LinkType.READ_WRITE);
+    Values.link(new EnabledModelValue(item), new EnabledUIValue(enabledBox.getModel()));
 
     return enabledBox;
   }
@@ -171,7 +170,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   private SpinnerModel createWeightSpinnerModel(final T item) {
     final SpinnerNumberModel spinnerModel = new SpinnerNumberModel(model.getWeight(item), 0, Integer.MAX_VALUE, 1);
-    ValueLinks.valueLink(new WeightModelValue(item), new WeightUIValue(spinnerModel), LinkType.READ_WRITE);
+    Values.link(new WeightModelValue(item), new WeightUIValue(spinnerModel));
 
     return spinnerModel;
   }

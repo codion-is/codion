@@ -5,7 +5,6 @@ package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
-import org.jminor.common.ui.LinkType;
 import org.jminor.common.ui.ValueLinks;
 
 import org.junit.Test;
@@ -35,7 +34,7 @@ public class TextValueLinkTest {
 
     final JTextField txtString2 = new JTextField();
     stringValue = "test";
-    ValueLinks.textValueLink(txtString2, this, "stringValue", String.class, evtStringValueChanged, LinkType.READ_ONLY);
+    ValueLinks.textValueLink(txtString2, this, "stringValue", String.class, evtStringValueChanged, true);
     assertEquals("test", txtString2.getText());
     assertFalse(txtString2.isEditable());
   }

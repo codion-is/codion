@@ -71,8 +71,7 @@ public final class Controls {
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
                                             final EventObserver changeEvent, final StateObserver enabledObserver) {
     final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
-    Values.link(Values.<Boolean>beanValue(owner, beanPropertyName, boolean.class, changeEvent,
-            false), new BooleanValue(buttonModel), false);
+    Values.link(Values.<Boolean>beanValue(owner, beanPropertyName, boolean.class, changeEvent), new BooleanValue(buttonModel));
 
     return new ToggleControl(caption, buttonModel, enabledObserver);
   }
@@ -102,7 +101,7 @@ public final class Controls {
     }
 
     @Override
-    public final void set(final Boolean value) {
+    public void set(final Boolean value) {
       if (SwingUtilities.isEventDispatchThread()) {
         buttonModel.setSelected(value != null && value);
       }
@@ -124,7 +123,7 @@ public final class Controls {
 
     /** {@inheritDoc} */
     @Override
-    public final EventObserver getChangeEvent() {
+    public EventObserver getChangeEvent() {
       return changeEvent.getObserver();
     }
   }
