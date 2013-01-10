@@ -3333,3 +3333,6 @@
   ValueLinks refactored
   Values.ValueLink, readOnly attribute removed
   PropertyImpl.DateColumnValueConverter bug fixed, did not handle null values correctly
+  Values.value() added along with Values.ValueImpl
+  ValuesTest added
+  UiValuesTest added, common.ui.valuemap tests ignored

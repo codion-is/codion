@@ -11,12 +11,14 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.db.EntityConnectionImplTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
+import org.junit.Ignore;
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
 public class DoubleValueLinkTest {
 
+  @Ignore
   @Test
   public void test() throws Exception {
     final EntityEditModel model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);

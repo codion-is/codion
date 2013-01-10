@@ -9,6 +9,14 @@ public final class Values {
 
   private Values() {}
 
+  public static <V> Value<V> value() {
+    return value(null);
+  }
+
+  public static <V> Value<V> value(final V initialValue) {
+    return new ValueImpl<V>(initialValue);
+  }
+
   public static <V> Value<V> beanValue(final Object owner, final String beanPropertyName, final Class valueClass,
                                        final EventObserver valueChangeEvent) {
     return new BeanValue<V>(owner, beanPropertyName, valueClass, valueChangeEvent);
@@ -33,6 +41,33 @@ public final class Values {
    */
   public static <V> void link(final Value<V> modelValue, final Value<V> uiValue, final boolean readOnly) {
     new ValueLink<V>(modelValue, uiValue, readOnly);
+  }
+
+  private static final class ValueImpl<V> implements Value<V> {
+    private final Event changeEvent = Events.event();
+    private V value;
+
+    private ValueImpl(final V initialValue) {
+      this.value = initialValue;
+    }
+
+    @Override
+      public void set(final V value) {
+        if (!Util.equal(this.value, value)) {
+          this.value = value;
+          changeEvent.fire();
+        }
+      }
+
+      @Override
+      public V get() {
+        return value;
+      }
+
+      @Override
+      public EventObserver getChangeEvent() {
+        return changeEvent.getObserver();
+      }
   }
 
   private static final class BeanValue<V> implements Value<V> {
