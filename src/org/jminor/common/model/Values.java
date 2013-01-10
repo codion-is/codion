@@ -44,6 +44,7 @@ public final class Values {
   }
 
   private static final class ValueImpl<V> implements Value<V> {
+
     private final Event changeEvent = Events.event();
     private V value;
 
@@ -51,23 +52,26 @@ public final class Values {
       this.value = initialValue;
     }
 
+    /** {@inheritDoc} */
     @Override
-      public void set(final V value) {
-        if (!Util.equal(this.value, value)) {
-          this.value = value;
-          changeEvent.fire();
-        }
+    public void set(final V value) {
+      if (!Util.equal(this.value, value)) {
+        this.value = value;
+        changeEvent.fire();
       }
+    }
 
-      @Override
-      public V get() {
-        return value;
-      }
+    /** {@inheritDoc} */
+    @Override
+    public V get() {
+      return value;
+    }
 
-      @Override
-      public EventObserver getChangeEvent() {
-        return changeEvent.getObserver();
-      }
+    /** {@inheritDoc} */
+    @Override
+    public EventObserver getChangeEvent() {
+      return changeEvent.getObserver();
+    }
   }
 
   private static final class BeanValue<V> implements Value<V> {

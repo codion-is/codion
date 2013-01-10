@@ -159,4 +159,10 @@ public class ValuesTest {
   public void beanValueNoValueClass() {
     Values.beanValue(this, "integerValue", null, integerValueChangeEvent.getObserver());
   }
+
+  @Test(expected = IllegalStateException.class)
+  public void setReadOnly() {
+    final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChangeEvent.getObserver());
+    modelValue.set(42);
+  }
 }
