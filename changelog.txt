@@ -3336,3 +3336,4 @@
   Values.value() added along with Values.ValueImpl
   ValuesTest added
   UiValuesTest added, common.ui.valuemap tests ignored
+  common.ui.valuemap tests removed
