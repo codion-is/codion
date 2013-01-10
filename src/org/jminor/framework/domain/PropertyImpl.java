@@ -1274,7 +1274,7 @@ class PropertyImpl implements Property {
     /** {@inheritDoc} */
     @Override
     public Object toColumnValue(final Object value) {
-      if (!(value instanceof java.sql.Date)) {
+      if (value != null && !(value instanceof java.sql.Date)) {
         return new java.sql.Date(((java.util.Date) value).getTime());
       }
       return value;

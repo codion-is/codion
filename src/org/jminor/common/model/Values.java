@@ -119,11 +119,6 @@ public final class Values {
     private final Value<V> uiValue;
 
     /**
-     * The link type
-     */
-    private final boolean readOnly;
-
-    /**
      * True while the UI value is being updated
      */
     private boolean isUpdatingUI = false;
@@ -141,16 +136,15 @@ public final class Values {
     private ValueLink(final Value<V> modelValue, final Value<V> uiValue, final boolean readOnly) {
       this.modelValue = Util.rejectNullValue(modelValue, "modelValue");
       this.uiValue = Util.rejectNullValue(uiValue, "uiValue");
-      this.readOnly = readOnly;
       updateUI();
-      bindEvents(modelValue, uiValue);
+      bindEvents(modelValue, uiValue, readOnly);
     }
 
     /**
      * Updates the model according to the UI.
      */
     private void updateModel() {
-      if (!readOnly && !isUpdatingModel && !isUpdatingUI) {
+      if (!isUpdatingUI) {
         try {
           isUpdatingModel = true;
           modelValue.set(uiValue.get());
@@ -176,7 +170,7 @@ public final class Values {
       }
     }
 
-    private void bindEvents(final Value<V> modelValue, final Value<V> uiValue) {
+    private void bindEvents(final Value<V> modelValue, final Value<V> uiValue, final boolean readOnly) {
       if (modelValue.getChangeEvent() != null) {
         modelValue.getChangeEvent().addListener(new EventAdapter() {
           /** {@inheritDoc} */
