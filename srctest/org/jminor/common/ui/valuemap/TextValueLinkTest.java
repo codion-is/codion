@@ -22,7 +22,7 @@ public class TextValueLinkTest {
   public void nullInitialValue() throws Exception {
     final EntityEditModel model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final JTextField txt = new JTextField();
-    ValueLinks.textValueLink(txt, new EditModelValue<String, String>(model, EmpDept.EMPLOYEE_NAME), false, null, true);
+    ValueLinks.textValueLink(txt, new EditModelValue<String, String>(model, EmpDept.EMPLOYEE_NAME), null, true, false);
     assertTrue("String value should be empty", model.isValueNull(EmpDept.EMPLOYEE_NAME));
     assertNull("Initial String value should be null", model.getValue(EmpDept.EMPLOYEE_NAME));
     txt.setText("darri");
@@ -39,7 +39,7 @@ public class TextValueLinkTest {
     final EntityEditModel model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final JTextField txt = new JTextField();
     model.setValue(EmpDept.EMPLOYEE_NAME, "name");
-    ValueLinks.textValueLink(txt, new EditModelValue<String, String>(model, EmpDept.EMPLOYEE_NAME), false, null, true);
+    ValueLinks.textValueLink(txt, new EditModelValue<String, String>(model, EmpDept.EMPLOYEE_NAME), null, true, false);
     assertFalse("String value should not be empty", model.isValueNull(EmpDept.EMPLOYEE_NAME));
     assertEquals("name", model.getValue(EmpDept.EMPLOYEE_NAME));
     txt.setText("darri");

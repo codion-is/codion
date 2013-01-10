@@ -22,7 +22,7 @@ public class DoubleValueLinkTest {
     final EntityEditModel model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(DoubleField.POINT);
-    ValueLinks.doubleValueLink(txt, new EditModelValue<String, Double>(model, EmpDept.EMPLOYEE_COMMISSION), false, false, null);
+    ValueLinks.doubleValueLink(txt, new EditModelValue<String, Double>(model, EmpDept.EMPLOYEE_COMMISSION), null, false, false);
     ValueLinkValidators.addValidator(EmpDept.EMPLOYEE_COMMISSION, txt, model);/*Range 100 - 2000*/
     assertNull("Initial Double value should be null", model.getValue(EmpDept.EMPLOYEE_COMMISSION));
     txt.setDouble(1000.5);

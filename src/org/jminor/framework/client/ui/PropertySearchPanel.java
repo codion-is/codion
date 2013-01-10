@@ -134,7 +134,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       else if (property.isInteger()) {
         ValueLinks.intValueLink((IntField) field, model,
                 isUpper ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false, false);
+                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false);
       }
       else if (property.isBoolean()) {
         ValueLinks.selectedItemValueLink((JComboBox) field, model,

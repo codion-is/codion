@@ -307,8 +307,7 @@ public final class UiValues {
     private final boolean isTimestamp;
 
     private DateUIValue(final JFormattedTextField textComponent, final Format format, final boolean isTimestamp) {
-      super(textComponent, format, true);
-      Util.rejectNullValue(format, "format");
+      super(textComponent, Util.rejectNullValue(format, "format"), true);
       this.isTimestamp = isTimestamp;
     }
 

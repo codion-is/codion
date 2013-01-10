@@ -596,7 +596,7 @@ public final class EntityUiUtil {
       ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new DocumentSizeFilter(property.getMaxLength()));
     }
 
-    ValueLinks.textValueLink(textArea, new EditModelValue<String, String>(editModel, property.getPropertyID()), readOnly, null, true);
+    ValueLinks.textValueLink(textArea, new EditModelValue<String, String>(editModel, property.getPropertyID()), null, true, readOnly);
     ValueLinkValidators.addValidator(property.getPropertyID(), textArea, editModel);
     textArea.setToolTipText(property.getDescription());
 
@@ -629,13 +629,13 @@ public final class EntityUiUtil {
     final JTextField textField = initializeTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     final String propertyID = property.getPropertyID();
     if (property.isString()) {
-      ValueLinks.textValueLink(textField, new EditModelValue<String, String>(editModel, propertyID), readOnly, null, immediateUpdate);
+      ValueLinks.textValueLink(textField, new EditModelValue<String, String>(editModel, propertyID), null, immediateUpdate, readOnly);
     }
     else if (property.isInteger()) {
-      ValueLinks.intValueLink((IntField) textField, new EditModelValue<String, Integer>(editModel, propertyID), (NumberFormat) property.getFormat(), readOnly, false);
+      ValueLinks.intValueLink((IntField) textField, new EditModelValue<String, Integer>(editModel, propertyID), (NumberFormat) property.getFormat(), false, readOnly);
     }
     else if (property.isDouble()) {
-      ValueLinks.doubleValueLink((DoubleField) textField, new EditModelValue<String, Double>(editModel, propertyID), readOnly, false, (NumberFormat) property.getFormat());
+      ValueLinks.doubleValueLink((DoubleField) textField, new EditModelValue<String, Double>(editModel, propertyID), (NumberFormat) property.getFormat(), false, readOnly);
     }
     else if (property.isDate()) {
       ValueLinks.dateValueLink((JFormattedTextField) textField, new EditModelValue<String, Date>(editModel, propertyID), readOnly, (SimpleDateFormat) property.getFormat(), false);
