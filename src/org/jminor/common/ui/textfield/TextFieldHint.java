@@ -52,24 +52,6 @@ public final class TextFieldHint {
   }
 
   /**
-   * Updates the hint state for the component,
-   * showing the hint text if the component contains no text
-   * and is not focused.
-   */
-  public void updateState() {
-    final boolean hasFocus = txtField.hasFocus();
-    final boolean hideHint = hasFocus && txtField.getText().equals(hintText);
-    final boolean showHint = !hasFocus && txtField.getText().isEmpty();
-    if (hideHint) {
-      txtField.setText("");
-    }
-    else if (showHint) {
-      txtField.setText(hintText);
-    }
-    updateColor();
-  }
-
-  /**
    * @return true if the hint text is visible
    */
   public boolean isHintTextVisible() {
@@ -121,6 +103,24 @@ public final class TextFieldHint {
         updateColor();
       }
     };
+  }
+
+  /**
+   * Updates the hint state for the component,
+   * showing the hint text if the component contains no text
+   * and is not focused.
+   */
+  private void updateState() {
+    final boolean hasFocus = txtField.hasFocus();
+    final boolean hideHint = hasFocus && txtField.getText().equals(hintText);
+    final boolean showHint = !hasFocus && txtField.getText().isEmpty();
+    if (hideHint) {
+      txtField.setText("");
+    }
+    else if (showHint) {
+      txtField.setText(hintText);
+    }
+    updateColor();
   }
 
   private void updateColor() {

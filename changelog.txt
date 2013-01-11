@@ -3337,3 +3337,9 @@
   ValuesTest added
   UiValuesTest added, common.ui.valuemap tests ignored
   common.ui.valuemap tests removed
+  UiValues.TextUiValue field textComponent replaced with document
+  UiValues.TextUiValue.getText() synchronizes on document
+  EntityLookupField, searchHint is enabled after the field has been linked with the model, since that removed the search hint text
+  TextFieldHint.updateState() privatized, only used due to the above
+  ForeignKeySearchPanel.initializeForeignKeyField() removed lookup field initialization code
+  ForeignKeySearchPanel.initializeInputField() now returns null for lower bound fields

@@ -57,7 +57,7 @@ import java.util.List;
 public final class EntityLookupField extends JTextField {
 
   private final EntityLookupModel model;
-  private final TextFieldHint searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
+  private final TextFieldHint searchHint;
   private final Action transferFocusAction = new UiUtil.TransferFocusAction(this);
   private final Action transferFocusBackwardAction = new UiUtil.TransferFocusAction(this, true);
 
@@ -89,6 +89,8 @@ public final class EntityLookupField extends JTextField {
     addFocusListener(initializeFocusListener());
     addEscapeListener();
     linkToModel();
+    this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
+    updateColors();
     UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, lookupOnKeyRelease, initializeLookupAction());
     UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
     UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusBackwardAction);
@@ -99,13 +101,6 @@ public final class EntityLookupField extends JTextField {
    */
   public EntityLookupModel getModel() {
     return model;
-  }
-
-  /**
-   * @return the TextFieldHint instance used by this lookup field
-   */
-  public TextFieldHint getSearchHint() {
-    return searchHint;
   }
 
   /**
@@ -166,7 +161,6 @@ public final class EntityLookupField extends JTextField {
         updateColors();
       }
     });
-    searchHint.updateState();
   }
 
   private void addEscapeListener() {
@@ -204,7 +198,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void updateColors() {
-    final boolean validBackground = model.searchStringRepresentsSelected() || searchHint.isHintTextVisible();
+    final boolean validBackground = model.searchStringRepresentsSelected() || (searchHint !=null && searchHint.isHintTextVisible());
     setBackground(validBackground ? validBackgroundColor : invalidBackgroundColor);
   }
 

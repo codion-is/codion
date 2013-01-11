@@ -107,8 +107,8 @@ public class ColumnSearchPanel<K> extends JPanel {
    * @param includeToggleAdvancedSearchButton if true an advanced toggle button is include
    * @param searchTypes the search types available to this search panel
    */
-  public ColumnSearchPanel(final ColumnSearchModel<K> searchModel, final boolean includeToggleSearchEnabledButton, final boolean includeToggleAdvancedSearchButton,
-                           final SearchType... searchTypes) {
+  public ColumnSearchPanel(final ColumnSearchModel<K> searchModel, final boolean includeToggleSearchEnabledButton,
+                           final boolean includeToggleAdvancedSearchButton, final SearchType... searchTypes) {
     this(searchModel, includeToggleSearchEnabledButton, includeToggleAdvancedSearchButton, new DefaultInputFieldProvider<K>(searchModel), searchTypes);
   }
 

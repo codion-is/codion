@@ -52,7 +52,11 @@ public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.Fore
     /** {@inheritDoc} */
     @Override
     public JComponent initializeInputField(final boolean isUpperBound) {
-      return initializeForeignKeyField();
+      if (isUpperBound) {
+        return initializeForeignKeyField();
+      }
+
+      return null;
     }
 
     private JComponent initializeForeignKeyField() {
@@ -64,11 +68,7 @@ public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.Fore
         return field;
       }
       else {
-        final EntityLookupField field = new EntityLookupField(((ForeignKeySearchModel) model).getEntityLookupModel());
-        field.getModel().refreshSearchText();
-        field.getSearchHint().updateState();
-
-        return field;
+        return new EntityLookupField(((ForeignKeySearchModel) model).getEntityLookupModel());
       }
     }
   }

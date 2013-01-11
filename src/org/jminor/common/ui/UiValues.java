@@ -153,12 +153,12 @@ public final class UiValues {
   }
 
   private static class TextUIValue<V> extends UIValue<V> {
-    private final JTextComponent textComponent;
+    private final Document document;
     private final JFormattedTextField.AbstractFormatter formatter;
     private final Format format;
 
     private TextUIValue(final JTextComponent textComponent, final Format format, final boolean immediateUpdate) {
-      this.textComponent = textComponent;
+      this.document = textComponent.getDocument();
       if (textComponent instanceof JFormattedTextField) {
         this.formatter = ((JFormattedTextField) textComponent).getFormatter();
       }
@@ -167,7 +167,7 @@ public final class UiValues {
       }
       this.format = format == null ? new Util.NullFormat() : format;
       if (immediateUpdate) {
-        textComponent.getDocument().addDocumentListener(new DocumentAdapter() {
+        document.addDocumentListener(new DocumentAdapter() {
           /** {@inheritDoc} */
           @Override
           public final void contentsChanged(final DocumentEvent e) {
@@ -191,8 +191,7 @@ public final class UiValues {
     protected void setInternal(final V value) {
       try {
         final String text = textFromValue(value);
-        synchronized (textComponent) {
-          final Document document = textComponent.getDocument();
+        synchronized (document) {
           document.remove(0, document.getLength());
           if (value != null) {
             document.insertString(0, text, null);
@@ -244,7 +243,10 @@ public final class UiValues {
      */
     protected final String getText() {
       try {
-        final String text = textComponent.getDocument().getText(0, textComponent.getDocument().getLength());
+        final String text;
+        synchronized (document) {
+          text = document.getText(0, document.getLength());
+        }
         if (formatter == null) {
           return text;
         }
