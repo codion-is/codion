@@ -763,7 +763,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         final Collection<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
         if (referencedPrimaryKeys.isEmpty()) {
           for (final Entity entity : entities) {
-            entity.setValue(foreignKeyProperty, null);
+            entity.setValue(foreignKeyProperty, null, false);
           }
         }
         else {
@@ -772,7 +772,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
           final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCriteria, currentForeignKeyFetchDepth + 1);
           final Map<Entity.Key, Entity> hashedReferencedEntities = EntityUtil.hashByPrimaryKey(referencedEntities);
           for (final Entity entity : entities) {
-            entity.setValue(foreignKeyProperty, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)));
+            entity.setValue(foreignKeyProperty, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)), false);
           }
         }
       }

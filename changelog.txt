@@ -3344,3 +3344,5 @@
   ForeignKeySearchPanel.initializeForeignKeyField() removed lookup field initialization code
   ForeignKeySearchPanel.initializeInputField() now returns null for lower bound fields
   PropertyImpl.getTypeClass() now returns byte[].class for BLOB properties
+  EntityConnectionImpl.setForeignKeyValues() now calls setValue() with validateType parameter as false
+  EntityImpl, PropertyImpl, some minor optimizations, using package protected fields

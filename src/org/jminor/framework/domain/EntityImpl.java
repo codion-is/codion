@@ -174,7 +174,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
       return getForeignKeyValue((Property.ForeignKeyProperty) property);
     }
 
-    return super.getValue(property.getPropertyID());
+    return super.getValue(((PropertyImpl) property).propertyID);
   }
 
   /**
@@ -649,7 +649,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
   private Key initializePrimaryKey(final boolean originalValues) {
     final Key key = new KeyImpl(definition);
     for (final Property.PrimaryKeyProperty property : definition.getPrimaryKeyProperties()) {
-      final String propertyID = property.getPropertyID();
+      final String propertyID = ((PropertyImpl) property).propertyID;
       key.setValue(propertyID, originalValues ? getOriginalValue(propertyID) : super.getValue(propertyID));
     }
 
@@ -717,12 +717,12 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
     if (property instanceof Property.ForeignKeyProperty) {
       propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) value, entityDefinitions);
     }
-    Object valueToSet = value;
+    Object valueToSet = value;//todo valueToSet = property.something(value);
     if (value != null && property.isDouble()) {
       valueToSet = Util.roundDouble((Double) value, property.getMaximumFractionDigits());
     }
 
-    return super.setValue(property.getPropertyID(), valueToSet);
+    return super.setValue(((PropertyImpl) property).propertyID, valueToSet);
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -731,7 +731,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
     stream.writeBoolean(isModified);
     for (final Property property : definition.getProperties().values()) {
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
-        final String propertyID = property.getPropertyID();
+        final String propertyID = ((PropertyImpl) property).propertyID;
         stream.writeObject(super.getValue(propertyID));
         if (isModified) {
           final boolean valueModified = isModified(propertyID);
@@ -753,7 +753,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
     }
     for (final Property property : definition.getProperties().values()) {
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
-        final String propertyID = property.getPropertyID();
+        final String propertyID = ((PropertyImpl) property).propertyID;
         super.setValue(propertyID, stream.readObject());
         if (isModified && stream.readBoolean()) {
           setOriginalValue(propertyID, stream.readObject());
@@ -1055,7 +1055,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
       singleIntegerKey = propertyCount == 1 && properties.get(0).isInteger();
       compositeKey = propertyCount > 1;
       for (final Property property : properties) {
-        setValue(property.getPropertyID(), stream.readObject());
+        setValue(((PropertyImpl) property).propertyID, stream.readObject());
       }
     }
   }

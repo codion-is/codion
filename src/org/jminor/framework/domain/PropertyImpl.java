@@ -36,7 +36,7 @@ class PropertyImpl implements Property {
    * By default this ID serves as column name for database properties.
    * @see #getPropertyID()
    */
-  private final String propertyID;
+  final String propertyID;
 
   /**
    * The property type, java.sql.Types
@@ -732,7 +732,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getInteger(resultSet, property.getSelectIndex());
+              return getInteger(resultSet, ((ColumnPropertyImpl) property).selectIndex);
             }
           };
         case Types.DOUBLE:
@@ -740,7 +740,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getDouble(resultSet, property.getSelectIndex());
+              return getDouble(resultSet, ((ColumnPropertyImpl) property).selectIndex);
             }
           };
         case Types.DATE:
@@ -748,7 +748,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getDate(resultSet, property.getSelectIndex());
+              return getDate(resultSet, ((ColumnPropertyImpl) property).selectIndex);
             }
           };
         case Types.TIMESTAMP:
@@ -756,7 +756,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getTimestamp(resultSet, property.getSelectIndex());
+              return getTimestamp(resultSet, ((ColumnPropertyImpl) property).selectIndex);
             }
           };
         case Types.VARCHAR:
@@ -764,7 +764,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getString(resultSet, property.getSelectIndex());
+              return getString(resultSet, ((ColumnPropertyImpl) property).selectIndex);
             }
           };
         case Types.BOOLEAN:
@@ -772,7 +772,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getBoolean(resultSet, property.getSelectIndex());
+              return getBoolean(resultSet, ((ColumnPropertyImpl) property).selectIndex);
             }
           };
         case Types.CHAR:
@@ -780,7 +780,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getCharacter(resultSet, property.getSelectIndex());
+              return getCharacter(resultSet, ((ColumnPropertyImpl) property).selectIndex);
             }
           };
         case Types.BLOB:
