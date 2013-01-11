@@ -3343,3 +3343,4 @@
   TextFieldHint.updateState() privatized, only used due to the above
   ForeignKeySearchPanel.initializeForeignKeyField() removed lookup field initialization code
   ForeignKeySearchPanel.initializeInputField() now returns null for lower bound fields
+  PropertyImpl.getTypeClass() now returns byte[].class for BLOB properties

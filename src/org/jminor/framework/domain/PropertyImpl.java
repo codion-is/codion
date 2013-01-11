@@ -495,6 +495,8 @@ class PropertyImpl implements Property {
         return Boolean.class;
       case Types.CHAR:
         return Character.class;
+      case Types.BLOB:
+        return byte[].class;
       default:
         return Object.class;
     }

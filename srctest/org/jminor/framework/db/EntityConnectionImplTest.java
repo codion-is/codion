@@ -553,7 +553,7 @@ public class EntityConnectionImplTest {
   }
 
   @Test
-  public void readWriteBlob2() throws SQLException, DatabaseException {
+  public void readWriteBlobViaEntity() throws SQLException, DatabaseException {
     DatabaseConnection databaseConnection = null;
     Statement statement = null;
     try {
