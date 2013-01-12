@@ -143,7 +143,7 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Selects distinct non-null values of the given property of the given entity
-   * @param entityID the class of the Entity
+   * @param entityID the entity type
    * @param propertyID the ID of the property
    * @param order if true then the result is ordered
    * @return the values in the given column (Property) in the given table (Entity)
@@ -156,7 +156,7 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Selects a single entity
-   * @param entityID the Class of the entity to select
+   * @param entityID the entity type
    * @param propertyID the ID of the property to use as a condition
    * @param value the value to use in the condition
    * @return an entity of the type <code>entityID</code>, having the
@@ -208,7 +208,7 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Selects entities according to one property (<code>propertyID</code>), using <code>values</code> as a condition
-   * @param entityID the Class of the entities to select
+   * @param entityID the entity type
    * @param propertyID the ID of the condition property
    * @param values the property values to use as condition
    * @return entities of the type <code>entityID</code> according to <code>propertyID</code> and <code>values</code>
@@ -219,7 +219,7 @@ public interface RemoteEntityConnection extends Remote {
 
   /**
    * Selects all the entities of the given type
-   * @param entityID the Class of the entities to select
+   * @param entityID the entity type
    * @return all entities of the given type
    * @throws org.jminor.common.db.exception.DatabaseException in case of a db exception
    * @throws java.rmi.RemoteException in case of a remote exception
