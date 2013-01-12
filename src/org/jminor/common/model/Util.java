@@ -44,9 +44,7 @@ import java.util.List;
 import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
-import java.util.concurrent.Executors;
 import java.util.concurrent.ThreadFactory;
-import java.util.concurrent.TimeUnit;
 import java.util.prefs.Preferences;
 
 /**
@@ -150,78 +148,66 @@ public final class Util {
     return stringBuilder.toString();
   }
 
+  /**
+   * Parses an Integer from the given String.
+   * A null or empty String results in null, "-" in -1.
+   * @param text the text to parse
+   * @return an Integer based on the given text
+   */
   public static Integer getInt(final String text) {
-    if (nullOrEmpty(text)) {
+    if (text == null) {
       return null;
     }
 
     final String noGrouping = text.replace(".", "");
-
-    final int value;
-    if (!noGrouping.isEmpty() && !noGrouping.equals("-")) {
-      value = Integer.parseInt(noGrouping);
+    if (noGrouping.isEmpty()) {
+      return null;
     }
-    else if (noGrouping.equals("-")) {
-      value = -1;
-    }
-    else {
-      value = 0;
+    if (noGrouping.equals("-")) {
+      return  -1;
     }
 
-    return value;
+    return Integer.parseInt(noGrouping);
   }
 
+  /**
+   * Parses a Double from the given String.
+   * A null or empty String results in null, "-" in -1.
+   * @param text the text to parse
+   * @return a Double based on the given text
+   */
   public static Double getDouble(final String text) {
     if (nullOrEmpty(text)) {
       return null;
     }
 
-    final double value;
-    if (!text.isEmpty() && !text.equals("-")) {
-      value = Double.parseDouble(text.replace(',', '.'));
-    }
-    else if (text.equals("-")) {
-      value = -1;
-    }
-    else {
-      value = 0;
+    if (text.equals("-")) {
+      return -1d;
     }
 
-    return value;
+    return Double.parseDouble(text.replace(',', '.'));
   }
 
+  /**
+   * Parses a Long from the given String.
+   * A null or empty String results in null, "-" in -1.
+   * @param text the text to parse
+   * @return a Long based on the given text
+   */
   public static Long getLong(final String text) {
-    if (nullOrEmpty(text)) {
+    if (text == null) {
       return null;
     }
 
     final String noGrouping = text.replace(".", "");
-
-    final long value;
-    if (!noGrouping.isEmpty() && !noGrouping.equals("-")) {
-      value = Long.parseLong(noGrouping);
+    if (noGrouping.isEmpty()) {
+      return null;
     }
-    else if (noGrouping.equals("-")) {
-      value = -1;
-    }
-    else {
-      value = 0;
+    if (noGrouping.equals("-")) {
+      return  -1l;
     }
 
-    return value;
-  }
-
-  public static void printListContents(final List<?> list) {
-    rejectNullValue(list, "list");
-    printArrayContents(list.toArray(), false);
-  }
-
-  public static void printArrayContents(final Object[] objects) {
-    printArrayContents(objects, false);
-  }
-
-  public static void printArrayContents(final Object[] objects, final boolean onePerLine) {
-    System.out.println(getArrayContentsAsString(objects, onePerLine));
+    return Long.parseLong(noGrouping);
   }
 
   public static String getCollectionContentsAsString(final Collection<?> collection, final boolean onePerLine) {
@@ -252,21 +238,6 @@ public final class Util {
     }
 
     return stringBuilder.toString();
-  }
-
-  /**
-   * Prints memory usage at regular intervals to the standard output
-   * @param interval the interval in milliseconds
-   * @see #getMemoryUsageString()
-   */
-  public static void printMemoryUsage(final long interval) {
-    Executors.newSingleThreadScheduledExecutor(new DaemonThreadFactory()).scheduleWithFixedDelay(new Runnable() {
-      /** {@inheritDoc} */
-      @Override
-      public void run() {
-        System.out.println(getMemoryUsageString());
-      }
-    }, 0, interval, TimeUnit.MILLISECONDS);
   }
 
   public static long getAllocatedMemory() {

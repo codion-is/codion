@@ -3346,3 +3346,7 @@
   PropertyImpl.getTypeClass() now returns byte[].class for BLOB properties
   EntityConnectionImpl.setForeignKeyValues() now calls setValue() with validateType parameter as false
   EntityImpl, PropertyImpl, some minor optimizations, using package protected fields
+  ItemComboBoxModel, minor generification
+  Util, removed a couple of unused methods, parseInt/Double/Long() refactored
+  UiUtil.selectFile()/selectDirectory() refactored
+  UiUtil.removeTransferFocusOnEnter() added, used in Chinook demo

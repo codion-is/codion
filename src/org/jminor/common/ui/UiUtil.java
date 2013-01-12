@@ -204,41 +204,20 @@ public final class UiUtil {
     return selectDirectory(dialogParent, startDir, Messages.get(Messages.SELECT_DIRECTORY));
   }
 
-  public static File selectDirectory(final JComponent dialogParent, final String startDir,
-                                     final String dialogTitle) throws CancelException {
-    if (fileChooser == null) {
-      try {
-        setWaitCursor(true, dialogParent);
-        fileChooser = new JFileChooser(new File(startDir == null ? System.getProperty("user.home") : startDir));
-      }
-      finally {
-        setWaitCursor(false, dialogParent);
-      }
-    }
-    fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
-    fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
-    fileChooser.setMultiSelectionEnabled(false);
-    if (!Util.nullOrEmpty(startDir)) {
-      fileChooser.setCurrentDirectory(new File(startDir));
-    }
-    if (dialogTitle != null) {
-      fileChooser.setDialogTitle(dialogTitle);
-    }
-    final int ret = fileChooser.showOpenDialog(dialogParent);
-    if (ret == JFileChooser.APPROVE_OPTION) {
-      return fileChooser.getSelectedFile();
-    }
-    else {
-      throw new CancelException();
-    }
+  public static File selectDirectory(final JComponent dialogParent, final String startDir, final String dialogTitle) throws CancelException {
+    return selectFileOrDirectory(dialogParent, startDir, false, dialogTitle);
   }
 
   public static File selectFile(final JComponent dialogParent, final String startDir) throws CancelException {
     return selectFile(dialogParent, startDir, Messages.get(Messages.SELECT_FILE));
   }
 
-  public static File selectFile(final JComponent dialogParent, final String startDir,
-                                final String dialogTitle) throws CancelException {
+  public static File selectFile(final JComponent dialogParent, final String startDir, final String dialogTitle) throws CancelException {
+    return selectFileOrDirectory(dialogParent, startDir, true, dialogTitle);
+  }
+
+  public static File selectFileOrDirectory(final JComponent dialogParent, final String startDir, final boolean files,
+                                           final String dialogTitle) throws CancelException {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
@@ -248,7 +227,12 @@ public final class UiUtil {
         setWaitCursor(false, dialogParent);
       }
     }
-    fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    if (files) {
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_ONLY);
+    }
+    else {
+      fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
+    }
     fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
     fileChooser.setMultiSelectionEnabled(false);
     if (!Util.nullOrEmpty(startDir)) {
@@ -732,13 +716,6 @@ public final class UiUtil {
     return panel;
   }
 
-  public static void showToolTip(final JComponent component) {
-    final Action toolTipAction = component.getActionMap().get("postTip");
-    if (toolTipAction != null) {
-      toolTipAction.actionPerformed(new ActionEvent(component, ActionEvent.ACTION_PERFORMED, ""));
-    }
-  }
-
   /**
    * Makes <code>textField</code> convert all lower case input to upper case
    * @param textField the text field
@@ -775,10 +752,20 @@ public final class UiUtil {
    * Adds a key event to the component which transfers focus
    * on enter, and backwards if shift is down
    * @param component the component
+   * @see #removeTransferFocusOnEnter(javax.swing.JComponent)
    */
   public static void transferFocusOnEnter(final JComponent component) {
     addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, new TransferFocusAction(component));
     addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, new TransferFocusAction(component, true));
+  }
+
+  /**
+   * Removes the transfer focus action added via {@link #transferFocusOnEnter(javax.swing.JComponent)}
+   * @param component the component
+   */
+  public static void removeTransferFocusOnEnter(final JComponent component) {
+    addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, null);
+    addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, null);
   }
 
   /**

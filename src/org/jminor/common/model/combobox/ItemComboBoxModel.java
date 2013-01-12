@@ -64,7 +64,7 @@ public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> 
    * @param item the item
    * @return the index of the given item
    */
-  public final int getIndexOfItem(final Object item) {
+  public final int getIndexOfItem(final T item) {
     return indexOf(item);
   }
 
@@ -74,7 +74,7 @@ public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> 
       return item;
     }
 
-    final int index = indexOf(item);
+    final int index = indexOf((T) item);
     if (index >= 0) {
       return getElementAt(index);
     }
@@ -82,7 +82,7 @@ public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> 
     return null;
   }
 
-  private int indexOf(final Object item) {
+  private int indexOf(final T item) {
     final int size = getSize();
     for (int i = 0; i < size; i++) {
       if (Util.equal(((Item) getElementAt(i)).getItem(), item)) {

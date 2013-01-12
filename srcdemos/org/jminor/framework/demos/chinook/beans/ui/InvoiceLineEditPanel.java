@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
+import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 
@@ -32,6 +33,7 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
     final JTextField txtTrack = createEntityLookupField(INVOICELINE_TRACKID_FK);
     txtTrack.setColumns(25);
     final JTextField txtQuantity = createTextField(INVOICELINE_QUANTITY);
+    UiUtil.removeTransferFocusOnEnter(txtQuantity);//otherwise the action added below wont work
     txtQuantity.addActionListener(getSaveControl());
 
     setLayout(new BorderLayout(5, 5));
