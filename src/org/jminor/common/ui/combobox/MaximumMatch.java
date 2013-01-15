@@ -200,7 +200,7 @@ public final class MaximumMatch extends PlainDocument {
     // look for items that match the given pattern
     for (int i = 0; i < model.getSize(); i++) {
       final Object currentItem = model.getElementAt(i);
-      final String itemAsString = currentItem.toString();
+      final String itemAsString = currentItem == null ? "" : currentItem.toString();
       if (startsWithIgnoreCase(itemAsString, pattern)) {
         // current item matches the pattern
         // how many leading characters have the selected and the current item in common?

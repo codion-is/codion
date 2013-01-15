@@ -20,7 +20,6 @@ import javax.swing.ButtonModel;
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
-import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.SwingUtilities;
 import javax.swing.event.ChangeEvent;
@@ -393,9 +392,6 @@ public final class UiValues {
           }
         }
       });
-      if (comboBox.isEditable()) {
-        ((JTextField) comboBox.getEditor().getEditorComponent()).getDocument().addDocumentListener(new DocumentListener(comboBox));
-      }
     }
 
     /** {@inheritDoc} */
@@ -416,20 +412,6 @@ public final class UiValues {
     @Override
     protected void setInternal(final Object value) {
       comboBox.getModel().setSelectedItem(value);
-    }
-
-    private static final class DocumentListener extends DocumentAdapter {
-      private final JComboBox comboBox;
-
-      private DocumentListener(final JComboBox comboBox) {
-        this.comboBox = comboBox;
-      }
-
-      /** {@inheritDoc} */
-      @Override
-      public void contentsChanged(final DocumentEvent e) {
-        comboBox.getModel().setSelectedItem(comboBox.getEditor().getItem());
-      }
     }
   }
 

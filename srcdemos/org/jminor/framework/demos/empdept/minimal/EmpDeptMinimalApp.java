@@ -220,7 +220,7 @@ public class EmpDeptMinimalApp {
    */
   public static void main(final String[] args) {
     //Let's set the locale, otherwise the application would be in icelandic
-    Locale.setDefault(new Locale("EN", "en"));
+    Locale.setDefault(new Locale("en", "EN"));
     //we're connecting to a RMI server running on the other side of the atlantic
     System.setProperty("jminor.client.connectionType", "remote");
     System.setProperty("jminor.server.hostname", "jminor.no-ip.org");

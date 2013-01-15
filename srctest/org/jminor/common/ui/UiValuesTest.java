@@ -194,7 +194,6 @@ public class UiValuesTest {
   @Test
   public void selectedItemUiValue() {
     final JComboBox box = new JComboBox(new String[] {null, "one", "two", "three"});
-    box.setEditable(true);
     final Value<Object> value = UiValues.selectedItemValue(box);
 
     assertNull(value.get());
@@ -205,7 +204,7 @@ public class UiValuesTest {
     box.setSelectedIndex(3);
     assertEquals("three", box.getSelectedItem());
     box.setSelectedIndex(0);
-    assertEquals("", value.get());//it's editable
+    assertNull(value.get());
 
     value.set("two");
     assertEquals("two", box.getSelectedItem());

@@ -6,6 +6,7 @@ package org.jminor.common.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
+import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
@@ -19,6 +20,7 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -36,6 +38,7 @@ import javax.swing.ListSelectionModel;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+import javax.swing.event.DocumentEvent;
 import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.text.AttributeSet;
@@ -813,6 +816,12 @@ public final class UiUtil {
     });
   }
 
+  public static void comboBoxImmediateUpdate(final JComboBox box) {
+    if (box.isEditable()) {
+      ((JTextField) box.getEditor().getEditorComponent()).getDocument().addDocumentListener(new ComboBoxEditorDocumentListener(box));
+    }
+  }
+
   public static JDialog showInDialog(final Window owner, final JComponent componentToShow, final boolean modal, final String title,
                                      final boolean includeButtonPanel, final boolean disposeOnOk, final Action okAction) {
     return showInDialog(owner, componentToShow, modal, title, includeButtonPanel,disposeOnOk, okAction, null);
@@ -1402,6 +1411,20 @@ public final class UiUtil {
                         final AttributeSet attributeSet) throws BadLocationException {
       super.replace(bypass, offset, length, string == null ? null :
               (upperCase ? string.toUpperCase(Locale.getDefault()) : string.toLowerCase(Locale.getDefault())), attributeSet);
+    }
+  }
+
+  private static final class ComboBoxEditorDocumentListener extends DocumentAdapter {
+    private final JComboBox comboBox;
+
+    private ComboBoxEditorDocumentListener(final JComboBox comboBox) {
+      this.comboBox = comboBox;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void contentsChanged(final DocumentEvent e) {
+      comboBox.getModel().setSelectedItem(comboBox.getEditor().getItem());
     }
   }
 }

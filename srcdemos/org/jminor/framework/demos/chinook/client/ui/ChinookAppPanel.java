@@ -141,7 +141,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
   }
 
   public static void main(final String[] args) throws CancelException {
-    Locale.setDefault(new Locale("EN", "en"));
+    Locale.setDefault(new Locale("en", "EN"));
     Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
     Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
     Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);

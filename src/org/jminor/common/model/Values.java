@@ -142,7 +142,7 @@ public final class Values {
   }
 
   /**
-   * An abstract base class for linking a UI component to a model value.
+   * A class for linking a UI component to a model value.
    * @param <V> the type of the value
    */
   private static final class ValueLink<V> {

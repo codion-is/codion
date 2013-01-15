@@ -3351,3 +3351,6 @@
   UiUtil.selectFile()/selectDirectory() refactored
   UiUtil.removeTransferFocusOnEnter() added, used in Chinook demo
   EntityConnection, RemoteEntityConnection, some minor javadoc improvements
+  UiValues.SelectedItemUIValue no longer listens to editor document, test fixed
+  UiUtil.comboBoxImmediateUpdate() added as a replacement for the above
+  MaimumMatch null handling improved
