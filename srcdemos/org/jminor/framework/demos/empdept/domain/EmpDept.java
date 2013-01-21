@@ -34,36 +34,27 @@ public class EmpDept {
   /**Entity identifier for the table scott.dept*/
   public static final String T_DEPARTMENT = "scott.dept";
 
-  /**Property identifier for the DEPTNO column in the table scott.dept*/
+  /**Property identifiers for the columns in the scott.dept table*/
   public static final String DEPARTMENT_ID = "deptno";
-  /**Property identifier for the DNAME column in the table scott.dept*/
   public static final String DEPARTMENT_NAME = "dname";
-  /**Property identifier for the LOC column in the table scott.dept*/
   public static final String DEPARTMENT_LOCATION = "loc";
 
   /**Entity identifier for the table scott.emp*/
   public static final String T_EMPLOYEE = "scott.emp";
 
-  /**Property identifier for the EMPNO column in the table scott.emp*/
+  /**Property identifiers for the columns in the scott.emp table*/
   public static final String EMPLOYEE_ID = "empno";
-  /**Property identifier for the ENANE column in the table scott.emp*/
   public static final String EMPLOYEE_NAME = "ename";
-  /**Property identifier for the JOB column in the table scott.emp*/
   public static final String EMPLOYEE_JOB = "job";
-  /**Property identifier for the MGR column in the table scott.emp*/
   public static final String EMPLOYEE_MGR = "mgr";
-  /**Foreign key (reference) identifier for the MGR column in the table scott.emp*/
-  public static final String EMPLOYEE_MGR_FK = "mgr_fk";
-  /**Property identifier for the HIREDATE column in the table scott.emp*/
   public static final String EMPLOYEE_HIREDATE = "hiredate";
-  /**Property identifier for the SAL column in the table scott.emp*/
   public static final String EMPLOYEE_SALARY = "sal";
-  /**Property identifier for the COMM column in the table scott.emp*/
   public static final String EMPLOYEE_COMMISSION = "comm";
-  /**Property identifier for the DEPTNO column in the table scott.emp*/
   public static final String EMPLOYEE_DEPARTMENT = "deptno";
   /**Foreign key (reference) identifier for the DEPT column in the table scott.emp*/
   public static final String EMPLOYEE_DEPARTMENT_FK = "dept_fk";
+  /**Foreign key (reference) identifier for the MGR column in the table scott.emp*/
+  public static final String EMPLOYEE_MGR_FK = "mgr_fk";
   /**Property identifier for the denormalized department location property*/
   public static final String EMPLOYEE_DEPARTMENT_LOCATION = "location";
 

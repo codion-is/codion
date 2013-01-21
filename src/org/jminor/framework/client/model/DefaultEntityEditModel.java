@@ -56,6 +56,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   private static final String FOREIGN_KEY_PROPERTY_ID = "foreignKeyPropertyID";
   private static final String FOREIGN_KEY_PROPERTY = "foreignKeyProperty";
+  private static final String PROPERTY = "property";
 
   private final Event evtBeforeInsert = Events.event();
   private final Event evtAfterInsert = Events.event();
@@ -644,12 +645,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final FilteredComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
-                                                                     final String nullValueString) {
-    Util.rejectNullValue(property, "property");
+  public final FilteredComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property) {
+    Util.rejectNullValue(property, PROPERTY);
     FilteredComboBoxModel comboBoxModel = propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
-      comboBoxModel = createPropertyComboBoxModel(property, refreshEvent == null ? evtEntitiesChanged : refreshEvent, nullValueString);
+      comboBoxModel = createPropertyComboBoxModel(property);
       propertyComboBoxModels.put(property, comboBoxModel);
       comboBoxModel.refresh();
     }
@@ -659,9 +659,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
-                                                           final String nullValueString) {
-    final FilteredComboBoxModel model = new DefaultPropertyComboBoxModel(entityID, connectionProvider, property, nullValueString, refreshEvent);
+  public FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property) {
+    Util.rejectNullValue(property, PROPERTY);
+    final FilteredComboBoxModel model = new DefaultPropertyComboBoxModel(entityID, connectionProvider, property, null, evtEntitiesChanged);
+    model.setNullValueString(getValidator().isNullable(getEntity(), property.getPropertyID()) ?
+            (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null);
     model.refresh();
 
     return model;
@@ -681,7 +683,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final FilteredComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property) {
-    Util.rejectNullValue(property, "property");
+    Util.rejectNullValue(property, PROPERTY);
     final FilteredComboBoxModel comboBoxModel = propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
       throw new IllegalStateException("No PropertyComboBoxModel has been initialized for property: " + property);

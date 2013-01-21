@@ -702,7 +702,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private static TableColumnModel initializeColumnModel(final String entityID) {
     final DefaultTableColumnModel model = new DefaultTableColumnModel();
     int modelIndex = 0;
-    for (final Property property : Entities.getVisibleProperties(entityID)) {
+    final List<Property> visibleProperties = Entities.getVisibleProperties(entityID);
+    if (visibleProperties.isEmpty()) {
+      throw new IllegalStateException("No visible properties defined for entity: " + entityID);
+    }
+    for (final Property property : visibleProperties) {
       final TableColumn column = new TableColumn(modelIndex++);
       column.setIdentifier(property);
       column.setHeaderValue(property.getCaption());

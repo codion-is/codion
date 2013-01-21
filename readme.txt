@@ -108,6 +108,7 @@ jar.sign.alias            - the keystore alias
 jar.sign.storepass        - the keystore password
 jar.sign.keystore         - the keystore path
 
-Before you can run the unit tests you must define the following property in 'user.properties':
+Before you can run the unit tests you must define the following properties in 'user.properties':
 
 jacocoant.jar             - the path to the jacocoant.jar file for the JaCoCo coverage library
+ivy.jar                   - the path to the ivy.jar file for the ivy dependency management library

@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.EventListener;
-import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
@@ -145,14 +144,13 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty);
 
   /**
-   * Creates a combo box model containing the current values of the given property
+   * Creates a combo box model containing the current values of the given property.
+   * This default implementation returns a sorted {@link FilteredComboBoxModel} with the default nullValueItem
+   * if the underlying property is nullable
    * @param property the property
-   * @param refreshEvent the combo box model is refreshed each time this event is fired
-   * @param nullValueString the string to use as a null value caption
    * @return a combo box model based on the given property
    */
-  FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
-                                                    final String nullValueString);
+  FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property);
 
   /**
    * Creates a {@link EntityLookupModel} for looking up entities referenced by the given foreign key property,
@@ -191,8 +189,6 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   /**
    * @param foreignKeyPropertyID the ID of the property for which to retrieve the {@link EntityLookupModel}
    * @return the {@link EntityLookupModel} for the property identified by <code>propertyID</code>,
-   * if no combo box model is associated with the property a new one is initialized, and associated
-   * with the given property
    * @throws IllegalStateException if no lookup model has been initialized for the given property
    */
   EntityLookupModel getEntityLookupModel(final String foreignKeyPropertyID);
@@ -206,16 +202,11 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
 
   /**
    * @param property the property for which to get the ComboBoxModel
-   * @param refreshEvent the combo box model is refreshed when this event fires,
-   * if none is specified the entities changed event is used ({@link #addEntitiesChangedListener(EventListener)}).
-   * @param nullValueString the value to use for representing the null item at the top of the list,
-   * if this value is null then no such item is included
    * @return a ComboBoxModel representing <code>property</code>, if no combo box model
    * has been initialized for the given property, a new one is created and associated with
    * the property, to be returned the next time this method is called
    */
-  FilteredComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property, final EventObserver refreshEvent,
-                                                        final String nullValueString);
+  FilteredComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property);
 
   /**
    * @param property the property for which to get the ComboBoxModel
@@ -234,8 +225,6 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   /**
    * @param foreignKeyPropertyID the ID of the property for which to retrieve the {@link EntityComboBoxModel}
    * @return the {@link EntityComboBoxModel} for the property identified by <code>propertyID</code>,
-   * if no combo box model is associated with the property a new one is initialized, and associated
-   * with the given property
    * @throws IllegalStateException if no combo box has been initialized for the given property
    */
   EntityComboBoxModel getEntityComboBoxModel(final String foreignKeyPropertyID);

@@ -661,20 +661,9 @@ public final class EntityUiUtil {
   }
 
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
-                                                       final EventObserver refreshEvent) {
-    return createPropertyComboBox(propertyID, editModel, refreshEvent, null);
-  }
-
-  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
-                                                       final EventObserver refreshEvent, final StateObserver enabledState) {
-    return createPropertyComboBox(propertyID, editModel, refreshEvent, enabledState, null);
-  }
-
-  public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
-                                                       final EventObserver refreshEvent, final StateObserver enabledState,
-                                                       final String nullValue) {
+                                                       final StateObserver enabledState) {
     return createPropertyComboBox(Entities.getColumnProperty(editModel.getEntityID(), propertyID),
-            editModel, refreshEvent, enabledState, nullValue);
+            editModel, enabledState);
   }
 
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel) {
@@ -682,26 +671,14 @@ public final class EntityUiUtil {
   }
 
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
-                                                       final EventObserver refreshEvent) {
-    return createPropertyComboBox(property, editModel, refreshEvent, null);
+                                                       final StateObserver enabledState) {
+    return createPropertyComboBox(property, editModel, enabledState, false);
   }
 
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
-                                                       final EventObserver refreshEvent, final StateObserver enabledState) {
-    return createPropertyComboBox(property, editModel, refreshEvent, enabledState, null);
-  }
-
-  public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
-                                                       final EventObserver refreshEvent, final StateObserver enabledState,
-                                                       final String nullValue) {
-    return createPropertyComboBox(property, editModel, refreshEvent, enabledState, nullValue, false);
-  }
-
-  public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
-                                                       final EventObserver refreshEvent, final StateObserver enabledState,
-                                                       final String nullValue, final boolean editable) {
+                                                       final StateObserver enabledState, final boolean editable) {
     final SteppedComboBox comboBox = createComboBox(property, editModel,
-            editModel.initializePropertyComboBoxModel(property, refreshEvent, nullValue), enabledState, editable);
+            editModel.initializePropertyComboBoxModel(property), enabledState, editable);
     if (!editable) {
       MaximumMatch.enable(comboBox);
     }

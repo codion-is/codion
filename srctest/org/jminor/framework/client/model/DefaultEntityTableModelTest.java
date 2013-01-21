@@ -347,6 +347,11 @@ public final class DefaultEntityTableModelTest {
     testModel.setValueAt("hello", 0, 0);
   }
 
+  @Test(expected = IllegalStateException.class)
+  public void noVisibleColumns() {
+    new DefaultEntityTableModel(EntityTestDomain.T_MASTER, EntityConnectionImplTest.CONNECTION_PROVIDER);
+  }
+
   public static final class EntityTableModelTmp extends DefaultEntityTableModel {
     public EntityTableModelTmp() {
       super(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.CONNECTION_PROVIDER);

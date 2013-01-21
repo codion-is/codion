@@ -374,7 +374,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC);
     return Controls.methodControl(editModel, "refresh", FrameworkMessages.get(FrameworkMessages.REFRESH),
             getActiveObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP) + ALT_PREFIX
-                    + mnemonic + ")", mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
+            + mnemonic + ")", mnemonic.charAt(0), null, Images.loadImage(Images.IMG_REFRESH_16));
   }
 
   /**
@@ -1677,7 +1677,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyID, final StateObserver enabledState) {
-    return createPropertyComboBox(propertyID, enabledState, null);
+    return createPropertyComboBox(propertyID, enabledState, false);
   }
 
   /**
@@ -1685,27 +1685,13 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * contains the underlying values of the property
    * @param propertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @param nullValueString the value used to represent a null value, shown at the top of the combo box value list
-   * @return a SteppedComboBox bound to the property
-   */
-  protected final SteppedComboBox createPropertyComboBox(final String propertyID, final StateObserver enabledState,
-                                                         final String nullValueString) {
-    return createPropertyComboBox(propertyID, enabledState, nullValueString, false);
-  }
-
-  /**
-   * Creates a SteppedComboBox bound to the property identified by <code>propertyID</code>, the combo box
-   * contains the underlying values of the property
-   * @param propertyID the ID of the property to bind
-   * @param enabledState a state for controlling the enabled state of the component
-   * @param nullValueString the value used to represent a null value, shown at the top of the combo box value list
    * @param editable true if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final String propertyID, final StateObserver enabledState,
-                                                         final String nullValueString, final boolean editable) {
+                                                         final boolean editable) {
     return createPropertyComboBox(Entities.getColumnProperty(editModel.getEntityID(), propertyID),
-            enabledState, nullValueString, editable);
+            enabledState, editable);
   }
 
   /**
@@ -1726,7 +1712,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final StateObserver enabledState) {
-    return createPropertyComboBox(property, enabledState, null);
+    return createPropertyComboBox(property, enabledState, false);
   }
 
   /**
@@ -1734,26 +1720,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * contains the underlying values of the property
    * @param property the property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @param nullValueString the value used to represent a null value, shown at the top of the combo box value list
-   * @return a SteppedComboBox bound to the property
-   */
-  protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final StateObserver enabledState,
-                                                         final String nullValueString) {
-    return createPropertyComboBox(property, enabledState, nullValueString, false);
-  }
-
-  /**
-   * Creates a SteppedComboBox bound to the given property, the combo box
-   * contains the underlying values of the property
-   * @param property the property to bind
-   * @param enabledState a state for controlling the enabled state of the component
-   * @param nullValueString the value used to represent a null value, shown at the top of the combo box value list
    * @param editable true if the combo box should be editable, only works with combo boxes based on String.class properties
    * @return a SteppedComboBox bound to the property
    */
   protected final SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final StateObserver enabledState,
-                                                         final String nullValueString, final boolean editable) {
-    final SteppedComboBox ret = EntityUiUtil.createPropertyComboBox(property, editModel, null, enabledState, nullValueString, editable);
+                                                         final boolean editable) {
+    final SteppedComboBox ret = EntityUiUtil.createPropertyComboBox(property, editModel, enabledState, editable);
     setComponent(property.getPropertyID(), ret);
 
     return ret;

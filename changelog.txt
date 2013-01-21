@@ -3353,4 +3353,7 @@
   EntityConnection, RemoteEntityConnection, some minor javadoc improvements
   UiValues.SelectedItemUIValue no longer listens to editor document, test fixed
   UiUtil.comboBoxImmediateUpdate() added as a replacement for the above
-  MaimumMatch null handling improved
+  MaximumMatch null handling improved
+  EntityEditModel.createPropertyComboBoxModel() and initializePropertyComboBoxModel(), refreshEvent and nullValueString parameters removed
+  EntityEditPanel and EntityUiUtil, changed according to the above
+  DefaultEntityTableModel.initializeColumnModel() now throws exception if no visible properties are defined
