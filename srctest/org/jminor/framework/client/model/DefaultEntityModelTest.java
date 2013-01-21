@@ -37,8 +37,8 @@ public final class DefaultEntityModelTest {
   public static class EmpModel extends DefaultEntityModel {
     public EmpModel(final EntityConnectionProvider connectionProvider) {
       super(new EmployeeEditModel(connectionProvider));
-      getEditModel().initializeEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).refresh();
-      getEditModel().initializeEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
+      getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).refresh();
+      getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK).refresh();
     }
   }
 
@@ -70,7 +70,7 @@ public final class DefaultEntityModelTest {
     assertTrue(departmentModel.getLinkedDetailModels().contains(employeeModel));
     departmentModel.refresh();
     final EntityEditModel employeeEditModel = employeeModel.getEditModel();
-    final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.initializeEntityComboBoxModel(Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getEntityComboBoxModel(Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK));
     departmentsComboBoxModel.refresh();
     final Entity.Key primaryKey = Entities.key(EmpDept.T_DEPARTMENT);
     primaryKey.setValue(EmpDept.DEPARTMENT_ID, 40);//operations, no employees
@@ -184,7 +184,7 @@ public final class DefaultEntityModelTest {
               EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "OPERATIONS");
       departmentModel.getTableModel().setSelectedItem(department);
       final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
-      final EntityComboBoxModel deptComboBoxModel = employeeModel.getEditModel().initializeEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK);
+      final EntityComboBoxModel deptComboBoxModel = employeeModel.getEditModel().getEntityComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK);
       deptComboBoxModel.refresh();
       deptComboBoxModel.setSelectedItem(department);
       departmentModel.getTableModel().deleteSelected();

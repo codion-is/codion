@@ -398,7 +398,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(foreignKeyProperty, editModel);
-    final EntityComboBoxModel boxModel = editModel.initializeEntityComboBoxModel(foreignKeyProperty);
+    final EntityComboBoxModel boxModel = editModel.getEntityComboBoxModel(foreignKeyProperty);
     boxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(boxModel);
     ValueLinks.selectedItemValueLink(comboBox, new EditModelValue<String, Object>(editModel, foreignKeyProperty.getPropertyID()));
@@ -470,7 +470,7 @@ public final class EntityUiUtil {
       throw new IllegalArgumentException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
     }
 
-    final EntityLookupModel lookupModel = editModel.initializeEntityLookupModel(foreignKeyProperty);
+    final EntityLookupModel lookupModel = editModel.getEntityLookupModel(foreignKeyProperty);
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
 
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
@@ -677,8 +677,7 @@ public final class EntityUiUtil {
 
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
                                                        final StateObserver enabledState, final boolean editable) {
-    final SteppedComboBox comboBox = createComboBox(property, editModel,
-            editModel.initializePropertyComboBoxModel(property), enabledState, editable);
+    final SteppedComboBox comboBox = createComboBox(property, editModel, editModel.getPropertyComboBoxModel(property), enabledState, editable);
     if (!editable) {
       MaximumMatch.enable(comboBox);
     }

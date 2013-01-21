@@ -164,22 +164,6 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   EntityLookupModel createEntityLookupModel(final Property.ForeignKeyProperty foreignKeyProperty);
 
   /**
-   * @param propertyID the ID of the foreign key property for which to retrieve the {@link EntityLookupModel}
-   * @return the {@link EntityLookupModel} for the <code>property</code>,
-   * if no lookup model is associated with the property a new one is created, and associated
-   * with the given property
-   */
-  EntityLookupModel initializeEntityLookupModel(final String propertyID);
-
-  /**
-   * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityLookupModel}
-   * @return the {@link EntityLookupModel} for the <code>property</code>,
-   * if no lookup model is associated with the property a new one is created, and associated
-   * with the given property
-   */
-  EntityLookupModel initializeEntityLookupModel(final Property.ForeignKeyProperty foreignKeyProperty);
-
-  /**
    * Returns true if this edit model contains a {@link EntityLookupModel} for the given foreign key property
    * @param foreignKeyPropertyID the ID of the property
    * @return true if a {@link EntityLookupModel} has been initialized for the given foreign key property
@@ -188,30 +172,25 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
 
   /**
    * @param foreignKeyPropertyID the ID of the property for which to retrieve the {@link EntityLookupModel}
-   * @return the {@link EntityLookupModel} for the property identified by <code>propertyID</code>,
-   * @throws IllegalStateException if no lookup model has been initialized for the given property
+   * @return the {@link EntityLookupModel} associated with the <code>property</code>, if no lookup model
+   * has been initialized for the given property, a new one is created and associated with
+   * the property, to be returned the next time this method is called
    */
   EntityLookupModel getEntityLookupModel(final String foreignKeyPropertyID);
 
   /**
    * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityLookupModel}
-   * @return the {@link EntityLookupModel} associated with the <code>property</code>
-   * @throws IllegalStateException if no lookup model has been initialized for the given property
+   * @return the {@link EntityLookupModel} associated with the <code>property</code>, if no lookup model
+   * has been initialized for the given property, a new one is created and associated with
+   * the property, to be returned the next time this method is called
    */
   EntityLookupModel getEntityLookupModel(final Property.ForeignKeyProperty foreignKeyProperty);
 
   /**
    * @param property the property for which to get the ComboBoxModel
-   * @return a ComboBoxModel representing <code>property</code>, if no combo box model
-   * has been initialized for the given property, a new one is created and associated with
-   * the property, to be returned the next time this method is called
-   */
-  FilteredComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property);
-
-  /**
-   * @param property the property for which to get the ComboBoxModel
-   * @return a ComboBoxModel representing <code>property</code>
-   * @throws IllegalStateException if no combo box has been initialized for the given property
+   * @return a ComboBoxModel representing <code>property</code>,
+   * if no combo box model is associated with the property a new one is created, and associated
+   * with the given property
    */
   FilteredComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property);
 
@@ -225,32 +204,18 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   /**
    * @param foreignKeyPropertyID the ID of the property for which to retrieve the {@link EntityComboBoxModel}
    * @return the {@link EntityComboBoxModel} for the property identified by <code>propertyID</code>,
-   * @throws IllegalStateException if no combo box has been initialized for the given property
+   * if no combo box model is associated with the property a new one is created, and associated
+   * with the given property
    */
   EntityComboBoxModel getEntityComboBoxModel(final String foreignKeyPropertyID);
 
   /**
    * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityComboBoxModel}
-   * @return the {@link EntityComboBoxModel} associated with the <code>property</code>
-   * @throws IllegalStateException if no combo box has been initialized for the given property
+   * @return the {@link EntityComboBoxModel} associated with the <code>property</code>,
+   * if no combo box model is associated with the property a new one is created, and associated
+   * with the given property
    */
   EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty);
-
-  /**
-   * @param foreignKeyPropertyID the ID of the foreign key property for which to retrieve the {@link EntityComboBoxModel}
-   * @return the {@link EntityComboBoxModel} for the <code>property</code>,
-   * if no combo box model is associated with the property a new one is created, and associated
-   * with the given property
-   */
-  EntityComboBoxModel initializeEntityComboBoxModel(final String foreignKeyPropertyID);
-
-  /**
-   * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityComboBoxModel}
-   * @return the {@link EntityComboBoxModel} for the <code>property</code>,
-   * if no combo box model is associated with the property a new one is created, and associated
-   * with the given property
-   */
-  EntityComboBoxModel initializeEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty);
 
   /**
    * Refreshes the Refreshable ComboBoxModels associated with this {@link EntityEditModel}

@@ -3357,3 +3357,4 @@
   EntityEditModel.createPropertyComboBoxModel() and initializePropertyComboBoxModel(), refreshEvent and nullValueString parameters removed
   EntityEditPanel and EntityUiUtil, changed according to the above
   DefaultEntityTableModel.initializeColumnModel() now throws exception if no visible properties are defined
+  EntityEditModel.initializeEntityComboBoxModel(), initializeEntityLookupModel() and initializePropertyComboBoxModel() removed

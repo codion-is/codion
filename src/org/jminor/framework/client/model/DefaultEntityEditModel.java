@@ -569,26 +569,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final EntityLookupModel initializeEntityLookupModel(final String foreignKeyPropertyID) {
-    Util.rejectNullValue(foreignKeyPropertyID, FOREIGN_KEY_PROPERTY_ID);
-    return initializeEntityLookupModel(Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID));
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EntityLookupModel initializeEntityLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
-    EntityLookupModel entityLookupModel = entityLookupModels.get(foreignKeyProperty);
-    if (entityLookupModel == null) {
-      entityLookupModel = createEntityLookupModel(foreignKeyProperty);
-      entityLookupModels.put(foreignKeyProperty, entityLookupModel);
-    }
-
-    return entityLookupModel;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public EntityLookupModel createEntityLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     final Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(foreignKeyProperty.getReferencedEntityID());
     if (searchProperties.isEmpty()) {
@@ -609,9 +589,10 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final EntityLookupModel getEntityLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
-    final EntityLookupModel entityLookupModel = entityLookupModels.get(foreignKeyProperty);
+    EntityLookupModel entityLookupModel = entityLookupModels.get(foreignKeyProperty);
     if (entityLookupModel == null) {
-      throw new IllegalStateException("No EntityLookupModel has been initialized for property: " + foreignKeyProperty);
+      entityLookupModel = createEntityLookupModel(foreignKeyProperty);
+      entityLookupModels.put(foreignKeyProperty, entityLookupModel);
     }
 
     return entityLookupModel;
@@ -621,40 +602,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final boolean containsComboBoxModel(final String propertyID) {
     return containsComboBoxModel(Entities.getProperty(entityID, propertyID));
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EntityComboBoxModel initializeEntityComboBoxModel(final String foreignKeyPropertyID) {
-    Util.rejectNullValue(foreignKeyPropertyID, FOREIGN_KEY_PROPERTY_ID);
-    return initializeEntityComboBoxModel(Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID));
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EntityComboBoxModel initializeEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
-    Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
-    EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
-    if (comboBoxModel == null) {
-      comboBoxModel = createEntityComboBoxModel(foreignKeyProperty);
-      propertyComboBoxModels.put(foreignKeyProperty, comboBoxModel);
-    }
-
-    return comboBoxModel;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final FilteredComboBoxModel initializePropertyComboBoxModel(final Property.ColumnProperty property) {
-    Util.rejectNullValue(property, PROPERTY);
-    FilteredComboBoxModel comboBoxModel = propertyComboBoxModels.get(property);
-    if (comboBoxModel == null) {
-      comboBoxModel = createPropertyComboBoxModel(property);
-      propertyComboBoxModels.put(property, comboBoxModel);
-      comboBoxModel.refresh();
-    }
-
-    return comboBoxModel;
   }
 
   /** {@inheritDoc} */
@@ -684,9 +631,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final FilteredComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property) {
     Util.rejectNullValue(property, PROPERTY);
-    final FilteredComboBoxModel comboBoxModel = propertyComboBoxModels.get(property);
+    FilteredComboBoxModel comboBoxModel = propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
-      throw new IllegalStateException("No PropertyComboBoxModel has been initialized for property: " + property);
+      comboBoxModel = createPropertyComboBoxModel(property);
+      propertyComboBoxModels.put(property, comboBoxModel);
+      comboBoxModel.refresh();
     }
 
     return comboBoxModel;
@@ -703,9 +652,10 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
-    final EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
+    EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
     if (comboBoxModel == null) {
-      throw new IllegalStateException("No EntityComboBoxModel has been initialized for property: " + foreignKeyProperty);
+      comboBoxModel = createEntityComboBoxModel(foreignKeyProperty);
+      propertyComboBoxModels.put(foreignKeyProperty, comboBoxModel);
     }
 
     return comboBoxModel;
