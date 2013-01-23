@@ -302,7 +302,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public StateObserver getSearchStringRepresentsSelectedObserver() {
+  public final StateObserver getSearchStringRepresentsSelectedObserver() {
     return stSearchStringRepresentsSelected.getObserver();
   }
 
