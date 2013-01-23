@@ -56,8 +56,13 @@ public interface ValueMapEditModel<K, V> {
   void removeValueListener(final K key, final EventListener listener);
 
   /**
+   * @return an EventObserver notified each time a value changes
+   */
+  EventObserver getValueChangeObserver();
+
+  /**
    * @param key the key for which to retrieve the event
-   * @return an EventObserver which fires when the value of <code>key</code> changes
+   * @return an EventObserver notified when the value of <code>key</code> changes
    */
   EventObserver getValueChangeObserver(K key);
 
@@ -98,6 +103,12 @@ public interface ValueMapEditModel<K, V> {
    * @throws ValidationException if the given value is not valid for the given key
    */
   void validate(final K key) throws ValidationException;
+
+  /**
+   * Validates the current state of the ValueMap
+   * @throws ValidationException in case the ValueMap is invalid
+   */
+  void validate() throws ValidationException;
 
   /**
    * Returns true if the value associated with the given key is valid, using the <code>validate</code> method

@@ -3358,3 +3358,5 @@
   EntityEditPanel and EntityUiUtil, changed according to the above
   DefaultEntityTableModel.initializeColumnModel() now throws exception if no visible properties are defined
   EntityEditModel.initializeEntityComboBoxModel(), initializeEntityLookupModel() and initializePropertyComboBoxModel() removed
+  ValueMapEditModel.getValueChangeObserver() and validate() added
+  DefaultEntityEditModel implements the above

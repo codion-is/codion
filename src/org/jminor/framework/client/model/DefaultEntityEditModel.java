@@ -265,6 +265,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
+  public final EventObserver getValueChangeObserver() {
+    return entity.getValueChangeObserver();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final EventObserver getValueChangeObserver(final String propertyID) {
     Util.rejectNullValue(propertyID, "propertyID");
     if (!valueChangeEventMap.containsKey(propertyID)) {
@@ -364,6 +370,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void validate(final String propertyID) throws ValidationException {
     validator.validate(entity, propertyID);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void validate() throws ValidationException {
+    validator.validate(entity);
   }
 
   /** {@inheritDoc} */

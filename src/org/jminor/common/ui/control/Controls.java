@@ -25,38 +25,38 @@ public final class Controls {
 
   private Controls() {}
 
-  public static MethodControl methodControl(final Object owner, final String methodName, final Icon icon) {
-    return methodControl(owner, methodName, null, null, null, -1, null, icon);
+  public static MethodControl methodControl(final Object owner, final String method, final Icon icon) {
+    return methodControl(owner, method, null, null, null, -1, null, icon);
   }
 
-  public static MethodControl methodControl(final Object owner, final String method, final String methodName) {
-    return methodControl(owner, method, methodName, null);
+  public static MethodControl methodControl(final Object owner, final String method, final String name) {
+    return methodControl(owner, method, name, null);
   }
 
-  public static MethodControl methodControl(final Object owner, final String method, final String methodName,
+  public static MethodControl methodControl(final Object owner, final String method, final String name,
                                             final StateObserver state) {
-    return new MethodControl(methodName, owner, method, state);
+    return new MethodControl(name, owner, method, state);
   }
 
-  public static MethodControl methodControl(final Object owner, final String method, final String methodName,
+  public static MethodControl methodControl(final Object owner, final String method, final String name,
                                             final StateObserver state, final String description) {
-    return (MethodControl) methodControl(owner, method, methodName, state).setDescription(description);
+    return (MethodControl) methodControl(owner, method, name, state).setDescription(description);
   }
 
-  public static MethodControl methodControl(final Object owner, final String method, final String methodName,
+  public static MethodControl methodControl(final Object owner, final String method, final String name,
                                             final StateObserver state, final String description, final int mnemonic) {
-    return (MethodControl) methodControl(owner, method, methodName, state, description).setMnemonic(mnemonic);
+    return (MethodControl) methodControl(owner, method, name, state, description).setMnemonic(mnemonic);
   }
 
-  public static MethodControl methodControl(final Object owner, final String method, final String methodName,
+  public static MethodControl methodControl(final Object owner, final String method, final String name,
                                             final StateObserver state, final String description, final int mnemonic, final KeyStroke ks) {
-    return (MethodControl) methodControl(owner, method, methodName, state, description, mnemonic).setKeyStroke(ks);
+    return (MethodControl) methodControl(owner, method, name, state, description, mnemonic).setKeyStroke(ks);
   }
 
-  public static MethodControl methodControl(final Object owner, final String method, final String methodName,
+  public static MethodControl methodControl(final Object owner, final String method, final String name,
                                             final StateObserver state, final String description, final int mnemonic,
                                             final KeyStroke ks, final Icon icon) {
-    return (MethodControl) methodControl(owner, method, methodName, state, description, mnemonic, ks).setIcon(icon);
+    return (MethodControl) methodControl(owner, method, name, state, description, mnemonic, ks).setIcon(icon);
   }
 
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption) {

@@ -430,10 +430,17 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void testListeners() throws Exception {
+    final Collection<Object> anyValueChangeCounter = new ArrayList<Object>();
     final Collection<Object> valueChangeCounter = new ArrayList<Object>();
     final Collection<Object> valueSetCounter = new ArrayList<Object>();
     final Collection<Object> valueMapSetCounter = new ArrayList<Object>();
 
+    final ValueChangeListener anyValueChangeListener = new ValueChangeListener() {
+      @Override
+      protected void valueChanged(final ValueChangeEvent event) {
+        anyValueChangeCounter.add(new Object());
+      }
+    };
     final ValueChangeListener valueChangeListener = new ValueChangeListener() {
       @Override
       protected void valueChanged(final ValueChangeEvent event) {
@@ -455,6 +462,7 @@ public final class DefaultEntityEditModelTest {
 
     final DefaultEntityEditModel model = new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
 
+    model.getValueChangeObserver().addListener(anyValueChangeListener);
     model.addValueListener(EmpDept.DEPARTMENT_ID, valueChangeListener);
     model.addValueSetListener(EmpDept.DEPARTMENT_ID, valueSetListener);
     model.addEntitySetListener(valueMapSetListener);
@@ -462,10 +470,12 @@ public final class DefaultEntityEditModelTest {
     model.setValue(EmpDept.DEPARTMENT_ID, 1);
     assertTrue(valueSetCounter.size() == 1);
     assertTrue(valueChangeCounter.size() == 1);
+    assertTrue(anyValueChangeCounter.size() == 1);
 
     model.setValue(EmpDept.DEPARTMENT_ID, 1);
     assertTrue(valueSetCounter.size() == 1);
     assertTrue(valueChangeCounter.size() == 1);
+    assertTrue(anyValueChangeCounter.size() == 1);
 
     assertFalse(model.isNullable(EmpDept.DEPARTMENT_ID));
     assertTrue(!model.isValueNull(EmpDept.DEPARTMENT_ID));
@@ -474,7 +484,13 @@ public final class DefaultEntityEditModelTest {
     model.setValue(EmpDept.DEPARTMENT_ID, null);
     assertTrue(valueSetCounter.size() == 2);
     assertTrue(valueChangeCounter.size() == 2);
+    assertTrue(anyValueChangeCounter.size() == 2);
     assertTrue(model.isValueNull(EmpDept.DEPARTMENT_ID));
+
+    model.setValue(EmpDept.DEPARTMENT_NAME, "Name");
+    assertTrue(valueSetCounter.size() == 2);
+    assertTrue(valueChangeCounter.size() == 2);
+    assertTrue(anyValueChangeCounter.size() == 3);
 
     model.getEntity();
     model.clear();
