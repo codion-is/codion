@@ -3360,3 +3360,4 @@
   EntityEditModel.initializeEntityComboBoxModel(), initializeEntityLookupModel() and initializePropertyComboBoxModel() removed
   ValueMapEditModel.getValueChangeObserver() and validate() added
   DefaultEntityEditModel implements the above
+  Ant task resolve_libraries now syncs

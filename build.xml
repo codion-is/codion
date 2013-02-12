@@ -61,7 +61,7 @@
 
   <target name="resolve_libraries"
           description="Resolves all libraries according to ivy.xml">
-    <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]"/>
+    <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
     <copy file="lib/webserver.jar" todir="${lib}/build"/>
     <copy file="lib/webserver.jar" todir="${lib}/runtime.server"/>
     <copy file="lib/webserver.jar" todir="${lib}/test"/>
