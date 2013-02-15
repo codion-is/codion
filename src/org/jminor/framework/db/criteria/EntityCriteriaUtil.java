@@ -392,7 +392,7 @@ public final class EntityCriteriaUtil {
     public String getWhereClause(final boolean includeWhereKeyword) {
       final String criteriaString = criteria == null ? "" : criteria.asString();
 
-      return !criteriaString.isEmpty() ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
+      return criteriaString.length() != 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -528,6 +528,13 @@ public final class EntityCriteriaUtil {
     @Override
     public String getOrderByClause() {
       return orderByClause;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public EntitySelectCriteria setOrderByClause(final String orderByClause) {
+      this.orderByClause = orderByClause;
+      return this;
     }
 
     /** {@inheritDoc} */

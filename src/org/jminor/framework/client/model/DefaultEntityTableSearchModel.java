@@ -249,7 +249,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   public final void setSimpleSearchString(final String simpleSearchString) {
     this.simpleSearchString = simpleSearchString == null ? "" : simpleSearchString;
     clearPropertySearchModels();
-    if (!this.simpleSearchString.isEmpty()) {
+    if (this.simpleSearchString.length() != 0) {
       setSearchString(this.simpleSearchString);
     }
     evtSimpleSearchStringChanged.fire();

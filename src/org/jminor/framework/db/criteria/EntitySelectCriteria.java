@@ -14,6 +14,12 @@ public interface EntitySelectCriteria extends EntityCriteria {
   String getOrderByClause();
 
   /**
+   * @param orderByClause the order by clause
+   * @return this EntitySelectCriteria instance
+   */
+  EntitySelectCriteria setOrderByClause(final String orderByClause);
+
+  /**
    * @return true if this select should lock the result for update
    */
   boolean isForUpdate();

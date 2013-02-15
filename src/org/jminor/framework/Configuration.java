@@ -48,6 +48,13 @@ public final class Configuration {
   public static final String CLIENT_CONNECTION_TYPE = "jminor.client.connectionType";
 
   /**
+   * Specifies whether client connections, remote or local, should check the validity of their connections periodically.
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final String CLIENT_SCHEDULE_CONNECTION_VALIDATION = "jminor.client.scheduleConnectionValidation";
+
+  /**
    * The report path used for the default report generation,
    * either file or http based
    */
@@ -481,6 +488,7 @@ public final class Configuration {
     PROPERTIES.put(LOAD_TEST_LOGIN_DELAY, 2);
     PROPERTIES.put(LOAD_TEST_REMOTE_HOSTNAME, "localhost");
     PROPERTIES.put(CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_LOCAL);
+    PROPERTIES.put(CLIENT_SCHEDULE_CONNECTION_VALIDATION, true);
     PROPERTIES.put(SERVER_CLIENT_LOGGING_ENABLED, true);
     PROPERTIES.put(SERVER_CONNECTION_LIMIT, -1);
     PROPERTIES.put(SERVER_CONNECTION_TIMEOUT, 120000);
@@ -535,6 +543,7 @@ public final class Configuration {
     parseBooleanSetting(ALLOW_COLUMN_REORDERING);
     parseBooleanSetting(AUTHENTICATION_REQUIRED);
     parseStringSetting(CLIENT_CONNECTION_TYPE);
+    parseBooleanSetting(CLIENT_SCHEDULE_CONNECTION_VALIDATION);
     parseBooleanSetting(COMPACT_ENTITY_PANEL_LAYOUT);
     parseBooleanSetting(CONFIRM_EXIT);
     parseStringSetting(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM);

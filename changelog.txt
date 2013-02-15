@@ -3361,3 +3361,5 @@
   ValueMapEditModel.getValueChangeObserver() and validate() added
   DefaultEntityEditModel implements the above
   Ant task resolve_libraries now syncs
+  String.isEmpty() replaced by length() == 0 for android compatability
+  Coniguration.CLIENT_SCHEDULE_CONNECTION_VALIDATION

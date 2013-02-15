@@ -276,7 +276,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   @Override
   public final boolean isNullValueSelected() {
     if (selectedItem instanceof String && nullValueString == null) {
-      return ((String) selectedItem).isEmpty();
+      return ((String) selectedItem).length() == 0;
     }
 
     return selectedItem == null && nullValueString != null;

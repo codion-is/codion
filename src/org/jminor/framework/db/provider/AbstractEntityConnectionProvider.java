@@ -9,6 +9,7 @@ import org.jminor.common.model.States;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 
 import org.slf4j.Logger;
@@ -21,11 +22,22 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractEntityConnectionProvider implements EntityConnectionProvider {
 
+  private static final boolean SCHEDULE_VALIDITY_CHECK = Configuration.getBooleanValue(Configuration.CLIENT_SCHEDULE_CONNECTION_VALIDATION);
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
   protected static final String IS_CONNECTED = "isConnected";
   protected static final String IS_VALID = "isValid";
   private final State stConnectionValid = States.state();
-  private final TaskScheduler validityCheckScheduler;
+  private final TaskScheduler validityCheckScheduler = new TaskScheduler(new Runnable() {
+    /** {@inheritDoc} */
+    @Override
+    public void run() {
+      final boolean valid = isConnectionValid();
+      stConnectionValid.setActive(valid);
+      if (!valid) {
+        validityCheckScheduler.stop();
+      }
+    }
+  }, 10, 0, TimeUnit.SECONDS);
 
   /**
    * The user used by this connection provider when connecting to the database server
@@ -40,17 +52,9 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   public AbstractEntityConnectionProvider(final User user) {
     Util.rejectNullValue(user, "user");
     this.user = user;
-    this.validityCheckScheduler = new TaskScheduler(new Runnable() {
-      /** {@inheritDoc} */
-      @Override
-      public void run() {
-        final boolean valid = isConnectionValid();
-        stConnectionValid.setActive(valid);
-        if (!valid) {
-          validityCheckScheduler.stop();
-        }
-      }
-    }, 10, 0, TimeUnit.SECONDS).start();
+    if (SCHEDULE_VALIDITY_CHECK) {
+      this.validityCheckScheduler.start();
+    }
   }
 
   /** {@inheritDoc} */
@@ -114,7 +118,9 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private void validateConnection() {
     if (entityConnection == null) {
       entityConnection = connect();
-      validityCheckScheduler.start();
+      if (SCHEDULE_VALIDITY_CHECK) {
+        validityCheckScheduler.start();
+      }
     }
     else if (!isConnectionValid()) {
       LOG.info("Previous connection invalid, reconnecting");
@@ -123,7 +129,9 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       }
       catch (Exception ignored) {}
       entityConnection = connect();
-      validityCheckScheduler.start();
+      if (SCHEDULE_VALIDITY_CHECK) {
+        validityCheckScheduler.start();
+      }
     }
   }
 }

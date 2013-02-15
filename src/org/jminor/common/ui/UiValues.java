@@ -277,7 +277,7 @@ public final class UiValues {
     /** {@inheritDoc} */
     @Override
     protected Integer valueFromText(final String text) {
-      if (text.isEmpty() && usePrimitive) {
+      if (text.length() == 0 && usePrimitive) {
         return 0;
       }
 
@@ -296,7 +296,7 @@ public final class UiValues {
     /** {@inheritDoc} */
     @Override
     protected Double valueFromText(final String text) {
-      if (text.isEmpty() && usePrimitive) {
+      if (text.length() == 0 && usePrimitive) {
         return 0d;
       }
 

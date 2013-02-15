@@ -913,7 +913,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
     final StringBuilder queryBuilder = new StringBuilder(selectSQL);
     final String whereClause = criteria.getWhereClause(!containsWhereClause(selectSQL));
-    if (!whereClause.isEmpty()) {
+    if (whereClause.length() != 0) {
       queryBuilder.append(" ").append(whereClause);
     }
     if (groupByClause != null) {

@@ -42,7 +42,7 @@ public final class TextInputProvider extends AbstractInputProvider<String, TextI
   public String getValue() {
     final String value = getInputComponent().getText();
 
-    return value.isEmpty() ? null : value;
+    return value.length() == 0 ? null : value;
   }
 
   private static JTextField createDefaultTextField(final ValueCollectionProvider valueProvider, final Object initialValue) {

@@ -367,7 +367,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
   private void doSearch(final boolean addToSelection, final int fromIndex, final boolean forward,
                         final String searchText) {
-    if (!searchText.isEmpty()) {
+    if (searchText.length() != 0) {
       final Point coordinate = tableModel.findNextItemCoordinate(fromIndex, forward, searchText);
       if (coordinate != null) {
         lastSearchResultCoordinate = coordinate;
@@ -506,7 +506,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
   private static void addFilterIndicator(final TableColumn column) {
     String val = (String) column.getHeaderValue();
-    if (!val.isEmpty() && val.charAt(0) != FILTER_INDICATOR) {
+    if (val.length() != 0 && val.charAt(0) != FILTER_INDICATOR) {
       val = FILTER_INDICATOR + val;
     }
 
@@ -515,7 +515,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
   private static void removeFilterIndicator(final TableColumn column) {
     String val = (String) column.getHeaderValue();
-    if (!val.isEmpty() && val.charAt(0) == FILTER_INDICATOR) {
+    if (val.length() != 0 && val.charAt(0) == FILTER_INDICATOR) {
       val = val.substring(1);
     }
 

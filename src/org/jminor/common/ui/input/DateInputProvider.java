@@ -29,7 +29,7 @@ public final class DateInputProvider extends AbstractInputProvider<Date, DateInp
   public Date getValue() {
     try {
       final String dateText = getInputComponent().getInputField().getText();
-      if (dateText.isEmpty()) {
+      if (dateText.length() == 0) {
         return null;
       }
       if (!dateText.contains("_")) {

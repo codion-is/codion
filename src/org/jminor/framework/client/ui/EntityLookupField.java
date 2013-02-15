@@ -186,7 +186,7 @@ public final class EntityLookupField extends JTextField {
       /** {@inheritDoc} */
       @Override
       public void focusLost(final FocusEvent e) {
-        if (getText().isEmpty()) {
+        if (getText().length() == 0) {
           getModel().setSelectedEntity(null);
         }
         else if (!searchHint.isHintTextVisible() && !performingLookup && !model.searchStringRepresentsSelected()) {
@@ -218,7 +218,7 @@ public final class EntityLookupField extends JTextField {
   private void performLookup(final boolean promptUser) {
     try {
       performingLookup = true;
-      if (model.getSearchString().isEmpty()) {
+      if (model.getSearchString().length() == 0) {
         model.setSelectedEntities(null);
       }
       else {
@@ -328,7 +328,7 @@ public final class EntityLookupField extends JTextField {
           lookupPanel.getModel().setWildcardPrefix(boxPrefixWildcard.isSelected());
           lookupPanel.getModel().setWildcardPostfix(boxPostfixWildcard.isSelected());
           lookupPanel.getModel().setMultipleSelectionAllowed(boxAllowMultipleValues.isSelected());
-          if (!txtMultipleValueSeparator.getText().isEmpty()) {
+          if (txtMultipleValueSeparator.getText().length() != 0) {
             lookupPanel.getModel().setMultipleValueSeparator(txtMultipleValueSeparator.getText());
           }
         }

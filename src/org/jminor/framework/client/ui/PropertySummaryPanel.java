@@ -36,7 +36,7 @@ public final class PropertySummaryPanel extends JPanel {
       public void eventOccurred() {
         final String summaryText = model.getSummaryText();
         txtSummary.setText(summaryText);
-        txtSummary.setToolTipText(!summaryText.isEmpty() ? (model.getSummaryType() + ": " + summaryText) : summaryText);
+        txtSummary.setToolTipText(summaryText.length() != 0 ? (model.getSummaryType() + ": " + summaryText) : summaryText);
       }
     });
     initialize();

@@ -113,7 +113,7 @@ public final class TextFieldHint {
   private void updateState() {
     final boolean hasFocus = txtField.hasFocus();
     final boolean hideHint = hasFocus && txtField.getText().equals(hintText);
-    final boolean showHint = !hasFocus && txtField.getText().isEmpty();
+    final boolean showHint = !hasFocus && txtField.getText().length() == 0;
     if (hideHint) {
       txtField.setText("");
     }

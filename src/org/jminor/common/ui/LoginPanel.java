@@ -111,7 +111,7 @@ public final class LoginPanel extends JPanel {
 
     setLayout(new FlowLayout(FlowLayout.CENTER));
     add(retBase, BorderLayout.CENTER);
-    if (usernameField.getText().isEmpty()) {
+    if (usernameField.getText().length() == 0) {
       UiUtil.addInitialFocusHack(usernameField, new AbstractAction() {
         @Override
         public void actionPerformed(final ActionEvent e) {

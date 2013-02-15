@@ -61,7 +61,7 @@
 
   <target name="resolve_libraries"
           description="Resolves all libraries according to ivy.xml">
-    <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
+    <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]" sync="false"/>
     <copy file="lib/webserver.jar" todir="${lib}/build"/>
     <copy file="lib/webserver.jar" todir="${lib}/runtime.server"/>
     <copy file="lib/webserver.jar" todir="${lib}/test"/>
@@ -168,38 +168,38 @@
     <jar jarfile="${dist}/jminor-db.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
-                org/jminor/framework/db/**,
-                org/jminor/framework/domain/*,
-                org/jminor/framework/i18n/**"/>
+                   org/jminor/framework/db/**,
+                   org/jminor/framework/domain/*,
+                   org/jminor/framework/i18n/**"/>
 
     <jar jarfile="${dist}/jminor-client.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
-                org/jminor/framework/client/**,
-                org/jminor/framework/db/**,
-                org/jminor/framework/i18n/**,
-                org/jminor/framework/domain/**,
-                org/jminor/framework/tools/testing/**,
-                org/jminor/framework/server/provider/RemoteEntityConnectionProvider*,
-                org/jminor/framework/server/RemoteEntityConnection.class,
-                org/jminor/framework/server/RemoteEntityConnectionImpl_Stub.class"/>
+                   org/jminor/framework/client/**,
+                   org/jminor/framework/db/**,
+                   org/jminor/framework/i18n/**,
+                   org/jminor/framework/domain/**,
+                   org/jminor/framework/tools/testing/**,
+                   org/jminor/framework/server/provider/RemoteEntityConnectionProvider*,
+                   org/jminor/framework/server/RemoteEntityConnection.class,
+                   org/jminor/framework/server/RemoteEntityConnectionImpl_Stub.class"/>
 
     <jar jarfile="${dist}/jminor-server.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
-                org/jminor/framework/db/**,
-                org/jminor/framework/domain/*,
-                org/jminor/framework/i18n/**,
-                org/jminor/framework/server/*.class"
+                   org/jminor/framework/db/**,
+                   org/jminor/framework/domain/*,
+                   org/jminor/framework/i18n/**,
+                   org/jminor/framework/server/*.class"
          excludes="org/jminor/framework/server/*Stub.class"/>
 
     <jar jarfile="${dist}/jminor-server-monitor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
-                org/jminor/framework/domain/**,
-                org/jminor/framework/server/monitor/**,
-                org/jminor/framework/server/EntityConnectionServerAdmin.class,
-                org/jminor/framework/server/EntityConnectionServerAdmin_Stub.class"/>
+                   org/jminor/framework/domain/**,
+                   org/jminor/framework/server/monitor/**,
+                   org/jminor/framework/server/EntityConnectionServerAdmin.class,
+                   org/jminor/framework/server/EntityConnectionServerAdmin_Stub.class"/>
 
     <jar jarfile="${dist}/jminor-plugins.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
@@ -217,6 +217,23 @@
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
     <copy file="${basedir}/changelog.txt" todir="${dist}"/>
+  </target>
+
+  <target name="dist_android" depends="clean, build, manifest"
+          description="Builds a android jminor library">
+    <jar jarfile="${dist}/jminor-android.jar" basedir="${build.base}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/common/**,
+                   org/jminor/framework/Configuration*,
+                   org/jminor/framework/db/**,
+                   org/jminor/framework/domain/**,
+                   org/jminor/framework/i18n/**,
+                   org/jminor/framework/tools/testing/EntityTestUnit*"
+         excludes="org/jminor/common/model/checkbox/**,
+                   org/jminor/common/model/combobox/**,
+                   org/jminor/common/model/table/**,
+                   org/jminor/common/ui/**,
+                   org/jminor/common/server/**,"/>
   </target>
 
   <target name="manifest"

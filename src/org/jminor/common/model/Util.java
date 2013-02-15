@@ -160,7 +160,7 @@ public final class Util {
     }
 
     final String noGrouping = text.replace(".", "");
-    if (noGrouping.isEmpty()) {
+    if (noGrouping.length() == 0) {
       return null;
     }
     if (noGrouping.equals("-")) {
@@ -200,7 +200,7 @@ public final class Util {
     }
 
     final String noGrouping = text.replace(".", "");
-    if (noGrouping.isEmpty()) {
+    if (noGrouping.length() == 0) {
       return null;
     }
     if (noGrouping.equals("-")) {
@@ -818,7 +818,7 @@ public final class Util {
       return true;
     }
     for (final String string : strings) {
-      if (string == null || string.isEmpty()) {
+      if (string == null || string.length() == 0) {
         return true;
       }
     }
@@ -934,7 +934,7 @@ public final class Util {
     Util.rejectNullValue(valueClass, "valueClass");
     Util.rejectNullValue(property, "property");
     Util.rejectNullValue(valueOwner, "valueOwner");
-    if (property.isEmpty()) {
+    if (property.length() == 0) {
       throw new IllegalArgumentException("Property must be specified");
     }
     final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
@@ -952,7 +952,7 @@ public final class Util {
     Util.rejectNullValue(valueClass, "valueClass");
     Util.rejectNullValue(property, "property");
     Util.rejectNullValue(valueOwner, "valueOwner");
-    if (property.isEmpty()) {
+    if (property.length() == 0) {
       throw new IllegalArgumentException("Property must be specified");
     }
     final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);

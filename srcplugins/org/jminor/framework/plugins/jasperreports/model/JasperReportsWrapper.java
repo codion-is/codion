@@ -96,7 +96,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
    */
   public static JasperReport loadJasperReport(final String reportPath) {
     Util.rejectNullValue(reportPath, "reportPath");
-    if (reportPath.isEmpty()) {
+    if (reportPath.length() == 0) {
       throw new IllegalArgumentException("Empty report path");
     }
     if (cacheReports && reportCache.containsKey(reportPath)) {

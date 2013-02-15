@@ -141,7 +141,7 @@ public final class DoubleField extends IntField {
     @Override
     protected boolean validValue(final String string, final String documentText, final int offset) {
       final String preparedString = prepareString(string, documentText, offset);
-      if (preparedString.isEmpty()) {
+      if (preparedString.length() == 0) {
         return true;
       }
       double value = 0;
