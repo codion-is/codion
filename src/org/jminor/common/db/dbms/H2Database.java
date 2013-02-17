@@ -145,17 +145,21 @@ public final class H2Database extends AbstractDatabase {
       DriverManager.getConnection(getURL(properties) + initializerString).close();
     }
     else {
-      try {
-        final Class runScriptToolClass = Class.forName(RUN_TOOL_CLASSNAME);
-        final Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, String.class, boolean.class);
-        execute.invoke(runScriptToolClass.newInstance(), getURL(null), SYSADMIN_USERNAME, "", scriptPath, null, false);
-      }
-      catch (ClassNotFoundException cle) {
-        throw new RuntimeException(RUN_TOOL_CLASSNAME + " must be on classpath for creating an embedded H2 database", cle);
-      }
-      catch (Exception e) {
-        throw new RuntimeException(e);
-      }
+      runScript(scriptPath);
+    }
+  }
+
+  public void runScript(final String scriptPath) {
+    try {
+      final Class runScriptToolClass = Class.forName(RUN_TOOL_CLASSNAME);
+      final Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, String.class, boolean.class);
+      execute.invoke(runScriptToolClass.newInstance(), getURL(null), SYSADMIN_USERNAME, "", scriptPath, null, false);
+    }
+    catch (ClassNotFoundException cle) {
+      throw new RuntimeException(RUN_TOOL_CLASSNAME + " must be on classpath for creating an embedded H2 database", cle);
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
     }
   }
 }
