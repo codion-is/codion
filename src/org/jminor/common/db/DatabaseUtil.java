@@ -7,6 +7,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.MethodLogger;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Statement;
@@ -67,6 +68,24 @@ public final class DatabaseUtil {
       try {
         if (statement != null) {
           statement.close();
+        }
+      }
+      catch (SQLException ignored) {}
+    }
+  }
+
+  /**
+   * Closes the given Connection instances, swallowing any SQLExceptions that occur
+   * @param connections the connections to close
+   */
+  public static void closeSilently(final Connection... connections) {
+    if (connections == null) {
+      return;
+    }
+    for (final Connection connection : connections) {
+      try {
+        if (connection != null) {
+          connection.close();
         }
       }
       catch (SQLException ignored) {}
