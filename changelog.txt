@@ -3364,3 +3364,6 @@
   String.isEmpty() replaced by length() == 0 for android compatability
   Coniguration.CLIENT_SCHEDULE_CONNECTION_VALIDATION
   DatabaseUtil.closeSilently(Connection) added
+  H2Database refactored
+  Configuration.SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT added
+  LocalEntityConnectionProvider uses the above

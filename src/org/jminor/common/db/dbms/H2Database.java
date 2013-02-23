@@ -6,6 +6,7 @@ package org.jminor.common.db.dbms;
 import org.jminor.common.db.AbstractDatabase;
 import org.jminor.common.model.Util;
 
+import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.sql.DriverManager;
 import java.sql.SQLException;
@@ -36,12 +37,13 @@ public final class H2Database extends AbstractDatabase {
   static final String FALSE = "false";
   static final boolean EMBEDDED_IN_MEMORY = TRUE.equals(System.getProperty(DATABASE_IN_MEMORY, FALSE));
   static final String URL_PREFIX = "jdbc:h2:";
+  static final String URL_PREFIX_MEM = "jdbc:h2:mem:";
 
   static {
     loadDriver(DRIVER_CLASS_NAME);
     if (EMBEDDED_IN_MEMORY) {
       try {
-        new H2Database().createEmbeddedH2Database(System.getProperty(DATABASE_INIT_SCRIPT));
+        new H2Database().initializeMemoryDatabase(System.getProperty(DATABASE_INIT_SCRIPT));
       }
       catch (SQLException e) {
         throw new RuntimeException(e);
@@ -118,8 +120,9 @@ public final class H2Database extends AbstractDatabase {
       if (connectionProperties != null && (Util.nullOrEmpty((String) connectionProperties.get(USER_PROPERTY)))) {
         connectionProperties.put(USER_PROPERTY, SYSADMIN_USERNAME);
       }
+      final String urlPrefix = embeddedInMemory ? URL_PREFIX_MEM : URL_PREFIX;
 
-      return URL_PREFIX + (embeddedInMemory ? "mem:" : "") + getHost() + (authentication == null ? "" : ";" + authentication) + urlAppend;
+      return urlPrefix + getHost() + (authentication == null ? "" : ";" + authentication) + urlAppend;
     }
     else {
       Util.require("host", getHost());
@@ -134,22 +137,20 @@ public final class H2Database extends AbstractDatabase {
    * @param scriptPath the path to the initialization script
    * @throws java.sql.SQLException in case of an exception
    */
-  public void createEmbeddedH2Database(final String scriptPath) throws SQLException {
-    if (embeddedInMemory) {
-      final Properties properties = new Properties();
-      properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
-      String initializerString = ";DB_CLOSE_DELAY=-1";
-      if (scriptPath != null) {
-        initializerString += ";INIT=RUNSCRIPT FROM '" + scriptPath + "'";
-      }
-      DriverManager.getConnection(getURL(properties) + initializerString).close();
+  public void initializeMemoryDatabase(final String scriptPath) throws SQLException {
+    if (!embeddedInMemory) {
+      throw new IllegalArgumentException("Database is not configured as in memory database");
     }
-    else {
-      runScript(scriptPath);
+    final Properties properties = new Properties();
+    properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
+    String initializerString = ";DB_CLOSE_DELAY=-1";
+    if (scriptPath != null) {
+      initializerString += ";INIT=RUNSCRIPT FROM '" + scriptPath + "'";
     }
+    DriverManager.getConnection(getURL(properties) + initializerString).close();
   }
 
-  public void runScript(final String scriptPath) {
+  public void runScript(final String scriptPath) throws SQLException {
     try {
       final Class runScriptToolClass = Class.forName(RUN_TOOL_CLASSNAME);
       final Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, String.class, boolean.class);
@@ -157,6 +158,12 @@ public final class H2Database extends AbstractDatabase {
     }
     catch (ClassNotFoundException cle) {
       throw new RuntimeException(RUN_TOOL_CLASSNAME + " must be on classpath for creating an embedded H2 database", cle);
+    }
+    catch (InvocationTargetException ite) {
+      if (ite.getCause() instanceof SQLException) {
+        throw (SQLException) ite.getCause();
+      }
+      throw new RuntimeException(ite.getTargetException());
     }
     catch (Exception e) {
       throw new RuntimeException(e);

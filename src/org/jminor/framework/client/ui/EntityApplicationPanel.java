@@ -987,12 +987,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /**
-   * Saves the user info so that it can be used as default the next time this application is started.
-   * This default implementation saves the username in the user preferences.
-   * @param user the user
+   * Saves the username so that it can be used as default the next time this application is started.
+   * @param username the username
    */
-  protected void saveDefaultUser(final User user) {
-    Util.setDefaultUserName(getApplicationIdentifier(), user.getUsername());
+  protected void saveDefaultUserName(final String username) {
+    Util.setDefaultUserName(getApplicationIdentifier(), username);
   }
 
   /**
@@ -1048,7 +1047,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         if (startupDialog != null) {
           startupDialog.dispose();
         }
-        saveDefaultUser(connectionProvider.getUser());
+        saveDefaultUserName(connectionProvider.getUser().getUsername());
         this.frameTitle = getFrameTitle(frameCaption, connectionProvider.getUser());
         final JFrame frame = prepareFrame(this.frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
         this.evtApplicationStarted.fire();

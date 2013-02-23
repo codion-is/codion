@@ -478,6 +478,14 @@ public final class Configuration {
    */
   public static final String SHOW_TOGGLE_EDIT_PANEL_CONTROL = "jminor.client.showToggleEditPanelControl";
 
+
+  /**
+   * Specifies whether or not an embedded database is shut down when disconnected from<br>
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final String SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT = "jminor.db.shutdownEmbeddedOnDisconnect";
+
   private static final Properties PROPERTIES = new Properties();
 
   static {
@@ -535,6 +543,7 @@ public final class Configuration {
     PROPERTIES.put(SHOW_DETAIL_PANEL_CONTROLS, true);
     PROPERTIES.put(SHOW_TOGGLE_EDIT_PANEL_CONTROL, true);
     PROPERTIES.put(DEFAULT_MAXIMUM_FRACTION_DIGITS, 10);
+    PROPERTIES.put(SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT, false);
     parseSystemSettings();
   }
 
@@ -596,6 +605,7 @@ public final class Configuration {
     parseBooleanSetting(SHOW_DETAIL_PANEL_CONTROLS);
     parseBooleanSetting(SHOW_TOGGLE_EDIT_PANEL_CONTROL);
     parseIntegerSetting(DEFAULT_MAXIMUM_FRACTION_DIGITS);
+    parseBooleanSetting(SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT);
   }
 
   private static void parseIntegerSetting(final String setting) {

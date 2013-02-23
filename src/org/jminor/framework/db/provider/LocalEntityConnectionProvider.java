@@ -9,6 +9,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.MethodLogger;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionLogger;
 import org.jminor.framework.db.EntityConnections;
@@ -52,7 +53,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     super(user);
     Util.rejectNullValue(database, "database");
     this.database = database;
-    this.connectionProperties.put("user", user.getUsername());
+    this.connectionProperties.put(Database.USER_PROPERTY, user.getUsername());
     this.connectionProperties.put(Database.PASSWORD_PROPERTY, user.getPassword());
   }
 
@@ -81,7 +82,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     if (getConnectionInternal() != null && getConnectionInternal().isValid()) {
       getConnectionInternal().disconnect();
       final DatabaseConnection databaseConnection = getConnectionInternal().getDatabaseConnection();
-      if (databaseConnection.getDatabase().isEmbedded()) {//todo is this proper?
+      if (databaseConnection.getDatabase().isEmbedded() && Configuration.getBooleanValue(Configuration.SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT)) {
         databaseConnection.getDatabase().shutdownEmbedded(connectionProperties);
       }
       setConnection(null);
