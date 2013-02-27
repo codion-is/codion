@@ -3369,3 +3369,4 @@
   LocalEntityConnectionProvider uses the above
   AbstractFilteredTableModel.initializeColumnComparator() added, overridable
   EntityJSONParser, made couple of methods public
+  AbstractFilteredTableModelTest.customSorting() added

@@ -18,6 +18,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -33,7 +34,7 @@ public final class AbstractFilteredTableModelTest {
 
   private TestAbstractFilteredTableModel tableModel;
 
-  private static final class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<String, Integer> {
+  private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<String, Integer> {
 
     private TestAbstractFilteredTableModel(final TableColumnModel columnModel, final List<? extends ColumnSearchModel<Integer>> columnFilterModels) {
       super(columnModel, columnFilterModels);
@@ -61,12 +62,25 @@ public final class AbstractFilteredTableModelTest {
   }
 
   public static TestAbstractFilteredTableModel createTestModel() {
+    return createTestModel(null);
+  }
+
+  public static TestAbstractFilteredTableModel createTestModel(final Comparator<String> customComparator) {
     final TableColumnModel columnModel = new DefaultTableColumnModel();
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     columnModel.addColumn(column);
     final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%");
-    return new TestAbstractFilteredTableModel(columnModel, Arrays.asList(filterModel));
+    return new TestAbstractFilteredTableModel(columnModel, Arrays.asList(filterModel)) {
+      @Override
+      protected Comparator initializeColumnComparator(final Integer columnIdentifier) {
+        if (customComparator != null) {
+          return customComparator;
+        }
+
+        return super.initializeColumnComparator(columnIdentifier);
+      }
+    };
   }
 
   @Before
@@ -260,6 +274,21 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.removeColumnHiddenListener(hideListener);
     tableModel.removeColumnShownListener(showListener);
+  }
+
+  @Test
+  public void customSorting() {
+    final AbstractFilteredTableModel<String, Integer> tableModel = createTestModel(new Comparator<String>() {
+      @Override
+      public int compare(final String o1, final String o2) {
+        return o2.compareTo(o1);//reverse order
+      }
+    });
+    tableModel.refresh();
+    tableModel.setSortingDirective(0, SortingDirective.ASCENDING, false);
+    assertEquals("e", tableModel.getItemAt(0));
+    tableModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
+    assertEquals("a", tableModel.getItemAt(0));
   }
 
   @Test
