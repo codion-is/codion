@@ -158,6 +158,17 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
   }
 
   /**
+   * Parses an Entity instance from the given JSON object string
+   * @param entityObject the JSON object string representing the entity
+   * @return the Entity represented by the given JSON object
+   * @throws ParseException in case of an exception
+   * @throws JSONException in case of an exception
+   */
+  public static Entity parseEntity(final String entityObject) throws JSONException, ParseException {
+    return parseEntity(new JSONObject(entityObject), DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT));
+  }
+
+  /**
    * Parses an Entity instance from the given JSON object
    * @param entityObject the JSON object representing the entity
    * @param jsonDateFormat the format to use when parsing dates
@@ -194,6 +205,21 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
     return Entities.entity(entityID, propertyValueMap, originalValueMap);
   }
 
+  public static String serializeEntity(final Entity entity, final boolean includeForeignKeyValues) throws JSONException {
+    return serializeEntity(entity, includeForeignKeyValues, DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT)).toString();
+  }
+
+  /**
+   * Parses an Entity.Key instance from the given JSON object string
+   * @param keyObject the JSON object string representing the entity
+   * @return the Entity.Key represented by the given JSON object
+   * @throws ParseException in case of an exception
+   * @throws JSONException in case of an exception
+   */
+  public static Entity.Key parseKey(final String keyObject) throws JSONException, ParseException {
+    return parseKey(new JSONObject(keyObject), DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT));
+  }
+
   /**
    * Parses an Entity.Key instance from the given JSON object
    * @param keyObject the JSON object representing the entity key
@@ -203,8 +229,8 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
    * @throws ParseException in case of an exception
    * @throws JSONException in case of an exception
    */
-  private static Entity.Key parseKey(final JSONObject keyObject, final DateFormat jsonDateFormat,
-                                     final DateFormat jsonTimestampFormat) throws JSONException, ParseException {
+  public static Entity.Key parseKey(final JSONObject keyObject, final DateFormat jsonDateFormat,
+                                    final DateFormat jsonTimestampFormat) throws JSONException, ParseException {
     final String entityID = keyObject.getString(ENTITY_ID);
     if (!Entities.isDefined(entityID)) {
       throw new RuntimeException("Undefined entity found in JSON string: '" + entityID + "'");
@@ -218,6 +244,10 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
     }
 
     return key;
+  }
+
+  public static String serializeKey(final Entity.Key key) throws JSONException {
+    return serializeKey(key, DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT)).toString();
   }
 
   /**

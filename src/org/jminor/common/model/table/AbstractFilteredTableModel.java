@@ -62,6 +62,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   };
   private static final Comparator LEXICAL_COMPARATOR = Util.getSpaceAwareCollator();
 
+  private final Map<C, Comparator> columnComparators = new HashMap<C, Comparator>();
+
   private final Comparator<R> rowComparator = new Comparator<R>() {
     @Override
     public int compare(final R o1, final R o2) {
@@ -173,6 +175,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       }
     }
     this.selectionModel = new SelectionModel(this);
+    initializeColumnComparators();
     resetSortingStates();
     bindEventsInternal();
   }
@@ -941,6 +944,24 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /**
+   * Initializes a comparator used when sorting by the give column,
+   * the comparator receives the column values, but never null.
+   * @param columnIdentifier the column identifier
+   * @return the comparator to use when sorting by the given column
+   */
+  protected Comparator initializeColumnComparator(final C columnIdentifier) {
+    final Class columnClass = getColumnClass(columnIdentifier);
+    if (columnClass.equals(String.class)) {
+      return LEXICAL_COMPARATOR;
+    }
+    if (Comparable.class.isAssignableFrom(columnClass)) {
+      return COMPARABLE_COMPARATOR;
+    }
+
+    return LEXICAL_COMPARATOR;
+  }
+
+  /**
    * @return true while this table model is being sorted
    */
   protected final boolean isSorting() {
@@ -1074,7 +1095,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
     else {
       //noinspection unchecked
-      comparison = getComparatorForColumn(columnIdentifier).compare(valueOne, valueTwo);
+      comparison = columnComparators.get(columnIdentifier).compare(valueOne, valueTwo);
     }
     if (comparison != 0) {
       return directive == SortingDirective.DESCENDING ? -comparison : comparison;
@@ -1083,16 +1104,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return 0;
   }
 
-  private Comparator getComparatorForColumn(final C columnIdentifier) {
-    final Class columnClass = getColumnClass(columnIdentifier);
-    if (columnClass.equals(String.class)) {
-      return LEXICAL_COMPARATOR;
+  private void initializeColumnComparators() {
+    final Enumeration<TableColumn> columns = columnModel.getColumns();
+    while (columns.hasMoreElements()) {
+      final TableColumn column = columns.nextElement();
+      final C identifier = (C) column.getIdentifier();
+      columnComparators.put(identifier, initializeColumnComparator(identifier));
     }
-    if (Comparable.class.isAssignableFrom(columnClass)) {
-      return COMPARABLE_COMPARATOR;
-    }
-
-    return LEXICAL_COMPARATOR;
   }
 
   private boolean isSortingStateEnabled() {

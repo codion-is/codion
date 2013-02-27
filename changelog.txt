@@ -3367,3 +3367,5 @@
   H2Database refactored
   Configuration.SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT added
   LocalEntityConnectionProvider uses the above
+  AbstractFilteredTableModel.initializeColumnComparator() added, overridable
+  EntityJSONParser, made couple of methods public
