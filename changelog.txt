@@ -3370,3 +3370,4 @@
   AbstractFilteredTableModel.initializeColumnComparator() added, overridable
   EntityJSONParser, made couple of methods public
   AbstractFilteredTableModelTest.customSorting() added
+  EntityConnectionImpl.EntityResultPacker.loadEntity() error message improved

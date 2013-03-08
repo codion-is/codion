@@ -1222,7 +1222,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
           entity.setValue(property, property.fetchValue(resultSet), false);
         }
         catch (Exception e) {
-          throw new SQLException("Unable to fetch value for: " + property + ", entityID: " + entityID, e);
+          throw new SQLException("Exception fetching: " + property + ", entity: " + entityID + " [" + e.getMessage() + "]", e);
         }
       }
 
