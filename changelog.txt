@@ -3371,3 +3371,5 @@
   EntityJSONParser, made couple of methods public
   AbstractFilteredTableModelTest.customSorting() added
   EntityConnectionImpl.EntityResultPacker.loadEntity() error message improved
+  LoginPanel improved a bit, allowing easier customization
+  EntityDataUtil.batchInsert() now throws exception on non-positive integer batchSize

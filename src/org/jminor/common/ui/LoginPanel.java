@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
-import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 
 /**
@@ -60,8 +59,11 @@ public final class LoginPanel extends JPanel {
   public static User showLoginPanel(final JComponent parent, final User defaultUser,
                                     final Icon icon, final String dialogTitle,
                                     final String usernameLabel, final String passwordLabel) throws CancelException {
-    final LoginPanel panel = new LoginPanel(defaultUser, false, usernameLabel, passwordLabel);
-    final JOptionPane pane = new JOptionPane(panel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, icon);
+    return new LoginPanel(defaultUser, false, usernameLabel, passwordLabel).showLoginPanel(parent, icon, dialogTitle);
+  }
+
+  public User showLoginPanel(final JComponent parent, final Icon icon, final String dialogTitle) throws CancelException {
+    final JOptionPane pane = new JOptionPane(this, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, icon);
     final JDialog dialog = pane.createDialog(parent, dialogTitle == null ? Messages.get(Messages.LOGIN) : dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.pack();
@@ -70,7 +72,7 @@ public final class LoginPanel extends JPanel {
     dialog.setVisible(true);
 
     if (pane.getValue() != null && pane.getValue().equals(0)) {
-      return panel.getUser();
+      return getUser();
     }
     else {
       throw new CancelException();
@@ -109,7 +111,7 @@ public final class LoginPanel extends JPanel {
     retBase.add(lblPass);
     retBase.add(passwordField);
 
-    setLayout(new FlowLayout(FlowLayout.CENTER));
+    setLayout(new BorderLayout(5, 5));
     add(retBase, BorderLayout.CENTER);
     if (usernameField.getText().length() == 0) {
       UiUtil.addInitialFocusHack(usernameField, new AbstractAction() {
