@@ -3373,3 +3373,5 @@
   EntityConnectionImpl.EntityResultPacker.loadEntity() error message improved
   LoginPanel improved a bit, allowing easier customization
   EntityDataUtil.batchInsert() now throws exception on non-positive integer batchSize
+  PropertyImpl.prepareValue() added
+  EntityConnectionImpl, minor refactoring

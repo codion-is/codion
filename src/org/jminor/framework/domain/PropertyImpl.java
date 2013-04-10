@@ -454,6 +454,20 @@ class PropertyImpl implements Property {
     return typeClass;
   }
 
+  /**
+   * Prepares the value according to the property configuration, such as rounding
+   * to the correct number of fraction digits in case of doubles
+   * @param value the value to prepare
+   * @return the prepared value
+   */
+  Object prepareValue(final Object value) {
+    if (value != null && isDouble()) {
+      return Util.roundDouble((Double) value, getMaximumFractionDigits());
+    }
+
+    return value;
+  }
+
   private Format initializeDefaultFormat() {
     if (isTime()) {
       if (isDate()) {

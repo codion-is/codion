@@ -939,12 +939,9 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
    */
   private static boolean containsWhereClause(final String selectQuery) {
     final String lowerCaseQuery = selectQuery.toLowerCase();
-    int lastFromIndex = lowerCaseQuery.lastIndexOf("from ");
-    if (lastFromIndex < 0) {
-      lastFromIndex = 0;
-    }
 
-    return selectQuery.substring(lastFromIndex, lowerCaseQuery.length()-1).contains("where ");
+    return selectQuery.substring(Math.max(0, lowerCaseQuery.lastIndexOf("from ")),
+            lowerCaseQuery.length()).contains("where ");
   }
 
   /**
