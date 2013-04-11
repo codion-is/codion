@@ -66,7 +66,7 @@ public class EntityCriteriaUtilTest {
   public void propertyCriteria() {
     final Criteria<Property.ColumnProperty> critOne = EntityCriteriaUtil.<String>propertyCriteria(EmpDept.T_DEPARTMENT,
             EmpDept.DEPARTMENT_LOCATION, SearchType.LIKE, true, "New York");
-    assertEquals("loc like ?", critOne.asString());
+    assertEquals("loc like ?", critOne.getWhereClause());
     assertNotNull(critOne);
   }
 
@@ -74,7 +74,7 @@ public class EntityCriteriaUtilTest {
   public void foreignKeyCriteriaNull() {
     final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, (Entity.Key) null);
-    assertEquals("deptno is null", criteria.asString());
+    assertEquals("deptno is null", criteria.getWhereClause());
   }
 
   @Test
@@ -83,17 +83,17 @@ public class EntityCriteriaUtilTest {
     department.setValue(EmpDept.DEPARTMENT_ID, 10);
     Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department);
-    assertEquals("deptno = ?", criteria.asString());
+    assertEquals("deptno = ?", criteria.getWhereClause());
 
     final Entity department2 = Entities.entity(EmpDept.T_DEPARTMENT);
     department2.setValue(EmpDept.DEPARTMENT_ID, 11);
     criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department, department2);
-    assertEquals("deptno in (?, ?)", criteria.asString());
+    assertEquals("deptno in (?, ?)", criteria.getWhereClause());
 
     criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.NOT_LIKE, department, department2);
-    assertEquals("deptno not in (?, ?)", criteria.asString());
+    assertEquals("deptno not in (?, ?)", criteria.getWhereClause());
   }
 
   @Test
@@ -102,7 +102,7 @@ public class EntityCriteriaUtilTest {
     department.setValue(EmpDept.DEPARTMENT_ID, 10);
     final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department.getPrimaryKey());
-    assertEquals("deptno = ?", criteria.asString());
+    assertEquals("deptno = ?", criteria.getWhereClause());
   }
 
   @Test
@@ -110,7 +110,7 @@ public class EntityCriteriaUtilTest {
     final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT,
             new SimpleCriteria<Property.ColumnProperty>("department name is not null"), EmpDept.DEPARTMENT_NAME, -1);
     assertEquals(0, criteria.getValues().size());
-    assertEquals(0, criteria.getValueProperties().size());
+    assertEquals(0, criteria.getValueKeys().size());
     assertEquals(criteria.getOrderByClause(), EmpDept.DEPARTMENT_NAME);
   }
 
@@ -118,17 +118,17 @@ public class EntityCriteriaUtilTest {
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
     assertEquals("where deptno = ?", criteria.getWhereClause());
     assertEquals(1, criteria.getValues().size());
-    assertEquals(1, criteria.getValueProperties().size());
+    assertEquals(1, criteria.getValueKeys().size());
     assertEquals(10, criteria.getValues().get(0));
-    assertEquals(EmpDept.DEPARTMENT_ID, criteria.getValueProperties().get(0).getPropertyID());
+    assertEquals(EmpDept.DEPARTMENT_ID, criteria.getValueKeys().get(0).getPropertyID());
   }
 
   private void assertCriteria(final EntityCriteria criteria) {
     assertEquals(EmpDept.T_DEPARTMENT, criteria.getEntityID());
     assertEquals("where dname not like ?", criteria.getWhereClause());
     assertEquals(1, criteria.getValues().size());
-    assertEquals(1, criteria.getValueProperties().size());
+    assertEquals(1, criteria.getValueKeys().size());
     assertEquals("DEPT", criteria.getValues().get(0));
-    assertEquals(EmpDept.DEPARTMENT_NAME, criteria.getValueProperties().get(0).getPropertyID());
+    assertEquals(EmpDept.DEPARTMENT_NAME, criteria.getValueKeys().get(0).getPropertyID());
   }
 }

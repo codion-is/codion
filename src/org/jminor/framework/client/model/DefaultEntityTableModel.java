@@ -9,7 +9,6 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.table.AbstractFilteredTableModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -21,6 +20,8 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import org.json.JSONException;
+import org.json.JSONObject;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -32,6 +33,7 @@ import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -60,6 +62,11 @@ import java.util.Map;
 public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, Property> implements EntityTableModel {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityTableModel.class);
+
+  private static final String PREFERENCES_COLUMNS = "columns";
+  private static final String PREFERENCES_COLUMN_WIDTH = "width";
+  private static final String PREFERENCES_COLUMN_VISIBLE = "visible";
+  private static final String PREFERENCES_COLUMN_INDEX = "index";
 
   /**
    * The entity ID
@@ -111,8 +118,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    */
   private boolean batchUpdateAllowed = true;
 
-  private ReportDataWrapper reportDataSource;
-
   /**
    * Instantiates a new DefaultEntityTableModel with default column and search models.
    * @param entityID the entity ID
@@ -140,6 +145,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     this.connectionProvider = connectionProvider;
     this.searchModel = searchModel;
     bindEvents();
+    applyPreferences();
   }
 
   /** {@inheritDoc} */
@@ -289,19 +295,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   @Override
   public final boolean isReadOnly() {
     return editModel == null || editModel.isReadOnly();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final ReportDataWrapper getReportDataSource() {
-    return reportDataSource;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EntityTableModel setReportDataSource(final ReportDataWrapper reportDataSource) {
-    this.reportDataSource = reportDataSource;
-    return this;
   }
 
   /** {@inheritDoc} */
@@ -545,6 +538,17 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
+  public final void savePreferences() {
+    try {
+      Util.putUserPreference(getPreferencesKey(), createPreferences().toString());
+    }
+    catch (JSONException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
   protected final void doRefresh() {
     try {
       LOG.debug("{} refreshing", this);
@@ -717,6 +721,62 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
 
     return model;
+  }
+
+  private String getPreferencesKey() {
+    return getClass().getName() + "-" + getEntityID();
+  }
+
+  private JSONObject createPreferences() throws JSONException {
+    final JSONObject preferencesRoot = new JSONObject();
+    preferencesRoot.put(PREFERENCES_COLUMNS, createColumnPreferences());
+
+    return preferencesRoot;
+  }
+
+  private JSONObject createColumnPreferences() throws JSONException {
+    final JSONObject columnPreferencesRoot = new JSONObject();
+    final ArrayList<TableColumn> columns = new ArrayList<TableColumn>(Collections.list(getColumnModel().getColumns()));
+    columns.addAll(getHiddenColumns());
+    for (final TableColumn column : columns) {
+      final JSONObject columnObject = new JSONObject();
+      final boolean visible = isColumnVisible((Property) column.getIdentifier());
+      columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
+      columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
+      columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? getColumnModel().getColumnIndex(column.getIdentifier()) : -1);
+      columnPreferencesRoot.put(column.getIdentifier().toString(), columnObject);
+    }
+
+    return columnPreferencesRoot;
+  }
+
+  private void applyPreferences() {
+    try {
+      final String preferencesString = Util.getUserPreference(getPreferencesKey(), "");
+      if (preferencesString.length() > 0) {
+        final JSONObject preferences = new JSONObject(preferencesString);
+        applyColumnPreferences(preferences.getJSONObject(PREFERENCES_COLUMNS));
+      }
+    }
+    catch (JSONException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private void applyColumnPreferences(final JSONObject preferences) throws JSONException {
+    final List<TableColumn> allColumns = Collections.list(getColumnModel().getColumns());
+    for (final TableColumn column : allColumns) {
+      final JSONObject columnPreferences = preferences.getJSONObject(column.getIdentifier().toString());
+      final int width = columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH);
+      column.setPreferredWidth(width);
+      if (columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
+        final int index = columnPreferences.getInt(PREFERENCES_COLUMN_INDEX);
+        getColumnModel().moveColumn(getColumnModel().getColumnIndex(column.getIdentifier()), index);
+      }
+      else {
+        setColumnVisible((Property) column.getIdentifier(), false);
+      }
+    }
   }
 
   private static final class SummaryValueProvider implements PropertySummaryModel.PropertyValueProvider {

@@ -387,6 +387,14 @@ public class DefaultEntityModel implements EntityModel {
 
   /** {@inheritDoc} */
   @Override
+  public void savePreferences() {
+    if (containsTableModel()) {
+      getTableModel().savePreferences();
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void addLinkedDetailModelsListener(final EventListener listener) {
     evtLinkedDetailModelsChanged.addListener(listener);
   }

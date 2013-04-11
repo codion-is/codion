@@ -901,8 +901,19 @@ public final class UiUtil {
   }
 
   public static JDialog showInDialog(final Container owner, final JComponent componentToShow, final boolean modal,
+                                     final String title) {
+    return showInDialog(owner, componentToShow, modal, title, null, null, null, null);
+  }
+
+  public static JDialog showInDialog(final Container owner, final JComponent componentToShow, final boolean modal,
                                      final String title, final Dimension size, final JButton defaultButton,
                                      final EventObserver closeEvent) {
+    return showInDialog(owner, componentToShow, modal, title, size, defaultButton, closeEvent, null);
+  }
+
+  public static JDialog showInDialog(final Container owner, final JComponent componentToShow, final boolean modal,
+                                     final String title, final Dimension size, final JButton defaultButton,
+                                     final EventObserver closeEvent, final Action onClosedAction) {
     final JDialog dialog = new JDialog(getParentWindow(owner), title);
     dialog.setLayout(createBorderLayout());
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -918,6 +929,14 @@ public final class UiUtil {
         @Override
         public void eventOccurred() {
           disposeActionListener.actionPerformed(null);
+        }
+      });
+    }
+    if (onClosedAction != null) {
+      dialog.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosed(final WindowEvent e) {
+          onClosedAction.actionPerformed(new ActionEvent(dialog, -1, null));
         }
       });
     }

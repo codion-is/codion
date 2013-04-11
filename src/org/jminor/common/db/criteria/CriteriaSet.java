@@ -74,7 +74,7 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
 
   /** {@inheritDoc} */
   @Override
-  public String asString() {
+  public String getWhereClause() {
     if (criteriaList.isEmpty()) {
       return "";
     }
@@ -82,7 +82,7 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
     final StringBuilder criteriaString = new StringBuilder(criteriaList.size() > 1 ? "(" : "");
     int i = 0;
     for (final Criteria criteria : criteriaList) {
-      criteriaString.append(criteria.asString());
+      criteriaString.append(criteria.getWhereClause());
       if (i++ < criteriaList.size() - 1) {
         criteriaString.append(conjunction.toString());
       }

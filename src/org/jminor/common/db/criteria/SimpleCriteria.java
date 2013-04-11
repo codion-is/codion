@@ -17,7 +17,7 @@ public final class SimpleCriteria<T> implements Criteria<T>, Serializable {
   private static final long serialVersionUID = 1;
 
   private final String criteriaString;
-  private final List<Object> values;
+  private final List<?> values;
   private final List<T> keys;
 
   /**
@@ -36,7 +36,7 @@ public final class SimpleCriteria<T> implements Criteria<T>, Serializable {
    * @param keys the keys required by this criteria string, in the same order as their respective values
    * @throws IllegalArgumentException in case any of the parameters are null
    */
-  public SimpleCriteria(final String criteriaString, final List<Object> values, final List<T> keys) {
+  public SimpleCriteria(final String criteriaString, final List<?> values, final List<T> keys) {
     this.criteriaString = Util.rejectNullValue(criteriaString, "criteriaString");
     this.values = Util.rejectNullValue(values, "values");
     this.keys = Util.rejectNullValue(keys, "keys");
@@ -44,13 +44,13 @@ public final class SimpleCriteria<T> implements Criteria<T>, Serializable {
 
   /** {@inheritDoc} */
   @Override
-  public String asString() {
+  public String getWhereClause() {
     return criteriaString;
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<Object> getValues() {
+  public List<?> getValues() {
     return values;
   }
 

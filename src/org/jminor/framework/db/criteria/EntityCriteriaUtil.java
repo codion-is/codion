@@ -359,13 +359,13 @@ public final class EntityCriteriaUtil {
 
     /** {@inheritDoc} */
     @Override
-    public List<Object> getValues() {
+    public List<?> getValues() {
       return criteria == null ? null : criteria.getValues();
     }
 
     /** {@inheritDoc} */
     @Override
-    public List<Property.ColumnProperty> getValueProperties() {
+    public List<Property.ColumnProperty> getValueKeys() {
       return criteria == null ? null : criteria.getValueKeys();
     }
 
@@ -390,7 +390,7 @@ public final class EntityCriteriaUtil {
     /** {@inheritDoc} */
     @Override
     public String getWhereClause(final boolean includeWhereKeyword) {
-      final String criteriaString = criteria == null ? "" : criteria.asString();
+      final String criteriaString = criteria == null ? "" : criteria.getWhereClause();
 
       return criteriaString.length() != 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
     }
@@ -496,13 +496,13 @@ public final class EntityCriteriaUtil {
 
     /** {@inheritDoc} */
     @Override
-    public List<Property.ColumnProperty> getValueProperties() {
-      return criteria.getValueProperties();
+    public List<Property.ColumnProperty> getValueKeys() {
+      return criteria.getValueKeys();
     }
 
     /** {@inheritDoc} */
     @Override
-    public List<Object> getValues() {
+    public List<?> getValues() {
       return criteria.getValues();
     }
 
@@ -639,8 +639,8 @@ public final class EntityCriteriaUtil {
 
     /** {@inheritDoc} */
     @Override
-    public String asString() {
-      return criteria.asString();
+    public String getWhereClause() {
+      return criteria.getWhereClause();
     }
 
     /** {@inheritDoc} */
@@ -775,7 +775,7 @@ public final class EntityCriteriaUtil {
 
     /** {@inheritDoc} */
     @Override
-    public String asString() {
+    public String getWhereClause() {
       return getConditionString();
     }
 
@@ -962,7 +962,7 @@ public final class EntityCriteriaUtil {
 
     /** {@inheritDoc} */
     @Override
-    public String asString() {
+    public String getWhereClause() {
       return getForeignKeyCriteriaString();
     }
 
@@ -978,7 +978,7 @@ public final class EntityCriteriaUtil {
 
     /** {@inheritDoc} */
     @Override
-    public List<Object> getValues() {
+    public List<?> getValues() {
       if (isNullCriteria) {
         return Collections.emptyList();
       }//null criteria, uses 'x is null', not 'x = ?'
@@ -991,19 +991,19 @@ public final class EntityCriteriaUtil {
         return getMultipleForeignKeyCriteriaString();
       }
 
-      return createSingleForeignKeyCriteria(values.get(0)).asString();
+      return createSingleForeignKeyCriteria(values.get(0)).getWhereClause();
     }
 
     private String getMultipleForeignKeyCriteriaString() {
       if (property.isCompositeReference()) {
-        return createMultipleCompositeForeignKeyCriteria().asString();
+        return createMultipleCompositeForeignKeyCriteria().getWhereClause();
       }
       else {
         return getInList(property.getReferenceProperties().get(0), searchType == SearchType.NOT_LIKE);
       }
     }
 
-    private List<Object> getForeignKeyCriteriaValues() {
+    private List<?> getForeignKeyCriteriaValues() {
       if (values.size() > 1) {
         return getCompositeForeignKeyCriteriaValues();
       }
@@ -1011,7 +1011,7 @@ public final class EntityCriteriaUtil {
       return createSingleForeignKeyCriteria(values.get(0)).getValues();
     }
 
-    private List<Object> getCompositeForeignKeyCriteriaValues() {
+    private List<?> getCompositeForeignKeyCriteriaValues() {
       return createMultipleCompositeForeignKeyCriteria().getValues();
     }
 

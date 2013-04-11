@@ -11,15 +11,19 @@ import java.util.List;
  */
 public interface Criteria<T> {
   /**
-   * @return a SQL where condition string without the 'where' keyword
+   * Returns a criteria clause based on this Criteria, note that this
+   * where clause contains the ? substitute character instead of the actual values.
+   * Whether or not the clause contains the WHERE keyword is implementation specific
+   * @return a where clause based on this Criteria
+   * @see #getValues()
    */
-  String asString();
+  String getWhereClause();
 
   /**
    * @return a list of the values this criteria is based on, in the order they appear
    * in the condition clause. An empty list is returned in case no values are specified.
    */
-  List<Object> getValues();
+  List<?> getValues();
 
   /**
    * @return a list of T describing the values this criteria is based on, in the same

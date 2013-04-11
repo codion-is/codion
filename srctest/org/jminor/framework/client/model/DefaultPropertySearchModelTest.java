@@ -25,13 +25,13 @@ public class DefaultPropertySearchModelTest {
     model.setSearchType(SearchType.LIKE);
     assertFalse(model.isLowerBoundRequired());
     model.setUpperBound("upper");
-    assertEquals(property.getPropertyID() + " like ?", model.getCriteria().asString());
+    assertEquals(property.getPropertyID() + " like ?", model.getCriteria().getWhereClause());
     model.setSearchType(SearchType.NOT_LIKE);
-    assertEquals(property.getPropertyID() + " not like ?", model.getCriteria().asString());
+    assertEquals(property.getPropertyID() + " not like ?", model.getCriteria().getWhereClause());
     model.setSearchType(SearchType.GREATER_THAN);
-    assertEquals(property.getPropertyID() + " >= ?", model.getCriteria().asString());
+    assertEquals(property.getPropertyID() + " >= ?", model.getCriteria().getWhereClause());
     model.setSearchType(SearchType.LESS_THAN);
-    assertEquals(property.getPropertyID() + " <= ?", model.getCriteria().asString());
+    assertEquals(property.getPropertyID() + " <= ?", model.getCriteria().getWhereClause());
 
     model.setSearchType(SearchType.WITHIN_RANGE);
     assertTrue(model.isLowerBoundRequired());
@@ -39,14 +39,14 @@ public class DefaultPropertySearchModelTest {
     List values = model.getCriteria().getValues();
     assertTrue(values.contains("upper"));
     assertTrue(values.contains("lower"));
-    assertEquals("(" + property.getPropertyID() + " >= ? and " + property.getPropertyID() + " <= ?)", model.getCriteria().asString());
+    assertEquals("(" + property.getPropertyID() + " >= ? and " + property.getPropertyID() + " <= ?)", model.getCriteria().getWhereClause());
 
     model.setSearchType(SearchType.LIKE);
     model.setAutomaticWildcard(true);
     values = model.getCriteria().getValues();
     assertTrue(values.contains("%upper%"));
-    assertEquals(property.getPropertyID() + " like ?", model.getCriteria().asString());
+    assertEquals(property.getPropertyID() + " like ?", model.getCriteria().getWhereClause());
     model.setSearchType(SearchType.NOT_LIKE);
-    assertEquals(property.getPropertyID() + " not like ?", model.getCriteria().asString());
+    assertEquals(property.getPropertyID() + " not like ?", model.getCriteria().getWhereClause());
   }
 }

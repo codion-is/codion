@@ -221,7 +221,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     try {
       deleteSQL = createDeleteSQL(criteria);
       statement = getConnection().prepareStatement(deleteSQL);
-      executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueProperties());
+      executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueKeys());
       commitIfTransactionIsNotOpen();
     }
     catch (SQLException e) {
@@ -254,7 +254,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
         final EntityCriteria criteria = EntityCriteriaUtil.criteria(criteriaKeys);
         deleteSQL = "delete from " + Entities.getTableName(hashedKeysEntry.getKey()) + " " + criteria.getWhereClause();
         statement = getConnection().prepareStatement(deleteSQL);
-        executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueProperties());
+        executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueKeys());
         statement.close();
         criteriaKeys.clear();
       }
@@ -375,7 +375,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
               "(" + selectSQL + " " + criteria.getWhereClause(!selectSQL.toLowerCase().contains("where ")) + ") alias", "count(*)", null, null);
       selectSQL += " " + criteria.getWhereClause(!containsWhereClause(selectSQL));
       statement = getConnection().prepareStatement(selectSQL);
-      resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
+      resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
       final List<Integer> result = DatabaseUtil.INTEGER_RESULT_PACKER.pack(resultSet, -1);
       commitIfTransactionIsNotOpen();
       if (result.isEmpty()) {
@@ -522,7 +522,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       values.add(null);//the blob value, set explicitly later
       values.addAll(criteria.getValues());
       properties.add(property);
-      properties.addAll(criteria.getValueProperties());
+      properties.addAll(criteria.getValueKeys());
 
       statement = getConnection().prepareStatement(sql);
       setParameterValues(statement, values, properties);
@@ -565,7 +565,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     try {
       logAccess("readBlob", new Object[]{sql});
       statement = getConnection().prepareStatement(sql);
-      setParameterValues(statement, criteria.getValues(), criteria.getValueProperties());
+      setParameterValues(statement, criteria.getValues(), criteria.getValueKeys());
 
       resultSet = statement.executeQuery();
       final List<Blob> result = BLOB_RESULT_PACKER.pack(resultSet, 1);
@@ -687,7 +687,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       selectSQL = getSelectSQL(criteria, Entities.getSelectColumnsString(criteria.getEntityID()),
               criteria.getOrderByClause(), Entities.getGroupByClause(criteria.getEntityID()), criteria.isForUpdate());
       statement = getConnection().prepareStatement(selectSQL);
-      resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
+      resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
       List<Entity> result = null;
       SQLException packingException = null;
       try {
@@ -729,7 +729,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     try {
       selectSQL = getSelectSQL(criteria, "*", null, null, true);
       statement = getConnection().prepareStatement(selectSQL);
-      resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueProperties());
+      resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
     }
     catch (SQLException e) {
       LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));

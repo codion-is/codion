@@ -12,7 +12,7 @@ public class SimpleCriteriaTest {
   public void test() {
     final String crit = "id = 1";
     final SimpleCriteria<Object> criteria = new SimpleCriteria<Object>(crit);
-    assertEquals(crit, criteria.asString());
+    assertEquals(crit, criteria.getWhereClause());
     assertEquals(0, criteria.getValueKeys().size());
     assertEquals(0, criteria.getValues().size());
   }

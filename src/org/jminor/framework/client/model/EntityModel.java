@@ -189,4 +189,9 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
    * @param listener the listener to remove
    */
   void removeLinkedDetailModelsListener(final EventListener listener);
+
+  /**
+   * Saves any user preferences
+   */
+  void savePreferences();
 }

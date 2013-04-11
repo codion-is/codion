@@ -6,7 +6,6 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -297,15 +296,6 @@ public final class DefaultEntityTableModelTest {
     assertTrue(testModel.isQueryConfigurationAllowed());
     testModel.refresh();
     assertFalse(testModel.isCellEditable(0,0));
-
-    final ReportDataWrapper wrapper = new ReportDataWrapper() {
-      @Override
-      public Object getDataSource() {
-        return null;
-      }
-    };
-    testModel.setReportDataSource(wrapper);
-    assertNotNull(testModel.getReportDataSource());
 
     assertEquals(Integer.class, testModel.getColumnClass(0));
 

@@ -1004,9 +1004,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /**
-   * Called during the exit() method, override to save user preferences on program exit
+   * Called during the exit() method, override to save user preferences on program exit,
+   * remember to call super.savePreferences() when overriding
    */
-  protected void savePreferences() {}
+  protected void savePreferences() {
+    for (final EntityPanel entityPanel : entityPanels) {
+      entityPanel.savePreferences();
+    }
+  }
 
   private void bindEventsInternal() {
     final StateObserver connected = applicationModel.getConnectionProvider().getConnectedObserver();

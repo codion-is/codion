@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -254,23 +253,8 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   /**
    * Returns an Iterator which iterates through the selected entities
    * @return the iterator used when generating reports
-   * @see #getReportDataSource()
    */
   Iterator<Entity> getSelectedEntitiesIterator();
-
-  /**
-   * @return the {@link ReportDataWrapper} specified for this table model
-   * @see #setReportDataSource(ReportDataWrapper)
-   * @see #getSelectedEntitiesIterator()
-   */
-  ReportDataWrapper getReportDataSource();
-
-  /**
-   * Sets the {@link ReportDataWrapper} to use during report generation
-   * @param reportDataSource the data source
-   * @return this {@link EntityTableModel} instance
-   */
-  EntityTableModel setReportDataSource(final ReportDataWrapper reportDataSource);
 
   /**
    * @param property the property for which to retrieve the values
@@ -305,4 +289,9 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @return the sorting directive assigned to the given property column
    */
   SortingDirective getSortingDirective(final String propertyID);
+
+  /**
+   * Saves any user preferences
+   */
+  void savePreferences();
 }

@@ -17,11 +17,11 @@ public final class CriteriaSetTest {
   @Test
   public void test() throws Exception {
     final CriteriaSet<Object> andSet = new CriteriaSet<Object>(Conjunction.AND, new TestCriteria(), new TestCriteria());
-    assertEquals("AND criteria set should be working", "(criteria and criteria)", andSet.asString());
+    assertEquals("AND criteria set should be working", "(criteria and criteria)", andSet.getWhereClause());
     assertEquals(2, andSet.getCriteriaCount());
 
     final CriteriaSet<Object> orSet = new CriteriaSet<Object>(Conjunction.OR, new TestCriteria(), new TestCriteria());
-    assertEquals("OR criteria set should be working", "(criteria or criteria)", orSet.asString());
+    assertEquals("OR criteria set should be working", "(criteria or criteria)", orSet.getWhereClause());
 
     final List<Object> values = orSet.getValues();
     assertEquals(2, values.size());
@@ -29,10 +29,10 @@ public final class CriteriaSetTest {
     assertEquals(2, keys.size());
 
     final CriteriaSet<Object> andOrAndSet = new CriteriaSet<Object>(Conjunction.AND, andSet, orSet);
-    assertEquals("AND OR AND criteria set should be working", "((criteria and criteria) and (criteria or criteria))", andOrAndSet.asString());
+    assertEquals("AND OR AND criteria set should be working", "((criteria and criteria) and (criteria or criteria))", andOrAndSet.getWhereClause());
 
     final CriteriaSet<Object> andOrOrSet = new CriteriaSet<Object>(Conjunction.OR, andSet, orSet);
-    assertEquals("AND OR OR criteria set should be working", "((criteria and criteria) or (criteria or criteria))", andOrOrSet.asString());
+    assertEquals("AND OR OR criteria set should be working", "((criteria and criteria) or (criteria or criteria))", andOrOrSet.getWhereClause());
 
     final CriteriaSet<Object> set = new CriteriaSet<Object>(Conjunction.OR);
     assertEquals(0, set.getCriteriaCount());
@@ -40,7 +40,7 @@ public final class CriteriaSetTest {
 
   private static class TestCriteria implements Criteria {
     @Override
-    public String asString() {
+    public String getWhereClause() {
       return "criteria";
     }
 

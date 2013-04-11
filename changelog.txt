@@ -3361,8 +3361,8 @@
   ValueMapEditModel.getValueChangeObserver() and validate() added
   DefaultEntityEditModel implements the above
   Ant task resolve_libraries now syncs
-  String.isEmpty() replaced by length() == 0 for android compatability
-  Coniguration.CLIENT_SCHEDULE_CONNECTION_VALIDATION
+  String.isEmpty() replaced by length() == 0 for android compatibility
+  Configuration.CLIENT_SCHEDULE_CONNECTION_VALIDATION
   DatabaseUtil.closeSilently(Connection) added
   H2Database refactored
   Configuration.SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT added
@@ -3375,3 +3375,13 @@
   EntityDataUtil.batchInsert() now throws exception on non-positive integer batchSize
   PropertyImpl.prepareValue() added
   EntityConnectionImpl, minor refactoring
+  EntityTableModel.get/SetReportDataSource() removed
+  Criteria.getValues() now uses generics wildcard
+  Criteria.asString() renamed to getWhereClause()
+  EntityCriteria now extends Criteria<Property.ColumnProperty>
+  EntityApplicationPanel.savePreferences() added and called when exiting
+  EntityPanel.savePreferences() added
+  EntityModel.savePreferences() added
+  EntityTableModel.savePreferences() added
+  DefaultEntityTableModel.savePreferences() implemented and applyPreferences() added and called during construction
+  UiUtil.showInDialog() overloaded with closeAction parameter
