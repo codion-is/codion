@@ -3385,3 +3385,10 @@
   EntityTableModel.savePreferences() added
   DefaultEntityTableModel.savePreferences() implemented and applyPreferences() added and called during construction
   UiUtil.showInDialog() overloaded with closeAction parameter
+  DefaultEntityTableModel, saving and applying preferences logs errors instead of throwing RuntimeException
+  AbstractFilteredTableModel, column comparators initialized lazily
+  Configuration.USE_CLIENT_PREFERENCES added
+  DefaultEntityTableModel uses the above
+  Util.removeUserPreference() added
+  Util.flushUserPreferences() added, called during EntityApplicationPanel.exit()
+  DefaultEntityTableModelTest.preferences() added

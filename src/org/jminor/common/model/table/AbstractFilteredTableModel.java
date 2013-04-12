@@ -175,7 +175,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       }
     }
     this.selectionModel = new SelectionModel(this);
-    initializeColumnComparators();
     resetSortingStates();
     bindEventsInternal();
   }
@@ -1094,23 +1093,19 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       comparison = 1;
     }
     else {
+      Comparator comparator = columnComparators.get(columnIdentifier);
+      if (comparator == null) {
+        comparator = initializeColumnComparator(columnIdentifier);
+        columnComparators.put(columnIdentifier, comparator);
+      }
       //noinspection unchecked
-      comparison = columnComparators.get(columnIdentifier).compare(valueOne, valueTwo);
+      comparison = comparator.compare(valueOne, valueTwo);
     }
     if (comparison != 0) {
       return directive == SortingDirective.DESCENDING ? -comparison : comparison;
     }
 
     return 0;
-  }
-
-  private void initializeColumnComparators() {
-    final Enumeration<TableColumn> columns = columnModel.getColumns();
-    while (columns.hasMoreElements()) {
-      final TableColumn column = columns.nextElement();
-      final C identifier = (C) column.getIdentifier();
-      columnComparators.put(identifier, initializeColumnComparator(identifier));
-    }
   }
 
   private boolean isSortingStateEnabled() {

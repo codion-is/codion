@@ -6,6 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -295,7 +296,7 @@ public final class DefaultEntityTableModelTest {
     assertTrue(testModel.isDeleteAllowed());
     assertTrue(testModel.isQueryConfigurationAllowed());
     testModel.refresh();
-    assertFalse(testModel.isCellEditable(0,0));
+    assertFalse(testModel.isCellEditable(0, 0));
 
     assertEquals(Integer.class, testModel.getColumnClass(0));
 
@@ -340,6 +341,35 @@ public final class DefaultEntityTableModelTest {
   @Test(expected = IllegalStateException.class)
   public void noVisibleColumns() {
     new DefaultEntityTableModel(EntityTestDomain.T_MASTER, EntityConnectionImplTest.CONNECTION_PROVIDER);
+  }
+
+  @Test
+  public void preferences() throws Exception {
+    testModel.clearPreferences();
+
+    final EntityTableModelTmp tableModel = new EntityTableModelTmp();
+    assertTrue(tableModel.isColumnVisible(Entities.getColumnProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING)));
+
+    tableModel.setColumnVisible(Entities.getColumnProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING), false);
+    tableModel.getColumnModel().moveColumn(1, 0);//double to 0, int to 1
+    TableColumn column = tableModel.getColumnModel().getColumn(3);
+    column.setWidth(150);//timestamp
+    column = tableModel.getColumnModel().getColumn(5);
+    column.setWidth(170);//entity_ref
+
+    tableModel.savePreferences();
+
+    final EntityTableModelTmp model = new EntityTableModelTmp();
+    assertFalse(model.isColumnVisible(Entities.getColumnProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING)));
+    assertTrue(model.getPropertyColumnIndex(EntityTestDomain.DETAIL_DOUBLE) == 0);
+    assertTrue(model.getPropertyColumnIndex(EntityTestDomain.DETAIL_INT) == 1);
+    column = model.getColumnModel().getColumn(3);
+    assertEquals(150, column.getWidth());
+    column = model.getColumnModel().getColumn(5);
+    assertEquals(170, column.getWidth());
+
+    model.clearPreferences();
+    Util.flushUserPreferences();
   }
 
   public static final class EntityTableModelTmp extends DefaultEntityTableModel {

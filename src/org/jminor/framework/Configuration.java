@@ -478,13 +478,19 @@ public final class Configuration {
    */
   public static final String SHOW_TOGGLE_EDIT_PANEL_CONTROL = "jminor.client.showToggleEditPanelControl";
 
-
   /**
    * Specifies whether or not an embedded database is shut down when disconnected from<br>
    * Value type: Boolean<br>
    * Default value: false
    */
   public static final String SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT = "jminor.db.shutdownEmbeddedOnDisconnect";
+
+  /**
+   * Specifies whether or not the client should save and apply user preferences<br>
+   * Value type: Boolean<br>
+   * Default value: true if required JSON library is found on classpath, false otherwise
+   */
+  public static final String USE_CLIENT_PREFERENCES = "jminor.client.useClientPreferences";
 
   private static final Properties PROPERTIES = new Properties();
 
@@ -544,6 +550,7 @@ public final class Configuration {
     PROPERTIES.put(SHOW_TOGGLE_EDIT_PANEL_CONTROL, true);
     PROPERTIES.put(DEFAULT_MAXIMUM_FRACTION_DIGITS, 10);
     PROPERTIES.put(SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT, false);
+    PROPERTIES.put(USE_CLIENT_PREFERENCES, Util.onClasspath("org.json.JSONObject"));
     parseSystemSettings();
   }
 
@@ -606,6 +613,7 @@ public final class Configuration {
     parseBooleanSetting(SHOW_TOGGLE_EDIT_PANEL_CONTROL);
     parseIntegerSetting(DEFAULT_MAXIMUM_FRACTION_DIGITS);
     parseBooleanSetting(SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT);
+    parseBooleanSetting(USE_CLIENT_PREFERENCES);
   }
 
   private static void parseIntegerSetting(final String setting) {
