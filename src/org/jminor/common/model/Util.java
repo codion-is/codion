@@ -45,6 +45,7 @@ import java.util.Map;
 import java.util.Properties;
 import java.util.Random;
 import java.util.concurrent.ThreadFactory;
+import java.util.prefs.BackingStoreException;
 import java.util.prefs.Preferences;
 
 /**
@@ -109,6 +110,15 @@ public final class Util {
   public static void putUserPreference(final String key, final String value) {
     rejectNullValue(key, "key");
     getUserPreferences().put(key, value);
+  }
+
+  public static void removeUserPreference(final String key) {
+    rejectNullValue(key, "key");
+    getUserPreferences().remove(key);
+  }
+
+  public static void flushUserPreferences() throws BackingStoreException {
+    getUserPreferences().flush();
   }
 
   public static String getDefaultUserName(final String applicationIdentifier, final String defaultName) {

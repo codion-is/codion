@@ -354,6 +354,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
     try {
       savePreferences();
+      Util.flushUserPreferences();
     }
     catch (Exception e) {
       LOG.debug("Exception while saving preferences", e);
