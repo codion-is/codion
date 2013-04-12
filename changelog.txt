@@ -3392,3 +3392,4 @@
   Util.removeUserPreference() added
   Util.flushUserPreferences() added, called during EntityApplicationPanel.exit()
   DefaultEntityTableModelTest.preferences() added
+  Util, added some javadoc

@@ -64,6 +64,7 @@ public final class Util {
   private static final int K = 1024;
   private static final String SPACE = " ";
   private static final String UNDERSCORE = "_";
+  private static final String KEY = "key";
   private static final int INPUT_BUFFER_SIZE = 8192;
   private static Preferences userPreferences;
 
@@ -102,21 +103,38 @@ public final class Util {
     }
   }
 
+  /**
+   * @param key the key identifying the preference
+   * @param defaultValue the default value if no preference is available
+   * @return the user preference associated with the given key
+   */
   public static String getUserPreference(final String key, final String defaultValue) {
-    rejectNullValue(key, "key");
+    rejectNullValue(key, KEY);
     return getUserPreferences().get(key, defaultValue);
   }
 
+  /**
+   * @param key the key to use to identify the preference
+   * @param value the preference value to associate with the given key
+   */
   public static void putUserPreference(final String key, final String value) {
-    rejectNullValue(key, "key");
+    rejectNullValue(key, KEY);
     getUserPreferences().put(key, value);
   }
 
+  /**
+   * Removes the preference associated with the given key
+   * @param key the key to use to identify the preference to remove
+   */
   public static void removeUserPreference(final String key) {
-    rejectNullValue(key, "key");
+    rejectNullValue(key, KEY);
     getUserPreferences().remove(key);
   }
 
+  /**
+   * Flushes the preferences to disk
+   * @throws BackingStoreException
+   */
   public static void flushUserPreferences() throws BackingStoreException {
     getUserPreferences().flush();
   }
@@ -220,6 +238,11 @@ public final class Util {
     return Long.parseLong(noGrouping);
   }
 
+  /**
+   * @param collection the collection
+   * @param onePerLine if true then each item is put on a separate line, otherwise a comma separator is used
+   * @return the collection contents as a string (using toString())
+   */
   public static String getCollectionContentsAsString(final Collection<?> collection, final boolean onePerLine) {
     if (collection == null) {
       return "";
@@ -228,6 +251,11 @@ public final class Util {
     return getArrayContentsAsString(collection.toArray(), onePerLine);
   }
 
+  /**
+   * @param items the items
+   * @param onePerLine if true then each item is put on a separate line, otherwise a comma separator is used
+   * @return the array contents as a string (using toString())
+   */
   public static String getArrayContentsAsString(final Object[] items, final boolean onePerLine) {
     if (items == null) {
       return "";
@@ -250,22 +278,37 @@ public final class Util {
     return stringBuilder.toString();
   }
 
+  /**
+   * @return the total memory allocated by this JVM in kilobytes
+   */
   public static long getAllocatedMemory() {
     return Runtime.getRuntime().totalMemory() / K;
   }
 
+  /**
+   * @return the free memory available to this JVM in kilobytes
+   */
   public static long getFreeMemory() {
     return Runtime.getRuntime().freeMemory() / K;
   }
 
+  /**
+   * @return the maximum memory available to this JVM in kilobytes
+   */
   public static long getMaxMemory() {
     return Runtime.getRuntime().maxMemory() / K;
   }
 
+  /**
+   * @return the memory used by this JVM in kilobytes
+   */
   public static long getUsedMemory() {
     return getAllocatedMemory() - getFreeMemory();
   }
 
+  /**
+   * @return a String indicating the memory usage of this JVM
+   */
   public static String getMemoryUsageString() {
     return getUsedMemory() + " KB";
   }
@@ -344,11 +387,25 @@ public final class Util {
     return getTextFileContents(inputStream, charset);
   }
 
+  /**
+   * Fetch the entire contents of a textfile, and return it in a String
+   * @param filename the name of the file
+   * @param charset the charset to use
+   * @return the file contents as a String
+   * @throws IOException in case of an exception
+   */
   public static String getTextFileContents(final String filename, final Charset charset) throws IOException {
     rejectNullValue(filename, "filename");
     return getTextFileContents(new FileInputStream(new File(filename)), charset);
   }
 
+  /**
+   * Fetch the entire contents of an InputStream, and return it in a String
+   * @param inputStream the input stream to read
+   * @param charset the charset to use
+   * @return the stream contents as a String
+   * @throws IOException in case of an exception
+   */
   public static String getTextFileContents(final InputStream inputStream, final Charset charset) throws IOException {
     rejectNullValue(inputStream, "inputStream");
     final StringBuilder contents = new StringBuilder();
@@ -369,6 +426,9 @@ public final class Util {
     return contents.toString();
   }
 
+  /**
+   * @return a String containing all system properties, one per line
+   */
   public static String getSystemProperties() {
     try {
       final SecurityManager manager = System.getSecurityManager();
@@ -428,10 +488,21 @@ public final class Util {
     writeFile(getDelimitedString(headers, data, delimiter), file);
   }
 
+  /**
+   * @param contents the contents to write to the file, overwriting the contents
+   * @param file the file
+   * @throws IOException in case of an exception
+   */
   public static void writeFile(final String contents, final File file) throws IOException {
     writeFile(contents, file, false);
   }
 
+  /**
+   * @param contents the contents to write to the file
+   * @param file the file
+   * @param append if true the contents are appended, otherwise overwritten
+   * @throws IOException in case of an exception
+   */
   public static void writeFile(final String contents, final File file, final boolean append) throws IOException {
     rejectNullValue(contents, "contents");
     rejectNullValue(file, "file");
@@ -446,6 +517,11 @@ public final class Util {
     }
   }
 
+  /**
+   * Deserializes a list of Objects from the given file
+   * @param file the file
+   * @return deserialized objects
+   */
   public static List<Object> deserializeFromFile(final File file) {
     final List<Object> objects = new ArrayList<Object>();
     ObjectInputStream inputStream = null;
@@ -466,6 +542,10 @@ public final class Util {
     return objects;
   }
 
+  /**
+   * Srializes a Collection of Objects to a given file
+   * @param file the file
+   */
   public static void serializeToFile(final Collection objects, final File file) {
     ObjectOutputStream outputStream = null;
     try {
@@ -492,6 +572,9 @@ public final class Util {
     return one == null && two == null || !(one == null ^ two == null) && one.equals(two);
   }
 
+  /**
+   * @return a string containing the version number
+   */
   public static String getVersion() {
     final String versionString = getVersionAndBuildNumber();
     if (versionString.toLowerCase().contains("build")) {
@@ -501,6 +584,9 @@ public final class Util {
     return "N/A";
   }
 
+  /**
+   * @return a string containing the version and build number
+   */
   public static String getVersionAndBuildNumber() {
     try {
       return getTextFileContents(Util.class, VERSION_FILE);
@@ -556,6 +642,11 @@ public final class Util {
     return true;
   }
 
+  /**
+   * @param file the file
+   * @return the bytes comprising the given file
+   * @throws IOException in case of an exception
+   */
   public static byte[] getBytesFromFile(final File file) throws IOException {
     rejectNullValue(file, "file");
     InputStream inputStream = null;
@@ -786,8 +877,8 @@ public final class Util {
   }
 
   /**
-   * @param maps the collections to check
-   * @return true if one of the given collections is null or empty or if no arguments are provided, false otherwise
+   * @param maps the maps to check
+   * @return true if one of the given maps is null or empty or if no arguments are provided, false otherwise
    */
   public static boolean nullOrEmpty(final Map... maps) {
     if (maps == null) {
@@ -901,6 +992,13 @@ public final class Util {
     }
   }
 
+  /**
+   * Initializes a proxy instance for the given class, using the class loader of that class
+   * @param clazz the class to proxy
+   * @param invocationHandler the invocation handler to use
+   * @param <T> the type
+   * @return a proxy for the given class
+   */
   @SuppressWarnings({"unchecked"})
   public static <T> T initializeProxy(final Class<T> clazz, final InvocationHandler invocationHandler) {
     return (T) Proxy.newProxyInstance(clazz.getClassLoader(), new Class[] {clazz}, invocationHandler);
@@ -1034,7 +1132,7 @@ public final class Util {
 
   private static <K, V> void map(final Map<K, Collection<V>> map, final V value, final K key) {
     rejectNullValue(value, "value");
-    rejectNullValue(key, "key");
+    rejectNullValue(key, KEY);
     rejectNullValue(map, "map");
     if (!map.containsKey(key)) {
       map.put(key, new ArrayList<V>());
