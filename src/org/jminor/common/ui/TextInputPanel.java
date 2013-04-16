@@ -177,7 +177,7 @@ public final class TextInputPanel extends JPanel {
         }
       };
       okAction.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-      UiUtil.showInDialog(UiUtil.getParentWindow(textComponent), scroller, true, dialogTitle, true, true, okAction);
+      UiUtil.displayInDialog(textComponent, scroller, dialogTitle, okAction);
     }
   }
 }

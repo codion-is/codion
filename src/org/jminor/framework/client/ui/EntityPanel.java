@@ -1391,20 +1391,17 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     final Point parentLocation = parent.getLocation();
     final Point location = new Point(parentLocation.x + (parentSize.width - size.width),
             parentLocation.y + (parentSize.height - size.height) - DETAIL_DIALOG_OFFSET);
-    SwingUtilities.invokeLater(new Runnable() {
-      /** {@inheritDoc} */
-      @Override
-      public void run() {
-        detailPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(EntityPanel.this), detailPanelTabbedPane, false,
-                caption + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false, true,
-                null, size, location, new AbstractAction() {
-          @Override
-          public void actionPerformed(final ActionEvent e) {
-            setDetailPanelState(HIDDEN);
-          }
-        });
-      }
-    });
+    detailPanelDialog = UiUtil.displayInDialog(EntityPanel.this, detailPanelTabbedPane,
+            caption + " - " + FrameworkMessages.get(FrameworkMessages.DETAIL_TABLES), false,
+            new AbstractAction() {
+              /** {@inheritDoc} */
+              @Override
+              public void actionPerformed(final ActionEvent e) {
+                setDetailPanelState(HIDDEN);
+              }
+            });
+    detailPanelDialog.setSize(size);
+    detailPanelDialog.setLocation(location);
   }
 
   /**
@@ -1422,14 +1419,15 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private void showEditDialog() {
     final Point location = getLocationOnScreen();
     location.setLocation(location.x + 1, location.y + getSize().height - editControlPanel.getSize().height - EDIT_DIALOG_LOCATION_OFFSET);
-    editPanelDialog = UiUtil.showInDialog(UiUtil.getParentWindow(this), editControlPanel, false,
-            caption, false, true, null, null, location, new AbstractAction() {
-      /** {@inheritDoc} */
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        setEditPanelState(HIDDEN);
-      }
-    });
+    editPanelDialog = UiUtil.displayInDialog(this, editControlPanel, caption, false,
+            new AbstractAction() {
+              /** {@inheritDoc} */
+              @Override
+              public void actionPerformed(final ActionEvent e) {
+                setEditPanelState(HIDDEN);
+              }
+            });
+    editPanelDialog.setLocation(location);
   }
 
   /**

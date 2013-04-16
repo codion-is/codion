@@ -408,8 +408,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
       /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
-        UiUtil.showInDialog(UiUtil.getParentWindow(FilteredTablePanel.this), panel, true,
-                Messages.get(Messages.SETTINGS), true, true, action);
+        UiUtil.displayInDialog(FilteredTablePanel.this, panel, Messages.get(Messages.SETTINGS), action);
       }
     });
 

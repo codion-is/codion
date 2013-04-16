@@ -59,7 +59,6 @@ import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Image;
 import java.awt.Insets;
-import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
@@ -334,7 +333,7 @@ public final class UiUtil {
       final Constructor constructor = jCalendarClass.getConstructor(Calendar.class);
       final JPanel calendarPanel = (JPanel) constructor.newInstance(cal);
 
-      showInDialog(getParentWindow(parent), calendarPanel, true, message, true, true, null);
+      displayInDialog(parent, calendarPanel, message);
 
       return new Date(((Calendar) getCalendar.invoke(calendarPanel)).getTimeInMillis());
     }
@@ -374,7 +373,7 @@ public final class UiUtil {
       final JPanel datePanel = new JPanel(createGridLayout(1, 1));
       datePanel.add(txtField);
 
-      showInDialog(getParentWindow(parent), datePanel, true, message, true, true, null);
+      displayInDialog(parent, datePanel, message);
       return inputDateFormat.parse(txtField.getText());
     }
     catch (ParseException e) {
@@ -822,139 +821,97 @@ public final class UiUtil {
     }
   }
 
-  public static JDialog showInDialog(final Window owner, final JComponent componentToShow, final boolean modal, final String title,
-                                     final boolean includeButtonPanel, final boolean disposeOnOk, final Action okAction) {
-    return showInDialog(owner, componentToShow, modal, title, includeButtonPanel,disposeOnOk, okAction, null);
+  /**
+   * Displays the given component in a dialog
+   * @param owner the dialog owner
+   * @param component the component to display
+   * @param title the dialog title
+   * @return the dialog used to display the component
+   */
+  public static JDialog displayInDialog(final Container owner, final JComponent component, final String title) {
+    return displayInDialog(owner, component, title, true);
   }
 
-  public static JDialog showInDialog(final Window owner, final JComponent componentToShow, final boolean modal, final String title,
-                                     final boolean includeButtonPanel, final boolean disposeOnOk, final Action okAction,
-                                     final Dimension size) {
-    return showInDialog(owner, componentToShow, modal, title, includeButtonPanel,disposeOnOk, okAction, size, null, null);
+  /**
+   * Displays the given component in a dialog
+   * @param owner the dialog owner
+   * @param component the component to display
+   * @param title the dialog title
+   * @param modal if true then the dialog is modal
+   * @return the dialog used to display the component
+   */
+  public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
+                                        final boolean modal) {
+    return displayInDialog(owner, component, title, modal, null, null, null);
   }
 
-  public static JDialog showInDialog(final Window owner, final JComponent componentToShow, final boolean modal, final String title,
-                                     final boolean includeButtonPanel, final boolean disposeOnOk, final Action okAction,
-                                     final Dimension size, final Point location, final Action closeAction) {
-    final JDialog dialog = new JDialog(owner, title);
-    dialog.setLayout(createBorderLayout());
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    if (closeAction != null) {
-      dialog.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosed(final WindowEvent e) {
-          closeAction.actionPerformed(new ActionEvent(dialog, -1, null));
-        }
-      });
-    }
-    final String okCaption = okAction != null ? (String) okAction.getValue(Action.NAME) : Messages.get(Messages.OK);
-    final Action ok = new AbstractAction(okCaption) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        if (okAction != null) {
-          okAction.actionPerformed(e);
-        }
-        if (disposeOnOk) {
-          dialog.setVisible(false);
-          dialog.dispose();
-        }
-      }
-    };
-    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-            new DisposeWindowAction(dialog));
-    if (includeButtonPanel) {
-      final JPanel buttonPanel = new JPanel(createFlowLayout(FlowLayout.RIGHT));
-      final JButton okButton = new JButton(ok);
-      final Character okMnemonic;
-      if (okAction != null && okAction.getValue(Action.MNEMONIC_KEY) != null) {
-        okMnemonic = (Character) okAction.getValue(Action.MNEMONIC_KEY);
-      }
-      else {
-        okMnemonic = Messages.get(Messages.OK_MNEMONIC).charAt(0);
-      }
-
-      if (okMnemonic != null) {
-        okButton.setMnemonic(okMnemonic);
-      }
-      buttonPanel.add(okButton);
-      dialog.getRootPane().setDefaultButton(okButton);
-      dialog.add(buttonPanel, BorderLayout.SOUTH);
-    }
-    dialog.add(componentToShow, BorderLayout.CENTER);
-    if (size == null) {
-      dialog.pack();
-    }
-    else {
-      dialog.setSize(size);
-    }
-    if (location == null) {
-      dialog.setLocationRelativeTo(owner);
-    }
-    else {
-      dialog.setLocation(location);
-    }
-    dialog.setModal(modal);
-    dialog.setResizable(true);
-    dialog.setVisible(true);
-
-    return dialog;
+  /**
+   * Displays the given component in a dialog
+   * @param owner the dialog owner
+   * @param component the component to display
+   * @param title the dialog title
+   * @param closeEvent the dialog will be disposed of when this event occurs
+   * @return the dialog used to display the component
+   */
+  public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
+                                        final EventObserver closeEvent) {
+    return displayInDialog(owner, component, title, true, closeEvent);
   }
 
-  public static JDialog showInDialog(final Container owner, final JComponent componentToShow, final boolean modal,
-                                     final String title) {
-    return showInDialog(owner, componentToShow, modal, title, null, null, null, null);
+  /**
+   * Displays the given component in a dialog
+   * @param owner the dialog owner
+   * @param component the component to display
+   * @param title the dialog title
+   * @param modal if true then the dialog is modal
+   * @param closeEvent the dialog will be disposed of when this event occurs
+   * @return the dialog used to display the component
+   */
+  public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
+                                        final boolean modal, final EventObserver closeEvent) {
+    return displayInDialog(owner, component, title, modal, null, closeEvent, null);
   }
 
-  public static JDialog showInDialog(final Container owner, final JComponent componentToShow, final boolean modal,
-                                     final String title, final Dimension size, final JButton defaultButton,
-                                     final EventObserver closeEvent) {
-    return showInDialog(owner, componentToShow, modal, title, size, defaultButton, closeEvent, null);
+  /**
+   * Displays the given component in a dialog
+   * @param owner the dialog owner
+   * @param component the component to display
+   * @param title the dialog title
+   * @param onClosedAction this action will be registered as a windowClosed action for the dialog
+   * @return the dialog used to display the component
+   */
+  public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
+                                        final Action onClosedAction) {
+    return displayInDialog(owner, component, title, true, onClosedAction);
   }
 
-  public static JDialog showInDialog(final Container owner, final JComponent componentToShow, final boolean modal,
-                                     final String title, final Dimension size, final JButton defaultButton,
-                                     final EventObserver closeEvent, final Action onClosedAction) {
-    final JDialog dialog = new JDialog(getParentWindow(owner), title);
-    dialog.setLayout(createBorderLayout());
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    if (defaultButton != null) {
-      dialog.getRootPane().setDefaultButton(defaultButton);
-    }
+  /**
+   * Displays the given component in a dialog
+   * @param owner the dialog owner
+   * @param component the component to display
+   * @param title the dialog title
+   * @param modal if true then the dialog is modal
+   * @param onClosedAction this action will be registered as a windowClosed action for the dialog
+   * @return the dialog used to display the component
+   */
+  public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
+                                        final boolean modal, final Action onClosedAction) {
+    return displayInDialog(owner, component, title, modal, null, null, onClosedAction);
+  }
 
-    final Action disposeActionListener = new DisposeWindowAction(dialog);
-    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, disposeActionListener);
-    if (closeEvent != null) {
-      closeEvent.addListener(new EventAdapter() {
-        /** {@inheritDoc} */
-        @Override
-        public void eventOccurred() {
-          disposeActionListener.actionPerformed(null);
-        }
-      });
-    }
-    if (onClosedAction != null) {
-      dialog.addWindowListener(new WindowAdapter() {
-        @Override
-        public void windowClosed(final WindowEvent e) {
-          onClosedAction.actionPerformed(new ActionEvent(dialog, -1, null));
-        }
-      });
-    }
-
-    dialog.add(componentToShow, BorderLayout.CENTER);
-    if (size == null) {
-      dialog.pack();
-    }
-    else {
-      dialog.setSize(size);
-    }
-
-    dialog.setLocationRelativeTo(owner);
-    dialog.setModal(modal);
-    dialog.setResizable(true);
-    dialog.setVisible(true);
-
-    return dialog;
+  /**
+   * Displays the given component in a dialog
+   * @param owner the dialog owner
+   * @param component the component to display
+   * @param title the dialog title
+   * @param modal if true then the dialog is modal
+   * @param defaultButton the the default dialog button
+   * @param closeEvent the dialog will be disposed of when this event occurs
+   * @return the dialog used to display the component
+   */
+  public static JDialog displayInDialog(final Container owner, final JComponent component, final String title, final boolean modal,
+                                        final JButton defaultButton, final EventObserver closeEvent) {
+    return displayInDialog(owner, component, title, modal, defaultButton, closeEvent, null);
   }
 
   /**
@@ -1203,9 +1160,8 @@ public final class UiUtil {
     finally {
       setWaitCursor(false, dialogParent);
     }
-    final JDialog dialog = initializeDialog(dialogParent, imagePanel);
-    dialog.setTitle(imagePath);
-    dialog.setVisible(true);
+    imagePanel.setPreferredSize(getScreenSizeRatio(0.5));
+    displayInDialog(dialogParent, imagePanel, imagePath, false);
   }
 
   /**
@@ -1292,16 +1248,52 @@ public final class UiUtil {
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(string), null);
   }
 
-  private static JDialog initializeDialog(final JComponent parent, final NavigableImagePanel panel) {
-    final JDialog dialog =  new JDialog(getParentWindow(parent));
+  /**
+   * Displays the given component in a dialog
+   * @param owner the dialog owner
+   * @param component the component to display
+   * @param title the dialog title
+   * @param modal if true then the dialog is modal
+   * @param defaultButton the the default dialog button
+   * @param closeEvent the dialog will be disposed of when this event occurs
+   * @param onClosedAction this action will be registered as a windowClosed action for the dialog
+   * @return the dialog used to display the component
+   */
+  private static JDialog displayInDialog(final Container owner, final JComponent component, final String title, final boolean modal,
+                                        final JButton defaultButton, final EventObserver closeEvent, final Action onClosedAction) {
+    final JDialog dialog = new JDialog(getParentWindow(owner), title);
     dialog.setLayout(createBorderLayout());
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-            new DisposeWindowAction(dialog));
-    dialog.add(panel, BorderLayout.CENTER);
-    dialog.setSize(getScreenSizeRatio(0.5));
-    dialog.setLocationRelativeTo(parent);
-    dialog.setModal(false);
+    if (defaultButton != null) {
+      dialog.getRootPane().setDefaultButton(defaultButton);
+    }
+
+    final Action disposeActionListener = new DisposeWindowAction(dialog);
+    addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, disposeActionListener);
+    if (closeEvent != null) {
+      closeEvent.addListener(new EventAdapter() {
+        /** {@inheritDoc} */
+        @Override
+        public void eventOccurred() {
+          disposeActionListener.actionPerformed(null);
+        }
+      });
+    }
+    if (onClosedAction != null) {
+      dialog.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosed(final WindowEvent e) {
+          onClosedAction.actionPerformed(new ActionEvent(dialog, -1, null));
+        }
+      });
+    }
+
+    dialog.add(component, BorderLayout.CENTER);
+    dialog.pack();
+    dialog.setLocationRelativeTo(owner);
+    dialog.setModal(modal);
+    dialog.setResizable(true);
+    dialog.setVisible(true);
 
     return dialog;
   }

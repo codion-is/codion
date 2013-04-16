@@ -3393,3 +3393,4 @@
   Util.flushUserPreferences() added, called during EntityApplicationPanel.exit()
   DefaultEntityTableModelTest.preferences() added
   Util, added some javadoc
+  UiUtil.showInDialog() refactored and renamed to displayInDialog()

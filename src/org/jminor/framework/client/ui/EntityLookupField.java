@@ -281,7 +281,7 @@ public final class EntityLookupField extends JTextField {
     final JPanel messagePanel = new JPanel(UiUtil.createBorderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     messagePanel.add(btnBase, BorderLayout.SOUTH);
-    UiUtil.showInDialog(this, messagePanel, true, Messages.get("OptionPane.messageDialogTitle"), null, null, closeEvent);
+    UiUtil.displayInDialog(this, messagePanel, Messages.get("OptionPane.messageDialogTitle"), closeEvent);
   }
 
   private static final class SettingsAction extends AbstractAction {
@@ -334,7 +334,7 @@ public final class EntityLookupField extends JTextField {
         }
       };
       action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-      UiUtil.showInDialog(UiUtil.getParentWindow(lookupPanel), panel, true, Messages.get(Messages.SETTINGS), true, true, action);
+      UiUtil.displayInDialog(lookupPanel, panel, Messages.get(Messages.SETTINGS), action);
     }
   }
 

@@ -236,16 +236,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   public final void viewApplicationTree() {
-    UiUtil.showInDialog(getParentWindow(), initializeApplicationTree(), false,
-            FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), false, true, null);
+    UiUtil.displayInDialog(this, initializeApplicationTree(), FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), false);
   }
 
   /**
    * Shows a dialog containing a dependency tree view of all defined entities
    */
   public final void viewDependencyTree() {
-    UiUtil.showInDialog(getParentWindow(), initializeDependencyTree(), false,
-            FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), false, true, null);
+    UiUtil.displayInDialog(this, initializeDependencyTree(), FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), false);
   }
 
   /**

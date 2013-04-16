@@ -57,9 +57,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
 
   public void importJSON() throws Exception {
     final File file = UiUtil.selectFile(this, null);
-    UiUtil.showInDialog(this, EntityTablePanel.createStaticEntityTablePanel(new EntityJSONParser().deserialize(
-            Util.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider()),
-            true, "Import", null, null, null);
+    UiUtil.displayInDialog(this, EntityTablePanel.createStaticEntityTablePanel(new EntityJSONParser().deserialize(
+            Util.getTextFileContents(file.getAbsolutePath(), Charset.defaultCharset())), getModel().getConnectionProvider()), "Import");
   }
 
   @Override

@@ -367,8 +367,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     finally {
       UiUtil.setWaitCursor(false, this);
     }
-    UiUtil.showInDialog(UiUtil.getParentWindow(this), panel, false,
-            FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY), true, false, action);
+    UiUtil.displayInDialog(this, panel, FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY), action);
   }
 
   /**
@@ -583,8 +582,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
             getInputProvider(propertyToUpdate, selectedEntities));
-    UiUtil.showInDialog(this, inputPanel, true, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE),
-            null, inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
+    UiUtil.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
+            inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
       EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), inputPanel.getValue(), selectedEntities);
       try {
@@ -1520,8 +1519,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     finally {
       UiUtil.setWaitCursor(false, dialogParent);
     }
-    UiUtil.showInDialog(UiUtil.getParentWindow(dialogParent), dependenciesPanel,
-            true, FrameworkMessages.get(FrameworkMessages.DEPENDENT_RECORDS_FOUND), true, true, null);
+    UiUtil.displayInDialog(UiUtil.getParentWindow(dialogParent), dependenciesPanel,
+            FrameworkMessages.get(FrameworkMessages.DEPENDENT_RECORDS_FOUND));
   }
 
   private static JLabel initializeStatusMessageLabel() {

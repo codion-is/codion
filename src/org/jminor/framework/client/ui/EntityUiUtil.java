@@ -181,8 +181,7 @@ public final class EntityUiUtil {
       lookupModel.setMultipleSelectionAllowed(false);
     }
     final InputProviderPanel inputPanel = new InputProviderPanel(lookupCaption, new EntityLookupProvider(lookupModel, null));
-    UiUtil.showInDialog(UiUtil.getParentWindow(dialogParent), inputPanel, true, dialogTitle,
-            null, inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
+    UiUtil.displayInDialog(dialogParent, inputPanel, dialogTitle, true, inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
       return lookupModel.getSelectedEntities();
     }
