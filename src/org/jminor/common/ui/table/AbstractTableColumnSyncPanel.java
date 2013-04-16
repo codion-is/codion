@@ -15,8 +15,10 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
+import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
 
 /**
@@ -25,6 +27,7 @@ import java.util.Map;
 public abstract class AbstractTableColumnSyncPanel extends JPanel {
 
   private final TableColumnModel columnModel;
+  private final List<TableColumn> columns;
   private final Box.Filler verticalFiller;
   private Map<TableColumn, JPanel> columnPanels;
 
@@ -32,18 +35,13 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
    * Instantiates a new AbstractTableColumnSyncPanel.
    * @param columnModel the column model
    */
-  public AbstractTableColumnSyncPanel(final TableColumnModel columnModel) {
+  public AbstractTableColumnSyncPanel(final TableColumnModel columnModel, final List<TableColumn> columns) {
     setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
     this.columnModel = columnModel;
+    this.columns = Collections.unmodifiableList(columns);
+    columnModel.addColumnModelListener(new SyncColumnModelListener());
     final Dimension fillerSize = new Dimension();
     this.verticalFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
-  }
-
-  /**
-   * @return the underlying column model
-   */
-  public final TableColumnModel getColumnModel() {
-    return columnModel;
   }
 
   /**
@@ -79,7 +77,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
     }
     add(verticalFiller);
 
-    syncPanelWidths(columnModel, columnPanels);
+    syncPanelWidths();
     repaint();
   }
 
@@ -91,14 +89,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
   protected abstract JPanel initializeColumnPanel(final TableColumn column);
 
   private void bindColumnAndPanelSizes() {
-    if (columnModel.getColumnCount() != columnPanels.size()) {
-      throw new IllegalArgumentException("An equal number of columns and panels is required when binding sizes");
-    }
-
-    columnModel.addColumnModelListener(new SyncColumnModelListener());
-    final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      final TableColumn column = columnEnumeration.nextElement();
+    for (final TableColumn column : columns) {
       final JPanel panel = columnPanels.get(column);
       panel.setPreferredSize(new Dimension(column.getWidth(), panel.getPreferredSize().height));
       column.addPropertyChangeListener(new SyncListener(panel, column));
@@ -107,20 +98,16 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
 
   private Map<TableColumn, JPanel> initializeColumnPanels() {
     final Map<TableColumn, JPanel> panels = new HashMap<TableColumn, JPanel>();
-    final Enumeration<TableColumn> columns = columnModel.getColumns();
-    while (columns.hasMoreElements()) {
-      final TableColumn column = columns.nextElement();
+    for (final TableColumn column : columns) {
       panels.put(column, initializeColumnPanel(column));
     }
 
     return panels;
   }
 
-  private static void syncPanelWidths(final TableColumnModel columnModel, final Map<TableColumn, JPanel> panelMap) {
-    final Enumeration<TableColumn> columnEnumeration = columnModel.getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      final TableColumn column = columnEnumeration.nextElement();
-      final JPanel panel = panelMap.get(column);
+  private void syncPanelWidths() {
+    for (final TableColumn column : columns) {
+      final JPanel panel = columnPanels.get(column);
       syncPanelWidth(panel, column);
     }
   }

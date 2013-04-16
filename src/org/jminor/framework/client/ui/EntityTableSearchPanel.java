@@ -13,6 +13,7 @@ import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.table.AbstractTableColumnSyncPanel;
 import org.jminor.common.ui.table.ColumnSearchPanel;
+import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.ForeignKeySearchModel;
 import org.jminor.framework.client.model.PropertySearchModel;
@@ -26,10 +27,9 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JTextField;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.BorderLayout;
 import java.awt.event.ActionEvent;
-import java.util.Enumeration;
+import java.util.List;
 
 /**
  * A UI component based on the EntityTableSearchModel
@@ -41,6 +41,7 @@ public final class EntityTableSearchPanel extends JPanel {
   private final Event evtSimpleSearchChanged = Events.event();
 
   private final EntityTableSearchModel searchModel;
+  private final List<TableColumn> columns;
 
   private final AbstractTableColumnSyncPanel fullSearchPanel;
   private final JPanel simpleSearchPanel;
@@ -50,23 +51,19 @@ public final class EntityTableSearchPanel extends JPanel {
 
   /**
    * Instantiates a new EntityTableSearchPanel
-   * @param searchModel the search model
-   * @param columnModel the column model
    */
-  public EntityTableSearchPanel(final EntityTableSearchModel searchModel, final TableColumnModel columnModel) {
-    this(searchModel, columnModel, UiUtil.getPreferredScrollBarWidth());
+  public EntityTableSearchPanel(final EntityTableModel tableModel) {
+    this(tableModel, UiUtil.getPreferredScrollBarWidth());
   }
 
   /**
    * Instantiates a new EntityTableSearchPanel
-   * @param searchModel the search model
-   * @param columnModel the column model
    * @param verticalFillerWidth the vertical filler width, f.ex. the width of a scroll bar
    */
-  public EntityTableSearchPanel(final EntityTableSearchModel searchModel, final TableColumnModel columnModel,
-                                final int verticalFillerWidth) {
-    this.searchModel = searchModel;
-    this.fullSearchPanel = initializeFullSearchPanel(searchModel, columnModel, verticalFillerWidth);
+  public EntityTableSearchPanel(final EntityTableModel tableModel, final int verticalFillerWidth) {
+    this.searchModel = tableModel.getSearchModel();
+    this.columns = tableModel.getColumns();
+    this.fullSearchPanel = initializeFullSearchPanel(tableModel, verticalFillerWidth);
     this.simpleSearchAction = initializeSimpleSearchAction();
     this.simpleSearchPanel = initializeSimpleSearchPanel();
     setLayout(new BorderLayout());
@@ -164,9 +161,7 @@ public final class EntityTableSearchPanel extends JPanel {
    * @return the search panel associated with the given property
    */
   public ColumnSearchPanel getSearchPanel(final String propertyID) {
-    final Enumeration<TableColumn> columnEnumeration = fullSearchPanel.getColumnModel().getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      final TableColumn column = columnEnumeration.nextElement();
+    for (final TableColumn column : columns) {
       final Property property = (Property) column.getIdentifier();
       if (property.is(propertyID)) {
         return (ColumnSearchPanel) fullSearchPanel.getColumnPanels().get(column);
@@ -226,10 +221,8 @@ public final class EntityTableSearchPanel extends JPanel {
     };
   }
 
-  private AbstractTableColumnSyncPanel initializeFullSearchPanel(final EntityTableSearchModel searchModel,
-                                                                 final TableColumnModel columnModel,
-                                                                 final int verticalFillerWidth) {
-    final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(columnModel) {
+  private AbstractTableColumnSyncPanel initializeFullSearchPanel(final EntityTableModel tableModel, final int verticalFillerWidth) {
+    final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(tableModel.getColumnModel(), tableModel.getColumns()) {
       /** {@inheritDoc} */
       @Override
       protected JPanel initializeColumnPanel(final TableColumn column) {

@@ -3396,3 +3396,6 @@
   UiUtil.showInDialog() refactored and renamed to displayInDialog()
   AbstractFilteredTableModel.getComparable() is now abstract
   AbstractFilteredTableModelTest.findNextItemCoordinate() improved
+  AbstractTableColumnSyncPanel, regression bug, this class could not be instantiated with hidden columns (allowed with preferences)
+  AbstractFilteredTableModel.columns field added to help with the above
+  EntityTableSearchPanel constructor simplified

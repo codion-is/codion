@@ -222,8 +222,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param tableModel the EntityTableModel instance
    */
   public EntityTablePanel(final EntityTableModel tableModel) {
-    this(tableModel, new EntityTableSearchPanel(tableModel.getSearchModel(), tableModel.getColumnModel()),
-            new EntityTableSummaryPanel(tableModel));
+    this(tableModel, new EntityTableSearchPanel(tableModel), new EntityTableSummaryPanel(tableModel));
   }
 
   /**
@@ -241,8 +240,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param summaryPanel the summary panel
    */
   public EntityTablePanel(final EntityTableModel tableModel, final EntityTableSummaryPanel summaryPanel) {
-    this(tableModel, new EntityTableSearchPanel(tableModel.getSearchModel(), tableModel.getColumnModel()),
-            summaryPanel);
+    this(tableModel, new EntityTableSearchPanel(tableModel), summaryPanel);
   }
 
   /**

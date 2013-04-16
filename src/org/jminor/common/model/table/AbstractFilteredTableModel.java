@@ -106,6 +106,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final TableColumnModel columnModel;
 
   /**
+   * The columns available to this table model
+   */
+  private final List<TableColumn> columns;
+
+  /**
    * Contains columns that have been hidden
    */
   private final Map<C, TableColumn> hiddenColumns = new HashMap<C, TableColumn>();
@@ -167,6 +172,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
                                     final Collection<? extends ColumnSearchModel<C>> columnFilterModels) {
     Util.rejectNullValue(columnModel, "columnModel");
     this.columnModel = columnModel;
+    this.columns = Collections.list(getColumnModel().getColumns());
     this.columnIndexCache = new int[columnModel.getColumnCount()];
     Arrays.fill(this.columnIndexCache, -1);
     if (columnFilterModels != null) {
@@ -213,6 +219,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final int getRowCount() {
     return getVisibleItemCount();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final List<TableColumn> getColumns() {
+    return columns;
   }
 
   /** {@inheritDoc} */

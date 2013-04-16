@@ -9,8 +9,9 @@ import javax.swing.JPanel;
 import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import java.util.ArrayList;
+import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
 import static org.junit.Assert.assertTrue;
 
 public class AbstractTableColumnSyncPanelTest {
@@ -22,12 +23,14 @@ public class AbstractTableColumnSyncPanelTest {
     columnModel = new DefaultTableColumnModel();
     columnModel.addColumn(new TableColumn(0, 20));
     columnModel.addColumn(new TableColumn(1, 20));
-    panel = new TableColumnSyncPanelImpl(columnModel);
+    final List<TableColumn> columns = new ArrayList<TableColumn>();
+    columns.add(columnModel.getColumn(0));
+    columns.add(columnModel.getColumn(1));
+    panel = new TableColumnSyncPanelImpl(columnModel, columns);
   }
 
   @Test
   public void addColumn() {
-    assertNotNull(panel.getColumnModel());
     panel.setVerticalFillerWidth(20);
     final TableColumn col = new TableColumn(3, 20);
     columnModel.addColumn(col);
@@ -36,8 +39,8 @@ public class AbstractTableColumnSyncPanelTest {
 
   private static class TableColumnSyncPanelImpl extends AbstractTableColumnSyncPanel {
 
-    private TableColumnSyncPanelImpl(final TableColumnModel columnModel) {
-      super(columnModel);
+    private TableColumnSyncPanelImpl(final TableColumnModel columnModel, final List<TableColumn> columns) {
+      super(columnModel, columns);
     }
 
     @Override
