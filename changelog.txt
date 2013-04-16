@@ -3394,3 +3394,5 @@
   DefaultEntityTableModelTest.preferences() added
   Util, added some javadoc
   UiUtil.showInDialog() refactored and renamed to displayInDialog()
+  AbstractFilteredTableModel.getComparable() is now abstract
+  AbstractFilteredTableModelTest.findNextItemCoordinate() improved

@@ -818,13 +818,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   protected abstract void doRefresh();
 
   /**
+   * Returns a Comparable instance for the given rowObject and columnIdentifier,
+   * used when sorting this table model
    * @param rowObject the object representing a given row
    * @param columnIdentifier the column identifier
    * @return a Comparable for the given row and column
    */
-  protected Comparable getComparable(final R rowObject, final C columnIdentifier) {
-    return (Comparable) rowObject;
-  }
+  protected abstract Comparable getComparable(final R rowObject, final C columnIdentifier);
 
   /**
    * Converts the index of the column in the table model at

@@ -56,6 +56,11 @@ public final class AbstractFilteredTableModelTest {
       return getItemAt(rowIndex);
     }
 
+    @Override
+    protected Comparable getComparable(final String rowObject, final Integer columnIdentifier) {
+      return rowObject;
+    }
+
     public void addItemsAt(final List<String> items, final int index) {
       addItems(items, index);
     }
@@ -105,6 +110,11 @@ public final class AbstractFilteredTableModelTest {
 
       @Override
       public Object getValueAt(final int rowIndex, final int columnIndex) {
+        return null;
+      }
+
+      @Override
+      protected Comparable getComparable(final String rowObject, final Integer columnIdentifier) {
         return null;
       }
     };
@@ -197,40 +207,138 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void findNextItemCoordinate() {
-    tableModel.refresh();
-    Point point = tableModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(new Point(0, 1), point);
-    point = tableModel.findNextItemCoordinate(point.y, true, "e");
-    assertEquals(new Point(0, 4), point);
-    point = tableModel.findNextItemCoordinate(point.y, false, "c");
-    assertEquals(new Point(0, 2), point);
-    point = tableModel.findNextItemCoordinate(0, true, "x");
+    final class Row implements Comparable<Row> {
+
+      private final int id;
+      private final String value;
+
+      Row(final int id, final String value) {
+        this.id = id;
+        this.value = value;
+      }
+
+      @Override
+      public int compareTo(final Row o) {
+        return value.compareTo(o.value);
+      }
+    }
+
+    final TableColumnModel columnModel = new DefaultTableColumnModel();
+    final TableColumn columnId = new TableColumn(0);
+    columnId.setIdentifier(0);
+    columnModel.addColumn(columnId);
+    final TableColumn columnValue = new TableColumn(1);
+    columnValue.setIdentifier(1);
+    columnModel.addColumn(columnValue);
+
+    final Row[] items = new Row[] {new Row(0, "a"), new Row(1, "b"), new Row(2, "c"), new Row(3, "d"), new Row(4, "e")};
+
+    final AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(columnModel, null) {
+      @Override
+      protected void doRefresh() {
+        clear();
+        addItems(Arrays.asList(items), false);
+      }
+
+      @Override
+      protected Class getColumnClass(final Integer columnIdentifier) {
+        if (columnIdentifier == 0) {
+          return Integer.class;
+        }
+
+        return String.class;
+      }
+
+      @Override
+      public Object getValueAt(final int rowIndex, final int columnIndex) {
+        final Row row = getItemAt(rowIndex);
+        if (columnIndex == 0) {
+          return row.id;
+        }
+
+        return row.value;
+      }
+
+      @Override
+      protected Comparable getComparable(final Row rowObject, final Integer columnIdentifier) {
+        if (columnIdentifier == 0) {
+          return rowObject.id;
+        }
+
+        return rowObject.value;
+      }
+    };
+
+    testModel.refresh();
+    Point point = testModel.findNextItemCoordinate(0, true, "b");
+    assertEquals(new Point(1, 1), point);
+    point = testModel.findNextItemCoordinate(point.y, true, "e");
+    assertEquals(new Point(1, 4), point);
+    point = testModel.findNextItemCoordinate(point.y, false, "c");
+    assertEquals(new Point(1, 2), point);
+    point = testModel.findNextItemCoordinate(0, true, "x");
     assertNull(point);
 
-    tableModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
+    testModel.setSortingDirective(1, SortingDirective.DESCENDING, false);
 
-    point = tableModel.findNextItemCoordinate(0, true, "b");
-    assertEquals(new Point(0, 3), point);
-    point = tableModel.findNextItemCoordinate(point.y, false, "e");
-    assertEquals(new Point(0, 0), point);
+    point = testModel.findNextItemCoordinate(0, true, "b");
+    assertEquals(new Point(1, 3), point);
+    point = testModel.findNextItemCoordinate(point.y, false, "e");
+    assertEquals(new Point(1, 0), point);
 
-    tableModel.setRegularExpressionSearch(true);
-    assertTrue(tableModel.isRegularExpressionSearch());
-    point = tableModel.findNextItemCoordinate(0, true, "(?i)B");
-    assertEquals(new Point(0, 3), point);
+    testModel.setRegularExpressionSearch(true);
+    assertTrue(testModel.isRegularExpressionSearch());
+    point = testModel.findNextItemCoordinate(0, true, "(?i)B");
+    assertEquals(new Point(1, 3), point);
 
-    final FilterCriteria<Object> criteria = new FilterCriteria<Object>() {
+    FilterCriteria<Object> criteria = new FilterCriteria<Object>() {
       @Override
       public boolean include(final Object item) {
         return item.equals("b") || item.equals("e");
       }
     };
 
-    point = tableModel.findNextItemCoordinate(4, false, criteria);
+    point = testModel.findNextItemCoordinate(4, false, criteria);
+    assertEquals(new Point(1, 3), point);
+    point = testModel.findNextItemCoordinate(point.y - 1, false, criteria);
+    assertEquals(new Point(1, 0), point);
+
+    testModel.setSortingDirective(1, SortingDirective.ASCENDING, false);
+    columnModel.moveColumn(1, 0);
+
+    testModel.refresh();
+    point = testModel.findNextItemCoordinate(0, true, "b");
+    assertEquals(new Point(0, 1), point);
+    point = testModel.findNextItemCoordinate(point.y, true, "e");
+    assertEquals(new Point(0, 4), point);
+    point = testModel.findNextItemCoordinate(point.y, false, "c");
+    assertEquals(new Point(0, 2), point);
+    point = testModel.findNextItemCoordinate(0, true, "x");
+    assertNull(point);
+
+    testModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
+
+    point = testModel.findNextItemCoordinate(0, true, "b");
     assertEquals(new Point(0, 3), point);
-    point = tableModel.findNextItemCoordinate(point.y - 1, false, criteria);
+    point = testModel.findNextItemCoordinate(point.y, false, "e");
     assertEquals(new Point(0, 0), point);
-    //todo add a column and move'em around
+
+    testModel.setRegularExpressionSearch(true);
+    assertTrue(testModel.isRegularExpressionSearch());
+    point = testModel.findNextItemCoordinate(0, true, "(?i)B");
+    assertEquals(new Point(0, 3), point);
+
+    criteria = new FilterCriteria<Object>() {
+      @Override
+      public boolean include(final Object item) {
+        return item.equals("b") || item.equals("e");
+      }
+    };
+
+    point = testModel.findNextItemCoordinate(4, false, criteria);
+    assertEquals(new Point(0, 3), point);
+    point = testModel.findNextItemCoordinate(point.y - 1, false, criteria);
+    assertEquals(new Point(0, 0), point);
   }
 
   @Test
