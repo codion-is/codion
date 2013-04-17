@@ -3405,3 +3405,6 @@
   DefaultTableSortModel and DefaultEntityTableSortModel added
   TableSortModel.sort() added, getRowComparator() removed
   AbstractFilteredTableModel.sorting field removed
+  LoadTest.ScenarioException moved up
+  Serializer.SerializeException moved up
+  Deserializer.DeserializeException removed, replaced with SerializeException

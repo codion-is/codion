@@ -28,19 +28,19 @@ public final class EditModelValue<K, V> implements Value<V> {
 
   /** {@inheritDoc} */
   @Override
-  public final V get() {
+  public V get() {
     return editModel.getValue(key);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void set(final V value) {
+  public void set(final V value) {
     editModel.setValue(key, value);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver getChangeEvent() {
+  public EventObserver getChangeEvent() {
     return editModel.getValueChangeObserver(key);
   }
 }

@@ -12,7 +12,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
-import org.jminor.common.model.Serializer;
+import org.jminor.common.model.SerializeException;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
@@ -668,7 +668,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     catch (IOException e) {
       handleException(e);
     }
-    catch (Serializer.SerializeException e) {
+    catch (SerializeException e) {
       handleException(e);
     }
     catch (CancelException e) {

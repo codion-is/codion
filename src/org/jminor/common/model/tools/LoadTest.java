@@ -292,25 +292,4 @@ public interface LoadTest {
      */
     int getUnsuccessfulRunCount();
   }
-
-  /**
-   * An exception originating from a scenario run
-   */
-  class ScenarioException extends Exception {
-
-    /**
-     * Instantiates a new ScenarioException.
-     */
-    public ScenarioException() {
-      super();
-    }
-
-    /**
-     * Instantiates a new ScenarioException.
-     * @param cause the root cause
-     */
-    public ScenarioException(final Throwable cause) {
-      super(cause);
-    }
-  }
 }

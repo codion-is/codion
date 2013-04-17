@@ -16,6 +16,7 @@ import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.LoadTestModel;
+import org.jminor.common.model.tools.ScenarioException;
 
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;

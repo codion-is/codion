@@ -3,8 +3,7 @@
  */
 package org.jminor.framework.plugins.json;
 
-import org.jminor.common.model.Deserializer;
-import org.jminor.common.model.Serializer;
+import org.jminor.common.model.SerializeException;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -162,7 +161,7 @@ public class EntityJSONParserTest {
   }
 
   @Test
-  public void emptyStringAndNull() throws Deserializer.DeserializeException, Serializer.SerializeException, ParseException, JSONException {
+  public void emptyStringAndNull() throws SerializeException, ParseException, JSONException {
     final EntityJSONParser parser = new EntityJSONParser();
     assertEquals(0, parser.deserialize("").size());
     assertEquals(0, parser.deserialize(null).size());

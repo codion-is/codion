@@ -6,6 +6,7 @@ package org.jminor.framework.demos.petstore.testing;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.tools.LoadTestModel;
+import org.jminor.common.model.tools.ScenarioException;
 import org.jminor.common.ui.tools.LoadTestPanel;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;

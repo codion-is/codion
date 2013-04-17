@@ -4,6 +4,7 @@
 package org.jminor.framework.plugins.json;
 
 import org.jminor.common.model.Deserializer;
+import org.jminor.common.model.SerializeException;
 import org.jminor.common.model.Serializer;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
@@ -57,15 +58,15 @@ public final class EntityJSONParser implements Serializer<Entity>, Deserializer<
    * Deserializes the given JSON string into a list of Entity instances
    * @param jsonString the JSON string to parse
    * @return a List containing the Entity instances represented by the given JSON string
-   * @throws DeserializeException in case of an exception
+   * @throws SerializeException in case of an exception
    */
   @Override
-  public List<Entity> deserialize(final String jsonString) throws DeserializeException {
+  public List<Entity> deserialize(final String jsonString) throws SerializeException {
     try {
       return deserializeEntities(jsonString);
     }
     catch (Exception e) {
-      throw new DeserializeException(e.getMessage(), e);
+      throw new SerializeException(e.getMessage(), e);
     }
   }
 

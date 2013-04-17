@@ -9,6 +9,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.ItemRandomizer;
 import org.jminor.common.model.tools.LoadTest;
 import org.jminor.common.model.tools.LoadTestModel;
+import org.jminor.common.model.tools.ScenarioException;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.control.Control;
@@ -461,8 +462,8 @@ public final class LoadTestPanel extends JPanel {
     @Override
     public void actionPerformed(final ActionEvent e) {
       getExceptionsTextArea().replaceRange("", 0, getExceptionsTextArea().getDocument().getLength());
-      final List<LoadTest.ScenarioException> exceptions = getScenario().getExceptions();
-      for (final LoadTest.ScenarioException exception : exceptions) {
+      final List<ScenarioException> exceptions = getScenario().getExceptions();
+      for (final ScenarioException exception : exceptions) {
         final Exception root = Util.unwrapAndLog((Exception) exception.getCause(), UndeclaredThrowableException.class, null);
         getExceptionsTextArea().append(root.toString());
         getExceptionsTextArea().append(Util.LINE_SEPARATOR);

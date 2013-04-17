@@ -5,7 +5,7 @@ package org.jminor.framework.demos.empdept.testing;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.model.tools.LoadTest;
+import org.jminor.common.model.tools.ScenarioException;
 import org.jminor.common.ui.tools.LoadTestPanel;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
@@ -70,7 +70,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     private final Random random = new Random();
 
     @Override
-    protected void performScenario(final EntityApplicationModel application) throws LoadTest.ScenarioException {
+    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
         final EntityModel departmentModel = application.getEntityModel(EmpDept.T_DEPARTMENT);
         selectRandomRow(departmentModel.getTableModel());
