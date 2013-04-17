@@ -15,6 +15,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.AbstractFilteredTableModel;
 import org.jminor.common.model.table.DefaultColumnSearchModel;
+import org.jminor.common.model.table.DefaultTableSortModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -389,7 +390,22 @@ public final class EntityGeneratorModel {
 
     private TableModel(final List<TableColumn> columns, final DatabaseMetaData metaData,
                        final String schema, final String catalog) {
-      super(columns, Arrays.asList(new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%"),
+      super(new DefaultTableSortModel<Table, Integer>(columns) {
+        @Override
+        protected Comparable getComparable(final Table rowObject, final Integer columnIdentifier) {
+          if (columnIdentifier.equals(SCHEMA_COLUMN_ID)) {
+            return rowObject.getSchemaName();
+          }
+          else {
+            return rowObject.getTableName();
+          }
+        }
+
+        @Override
+        protected Class getColumnClass(final Integer columnIdentifier) {
+          return String.class;
+        }
+      }, Arrays.asList(new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%"),
               new DefaultColumnSearchModel<Integer>(1, Types.VARCHAR, "%")));
       this.metaData = metaData;
       this.schema = schema;
@@ -433,16 +449,6 @@ public final class EntityGeneratorModel {
       }
       else {
         return table.getTableName();
-      }
-    }
-
-    @Override
-    protected Comparable getComparable(final Table object, final Integer columnIdentifier) {
-      if (columnIdentifier.equals(SCHEMA_COLUMN_ID)) {
-        return object.getSchemaName();
-      }
-      else {
-        return object.getTableName();
       }
     }
   }

@@ -44,13 +44,13 @@ public final class DefaultEntityTableModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void nullSearchModel() {
-    new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, null, null);
+    new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void nonMatchingSearchModelEntityID() {
     final EntityTableSearchModel searchModel = new DefaultEntityTableSearchModel(EmpDept.T_DEPARTMENT, null);
-    new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, null, searchModel);
+    new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, null, null, searchModel);
   }
 
   @Test

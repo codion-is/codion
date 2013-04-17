@@ -147,30 +147,6 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   FilteredTableColumnModel<C> getColumnModel();
 
   /**
-   * @param columnIdentifier the identifier of the column to sort by
-   * @param directive the sorting directive
-   * @param addColumnToSort if false then the sorting state is cleared, otherwise
-   * this column is added to the sorted column set according to <code>getSortingPriority()</code>
-   * @see #getSortingPriority(Object)
-   */
-  void setSortingDirective(final C columnIdentifier, final SortingDirective directive,
-                           final boolean addColumnToSort);
-
-  /**
-   * @param columnIdentifier the column identifier
-   * @return the sorting directive assigned to the given column
-   * @throws IllegalArgumentException in case no sorting directive has been set for the given column
-   */
-  SortingDirective getSortingDirective(final C columnIdentifier);
-
-  /**
-   * @param columnIdentifier the column identifier
-   * @return the sorting priority for the given column
-   * @throws IllegalArgumentException in case no sorting directive has been set for the given column
-   */
-  int getSortingPriority(final C columnIdentifier);
-
-  /**
    * Returns a Point denoting the row (point.y) and column index (point.x) of the first value to fulfill
    * the given search criteria.
    * @param fromIndex the row index to start searching at, if this is larger than the size of
@@ -317,18 +293,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   ListSelectionModel getSelectionModel();
 
   /**
-   * Specifies a sorting state for a column.
+   * @return the sorting model
    */
-  interface SortingState {
-
-    /**
-     * @return the sorting directive currently associated with the column
-     */
-    SortingDirective getDirective();
-
-    /**
-     * @return the sorting priority, 0 being the lowest
-     */
-    int getPriority();
-  }
+  TableSortModel<R, C> getSortModel();
 }

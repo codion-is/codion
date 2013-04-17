@@ -543,7 +543,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
       final int index = columnModel.getColumnIndexAtX(e.getX());
       if (index >= 0) {
         final C columnIdentifier = (C) columnModel.getColumn(index).getIdentifier();
-        SortingDirective status = tableModel.getSortingDirective(columnIdentifier);
+        SortingDirective status = tableModel.getSortModel().getSortingDirective(columnIdentifier);
         final boolean shiftDown = e.isShiftDown();
         switch (status) {
           case UNSORTED:
@@ -562,7 +562,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
             break;
         }
 
-        tableModel.setSortingDirective(columnIdentifier, status, e.isControlDown());
+        tableModel.getSortModel().setSortingDirective(columnIdentifier, status, e.isControlDown());
       }
     }
   }
@@ -590,12 +590,12 @@ public class FilteredTablePanel<T, C> extends JPanel {
     }
 
     private Icon getHeaderRendererIcon(final C columnIdentifier, final int iconSizePixels) {
-      final SortingDirective directive = tableModel.getSortingDirective(columnIdentifier);
+      final SortingDirective directive = tableModel.getSortModel().getSortingDirective(columnIdentifier);
       if (directive == SortingDirective.UNSORTED) {
         return null;
       }
 
-      return new Arrow(directive == SortingDirective.DESCENDING, iconSizePixels, tableModel.getSortingPriority(columnIdentifier));
+      return new Arrow(directive == SortingDirective.DESCENDING, iconSizePixels, tableModel.getSortModel().getSortingPriority(columnIdentifier));
     }
   }
 

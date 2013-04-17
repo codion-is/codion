@@ -10,7 +10,9 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.AbstractFilteredTableModel;
+import org.jminor.common.model.table.DefaultTableSortModel;
 import org.jminor.common.model.table.SortingDirective;
+import org.jminor.common.model.table.TableSortModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -121,7 +123,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    * @param connectionProvider the db provider
    */
   public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    this(entityID, connectionProvider, new DefaultEntityTableSearchModel(entityID, connectionProvider));
+    this(entityID, connectionProvider, new DefaultEntityTableSortModel(entityID), new DefaultEntityTableSearchModel(entityID, connectionProvider));
   }
 
   /**
@@ -133,8 +135,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    * does not match the one supplied as parameter
    */
   public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider,
-                                 final EntityTableSearchModel searchModel) {
-    super(initializeColumns(entityID), Util.rejectNullValue(searchModel, "searchModelModel").getPropertyFilterModels());
+                                 final TableSortModel<Entity, Property> sortModel, final EntityTableSearchModel searchModel) {
+    super(sortModel, Util.rejectNullValue(searchModel, "searchModelModel").getPropertyFilterModels());
     if (!searchModel.getEntityID().equals(entityID)) {
       throw new IllegalArgumentException("Entity ID mismatch, searchModel: " + searchModel.getEntityID() + ", tableModel: " + entityID);
     }
@@ -297,7 +299,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final Class<?> getColumnClass(final int columnIndex) {
-    return getColumnClass(getColumnModel().getColumnIdentifier(columnIndex));
+    return getColumnModel().getColumnIdentifier(columnIndex).getTypeClass();
   }
 
   /** {@inheritDoc} */
@@ -523,14 +525,14 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final SortingDirective getSortingDirective(final String propertyID) {
-    return super.getSortingDirective(Entities.getProperty(entityID, propertyID));
+    return getSortModel().getSortingDirective(Entities.getProperty(entityID, propertyID));
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setSortingDirective(final String propertyID, final SortingDirective directive,
                                         final boolean addColumnToSort) {
-    super.setSortingDirective(Entities.getProperty(entityID, propertyID), directive, addColumnToSort);
+    getSortModel().setSortingDirective(Entities.getProperty(entityID, propertyID), directive, addColumnToSort);
   }
 
   /** {@inheritDoc} */
@@ -598,18 +600,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
 
     return entity.getValue(property);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected final Class getColumnClass(final Property columnIdentifier) {
-    return columnIdentifier.getTypeClass();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  protected final Comparable getComparable(final Entity rowObject, final Property columnIdentifier) {
-    return (Comparable) rowObject.getValue(columnIdentifier);
   }
 
   /** {@inheritDoc} */
@@ -709,7 +699,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     searchModel.setSearchEnabled(property.getPropertyID(), false);
   }
 
-  private static List<TableColumn> initializeColumns(final String entityID) {
+  static List<TableColumn> initializeColumns(final String entityID) {
     int modelIndex = 0;
     final List<Property> visibleProperties = Entities.getVisibleProperties(entityID);
     if (visibleProperties.isEmpty()) {
@@ -780,6 +770,28 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       else {
         getColumnModel().setColumnVisible((Property) column.getIdentifier(), false);
       }
+    }
+  }
+
+  /**
+   * A default sort model implementation based on Entity
+   */
+  public static class DefaultEntityTableSortModel extends DefaultTableSortModel<Entity, Property> {
+
+    public DefaultEntityTableSortModel(final String entityID) {
+      super(initializeColumns(entityID));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected final Comparable getComparable(final Entity entity, final Property property) {
+      return (Comparable) entity.getValue(property);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected Class getColumnClass(final Property property) {
+      return property.getTypeClass();
     }
   }
 

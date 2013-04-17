@@ -3401,3 +3401,5 @@
   EntityTableSearchPanel constructor simplified
   FilteredTableColumnModel refactored out of FilteredTableModel
   DefaultFilteredTableColumnModel and DefaultFilteredTableColumnModelTest added
+  TableSortModel refactored out of AbstractFilteredTableModel
+  DefaultTableSortModel and DefaultEntityTableSortModel added

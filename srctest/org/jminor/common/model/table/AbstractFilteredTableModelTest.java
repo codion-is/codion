@@ -34,8 +34,9 @@ public final class AbstractFilteredTableModelTest {
 
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<String, Integer> {
 
-    private TestAbstractFilteredTableModel(final List<TableColumn> columns, final List<? extends ColumnSearchModel<Integer>> columnFilterModels) {
-      super(columns, columnFilterModels);
+    private TestAbstractFilteredTableModel(final DefaultTableSortModel<String, Integer> sortModel,
+                                           final List<? extends ColumnSearchModel<Integer>> columnFilterModels) {
+      super(sortModel, columnFilterModels);
     }
 
     @Override
@@ -45,18 +46,8 @@ public final class AbstractFilteredTableModelTest {
     }
 
     @Override
-    protected Class getColumnClass(final Integer columnIdentifier) {
-      return String.class;
-    }
-
-    @Override
     public Object getValueAt(final int rowIndex, final int columnIndex) {
       return getItemAt(rowIndex);
-    }
-
-    @Override
-    protected Comparable getComparable(final String rowObject, final Integer columnIdentifier) {
-      return rowObject;
     }
 
     public void addItemsAt(final List<String> items, final int index) {
@@ -72,7 +63,17 @@ public final class AbstractFilteredTableModelTest {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%");
-    return new TestAbstractFilteredTableModel(Arrays.asList(column), Arrays.asList(filterModel)) {
+    return new TestAbstractFilteredTableModel(new DefaultTableSortModel<String, Integer>(Arrays.asList(column)) {
+      @Override
+      protected Comparable getComparable(final String rowObject, final Integer columnIdentifier) {
+        return rowObject;
+      }
+
+      @Override
+      protected Class getColumnClass(final Integer columnIdentifier) {
+        return String.class;
+      }
+
       @Override
       protected Comparator initializeColumnComparator(final Integer columnIdentifier) {
         if (customComparator != null) {
@@ -81,7 +82,7 @@ public final class AbstractFilteredTableModelTest {
 
         return super.initializeColumnComparator(columnIdentifier);
       }
-    };
+    }, Arrays.asList(filterModel));
   }
 
   @Before
@@ -106,11 +107,6 @@ public final class AbstractFilteredTableModelTest {
 
       @Override
       public Object getValueAt(final int rowIndex, final int columnIndex) {
-        return null;
-      }
-
-      @Override
-      protected Comparable getComparable(final String rowObject, final Integer columnIdentifier) {
         return null;
       }
     };
@@ -226,20 +222,30 @@ public final class AbstractFilteredTableModelTest {
 
     final Row[] items = new Row[] {new Row(0, "a"), new Row(1, "b"), new Row(2, "c"), new Row(3, "d"), new Row(4, "e")};
 
-    final AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(Arrays.asList(columnId, columnValue), null) {
+    final AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(
+            new DefaultTableSortModel<Row, Integer>(Arrays.asList(columnId, columnValue)) {
+              @Override
+              protected Comparable getComparable(final Row rowObject, final Integer columnIdentifier) {
+                if (columnIdentifier == 0) {
+                  return rowObject.id;
+                }
+
+                return rowObject.value;
+              }
+
+              @Override
+              protected Class getColumnClass(final Integer columnIdentifier) {
+                if (columnIdentifier == 0) {
+                  return Integer.class;
+                }
+
+                return String.class;
+              }
+            }, null) {
       @Override
       protected void doRefresh() {
         clear();
         addItems(Arrays.asList(items), false);
-      }
-
-      @Override
-      protected Class getColumnClass(final Integer columnIdentifier) {
-        if (columnIdentifier == 0) {
-          return Integer.class;
-        }
-
-        return String.class;
       }
 
       @Override
@@ -250,15 +256,6 @@ public final class AbstractFilteredTableModelTest {
         }
 
         return row.value;
-      }
-
-      @Override
-      protected Comparable getComparable(final Row rowObject, final Integer columnIdentifier) {
-        if (columnIdentifier == 0) {
-          return rowObject.id;
-        }
-
-        return rowObject.value;
       }
     };
 
@@ -272,7 +269,7 @@ public final class AbstractFilteredTableModelTest {
     point = testModel.findNextItemCoordinate(0, true, "x");
     assertNull(point);
 
-    testModel.setSortingDirective(1, SortingDirective.DESCENDING, false);
+    testModel.getSortModel().setSortingDirective(1, SortingDirective.DESCENDING, false);
 
     point = testModel.findNextItemCoordinate(0, true, "b");
     assertEquals(new Point(1, 3), point);
@@ -296,7 +293,7 @@ public final class AbstractFilteredTableModelTest {
     point = testModel.findNextItemCoordinate(point.y - 1, false, criteria);
     assertEquals(new Point(1, 0), point);
 
-    testModel.setSortingDirective(1, SortingDirective.ASCENDING, false);
+    testModel.getSortModel().setSortingDirective(1, SortingDirective.ASCENDING, false);
     testModel.getColumnModel().moveColumn(1, 0);
 
     testModel.refresh();
@@ -309,7 +306,7 @@ public final class AbstractFilteredTableModelTest {
     point = testModel.findNextItemCoordinate(0, true, "x");
     assertNull(point);
 
-    testModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
+    testModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
 
     point = testModel.findNextItemCoordinate(0, true, "b");
     assertEquals(new Point(0, 3), point);
@@ -351,9 +348,9 @@ public final class AbstractFilteredTableModelTest {
       }
     });
     tableModel.refresh();
-    tableModel.setSortingDirective(0, SortingDirective.ASCENDING, false);
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
     assertEquals("e", tableModel.getItemAt(0));
-    tableModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals("a", tableModel.getItemAt(0));
   }
 
@@ -369,49 +366,49 @@ public final class AbstractFilteredTableModelTest {
     tableModel.addSortingListener(listener);
 
     tableModel.refresh();
-    tableModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
-    assertEquals(SortingDirective.DESCENDING, tableModel.getSortingDirective(0));
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
+    assertEquals(SortingDirective.DESCENDING, tableModel.getSortModel().getSortingDirective(0));
     assertEquals("e", tableModel.getItemAt(0));
     assertEquals(1, actionsPerformed.size());
-    tableModel.setSortingDirective(0, SortingDirective.ASCENDING, false);
-    assertEquals(SortingDirective.ASCENDING, tableModel.getSortingDirective(0));
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
+    assertEquals(SortingDirective.ASCENDING, tableModel.getSortModel().getSortingDirective(0));
     assertEquals("a", tableModel.getItemAt(0));
-    assertEquals(0, tableModel.getSortingPriority(0));
+    assertEquals(0, tableModel.getSortModel().getSortingPriority(0));
     assertEquals(2, actionsPerformed.size());
 
-    tableModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     tableModel.refresh();
     assertEquals("a", tableModel.getItemAt(4));
     assertEquals("e", tableModel.getItemAt(0));
-    tableModel.setSortingDirective(0, SortingDirective.ASCENDING, false);
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
 
     final List<String> items = new ArrayList<String>();
     items.add(null);
     tableModel.addItems(items, true);
-    tableModel.setSortingDirective(0, SortingDirective.ASCENDING, false);
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
     assertEquals(0, tableModel.indexOf(null));
-    tableModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals(tableModel.getRowCount() - 1, tableModel.indexOf(null));
 
     tableModel.refresh();
     items.add(null);
     tableModel.addItems(items, true);
-    tableModel.setSortingDirective(0, SortingDirective.ASCENDING, false);
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
     assertEquals(0, tableModel.indexOf(null));
-    tableModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals(tableModel.getRowCount() - 2, tableModel.indexOf(null));
-    tableModel.setSortingDirective(0, SortingDirective.UNSORTED, false);
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.UNSORTED, false);
     tableModel.removeSortingListener(listener);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void getSortingDirectiveInvalidColumn() {
-    tableModel.getSortingDirective(1);
+    tableModel.getSortModel().getSortingDirective(1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void getSortingPriorityInvalidColumn() {
-    tableModel.getSortingPriority(1);
+    tableModel.getSortModel().getSortingPriority(1);
   }
 
   @Test(expected = IndexOutOfBoundsException.class)
@@ -591,14 +588,14 @@ public final class AbstractFilteredTableModelTest {
     assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
     assertEquals("current selected item should fit", ITEMS[2], tableModel.getSelectedItem());
 
-    tableModel.setSortingDirective(0, SortingDirective.ASCENDING, false);
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
     assertEquals("current selected item should fit", ITEMS[2], tableModel.getSelectedItem());
     assertEquals("current index should fit", 2,
             tableModel.getSelectionModel().getMinSelectionIndex());
 
     tableModel.setSelectedIndexes(Arrays.asList(0));
     assertEquals("current selected item should fit", ITEMS[0], tableModel.getSelectedItem());
-    tableModel.setSortingDirective(0, SortingDirective.DESCENDING, false);
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals("current index should fit", 4,
             tableModel.getSelectionModel().getMinSelectionIndex());
 
