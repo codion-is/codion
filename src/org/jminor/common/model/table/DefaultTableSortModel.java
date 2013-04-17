@@ -19,7 +19,7 @@ import java.util.Map;
 /**
  * A default TableSortModel implementation
  * @param <R> the type representing a row in the table model
- * @param <C> the type representing the columns in the table model
+ * @param <C> the type representing the column identifier in the table model
  */
 public abstract class DefaultTableSortModel<R, C> implements TableSortModel<R, C> {
 
@@ -73,20 +73,20 @@ public abstract class DefaultTableSortModel<R, C> implements TableSortModel<R, C
    * @param columns the table columns
    */
   public DefaultTableSortModel(final List<TableColumn> columns) {
-    this.columns = columns;
+    this.columns = Collections.unmodifiableList(columns);
     resetSortingStates();
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<TableColumn> getColumns() {
-    return columns;
+  public final void sort(final List<R> items) {
+    Collections.sort(items, rowComparator);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Comparator<R> getRowComparator() {
-    return rowComparator;
+  public final List<TableColumn> getColumns() {
+    return columns;
   }
 
   /** {@inheritDoc} */

@@ -64,6 +64,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final List<R> filteredItems = new ArrayList<R>();
 
   /**
+   * The selection model
+   */
+  private final SelectionModel selectionModel = new SelectionModel();
+
+  /**
    * The TableColumnModel
    */
   private final FilteredTableColumnModel<C> columnModel;
@@ -72,16 +77,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * The sort model
    */
   private final TableSortModel<R, C> sortModel;
-
-  /**
-   * The selection model
-   */
-  private final SelectionModel selectionModel;
-
-  /**
-   * true while the model data is being sorted
-   */
-  private boolean sorting = false;
 
   /**
    * the filter criteria used by this model
@@ -114,7 +109,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     Util.rejectNullValue(sortModel, "sortModel");
     this.sortModel = sortModel;
     this.columnModel = new DefaultFilteredTableColumnModel<C>(sortModel.getColumns(), columnFilterModels);
-    this.selectionModel = new SelectionModel(this);
     bindEventsInternal();
   }
 
@@ -450,7 +444,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
           iterator.remove();
         }
       }
-      Collections.sort(visibleItems, sortModel.getRowComparator());
+      sortModel.sort(visibleItems);
       fireTableDataChanged();
       setSelectedItems(selectedItems);
     }
@@ -661,7 +655,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       }
     }
     if (!atFront && sortModel.isSortingEnabled()) {
-      Collections.sort(visibleItems, sortModel.getRowComparator());
+      sortModel.sort(visibleItems);
     }
     fireTableDataChanged();
   }
@@ -683,7 +677,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       }
     }
     if (sortModel.isSortingEnabled()) {
-      Collections.sort(visibleItems, sortModel.getRowComparator());
+      sortModel.sort(visibleItems);
     }
     fireTableDataChanged();
   }
@@ -716,13 +710,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         return !(item == null || searchText == null) && item.toString().toLowerCase().contains(searchText.toLowerCase());
       }
     };
-  }
-
-  /**
-   * @return true while this table model is being sorted
-   */
-  protected final boolean isSorting() {
-    return sorting;
   }
 
   private void bindEventsInternal() {
@@ -766,15 +753,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private void sortVisibleItems() {
     try {
-      sorting = true;
       evtSortingStarted.fire();
       final List<R> selectedItems = new ArrayList<R>(getSelectedItems());
-      Collections.sort(visibleItems, sortModel.getRowComparator());
+      sortModel.sort(visibleItems);
       fireTableDataChanged();
       setSelectedItems(selectedItems);
     }
     finally {
-      sorting = false;
       evtSortingDone.fire();
     }
   }
@@ -787,8 +772,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     private final State stMultipleSelection = States.state(false);
     private final State stSingleSelection = States.state(false);
 
-    private final AbstractFilteredTableModel tableModel;
-
     /**
      * true while the selection is being updated
      */
@@ -797,10 +780,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
      * Holds the topmost (minimum) selected index
      */
     private int selectedIndex = -1;
-
-    private SelectionModel(final AbstractFilteredTableModel tableModel) {
-      this.tableModel = tableModel;
-    }
 
     /** {@inheritDoc} */
     @Override
@@ -814,7 +793,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         selectedIndex = minSelIndex;
         evtSelectedIndexChanged.fire();
       }
-      if (!(isAdjusting || isUpdatingSelection || tableModel.isSorting())) {
+      if (!(isAdjusting || isUpdatingSelection)) {
         evtSelectionChanged.fire();
       }
     }

@@ -3403,3 +3403,5 @@
   DefaultFilteredTableColumnModel and DefaultFilteredTableColumnModelTest added
   TableSortModel refactored out of AbstractFilteredTableModel
   DefaultTableSortModel and DefaultEntityTableSortModel added
+  TableSortModel.sort() added, getRowComparator() removed
+  AbstractFilteredTableModel.sorting field removed

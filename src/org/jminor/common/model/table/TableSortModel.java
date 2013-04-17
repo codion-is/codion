@@ -6,18 +6,20 @@ package org.jminor.common.model.table;
 import org.jminor.common.model.EventListener;
 
 import javax.swing.table.TableColumn;
-import java.util.Comparator;
 import java.util.List;
 
 /**
  * Handles the column sorting states for table models
+ * @param <R> the type representing a row in the table model
+ * @param <C> the type representing the column identifiers in the table model
  */
 public interface TableSortModel<R, C> {
 
   /**
-   * @return the Comparator used to sort rows
+   * Sorts the given list according to the sort configuration
+   * @param items the items to sort
    */
-  Comparator<R> getRowComparator();
+  void sort(final List<R> items);
 
   /**
    * @param columnIdentifier the identifier of the column to sort by
