@@ -3399,3 +3399,5 @@
   AbstractTableColumnSyncPanel, regression bug, this class could not be instantiated with hidden columns (allowed with preferences)
   AbstractFilteredTableModel.columns field added to help with the above
   EntityTableSearchPanel constructor simplified
+  FilteredTableColumnModel refactored out of FilteredTableModel
+  DefaultFilteredTableColumnModel and DefaultFilteredTableColumnModelTest added

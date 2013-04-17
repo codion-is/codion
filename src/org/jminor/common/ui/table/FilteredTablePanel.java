@@ -49,7 +49,6 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
-import java.util.Enumeration;
 import java.util.List;
 
 /**
@@ -286,8 +285,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
    */
   @SuppressWarnings({"unchecked"})
   public final void selectTableColumns() {
-    final List<TableColumn> allColumns = Collections.list(tableModel.getColumnModel().getColumns());
-    allColumns.addAll(tableModel.getHiddenColumns());
+    final List<TableColumn> allColumns = new ArrayList<TableColumn>(tableModel.getColumnModel().getAllColumns());
     Collections.sort(allColumns, new Comparator<TableColumn>() {
       private final Collator collator = Collator.getInstance();
       /** {@inheritDoc} */
@@ -299,7 +297,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, allColumns.size()), 0));
     final List<JCheckBox> buttonList = new ArrayList<JCheckBox>();
     for (final TableColumn column : allColumns) {
-      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), tableModel.isColumnVisible((C) column.getIdentifier()));
+      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()));
       buttonList.add(chkColumn);
       togglePanel.add(chkColumn);
     }
@@ -315,7 +313,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
       }
       for (final JCheckBox chkButton : buttonList) {
         final TableColumn column = allColumns.get(buttonList.indexOf(chkButton));
-        tableModel.setColumnVisible((C) column.getIdentifier(), chkButton.isSelected());
+        tableModel.getColumnModel().setColumnVisible((C) column.getIdentifier(), chkButton.isSelected());
       }
     }
   }
@@ -461,10 +459,8 @@ public class FilteredTablePanel<T, C> extends JPanel {
         UiUtil.setWaitCursor(false, FilteredTablePanel.this);
       }
     });
-    final Enumeration<TableColumn> columns = tableModel.getColumnModel().getColumns();
-    while (columns.hasMoreElements()) {
-      final TableColumn column = columns.nextElement();
-      final ColumnSearchModel model = tableModel.getFilterModel((C) column.getIdentifier());
+    for (final TableColumn column : tableModel.getColumnModel().getAllColumns()) {
+      final ColumnSearchModel model = tableModel.getColumnModel().getFilterModel((C) column.getIdentifier());
       if (model != null) {
         model.addSearchStateListener(new EventAdapter() {
           /** {@inheritDoc} */
@@ -525,9 +521,8 @@ public class FilteredTablePanel<T, C> extends JPanel {
   private static <T, C> List<ColumnSearchPanel<C>> initializeFilterPanels(final FilteredTableModel<T, C> tableModel) {
     Util.rejectNullValue(tableModel, "tableModel");
     final List<ColumnSearchPanel<C>> filterPanels = new ArrayList<ColumnSearchPanel<C>>(tableModel.getColumnCount());
-    final Enumeration<TableColumn> columns = tableModel.getColumnModel().getColumns();
-    while (columns.hasMoreElements()) {
-      final ColumnSearchModel<C> model = tableModel.getFilterModel((C) columns.nextElement().getIdentifier());
+    for (final TableColumn column : tableModel.getColumnModel().getAllColumns()) {
+      final ColumnSearchModel<C> model = tableModel.getColumnModel().getFilterModel((C) column.getIdentifier());
       filterPanels.add(new ColumnSearchPanel<C>(model, true, true));
     }
 

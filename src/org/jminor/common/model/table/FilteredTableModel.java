@@ -10,8 +10,6 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.StateObserver;
 
 import javax.swing.ListSelectionModel;
-import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.table.TableModel;
 import java.awt.Point;
 import java.util.Collection;
@@ -90,26 +88,6 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   void removeSortingListener(final EventListener listener);
 
   /**
-   * @param listener a listener to be notified each time a column is hidden
-   */
-  void addColumnHiddenListener(final EventListener<C> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeColumnHiddenListener(final EventListener<C> listener);
-
-  /**
-   * @param listener a listener to be notified each time a column is shown
-   */
-  void addColumnShownListener(final EventListener<C> listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeColumnShownListener(final EventListener<C> listener);
-
-  /**
    * @param listener a listener to be notified each time the table data changes
    */
   void addTableDataChangedListener(final EventListener listener);
@@ -166,44 +144,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
   /**
    * @return the TableColumnModel used by this TableModel
    */
-  TableColumnModel getColumnModel();
-
-  /**
-   * Returns the TableColumn with the given identifier
-   * @param identifier the column identifier
-   * @return the TableColumn with the given identifier
-   * @throws IllegalArgumentException in case this table model does not contain a column with the given identifier
-   */
-  TableColumn getTableColumn(final C identifier);
-
-  /**
-   * @param modelColumnIndex the column model index
-   * @return the column identifier
-   */
-  C getColumnIdentifier(final int modelColumnIndex);
-
-  /**
-   * @return the columns (hidden and visible) available to this table model
-   */
-  List<TableColumn> getColumns();
-
-  /**
-   * @return an unmodifiable view of hidden table columns
-   */
-  Collection<TableColumn> getHiddenColumns();
-
-  /**
-   * @param columnIdentifier the key for which to query if its column is visible
-   * @return true if the column is visible, false if it is hidden
-   */
-  boolean isColumnVisible(final C columnIdentifier);
-
-  /**
-   * Toggles the visibility of the column representing the given columnIdentifier.<br>
-   * @param columnIdentifier the column identifier
-   * @param visible if true the column is shown, otherwise it is hidden
-   */
-  void setColumnVisible(final C columnIdentifier, final boolean visible);
+  FilteredTableColumnModel<C> getColumnModel();
 
   /**
    * @param columnIdentifier the identifier of the column to sort by
@@ -264,12 +205,6 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    * @param value the value
    */
   void setRegularExpressionSearch(final boolean value);
-
-  /**
-   * @param columnIdentifier the column identifier
-   * @return the SearchModel at the given column index
-   */
-  ColumnSearchModel<C> getFilterModel(final C columnIdentifier);
 
   /**
    * @return true if no rows are selected in this table model

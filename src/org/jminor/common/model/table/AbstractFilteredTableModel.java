@@ -15,15 +15,10 @@ import org.jminor.common.model.Util;
 
 import javax.swing.DefaultListSelectionModel;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ListSelectionEvent;
-import javax.swing.event.TableColumnModelEvent;
-import javax.swing.event.TableColumnModelListener;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -87,8 +82,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private final Event evtRefreshDone = Events.event();
   private final Event evtTableDataChanged = Events.event();
   private final Event evtTableModelCleared = Events.event();
-  private final Event evtColumnHidden = Events.event();
-  private final Event evtColumnShown = Events.event();
 
   /**
    * Holds visible items
@@ -103,22 +96,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * The TableColumnModel
    */
-  private final TableColumnModel columnModel;
-
-  /**
-   * The columns available to this table model
-   */
-  private final List<TableColumn> columns;
-
-  /**
-   * Contains columns that have been hidden
-   */
-  private final Map<C, TableColumn> hiddenColumns = new HashMap<C, TableColumn>();
-
-  /**
-   * The SearchModels used for filtering
-   */
-  private final Map<C, ColumnSearchModel<C>> columnFilterModels = new HashMap<C, ColumnSearchModel<C>>();
+  private final FilteredTableColumnModel<C> columnModel;
 
   /**
    * holds the column sorting states
@@ -129,11 +107,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * The selection model
    */
   private final SelectionModel selectionModel;
-
-  /**
-   * Caches the column indexes in the model
-   */
-  private final int[] columnIndexCache;
 
   /**
    * true while the model data is being sorted
@@ -147,7 +120,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     /** {@inheritDoc} */
     @Override
     public boolean include(final R item) {
-      for (final ColumnSearchModel columnFilter : columnFilterModels.values()) {
+      for (final ColumnSearchModel columnFilter : columnModel.getColumnFilterModels()) {
         if (columnFilter.isEnabled() && !columnFilter.include(item)) {
           return false;
         }
@@ -164,22 +137,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /**
    * Instantiates a new table model.
-   * @param columnModel the column model to base this table model on
+   * @param columns the columns to base this model on
    * @param columnFilterModels the column filter models
    * @throws IllegalArgumentException in case <code>columnModel</code> is null
    */
-  public AbstractFilteredTableModel(final TableColumnModel columnModel,
-                                    final Collection<? extends ColumnSearchModel<C>> columnFilterModels) {
-    Util.rejectNullValue(columnModel, "columnModel");
-    this.columnModel = columnModel;
-    this.columns = Collections.list(getColumnModel().getColumns());
-    this.columnIndexCache = new int[columnModel.getColumnCount()];
-    Arrays.fill(this.columnIndexCache, -1);
-    if (columnFilterModels != null) {
-      for (final ColumnSearchModel<C> columnFilterModel : columnFilterModels) {
-        this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
-      }
-    }
+  public AbstractFilteredTableModel(final List<TableColumn> columns, final Collection<? extends ColumnSearchModel<C>> columnFilterModels) {
+    this.columnModel = new DefaultFilteredTableColumnModel<C>(columns, columnFilterModels);
     this.selectionModel = new SelectionModel(this);
     resetSortingStates();
     bindEventsInternal();
@@ -219,12 +182,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final int getRowCount() {
     return getVisibleItemCount();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final List<TableColumn> getColumns() {
-    return columns;
   }
 
   /** {@inheritDoc} */
@@ -359,12 +316,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final void setRegularExpressionSearch(final boolean value) {
     this.regularExpressionSearch = value;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final ColumnSearchModel<C> getFilterModel(final C columnIdentifier) {
-    return columnFilterModels.get(columnIdentifier);
   }
 
   /** {@inheritDoc} */
@@ -623,65 +574,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final TableColumnModel getColumnModel() {
+  public final FilteredTableColumnModel<C> getColumnModel() {
     return columnModel;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final TableColumn getTableColumn(final C identifier) {
-    Util.rejectNullValue(identifier, "identifier");
-    final Enumeration<TableColumn> visibleColumns = columnModel.getColumns();
-    while (visibleColumns.hasMoreElements()) {
-      final TableColumn column = visibleColumns.nextElement();
-      if (identifier.equals(column.getIdentifier())) {
-        return column;
-      }
-    }
-
-    throw new IllegalArgumentException("Column not found: " + identifier);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  @SuppressWarnings({"unchecked"})
-  public final C getColumnIdentifier(final int modelColumnIndex) {
-    return (C) columnModel.getColumn(convertColumnIndexToView(modelColumnIndex)).getIdentifier();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  @SuppressWarnings({"unchecked"})
-  public final void setColumnVisible(final C columnIdentifier, final boolean visible) {
-    if (visible) {
-      final TableColumn column = hiddenColumns.get(columnIdentifier);
-      if (column != null) {
-        hiddenColumns.remove(columnIdentifier);
-        columnModel.addColumn(column);
-        columnModel.moveColumn(columnModel.getColumnCount() - 1, 0);
-        evtColumnShown.fire(column.getIdentifier());
-      }
-    }
-    else {
-      if (!hiddenColumns.containsKey(columnIdentifier)) {
-        final TableColumn column = getTableColumn(columnIdentifier);
-        columnModel.removeColumn(column);
-        hiddenColumns.put((C) column.getIdentifier(), column);
-        evtColumnHidden.fire(column.getIdentifier());
-      }
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isColumnVisible(final C columnIdentifier) {
-    return !hiddenColumns.containsKey(columnIdentifier);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final List<TableColumn> getHiddenColumns() {
-    return new ArrayList<TableColumn>(hiddenColumns.values());
   }
 
   /** {@inheritDoc} */
@@ -700,30 +594,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public StateObserver getSingleSelectionObserver() {
     return selectionModel.getSingleSelectionObserver();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void addColumnHiddenListener(final EventListener<C> listener) {
-    evtColumnHidden.addListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void removeColumnHiddenListener(final EventListener<C> listener) {
-    evtColumnHidden.removeListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void addColumnShownListener(final EventListener<C> listener) {
-    evtColumnShown.addListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void removeColumnShownListener(final EventListener<C> listener) {
-    evtColumnShown.removeListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -839,36 +709,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   protected abstract Comparable getComparable(final R rowObject, final C columnIdentifier);
 
   /**
-   * Converts the index of the column in the table model at
-   * <code>modelColumnIndex</code> to the index of the column
-   * in the view. Returns the index of the
-   * corresponding column in the view; returns -1 if this column is not
-   * being displayed.  If <code>modelColumnIndex</code> is less than zero,
-   * this returns <code>modelColumnIndex</code>.
-   * @param modelColumnIndex the index of the column in the model
-   * @return the index of the corresponding column in the view
-   */
-  protected final int convertColumnIndexToView(final int modelColumnIndex) {
-    if (modelColumnIndex < 0) {
-      return modelColumnIndex;
-    }
-
-    final int cachedIndex = columnIndexCache[modelColumnIndex];
-    if (cachedIndex >= 0) {
-      return cachedIndex;
-    }
-
-    for (int index = 0; index < getColumnCount(); index++) {
-      if (columnModel.getColumn(index).getModelIndex() == modelColumnIndex) {
-        columnIndexCache[modelColumnIndex] = index;
-        return index;
-      }
-    }
-
-    return -1;
-  }
-
-  /**
    * Adds the given items to this table model, filtering on the fly and sorting if sorting is enabled and
    * the items are not being added at the front.
    * @param items the items to add
@@ -923,7 +763,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @return the search value
    */
   protected String getSearchValueAt(final int rowIndex, final C columnIdentifier) {
-    final Object value = getValueAt(rowIndex, getTableColumn(columnIdentifier).getModelIndex());
+    final Object value = getValueAt(rowIndex, columnModel.getTableColumn(columnIdentifier).getModelIndex());
 
     return value == null ? "" : value.toString();
   }
@@ -987,7 +827,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         evtTableDataChanged.fire();
       }
     });
-    for (final ColumnSearchModel searchModel : columnFilterModels.values()) {
+    for (final ColumnSearchModel searchModel : columnModel.getColumnFilterModels()) {
       searchModel.addSearchStateListener(new EventAdapter() {
         /** {@inheritDoc} */
         @Override
@@ -996,29 +836,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         }
       });
     }
-    columnModel.addColumnModelListener(new TableColumnModelListener() {
-      /** {@inheritDoc} */
-      @Override
-      public void columnAdded(final TableColumnModelEvent e) {
-        Arrays.fill(columnIndexCache, -1);
-      }
-      /** {@inheritDoc} */
-      @Override
-      public void columnRemoved(final TableColumnModelEvent e) {
-        Arrays.fill(columnIndexCache, -1);
-      }
-      /** {@inheritDoc} */
-      @Override
-      public void columnMoved(final TableColumnModelEvent e) {
-        Arrays.fill(columnIndexCache, -1);
-      }
-      /** {@inheritDoc} */
-      @Override
-      public void columnMarginChanged(final ChangeEvent e) {}
-      /** {@inheritDoc} */
-      @Override
-      public void columnSelectionChanged(final ListSelectionEvent e) {}
-    });
   }
 
   @SuppressWarnings({"unchecked"})

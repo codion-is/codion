@@ -26,9 +26,7 @@ import org.slf4j.LoggerFactory;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -136,7 +134,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    */
   public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider,
                                  final EntityTableSearchModel searchModel) {
-    super(initializeColumnModel(entityID), Util.rejectNullValue(searchModel, "searchModelModel").getPropertyFilterModels());
+    super(initializeColumns(entityID), Util.rejectNullValue(searchModel, "searchModelModel").getPropertyFilterModels());
     if (!searchModel.getEntityID().equals(entityID)) {
       throw new IllegalArgumentException("Entity ID mismatch, searchModel: " + searchModel.getEntityID() + ", tableModel: " + entityID);
     }
@@ -299,7 +297,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final Class<?> getColumnClass(final int columnIndex) {
-    return getColumnClass(getColumnIdentifier(columnIndex));
+    return getColumnClass(getColumnModel().getColumnIdentifier(columnIndex));
   }
 
   /** {@inheritDoc} */
@@ -311,7 +309,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final Object getValueAt(final int rowIndex, final int columnIndex) {
-    final Property property = getColumnIdentifier(columnIndex);
+    final Property property = getColumnModel().getColumnIdentifier(columnIndex);
     final Entity entity = getItemAt(rowIndex);
 
     return getValue(entity, property);
@@ -647,7 +645,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   private void bindEvents() {
-    addColumnHiddenListener(new EventAdapter<Property>() {
+    getColumnModel().addColumnHiddenListener(new EventAdapter<Property>() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred(final Property eventInfo) {
@@ -711,13 +709,13 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     searchModel.setSearchEnabled(property.getPropertyID(), false);
   }
 
-  private static TableColumnModel initializeColumnModel(final String entityID) {
-    final DefaultTableColumnModel model = new DefaultTableColumnModel();
+  private static List<TableColumn> initializeColumns(final String entityID) {
     int modelIndex = 0;
     final List<Property> visibleProperties = Entities.getVisibleProperties(entityID);
     if (visibleProperties.isEmpty()) {
       throw new IllegalStateException("No visible properties defined for entity: " + entityID);
     }
+    final List<TableColumn> columns = new ArrayList<TableColumn>(visibleProperties.size());
     for (final Property property : visibleProperties) {
       final TableColumn column = new TableColumn(modelIndex++);
       column.setIdentifier(property);
@@ -725,10 +723,10 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       if (property.getPreferredColumnWidth() > 0) {
         column.setPreferredWidth(property.getPreferredColumnWidth());
       }
-      model.addColumn(column);
+      columns.add(column);
     }
 
-    return model;
+    return columns;
   }
 
   private String getPreferencesKey() {
@@ -744,11 +742,10 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   private org.json.JSONObject createColumnPreferences() throws Exception {
     final org.json.JSONObject columnPreferencesRoot = new org.json.JSONObject();
-    final ArrayList<TableColumn> columns = new ArrayList<TableColumn>(Collections.list(getColumnModel().getColumns()));
-    columns.addAll(getHiddenColumns());
+    final List<TableColumn> columns = getColumnModel().getAllColumns();
     for (final TableColumn column : columns) {
       final org.json.JSONObject columnObject = new org.json.JSONObject();
-      final boolean visible = isColumnVisible((Property) column.getIdentifier());
+      final boolean visible = getColumnModel().isColumnVisible((Property) column.getIdentifier());
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
       columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
       columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? getColumnModel().getColumnIndex(column.getIdentifier()) : -1);
@@ -781,7 +778,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
         getColumnModel().moveColumn(getColumnModel().getColumnIndex(column.getIdentifier()), columnPreferences.getInt(PREFERENCES_COLUMN_INDEX));
       }
       else {
-        setColumnVisible((Property) column.getIdentifier(), false);
+        getColumnModel().setColumnVisible((Property) column.getIdentifier(), false);
       }
     }
   }

@@ -62,7 +62,7 @@ public final class EntityTableSearchPanel extends JPanel {
    */
   public EntityTableSearchPanel(final EntityTableModel tableModel, final int verticalFillerWidth) {
     this.searchModel = tableModel.getSearchModel();
-    this.columns = tableModel.getColumns();
+    this.columns = tableModel.getColumnModel().getAllColumns();
     this.fullSearchPanel = initializeFullSearchPanel(tableModel, verticalFillerWidth);
     this.simpleSearchAction = initializeSimpleSearchAction();
     this.simpleSearchPanel = initializeSimpleSearchPanel();
@@ -222,7 +222,7 @@ public final class EntityTableSearchPanel extends JPanel {
   }
 
   private AbstractTableColumnSyncPanel initializeFullSearchPanel(final EntityTableModel tableModel, final int verticalFillerWidth) {
-    final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(tableModel.getColumnModel(), tableModel.getColumns()) {
+    final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(tableModel.getColumnModel(), tableModel.getColumnModel().getAllColumns()) {
       /** {@inheritDoc} */
       @Override
       protected JPanel initializeColumnPanel(final TableColumn column) {

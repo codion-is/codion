@@ -19,9 +19,7 @@ import org.jminor.common.model.table.DefaultColumnSearchModel;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.DefaultStyledDocument;
 import javax.swing.text.Document;
@@ -163,17 +161,14 @@ public final class EntityGeneratorModel {
   }
 
   private TableModel initializeTableModel() {
-    final TableColumnModel columnModel = new DefaultTableColumnModel();
     final TableColumn schemaColumn = new TableColumn(SCHEMA_COLUMN_ID);
     schemaColumn.setIdentifier(SCHEMA_COLUMN_ID);
     schemaColumn.setHeaderValue("Schema");
-    columnModel.addColumn(schemaColumn);
     final TableColumn tableColumn = new TableColumn(TABLE_COLUMN_ID);
     tableColumn.setIdentifier(TABLE_COLUMN_ID);
     tableColumn.setHeaderValue("Table");
-    columnModel.addColumn(tableColumn);
 
-    return new TableModel(columnModel, metaData, schema, catalog);
+    return new TableModel(Arrays.asList(schemaColumn, tableColumn), metaData, schema, catalog);
   }
 
   private void bindEvents() {
@@ -392,9 +387,9 @@ public final class EntityGeneratorModel {
     private final String schema;
     private final String catalog;
 
-    private TableModel(final TableColumnModel columnModel, final DatabaseMetaData metaData,
+    private TableModel(final List<TableColumn> columns, final DatabaseMetaData metaData,
                        final String schema, final String catalog) {
-      super(columnModel, Arrays.asList(new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%"),
+      super(columns, Arrays.asList(new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%"),
               new DefaultColumnSearchModel<Integer>(1, Types.VARCHAR, "%")));
       this.metaData = metaData;
       this.schema = schema;

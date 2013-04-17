@@ -15,7 +15,6 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTestDomain;
-import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
 import org.junit.Test;
@@ -275,12 +274,6 @@ public final class DefaultEntityTableModelTest {
     assertEquals(8, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_MASTER_CODE));
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void getTableColumnNotFound() {
-    final Property property = Properties.columnProperty("testProperty");
-    testModel.getTableColumn(property);
-  }
-
   @Test
   public void testTheRest() {
     final List<Property> columnProperties = testModel.getTableColumnProperties();
@@ -301,7 +294,7 @@ public final class DefaultEntityTableModelTest {
     assertEquals(Integer.class, testModel.getColumnClass(0));
 
     final Property property = Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING);
-    final TableColumn column = testModel.getTableColumn(property);
+    final TableColumn column = testModel.getColumnModel().getTableColumn(property);
     assertEquals(property, column.getIdentifier());
 
     final Collection<Object> values = testModel.getValues(property, false);
@@ -348,9 +341,9 @@ public final class DefaultEntityTableModelTest {
     testModel.clearPreferences();
 
     final EntityTableModelTmp tableModel = new EntityTableModelTmp();
-    assertTrue(tableModel.isColumnVisible(Entities.getColumnProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING)));
+    assertTrue(tableModel.getColumnModel().isColumnVisible(Entities.getColumnProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING)));
 
-    tableModel.setColumnVisible(Entities.getColumnProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING), false);
+    tableModel.getColumnModel().setColumnVisible(Entities.getColumnProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING), false);
     tableModel.getColumnModel().moveColumn(1, 0);//double to 0, int to 1
     TableColumn column = tableModel.getColumnModel().getColumn(3);
     column.setWidth(150);//timestamp
@@ -360,7 +353,7 @@ public final class DefaultEntityTableModelTest {
     tableModel.savePreferences();
 
     final EntityTableModelTmp model = new EntityTableModelTmp();
-    assertFalse(model.isColumnVisible(Entities.getColumnProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING)));
+    assertFalse(model.getColumnModel().isColumnVisible(Entities.getColumnProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING)));
     assertTrue(model.getPropertyColumnIndex(EntityTestDomain.DETAIL_DOUBLE) == 0);
     assertTrue(model.getPropertyColumnIndex(EntityTestDomain.DETAIL_INT) == 1);
     column = model.getColumnModel().getColumn(3);
