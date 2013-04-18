@@ -33,7 +33,6 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -172,18 +171,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   @Override
   public final boolean hasEditModel() {
     return this.editModel != null;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final List<Property> getTableColumnProperties() {
-    final List<Property> propertyList = new ArrayList<Property>(getColumnModel().getColumnCount());
-    final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      propertyList.add((Property) columnEnumeration.nextElement().getIdentifier());
-    }
-
-    return propertyList;
   }
 
   /** {@inheritDoc} */
@@ -484,8 +471,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final void deleteSelected() throws CancelException, DatabaseException {
-    if (editModel == null) {
-      throw new IllegalStateException("No edit model has been set for table model: " + this);
+    if (!isDeleteAllowed()) {
+      throw new IllegalStateException("Deleting is not allowed via this table model");
     }
     editModel.delete(getSelectedItems());
   }
@@ -493,8 +480,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final void update(final List<Entity> entities) throws CancelException, ValidationException, DatabaseException {
-    if (editModel == null) {
-      throw new IllegalStateException("No edit model has been set for table model: " + this);
+    if (!isUpdateAllowed()) {
+      throw new IllegalStateException("Updating is not allowed via this table model");
+    }
+    if (entities.size() > 1 && !batchUpdateAllowed) {
+      throw new IllegalStateException("Batch update of entities is not allowed!");
     }
     editModel.update(entities);
   }
@@ -553,7 +543,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   protected final void doRefresh() {
     try {
       LOG.debug("{} refreshing", this);
-      final List<Entity> queryResult = performQuery(getQueryCriteria());
+      final List<Entity> queryResult = performQuery(searchModel.getSearchCriteria());
       clear();
       addItems(queryResult, false);
       searchModel.rememberCurrentSearchState();
@@ -567,7 +557,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    * Queries for the data used to populate this EntityTableModel when it is refreshed
    * @param criteria a criteria
    * @return entities selected from the database according the the query criteria.
-   * @see #getQueryCriteria()
+   * @see EntityTableSearchModel#getSearchCriteria()
    */
   protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
     if (criteria == null && queryCriteriaRequired) {
@@ -606,17 +596,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   @Override
   protected final String getSearchValueAt(final int rowIndex, final Property columnIdentifier) {
     return getItemAt(rowIndex).getValueAsString(columnIdentifier);
-  }
-
-  /**
-   * @return a Criteria object used to filter the result when this
-   * table models data is queried, this implementation returns
-   * the result retrieved via the <code>getSearchCriteria()</code> method
-   * found in the underlying EntityTableSearchModel
-   * @see EntityTableSearchModel#getSearchCriteria()
-   */
-  protected final Criteria<Property.ColumnProperty> getQueryCriteria() {
-    return searchModel.getSearchCriteria();
   }
 
   @SuppressWarnings({"UnusedDeclaration"})

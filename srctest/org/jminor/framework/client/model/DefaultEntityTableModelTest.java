@@ -15,14 +15,17 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityTestDomain;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
 import org.junit.Test;
 
 import javax.swing.table.TableColumn;
+import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -32,14 +35,11 @@ import static org.junit.Assert.*;
 
 public final class DefaultEntityTableModelTest {
 
-  private static final Entity[] testEntities;
-
   private final DefaultEntityTableModel testModel = new EntityTableModelTmp();
 
   static {
     EntityTestDomain.init();
     EmpDept.init();
-    testEntities = initTestEntities(new Entity[5]);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -229,13 +229,8 @@ public final class DefaultEntityTableModelTest {
   }
 
   @Test
-  public void settersAndGetters() {
-    assertEquals(EntityConnectionImplTest.CONNECTION_PROVIDER, testModel.getConnectionProvider());
+  public void getEntityID() {
     assertEquals(EntityTestDomain.T_DETAIL, testModel.getEntityID());
-    testModel.setQueryCriteriaRequired(false);
-    assertFalse(testModel.isQueryCriteriaRequired());
-    testModel.setQueryConfigurationAllowed(false);
-    assertFalse(testModel.isQueryConfigurationAllowed());
   }
 
   @Test
@@ -274,29 +269,78 @@ public final class DefaultEntityTableModelTest {
     assertEquals(8, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_MASTER_CODE));
   }
 
+  @Test(expected = IllegalStateException.class)
+  public void deleteNotAllowed() throws CancelException, DatabaseException {
+    testModel.getEditModel().setDeleteAllowed(false);
+    assertFalse(testModel.isDeleteAllowed());
+    testModel.refresh();
+    testModel.setSelectedIndex(0);
+    testModel.deleteSelected();
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void updateNotAllowed() throws DatabaseException, CancelException, ValidationException {
+    testModel.getEditModel().setUpdateAllowed(false);
+    assertFalse(testModel.isUpdateAllowed());
+    testModel.refresh();
+    testModel.setSelectedIndex(0);
+    final Entity entity = testModel.getSelectedItem();
+    entity.setValue(EntityTestDomain.DETAIL_STRING, "hello");
+    testModel.update(Arrays.asList(entity));
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void batchUpdateNotAllowed() throws DatabaseException, CancelException, ValidationException {
+    testModel.setBatchUpdateAllowed(false);
+    assertFalse(testModel.isBatchUpdateAllowed());
+    testModel.refresh();
+    testModel.setSelectedIndexes(Arrays.asList(0, 1));
+    final List<Entity> entities = testModel.getSelectedItems();
+    EntityUtil.setPropertyValue(EntityTestDomain.DETAIL_STRING, "hello", entities);
+    testModel.update(entities);
+  }
+
   @Test
   public void testTheRest() {
-    final List<Property> columnProperties = testModel.getTableColumnProperties();
-    assertEquals(testModel.getColumnCount(), columnProperties.size());
+    assertEquals(EntityConnectionImplTest.CONNECTION_PROVIDER, testModel.getConnectionProvider());
+    testModel.setQueryCriteriaRequired(false);
+    assertFalse(testModel.isQueryCriteriaRequired());
+    testModel.setQueryCriteriaRequired(true);
+    assertTrue(testModel.isQueryCriteriaRequired());
     testModel.setQueryConfigurationAllowed(false);
     assertFalse(testModel.isQueryConfigurationAllowed());
+    testModel.setQueryConfigurationAllowed(true);
+    assertTrue(testModel.isQueryConfigurationAllowed());
     testModel.setFetchCount(10);
     assertEquals(10, testModel.getFetchCount());
     assertNotNull(testModel.getEditModel());
     assertFalse(testModel.isReadOnly());
-    testModel.setBatchUpdateAllowed(true).setQueryConfigurationAllowed(true);
-    assertTrue(testModel.isBatchUpdateAllowed());
-    assertTrue(testModel.isDeleteAllowed());
-    assertTrue(testModel.isQueryConfigurationAllowed());
     testModel.refresh();
     assertFalse(testModel.isCellEditable(0, 0));
+  }
 
+  @Test
+  public void getColumnClass() {
     assertEquals(Integer.class, testModel.getColumnClass(0));
+    assertEquals(Double.class, testModel.getColumnClass(1));
+    assertEquals(String.class, testModel.getColumnClass(2));
+    assertEquals(Date.class, testModel.getColumnClass(3));
+    assertEquals(Timestamp.class, testModel.getColumnClass(4));
+    assertEquals(Boolean.class, testModel.getColumnClass(5));
+    assertEquals(Object.class, testModel.getColumnClass(6));
+  }
 
+  @Test
+  public void columnModel() {
     final Property property = Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING);
     final TableColumn column = testModel.getColumnModel().getTableColumn(property);
     assertEquals(property, column.getIdentifier());
+  }
 
+  @Test
+  public void getValues() {
+    testModel.refresh();
+    final Property property = Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING);
     final Collection<Object> values = testModel.getValues(property, false);
     assertEquals(5, values.size());
     assertTrue(values.contains("a"));
@@ -304,7 +348,22 @@ public final class DefaultEntityTableModelTest {
     assertTrue(values.contains("c"));
     assertTrue(values.contains("d"));
     assertTrue(values.contains("e"));
+    assertFalse(values.contains("zz"));
+  }
 
+  @Test
+  public void getEntitiesByPropertyValues() {
+    testModel.refresh();
+    final Map<String, Object> propValues = new HashMap<String, Object>();
+    propValues.put(EntityTestDomain.DETAIL_STRING, "b");
+    assertEquals(1, testModel.getEntitiesByPropertyValues(propValues).size());
+    propValues.put(EntityTestDomain.DETAIL_STRING, "zz");
+    assertTrue(testModel.getEntitiesByPropertyValues(propValues).isEmpty());
+  }
+
+  @Test
+  public void getEntitiesByPrimaryKeys() {
+    testModel.refresh();
     Entity tmpEnt = Entities.entity(EntityTestDomain.T_DETAIL);
     tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 3);
     assertEquals("c", testModel.getEntityByPrimaryKey(tmpEnt.getPrimaryKey()).getValue(EntityTestDomain.DETAIL_STRING));
@@ -319,11 +378,6 @@ public final class DefaultEntityTableModelTest {
 
     final Collection<Entity> entities = testModel.getEntitiesByPrimaryKeys(keys);
     assertEquals(3, entities.size());
-
-    final Map<String, Object> propValues = new HashMap<String, Object>();
-    propValues.put(EntityTestDomain.DETAIL_STRING, "b");
-    final Collection<Entity> byPropertyValues = testModel.getEntitiesByPropertyValues(propValues);
-    assertEquals(1, byPropertyValues.size());
   }
 
   @Test(expected = UnsupportedOperationException.class)
@@ -366,13 +420,16 @@ public final class DefaultEntityTableModelTest {
   }
 
   public static final class EntityTableModelTmp extends DefaultEntityTableModel {
+
+    private final Entity[] entities = initTestEntities(new Entity[5]);
+
     public EntityTableModelTmp() {
       super(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.CONNECTION_PROVIDER);
       setEditModel(new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.CONNECTION_PROVIDER));
     }
     @Override
     protected List<Entity> performQuery(final Criteria criteria) {
-      return Arrays.asList(testEntities);
+      return Arrays.asList(entities);
     }
   }
 

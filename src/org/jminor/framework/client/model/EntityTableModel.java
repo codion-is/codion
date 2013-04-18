@@ -153,11 +153,6 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   Color getPropertyBackgroundColor(final int row, final Property columnProperty);
 
   /**
-   * @return the underlying table column properties
-   */
-  List<Property> getTableColumnProperties();
-
-  /**
    * @param propertyID the propertyID
    * @return the index of the column representing the given property
    */

@@ -574,10 +574,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
 
     final List<Entity> selectedEntities = EntityUtil.copyEntities(getEntityTableModel().getSelectedItems());
-    if (!getEntityTableModel().isBatchUpdateAllowed() && selectedEntities.size() > 1) {
-      throw new UnsupportedOperationException("Update of multiple entities is not allowed!");
-    }
-
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
             getInputProvider(propertyToUpdate, selectedEntities));
     UiUtil.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
@@ -1314,8 +1310,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   private void copyTableAsDelimitedString() {
     final List<String> headerValues = new ArrayList<String>();
-    final List<Property> properties = new ArrayList<Property>(getEntityTableModel().getTableColumnProperties());
-    for (final Property property : properties) {
+    final List<Property> properties = new ArrayList<Property>();
+    final Enumeration<TableColumn> columnEnumeration = getEntityTableModel().getColumnModel().getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
+      properties.add(property);
       headerValues.add(property.getCaption());
     }
 
