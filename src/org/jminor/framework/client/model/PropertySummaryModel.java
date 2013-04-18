@@ -6,7 +6,6 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventListener;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.i18n.FrameworkMessages;
 
 import java.util.Collection;
 import java.util.List;
@@ -16,38 +15,8 @@ import java.util.List;
  */
 public interface PropertySummaryModel {
 
-  public enum SummaryType {
-    NONE {
-      @Override
-      public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.NONE);
-      }
-    }, SUM {
-      @Override
-      public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.SUM);
-      }
-    }, AVERAGE {
-      @Override
-      public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.AVERAGE);
-      }
-    }, MINIMUM {
-      @Override
-      public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.MINIMUM);
-      }
-    }, MAXIMUM {
-      @Override
-      public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.MAXIMUM);
-      }
-    }, MINIMUM_MAXIMUM {
-      @Override
-      public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.MINIMUM_AND_MAXIMUM);
-      }
-    }
+  interface Summary {
+    String getSummary(final PropertyValueProvider valueProvider, final Property property);
   }
 
   /**
@@ -56,19 +25,19 @@ public interface PropertySummaryModel {
   Property getProperty();
 
   /**
-   * @param summaryType the type of summary to show
+   * @param summary the type of summary to show
    */
-  void setSummaryType(final SummaryType summaryType);
+  void setCurrentSummary(final Summary summary);
 
   /**
    * @return the current summary type
    */
-  SummaryType getSummaryType();
+  Summary getCurrentSummary();
 
   /**
-   * @return a list containing the available summary types
+   * @return a list containing the available summaries
    */
-  List<SummaryType> getSummaryTypes();
+  List<? extends Summary> getAvailableSummaries();
 
   /**
    * @return a string representing the summary value
@@ -76,7 +45,17 @@ public interface PropertySummaryModel {
   String getSummaryText();
 
   /**
-   * @param listener a listener to be notified each time the summary changes
+   * @param listener a listener to be notified each time the summary value changes
+   */
+  void addSummaryValueListener(final EventListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeSummaryValueListener(final EventListener listener);
+
+  /**
+   * @param listener a listener to be notified each time the summary type changes
    */
   void addSummaryListener(final EventListener listener);
 
@@ -84,16 +63,6 @@ public interface PropertySummaryModel {
    * @param listener the listener to remove
    */
   void removeSummaryListener(final EventListener listener);
-
-  /**
-   * @param listener a listener to be notified each time the summary type changes
-   */
-  void addSummaryTypeListener(final EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeSummaryTypeListener(final EventListener listener);
 
   /**
    * Provides the values used when creating the summary value.

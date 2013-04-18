@@ -3412,3 +3412,4 @@
   DefaultEntityTableModel.getQueryCriteria() removed
   DefaultEntityTableModel.getTableColumnProperties() removed
   DefaultEntityTableModelTest refactored
+  PropertySummaryModel and descendants refactored

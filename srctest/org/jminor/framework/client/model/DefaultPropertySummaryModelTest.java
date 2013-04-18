@@ -53,77 +53,77 @@ public class DefaultPropertySummaryModelTest {
 
   @Test
   public void test() {
-    testIntModel.setSummaryType(PropertySummaryModel.SummaryType.SUM);
+    testIntModel.setCurrentSummary(DefaultPropertySummaryModel.SummaryType.SUM);
     assertEquals("TestProperty", testIntModel.getProperty().getPropertyID());
-    assertEquals(PropertySummaryModel.SummaryType.SUM, testIntModel.getSummaryType());
-    assertTrue(testIntModel.getSummaryTypes().size() > 0);
+    assertEquals(DefaultPropertySummaryModel.SummaryType.SUM, testIntModel.getCurrentSummary());
+    assertTrue(testIntModel.getAvailableSummaries().size() > 0);
     final EventListener listener = new EventAdapter() {
       @Override
       public void eventOccurred() {}
     };
+    testIntModel.addSummaryValueListener(listener);
     testIntModel.addSummaryListener(listener);
-    testIntModel.addSummaryTypeListener(listener);
+    testIntModel.removeSummaryValueListener(listener);
     testIntModel.removeSummaryListener(listener);
-    testIntModel.removeSummaryTypeListener(listener);
   }
 
   @Test
   public void intSum() {
-    testIntModel.setSummaryType(PropertySummaryModel.SummaryType.SUM);
+    testIntModel.setCurrentSummary(DefaultPropertySummaryModel.SummaryType.SUM);
     assertEquals("15", testIntModel.getSummaryText());
   }
 
   @Test
   public void intAverage() {
-    testIntModel.setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
+    testIntModel.setCurrentSummary(DefaultPropertySummaryModel.SummaryType.AVERAGE);
     assertEquals("3", testIntModel.getSummaryText());
   }
 
   @Test
   public void intMininum() {
-    testIntModel.setSummaryType(PropertySummaryModel.SummaryType.MINIMUM);
+    testIntModel.setCurrentSummary(DefaultPropertySummaryModel.SummaryType.MINIMUM);
     assertEquals("1", testIntModel.getSummaryText());
   }
 
   @Test
   public void intMaximum() {
-    testIntModel.setSummaryType(PropertySummaryModel.SummaryType.MAXIMUM);
+    testIntModel.setCurrentSummary(DefaultPropertySummaryModel.SummaryType.MAXIMUM);
     assertEquals("5", testIntModel.getSummaryText());
   }
 
   @Test
   public void intMininumMaximum() {
-    testIntModel.setSummaryType(PropertySummaryModel.SummaryType.MINIMUM_MAXIMUM);
+    testIntModel.setCurrentSummary(DefaultPropertySummaryModel.SummaryType.MINIMUM_MAXIMUM);
     assertEquals("1/5", testIntModel.getSummaryText());
   }
 
   @Test
   public void doubleSum() {
-    testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.SUM);
+    testDoubleModel.setCurrentSummary(DefaultPropertySummaryModel.SummaryType.SUM);
     assertEquals(numberFormat.format(16.5), testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleAverage() {
-    testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
+    testDoubleModel.setCurrentSummary(DefaultPropertySummaryModel.SummaryType.AVERAGE);
     assertEquals(numberFormat.format(3.3), testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleMininum() {
-    testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.MINIMUM);
+    testDoubleModel.setCurrentSummary(DefaultPropertySummaryModel.SummaryType.MINIMUM);
     assertEquals(numberFormat.format(1.1), testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleMaximum() {
-    testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.MAXIMUM);
+    testDoubleModel.setCurrentSummary(DefaultPropertySummaryModel.SummaryType.MAXIMUM);
     assertEquals(numberFormat.format(5.5), testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleMininumMaximum() {
-    testDoubleModel.setSummaryType(PropertySummaryModel.SummaryType.MINIMUM_MAXIMUM);
+    testDoubleModel.setCurrentSummary(DefaultPropertySummaryModel.SummaryType.MINIMUM_MAXIMUM);
     assertEquals(numberFormat.format(1.1) + "/" + numberFormat.format(5.5), testDoubleModel.getSummaryText());
   }
 }

@@ -30,13 +30,13 @@ public final class PropertySummaryPanel extends JPanel {
    */
   public PropertySummaryPanel(final PropertySummaryModel model) {
     this.model = model;
-    model.addSummaryListener(new EventAdapter() {
+    model.addSummaryValueListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         final String summaryText = model.getSummaryText();
         txtSummary.setText(summaryText);
-        txtSummary.setToolTipText(summaryText.length() != 0 ? (model.getSummaryType() + ": " + summaryText) : summaryText);
+        txtSummary.setToolTipText(summaryText.length() != 0 ? (model.getCurrentSummary() + ": " + summaryText) : summaryText);
       }
     });
     initialize();
@@ -68,22 +68,22 @@ public final class PropertySummaryPanel extends JPanel {
   private JPopupMenu createPopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     final ButtonGroup group = new ButtonGroup();
-    for (final PropertySummaryModel.SummaryType summaryType : model.getSummaryTypes()) {
-      final JRadioButtonMenuItem item = new JRadioButtonMenuItem(new AbstractAction(summaryType.toString()) {
+    for (final PropertySummaryModel.Summary summary : model.getAvailableSummaries()) {
+      final JRadioButtonMenuItem item = new JRadioButtonMenuItem(new AbstractAction(summary.toString()) {
         /** {@inheritDoc} */
         @Override
         public void actionPerformed(final ActionEvent e) {
-          model.setSummaryType(summaryType);
+          model.setCurrentSummary(summary);
         }
       });
-      model.addSummaryTypeListener(new EventAdapter() {
+      model.addSummaryListener(new EventAdapter() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
-          item.setSelected(model.getSummaryType() == summaryType);
+          item.setSelected(model.getCurrentSummary() == summary);
         }
       });
-      item.setSelected(model.getSummaryType() == summaryType);
+      item.setSelected(model.getCurrentSummary() == summary);
       group.add(item);
       popupMenu.add(item);
     }

@@ -12,11 +12,11 @@ import org.jminor.common.ui.control.Controls;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.DefaultEntityModelProvider;
+import org.jminor.framework.client.model.DefaultPropertySummaryModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityModelProvider;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.client.ui.EntityTablePanel;
@@ -100,7 +100,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
 
     @Override
     protected void configureTableModel(final EntityTableModel tableModel) {
-      tableModel.getPropertySummaryModel(EMPLOYEE_SALARY).setSummaryType(PropertySummaryModel.SummaryType.AVERAGE);
+      tableModel.getPropertySummaryModel(EMPLOYEE_SALARY).setCurrentSummary(DefaultPropertySummaryModel.SummaryType.AVERAGE);
     }
   }
 
