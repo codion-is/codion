@@ -14,8 +14,8 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.AbstractFilteredTableModel;
+import org.jminor.common.model.table.AbstractTableSortModel;
 import org.jminor.common.model.table.DefaultColumnSearchModel;
-import org.jminor.common.model.table.DefaultTableSortModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -390,7 +390,7 @@ public final class EntityGeneratorModel {
 
     private TableModel(final List<TableColumn> columns, final DatabaseMetaData metaData,
                        final String schema, final String catalog) {
-      super(new DefaultTableSortModel<Table, Integer>(columns) {
+      super(new AbstractTableSortModel<Table, Integer>(columns) {
         @Override
         protected Comparable getComparable(final Table rowObject, final Integer columnIdentifier) {
           if (columnIdentifier.equals(SCHEMA_COLUMN_ID)) {

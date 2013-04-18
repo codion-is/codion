@@ -3408,3 +3408,4 @@
   LoadTest.ScenarioException moved up
   Serializer.SerializeException moved up
   Deserializer.DeserializeException removed, replaced with SerializeException
+  DefaultTableSortModel renamed to AbstractTableSortModel

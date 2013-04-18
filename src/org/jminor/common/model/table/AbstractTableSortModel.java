@@ -21,7 +21,7 @@ import java.util.Map;
  * @param <R> the type representing a row in the table model
  * @param <C> the type representing the column identifier in the table model
  */
-public abstract class DefaultTableSortModel<R, C> implements TableSortModel<R, C> {
+public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, C> {
 
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new Comparator<Comparable<Object>>() {
     /** {@inheritDoc} */
@@ -54,7 +54,11 @@ public abstract class DefaultTableSortModel<R, C> implements TableSortModel<R, C
    */
   private final Map<C, SortingState> sortingStates = new HashMap<C, SortingState>();
 
+  /**
+   * The comparator used when comparing row objects
+   */
   private final Comparator<R> rowComparator = new Comparator<R>() {
+    /** {@inheritDoc} */
     @Override
     public int compare(final R o1, final R o2) {
       for (final Map.Entry<C, TableSortModel.SortingState> state : getOrderedSortingStates()) {
@@ -69,10 +73,10 @@ public abstract class DefaultTableSortModel<R, C> implements TableSortModel<R, C
   };
 
   /**
-   * Instantiates a new DefaultTableSortModel
+   * Instantiates a new AbstractTableSortModel
    * @param columns the table columns
    */
-  public DefaultTableSortModel(final List<TableColumn> columns) {
+  public AbstractTableSortModel(final List<TableColumn> columns) {
     this.columns = Collections.unmodifiableList(columns);
     resetSortingStates();
   }
@@ -143,11 +147,11 @@ public abstract class DefaultTableSortModel<R, C> implements TableSortModel<R, C
   }
 
   /**
-   * Returns a Comparable instance for the given rowObject and columnIdentifier,
-   * used when sorting the table model
+   * Returns a Comparable instance for the given rowObject and columnIdentifier, used when sorting
    * @param rowObject the object representing a given row
    * @param columnIdentifier the column identifier
    * @return a Comparable for the given row and column
+   * @see #sort(java.util.List)
    */
   protected abstract Comparable getComparable(final R rowObject, final C columnIdentifier);
 

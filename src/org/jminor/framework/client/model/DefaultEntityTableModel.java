@@ -10,7 +10,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.AbstractFilteredTableModel;
-import org.jminor.common.model.table.DefaultTableSortModel;
+import org.jminor.common.model.table.AbstractTableSortModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.table.TableSortModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -699,26 +699,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     searchModel.setSearchEnabled(property.getPropertyID(), false);
   }
 
-  static List<TableColumn> initializeColumns(final String entityID) {
-    int modelIndex = 0;
-    final List<Property> visibleProperties = Entities.getVisibleProperties(entityID);
-    if (visibleProperties.isEmpty()) {
-      throw new IllegalStateException("No visible properties defined for entity: " + entityID);
-    }
-    final List<TableColumn> columns = new ArrayList<TableColumn>(visibleProperties.size());
-    for (final Property property : visibleProperties) {
-      final TableColumn column = new TableColumn(modelIndex++);
-      column.setIdentifier(property);
-      column.setHeaderValue(property.getCaption());
-      if (property.getPreferredColumnWidth() > 0) {
-        column.setPreferredWidth(property.getPreferredColumnWidth());
-      }
-      columns.add(column);
-    }
-
-    return columns;
-  }
-
   private String getPreferencesKey() {
     return getClass().getSimpleName() + "-" + getEntityID();
   }
@@ -773,10 +753,30 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
   }
 
+  private static List<TableColumn> initializeColumns(final String entityID) {
+    int modelIndex = 0;
+    final List<Property> visibleProperties = Entities.getVisibleProperties(entityID);
+    if (visibleProperties.isEmpty()) {
+      throw new IllegalStateException("No visible properties defined for entity: " + entityID);
+    }
+    final List<TableColumn> columns = new ArrayList<TableColumn>(visibleProperties.size());
+    for (final Property property : visibleProperties) {
+      final TableColumn column = new TableColumn(modelIndex++);
+      column.setIdentifier(property);
+      column.setHeaderValue(property.getCaption());
+      if (property.getPreferredColumnWidth() > 0) {
+        column.setPreferredWidth(property.getPreferredColumnWidth());
+      }
+      columns.add(column);
+    }
+
+    return columns;
+  }
+
   /**
    * A default sort model implementation based on Entity
    */
-  public static class DefaultEntityTableSortModel extends DefaultTableSortModel<Entity, Property> {
+  public static class DefaultEntityTableSortModel extends AbstractTableSortModel<Entity, Property> {
 
     public DefaultEntityTableSortModel(final String entityID) {
       super(initializeColumns(entityID));
@@ -790,7 +790,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
     /** {@inheritDoc} */
     @Override
-    protected Class getColumnClass(final Property property) {
+    protected final Class getColumnClass(final Property property) {
       return property.getTypeClass();
     }
   }

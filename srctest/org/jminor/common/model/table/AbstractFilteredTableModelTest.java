@@ -34,7 +34,7 @@ public final class AbstractFilteredTableModelTest {
 
   private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<String, Integer> {
 
-    private TestAbstractFilteredTableModel(final DefaultTableSortModel<String, Integer> sortModel,
+    private TestAbstractFilteredTableModel(final AbstractTableSortModel<String, Integer> sortModel,
                                            final List<? extends ColumnSearchModel<Integer>> columnFilterModels) {
       super(sortModel, columnFilterModels);
     }
@@ -63,7 +63,7 @@ public final class AbstractFilteredTableModelTest {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%");
-    return new TestAbstractFilteredTableModel(new DefaultTableSortModel<String, Integer>(Arrays.asList(column)) {
+    return new TestAbstractFilteredTableModel(new AbstractTableSortModel<String, Integer>(Arrays.asList(column)) {
       @Override
       protected Comparable getComparable(final String rowObject, final Integer columnIdentifier) {
         return rowObject;
@@ -223,7 +223,7 @@ public final class AbstractFilteredTableModelTest {
     final Row[] items = new Row[] {new Row(0, "a"), new Row(1, "b"), new Row(2, "c"), new Row(3, "d"), new Row(4, "e")};
 
     final AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(
-            new DefaultTableSortModel<Row, Integer>(Arrays.asList(columnId, columnValue)) {
+            new AbstractTableSortModel<Row, Integer>(Arrays.asList(columnId, columnValue)) {
               @Override
               protected Comparable getComparable(final Row rowObject, final Integer columnIdentifier) {
                 if (columnIdentifier == 0) {
