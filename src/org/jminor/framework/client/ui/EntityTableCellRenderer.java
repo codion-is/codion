@@ -90,7 +90,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     if (property.isInteger() || property.isDouble()) {
       return new NumberRenderer(property);
     }
-    if (property.isTime()) {
+    if (property.isDateOrTime()) {
       return new DateRenderer(property);
     }
     else {

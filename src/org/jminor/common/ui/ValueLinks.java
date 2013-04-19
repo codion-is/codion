@@ -17,7 +17,9 @@ import javax.swing.JFormattedTextField;
 import javax.swing.JToggleButton;
 import javax.swing.SpinnerNumberModel;
 import javax.swing.text.JTextComponent;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
@@ -38,13 +40,13 @@ public final class ValueLinks {
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
    * @param dateFormat the data format
-   * @param isTimestamp if true then Timestamp values are used, otherwise Date
+   * @param sqlType the actual sql type (Types.DATE, Types.TIMESTAMP or Types.TIME)
    */
   public static void dateValueLink(final JFormattedTextField textComponent, final Object owner,
                                    final String beanPropertyName, final EventObserver valueChangeEvent,
-                                   final boolean readOnly, final DateFormat dateFormat, final boolean isTimestamp) {
-    dateValueLink(textComponent, Values.<Date>beanValue(owner, beanPropertyName, isTimestamp ? Timestamp.class : Date.class,
-            valueChangeEvent), readOnly, dateFormat, isTimestamp);
+                                   final boolean readOnly, final DateFormat dateFormat, final int sqlType) {
+    dateValueLink(textComponent, Values.<Date>beanValue(owner, beanPropertyName, getDateTypeClass(sqlType),
+            valueChangeEvent), readOnly, dateFormat, sqlType);
   }
 
   /**
@@ -53,12 +55,12 @@ public final class ValueLinks {
    * @param modelValue the model value
    * @param readOnly if true the component will be read only
    * @param dateFormat the data format
-   * @param isTimestamp if true then Timestamp values are used, otherwise Date
+   * @param sqlType the actual sql type (Types.DATE, Types.TIMESTAMP or Types.TIME)
    */
   public static void dateValueLink(final JFormattedTextField textComponent, final Value<Date> modelValue,
-                                   final boolean readOnly, final DateFormat dateFormat, final boolean isTimestamp) {
+                                   final boolean readOnly, final DateFormat dateFormat, final int sqlType) {
     textComponent.setEditable(!readOnly);
-    Values.link(modelValue, UiValues.dateValue(textComponent, dateFormat, isTimestamp), readOnly);
+    Values.link(modelValue, UiValues.dateValue(textComponent, dateFormat, sqlType), readOnly);
   }
 
   /**
@@ -361,5 +363,18 @@ public final class ValueLinks {
                                          final SpinnerNumberModel spinnerModel, final boolean readOnly) {
     Values.link(Values.<Integer>beanValue(owner, beanPropertyName, int.class, valueChangeEvent),
             UiValues.integerValue(spinnerModel), readOnly);
+  }
+
+  private static Class getDateTypeClass(final int sqlType) {
+    switch (sqlType) {
+      case Types.DATE:
+        return Date.class;
+      case Types.TIMESTAMP:
+        return Timestamp.class;
+      case Types.TIME:
+        return Time.class;
+      default:
+        throw new IllegalArgumentException("Not a date based type: " + sqlType);
+    }
   }
 }

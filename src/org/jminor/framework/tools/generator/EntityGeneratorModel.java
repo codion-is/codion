@@ -368,6 +368,7 @@ public final class EntityGeneratorModel {
       case Types.REAL:
         return "Types.DOUBLE";
       case Types.TIME:
+        return "Types.TIME";
       case Types.TIMESTAMP:
         return "Types.TIMESTAMP";
       case Types.LONGVARCHAR:

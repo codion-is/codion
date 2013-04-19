@@ -9,6 +9,7 @@ import org.jminor.framework.Configuration;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.DateFormat;
@@ -158,8 +159,8 @@ class PropertyImpl implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isTime() {
-    return isDate() || isTimestamp();
+  public final boolean isDateOrTime() {
+    return isDate() || isTimestamp() || isTime();
   }
 
   /** {@inheritDoc} */
@@ -172,6 +173,12 @@ class PropertyImpl implements Property {
   @Override
   public final boolean isTimestamp() {
     return isType(Types.TIMESTAMP);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isTime() {
+    return isType(Types.TIME);
   }
 
   /** {@inheritDoc} */
@@ -398,7 +405,7 @@ class PropertyImpl implements Property {
     if (isNumerical() && !(format instanceof NumberFormat)) {
       throw new IllegalArgumentException("NumberFormat expected for numerical property: " + propertyID);
     }
-    if (isTime() && !(format instanceof DateFormat)) {
+    if (isDateOrTime() && !(format instanceof DateFormat)) {
       throw new IllegalArgumentException("DateFormat expected for time based property: " + propertyID);
     }
     this.format = format;
@@ -469,9 +476,12 @@ class PropertyImpl implements Property {
   }
 
   private Format initializeDefaultFormat() {
-    if (isTime()) {
+    if (isDateOrTime()) {
       if (isDate()) {
         return Configuration.getDefaultDateFormat();
+      }
+      else if (isTime()) {
+        return Configuration.getDefaultTimeFormat();
       }
       else {
         return Configuration.getDefaultTimestampFormat();
@@ -503,6 +513,8 @@ class PropertyImpl implements Property {
         return Date.class;
       case Types.TIMESTAMP:
         return Timestamp.class;
+      case Types.TIME:
+        return Time.class;
       case Types.VARCHAR:
         return String.class;
       case Types.BOOLEAN:
@@ -773,6 +785,14 @@ class PropertyImpl implements Property {
               return getTimestamp(resultSet, ((ColumnPropertyImpl) property).selectIndex);
             }
           };
+        case Types.TIME:
+          return new ValueFetcher() {
+            /** {@inheritDoc} */
+            @Override
+            public Object fetchValue(final ResultSet resultSet) throws SQLException {
+              return getTime(resultSet, ((ColumnPropertyImpl) property).selectIndex);
+            }
+          };
         case Types.VARCHAR:
           return new ValueFetcher() {
             /** {@inheritDoc} */
@@ -838,6 +858,10 @@ class PropertyImpl implements Property {
 
     private static Timestamp getTimestamp(final ResultSet resultSet, final int columnIndex) throws SQLException {
       return resultSet.getTimestamp(columnIndex);
+    }
+
+    private static Time getTime(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      return resultSet.getTime(columnIndex);
     }
 
     private static Character getCharacter(final ResultSet resultSet, final int columnIndex) throws SQLException {

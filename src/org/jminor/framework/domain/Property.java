@@ -66,9 +66,9 @@ public interface Property extends Attribute {
   boolean isNumerical();
 
   /**
-   * @return true if this is a time based property, Date or Timestamp
+   * @return true if this is a time based property, Date, Timestamp or Time
    */
-  boolean isTime();
+  boolean isDateOrTime();
 
   /**
    * @return true if this is a date property
@@ -79,6 +79,11 @@ public interface Property extends Attribute {
    * @return true if this is a timestamp property
    */
   boolean isTimestamp();
+
+  /**
+   * @return true if this is a time property
+   */
+  boolean isTime();
 
   /**
    * @return true if this is a character property

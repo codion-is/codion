@@ -545,8 +545,8 @@ public final class EntityUiUtil {
                                                     final boolean readOnly, final boolean includeButton,
                                                     final StateObserver enabledState) {
     Util.rejectNullValue(property,PROPERTY_PARAM_NAME);
-    if (!property.isTime()) {
-      throw new IllegalArgumentException("Property " + property + " is not a date property");
+    if (!property.isDateOrTime()) {
+      throw new IllegalArgumentException("Property " + property + " is not a date or time property");
     }
 
     final JFormattedTextField field = (JFormattedTextField) createTextField(property, editModel, readOnly,
@@ -631,16 +631,16 @@ public final class EntityUiUtil {
       ValueLinks.textValueLink(textField, new EditModelValue<String, String>(editModel, propertyID), null, immediateUpdate, readOnly);
     }
     else if (property.isInteger()) {
-      ValueLinks.intValueLink((IntField) textField, new EditModelValue<String, Integer>(editModel, propertyID), (NumberFormat) property.getFormat(), false, readOnly);
+      ValueLinks.intValueLink((IntField) textField, new EditModelValue<String, Integer>(editModel, propertyID),
+              (NumberFormat) property.getFormat(), false, readOnly);
     }
     else if (property.isDouble()) {
-      ValueLinks.doubleValueLink((DoubleField) textField, new EditModelValue<String, Double>(editModel, propertyID), (NumberFormat) property.getFormat(), false, readOnly);
+      ValueLinks.doubleValueLink((DoubleField) textField, new EditModelValue<String, Double>(editModel, propertyID),
+              (NumberFormat) property.getFormat(), false, readOnly);
     }
-    else if (property.isDate()) {
-      ValueLinks.dateValueLink((JFormattedTextField) textField, new EditModelValue<String, Date>(editModel, propertyID), readOnly, (SimpleDateFormat) property.getFormat(), false);
-    }
-    else if (property.isTimestamp()) {
-      ValueLinks.dateValueLink((JFormattedTextField) textField, new EditModelValue<String, Date>(editModel, propertyID), readOnly, (SimpleDateFormat) property.getFormat(), true);
+    else if (property.isDateOrTime()) {
+      ValueLinks.dateValueLink((JFormattedTextField) textField, new EditModelValue<String, Date>(editModel, propertyID),
+              readOnly, (SimpleDateFormat) property.getFormat(), property.getType());
     }
     else {
       throw new IllegalArgumentException("Not a text based property: " + property);
@@ -769,7 +769,7 @@ public final class EntityUiUtil {
         ((DoubleField) field).setMaximumFractionDigits(property.getMaximumFractionDigits());
       }
     }
-    else if (property.isTime()) {
+    else if (property.isDateOrTime()) {
       field = UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) property.getFormat()));
     }
     else if (property.isString()) {

@@ -184,6 +184,14 @@ public final class Configuration {
   public static final String LOAD_TEST_REMOTE_HOSTNAME = "jminor.loadtest.remote.hostname";
 
   /**
+   * The date format pattern to use when showing time values in tables and when
+   * creating default time input fields<br>
+   * Value type: String<br>
+   * Default value: HH:mm
+   */
+  public static final String DEFAULT_TIME_FORMAT = "jminor.client.defaultTimeFormat";
+
+  /**
    * The date format pattern to use when showing timestamp values in tables and when
    * creating default timestamp input fields<br>
    * Value type: String<br>
@@ -513,6 +521,7 @@ public final class Configuration {
     PROPERTIES.put(REGISTRY_PORT_NUMBER, 1099);
     PROPERTIES.put(DEFAULT_TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
     PROPERTIES.put(DEFAULT_DATE_FORMAT, "dd-MM-yyyy");
+    PROPERTIES.put(DEFAULT_TIME_FORMAT, "HH:mm");
     PROPERTIES.put(ALL_PANELS_ACTIVE, false);
     PROPERTIES.put(COMPACT_ENTITY_PANEL_LAYOUT, true);
     PROPERTIES.put(USE_KEYBOARD_NAVIGATION, true);
@@ -564,10 +573,11 @@ public final class Configuration {
     parseBooleanSetting(CONFIRM_EXIT);
     parseStringSetting(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM);
     parseStringSetting(DEFAULT_DATE_FORMAT);
+    parseStringSetting(DEFAULT_TIMESTAMP_FORMAT);
+    parseStringSetting(DEFAULT_TIME_FORMAT);
     parseIntegerSetting(DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
     parseIntegerSetting(DEFAULT_LABEL_TEXT_ALIGNMENT);
     parseBooleanSetting(DEFAULT_SEARCH_PANEL_STATE);
-    parseStringSetting(DEFAULT_TIMESTAMP_FORMAT);
     parseBooleanSetting(LIMIT_FOREIGN_KEY_FETCH_DEPTH);
     parseIntegerSetting(LOAD_TEST_THINKTIME);
     parseIntegerSetting(LOAD_TEST_BATCH_SIZE);
@@ -677,6 +687,14 @@ public final class Configuration {
    */
   public static SimpleDateFormat getDefaultTimestampFormat() {
     return DateFormats.getDateFormat((String) getValue(DEFAULT_TIMESTAMP_FORMAT));
+  }
+
+  /**
+   * @return A non-lenient SimpleDateFormat based on Configuration.DEFAULT_TIME_FORMAT
+   * @see org.jminor.framework.Configuration#DEFAULT_TIME_FORMAT
+   */
+  public static SimpleDateFormat getDefaultTimeFormat() {
+    return DateFormats.getDateFormat((String) getValue(DEFAULT_TIME_FORMAT));
   }
 
   public static String getReportPath() {

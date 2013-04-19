@@ -3413,3 +3413,4 @@
   DefaultEntityTableModel.getTableColumnProperties() removed
   DefaultEntityTableModelTest refactored
   PropertySummaryModel and descendants refactored
+  Property, Types.TIME implemented

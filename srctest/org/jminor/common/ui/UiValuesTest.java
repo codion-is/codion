@@ -18,6 +18,7 @@ import javax.swing.JComboBox;
 import javax.swing.JFormattedTextField;
 import javax.swing.JTextField;
 import javax.swing.SpinnerNumberModel;
+import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
@@ -27,10 +28,30 @@ import static org.junit.Assert.*;
 public class UiValuesTest {
 
   @Test
+  public void timeUiValue() throws ParseException {
+    final SimpleDateFormat format = DateFormats.getDateFormat("HH:mm");
+    final JFormattedTextField txt = UiUtil.createFormattedField(DateUtil.getDateMask(format));//HH:mm
+    final Value<Date> value = UiValues.dateValue (txt, format, Types.TIME);
+
+    assertNull(value.get());
+    final String timeString = "22:42";
+    txt.setText(timeString);
+    assertEquals(format.parse(timeString), value.get());
+
+    final String invalidDateString = "23:";
+    txt.setText(invalidDateString);
+    assertEquals("23:__", txt.getText());
+    assertNull(value.get());
+
+    value.set(format.parse(timeString));
+    assertEquals(timeString, txt.getText());
+  }
+
+  @Test
   public void dateUiValue() throws ParseException {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
     final JFormattedTextField txt = UiUtil.createFormattedField(DateUtil.getDateMask(format));//dd-MM-yyyy
-    final Value<Date> value = UiValues.dateValue (txt, format, true);
+    final Value<Date> value = UiValues.dateValue (txt, format, Types.DATE);
 
     assertNull(value.get());
     final String dateString = "03-10-1975";
@@ -50,7 +71,7 @@ public class UiValuesTest {
   public void timestampUiValue() throws ParseException {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.TIMESTAMP);
     final JFormattedTextField txt = UiUtil.createFormattedField(DateUtil.getDateMask(format));//dd-MM-yyyy HH:mm
-    final Value<Date> value = UiValues.dateValue (txt, format, true);
+    final Value<Date> value = UiValues.dateValue (txt, format, Types.TIMESTAMP);
 
     assertNull(value.get());
     final String dateString = "03-10-1975 22:45";

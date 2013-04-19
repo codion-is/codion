@@ -350,7 +350,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     }
 
     private JComponent initializeField() {
-      if (searchModel.getType() == Types.DATE || searchModel.getType() == Types.TIMESTAMP) {
+      if (searchModel.getType() == Types.DATE || searchModel.getType() == Types.TIMESTAMP || searchModel.getType() == Types.TIME) {
         return UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) searchModel.getFormat()));
       }
       else if (searchModel.getType() == Types.DOUBLE) {
@@ -384,17 +384,11 @@ public class ColumnSearchPanel<K> extends JPanel {
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false);
       }
-      else if (searchModel.getType() == Types.DATE) {
+      else if (searchModel.getType() == Types.TIMESTAMP || searchModel.getType() == Types.DATE || searchModel.getType() == Types.TIME) {
         ValueLinks.dateValueLink((JFormattedTextField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(),
-                false, (DateFormat) searchModel.getFormat(), false);
-      }
-      else if (searchModel.getType() == Types.TIMESTAMP) {
-        ValueLinks.dateValueLink((JFormattedTextField) component, searchModel,
-                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(),
-                false, (DateFormat) searchModel.getFormat(), true);
+                false, (DateFormat) searchModel.getFormat(), searchModel.getType());
       }
       else {
         ValueLinks.textValueLink((JTextField) component, searchModel,

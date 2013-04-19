@@ -13,6 +13,7 @@ import org.jminor.framework.Configuration;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Collator;
@@ -430,6 +431,8 @@ public final class EntityUtil {
         return DateUtil.floorDate(new Date());
       case Types.TIMESTAMP:
         return DateUtil.floorTimestamp(new Timestamp(System.currentTimeMillis()));
+      case Types.TIME:
+        return new Time(System.currentTimeMillis());
       case Types.DOUBLE:
         return getRandomDouble(property);
       case Types.INTEGER:

@@ -32,7 +32,9 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
+import java.sql.Time;
 import java.sql.Timestamp;
+import java.sql.Types;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
@@ -49,11 +51,11 @@ public final class UiValues {
   /**
    * @param textComponent the component
    * @param dateFormat the date format
-   * @param isTimestamp if true then a Timestamp is used, Date otherwise
+   * @param sqlType the actual sql type (Types.DATE, Types.TIMESTAMP or Types.TIME)
    * @return a Value bound to the given component
    */
-  public static Value<Date> dateValue(final JFormattedTextField textComponent, final DateFormat dateFormat, final boolean isTimestamp) {
-    return new DateUIValue(textComponent, dateFormat, isTimestamp);
+  public static Value<Date> dateValue(final JFormattedTextField textComponent, final DateFormat dateFormat, final int sqlType) {
+    return new DateUIValue(textComponent, dateFormat, sqlType);
   }
 
   /**
@@ -305,17 +307,29 @@ public final class UiValues {
   }
 
   private static final class DateUIValue extends TextUIValue<Date> {
-    private final boolean isTimestamp;
+    private final int sqlType;
 
-    private DateUIValue(final JFormattedTextField textComponent, final Format format, final boolean isTimestamp) {
+    private DateUIValue(final JFormattedTextField textComponent, final Format format, final int sqlType) {
       super(textComponent, Util.rejectNullValue(format, "format"), true);
-      this.isTimestamp = isTimestamp;
+      if (sqlType != Types.DATE && sqlType != Types.TIMESTAMP && sqlType != Types.TIME) {
+        throw new IllegalArgumentException("DateUIValue only applicable to: Types.DATE, Types.TIMESTAMP and Types.TIME");
+      }
+      this.sqlType = sqlType;
     }
 
     @Override
     protected Date valueFromText(final String text) {
       final Date parsedValue = super.valueFromText(text);
-      return parsedValue == null ? null : isTimestamp ? new Timestamp(parsedValue.getTime()) : new Date(parsedValue.getTime());
+      if (parsedValue == null) {
+        return null;
+      }
+      switch (sqlType) {
+        case Types.DATE: return parsedValue;
+        case Types.TIMESTAMP : return new Timestamp(parsedValue.getTime());
+        case Types.TIME : return new Time(parsedValue.getTime());
+      }
+
+      throw new IllegalStateException("Illegal sql type for DateUIValue: " + sqlType);
     }
   }
 

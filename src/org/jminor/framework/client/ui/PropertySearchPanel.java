@@ -95,7 +95,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       if (property instanceof Property.ValueListProperty) {
         return initValueListField((Property.ValueListProperty) property);
       }
-      if (property.isTime()) {
+      if (property.isDateOrTime()) {
         return UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) model.getFormat()));
       }
       else if (property.isDouble()) {
@@ -119,11 +119,11 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 Object.class, isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
       }
-      else if (property.isTime()) {
+      else if (property.isDateOrTime()) {
         ValueLinks.dateValueLink((JFormattedTextField) field, model,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
-                false, (SimpleDateFormat) model.getFormat(), property.isTimestamp());
+                false, (SimpleDateFormat) model.getFormat(), property.getType());
 
       }
       else if (property.isDouble()) {
