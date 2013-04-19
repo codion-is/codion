@@ -390,24 +390,11 @@ public class EntityUtilTest {
     EntityUtil.getEntitySerializer();
   }
 
-  @Test(expected = RuntimeException.class)
-  public void getEntityDeserializerUnconfigured() {
-    Configuration.setValue(Configuration.ENTITY_DESERIALIZER_CLASS, null);
-    EntityUtil.getEntityDeserializer();
-  }
-
   @Test
   public void getEntitySerializer() {
     Configuration.setValue(Configuration.ENTITY_SERIALIZER_CLASS, "org.jminor.framework.plugins.json.EntityJSONParser");
     assertNotNull(EntityUtil.getEntitySerializer());
     Configuration.clearValue(Configuration.ENTITY_SERIALIZER_CLASS);
-  }
-
-  @Test
-  public void getEntityDeserializer() {
-    Configuration.setValue(Configuration.ENTITY_DESERIALIZER_CLASS, "org.jminor.framework.plugins.json.EntityJSONParser");
-    assertNotNull(EntityUtil.getEntityDeserializer());
-    Configuration.clearValue(Configuration.ENTITY_DESERIALIZER_CLASS);
   }
 
   private EntityUtil.EntityBeanMapper createEmpDeptBeanMapper() {

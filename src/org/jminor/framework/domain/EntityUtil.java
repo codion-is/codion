@@ -4,7 +4,6 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.Deserializer;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.Serializer;
 import org.jminor.common.model.Util;
@@ -457,25 +456,6 @@ public final class EntityUtil {
       final String serializerClass = Configuration.getStringValue(Configuration.ENTITY_SERIALIZER_CLASS);
 
       return (Serializer<Entity>) Class.forName(serializerClass).getConstructor().newInstance();
-    }
-    catch (Exception e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  /**
-   * @return a Deserializer, if one is available on the classpath
-   */
-  @SuppressWarnings({"unchecked"})
-  public static Deserializer<Entity> getEntityDeserializer() {
-    if (!Configuration.entityDeserializerAvailable()) {
-      throw new IllegalArgumentException("Required configuration property is missing: " + Configuration.ENTITY_DESERIALIZER_CLASS);
-    }
-
-    try {
-      final String deserializerClass = Configuration.getStringValue(Configuration.ENTITY_DESERIALIZER_CLASS);
-
-      return (Deserializer<Entity>) Class.forName(deserializerClass).getConstructor().newInstance();
     }
     catch (Exception e) {
       throw new RuntimeException(e);

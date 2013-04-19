@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.plugins.json;
 
-import org.jminor.common.model.Deserializer;
 import org.jminor.common.model.SerializeException;
 import org.jminor.common.model.Serializer;
 import org.jminor.common.model.Util;
@@ -30,7 +29,7 @@ import java.util.Map;
 /**
  * A class responsible for serializing Entity related objects to and from the JSON format.
  */
-public final class EntityJSONParser implements Serializer<Entity>, Deserializer<Entity> {
+public final class EntityJSONParser implements Serializer<Entity> {
 
   private static final String ENTITY_ID = "entityID";
   private static final String VALUES = "values";

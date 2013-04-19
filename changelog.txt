@@ -3414,3 +3414,4 @@
   DefaultEntityTableModelTest refactored
   PropertySummaryModel and descendants refactored
   Property, Types.TIME implemented
+  Deserializer merged with Serializer
