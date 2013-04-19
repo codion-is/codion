@@ -3416,3 +3416,4 @@
   Property, Types.TIME implemented
   Deserializer merged with Serializer
   RemoteEntityConnection code cleanup, synchronized with EntityConnection
+  FrameworkMessages_is_IS.properties encoding fixed
