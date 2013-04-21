@@ -324,7 +324,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<Object> getValues(final Property property, final boolean selectedOnly) {
+  public final Collection getValues(final Property property, final boolean selectedOnly) {
     return EntityUtil.getPropertyValues(property.getPropertyID(),
             selectedOnly ? getSelectedItems() : getVisibleItems(), false);
   }
@@ -799,7 +799,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
     /** {@inheritDoc} */
     @Override
-    public Collection<?> getValues() {
+    public Collection getValues() {
       return tableModel.getValues(property, isValueSubset());
     }
 

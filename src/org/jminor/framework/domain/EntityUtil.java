@@ -99,7 +99,7 @@ public final class EntityUtil {
    * @param keys the keys
    * @return the actual property values of the given keys
    */
-  public static Collection<Object> getPropertyValues(final Collection<Entity.Key> keys) {
+  public static Collection getPropertyValues(final Collection<Entity.Key> keys) {
     Util.rejectNullValue(keys, "keys");
     final List<Object> list = new ArrayList<Object>(keys.size());
     for (final Entity.Key key : keys) {
@@ -115,7 +115,7 @@ public final class EntityUtil {
    * @return a Collection containing the values of the property with the given ID from the given entities,
    * null values are included
    */
-  public static Collection<Object> getPropertyValues(final String propertyID, final Collection<Entity> entities) {
+  public static Collection getPropertyValues(final String propertyID, final Collection<Entity> entities) {
     return getPropertyValues(propertyID, entities, true);
   }
 
@@ -125,8 +125,8 @@ public final class EntityUtil {
    * @param includeNullValues if true then null values are included
    * @return a Collection containing the values of the property with the given ID from the given entities
    */
-  public static Collection<Object> getPropertyValues(final String propertyID, final Collection<Entity> entities,
-                                                     final boolean includeNullValues) {
+  public static Collection getPropertyValues(final String propertyID, final Collection<Entity> entities,
+                                             final boolean includeNullValues) {
     if (Util.nullOrEmpty(entities)) {
       return new ArrayList<Object>(0);
     }
@@ -140,7 +140,7 @@ public final class EntityUtil {
    * @return a Collection containing the values of the property with the given ID from the given entities,
    * null values are included
    */
-  public static Collection<Object> getPropertyValues(final Property property, final Collection<Entity> entities) {
+  public static Collection getPropertyValues(final Property property, final Collection<Entity> entities) {
     return getPropertyValues(property, entities, true);
   }
 
@@ -150,8 +150,8 @@ public final class EntityUtil {
    * @param includeNullValues if true then null values are included
    * @return a Collection containing the values of the property with the given ID from the given entities
    */
-  public static Collection<Object> getPropertyValues(final Property property, final Collection<Entity> entities,
-                                                     final boolean includeNullValues) {
+  public static Collection getPropertyValues(final Property property, final Collection<Entity> entities,
+                                             final boolean includeNullValues) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
     final List<Object> values = new ArrayList<Object>(entities.size());
     for (final Entity entity : entities) {
@@ -187,7 +187,7 @@ public final class EntityUtil {
    */
   public static Collection getDistinctPropertyValues(final String propertyID, final Collection<Entity> entities,
                                                      final boolean includeNullValue) {
-    final Set values = new HashSet();
+    final Set<Object> values = new HashSet<Object>();
     if (entities == null) {
       return values;
     }

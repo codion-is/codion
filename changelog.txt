@@ -3420,3 +3420,5 @@
   DateUtils.floorTime() added
   EntityUtil.getRandomDate() now returns a random date within the last year instead of a date based on current time
   EntityUiUtil.createEntityLookupFieldPanel() added
+  EntityUtil.getPropertyValues() no longer returns a generified collection
+  PropertySummaryModel.PropertyValueProvider.getValues() no longer returns a generified collection

@@ -341,7 +341,7 @@ public final class DefaultEntityTableModelTest {
   public void getValues() {
     testModel.refresh();
     final Property property = Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING);
-    final Collection<Object> values = testModel.getValues(property, false);
+    final Collection values = testModel.getValues(property, false);
     assertEquals(5, values.size());
     assertTrue(values.contains("a"));
     assertTrue(values.contains("b"));

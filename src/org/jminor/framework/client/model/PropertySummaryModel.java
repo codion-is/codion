@@ -72,7 +72,7 @@ public interface PropertySummaryModel {
     /**
      * @return the values to base the summary on
      */
-    Collection<?> getValues();
+    Collection getValues();
 
     /**
      * @return true if the values provided by <code>getValues()</code> is a subset of the total available values

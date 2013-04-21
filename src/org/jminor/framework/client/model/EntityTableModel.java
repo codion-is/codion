@@ -256,7 +256,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @param selectedOnly if true only values from the selected entities are returned
    * @return the values of <code>property</code> from the entities in the table model
    */
-  Collection<Object> getValues(final Property property, final boolean selectedOnly);
+  Collection getValues(final Property property, final boolean selectedOnly);
 
   /**
    * @param primaryKey the primary key to search by
