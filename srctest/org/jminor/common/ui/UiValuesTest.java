@@ -21,6 +21,7 @@ import javax.swing.SpinnerNumberModel;
 import java.sql.Types;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
+import java.util.Calendar;
 import java.util.Date;
 
 import static org.junit.Assert.*;
@@ -31,12 +32,19 @@ public class UiValuesTest {
   public void timeUiValue() throws ParseException {
     final SimpleDateFormat format = DateFormats.getDateFormat("HH:mm");
     final JFormattedTextField txt = UiUtil.createFormattedField(DateUtil.getDateMask(format));//HH:mm
-    final Value<Date> value = UiValues.dateValue (txt, format, Types.TIME);
+    final Value<Date> value = UiValues.dateValue(txt, format, Types.TIME);
 
     assertNull(value.get());
     final String timeString = "22:42";
     txt.setText(timeString);
-    assertEquals(format.parse(timeString), value.get());
+    final Date date = value.get();
+    assertEquals(format.parse(timeString), date);
+
+    final Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    assertEquals(1970, calendar.get(Calendar.YEAR));
+    assertEquals(Calendar.JANUARY, calendar.get(Calendar.MONTH));
+    assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
 
     final String invalidDateString = "23:";
     txt.setText(invalidDateString);
@@ -51,7 +59,7 @@ public class UiValuesTest {
   public void dateUiValue() throws ParseException {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
     final JFormattedTextField txt = UiUtil.createFormattedField(DateUtil.getDateMask(format));//dd-MM-yyyy
-    final Value<Date> value = UiValues.dateValue (txt, format, Types.DATE);
+    final Value<Date> value = UiValues.dateValue(txt, format, Types.DATE);
 
     assertNull(value.get());
     final String dateString = "03-10-1975";

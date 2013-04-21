@@ -28,23 +28,23 @@ public class DateUtilTest {
     assertTrue("isDateValid should work with a date format specified",
             DateUtil.isDateValid("03.10.1975", false, DateFormats.getDateFormat(DateFormats.SHORT_DOT)));
   }
-  
+
   @Test(expected = IllegalArgumentException.class)
   public void isDateValidNullFormat() {
     DateUtil.isDateValid("03-10-1975");
   }
-  
+
   @Test(expected = IllegalArgumentException.class)
   public void floorFieldsNullCalendar() {
     DateUtil.floorFields(null);
   }
-  
+
   @Test
   public void getDate() throws ParseException {
     final Date date = DateUtil.getDate(1975, Calendar.OCTOBER, 3);
     assertEquals(DateFormats.getDateFormat(DateFormats.SHORT_DASH).parse("03-10-1975"), date);
   }
-  
+
   @Test
   public void floorTimeFields() throws ParseException {
     final Date dateWithTime = DateFormats.getDateFormat(DateFormats.EXACT_TIMESTAMP).parse("1975-10-03 10:45:42.123");
@@ -55,6 +55,21 @@ public class DateUtilTest {
     assertEquals(0, calendar.get(Calendar.SECOND));
     assertEquals(0, calendar.get(Calendar.MINUTE));
     assertEquals(0, calendar.get(Calendar.HOUR_OF_DAY));
+  }
+
+  @Test
+  public void floorTime() throws ParseException {
+    final Date dateWithTime = DateFormats.getDateFormat(DateFormats.EXACT_TIMESTAMP).parse("1975-10-03 10:45:42.123");
+    final Date date = DateUtil.floorTime(dateWithTime);
+    final Calendar calendar = Calendar.getInstance();
+    calendar.setTime(date);
+    assertEquals(1970, calendar.get(Calendar.YEAR));
+    assertEquals(Calendar.JANUARY, calendar.get(Calendar.MONTH));
+    assertEquals(1, calendar.get(Calendar.DAY_OF_MONTH));
+    assertEquals(10, calendar.get(Calendar.HOUR_OF_DAY));
+    assertEquals(45, calendar.get(Calendar.MINUTE));
+    assertEquals(42, calendar.get(Calendar.SECOND));
+    assertEquals(123, calendar.get(Calendar.MILLISECOND));
   }
 
   @Test

@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model;
 
+import java.sql.Time;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -53,6 +54,21 @@ public final class DateUtil {
     }
 
     return false;
+  }
+
+  /**
+   * @param date the Date object to floor
+   * @return a Time object with the same time of day as <code>date</code>, except the Calendar.YEAR,
+   * Calendar.MONTH and Calendar.DATE fields are set to 1970, january and 1 respectively
+   */
+  public static Time floorTime(final Date date) {
+    final Calendar cal = Calendar.getInstance();
+    cal.setTime(date);
+    cal.set(Calendar.YEAR, 1970);
+    cal.set(Calendar.MONTH, Calendar.JANUARY);
+    cal.set(Calendar.DATE, 1);
+
+    return new Time(cal.getTimeInMillis());
   }
 
   /**

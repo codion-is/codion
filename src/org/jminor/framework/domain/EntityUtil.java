@@ -12,11 +12,11 @@ import org.jminor.framework.Configuration;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.sql.Time;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Collator;
 import java.util.ArrayList;
+import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -427,11 +427,11 @@ public final class EntityUtil {
       case Types.CHAR:
         return (char) RANDOM.nextInt();
       case Types.DATE:
-        return DateUtil.floorDate(new Date());
+        return DateUtil.floorDate(getRandomDate());
       case Types.TIMESTAMP:
-        return DateUtil.floorTimestamp(new Timestamp(System.currentTimeMillis()));
+        return DateUtil.floorTimestamp(new Timestamp(getRandomDate().getTime()));
       case Types.TIME:
-        return new Time(System.currentTimeMillis());
+        return DateUtil.floorTime(getRandomDate());
       case Types.DOUBLE:
         return getRandomDouble(property);
       case Types.INTEGER:
@@ -491,6 +491,16 @@ public final class EntityUtil {
     final double max = property.getMax() == null ? 10000000 : property.getMax();
 
     return (int) (min + (RANDOM.nextDouble() * ((max - min) + 1)));
+  }
+
+  private static Date getRandomDate() {
+    final Calendar calendar = Calendar.getInstance();
+    long offset = calendar.getTimeInMillis();
+    calendar.add(Calendar.YEAR, -1);
+    long end = System.currentTimeMillis();
+    long diff = end - offset + 1;
+
+    return new Timestamp(offset + (long) (Math.random() * diff));
   }
 
   private static Object getRandomDouble(final Property property) {

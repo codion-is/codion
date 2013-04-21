@@ -3417,3 +3417,6 @@
   Deserializer merged with Serializer
   RemoteEntityConnection code cleanup, synchronized with EntityConnection
   FrameworkMessages_is_IS.properties encoding fixed
+  DateUtils.floorTime() added
+  EntityUtil.getRandomDate() now returns a random date within the last year instead of a date based on current time
+  EntityUiUtil.createEntityLookupFieldPanel() added

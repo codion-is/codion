@@ -49,6 +49,8 @@ public final class UiValues {
   private UiValues() {}
 
   /**
+   * Note that when using Types.TIME the date fields (year, month and day of month) are
+   * set to 1970, january and 1 respectively
    * @param textComponent the component
    * @param dateFormat the date format
    * @param sqlType the actual sql type (Types.DATE, Types.TIMESTAMP or Types.TIME)

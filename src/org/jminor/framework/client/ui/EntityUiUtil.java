@@ -737,6 +737,11 @@ public final class EntityUiUtil {
     return createEastButtonPanel(entityComboBox, new CreateEntityAction(entityComboBox, panelProvider), newRecordButtonTakesFocus);
   }
 
+  public static JPanel createEntityLookupFieldPanel(final EntityLookupField entityLookupField, final EntityPanelProvider panelProvider,
+                                                    final boolean newRecordButtonTakesFocus) {
+    return createEastButtonPanel(entityLookupField, new CreateEntityAction(entityLookupField, panelProvider), newRecordButtonTakesFocus);
+  }
+
   public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final String foreignKeyPropertyID,
                                                        final boolean filterButtonTakesFocus) {
     return createEastButtonPanel(entityComboBox, entityComboBox.createForeignKeyFilterAction(foreignKeyPropertyID),
