@@ -3422,3 +3422,4 @@
   EntityUiUtil.createEntityLookupFieldPanel() added
   EntityUtil.getPropertyValues() no longer returns a generified collection
   PropertySummaryModel.PropertyValueProvider.getValues() no longer returns a generified collection
+  EntityUtil, minor refactoring
