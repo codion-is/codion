@@ -59,7 +59,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * The selection model
    */
-  private final TableSelectionModel<R> selectionModel = new DefaultTableSelectionModel<R>(new AbstractFilteredTableModelProxy<R>(this));
+  private final TableSelectionModel<R> selectionModel;
 
   /**
    * The TableColumnModel
@@ -74,19 +74,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * the filter criteria used by this model
    */
-  private final FilterCriteria<R> filterCriteria = new FilterCriteria<R>() {
-    /** {@inheritDoc} */
-    @Override
-    public boolean include(final R item) {
-      for (final ColumnSearchModel columnFilter : columnModel.getColumnFilterModels()) {
-        if (!columnFilter.include(item)) {
-          return false;
-        }
-      }
-
-      return true;
-    }
-  };
+  private final FilterCriteria<R> filterCriteria;
 
   /**
    * true if searching the table model should be done via regular expressions
@@ -102,6 +90,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     Util.rejectNullValue(sortModel, "sortModel");
     this.sortModel = sortModel;
     this.columnModel = new DefaultFilteredTableColumnModel<C>(sortModel.getColumns(), columnFilterModels);
+    this.selectionModel = new DefaultTableSelectionModel<R>(new AbstractFilteredTableModelProxy<R>(this));
+    this.filterCriteria = new FilterCriteriaImpl<R, C>(this.columnModel.getColumnFilterModels());
     bindEventsInternal();
   }
 
@@ -471,11 +461,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * Returns the value to use when searching through the table.
    * @param rowIndex the row index
-   * @param columnIdentifier the column identifier
+   * @param column the column
    * @return the search value
+   * @see #findNextItemCoordinate(int, boolean, String)
    */
-  protected String getSearchValueAt(final int rowIndex, final C columnIdentifier) {
-    final Object value = getValueAt(rowIndex, columnModel.getTableColumn(columnIdentifier).getModelIndex());
+  protected String getSearchValueAt(final int rowIndex, final TableColumn column) {
+    final Object value = getValueAt(rowIndex, column.getModelIndex());
 
     return value == null ? "" : value.toString();
   }
@@ -523,12 +514,10 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     });
   }
 
-  @SuppressWarnings({"unchecked"})
   private Point findColumnValue(final Enumeration<TableColumn> visibleColumns, final int row, final FilterCriteria<Object> criteria) {
     int index = 0;
     while (visibleColumns.hasMoreElements()) {
-      final TableColumn column = visibleColumns.nextElement();
-      if (criteria.include(getSearchValueAt(row, (C) column.getIdentifier()))) {
+      if (criteria.include(getSearchValueAt(row, visibleColumns.nextElement()))) {
         return new Point(index, row);
       }
       index++;
@@ -584,7 +573,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
      * Instantiates a new RegexFilterCriteria.
      * @param patternString the regex pattern
      */
-    public RegexFilterCriteria(final String patternString) {
+    private RegexFilterCriteria(final String patternString) {
       this.pattern = Pattern.compile(patternString);
     }
 
@@ -596,6 +585,27 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     @Override
     public boolean include(final T item) {
       return item != null && pattern.matcher(item.toString()).find();
+    }
+  }
+
+  private static final class FilterCriteriaImpl<R, C> implements FilterCriteria<R> {
+
+    private final Collection<ColumnSearchModel<C>> columnFilters;
+
+    private FilterCriteriaImpl(final Collection<ColumnSearchModel<C>> columnFilters) {
+      this.columnFilters = columnFilters;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean include(final R item) {
+      for (final ColumnSearchModel columnFilter : columnFilters) {
+        if (!columnFilter.include(item)) {
+          return false;
+        }
+      }
+
+      return true;
     }
   }
 }

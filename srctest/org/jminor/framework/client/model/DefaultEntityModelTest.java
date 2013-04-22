@@ -155,6 +155,15 @@ public final class DefaultEntityModelTest {
     new DefaultEntityModel(editModel, tableModel);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorTableModelEditModelMismatch() {
+    final EntityEditModel editModel = new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel2 = new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    tableModel.setEditModel(editModel);
+    new DefaultEntityModel(editModel2, tableModel);
+  }
+
   @Test
   public void test() throws Exception {
     assertNull(departmentModel.getMasterModel());

@@ -77,6 +77,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private final EntityConnectionProvider connectionProvider;
 
   /**
+   * The edit model to use when updating/deleting entities
+   */
+  private EntityEditModel editModel;
+
+  /**
    * The search model
    */
   private final EntityTableSearchModel searchModel;
@@ -87,19 +92,14 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private final Map<String, PropertySummaryModel> propertySummaryModels = new HashMap<String, PropertySummaryModel>();
 
   /**
-   * True if the underlying query should be configurable by the user
-   */
-  private boolean queryConfigurationAllowed = true;
-
-  /**
-   * The edit model to use when updating/deleting entities
-   */
-  private EntityEditModel editModel;
-
-  /**
    * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
    */
   private int fetchCount = -1;
+
+  /**
+   * True if the underlying query should be configurable by the user
+   */
+  private boolean queryConfigurationAllowed = true;
 
   /**
    * If true then querying should be disabled if no criteria is specified
@@ -594,8 +594,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  protected final String getSearchValueAt(final int rowIndex, final Property columnIdentifier) {
-    return getItemAt(rowIndex).getValueAsString(columnIdentifier);
+  protected final String getSearchValueAt(final int rowIndex, final TableColumn column) {
+    return getItemAt(rowIndex).getValueAsString((Property) column.getIdentifier());
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
@@ -691,8 +691,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   private org.json.JSONObject createColumnPreferences() throws Exception {
     final org.json.JSONObject columnPreferencesRoot = new org.json.JSONObject();
-    final List<TableColumn> columns = getColumnModel().getAllColumns();
-    for (final TableColumn column : columns) {
+    for (final TableColumn column : getColumnModel().getAllColumns()) {
       final org.json.JSONObject columnObject = new org.json.JSONObject();
       final boolean visible = getColumnModel().isColumnVisible((Property) column.getIdentifier());
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
