@@ -3427,3 +3427,4 @@
   DefaultTableSelectionModel added
   DefaultColumnSearchModel.include(Object) now returns true if model is not enabled
   AbstractFilteredTableModel.getSearchValueAt() second parameter changed to TableColumn, some minor refactoring
+  EntityUtil, testing related methods moved to EntityTestUnit
