@@ -117,7 +117,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   @Override
   public final boolean include(final Entity item) {
     for (final ColumnSearchModel<Property> columnFilter : propertyFilterModels.values()) {
-      if (columnFilter.isEnabled() && !columnFilter.include(item)) {
+      if (!columnFilter.include(item)) {
         return false;
       }
     }

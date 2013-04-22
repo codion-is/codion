@@ -490,7 +490,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   /** {@inheritDoc} */
   @Override
   public final boolean include(final Object object) {
-    return include(getComparable(object));
+    return !enabled || include(getComparable(object));
   }
 
   /** {@inheritDoc} */

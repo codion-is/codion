@@ -44,7 +44,7 @@ public interface ColumnSearchModel<K> {
 
   /**
    * @param object the object
-   * @return true if the object should be included
+   * @return true if the object should be included or if this model is not enabled
    */
   boolean include(final Object object);
 
@@ -60,7 +60,7 @@ public interface ColumnSearchModel<K> {
 
   /**
    * @param comparable the value to check
-   * @return true if the given value should be included
+   * @return true if the given value should be included or if this model is not enabled
    */
   boolean include(final Comparable comparable);
 

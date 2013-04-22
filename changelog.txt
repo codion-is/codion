@@ -3425,3 +3425,4 @@
   EntityUtil, minor refactoring
   TableSelectionModel refactored out of FilteredTableModel
   DefaultTableSelectionModel added
+  DefaultColumnSearchModel.include(Object) now returns true if model is not enabled

@@ -79,7 +79,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     @Override
     public boolean include(final R item) {
       for (final ColumnSearchModel columnFilter : columnModel.getColumnFilterModels()) {
-        if (columnFilter.isEnabled() && !columnFilter.include(item)) {
+        if (!columnFilter.include(item)) {
           return false;
         }
       }
