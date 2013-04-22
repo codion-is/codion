@@ -1137,7 +1137,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return the InputProvider handling input for <code>property</code>
    * @see #updateSelectedEntities(org.jminor.framework.domain.Property)
    */
-  @SuppressWarnings({"UnusedDeclaration"})
   protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
     final Collection values = EntityUtil.getDistinctPropertyValues(property.getPropertyID(), toUpdate);
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
