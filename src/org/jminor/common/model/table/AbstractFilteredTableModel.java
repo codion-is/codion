@@ -8,24 +8,17 @@ import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
-import org.jminor.common.model.State;
-import org.jminor.common.model.StateObserver;
-import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 
-import javax.swing.DefaultListSelectionModel;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.Point;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
-import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.regex.Pattern;
@@ -66,7 +59,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * The selection model
    */
-  private final SelectionModel selectionModel = new SelectionModel();
+  private final TableSelectionModel<R> selectionModel = new DefaultTableSelectionModel<R>(new AbstractFilteredTableModelProxy<R>(this));
 
   /**
    * The TableColumnModel
@@ -208,9 +201,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   public final void refresh() {
     try {
       evtRefreshStarted.fire();
-      final List<R> selectedItems = new ArrayList<R>(getSelectedItems());
+      final List<R> selectedItems = new ArrayList<R>(selectionModel.getSelectedItems());
       doRefresh();
-      setSelectedItems(selectedItems);
+      selectionModel.setSelectedItems(selectedItems);
     }
     finally {
       evtRefreshDone.fire();
@@ -231,7 +224,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final ListSelectionModel getSelectionModel() {
+  public final TableSelectionModel<R> getSelectionModel() {
     return selectionModel;
   }
 
@@ -255,171 +248,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final void selectAll() {
-    selectionModel.setSelectionInterval(0, getVisibleItemCount() - 1);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void clearSelection() {
-    selectionModel.clearSelection();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final List<Integer> getSelectedIndexes() {
-    return selectionModel.getSelectedIndexes();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void moveSelectionUp() {
-    if (!visibleItems.isEmpty()) {
-      if (selectionModel.isSelectionEmpty()) {
-        selectionModel.setSelectionInterval(visibleItems.size() - 1, visibleItems.size() - 1);
-      }
-      else {
-        final Collection<Integer> selected = selectionModel.getSelectedIndexes();
-        final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
-        for (final Integer index : selected) {
-          newSelected.add(index == 0 ? visibleItems.size() - 1 : index - 1);
-        }
-        setSelectedIndexes(newSelected);
-      }
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void moveSelectionDown() {
-    if (!visibleItems.isEmpty()) {
-      if (selectionModel.isSelectionEmpty()) {
-        selectionModel.setSelectionInterval(0, 0);
-      }
-      else {
-        final Collection<Integer> selected = selectionModel.getSelectedIndexes();
-        final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
-        for (final Integer index : selected) {
-          newSelected.add(index == visibleItems.size() - 1 ? 0 : index + 1);
-        }
-        setSelectedIndexes(newSelected);
-      }
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final R getSelectedItem() {
-    final int index = selectionModel.getSelectedIndex();
-    if (index >= 0 && index < getVisibleItemCount()) {
-      return getItemAt(index);
-    }
-    else {
-      return null;
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final List<R> getSelectedItems() {
-    final Collection<Integer> selectedModelIndexes = selectionModel.getSelectedIndexes();
-    final List<R> selectedItems = new ArrayList<R>();
-    for (final int modelIndex : selectedModelIndexes) {
-      selectedItems.add(getItemAt(modelIndex));
-    }
-
-    return selectedItems;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void setSelectedIndex(final int index) {
-    if (index < 0 || index > getVisibleItemCount() - 1) {
-      throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getVisibleItemCount());
-    }
-    selectionModel.setSelectionInterval(index, index);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void setSelectedIndexes(final Collection<Integer> indexes) {
-    for (final Integer index : indexes) {
-      if (index < 0 || index > getVisibleItemCount() - 1) {
-        throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getVisibleItemCount());
-      }
-    }
-    selectionModel.setSelectedIndexes(indexes);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void setSelectedItem(final R item) {
-    setSelectedItems(Arrays.asList(item));
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void setSelectedItems(final Collection<R> items) {
-    if (!selectionModel.isSelectionEmpty()) {
-      selectionModel.clearSelection();
-    }
-    addSelectedItems(items);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void addSelectedItem(final R item) {
-    addSelectedItems(Arrays.asList(item));
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void addSelectedItems(final Collection<R> items) {
-    final List<Integer> indexes = new ArrayList<Integer>();
-    for (final R item : items) {
-      final int index = indexOf(item);
-      if (index >= 0) {
-        indexes.add(index);
-      }
-    }
-    selectionModel.addSelectedIndexes(indexes);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void addSelectedIndex(final int index) {
-    if (index < 0 || index > getVisibleItemCount() - 1) {
-      throw new IndexOutOfBoundsException("Index: " + index + ", size: " + getVisibleItemCount());
-    }
-    selectionModel.addSelectionInterval(index, index);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void addSelectedIndexes(final Collection<Integer> indexes) {
-    selectionModel.addSelectedIndexes(indexes);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final int getSelectedIndex() {
-    return selectionModel.getSelectedIndex();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final int getSelectionCount() {
-    return selectionModel.getSelectionCount();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isSelectionEmpty() {
-    return selectionModel.isSelectionEmpty();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final R getItemAt(final int index) {
     return visibleItems.get(index);
   }
@@ -434,7 +262,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final void filterContents() {
     try {
-      final List<R> selectedItems = getSelectedItems();
+      final List<R> selectedItems = selectionModel.getSelectedItems();
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
       for (final ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext();) {
@@ -446,7 +274,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       }
       sortModel.sort(visibleItems);
       fireTableDataChanged();
-      setSelectedItems(selectedItems);
+      selectionModel.setSelectedItems(selectedItems);
     }
     finally {
       evtFilteringDone.fire();
@@ -515,24 +343,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final StateObserver getSelectionEmptyObserver() {
-    return selectionModel.getSelectionEmptyObserver();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final StateObserver getMultipleSelectionObserver() {
-    return selectionModel.getMultipleSelectionObserver();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public StateObserver getSingleSelectionObserver() {
-    return selectionModel.getSingleSelectionObserver();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final void addRefreshStartedListener(final EventListener listener) {
     evtRefreshStarted.addListener(listener);
   }
@@ -577,30 +387,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final void removeSortingListener(final EventListener listener) {
     evtSortingDone.removeListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void addSelectedIndexListener(final EventListener listener) {
-    selectionModel.addSelectedIndexListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void removeSelectedIndexListener(final EventListener listener) {
-    selectionModel.removeSelectedIndexListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void addSelectionChangedListener(final EventListener listener) {
-    selectionModel.addSelectionChangedListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void removeSelectionChangedListener(final EventListener listener) {
-    selectionModel.removeSelectionChangedListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -754,175 +540,39 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private void sortVisibleItems() {
     try {
       evtSortingStarted.fire();
-      final List<R> selectedItems = new ArrayList<R>(getSelectedItems());
+      final List<R> selectedItems = new ArrayList<R>(selectionModel.getSelectedItems());
       sortModel.sort(visibleItems);
       fireTableDataChanged();
-      setSelectedItems(selectedItems);
+      selectionModel.setSelectedItems(selectedItems);
     }
     finally {
       evtSortingDone.fire();
     }
   }
 
-  private static final class SelectionModel extends DefaultListSelectionModel {
+  private static final class AbstractFilteredTableModelProxy<R> implements TableSelectionModel.TableModelProxy<R> {
+    private final FilteredTableModel<R, ?> tableModel;
 
-    private final Event evtSelectionChanged = Events.event();
-    private final Event evtSelectedIndexChanged = Events.event();
-    private final State stSelectionEmpty = States.state(true);
-    private final State stMultipleSelection = States.state(false);
-    private final State stSingleSelection = States.state(false);
-
-    /**
-     * true while the selection is being updated
-     */
-    private boolean isUpdatingSelection = false;
-    /**
-     * Holds the topmost (minimum) selected index
-     */
-    private int selectedIndex = -1;
+    private AbstractFilteredTableModelProxy(final FilteredTableModel<R, ?> tableModel) {
+      this.tableModel = tableModel;
+    }
 
     /** {@inheritDoc} */
     @Override
-    public void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
-      super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
-      stSelectionEmpty.setActive(isSelectionEmpty());
-      stSingleSelection.setActive(getSelectionCount() == 1);
-      stMultipleSelection.setActive(!stSelectionEmpty.isActive() && !stSingleSelection.isActive());
-      final int minSelIndex = getMinSelectionIndex();
-      if (selectedIndex != minSelIndex) {
-        selectedIndex = minSelIndex;
-        evtSelectedIndexChanged.fire();
-      }
-      if (!(isAdjusting || isUpdatingSelection)) {
-        evtSelectionChanged.fire();
-      }
+    public int getSize() {
+      return tableModel.getVisibleItemCount();
     }
 
-    /**
-     * @return the number of selected rows
-     */
-    private int getSelectionCount() {
-      if (isSelectionEmpty()) {
-        return 0;
-      }
-
-      int counter = 0;
-      final int min = getMinSelectionIndex();
-      final int max = getMaxSelectionIndex();
-      if (min >= 0 && max >= 0) {
-        for (int i = min; i <= max; i++) {
-          if (isSelectedIndex(i)) {
-            counter++;
-          }
-        }
-      }
-
-      return counter;
+    /** {@inheritDoc} */
+    @Override
+    public int indexOf(final R item) {
+      return tableModel.indexOf(item);
     }
 
-    /**
-     * Adds these indexes to the selection
-     * @param indexes the indexes to add to the selection
-     */
-    private void addSelectedIndexes(final Collection<Integer> indexes) {
-      if (indexes.isEmpty()) {
-        return;
-      }
-      final Iterator<Integer> iterator = indexes.iterator();
-      //keep the first index and add last in order to avoid firing evtSelectionChanged
-      //for each index being added, see fireValueChanged() above
-      final int firstIndex = iterator.next();
-      try {
-        isUpdatingSelection = true;
-        while (iterator.hasNext()) {
-          final int index = iterator.next();
-          addSelectionInterval(index, index);
-        }
-      }
-      finally {
-        isUpdatingSelection = false;
-        addSelectionInterval(firstIndex, firstIndex);
-      }
-    }
-
-    /**
-     * @param indexes the indexes to select
-     */
-    private void setSelectedIndexes(final Collection<Integer> indexes) {
-      clearSelection();
-      addSelectedIndexes(indexes);
-    }
-
-    /**
-     * @return the selected indexes
-     */
-    private List<Integer> getSelectedIndexes() {
-      final List<Integer> indexes = new ArrayList<Integer>();
-      final int min = getMinSelectionIndex();
-      final int max = getMaxSelectionIndex();
-      for (int i = min; i <= max; i++) {
-        if (isSelectedIndex(i)) {
-          indexes.add(i);
-        }
-      }
-
-      return indexes;
-    }
-
-    /**
-     * @return the topmost (lowest row index) selected index
-     */
-    private int getSelectedIndex() {
-      return selectedIndex;
-    }
-
-    /**
-     * @param listener a listener notified each time the topmost (lowest row index) selected index changes
-     */
-    private void addSelectedIndexListener(final EventListener listener) {
-      evtSelectedIndexChanged.addListener(listener);
-    }
-
-    /**
-     * @param listener the listener to remove
-     */
-    private void removeSelectedIndexListener(final EventListener listener) {
-      evtSelectedIndexChanged.addListener(listener);
-    }
-
-    /**
-     * @param listener a listener notified each time the selection changes
-     */
-    private void addSelectionChangedListener(final EventListener listener) {
-      evtSelectionChanged.addListener(listener);
-    }
-
-    /**
-     * @param listener the listener to remove
-     */
-    private void removeSelectionChangedListener(final EventListener listener) {
-      evtSelectionChanged.addListener(listener);
-    }
-
-    /**
-     * @return a state active when multiple rows are selected
-     */
-    private StateObserver getMultipleSelectionObserver() {
-      return stMultipleSelection.getObserver();
-    }
-
-    /**
-     * @return a state active when a single row is selected
-     */
-    private StateObserver getSingleSelectionObserver() {
-      return stSingleSelection.getObserver();
-    }
-
-    /**
-     * @return a state active when the selection is empty
-     */
-    private StateObserver getSelectionEmptyObserver() {
-      return stSelectionEmpty.getObserver();
+    /** {@inheritDoc} */
+    @Override
+    public R getItemAt(final int index) {
+      return tableModel.getItemAt(index);
     }
   }
 

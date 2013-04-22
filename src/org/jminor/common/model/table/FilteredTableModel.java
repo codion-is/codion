@@ -7,13 +7,10 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.StateObserver;
 
-import javax.swing.ListSelectionModel;
 import javax.swing.table.TableModel;
 import java.awt.Point;
 import java.util.Collection;
-import java.util.List;
 
 /**
  * Specifies a table model supporting selection as well as filtering
@@ -21,41 +18,6 @@ import java.util.List;
  * @param <C> type type used to identify columns in this table model, Integer for simple indexed identification for example
  */
 public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, Refreshable {
-
-  /**
-   * @return a StateObserver indicating that the selection is empty
-   */
-  StateObserver getSelectionEmptyObserver();
-
-  /**
-   * @return a StateObserver indicating that multiple rows are selected
-   */
-  StateObserver getMultipleSelectionObserver();
-
-  /**
-   * @return a StateObserver indicating that a single row is selected
-   */
-  StateObserver getSingleSelectionObserver();
-
-  /**
-   * @param listener a listener to be notified each time the selection changes
-   */
-  void addSelectionChangedListener(final EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeSelectionChangedListener(final EventListener listener);
-
-  /**
-   * @param listener a listener to be notified each time the selected index changes
-   */
-  void addSelectedIndexListener(final EventListener listener);
-
-  /**
-   * @param listener the listener to remove
-   */
-  void removeSelectedIndexListener(final EventListener listener);
 
   /**
    * @param listener a listener to be notified each time a refresh is about to start
@@ -182,115 +144,11 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    */
   void setRegularExpressionSearch(final boolean value);
 
-  /**
-   * @return true if no rows are selected in this table model
-   */
-  boolean isSelectionEmpty();
-
-  /**
-   * @return the index of the selected record, -1 if none is selected and
-   * the lowest index if more than one record is selected
-   */
-  int getSelectedIndex();
-
-  /**
-   * Selects the item at <code>index</code>
-   * @param index the index
-   */
-  void addSelectedIndex(final int index);
-
-  /**
-   * Clears the selection and selects the item at <code>index</code>
-   * @param index the index
-   */
-  void setSelectedIndex(final int index);
-
-  /**
-   * Clears the selection
-   * @see #addSelectionChangedListener(EventListener)
-   */
-  void clearSelection();
-
-  /**
-   * Selects the given indexes
-   * @param indexes the indexes to select
-   */
-  void setSelectedIndexes(final Collection<Integer> indexes);
-
-  /**
-   * Selects the given items
-   * @param items the items to select
-   */
-  void setSelectedItems(final Collection<R> items);
-
-  /**
-   * @return a list containing the selected items
-   */
-  List<R> getSelectedItems();
-
-  /**
-   * @return the selected item, null if none is selected
-   */
-  R getSelectedItem();
-
-  /**
-   * @return the selected indexes, an empty list if selection is empty
-   */
-  List<Integer> getSelectedIndexes();
-
-  /**
-   * Sets the selected item
-   * @param item the item to select
-   */
-  void setSelectedItem(final R item);
-
-  /**
-   * Adds the given item to the selection
-   * @param item the item to add to the selection
-   */
-  void addSelectedItem(final R item);
-
-  /**
-   * Adds the given items to the selection
-   * @param items the items to add to the selection
-   */
-  void addSelectedItems(final Collection<R> items);
-
-  /**
-   * Selects all visible entities
-   * @see #addSelectionChangedListener(EventListener)
-   */
-  void selectAll();
-
-  /**
-   * Adds these indexes to the selection
-   * @param indexes the indexes to add to the selection
-   */
-  void addSelectedIndexes(final Collection<Integer> indexes);
-
-  /**
-   * @return the number of selected indexes in the underlying selection model.
-   */
-  int getSelectionCount();
-
-  /**
-   * Moves all selected indexes down one index, wraps around.
-   * If the selection is empty the first item in this model is selected.
-   * @see #addSelectionChangedListener(EventListener)
-   */
-  void moveSelectionDown();
-
-  /**
-   * Moves all selected indexes up one index, wraps around.
-   * If the selection is empty the last item in this model is selected.
-   * @see #addSelectionChangedListener(EventListener)
-   */
-  void moveSelectionUp();
 
   /**
    * @return the selection model used by this table model
    */
-  ListSelectionModel getSelectionModel();
+  TableSelectionModel<R> getSelectionModel();
 
   /**
    * @return the sorting model

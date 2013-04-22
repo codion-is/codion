@@ -242,7 +242,7 @@ public class EntityUtilTest {
     values.add(3);
     values.add(4);
 
-    Collection<Object> propertyValues = EntityUtil.getDistinctPropertyValues(EmpDept.DEPARTMENT_ID, entities);
+    Collection propertyValues = EntityUtil.getDistinctPropertyValues(EmpDept.DEPARTMENT_ID, entities);
     assertEquals(4, propertyValues.size());
     assertTrue(propertyValues.containsAll(values));
 

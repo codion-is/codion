@@ -28,13 +28,13 @@ public class DepartmentTablePanel extends EntityTablePanel {
   }
 
   public void viewEmployeeReport() throws Exception {
-    if (getEntityTableModel().isSelectionEmpty()) {
+    if (getEntityTableModel().getSelectionModel().isSelectionEmpty()) {
       return;
     }
 
     final String reportPath = Configuration.getReportPath() + "/empdept_employees.jasper";
-    final Collection<Object> departmentNumbers =
-            EntityUtil.getDistinctPropertyValues(DEPARTMENT_ID, getEntityTableModel().getSelectedItems());
+    final Collection departmentNumbers =
+            EntityUtil.getDistinctPropertyValues(DEPARTMENT_ID, getEntityTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("DEPTNO", departmentNumbers);
     new SwingWorker() {

@@ -450,7 +450,7 @@ public class DefaultEntityModel implements EntityModel {
 
   private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
     if (containsTableModel()) {
-      tableModel.clearSelection();
+      tableModel.getSelectionModel().clearSelection();
       tableModel.addEntities(insertEvent.getInsertedEntities(), true);
     }
   }
@@ -533,8 +533,8 @@ public class DefaultEntityModel implements EntityModel {
 
   private List<Entity> getActiveEntities() {
     final List<Entity> activeEntities;
-    if (containsTableModel() && !tableModel.isSelectionEmpty()) {
-      activeEntities = tableModel.getSelectedItems();
+    if (containsTableModel() && !tableModel.getSelectionModel().isSelectionEmpty()) {
+      activeEntities = tableModel.getSelectionModel().getSelectedItems();
     }
     else {
       if (editModel.isEntityNew()) {
@@ -587,7 +587,7 @@ public class DefaultEntityModel implements EntityModel {
     };
     evtLinkedDetailModelsChanged.addListener(initializer);
     if (containsTableModel()) {
-      tableModel.addSelectionChangedListener(initializer);
+      tableModel.getSelectionModel().addSelectionChangedListener(initializer);
     }
     else {
       editModel.addEntitySetListener(initializer);

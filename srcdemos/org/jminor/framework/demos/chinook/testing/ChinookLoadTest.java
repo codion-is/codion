@@ -70,7 +70,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
         selectRandomRow(genreModel.getTableModel());
         final EntityModel trackModel = genreModel.getDetailModel(T_TRACK);
         selectRandomRows(trackModel.getTableModel(), 2);
-        genreModel.getConnectionProvider().getConnection().selectDependentEntities(trackModel.getTableModel().getSelectedItems());
+        genreModel.getConnectionProvider().getConnection().selectDependentEntities(trackModel.getTableModel().getSelectionModel().getSelectedItems());
       }
       catch (Exception e) {
         throw new ScenarioException(e);
@@ -92,8 +92,8 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
         selectRandomRow(customerModel);
 
         final String reportPath = Configuration.getReportPath() + "/customer_report.jasper";
-        final Collection<Object> customerIDs =
-                EntityUtil.getDistinctPropertyValues(CUSTOMER_CUSTOMERID, customerModel.getSelectedItems());
+        final Collection customerIDs =
+                EntityUtil.getDistinctPropertyValues(CUSTOMER_CUSTOMERID, customerModel.getSelectionModel().getSelectedItems());
         final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
         reportParameters.put("CUSTOMER_IDS", customerIDs);
         EntityReportUtil.fillReport(new JasperReportsWrapper(reportPath, reportParameters),

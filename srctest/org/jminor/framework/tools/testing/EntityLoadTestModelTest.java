@@ -113,13 +113,13 @@ public class EntityLoadTestModelTest {
     tableModel.refresh();
 
     EntityLoadTestModel.selectRandomRow(tableModel);
-    assertFalse(tableModel.getSelectionEmptyObserver().isActive());
+    assertFalse(tableModel.getSelectionModel().getSelectionEmptyObserver().isActive());
 
     EntityLoadTestModel.selectRandomRows(tableModel, 3);
-    assertEquals(3, tableModel.getSelectedItems().size());
+    assertEquals(3, tableModel.getSelectionModel().getSelectedItems().size());
 
     EntityLoadTestModel.selectRandomRows(tableModel, 0.5);
-    assertEquals(2, tableModel.getSelectedItems().size());
+    assertEquals(2, tableModel.getSelectionModel().getSelectedItems().size());
 
     model.getConnectionProvider().disconnect();
   }

@@ -173,13 +173,13 @@ public final class EntityGeneratorModel {
   }
 
   private void bindEvents() {
-    tableModel.addSelectionChangedListener(new EventAdapter() {
+    tableModel.getSelectionModel().addSelectionChangedListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         try {
           evtRefreshStarted.fire();
-          generateDefinitions(tableModel.getSelectedItems());
+          generateDefinitions(tableModel.getSelectionModel().getSelectedItems());
         }
         finally {
           evtRefreshEnded.fire();

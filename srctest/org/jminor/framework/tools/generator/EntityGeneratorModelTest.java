@@ -134,7 +134,7 @@ public class EntityGeneratorModelTest {
     model.addRefreshStartedListener(listener);
     model.addRefreshDoneListener(listener);
 
-    model.getTableModel().setSelectedIndex(0);
+    model.getTableModel().getSelectionModel().setSelectedIndex(0);
     assertEquals(2, counter.size());
     final String addressDef = model.getDocumentText();
     assertEquals(ADDRESS_DEF, addressDef);
@@ -145,14 +145,14 @@ public class EntityGeneratorModelTest {
 
   @Test
   public void product() {
-    model.getTableModel().setSelectedIndex(3);
+    model.getTableModel().getSelectionModel().setSelectedIndex(3);
     final String productDef = model.getDocumentText();
     assertEquals(PRODUCT_DEF, productDef);
   }
 
   @Test
   public void tagItem() throws Exception {
-    model.getTableModel().setSelectedIndex(6);
+    model.getTableModel().getSelectionModel().setSelectedIndex(6);
     final String tagItemDef = model.getDocumentText();
     assertEquals(TAG_ITEM_DEF, tagItemDef);
   }

@@ -15,6 +15,6 @@ public class EntityGeneratorPanelTest {
   public void test() throws ClassNotFoundException, DatabaseException {
     final EntityGeneratorModel model = new EntityGeneratorModel(new User("scott", "tiger"), "PETSTORE");
     new EntityGeneratorPanel(model);
-    model.getTableModel().setSelectedIndex(0);
+    model.getTableModel().getSelectionModel().setSelectedIndex(0);
   }
 }

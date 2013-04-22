@@ -79,12 +79,12 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
           employeeModel.getConnectionProvider().getConnection().beginTransaction();
           try {
             selectRandomRow(employeeModel.getTableModel());
-            Entity selected = employeeModel.getTableModel().getSelectedItem();
+            Entity selected = employeeModel.getTableModel().getSelectionModel().getSelectedItem();
             EntityUtil.randomize(selected, false, null);
             employeeModel.getEditModel().setEntity(selected);
             employeeModel.getEditModel().update();
             selectRandomRow(employeeModel.getTableModel());
-            selected = employeeModel.getTableModel().getSelectedItem();
+            selected = employeeModel.getTableModel().getSelectionModel().getSelectedItem();
             EntityUtil.randomize(selected, false, null);
             employeeModel.getEditModel().setEntity(selected);
             employeeModel.getEditModel().update();
@@ -117,7 +117,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         selectRandomRow(departmentModel.getTableModel());
         final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
         final Map<String, Entity> references = new HashMap<String, Entity>();
-        references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectedItem());
+        references.put(EmpDept.T_DEPARTMENT, departmentModel.getTableModel().getSelectionModel().getSelectedItem());
         employeeModel.getEditModel().setEntity(EntityUtil.createRandomEntity(EmpDept.T_EMPLOYEE, references));
         employeeModel.getEditModel().insert();
       }

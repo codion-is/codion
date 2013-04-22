@@ -370,10 +370,10 @@ public class FilteredTablePanel<T, C> extends JPanel {
       if (coordinate != null) {
         lastSearchResultCoordinate = coordinate;
         if (addToSelection) {
-          tableModel.addSelectedIndex(coordinate.y);
+          tableModel.getSelectionModel().addSelectedIndex(coordinate.y);
         }
         else {
-          tableModel.setSelectedIndex(coordinate.y);
+          tableModel.getSelectionModel().setSelectedIndex(coordinate.y);
           table.setColumnSelectionInterval(coordinate.x, coordinate.x);
         }
         scrollToCenter(coordinate.y, coordinate.x);
@@ -436,12 +436,12 @@ public class FilteredTablePanel<T, C> extends JPanel {
         table.getTableHeader().repaint();
       }
     });
-    tableModel.addSelectedIndexListener(new EventAdapter() {
+    tableModel.getSelectionModel().addSelectedIndexListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
-        if (scrollToSelectedItem && !tableModel.isSelectionEmpty()) {
-          scrollToCoordinate(tableModel.getSelectedIndex(), table.getSelectedColumn());
+        if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
+          scrollToCoordinate(tableModel.getSelectionModel().getSelectedIndex(), table.getSelectedColumn());
         }
       }
     });

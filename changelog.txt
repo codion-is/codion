@@ -3423,3 +3423,5 @@
   EntityUtil.getPropertyValues() no longer returns a generified collection
   PropertySummaryModel.PropertyValueProvider.getValues() no longer returns a generified collection
   EntityUtil, minor refactoring
+  TableSelectionModel refactored out of FilteredTableModel
+  DefaultTableSelectionModel added

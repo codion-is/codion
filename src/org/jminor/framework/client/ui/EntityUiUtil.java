@@ -127,8 +127,8 @@ public final class EntityUiUtil {
       public void actionPerformed(final ActionEvent e) {
         try {
           final EntityTableModel tableModel = tablePanel.getEntityTableModel();
-          if (!tableModel.isSelectionEmpty()) {
-            final Entity selected = tableModel.getSelectedItem();
+          if (!tableModel.getSelectionModel().isSelectionEmpty()) {
+            final Entity selected = tableModel.getSelectionModel().getSelectedItem();
             if (!selected.isValueNull(imagePathPropertyID)) {
               UiUtil.showImage(selected.getStringValue(imagePathPropertyID), tablePanel);
             }
@@ -205,7 +205,7 @@ public final class EntityUiUtil {
       /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
-        final List<Entity> entities = lookupModel.getSelectedItems();
+        final List<Entity> entities = lookupModel.getSelectionModel().getSelectedItems();
         for (final Entity entity : entities) {
           selected.add(entity);
         }
@@ -226,7 +226,7 @@ public final class EntityUiUtil {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
-        if (!entityTablePanel.getEntityTableModel().isSelectionEmpty()) {
+        if (!lookupModel.getSelectionModel().isSelectionEmpty()) {
           okAction.actionPerformed(null);
         }
       }
@@ -241,7 +241,7 @@ public final class EntityUiUtil {
       public void actionPerformed(final ActionEvent e) {
         lookupModel.refresh();
         if (lookupModel.getRowCount() > 0) {
-          lookupModel.setSelectedIndexes(Arrays.asList(0));
+          lookupModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0));
           entityTablePanel.getJTable().requestFocusInWindow();
         }
         else {

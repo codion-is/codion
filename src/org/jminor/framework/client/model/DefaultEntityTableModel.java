@@ -326,7 +326,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   @Override
   public final Collection getValues(final Property property, final boolean selectedOnly) {
     return EntityUtil.getPropertyValues(property.getPropertyID(),
-            selectedOnly ? getSelectedItems() : getVisibleItems(), false);
+            selectedOnly ? getSelectionModel().getSelectedItems() : getVisibleItems(), false);
   }
 
   /** {@inheritDoc} */
@@ -352,7 +352,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   public final String getStatusMessage() {
     final int filteredItemCount = getFilteredItemCount();
 
-    return Integer.toString(getRowCount()) + " (" + Integer.toString(getSelectionCount()) + " " +
+    return Integer.toString(getRowCount()) + " (" + Integer.toString(getSelectionModel().getSelectionCount()) + " " +
             FrameworkMessages.get(FrameworkMessages.SELECTED) + (filteredItemCount > 0 ? ", " +
             filteredItemCount + " " + FrameworkMessages.get(FrameworkMessages.HIDDEN) + ")" : ")");
   }
@@ -428,7 +428,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       }
     }
 
-    setSelectedIndexes(indexes);
+    getSelectionModel().setSelectedIndexes(indexes);
   }
 
   /** {@inheritDoc} */
@@ -474,7 +474,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     if (!isDeleteAllowed()) {
       throw new IllegalStateException("Deleting is not allowed via this table model");
     }
-    editModel.delete(getSelectedItems());
+    editModel.delete(getSelectionModel().getSelectedItems());
   }
 
   /** {@inheritDoc} */
@@ -509,7 +509,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final Iterator<Entity> getSelectedEntitiesIterator() {
-    return getSelectedItems().iterator();
+    return getSelectionModel().getSelectedItems().iterator();
   }
 
   /** {@inheritDoc} */
@@ -644,11 +644,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
         refresh();
       }
     });
-    addSelectedIndexListener(new EventAdapter() {
+    getSelectionModel().addSelectedIndexListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
-        final Entity itemToSelect = isSelectionEmpty() ? null : getSelectedItem();
+        final Entity itemToSelect = getSelectionModel().isSelectionEmpty() ? null : getSelectionModel().getSelectedItem();
         editModel.setEntity(itemToSelect);
       }
     });
@@ -658,9 +658,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       @Override
       public void tableChanged(final TableModelEvent e) {
         //if the selected record is being updated via the table model refresh the one in the edit model
-        if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getSelectedIndex()) {
+        if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getSelectionModel().getSelectedIndex()) {
           editModel.setEntity(null);
-          editModel.setEntity(getSelectedItem());
+          editModel.setEntity(getSelectionModel().getSelectedItem());
         }
       }
     });
@@ -794,7 +794,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       }
       tableModel.addFilteringListener(event);//todo summary is updated twice per refresh
       tableModel.addRefreshDoneListener(event);
-      tableModel.addSelectionChangedListener(event);
+      tableModel.getSelectionModel().addSelectionChangedListener(event);
     }
 
     /** {@inheritDoc} */
@@ -806,7 +806,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     /** {@inheritDoc} */
     @Override
     public boolean isValueSubset() {
-      return !tableModel.isSelectionEmpty();
+      return !tableModel.getSelectionModel().isSelectionEmpty();
     }
   }
 }

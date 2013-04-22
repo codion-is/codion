@@ -487,7 +487,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
             || !getEntityTableModel().isBatchUpdateAllowed()) {
       throw new IllegalStateException("Table model is read only or does not allow updates");
     }
-    final StateObserver enabled = getEntityTableModel().getSelectionEmptyObserver().getReversedObserver();
+    final StateObserver enabled = getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver();
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED),
             (char) 0, Images.loadImage("Modify16.gif"), enabled);
     controlSet.setDescription(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_TIP));
@@ -523,7 +523,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public final Control getViewDependenciesControl() {
     return Controls.methodControl(this, "viewSelectionDependencies",
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES) + TRIPLEDOT,
-            getEntityTableModel().getSelectionEmptyObserver().getReversedObserver(),
+            getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(),
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES_TIP), 'W');
   }
 
@@ -538,7 +538,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return Controls.methodControl(this, "delete", FrameworkMessages.get(FrameworkMessages.DELETE),
             States.aggregateState(Conjunction.AND,
                     getEntityTableModel().getEditModel().getAllowDeleteObserver(),
-                    getEntityTableModel().getSelectionEmptyObserver().getReversedObserver()),
+                    getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()),
             FrameworkMessages.get(FrameworkMessages.DELETE_TIP), 0, null,
             Images.loadImage(Images.IMG_DELETE_16));
   }
@@ -549,7 +549,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public final Control getExportControl() {
     return Controls.methodControl(this, "exportSelected",
             FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED) + TRIPLEDOT,
-            getEntityTableModel().getSelectionEmptyObserver().getReversedObserver(),
+            getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(),
             FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_TIP), 0, null,
             Images.loadImage(Images.IMG_SAVE_16));
   }
@@ -569,11 +569,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List)
    */
   public final void updateSelectedEntities(final Property propertyToUpdate) {
-    if (getEntityTableModel().getSelectionEmptyObserver().isActive()) {
+    if (getEntityTableModel().getSelectionModel().isSelectionEmpty()) {
       return;
     }
 
-    final List<Entity> selectedEntities = EntityUtil.copyEntities(getEntityTableModel().getSelectedItems());
+    final List<Entity> selectedEntities = EntityUtil.copyEntities(getEntityTableModel().getSelectionModel().getSelectedItems());
     final InputProviderPanel inputPanel = new InputProviderPanel(propertyToUpdate.getCaption(),
             getInputProvider(propertyToUpdate, selectedEntities));
     UiUtil.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
@@ -603,7 +603,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * Shows a dialog containing lists of entities depending on the selected entities via foreign key
    */
   public final void viewSelectionDependencies() {
-    if (getTableModel().isSelectionEmpty()) {
+    if (getTableModel().getSelectionModel().isSelectionEmpty()) {
       return;
     }
 
@@ -611,7 +611,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     try {
       UiUtil.setWaitCursor(true, this);
       final Map<String, Collection<Entity>> dependencies =
-              tableModel.getConnectionProvider().getConnection().selectDependentEntities(tableModel.getSelectedItems());
+              tableModel.getConnectionProvider().getConnection().selectDependentEntities(tableModel.getSelectionModel().getSelectedItems());
       if (!dependencies.isEmpty()) {
         showDependenciesDialog(dependencies, tableModel.getConnectionProvider(), this);
       }
@@ -657,7 +657,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public final void exportSelected() {
     try {
-      final List<Entity> selected = getEntityTableModel().getSelectedItems();
+      final List<Entity> selected = getEntityTableModel().getSelectionModel().getSelectedItems();
       Util.writeFile(EntityUtil.getEntitySerializer().serialize(selected), UiUtil.chooseFileToSave(this, null, null));
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
     }
@@ -729,8 +729,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a control for clearing the table selection
    */
   public final Control getClearSelectionControl() {
-    final Control clearSelection = Controls.methodControl(getEntityTableModel(), "clearSelection", null,
-            getEntityTableModel().getSelectionEmptyObserver().getReversedObserver(), null, -1, null,
+    final Control clearSelection = Controls.methodControl(getEntityTableModel().getSelectionModel(), "clearSelection", null,
+            getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver(), null, -1, null,
             Images.loadImage("ClearSelection16.gif"));
     clearSelection.setDescription(FrameworkMessages.get(FrameworkMessages.CLEAR_SELECTION_TIP));
 
@@ -741,7 +741,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a control for moving the table selection down one index
    */
   public final Control getMoveSelectionDownControl() {
-    final Control selectionDown = Controls.methodControl(getEntityTableModel(), "moveSelectionDown",
+    final Control selectionDown = Controls.methodControl(getEntityTableModel().getSelectionModel(), "moveSelectionDown",
             Images.loadImage(Images.IMG_DOWN_16));
     selectionDown.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_DOWN_TIP));
 
@@ -752,7 +752,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a control for moving the table selection up one index
    */
   public final Control getMoveSelectionUpControl() {
-    final Control selectionUp = Controls.methodControl(getEntityTableModel(), "moveSelectionUp",
+    final Control selectionUp = Controls.methodControl(getEntityTableModel().getSelectionModel(), "moveSelectionUp",
             Images.loadImage(Images.IMG_UP_16));
     selectionUp.setDescription(FrameworkMessages.get(FrameworkMessages.SELECTION_UP_TIP));
 
@@ -1287,7 +1287,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   private Control getCopyCellControl() {
     return new Control(FrameworkMessages.get(FrameworkMessages.COPY_CELL),
-            getEntityTableModel().getSelectionEmptyObserver().getReversedObserver()) {
+            getEntityTableModel().getSelectionModel().getSelectionEmptyObserver().getReversedObserver()) {
       /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -1320,8 +1320,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
     final String[][] header = {headerValues.toArray(new String[headerValues.size()])};
 
-    final List<Entity> entities = getEntityTableModel().isSelectionEmpty()
-            ? getEntityTableModel().getVisibleItems() : getEntityTableModel().getSelectedItems();
+    final List<Entity> entities = getEntityTableModel().getSelectionModel().isSelectionEmpty()
+            ? getEntityTableModel().getVisibleItems() : getEntityTableModel().getSelectionModel().getSelectedItems();
 
     final String[][] data = new String[entities.size()][];
     for (int i = 0; i < data.length; i++) {
@@ -1412,7 +1412,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   private void showEntityMenu(final Point location) {
-    final Entity entity = getEntityTableModel().getSelectedItem();
+    final Entity entity = getEntityTableModel().getSelectionModel().getSelectedItem();
     if (entity != null) {
       final JPopupMenu popupMenu = new JPopupMenu();
       populateEntityMenu(popupMenu, (Entity) entity.getCopy(), getEntityTableModel().getConnectionProvider());
@@ -1439,7 +1439,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         updateStatusMessage();
       }
     };
-    getEntityTableModel().addSelectionChangedListener(statusListener);
+    getEntityTableModel().getSelectionModel().addSelectionChangedListener(statusListener);
     getEntityTableModel().addFilteringListener(statusListener);
     getEntityTableModel().addTableDataChangedListener(statusListener);
 

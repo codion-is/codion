@@ -412,11 +412,27 @@ public final class AbstractFilteredTableModelTest {
   }
 
   @Test(expected = IndexOutOfBoundsException.class)
+  public void addSelectedIndexesNegative() {
+    final Collection<Integer> indexes = new ArrayList<Integer>();
+    indexes.add(1);
+    indexes.add(-1);
+    tableModel.getSelectionModel().addSelectedIndexes(indexes);
+  }
+
+  @Test(expected = IndexOutOfBoundsException.class)
+  public void addSelectedIndexesOutOfBounds() {
+    final Collection<Integer> indexes = new ArrayList<Integer>();
+    indexes.add(1);
+    indexes.add(10);
+    tableModel.getSelectionModel().addSelectedIndexes(indexes);
+  }
+
+  @Test(expected = IndexOutOfBoundsException.class)
   public void setSelectedIndexesNegative() {
     final Collection<Integer> indexes = new ArrayList<Integer>();
     indexes.add(1);
     indexes.add(-1);
-    tableModel.setSelectedIndexes(indexes);
+    tableModel.getSelectionModel().setSelectedIndexes(indexes);
   }
 
   @Test(expected = IndexOutOfBoundsException.class)
@@ -424,27 +440,27 @@ public final class AbstractFilteredTableModelTest {
     final Collection<Integer> indexes = new ArrayList<Integer>();
     indexes.add(1);
     indexes.add(10);
-    tableModel.setSelectedIndexes(indexes);
+    tableModel.getSelectionModel().setSelectedIndexes(indexes);
   }
 
   @Test(expected = IndexOutOfBoundsException.class)
   public void setSelectedIndexNegative() {
-    tableModel.setSelectedIndex(-1);
+    tableModel.getSelectionModel().setSelectedIndex(-1);
   }
 
   @Test(expected = IndexOutOfBoundsException.class)
   public void setSelectedIndexOutOfBounds() {
-    tableModel.setSelectedIndex(10);
+    tableModel.getSelectionModel().setSelectedIndex(10);
   }
 
   @Test(expected = IndexOutOfBoundsException.class)
   public void addSelectedIndexNegative() {
-    tableModel.addSelectedIndex(-1);
+    tableModel.getSelectionModel().addSelectedIndex(-1);
   }
 
   @Test(expected = IndexOutOfBoundsException.class)
   public void addSelectedIndexOutOfBounds() {
-    tableModel.addSelectedIndex(10);
+    tableModel.getSelectionModel().addSelectedIndex(10);
   }
 
   @Test
@@ -456,120 +472,121 @@ public final class AbstractFilteredTableModelTest {
         events.add(new Object());
       }
     };
-    tableModel.addSelectedIndexListener(listener);
-    tableModel.addSelectionChangedListener(listener);
+    final TableSelectionModel selectionModel = tableModel.getSelectionModel();
+    selectionModel.addSelectedIndexListener(listener);
+    selectionModel.addSelectionChangedListener(listener);
 
-    assertFalse(tableModel.getSingleSelectionObserver().isActive());
-    assertTrue(tableModel.getSelectionEmptyObserver().isActive());
-    assertFalse(tableModel.getMultipleSelectionObserver().isActive());
+    assertFalse(selectionModel.getSingleSelectionObserver().isActive());
+    assertTrue(selectionModel.getSelectionEmptyObserver().isActive());
+    assertFalse(selectionModel.getMultipleSelectionObserver().isActive());
 
     tableModel.refresh();
-    tableModel.setSelectedIndex(2);
+    selectionModel.setSelectedIndex(2);
     assertEquals(2, events.size());
-    assertTrue(tableModel.getSingleSelectionObserver().isActive());
-    assertFalse(tableModel.getSelectionEmptyObserver().isActive());
-    assertFalse(tableModel.getMultipleSelectionObserver().isActive());
-    assertEquals(2, tableModel.getSelectedIndex());
-    tableModel.moveSelectionDown();
+    assertTrue(selectionModel.getSingleSelectionObserver().isActive());
+    assertFalse(selectionModel.getSelectionEmptyObserver().isActive());
+    assertFalse(selectionModel.getMultipleSelectionObserver().isActive());
+    assertEquals(2, selectionModel.getSelectedIndex());
+    selectionModel.moveSelectionDown();
     assertEquals(6, events.size());
-    assertEquals(3, tableModel.getSelectedIndex());
-    tableModel.moveSelectionUp();
-    tableModel.moveSelectionUp();
-    assertEquals(1, tableModel.getSelectedIndex());
+    assertEquals(3, selectionModel.getSelectedIndex());
+    selectionModel.moveSelectionUp();
+    selectionModel.moveSelectionUp();
+    assertEquals(1, selectionModel.getSelectedIndex());
 
-    tableModel.moveSelectionDown();
-    tableModel.moveSelectionDown();
+    selectionModel.moveSelectionDown();
+    selectionModel.moveSelectionDown();
 
-    assertEquals(3, tableModel.getSelectedIndex());
+    assertEquals(3, selectionModel.getSelectedIndex());
 
-    tableModel.setSelectedIndex(0);
-    tableModel.moveSelectionUp();
-    assertEquals(tableModel.getRowCount() - 1, tableModel.getSelectedIndex());
+    selectionModel.setSelectedIndex(0);
+    selectionModel.moveSelectionUp();
+    assertEquals(tableModel.getRowCount() - 1, selectionModel.getSelectedIndex());
 
-    tableModel.setSelectedIndex(tableModel.getRowCount() - 1);
-    tableModel.moveSelectionDown();
-    assertEquals(0, tableModel.getSelectedIndex());
+    selectionModel.setSelectedIndex(tableModel.getRowCount() - 1);
+    selectionModel.moveSelectionDown();
+    assertEquals(0, selectionModel.getSelectedIndex());
 
-    tableModel.clearSelection();
-    tableModel.moveSelectionUp();
-    assertEquals(tableModel.getRowCount() - 1, tableModel.getSelectedIndex());
+    selectionModel.clearSelection();
+    selectionModel.moveSelectionUp();
+    assertEquals(tableModel.getRowCount() - 1, selectionModel.getSelectedIndex());
 
-    tableModel.clearSelection();
-    tableModel.moveSelectionDown();
-    assertEquals(0, tableModel.getSelectedIndex());
+    selectionModel.clearSelection();
+    selectionModel.moveSelectionDown();
+    assertEquals(0, selectionModel.getSelectedIndex());
 
-    tableModel.selectAll();
-    assertEquals(5, tableModel.getSelectedItems().size());
-    tableModel.clearSelection();
-    assertFalse(tableModel.getSingleSelectionObserver().isActive());
-    assertTrue(tableModel.getSelectionEmptyObserver().isActive());
-    assertFalse(tableModel.getMultipleSelectionObserver().isActive());
-    assertEquals(0, tableModel.getSelectedItems().size());
+    selectionModel.selectAll();
+    assertEquals(5, selectionModel.getSelectedItems().size());
+    selectionModel.clearSelection();
+    assertFalse(selectionModel.getSingleSelectionObserver().isActive());
+    assertTrue(selectionModel.getSelectionEmptyObserver().isActive());
+    assertFalse(selectionModel.getMultipleSelectionObserver().isActive());
+    assertEquals(0, selectionModel.getSelectedItems().size());
 
-    tableModel.setSelectedItem(ITEMS[0]);
-    assertFalse(tableModel.getMultipleSelectionObserver().isActive());
-    assertEquals("selected item should fit", ITEMS[0], tableModel.getSelectedItem());
-    assertEquals("current index should fit", 0, tableModel.getSelectedIndex());
-    assertEquals(1, tableModel.getSelectionCount());
-    assertFalse(tableModel.isSelectionEmpty());
-    tableModel.addSelectedIndex(1);
-    assertTrue(tableModel.getMultipleSelectionObserver().isActive());
-    assertEquals("selected item should fit", ITEMS[0], tableModel.getSelectedItem());
-    assertEquals("selected indexes should fit", Arrays.asList(0, 1), tableModel.getSelectedIndexes());
-    assertEquals("current index should fit", 0, tableModel.getSelectedIndex());
-    tableModel.addSelectedIndex(4);
-    assertTrue(tableModel.getMultipleSelectionObserver().isActive());
-    assertEquals("selected indexes should fit", Arrays.asList(0, 1, 4), tableModel.getSelectedIndexes());
-    tableModel.getSelectionModel().removeIndexInterval(1, 4);
-    assertEquals("selected indexes should fit", Arrays.asList(0), tableModel.getSelectedIndexes());
-    assertEquals("current index should fit", 0, tableModel.getSelectedIndex());
-    tableModel.getSelectionModel().clearSelection();
-    assertEquals("selected indexes should fit", new ArrayList<Integer>(), tableModel.getSelectedIndexes());
-    assertEquals("current index should fit", -1, tableModel.getSelectionModel().getMinSelectionIndex());
-    tableModel.addSelectedIndexes(Arrays.asList(0, 3, 4));
-    assertEquals("selected indexes should fit", Arrays.asList(0, 3, 4), tableModel.getSelectedIndexes());
-    assertEquals("current index should fit", 0, tableModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals(3, tableModel.getSelectionCount());
-    tableModel.getSelectionModel().removeSelectionInterval(0, 0);
-    assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
-    tableModel.getSelectionModel().removeSelectionInterval(3, 3);
-    assertEquals("current index should fit", 4, tableModel.getSelectionModel().getMinSelectionIndex());
+    selectionModel.setSelectedItem(ITEMS[0]);
+    assertFalse(selectionModel.getMultipleSelectionObserver().isActive());
+    assertEquals("selected item should fit", ITEMS[0], selectionModel.getSelectedItem());
+    assertEquals("current index should fit", 0, selectionModel.getSelectedIndex());
+    assertEquals(1, selectionModel.getSelectionCount());
+    assertFalse(selectionModel.isSelectionEmpty());
+    selectionModel.addSelectedIndex(1);
+    assertTrue(selectionModel.getMultipleSelectionObserver().isActive());
+    assertEquals("selected item should fit", ITEMS[0], selectionModel.getSelectedItem());
+    assertEquals("selected indexes should fit", Arrays.asList(0, 1), selectionModel.getSelectedIndexes());
+    assertEquals("current index should fit", 0, selectionModel.getSelectedIndex());
+    selectionModel.addSelectedIndex(4);
+    assertTrue(selectionModel.getMultipleSelectionObserver().isActive());
+    assertEquals("selected indexes should fit", Arrays.asList(0, 1, 4), selectionModel.getSelectedIndexes());
+    selectionModel.removeIndexInterval(1, 4);
+    assertEquals("selected indexes should fit", Arrays.asList(0), selectionModel.getSelectedIndexes());
+    assertEquals("current index should fit", 0, selectionModel.getSelectedIndex());
+    selectionModel.clearSelection();
+    assertEquals("selected indexes should fit", new ArrayList<Integer>(), selectionModel.getSelectedIndexes());
+    assertEquals("current index should fit", -1, selectionModel.getMinSelectionIndex());
+    selectionModel.addSelectedIndexes(Arrays.asList(0, 3, 4));
+    assertEquals("selected indexes should fit", Arrays.asList(0, 3, 4), selectionModel.getSelectedIndexes());
+    assertEquals("current index should fit", 0, selectionModel.getMinSelectionIndex());
+    assertEquals(3, selectionModel.getSelectionCount());
+    selectionModel.removeSelectionInterval(0, 0);
+    assertEquals("current index should fit", 3, selectionModel.getMinSelectionIndex());
+    selectionModel.removeSelectionInterval(3, 3);
+    assertEquals("current index should fit", 4, selectionModel.getMinSelectionIndex());
 
-    tableModel.addSelectedIndexes(Arrays.asList(0, 3, 4));
-    assertEquals("current index should fit", 0, tableModel.getSelectionModel().getMinSelectionIndex());
-    tableModel.getSelectionModel().removeSelectionInterval(3, 3);
-    assertEquals("current index should fit", 0, tableModel.getSelectionModel().getMinSelectionIndex());
-    tableModel.getSelectionModel().clearSelection();
-    assertEquals("current index should fit", -1, tableModel.getSelectionModel().getMinSelectionIndex());
+    selectionModel.addSelectedIndexes(Arrays.asList(0, 3, 4));
+    assertEquals("current index should fit", 0, selectionModel.getMinSelectionIndex());
+    selectionModel.removeSelectionInterval(3, 3);
+    assertEquals("current index should fit", 0, selectionModel.getMinSelectionIndex());
+    selectionModel.clearSelection();
+    assertEquals("current index should fit", -1, selectionModel.getMinSelectionIndex());
 
-    tableModel.addSelectedIndexes(Arrays.asList(0, 1, 2, 3, 4));
-    assertEquals("current index should fit", 0, tableModel.getSelectionModel().getMinSelectionIndex());
-    tableModel.getSelectionModel().removeSelectionInterval(0, 0);
-    assertEquals("current index should fit", 1, tableModel.getSelectionModel().getMinSelectionIndex());
-    tableModel.getSelectionModel().removeSelectionInterval(1, 1);
-    assertEquals("current index should fit", 2, tableModel.getSelectionModel().getMinSelectionIndex());
-    tableModel.getSelectionModel().removeSelectionInterval(2, 2);
-    assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
-    tableModel.getSelectionModel().removeSelectionInterval(3, 3);
-    assertEquals("current index should fit", 4, tableModel.getSelectionModel().getMinSelectionIndex());
-    tableModel.getSelectionModel().removeSelectionInterval(4, 4);
-    assertEquals("current index should fit", -1, tableModel.getSelectionModel().getMinSelectionIndex());
+    selectionModel.addSelectedIndexes(Arrays.asList(0, 1, 2, 3, 4));
+    assertEquals("current index should fit", 0, selectionModel.getMinSelectionIndex());
+    selectionModel.removeSelectionInterval(0, 0);
+    assertEquals("current index should fit", 1, selectionModel.getMinSelectionIndex());
+    selectionModel.removeSelectionInterval(1, 1);
+    assertEquals("current index should fit", 2, selectionModel.getMinSelectionIndex());
+    selectionModel.removeSelectionInterval(2, 2);
+    assertEquals("current index should fit", 3, selectionModel.getMinSelectionIndex());
+    selectionModel.removeSelectionInterval(3, 3);
+    assertEquals("current index should fit", 4, selectionModel.getMinSelectionIndex());
+    selectionModel.removeSelectionInterval(4, 4);
+    assertEquals("current index should fit", -1, selectionModel.getMinSelectionIndex());
 
-    tableModel.addSelectedItem(ITEMS[0]);
-    assertEquals(1, tableModel.getSelectionCount());
-    assertEquals("current index should fit", 0, tableModel.getSelectionModel().getMinSelectionIndex());
-    tableModel.addSelectedItems(Arrays.asList(ITEMS[1], ITEMS[2]));
-    assertEquals(3, tableModel.getSelectionCount());
-    assertEquals("current index should fit", 0, tableModel.getSelectionModel().getMinSelectionIndex());
-    tableModel.addSelectedItem(ITEMS[4]);
-    assertEquals(4, tableModel.getSelectionCount());
-    assertEquals("current index should fit", 0, tableModel.getSelectionModel().getMinSelectionIndex());
+    selectionModel.addSelectedItem(ITEMS[0]);
+    assertEquals(1, selectionModel.getSelectionCount());
+    assertEquals("current index should fit", 0, selectionModel.getMinSelectionIndex());
+    selectionModel.addSelectedItems(Arrays.asList(ITEMS[1], ITEMS[2]));
+    assertEquals(3, selectionModel.getSelectionCount());
+    assertEquals("current index should fit", 0, selectionModel.getMinSelectionIndex());
+    selectionModel.addSelectedItem(ITEMS[4]);
+    assertEquals(4, selectionModel.getSelectionCount());
+    assertEquals("current index should fit", 0, selectionModel.getMinSelectionIndex());
 
-    tableModel.clearSelection();
-    assertNull(tableModel.getSelectedItem());
+    selectionModel.clearSelection();
+    assertNull(selectionModel.getSelectedItem());
 
-    tableModel.removeSelectedIndexListener(listener);
-    tableModel.removeSelectionChangedListener(listener);
+    selectionModel.removeSelectedIndexListener(listener);
+    selectionModel.removeSelectionChangedListener(listener);
   }
 
   @Test
@@ -578,48 +595,48 @@ public final class AbstractFilteredTableModelTest {
     assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));
 
     //test selection and filtering together
-    tableModel.addSelectedIndexes(Arrays.asList(3));
+    tableModel.getSelectionModel().addSelectedIndexes(Arrays.asList(3));
     assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
 
     tableModel.getColumnModel().getFilterModel(0).setLikeValue("d");
     tableModel.getColumnModel().getFilterModel(0).setEnabled(false);
 
-    tableModel.setSelectedIndexes(Arrays.asList(3));
+    tableModel.getSelectionModel().setSelectedIndexes(Arrays.asList(3));
     assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("current selected item should fit", ITEMS[2], tableModel.getSelectedItem());
+    assertEquals("current selected item should fit", ITEMS[2], tableModel.getSelectionModel().getSelectedItem());
 
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
-    assertEquals("current selected item should fit", ITEMS[2], tableModel.getSelectedItem());
+    assertEquals("current selected item should fit", ITEMS[2], tableModel.getSelectionModel().getSelectedItem());
     assertEquals("current index should fit", 2,
             tableModel.getSelectionModel().getMinSelectionIndex());
 
-    tableModel.setSelectedIndexes(Arrays.asList(0));
-    assertEquals("current selected item should fit", ITEMS[0], tableModel.getSelectedItem());
+    tableModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0));
+    assertEquals("current selected item should fit", ITEMS[0], tableModel.getSelectionModel().getSelectedItem());
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals("current index should fit", 4,
             tableModel.getSelectionModel().getMinSelectionIndex());
 
-    assertEquals("selected indexes should fit", Arrays.asList(4), tableModel.getSelectedIndexes());
-    assertEquals("current selected item should fit", ITEMS[0], tableModel.getSelectedItem());
+    assertEquals("selected indexes should fit", Arrays.asList(4), tableModel.getSelectionModel().getSelectedIndexes());
+    assertEquals("current selected item should fit", ITEMS[0], tableModel.getSelectionModel().getSelectedItem());
     assertEquals("current index should fit", 4,
             tableModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("selected item should fit", ITEMS[0], tableModel.getSelectedItem());
+    assertEquals("selected item should fit", ITEMS[0], tableModel.getSelectionModel().getSelectedItem());
   }
 
   @Test
   public void testSelectionAndFiltering() {
     tableModel.refresh();
-    tableModel.addSelectedIndexes(Arrays.asList(3));
+    tableModel.getSelectionModel().addSelectedIndexes(Arrays.asList(3));
     assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
 
     tableModel.getColumnModel().getFilterModel(0).setLikeValue("d");
     assertEquals("current index should fit", 0,
             tableModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("selected indexes should fit", Arrays.asList(0), tableModel.getSelectedIndexes());
+    assertEquals("selected indexes should fit", Arrays.asList(0), tableModel.getSelectionModel().getSelectedIndexes());
     tableModel.getColumnModel().getFilterModel(0).setEnabled(false);
     assertEquals("current index should fit", 0,
             tableModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("selected item should fit", ITEMS[3], tableModel.getSelectedItem());
+    assertEquals("selected item should fit", ITEMS[3], tableModel.getSelectionModel().getSelectedItem());
   }
 
   @Test(expected = UnsupportedOperationException.class)

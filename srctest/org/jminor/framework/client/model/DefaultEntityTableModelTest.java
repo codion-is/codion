@@ -64,22 +64,22 @@ public final class DefaultEntityTableModelTest {
     pk2.setValue(EmpDept.EMPLOYEE_ID, 2);
 
     tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk1));
-    final Entity selectedPK1 = tableModel.getSelectedItem();
+    final Entity selectedPK1 = tableModel.getSelectionModel().getSelectedItem();
     assertEquals(pk1, selectedPK1.getPrimaryKey());
-    assertEquals(1, tableModel.getSelectionCount());
+    assertEquals(1, tableModel.getSelectionModel().getSelectionCount());
 
     tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk2));
-    final Entity selectedPK2 = tableModel.getSelectedItem();
+    final Entity selectedPK2 = tableModel.getSelectionModel().getSelectedItem();
     assertEquals(pk2, selectedPK2.getPrimaryKey());
-    assertEquals(1, tableModel.getSelectionCount());
+    assertEquals(1, tableModel.getSelectionModel().getSelectionCount());
 
     final List<Entity.Key> keys = Arrays.asList(pk1, pk2);
     tableModel.setSelectedByPrimaryKeys(keys);
-    final List<Entity> selectedItems = tableModel.getSelectedItems();
+    final List<Entity> selectedItems = tableModel.getSelectionModel().getSelectedItems();
     for (final Entity selected : selectedItems) {
       assertTrue(keys.contains(selected.getPrimaryKey()));
     }
-    assertEquals(2, tableModel.getSelectionCount());
+    assertEquals(2, tableModel.getSelectionModel().getSelectionCount());
   }
 
   @Test
@@ -87,7 +87,7 @@ public final class DefaultEntityTableModelTest {
     final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
     tableModel.refresh();
 
-    tableModel.setSelectedIndexes(Arrays.asList(0, 3, 5));
+    tableModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0, 3, 5));
     final Iterator<Entity> iterator = tableModel.getSelectedEntitiesIterator();
     assertEquals(tableModel.getItemAt(0), iterator.next());
     assertEquals(tableModel.getItemAt(3), iterator.next());
@@ -104,7 +104,7 @@ public final class DefaultEntityTableModelTest {
   public void deleteSelectedNoEditModel() throws CancelException, DatabaseException {
     final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
     tableModel.refresh();
-    tableModel.setSelectedIndex(0);
+    tableModel.getSelectionModel().setSelectedIndex(0);
     tableModel.deleteSelected();
   }
 
@@ -121,15 +121,15 @@ public final class DefaultEntityTableModelTest {
     try {
       tableModel.getConnectionProvider().getConnection().beginTransaction();
       tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk1));
-      tableModel.setSelectedIndex(0);
-      Entity selected = tableModel.getSelectedItem();
+      tableModel.getSelectionModel().setSelectedIndex(0);
+      Entity selected = tableModel.getSelectionModel().getSelectedItem();
       tableModel.setRemoveItemsOnDelete(true);
       assertTrue(tableModel.isRemoveItemsOnDelete());
       tableModel.deleteSelected();
       assertFalse(tableModel.contains(selected, false));
 
       tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk2));
-      selected = tableModel.getSelectedItem();
+      selected = tableModel.getSelectionModel().getSelectedItem();
       tableModel.setRemoveItemsOnDelete(false);
       assertFalse(tableModel.isRemoveItemsOnDelete());
       tableModel.deleteSelected();
@@ -274,7 +274,7 @@ public final class DefaultEntityTableModelTest {
     testModel.getEditModel().setDeleteAllowed(false);
     assertFalse(testModel.isDeleteAllowed());
     testModel.refresh();
-    testModel.setSelectedIndex(0);
+    testModel.getSelectionModel().setSelectedIndex(0);
     testModel.deleteSelected();
   }
 
@@ -283,8 +283,8 @@ public final class DefaultEntityTableModelTest {
     testModel.getEditModel().setUpdateAllowed(false);
     assertFalse(testModel.isUpdateAllowed());
     testModel.refresh();
-    testModel.setSelectedIndex(0);
-    final Entity entity = testModel.getSelectedItem();
+    testModel.getSelectionModel().setSelectedIndex(0);
+    final Entity entity = testModel.getSelectionModel().getSelectedItem();
     entity.setValue(EntityTestDomain.DETAIL_STRING, "hello");
     testModel.update(Arrays.asList(entity));
   }
@@ -294,8 +294,8 @@ public final class DefaultEntityTableModelTest {
     testModel.setBatchUpdateAllowed(false);
     assertFalse(testModel.isBatchUpdateAllowed());
     testModel.refresh();
-    testModel.setSelectedIndexes(Arrays.asList(0, 1));
-    final List<Entity> entities = testModel.getSelectedItems();
+    testModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0, 1));
+    final List<Entity> entities = testModel.getSelectionModel().getSelectedItems();
     EntityUtil.setPropertyValue(EntityTestDomain.DETAIL_STRING, "hello", entities);
     testModel.update(entities);
   }

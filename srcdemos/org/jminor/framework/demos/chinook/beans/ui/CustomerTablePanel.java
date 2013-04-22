@@ -26,13 +26,13 @@ public class CustomerTablePanel extends EntityTablePanel {
   }
 
   public void viewCustomerReport() throws Exception {
-    if (getEntityTableModel().isSelectionEmpty()) {
+    if (getEntityTableModel().getSelectionModel().isSelectionEmpty()) {
       return;
     }
 
     final String reportPath = Configuration.getReportPath() + "/customer_report.jasper";
-    final Collection<Object> customerIDs =
-            EntityUtil.getDistinctPropertyValues(CUSTOMER_CUSTOMERID, getEntityTableModel().getSelectedItems());
+    final Collection customerIDs =
+            EntityUtil.getDistinctPropertyValues(CUSTOMER_CUSTOMERID, getEntityTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
     new SwingWorker() {
