@@ -1208,10 +1208,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Initialize the MouseListener for the table component.
-   * The default implementation simply invokes the action returned
-   * by <code>getDoubleClickAction()</code> on a double click with
-   * the JTable as the ActionEvent source.
+   * Initialize the MouseListener for the table component handling
+   * double click and right click, or popup click with ALT down. Double clicking
+   * simply invokes the action returned by {@link #getTableDoubleClickAction()}
+   * with the JTable as the ActionEvent source while right click with ALT down
+   * invokes {@link #showEntityMenu(java.awt.Point)}
    * @return the MouseListener for the table
    * @see #getTableDoubleClickAction()
    */
