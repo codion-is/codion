@@ -513,7 +513,7 @@ public final class EntityUtil {
         return null;
       }
 
-      final Class beanClass = getBeanClass(entity.getEntityID());
+      final Class<?> beanClass = getBeanClass(entity.getEntityID());
       final Object bean = beanClass.getConstructor().newInstance();
       final Map<String, String> beanPropertyMap = getPropertyMap(beanClass);
       for (final Map.Entry<String, String> propertyEntry : beanPropertyMap.entrySet()) {
