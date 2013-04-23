@@ -17,7 +17,7 @@ import org.jminor.common.model.Values;
 import org.jminor.common.model.checkbox.TristateButtonModel;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
-import org.jminor.common.model.valuemap.EditModelValue;
+import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.ui.DateInputPanel;
@@ -334,7 +334,7 @@ public final class EntityUiUtil {
 
     final JCheckBox checkBox = includeCaption ? new JCheckBox(property.getCaption()) : new JCheckBox();
     ValueLinks.toggleValueLink(checkBox.getModel(),
-            new EditModelValue<String, Boolean>(editModel, property.getPropertyID()), false);
+            EditModelValues.<Boolean>value(editModel, property.getPropertyID()), false);
     UiUtil.linkToEnabledState(enabledState, checkBox);
     if (property.getDescription() != null) {
       checkBox.setToolTipText(property.getDescription());
@@ -360,7 +360,7 @@ public final class EntityUiUtil {
 
     final TristateCheckBox checkBox = new TristateCheckBox(includeCaption ? property.getCaption() : null);
     ValueLinks.tristateValueLink((TristateButtonModel) checkBox.getModel(),
-            new EditModelValue<String, Boolean>(editModel, property.getPropertyID()), false);
+            EditModelValues.<Boolean>value(editModel, property.getPropertyID()), false);
     UiUtil.linkToEnabledState(enabledState, checkBox);
     if (property.getDescription() != null) {
       checkBox.setToolTipText(property.getDescription());
@@ -400,7 +400,7 @@ public final class EntityUiUtil {
     final EntityComboBoxModel boxModel = editModel.getEntityComboBoxModel(foreignKeyProperty);
     boxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(boxModel);
-    ValueLinks.selectedItemValueLink(comboBox, new EditModelValue<String, Object>(editModel, foreignKeyProperty.getPropertyID()));
+    ValueLinks.selectedItemValueLink(comboBox, EditModelValues.value(editModel, foreignKeyProperty.getPropertyID()));
     UiUtil.linkToEnabledState(enabledState, comboBox);
     MaximumMatch.enable(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
@@ -475,7 +475,7 @@ public final class EntityUiUtil {
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       lookupField.setTransferFocusOnEnter();
     }
-    Values.link(new EditModelValue<String, Entity>(editModel, foreignKeyProperty.getPropertyID()),
+    Values.link(EditModelValues.<Entity>value(editModel, foreignKeyProperty.getPropertyID()),
             new LookupUIValue(lookupField.getModel()));
     UiUtil.linkToEnabledState(enabledState, lookupField);
     lookupField.setToolTipText(foreignKeyProperty.getDescription());
@@ -525,7 +525,7 @@ public final class EntityUiUtil {
     checkProperty(property, editModel);
     final SteppedComboBox comboBox = new SteppedComboBox(model);
     comboBox.setEditable(editable);
-    ValueLinks.selectedItemValueLink(comboBox, new EditModelValue<String, Object>(editModel, property.getPropertyID()));
+    ValueLinks.selectedItemValueLink(comboBox, EditModelValues.value(editModel, property.getPropertyID()));
     UiUtil.linkToEnabledState(enabledState, comboBox);
     comboBox.setToolTipText(property.getDescription());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
@@ -595,7 +595,7 @@ public final class EntityUiUtil {
       ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new DocumentSizeFilter(property.getMaxLength()));
     }
 
-    ValueLinks.textValueLink(textArea, new EditModelValue<String, String>(editModel, property.getPropertyID()), null, true, readOnly);
+    ValueLinks.textValueLink(textArea, EditModelValues.<String>value(editModel, property.getPropertyID()), null, true, readOnly);
     ValueLinkValidators.addValidator(property.getPropertyID(), textArea, editModel);
     textArea.setToolTipText(property.getDescription());
 
@@ -628,18 +628,18 @@ public final class EntityUiUtil {
     final JTextField textField = initializeTextField(property, editModel, enabledState, formatMaskString, valueContainsLiteralCharacters);
     final String propertyID = property.getPropertyID();
     if (property.isString()) {
-      ValueLinks.textValueLink(textField, new EditModelValue<String, String>(editModel, propertyID), null, immediateUpdate, readOnly);
+      ValueLinks.textValueLink(textField, EditModelValues.<String>value(editModel, propertyID), null, immediateUpdate, readOnly);
     }
     else if (property.isInteger()) {
-      ValueLinks.intValueLink((IntField) textField, new EditModelValue<String, Integer>(editModel, propertyID),
+      ValueLinks.intValueLink((IntField) textField, EditModelValues.<Integer>value(editModel, propertyID),
               (NumberFormat) property.getFormat(), false, readOnly);
     }
     else if (property.isDouble()) {
-      ValueLinks.doubleValueLink((DoubleField) textField, new EditModelValue<String, Double>(editModel, propertyID),
+      ValueLinks.doubleValueLink((DoubleField) textField, EditModelValues.<Double>value(editModel, propertyID),
               (NumberFormat) property.getFormat(), false, readOnly);
     }
     else if (property.isDateOrTime()) {
-      ValueLinks.dateValueLink((JFormattedTextField) textField, new EditModelValue<String, Date>(editModel, propertyID),
+      ValueLinks.dateValueLink((JFormattedTextField) textField, EditModelValues.<Date>value(editModel, propertyID),
               readOnly, (SimpleDateFormat) property.getFormat(), property.getType());
     }
     else {

@@ -8,7 +8,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.valuemap.EditModelValue;
+import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.framework.db.EntityConnection;
@@ -51,7 +51,7 @@ public final class DefaultEntityModelTest {
     final EntityEditModel employeeEditModel = employeeModel.getEditModel();
     final EntityTableModel employeeTableModel = employeeModel.getTableModel();
     ValueLinks.selectedItemValueLink(new JComboBox(employeeEditModel.getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)),
-            new EditModelValue<String, Object>(employeeEditModel, EmpDept.EMPLOYEE_MGR_FK));
+            EditModelValues.value(employeeEditModel, EmpDept.EMPLOYEE_MGR_FK));
     employeeTableModel.refresh();
     for (final Entity employee : employeeTableModel.getAllItems()) {
       employeeTableModel.getSelectionModel().setSelectedItem(employee);

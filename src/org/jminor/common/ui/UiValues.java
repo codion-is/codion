@@ -118,7 +118,7 @@ public final class UiValues {
    * @param box the combo box
    * @return a Value bound to the given component
    */
-  public static Value<Object> selectedItemValue(final JComboBox box) {
+  public static Value selectedItemValue(final JComboBox box) {
     return new SelectedItemUIValue(box);
   }
 
@@ -394,7 +394,7 @@ public final class UiValues {
     }
   }
 
-  private static final class SelectedItemUIValue extends UIValue<Object> {
+  private static final class SelectedItemUIValue extends UIValue {
     private final JComboBox comboBox;
 
     private SelectedItemUIValue(final JComboBox comboBox) {

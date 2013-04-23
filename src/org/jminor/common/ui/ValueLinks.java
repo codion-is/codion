@@ -308,14 +308,14 @@ public final class ValueLinks {
   public static void selectedItemValueLink(final JComboBox box, final Object owner, final String beanPropertyName,
                                            final Class valueClass, final EventObserver valueChangeEvent,
                                            final boolean readOnly) {
-    selectedItemValueLink(box, Values.<Object>beanValue(owner, beanPropertyName, valueClass, valueChangeEvent), readOnly);
+    selectedItemValueLink(box, Values.beanValue(owner, beanPropertyName, valueClass, valueChangeEvent), readOnly);
   }
 
   /**
    * @param box the combo box to link with the value
    * @param modelValue the model value
    */
-  public static void selectedItemValueLink(final JComboBox box, final Value<Object> modelValue) {
+  public static void selectedItemValueLink(final JComboBox box, final Value modelValue) {
     Values.link(modelValue, UiValues.selectedItemValue(box), false);
   }
 
@@ -324,7 +324,7 @@ public final class ValueLinks {
    * @param modelValue the model value
    * @param readOnly if true the component will be read only
    */
-  public static void selectedItemValueLink(final JComboBox box, final Value<Object> modelValue, final boolean readOnly) {
+  public static void selectedItemValueLink(final JComboBox box, final Value modelValue, final boolean readOnly) {
     Values.link(modelValue, UiValues.selectedItemValue(box), readOnly);
   }
 
