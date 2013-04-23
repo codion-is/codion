@@ -3431,3 +3431,5 @@
   EntityTablePanel.getInputProvider() improved, uses new TextInputProvider constructor with max length parameter
   EditModelValue replaced by factory class EditModelValues
   EntityUiUtil, javadoc improvements
+  ControlProvider, javadoc improvements
+  EntityPanelProvider, javadoc improved

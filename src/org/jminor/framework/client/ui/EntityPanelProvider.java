@@ -91,10 +91,19 @@ public class EntityPanelProvider implements Comparable {
     this.modelProvider = new DefaultEntityModelProvider(entityID, entityModelClass);
   }
 
+  /**
+   * Instantiates a new EntityPanelProvider
+   * @param modelProvider the EntityModelProvider to base this panel provider on
+   */
   public EntityPanelProvider (final EntityModelProvider modelProvider) {
     this(modelProvider, Entities.getCaption(modelProvider.getEntityID()));
   }
 
+  /**
+   * Instantiates a new EntityPanelProvider
+   * @param modelProvider the EntityModelProvider to base this panel provider on
+   * @param caption the panel caption to use
+   */
   public EntityPanelProvider (final EntityModelProvider modelProvider, final String caption) {
     Util.rejectNullValue(modelProvider, "modelProvider");
     this.modelProvider = modelProvider;
@@ -108,6 +117,9 @@ public class EntityPanelProvider implements Comparable {
     return modelProvider.getEntityID();
   }
 
+  /**
+   * @return the EntityModelProvider this panel provider is based on
+   */
   public final EntityModelProvider getModelProvider() {
     return modelProvider;
   }
@@ -119,6 +131,11 @@ public class EntityPanelProvider implements Comparable {
     return caption;
   }
 
+  /**
+   * Adds the given panel provider as a detail panel provider for this panel provider instance
+   * @param panelProvider the detail panel provider
+   * @return this EntityPanelProvider instance
+   */
   public final EntityPanelProvider addDetailPanelProvider(final EntityPanelProvider panelProvider) {
     if (!detailPanelProviders.contains(panelProvider)) {
       detailPanelProviders.add(panelProvider);
@@ -130,76 +147,131 @@ public class EntityPanelProvider implements Comparable {
     return this;
   }
 
+  /**
+   * @return an unmodifiable view of the detail panel providers
+   */
   public final List<EntityPanelProvider> getDetailPanelProviders() {
     return Collections.unmodifiableList(detailPanelProviders);
   }
 
+  /**
+   * @return true if the data model this panel is based on should be refreshed when the panel is initialized
+   */
   public final boolean isRefreshOnInit() {
     return refreshOnInit;
   }
 
+  /**
+   * @param refreshOnInit if true then the data model this panel is based on will be refreshed when
+   * the panel is initialized
+   * @return this EntityPanelProvider instance
+   */
   public final EntityPanelProvider setRefreshOnInit(final boolean refreshOnInit) {
     this.refreshOnInit = refreshOnInit;
     return this;
   }
 
+  /**
+   * @return whether or not the table search panel is made visible when the panel is initialized
+   */
   public final boolean isTableSearchPanelVisible() {
     return tableSearchPanelVisible;
   }
 
+  /**
+   * @param tableSearchPanelVisible if true then the table search panel is made visible when the panel is initialized
+   * @return this EntityPanelProvider instance
+   */
   public final EntityPanelProvider setTableSearchPanelVisible(final boolean tableSearchPanelVisible) {
     this.tableSearchPanelVisible = tableSearchPanelVisible;
     return this;
   }
 
+  /**
+   * @return the state of the detail panels when this panel is initialized
+   */
   public final int getDetailPanelState() {
     return detailPanelState;
   }
 
+  /**
+   * @param detailPanelState the state of the detail panels when this panel is initialized,
+   * ({@link EntityPanel#HIDDEN}, {@link EntityPanel#EMBEDDED}, {@link EntityPanel#DIALOG})
+   * @return this EntityPanelProvider instance
+   */
   public final EntityPanelProvider setDetailPanelState(final int detailPanelState) {
     this.detailPanelState = detailPanelState;
     return this;
   }
 
+  /**
+   * @return the split panel resize weight to use when initializing this panel
+   * with its detail panels
+   */
   public final double getDetailSplitPanelResizeWeight() {
     return detailSplitPanelResizeWeight;
   }
 
+  /**
+   * @param detailSplitPanelResizeWeight the split panel resize weight to use when initializing this panel
+   * with its detail panels
+   * @return this EntityPanelProvider instance
+   */
   public final EntityPanelProvider setDetailSplitPanelResizeWeight(final double detailSplitPanelResizeWeight) {
     this.detailSplitPanelResizeWeight = detailSplitPanelResizeWeight;
     return this;
   }
 
+  /**
+   * Note that setting the EntityPanel class overrides any table panel or edit panel classes that have been set.
+   * @param panelClass the EntityPanel class to use when providing this panel
+   * @return this EntityPanelProvider instance
+   */
   public final EntityPanelProvider setPanelClass(final Class<? extends EntityPanel> panelClass) {
     this.panelClass = panelClass;
     return this;
   }
 
+  /**
+   * @param editPanelClass the EntityEditPanel class to use when providing this panel
+   * @return this EntityPanelProvider instance
+   */
   public final EntityPanelProvider setEditPanelClass(final Class<? extends EntityEditPanel> editPanelClass) {
     this.editPanelClass = editPanelClass;
     return this;
   }
 
+  /**
+   * @param tablePanelClass the EntityTablePanel class to use when providing this panel
+   * @return this EntityPanelProvider instance
+   */
   public final EntityPanelProvider setTablePanelClass(final Class<? extends EntityTablePanel> tablePanelClass) {
     this.tablePanelClass = tablePanelClass;
     return this;
   }
 
   /**
-   * @return the EntityPanel Class to instantiate
+   * @return the EntityPanel class to use
    */
   public final Class<? extends EntityPanel> getPanelClass() {
     return panelClass;
   }
 
+  /**
+   * @return the EntityEditPanel class to use
+   */
   public final Class<? extends EntityEditPanel> getEditPanelClass() {
     return editPanelClass;
   }
 
+  /**
+   * @return the EntityTablePanel class to use
+   */
   public final Class<? extends EntityTablePanel> getTablePanelClass() {
     return tablePanelClass;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int compareTo(final Object o) {
     final String thisCompare = caption == null ? modelProvider.getModelClass().getSimpleName() : caption;
@@ -221,10 +293,21 @@ public class EntityPanelProvider implements Comparable {
     return modelProvider.getEntityID().hashCode();
   }
 
+  /**
+   * Creates an EntityPanel based on this provider configuration
+   * @param connectionProvider the connection provider
+   * @return an EntityPanel based on this provider configuration
+   */
   public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider) {
     return createPanel(connectionProvider, false);
   }
 
+  /**
+   * Creates an EntityPanel based on this provider configuration
+   * @param connectionProvider the connection provider
+   * @param detailPanel if true then this panel is a detail panel
+   * @return an EntityPanel based on this provider configuration
+   */
   public final EntityPanel createPanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
     Util.rejectNullValue(connectionProvider, "connectionProvider");
     try {
@@ -240,6 +323,11 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
+  /**
+   * Creates an EntityPanel based on this provider configuration
+   * @param model the EntityModel to base this panel on
+   * @return an EntityPanel based on this provider configuration
+   */
   public final EntityPanel createPanel(final EntityModel model) {
     if (model == null) {
       throw new IllegalArgumentException("Can not create EntityPanel without an EntityModel");
@@ -273,18 +361,40 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
+  /**
+   * Creates an EntityEditPanel
+   * @param connectionProvider the connection provider
+   * @return an EntityEditPanel based on this provider
+   */
   public final EntityEditPanel createEditPanel(final EntityConnectionProvider connectionProvider) {
     return initializeEditPanel(modelProvider.createEditModel(connectionProvider));
   }
 
+  /**
+   * Creates an EntityTablePanel
+   * @param connectionProvider the connection provider
+   * @return an EntityTablePanel based on this provider
+   */
   public final EntityTablePanel createTablePanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {
     return initializeTablePanel(modelProvider.createTableModel(connectionProvider, detailPanel));
   }
 
+  /**
+   * Called after the EntityPanel has been initialized, override to configure
+   * @param entityPanel the EntityPanel just initialized
+   */
   protected void configurePanel(final EntityPanel entityPanel) {}
 
+  /**
+   * Called after the EntityEditPanel has been initialized, override to configure
+   * @param editPanel the EntityEditPanel just initialized
+   */
   protected void configureEditPanel(final EntityEditPanel editPanel) {}
 
+  /**
+   * Called after the EntityTablePanel has been initialized, override to configure
+   * @param tablePanel the EntityTablePanel just initialized
+   */
   protected void configureTablePanel(final EntityTablePanel tablePanel) {}
 
   private EntityPanel initializePanel(final EntityModel entityModel) {
