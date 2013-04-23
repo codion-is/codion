@@ -9,7 +9,9 @@ import org.jminor.common.model.Value;
 /**
  * A factory class for creating values based on {@link ValueMapEditModel}
  */
-public class EditModelValues {
+public final class EditModelValues {
+
+  private EditModelValues() {}
 
   /**
    * Instantiates a new Value based on the value identified by <code>key</code> in
