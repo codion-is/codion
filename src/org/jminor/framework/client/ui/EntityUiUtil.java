@@ -189,11 +189,30 @@ public final class EntityUiUtil {
     return Collections.emptyList();
   }
 
+  /**
+   * Displays a entity table in a dialog for selecting one or more entities
+   * @param lookupModel the table model on which to base the table panel
+   * @param dialogOwner the dialog owner
+   * @param singleSelection if true then only a single item can be selected
+   * @param dialogTitle the dialog title
+   * @return a Collection containing the selected entities
+   * @throws CancelException in case the user cancels the operation
+   */
   public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final JComponent dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle) throws CancelException {
     return selectEntities(lookupModel, dialogOwner, singleSelection, dialogTitle, null);
   }
 
+  /**
+   * Displays a entity table in a dialog for selecting one or more entities
+   * @param lookupModel the table model on which to base the table panel
+   * @param dialogOwner the dialog owner
+   * @param singleSelection if true then only a single item can be selected
+   * @param dialogTitle the dialog title
+   * @param preferredSize the preferred size of the dialog
+   * @return a Collection containing the selected entities
+   * @throws CancelException in case the user cancels the operation
+   */
   public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final JComponent dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle,
                                                   final Dimension preferredSize) throws CancelException {
@@ -315,15 +334,39 @@ public final class EntityUiUtil {
     return label;
   }
 
+  /**
+   * Creates a JCheckBox based on the given boolean property
+   * @param property the property on which value to base the checkbox
+   * @param editModel the edit model to bind with the value
+   * @return a check box based on the given property
+   * @throws IllegalArgumentException in case the property is not a boolean property
+   */
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel) {
     return createCheckBox(property, editModel, null);
   }
 
+  /**
+   * Creates a JCheckBox based on the given boolean property
+   * @param property the property on which value to base the checkbox
+   * @param editModel the edit model to bind with the value
+   * @param enabledState the state controlling the enabled state of the checkbox
+   * @return a check box based on the given property
+   * @throws IllegalArgumentException in case the property is not a boolean property
+   */
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
                                          final StateObserver enabledState) {
     return createCheckBox(property, editModel, enabledState, true);
   }
 
+  /**
+   * Creates a JCheckBox based on the given boolean property
+   * @param property the property on which value to base the checkbox
+   * @param editModel the edit model to bind with the value
+   * @param enabledState the state controlling the enabled state of the checkbox
+   * @param includeCaption if true then the property caption is included as the checkbox text
+   * @return a check box based on the given property
+   * @throws IllegalArgumentException in case the property is not a boolean property
+   */
   public static JCheckBox createCheckBox(final Property property, final EntityEditModel editModel,
                                          final StateObserver enabledState, final boolean includeCaption) {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
@@ -349,6 +392,15 @@ public final class EntityUiUtil {
     return checkBox;
   }
 
+  /**
+   * Creates a TristateCheckBox based on the given boolean property
+   * @param property the property on which value to base the checkbox
+   * @param editModel the edit model to bind with the value
+   * @param enabledState the state controlling the enabled state of the checkbox
+   * @param includeCaption if true then the property caption is included as the checkbox text
+   * @return a check box based on the given property
+   * @throws IllegalArgumentException in case the property is not a nullable boolean property
+   */
   public static TristateCheckBox createTristateCheckBox(final Property property, final EntityEditModel editModel,
                                                         final StateObserver enabledState, final boolean includeCaption) {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
@@ -375,10 +427,23 @@ public final class EntityUiUtil {
     return checkBox;
   }
 
+  /**
+   * Creates a combobox containing the values (null, yes, no) based on the given boolean property
+   * @param property the property on which to base the combobox
+   * @param editModel the edit model to bind with the value
+   * @return a SteppedComboBox based on the given boolean property
+   */
   public static SteppedComboBox createBooleanComboBox(final Property property, final EntityEditModel editModel) {
     return createBooleanComboBox(property, editModel, null);
   }
 
+  /**
+   * Creates a combobox containing the values (null, yes, no) based on the given boolean property
+   * @param property the property on which to base the combobox
+   * @param editModel the edit model to bind with the value
+   * @param enabledState the state controlling the enabled state of the combobox
+   * @return a SteppedComboBox based on the given boolean property
+   */
   public static SteppedComboBox createBooleanComboBox(final Property property, final EntityEditModel editModel,
                                                       final StateObserver enabledState) {
     final SteppedComboBox box = createComboBox(property, editModel, new BooleanComboBoxModel(), enabledState);
@@ -387,11 +452,24 @@ public final class EntityUiUtil {
     return box;
   }
 
+  /**
+   * Creates EntityComboBox based on the given foreign key property
+   * @param foreignKeyProperty the foreign key property on which entity to base the combobox
+   * @param editModel the edit model to bind with the value
+   * @return a EntityComboBox based on the given foreign key property
+   */
   public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
                                                     final EntityEditModel editModel) {
     return createEntityComboBox(foreignKeyProperty, editModel, null);
   }
 
+  /**
+   * Creates EntityComboBox based on the given foreign key property
+   * @param foreignKeyProperty the foreign key property on which entity to base the combobox
+   * @param editModel the edit model to bind with the value
+   * @param enabledState the state controlling the enabled state of the combobox
+   * @return a EntityComboBox based on the given foreign key property
+   */
   public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
                                                     final EntityEditModel editModel, final StateObserver enabledState) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
@@ -438,16 +516,36 @@ public final class EntityUiUtil {
     return textField;
   }
 
+  /**
+   * Creates a EntityLookupField based on the given foreign key property
+   * @param foreignKeyProperty the foreign key property on which entity to base the lookup model
+   * @param editModel the edit model to bind with the value
+   * @return a lookup model based on the given foreign key property
+   */
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityEditModel editModel) {
     return createEntityLookupField(foreignKeyProperty, editModel, (StateObserver) null);
   }
 
+  /**
+   * Creates a EntityLookupField based on the given foreign key property
+   * @param foreignKeyProperty the foreign key property on which entity to base the lookup model
+   * @param editModel the edit model to bind with the value
+   * @param searchPropertyIDs the propertyIDs to use when searching via this lookup field
+   * @return a lookup model based on the given foreign key property
+   */
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityEditModel editModel, final String... searchPropertyIDs) {
     return createEntityLookupField(foreignKeyProperty, editModel, null, searchPropertyIDs);
   }
 
+  /**
+   * Creates a EntityLookupField based on the given foreign key property
+   * @param foreignKeyProperty the foreign key property on which entity to base the lookup model
+   * @param editModel the edit model to bind with the value
+   * @param enabledState the state controlling the enabled state of the lookup field
+   * @return a lookup model based on the given foreign key property
+   */
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityEditModel editModel, final StateObserver enabledState) {
     final Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
@@ -459,6 +557,14 @@ public final class EntityUiUtil {
     return createEntityLookupField(foreignKeyProperty, editModel, enabledState, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
   }
 
+  /**
+   * Creates a EntityLookupField based on the given foreign key property
+   * @param foreignKeyProperty the foreign key property on which entity to base the lookup model
+   * @param editModel the edit model to bind with the value
+   * @param enabledState the state controlling the enabled state of the lookup field
+   * @param searchPropertyIDs the propertyIDs to use when searching via this lookup field
+   * @return a lookup model based on the given foreign key property
+   */
   public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                           final EntityEditModel editModel, final StateObserver enabledState,
                                                           final String... searchPropertyIDs) {
@@ -484,20 +590,48 @@ public final class EntityUiUtil {
     return lookupField;
   }
 
+  /**
+   * Creates a combo box based on the values in the given value list property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @return a combo box based on the given values
+   */
   public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel) {
     return createValueListComboBox(property, editModel, true, null);
   }
 
+  /**
+   * Creates a combo box based on the values in the given value list property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param enabledState the state controlling the enabled state of the combo box
+   * @return a combo box based on the given values
+   */
   public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel,
                                                         final StateObserver enabledState) {
     return createValueListComboBox(property, editModel, true, enabledState);
   }
 
+  /**
+   * Creates a combo box based on the values in the given value list property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param sortItems if true then the items are sorted
+   * @return a combo box based on the given values
+   */
   public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel,
                                                         final boolean sortItems) {
     return createValueListComboBox(property, editModel, sortItems, null);
   }
 
+  /**
+   * Creates a combo box based on the values in the given value list property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param sortItems if true then the items are sorted
+   * @param enabledState the state controlling the enabled state of the combo box
+   * @return a combo box based on the given values
+   */
   public static SteppedComboBox createValueListComboBox(final Property.ValueListProperty property, final EntityEditModel editModel,
                                                         final boolean sortItems, final StateObserver enabledState) {
     final ItemComboBoxModel model;
@@ -513,11 +647,28 @@ public final class EntityUiUtil {
     return comboBox;
   }
 
+  /**
+   * Creates a combo box based on the given combo box model
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param model the combo box model
+   * @param enabledState the state controlling the enabled state of the combo box
+   * @return a combo box based on the given model
+   */
   public static SteppedComboBox createComboBox(final Property property, final EntityEditModel editModel,
                                                final ComboBoxModel model, final StateObserver enabledState) {
     return createComboBox(property, editModel, model, enabledState, false);
   }
 
+  /**
+   * Creates a combo box based on the given combo box model
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param model the combo box model
+   * @param enabledState the state controlling the enabled state of the combo box
+   * @param editable if true then the combo box is made editable
+   * @return a combo box based on the given model
+   */
   public static SteppedComboBox createComboBox(final Property property, final EntityEditModel editModel,
                                                final ComboBoxModel model, final StateObserver enabledState,
                                                final boolean editable) {
@@ -536,11 +687,28 @@ public final class EntityUiUtil {
     return comboBox;
   }
 
+  /**
+   * Creates a panel with a date input field and a button for opening a date input dialog
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param readOnly if true then the value is read only
+   * @param includeButton if true then a button for opening a date input dialog is included
+   * @return a date input panel
+   */
   public static DateInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
                                                     final boolean readOnly, final boolean includeButton) {
     return createDateInputPanel(property, editModel, readOnly, includeButton, null);
   }
 
+  /**
+   * Creates a panel with a date input field and a button for opening a date input dialog
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param readOnly if true then the value is read only
+   * @param includeButton if true then a button for opening a date input dialog is included
+   * @param enabledState the state controlling the enabled state of the panel
+   * @return a date input panel
+   */
   public static DateInputPanel createDateInputPanel(final Property property, final EntityEditModel editModel,
                                                     final boolean readOnly, final boolean includeButton,
                                                     final StateObserver enabledState) {
@@ -559,6 +727,15 @@ public final class EntityUiUtil {
     return panel;
   }
 
+  /**
+   * Creates a panel with a text field and a button for opening a dialog with a text area
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param readOnly if true then the value is read only
+   * @param immediateUpdate if true then the value is committed on each keystroke, otherwise on focus lost
+   * @param buttonFocusable if true then the dialog button is focusable
+   * @return a text input panel
+   */
   public static TextInputPanel createTextInputPanel(final Property property, final EntityEditModel editModel,
                                                     final boolean readOnly, final boolean immediateUpdate,
                                                     final boolean buttonFocusable) {
@@ -574,11 +751,27 @@ public final class EntityUiUtil {
     return panel;
   }
 
+  /**
+   * Creates a text area based on the given property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param readOnly if true then the value is read only
+   * @return a text area
+   */
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
                                          final boolean readOnly) {
     return createTextArea(property, editModel, readOnly, -1, -1);
   }
 
+  /**
+   * Creates a text area based on the given property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param readOnly if true then the value is read only
+   * @param rows the number of rows
+   * @param columns the number of columns
+   * @return a text area
+   */
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
                                          final boolean readOnly, final int rows, final int columns) {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
@@ -602,22 +795,56 @@ public final class EntityUiUtil {
     return textArea;
   }
 
+  /**
+   * Creates a text field based on the given property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @return a text field for the given property
+   */
   public static JTextField createTextField(final Property property, final EntityEditModel editModel) {
     return createTextField(property, editModel, false, null, true);
   }
 
+  /**
+   * Creates a text field based on the given property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
+   * @param immediateUpdate if true then the value is committed on each keystroke, otherwise on focus lost
+   * @return a text field for the given property
+   */
   public static JTextField createTextField(final Property property, final EntityEditModel editModel,
                                            final boolean readOnly, final String formatMaskString,
                                            final boolean immediateUpdate) {
     return createTextField(property, editModel, readOnly, formatMaskString, immediateUpdate, null);
   }
 
+  /**
+   * Creates a text field based on the given property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
+   * @param immediateUpdate if true then the value is committed on each keystroke, otherwise on focus lost
+   * @param enabledState the state controlling the enabled state of the panel
+   * @return a text field for the given property
+   */
   public static JTextField createTextField(final Property property, final EntityEditModel editModel,
                                            final boolean readOnly, final String formatMaskString,
                                            final boolean immediateUpdate, final StateObserver enabledState) {
     return createTextField(property, editModel, readOnly, formatMaskString, immediateUpdate, enabledState, false);
   }
 
+  /**
+   * Creates a text field based on the given property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
+   * @param immediateUpdate if true then the value is committed on each keystroke, otherwise on focus lost
+   * @param enabledState the state controlling the enabled state of the panel
+   * @param valueContainsLiteralCharacters whether or not the value should contain any literal characters
+   * associated with a the format mask
+   * @return a text field for the given property
+   */
   public static JTextField createTextField(final Property property, final EntityEditModel editModel,
                                            final boolean readOnly, final String formatMaskString,
                                            final boolean immediateUpdate, final StateObserver enabledState,
@@ -655,25 +882,59 @@ public final class EntityUiUtil {
     return textField;
   }
 
+  /**
+   * Creates a combo box based on the values of the given property
+   * @param propertyID the propertyID
+   * @param editModel the edit model to bind with the value
+   * @return a combo box based on the property values
+   */
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel) {
     return createPropertyComboBox(propertyID, editModel, null);
   }
 
+  /**
+   * Creates a combo box based on the values of the given property
+   * @param propertyID the propertyID
+   * @param editModel the edit model to bind with the value
+   * @param enabledState the state controlling the enabled state of the panel
+   * @return a combo box based on the property values
+   */
   public static SteppedComboBox createPropertyComboBox(final String propertyID, final EntityEditModel editModel,
                                                        final StateObserver enabledState) {
     return createPropertyComboBox(Entities.getColumnProperty(editModel.getEntityID(), propertyID),
             editModel, enabledState);
   }
 
+  /**
+   * Creates a combo box based on the values of the given property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @return a combo box based on the property values
+   */
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel) {
     return createPropertyComboBox(property, editModel, null);
   }
 
+  /**
+   * Creates a combo box based on the values of the given property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param enabledState the state controlling the enabled state of the panel
+   * @return a combo box based on the property values
+   */
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
                                                        final StateObserver enabledState) {
     return createPropertyComboBox(property, editModel, enabledState, false);
   }
 
+  /**
+   * Creates a combo box based on the values of the given property
+   * @param property the property
+   * @param editModel the edit model to bind with the value
+   * @param enabledState the state controlling the enabled state of the panel
+   * @param editable if true then the combo box will be editable
+   * @return a combo box based on the property values
+   */
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
                                                        final StateObserver enabledState, final boolean editable) {
     final SteppedComboBox comboBox = createComboBox(property, editModel, editModel.getPropertyComboBoxModel(property), enabledState, editable);
@@ -684,6 +945,13 @@ public final class EntityUiUtil {
     return comboBox;
   }
 
+  /**
+   * Creates a panel containing a EntityLookupField and a button for opening a entity table panel for
+   * selecting entities
+   * @param lookupField the lookup field
+   * @param tableModel the table model
+   * @return a lookup field panel
+   */
   public static JPanel createLookupFieldPanel(final EntityLookupField lookupField, final EntityTableModel tableModel) {
     Util.rejectNullValue(lookupField, "lookupField");
     Util.rejectNullValue(tableModel, "tableModel");
@@ -732,16 +1000,37 @@ public final class EntityUiUtil {
     return new JButton(new CreateEntityAction(lookupField, panelProvider));
   }
 
+  /**
+   * Creates a panel containing an EntityComboBox and a button for creating a new entity for that combo box
+   * @param entityComboBox the combo box
+   * @param panelProvider the EntityPanelProvider to use when creating a panel for inserting a new record
+   * @param newRecordButtonTakesFocus if true then the new record button is focusable
+   * @return a panel with a combo box and a button
+   */
   public static JPanel createEntityComboBoxPanel(final EntityComboBox entityComboBox, final EntityPanelProvider panelProvider,
                                                  final boolean newRecordButtonTakesFocus) {
     return createEastButtonPanel(entityComboBox, new CreateEntityAction(entityComboBox, panelProvider), newRecordButtonTakesFocus);
   }
 
+  /**
+   * Creates a panel containing an EntityLookupField and a button for creating a new entity for that field
+   * @param entityLookupField the lookup field
+   * @param panelProvider the EntityPanelProvider to use when creating a panel for inserting a new record
+   * @param newRecordButtonTakesFocus if true then the new record button is focusable
+   * @return a panel with a lookup field and a button
+   */
   public static JPanel createEntityLookupFieldPanel(final EntityLookupField entityLookupField, final EntityPanelProvider panelProvider,
                                                     final boolean newRecordButtonTakesFocus) {
     return createEastButtonPanel(entityLookupField, new CreateEntityAction(entityLookupField, panelProvider), newRecordButtonTakesFocus);
   }
 
+  /**
+   * Creates a panel containing an EntityComboBox and a button for filtering that combo box based on a foreign key
+   * @param entityComboBox the combo box
+   * @param foreignKeyPropertyID the foreign key to base the filtering on
+   * @param filterButtonTakesFocus if true then the filter button is focusable
+   * @return a panel with a combo box and a button
+   */
   public static JPanel createEntityComboBoxFilterPanel(final EntityComboBox entityComboBox, final String foreignKeyPropertyID,
                                                        final boolean filterButtonTakesFocus) {
     return createEastButtonPanel(entityComboBox, entityComboBox.createForeignKeyFilterAction(foreignKeyPropertyID),
@@ -944,6 +1233,7 @@ public final class EntityUiUtil {
       this.editPanel = editPanel;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void actionPerformed(final ActionEvent e) {
       editPanel.setInitialFocus();

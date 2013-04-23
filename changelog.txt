@@ -3430,3 +3430,4 @@
   EntityUtil, testing related methods moved to EntityTestUnit
   EntityTablePanel.getInputProvider() improved, uses new TextInputProvider constructor with max length parameter
   EditModelValue replaced by factory class EditModelValues
+  EntityUiUtil, javadoc improvements
