@@ -85,6 +85,7 @@ import java.awt.event.MouseEvent;
 import java.awt.event.MouseListener;
 import java.awt.print.PrinterException;
 import java.io.IOException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Date;
@@ -1143,26 +1144,28 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (property instanceof Property.ValueListProperty) {
       return new ValueListInputProvider(currentValue, ((Property.ValueListProperty) property).getValues());
     }
-    if (property.isTimestamp()) {
-      return new DateInputProvider((Date) currentValue, Configuration.getDefaultTimestampFormat());
-    }
-    if (property.isDate()) {
-      return new DateInputProvider((Date) currentValue, Configuration.getDefaultDateFormat());
-    }
-    if (property.isDouble()) {
-      return new DoubleInputProvider((Double) currentValue);
-    }
-    if (property.isInteger()) {
-      return new IntInputProvider((Integer) currentValue);
-    }
-    if (property.isBoolean()) {
-      return new BooleanInputProvider((Boolean) currentValue);
-    }
-    if (property.isString()) {
-      return new TextInputProvider(property.getCaption(), getEntityTableModel().getEditModel().getValueProvider(property), (String) currentValue);
-    }
     if (property instanceof Property.ForeignKeyProperty) {
       return createEntityInputProvider((Property.ForeignKeyProperty) property, (Entity) currentValue, getEntityTableModel().getEditModel());
+    }
+    switch (property.getType()) {
+      case Types.BOOLEAN:
+        return new BooleanInputProvider((Boolean) currentValue);
+      case Types.DATE:
+        return new DateInputProvider((Date) currentValue, Configuration.getDefaultDateFormat());
+      case Types.TIMESTAMP:
+        return new DateInputProvider((Date) currentValue, Configuration.getDefaultTimestampFormat());
+      case Types.TIME:
+        return new DateInputProvider((Date) currentValue, Configuration.getDefaultTimeFormat());
+      case Types.DOUBLE:
+        return new DoubleInputProvider((Double) currentValue);
+      case Types.INTEGER:
+        return new IntInputProvider((Integer) currentValue);
+      case Types.CHAR:
+        return new TextInputProvider(property.getCaption(), getEntityTableModel().getEditModel().getValueProvider(property),
+                (String) currentValue, 1);
+      case Types.VARCHAR:
+        return new TextInputProvider(property.getCaption(), getEntityTableModel().getEditModel().getValueProvider(property),
+                (String) currentValue, property.getMaxLength());
     }
 
     throw new IllegalArgumentException("Unsupported property type: " + property.getType());

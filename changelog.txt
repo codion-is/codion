@@ -3428,3 +3428,4 @@
   DefaultColumnSearchModel.include(Object) now returns true if model is not enabled
   AbstractFilteredTableModel.getSearchValueAt() second parameter changed to TableColumn, some minor refactoring
   EntityUtil, testing related methods moved to EntityTestUnit
+  EntityTablePanel.getInputProvider() improved, uses new TextInputProvider constructor with max length parameter
