@@ -41,8 +41,6 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
 
   private static final int MAGIC_NUMBER = 23;
 
-  public ValueMapImpl() {}
-
   /** {@inheritDoc} */
   @Override
   public boolean isValueNull(final K key) {
@@ -168,10 +166,9 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  @SuppressWarnings({"unchecked"})
   public final Collection<K> getOriginalValueKeys() {
     if (originalValues == null) {
-      return (Collection<K>) Collections.EMPTY_LIST;
+      return Collections.emptyList();
     }
 
     return Collections.unmodifiableCollection(originalValues.keySet());

@@ -97,22 +97,22 @@ public final class States {
     }
 
     @Override
-    public void addActivateListener(final EventListener listener) {
+    public final void addActivateListener(final EventListener listener) {
       getObserver().addActivateListener(listener);
     }
 
     @Override
-    public void removeActivateListener(final EventListener listener) {
+    public final void removeActivateListener(final EventListener listener) {
       getObserver().removeActivateListener(listener);
     }
 
     @Override
-    public void addDeactivateListener(final EventListener listener) {
+    public final void addDeactivateListener(final EventListener listener) {
       getObserver().addDeactivateListener(listener);
     }
 
     @Override
-    public void removeDeactivateListener(final EventListener listener) {
+    public final void removeDeactivateListener(final EventListener listener) {
       getObserver().removeDeactivateListener(listener);
     }
 
@@ -127,7 +127,7 @@ public final class States {
     }
 
     @Override
-    public StateObserver getReversedObserver() {
+    public final StateObserver getReversedObserver() {
       return getObserver().getReversedObserver();
     }
   }

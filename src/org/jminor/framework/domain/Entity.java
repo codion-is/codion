@@ -296,7 +296,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
    * Implementations should implement either <code>beforeInsert()</code> or <code>afterInsert()</code>
    * and leave the other one empty. <code>isAutoIncrement()</code> returns true if the database
    * generates primary key values automatically, this implies that <code>afterInsert()</code>
-   * should be used, fetching the generated primary key value and updating the entity instance accordingly..
+   * should be used, fetching the generated primary key value and updating the entity instance accordingly.
    */
   interface KeyGenerator {
 
