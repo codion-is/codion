@@ -46,7 +46,17 @@ public interface EntitySelectCriteria extends EntityCriteria {
    */
   int getForeignKeyFetchDepthLimit(final String foreignKeyPropertyID);
 
+  /**
+   * Limit the levels of foreign keys to fetch via the given foreign key property, default 1
+   * @param fetchDepthLimit the foreign key fetch depth limit
+   * @return this EntitySelectCriteria instance
+   */
   EntitySelectCriteria setForeignKeyFetchDepthLimit(final String foreignKeyPropertyID, final int fetchDepthLimit);
 
+  /**
+   * Limit the levels of foreign keys to fetch, default 1
+   * @param fetchDepthLimit the foreign key fetch depth limit
+   * @return this EntitySelectCriteria instance
+   */
   EntitySelectCriteria setForeignKeyFetchDepthLimit(final int fetchDepthLimit);
 }

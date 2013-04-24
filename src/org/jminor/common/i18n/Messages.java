@@ -88,6 +88,11 @@ public final class Messages {
   public static final String WITHIN_RANGE = "within_range";
   public static final String OUTSIDE_RANGE = "outside_range";
 
+  /**
+   * Retrieves the locale string associated with the given key
+   * @param key the key
+   * @return the string associated with the key
+   */
   public static String get(final String key) {
     return BUNDLE.getString(key);
   }

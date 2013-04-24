@@ -8,6 +8,9 @@ import org.jminor.common.model.User;
 
 import java.sql.Connection;
 
+/**
+ * A factory class for DatabaseConnections
+ */
 public final class DatabaseConnections {
 
   private DatabaseConnections() {}

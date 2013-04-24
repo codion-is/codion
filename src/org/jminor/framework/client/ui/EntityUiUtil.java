@@ -73,8 +73,6 @@ import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
 import java.text.NumberFormat;
@@ -488,13 +486,6 @@ public final class EntityUiUtil {
     }
 
     return comboBox;
-  }
-
-  public static EntityFieldPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                        final EntityEditModel editModel, final EntityTableModel lookupModel) {
-    checkProperty(foreignKeyProperty, editModel);
-
-    return new EntityFieldPanel(foreignKeyProperty, editModel, lookupModel);
   }
 
   public static JTextField createEntityField(final Property.ForeignKeyProperty foreignKeyProperty,
@@ -1099,48 +1090,6 @@ public final class EntityUiUtil {
     }
   }
 
-  public static final class EntityFieldPanel extends JPanel {
-
-    private final JTextField textField;
-
-    public EntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
-                            final EntityEditModel editModel, final EntityTableModel lookupModel) {
-      super(UiUtil.createBorderLayout());
-      Util.rejectNullValue(lookupModel, "lookupModel");
-      textField = createEntityField(foreignKeyProperty, editModel);
-      initializeUI(foreignKeyProperty, editModel, lookupModel);
-      addFocusListener(new FocusAdapter() {
-        @Override
-        public void focusGained(final FocusEvent e) {
-          textField.requestFocusInWindow();
-        }
-      });
-    }
-
-    public JTextField getTextField() {
-      return textField;
-    }
-
-    private void initializeUI(final Property.ForeignKeyProperty foreignKeyProperty,
-                              final EntityEditModel editModel, final EntityTableModel lookupModel) {
-      final JButton btn = new JButton(new AbstractAction("...") {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          try {
-            final Collection<Entity> selected = selectEntities(lookupModel, textField,
-                    true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null);
-            editModel.setValue(foreignKeyProperty.getPropertyID(), !selected.isEmpty() ? selected.iterator().next() : null);
-          }
-          catch (CancelException ignored) {}
-        }
-      });
-      btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-
-      add(textField, BorderLayout.CENTER);
-      add(btn, BorderLayout.EAST);
-    }
-  }
-
   private  static final class LookupUIValue implements Value<Entity> {
     private final Event changeEvent = Events.event();
     private final EntityLookupModel lookupModel;
@@ -1192,6 +1141,7 @@ public final class EntityUiUtil {
       this.panelProvider = panelProvider;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void actionPerformed(final ActionEvent e) {
       final EntityEditPanel editPanel = panelProvider.createEditPanel(dataProvider.getConnectionProvider());

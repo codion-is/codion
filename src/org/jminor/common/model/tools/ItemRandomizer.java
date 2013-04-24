@@ -115,6 +115,10 @@ public interface ItemRandomizer<T> {
    */
   void setItemEnabled(final T item, final boolean value);
 
+  /**
+   * Wraps an item for usage in the ItemRandomizer
+   * @param <T> the type being wrapped
+   */
   interface RandomItem<T> extends Serializable {
 
     /**

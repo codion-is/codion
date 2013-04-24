@@ -153,6 +153,11 @@ public final class FrameworkMessages {
     UIManager.put("OptionPane.messageDialogTitle", FrameworkMessages.get(FrameworkMessages.OPTION_PANE_MESSAGE_DIALOG_TITLE));
   }
 
+  /**
+   * Retrieves the locale string associated with the given key
+   * @param key the key
+   * @return the string associated with the key
+   */
   public static String get(final String key) {
     return BUNDLE.getString(key);
   }

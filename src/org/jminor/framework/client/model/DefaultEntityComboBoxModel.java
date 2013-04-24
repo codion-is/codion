@@ -347,7 +347,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     final List<Entity> filteredItems = getFilteredItems();
     for (int index = 0; index < filteredItems.size(); index++) {
       final Object item = filteredItems.get(index);
-      if (item instanceof Entity && ((Entity) item).getPrimaryKey().equals(primaryKey)) {
+      if (((Entity) item).getPrimaryKey().equals(primaryKey)) {
         return index;
       }
     }
@@ -358,7 +358,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
 
     private final EntityComboBoxModel foreignKeyModel;
 
-    public ForeignKeyModelRefreshListener(final EntityComboBoxModel foreignKeyModel) {
+    private ForeignKeyModelRefreshListener(final EntityComboBoxModel foreignKeyModel) {
       this.foreignKeyModel = foreignKeyModel;
     }
 

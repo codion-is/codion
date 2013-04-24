@@ -768,6 +768,7 @@ public final class Util {
    */
   public static ThreadLocal<Collator> getThreadLocalCollator() {
     return new ThreadLocal<Collator>() {
+      /** {@inheritDoc} */
       @Override
       protected synchronized Collator initialValue() {
         return Collator.getInstance();

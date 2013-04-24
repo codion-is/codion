@@ -150,6 +150,11 @@ public final class H2Database extends AbstractDatabase {
     DriverManager.getConnection(getURL(properties) + initializerString).close();
   }
 
+  /**
+   * Runs the given script using the RunScript tool
+   * @param scriptPath the path to the script
+   * @throws SQLException in case of an exception
+   */
   public void runScript(final String scriptPath) throws SQLException {
     try {
       final Class runScriptToolClass = Class.forName(RUN_TOOL_CLASSNAME);

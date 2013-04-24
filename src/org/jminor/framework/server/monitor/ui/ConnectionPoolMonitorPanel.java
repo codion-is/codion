@@ -74,7 +74,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     bindEvents();
   }
 
-  public void updateView() {
+  private void updateView() {
     final ConnectionPoolStatistics statistics = model.getConnectionPoolStatistics();
     txtPoolSize.setText(format.format(statistics.getSize()));
     txtCreated.setText(format.format(statistics.getCreated()));

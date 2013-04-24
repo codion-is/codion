@@ -330,6 +330,9 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
     }
   }
 
+  /**
+   * Stops the web server in case it's running
+   */
   private void shutdownWebServer() {
     if (webServer != null) {
       LOG.info("Shutting down web server");
@@ -500,6 +503,9 @@ final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConn
       addDefaultServlets(null); //file servlet
     }
 
+    /**
+     * Stops the web server
+     */
     public void stop() {
       notifyStop();
       destroyAllServlets();

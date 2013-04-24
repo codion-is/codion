@@ -1105,6 +1105,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return res == JOptionPane.OK_OPTION;
   }
 
+  /**
+   * @return Strings to display in the confirm delete dialog, index 0 = message, index 1 = title
+   */
   protected String[] getConfirmDeleteMessages() {
     return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED),
             FrameworkMessages.get(FrameworkMessages.DELETE)};
@@ -1688,7 +1691,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     private final JTable table;
     private final boolean enlarge;
 
-    public ResizeSelectedColumnAction(final JTable table, final boolean enlarge) {
+    private ResizeSelectedColumnAction(final JTable table, final boolean enlarge) {
       super("EntityTablePanel.column" + (enlarge ? "Larger" : "Smaller"));
       this.table = table;
       this.enlarge = enlarge;

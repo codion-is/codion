@@ -100,6 +100,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private String frameTitle = "<no title>";
 
+  /**
+   * A default constructor
+   */
   public EntityApplicationPanel() {
     setUncaughtExceptionHandler();
   }
@@ -235,6 +238,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     EntityUiUtil.setLoggingLevel(this);
   }
 
+  /**
+   * Displays in a dialog a tree describing the application layout
+   */
   public final void viewApplicationTree() {
     UiUtil.displayInDialog(this, initializeApplicationTree(), FrameworkMessages.get(FrameworkMessages.APPLICATION_TREE), false);
   }

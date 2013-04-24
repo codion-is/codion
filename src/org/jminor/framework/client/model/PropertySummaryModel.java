@@ -15,7 +15,17 @@ import java.util.List;
  */
 public interface PropertySummaryModel {
 
+  /**
+   * Specifies a summary provider
+   */
   interface Summary {
+
+    /**
+     * Returns a String containing the summary information for the given property
+     * @param valueProvider the object responsible for providing the values for the summary
+     * @param property the property on which values to base the summary
+     * @return a summary text
+     */
     String getSummary(final PropertyValueProvider valueProvider, final Property property);
   }
 

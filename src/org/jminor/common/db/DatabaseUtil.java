@@ -110,6 +110,15 @@ public final class DatabaseUtil {
     throw new SQLException("No records returned when querying for an integer", sql);
   }
 
+  /**
+   * Creates a log message from the given information
+   * @param user the user
+   * @param sqlStatement the sql statement
+   * @param values the values
+   * @param exception the exception, if any
+   * @param entry the log entry
+   * @return a log message
+   */
   public static String createLogMessage(final User user, final String sqlStatement, final List<?> values,
                                         final Exception exception, final MethodLogger.Entry entry) {
     final StringBuilder logMessage = new StringBuilder(user.toString()).append("\n");

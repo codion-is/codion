@@ -27,7 +27,6 @@ import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
@@ -1881,33 +1880,6 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   protected final JTextField createEntityField(final Property.ForeignKeyProperty foreignKeyProperty) {
     final JTextField ret = EntityUiUtil.createEntityField(foreignKeyProperty, editModel);
     setComponent(foreignKeyProperty.getPropertyID(), ret);
-
-    return ret;
-  }
-
-  /**
-   * Creates a JPanel containing an uneditable JTextField bound to the property identified by <code>propertyID</code>
-   * and a button for selecting an Entity to set as the property value
-   * @param propertyID the ID of the property to bind
-   * @param lookupModel an EntityTableModel to use when looking up entities
-   * @return an uneditable JTextField bound to the property
-   */
-  protected final JPanel createEntityFieldPanel(final String propertyID, final EntityTableModel lookupModel) {
-    return createEntityFieldPanel((Property.ForeignKeyProperty)
-            Entities.getProperty(editModel.getEntityID(), propertyID), lookupModel);
-  }
-
-  /**
-   * Creates a JPanel containing an uneditable JTextField bound to the given property identified
-   * and a button for selecting an Entity to set as the property value
-   * @param foreignKeyProperty the foreign key property to bind
-   * @param lookupModel an EntityTableModel to use when looking up entities
-   * @return an uneditable JTextField bound to the property
-   */
-  protected final EntityUiUtil.EntityFieldPanel createEntityFieldPanel(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                                       final EntityTableModel lookupModel) {
-    final EntityUiUtil.EntityFieldPanel ret = EntityUiUtil.createEntityFieldPanel(foreignKeyProperty, editModel, lookupModel);
-    setComponent(foreignKeyProperty.getPropertyID(), ret.getTextField());
 
     return ret;
   }

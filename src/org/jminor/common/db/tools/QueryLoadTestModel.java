@@ -64,14 +64,19 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
     return pool;
   }
 
+  /** {@inheritDoc} */
   @Override
   protected void disconnectApplication(final QueryApplication application) {}
 
+  /** {@inheritDoc} */
   @Override
   protected QueryApplication initializeApplication() throws CancelException {
     return new QueryApplication(pool);
   }
 
+  /**
+   * A class used internally
+   */
   public static final class QueryApplication {
 
     private final ConnectionPool pool;

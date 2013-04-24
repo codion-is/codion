@@ -29,10 +29,21 @@ public final class Images {
 
   private Images() {}
 
+  /**
+   * Loads the given image assuming it is on the classpath on the same level as this class
+   * @param imageFileName the image name
+   * @return an ImageIcon based on the given image
+   */
   public static ImageIcon loadImage(final String imageFileName) {
     return getImageIcon(Images.class, imageFileName);
   }
 
+  /**
+   * Loads an image from the given resource assuming it is on the classpath on the same level as the given class
+   * @param resourceOwnerClass the class owning the given resource
+   * @param resourceName the image name
+   * @return an ImageIcon based on the given image
+   */
   public static ImageIcon getImageIcon(final Class resourceOwnerClass, final String resourceName) {
     final URL url = resourceOwnerClass.getResource(resourceName);
     Util.rejectNullValue(url, "Resource: " + resourceName + " for " + resourceOwnerClass);

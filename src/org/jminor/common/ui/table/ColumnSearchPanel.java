@@ -195,6 +195,11 @@ public class ColumnSearchPanel<K> extends JPanel {
     return dialogVisible;
   }
 
+  /**
+   * Displays this search panel in a dialog
+   * @param dialogParent the dialog parent
+   * @param position the position
+   */
   public final void enableDialog(final Container dialogParent, final Point position) {
     if (!isDialogEnabled()) {
       initializeSearchDialog(dialogParent);
@@ -214,6 +219,9 @@ public class ColumnSearchPanel<K> extends JPanel {
     showDialog();
   }
 
+  /**
+   * Hides the dialog displaying this search panel
+   */
   public final void disableDialog() {
     if (isDialogEnabled()) {
       if (isDialogVisible()) {

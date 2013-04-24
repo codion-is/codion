@@ -20,14 +20,35 @@ public final class FlexibleGridLayout extends GridLayout {
   private int fixedColumnWidth;
   private int fixedRowHeight;
 
+  /**
+   * Instantiates a new FlexibleGridLayout
+   * @param rows the number of rows
+   * @param cols the number of columns
+   */
   public FlexibleGridLayout(final int rows, final int cols) {
     this(rows, cols, 0, 0, false, false);
   }
 
+  /**
+   * Instantiates a new FlexibleGridLayout
+   * @param rows the number of rows
+   * @param cols the number of columns
+   * @param hgap the horizontal gap
+   * @param vgap the vertical gap
+   */
   public FlexibleGridLayout(final int rows, final int cols, final int hgap,final  int vgap) {
     this(rows, cols, hgap, vgap, false, false);
   }
 
+  /**
+   * Instantiates a new FlexibleGridLayout
+   * @param rows the number of rows
+   * @param cols the number of columns
+   * @param hgap the horizontal gap
+   * @param vgap the vertical gap
+   * @param fixRowHeights if true then the row heights are fixed according to the largest row
+   * @param fixColumnWidths if true then the column widths are fixed according to the largest column
+   */
   public FlexibleGridLayout(final int rows, final int cols, final int hgap, final int vgap,
                             final boolean fixRowHeights, final boolean fixColumnWidths) {
     super(rows, cols, hgap, vgap);
@@ -53,16 +74,19 @@ public final class FlexibleGridLayout extends GridLayout {
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Dimension preferredLayoutSize(final Container parent) {
     return layoutSize(parent, true);
   }
 
+  /** {@inheritDoc} */
   @Override
   public Dimension minimumLayoutSize(final Container parent) {
     return layoutSize(parent, false);
   }
 
+  /** {@inheritDoc} */
   @Override
   public void layoutContainer(final Container parent) {
     synchronized (parent.getTreeLock()) {

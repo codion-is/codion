@@ -383,6 +383,9 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
     void performRangeValidation(final Entity entity, final Property property) throws RangeValidationException;
   }
 
+  /**
+   * Specifies an object responsible for creating String representations of entities
+   */
   interface ToString extends ValueMap.ToString<String, Entity> {}
 
   /**

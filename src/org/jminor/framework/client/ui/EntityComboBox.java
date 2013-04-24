@@ -11,6 +11,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.AbstractAction;
+import javax.swing.Action;
 import javax.swing.JOptionPane;
 import javax.swing.JPopupMenu;
 import java.awt.event.ActionEvent;
@@ -37,7 +38,12 @@ public final class EntityComboBox extends SteppedComboBox {
     return (EntityComboBoxModel) super.getModel();
   }
 
-  public AbstractAction createForeignKeyFilterAction(final String foreignKeyPropertyID) {
+  /**
+   * Creates an Action which displays a dialog for filtering this combo box via a foreign key
+   * @param foreignKeyPropertyID the ID of the foreign key property on which to filter
+   * @return an Action for filtering this combo box
+   */
+  public Action createForeignKeyFilterAction(final String foreignKeyPropertyID) {
     return new AbstractAction(null, Images.loadImage(Images.IMG_FILTER_16)) {
       /** {@inheritDoc} */
       @Override
@@ -53,6 +59,11 @@ public final class EntityComboBox extends SteppedComboBox {
     };
   }
 
+  /**
+   * Creates a EntityComboBox for filtering this combo box via a foreign key
+   * @param foreignKeyPropertyID the ID of the foreign key property on which to filter
+   * @return an EntityComboBox for filtering this combo box
+   */
   public EntityComboBox createForeignKeyFilterComboBox(final String foreignKeyPropertyID) {
     final EntityComboBox comboBox = new EntityComboBox(getModel().createForeignKeyFilterComboBoxModel(foreignKeyPropertyID));
     MaximumMatch.enable(comboBox);

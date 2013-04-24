@@ -30,7 +30,11 @@ public final class MaximumMatch extends PlainDocument {
   private boolean hitBackspace = false;
   private boolean hitBackspaceOnSelection;
 
-  public MaximumMatch(final JComboBox comboBox) {
+  /**
+   * Enables MaximumMatch on the given combobox
+   * @param comboBox the combobox
+   */
+  private MaximumMatch(final JComboBox comboBox) {
     this.comboBox = comboBox;
     model = comboBox.getModel();
     editor = (JTextComponent) comboBox.getEditor().getEditorComponent();

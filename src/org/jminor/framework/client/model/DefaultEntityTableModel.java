@@ -756,6 +756,10 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    */
   public static class DefaultEntityTableSortModel extends AbstractTableSortModel<Entity, Property> {
 
+    /**
+     * Instantiates a new DefaultEntityTableSortModel
+     * @param entityID the entity ID
+     */
     public DefaultEntityTableSortModel(final String entityID) {
       super(initializeColumns(entityID));
     }

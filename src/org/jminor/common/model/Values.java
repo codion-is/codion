@@ -5,18 +5,41 @@ package org.jminor.common.model;
 
 import java.lang.reflect.Method;
 
+/**
+ * A factory class for Value objects
+ */
 public final class Values {
 
   private Values() {}
 
+  /**
+   * Instantiates a new Value
+   * @param <V> type to wrap
+   * @return a Value for the given type
+   */
   public static <V> Value<V> value() {
     return value(null);
   }
 
+  /**
+   * Instantiates a new Value
+   * @param initialValue the initial value
+   * @param <V> type to wrap
+   * @return a Value for the given type with the given initial value
+   */
   public static <V> Value<V> value(final V initialValue) {
     return new ValueImpl<V>(initialValue);
   }
 
+  /**
+   * Instantiates a new Value based on a bean property
+   * @param owner the property owner
+   * @param beanPropertyName the name of the bean property
+   * @param valueClass the class of the bean value
+   * @param valueChangeEvent an event which fires each time the bean value changes
+   * @param <V> type to wrap
+   * @return a Value for the given bean property
+   */
   public static <V> Value<V> beanValue(final Object owner, final String beanPropertyName, final Class valueClass,
                                        final EventObserver valueChangeEvent) {
     return new BeanValue<V>(owner, beanPropertyName, valueClass, valueChangeEvent);

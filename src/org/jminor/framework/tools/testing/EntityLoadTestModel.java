@@ -94,12 +94,22 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
   @Override
   protected abstract EntityApplicationModel initializeApplication() throws CancelException;
 
+  /**
+   * An abstract base class for usage scenarios based on EntityApplicationModel instances
+   */
   public abstract static class AbstractEntityUsageScenario extends AbstractUsageScenario<EntityApplicationModel> {
 
+    /**
+     * Instantiates a new AbstractEntityUsageScenario
+     */
     public AbstractEntityUsageScenario() {
       super();
     }
 
+    /**
+     * Instantiates a new AbstractEntityUsageScenario
+     * @param name the scenario name
+     */
     public AbstractEntityUsageScenario(final String name) {
       super(name);
     }

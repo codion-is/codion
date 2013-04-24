@@ -20,10 +20,18 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
 
   private static final ExceptionHandler INSTANCE = new DefaultExceptionHandler();
 
+  /**
+   * @return an ExceptionHandler singleton
+   */
   public static ExceptionHandler getInstance() {
     return INSTANCE;
   }
 
+  /**
+   * Handles the given exception by displaying it in a dialog
+   * @param exception the exception
+   * @param dialogParent the component to use as parent to the exception dialog
+   */
   @Override
   public void handleException(final Throwable exception, final JComponent dialogParent) {
     final Throwable rootCause = unwrapExceptions(exception, RuntimeException.class, InvocationTargetException.class,
@@ -40,6 +48,11 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
     }
   }
 
+  /**
+   * Handles the given database exception by displaying it in a dialog
+   * @param dbException the exception
+   * @param dialogParent the component to use as parent to the exception dialog
+   */
   public void handleDatabaseException(final DatabaseException dbException, final JComponent dialogParent) {
     String errMsg = dbException.getMessage();
     if (Util.nullOrEmpty(errMsg)) {
