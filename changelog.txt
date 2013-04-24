@@ -3441,3 +3441,4 @@
   Some javadoc improvements
   EntityEditPanel.createEntityFieldPanel() removed
   EntityUiUtil.createEntityFieldPanel() removed
+  DateUtilTest, added a single test

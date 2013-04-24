@@ -8,6 +8,7 @@ import org.jminor.common.model.formats.DateFormats;
 import org.junit.Test;
 
 import java.sql.Timestamp;
+import java.text.DateFormat;
 import java.text.ParseException;
 import java.util.Calendar;
 import java.util.Date;
@@ -22,16 +23,12 @@ public class DateUtilTest {
     assertFalse("isDateValid should work with an invalid date", DateUtil.isDateValid("033-102-975", DateFormats.getDateFormat(DateFormats.SHORT_DASH)));
 
     assertTrue("isDateValid should work with an empty string", DateUtil.isDateValid("", true, DateFormats.getDateFormat(DateFormats.SHORT_DASH)));
+    assertFalse("isDateValid should not work with an empty string", DateUtil.isDateValid("", false, DateFormats.getDateFormat(DateFormats.SHORT_DASH)));
 
     assertTrue("isDateValid should work with long date", DateUtil.isDateValid("03-10-1975 10:45", false, DateFormats.getDateFormat(DateFormats.TIMESTAMP)));
 
     assertTrue("isDateValid should work with a date format specified",
             DateUtil.isDateValid("03.10.1975", false, DateFormats.getDateFormat(DateFormats.SHORT_DOT)));
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void isDateValidNullFormat() {
-    DateUtil.isDateValid("03-10-1975");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -90,5 +87,15 @@ public class DateUtilTest {
     calendar.setTime(timestamp);
     assertEquals(0, calendar.get(Calendar.MILLISECOND));
     assertEquals(0, calendar.get(Calendar.SECOND));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void isDateValidMissingDateFormat() {
+    DateUtil.isDateValid("03-10-1975", false);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void isDateValidNullDateFormat() {
+    DateUtil.isDateValid("03-10-1975", false, (DateFormat[]) null);
   }
 }
