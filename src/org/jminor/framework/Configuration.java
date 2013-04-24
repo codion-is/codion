@@ -189,7 +189,7 @@ public final class Configuration {
    * Value type: String<br>
    * Default value: HH:mm
    */
-  public static final String DEFAULT_TIME_FORMAT = "jminor.client.defaultTimeFormat";
+  public static final String TIME_FORMAT = "jminor.client.timeFormat";
 
   /**
    * The date format pattern to use when showing timestamp values in tables and when
@@ -197,7 +197,7 @@ public final class Configuration {
    * Value type: String<br>
    * Default value: dd-MM-yyyy HH:mm
    */
-  public static final String DEFAULT_TIMESTAMP_FORMAT = "jminor.client.defaultTimestampFormat";
+  public static final String TIMESTAMP_FORMAT = "jminor.client.timestampFormat";
 
   /**
    * The date format pattern to use when showing date values in tables and when
@@ -205,7 +205,7 @@ public final class Configuration {
    * Value type: String<br>
    * Default value: dd-MM-yyyy
    */
-  public static final String DEFAULT_DATE_FORMAT = "jminor.client.defaultDateFormat";
+  public static final String DATE_FORMAT = "jminor.client.dateFormat";
 
   /**
    * Indicates whether all entity panels should be enabled and receiving input by default<br>
@@ -352,7 +352,7 @@ public final class Configuration {
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final String DEFAULT_SEARCH_PANEL_STATE = "jminor.client.defaultSearchPanelState";
+  public static final String SEARCH_PANEL_STATE = "jminor.client.searchPanelState";
 
   /**
    * Specifies the prefix used when exporting/looking up the JMinor server<br>
@@ -388,7 +388,7 @@ public final class Configuration {
    * Value type: Integer<br>
    * Default value: 10
    */
-  public static final String DEFAULT_MAXIMUM_FRACTION_DIGITS = "jminor.defaultMaximumFractionDigits";
+  public static final String MAXIMUM_FRACTION_DIGITS = "jminor.maximumFractionDigits";
 
   /**
    * Specifies the class providing remote db connections<br>
@@ -417,7 +417,7 @@ public final class Configuration {
    * Value type: String<br>
    * Default value: -
    */
-  public static final String DEFAULT_COMBO_BOX_NULL_VALUE_ITEM = "jminor.client.defaultComboBoxNullValueItem";
+  public static final String COMBO_BOX_NULL_VALUE_ITEM = "jminor.client.comboBoxNullValueItem";
 
   /**
    * Specifies whether the client layer should perform null validation on entities
@@ -441,14 +441,14 @@ public final class Configuration {
    * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER)<br>
    * Default value: JLabel.LEFT
    */
-  public static final String DEFAULT_LABEL_TEXT_ALIGNMENT = "jminor.client.defaultLabelTextAlignment";
+  public static final String LABEL_TEXT_ALIGNMENT = "jminor.client.labelTextAlignment";
 
   /**
    * Specifies the default foreign key fetch depth<br>
    * Value type: Integer<br>
    * Default value: 1
    */
-  public static final String DEFAULT_FOREIGN_KEY_FETCH_DEPTH = "jminor.db.foreignKeyFetchDepth";
+  public static final String FOREIGN_KEY_FETCH_DEPTH = "jminor.db.foreignKeyFetchDepth";
 
   /**
    * Specifies whether the foreign key value graph should be fully populated instead of
@@ -463,7 +463,7 @@ public final class Configuration {
    * Value type: Integer<br>
    * Default value: 18<br>
    */
-  public static final String DEFAULT_SPLIT_PANE_DIVIDER_SIZE = "jminor.client.defaultSplitPaneDividerSize";
+  public static final String SPLIT_PANE_DIVIDER_SIZE = "jminor.client.splitPaneDividerSize";
 
   /**
    * Specifies whether or not actions to hide detail panels or show them in a dialog are available to the user<br>
@@ -493,36 +493,171 @@ public final class Configuration {
    */
   public static final String USE_CLIENT_PREFERENCES = "jminor.client.useClientPreferences";
 
+  /**
+   * Sets the given configuration value
+   * @param key the property key
+   * @param value the value
+   */
+  public static void setValue(final String key, final Object value) {
+    PROPERTIES.put(key, value);
+    System.setProperty(key, value.toString());
+  }
+
+  /**
+   * Clears the given configuration value
+   * @param key the property key
+   */
+  public static void clearValue(final String key) {
+    PROPERTIES.remove(key);
+    System.clearProperty(key);
+  }
+
+  /**
+   * Retrieves the configuration value associated with the given key
+   * @param key the property key
+   * @return the value
+   */
+  public static Object getValue(final String key) {
+    return PROPERTIES.get(key);
+  }
+
+  /**
+   * Retrieves the configuration value associated with the given key, assuming it is an Integer
+   * @param key the property key
+   * @return the value
+   */
+  public static Integer getIntValue(final String key) {
+    return (Integer) getValue(key);
+  }
+
+  /**
+   * Retrieves the configuration value associated with the given key, assuming it is a Boolean
+   * @param key the property key
+   * @return the value
+   */
+  public static Boolean getBooleanValue(final String key) {
+    return (Boolean) getValue(key);
+  }
+
+  /**
+   * Retrieves the configuration value associated with the given key, assuming it is a String
+   * @param key the property key
+   * @return the value
+   */
+  public static String getStringValue(final String key) {
+    return (String) getValue(key);
+  }
+
+  /**
+   * @return A non-lenient SimpleDateFormat based on Configuration.DATE_FORMAT
+   * @see Configuration#DATE_FORMAT
+   */
+  public static SimpleDateFormat getDefaultDateFormat() {
+    return DateFormats.getDateFormat((String) getValue(DATE_FORMAT));
+  }
+
+  /**
+   * @return A non-lenient SimpleDateFormat based on Configuration.TIMESTAMP_FORMAT
+   * @see org.jminor.framework.Configuration#TIMESTAMP_FORMAT
+   */
+  public static SimpleDateFormat getDefaultTimestampFormat() {
+    return DateFormats.getDateFormat((String) getValue(TIMESTAMP_FORMAT));
+  }
+
+  /**
+   * @return A non-lenient SimpleDateFormat based on Configuration.TIME_FORMAT
+   * @see org.jminor.framework.Configuration#TIME_FORMAT
+   */
+  public static SimpleDateFormat getDefaultTimeFormat() {
+    return DateFormats.getDateFormat((String) getValue(TIME_FORMAT));
+  }
+
+  /**
+   * @return the value associated with {@link #REPORT_PATH}
+   */
+  public static String getReportPath() {
+    final String path = getStringValue(REPORT_PATH);
+    if (Util.nullOrEmpty(path)) {
+      throw new IllegalArgumentException(REPORT_PATH + " property is not specified");
+    }
+
+    return path;
+  }
+
+  /**
+   * @return true if a entity serializer is specified and available on the classpath
+   */
+  public static boolean entitySerializerAvailable() {
+    final String serializerClass = getStringValue(ENTITY_SERIALIZER_CLASS);
+    return serializerClass != null && Util.onClasspath(serializerClass);
+  }
+
+  /**
+   * Parses the value associated with the given property, splitting it by comma,
+   * returning the trimmed String values.
+   * Returns an empty Collection in case the given property has no value.
+   * @param propertyName the name of the property
+   * @return trimmed String values
+   */
+  public static Collection<String> parseCommaSeparatedValues(final String propertyName) {
+    final Collection<String> values = new ArrayList<String>();
+    final String commaSeparatedValues = Configuration.getStringValue(propertyName);
+    if (!Util.nullOrEmpty(commaSeparatedValues)) {
+      final String[] classNames = commaSeparatedValues.split(",");
+      for (final String className : classNames) {
+        values.add(className.trim());
+      }
+    }
+
+    return values;
+  }
+
   private static final Properties PROPERTIES = new Properties();
+
+  private static final int DEFAULT_LOAD_TEST_THINKTIME = 2000;
+  private static final int DEFAULT_LOAD_TEST_BATCH_SIZE = 10;
+  private static final int DEFAULT_LOAD_TEST_LOGIN_DELAY = 2;
+  private static final int DEFAULT_SERVER_CONNECTION_LIMIT = -1;
+  private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 120000;
+  private static final int DEFAULT_SERVER_CONNECTION_LOG_SIZE = 40;
+  private static final int DEFAULT_SERVER_ADMIN_PORT = 3333;
+  private static final int DEFAULT_REGISTRY_PORT_NUMBER = 1099;
+  private static final int DEFAULT_TABLE_AUTO_RESIZE_MODE = 0;//JTable.AUTO_RESIZE_OFF
+  private static final int DEFAULT_TAB_PLACEMENT = 1;//JTabbedPane.TOP
+  private static final int DEFAULT_LABEL_TEXT_ALIGNMENT = 2;//JLabel.LEFT
+  private static final int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;
+  private static final int DEFAULT_WEB_SERVER_PORT = 80;
+  private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
+  private static final int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
 
   static {
     Util.parseConfigurationFile();
     //default settings
-    PROPERTIES.put(LOAD_TEST_THINKTIME, 2000);
-    PROPERTIES.put(LOAD_TEST_BATCH_SIZE, 10);
-    PROPERTIES.put(LOAD_TEST_LOGIN_DELAY, 2);
+    PROPERTIES.put(LOAD_TEST_THINKTIME, DEFAULT_LOAD_TEST_THINKTIME);
+    PROPERTIES.put(LOAD_TEST_BATCH_SIZE, DEFAULT_LOAD_TEST_BATCH_SIZE);
+    PROPERTIES.put(LOAD_TEST_LOGIN_DELAY, DEFAULT_LOAD_TEST_LOGIN_DELAY);
     PROPERTIES.put(LOAD_TEST_REMOTE_HOSTNAME, "localhost");
     PROPERTIES.put(CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_LOCAL);
     PROPERTIES.put(CLIENT_SCHEDULE_CONNECTION_VALIDATION, true);
     PROPERTIES.put(SERVER_CLIENT_LOGGING_ENABLED, true);
-    PROPERTIES.put(SERVER_CONNECTION_LIMIT, -1);
-    PROPERTIES.put(SERVER_CONNECTION_TIMEOUT, 120000);
-    PROPERTIES.put(SERVER_CONNECTION_LOG_SIZE, 40);
+    PROPERTIES.put(SERVER_CONNECTION_LIMIT, DEFAULT_SERVER_CONNECTION_LIMIT);
+    PROPERTIES.put(SERVER_CONNECTION_TIMEOUT, DEFAULT_SERVER_CONNECTION_TIMEOUT);
+    PROPERTIES.put(SERVER_CONNECTION_LOG_SIZE, DEFAULT_SERVER_CONNECTION_LOG_SIZE);
     PROPERTIES.put(SERVER_CONNECTION_SSL_ENABLED, true);
-    PROPERTIES.put(SERVER_ADMIN_PORT, 3333);
+    PROPERTIES.put(SERVER_ADMIN_PORT, DEFAULT_SERVER_ADMIN_PORT);
     PROPERTIES.put(SERVER_HOST_NAME, "localhost");
-    PROPERTIES.put(REGISTRY_PORT_NUMBER, 1099);
-    PROPERTIES.put(DEFAULT_TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
-    PROPERTIES.put(DEFAULT_DATE_FORMAT, "dd-MM-yyyy");
-    PROPERTIES.put(DEFAULT_TIME_FORMAT, "HH:mm");
+    PROPERTIES.put(REGISTRY_PORT_NUMBER, DEFAULT_REGISTRY_PORT_NUMBER);
+    PROPERTIES.put(TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
+    PROPERTIES.put(DATE_FORMAT, "dd-MM-yyyy");
+    PROPERTIES.put(TIME_FORMAT, "HH:mm");
     PROPERTIES.put(ALL_PANELS_ACTIVE, false);
     PROPERTIES.put(COMPACT_ENTITY_PANEL_LAYOUT, true);
     PROPERTIES.put(USE_KEYBOARD_NAVIGATION, true);
     PROPERTIES.put(USE_FOCUS_ACTIVATION, true);
-    PROPERTIES.put(TABLE_AUTO_RESIZE_MODE, 0);//JTable.AUTO_RESIZE_OFF
+    PROPERTIES.put(TABLE_AUTO_RESIZE_MODE, DEFAULT_TABLE_AUTO_RESIZE_MODE);
     PROPERTIES.put(CONFIRM_EXIT, false);
     PROPERTIES.put(PROPERTY_DEBUG_OUTPUT, false);
-    PROPERTIES.put(TAB_PLACEMENT, 1);//JTabbedPane.TOP
+    PROPERTIES.put(TAB_PLACEMENT, DEFAULT_TAB_PLACEMENT);
     PROPERTIES.put(TOOLBAR_BUTTONS, false);
     PROPERTIES.put(PERSIST_FOREIGN_KEY_VALUES, true);
     PROPERTIES.put(USERNAME_PREFIX, "");
@@ -533,24 +668,24 @@ public final class Configuration {
     PROPERTIES.put(SQL_BOOLEAN_VALUE_FALSE, 0);
     PROPERTIES.put(SQL_BOOLEAN_VALUE_TRUE, 1);
     PROPERTIES.put(PERSIST_ENTITY_PANELS, false);
-    PROPERTIES.put(DEFAULT_SEARCH_PANEL_STATE, false);
+    PROPERTIES.put(SEARCH_PANEL_STATE, false);
     PROPERTIES.put(SERVER_NAME_PREFIX, "JMinor Server");
     PROPERTIES.put(WILDCARD_CHARACTER, "%");
     PROPERTIES.put(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.provider.RemoteEntityConnectionProvider");
     PROPERTIES.put(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.provider.LocalEntityConnectionProvider");
-    PROPERTIES.put(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM, "-");
+    PROPERTIES.put(COMBO_BOX_NULL_VALUE_ITEM, "-");
     PROPERTIES.put(PERFORM_NULL_VALIDATION, true);
-    PROPERTIES.put(DEFAULT_LABEL_TEXT_ALIGNMENT, 2);//JLabel.LEFT
+    PROPERTIES.put(LABEL_TEXT_ALIGNMENT, DEFAULT_LABEL_TEXT_ALIGNMENT);
     PROPERTIES.put(ALLOW_COLUMN_REORDERING, true);
-    PROPERTIES.put(DEFAULT_FOREIGN_KEY_FETCH_DEPTH, 1);
+    PROPERTIES.put(FOREIGN_KEY_FETCH_DEPTH, DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
     PROPERTIES.put(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
-    PROPERTIES.put(WEB_SERVER_PORT, 80);
+    PROPERTIES.put(WEB_SERVER_PORT, DEFAULT_WEB_SERVER_PORT);
     PROPERTIES.put(CACHE_REPORTS, true);
-    PROPERTIES.put(DEFAULT_SPLIT_PANE_DIVIDER_SIZE, 18);
+    PROPERTIES.put(SPLIT_PANE_DIVIDER_SIZE, DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
     PROPERTIES.put(STRICT_FOREIGN_KEYS, true);
     PROPERTIES.put(SHOW_DETAIL_PANEL_CONTROLS, true);
     PROPERTIES.put(SHOW_TOGGLE_EDIT_PANEL_CONTROL, true);
-    PROPERTIES.put(DEFAULT_MAXIMUM_FRACTION_DIGITS, 10);
+    PROPERTIES.put(MAXIMUM_FRACTION_DIGITS, DEFAULT_MAXIMUM_FRACTION_DIGITS);
     PROPERTIES.put(SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT, false);
     PROPERTIES.put(USE_CLIENT_PREFERENCES, Util.onClasspath("org.json.JSONObject"));
     parseSystemSettings();
@@ -564,13 +699,13 @@ public final class Configuration {
     parseBooleanSetting(CLIENT_SCHEDULE_CONNECTION_VALIDATION);
     parseBooleanSetting(COMPACT_ENTITY_PANEL_LAYOUT);
     parseBooleanSetting(CONFIRM_EXIT);
-    parseStringSetting(DEFAULT_COMBO_BOX_NULL_VALUE_ITEM);
-    parseStringSetting(DEFAULT_DATE_FORMAT);
-    parseStringSetting(DEFAULT_TIMESTAMP_FORMAT);
-    parseStringSetting(DEFAULT_TIME_FORMAT);
-    parseIntegerSetting(DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
-    parseIntegerSetting(DEFAULT_LABEL_TEXT_ALIGNMENT);
-    parseBooleanSetting(DEFAULT_SEARCH_PANEL_STATE);
+    parseStringSetting(COMBO_BOX_NULL_VALUE_ITEM);
+    parseStringSetting(DATE_FORMAT);
+    parseStringSetting(TIMESTAMP_FORMAT);
+    parseStringSetting(TIME_FORMAT);
+    parseIntegerSetting(FOREIGN_KEY_FETCH_DEPTH);
+    parseIntegerSetting(LABEL_TEXT_ALIGNMENT);
+    parseBooleanSetting(SEARCH_PANEL_STATE);
     parseBooleanSetting(LIMIT_FOREIGN_KEY_FETCH_DEPTH);
     parseIntegerSetting(LOAD_TEST_THINKTIME);
     parseIntegerSetting(LOAD_TEST_BATCH_SIZE);
@@ -610,11 +745,11 @@ public final class Configuration {
     parseIntegerSetting(WEB_SERVER_PORT);
     parseStringSetting(Util.JAVAX_NET_NET_TRUSTSTORE);
     parseBooleanSetting(CACHE_REPORTS);
-    parseIntegerSetting(DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
+    parseIntegerSetting(SPLIT_PANE_DIVIDER_SIZE);
     parseBooleanSetting(STRICT_FOREIGN_KEYS);
     parseBooleanSetting(SHOW_DETAIL_PANEL_CONTROLS);
     parseBooleanSetting(SHOW_TOGGLE_EDIT_PANEL_CONTROL);
-    parseIntegerSetting(DEFAULT_MAXIMUM_FRACTION_DIGITS);
+    parseIntegerSetting(MAXIMUM_FRACTION_DIGITS);
     parseBooleanSetting(SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT);
     parseBooleanSetting(USE_CLIENT_PREFERENCES);
   }
@@ -638,92 +773,5 @@ public final class Configuration {
     if (value != null) {
       PROPERTIES.put(setting, value);
     }
-  }
-
-  public static void setValue(final String key, final Object value) {
-    PROPERTIES.put(key, value);
-    System.setProperty(key, value.toString());
-  }
-
-  public static void clearValue(final String key) {
-    PROPERTIES.remove(key);
-    System.clearProperty(key);
-  }
-
-  public static Object getValue(final String key) {
-    return PROPERTIES.get(key);
-  }
-
-  public static Integer getIntValue(final String key) {
-    return (Integer) getValue(key);
-  }
-
-  public static Boolean getBooleanValue(final String key) {
-    return (Boolean) getValue(key);
-  }
-
-  public static String getStringValue(final String key) {
-    return (String) getValue(key);
-  }
-
-  /**
-   * @return A non-lenient SimpleDateFormat based on Configuration.DEFAULT_DATE_FORMAT
-   * @see Configuration#DEFAULT_DATE_FORMAT
-   */
-  public static SimpleDateFormat getDefaultDateFormat() {
-    return DateFormats.getDateFormat((String) getValue(DEFAULT_DATE_FORMAT));
-  }
-
-  /**
-   * @return A non-lenient SimpleDateFormat based on Configuration.DEFAULT_TIMESTAMP_FORMAT
-   * @see org.jminor.framework.Configuration#DEFAULT_TIMESTAMP_FORMAT
-   */
-  public static SimpleDateFormat getDefaultTimestampFormat() {
-    return DateFormats.getDateFormat((String) getValue(DEFAULT_TIMESTAMP_FORMAT));
-  }
-
-  /**
-   * @return A non-lenient SimpleDateFormat based on Configuration.DEFAULT_TIME_FORMAT
-   * @see org.jminor.framework.Configuration#DEFAULT_TIME_FORMAT
-   */
-  public static SimpleDateFormat getDefaultTimeFormat() {
-    return DateFormats.getDateFormat((String) getValue(DEFAULT_TIME_FORMAT));
-  }
-
-  public static String getReportPath() {
-    final String path = getStringValue(REPORT_PATH);
-    if (Util.nullOrEmpty(path)) {
-      throw new IllegalArgumentException(REPORT_PATH + " property is not specified");
-    }
-
-    return path;
-  }
-
-  /**
-   * @return true if a entity serializer is specified and available on the classpath
-   */
-  public static boolean entitySerializerAvailable() {
-    final String serializerClass = getStringValue(ENTITY_SERIALIZER_CLASS);
-    return serializerClass != null && Util.onClasspath(serializerClass);
-  }
-
-  /**
-   * Parses the value associated with the given property, splitting it by comma,
-   * returning the trimmed String values.
-   * Returns an empty Collection in case the given property has no value.
-   * @param propertyName the name of the property
-   * @return trimmed String values
-   */
-  public static Collection<String> parseCommaSeparatedValues(final String propertyName) {
-    final Collection<String> values = new ArrayList<String>();
-    final String commaSeparatedValues = Configuration.getStringValue(propertyName);
-    if (!Util.nullOrEmpty(commaSeparatedValues)) {
-      final String[] classNames = commaSeparatedValues.split(",");
-      for (final String className : classNames) {
-        values.add(className.trim());
-      }
-    }
-
-    return values;
   }
 }

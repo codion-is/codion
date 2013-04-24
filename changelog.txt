@@ -3437,3 +3437,4 @@
   ExceptionDialog, javadoc improved
   DoubleField, javadoc improved
   LoginPanel, javadoc improved
+  Configuration, javadoc improved, renamed a few properties, added constants for default numerical values

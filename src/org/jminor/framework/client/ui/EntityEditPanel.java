@@ -1040,7 +1040,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * identified by <code>propertyID</code>.
    * @param propertyID the ID of the property for which to create the panel
    * @return a DateInputPanel using the default short date format
-   * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
+   * @see org.jminor.framework.Configuration#DATE_FORMAT
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID) {
     return createDateInputPanel(propertyID, true);
@@ -1051,7 +1051,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param propertyID the ID of the property for which to create the panel
    * @param includeButton if true a button for visually editing the date is included
    * @return a DateInputPanel using the default short date format
-   * @see org.jminor.framework.Configuration#DEFAULT_DATE_FORMAT
+   * @see org.jminor.framework.Configuration#DATE_FORMAT
    */
   protected final DateInputPanel createDateInputPanel(final String propertyID, final boolean includeButton) {
     final Property property = Entities.getProperty(editModel.getEntityID(), propertyID);

@@ -36,7 +36,7 @@ public class EntityPanelProvider implements Comparable {
   private boolean refreshOnInit = true;
   private int detailPanelState = EntityPanel.EMBEDDED;
   private double detailSplitPanelResizeWeight = 0.5;
-  private boolean tableSearchPanelVisible = Configuration.getBooleanValue(Configuration.DEFAULT_SEARCH_PANEL_STATE);
+  private boolean tableSearchPanelVisible = Configuration.getBooleanValue(Configuration.SEARCH_PANEL_STATE);
 
   private Class<? extends EntityPanel> panelClass = EntityPanel.class;
   private Class<? extends EntityTablePanel> tablePanelClass = EntityTablePanel.class;

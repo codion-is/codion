@@ -622,7 +622,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     Util.rejectNullValue(property, PROPERTY);
     final FilteredComboBoxModel model = new DefaultPropertyComboBoxModel(entityID, connectionProvider, property, null, evtEntitiesChanged);
     model.setNullValueString(getValidator().isNullable(getEntity(), property.getPropertyID()) ?
-            (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null);
+            (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM) : null);
     model.refresh();
 
     return model;
@@ -634,7 +634,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
     final EntityComboBoxModel model = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
     model.setNullValueString(getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
-            (String) Configuration.getValue(Configuration.DEFAULT_COMBO_BOX_NULL_VALUE_ITEM) : null);
+            (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM) : null);
 
     return model;
   }

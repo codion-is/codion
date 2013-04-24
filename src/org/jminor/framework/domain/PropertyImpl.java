@@ -490,7 +490,7 @@ class PropertyImpl implements Property {
     else if (isNumerical()) {
       final NumberFormat numberFormat = Util.getNonGroupingNumberFormat(isInteger());
       if (isDouble()) {
-        numberFormat.setMaximumFractionDigits(Configuration.getIntValue(Configuration.DEFAULT_MAXIMUM_FRACTION_DIGITS));
+        numberFormat.setMaximumFractionDigits(Configuration.getIntValue(Configuration.MAXIMUM_FRACTION_DIGITS));
       }
 
       return numberFormat;
@@ -907,7 +907,7 @@ class PropertyImpl implements Property {
     private final List<ColumnProperty> referenceProperties;
     private final boolean compositeReference;
     private Map<Property, String> linkedReferenceProperties;
-    private int fetchDepth = Configuration.getIntValue(Configuration.DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
+    private int fetchDepth = Configuration.getIntValue(Configuration.FOREIGN_KEY_FETCH_DEPTH);
 
     /**
      * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not

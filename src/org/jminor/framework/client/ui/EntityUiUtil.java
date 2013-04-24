@@ -312,10 +312,10 @@ public final class EntityUiUtil {
    * Creates a JLabel with a caption from the given property, using the default label text alignment
    * @param property the property for which to create the label
    * @return a JLabel for the given property
-   * @see org.jminor.framework.Configuration#DEFAULT_LABEL_TEXT_ALIGNMENT
+   * @see org.jminor.framework.Configuration#LABEL_TEXT_ALIGNMENT
    */
   public static JLabel createLabel(final Property property) {
-    return createLabel(property, Configuration.getIntValue(Configuration.DEFAULT_LABEL_TEXT_ALIGNMENT));
+    return createLabel(property, Configuration.getIntValue(Configuration.LABEL_TEXT_ALIGNMENT));
   }
 
   /**

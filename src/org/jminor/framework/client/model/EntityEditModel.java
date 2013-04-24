@@ -138,7 +138,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * if the underlying property is nullable
    * @param foreignKeyProperty the foreign key property for which to create a {@link EntityComboBoxModel}
    * @return a {@link EntityComboBoxModel} for the given property
-   * @see org.jminor.framework.Configuration#DEFAULT_COMBO_BOX_NULL_VALUE_ITEM
+   * @see org.jminor.framework.Configuration#COMBO_BOX_NULL_VALUE_ITEM
    * @see org.jminor.framework.domain.Property#isNullable()
    */
   EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty);
