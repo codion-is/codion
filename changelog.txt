@@ -2577,7 +2577,7 @@
   FilteredComboBoxModel.getSelectedValue() added
   EntityComboBoxModel.getSelectedEntity() removed, the above covers it quite nicely
   ItemComboBoxModel now extends DefaultFilteredComboBoxModel instead of DefaultComboBoxModel
-  CombBoxValueLink slightly modified to accommodate the above
+  ComboBoxValueLink slightly modified to accommodate the above
   DefaultFilteredComboBoxModel.isNullValueSelected() now regards an empty string to be null
   Entity.clearPrimaryKeyValues() added
   EntityTablePanel, added column info tooltips to entity popup menu
@@ -3433,3 +3433,7 @@
   EntityUiUtil, javadoc improvements
   ControlProvider, javadoc improvements
   EntityPanelProvider, javadoc improved
+  UiUtil, javadoc improved
+  ExceptionDialog, javadoc improved
+  DoubleField, javadoc improved
+  LoginPanel, javadoc improved

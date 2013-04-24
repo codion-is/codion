@@ -63,7 +63,7 @@ public final class ExceptionDialog extends JDialog {
   private JTextField exceptionField;
   private JTextArea messageArea;
   private JPanel detailPanel;
-  private final Window ownerFrame;
+  private final Window window;
   private JPanel centerPanel;
   private JTextArea detailsArea;
   private JLabel descriptionLabel;
@@ -85,34 +85,59 @@ public final class ExceptionDialog extends JDialog {
   private static String lastUsedEmailAddress = "";
   private static String errorReportEmailSubjectPrefix = "";
 
-  public ExceptionDialog(final Window owner) {
-    super(owner);
-    ownerFrame = owner;
+  /**
+   * Instantiates a new ExceptionDialog with the given window as parent
+   * @param window the dialog parent
+   */
+  private ExceptionDialog(final Window window) {
+    super(window);
+    this.window = window;
     setupControls();
     bindEvents();
-    initUI();
+    initializeUI();
   }
 
-  public static void showExceptionDialog(final Window parentFrame, final String title, final Throwable throwable) {
-    showExceptionDialog(parentFrame, title, throwable.getMessage(), throwable);
+  /**
+   * Shows an ExceptionDialog for the given throwable
+   * @param window the dialog parent window
+   * @param title the dialog title
+   * @param throwable the exception to display
+   */
+  public static void showExceptionDialog(final Window window, final String title, final Throwable throwable) {
+    showExceptionDialog(window, title, throwable.getMessage(), throwable);
   }
 
-  public static void showExceptionDialog(final Window parentFrame, final String title, final String message,
+  /**
+   * Shows an ExceptionDialog for the given throwable
+   * @param window the dialog parent window
+   * @param message the message
+   * @param title the dialog title
+   * @param throwable the exception to display
+   */
+  public static void showExceptionDialog(final Window window, final String title, final String message,
                                          final Throwable throwable) {
-    showExceptionDialog(parentFrame, title, message, throwable, true);
+    showExceptionDialog(window, title, message, throwable, true);
   }
 
-  public static void showExceptionDialog(final Window parentFrame, final String title, final String message,
+  /**
+   * Shows an ExceptionDialog for the given throwable
+   * @param window the dialog parent window
+   * @param message the message
+   * @param title the dialog title
+   * @param modal if true then the dialog will be modal
+   * @param throwable the exception to display
+   */
+  public static void showExceptionDialog(final Window window, final String title, final String message,
                                          final Throwable throwable, final boolean modal) {
     try {
       if (SwingUtilities.isEventDispatchThread()) {
-        new ExceptionDialog(parentFrame).showForThrowable(title, message, throwable, modal);
+        new ExceptionDialog(window).showForThrowable(title, message, throwable, modal);
       }
       else {
         SwingUtilities.invokeAndWait(new Runnable() {
           @Override
           public void run() {
-            new ExceptionDialog(parentFrame).showForThrowable(title, message, throwable, modal);
+            new ExceptionDialog(window).showForThrowable(title, message, throwable, modal);
           }
         });
       }
@@ -120,57 +145,6 @@ public final class ExceptionDialog extends JDialog {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
-  }
-
-  public void showForThrowable(final String title, final String message, final Throwable t) {
-    showForThrowable(title, message, t, true);
-  }
-
-  public void showForThrowable(final String title, final String message, final Throwable throwable, final boolean modal) {
-    setModal(modal);
-    setTitle(title);
-
-    final String name = translateExceptionClass(throwable.getClass());
-    descriptionLabel.setText(message == null ? name : truncateMessage(message));
-    descriptionLabel.setToolTipText(message);
-
-    exceptionField.setText(name);
-    messageArea.setText(throwable.getMessage());
-
-    final StringWriter sw = new StringWriter();
-    throwable.printStackTrace(new PrintWriter(sw));
-
-    detailsArea.setText(null);
-    detailsArea.append(sw.toString());
-    detailsArea.append("\n");
-    detailsArea.append("--------------------------------------------Properties--------------------------------------------\n\n");
-
-    final String propsString = Util.getSystemProperties();
-    detailsArea.append(propsString);
-
-    detailsArea.setCaretPosition(0);
-    initDetailView(false);
-    setVisible(true);
-  }
-
-  private String truncateMessage(final String message) {
-    if (message.length() > 100) {
-      return message.substring(0, 100) + "...";
-    }
-
-    return message;
-  }
-
-  private String translateExceptionClass(final Class<? extends Throwable> exceptionClass) {
-    if (exceptionClass.equals(DatabaseException.class)) {
-      return Messages.get(Messages.DATABASE_EXCEPTION);
-    }
-
-    return exceptionClass.getSimpleName();
-  }
-
-  public void close() {
-    setVisible(false);
   }
 
   /**
@@ -195,6 +169,9 @@ public final class ExceptionDialog extends JDialog {
     errorReportEmailSubjectPrefix = errorReportSubjectPrefix;
   }
 
+  /**
+   * Prints the details area
+   */
   public void printErrorReport() {
     try {
       detailsArea.print();
@@ -204,19 +181,27 @@ public final class ExceptionDialog extends JDialog {
     }
   }
 
+  /**
+   * Displays a dialog for selecting where to save the current error report
+   * @throws IOException in case of an exception
+   */
   public void saveErrorReport() throws IOException {
     try {
       Util.writeFile(detailsArea.getText(), UiUtil.chooseFileToSave(detailsArea, null, null));
     }
-    catch (CancelException e) {
-      //cancelled
-    }
+    catch (CancelException ignored) {}
   }
 
+  /**
+   * Copies the current error report and puts it on the clipboard
+   */
   public void copyErrorReport() {
     UiUtil.setClipboard(detailsArea.getText());
   }
 
+  /**
+   * Uses "mailto" to create an email containing the current error report to a specified recipient
+   */
   public void emailErrorReport() {
     final String address = JOptionPane.showInputDialog(Messages.get(Messages.INPUT_EMAIL_ADDRESS), lastUsedEmailAddress);
     if (Util.nullOrEmpty(address)) {
@@ -260,11 +245,12 @@ public final class ExceptionDialog extends JDialog {
             Messages.get(Messages.SEND_MNEMONIC).charAt(0));
   }
 
-  private void initUI() {
+  private void initializeUI() {
     final AbstractAction closeAction = new AbstractAction("close") {
+      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
-        close();
+        dispose();
       }
     };
     UiUtil.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, closeAction);
@@ -280,16 +266,17 @@ public final class ExceptionDialog extends JDialog {
   }
 
   private void bindEvents() {
+    setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     evtShowDetailsChanged.addListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
-        initDetailView(isShowDetails());
+        initializeDetailView(isShowDetails());
       }
     });
   }
 
-  private void initDetailView(final boolean show) {
+  private void initializeDetailView(final boolean show) {
     btnPrint.setVisible(show);
     btnSave.setVisible(show);
     btnCopy.setVisible(show);
@@ -298,7 +285,7 @@ public final class ExceptionDialog extends JDialog {
     centerPanel.setVisible(show);
     pack();
     detailPanel.revalidate();
-    if (ownerFrame != null && ownerFrame.isVisible()) {
+    if (window != null && window.isVisible()) {
       positionOverFrame();
     }
     else {
@@ -400,5 +387,48 @@ public final class ExceptionDialog extends JDialog {
     }
 
     setLocation(p);
+  }
+
+  private void showForThrowable(final String title, final String message, final Throwable throwable, final boolean modal) {
+    setModal(modal);
+    setTitle(title);
+
+    final String name = translateExceptionClass(throwable.getClass());
+    descriptionLabel.setText(message == null ? name : truncateMessage(message));
+    descriptionLabel.setToolTipText(message);
+
+    exceptionField.setText(name);
+    messageArea.setText(throwable.getMessage());
+
+    final StringWriter sw = new StringWriter();
+    throwable.printStackTrace(new PrintWriter(sw));
+
+    detailsArea.setText(null);
+    detailsArea.append(sw.toString());
+    detailsArea.append("\n");
+    detailsArea.append("--------------------------------------------Properties--------------------------------------------\n\n");
+
+    final String propsString = Util.getSystemProperties();
+    detailsArea.append(propsString);
+
+    detailsArea.setCaretPosition(0);
+    initializeDetailView(false);
+    setVisible(true);
+  }
+
+  private String truncateMessage(final String message) {
+    if (message.length() > 100) {
+      return message.substring(0, 100) + "...";
+    }
+
+    return message;
+  }
+
+  private String translateExceptionClass(final Class<? extends Throwable> exceptionClass) {
+    if (exceptionClass.equals(DatabaseException.class)) {
+      return Messages.get(Messages.DATABASE_EXCEPTION);
+    }
+
+    return exceptionClass.getSimpleName();
   }
 }

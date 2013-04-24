@@ -26,42 +26,99 @@ public final class LoginPanel extends JPanel {
 
   private static final int DEFAULT_FIELD_COLUMNS = 8;
 
-  private final JTextField usernameField = new JTextField(8);
-  private final JPasswordField passwordField = new JPasswordField(8);
+  private final JTextField usernameField = new JTextField(DEFAULT_FIELD_COLUMNS);
+  private final JPasswordField passwordField = new JPasswordField(DEFAULT_FIELD_COLUMNS);
 
   private final JLabel lblUser = new JLabel("", JLabel.RIGHT);
   private final JLabel lblPass = new JLabel("", JLabel.RIGHT);
 
   private final User defaultUser;
 
+  /**
+   * Instantiates a new LoginPanel
+   * @param defaultUser the default user
+   */
   public LoginPanel(final User defaultUser) {
     this(defaultUser, false, null, null);
   }
 
+  /**
+   * Instantiates a new LoginPanel
+   * @param defaultUser the default user
+   */
   public LoginPanel(final User defaultUser, final boolean labelsOnTop, final String userLabel, final String passLabel) {
     this.defaultUser = defaultUser;
     initUI(labelsOnTop, userLabel, passLabel);
   }
 
+  /**
+   * @return a User object based on the values found in this LoginPanel
+   */
   public User getUser() {
     return new User(usernameField.getText(), new String(passwordField.getPassword()));
   }
 
+  /**
+   * @return the username field
+   */
+  public JTextField getUsernameField() {
+    return usernameField;
+  }
+
+  /**
+   * @return the password field
+   */
+  public JPasswordField getPasswordField() {
+    return passwordField;
+  }
+
+  /**
+   * Displays a LoginPanel
+   * @param parent the dialog parent component
+   * @param defaultUser the default user
+   * @return a User object based on the values found in this LoginPanel
+   * @throws CancelException in case the user cancels
+   */
   public static User showLoginPanel(final JComponent parent, final User defaultUser) throws CancelException {
     return showLoginPanel(parent, defaultUser, null);
   }
 
+  /**
+   * Displays a LoginPanel
+   * @param parent the dialog parent component
+   * @param defaultUser the default user
+   * @param icon the dialog icon
+   * @return a User object based on the values found in this LoginPanel
+   * @throws CancelException in case the user cancels
+   */
   public static User showLoginPanel(final JComponent parent, final User defaultUser, final Icon icon)
           throws CancelException {
     return showLoginPanel(parent, defaultUser, icon, null, null, null);
   }
 
+  /**
+   * Displays a LoginPanel
+   * @param parent the dialog parent component
+   * @param defaultUser the default user
+   * @param icon the dialog icon
+   * @param usernameLabel the caption for the username label
+   * @param passwordLabel the caption for the password label
+   * @return a User object based on the values found in this LoginPanel
+   * @throws CancelException in case the user cancels
+   */
   public static User showLoginPanel(final JComponent parent, final User defaultUser,
                                     final Icon icon, final String dialogTitle,
                                     final String usernameLabel, final String passwordLabel) throws CancelException {
     return new LoginPanel(defaultUser, false, usernameLabel, passwordLabel).showLoginPanel(parent, icon, dialogTitle);
   }
 
+  /**
+   * Displays a LoginPanel
+   * @param parent the dialog parent component
+   * @param icon the dialog icon
+   * @return a User object based on the values found in this LoginPanel
+   * @throws CancelException in case the user cancels
+   */
   public User showLoginPanel(final JComponent parent, final Icon icon, final String dialogTitle) throws CancelException {
     final JOptionPane pane = new JOptionPane(this, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, icon);
     final JDialog dialog = pane.createDialog(parent, dialogTitle == null ? Messages.get(Messages.LOGIN) : dialogTitle);
@@ -79,14 +136,13 @@ public final class LoginPanel extends JPanel {
     }
   }
 
-  public JPasswordField getPasswordField() {
-    return passwordField;
-  }
-
-  public JTextField getUsernameField() {
-    return usernameField;
-  }
-
+  /**
+   * Displays a LoginPanel for logging in
+   * @param parent the dialog parent
+   * @param defaultUser the default user
+   * @return a User object based on the values found in this LoginPanel
+   * @throws CancelException in case the user cancels
+   */
   public static User getUser(final JComponent parent, final User defaultUser) throws CancelException {
     return showLoginPanel(parent, defaultUser);
   }
@@ -111,10 +167,11 @@ public final class LoginPanel extends JPanel {
     retBase.add(lblPass);
     retBase.add(passwordField);
 
-    setLayout(new BorderLayout(5, 5));
+    setLayout(UiUtil.createBorderLayout());
     add(retBase, BorderLayout.CENTER);
     if (usernameField.getText().length() == 0) {
       UiUtil.addInitialFocusHack(usernameField, new AbstractAction() {
+        /** {@inheritDoc} */
         @Override
         public void actionPerformed(final ActionEvent e) {
           usernameField.setCaretPosition(usernameField.getText().length());
@@ -123,6 +180,7 @@ public final class LoginPanel extends JPanel {
     }
     else {
       UiUtil.addInitialFocusHack(passwordField, new AbstractAction() {
+        /** {@inheritDoc} */
         @Override
         public void actionPerformed(final ActionEvent e) {
           passwordField.setCaretPosition(passwordField.getPassword().length);

@@ -25,55 +25,143 @@ public final class Controls {
 
   private Controls() {}
 
+  /**
+   * Creates a control for calling a method, this method must be public in the owner class
+   * @param owner the object owning the method
+   * @param method the method name
+   * @param icon the icon
+   * @return a Control for calling the given method
+   */
   public static MethodControl methodControl(final Object owner, final String method, final Icon icon) {
     return methodControl(owner, method, null, null, null, -1, null, icon);
   }
 
+  /**
+   * Creates a control for calling a method, this method must be public in the owner class
+   * @param owner the object owning the method
+   * @param method the method name
+   * @param name the name of the control
+   * @return a Control for calling the given method
+   */
   public static MethodControl methodControl(final Object owner, final String method, final String name) {
     return methodControl(owner, method, name, null);
   }
 
+  /**
+   * Creates a control for calling a method, this method must be public in the owner class
+   * @param owner the object owning the method
+   * @param method the method name
+   * @param name the name of the control
+   * @param enabledState the state which controls the enabled state of the control
+   * @return a Control for calling the given method
+   */
   public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final StateObserver state) {
-    return new MethodControl(name, owner, method, state);
+                                            final StateObserver enabledState) {
+    return new MethodControl(name, owner, method, enabledState);
   }
 
+  /**
+   * Creates a control for calling a method, this method must be public in the owner class
+   * @param owner the object owning the method
+   * @param method the method name
+   * @param name the name of the control
+   * @param enabledState the state which controls the enabled state of the control
+   * @param description a string describing the control
+   * @return a Control for calling the given method
+   */
   public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final StateObserver state, final String description) {
-    return (MethodControl) methodControl(owner, method, name, state).setDescription(description);
+                                            final StateObserver enabledState, final String description) {
+    return (MethodControl) methodControl(owner, method, name, enabledState).setDescription(description);
   }
 
+  /**
+   * Creates a control for calling a method, this method must be public in the owner class
+   * @param owner the object owning the method
+   * @param method the method name
+   * @param name the name of the control
+   * @param enabledState the state which controls the enabled state of the control
+   * @param description a string describing the control
+   * @param mnemonic the control mnemonic
+   * @return a Control for calling the given method
+   */
   public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final StateObserver state, final String description, final int mnemonic) {
-    return (MethodControl) methodControl(owner, method, name, state, description).setMnemonic(mnemonic);
+                                            final StateObserver enabledState, final String description, final int mnemonic) {
+    return (MethodControl) methodControl(owner, method, name, enabledState, description).setMnemonic(mnemonic);
   }
 
+  /**
+   * Creates a control for calling a method, this method must be public in the owner class
+   * @param owner the object owning the method
+   * @param method the method name
+   * @param name the name of the control
+   * @param enabledState the state which controls the enabled state of the control
+   * @param description a string describing the control
+   * @param mnemonic the control mnemonic
+   * @param keyStroke the keystroke to associate with the control
+   * @return a Control for calling the given method
+   */
   public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final StateObserver state, final String description, final int mnemonic, final KeyStroke ks) {
-    return (MethodControl) methodControl(owner, method, name, state, description, mnemonic).setKeyStroke(ks);
+                                            final StateObserver enabledState, final String description, final int mnemonic, final KeyStroke keyStroke) {
+    return (MethodControl) methodControl(owner, method, name, enabledState, description, mnemonic).setKeyStroke(keyStroke);
   }
 
+  /**
+   * Creates a control for calling a method, this method must be public in the owner class
+   * @param owner the object owning the method
+   * @param method the method name
+   * @param name the name of the control
+   * @param enabledState the state which controls the enabled state of the control
+   * @param description a string describing the control
+   * @param mnemonic the control mnemonic
+   * @param keyStroke the keystroke to associate with the control
+   * @param icon the control icon
+   * @return a Control for calling the given method
+   */
   public static MethodControl methodControl(final Object owner, final String method, final String name,
-                                            final StateObserver state, final String description, final int mnemonic,
-                                            final KeyStroke ks, final Icon icon) {
-    return (MethodControl) methodControl(owner, method, name, state, description, mnemonic, ks).setIcon(icon);
+                                            final StateObserver enabledState, final String description, final int mnemonic,
+                                            final KeyStroke keyStroke, final Icon icon) {
+    return (MethodControl) methodControl(owner, method, name, enabledState, description, mnemonic, keyStroke).setIcon(icon);
   }
 
+  /**
+   * Creates a toggle control based on the boolean property <code>beanPropertyName</code> in the owner object
+   * @param owner the owner object
+   * @param beanPropertyName the name of the boolean bean property, must have a public setter and getter
+   * @param caption the control caption
+   * @return a toggle control
+   */
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption) {
     return toggleControl(owner, beanPropertyName, caption, null);
   }
 
+  /**
+   * Creates a toggle control based on the boolean property <code>beanPropertyName</code> in the owner object
+   * @param owner the owner object
+   * @param beanPropertyName the name of the boolean bean property, must have a public setter and getter
+   * @param caption the control caption
+   * @param changeEvent an event fired each time the property value changes in the underlying object
+   * @return a toggle control
+   */
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
                                             final EventObserver changeEvent) {
     return toggleControl(owner, beanPropertyName, caption, changeEvent, null);
   }
 
+  /**
+   * Creates a toggle control based on the boolean property <code>beanPropertyName</code> in the owner object
+   * @param owner the owner object
+   * @param beanPropertyName the name of the boolean bean property, must have a public setter and getter
+   * @param caption the control caption
+   * @param changeEvent an event fired each time the property value changes in the underlying object
+   * @param enabledState the state which controls the enabled state of the control
+   * @return a toggle control
+   */
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
-                                            final EventObserver changeEvent, final StateObserver enabledObserver) {
+                                            final EventObserver changeEvent, final StateObserver enabledState) {
     final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
     Values.link(Values.<Boolean>beanValue(owner, beanPropertyName, boolean.class, changeEvent), new BooleanValue(buttonModel));
 
-    return new ToggleControl(caption, buttonModel, enabledObserver);
+    return new ToggleControl(caption, buttonModel, enabledState);
   }
 
   /**
@@ -100,6 +188,7 @@ public final class Controls {
       return buttonModel.isSelected();
     }
 
+    /** {@inheritDoc} */
     @Override
     public void set(final Boolean value) {
       if (SwingUtilities.isEventDispatchThread()) {

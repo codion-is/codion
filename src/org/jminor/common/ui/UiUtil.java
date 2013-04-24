@@ -6,7 +6,6 @@ package org.jminor.common.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.DocumentAdapter;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
@@ -20,7 +19,6 @@ import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.JButton;
-import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
@@ -38,7 +36,6 @@ import javax.swing.ListSelectionModel;
 import javax.swing.RootPaneContainer;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
-import javax.swing.event.DocumentEvent;
 import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
 import javax.swing.text.AttributeSet;
@@ -103,7 +100,13 @@ import java.util.concurrent.TimeUnit;
  */
 public final class UiUtil {
 
+  /**
+   * A wait cursor
+   */
   public static final Cursor WAIT_CURSOR = new Cursor(Cursor.WAIT_CURSOR);
+  /**
+   * The default cursor
+   */
   public static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
 
   private static final Collection<String> IMAGE_FILE_TYPES = Arrays.asList("gif", "tif", "jpg", "jpeg", "png", "bmp");
@@ -130,7 +133,7 @@ public final class UiUtil {
   private UiUtil() {}
 
   /**
-   * Sets the default horizontal and vertical component gap, used by the layout factory methods
+   * Sets the default horizontal and vertical component gap, used by the layout factory methods, by default this is 5
    * @param gap the default horizontal and vertical gap
    * @see #createBorderLayout()
    * @see #createFlowLayout(int)
@@ -186,9 +189,13 @@ public final class UiUtil {
             defaultHorizontalVerticalComponentGap, fixRowHeights, fixColumnWidths);
   }
 
+  /**
+   * Creates a text field containing information about the memory usage
+   * @param updateIntervalMilliseconds the interval between updating the memory usage info
+   * @return the text field
+   */
   public static JTextField createMemoryUsageField(final int updateIntervalMilliseconds) {
-    final JTextField txt = new JTextField();
-    txt.setColumns(8);
+    final JTextField txt = new JTextField(8);
     txt.setEditable(false);
     txt.setHorizontalAlignment(JTextField.CENTER);
     Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory()).scheduleWithFixedDelay(new Runnable() {
@@ -202,22 +209,61 @@ public final class UiUtil {
     return txt;
   }
 
+  /**
+   * Displays a file selection dialog for selecting an existing directory
+   * @param dialogParent the dialog parent
+   * @param startDir the start directory, user.home if not specified
+   * @return the selected file
+   * @throws CancelException in case the user cancels
+   */
   public static File selectDirectory(final JComponent dialogParent, final String startDir) throws CancelException {
     return selectDirectory(dialogParent, startDir, Messages.get(Messages.SELECT_DIRECTORY));
   }
 
+  /**
+   * Displays a file selection dialog for selecting an existing directory
+   * @param dialogParent the dialog parent
+   * @param startDir the start directory, user.home if not specified
+   * @param dialogTitle the dialog title
+   * @return the selected file
+   * @throws CancelException in case the user cancels
+   */
   public static File selectDirectory(final JComponent dialogParent, final String startDir, final String dialogTitle) throws CancelException {
     return selectFileOrDirectory(dialogParent, startDir, false, dialogTitle);
   }
 
+  /**
+   * Displays a file selection dialog for selecting an existing file
+   * @param dialogParent the dialog parent
+   * @param startDir the start directory, user.home if not specified
+   * @return the selected file
+   * @throws CancelException in case the user cancels
+   */
   public static File selectFile(final JComponent dialogParent, final String startDir) throws CancelException {
     return selectFile(dialogParent, startDir, Messages.get(Messages.SELECT_FILE));
   }
 
+  /**
+   * Displays a file selection dialog for selecting an existing file
+   * @param dialogParent the dialog parent
+   * @param startDir the start directory, user.home if not specified
+   * @param dialogTitle the dialog title
+   * @return the selected file
+   * @throws CancelException in case the user cancels
+   */
   public static File selectFile(final JComponent dialogParent, final String startDir, final String dialogTitle) throws CancelException {
     return selectFileOrDirectory(dialogParent, startDir, true, dialogTitle);
   }
 
+  /**
+   * Displays a file selection dialog for selecting an existing file or directory
+   * @param dialogParent the dialog parent
+   * @param startDir the start directory, user.home if not specified
+   * @param files if true then files are displayed, otherwise only directories
+   * @param dialogTitle the dialog title
+   * @return the selected file
+   * @throws CancelException in case the user cancels
+   */
   public static File selectFileOrDirectory(final JComponent dialogParent, final String startDir, final boolean files,
                                            final String dialogTitle) throws CancelException {
     if (fileChooser == null) {
@@ -254,6 +300,14 @@ public final class UiUtil {
     throw new CancelException();
   }
 
+  /**
+   * Displays a save file dialog for creating a new file
+   * @param dialogParent the dialog parent
+   * @param startDir the start dir, user.dir if not specified
+   * @param defaultFileName the default file name to suggest
+   * @return the selected file
+   * @throws CancelException in case the user cancels
+   */
   public static File chooseFileToSave(final JComponent dialogParent, final String startDir,
                                       final String defaultFileName) throws CancelException {
     if (fileChooser == null) {
@@ -381,6 +435,12 @@ public final class UiUtil {
     }
   }
 
+  /**
+   * Creates a formatted text field using the given format
+   * @param maskFormat the format
+   * @param initialValue the initial value
+   * @return the text field
+   */
   public static JFormattedTextField createFormattedDateField(final SimpleDateFormat maskFormat, final Date initialValue) {
     final JFormattedTextField txtField = createFormattedField(DateUtil.getDateMask(maskFormat));
     if (initialValue != null) {
@@ -423,6 +483,7 @@ public final class UiUtil {
                                                          final boolean charsAsUpper) {
     try {
       final MaskFormatter formatter = new MaskFormatter(mask) {
+        /** {@inheritDoc} */
         @Override
         public Object stringToValue(final String value) throws ParseException {
           String ret = value;
@@ -609,9 +670,15 @@ public final class UiUtil {
             (int) (screen.getHeight() - size.getHeight()) / 2);
   }
 
+  /**
+   * Expands or collapses all the paths from a parent in the given tree
+   * @param tree the tree
+   * @param parent the parent from which to exapand/collapse
+   * @param expand if true then the tree is expanded, collapsed otherwise
+   */
   public static void expandAll(final JTree tree, final TreePath parent, final boolean expand) {
     // Traverse children
-    final TreeNode node = (TreeNode)parent.getLastPathComponent();
+    final TreeNode node = (TreeNode) parent.getLastPathComponent();
     if (node.getChildCount() >= 0) {
       final Enumeration e = node.children();
       while (e.hasMoreElements()) {
@@ -627,6 +694,22 @@ public final class UiUtil {
     }
   }
 
+  /**
+   * Adds or subtracts a wait cursor request for the parent root pane of the given component,
+   * the wait cursor is activated once a request is made, but only deactivated once all such
+   * requests have been retracted. Best used in try/finally block combinations.
+   * <pre>
+   try {
+     UiUtil.setWaitCursor(true, dialogParent);
+     doSomething();
+   }
+   finally {
+     UiUtil.setWaitCursor(false, dialogParent);
+   }
+   * </pre>
+   * @param on if on, then the wait cursor is activated, otherwise it is deactivated
+   * @param component the component
+   */
   public static void setWaitCursor(final boolean on, final JComponent component) {
     RootPaneContainer root = getParentDialog(component);
     if (root == null) {
@@ -694,6 +777,10 @@ public final class UiUtil {
     return textField.getPreferredSize().height;
   }
 
+  /**
+   * Creates a TabbedPaneUI with content border insets only at the top, disregarding the tab placement
+   * @return a tabbed pane ui without borders
+   */
   public static TabbedPaneUI getBorderlessTabbedPaneUI() {
     return new BasicTabbedPaneUI() {
       @Override
@@ -813,12 +900,6 @@ public final class UiUtil {
         textComponent.setCaretPosition(textComponent.getText().length());
       }
     });
-  }
-
-  public static void comboBoxImmediateUpdate(final JComboBox box) {
-    if (box.isEditable()) {
-      ((JTextField) box.getEditor().getEditorComponent()).getDocument().addDocumentListener(new ComboBoxEditorDocumentListener(box));
-    }
   }
 
   /**
@@ -998,6 +1079,12 @@ public final class UiUtil {
     component.getInputMap(condition).put(KeyStroke.getKeyStroke(keyEvent, modifiers, onKeyRelease), actionName);
   }
 
+  /**
+   * Adds a CTRL-SPACE action the the given text field for displaying a lookup dialog showing the values provided
+   * by the given value provider
+   * @param txtField the text field
+   * @param valueCollectionProvider provides the values for the lookup dialog
+   */
   public static void addLookupDialog(final JTextField txtField, final ValueCollectionProvider valueCollectionProvider) {
     addKeyEvent(txtField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, new AbstractAction("UiUtil.lookupValue") {
       @Override
@@ -1015,10 +1102,23 @@ public final class UiUtil {
     });
   }
 
+  /**
+   * Displays a dialog for selecting on of a collection of values
+   * @param dialogOwner the dialog owner
+   * @param values the values to choose from
+   * @return the selected value, null if none was selected
+   */
   public static Object selectValue(final JComponent dialogOwner, final Collection<?> values) {
     return selectValue(dialogOwner, values, Messages.get(Messages.SELECT_VALUE));
   }
 
+  /**
+   * Displays a dialog for selecting on of a collection of values
+   * @param dialogOwner the dialog owner
+   * @param values the values to choose from
+   * @param dialogTitle the dialog title
+   * @return the selected value, null if none was selected
+   */
   public static Object selectValue(final JComponent dialogOwner, final Collection<?> values, final String dialogTitle) {
     final JList list = new JList(values.toArray());
     final Window owner = getParentWindow(dialogOwner);
@@ -1244,6 +1344,10 @@ public final class UiUtil {
     });
   }
 
+  /**
+   * Sets the given string as clipboard contents
+   * @param string the string to put on the clipboard
+   */
   public static void setClipboard(final String string) {
     Toolkit.getDefaultToolkit().getSystemClipboard().setContents(new StringSelection(string), null);
   }
@@ -1260,7 +1364,7 @@ public final class UiUtil {
    * @return the dialog used to display the component
    */
   private static JDialog displayInDialog(final Container owner, final JComponent component, final String title, final boolean modal,
-                                        final JButton defaultButton, final EventObserver closeEvent, final Action onClosedAction) {
+                                         final JButton defaultButton, final EventObserver closeEvent, final Action onClosedAction) {
     final JDialog dialog = new JDialog(getParentWindow(owner), title);
     dialog.setLayout(createBorderLayout());
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -1384,11 +1488,13 @@ public final class UiUtil {
       this.textComponent = textComponent;
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean canImport(final TransferSupport support) {
       return isFileDataFlavor(support);
     }
 
+    /** {@inheritDoc} */
     @Override
     public boolean importData(final TransferSupport support) {
       final File file = getFileDataFlavor(support);
@@ -1410,6 +1516,7 @@ public final class UiUtil {
       this.upperCase = upperCase;
     }
 
+    /** {@inheritDoc} */
     @Override
     public void insertString(final FilterBypass bypass, final int offset, final String string,
                              final AttributeSet attributeSet) throws BadLocationException {
@@ -1417,25 +1524,12 @@ public final class UiUtil {
               (upperCase ? string.toUpperCase(Locale.getDefault()) : string.toLowerCase(Locale.getDefault())), attributeSet);
     }
 
+    /** {@inheritDoc} */
     @Override
     public void replace(final FilterBypass bypass, final int offset, final int length, final String string,
                         final AttributeSet attributeSet) throws BadLocationException {
       super.replace(bypass, offset, length, string == null ? null :
               (upperCase ? string.toUpperCase(Locale.getDefault()) : string.toLowerCase(Locale.getDefault())), attributeSet);
-    }
-  }
-
-  private static final class ComboBoxEditorDocumentListener extends DocumentAdapter {
-    private final JComboBox comboBox;
-
-    private ComboBoxEditorDocumentListener(final JComboBox comboBox) {
-      this.comboBox = comboBox;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void contentsChanged(final DocumentEvent e) {
-      comboBox.getModel().setSelectedItem(comboBox.getEditor().getItem());
     }
   }
 }

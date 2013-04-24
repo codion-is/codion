@@ -19,37 +19,60 @@ public final class DoubleField extends IntField {
 
   private final transient ThreadLocal<NumberFormat> format = new LocalFormat();
 
-  /** Constructs a new DoubleField. */
+  /**
+   * Instantiates a new DoubleField.
+   */
   public DoubleField() {
     this(0);
   }
 
+  /**
+   * Instantiates a new DoubleField
+   * @param columns the number of columns
+   */
   public DoubleField(final int columns) {
     super(columns);
   }
 
+  /**
+   * Instantiates a new DoubleField
+   * @param min the minimum value the field can contain
+   * @param max the maximum value the field can contain
+   */
   public DoubleField(final double min, final double max) {
     setRange(min, max);
   }
 
+  /**
+   * @return the decimal symbol being used by this field
+   */
   public String getDecimalSymbol() {
     return ((DoubleFieldDocument) getDocument()).getDecimalSymbol();
   }
 
+  /**
+   * @param decimalSymbol the decimal symbol to be used by this field
+   */
   public void setDecimalSymbol(final String decimalSymbol) {
     ((DoubleFieldDocument) getDocument()).setDecimalSymbol(decimalSymbol);
   }
 
+  /**
+   * @return the maximum number of fraction digits this field shows
+   */
   public int getMaximumFractionDigits() {
     return ((DoubleFieldDocument) getDocument()).getMaximumFractionDigits();
   }
 
+  /**
+   * @param maximumFractionDigits the maximum number of fraction digits this field shows
+   */
   public void setMaximumFractionDigits(final int maximumFractionDigits) {
     ((DoubleFieldDocument) getDocument()).setMaximumFractionDigits(maximumFractionDigits);
   }
 
   /**
-   * @return the value
+   * @return the current value
    */
   public Double getDouble() {
     return Util.getDouble(getText());
@@ -62,11 +85,11 @@ public final class DoubleField extends IntField {
     setText(value == null ? "" : format.get().format(value));
   }
 
-  public static boolean isDecimalSymbol(final Character character) {
-    return POINT.charAt(0) == character || COMMA.charAt(0) == character;
-  }
-
-  public static boolean isDecimalSymbol(final String string) {
+  /**
+   * @param string the string
+   * @return true if the given string is a point or a comma
+   */
+  private static boolean isDecimalSymbol(final String string) {
     return POINT.equals(string) || COMMA.equals(string);
   }
 

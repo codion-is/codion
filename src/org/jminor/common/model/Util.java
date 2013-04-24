@@ -53,10 +53,22 @@ import java.util.prefs.Preferences;
  */
 public final class Util {
 
+  /**
+   * The name of the file containing the current version information
+   */
   public static final String VERSION_FILE = "version.txt";
 
-  public static final String PREF_DEFAULT_USERNAME = "jminor.username";
+  /**
+   * The name of the preferences key used to save the default username
+   */
+  public static final String PREFERENCE_DEFAULT_USERNAME = "jminor.username";
+  /**
+   * The line separator for the current system
+   */
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+  /**
+   * The system property key for specifying a ssl truststore
+   */
   public static final String JAVAX_NET_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
 
   private static final Logger LOG = LoggerFactory.getLogger(Util.class);
@@ -139,14 +151,25 @@ public final class Util {
     getUserPreferences().flush();
   }
 
+  /**
+   * Retrieves the default username for the given application identifier saved in preferences, if any
+   * @param applicationIdentifier the application identifier
+   * @param defaultName the name to use if none is found in the preferences
+   * @return the default username
+   */
   public static String getDefaultUserName(final String applicationIdentifier, final String defaultName) {
     rejectNullValue(applicationIdentifier, "applicationIdentifier");
-    return getUserPreference(applicationIdentifier + "." + PREF_DEFAULT_USERNAME, defaultName);
+    return getUserPreference(applicationIdentifier + "." + PREFERENCE_DEFAULT_USERNAME, defaultName);
   }
 
-  public static void setDefaultUserName(final String applicationClassName, final String username) {
-    rejectNullValue(applicationClassName, "applicationClassName");
-    putUserPreference(applicationClassName + "." + PREF_DEFAULT_USERNAME, username);
+  /**
+   * Saves the default username for the given application identifier
+   * @param applicationIdentifier the application identifier
+   * @param username the username
+   */
+  public static void setDefaultUserName(final String applicationIdentifier, final String username) {
+    rejectNullValue(applicationIdentifier, "applicationIdentifier");
+    putUserPreference(applicationIdentifier + "." + PREFERENCE_DEFAULT_USERNAME, username);
   }
 
   /**
@@ -681,6 +704,12 @@ public final class Util {
 
   private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
+  /**
+   * Creates a random string from alphanumeric uppercase characters
+   * @param minLength the minimum length
+   * @param maxLength the maximum length
+   * @return a random string
+   */
   public static String createRandomString(final int minLength, final int maxLength) {
     if (minLength > maxLength) {
       throw new IllegalArgumentException("Minimum length can not exceed maximum length");
@@ -704,10 +733,22 @@ public final class Util {
     Collections.sort(values, getSpaceAwareCollator());
   }
 
+  /**
+   * Creates a URI from the given URL or path
+   * @param urlOrPath the URL or path
+   * @return URI from the given URL or path
+   * @throws URISyntaxException in case of an exception
+   */
   public static URI getURI(final String urlOrPath) throws URISyntaxException {
     return getURIs(Arrays.asList(urlOrPath)).iterator().next();
   }
 
+  /**
+   * Creates URIs from the given URLs or paths
+   * @param urlsOrPaths the URLs or paths
+   * @return URIs from the given URLs or paths
+   * @throws URISyntaxException in case of an exception
+   */
   public static Collection<URI> getURIs(final Collection<String> urlsOrPaths) throws URISyntaxException {
     final Collection<URI> urls = new ArrayList<URI>();
     for (final String urlsOrPath : urlsOrPaths) {
