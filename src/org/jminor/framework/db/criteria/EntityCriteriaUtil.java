@@ -301,7 +301,7 @@ public final class EntityCriteriaUtil {
    */
   public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                      final SearchType searchType, final Entity... values) {
-    return new ForeignKeyCriteria(foreignKeyProperty, searchType, values);
+    return new ForeignKeyCriteria(foreignKeyProperty, searchType, (Object[]) values);
   }
 
   /**
