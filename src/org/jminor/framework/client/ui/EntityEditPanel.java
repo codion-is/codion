@@ -86,7 +86,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * Controls mapped to their respective control codes
    */
-  private final Map<String, Control> controlMap = new HashMap<String, Control>();
+  private final Map<String, Control> controls = new HashMap<String, Control>();
 
   /**
    * Indicates whether the panel is active and ready to receive input
@@ -147,6 +147,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     bindEvents();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final String toString() {
     return editModel.toString();
@@ -359,11 +360,11 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @throws RuntimeException in case no control is associated with the given control code
    */
   public final Control getControl(final String controlCode) {
-    if (!controlMap.containsKey(controlCode)) {
+    if (!controls.containsKey(controlCode)) {
       throw new IllegalArgumentException(controlCode + " control not available in panel: " + this);
     }
 
-    return controlMap.get(controlCode);
+    return controls.get(controlCode);
   }
 
   /**
@@ -750,10 +751,10 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   protected final void setControl(final String controlCode, final Control control) {
     if (control == null) {
-      controlMap.remove(controlCode);
+      controls.remove(controlCode);
     }
     else {
-      controlMap.put(controlCode, control);
+      controls.put(controlCode, control);
     }
   }
 
@@ -763,20 +764,20 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   protected ControlSet initializeControlPanelControlSet() {
     final ControlSet controlSet = new ControlSet("Actions");
-    if (controlMap.containsKey(INSERT)) {
-      controlSet.add(controlMap.get(INSERT));
+    if (controls.containsKey(INSERT)) {
+      controlSet.add(controls.get(INSERT));
     }
-    if (controlMap.containsKey(UPDATE)) {
-      controlSet.add(controlMap.get(UPDATE));
+    if (controls.containsKey(UPDATE)) {
+      controlSet.add(controls.get(UPDATE));
     }
-    if (controlMap.containsKey(DELETE)) {
-      controlSet.add(controlMap.get(DELETE));
+    if (controls.containsKey(DELETE)) {
+      controlSet.add(controls.get(DELETE));
     }
-    if (controlMap.containsKey(CLEAR)) {
-      controlSet.add(controlMap.get(CLEAR));
+    if (controls.containsKey(CLEAR)) {
+      controlSet.add(controls.get(CLEAR));
     }
-    if (controlMap.containsKey(REFRESH)) {
-      controlSet.add(controlMap.get(REFRESH));
+    if (controls.containsKey(REFRESH)) {
+      controlSet.add(controls.get(REFRESH));
     }
 
     return controlSet;

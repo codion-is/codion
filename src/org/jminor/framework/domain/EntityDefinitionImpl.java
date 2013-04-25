@@ -26,7 +26,7 @@ import java.util.Set;
  */
 final class EntityDefinitionImpl implements Entity.Definition {
 
-  static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = new DefaultKeyGenerator();
+  private static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = new DefaultKeyGenerator();
 
   /**
    * The entityID
@@ -167,10 +167,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
     this.selectTableName = tableName;
     this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
     this.groupByClause = initializeGroupByClause(getColumnProperties());
-    final String[] selectColumnNames = initializeSelectColumnNames(getColumnProperties());
-    for (int idx = 0; idx < selectColumnNames.length; idx++) {
-      ((Property.ColumnProperty) properties.get(selectColumnNames[idx])).setSelectIndex(idx + 1);
-    }
+    setSelectIndexes();
     initializePropertyLinks();
   }
 
@@ -569,6 +566,13 @@ final class EntityDefinitionImpl implements Entity.Definition {
       }
     }
     throw new IllegalArgumentException("Entity is missing a primary key: " + entityID);
+  }
+
+  private void setSelectIndexes() {
+    final String[] selectColumnNames = initializeSelectColumnNames(getColumnProperties());
+    for (int idx = 0; idx < selectColumnNames.length; idx++) {
+      ((Property.ColumnProperty) properties.get(selectColumnNames[idx])).setSelectIndex(idx + 1);
+    }
   }
 
   private void initializePropertyLinks() {

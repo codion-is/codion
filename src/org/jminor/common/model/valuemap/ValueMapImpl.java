@@ -53,10 +53,10 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
     final boolean initialization = !values.containsKey(key);
     final V previousValue = values.put(key, value);
     if (!initialization && Util.equal(previousValue, value)) {
-      return previousValue;
+      return value;
     }
     if (!initialization) {
-      updateModifiedState(key, value, previousValue);
+      updateOriginalValue(key, value, previousValue);
     }
     notifyValueChange(key, value, previousValue, initialization);
     handleValueSet(key, value, previousValue, initialization);
@@ -371,12 +371,12 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
    */
   protected void handleValueChangedEventInitialized() {}
 
-  private void updateModifiedState(final K key, final V value, final V previousValue) {
+  private void updateOriginalValue(final K key, final V value, final V previousValue) {
     final boolean modified = isModified(key);
     if (modified && Util.equal(getOriginalValue(key), value)) {
       removeOriginalValue(key);//we're back to the original value
     }
-    else if (!modified) {
+    else if (!modified) {//only the first original value is kept
       setOriginalValue(key, previousValue);
     }
   }

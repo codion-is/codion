@@ -42,6 +42,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
    * Retrieves the property identified by propertyID from the entity repository
    * @param propertyID the ID of the property to retrieve
    * @return the property identified by propertyID
+   * @throws IllegalArgumentException in case the property does not exist in this entity
    */
   Property getProperty(final String propertyID);
 
