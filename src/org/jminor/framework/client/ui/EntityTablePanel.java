@@ -1686,7 +1686,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   /**
    * Resizes the selected table column by 10 pixels.
    */
-  private static class ResizeSelectedColumnAction extends  AbstractAction {
+  private static final class ResizeSelectedColumnAction extends  AbstractAction {
 
     private final JTable table;
     private final boolean enlarge;
