@@ -85,6 +85,9 @@ public class DefaultFilteredComboBoxModelTest {
         if (o1 == null) {
           return -1;
         }
+        if (o2 == null) {
+          return 1;
+        }
         return o2.compareTo(o1);
       }
     });

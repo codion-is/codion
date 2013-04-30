@@ -1195,8 +1195,8 @@ public final class Util {
    * A ThreadFactory implementation producing daemon threads
    */
   public static final class DaemonThreadFactory implements ThreadFactory {
-   /** {@inheritDoc} */
-   @Override
+    /** {@inheritDoc} */
+    @Override
     public Thread newThread(final Runnable runnable) {
       final Thread thread = new Thread(runnable);
       thread.setDaemon(true);

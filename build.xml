@@ -595,7 +595,7 @@
   <target name="recreate_h2_db"
           description="Recreates the demo h2 database. The demo database includes the EmpDept, Petstore and Chinook schemas, used by unit tests and demo applications">
     <delete dir="${db.h2.dir}"/>
-    <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.build">
+    <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.test">
       <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -showResults -script ${db.init.h2}"/>
     </java>
   </target>
