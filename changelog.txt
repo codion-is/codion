@@ -3442,3 +3442,6 @@
   EntityEditPanel.createEntityFieldPanel() removed
   EntityUiUtil.createEntityFieldPanel() removed
   DateUtilTest, added a single test
+  ExceptionDialog.close() re-added
+  UiUtil.getDateFromUser() improved
+  EmployeeEditPanel in empdept demo uses DateInputPanel with button

@@ -148,6 +148,13 @@ public final class ExceptionDialog extends JDialog {
   }
 
   /**
+   * Disposes of this dialog
+   */
+  public void close() {
+    dispose();
+  }
+
+  /**
    * @return true if show details is active
    */
   public boolean isShowDetails() {

@@ -6,8 +6,10 @@ package org.jminor.common.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
+import org.jminor.common.model.Event;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
@@ -386,10 +388,41 @@ public final class UiUtil {
       final Method getCalendar = jCalendarClass.getMethod("getCalendar");
       final Constructor constructor = jCalendarClass.getConstructor(Calendar.class);
       final JPanel calendarPanel = (JPanel) constructor.newInstance(cal);
+      final JPanel datePanel = new JPanel(createBorderLayout());
+      datePanel.add(calendarPanel, BorderLayout.NORTH);
 
-      displayInDialog(parent, calendarPanel, message);
+      final Event closeEvent = Events.event();
+      final Calendar returnTime = Calendar.getInstance();
+      returnTime.setTime(cal.getTime());
+      final JButton okBtn = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
+        /** {@inheritDoc} */
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+          try {
+            returnTime.setTimeInMillis(((Calendar) getCalendar.invoke(calendarPanel)).getTimeInMillis());
+            closeEvent.fire();
+          }
+          catch (Exception ex) {
+            throw new RuntimeException("Exception while using JCalendar", ex);
+          }
+        }
+      });
+      final JButton cancelBtn = new JButton(new AbstractAction(Messages.get(Messages.CANCEL)) {
+        /** {@inheritDoc} */
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+          closeEvent.fire();
+        }
+      });
+      final JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 5));
+      buttonPanel.add(okBtn);
+      buttonPanel.add(cancelBtn);
 
-      return new Date(((Calendar) getCalendar.invoke(calendarPanel)).getTimeInMillis());
+      datePanel.add(buttonPanel, BorderLayout.SOUTH);
+
+      displayInDialog(parent, datePanel, message, closeEvent);
+
+      return new Date(returnTime.getTimeInMillis());
     }
     catch (Exception e) {
       throw new RuntimeException("Exception while using JCalendar", e);
