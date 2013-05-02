@@ -3445,3 +3445,4 @@
   ExceptionDialog.close() re-added
   UiUtil.getDateFromUser() improved
   EmployeeEditPanel in empdept demo uses DateInputPanel with button
+  Control.toString() implemented, returns name
