@@ -65,6 +65,12 @@ public class Control extends AbstractAction {
 
   /** {@inheritDoc} */
   @Override
+  public final String toString() {
+    return getName();
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean isEnabled() {
     return enabledObserver.isActive();
   }
