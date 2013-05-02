@@ -161,7 +161,7 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
   @Override
   public List<R> getSelectedItems() {
     final Collection<Integer> selectedModelIndexes = getSelectedIndexes();
-    final List<R> selectedItems = new ArrayList<R>();
+    final List<R> selectedItems = new ArrayList<R>(selectedModelIndexes.size());
     for (final int modelIndex : selectedModelIndexes) {
       selectedItems.add(tableModelProxy.getItemAt(modelIndex));
     }
