@@ -207,16 +207,17 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
   @Override
   public void moveSelectionUp() {
     if (tableModelProxy.getSize() > 0) {
+      final int lastIndex = tableModelProxy.getSize() - 1;
       if (isSelectionEmpty()) {
-        setSelectionInterval(tableModelProxy.getSize() - 1, tableModelProxy.getSize() - 1);
+        setSelectionInterval(lastIndex, lastIndex);
       }
       else {
         final Collection<Integer> selected = getSelectedIndexes();
-        final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
+        final List<Integer> indexesToSelect = new ArrayList<Integer>(selected.size());
         for (final Integer index : selected) {
-          newSelected.add(index == 0 ? tableModelProxy.getSize() - 1 : index - 1);
+          indexesToSelect.add(index == 0 ? lastIndex : index - 1);
         }
-        setSelectedIndexes(newSelected);
+        setSelectedIndexes(indexesToSelect);
       }
     }
   }
@@ -230,11 +231,11 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
       }
       else {
         final Collection<Integer> selected = getSelectedIndexes();
-        final List<Integer> newSelected = new ArrayList<Integer>(selected.size());
+        final List<Integer> indexesToSelect = new ArrayList<Integer>(selected.size());
         for (final Integer index : selected) {
-          newSelected.add(index == tableModelProxy.getSize() - 1 ? 0 : index + 1);
+          indexesToSelect.add(index == tableModelProxy.getSize() - 1 ? 0 : index + 1);
         }
-        setSelectedIndexes(newSelected);
+        setSelectedIndexes(indexesToSelect);
       }
     }
   }
