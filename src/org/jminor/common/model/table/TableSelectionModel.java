@@ -133,7 +133,7 @@ public interface TableSelectionModel<R> extends ListSelectionModel {
   List<R> getSelectedItems();
 
   /**
-   * @return the selected item, null if none is selected
+   * @return the item at the lowest selected index, null if none is selected
    */
   R getSelectedItem();
 
