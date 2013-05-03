@@ -606,14 +606,14 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public ColumnProperty setSearchable(final boolean searchable) {
+    public final ColumnProperty setSearchable(final boolean searchable) {
       this.searchable = searchable;
       return this;
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean isSearchable() {
+    public final boolean isSearchable() {
       return searchable;
     }
 
@@ -637,7 +637,7 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public ColumnProperty setGroupingColumn(final boolean groupingColumn) {
+    public final ColumnProperty setGroupingColumn(final boolean groupingColumn) {
       if (aggregateColumn) {
         throw new IllegalStateException(columnName + " is an aggregate column");
       }
@@ -647,13 +647,13 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public boolean isGroupingColumn() {
+    public final boolean isGroupingColumn() {
       return groupingColumn;
     }
 
     /** {@inheritDoc} */
     @Override
-    public ColumnProperty setAggregateColumn(final boolean aggregateColumn) {
+    public final ColumnProperty setAggregateColumn(final boolean aggregateColumn) {
       if (groupingColumn) {
         throw new IllegalStateException(columnName + " is a grouping column");
       }
@@ -663,7 +663,7 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public boolean isAggregateColumn() {
+    public final boolean isAggregateColumn() {
       return aggregateColumn;
     }
 
@@ -718,7 +718,7 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public Object fetchValue(final ResultSet resultSet) throws SQLException {
+    public final Object fetchValue(final ResultSet resultSet) throws SQLException {
       return valueFetcher.fetchValue(resultSet);
     }
 
@@ -875,7 +875,7 @@ class PropertyImpl implements Property {
     }
   }
 
-  static class PrimaryKeyPropertyImpl extends ColumnPropertyImpl implements PrimaryKeyProperty {
+  static final class PrimaryKeyPropertyImpl extends ColumnPropertyImpl implements PrimaryKeyProperty {
 
     private int index = 0;
 
@@ -886,13 +886,13 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public final int getIndex() {
+    public int getIndex() {
       return index;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final PrimaryKeyProperty setIndex(final int index) {
+    public PrimaryKeyProperty setIndex(final int index) {
       if (index < 0) {
         throw new IllegalArgumentException("Primary key index must be at least 0");
       }
@@ -901,7 +901,7 @@ class PropertyImpl implements Property {
     }
   }
 
-  static class ForeignKeyPropertyImpl extends PropertyImpl implements Property.ForeignKeyProperty {
+  static final class ForeignKeyPropertyImpl extends PropertyImpl implements Property.ForeignKeyProperty {
 
     private final String referencedEntityID;
     private final List<ColumnProperty> referenceProperties;
@@ -957,7 +957,7 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public final boolean isUpdatable() {
+    public boolean isUpdatable() {
       for (final ColumnProperty referenceProperty : referenceProperties) {
         if (!referenceProperty.isUpdatable()) {
           return false;
@@ -969,7 +969,7 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public final ForeignKeyProperty setNullable(final boolean nullable) {
+    public ForeignKeyProperty setNullable(final boolean nullable) {
       for (final ColumnProperty columnProperty : referenceProperties) {
         columnProperty.setNullable(nullable);
       }
@@ -979,38 +979,38 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public final String getReferencedEntityID() {
+    public String getReferencedEntityID() {
       return referencedEntityID;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final List<ColumnProperty> getReferenceProperties() {
+    public List<ColumnProperty> getReferenceProperties() {
       return referenceProperties;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final boolean isCompositeReference() {
+    public boolean isCompositeReference() {
       return compositeReference;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final int getFetchDepth() {
+    public int getFetchDepth() {
       return fetchDepth;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final ForeignKeyProperty setFetchDepth(final int fetchDepth) {
+    public ForeignKeyProperty setFetchDepth(final int fetchDepth) {
       this.fetchDepth = fetchDepth;
       return this;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final String getReferencedPropertyID(final Property referenceProperty) {
+    public String getReferencedPropertyID(final Property referenceProperty) {
       if (linkedReferenceProperties == null) {
         return null;
       }
@@ -1030,7 +1030,7 @@ class PropertyImpl implements Property {
     }
   }
 
-  static class MirrorPropertyImpl extends ColumnPropertyImpl implements MirrorProperty {
+  static final class MirrorPropertyImpl extends ColumnPropertyImpl implements MirrorProperty {
 
     MirrorPropertyImpl(final String propertyID) {
       super(propertyID, -1, null);
@@ -1040,7 +1040,7 @@ class PropertyImpl implements Property {
   /**
    * A property representing a column that should get its value automatically from a column in a referenced table
    */
-  static class DenormalizedPropertyImpl extends ColumnPropertyImpl implements DenormalizedProperty {
+  static final class DenormalizedPropertyImpl extends ColumnPropertyImpl implements DenormalizedProperty {
 
     private final String foreignKeyPropertyID;
     private final Property denormalizedProperty;
@@ -1061,24 +1061,24 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public final String getForeignKeyPropertyID() {
+    public String getForeignKeyPropertyID() {
       return foreignKeyPropertyID;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final Property getDenormalizedProperty() {
+    public Property getDenormalizedProperty() {
       return denormalizedProperty;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final boolean isDenormalized() {
+    public boolean isDenormalized() {
       return true;
     }
   }
 
-  static class ValueListPropertyImpl<T> extends ColumnPropertyImpl implements ValueListProperty<T> {
+  static final class ValueListPropertyImpl<T> extends ColumnPropertyImpl implements ValueListProperty<T> {
 
     private final List<Item<T>> values;
 
@@ -1096,19 +1096,19 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public final boolean isValid(final T value) {
+    public boolean isValid(final T value) {
       return values.contains(new Item<T>(value, ""));
     }
 
     /** {@inheritDoc} */
     @Override
-    public final List<Item<T>> getValues() {
+    public List<Item<T>> getValues() {
       return values;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final String getCaption(final T value) {
+    public String getCaption(final T value) {
       final Item<T> item = new Item<T>(value, "");
       final int index = values.indexOf(item);
       if (index >= 0) {
@@ -1132,7 +1132,7 @@ class PropertyImpl implements Property {
     }
   }
 
-  static class DerivedPropertyImpl extends TransientPropertyImpl implements DerivedProperty {
+  static final class DerivedPropertyImpl extends TransientPropertyImpl implements DerivedProperty {
 
     private final Provider valueProvider;
     private final List<String> linkedPropertyIDs;
@@ -1158,12 +1158,12 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public final List<String> getLinkedPropertyIDs() {
+    public List<String> getLinkedPropertyIDs() {
       return linkedPropertyIDs;
     }
   }
 
-  static class DenormalizedViewPropertyImpl extends TransientPropertyImpl implements DenormalizedViewProperty {
+  static final class DenormalizedViewPropertyImpl extends TransientPropertyImpl implements DenormalizedViewProperty {
 
     private final String foreignKeyPropertyID;
     private final Property denormalizedProperty;
@@ -1184,18 +1184,18 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public final String getForeignKeyPropertyID() {
+    public String getForeignKeyPropertyID() {
       return foreignKeyPropertyID;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final Property getDenormalizedProperty() {
+    public Property getDenormalizedProperty() {
       return denormalizedProperty;
     }
   }
 
-  static class SubqueryPropertyImpl extends ColumnPropertyImpl implements SubqueryProperty {
+  static final class SubqueryPropertyImpl extends ColumnPropertyImpl implements SubqueryProperty {
 
     private final String subquery;
 
@@ -1217,7 +1217,7 @@ class PropertyImpl implements Property {
 
     /** {@inheritDoc} */
     @Override
-    public final String getSubQuery() {
+    public String getSubQuery() {
       return subquery;
     }
   }
@@ -1239,14 +1239,14 @@ class PropertyImpl implements Property {
     }
   }
 
-  static class AuditTimePropertyImpl extends AuditPropertyImpl implements AuditTimeProperty {
+  static final class AuditTimePropertyImpl extends AuditPropertyImpl implements AuditTimeProperty {
 
     AuditTimePropertyImpl(final String propertyID, final AuditAction auditAction, final String caption) {
       super(propertyID, Types.TIMESTAMP, auditAction, caption);
     }
   }
 
-  static class AuditUserPropertyImpl extends AuditPropertyImpl implements AuditUserProperty {
+  static final class AuditUserPropertyImpl extends AuditPropertyImpl implements AuditUserProperty {
 
     AuditUserPropertyImpl(final String propertyID, final AuditAction auditAction, final String caption) {
       super(propertyID, Types.VARCHAR, auditAction, caption);

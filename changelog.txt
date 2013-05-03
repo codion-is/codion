@@ -3452,3 +3452,4 @@
   EntityUiUtilTest added
   UiUtil.createFrame() removed
   Removed a few magic numbers
+  PropertyImpl, finalization improvements
