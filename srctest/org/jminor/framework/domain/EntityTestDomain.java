@@ -3,7 +3,11 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.model.Item;
+
 import java.sql.Types;
+import java.util.Arrays;
+import java.util.List;
 
 public class EntityTestDomain {
 
@@ -27,6 +31,10 @@ public class EntityTestDomain {
   public static final String DETAIL_ENTITY_FK = "entity_ref";
   public static final String DETAIL_MASTER_NAME = "master_name";
   public static final String DETAIL_MASTER_CODE = "master_code";
+  public static final String DETAIL_INT_VALUE_LIST = "int_value_list";
+
+  private static final List<Item<Integer>> ITEMS = Arrays.asList(new Item<Integer>(0, "0"), new Item<Integer>(1, "1"),
+          new Item<Integer>(2, "2"), new Item<Integer>(3, "3"));
 
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
@@ -50,7 +58,8 @@ public class EntityTestDomain {
             Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,
                     Entities.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
             Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
-                    Entities.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE))
+                    Entities.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE),
+            Properties.valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST, ITEMS))
             .setOrderByClause(DETAIL_STRING).setSelectTableName(DETAIL_SELECT_TABLE_NAME)
             .setSmallDataset(true).setStringProvider(new Entities.StringProvider(DETAIL_STRING));
   }

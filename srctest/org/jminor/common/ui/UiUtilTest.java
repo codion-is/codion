@@ -2,6 +2,7 @@ package org.jminor.common.ui;
 
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
+import org.jminor.common.ui.textfield.SizedDocument;
 
 import org.junit.Test;
 
@@ -43,7 +44,13 @@ public class UiUtilTest {
 
   @Test
   public void makeUpperCase() {
-    final JTextField txt = new JTextField();
+    JTextField txt = new JTextField();
+    UiUtil.makeUpperCase(txt);
+    txt.setText("hello");
+    assertEquals("HELLO", txt.getText());
+
+    txt = new JTextField();
+    txt.setDocument(new SizedDocument());
     UiUtil.makeUpperCase(txt);
     txt.setText("hello");
     assertEquals("HELLO", txt.getText());
@@ -51,7 +58,13 @@ public class UiUtilTest {
 
   @Test
   public void makeLowerCase() {
-    final JTextField txt = new JTextField();
+    JTextField txt = new JTextField();
+    UiUtil.makeLowerCase(txt);
+    txt.setText("HELLO");
+    assertEquals("hello", txt.getText());
+
+    txt = new JTextField();
+    txt.setDocument(new SizedDocument());
     UiUtil.makeLowerCase(txt);
     txt.setText("HELLO");
     assertEquals("hello", txt.getText());

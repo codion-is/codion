@@ -17,5 +17,9 @@ public class ItemTest {
     assertEquals(item, newItem);
     assertEquals("hello".hashCode(), item.hashCode());
     assertEquals(1, item.compareTo(newItem));
+
+    final Item<String> thirdItem = new Item<String>("hello");
+    assertEquals("hello".hashCode(), thirdItem.hashCode());
+    assertEquals("hello", thirdItem.getCaption());
   }
 }

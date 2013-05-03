@@ -20,6 +20,15 @@ public class Item<T> implements Comparable<Item>, Serializable {
   private final String caption;
 
   /**
+   * Instantiates a new Item, with the caption as item.toString(),
+   * zero length string in case of a null item
+   * @param item the item
+   */
+  public Item(final T item) {
+    this(item, item == null ? "" : item.toString());
+  }
+
+  /**
    * Instantiates a new Item.
    * @param item the item
    * @param caption the caption

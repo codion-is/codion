@@ -56,7 +56,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
-import java.awt.Image;
 import java.awt.Insets;
 import java.awt.Toolkit;
 import java.awt.Window;
@@ -586,22 +585,6 @@ public final class UiUtil {
     }
 
     return component;
-  }
-
-  /**
-   * Creates a JFrame instance with the given icon which does nothing on close
-   * @param icon used as a frame icon if specified
-   * @return a JFrame instance
-   */
-  public static JFrame createFrame(final Image icon) {
-    final JFrame frame = new JFrame();
-    if (icon != null) {
-      frame.setIconImage(icon);
-    }
-
-    frame.setDefaultCloseOperation(JFrame.DO_NOTHING_ON_CLOSE);
-
-    return frame;
   }
 
   /**

@@ -3446,3 +3446,8 @@
   UiUtil.getDateFromUser() improved
   EmployeeEditPanel in empdept demo uses DateInputPanel with button
   Control.toString() implemented, returns name
+  Item, single parameter constructor added
+  ValueListInputProviderTest added
+  TristateCheckBoxTest added
+  EntityUiUtilTest added
+  UiUtil.createFrame() removed

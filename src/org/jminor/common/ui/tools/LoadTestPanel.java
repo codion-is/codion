@@ -98,7 +98,8 @@ public final class LoadTestPanel extends JPanel {
    * @return the frame
    */
   public JFrame showFrame() {
-    final JFrame frame = UiUtil.createFrame(Images.loadImage("jminor_logo32.gif").getImage());
+    final JFrame frame = new JFrame();
+    frame.setIconImage(Images.loadImage("jminor_logo32.gif").getImage());
     final String title = "JMinor - " + loadTestModel.getClass().getSimpleName();
     frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
     frame.addWindowListener(new WindowAdapter() {

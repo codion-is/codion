@@ -1,0 +1,123 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package org.jminor.framework.client.ui;
+
+import org.jminor.common.model.combobox.BooleanComboBoxModel;
+import org.jminor.common.ui.checkbox.TristateCheckBox;
+import org.jminor.framework.client.model.DefaultEntityEditModel;
+import org.jminor.framework.client.model.EntityEditModel;
+import org.jminor.framework.db.EntityConnectionImplTest;
+import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.EntityTestDomain;
+import org.jminor.framework.domain.Property;
+
+import org.junit.Test;
+
+import javax.swing.DefaultComboBoxModel;
+import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
+import javax.swing.JLabel;
+
+import static junit.framework.Assert.assertNull;
+import static junit.framework.Assert.assertTrue;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertFalse;
+
+public class EntityUiUtilTest {
+
+  @Test
+  public void createLabel() {
+    EmpDept.init();
+    final JLabel lbl = EntityUiUtil.createLabel(Entities.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertEquals(EmpDept.getString(EmpDept.EMPLOYEE_DEPARTMENT_FK), lbl.getText());
+  }
+
+  @Test
+  public void createCheckBox() {
+    EntityTestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final JCheckBox box = EntityUiUtil.createCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
+            EntityTestDomain.DETAIL_BOOLEAN), editModel);
+    assertTrue(box.isSelected());//default value is true
+    assertTrue((Boolean) editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN));
+
+    box.doClick();
+
+    assertFalse(box.isSelected());
+    assertFalse((Boolean) editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN));
+
+    editModel.setValue(EntityTestDomain.DETAIL_BOOLEAN, true);
+    assertTrue(box.isSelected());
+  }
+
+  @Test
+  public void createTristateCheckBox() {
+    EntityTestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
+            EntityTestDomain.DETAIL_BOOLEAN), editModel, null, false);
+    assertTrue(box.isSelected());//default value is true
+    assertTrue((Boolean) editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN));
+
+    box.getMouseListeners()[0].mousePressed(null);
+
+    assertTrue(box.isIndeterminate());
+    assertNull(editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN));
+
+    editModel.setValue(EntityTestDomain.DETAIL_BOOLEAN, false);
+    assertFalse(box.isSelected());
+  }
+
+  @Test
+  public void createBooleanComboBox() {
+    EntityTestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final BooleanComboBoxModel boxModel = (BooleanComboBoxModel) EntityUiUtil.createBooleanComboBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
+            EntityTestDomain.DETAIL_BOOLEAN), editModel).getModel();
+    assertTrue(boxModel.getSelectedValue().getItem());
+    boxModel.setSelectedItem(null);
+    assertNull(editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN));
+
+    editModel.setValue(EntityTestDomain.DETAIL_BOOLEAN, false);
+    assertFalse(boxModel.getSelectedValue().getItem());
+  }
+
+  @Test
+  public void createValueListComboBox() {
+    EntityTestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final JComboBox box = EntityUiUtil.createValueListComboBox((Property.ValueListProperty) Entities.getProperty(EntityTestDomain.T_DETAIL,
+            EntityTestDomain.DETAIL_INT_VALUE_LIST), editModel);
+
+    assertNull(editModel.getValue(EntityTestDomain.DETAIL_INT_VALUE_LIST));
+    box.setSelectedItem(1);
+    assertEquals(1, editModel.getValue(EntityTestDomain.DETAIL_INT_VALUE_LIST));
+    box.setSelectedItem(2);
+    assertEquals(2, editModel.getValue(EntityTestDomain.DETAIL_INT_VALUE_LIST));
+    box.setSelectedItem(3);
+    assertEquals(3, editModel.getValue(EntityTestDomain.DETAIL_INT_VALUE_LIST));
+    box.setSelectedItem(4);//does not exist
+    assertEquals(3, editModel.getValue(EntityTestDomain.DETAIL_INT_VALUE_LIST));
+  }
+
+  @Test
+  public void createComboBox() {
+    EntityTestDomain.init();
+    final DefaultComboBoxModel boxModel = new DefaultComboBoxModel(new Object[] {0, 1, 2, 3});
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final JComboBox box = EntityUiUtil.createComboBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
+            EntityTestDomain.DETAIL_INT), editModel, boxModel, null);
+
+    assertNull(editModel.getValue(EntityTestDomain.DETAIL_INT));
+    box.setSelectedItem(1);
+    assertEquals(1, editModel.getValue(EntityTestDomain.DETAIL_INT));
+    box.setSelectedItem(2);
+    assertEquals(2, editModel.getValue(EntityTestDomain.DETAIL_INT));
+    box.setSelectedItem(3);
+    assertEquals(3, editModel.getValue(EntityTestDomain.DETAIL_INT));
+    box.setSelectedItem(4);//does not exist
+    assertEquals(3, editModel.getValue(EntityTestDomain.DETAIL_INT));
+  }
+}

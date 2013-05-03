@@ -118,7 +118,8 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   public void showFrame() {
-    monitorFrame = UiUtil.createFrame(Images.loadImage("jminor_logo_red24.png").getImage());
+    monitorFrame = new JFrame();
+    monitorFrame.setIconImage(Images.loadImage("jminor_logo_red24.png").getImage());
     monitorFrame.setJMenuBar(ControlProvider.createMenuBar(initializeMainMenuControlSets()));
     monitorFrame.setTitle("JMinor Server Monitor");
     monitorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
