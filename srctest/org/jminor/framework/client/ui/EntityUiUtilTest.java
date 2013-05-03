@@ -8,7 +8,6 @@ import org.jminor.common.ui.checkbox.TristateCheckBox;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.db.EntityConnectionImplTest;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.Property;
@@ -29,9 +28,9 @@ public class EntityUiUtilTest {
 
   @Test
   public void createLabel() {
-    EmpDept.init();
-    final JLabel lbl = EntityUiUtil.createLabel(Entities.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK));
-    assertEquals(EmpDept.getString(EmpDept.EMPLOYEE_DEPARTMENT_FK), lbl.getText());
+    EntityTestDomain.init();
+    final JLabel lbl = EntityUiUtil.createLabel(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING));
+    assertEquals(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING).getCaption(), lbl.getText());
   }
 
   @Test

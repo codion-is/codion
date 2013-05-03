@@ -49,7 +49,7 @@ public class EntityTestDomain {
             Properties.primaryKeyProperty(DETAIL_ID),
             Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
             Properties.columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE),
-            Properties.columnProperty(DETAIL_STRING, Types.VARCHAR, DETAIL_STRING),
+            Properties.columnProperty(DETAIL_STRING, Types.VARCHAR, "Detail string"),
             Properties.columnProperty(DETAIL_DATE, Types.DATE, DETAIL_DATE),
             Properties.columnProperty(DETAIL_TIMESTAMP, Types.TIMESTAMP, DETAIL_TIMESTAMP),
             Properties.columnProperty(DETAIL_BOOLEAN, Types.BOOLEAN, DETAIL_BOOLEAN).setDefaultValue(true),
