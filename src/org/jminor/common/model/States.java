@@ -288,14 +288,14 @@ public final class States {
       evtStateDeactivated.removeListener(listener);
     }
 
-    private void notifyObservers() {
+    private synchronized void notifyObservers() {
       evtStateChanged.fire();
       if (reversedStateObserver != null) {
         reversedStateObserver.notifyObservers();
       }
     }
 
-    private void notifyObservers(final boolean previousValue, final boolean newValue) {
+    private synchronized void notifyObservers(final boolean previousValue, final boolean newValue) {
       if (previousValue != newValue) {
         notifyObservers();
         if (newValue) {

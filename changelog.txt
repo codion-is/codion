@@ -3453,3 +3453,6 @@
   UiUtil.createFrame() removed
   Removed a few magic numbers
   PropertyImpl, finalization improvements
+  ControlProvider, finalized some classes
+  States, synchronized notifyObservers() methods
+  AbstractEntityConnectionProvider, synchronized getConnectionInternal() and setConnection()

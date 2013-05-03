@@ -178,7 +178,7 @@ public final class ControlProvider {
     return menuBar;
   }
 
-  private static class ButtonControlIterator implements ControlIterator {
+  private static final class ButtonControlIterator implements ControlIterator {
 
     private final JPanel btnPanel;
     private final boolean vertical;
@@ -221,7 +221,7 @@ public final class ControlProvider {
     }
   }
 
-  private static class MenuControlIterator implements ControlIterator {
+  private static final class MenuControlIterator implements ControlIterator {
 
     private final JMenu menu;
 
@@ -291,7 +291,7 @@ public final class ControlProvider {
     }
   }
 
-  private static class ToolBarControlIterator implements ControlIterator {
+  private static final class ToolBarControlIterator implements ControlIterator {
 
     private boolean includeCaption = true;
     private final JToolBar toolbar;

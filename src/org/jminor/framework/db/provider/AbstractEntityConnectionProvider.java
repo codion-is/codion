@@ -22,8 +22,9 @@ import java.util.concurrent.TimeUnit;
  */
 public abstract class AbstractEntityConnectionProvider implements EntityConnectionProvider {
 
-  private static final boolean SCHEDULE_VALIDITY_CHECK = Configuration.getBooleanValue(Configuration.CLIENT_SCHEDULE_CONNECTION_VALIDATION);
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
+  private static final boolean SCHEDULE_VALIDITY_CHECK = Configuration.getBooleanValue(Configuration.CLIENT_SCHEDULE_CONNECTION_VALIDATION);
+  private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 10;
   protected static final String IS_CONNECTED = "isConnected";
   protected static final String IS_VALID = "isValid";
   private final State stConnectionValid = States.state();
@@ -37,7 +38,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
         validityCheckScheduler.stop();
       }
     }
-  }, 10, 0, TimeUnit.SECONDS);
+  }, VALIDITY_CHECK_INTERVAL_SECONDS, 0, TimeUnit.SECONDS);
 
   /**
    * The user used by this connection provider when connecting to the database server
@@ -107,11 +108,11 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    */
   protected abstract EntityConnection connect();
 
-  protected final EntityConnection getConnectionInternal() {
+  protected final synchronized EntityConnection getConnectionInternal() {
     return entityConnection;
   }
 
-  protected final void setConnection(final EntityConnection entityConnection) {
+  protected final synchronized void setConnection(final EntityConnection entityConnection) {
     this.entityConnection = entityConnection;
   }
 
