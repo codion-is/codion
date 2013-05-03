@@ -56,6 +56,8 @@ import java.util.List;
  */
 public final class EntityLookupField extends JTextField {
 
+  private static final int BORDER_SIZE = 15;
+
   private final EntityLookupModel model;
   private final TextFieldHint searchHint;
   private final Action transferFocusAction = new UiUtil.TransferFocusAction(this);
@@ -277,7 +279,7 @@ public final class EntityLookupField extends JTextField {
     final JPanel btnBase = new JPanel(UiUtil.createFlowLayout(FlowLayout.CENTER));
     btnBase.add(okButton);
     final JLabel messageLabel = new JLabel(FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
-    messageLabel.setBorder(BorderFactory.createEmptyBorder(15, 15, 0, 15));
+    messageLabel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, 0, BORDER_SIZE));
     final JPanel messagePanel = new JPanel(UiUtil.createBorderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     messagePanel.add(btnBase, BorderLayout.SOUTH);

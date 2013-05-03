@@ -43,6 +43,8 @@ import java.util.Date;
  */
 public final class ServerMonitorPanel extends JPanel {
 
+  private static final int SPINNER_COLUMNS = 3;
+
   private final ServerMonitor model;
 
   private final JFreeChart requestsPerSecondChart = ChartFactory.createXYStepChart(null,
@@ -91,7 +93,7 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(new JLabel("limit", JLabel.RIGHT));
     final JSpinner spnConnectionLimit = new JSpinner(
             ValueLinks.intSpinnerValueLink(model, "connectionLimit", model.getConnectionLimitObserver()));
-    ((JSpinner.DefaultEditor) spnConnectionLimit.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) spnConnectionLimit.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     infoPanel.add(spnConnectionLimit);
     infoPanel.add(new JLabel("Mem. usage", JLabel.RIGHT));
     infoPanel.add(initializeMemoryField());
@@ -106,7 +108,7 @@ public final class ServerMonitorPanel extends JPanel {
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
 
     controlPanel.add(new JLabel("Update interval (s)"));
     controlPanel.add(spnUpdateInterval);
@@ -115,7 +117,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JSpinner spnWarningThreshold = new JSpinner(
             ValueLinks.intSpinnerValueLink(model, "warningThreshold", model.getWarningThresholdObserver()));
     ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     controlPanel.add(spnWarningThreshold);
 
     final JPanel controlPanelBase = new JPanel(UiUtil.createBorderLayout());

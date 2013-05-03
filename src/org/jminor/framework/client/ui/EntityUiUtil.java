@@ -91,6 +91,7 @@ public final class EntityUiUtil {
 
   private static final String PROPERTY_PARAM_NAME = "property";
   private static final String EDIT_MODEL_PARAM_NAME = "editModel";
+  private static final int BOOLEAN_COMBO_BOX_POPUP_WIDTH = 40;
 
   private EntityUiUtil() {}
 
@@ -445,7 +446,7 @@ public final class EntityUiUtil {
   public static SteppedComboBox createBooleanComboBox(final Property property, final EntityEditModel editModel,
                                                       final StateObserver enabledState) {
     final SteppedComboBox box = createComboBox(property, editModel, new BooleanComboBoxModel(), enabledState);
-    box.setPopupWidth(40);
+    box.setPopupWidth(BOOLEAN_COMBO_BOX_POPUP_WIDTH);
 
     return box;
   }

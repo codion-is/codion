@@ -16,8 +16,13 @@ import java.util.Date;
  */
 public final class DateUtil {
 
+  public enum Quarter {
+    FIRST, SECOND, THIRD, FOURTH
+  }
+
   private static final int THIRTY_FIRST = 31;
   private static final int THIRTIETH = 30;
+  private static final int NINETEENSEVENTY = 1970;
 
   private DateUtil() {}
 
@@ -64,7 +69,7 @@ public final class DateUtil {
   public static Time floorTime(final Date date) {
     final Calendar cal = Calendar.getInstance();
     cal.setTime(date);
-    cal.set(Calendar.YEAR, 1970);
+    cal.set(Calendar.YEAR, NINETEENSEVENTY);
     cal.set(Calendar.MONTH, Calendar.JANUARY);
     cal.set(Calendar.DATE, 1);
 
@@ -215,31 +220,27 @@ public final class DateUtil {
   /**
    * Returns the first day of the the given quarter, assuming quarters begin
    * in january, april, july and october.
-   * @param quarter the quarter, 1, 2, 3 or 4
+   * @param quarter the Quarter
    * @return the first day of the given quarter
    */
-  public static Date getFirstDayOfQuarter(final int quarter) {
-    if (quarter < 1 || quarter > 4) {
-      throw new IllegalArgumentException("Quarter must be between 1 and 4");
-    }
-
+  public static Date getFirstDayOfQuarter(final Quarter quarter) {
     final Calendar calendar = Calendar.getInstance();
     floorTimeFields(calendar);
     calendar.set(Calendar.DAY_OF_MONTH, 1);
     switch (quarter) {
-      case 1: {
+      case FIRST: {
         calendar.set(Calendar.MONTH, Calendar.JANUARY);
         return calendar.getTime();
       }
-      case 2: {
+      case SECOND: {
         calendar.set(Calendar.MONTH, Calendar.APRIL);
         return calendar.getTime();
       }
-      case 3: {
+      case THIRD: {
         calendar.set(Calendar.MONTH, Calendar.JULY);
         return calendar.getTime();
       }
-      case 4: {
+      case FOURTH: {
         calendar.set(Calendar.MONTH, Calendar.OCTOBER);
         return calendar.getTime();
       }
@@ -251,33 +252,29 @@ public final class DateUtil {
   /**
    * Returns the last day of the the given quarter, assuming quarters begin
    * in january, april, july and october.
-   * @param quarter the quarter, 1, 2, 3 or 4
+   * @param quarter the Quarter
    * @return the last day of the given quarter
    */
-  public static Date getLastDayOfQuarter(final int quarter) {
-    if (quarter < 1 || quarter > 4) {
-      throw new IllegalArgumentException("Quarter must be between 1 and 4");
-    }
-
+  public static Date getLastDayOfQuarter(final Quarter quarter) {
     final Calendar calendar = Calendar.getInstance();
     floorTimeFields(calendar);
     switch (quarter) {
-      case 1: {
+      case FIRST: {
         calendar.set(Calendar.MONTH, Calendar.MARCH);
         calendar.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
         return calendar.getTime();
       }
-      case 2: {
+      case SECOND: {
         calendar.set(Calendar.MONTH, Calendar.JUNE);
         calendar.set(Calendar.DAY_OF_MONTH, THIRTIETH);
         return calendar.getTime();
       }
-      case 3: {
+      case THIRD: {
         calendar.set(Calendar.MONTH, Calendar.SEPTEMBER);
         calendar.set(Calendar.DAY_OF_MONTH, THIRTIETH);
         return calendar.getTime();
       }
-      case 4: {
+      case FOURTH: {
         calendar.set(Calendar.MONTH, Calendar.DECEMBER);
         calendar.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
         return calendar.getTime();
@@ -288,9 +285,9 @@ public final class DateUtil {
   }
 
   /**
-   * @param from the from date
-   * @param to the to date
-   * @return the number of days in the given interval
+   * @param from the from date, inclusive
+   * @param to the to date, inclusive
+   * @return the number of days in the given interval, including the from and to dates
    */
   public static int numberOfDaysInRange(final Date from, final Date to) {
     Util.rejectNullValue(from, "from");

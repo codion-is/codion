@@ -60,9 +60,14 @@ public final class LoadTestPanel extends JPanel {
 
   private static final int DEFAULT_MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private static final double DEFAULT_SCREEN_SIZE_RATIO = 0.75;
+  private static final int LARGE_TEXT_FIELD_COLUMNS = 8;
+  private static final int SMALL_TEXT_FIELD_COLUMNS = 3;
+  private static final int SPINNER_STEP_SIZE = 10;
+  private static final int COMPONENT_GAP = 0;
+
   private final LoadTest loadTestModel;
 
-  private final JPanel scenarioBase = new JPanel(UiUtil.createGridLayout(0, 1));
+  private final JPanel scenarioBase = new JPanel(UiUtil.createGridLayout(COMPONENT_GAP, 1));
   private final JPanel pluginPanel;
   private ItemRandomizerPanel randomizerPanel;
 
@@ -174,9 +179,9 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeUserPanel() {
     final User user = loadTestModel.getUser();
     final JTextField txtUsername = new JTextField(user.getUsername());
-    txtUsername.setColumns(8);
+    txtUsername.setColumns(LARGE_TEXT_FIELD_COLUMNS);
     final JTextField txtPassword = new JPasswordField(user.getPassword());
-    txtPassword.setColumns(8);
+    txtPassword.setColumns(LARGE_TEXT_FIELD_COLUMNS);
     final ActionListener userInfoListener = new ActionListener() {
       @Override
       public void actionPerformed(final ActionEvent e) {
@@ -210,7 +215,7 @@ public final class LoadTestPanel extends JPanel {
             loadTestModel.applicationBatchSizeObserver()));
     spnBatchSize.setToolTipText("Application batch size");
     ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) spnBatchSize.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
     final JPanel applicationCountPanel = new JPanel(UiUtil.createBorderLayout());
     applicationCountPanel.add(initializeApplicationCountButtonPanel(), BorderLayout.WEST);
@@ -223,7 +228,7 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private JPanel initializeApplicationCountButtonPanel() {
-    final JPanel btnPanel = new JPanel(new GridLayout(1, 2, 0, 0));
+    final JPanel btnPanel = new JPanel(new GridLayout(1, 2, COMPONENT_GAP, COMPONENT_GAP));
     btnPanel.add(initializeAddRemoveApplicationButton(false));
     btnPanel.add(initializeAddRemoveApplicationButton(true));
 
@@ -248,7 +253,7 @@ public final class LoadTestPanel extends JPanel {
       }
     });
     btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-    btn.setMargin(new Insets(0, 0, 0, 0));
+    btn.setMargin(new Insets(COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP, COMPONENT_GAP));
     btn.setToolTipText(add ? "Add application batch" : "Remove application batch");
 
     return btn;
@@ -305,7 +310,7 @@ public final class LoadTestPanel extends JPanel {
     twoTab.addTab("Scenarios run", usageScenarioChartPanel);
     twoTab.addTab("Failed runs", failureChartPanel);
 
-    final JPanel bottomPanel = new JPanel(new GridLayout(1, 3, 0, 0));
+    final JPanel bottomPanel = new JPanel(new GridLayout(1, 3, COMPONENT_GAP, COMPONENT_GAP));
     bottomPanel.add(memoryUsageChartPanel);
     bottomPanel.add(thinkTimeChartPanel);
     bottomPanel.add(numberOfApplicationsChartPanel);
@@ -316,7 +321,7 @@ public final class LoadTestPanel extends JPanel {
     two.setRightComponent(bottomPanel);
     two.setResizeWeight(0.8);
 
-    final JPanel chartBase = new JPanel(new BorderLayout(0, 0));
+    final JPanel chartBase = new JPanel(new BorderLayout(COMPONENT_GAP, COMPONENT_GAP));
 
     final JTabbedPane tabPane = new JTabbedPane();
     tabPane.addTab("Overview", two);
@@ -330,21 +335,21 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeActivityPanel() {
     final SpinnerNumberModel maxSpinnerModel = ValueLinks.intSpinnerValueLink(loadTestModel, "maximumThinkTime",
             loadTestModel.maximumThinkTimeObserver());
-    maxSpinnerModel.setStepSize(10);
+    maxSpinnerModel.setStepSize(SPINNER_STEP_SIZE);
     final JSpinner spnMaxThinkTime = new JSpinner(maxSpinnerModel);
-    ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) spnMaxThinkTime.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
     final SpinnerNumberModel minSpinnerModel = ValueLinks.intSpinnerValueLink(loadTestModel, "minimumThinkTime",
             loadTestModel.getMinimumThinkTimeObserver());
-    minSpinnerModel.setStepSize(10);
+    minSpinnerModel.setStepSize(SPINNER_STEP_SIZE);
     final JSpinner spnMinThinkTimeField = new JSpinner(minSpinnerModel);
-    ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) spnMinThinkTimeField.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
 
     final SpinnerNumberModel warningSpinnerModel = ValueLinks.intSpinnerValueLink(loadTestModel, "warningTime",
             loadTestModel.getWarningTimeObserver());
-    warningSpinnerModel.setStepSize(10);
+    warningSpinnerModel.setStepSize(SPINNER_STEP_SIZE);
     final JSpinner spnWarningTime = new JSpinner(warningSpinnerModel);
-    ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) spnWarningTime.getEditor()).getTextField().setColumns(SMALL_TEXT_FIELD_COLUMNS);
     spnWarningTime.setToolTipText("A work request is considered 'delayed' if the time it takes to process it exceeds this value (ms)");
 
     final ToggleControl pauseControl = Controls.toggleControl(loadTestModel, "paused", "Pause", loadTestModel.getPauseObserver());

@@ -81,6 +81,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
   public static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
+  private static final Dimension MINIMUM_HELP_WINDOW_SIZE = new Dimension(600, 750);
 
   private final List<EntityPanelProvider> entityPanelProviders = new ArrayList<EntityPanelProvider>();
   private final List<EntityPanelProvider> supportPanelProviders = new ArrayList<EntityPanelProvider>();
@@ -382,7 +383,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
             FrameworkMessages.get(FrameworkMessages.HELP));
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    UiUtil.resizeWindow(dialog, 0.1, new Dimension(600, 750));
+    UiUtil.resizeWindow(dialog, 0.1, MINIMUM_HELP_WINDOW_SIZE);
     dialog.setLocationRelativeTo(this);
     dialog.setResizable(true);
     dialog.setModal(false);

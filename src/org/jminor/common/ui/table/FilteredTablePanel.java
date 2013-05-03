@@ -61,6 +61,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
   private static final Point NULL_POINT = new Point(-1, -1);
   private static final int SELECT_COLUMNS_GRID_ROWS = 15;
+  private static final int SEARCH_FIELD_COLUMNS = 8;
 
   /**
    * The table model
@@ -325,7 +326,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
   private JTextField initializeSearchField() {
     final JTextField txtSearch = new JTextField();
     txtSearch.setBackground((Color) UIManager.getLookAndFeel().getDefaults().get("TextField.inactiveBackground"));
-    txtSearch.setColumns(8);
+    txtSearch.setColumns(SEARCH_FIELD_COLUMNS);
     TextFieldHint.enable(txtSearch, Messages.get(Messages.SEARCH_FIELD_HINT));
     txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
       /** {@inheritDoc} */

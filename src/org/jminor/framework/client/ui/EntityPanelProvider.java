@@ -14,9 +14,6 @@ import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
-
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -28,14 +25,14 @@ import java.util.List;
  */
 public class EntityPanelProvider implements Comparable {
 
-  protected static final Logger LOG = LoggerFactory.getLogger(EntityPanelProvider.class);
+  private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
 
   private final Comparator<String> comparator = Util.getSpaceAwareCollator();
 
   private final String caption;
   private boolean refreshOnInit = true;
   private int detailPanelState = EntityPanel.EMBEDDED;
-  private double detailSplitPanelResizeWeight = 0.5;
+  private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
   private boolean tableSearchPanelVisible = Configuration.getBooleanValue(Configuration.SEARCH_PANEL_STATE);
 
   private Class<? extends EntityPanel> panelClass = EntityPanel.class;

@@ -98,4 +98,23 @@ public class DateUtilTest {
   public void isDateValidNullDateFormat() {
     DateUtil.isDateValid("03-10-1975", false, (DateFormat[]) null);
   }
+
+  @Test
+  public void numberOfDaysInRange() {
+    final Date start = DateUtil.getDate(2011, Calendar.JANUARY, 1);
+    Date end = DateUtil.getDate(2011, Calendar.JANUARY, 1);
+    assertEquals(1, DateUtil.numberOfDaysInRange(start, end));
+
+    end = DateUtil.getDate(2011, Calendar.JANUARY, 2);
+    assertEquals(2, DateUtil.numberOfDaysInRange(start, end));
+    end = DateUtil.getDate(2011, Calendar.JANUARY, 3);
+    assertEquals(3, DateUtil.numberOfDaysInRange(start, end));
+    end = DateUtil.getDate(2011, Calendar.FEBRUARY, 1);
+    assertEquals(32, DateUtil.numberOfDaysInRange(start, end));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void numberOfDaysInRangeToAfterFrom() {
+    assertEquals(1, DateUtil.numberOfDaysInRange(DateUtil.getDate(2011, Calendar.FEBRUARY, 1), DateUtil.getDate(2011, Calendar.JANUARY, 1)));
+  }
 }

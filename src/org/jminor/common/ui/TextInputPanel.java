@@ -27,7 +27,7 @@ import java.awt.event.ActionEvent;
  */
 public final class TextInputPanel extends JPanel {
 
-  private static final double DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO = 1d/4d;
+  private static final double DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO = 0.25;
 
   private final JTextComponent textComponent;
   private final JButton button;

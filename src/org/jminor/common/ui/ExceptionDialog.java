@@ -58,6 +58,13 @@ public final class ExceptionDialog extends JDialog {
   private static final int MESSAGE_LABEL_WIDTH = 50;
   private static final int SCROLL_PANE_WIDTH = 500;
   private static final int SCROLL_PANE_HEIGHT = 200;
+  private static final int MAX_MESSAGE_LENGTH = 100;
+  private static final int BORDER_SIZE = 5;
+  private static final int ICON_TEXT_GAP = 10;
+  private static final int NORTH_PANEL_DIMENSIONS = 2;
+  private static final int COMPONENT_GAP = 0;
+  private static final int TAB_SIZE = 4;
+  private static final int FONT_SIZE = 9;
 
   //ui components
   private JTextField exceptionField;
@@ -262,7 +269,7 @@ public final class ExceptionDialog extends JDialog {
     };
     UiUtil.addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, closeAction);
     final JPanel basePanel = new JPanel(UiUtil.createBorderLayout());
-    basePanel.setBorder(BorderFactory.createEmptyBorder(5, 5, 5, 5));
+    basePanel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
     basePanel.add(createNorthPanel(), BorderLayout.NORTH);
     centerPanel = createCenterPanel();
     basePanel.add(centerPanel, BorderLayout.CENTER);
@@ -301,12 +308,12 @@ public final class ExceptionDialog extends JDialog {
   }
 
   private JPanel createNorthPanel() {
-    final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(2, 2, true, false);
+    final FlexibleGridLayout layout = UiUtil.createFlexibleGridLayout(NORTH_PANEL_DIMENSIONS, NORTH_PANEL_DIMENSIONS, true, false);
     layout.setFixedRowHeight(new JTextField().getPreferredSize().height);
     detailPanel = new JPanel(layout);
     descriptionLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"), SwingConstants.CENTER);
     descriptionLabel.setMaximumSize(new Dimension(DESCRIPTION_LABEL_WIDTH, descriptionLabel.getMaximumSize().height));
-    descriptionLabel.setIconTextGap(10);
+    descriptionLabel.setIconTextGap(ICON_TEXT_GAP);
     final JLabel exceptionLabel = new JLabel(
             Messages.get(Messages.EXCEPTION) + ": ", SwingConstants.LEFT);
     exceptionField = new JTextField();
@@ -339,8 +346,8 @@ public final class ExceptionDialog extends JDialog {
 
   private JPanel createCenterPanel() {
     detailsArea = new JTextArea();
-    detailsArea.setFont(new Font("Dialog", Font.PLAIN, 9));
-    detailsArea.setTabSize(4);
+    detailsArea.setFont(new Font("Dialog", Font.PLAIN, FONT_SIZE));
+    detailsArea.setTabSize(TAB_SIZE);
     detailsArea.setEditable(false);
     detailsArea.setLineWrap(true);
     detailsArea.setWrapStyleWord(true);
@@ -355,8 +362,8 @@ public final class ExceptionDialog extends JDialog {
 
   private JPanel createButtonPanel() {
     final JPanel baseButtonPanel = new JPanel(new BorderLayout());
-    final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, 0, 0));
-    final JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, 0, 0));
+    final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, COMPONENT_GAP, COMPONENT_GAP));
+    final JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, COMPONENT_GAP, COMPONENT_GAP));
 
     final JButton btnClose = ControlProvider.createButton(ctrClose);
     btnPrint = ControlProvider.createButton(ctrPrint);
@@ -424,8 +431,8 @@ public final class ExceptionDialog extends JDialog {
   }
 
   private String truncateMessage(final String message) {
-    if (message.length() > 100) {
-      return message.substring(0, 100) + "...";
+    if (message.length() > MAX_MESSAGE_LENGTH) {
+      return message.substring(0, MAX_MESSAGE_LENGTH) + "...";
     }
 
     return message;
