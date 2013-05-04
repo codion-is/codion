@@ -132,6 +132,12 @@ public final class H2Database extends AbstractDatabase {
     }
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public String getDriverClassName() {
+    return DRIVER_CLASS_NAME;
+  }
+
   /**
    * Initializes a new H2 database, with the given script
    * @param scriptPath the path to the initialization script

@@ -52,4 +52,10 @@ public final class SQLServerDatabase extends AbstractDatabase {
     final String sid = getSid();
     return URL_PREFIX + getHost() + ":" + getPort() + (!Util.nullOrEmpty(sid) ? ";databaseName=" + sid : "");
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getDriverClassName() {
+    return DRIVER_CLASS_NAME;
+  }
 }

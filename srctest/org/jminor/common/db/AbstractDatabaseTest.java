@@ -10,14 +10,16 @@ import static org.junit.Assert.assertTrue;
 
 public final class AbstractDatabaseTest {
   private final AbstractDatabase database = new AbstractDatabase("h2") {
-
     @Override
     public String getAutoIncrementValueSQL(final String idSource) {
       return null;
     }
-
     @Override
     public String getURL(final Properties connectionProperties) {
+      return null;
+    }
+    @Override
+    public String getDriverClassName() {
       return null;
     }
   };
@@ -40,6 +42,10 @@ public final class AbstractDatabaseTest {
       }
       @Override
       public String getURL(final Properties connectionProperties) {
+        return null;
+      }
+      @Override
+      public String getDriverClassName() {
         return null;
       }
     };

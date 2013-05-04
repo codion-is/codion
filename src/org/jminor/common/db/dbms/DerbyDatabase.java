@@ -80,6 +80,13 @@ public final class DerbyDatabase extends AbstractDatabase {
 
   /** {@inheritDoc} */
   @Override
+  public String getDriverClassName() {
+    final boolean embedded = System.getProperty(DATABASE_EMBEDDED, "false").equals("true");
+    return embedded ? EMBEDDED_DRIVER_CLASS_NAME : DRIVER_CLASS_NAME;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public void shutdownEmbedded(final Properties connectionProperties) {
     try {
       final String authentication = getAuthenticationInfo(connectionProperties);

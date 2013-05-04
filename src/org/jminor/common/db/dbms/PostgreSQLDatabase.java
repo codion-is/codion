@@ -61,6 +61,12 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
     return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid();
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public String getDriverClassName() {
+    return DRIVER_CLASS_NAME;
+  }
+
   /**
    * @return false
    */

@@ -55,6 +55,12 @@ public final class MySQLDatabase extends AbstractDatabase {
 
   /** {@inheritDoc} */
   @Override
+  public String getDriverClassName() {
+    return DRIVER_CLASS_NAME;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public boolean supportsNowait() {
     return false;
   }

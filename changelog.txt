@@ -3456,3 +3456,4 @@
   ControlProvider, finalized some classes
   States, synchronized notifyObservers() methods
   AbstractEntityConnectionProvider, synchronized getConnectionInternal() and setConnection()
+  Database.getDriverClassName() added
