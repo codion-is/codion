@@ -231,6 +231,11 @@ public interface Database {
   Connection createConnection(final User user) throws DatabaseException;
 
   /**
+   * @return the name of the driver class
+   */
+  String getDriverClassName();
+
+  /**
    * Encapsulates basic database usage statistics.
    */
   interface Statistics {
