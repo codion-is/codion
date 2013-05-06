@@ -23,6 +23,7 @@ public abstract class AbstractDatabase implements Database {
   private static final Logger LOG = LoggerFactory.getLogger(AbstractDatabase.class);
 
   private final String databaseType;
+  private final String driverClassName;
   private final String host;
   private final String sid;
   private final String port;
@@ -32,66 +33,74 @@ public abstract class AbstractDatabase implements Database {
    * Instantiates a new AbstractDatabase using host/port/sid/embedded settings specified
    * by system properties
    * @param databaseType a string identifying the database type
+   * @param driverClassName the database driver class name
    * @see #DATABASE_HOST
    * @see #DATABASE_PORT
    * @see #DATABASE_SID
    * @see #DATABASE_EMBEDDED
    */
-  public AbstractDatabase(final String databaseType) {
-    this(databaseType, System.getProperty(DATABASE_HOST));
+  public AbstractDatabase(final String databaseType, final String driverClassName) {
+    this(databaseType, driverClassName, System.getProperty(DATABASE_HOST));
   }
 
   /**
    * Instantiates a new AbstractDatabase using port/sid/embedded settings specified
    * by system properties
    * @param databaseType a string identifying the database type
+   * @param driverClassName the database driver class name
    * @param host the database host name or path to the database files in case of an embedded database
    * @see #DATABASE_PORT
    * @see #DATABASE_SID
    * @see #DATABASE_EMBEDDED
    */
-  public AbstractDatabase(final String databaseType, final String host) {
-    this(databaseType, host, System.getProperty(DATABASE_PORT));
+  public AbstractDatabase(final String databaseType, final String driverClassName, final String host) {
+    this(databaseType, driverClassName, host, System.getProperty(DATABASE_PORT));
   }
 
   /**
    * Instantiates a new AbstractDatabase using sid/embedded settings specified
    * by system properties
    * @param databaseType a string identifying the database type
+   * @param driverClassName the database driver class name
    * @param host the database host name or path to the database files in case of an embedded database
    * @param port the database server port
    * @see #DATABASE_SID
    * @see #DATABASE_EMBEDDED
    */
-  public AbstractDatabase(final String databaseType, final String host, final String port) {
-    this(databaseType, host, port, System.getProperty(DATABASE_SID));
+  public AbstractDatabase(final String databaseType, final String driverClassName, final String host, final String port) {
+    this(databaseType, driverClassName, host, port, System.getProperty(DATABASE_SID));
   }
 
   /**
    * Instantiates a new AbstractDatabase using the embedded settings specified
    * by the system property
    * @param databaseType a string identifying the database type
+   * @param driverClassName the database driver class name
    * @param host the database host name or path to the database files in case of an embedded database
    * @param port the database server port
    * @param sid the service identifier
    * @see #DATABASE_EMBEDDED
    */
-  public AbstractDatabase(final String databaseType, final String host, final String port, final String sid) {
-    this(databaseType, host, port, sid, System.getProperty(Database.DATABASE_EMBEDDED, "false").equalsIgnoreCase("true"));
+  public AbstractDatabase(final String databaseType, final String driverClassName, final String host, final String port, final String sid) {
+    this(databaseType, driverClassName, host, port, sid, System.getProperty(Database.DATABASE_EMBEDDED, Boolean.FALSE.toString()).equalsIgnoreCase(Boolean.TRUE.toString()));
   }
 
   /**
    * Instantiates a new AbstractDatabase
    * @param databaseType a string identifying the database type
+   * @param driverClassName the database driver class name
    * @param host the database host name or path to the database files in case of an embedded database
    * @param port the database server port
    * @param sid the service identifier
    * @param embedded true if the database is embedded
    */
-  public AbstractDatabase(final String databaseType, final String host, final String port, final String sid,
+  public AbstractDatabase(final String databaseType, final String driverClassName, final String host, final String port, final String sid,
                           final boolean embedded) {
     Util.rejectNullValue(databaseType, "databaseType");
+    Util.rejectNullValue(driverClassName, "driverClassName");
+    loadDriver(driverClassName);
     this.databaseType = databaseType;
+    this.driverClassName = driverClassName;
     this.host = host;
     this.port = port;
     this.sid = sid;
@@ -102,6 +111,12 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public final String getDatabaseType() {
     return databaseType;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String getDriverClassName() {
+    return driverClassName;
   }
 
   /** {@inheritDoc} */
@@ -221,7 +236,11 @@ public abstract class AbstractDatabase implements Database {
     return Database.DEFAULT_LOGIN_TIMEOUT;
   }
 
-  protected static void loadDriver(final String driverClassName) {
+  /**
+   * Loads the given class by name
+   * @param driverClassName the class name
+   */
+  private static void loadDriver(final String driverClassName) {
     Util.rejectNullValue(driverClassName, "driverClassName");
     try {
       Class.forName(driverClassName);

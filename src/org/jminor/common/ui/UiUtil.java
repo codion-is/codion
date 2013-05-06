@@ -1123,8 +1123,9 @@ public final class UiUtil {
    * @param dialogOwner the dialog owner
    * @param values the values to choose from
    * @return the selected value, null if none was selected
+   * @param <T> the type of values being selected
    */
-  public static Object selectValue(final JComponent dialogOwner, final Collection<?> values) {
+  public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values) {
     return selectValue(dialogOwner, values, Messages.get(Messages.SELECT_VALUE));
   }
 
@@ -1134,8 +1135,9 @@ public final class UiUtil {
    * @param values the values to choose from
    * @param dialogTitle the dialog title
    * @return the selected value, null if none was selected
+   * @param <T> the type of values being selected
    */
-  public static Object selectValue(final JComponent dialogOwner, final Collection<?> values, final String dialogTitle) {
+  public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
     final JList list = new JList(values.toArray());
     final Window owner = getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
@@ -1154,7 +1156,7 @@ public final class UiUtil {
       dialog.setSize(new Dimension(500, dialog.getSize().height));
     }
 
-    return list.getSelectedValue();
+    return (T) list.getSelectedValue();
   }
 
   /**

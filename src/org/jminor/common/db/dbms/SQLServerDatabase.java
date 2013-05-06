@@ -17,15 +17,11 @@ public final class SQLServerDatabase extends AbstractDatabase {
   static final String AUTO_INCREMENT_QUERY = "SELECT SCOPE_IDENTITY()";
   static final String URL_PREFIX = "jdbc:sqlserver://";
 
-  static {
-    loadDriver(DRIVER_CLASS_NAME);
-  }
-
   /**
    * Instantiates a new SQLServerDatabase.
    */
   public SQLServerDatabase() {
-    super(SQLSERVER);
+    super(SQLSERVER, DRIVER_CLASS_NAME);
   }
 
   /**
@@ -35,7 +31,7 @@ public final class SQLServerDatabase extends AbstractDatabase {
    * @param databaseName the database name
    */
   public SQLServerDatabase(final String host, final String port, final String databaseName) {
-    super(SQLSERVER, host, port, databaseName, false);
+    super(SQLSERVER, DRIVER_CLASS_NAME, host, port, databaseName, false);
   }
 
   /** {@inheritDoc} */
@@ -51,11 +47,5 @@ public final class SQLServerDatabase extends AbstractDatabase {
     Util.require("port", getPort());
     final String sid = getSid();
     return URL_PREFIX + getHost() + ":" + getPort() + (!Util.nullOrEmpty(sid) ? ";databaseName=" + sid : "");
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getDriverClassName() {
-    return DRIVER_CLASS_NAME;
   }
 }

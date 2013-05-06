@@ -17,15 +17,11 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
   static final String URL_PREFIX = "jdbc:postgresql://";
   static final String CHECK_QUERY = "select 1";
 
-  static {
-    loadDriver(DRIVER_CLASS_NAME);
-  }
-
   /**
    * Instantiates a new PostgreSQLDatabase.
    */
   public PostgreSQLDatabase() {
-    super(POSTGRESQL);
+    super(POSTGRESQL, DRIVER_CLASS_NAME);
   }
 
   /**
@@ -35,7 +31,7 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
    * @param database the database name
    */
   public PostgreSQLDatabase(final String host, final String port, final String database) {
-    super(POSTGRESQL, host, port, database, false);
+    super(POSTGRESQL, DRIVER_CLASS_NAME, host, port, database, false);
   }
 
   /** {@inheritDoc} */
@@ -59,12 +55,6 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
     Util.require("port", getPort());
     Util.require("sid", getSid());
     return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getDriverClassName() {
-    return DRIVER_CLASS_NAME;
   }
 
   /**

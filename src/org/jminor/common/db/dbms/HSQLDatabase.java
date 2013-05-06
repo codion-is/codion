@@ -19,15 +19,11 @@ public final class HSQLDatabase extends AbstractDatabase {
   static final String EMBEDDED_URL_PREFIX = "jdbc:hsqldb:file:";
   static final String NETWORKED_URL_PREFIX = "jdbc:hsqldb:hsql//";
 
-  static {
-    loadDriver(DRIVER_CLASS_NAME);
-  }
-
   /**
    * Instantiates a new H2Database.
    */
   public HSQLDatabase() {
-    super(HSQL);
+    super(HSQL, DRIVER_CLASS_NAME);
   }
 
   /**
@@ -35,7 +31,7 @@ public final class HSQLDatabase extends AbstractDatabase {
    * @param databaseName the path to the database files
    */
   public HSQLDatabase(final String databaseName) {
-    super(HSQL, databaseName, null, null, true);
+    super(HSQL, DRIVER_CLASS_NAME, databaseName, null, null, true);
   }
 
   /**
@@ -45,7 +41,7 @@ public final class HSQLDatabase extends AbstractDatabase {
    * @param sid the service identifier
    */
   public HSQLDatabase(final String host, final String port, final String sid) {
-    super(HSQL, host, port, sid, false);
+    super(HSQL, DRIVER_CLASS_NAME, host, port, sid, false);
   }
 
   /** {@inheritDoc} */
@@ -75,11 +71,5 @@ public final class HSQLDatabase extends AbstractDatabase {
       Util.require("sid", getSid());
       return NETWORKED_URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
     }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getDriverClassName() {
-    return DRIVER_CLASS_NAME;
   }
 }

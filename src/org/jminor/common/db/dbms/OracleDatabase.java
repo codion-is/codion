@@ -37,7 +37,6 @@ public final class OracleDatabase extends AbstractDatabase {
   private static final int VIEW_HAS_ERRORS_ERROR = 4063;
 
   static {
-    loadDriver(DRIVER_CLASS_NAME);
     ERROR_CODE_MAP.put(UNIQUE_KEY_ERROR, Messages.get(Messages.UNIQUE_KEY_ERROR));
     ERROR_CODE_MAP.put(CHILD_RECORD_ERROR, Messages.get(Messages.CHILD_RECORD_ERROR));
     ERROR_CODE_MAP.put(NULL_VALUE_ERROR, Messages.get(Messages.NULL_VALUE_ERROR));
@@ -56,7 +55,7 @@ public final class OracleDatabase extends AbstractDatabase {
    * Instantiates a new OracleDatabase.
    */
   public OracleDatabase() {
-    super(ORACLE);
+    super(ORACLE, DRIVER_CLASS_NAME);
   }
 
   /**
@@ -66,7 +65,7 @@ public final class OracleDatabase extends AbstractDatabase {
    * @param sid the service identifier
    */
   public OracleDatabase(final String host, final String port, final String sid) {
-    super(ORACLE, host, port, sid);
+    super(ORACLE, DRIVER_CLASS_NAME, host, port, sid);
   }
 
   /** {@inheritDoc} */
@@ -90,12 +89,6 @@ public final class OracleDatabase extends AbstractDatabase {
     Util.require("port", getPort());
     Util.require("sid", getSid());
     return URL_PREFIX + getHost() + ":" + getPort() + ":" + getSid();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getDriverClassName() {
-    return DRIVER_CLASS_NAME;
   }
 
   /**

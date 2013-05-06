@@ -764,7 +764,7 @@ public final class Configuration {
   private static void parseBooleanSetting(final String setting) {
     final String value = System.getProperty(setting);
     if (value != null) {
-      PROPERTIES.put(setting, value.equalsIgnoreCase("true"));
+      PROPERTIES.put(setting, value.equalsIgnoreCase(Boolean.TRUE.toString()));
     }
   }
 

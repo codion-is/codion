@@ -32,24 +32,12 @@ public final class H2Database extends AbstractDatabase {
   static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
   static final String SYSADMIN_USERNAME = "sa";
-  static final String RUN_TOOL_CLASSNAME = "org.h2.tools.RunScript";
-  static final String TRUE = "true";
-  static final String FALSE = "false";
-  static final boolean EMBEDDED_IN_MEMORY = TRUE.equals(System.getProperty(DATABASE_IN_MEMORY, FALSE));
+  static final String RUN_TOOL_CLASS_NAME = "org.h2.tools.RunScript";
+  static final boolean EMBEDDED_IN_MEMORY = Boolean.TRUE.toString().equals(System.getProperty(DATABASE_IN_MEMORY, Boolean.FALSE.toString()));
   static final String URL_PREFIX = "jdbc:h2:";
   static final String URL_PREFIX_MEM = "jdbc:h2:mem:";
 
-  static {
-    loadDriver(DRIVER_CLASS_NAME);
-    if (EMBEDDED_IN_MEMORY) {
-      try {
-        new H2Database().initializeMemoryDatabase(System.getProperty(DATABASE_INIT_SCRIPT));
-      }
-      catch (SQLException e) {
-        throw new RuntimeException(e);
-      }
-    }
-  }
+  private static boolean inMemoryDatabaseInitialized;
 
   private final boolean embeddedInMemory;
   private String urlAppend = "";
@@ -74,8 +62,17 @@ public final class H2Database extends AbstractDatabase {
    * @param databaseName the path to the database files or the database name if in-memory
    */
   public H2Database(final String databaseName, final boolean embeddedInMemory) {
-    super(H2, databaseName, null, null, true);
+    super(H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
     this.embeddedInMemory = embeddedInMemory;
+    try {
+      if (embeddedInMemory && !inMemoryDatabaseInitialized) {
+        initializeMemoryDatabase(System.getProperty(DATABASE_INIT_SCRIPT));
+        inMemoryDatabaseInitialized = true;
+      }
+    }
+    catch (SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -85,7 +82,7 @@ public final class H2Database extends AbstractDatabase {
    * @param databaseName the database name
    */
   public H2Database(final String host, final String port, final String databaseName) {
-    super(H2, host, port, databaseName, false);
+    super(H2, DRIVER_CLASS_NAME, host, port, databaseName, false);
     this.embeddedInMemory = false;
   }
 
@@ -132,12 +129,6 @@ public final class H2Database extends AbstractDatabase {
     }
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public String getDriverClassName() {
-    return DRIVER_CLASS_NAME;
-  }
-
   /**
    * Initializes a new H2 database, with the given script
    * @param scriptPath the path to the initialization script
@@ -163,12 +154,12 @@ public final class H2Database extends AbstractDatabase {
    */
   public void runScript(final String scriptPath) throws SQLException {
     try {
-      final Class runScriptToolClass = Class.forName(RUN_TOOL_CLASSNAME);
+      final Class runScriptToolClass = Class.forName(RUN_TOOL_CLASS_NAME);
       final Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, String.class, boolean.class);
       execute.invoke(runScriptToolClass.newInstance(), getURL(null), SYSADMIN_USERNAME, "", scriptPath, null, false);
     }
     catch (ClassNotFoundException cle) {
-      throw new RuntimeException(RUN_TOOL_CLASSNAME + " must be on classpath for creating an embedded H2 database", cle);
+      throw new RuntimeException(RUN_TOOL_CLASS_NAME + " must be on classpath for creating an embedded H2 database", cle);
     }
     catch (InvocationTargetException ite) {
       if (ite.getCause() instanceof SQLException) {

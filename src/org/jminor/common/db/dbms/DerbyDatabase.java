@@ -25,16 +25,13 @@ public final class DerbyDatabase extends AbstractDatabase {
 
   private static final Logger LOG = LoggerFactory.getLogger(DerbyDatabase.class);
 
-  static {
-    final boolean embedded = System.getProperty(DATABASE_EMBEDDED, "false").equals("true");
-    loadDriver(embedded ? EMBEDDED_DRIVER_CLASS_NAME : DRIVER_CLASS_NAME);
-  }
+  static final boolean EMBEDDED = Boolean.TRUE.toString().equals(System.getProperty(DATABASE_EMBEDDED, Boolean.FALSE.toString()));
 
   /**
    * Instantiates a new DerbyDatabase.
    */
   public DerbyDatabase() {
-    super(DERBY);
+    super(DERBY, EMBEDDED ? EMBEDDED_DRIVER_CLASS_NAME : DRIVER_CLASS_NAME);
   }
 
   /**
@@ -42,7 +39,7 @@ public final class DerbyDatabase extends AbstractDatabase {
    * @param databaseName the path to the database files
    */
   public DerbyDatabase(final String databaseName) {
-    super(DERBY, databaseName, null, null, true);
+    super(DERBY, EMBEDDED_DRIVER_CLASS_NAME, databaseName, null, null, true);
   }
 
   /**
@@ -52,7 +49,7 @@ public final class DerbyDatabase extends AbstractDatabase {
    * @param sid the service identifier
    */
   public DerbyDatabase(final String host, final String port, final String sid) {
-    super(DERBY, host, port, sid, false);
+    super(DERBY, DRIVER_CLASS_NAME, host, port, sid, false);
   }
 
   /** {@inheritDoc} */
@@ -76,13 +73,6 @@ public final class DerbyDatabase extends AbstractDatabase {
       Util.require("sid", getSid());
       return URL_PREFIX + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication);
     }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getDriverClassName() {
-    final boolean embedded = System.getProperty(DATABASE_EMBEDDED, "false").equals("true");
-    return embedded ? EMBEDDED_DRIVER_CLASS_NAME : DRIVER_CLASS_NAME;
   }
 
   /** {@inheritDoc} */

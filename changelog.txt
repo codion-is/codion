@@ -3457,3 +3457,6 @@
   States, synchronized notifyObservers() methods
   AbstractEntityConnectionProvider, synchronized getConnectionInternal() and setConnection()
   Database.getDriverClassName() added
+  UiUtil.selectValue() generified
+  AbstractDatabase now implements getDriverClassName()
+  Removed a couple of "true" and "false" hardcoded strings, replaced with Boolean.TRUE.toString() and Boolean.FALSE.toString() respectively

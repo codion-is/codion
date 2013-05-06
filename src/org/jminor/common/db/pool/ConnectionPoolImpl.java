@@ -67,7 +67,7 @@ final class ConnectionPoolImpl implements ConnectionPool {
   private boolean closed = false;
 
   private final LinkedList<ConnectionPoolStateImpl> connectionPoolStatistics = new LinkedList<ConnectionPoolStateImpl>();
-  private boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "false").equalsIgnoreCase("true");
+  private boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, Boolean.TRUE.toString()).equalsIgnoreCase(Boolean.TRUE.toString());
 
   /**
    * Instantiates a new ConnectionPoolImpl.

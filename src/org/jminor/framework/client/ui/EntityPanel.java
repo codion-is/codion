@@ -1087,7 +1087,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         }
         final List<String> propertyIDs = editPanel.getSelectComponentPropertyIDs();
         final List<Property> properties = EntityUtil.getSortedProperties(entityModel.getEntityID(), propertyIDs);
-        final Property property = (Property) UiUtil.selectValue(getEditPanel(), properties, Messages.get(Messages.SELECT_INPUT_FIELD));
+        final Property property = UiUtil.selectValue(getEditPanel(), properties, Messages.get(Messages.SELECT_INPUT_FIELD));
         if (property != null) {
           getEditPanel().selectComponent(property.getPropertyID());
         }
