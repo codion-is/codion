@@ -16,6 +16,9 @@ import java.util.Date;
  */
 public final class DateUtil {
 
+  /**
+   * The quarters of the year
+   */
   public enum Quarter {
     FIRST, SECOND, THIRD, FOURTH
   }
@@ -29,7 +32,7 @@ public final class DateUtil {
   /**
    * @param date the date to check for validity
    * @param formats the date formats to use for validation
-   * @return true if the date is valid
+   * @return true if the date is valid according to any of the given formats
    */
   public static boolean isDateValid(final String date, final DateFormat... formats) {
     return isDateValid(date, false, formats);
@@ -39,7 +42,7 @@ public final class DateUtil {
    * @param dateString the date to check for validity
    * @param emptyStringOk if true then an empty string is regarded as a valid date
    * @param formats the date formats to use for validation
-   * @return true if the date is valid, using the given date formats
+   * @return true if the date is valid according to any of the given formats
    */
   public static boolean isDateValid(final String dateString, final boolean emptyStringOk, final DateFormat... formats) {
     if (formats == null || formats.length == 0) {
