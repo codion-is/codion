@@ -88,6 +88,7 @@ public abstract class EntityTestUnit {
       Entity testEntity = null;
       if (!Entities.isReadOnly(entityID)) {
         testEntity = testInsert(Util.rejectNullValue(initializeTestEntity(entityID), "test entity"));
+        testEntity.toString();
         testUpdate(testEntity);
       }
       testSelect(entityID, testEntity);
@@ -129,9 +130,11 @@ public abstract class EntityTestUnit {
   }
 
   /**
+   * Randomizes the values in the given entity, note that if a reference entity is not provided
+   * the respective foreign key value in not modified
    * @param entity the entity to randomize
    * @param includePrimaryKey if true then the primary key values are include
-   * @param referenceEntities entities referenced by the given entity
+   * @param referenceEntities entities referenced by the given entity via foreign keys
    * @return the entity with randomized values
    */
   public static Entity randomize(final Entity entity, final boolean includePrimaryKey, final Map<String, Entity> referenceEntities) {
@@ -414,7 +417,10 @@ public abstract class EntityTestUnit {
       }
     }
     for (final Property.ForeignKeyProperty property : Entities.getForeignKeyProperties(entity.getEntityID())) {
-      entity.setValue(property, valueProvider.getValue(property));
+      final Object value = valueProvider.getValue(property);
+      if (value != null) {
+        entity.setValue(property, value);
+      }
     }
   }
 
