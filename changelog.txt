@@ -3463,3 +3463,6 @@
   Removed a couple of "true" and "false" hardcoded strings, replaced with Boolean.TRUE.toString() and Boolean.FALSE.toString() respectively
   EntityEditPanelTestUnit added
   EmployeeEditPanelTest added
+  EntityApplicationPanelTestUnit added
+  EmpDeptAppPanelTest added
+  EntityApplicationPanel.startApplication() modified to allow testing
