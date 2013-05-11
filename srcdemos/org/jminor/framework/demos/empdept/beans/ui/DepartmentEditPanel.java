@@ -7,6 +7,7 @@ import org.jminor.common.model.EventAdapter;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
+import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;
@@ -22,10 +23,10 @@ public class DepartmentEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     final JTextField txtDepartmentNumber = createTextField(DEPARTMENT_ID);
-    final JTextField txtDepartmentName = (JTextField) UiUtil.makeUpperCase(createTextField(DEPARTMENT_NAME));
+    UiUtil.makeUpperCase(createTextField(DEPARTMENT_NAME));
     UiUtil.makeUpperCase(createTextField(DEPARTMENT_LOCATION));
 
-    setInitialFocusComponent(txtDepartmentNumber);
+    setInitialFocusProperty(EmpDept.DEPARTMENT_ID);
     txtDepartmentNumber.setColumns(10);
 
     //we don't allow editing of the department number since it's a primary key
@@ -34,11 +35,11 @@ public class DepartmentEditPanel extends EntityEditPanel {
       public void eventOccurred() {
         if (getEditModel().isEntityNew()) {
           txtDepartmentNumber.setEnabled(true);
-          setInitialFocusComponent(txtDepartmentNumber);
+          setInitialFocusProperty(EmpDept.DEPARTMENT_ID);
         }
         else {
           txtDepartmentNumber.setEnabled(false);
-          setInitialFocusComponent(txtDepartmentName);
+          setInitialFocusProperty(EmpDept.DEPARTMENT_NAME);
         }
       }
     });
