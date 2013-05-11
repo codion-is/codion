@@ -3465,4 +3465,6 @@
   EmployeeEditPanelTest added
   EntityApplicationPanelTestUnit added
   EmpDeptAppPanelTest added
-  EntityApplicationPanel.startApplication() modified to allow testing
+  EntityApplicationPanel.startApplication() modified to allow
+  EntityTestUnit.initialize() renamed to selectOrInsert(), only checks if primary key is available
+  EntityTestUnit.initializeReferencedEntities() refactored

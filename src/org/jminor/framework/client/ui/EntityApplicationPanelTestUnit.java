@@ -1,6 +1,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 
 /**
  * A class for testing {@link EntityApplicationPanel} classes
@@ -16,6 +17,8 @@ public class EntityApplicationPanelTestUnit {
    * @param user the user
    */
   protected EntityApplicationPanelTestUnit(final Class<? extends EntityApplicationPanel> panelClass, final User user) {
+    Util.rejectNullValue(panelClass, "panelClass");
+    Util.rejectNullValue(user, "user");
     this.panelClass = panelClass;
     this.user = user;
   }

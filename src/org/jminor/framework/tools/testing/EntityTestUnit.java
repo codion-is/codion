@@ -26,9 +26,12 @@ import org.junit.Before;
 
 import java.sql.Timestamp;
 import java.sql.Types;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.List;
@@ -211,7 +214,7 @@ public abstract class EntityTestUnit {
       throw new IllegalArgumentException("Reference entity type mismatch: " + entityID + " - " + entity.getEntityID());
     }
 
-    referencedEntities.put(entityID, initialize(entity));
+    referencedEntities.put(entityID, insertOrSelect(entity));
   }
 
   /**
@@ -254,22 +257,23 @@ public abstract class EntityTestUnit {
    */
   @SuppressWarnings({"UnusedDeclaration"})
   private void initializeReferencedEntities(final String entityID) throws DatabaseException {
-    boolean referencesSelf = false;
+    final List<Property.ForeignKeyProperty> foreignKeyProperties =
+            new ArrayList<Property.ForeignKeyProperty>(Entities.getForeignKeyProperties(entityID));
+    Collections.sort(foreignKeyProperties, new Comparator<Property.ForeignKeyProperty>() {
+      //we initialize the self references last, to insure that all required reference entities have been initialized
+      @Override//before trying to initialize an instance of this entity
+      public int compare(final Property.ForeignKeyProperty o1, final Property.ForeignKeyProperty o2) {
+        return o1.getReferencedEntityID().equals(entityID) ? 1 : 0;
+      }
+    });
     for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID)) {
       final String referencedEntityID = foreignKeyProperty.getReferencedEntityID();
-      if (referencedEntityID.equals(entityID)) {
-        referencesSelf = true;
-      }
-      else {
+      if (!entityID.equals(referencedEntityID)) {
         initializeReferencedEntities(referencedEntityID);
-        if (!referencedEntities.containsKey(referencedEntityID)) {
-          setReferenceEntity(referencedEntityID, initializeReferenceEntity(referencedEntityID));
-        }
       }
-    }
-    //we initialize the self reference last, to insure that all other referenced entities have been initialized
-    if (referencesSelf && !referencedEntities.containsKey(entityID)) {
-      setReferenceEntity(entityID, initializeReferenceEntity(entityID));
+      if (!referencedEntities.containsKey(referencedEntityID)) {
+        setReferenceEntity(referencedEntityID, initializeReferenceEntity(referencedEntityID));
+      }
     }
   }
 
@@ -355,16 +359,17 @@ public abstract class EntityTestUnit {
   }
 
   /**
-   * Initializes the given entity, that is, performs an insert on it in case it doesn't
-   * already exist in the database, returns the same entity
+   * Inserts or selects the given entity if it exists and returns the result
    * @param entity the entity to initialize
    * @return the entity
-   * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
+   * @throws DatabaseException in case of an exception
    */
-  private Entity initialize(final Entity entity) throws DatabaseException {
-    final List<Entity> entities = connection.selectMany(Arrays.asList(entity.getPrimaryKey()));
-    if (!entities.isEmpty()) {
-      return entities.get(0);
+  private Entity insertOrSelect(final Entity entity) throws DatabaseException {
+    if (!entity.isPrimaryKeyNull()) {
+      final List<Entity> entities = connection.selectMany(Arrays.asList(entity.getPrimaryKey()));
+      if (!entities.isEmpty()) {
+        return entities.get(0);
+      }
     }
 
     return connection.selectSingle(connection.insert(Arrays.asList(entity)).get(0));

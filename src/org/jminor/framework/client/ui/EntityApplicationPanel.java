@@ -303,14 +303,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @param frameSize the frame size when not maximized
    * @param defaultUser the default user to display in the login dialog
    * @param showFrame if true the frame is set visible
-   * @param forceUser if specified the application is started with that user, displaying no login or progress dialog
+   * @param silentLoginUser if specified the application is started silently with that user, displaying no login or progress dialog
    * @return the JFrame instance containing this application panel
    */
   public final JFrame startApplication(final String frameCaption, final String iconName, final boolean maximize,
                                        final Dimension frameSize, final User defaultUser, final boolean showFrame,
-                                       final User forceUser) {
+                                       final User silentLoginUser) {
     try {
-      return startApplicationInternal(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame, forceUser);
+      return startApplicationInternal(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame, silentLoginUser);
     }
     catch (CancelException e) {
       System.exit(0);
@@ -1056,14 +1056,14 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   private JFrame startApplicationInternal(final String frameCaption, final String iconName, final boolean maximize,
                                           final Dimension frameSize, final User defaultUser, final boolean showFrame,
-                                          final User forceUser) throws Exception {
+                                          final User silentLoginUser) throws Exception {
     LOG.debug("{} application starting", frameCaption);
     FrameworkMessages.class.getName();//hack to force-load the class, initializes UI caption constants
     UIManager.setLookAndFeel(getDefaultLookAndFeelClassName());
     final ImageIcon applicationIcon = iconName != null ? Images.getImageIcon(getClass(), iconName) : Images.loadImage("jminor_logo32.gif");
-    final JDialog startupDialog = forceUser == null && showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
+    final JDialog startupDialog = silentLoginUser == null && showStartupDialog ? initializeStartupDialog(applicationIcon, frameCaption) : null;
     while (true) {
-      final User user = forceUser != null ? forceUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : new User("", "");
+      final User user = silentLoginUser != null ? silentLoginUser : loginRequired ? getUser(frameCaption, defaultUser, applicationIcon) : new User("", "");
       if (startupDialog != null) {
         startupDialog.setVisible(true);
       }
