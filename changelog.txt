@@ -3468,3 +3468,4 @@
   EntityApplicationPanel.startApplication() modified to allow
   EntityTestUnit.initialize() renamed to selectOrInsert(), only checks if primary key is available
   EntityTestUnit.initializeReferencedEntities() refactored
+  UiUtil.displayInDialog() overloaded with a disposeOnEscape parameter
