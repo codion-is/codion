@@ -431,7 +431,12 @@ public abstract class EntityTestUnit {
 
   private static Object getRandomString(final Property property) {
     final int minLength = property.isNullable() ? 0 : 1;
-    return Util.createRandomString(minLength, property.getMaxLength() < 0 ? 10 : property.getMaxLength());
+    final String randomString = Util.createRandomString(minLength, property.getMaxLength() < 0 ? 10 : property.getMaxLength());
+    if (randomString.isEmpty()) {
+      return null;
+    }
+
+    return randomString;
   }
 
   private static Date getRandomDate() {
