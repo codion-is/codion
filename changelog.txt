@@ -3469,3 +3469,5 @@
   EntityTestUnit.initialize() renamed to selectOrInsert(), only checks if primary key is available
   EntityTestUnit.initializeReferencedEntities() refactored
   UiUtil.displayInDialog() overloaded with a disposeOnEscape parameter
+  EntityTestUnit.getRandomDouble() now rounds the result according to the property's maximum fraction digits
+  AbstractDatabaseTest improved

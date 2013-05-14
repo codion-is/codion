@@ -436,10 +436,10 @@ public abstract class EntityTestUnit {
 
   private static Date getRandomDate() {
     final Calendar calendar = Calendar.getInstance();
-    long offset = calendar.getTimeInMillis();
+    final long offset = calendar.getTimeInMillis();
     calendar.add(Calendar.YEAR, -1);
-    long end = System.currentTimeMillis();
-    long diff = end - offset + 1;
+    final long end = System.currentTimeMillis();
+    final long diff = end - offset + 1;
 
     return new Timestamp(offset + (long) (Math.random() * diff));
   }
@@ -455,6 +455,6 @@ public abstract class EntityTestUnit {
     final double min = property.getMin() == null ? -10000000 : property.getMin();
     final double max = property.getMax() == null ? 10000000 : property.getMax();
 
-    return (RANDOM.nextDouble() * ((max - min))) + min;
+    return Util.roundDouble((RANDOM.nextDouble() * ((max - min))) + min, property.getMaximumFractionDigits());
   }
 }
