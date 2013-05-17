@@ -737,28 +737,17 @@ class PropertyImpl implements Property {
       return new DefaultColumnValueConverter();
     }
 
-    private static ValueFetcher initializeValueFetcher(final ColumnProperty property) {
+    private static ValueFetcher initializeValueFetcher(final ColumnPropertyImpl property) {
       if (property instanceof MirrorProperty) {
         return null;
       }
-      return new ValueFetcher() {
-        private final ValueFetcher columnValueFetcher = initializeColumnValueFetcher(property.getColumnType(), property);
-        /** {@inheritDoc} */
-        @Override
-        public Object fetchValue(final ResultSet resultSet) throws SQLException {
-          return property.fromColumnValue(columnValueFetcher.fetchValue(resultSet));
-        }
-      };
-    }
-
-    private static ValueFetcher initializeColumnValueFetcher(final int columnType, final ColumnProperty property) {
-      switch (columnType) {
+      switch (property.columnType) {
         case Types.INTEGER:
           return new ValueFetcher() {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getInteger(resultSet, ((ColumnPropertyImpl) property).selectIndex);
+              return property.fromColumnValue(getInteger(resultSet, property.selectIndex));
             }
           };
         case Types.DOUBLE:
@@ -766,7 +755,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getDouble(resultSet, ((ColumnPropertyImpl) property).selectIndex);
+              return property.fromColumnValue(getDouble(resultSet, property.selectIndex));
             }
           };
         case Types.DATE:
@@ -774,7 +763,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getDate(resultSet, ((ColumnPropertyImpl) property).selectIndex);
+              return property.fromColumnValue(getDate(resultSet, property.selectIndex));
             }
           };
         case Types.TIMESTAMP:
@@ -782,7 +771,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getTimestamp(resultSet, ((ColumnPropertyImpl) property).selectIndex);
+              return property.fromColumnValue(getTimestamp(resultSet, property.selectIndex));
             }
           };
         case Types.TIME:
@@ -790,7 +779,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getTime(resultSet, ((ColumnPropertyImpl) property).selectIndex);
+              return property.fromColumnValue(getTime(resultSet, property.selectIndex));
             }
           };
         case Types.VARCHAR:
@@ -798,7 +787,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getString(resultSet, ((ColumnPropertyImpl) property).selectIndex);
+              return property.fromColumnValue(getString(resultSet, property.selectIndex));
             }
           };
         case Types.BOOLEAN:
@@ -806,7 +795,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getBoolean(resultSet, ((ColumnPropertyImpl) property).selectIndex);
+              return property.fromColumnValue(getBoolean(resultSet, property.selectIndex));
             }
           };
         case Types.CHAR:
@@ -814,7 +803,7 @@ class PropertyImpl implements Property {
             /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
-              return getCharacter(resultSet, ((ColumnPropertyImpl) property).selectIndex);
+              return property.fromColumnValue(getCharacter(resultSet, property.selectIndex));
             }
           };
         case Types.BLOB:
@@ -827,7 +816,7 @@ class PropertyImpl implements Property {
           };
       }
 
-      throw new IllegalArgumentException("Unsupported value type: " + columnType);
+      throw new IllegalArgumentException("Unsupported SQL value type: " + property.columnType);
     }
 
     private static Boolean getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {

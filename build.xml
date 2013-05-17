@@ -223,17 +223,17 @@
           description="Builds a android jminor library">
     <jar jarfile="${dist}/jminor-android.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
-         includes="org/jminor/common/**,
+         includes="org/jminor/common/db/*.class,
+                   org/jminor/common/db/criteria/**,
+                   org/jminor/common/db/dbms/**,
+                   org/jminor/common/db/exception/**,
+                   org/jminor/common/model/*.class,
+                   org/jminor/common/model/valuemap/**,
                    org/jminor/framework/Configuration*,
                    org/jminor/framework/db/**,
                    org/jminor/framework/domain/**,
                    org/jminor/framework/i18n/**,
-                   org/jminor/framework/tools/testing/EntityTestUnit*"
-         excludes="org/jminor/common/model/checkbox/**,
-                   org/jminor/common/model/combobox/**,
-                   org/jminor/common/model/table/**,
-                   org/jminor/common/ui/**,
-                   org/jminor/common/server/**,"/>
+                   org/jminor/framework/tools/testing/EntityTestUnit*"/>
   </target>
 
   <target name="manifest"

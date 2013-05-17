@@ -3472,3 +3472,5 @@
   EntityTestUnit.getRandomDouble() now rounds the result according to the property's maximum fraction digits
   AbstractDatabaseTest improved
   EntityTestUnit.getRandomString() now returns null instead of an empty string
+  build.xml android jar contents fine tuned
+  PropertyImpl.initializeValueFetcher() refactored
