@@ -3,21 +3,21 @@ create schema chinook;
 create table chinook.genre
 (
     genreid identity not null,
-    name varchar(120),
+    name varchar(120) not null,
     constraint pk_genre primary key (genreid)
 );
 
 create table chinook.mediatype
 (
     mediatypeid identity not null,
-    name varchar(120),
+    name varchar(120) not null,
     constraint pk_mediatype primary key (mediatypeid)
 );
 
 create table chinook.artist
 (
     artistid identity not null,
-    name varchar(120),
+    name varchar(120) not null,
     constraint pk_artist primary key (artistid)
 );
 
@@ -108,7 +108,7 @@ create table chinook.invoiceline
 create table chinook.playlist
 (
     playlistid identity not null,
-    name varchar(120),
+    name varchar(120) not null,
     constraint pk_playlist primary key (playlistid)
 );
 

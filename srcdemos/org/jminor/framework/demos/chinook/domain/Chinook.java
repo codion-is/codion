@@ -195,6 +195,7 @@ public class Chinook {
     Entities.define(T_ARTIST,
             Properties.primaryKeyProperty(ARTIST_ARTISTID),
             Properties.columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
+                    .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
@@ -299,6 +300,7 @@ public class Chinook {
     Entities.define(T_GENRE,
             Properties.primaryKeyProperty(GENRE_GENREID),
             Properties.columnProperty(GENRE_NAME, Types.VARCHAR, "Name")
+                    .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
@@ -311,6 +313,7 @@ public class Chinook {
     Entities.define(T_MEDIATYPE,
             Properties.primaryKeyProperty(MEDIATYPE_MEDIATYPEID),
             Properties.columnProperty(MEDIATYPE_NAME, Types.VARCHAR, "Name")
+                    .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)
@@ -357,6 +360,7 @@ public class Chinook {
     Entities.define(T_PLAYLIST,
             Properties.primaryKeyProperty(PLAYLIST_PLAYLISTID),
             Properties.columnProperty(PLAYLIST_NAME, Types.VARCHAR, "Name")
+                    .setNullable(false)
                     .setMaxLength(120)
                     .setPreferredColumnWidth(160))
             .setDomainID(DOMAIN_ID)

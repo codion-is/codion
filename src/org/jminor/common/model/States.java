@@ -5,7 +5,6 @@ package org.jminor.common.model;
 
 import java.lang.ref.WeakReference;
 import java.util.ArrayList;
-import java.util.Collections;
 import java.util.List;
 
 /**
@@ -310,7 +309,7 @@ public final class States {
 
   static final class StateGroupImpl implements State.StateGroup {
 
-    private final List<WeakReference<State>> members = Collections.synchronizedList(new ArrayList<WeakReference<State>>());
+    private final List<WeakReference<State>> members = new ArrayList<WeakReference<State>>();
 
     @Override
     public void addState(final State state) {

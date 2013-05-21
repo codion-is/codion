@@ -129,9 +129,11 @@ public final class EntityTableSearchPanel extends JPanel {
   }
 
   /**
+   * Sets the search text in case simple search is enabled
    * @param txt the search text
+   * @see #isSimpleSearch()
    */
-  public void setSearchTest(final String txt) {
+  public void setSearchText(final String txt) {
     simpleSearchTextField.setText(txt);
   }
 

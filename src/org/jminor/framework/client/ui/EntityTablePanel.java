@@ -40,6 +40,7 @@ import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.DefaultEntityTableModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -1449,14 +1450,16 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     getEntityTableModel().addFilteringListener(statusListener);
     getEntityTableModel().addTableDataChangedListener(statusListener);
 
-    getEntityTableModel().getSearchModel().getSearchStateObserver().addListener(new EventAdapter() {
-      /** {@inheritDoc} */
-      @Override
-      public void eventOccurred() {
-        getJTable().getTableHeader().repaint();
-        getJTable().repaint();
-      }
-    });
+    for (final PropertySearchModel searchModel : getEntityTableModel().getSearchModel().getPropertySearchModels()) {
+      searchModel.addSearchStateListener(new EventAdapter() {
+        /** {@inheritDoc} */
+        @Override
+        public void eventOccurred() {
+          getJTable().getTableHeader().repaint();
+          getJTable().repaint();
+        }
+      });
+    }
 
     if (getEntityTableModel().hasEditModel()) {
       getEntityTableModel().getEditModel().addEntitiesChangedListener(new EventAdapter() {

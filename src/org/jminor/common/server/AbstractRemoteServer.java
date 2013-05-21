@@ -137,6 +137,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
     return connect(client);
   }
 
+  //todo review synchronization
   /** {@inheritDoc} */
   @Override
   public final T connect(final ClientInfo clientInfo) throws RemoteException,
@@ -266,7 +267,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   protected abstract void doDisconnect(final T connection) throws RemoteException;
 
   private boolean maximumNumberOfConnectionReached() {
-    return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
+    return connectionLimit > -1 && connections.size() >= connectionLimit;
   }
 
   private LoginProxy getLoginProxy(final ClientInfo clientInfo) {
