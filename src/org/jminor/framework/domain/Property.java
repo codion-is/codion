@@ -383,7 +383,43 @@ public interface Property extends Attribute {
     /**
      * Set a value converter, for converting to and from a sql representation of the value
      */
-    ColumnProperty setColumnValueConverter(final ColumnValueConverter columnValueConverter);
+    ColumnProperty setValueConverter(final ValueConverter valueConverter);
+
+    /**
+     * Converts to and from SQL values, such as integers being used
+     * to represent booleans in a database
+     */
+    interface ValueConverter {
+
+      /**
+       * Translates the given value into a sql value, usually this is not required
+       * but for certain types this may be necessary, such as boolean values where
+       * the values are represented by a non-boolean data type in the underlying database
+       * @param value the value to translate
+       * @return the sql value used to represent the given value
+       */
+      Object toColumnValue(final Object value);
+
+      /**
+       * @param columnValue the SQL value to translate from
+       * @return the value of SQL <code>columnValue</code>
+       */
+      Object fromColumnValue(final Object columnValue);
+    }
+
+    /**
+     * Fetches a single value from a result set
+     */
+    interface ValueFetcher {
+
+      /**
+       * Fetches a single value from a ResultSet
+       * @param resultSet the ResultSet
+       * @return a single value fetched from the given ResultSet
+       * @throws SQLException in case of an exception
+       */
+      Object fetchValue(final ResultSet resultSet) throws SQLException;
+    }
   }
 
   /**
@@ -593,40 +629,4 @@ public interface Property extends Attribute {
    * Specifies a audit property with a username value
    */
   interface AuditUserProperty extends AuditProperty {}
-
-  /**
-   * Converts to and from SQL values, such as integers being used
-   * to represent booleans in a database
-   */
-  interface ColumnValueConverter {
-
-    /**
-     * Translates the given value into a sql value, usually this is not required
-     * but for certain types this may be necessary, such as boolean values where
-     * the values are represented by a non-boolean data type in the underlying database
-     * @param value the value to translate
-     * @return the sql value used to represent the given value
-     */
-    Object toColumnValue(final Object value);
-
-    /**
-     * @param columnValue the SQL value to translate from
-     * @return the value of SQL <code>columnValue</code>
-     */
-    Object fromColumnValue(final Object columnValue);
-  }
-
-  /**
-   * Fetches a single value from a result set
-   */
-  interface ValueFetcher {
-
-    /**
-     * Fetches a single value from a ResultSet
-     * @param resultSet the ResultSet
-     * @return a single value fetched from the given ResultSet
-     * @throws SQLException in case of an exception
-     */
-    Object fetchValue(final ResultSet resultSet) throws SQLException;
-  }
 }

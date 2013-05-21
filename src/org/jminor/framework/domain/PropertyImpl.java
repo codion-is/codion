@@ -533,7 +533,7 @@ class PropertyImpl implements Property {
     private final String columnName;
     private final int columnType;
     private final ValueFetcher valueFetcher;
-    private ColumnValueConverter columnValueConverter;
+    private ValueConverter valueConverter;
     private int selectIndex;
     private boolean columnHasDefaultValue = false;
     private boolean updatable = true;
@@ -550,7 +550,7 @@ class PropertyImpl implements Property {
       super(propertyID, type, caption);
       this.columnName = propertyID;
       this.columnType = columnType;
-      this.columnValueConverter = initializeValueConverter(this);
+      this.valueConverter = initializeValueConverter(this);
       this.valueFetcher = initializeValueFetcher(this);
     }
 
@@ -569,13 +569,13 @@ class PropertyImpl implements Property {
     /** {@inheritDoc} */
     @Override
     public final Object toColumnValue(final Object value) {
-      return columnValueConverter.toColumnValue(value);
+      return valueConverter.toColumnValue(value);
     }
 
     /** {@inheritDoc} */
     @Override
     public final Object fromColumnValue(final Object object) {
-      return columnValueConverter.fromColumnValue(object);
+      return valueConverter.fromColumnValue(object);
     }
 
     /** {@inheritDoc} */
@@ -723,18 +723,18 @@ class PropertyImpl implements Property {
     }
 
     @Override
-    public final ColumnProperty setColumnValueConverter(final ColumnValueConverter columnValueConverter) {
-      Util.rejectNullValue(columnValueConverter, "columnValueConverter");
-      this.columnValueConverter = columnValueConverter;
+    public final ColumnProperty setValueConverter(final ValueConverter valueConverter) {
+      Util.rejectNullValue(valueConverter, "valueConverter");
+      this.valueConverter = valueConverter;
       return this;
     }
 
-    private static ColumnValueConverter initializeValueConverter(final ColumnProperty property) {
+    private static ValueConverter initializeValueConverter(final ColumnProperty property) {
       if (property.isDate()) {
-        return new DateColumnValueConverter();
+        return new DateValueConverter();
       }
 
-      return new DefaultColumnValueConverter();
+      return new DefaultValueConverter();
     }
 
     private static ValueFetcher initializeValueFetcher(final ColumnPropertyImpl property) {
@@ -1242,17 +1242,17 @@ class PropertyImpl implements Property {
     }
   }
 
-  static final class BooleanColumnValueConverter implements ColumnValueConverter {
+  static final class BooleanValueConverter implements ColumnProperty.ValueConverter {
 
     private final Object trueValue;
     private final Object falseValue;
 
-    BooleanColumnValueConverter() {
+    BooleanValueConverter() {
       this(Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_TRUE),
               Configuration.getValue(Configuration.SQL_BOOLEAN_VALUE_FALSE));
     }
 
-    BooleanColumnValueConverter(final Object trueValue, final Object falseValue) {
+    BooleanValueConverter(final Object trueValue, final Object falseValue) {
       this.trueValue = trueValue;
       this.falseValue = falseValue;
     }
@@ -1285,7 +1285,7 @@ class PropertyImpl implements Property {
     }
   }
 
-  private static final class DefaultColumnValueConverter implements ColumnValueConverter {
+  private static final class DefaultValueConverter implements ColumnProperty.ValueConverter {
     /** {@inheritDoc} */
     @Override
     public Object toColumnValue(final Object value) {
@@ -1299,7 +1299,7 @@ class PropertyImpl implements Property {
     }
   }
 
-  private static final class DateColumnValueConverter implements ColumnValueConverter {
+  private static final class DateValueConverter implements ColumnProperty.ValueConverter {
     /** {@inheritDoc} */
     @Override
     public Object toColumnValue(final Object value) {

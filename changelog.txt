@@ -3477,3 +3477,5 @@
   States.StateGroupImpl, unnecessary call to Collections.synchronizedMap() on members, already properly synchronized
   EntityTablePanel.bindEvents(), bug fixed, header and table were not repainted on search state change, now listens to all individual search models
   Chinook demo, added not null constraints to some columns, unit tests failed randomly
+  Property.ColumnValueConverter renamed to ValueConverter for consistency
+  Property.ValueConverter and ValueFetcher moved to ColumnProperty

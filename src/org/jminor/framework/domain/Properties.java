@@ -220,7 +220,7 @@ public final class Properties {
    */
   public static Property.ColumnProperty booleanProperty(final String propertyID, final int columnType, final String caption) {
     return new PropertyImpl.ColumnPropertyImpl(propertyID, Types.BOOLEAN, caption, columnType)
-            .setColumnValueConverter(booleanColumnValueConverter());
+            .setValueConverter(booleanValueConverter());
   }
 
   /**
@@ -234,7 +234,7 @@ public final class Properties {
   public static Property.ColumnProperty booleanProperty(final String propertyID, final int columnType, final String caption,
                                                         final Object trueValue, final Object falseValue) {
     return new PropertyImpl.ColumnPropertyImpl(propertyID, Types.BOOLEAN, caption, columnType)
-            .setColumnValueConverter(booleanColumnValueConverter(trueValue, falseValue));
+            .setValueConverter(booleanValueConverter(trueValue, falseValue));
   }
 
   /**
@@ -318,8 +318,8 @@ public final class Properties {
    * @see org.jminor.framework.Configuration#SQL_BOOLEAN_VALUE_TRUE
    * @see org.jminor.framework.Configuration#SQL_BOOLEAN_VALUE_FALSE
    */
-  public static Property.ColumnValueConverter booleanColumnValueConverter() {
-    return new PropertyImpl.BooleanColumnValueConverter();
+  public static Property.ColumnProperty.ValueConverter booleanValueConverter() {
+    return new PropertyImpl.BooleanValueConverter();
   }
 
   /**
@@ -328,7 +328,7 @@ public final class Properties {
    * @return a value converter which converts an underlying database representation
    * of a boolean value into an actual Boolean
    */
-  public static Property.ColumnValueConverter booleanColumnValueConverter(final Object trueValue, final Object falseValue) {
-    return new PropertyImpl.BooleanColumnValueConverter(trueValue, falseValue);
+  public static Property.ColumnProperty.ValueConverter booleanValueConverter(final Object trueValue, final Object falseValue) {
+    return new PropertyImpl.BooleanValueConverter(trueValue, falseValue);
   }
 }
