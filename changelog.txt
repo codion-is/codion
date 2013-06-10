@@ -3491,3 +3491,5 @@
   AbstractFilteredTableModel.AbstractFilteredTableModelProxy removed
   ForeignKeySearchPanel constructor parameter includeToggleSearchEnabledButton added
   DefaultTableSelectionModelTest added
+  EntityTestUnit.getRandomString() now returns a string of length maxLength if specified
+  Configuration.SAVE_DEFAULT_USERNAME added

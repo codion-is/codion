@@ -2,6 +2,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.framework.Configuration;
 
 /**
  * A class for testing {@link EntityApplicationPanel} classes
@@ -28,6 +29,7 @@ public class EntityApplicationPanelTestUnit {
    * @throws Exception in case of an exception
    */
   protected final void testInitializePanel() throws Exception {
+    Configuration.setValue(Configuration.SAVE_DEFAULT_USERNAME, false);
     final EntityApplicationPanel panel = createApplicationPanel();
     panel.startApplication(null, null, false, null, null, false, user);
     panel.getModel().getConnectionProvider().disconnect();

@@ -1084,7 +1084,9 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
         if (startupDialog != null) {
           startupDialog.dispose();
         }
-        saveDefaultUserName(connectionProvider.getUser().getUsername());
+        if (Configuration.getBooleanValue(Configuration.SAVE_DEFAULT_USERNAME)) {
+          saveDefaultUserName(connectionProvider.getUser().getUsername());
+        }
         this.frameTitle = getFrameTitle(frameCaption, connectionProvider.getUser());
         final JFrame frame = prepareFrame(this.frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
         this.evtApplicationStarted.fire();

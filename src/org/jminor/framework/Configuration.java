@@ -142,6 +142,15 @@ public final class Configuration {
   public static final String SERVER_CONNECTION_POOLING_INITIAL = "jminor.server.pooling.initial";
 
   /**
+   * Specifies the class name of the connection pool provider to user, if none is specified
+   * the internal connection pool is used if necessary<br>
+   * Value type: String<br>
+   * Default value: none
+   * @see org.jminor.common.db.pool.ConnectionPoolProvider
+   */
+  public static final String SERVER_CONNECTION_POOL_PROVIDER_CLASS = "jminor.server.pooling.poolProviderClass";
+
+  /**
    * Specifies a comma separated list of domain model class names, these classes must be
    * available on the server classpath
    */
@@ -292,6 +301,14 @@ public final class Configuration {
    * Default value: [empty string]
    */
   public static final String USERNAME_PREFIX = "jminor.client.usernamePrefix";
+
+  /**
+   * Specifies whether or not the client saves the last successful login username,<br>
+   * which is then displayed as the default username the next time the application is started<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final String SAVE_DEFAULT_USERNAME = "jminor.client.saveDefaultUsername";
 
   /**
    * Specifies whether user authentication is required<br>
@@ -688,6 +705,7 @@ public final class Configuration {
     PROPERTIES.put(MAXIMUM_FRACTION_DIGITS, DEFAULT_MAXIMUM_FRACTION_DIGITS);
     PROPERTIES.put(SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT, false);
     PROPERTIES.put(USE_CLIENT_PREFERENCES, Util.onClasspath("org.json.JSONObject"));
+    PROPERTIES.put(SAVE_DEFAULT_USERNAME, true);
     parseSystemSettings();
   }
 
@@ -752,6 +770,8 @@ public final class Configuration {
     parseIntegerSetting(MAXIMUM_FRACTION_DIGITS);
     parseBooleanSetting(SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT);
     parseBooleanSetting(USE_CLIENT_PREFERENCES);
+    parseStringSetting(SERVER_CONNECTION_POOL_PROVIDER_CLASS);
+    parseBooleanSetting(SAVE_DEFAULT_USERNAME);
   }
 
   private static void parseIntegerSetting(final String setting) {
