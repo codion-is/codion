@@ -223,12 +223,14 @@ public final class EntityGeneratorModel {
   }
 
   private static void appendEntityDefinition(final StringBuilder builder, final Table table) {
-    builder.append("Entities.define(").append(getEntityID(table)).append(",").append(Util.LINE_SEPARATOR);
+    builder.append("static {").append(Util.LINE_SEPARATOR);
+    builder.append("  Entities.define(").append(getEntityID(table)).append(",").append(Util.LINE_SEPARATOR);
     for (final Column column : table.getColumns()) {
-      builder.append(getPropertyDefinition(table, column))
+      builder.append("  ").append(getPropertyDefinition(table, column))
               .append(table.getColumns().indexOf(column) < table.getColumns().size() - 1 ? "," : "").append(Util.LINE_SEPARATOR);
     }
-    builder.append(");").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
+    builder.append("  );").append(Util.LINE_SEPARATOR);
+    builder.append("}");
   }
 
   private static void appendPropertyConstants(final StringBuilder builder, final Table table) {
@@ -284,7 +286,7 @@ public final class EntityGeneratorModel {
     final String propertyID = getPropertyID(table, column, false);
     final String caption = getCaption(column);
     if (column.getKeySeq() != -1) {
-      if (column.getColumnType() == Types.INTEGER) {
+      if (column.getColumnTypeName().equals("Types.INTEGER")) {
         builder.append("        Properties.primaryKeyProperty(").append(propertyID).append(")");
       }
       else {
@@ -350,9 +352,10 @@ public final class EntityGeneratorModel {
     return builder.toString();
   }
 
-  private static String translateType(final int sqlType) {
+  private static String translateType(final int sqlType, final int decimalDigits) {
     switch (sqlType) {
       case Types.BIGINT:
+        return "Types.BIGINT";
       case Types.INTEGER:
       case Types.ROWID:
       case Types.SMALLINT:
@@ -364,9 +367,9 @@ public final class EntityGeneratorModel {
       case Types.DECIMAL:
       case Types.DOUBLE:
       case Types.FLOAT:
-      case Types.NUMERIC:
       case Types.REAL:
-        return "Types.DOUBLE";
+      case Types.NUMERIC:
+        return decimalDigits == 0 ? "Types.INTEGER" : "Types.DOUBLE";
       case Types.TIME:
         return "Types.TIME";
       case Types.TIMESTAMP:
@@ -683,13 +686,12 @@ public final class EntityGeneratorModel {
       final List<Column> columns = new ArrayList<Column>();
       while (resultSet.next()) {
         final int dataType = resultSet.getInt("DATA_TYPE");
-        final String translatedType = translateType(dataType);
+        int decimalDigits = resultSet.getInt("DECIMAL_DIGITS");
+        if (resultSet.wasNull()) {
+          decimalDigits = -1;
+        }
+        final String translatedType = translateType(dataType, decimalDigits);
         if (translatedType != null) {
-          int decimalDigits = resultSet.getInt("DECIMAL_DIGITS");
-          if (resultSet.wasNull()) {
-            decimalDigits = -1;
-          }
-
           final String tableName = resultSet.getString("TABLE_NAME");
           final String columnName = resultSet.getString("COLUMN_NAME");
           columns.add(new Column(columnName, dataType, translatedType,

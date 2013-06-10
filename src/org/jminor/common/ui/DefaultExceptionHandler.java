@@ -9,6 +9,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Util;
 
 import javax.swing.JComponent;
+import java.awt.Window;
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
@@ -18,12 +19,12 @@ import java.lang.reflect.UndeclaredThrowableException;
  */
 public final class DefaultExceptionHandler implements ExceptionHandler {
 
-  private static final ExceptionHandler INSTANCE = new DefaultExceptionHandler();
+  private static final DefaultExceptionHandler INSTANCE = new DefaultExceptionHandler();
 
   /**
    * @return an ExceptionHandler singleton
    */
-  public static ExceptionHandler getInstance() {
+  public static DefaultExceptionHandler getInstance() {
     return INSTANCE;
   }
 
@@ -32,8 +33,12 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
    * @param exception the exception
    * @param dialogParent the component to use as parent to the exception dialog
    */
-  @Override
   public void handleException(final Throwable exception, final JComponent dialogParent) {
+    handleException(exception, UiUtil.getParentWindow(dialogParent));
+  }
+
+  @Override
+  public void handleException(final Throwable exception, final Window dialogParent) {
     final Throwable rootCause = unwrapExceptions(exception, RuntimeException.class, InvocationTargetException.class,
             ExceptionInInitializerError.class, UndeclaredThrowableException.class);
     if (rootCause instanceof CancelException) {
@@ -44,7 +49,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
       handleDatabaseException((DatabaseException) rootCause, dialogParent);
     }
     else {
-      ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), getMessageTitle(rootCause), rootCause.getMessage(), rootCause);
+      ExceptionDialog.showExceptionDialog(dialogParent, getMessageTitle(rootCause), rootCause.getMessage(), rootCause);
     }
   }
 
@@ -53,7 +58,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
    * @param dbException the exception
    * @param dialogParent the component to use as parent to the exception dialog
    */
-  public void handleDatabaseException(final DatabaseException dbException, final JComponent dialogParent) {
+  private static void handleDatabaseException(final DatabaseException dbException, final Window dialogParent) {
     String errMsg = dbException.getMessage();
     if (Util.nullOrEmpty(errMsg)) {
       if (dbException.getCause() == null) {
@@ -63,8 +68,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
         errMsg = trimMessage(dbException.getCause());
       }
     }
-    ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent),
-            Messages.get(Messages.EXCEPTION), errMsg, dbException);
+    ExceptionDialog.showExceptionDialog(dialogParent, Messages.get(Messages.EXCEPTION), errMsg, dbException);
   }
 
   private static Throwable unwrapExceptions(final Throwable exception, final Class<? extends Throwable>... exceptions) {
@@ -87,7 +91,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
     return exception;
   }
 
-  private String getMessageTitle(final Throwable e) {
+  private static String getMessageTitle(final Throwable e) {
     if (e instanceof FileNotFoundException) {
       return Messages.get(Messages.UNABLE_TO_OPEN_FILE);
     }
@@ -95,7 +99,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
     return Messages.get(Messages.EXCEPTION);
   }
 
-  private String trimMessage(final Throwable e) {
+  private static String trimMessage(final Throwable e) {
     final String msg = e.getMessage();
     if (msg.length() > 50) {
       return msg.substring(0, 50) + "...";

@@ -23,16 +23,19 @@ public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.Fore
    * @param model the model to base this panel on
    */
   public ForeignKeySearchPanel(final ForeignKeySearchModel model) {
-    this(model, false);
+    this(model, true, false);
   }
 
   /**
    * Instantiates a new ForeignKeySearchModel.
    * @param model the model to base this panel on
+   * @param includeToggleSearchEnabledButton if true a toggle button for enabling/disabling is included
    * @param includeToggleAdvancedSearchButton if true an advanced toggle button is included
    */
-  public ForeignKeySearchPanel(final ForeignKeySearchModel model, final boolean includeToggleAdvancedSearchButton) {
-    super(model, true, includeToggleAdvancedSearchButton, new ForeignKeyInputFieldProvider(model), SearchType.LIKE, SearchType.NOT_LIKE);
+  public ForeignKeySearchPanel(final ForeignKeySearchModel model, final boolean includeToggleSearchEnabledButton,
+                               final boolean includeToggleAdvancedSearchButton) {
+    super(model, includeToggleSearchEnabledButton, includeToggleAdvancedSearchButton,
+            new ForeignKeyInputFieldProvider(model), SearchType.LIKE, SearchType.NOT_LIKE);
   }
 
   private static final class ForeignKeyInputFieldProvider implements InputFieldProvider<Property.ForeignKeyProperty> {

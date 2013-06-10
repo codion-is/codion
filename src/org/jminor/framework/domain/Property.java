@@ -96,6 +96,11 @@ public interface Property extends Attribute {
   boolean isString();
 
   /**
+   * @return true if this is a long property
+   */
+  boolean isLong();
+
+  /**
    * @return true if this is a integer property
    */
   boolean isInteger();

@@ -36,28 +36,30 @@ public class EntityGeneratorModelTest {
     addressBuilder.append("public static final String ADDRESS_LATITUDE = \"latitude\";").append(Util.LINE_SEPARATOR);
     addressBuilder.append("public static final String ADDRESS_LONGITUDE = \"longitude\";").append(Util.LINE_SEPARATOR);
     addressBuilder.append(Util.LINE_SEPARATOR);
-    addressBuilder.append("Entities.define(T_ADDRESS,").append(Util.LINE_SEPARATOR);
-    addressBuilder.append("        Properties.primaryKeyProperty(ADDRESS_ADDRESSID),").append(Util.LINE_SEPARATOR);
-    addressBuilder.append("        Properties.columnProperty(ADDRESS_STREET1, Types.VARCHAR, \"Street1\")").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("static {").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("  Entities.define(T_ADDRESS,").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("          Properties.primaryKeyProperty(ADDRESS_ADDRESSID),").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("          Properties.columnProperty(ADDRESS_STREET1, Types.VARCHAR, \"Street1\")").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setNullable(false)").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setMaxLength(55),").append(Util.LINE_SEPARATOR);
-    addressBuilder.append("        Properties.columnProperty(ADDRESS_STREET2, Types.VARCHAR, \"Street2\")").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("          Properties.columnProperty(ADDRESS_STREET2, Types.VARCHAR, \"Street2\")").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setMaxLength(55),").append(Util.LINE_SEPARATOR);
-    addressBuilder.append("        Properties.columnProperty(ADDRESS_CITY, Types.VARCHAR, \"City\")").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("          Properties.columnProperty(ADDRESS_CITY, Types.VARCHAR, \"City\")").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setNullable(false)").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setMaxLength(55),").append(Util.LINE_SEPARATOR);
-    addressBuilder.append("        Properties.columnProperty(ADDRESS_STATE, Types.VARCHAR, \"State\")").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("          Properties.columnProperty(ADDRESS_STATE, Types.VARCHAR, \"State\")").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setNullable(false)").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setMaxLength(25),").append(Util.LINE_SEPARATOR);
-    addressBuilder.append("        Properties.columnProperty(ADDRESS_ZIP, Types.INTEGER, \"Zip\")").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("          Properties.columnProperty(ADDRESS_ZIP, Types.INTEGER, \"Zip\")").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setNullable(false),").append(Util.LINE_SEPARATOR);
-    addressBuilder.append("        Properties.columnProperty(ADDRESS_LATITUDE, Types.DOUBLE, \"Latitude\")").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("          Properties.columnProperty(ADDRESS_LATITUDE, Types.DOUBLE, \"Latitude\")").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setNullable(false)").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setMaximumFractionDigits(2),").append(Util.LINE_SEPARATOR);
-    addressBuilder.append("        Properties.columnProperty(ADDRESS_LONGITUDE, Types.DOUBLE, \"Longitude\")").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("          Properties.columnProperty(ADDRESS_LONGITUDE, Types.DOUBLE, \"Longitude\")").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setNullable(false)").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setMaximumFractionDigits(2)").append(Util.LINE_SEPARATOR);
-    addressBuilder.append(");").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
+    addressBuilder.append("  );").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("}");
 
     ADDRESS_DEF = addressBuilder.toString();
 
@@ -68,15 +70,17 @@ public class EntityGeneratorModelTest {
     tagItemBuilder.append("public static final String TAG_ITEM_ITEMID = \"itemid\";").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("public static final String TAG_ITEM_ITEMID_FK = \"itemid_fk\";").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append(Util.LINE_SEPARATOR);
-    tagItemBuilder.append("Entities.define(T_TAG_ITEM,").append(Util.LINE_SEPARATOR);
-    tagItemBuilder.append("        Properties.foreignKeyProperty(TAG_ITEM_TAGID_FK, \"Tagid\", T_TAG,").append(Util.LINE_SEPARATOR);
+    tagItemBuilder.append("static {").append(Util.LINE_SEPARATOR);
+    tagItemBuilder.append("  Entities.define(T_TAG_ITEM,").append(Util.LINE_SEPARATOR);
+    tagItemBuilder.append("          Properties.foreignKeyProperty(TAG_ITEM_TAGID_FK, \"Tagid\", T_TAG,").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("                Properties.primaryKeyProperty(TAG_ITEM_TAGID))").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("                .setNullable(false),").append(Util.LINE_SEPARATOR);
-    tagItemBuilder.append("        Properties.foreignKeyProperty(TAG_ITEM_ITEMID_FK, \"Itemid\", T_ITEM,").append(Util.LINE_SEPARATOR);
+    tagItemBuilder.append("          Properties.foreignKeyProperty(TAG_ITEM_ITEMID_FK, \"Itemid\", T_ITEM,").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("                Properties.primaryKeyProperty(TAG_ITEM_ITEMID)").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("                        .setIndex(1))").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("                .setNullable(false)").append(Util.LINE_SEPARATOR);
-    tagItemBuilder.append(");").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
+    tagItemBuilder.append("  );").append(Util.LINE_SEPARATOR);
+    tagItemBuilder.append("}");
 
     TAG_ITEM_DEF = tagItemBuilder.toString();
 
@@ -89,20 +93,22 @@ public class EntityGeneratorModelTest {
     productBuilder.append("public static final String PRODUCT_DESCRIPTION = \"description\";").append(Util.LINE_SEPARATOR);
     productBuilder.append("public static final String PRODUCT_IMAGEURL = \"imageurl\";").append(Util.LINE_SEPARATOR);
     productBuilder.append(Util.LINE_SEPARATOR);
-    productBuilder.append("Entities.define(T_PRODUCT,").append(Util.LINE_SEPARATOR);
-    productBuilder.append("        Properties.primaryKeyProperty(PRODUCT_PRODUCTID),").append(Util.LINE_SEPARATOR);
-    productBuilder.append("        Properties.foreignKeyProperty(PRODUCT_CATEGORYID_FK, \"Categoryid\", T_CATEGORY,").append(Util.LINE_SEPARATOR);
+    productBuilder.append("static {").append(Util.LINE_SEPARATOR);
+    productBuilder.append("  Entities.define(T_PRODUCT,").append(Util.LINE_SEPARATOR);
+    productBuilder.append("          Properties.primaryKeyProperty(PRODUCT_PRODUCTID),").append(Util.LINE_SEPARATOR);
+    productBuilder.append("          Properties.foreignKeyProperty(PRODUCT_CATEGORYID_FK, \"Categoryid\", T_CATEGORY,").append(Util.LINE_SEPARATOR);
     productBuilder.append("                Properties.columnProperty(PRODUCT_CATEGORYID))").append(Util.LINE_SEPARATOR);
     productBuilder.append("                .setNullable(false),").append(Util.LINE_SEPARATOR);
-    productBuilder.append("        Properties.columnProperty(PRODUCT_NAME, Types.VARCHAR, \"Name\")").append(Util.LINE_SEPARATOR);
+    productBuilder.append("          Properties.columnProperty(PRODUCT_NAME, Types.VARCHAR, \"Name\")").append(Util.LINE_SEPARATOR);
     productBuilder.append("                .setNullable(false)").append(Util.LINE_SEPARATOR);
     productBuilder.append("                .setMaxLength(25),").append(Util.LINE_SEPARATOR);
-    productBuilder.append("        Properties.columnProperty(PRODUCT_DESCRIPTION, Types.VARCHAR, \"Description\")").append(Util.LINE_SEPARATOR);
+    productBuilder.append("          Properties.columnProperty(PRODUCT_DESCRIPTION, Types.VARCHAR, \"Description\")").append(Util.LINE_SEPARATOR);
     productBuilder.append("                .setNullable(false)").append(Util.LINE_SEPARATOR);
     productBuilder.append("                .setMaxLength(255),").append(Util.LINE_SEPARATOR);
-    productBuilder.append("        Properties.columnProperty(PRODUCT_IMAGEURL, Types.VARCHAR, \"Imageurl\")").append(Util.LINE_SEPARATOR);
+    productBuilder.append("          Properties.columnProperty(PRODUCT_IMAGEURL, Types.VARCHAR, \"Imageurl\")").append(Util.LINE_SEPARATOR);
     productBuilder.append("                .setMaxLength(55)").append(Util.LINE_SEPARATOR);
-    productBuilder.append(");").append(Util.LINE_SEPARATOR).append(Util.LINE_SEPARATOR);
+    productBuilder.append("  );").append(Util.LINE_SEPARATOR);
+    productBuilder.append("}");
 
     PRODUCT_DEF = productBuilder.toString();
   }

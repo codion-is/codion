@@ -46,6 +46,7 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Window;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -452,7 +453,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
       selectComponent((String) ((ValidationException) throwable).getKey());
     }
     else {
-      handleException(throwable, this);
+      handleException(throwable, UiUtil.getParentWindow(this));
     }
   }
 
@@ -462,7 +463,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param dialogParent the component to use as exception dialog parent
    */
   @Override
-  public final void handleException(final Throwable exception, final JComponent dialogParent) {
+  public final void handleException(final Throwable exception, final Window dialogParent) {
     LOG.error(exception.getMessage(), exception);
     DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
   }

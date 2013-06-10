@@ -83,6 +83,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /**
    * Instantiates a new table model.
+   * @param sortModel the sort model to use
    * @param columnFilterModels the column filter models
    * @throws IllegalArgumentException in case <code>columnModel</code> is null
    */
@@ -90,7 +91,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     Util.rejectNullValue(sortModel, "sortModel");
     this.sortModel = sortModel;
     this.columnModel = new DefaultFilteredTableColumnModel<C>(sortModel.getColumns(), columnFilterModels);
-    this.selectionModel = new DefaultTableSelectionModel<R>(new AbstractFilteredTableModelProxy<R>(this));
+    this.selectionModel = new DefaultTableSelectionModel<R>(this);
     this.filterCriteria = new FilterCriteriaImpl<R, C>(this.columnModel.getColumnFilterModels());
     bindEventsInternal();
   }
@@ -110,7 +111,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final int getVisibleItemCount() {
-    return visibleItems.size();
+    return getRowCount();
   }
 
   /** {@inheritDoc} */
@@ -128,7 +129,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final int getRowCount() {
-    return getVisibleItemCount();
+    return visibleItems.size();
   }
 
   /** {@inheritDoc} */
@@ -325,6 +326,15 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     fireTableRowsDeleted(fromIndex, toIndex);
   }
 
+  /**
+   * A default implementation returning false
+   * @return false
+   */
+  @Override
+  public boolean vetoSelectionChange() {
+    return false;
+  }
+
   /** {@inheritDoc} */
   @Override
   public final FilteredTableColumnModel<C> getColumnModel() {
@@ -414,13 +424,14 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * Adds the given items to this table model, filtering on the fly and sorting if sorting is enabled and
    * the items are not being added at the front.
    * @param items the items to add
-   * @param atFront if true then the items are added at the front (topmost), otherwise they are added last
+   * @param atFront if true then the items are added at the front (topmost) in the order they are received, otherwise they are added last
    */
   protected final void addItems(final List<R> items, final boolean atFront) {
+    int index = 0;
     for (final R item : items) {
       if (filterCriteria.include(item)) {
         if (atFront) {
-          visibleItems.add(0, item);
+          visibleItems.add(index++, item);
         }
         else {
           visibleItems.add(item);
@@ -536,32 +547,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
     finally {
       evtSortingDone.fire();
-    }
-  }
-
-  private static final class AbstractFilteredTableModelProxy<R> implements TableSelectionModel.TableModelProxy<R> {
-    private final FilteredTableModel<R, ?> tableModel;
-
-    private AbstractFilteredTableModelProxy(final FilteredTableModel<R, ?> tableModel) {
-      this.tableModel = tableModel;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int getSize() {
-      return tableModel.getVisibleItemCount();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int indexOf(final R item) {
-      return tableModel.indexOf(item);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public R getItemAt(final int index) {
-      return tableModel.getItemAt(index);
     }
   }
 

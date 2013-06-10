@@ -689,7 +689,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @see DefaultExceptionHandler#handleException(Throwable, javax.swing.JComponent)
    */
   public final void handleException(final Exception exception) {
-    DefaultExceptionHandler.getInstance().handleException(exception, this);
+    DefaultExceptionHandler.getInstance().handleException(exception, UiUtil.getParentWindow(this));
   }
 
   /**

@@ -108,9 +108,17 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     setUncaughtExceptionHandler();
   }
 
+  /**
+   * Handles the given exception, which usually means simply displaying it to the user
+   * @param throwable the exception to handle
+   */
+  public final void handleException(final Throwable throwable) {
+    handleException(throwable, UiUtil.getParentWindow(this));
+  }
+
   /** {@inheritDoc} */
   @Override
-  public final void handleException(final Throwable exception, final JComponent dialogParent) {
+  public final void handleException(final Throwable exception, final Window dialogParent) {
     LOG.error(exception.getMessage(), exception);
     DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
   }
@@ -316,7 +324,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       System.exit(0);
     }
     catch (Exception e) {
-      handleException(e, this);
+      handleException(e, UiUtil.getParentWindow(this));
       System.exit(1);
     }
     return null;
@@ -977,7 +985,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
       @Override
       public void uncaughtException(final Thread t, final Throwable e) {
-        DefaultExceptionHandler.getInstance().handleException(e, EntityApplicationPanel.this);
+        DefaultExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityApplicationPanel.this));
       }
     });
   }

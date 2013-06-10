@@ -66,11 +66,6 @@ public interface TableSelectionModel<R> extends ListSelectionModel {
   void moveSelectionUp();
 
   /**
-   * @return true if no rows are selected in this table model
-   */
-  boolean isSelectionEmpty();
-
-  /**
    * @return the index of the selected record, -1 if none is selected and
    * the lowest index if more than one record is selected
    */
@@ -87,12 +82,6 @@ public interface TableSelectionModel<R> extends ListSelectionModel {
    * @param index the index
    */
   void setSelectedIndex(final int index);
-
-  /**
-   * Clears the selection
-   * @see #addSelectionChangedListener(EventListener)
-   */
-  void clearSelection();
 
   /**
    * Selects the given indexes
@@ -163,7 +152,7 @@ public interface TableSelectionModel<R> extends ListSelectionModel {
     /**
      * @return the size of the table model
      */
-    int getSize();
+    int getRowCount();
 
     /**
      * @param item the item
@@ -176,5 +165,10 @@ public interface TableSelectionModel<R> extends ListSelectionModel {
      * @return the item at the given index in the table model
      */
     R getItemAt(final int index);
+
+    /**
+     * @return true if an impending selection change should be vetoed
+     */
+    boolean vetoSelectionChange();
   }
 }

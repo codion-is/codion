@@ -20,7 +20,7 @@ import java.util.List;
 import java.util.Stack;
 
 /**
- * A cyclical method call logger.
+ * A cyclical method call logger allowing nested logging of method calls.
  * TODO this class should be able to handle/recover from incorrect usage, not crash the application
  */
 public class MethodLogger implements Serializable {

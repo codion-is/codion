@@ -3479,3 +3479,15 @@
   Chinook demo, added not null constraints to some columns, unit tests failed randomly
   Property.ColumnValueConverter renamed to ValueConverter for consistency
   Property.ValueConverter and ValueFetcher moved to ColumnProperty
+  EntityGeneratorModel improved
+  Types.BIGINT partial support added
+  ExceptionHandler.handleException() dialogParent parameter is now Window
+  CancelException is now a RuntimeException descendant
+  DefaultEntityEditModel, getModifiedEntities() added
+  TableSelectionModel.TableModelProxy.vetoSelectionChange() added
+  TableSelectionModel.TableModelProxy.getSize() renamed to getRowCount() for TableModel consistency
+  FilteredTableModel extends TableSelectionModel.TableModelProxy
+  DefaultTableSelectionModel uses TableModelProxy.vetoSelectionChange() to check if changes to selection should be vetoed
+  AbstractFilteredTableModel.AbstractFilteredTableModelProxy removed
+  ForeignKeySearchPanel constructor parameter includeToggleSearchEnabledButton added
+  DefaultTableSelectionModelTest added

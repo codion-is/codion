@@ -489,7 +489,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
     LOG.debug("{} - update {}", this, Util.getCollectionContentsAsString(entities, false));
 
-    final List<Entity> modifiedEntities = EntityUtil.getModifiedEntities(entities);
+    final List<Entity> modifiedEntities = getModifiedEntities(entities);
     if (modifiedEntities.isEmpty()) {
       return Collections.emptyList();
     }
@@ -886,6 +886,20 @@ public class DefaultEntityEditModel implements EntityEditModel {
    */
   protected Object prepareNewValue(final String propertyID, final Object value) {
     return value;
+  }
+
+  /**
+   * Called during the {@link #update()} function, to determine which entities need to be updated,
+   * these entities will then be forwarded to {@link #doUpdate(java.util.List)}.
+   * Returns the entities that have been modified and require updating, override to be able to
+   * perform an update on unmodified entities or to return an empty list to veto an update action.
+   * @param entities the entities
+   * @return the entities requiring update
+   * @see #update()
+   * @see #update(java.util.List)
+   */
+  protected List<Entity> getModifiedEntities(final List<Entity> entities) {
+    return EntityUtil.getModifiedEntities(entities);
   }
 
   private List<Entity> insertEntities(final List<Entity> entities) throws DatabaseException, ValidationException {

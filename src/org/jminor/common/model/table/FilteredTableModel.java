@@ -17,7 +17,7 @@ import java.util.Collection;
  * @param <R> the type representing the rows in this table model
  * @param <C> type type used to identify columns in this table model, Integer for simple indexed identification for example
  */
-public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, Refreshable {
+public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableSelectionModel.TableModelProxy<R>, TableModel, Refreshable {
 
   /**
    * @param listener a listener to be notified each time a refresh is about to start
@@ -68,20 +68,6 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    * @param listener the listener to remove
    */
   void removeTableModelClearedListener(final EventListener listener);
-
-  /**
-   * Returns the item found at the given index
-   * @param index the index
-   * @return the item at the given row index
-   */
-  R getItemAt(final int index);
-
-  /**
-   * Returns the index of the given item
-   * @param item the item
-   * @return the index of the given item or -1 if it was not found
-   */
-  int indexOf(final R item);
 
   /**
    * Removes the given items from this table model
@@ -143,7 +129,6 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModel, 
    * @param value the value
    */
   void setRegularExpressionSearch(final boolean value);
-
 
   /**
    * @return the selection model used by this table model

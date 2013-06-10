@@ -407,6 +407,8 @@ public abstract class EntityTestUnit {
         return getRandomDouble(property);
       case Types.INTEGER:
         return getRandomInteger(property);
+      case Types.BIGINT:
+        return (long) getRandomInteger(property);
       case Types.VARCHAR:
         return getRandomString(property);
       default:
@@ -429,7 +431,7 @@ public abstract class EntityTestUnit {
     }
   }
 
-  private static Object getRandomString(final Property property) {
+  private static String getRandomString(final Property property) {
     final int minLength = property.isNullable() ? 0 : 1;
     final String randomString = Util.createRandomString(minLength, property.getMaxLength() < 0 ? 10 : property.getMaxLength());
     if (randomString.isEmpty()) {
@@ -449,14 +451,14 @@ public abstract class EntityTestUnit {
     return new Timestamp(offset + (long) (Math.random() * diff));
   }
 
-  private static Object getRandomInteger(final Property property) {
+  private static int getRandomInteger(final Property property) {
     final double min = property.getMin() == null ? -10000000 : property.getMin();
     final double max = property.getMax() == null ? 10000000 : property.getMax();
 
     return (int) (min + (RANDOM.nextDouble() * ((max - min) + 1)));
   }
 
-  private static Object getRandomDouble(final Property property) {
+  private static double getRandomDouble(final Property property) {
     final double min = property.getMin() == null ? -10000000 : property.getMin();
     final double max = property.getMax() == null ? 10000000 : property.getMax();
 

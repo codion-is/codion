@@ -195,6 +195,12 @@ class PropertyImpl implements Property {
 
   /** {@inheritDoc} */
   @Override
+  public final boolean isLong() {
+    return isType(Types.BIGINT);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean isInteger() {
     return isType(Types.INTEGER);
   }
@@ -505,6 +511,8 @@ class PropertyImpl implements Property {
    */
   private static Class<?> getTypeClass(final int sqlType) {
     switch (sqlType) {
+      case Types.BIGINT:
+        return Long.class;
       case Types.INTEGER:
         return Integer.class;
       case Types.DOUBLE:
@@ -750,6 +758,14 @@ class PropertyImpl implements Property {
               return property.fromColumnValue(getInteger(resultSet, property.selectIndex));
             }
           };
+        case Types.BIGINT:
+          return new ValueFetcher() {
+            /** {@inheritDoc} */
+            @Override
+            public Object fetchValue(final ResultSet resultSet) throws SQLException {
+              return property.fromColumnValue(getLong(resultSet, property.selectIndex));
+            }
+          };
         case Types.DOUBLE:
           return new ValueFetcher() {
             /** {@inheritDoc} */
@@ -827,6 +843,12 @@ class PropertyImpl implements Property {
 
     private static Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
       final int value = resultSet.getInt(columnIndex);
+
+      return resultSet.wasNull() ? null : value;
+    }
+
+    private static Long getLong(final ResultSet resultSet, final int columnIndex) throws SQLException {
+      final long value = resultSet.getLong(columnIndex);
 
       return resultSet.wasNull() ? null : value;
     }

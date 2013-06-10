@@ -61,7 +61,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
       @Override
       public void uncaughtException(final Thread t, final Throwable e) {
-        DefaultExceptionHandler.getInstance().handleException(e, EntityServerMonitorPanel.this);
+        DefaultExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityServerMonitorPanel.this));
       }
     });
   }

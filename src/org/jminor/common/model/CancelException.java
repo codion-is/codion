@@ -6,4 +6,4 @@ package org.jminor.common.model;
 /**
  * Used when actions must be cancelled from deep within a call stack.
  */
-public class CancelException extends Exception {}
+public class CancelException extends RuntimeException {}

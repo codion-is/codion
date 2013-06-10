@@ -54,14 +54,14 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
   /** {@inheritDoc} */
   @Override
   public void addSelectedIndex(final int index) {
-    checkIndex(index, tableModelProxy.getSize());
+    checkIndex(index, tableModelProxy.getRowCount());
     addSelectionInterval(index, index);
   }
 
   /** {@inheritDoc} */
   @Override
   public void setSelectedIndex(final int index) {
-    checkIndex(index, tableModelProxy.getSize());
+    checkIndex(index, tableModelProxy.getRowCount());
     setSelectionInterval(index, index);
   }
 
@@ -142,14 +142,14 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
   /** {@inheritDoc} */
   @Override
   public void selectAll() {
-    setSelectionInterval(0, tableModelProxy.getSize() - 1);
+    setSelectionInterval(0, tableModelProxy.getRowCount() - 1);
   }
 
   /** {@inheritDoc} */
   @Override
   public R getSelectedItem() {
     final int index = getSelectedIndex();
-    if (index >= 0 && index < tableModelProxy.getSize()) {
+    if (index >= 0 && index < tableModelProxy.getRowCount()) {
       return tableModelProxy.getItemAt(index);
     }
     else {
@@ -203,11 +203,46 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
     addSelectedIndexes(indexes);
   }
 
+  @Override
+  public void addSelectionInterval(final int fromIndex, final int toIndex) {
+    if (!tableModelProxy.vetoSelectionChange()) {
+      super.addSelectionInterval(fromIndex, toIndex);
+    }
+  }
+
+  @Override
+  public void setSelectionInterval(final int fromIndex, final int toIndex) {
+    if (!tableModelProxy.vetoSelectionChange()) {
+      super.setSelectionInterval(fromIndex, toIndex);
+    }
+  }
+
+  @Override
+  public void removeSelectionInterval(final int fromIndex, final int toIndex) {
+    if (!tableModelProxy.vetoSelectionChange()) {
+      super.removeSelectionInterval(fromIndex, toIndex);
+    }
+  }
+
+  @Override
+  public void insertIndexInterval(final int fromIndex, final int length, final boolean before) {
+    if (!tableModelProxy.vetoSelectionChange()) {
+      super.insertIndexInterval(fromIndex, length, before);
+    }
+  }
+
+  @Override
+  public void removeIndexInterval(final int fromIndex, final int toIndex) {
+    if (!tableModelProxy.vetoSelectionChange()) {
+      super.removeIndexInterval(fromIndex, toIndex);
+    }
+  }
+
   /** {@inheritDoc} */
   @Override
   public void moveSelectionUp() {
-    if (tableModelProxy.getSize() > 0) {
-      final int lastIndex = tableModelProxy.getSize() - 1;
+    if (tableModelProxy.getRowCount() > 0) {
+      final int lastIndex = tableModelProxy.getRowCount() - 1;
       if (isSelectionEmpty()) {
         setSelectionInterval(lastIndex, lastIndex);
       }
@@ -225,7 +260,7 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
   /** {@inheritDoc} */
   @Override
   public void moveSelectionDown() {
-    if (tableModelProxy.getSize() > 0) {
+    if (tableModelProxy.getRowCount() > 0) {
       if (isSelectionEmpty()) {
         setSelectionInterval(0, 0);
       }
@@ -233,7 +268,7 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
         final Collection<Integer> selected = getSelectedIndexes();
         final List<Integer> indexesToSelect = new ArrayList<Integer>(selected.size());
         for (final Integer index : selected) {
-          indexesToSelect.add(index == tableModelProxy.getSize() - 1 ? 0 : index + 1);
+          indexesToSelect.add(index == tableModelProxy.getRowCount() - 1 ? 0 : index + 1);
         }
         setSelectedIndexes(indexesToSelect);
       }
@@ -300,7 +335,7 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
   }
 
   private void checkIndexes(final Collection<Integer> indexes) {
-    final int size = tableModelProxy.getSize();
+    final int size = tableModelProxy.getRowCount();
     for (final Integer index : indexes) {
       checkIndex(index, size);
     }

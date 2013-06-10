@@ -252,7 +252,7 @@ public final class EntityTableSearchPanel extends JPanel {
   @SuppressWarnings({"unchecked"})
   private ColumnSearchPanel initializeSearchPanel(final PropertySearchModel propertySearchModel) {
     if (propertySearchModel instanceof ForeignKeySearchModel) {
-      return new ForeignKeySearchPanel((ForeignKeySearchModel) propertySearchModel, false);
+      return new ForeignKeySearchPanel((ForeignKeySearchModel) propertySearchModel, true, false);
     }
 
     return new PropertySearchPanel(propertySearchModel, true, false);
