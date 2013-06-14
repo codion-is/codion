@@ -72,6 +72,9 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
   }
 
   private static Throwable unwrapExceptions(final Throwable exception, final Class<? extends Throwable>... exceptions) {
+    if (exception instanceof CancelException) {
+      return exception;
+    }
     if (exception.getCause() == null) {
       return exception;
     }

@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
@@ -62,10 +63,15 @@ public final class MethodControl extends Control {
       method.invoke(owner);
     }
     catch (InvocationTargetException ite) {
-      throw new RuntimeException(ite.getTargetException());
-    }
-    catch (RuntimeException re) {
-      throw re;
+      final Throwable targetException = ite.getTargetException();
+      if (!(targetException instanceof CancelException)) {
+        if (targetException instanceof RuntimeException) {
+          throw (RuntimeException) targetException;
+        }
+        else {
+          throw new RuntimeException(targetException);
+        }
+      }
     }
     catch (Exception ex) {
       throw new RuntimeException(ex);

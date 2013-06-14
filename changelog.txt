@@ -3493,3 +3493,7 @@
   DefaultTableSelectionModelTest added
   EntityTestUnit.getRandomString() now returns a string of length maxLength if specified
   Configuration.SAVE_DEFAULT_USERNAME added
+  UiUtil.displayInDialog() no longer available with both disposeOnEscape and closeEvent, since the latter now overrides the former
+  UiUtil.chooseFileToSave() no remembers last directory used
+  MethodControl now handles CancelException correctly
+  DefaultExceptionHandler.unwrapException() now handles CancelException specifically
