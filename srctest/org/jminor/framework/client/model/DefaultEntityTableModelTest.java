@@ -411,9 +411,9 @@ public final class DefaultEntityTableModelTest {
     assertTrue(model.getPropertyColumnIndex(EntityTestDomain.DETAIL_DOUBLE) == 0);
     assertTrue(model.getPropertyColumnIndex(EntityTestDomain.DETAIL_INT) == 1);
     column = model.getColumnModel().getColumn(3);
-    assertEquals(150, column.getWidth());
+    assertEquals(150, column.getPreferredWidth());
     column = model.getColumnModel().getColumn(5);
-    assertEquals(170, column.getWidth());
+    assertEquals(170, column.getPreferredWidth());
 
     model.clearPreferences();
     Util.flushUserPreferences();

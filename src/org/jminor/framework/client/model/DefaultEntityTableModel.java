@@ -692,12 +692,13 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private org.json.JSONObject createColumnPreferences() throws Exception {
     final org.json.JSONObject columnPreferencesRoot = new org.json.JSONObject();
     for (final TableColumn column : getColumnModel().getAllColumns()) {
+      final Property property = (Property) column.getIdentifier();
       final org.json.JSONObject columnObject = new org.json.JSONObject();
-      final boolean visible = getColumnModel().isColumnVisible((Property) column.getIdentifier());
+      final boolean visible = getColumnModel().isColumnVisible(property);
       columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
       columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
-      columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? getColumnModel().getColumnIndex(column.getIdentifier()) : -1);
-      columnPreferencesRoot.put(column.getIdentifier().toString(), columnObject);
+      columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? getColumnModel().getColumnIndex(property) : -1);
+      columnPreferencesRoot.put(property.getPropertyID(), columnObject);
     }
 
     return columnPreferencesRoot;
@@ -720,8 +721,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private void applyColumnPreferences(final org.json.JSONObject preferences) throws Exception {
     final List<TableColumn> allColumns = Collections.list(getColumnModel().getColumns());
     for (final TableColumn column : allColumns) {
-      final org.json.JSONObject columnPreferences = preferences.getJSONObject(column.getIdentifier().toString());
-      column.setWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
+      final Property property = (Property) column.getIdentifier();
+      final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getPropertyID());
+      column.setPreferredWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
       if (columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
         getColumnModel().moveColumn(getColumnModel().getColumnIndex(column.getIdentifier()), columnPreferences.getInt(PREFERENCES_COLUMN_INDEX));
       }

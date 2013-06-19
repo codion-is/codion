@@ -3497,3 +3497,4 @@
   UiUtil.chooseFileToSave() no remembers last directory used
   MethodControl now handles CancelException correctly
   DefaultExceptionHandler.unwrapException() now handles CancelException specifically
+  DefaultEntityTableModel.applyColumnPreferences() bug fixed, column.setPreferredWith() now used instead of setWidth(), see javadoc
