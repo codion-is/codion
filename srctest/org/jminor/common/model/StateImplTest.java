@@ -133,11 +133,11 @@ public class StateImplTest {
   }
 
   @Test
-  public void stateGroup() throws Exception {
+  public void group() throws Exception {
     final State stateOne = States.state(true);
     final State stateTwo = States.state(true);
     final State stateThree = States.state(true);
-    final State.StateGroup stateGroup = new States.StateGroupImpl();
+    final State.Group stateGroup = new States.GroupImpl();
 
     stateGroup.addState(stateOne);
     stateGroup.addState(stateOne);//has no effect

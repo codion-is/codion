@@ -44,12 +44,12 @@ public final class States {
   }
 
   /**
-   * Instantiates a new State.StateGroup object, which guarantees a single active state within the group
+   * Instantiates a new State.Group object, which guarantees a single active state within the group
    * @param states the states to add to the group initially, not required
-   * @return a new State.StateGroup
+   * @return a new State.Group
    */
-  public static State.StateGroup stateGroup(final State... states) {
-    return new StateGroupImpl(states);
+  public static State.Group group(final State... states) {
+    return new GroupImpl(states);
   }
 
   private static class StateImpl implements State {
@@ -308,11 +308,11 @@ public final class States {
     }
   }
 
-  static final class StateGroupImpl implements State.StateGroup {
+  static final class GroupImpl implements State.Group {
 
     private final List<WeakReference<State>> members = new ArrayList<WeakReference<State>>();
 
-    public StateGroupImpl(final State... states) {
+    public GroupImpl(final State... states) {
       if (states != null) {
         for (final State state : states) {
           addState(state);

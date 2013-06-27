@@ -3501,3 +3501,5 @@
   EntityTablePanel and EntityTableSearchPanel modified to allow customizations of the latter
   Controls.toggleControl() based on a State added
   UiUtil.linkToEnabledState() modified to accept varargs
+  State.StateGroup renamed to State.Group
+  EventObserverImpl now uses WeakReference

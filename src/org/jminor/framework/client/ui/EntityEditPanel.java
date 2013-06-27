@@ -97,7 +97,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * The mechanism for restricting a single active EntityEditPanel at a time
    */
-  private static final State.StateGroup ACTIVE_STATE_GROUP = States.stateGroup();
+  private static final State.Group ACTIVE_STATE_GROUP = States.group();
 
   /**
    * The component that should receive focus when the UI is prepared

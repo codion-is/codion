@@ -41,11 +41,11 @@ public interface State extends StateObserver {
   }
 
   /**
-   * A StateGroup deactivates all other states when a state in the group is activated.
-   * StateGroup works with WeakReference so adding states does not prevent
+   * A State.Group deactivates all other states when a state in the group is activated.
+   * State.Group works with WeakReference so adding states does not prevent
    * them from being garbage collected.
    */
-  interface StateGroup {
+  interface Group {
 
     /**
      * Adds a state to this state group via a WeakReference,

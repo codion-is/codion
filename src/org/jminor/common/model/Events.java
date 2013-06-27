@@ -3,8 +3,11 @@
  */
 package org.jminor.common.model;
 
+import java.lang.ref.WeakReference;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.List;
+import java.util.ListIterator;
 
 /**
  * A factory class for Event objects.
@@ -83,25 +86,51 @@ public final class Events {
 
   private static final class EventObserverImpl implements EventObserver {
 
-    private final Collection<EventListener> listeners = new ArrayList<EventListener>();
+    private final List<WeakReference<EventListener>> listeners = new ArrayList<WeakReference<EventListener>>();
 
     /** {@inheritDoc} */
     @Override
     public synchronized void addListener(final EventListener listener) {
       Util.rejectNullValue(listener, "listener");
-      if (!listeners.contains(listener)) {
-        listeners.add(listener);
+      final ListIterator<WeakReference<EventListener>> iterator = listeners.listIterator();
+      while (iterator.hasNext()) {
+        final EventListener referencedListener = iterator.next().get();
+        if (referencedListener == null) {
+          iterator.remove();
+        }
+        else if (referencedListener == listener) {
+          return;
+        }
       }
+      listeners.add(new WeakReference<EventListener>(listener));
     }
 
     /** {@inheritDoc} */
     @Override
     public synchronized void removeListener(final EventListener listener) {
-      listeners.remove(listener);
+      final ListIterator<WeakReference<EventListener>> iterator = listeners.listIterator();
+      while (iterator.hasNext()) {
+        final EventListener referencedListener = iterator.next().get();
+        if (referencedListener == null || referencedListener == listener) {
+          iterator.remove();
+        }
+      }
     }
 
     private synchronized Collection<EventListener> getListeners() {
-      return new ArrayList<EventListener>(listeners);
+      final ListIterator<WeakReference<EventListener>> iterator = listeners.listIterator();
+      final List<EventListener> eventListeners = new ArrayList<EventListener>(listeners.size());
+      while (iterator.hasNext()) {
+        final EventListener listener = iterator.next().get();
+        if (listener == null) {
+          iterator.remove();
+        }
+        else {
+          eventListeners.add(listener);
+        }
+      }
+
+      return eventListeners;
     }
   }
 }
