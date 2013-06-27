@@ -75,8 +75,9 @@ import java.util.Map;
 
 /**
  * A central application panel class.
+ * @param <Model> the application model type
  */
-public abstract class EntityApplicationPanel extends JPanel implements ExceptionHandler, MasterDetailPanel {
+public abstract class EntityApplicationPanel<Model extends EntityApplicationModel> extends JPanel implements ExceptionHandler, MasterDetailPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
@@ -87,7 +88,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   private final List<EntityPanelProvider> supportPanelProviders = new ArrayList<EntityPanelProvider>();
   private final List<EntityPanel> entityPanels = new ArrayList<EntityPanel>();
 
-  private EntityApplicationModel applicationModel;
+  private Model applicationModel;
   private JTabbedPane applicationTabPane;
 
   private final Event evtApplicationStarted = Events.event();
@@ -126,7 +127,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   /**
    * @return the application model this application panel is based on
    */
-  public final EntityApplicationModel getModel() {
+  public final Model getModel() {
     return applicationModel;
   }
 
@@ -374,6 +375,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
 
   /**
    * Exists this application
+   * @see #onExit()
    * @throws CancelException if the exit is cancelled
    */
   public final void exit() throws CancelException {
@@ -382,6 +384,15 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       throw new CancelException();
     }
 
+    try {
+      onExit();
+    }
+    catch (CancelException e) {
+      throw e;
+    }
+    catch (Exception e) {
+      LOG.debug("Exception while exiting", e);
+    }
     try {
       savePreferences();
       Util.flushUserPreferences();
@@ -638,7 +649,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @throws IllegalStateException if the application model has not been set
    * @throws org.jminor.common.model.CancelException in case the initialization is cancelled
    */
-  protected final void initialize(final EntityApplicationModel applicationModel) throws CancelException {
+  protected final void initialize(final Model applicationModel) throws CancelException {
     Util.rejectNullValue(applicationModel, "applicationModel");
     this.applicationModel = applicationModel;
     setupEntityPanelProviders();
@@ -807,7 +818,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return a List containing the {@link EntityPanel}s to include in this application panel
    * @see #addEntityPanelProvider(EntityPanelProvider)
    */
-  protected List<EntityPanel> initializeEntityPanels(final EntityApplicationModel applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(final Model applicationModel) {
     final List<EntityPanel> panels = new ArrayList<EntityPanel>();
     for (final EntityPanelProvider provider : entityPanelProviders) {
       final EntityPanel entityPanel;
@@ -961,7 +972,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
     }
     frame.setTitle(title);
     if (showMenuBar) {
-      frame.setJMenuBar(createMenuBar());
+      frame.setJMenuBar(initializeMenuBar());
     }
     if (setVisible) {
       frame.setVisible(true);
@@ -971,10 +982,11 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
   }
 
   /**
-   * @return a JMenuBar based on the main menu control set
+   * Initializes the JMenuBar to use on the application Frame
+   * @return by default a JMenuBar based on the main menu control set
    * @see #getMainMenuControlSet()
    */
-  protected final JMenuBar createMenuBar() {
+  protected JMenuBar initializeMenuBar() {
     return ControlProvider.createMenuBar(getMainMenuControlSet());
   }
 
@@ -996,7 +1008,7 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
    * @return an initialized application model
    * @throws CancelException in case the initialization is cancelled
    */
-  protected abstract EntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException;
+  protected abstract Model initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException;
 
   /**
    * Returns the user, either via a login dialog or via override, called during startup
@@ -1043,6 +1055,13 @@ public abstract class EntityApplicationPanel extends JPanel implements Exception
       entityPanel.savePreferences();
     }
   }
+
+  /**
+   * For overriding, called when exiting the application, note that any exceptions
+   * thrown are ignored but logged although {@link org.jminor.common.model.CancelException}
+   * is allowed to propagate onward thereby cancelling the application exit
+   */
+  protected void onExit() {}
 
   private void bindEventsInternal() {
     final StateObserver connected = applicationModel.getConnectionProvider().getConnectedObserver();

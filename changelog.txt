@@ -3503,3 +3503,8 @@
   UiUtil.linkToEnabledState() modified to accept varargs
   State.StateGroup renamed to State.Group
   EventObserverImpl now uses WeakReference
+  EventObserverImpl no longer uses WeakReference, forgot to think on this one
+  EntityApplicationPanel.onExit() added
+  EntityApplicationPanel.exit() calls the above method, allowing CancelException to propogate
+  EntityApplicationPanel now generified in regard to the application model
+  EntityApplicationPanel.createMenuBar() renamed to initializeMenuBar() and can be overridden
