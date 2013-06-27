@@ -43,31 +43,32 @@ public final class EntityTableSearchPanel extends JPanel {
   private final EntityTableSearchModel searchModel;
   private final List<TableColumn> columns;
 
-  private final AbstractTableColumnSyncPanel fullSearchPanel;
+  private final JPanel advancedSearchPanel;
   private final JPanel simpleSearchPanel;
-  private final JTextField simpleSearchTextField = new JTextField();
-  private final Action simpleSearchAction;
-  private boolean simpleSearch = false;
 
   /**
-   * Instantiates a new EntityTableSearchPanel
+   * Instantiates a new EntityTableSearchPanel with a default search panel setup, based on
+   * an {@link AbstractTableColumnSyncPanel} containing {@link PropertySearchPanel}s
    */
   public EntityTableSearchPanel(final EntityTableModel tableModel) {
-    this(tableModel, UiUtil.getPreferredScrollBarWidth());
+    this(tableModel, initializeAdvancedSearchPanel(tableModel, UiUtil.getPreferredScrollBarWidth()),
+            initializeSimpleSearchPanel(tableModel.getSearchModel()));
   }
 
   /**
    * Instantiates a new EntityTableSearchPanel
-   * @param verticalFillerWidth the vertical filler width, f.ex. the width of a scroll bar
    */
-  public EntityTableSearchPanel(final EntityTableModel tableModel, final int verticalFillerWidth) {
+  public EntityTableSearchPanel(final EntityTableModel tableModel, final JPanel advancedSearchPanel,
+                                final JPanel simpleSearchPanel) {
+    if (advancedSearchPanel == null && simpleSearchPanel == null) {
+      throw new IllegalArgumentException("An advanced and/or a simple search panel is required");
+    }
     this.searchModel = tableModel.getSearchModel();
     this.columns = tableModel.getColumnModel().getAllColumns();
-    this.fullSearchPanel = initializeFullSearchPanel(tableModel, verticalFillerWidth);
-    this.simpleSearchAction = initializeSimpleSearchAction();
-    this.simpleSearchPanel = initializeSimpleSearchPanel();
+    this.advancedSearchPanel = advancedSearchPanel;
+    this.simpleSearchPanel = simpleSearchPanel;
     setLayout(new BorderLayout());
-    setSimpleSearch(false);
+    layoutPanel(true);
   }
 
   /**
@@ -82,12 +83,16 @@ public final class EntityTableSearchPanel extends JPanel {
    * does not apply when simple search is enabled
    */
   public void setAdvanced(final boolean value) {
-    for (final JPanel searchPanel : fullSearchPanel.getColumnPanels().values()) {
-      if (searchPanel instanceof ColumnSearchPanel) {
-        ((ColumnSearchPanel) searchPanel).setAdvancedSearchOn(value);
+    if (advancedSearchPanel instanceof AbstractTableColumnSyncPanel) {
+      for (final JPanel searchPanel : ((AbstractTableColumnSyncPanel) advancedSearchPanel).getColumnPanels().values()) {
+        if (searchPanel instanceof ColumnSearchPanel) {
+          ((ColumnSearchPanel) searchPanel).setAdvancedSearchOn(value);
+        }
       }
     }
-
+    else {
+      layoutPanel(value);
+    }
     evtAdvancedChanged.fire();
   }
 
@@ -96,52 +101,47 @@ public final class EntityTableSearchPanel extends JPanel {
    * does not apply when simple search is enabled
    */
   public boolean isAdvanced() {
-    for (final JPanel searchPanel : fullSearchPanel.getColumnPanels().values()) {
-      if (searchPanel instanceof ColumnSearchPanel) {
-        return ((ColumnSearchPanel) searchPanel).isAdvancedSearchOn();
+    if (advancedSearchPanel instanceof AbstractTableColumnSyncPanel) {
+      for (final JPanel searchPanel : ((AbstractTableColumnSyncPanel) advancedSearchPanel).getColumnPanels().values()) {
+        if (searchPanel instanceof ColumnSearchPanel) {
+          return ((ColumnSearchPanel) searchPanel).isAdvancedSearchOn();
+        }
       }
     }
 
-    return false;
+    return getComponentCount() > 0 && getComponent(0) == advancedSearchPanel;
+  }
+
+  public boolean canToggleAdvanced() {
+    return advancedSearchPanel instanceof AbstractTableColumnSyncPanel || (advancedSearchPanel != null && simpleSearchPanel != null);
   }
 
   /**
-   * @return true if the simple search panel is visible, false if the full panel is visible
+   * @param advanced if true then the simple search panel is shown, if false the advanced search panel is shown,
+   * note that if either of these is not available calling this method has no effect
    */
-  public boolean isSimpleSearch() {
-    return simpleSearch;
-  }
-
-  /**
-   * @param simpleSearch if true then the simple search panel is shown, if false the full
-   * search panel is shown
-   */
-  public void setSimpleSearch(final boolean simpleSearch) {
-    this.simpleSearch = simpleSearch;
+  private void layoutPanel(final boolean advanced) {
+    if (advanced && advancedSearchPanel == null) {
+      return;
+    }
+    if (!advanced && simpleSearchPanel == null) {
+      return;
+    }
     removeAll();
-    if (simpleSearch) {
-      add(simpleSearchPanel, BorderLayout.CENTER);
+    if (advanced) {
+      add(advancedSearchPanel, BorderLayout.CENTER);
     }
     else {
-      add(fullSearchPanel, BorderLayout.CENTER);
+      add(simpleSearchPanel, BorderLayout.CENTER);
     }
-    evtSimpleSearchChanged.fire();
   }
 
   /**
    * Sets the search text in case simple search is enabled
    * @param txt the search text
-   * @see #isSimpleSearch()
    */
   public void setSearchText(final String txt) {
-    simpleSearchTextField.setText(txt);
-  }
-
-  /**
-   * Performs the search
-   */
-  public void performSearch() {
-    simpleSearchAction.actionPerformed(null);
+    getSearchModel().setSimpleSearchString(txt);
   }
 
   /**
@@ -151,8 +151,10 @@ public final class EntityTableSearchPanel extends JPanel {
   public ControlSet getControls() {
     final ControlSet controlSet = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
     controlSet.setIcon(Images.loadImage(Images.IMG_FILTER_16));
-    controlSet.add(Controls.toggleControl(this, "advanced",
-            FrameworkMessages.get(FrameworkMessages.ADVANCED), evtAdvancedChanged));
+    if (canToggleAdvanced()) {
+      controlSet.add(Controls.toggleControl(this, "advanced",
+              FrameworkMessages.get(FrameworkMessages.ADVANCED), evtAdvancedChanged));
+    }
     controlSet.add(Controls.methodControl(searchModel, "clearPropertySearchModels", FrameworkMessages.get(FrameworkMessages.CLEAR)));
 
     return controlSet;
@@ -163,10 +165,12 @@ public final class EntityTableSearchPanel extends JPanel {
    * @return the search panel associated with the given property
    */
   public ColumnSearchPanel getSearchPanel(final String propertyID) {
-    for (final TableColumn column : columns) {
-      final Property property = (Property) column.getIdentifier();
-      if (property.is(propertyID)) {
-        return (ColumnSearchPanel) fullSearchPanel.getColumnPanels().get(column);
+    if (advancedSearchPanel instanceof AbstractTableColumnSyncPanel) {
+      for (final TableColumn column : columns) {
+        final Property property = (Property) column.getIdentifier();
+        if (property.is(propertyID)) {
+          return (ColumnSearchPanel) ((AbstractTableColumnSyncPanel) advancedSearchPanel).getColumnPanels().get(column);
+        }
       }
     }
 
@@ -201,7 +205,15 @@ public final class EntityTableSearchPanel extends JPanel {
     evtAdvancedChanged.removeListener(listener);
   }
 
-  private JPanel initializeSimpleSearchPanel() {
+  private static JPanel initializeSimpleSearchPanel(final EntityTableSearchModel searchModel) {
+    final JTextField simpleSearchTextField = new JTextField();
+    final Action simpleSearchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
+      /** {@inheritDoc} */
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        searchModel.performSimpleSearch();
+      }
+    };
     final JButton simpleSearchButton = new JButton(simpleSearchAction);
     simpleSearchTextField.addActionListener(simpleSearchAction);
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
@@ -213,24 +225,14 @@ public final class EntityTableSearchPanel extends JPanel {
     return panel;
   }
 
-  private Action initializeSimpleSearchAction() {
-    return new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
-      /** {@inheritDoc} */
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        searchModel.performSimpleSearch();
-      }
-    };
-  }
-
-  private AbstractTableColumnSyncPanel initializeFullSearchPanel(final EntityTableModel tableModel, final int verticalFillerWidth) {
+  private static AbstractTableColumnSyncPanel initializeAdvancedSearchPanel(final EntityTableModel tableModel, final int verticalFillerWidth) {
     final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(tableModel.getColumnModel(), tableModel.getColumnModel().getAllColumns()) {
       /** {@inheritDoc} */
       @Override
       protected JPanel initializeColumnPanel(final TableColumn column) {
         final Property property = (Property) column.getIdentifier();
-        if (searchModel.containsPropertySearchModel(property.getPropertyID())) {
-          final PropertySearchModel propertySearchModel = searchModel.getPropertySearchModel(property.getPropertyID());
+        if (tableModel.getSearchModel().containsPropertySearchModel(property.getPropertyID())) {
+          final PropertySearchModel propertySearchModel = tableModel.getSearchModel().getPropertySearchModel(property.getPropertyID());
           return initializeSearchPanel(propertySearchModel);
         }
         else {
@@ -250,7 +252,7 @@ public final class EntityTableSearchPanel extends JPanel {
    * @return a PropertySearchPanel based on the given model
    */
   @SuppressWarnings({"unchecked"})
-  private ColumnSearchPanel initializeSearchPanel(final PropertySearchModel propertySearchModel) {
+  private static ColumnSearchPanel initializeSearchPanel(final PropertySearchModel propertySearchModel) {
     if (propertySearchModel instanceof ForeignKeySearchModel) {
       return new ForeignKeySearchPanel((ForeignKeySearchModel) propertySearchModel, true, false);
     }

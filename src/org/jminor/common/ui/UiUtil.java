@@ -550,12 +550,12 @@ public final class UiUtil {
   /**
    * Links the given action to the given StateObserver, so that the action is enabled
    * only when the observed state is active
-   * @param enabledState the StateObserver with which to link the action
-   * @param action the action
+   * @param enabledState the StateObserver with which to link the action, if null then nothing is done
+   * @param action the action, if null then nothing is done
    * @return the linked action
    */
   public static Action linkToEnabledState(final StateObserver enabledState, final Action action) {
-    if (enabledState != null) {
+    if (enabledState != null && action != null) {
       action.setEnabled(enabledState.isActive());
       enabledState.addListener(new EventAdapter() {
         /** {@inheritDoc} */
@@ -570,27 +570,26 @@ public final class UiUtil {
   }
 
   /**
-   * Links the given component to the given StateObserver, so that the component is enabled and focusable
+   * Links the given components to the given StateObserver, so that each component is enabled and focusable
    * only when the observed state is active
-   * @param enabledState the StateObserver with which to link the component
-   * @param component the component
-   * @return the linked component
+   * @param enabledState the StateObserver with which to link the components, if null then nothing is done
+   * @param components the components, if null nothing is done
    */
-  public static JComponent linkToEnabledState(final StateObserver enabledState, final JComponent component) {
-    if (enabledState != null) {
-      component.setEnabled(enabledState.isActive());
-      component.setFocusable(enabledState.isActive());
-      enabledState.addListener(new EventAdapter() {
-        /** {@inheritDoc} */
-        @Override
-        public void eventOccurred() {
-          component.setEnabled(enabledState.isActive());
-          component.setFocusable(enabledState.isActive());
-        }
-      });
+  public static void linkToEnabledState(final StateObserver enabledState, final JComponent... components) {
+    if (enabledState != null && components != null) {
+      for (final JComponent component : components) {
+        component.setEnabled(enabledState.isActive());
+        component.setFocusable(enabledState.isActive());
+        enabledState.addListener(new EventAdapter() {
+          /** {@inheritDoc} */
+          @Override
+          public void eventOccurred() {
+            component.setEnabled(enabledState.isActive());
+            component.setFocusable(enabledState.isActive());
+          }
+        });
+      }
     }
-
-    return component;
   }
 
   /**

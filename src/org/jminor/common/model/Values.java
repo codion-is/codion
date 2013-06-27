@@ -46,7 +46,16 @@ public final class Values {
   }
 
   /**
-   * Links the two values together
+   * Instantiates a boolean Value based on a {@link State}
+   * @param state the state to base the value on
+   * @return a boolean state based on the given value
+   */
+  public static Value<Boolean> stateValue(final State state) {
+    return new StateValue(state);
+  }
+
+  /**
+   * Links the two values together so that changes in one are reflected in the other
    * @param modelValue the model value
    * @param uiValue the ui value
    * @param <V> the value type
@@ -161,6 +170,35 @@ public final class Values {
     @Override
     public EventObserver getChangeEvent() {
       return changeEvent;
+    }
+  }
+
+  /**
+   * A boolean value based on a State
+   */
+  private static final class StateValue implements Value<Boolean> {
+    private final State state;
+
+    private StateValue(final State state) {
+      this.state = state;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void set(final Boolean value) {
+      state.setActive(value);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public Boolean get() {
+      return state.isActive();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public EventObserver getChangeEvent() {
+      return state.getStateChangeObserver();
     }
   }
 

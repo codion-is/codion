@@ -140,6 +140,20 @@ public class ValuesTest {
     assertEquals(3, uiValueEventCounter.size());
   }
 
+  @Test
+  public void stateValue() {
+    final State state = States.state(true);
+    final Value<Boolean> stateValue = Values.stateValue(state);
+    assertNotNull(stateValue.getChangeEvent());
+    assertTrue(stateValue.get());
+    stateValue.set(false);
+    assertFalse(state.isActive());
+    stateValue.set(true);
+    assertTrue(state.isActive());
+    state.setActive(false);
+    assertFalse(stateValue.get());
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void beanValueNoGetter() {
     Values.beanValue(this, "nonexistent", Integer.class, integerValueChangeEvent.getObserver());

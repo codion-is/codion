@@ -6,6 +6,7 @@ package org.jminor.common.ui.control;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
+import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
@@ -162,6 +163,28 @@ public final class Controls {
     Values.link(Values.<Boolean>beanValue(owner, beanPropertyName, boolean.class, changeEvent), new BooleanValue(buttonModel));
 
     return new ToggleControl(caption, buttonModel, enabledState);
+  }
+
+  /**
+   * Creates a ToggleControl based on the given {@link State}
+   * @param state the state to toggle
+   * @return a ToggleControl based on the given state
+   */
+  public static ToggleControl toggleControl(final State state) {
+    return toggleControl(state, null);
+  }
+
+  /**
+   * Creates a ToggleControl based on the given {@link State}
+   * @param state the state to toggle
+   * @param enabledState the state which controls the enabled state of the control
+   * @return a ToggleControl based on the given state
+   */
+  public static ToggleControl toggleControl(final State state, final StateObserver enabledState) {
+    final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
+    Values.link(Values.stateValue(state), new BooleanValue(buttonModel));
+
+    return new ToggleControl("toggleControl", buttonModel, enabledState);
   }
 
   /**

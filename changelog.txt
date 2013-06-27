@@ -3498,3 +3498,6 @@
   MethodControl now handles CancelException correctly
   DefaultExceptionHandler.unwrapException() now handles CancelException specifically
   DefaultEntityTableModel.applyColumnPreferences() bug fixed, column.setPreferredWith() now used instead of setWidth(), see javadoc
+  EntityTablePanel and EntityTableSearchPanel modified to allow customizations of the latter
+  Controls.toggleControl() based on a State added
+  UiUtil.linkToEnabledState() modified to accept varargs

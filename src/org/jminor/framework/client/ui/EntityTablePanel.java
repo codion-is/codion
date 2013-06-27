@@ -439,7 +439,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * in case it is a EntityTableSearchPanel advanced
    */
   public final void toggleSearchPanel() {
-    if (!searchPanel.isSimpleSearch()) {
+    if (searchPanel.canToggleAdvanced()) {
       if (isSearchPanelVisible()) {
         if (searchPanel.isAdvanced()) {
           setSearchPanelVisible(false);
@@ -1345,7 +1345,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private void initializeUI() {
     if (includeSearchPanel && searchScrollPane != null) {
       tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
-      if (!searchPanel.isSimpleSearch()) {
+      if (searchPanel.canToggleAdvanced()) {
         searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
         searchPanel.addAdvancedListener(new EventAdapter() {
           /** {@inheritDoc} */
