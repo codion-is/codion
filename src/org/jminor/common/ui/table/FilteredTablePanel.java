@@ -49,7 +49,9 @@ import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A UI component based on a FilteredTableModel.
@@ -69,9 +71,14 @@ public class FilteredTablePanel<T, C> extends JPanel {
   private final FilteredTableModel<T, C> tableModel;
 
   /**
+   * Provides filter panels
+   */
+  private final ColumnSearchPanelProvider<C> searchPanelProvider;
+
+  /**
    * the property filter panels
    */
-  private final List<ColumnSearchPanel<C>> columnFilterPanels;
+  private final Map<TableColumn, ColumnSearchPanel<C>> columnFilterPanels = new HashMap<TableColumn, ColumnSearchPanel<C>>();
 
   /**
    * the JTable for showing the underlying entities
@@ -108,31 +115,31 @@ public class FilteredTablePanel<T, C> extends JPanel {
    * @param tableModel the table model
    */
   public FilteredTablePanel(final FilteredTableModel<T, C> tableModel) {
-    this(tableModel, initializeFilterPanels(tableModel));
+    this(tableModel, new ColumnSearchPanelProvider<C>() {
+      /** {@inheritDoc} */
+      @Override
+      public ColumnSearchPanel<C> createColumnSearchPanel(final TableColumn column) {
+        //noinspection unchecked
+        return new ColumnSearchPanel<C>(tableModel.getColumnModel().getFilterModel((C) column.getIdentifier()), true, true);
+      }
+    });
   }
 
   /**
    * Instantiates a new FilteredTablePanel.
    * @param tableModel the table model
-   * @param columnFilterPanels the column filter panels to use, these must be based on
+   * @param searchPanelProvider the column search panel provider
    * the column filter models found in the table model
    */
-  public FilteredTablePanel(final FilteredTableModel<T, C> tableModel, final List<ColumnSearchPanel<C>> columnFilterPanels) {
+  public FilteredTablePanel(final FilteredTableModel<T, C> tableModel, final ColumnSearchPanelProvider<C> searchPanelProvider) {
     Util.rejectNullValue(tableModel, "tableModel");
     this.tableModel = tableModel;
+    this.searchPanelProvider = searchPanelProvider;
     this.table = initializeJTable();
     this.tableScrollPane = new JScrollPane(table);
     this.searchField = initializeSearchField();
-    this.columnFilterPanels = columnFilterPanels;
     initializeTableHeader();
     bindEvents();
-  }
-
-  /**
-   * @return the column search panels serving as column filter panels
-   */
-  public final List<ColumnSearchPanel<C>> getColumnFilterPanels() {
-    return Collections.unmodifiableList(columnFilterPanels);
   }
 
   /**
@@ -140,7 +147,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
    * @param value true if the active filter panels should be shown, false if they should be hidden
    */
   public final void setFilterPanelsVisible(final boolean value) {
-    for (final ColumnSearchPanel columnFilterPanel : getColumnFilterPanels()) {
+    for (final ColumnSearchPanel columnFilterPanel : columnFilterPanels.values()) {
       if (value) {
         columnFilterPanel.showDialog();
       }
@@ -486,8 +493,12 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
     final int index = tableModel.getColumnModel().getColumnIndexAtX(event.getX());
+    final TableColumn column = tableModel.getColumnModel().getColumn(index);
+    if (!columnFilterPanels.containsKey(column)) {
+      columnFilterPanels.put(column, searchPanelProvider.createColumnSearchPanel(column));
+    }
 
-    toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(index), table);
+    toggleFilterPanel(event.getLocationOnScreen(), columnFilterPanels.get(column), table);
   }
 
   private static void toggleFilterPanel(final Point position, final ColumnSearchPanel columnFilterPanel,
@@ -518,16 +529,17 @@ public class FilteredTablePanel<T, C> extends JPanel {
     column.setHeaderValue(val);
   }
 
-  @SuppressWarnings({"unchecked"})
-  private static <T, C> List<ColumnSearchPanel<C>> initializeFilterPanels(final FilteredTableModel<T, C> tableModel) {
-    Util.rejectNullValue(tableModel, "tableModel");
-    final List<ColumnSearchPanel<C>> filterPanels = new ArrayList<ColumnSearchPanel<C>>(tableModel.getColumnCount());
-    for (final TableColumn column : tableModel.getColumnModel().getAllColumns()) {
-      final ColumnSearchModel<C> model = tableModel.getColumnModel().getFilterModel((C) column.getIdentifier());
-      filterPanels.add(new ColumnSearchPanel<C>(model, true, true));
-    }
-
-    return filterPanels;
+  /**
+   * Responsible for creating {@link ColumnSearchPanel}s
+   * @param <C> the type used as column identifier
+   */
+  public interface ColumnSearchPanelProvider<C> {
+    /**
+     * Creates a ColumnSearchPanel for the given column
+     * @param column the column
+     * @return a ColumnSearchPanel
+     */
+    ColumnSearchPanel<C> createColumnSearchPanel(final TableColumn column);
   }
 
   private final class MouseSortHandler extends MouseAdapter {

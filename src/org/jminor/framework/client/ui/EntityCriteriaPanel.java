@@ -69,10 +69,10 @@ public final class EntityCriteriaPanel extends JPanel {
 
     tableModel.getSearchModel().refresh();
 
-    add(initializeShowAllPanel(tableModel), BorderLayout.SOUTH);
+    add(initializeConfigurationPanel(tableModel), BorderLayout.SOUTH);
   }
 
-  private JPanel initializeShowAllPanel(final EntityTableModel tableModel) {
+  private JPanel initializeConfigurationPanel(final EntityTableModel tableModel) {
     final JPanel panel = new JPanel(new FlowLayout(FlowLayout.LEFT));
     panel.setBorder(BorderFactory.createTitledBorder(FrameworkMessages.get(FrameworkMessages.FILTER_SETTINGS)));
     panel.add(ControlProvider.createCheckBox(Controls.toggleControl(tableModel,

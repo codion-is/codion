@@ -3510,3 +3510,6 @@
   EntityApplicationPanel.createMenuBar() renamed to initializeMenuBar() and can be overridden
   DefaultForeignKeySearchModel no longer refreshes the combo box model on initialization
   ForeignKeySearchPanel now refreshes the underlying combo box model, if any
+  EntityTableSearchPanel now lazily initializes the search panels
+  FilteredTablePanel.ColumnSearchPanelProvider added, added as constructor parameter enabling lazy initialization of filter panels
+  FilteredTablePanel bug fixed, reording of columns broke filter panel display

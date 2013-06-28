@@ -16,7 +16,6 @@ import org.jminor.common.model.SerializeException;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.UiUtil;
@@ -253,7 +252,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public EntityTablePanel(final EntityTableModel tableModel, final EntityTableSearchPanel searchPanel,
                           final EntityTableSummaryPanel summaryPanel) {
-    super(tableModel, initializeFilterPanels(tableModel));
+    super(tableModel, new ColumnSearchPanelProvider<Property>() {
+      /** {@inheritDoc} */
+      @Override
+      public ColumnSearchPanel<Property> createColumnSearchPanel(final TableColumn column) {
+        return new PropertyFilterPanel(tableModel.getSearchModel().getPropertyFilterModel(
+                ((Property) column.getIdentifier()).getPropertyID()), true, true);
+      }
+    });
     this.searchPanel = searchPanel;
     if (searchPanel != null) {
       this.searchScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
@@ -1550,19 +1556,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     panel.add(tabPane, BorderLayout.CENTER);
 
     return panel;
-  }
-
-  @SuppressWarnings({"unchecked"})
-  private static List<ColumnSearchPanel<Property>> initializeFilterPanels(final EntityTableModel tableModel) {
-    final List<ColumnSearchPanel<Property>> filterPanels = new ArrayList<ColumnSearchPanel<Property>>(tableModel.getColumnCount());
-    final Enumeration<TableColumn> columns = tableModel.getColumnModel().getColumns();
-    while (columns.hasMoreElements()) {
-      final Property columnProperty = (Property) columns.nextElement().getIdentifier();
-      final ColumnSearchModel<Property> model = tableModel.getSearchModel().getPropertyFilterModel(columnProperty.getPropertyID());
-      filterPanels.add(new PropertyFilterPanel(model, true, true));
-    }
-
-    return filterPanels;
   }
 
   private static Point getPopupLocation(final JTable table) {

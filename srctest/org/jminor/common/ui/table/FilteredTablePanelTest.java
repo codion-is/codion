@@ -7,7 +7,6 @@ import org.jminor.common.model.table.AbstractFilteredTableModelTest;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
 
 public class FilteredTablePanelTest {
@@ -16,7 +15,6 @@ public class FilteredTablePanelTest {
   public void test() {
     final FilteredTablePanel<String, Integer> panel =
             new FilteredTablePanel<String, Integer>(AbstractFilteredTableModelTest.createTestModel());
-    assertEquals(1, panel.getColumnFilterPanels().size());
     assertNotNull(panel.getJTable());
     assertNotNull(panel.getSearchField());
   }

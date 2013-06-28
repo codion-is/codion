@@ -116,7 +116,9 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
 
   /**
    * @param propertyID the id of the property for which to retrieve the PropertySearchModel
-   * @return the PropertySearchModel associated with the property identified by <code>propertyID</code>, null if none is found
+   * @return the PropertySearchModel associated with the property identified by <code>propertyID</code>
+   * @throws IllegalArgumentException in case no search model is available
+   * @see #containsPropertySearchModel(String)
    */
   PropertySearchModel<? extends Property.SearchableProperty> getPropertySearchModel(final String propertyID);
 
