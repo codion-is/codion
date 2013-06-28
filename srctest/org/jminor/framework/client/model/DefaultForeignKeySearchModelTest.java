@@ -56,6 +56,11 @@ public class DefaultForeignKeySearchModelTest {
     Collection<Entity> searchEntities = searchModel.getSearchEntities();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
+    comboBoxModel.refresh();
+    assertEquals(sales, comboBoxModel.getSelectedValue());
+    searchEntities = searchModel.getSearchEntities();
+    assertEquals(1, searchEntities.size());
+    assertTrue(searchEntities.contains(sales));
 
     searchModel.setUpperBound((Object) null);
     assertNull(comboBoxModel.getSelectedItem());

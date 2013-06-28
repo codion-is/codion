@@ -65,6 +65,7 @@ public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.Fore
     private JComponent initializeForeignKeyField() {
       final EntityComboBoxModel boxModel = ((ForeignKeySearchModel) model).getEntityComboBoxModel();
       if (boxModel != null) {
+        boxModel.refresh();
         final EntityComboBox field = new EntityComboBox(boxModel);
         MaximumMatch.enable(field);
 

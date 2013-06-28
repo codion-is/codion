@@ -3508,3 +3508,5 @@
   EntityApplicationPanel.exit() calls the above method, allowing CancelException to propogate
   EntityApplicationPanel now generified in regard to the application model
   EntityApplicationPanel.createMenuBar() renamed to initializeMenuBar() and can be overridden
+  DefaultForeignKeySearchModel no longer refreshes the combo box model on initialization
+  ForeignKeySearchPanel now refreshes the underlying combo box model, if any

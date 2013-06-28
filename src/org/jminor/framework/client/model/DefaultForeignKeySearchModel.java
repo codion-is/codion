@@ -30,7 +30,6 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
    * Constructs a DefaultPropertySearchModel instance
    * @param property the property
    * @param entityLookupModel a EntityLookupModel
-   * @throws IllegalArgumentException if an illegal constant is used
    */
   public DefaultForeignKeySearchModel(final Property.ForeignKeyProperty property, final EntityLookupModel entityLookupModel) {
     super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
@@ -43,13 +42,11 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
    * Constructs a DefaultPropertySearchModel instance
    * @param property the property
    * @param entityComboBoxModel a EntityComboBoxModel
-   * @throws IllegalArgumentException if an illegal constant is used
    */
   public DefaultForeignKeySearchModel(final Property.ForeignKeyProperty property, final EntityComboBoxModel entityComboBoxModel) {
     super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
     this.entityComboBoxModel = entityComboBoxModel;
     if (entityComboBoxModel != null && entityComboBoxModel.isCleared()) {
-      entityComboBoxModel.refresh();
       entityComboBoxModel.setSelectedItem(getUpperBound());
     }
     this.entityLookupModel = null;
