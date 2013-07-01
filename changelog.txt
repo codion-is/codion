@@ -3513,3 +3513,5 @@
   EntityTableSearchPanel now lazily initializes the search panels
   FilteredTablePanel.ColumnSearchPanelProvider added, added as constructor parameter enabling lazy initialization of filter panels
   FilteredTablePanel bug fixed, reording of columns broke filter panel display
+  EntityEditModel.addEntitySetListener() now takes a generified listener, notified with the actual entity being set
+  DefaultEntityModel, moved bindEvents code linking the edit model to the table model to DefaultEntityTableModel

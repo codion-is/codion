@@ -302,7 +302,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void setEntity(final Entity entity) {
     this.entity.setAs(entity == null ? getDefaultEntity() : entity);
-    evtEntitySet.fire();
+    evtEntitySet.fire(entity);
   }
 
   /** {@inheritDoc} */
@@ -729,7 +729,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addEntitySetListener(final EventListener listener) {
+  public final void addEntitySetListener(final EventListener<Entity> listener) {
     evtEntitySet.addListener(listener);
   }
 

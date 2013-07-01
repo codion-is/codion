@@ -630,6 +630,20 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   private void bindEditModelEventsInternal() {
+    editModel.addAfterInsertListener(new EventAdapter<EntityEditModel.InsertEvent>() {
+      /** {@inheritDoc} */
+      @Override
+      public void eventOccurred(final EntityEditModel.InsertEvent eventInfo) {
+        handleInsert(eventInfo);
+      }
+    });
+    editModel.addAfterUpdateListener(new EventAdapter<EntityEditModel.UpdateEvent>() {
+      /** {@inheritDoc} */
+      @Override
+      public void eventOccurred(final EntityEditModel.UpdateEvent eventInfo) {
+        handleUpdate(eventInfo);
+      }
+    });
     editModel.addAfterDeleteListener(new EventAdapter<EntityEditModel.DeleteEvent>() {
       /** {@inheritDoc} */
       @Override
@@ -664,6 +678,27 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
         }
       }
     });
+  }
+
+  private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
+    getSelectionModel().clearSelection();
+    addEntities(insertEvent.getInsertedEntities(), true);
+  }
+
+  private void handleUpdate(final EntityEditModel.UpdateEvent updateEvent) {
+    final List<Entity> updatedEntities = updateEvent.getUpdatedEntities();
+    if (updateEvent.isPrimaryKeyModified()) {
+      refresh();//best we can do under the circumstances
+    }
+    else {//replace the updated entities in the table model
+      final List<Entity> updated = new ArrayList<Entity>();
+      for (final Entity entity : updatedEntities) {
+        if (entity.is(entityID)) {
+          updated.add(entity);
+        }
+      }
+      replaceEntities(updated);
+    }
   }
 
   private void handleDeleteInternal(final EntityEditModel.DeleteEvent e) {

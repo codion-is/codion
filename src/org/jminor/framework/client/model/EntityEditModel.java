@@ -357,7 +357,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   /**
    * @param listener a listener notified each time the entity is set
    */
-  void addEntitySetListener(final EventListener listener);
+  void addEntitySetListener(final EventListener<Entity> listener);
 
   /**
    * @param listener the listener to remove

@@ -448,31 +448,6 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
-  private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
-    if (containsTableModel()) {
-      tableModel.getSelectionModel().clearSelection();
-      tableModel.addEntities(insertEvent.getInsertedEntities(), true);
-    }
-  }
-
-  private void handleUpdate(final EntityEditModel.UpdateEvent updateEvent) {
-    final List<Entity> updatedEntities = updateEvent.getUpdatedEntities();
-    if (containsTableModel()) {
-      if (updateEvent.isPrimaryKeyModified()) {
-        tableModel.refresh();//best we can do under the circumstances
-      }
-      else {//replace the updated entities in the table model
-        final List<Entity> updated = new ArrayList<Entity>();
-        for (final Entity entity : updatedEntities) {
-          if (entity.is(entityID)) {
-            updated.add(entity);
-          }
-        }
-        tableModel.replaceEntities(updated);
-      }
-    }
-  }
-
   /**
    * Adds the inserted entities to the EntityComboBoxModels based on the inserted entity type
    * and sets the value of the master foreign key property
@@ -564,20 +539,6 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   private void bindEvents() {
-    editModel.addAfterInsertListener(new EventAdapter<EntityEditModel.InsertEvent>() {
-      /** {@inheritDoc} */
-      @Override
-      public void eventOccurred(final EntityEditModel.InsertEvent eventInfo) {
-        handleInsert(eventInfo);
-      }
-    });
-    editModel.addAfterUpdateListener(new EventAdapter<EntityEditModel.UpdateEvent>() {
-      /** {@inheritDoc} */
-      @Override
-      public void eventOccurred(final EntityEditModel.UpdateEvent eventInfo) {
-        handleUpdate(eventInfo);
-      }
-    });
     final EventListener initializer = new EventAdapter() {
       /** {@inheritDoc} */
       @Override
