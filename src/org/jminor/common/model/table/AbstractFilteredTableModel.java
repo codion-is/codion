@@ -74,7 +74,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * the filter criteria used by this model
    */
-  private final FilterCriteria<R> filterCriteria;
+  private FilterCriteria<R> filterCriteria;
 
   /**
    * true if searching the table model should be done via regular expressions
@@ -252,6 +252,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void filterContents() {
+    if (filterCriteria == null) {
+      return;
+    }
     try {
       final List<R> selectedItems = selectionModel.getSelectedItems();
       visibleItems.addAll(filteredItems);
@@ -281,7 +284,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void setFilterCriteria(final FilterCriteria<R> filterCriteria) {
-    throw new UnsupportedOperationException("AbstractFilteredTableModel.setFilterCriteria(FilterCriteria)");
+    this.filterCriteria = filterCriteria;
+    filterContents();
   }
 
   /** {@inheritDoc} */
@@ -575,9 +579,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private static final class FilterCriteriaImpl<R, C> implements FilterCriteria<R> {
 
-    private final Collection<ColumnSearchModel<C>> columnFilters;
+    private final Collection<? extends ColumnSearchModel<C>> columnFilters;
 
-    private FilterCriteriaImpl(final Collection<ColumnSearchModel<C>> columnFilters) {
+    private FilterCriteriaImpl(final Collection<? extends ColumnSearchModel<C>> columnFilters) {
       this.columnFilters = columnFilters;
     }
 

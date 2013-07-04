@@ -23,8 +23,10 @@ public interface FilteredModel<T> {
 
   /**
    * Filters the table according to the criteria returned by <code>getFilterCriteria()</code>.
+   * If no filter criteria is specified this method does nothing.
    * This method does not interfere with the internal ordering of the visible items.
    * @see #getFilterCriteria()
+   * @see #setFilterCriteria(FilterCriteria)
    * @see #addFilteringListener(EventListener)
    */
   void filterContents();
@@ -38,6 +40,7 @@ public interface FilteredModel<T> {
   FilterCriteria<T> getFilterCriteria();
 
   /**
+   * Sets the filter criteria and filters the model
    * @param filterCriteria the FilterCriteria to use
    */
   void setFilterCriteria(final FilterCriteria<T> filterCriteria);

@@ -472,7 +472,7 @@ public final class AbstractFilteredTableModelTest {
         events.add(new Object());
       }
     };
-    final TableSelectionModel selectionModel = tableModel.getSelectionModel();
+    final TableSelectionModel<String> selectionModel = tableModel.getSelectionModel();
     selectionModel.addSelectedIndexListener(listener);
     selectionModel.addSelectionChangedListener(listener);
 
@@ -639,14 +639,16 @@ public final class AbstractFilteredTableModelTest {
     assertEquals("selected item should fit", ITEMS[3], tableModel.getSelectionModel().getSelectedItem());
   }
 
-  @Test(expected = UnsupportedOperationException.class)
+  @Test()
   public void setFilterCriteria() {
+    tableModel.refresh();
     tableModel.setFilterCriteria(new FilterCriteria<String>() {
       @Override
       public boolean include(final String item) {
         return false;
       }
     });
+    assertTrue(tableModel.getRowCount() == 0);
   }
 
   @Test

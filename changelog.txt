@@ -3515,3 +3515,4 @@
   FilteredTablePanel bug fixed, reording of columns broke filter panel display
   EntityEditModel.addEntitySetListener() now takes a generified listener, notified with the actual entity being set
   DefaultEntityModel, moved bindEvents code linking the edit model to the table model to DefaultEntityTableModel
+  AbstractFilteredTableModel.setFilterCriteria() implemented
