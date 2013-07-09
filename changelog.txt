@@ -3516,3 +3516,6 @@
   EntityEditModel.addEntitySetListener() now takes a generified listener, notified with the actual entity being set
   DefaultEntityModel, moved bindEvents code linking the edit model to the table model to DefaultEntityTableModel
   AbstractFilteredTableModel.setFilterCriteria() implemented
+  DefaultExceptionHandler now unwraps RemoteException
+  EntityTablePanel.setIncludePopupMenu() added
+  EntityApplicationPanel.onExit() functionality replaced by addOnExitListener()

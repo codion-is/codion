@@ -214,6 +214,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private boolean includeSearchPanel = true;
 
   /**
+   * specifies whether or not to include a popup menu
+   */
+  private boolean includePopupMenu = true;
+
+  /**
    * True after <code>initializePanel()</code> has been called
    */
   private boolean panelInitialized = false;
@@ -337,6 +342,16 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public final void setIncludeSearchPanel(final boolean value) {
     checkIfInitialized();
     this.includeSearchPanel = value;
+  }
+
+  /**
+   * @param value true if a popup menu should be included
+   * @see #initializePanel()
+   * @throws IllegalStateException in case the panel has already been initialized
+   */
+  public final void setIncludePopupMenu(final boolean value) {
+    checkIfInitialized();
+    this.includePopupMenu = value;
   }
 
   /**
@@ -1511,7 +1526,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       column.setCellRenderer(tableCellRenderer);
       column.setResizable(true);
     }
-    setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControlSets));
+    if (includePopupMenu) {
+      setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControlSets));
+    }
   }
 
   private void checkIfInitialized() {

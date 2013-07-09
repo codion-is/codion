@@ -13,6 +13,7 @@ import java.awt.Window;
 import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
+import java.rmi.RemoteException;
 
 /**
  * A default ExceptionHandler implementation
@@ -39,8 +40,8 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
 
   @Override
   public void handleException(final Throwable exception, final Window dialogParent) {
-    final Throwable rootCause = unwrapExceptions(exception, RuntimeException.class, InvocationTargetException.class,
-            ExceptionInInitializerError.class, UndeclaredThrowableException.class);
+    final Throwable rootCause = unwrapExceptions(exception, RemoteException.class, RuntimeException.class,
+            InvocationTargetException.class, ExceptionInInitializerError.class, UndeclaredThrowableException.class);
     if (rootCause instanceof CancelException) {
       return;
     }
@@ -81,7 +82,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
 
     boolean unwrap = false;
     for (final Class<? extends Throwable> exceptionClass : exceptions) {
-      unwrap = exception.getClass().equals(exceptionClass);
+      unwrap = exceptionClass.isAssignableFrom(exception.getClass());
       if (unwrap) {
         break;
       }

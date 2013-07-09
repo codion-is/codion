@@ -52,6 +52,7 @@ import javax.swing.JToolBar;
 import javax.swing.JTree;
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import javax.swing.WindowConstants;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
@@ -93,6 +94,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
 
   private final Event evtApplicationStarted = Events.event();
   private final Event evtAlwaysOnTopChanged = Events.event();
+  private final Event evtOnExit = Events.event();
 
   private final boolean persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
   private final Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
@@ -375,7 +377,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
 
   /**
    * Exists this application
-   * @see #onExit()
+   * @see #addOnExitListener(org.jminor.common.model.EventListener)
    * @throws CancelException if the exit is cancelled
    */
   public final void exit() throws CancelException {
@@ -385,7 +387,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     }
 
     try {
-      onExit();
+      evtOnExit.fire();
     }
     catch (CancelException e) {
       throw e;
@@ -405,6 +407,10 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     }
     catch (Exception e) {
       LOG.debug("Exception while disconnecting from database", e);
+    }
+    final Window parent = getParentWindow();
+    if (parent != null) {
+      parent.dispose();
     }
     System.exit(0);
   }
@@ -943,6 +949,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
                                       final boolean showMenuBar, final Dimension size,
                                       final ImageIcon applicationIcon, final boolean setVisible) {
     final JFrame frame = new JFrame();
+    frame.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     frame.setIconImage(applicationIcon.getImage());
     frame.addWindowListener(new WindowAdapter() {
       @Override
@@ -979,6 +986,15 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     }
 
     return frame;
+  }
+
+  /**
+   * Adds a listener notified when the application is about to exit.
+   * To cancel the exit throw a {@link CancelException}.
+   * @param listener a listener notified when the application is about to exit
+   */
+  protected final void addOnExitListener(final EventListener listener) {
+    evtOnExit.addListener(listener);
   }
 
   /**
@@ -1055,13 +1071,6 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
       entityPanel.savePreferences();
     }
   }
-
-  /**
-   * For overriding, called when exiting the application, note that any exceptions
-   * thrown are ignored but logged although {@link org.jminor.common.model.CancelException}
-   * is allowed to propagate onward thereby cancelling the application exit
-   */
-  protected void onExit() {}
 
   private void bindEventsInternal() {
     final StateObserver connected = applicationModel.getConnectionProvider().getConnectedObserver();
