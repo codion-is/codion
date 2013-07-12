@@ -3505,7 +3505,7 @@
   EventObserverImpl now uses WeakReference
   EventObserverImpl no longer uses WeakReference, forgot to think on this one
   EntityApplicationPanel.onExit() added
-  EntityApplicationPanel.exit() calls the above method, allowing CancelException to propogate
+  EntityApplicationPanel.exit() calls the above method, allowing CancelException to propagate
   EntityApplicationPanel now generified in regard to the application model
   EntityApplicationPanel.createMenuBar() renamed to initializeMenuBar() and can be overridden
   DefaultForeignKeySearchModel no longer refreshes the combo box model on initialization
@@ -3519,3 +3519,7 @@
   DefaultExceptionHandler now unwraps RemoteException
   EntityTablePanel.setIncludePopupMenu() added
   EntityApplicationPanel.onExit() functionality replaced by addOnExitListener()
+  FilteredTableModel.setColumns() added
+  EntityTableModel.setColumns() added
+  OracleDatabase.getErrorMessage() now handles multi-line error messages
+  EntityLookupField now places the caret at index 0 when the selected entity has been set

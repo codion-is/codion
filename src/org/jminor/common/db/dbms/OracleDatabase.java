@@ -109,7 +109,11 @@ public final class OracleDatabase extends AbstractDatabase {
   @Override
   public String getErrorMessage(final SQLException exception) {
     if (exception.getErrorCode() == NULL_VALUE_ERROR || exception.getErrorCode() == NULL_VALU_ERROR_2) {
-      final String errorMsg = exception.getMessage();
+      String exceptionMessage = exception.getMessage();
+      if (exceptionMessage.contains("\n")) {
+        exceptionMessage = exceptionMessage.substring(0, exception.getMessage().indexOf("\n"));
+      }
+      final String errorMsg = exceptionMessage;
       final String columnName = errorMsg.substring(errorMsg.lastIndexOf('.') + 2, errorMsg.lastIndexOf(')') - 1);
 
       return Messages.get(Messages.VALUE_MISSING) + ": " + columnName;

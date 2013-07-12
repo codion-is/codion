@@ -163,6 +163,12 @@ public final class EntityLookupField extends JTextField {
         updateColors();
       }
     });
+    getModel().addSelectedEntitiesListener(new EventAdapter() {
+      @Override
+      public void eventOccurred() {
+        setCaretPosition(0);
+      }
+    });
   }
 
   private void addEscapeListener() {

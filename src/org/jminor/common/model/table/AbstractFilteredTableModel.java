@@ -16,6 +16,7 @@ import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.Point;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
@@ -343,6 +344,24 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final FilteredTableColumnModel<C> getColumnModel() {
     return columnModel;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setColumns(final C... columnIdentifiers) {
+    if (columnIdentifiers != null) {
+      final List<C> identifiers = Arrays.asList(columnIdentifiers);
+      int columnIndex = 0;
+      for (final C identifier : identifiers) {
+        columnModel.setColumnVisible(identifier, true);
+        columnModel.moveColumn(columnModel.getColumnIndex(identifier), columnIndex++);
+      }
+      for (final TableColumn column : columnModel.getAllColumns()) {
+        if (!identifiers.contains(column.getIdentifier())) {
+          columnModel.setColumnVisible((C) column.getIdentifier(), false);
+        }
+      }
+    }
   }
 
   /** {@inheritDoc} */

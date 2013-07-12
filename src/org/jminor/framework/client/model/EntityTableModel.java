@@ -289,4 +289,10 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * Saves any user preferences
    */
   void savePreferences();
+
+  /**
+   * Arranges the column model so that only the given columns are visible and in the given order
+   * @param propertyIDs the column identifiers
+   */
+  void setColumns(final String... propertyIDs);
 }

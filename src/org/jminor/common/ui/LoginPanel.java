@@ -17,6 +17,7 @@ import javax.swing.JPanel;
 import javax.swing.JPasswordField;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
 
 /**
@@ -167,8 +168,10 @@ public final class LoginPanel extends JPanel {
     retBase.add(lblPass);
     retBase.add(passwordField);
 
+    final JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    centerPanel.add(retBase);
     setLayout(UiUtil.createBorderLayout());
-    add(retBase, BorderLayout.CENTER);
+    add(centerPanel, BorderLayout.CENTER);
     if (usernameField.getText().length() == 0) {
       UiUtil.addInitialFocusHack(usernameField, new AbstractAction() {
         /** {@inheritDoc} */
