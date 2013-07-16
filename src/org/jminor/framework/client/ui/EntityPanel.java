@@ -1417,8 +1417,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Shows the edit panel in a non-modal dialog
    */
   private void showEditDialog() {
-    final Point location = getLocationOnScreen();
-    location.setLocation(location.x + 1, location.y + getSize().height - editControlPanel.getSize().height - EDIT_DIALOG_LOCATION_OFFSET);
     editPanelDialog = UiUtil.displayInDialog(this, editControlPanel, caption, false,
             new AbstractAction() {
               /** {@inheritDoc} */
@@ -1427,7 +1425,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
                 setEditPanelState(HIDDEN);
               }
             });
-    editPanelDialog.setLocation(location);
   }
 
   /**

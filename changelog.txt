@@ -3529,3 +3529,4 @@
   DefaultTableSelectionModel now listens to TableModelEvent.DELETE events and modifies the selection accordingly, bypassing the vetoSelectionChange functionality for obvious reasons
   DefaultEntityModel.initializeDetailModels() now protected
   EntityTestUnit no longer uses LoginPanel for getting unit test user credentials
+  EntityPanel no longer explicitly sets the edit panel dialog location
