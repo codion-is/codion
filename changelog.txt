@@ -3523,3 +3523,7 @@
   EntityTableModel.setColumns() added
   OracleDatabase.getErrorMessage() now handles multi-line error messages
   EntityLookupField now places the caret at index 0 when the selected entity has been set
+  DefaultEntityEditModel.getDefaultEntity() now always returns an unmodified instance
+  TableSelectionModel.TableModelProxy.addTableModelListener() added
+  AbstractFilteredTableModel.removeItems() now uses removeItem(), so that it fires table row deleted, worse performance probably
+  DefaultTableSelectionModel now listens to TableModelEvent.DELETE events and modifies the selection accordingly, bypassing the vetoSelectionChange functionality for obvious reasons

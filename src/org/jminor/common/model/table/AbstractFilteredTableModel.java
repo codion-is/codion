@@ -316,11 +316,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void removeItems(final Collection<R> items) {
-    final int visibleCount = visibleItems.size();
-    visibleItems.removeAll(items);
-    filteredItems.removeAll(items);
-    if (visibleItems.size() != visibleCount) {
-      fireTableDataChanged();
+    for (final R rowItem : items) {
+      removeItem(rowItem);
     }
   }
 

@@ -687,6 +687,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       defaultEntity.setValue(foreignKeyProperty, getDefaultValue(foreignKeyProperty));
     }
+    defaultEntity.saveAll();
 
     return defaultEntity;
   }

@@ -581,10 +581,15 @@ public final class AbstractFilteredTableModelTest {
     selectionModel.addSelectedItem(ITEMS[4]);
     assertEquals(4, selectionModel.getSelectionCount());
     assertEquals("current index should fit", 0, selectionModel.getMinSelectionIndex());
+    tableModel.removeItem(ITEMS[0]);
+    assertEquals(3, selectionModel.getSelectionCount());
+    assertEquals("current index should fit", 0, selectionModel.getMinSelectionIndex());
 
-    selectionModel.clearSelection();
+    tableModel.clear();
+    assertTrue(selectionModel.getSelectionEmptyObserver().isActive());
     assertNull(selectionModel.getSelectedItem());
 
+    selectionModel.clearSelection();
     selectionModel.removeSelectedIndexListener(listener);
     selectionModel.removeSelectionChangedListener(listener);
   }

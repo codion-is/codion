@@ -7,6 +7,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.StateObserver;
 
 import javax.swing.ListSelectionModel;
+import javax.swing.event.TableModelListener;
 import java.util.Collection;
 import java.util.List;
 
@@ -170,5 +171,11 @@ public interface TableSelectionModel<R> extends ListSelectionModel {
      * @return true if an impending selection change should be vetoed
      */
     boolean vetoSelectionChange();
+
+    /**
+     * Adds a listener to the list that's notified each time a change to the data model occurs.
+     * @param listener the listener
+     */
+    void addTableModelListener(TableModelListener listener);
   }
 }
