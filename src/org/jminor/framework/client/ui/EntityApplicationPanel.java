@@ -653,7 +653,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * Initializes this application panel
    * @param applicationModel the application model
    * @throws IllegalStateException if the application model has not been set
-   * @throws org.jminor.common.model.CancelException in case the initialization is cancelled
+   * @throws CancelException in case the initialization is cancelled
    */
   protected final void initialize(final Model applicationModel) throws CancelException {
     Util.rejectNullValue(applicationModel, "applicationModel");

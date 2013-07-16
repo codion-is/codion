@@ -182,7 +182,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * Updates the given entities. If the entities are unmodified or the list is empty
    * this method returns silently.
    * @param entities the Entities to update
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
+   * @throws DatabaseException in case of a database exception
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
@@ -193,9 +193,9 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
 
   /**
    * Deletes the selected entities
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
+   * @throws DatabaseException in case of a database exception
    * @throws CancelException in case the user cancels the operation
-   * @throws  IllegalStateException in case this table model has no edit model
+   * @throws IllegalStateException in case this table model has no edit model
    */
   void deleteSelected() throws CancelException, DatabaseException;
 

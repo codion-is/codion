@@ -436,7 +436,14 @@ public class DefaultEntityModel implements EntityModel {
   @SuppressWarnings({"UnusedDeclaration"})
   protected void handleInitialization(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {}
 
-  private void initializeDetailModels() {
+  /**
+   * Initializes all linked detail models according to the active entities in this master model
+   * @see #getActiveEntities()
+   * @see #addLinkedDetailModel(EntityModel)
+   * @see #initialize(org.jminor.framework.domain.Property.ForeignKeyProperty, java.util.List)
+   * @see #initialize(String, java.util.List)
+   */
+  protected final void initializeDetailModels() {
     final List<Entity> activeEntities = getActiveEntities();
     for (final EntityModel detailModel : linkedDetailModels) {
       if (detailModelForeignKeys.containsKey(detailModel)) {
@@ -460,7 +467,7 @@ public class DefaultEntityModel implements EntityModel {
         for (final Entity entity : insertEvent.getInsertedEntities()) {
           editModel.getEntityComboBoxModel(foreignKeyProperty).addItem(entity);
         }
-      }
+      }//todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
       editModel.setValue(foreignKeyProperty.getPropertyID(), insertEvent.getInsertedEntities().get(0));
     }
   }

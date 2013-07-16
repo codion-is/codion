@@ -5,13 +5,11 @@ package org.jminor.framework.tools.testing;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordNotFoundException;
-import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueProvider;
-import org.jminor.common.ui.LoginPanel;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
@@ -60,10 +58,9 @@ public abstract class EntityTestUnit {
 
   /**
    * Sets up the database connection
-   * @throws CancelException in case the test is cancelled during setup
    */
   @Before
-  public final void setUp() throws CancelException {
+  public final void setUp() {
     connection = initializeConnectionProvider().getConnection();
     doSetUp();
   }
@@ -165,9 +162,8 @@ public abstract class EntityTestUnit {
 
   /**
    * @return the EntityConnectionProvider instance this test case should use
-   * @throws CancelException in case the login was cancelled
    */
-  protected EntityConnectionProvider initializeConnectionProvider() throws CancelException {
+  protected EntityConnectionProvider initializeConnectionProvider() {
     return EntityConnectionProviders.createConnectionProvider(getTestUser(), getClass().getName());
   }
 
@@ -175,10 +171,9 @@ public abstract class EntityTestUnit {
    * Returns the database user to use when running the tests, this default implementation
    * prompts for the user/password information, usually overridden
    * @return the db user to use when running the test
-   * @throws CancelException in case the user cancels the login
    */
-  protected User getTestUser() throws CancelException {
-    return LoginPanel.getUser(null, null);
+  protected User getTestUser() {
+    return User.UNIT_TEST_USER;
   }
 
   /**
