@@ -3512,7 +3512,7 @@
   ForeignKeySearchPanel now refreshes the underlying combo box model, if any
   EntityTableSearchPanel now lazily initializes the search panels
   FilteredTablePanel.ColumnSearchPanelProvider added, added as constructor parameter enabling lazy initialization of filter panels
-  FilteredTablePanel bug fixed, reording of columns broke filter panel display
+  FilteredTablePanel bug fixed, reordering of columns broke filter panel display
   EntityEditModel.addEntitySetListener() now takes a generified listener, notified with the actual entity being set
   DefaultEntityModel, moved bindEvents code linking the edit model to the table model to DefaultEntityTableModel
   AbstractFilteredTableModel.setFilterCriteria() implemented
@@ -3530,3 +3530,5 @@
   DefaultEntityModel.initializeDetailModels() now protected
   EntityTestUnit no longer uses LoginPanel for getting unit test user credentials
   EntityPanel no longer explicitly sets the edit panel dialog location
+  DefaultEntityTableModel now clears the selection when the associated edit model is cleared
+  ValueChangeEvent.toString() added

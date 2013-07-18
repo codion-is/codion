@@ -118,4 +118,15 @@ public final class ValueChangeEvent<K, V> {
   public boolean isInitialization() {
     return initialization;
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public String toString() {
+    if (initialization) {
+      return ValueChangeEvent.class.getName() + ", " + key + ": " + newValue;
+    }
+    else {
+      return ValueChangeEvent.class.getName() + ", " + key + ": " + oldValue + " -> " + newValue;
+    }
+  }
 }

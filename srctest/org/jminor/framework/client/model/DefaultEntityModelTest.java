@@ -25,6 +25,7 @@ import org.junit.Test;
 
 import javax.swing.JComboBox;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -162,6 +163,16 @@ public final class DefaultEntityModelTest {
     final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
     tableModel.setEditModel(editModel);
     new DefaultEntityModel(editModel2, tableModel);
+  }
+
+  @Test
+  public void clearEditModelClearTableSelection() {
+    departmentModel.refresh();
+    departmentModel.getTableModel().getSelectionModel().setSelectedIndexes(Arrays.asList(1,2,3));
+    assertFalse(departmentModel.getTableModel().getSelectionModel().isSelectionEmpty());
+    assertFalse(departmentModel.getEditModel().isEntityNew());
+    departmentModel.getEditModel().setEntity(null);
+    assertTrue(departmentModel.getTableModel().getSelectionModel().isSelectionEmpty());
   }
 
   @Test

@@ -665,6 +665,15 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
         refresh();
       }
     });
+    editModel.addEntitySetListener(new EventAdapter<Entity>() {
+      /** {@inheritDoc} */
+      @Override
+      public void eventOccurred(final Entity entity) {
+        if (entity == null && !getSelectionModel().isSelectionEmpty()) {
+          getSelectionModel().clearSelection();
+        }
+      }
+    });
     getSelectionModel().addSelectedIndexListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
@@ -680,7 +689,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       public void tableChanged(final TableModelEvent e) {
         //if the selected record is being updated via the table model refresh the one in the edit model
         if (e.getType() == TableModelEvent.UPDATE && e.getFirstRow() == getSelectionModel().getSelectedIndex()) {
-          editModel.setEntity(null);
           editModel.setEntity(getSelectionModel().getSelectedItem());
         }
       }
