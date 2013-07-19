@@ -533,6 +533,9 @@ public class DefaultEntityEditModel implements EntityEditModel {
     evtBeforeDelete.fire();
 
     doDelete(entities);
+    if (entities.contains(getEntity())) {
+      setEntity(null);
+    }
 
     evtAfterDelete.fire(new DeleteEventImpl(entities));
 
