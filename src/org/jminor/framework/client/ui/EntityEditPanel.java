@@ -940,7 +940,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return a JTextArea bound to the property
    */
   protected final JTextArea createTextArea(final String propertyID, final int rows, final int columns) {
-    return createTextArea(propertyID, readOnly(propertyID), rows, columns);
+    return createTextArea(propertyID, readOnly(propertyID), rows, columns, null);
   }
 
   /**
@@ -951,9 +951,10 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param columns the number of columns in the text area
    * @return a JTextArea bound to the property
    */
-  protected final JTextArea createTextArea(final String propertyID, final boolean readOnly, final int rows, final int columns) {
+  protected final JTextArea createTextArea(final String propertyID, final boolean readOnly, final int rows, final int columns,
+                                           final StateObserver enabledState) {
     final Property property = Entities.getProperty(editModel.getEntityID(), propertyID);
-    final JTextArea textArea = EntityUiUtil.createTextArea(property, editModel, readOnly, rows, columns);
+    final JTextArea textArea = EntityUiUtil.createTextArea(property, editModel, readOnly, rows, columns, enabledState);
     setComponent(propertyID, textArea);
 
     return textArea;

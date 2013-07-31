@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.Util;
+import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.MasterDetailPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
@@ -649,7 +650,12 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param exception the exception to handle
    */
   public final void handleException(final Exception exception) {
-    editPanel.handleException(exception);
+    if (editPanel != null) {
+      editPanel.handleException(exception);
+    }
+    else {
+      DefaultExceptionHandler.getInstance().handleException(exception, this);
+    }
   }
 
   /**
@@ -1036,20 +1042,22 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
 
     setLayout(UiUtil.createBorderLayout());
-    if (detailPanelTabbedPane == null) { //no left right split pane
-      add(tablePanel, BorderLayout.CENTER);
-    }
-    else {
-      if (compactDetailLayout) {
-        compactBase = new JPanel(UiUtil.createBorderLayout());
-        compactBase.add(tablePanel, BorderLayout.CENTER);
-        horizontalSplitPane.setLeftComponent(compactBase);
+    if (detailPanelTabbedPane != null || tablePanel != null) {
+      if (detailPanelTabbedPane == null) { //no left right split pane
+        add(tablePanel, BorderLayout.CENTER);
       }
       else {
-        horizontalSplitPane.setLeftComponent(tablePanel);
+        if (compactDetailLayout) {
+          compactBase = new JPanel(UiUtil.createBorderLayout());
+          compactBase.add(tablePanel, BorderLayout.CENTER);
+          horizontalSplitPane.setLeftComponent(compactBase);
+        }
+        else {
+          horizontalSplitPane.setLeftComponent(tablePanel);
+        }
+        horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
+        add(horizontalSplitPane, BorderLayout.CENTER);
       }
-      horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
-      add(horizontalSplitPane, BorderLayout.CENTER);
     }
     setDetailPanelState(detailPanelState);
     setEditPanelState(editPanelState);

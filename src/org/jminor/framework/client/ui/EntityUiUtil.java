@@ -752,7 +752,7 @@ public final class EntityUiUtil {
    */
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
                                          final boolean readOnly) {
-    return createTextArea(property, editModel, readOnly, -1, -1);
+    return createTextArea(property, editModel, readOnly, -1, -1, null);
   }
 
   /**
@@ -765,7 +765,8 @@ public final class EntityUiUtil {
    * @return a text area
    */
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
-                                         final boolean readOnly, final int rows, final int columns) {
+                                         final boolean readOnly, final int rows, final int columns,
+                                         final StateObserver enabledState) {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(property, editModel);
@@ -778,6 +779,9 @@ public final class EntityUiUtil {
     textArea.setWrapStyleWord(true);
     if (property.getMaxLength() > 0) {
       ((AbstractDocument) textArea.getDocument()).setDocumentFilter(new DocumentSizeFilter(property.getMaxLength()));
+    }
+    if (enabledState != null) {
+      UiUtil.linkToEnabledState(enabledState, textArea);
     }
 
     ValueLinks.textValueLink(textArea, EditModelValues.<String>value(editModel, property.getPropertyID()), null, true, readOnly);

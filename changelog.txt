@@ -3533,3 +3533,4 @@
   DefaultEntityTableModel now clears the selection when the associated edit model is cleared
   ValueChangeEvent.toString() added
   DefaultEntityEditModel.delete() now clears the model if the active entity was deleted
+  EntityUiUtil.createTextArea() overloaded with enabledState
