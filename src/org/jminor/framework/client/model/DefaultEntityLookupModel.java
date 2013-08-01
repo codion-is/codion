@@ -34,9 +34,9 @@ import java.util.List;
  */
 public class DefaultEntityLookupModel implements EntityLookupModel {
 
-  private final Event evtSelectedEntitiesChanged = Events.event();
-  private final Event evtSearchStringChanged = Events.event();
-  private final State stSearchStringRepresentsSelected = States.state(true);
+  private final Event selectedEntitiesChangedEvent = Events.event();
+  private final Event searchStringChangedEvent = Events.event();
+  private final State searchStringRepresentsSelectedState = States.state(true);
 
   /**
    * The ID of the entity this lookup model is based on
@@ -148,7 +148,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
       this.selectedEntities.addAll(entities);
     }
     refreshSearchText();
-    evtSelectedEntitiesChanged.fire();
+    selectedEntitiesChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -234,15 +234,15 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   @Override
   public final void refreshSearchText() {
     setSearchString(selectedEntities.isEmpty() ? "" : toString(getSelectedEntities()));
-    stSearchStringRepresentsSelected.setActive(searchStringRepresentsSelected());
+    searchStringRepresentsSelectedState.setActive(searchStringRepresentsSelected());
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setSearchString(final String searchString) {
     this.searchString = searchString == null ? "" : searchString;
-    stSearchStringRepresentsSelected.setActive(searchStringRepresentsSelected());
-    evtSearchStringChanged.fire();
+    searchStringRepresentsSelectedState.setActive(searchStringRepresentsSelected());
+    searchStringChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -273,37 +273,37 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   @Override
   public final EventObserver getSearchStringObserver() {
-    return evtSearchStringChanged.getObserver();
+    return searchStringChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addSearchStringListener(final EventListener listener) {
-    evtSearchStringChanged.addListener(listener);
+    searchStringChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addSelectedEntitiesListener(final EventListener listener) {
-    evtSelectedEntitiesChanged.addListener(listener);
+    selectedEntitiesChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeSearchStringListener(final EventListener listener) {
-    evtSearchStringChanged.removeListener(listener);
+    searchStringChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeSelectedEntitiesListener(final EventListener listener) {
-    evtSelectedEntitiesChanged.removeListener(listener);
+    selectedEntitiesChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final StateObserver getSearchStringRepresentsSelectedObserver() {
-    return stSearchStringRepresentsSelected.getObserver();
+    return searchStringRepresentsSelectedState.getObserver();
   }
 
   /**

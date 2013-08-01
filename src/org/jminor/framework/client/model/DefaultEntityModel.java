@@ -45,9 +45,9 @@ public class DefaultEntityModel implements EntityModel {
 
   protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityModel.class);
 
-  private final Event evtRefreshStarted = Events.event();
-  private final Event evtRefreshDone = Events.event();
-  private final Event evtLinkedDetailModelsChanged = Events.event();
+  private final Event refreshStartedEvent = Events.event();
+  private final Event refreshDoneEvent = Events.event();
+  private final Event linkedDetailModelsChangedEvent = Events.event();
 
   /**
    * The entity ID
@@ -257,7 +257,7 @@ public class DefaultEntityModel implements EntityModel {
   @Override
   public final void addLinkedDetailModel(final EntityModel detailModel) {
     if (detailModel != null && linkedDetailModels.add(detailModel)) {
-      evtLinkedDetailModelsChanged.fire();
+      linkedDetailModelsChangedEvent.fire();
     }
   }
 
@@ -265,7 +265,7 @@ public class DefaultEntityModel implements EntityModel {
   @Override
   public final void removeLinkedDetailModel(final EntityModel detailModel) {
     if (detailModel != null && linkedDetailModels.remove(detailModel)) {
-      evtLinkedDetailModelsChanged.fire();
+      linkedDetailModelsChangedEvent.fire();
     }
   }
 
@@ -324,7 +324,7 @@ public class DefaultEntityModel implements EntityModel {
     try {
       LOG.debug("{} refreshing", this);
       isRefreshing = true;
-      evtRefreshStarted.fire();
+      refreshStartedEvent.fire();
       if (containsTableModel()) {
         tableModel.refresh();
       }
@@ -332,7 +332,7 @@ public class DefaultEntityModel implements EntityModel {
     }
     finally {
       isRefreshing = false;
-      evtRefreshDone.fire();
+      refreshDoneEvent.fire();
       LOG.debug("{} done refreshing", this);
     }
   }
@@ -396,37 +396,37 @@ public class DefaultEntityModel implements EntityModel {
   /** {@inheritDoc} */
   @Override
   public final void addLinkedDetailModelsListener(final EventListener listener) {
-    evtLinkedDetailModelsChanged.addListener(listener);
+    linkedDetailModelsChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeLinkedDetailModelsListener(final EventListener listener) {
-    evtLinkedDetailModelsChanged.removeListener(listener);
+    linkedDetailModelsChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addBeforeRefreshListener(final EventListener listener) {
-    evtRefreshStarted.addListener(listener);
+    refreshStartedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeBeforeRefreshListener(final EventListener listener) {
-    evtRefreshStarted.removeListener(listener);
+    refreshStartedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addAfterRefreshListener(final EventListener listener) {
-    evtRefreshDone.addListener(listener);
+    refreshDoneEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeAfterRefreshListener(final EventListener listener) {
-    evtRefreshDone.removeListener(listener);
+    refreshDoneEvent.removeListener(listener);
   }
 
   /**
@@ -553,7 +553,7 @@ public class DefaultEntityModel implements EntityModel {
         initializeDetailModels();
       }
     };
-    evtLinkedDetailModelsChanged.addListener(initializer);
+    linkedDetailModelsChangedEvent.addListener(initializer);
     if (containsTableModel()) {
       tableModel.getSelectionModel().addSelectionChangedListener(initializer);
     }

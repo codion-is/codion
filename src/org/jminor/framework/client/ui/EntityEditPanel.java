@@ -92,7 +92,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * Indicates whether the panel is active and ready to receive input
    */
-  private final State stActive = States.state(Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE));
+  private final State activeState = States.state(Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE));
 
   /**
    * The mechanism for restricting a single active EntityEditPanel at a time
@@ -142,7 +142,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   public EntityEditPanel(final EntityEditModel editModel, final String... controlKeys) {
     this.editModel = Util.rejectNullValue(editModel, "editModel");
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
-      ACTIVE_STATE_GROUP.addState(stActive);
+      ACTIVE_STATE_GROUP.addState(activeState);
     }
     setupDefaultControls(controlKeys);
     bindEvents();
@@ -166,7 +166,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return a state indicating whether the active is active and ready to receive input
    */
   public final StateObserver getActiveObserver() {
-    return stActive.getObserver();
+    return activeState.getObserver();
   }
 
   /**
@@ -175,14 +175,14 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param active the active state
    */
   public final void setActive(final boolean active) {
-    stActive.setActive(active);
+    activeState.setActive(active);
   }
 
   /**
    * @return true if this edit panel is active and ready to receive input
    */
   public final boolean isActive() {
-    return stActive.isActive();
+    return activeState.isActive();
   }
 
   /**
@@ -433,11 +433,11 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   public final Control getSaveControl() {
     final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
-    final State stInsertUpdate = States.aggregateState(Conjunction.OR, editModel.getAllowInsertObserver(),
+    final State insertUpdateState = States.aggregateState(Conjunction.OR, editModel.getAllowInsertObserver(),
             States.aggregateState(Conjunction.AND, editModel.getAllowUpdateObserver(),
                     editModel.getModifiedObserver()));
     return Controls.methodControl(this, "save", insertCaption,
-            States.aggregateState(Conjunction.AND, getActiveObserver(), stInsertUpdate),
+            States.aggregateState(Conjunction.AND, getActiveObserver(), insertUpdateState),
             FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
             insertCaption.charAt(0), null, Images.loadImage(Images.IMG_SAVE_16));
   }

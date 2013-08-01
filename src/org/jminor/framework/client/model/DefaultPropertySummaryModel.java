@@ -21,8 +21,8 @@ import java.util.List;
  */
 public class DefaultPropertySummaryModel implements PropertySummaryModel {
 
-  private final Event evtSummaryChanged = Events.event();
-  private final Event evtSummaryValueChanged = Events.event();
+  private final Event summaryChangedEvent = Events.event();
+  private final Event summaryValueChangedEvent = Events.event();
 
   private final Property property;
   private final PropertyValueProvider valueProvider;
@@ -37,8 +37,8 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
   public DefaultPropertySummaryModel(final Property property, final PropertyValueProvider valueProvider) {
     this.property = property;
     this.valueProvider = valueProvider;
-    this.valueProvider.bindValuesChangedEvent(evtSummaryValueChanged);
-    evtSummaryChanged.addListener(evtSummaryValueChanged);
+    this.valueProvider.bindValuesChangedEvent(summaryValueChangedEvent);
+    this.summaryChangedEvent.addListener(summaryValueChangedEvent);
   }
 
   /**
@@ -55,7 +55,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     Util.rejectNullValue(summary, "summary");
     if (!this.summary.equals(summary)) {
       this.summary = summary;
-      evtSummaryChanged.fire();
+      summaryChangedEvent.fire();
     }
   }
 
@@ -84,25 +84,25 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
   /** {@inheritDoc} */
   @Override
   public final void addSummaryValueListener(final EventListener listener) {
-    evtSummaryValueChanged.addListener(listener);
+    summaryValueChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeSummaryValueListener(final EventListener listener) {
-    evtSummaryValueChanged.removeListener(listener);
+    summaryValueChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addSummaryListener(final EventListener listener) {
-    evtSummaryChanged.addListener(listener);
+    summaryChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeSummaryListener(final EventListener listener) {
-    evtSummaryChanged.removeListener(listener);
+    summaryChangedEvent.removeListener(listener);
   }
 
   /**

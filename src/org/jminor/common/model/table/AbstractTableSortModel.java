@@ -47,7 +47,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   /**
    * Fired when a column sorting state changes
    */
-  private final Event evtSortingStateChanged = Events.event();
+  private final Event sortingStateChangedEvent = Events.event();
 
   /**
    * holds the column sorting states
@@ -125,7 +125,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
         sortingStates.put(columnIdentifier, new SortingStateImpl(directive, state.getPriority()));
       }
     }
-    evtSortingStateChanged.fire();
+    sortingStateChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -143,7 +143,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   /** {@inheritDoc} */
   @Override
   public final void addSortingStateChangedListener(final EventListener listener) {
-    evtSortingStateChanged.addListener(listener);
+    sortingStateChangedEvent.addListener(listener);
   }
 
   /**

@@ -92,9 +92,9 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   private Model applicationModel;
   private JTabbedPane applicationTabPane;
 
-  private final Event evtApplicationStarted = Events.event();
-  private final Event evtAlwaysOnTopChanged = Events.event();
-  private final Event evtOnExit = Events.event();
+  private final Event applicationStartedEvent = Events.event();
+  private final Event alwaysOnTopChangedEvent = Events.event();
+  private final Event onExitEvent = Events.event();
 
   private final boolean persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
   private final Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
@@ -223,7 +223,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     final Window parent = getParentWindow();
     if (parent != null) {
       parent.setAlwaysOnTop(value);
-      evtAlwaysOnTopChanged.fire();
+      alwaysOnTopChangedEvent.fire();
     }
   }
 
@@ -387,7 +387,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     }
 
     try {
-      evtOnExit.fire();
+      onExitEvent.fire();
     }
     catch (CancelException e) {
       throw e;
@@ -452,28 +452,28 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @param listener a listener notified each time the always on top status changes
    */
   public final void addAlwaysOnTopListener(final EventListener listener) {
-    evtAlwaysOnTopChanged.addListener(listener);
+    alwaysOnTopChangedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public final void removeAlwaysOnTopListener(final EventListener listener) {
-    evtAlwaysOnTopChanged.removeListener(listener);
+    alwaysOnTopChangedEvent.removeListener(listener);
   }
 
   /**
    * @param listener a listener notified when to application has been successfully started
    */
   public final void addApplicationStartedListener(final EventListener listener) {
-    evtApplicationStarted.addListener(listener);
+    applicationStartedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public final void removeApplicationStartedListener(final EventListener listener) {
-    evtApplicationStarted.removeListener(listener);
+    applicationStartedEvent.removeListener(listener);
   }
 
   /**
@@ -570,7 +570,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
             FrameworkMessages.get(FrameworkMessages.VIEW_DEPENDENCIES), null, null));
     controlSet.addSeparator();
     final Control ctrAlwaysOnTop = Controls.toggleControl(this,
-            "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), evtAlwaysOnTopChanged);
+            "alwaysOnTop", FrameworkMessages.get(FrameworkMessages.ALWAYS_ON_TOP), alwaysOnTopChangedEvent);
     controlSet.add(ctrAlwaysOnTop);
 
     return controlSet;
@@ -994,7 +994,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @param listener a listener notified when the application is about to exit
    */
   protected final void addOnExitListener(final EventListener listener) {
-    evtOnExit.addListener(listener);
+    onExitEvent.addListener(listener);
   }
 
   /**
@@ -1117,7 +1117,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
         }
         this.frameTitle = getFrameTitle(frameCaption, connectionProvider.getUser());
         final JFrame frame = prepareFrame(this.frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
-        this.evtApplicationStarted.fire();
+        this.applicationStartedEvent.fire();
         LOG.info(this.frameTitle + ", application started successfully, " + connectionProvider.getUser().getUsername()
                 + ": " + (System.currentTimeMillis() - initializationStarted) + " ms");
         return frame;

@@ -16,7 +16,7 @@ import org.jminor.common.model.valuemap.exception.ValidationException;
  */
 public class DefaultValueMapValidator<K, V extends ValueMap<K, ?>> implements ValueMap.Validator<K, V> {
 
-  private final Event evtRevalidate = Events.event();
+  private final Event revalidateEvent = Events.event();
 
   /** {@inheritDoc} */
   @Override
@@ -57,18 +57,18 @@ public class DefaultValueMapValidator<K, V extends ValueMap<K, ?>> implements Va
   /** {@inheritDoc} */
   @Override
   public final void revalidate() {
-    evtRevalidate.fire();
+    revalidateEvent.fire();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addRevalidationListener(final EventListener listener) {
-    evtRevalidate.addListener(listener);
+    revalidateEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeRevalidationListener(final EventListener listener) {
-    evtRevalidate.removeListener(listener);
+    revalidateEvent.removeListener(listener);
   }
 }

@@ -228,9 +228,9 @@ public final class States {
     private final StateObserver stateObserver;
     private final boolean reversed;
 
-    private final Event evtStateChanged = Events.event();
-    private final Event evtStateActivated = Events.event();
-    private final Event evtStateDeactivated = Events.event();
+    private final Event stateChangedEvent = Events.event();
+    private final Event stateActivatedEvent = Events.event();
+    private final Event stateDeactivatedEvent = Events.event();
 
     private StateObserverImpl reversedStateObserver = null;
 
@@ -246,7 +246,7 @@ public final class States {
 
     @Override
     public EventObserver getStateChangeObserver() {
-      return evtStateChanged.getObserver();
+      return stateChangedEvent.getObserver();
     }
 
     @Override
@@ -260,36 +260,36 @@ public final class States {
 
     @Override
     public void addListener(final EventListener listener) {
-      evtStateChanged.addListener(listener);
+      stateChangedEvent.addListener(listener);
     }
 
     @Override
     public void removeListener(final EventListener listener) {
-      evtStateChanged.removeListener(listener);
+      stateChangedEvent.removeListener(listener);
     }
 
     @Override
     public void addActivateListener(final EventListener listener) {
-      evtStateActivated.addListener(listener);
+      stateActivatedEvent.addListener(listener);
     }
 
     @Override
     public void removeActivateListener(final EventListener listener) {
-      evtStateActivated.removeListener(listener);
+      stateActivatedEvent.removeListener(listener);
     }
 
     @Override
     public void addDeactivateListener(final EventListener listener) {
-      evtStateDeactivated.addListener(listener);
+      stateDeactivatedEvent.addListener(listener);
     }
 
     @Override
     public void removeDeactivateListener(final EventListener listener) {
-      evtStateDeactivated.removeListener(listener);
+      stateDeactivatedEvent.removeListener(listener);
     }
 
     private synchronized void notifyObservers() {
-      evtStateChanged.fire();
+      stateChangedEvent.fire();
       if (reversedStateObserver != null) {
         reversedStateObserver.notifyObservers();
       }
@@ -299,10 +299,10 @@ public final class States {
       if (previousValue != newValue) {
         notifyObservers();
         if (newValue) {
-          evtStateActivated.fire();
+          stateActivatedEvent.fire();
         }
         else {
-          evtStateDeactivated.fire();
+          stateDeactivatedEvent.fire();
         }
       }
     }

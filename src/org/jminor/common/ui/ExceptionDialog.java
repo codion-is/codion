@@ -86,7 +86,7 @@ public final class ExceptionDialog extends JDialog {
   private Control ctrCopy;
   private Control ctrEmail;
 
-  private final Event evtShowDetailsChanged = Events.event();
+  private final Event showDetailsChangedEvent = Events.event();
   private boolean showDetails = false;
 
   private static String lastUsedEmailAddress = "";
@@ -173,7 +173,7 @@ public final class ExceptionDialog extends JDialog {
    */
   public void setShowDetails(final boolean show) {
     showDetails = show;
-    evtShowDetailsChanged.fire();
+    showDetailsChangedEvent.fire();
   }
 
   /**
@@ -281,7 +281,7 @@ public final class ExceptionDialog extends JDialog {
 
   private void bindEvents() {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    evtShowDetailsChanged.addListener(new EventAdapter() {
+    showDetailsChangedEvent.addListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {

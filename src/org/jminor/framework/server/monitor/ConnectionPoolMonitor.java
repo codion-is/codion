@@ -33,8 +33,8 @@ public final class ConnectionPoolMonitor {
 
   private static final int THOUSAND = 1000;
 
-  private final Event evtStatisticsUpdated = Events.event();
-  private final Event evtCollectFineGrainedStatisticsChanged = Events.event();
+  private final Event statisticsUpdatedEvent = Events.event();
+  private final Event collectFineGrainedStatisticsChangedEvent = Events.event();
 
   private final User user;
   private final ConnectionPool connectionPool;
@@ -186,7 +186,7 @@ public final class ConnectionPoolMonitor {
 
   public void setCollectFineGrainedStatistics(final boolean value) {
     connectionPool.setCollectFineGrainedStatistics(value);
-    evtCollectFineGrainedStatisticsChanged.fire();
+    collectFineGrainedStatisticsChangedEvent.fire();
   }
 
   public boolean isCollectFineGrainedStatistics() {
@@ -198,11 +198,11 @@ public final class ConnectionPoolMonitor {
   }
 
   public EventObserver getCollectFineGrainedStatisticsObserver() {
-    return evtCollectFineGrainedStatisticsChanged.getObserver();
+    return collectFineGrainedStatisticsChangedEvent.getObserver();
   }
 
   public EventObserver getStatisticsObserver() {
-    return evtStatisticsUpdated.getObserver();
+    return statisticsUpdatedEvent.getObserver();
   }
 
   public TaskScheduler getUpdateScheduler() {
@@ -235,7 +235,7 @@ public final class ConnectionPoolMonitor {
       this.fineGrainedStatisticsCollection.addSeries(fineGrainedInPoolSeries);
       this.fineGrainedStatisticsCollection.addSeries(fineGrainedInUseSeries);
     }
-    evtStatisticsUpdated.fire();
+    statisticsUpdatedEvent.fire();
   }
 
   private static List<ConnectionPoolState> sortAndRemoveDuplicates(final List<ConnectionPoolState> stats) {

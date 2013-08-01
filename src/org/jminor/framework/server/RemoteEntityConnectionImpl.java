@@ -111,7 +111,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
 
   private static final int DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL = 2500;
 
-  private final Event evtDisconnected = Events.event();
+  private final Event disconnectedEvent = Events.event();
 
   static {
     Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory()).scheduleWithFixedDelay(new Runnable() {
@@ -210,7 +210,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
       }
       returnConnection();
     }
-    evtDisconnected.fire();
+    disconnectedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -406,11 +406,11 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   }
 
   void addDisconnectListener(final EventListener listener) {
-    evtDisconnected.addListener(listener);
+    disconnectedEvent.addListener(listener);
   }
 
   void removeDisconnectListener(final EventListener listener) {
-    evtDisconnected.removeListener(listener);
+    disconnectedEvent.removeListener(listener);
   }
 
   /**

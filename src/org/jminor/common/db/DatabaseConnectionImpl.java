@@ -175,7 +175,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public final List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException {
-    Databases.QUERY_COUNTER.count(sql);
+    DatabaseUtil.QUERY_COUNTER.count(sql);
     Statement statement = null;
     SQLException exception = null;
     ResultSet resultSet = null;

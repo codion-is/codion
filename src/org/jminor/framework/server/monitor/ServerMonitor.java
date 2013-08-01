@@ -33,11 +33,11 @@ public final class ServerMonitor {
   private static final Logger LOG = LoggerFactory.getLogger(ServerMonitor.class);
   private static final double THOUSAND = 1000d;
 
-  private final Event evtServerShutDown = Events.event();
-  private final Event evtStatisticsUpdated = Events.event();
-  private final Event evtWarningThresholdChanged = Events.event();
-  private final Event evtLoggingLevelChanged = Events.event();
-  private final Event evtConnectionLimitChanged = Events.event();
+  private final Event serverShutDownEvent = Events.event();
+  private final Event statisticsUpdatedEvent = Events.event();
+  private final Event warningThresholdChangedEvent = Events.event();
+  private final Event loggingLevelChangedEvent = Events.event();
+  private final Event connectionLimitChangedEvent = Events.event();
 
   private final String hostName;
   private final String serverName;
@@ -128,7 +128,7 @@ public final class ServerMonitor {
 
   public void setWarningThreshold(final int threshold) throws RemoteException {
     server.setWarningTimeThreshold(threshold);
-    evtWarningThresholdChanged.fire();
+    warningThresholdChangedEvent.fire();
   }
 
   public int getConnectionLimit() throws RemoteException {
@@ -137,7 +137,7 @@ public final class ServerMonitor {
 
   public void setConnectionLimit(final int value) throws RemoteException {
     server.setConnectionLimit(value);
-    evtConnectionLimitChanged.fire();
+    connectionLimitChangedEvent.fire();
   }
 
   public Level getLoggingLevel() throws RemoteException {
@@ -146,7 +146,7 @@ public final class ServerMonitor {
 
   public void setLoggingLevel(final Level level) throws RemoteException {
     server.setLoggingLevel(level);
-    evtLoggingLevelChanged.fire();
+    loggingLevelChangedEvent.fire();
   }
 
   public XYSeriesCollection getConnectionRequestsDataset() {
@@ -193,7 +193,7 @@ public final class ServerMonitor {
       server.shutdown();
     }
     catch (RemoteException ignored) {}
-    evtServerShutDown.fire();
+    serverShutDownEvent.fire();
   }
 
   public String getServerName() {
@@ -205,23 +205,23 @@ public final class ServerMonitor {
   }
 
   public EventObserver getServerShutDownObserver() {
-    return evtServerShutDown.getObserver();
+    return serverShutDownEvent.getObserver();
   }
 
   public EventObserver getWarningThresholdObserver() {
-    return evtWarningThresholdChanged.getObserver();
+    return warningThresholdChangedEvent.getObserver();
   }
 
   public EventObserver getConnectionLimitObserver() {
-    return evtConnectionLimitChanged.getObserver();
+    return connectionLimitChangedEvent.getObserver();
   }
 
   public EventObserver getStatisticsUpdatedObserver() {
-    return evtStatisticsUpdated.getObserver();
+    return statisticsUpdatedEvent.getObserver();
   }
 
   public EventObserver getLoggingLevelObserver() {
-    return evtLoggingLevelChanged.getObserver();
+    return loggingLevelChangedEvent.getObserver();
   }
 
   private EntityConnectionServerAdmin connectServer(final String serverName) throws RemoteException {
@@ -258,7 +258,7 @@ public final class ServerMonitor {
     usedMemorySeries.add(time, server.getUsedMemory() / THOUSAND);
     connectionCountSeries.add(time, server.getConnectionCount());
     connectionLimitSeries.add(time, server.getConnectionLimit());
-    evtStatisticsUpdated.fire();
+    statisticsUpdatedEvent.fire();
   }
 
   private static String removeAdminPrefix(final String serverName) {

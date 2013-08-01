@@ -39,13 +39,13 @@ import java.util.regex.Pattern;
  */
 public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableModel implements FilteredTableModel<R, C> {
 
-  private final Event evtFilteringDone = Events.event();
-  private final Event evtSortingStarted = Events.event();
-  private final Event evtSortingDone = Events.event();
-  private final Event evtRefreshStarted = Events.event();
-  private final Event evtRefreshDone = Events.event();
-  private final Event evtTableDataChanged = Events.event();
-  private final Event evtTableModelCleared = Events.event();
+  private final Event filteringDoneEvent = Events.event();
+  private final Event sortingStartedEvent = Events.event();
+  private final Event sortingDoneEvent = Events.event();
+  private final Event refreshStartedEvent = Events.event();
+  private final Event refreshDoneEvent = Events.event();
+  private final Event tableDataChangedEvent = Events.event();
+  private final Event tableModelClearedEvent = Events.event();
 
   /**
    * Holds visible items
@@ -192,13 +192,13 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final void refresh() {
     try {
-      evtRefreshStarted.fire();
+      refreshStartedEvent.fire();
       final List<R> selectedItems = new ArrayList<R>(selectionModel.getSelectedItems());
       doRefresh();
       selectionModel.setSelectedItems(selectedItems);
     }
     finally {
-      evtRefreshDone.fire();
+      refreshDoneEvent.fire();
     }
   }
 
@@ -211,7 +211,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       visibleItems.clear();
       fireTableRowsDeleted(0, size - 1);
     }
-    evtTableModelCleared.fire();
+    tableModelClearedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -272,7 +272,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       selectionModel.setSelectedItems(selectedItems);
     }
     finally {
-      evtFilteringDone.fire();
+      filteringDoneEvent.fire();
     }
   }
 
@@ -364,73 +364,73 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void addRefreshStartedListener(final EventListener listener) {
-    evtRefreshStarted.addListener(listener);
+    refreshStartedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeRefreshStartedListener(final EventListener listener) {
-    evtRefreshStarted.removeListener(listener);
+    refreshStartedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addRefreshDoneListener(final EventListener listener) {
-    evtRefreshDone.addListener(listener);
+    refreshDoneEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeRefreshDoneListener(final EventListener listener) {
-    evtRefreshDone.removeListener(listener);
+    refreshDoneEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addFilteringListener(final EventListener listener) {
-    evtFilteringDone.addListener(listener);
+    filteringDoneEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeFilteringListener(final EventListener listener) {
-    evtFilteringDone.removeListener(listener);
+    filteringDoneEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addSortingListener(final EventListener listener) {
-    evtSortingDone.addListener(listener);
+    sortingDoneEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeSortingListener(final EventListener listener) {
-    evtSortingDone.removeListener(listener);
+    sortingDoneEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addTableDataChangedListener(final EventListener listener) {
-    evtTableDataChanged.addListener(listener);
+    tableDataChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeTableDataChangedListener(final EventListener listener) {
-    evtTableDataChanged.removeListener(listener);
+    tableDataChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addTableModelClearedListener(final EventListener listener) {
-    evtTableModelCleared.addListener(listener);
+    tableModelClearedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeTableModelClearedListener(final EventListener listener) {
-    evtTableModelCleared.removeListener(listener);
+    tableModelClearedEvent.removeListener(listener);
   }
 
   /**
@@ -525,7 +525,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       /** {@inheritDoc} */
       @Override
       public void tableChanged(final TableModelEvent e) {
-        evtTableDataChanged.fire();
+        tableDataChangedEvent.fire();
       }
     });
     for (final ColumnSearchModel searchModel : columnModel.getColumnFilterModels()) {
@@ -559,14 +559,14 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private void sortVisibleItems() {
     try {
-      evtSortingStarted.fire();
+      sortingStartedEvent.fire();
       final List<R> selectedItems = new ArrayList<R>(selectionModel.getSelectedItems());
       sortModel.sort(visibleItems);
       fireTableDataChanged();
       selectionModel.setSelectedItems(selectedItems);
     }
     finally {
-      evtSortingDone.fire();
+      sortingDoneEvent.fire();
     }
   }
 

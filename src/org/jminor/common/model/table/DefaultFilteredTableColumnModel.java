@@ -29,8 +29,8 @@ import java.util.Map;
  */
 public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel implements FilteredTableColumnModel<C> {
 
-  private final Event evtColumnHidden = Events.event();
-  private final Event evtColumnShown = Events.event();
+  private final Event columnHiddenEvent = Events.event();
+  private final Event columnShownEvent = Events.event();
 
   /**
    * The columns available to this table model
@@ -92,7 +92,7 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
         hiddenColumns.remove(columnIdentifier);
         addColumn(column);
         moveColumn(getColumnCount() - 1, 0);
-        evtColumnShown.fire(column.getIdentifier());
+        columnShownEvent.fire(column.getIdentifier());
       }
     }
     else {
@@ -100,7 +100,7 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
         final TableColumn column = getTableColumn(columnIdentifier);
         removeColumn(column);
         hiddenColumns.put((C) column.getIdentifier(), column);
-        evtColumnHidden.fire(column.getIdentifier());
+        columnHiddenEvent.fire(column.getIdentifier());
       }
     }
   }
@@ -154,25 +154,25 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
   /** {@inheritDoc} */
   @Override
   public final void addColumnHiddenListener(final EventListener<C> listener) {
-    evtColumnHidden.addListener(listener);
+    columnHiddenEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeColumnHiddenListener(final EventListener<C> listener) {
-    evtColumnHidden.removeListener(listener);
+    columnHiddenEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addColumnShownListener(final EventListener<C> listener) {
-    evtColumnShown.addListener(listener);
+    columnShownEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeColumnShownListener(final EventListener<C> listener) {
-    evtColumnShown.removeListener(listener);
+    columnShownEvent.removeListener(listener);
   }
 
   /**

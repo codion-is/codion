@@ -45,15 +45,15 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   private static final long NANO_IN_MILLI = 1000000;
 
-  private final Event evtPausedChanged = Events.event();
-  private final Event evtCollectChartDataChanged = Events.event();
-  private final Event evtMaximumThinkTimeChanged = Events.event();
-  private final Event evtMinimumThinkTimeChanged = Events.event();
-  private final Event evtWarningTimeChanged = Events.event();
-  private final Event evtLoginDelayFactorChanged = Events.event();
-  private final Event evtApplicationCountChanged = Events.event();
-  private final Event evtApplicationBatchSizeChanged = Events.event();
-  private final Event evtDoneExiting = Events.event();
+  private final Event pausedChangedEvent = Events.event();
+  private final Event collectChartDataChangedEvent = Events.event();
+  private final Event maximumThinkTimeChangedEvent = Events.event();
+  private final Event minimumThinkTimeChangedEvent = Events.event();
+  private final Event warningTimeChangedEvent = Events.event();
+  private final Event loginDelayFactorChangedEvent = Events.event();
+  private final Event applicationCountChangedEvent = Events.event();
+  private final Event applicationBatchSizeChangedEvent = Events.event();
+  private final Event exitingDoneEvent = Events.event();
 
   private int maximumThinkTime;
   private int minimumThinkTime;
@@ -320,7 +320,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
     if (this.warningTime != warningTime) {
       this.warningTime = warningTime;
-      evtWarningTimeChanged.fire();
+      warningTimeChangedEvent.fire();
     }
   }
 
@@ -356,7 +356,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     this.applicationBatchSize = applicationBatchSize;
-    evtApplicationBatchSizeChanged.fire();
+    applicationBatchSizeChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -367,7 +367,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
       synchronized (applications) {
         applications.push(runner);
       }
-      evtApplicationCountChanged.fire();
+      applicationCountChangedEvent.fire();
 
       executor.execute(runner);
     }
@@ -391,7 +391,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   @Override
   public final void setPaused(final boolean value) {
     this.paused = value;
-    evtPausedChanged.fire();
+    pausedChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -404,7 +404,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   @Override
   public final void setCollectChartData(final boolean value) {
     this.collectChartData = value;
-    evtCollectChartDataChanged.fire();
+    collectChartDataChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -425,7 +425,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
       }
       catch (InterruptedException ignored) {}
     }
-    evtDoneExiting.fire();
+    exitingDoneEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -442,7 +442,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     this.maximumThinkTime = maximumThinkTime;
-    evtMaximumThinkTimeChanged.fire();
+    maximumThinkTimeChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -459,7 +459,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     this.minimumThinkTime = minimumThinkTime;
-    evtMinimumThinkTimeChanged.fire();
+    minimumThinkTimeChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -476,49 +476,49 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     this.loginDelayFactor = loginDelayFactor;
-    evtLoginDelayFactorChanged.fire();
+    loginDelayFactorChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver applicationBatchSizeObserver() {
-    return evtApplicationBatchSizeChanged.getObserver();
+    return applicationBatchSizeChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver applicationCountObserver() {
-    return evtApplicationCountChanged.getObserver();
+    return applicationCountChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver maximumThinkTimeObserver() {
-    return evtMaximumThinkTimeChanged.getObserver();
+    return maximumThinkTimeChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver getMinimumThinkTimeObserver() {
-    return evtMinimumThinkTimeChanged.getObserver();
+    return minimumThinkTimeChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver getPauseObserver() {
-    return evtPausedChanged.getObserver();
+    return pausedChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver collectChartDataObserver() {
-    return evtCollectChartDataChanged.getObserver();
+    return collectChartDataChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver getWarningTimeObserver() {
-    return evtWarningTimeChanged.getObserver();
+    return warningTimeChangedEvent.getObserver();
   }
 
   /**
@@ -535,7 +535,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
    * @param listener a listener notified when this load test model has finished removing all applications
    */
   protected void addExitListener(final EventListener listener) {
-    evtDoneExiting.addListener(listener);
+    exitingDoneEvent.addListener(listener);
   }
 
   /**
@@ -580,7 +580,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     synchronized (applications) {
       applications.pop().stop();
     }
-    evtApplicationCountChanged.fire();
+    applicationCountChangedEvent.fire();
   }
 
   private ItemRandomizer<UsageScenario> initializeScenarioChooser() {

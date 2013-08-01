@@ -26,7 +26,7 @@ import java.awt.event.ActionEvent;
  */
 public final class InputProviderPanel extends JPanel implements InputProvider {
 
-  private final Event evtButtonClicked = Events.event();
+  private final Event buttonClickedEvent = Events.event();
 
   private final InputProvider inputProvider;
 
@@ -74,7 +74,7 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
    * @return an EventObserver notified each time the OK button is clicked
    */
   public EventObserver getButtonClickObserver() {
-    return evtButtonClicked.getObserver();
+    return buttonClickedEvent.getObserver();
   }
 
   /**
@@ -88,7 +88,7 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
    * @param listener the listener to remove
    */
   public void removeButtonClickListener(final EventListener listener) {
-    evtButtonClicked.removeListener(listener);
+    buttonClickedEvent.removeListener(listener);
   }
 
   private void initUI(final String caption) {
@@ -117,7 +117,7 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
       @Override
       public void actionPerformed(final ActionEvent e) {
         buttonValue = option;
-        evtButtonClicked.fire();
+        buttonClickedEvent.fire();
       }
     });
     button.setMnemonic(mnemonic.charAt(0));

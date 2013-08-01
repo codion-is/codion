@@ -46,7 +46,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   private final ItemRandomizer<T> model;
   private final JPanel configPanel = new JPanel(UiUtil.createGridLayout(0, 1));
   private final JList itemList = new JList(new DefaultListModel());
-  private final Event evtSelectedItemChanged = Events.event();
+  private final Event selectedItemChangedEvent = Events.event();
 
   /**
    * Instantiates a new RandomItemPanel.
@@ -70,14 +70,14 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * @param listener a listener notified each time the selected item changes
    */
   public void addSelectedItemListener(final EventListener listener) {
-    evtSelectedItemChanged.addListener(listener);
+    selectedItemChangedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public void removeSelectedItemListener(final EventListener listener) {
-    evtSelectedItemChanged.removeListener(listener);
+    selectedItemChangedEvent.removeListener(listener);
   }
 
   /**
@@ -113,7 +113,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
       @SuppressWarnings({"unchecked"})
       public void valueChanged(final ListSelectionEvent e) {
         handleSelectionChanged();
-        evtSelectedItemChanged.fire();
+        selectedItemChangedEvent.fire();
       }
     });
     setLayout(UiUtil.createBorderLayout());

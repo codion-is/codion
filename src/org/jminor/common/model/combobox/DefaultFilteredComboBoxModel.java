@@ -25,10 +25,10 @@ import java.util.concurrent.CopyOnWriteArrayList;
  */
 public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T> {
 
-  private final Event evtSelectionChanged = Events.event();
-  private final Event evtFilteringDone = Events.event();
+  private static final FilterCriteria ACCEPT_ALL_CRITERIA = new FilterCriteria.AcceptAllCriteria();
 
-  private final FilterCriteria<T> acceptAllCriteria = new FilterCriteria.AcceptAllCriteria<T>();
+  private final Event selectionChangedEvent = Events.event();
+  private final Event filteringDoneEvent = Events.event();
 
   private final List<T> visibleItems = new ArrayList<T>();
   private final List<T> filteredItems = new ArrayList<T>();
@@ -41,7 +41,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private Comparator<? super T> sortComparator;
   private T selectedItem = null;
   private String nullValueString;
-  private FilterCriteria<T> filterCriteria = acceptAllCriteria;
+  private FilterCriteria<T> filterCriteria = ACCEPT_ALL_CRITERIA;
   private boolean filterSelectedItem = true;
 
   private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<ListDataListener>();
@@ -134,7 +134,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
       fireContentsChanged();
     }
     finally {
-      evtFilteringDone.fire();
+      filteringDoneEvent.fire();
     }
   }
 
@@ -158,7 +158,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   @Override
   public final void setFilterCriteria(final FilterCriteria<T> filterCriteria) {
     if (filterCriteria == null) {
-      this.filterCriteria = acceptAllCriteria;
+      this.filterCriteria = ACCEPT_ALL_CRITERIA;
     }
     else {
       this.filterCriteria = filterCriteria;
@@ -324,7 +324,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
       selectedItem = (T) toSelect;
     }
     fireContentsChanged();
-    evtSelectionChanged.fire();
+    selectionChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -373,25 +373,25 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   /** {@inheritDoc} */
   @Override
   public final void addFilteringListener(final EventListener listener) {
-    evtFilteringDone.addListener(listener);
+    filteringDoneEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeFilteringListener(final EventListener listener) {
-    evtFilteringDone.removeListener(listener);
+    filteringDoneEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addSelectionListener(final EventListener listener) {
-    evtSelectionChanged.addListener(listener);
+    selectionChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeSelectionListener(final EventListener listener) {
-    evtSelectionChanged.removeListener(listener);
+    selectionChangedEvent.removeListener(listener);
   }
 
   /**

@@ -19,7 +19,7 @@ import java.lang.reflect.Method;
  */
 public final class MethodControl extends Control {
 
-  private final Event evtActionPerformed = Events.event();
+  private final Event actionPerformedEvent = Events.event();
 
   private final Object owner;
   private final Method method;
@@ -77,7 +77,7 @@ public final class MethodControl extends Control {
       throw new RuntimeException(ex);
     }
     finally {
-      evtActionPerformed.fire();
+      actionPerformedEvent.fire();
     }
   }
 
@@ -85,13 +85,13 @@ public final class MethodControl extends Control {
    * @param listener a listener notified each time actionPerformed() is called
    */
   public void addActionPerformedListener(final EventListener listener) {
-    evtActionPerformed.addListener(listener);
+    actionPerformedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public void removeActionPerformedListener(final EventListener listener) {
-    evtActionPerformed.removeListener(listener);
+    actionPerformedEvent.removeListener(listener);
   }
 }

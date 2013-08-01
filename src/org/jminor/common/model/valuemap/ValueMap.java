@@ -46,7 +46,8 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
   String getValueAsString(final K key);
 
   /**
-   * Removes all values from this map.
+   * Silently removes all values from this map, as in, removes the values
+   * without firing value change events
    */
   void clear();
 

@@ -7,6 +7,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.MethodLogger;
 
+import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -18,6 +19,11 @@ import java.util.List;
  * A static utility class.
  */
 public final class DatabaseUtil {
+
+  /**
+   * A synchronized query counter
+   */
+  public static final QueryCounter QUERY_COUNTER = new QueryCounter();
 
   /**
    * A result packer for fetching integers from a result set containing a single integer column
@@ -133,5 +139,190 @@ public final class DatabaseUtil {
     }
 
     return logMessage.toString();
+  }
+
+  /**
+   * @return a DatabaseStatistics object containing query statistics collected since
+   * the last time this function was called.
+   */
+  public static Database.Statistics getDatabaseStatistics() {
+    DatabaseUtil.QUERY_COUNTER.updateQueriesPerSecond();
+    return new DatabaseStatistics(QUERY_COUNTER.getQueriesPerSecond(),
+            QUERY_COUNTER.getSelectsPerSecond(), QUERY_COUNTER.getInsertsPerSecond(),
+            QUERY_COUNTER.getDeletesPerSecond(), QUERY_COUNTER.getUpdatesPerSecond());
+  }
+
+  /**
+   * A class for counting query types, providing averages over time
+   */
+  public static final class QueryCounter {
+
+    private long queriesPerSecondTime = System.currentTimeMillis();
+    private int queriesPerSecond = 0;
+    private int queriesPerSecondCounter = 0;
+    private int selectsPerSecond = 0;
+    private int selectsPerSecondCounter = 0;
+    private int insertsPerSecond = 0;
+    private int insertsPerSecondCounter = 0;
+    private int updatesPerSecond = 0;
+    private int updatesPerSecondCounter = 0;
+    private int deletesPerSecond = 0;
+    private int deletesPerSecondCounter = 0;
+    private int undefinedPerSecond = 0;
+    private int undefinedPerSecondCounter = 0;
+
+    /**
+     * Counts the given query, based on it's first character
+     * @param sql the sql query
+     */
+    public synchronized void count(final String sql) {
+      queriesPerSecondCounter++;
+      switch (Character.toLowerCase(sql.charAt(0))) {
+        case 's':
+          selectsPerSecondCounter++;
+          break;
+        case 'i':
+          insertsPerSecondCounter++;
+          break;
+        case 'u':
+          updatesPerSecondCounter++;
+          break;
+        case 'd':
+          deletesPerSecondCounter++;
+          break;
+        default:
+          undefinedPerSecondCounter++;
+      }
+    }
+
+    /**
+     * @return the number of queries being run per second
+     */
+    public synchronized int getQueriesPerSecond() {
+      return queriesPerSecond;
+    }
+
+    /**
+     * @return the number of select queries being run per second
+     */
+    public synchronized int getSelectsPerSecond() {
+      return selectsPerSecond;
+    }
+
+    /**
+     * @return the number of delete queries being run per second
+     */
+    public synchronized int getDeletesPerSecond() {
+      return deletesPerSecond;
+    }
+
+    /**
+     * @return the number of insert queries being run per second
+     */
+    public synchronized int getInsertsPerSecond() {
+      return insertsPerSecond;
+    }
+
+    /**
+     * @return the number of update queries being run per second
+     */
+    public synchronized int getUpdatesPerSecond() {
+      return updatesPerSecond;
+    }
+
+    /**
+     * @return the number of undefined queries being run per second
+     */
+    public synchronized int getUndefinedPerSecond() {
+      return undefinedPerSecond;
+    }
+
+    private synchronized void updateQueriesPerSecond() {
+      final long current = System.currentTimeMillis();
+      final double seconds = (current - queriesPerSecondTime) / 1000d;
+      if (seconds > 0) {
+        queriesPerSecond = (int) (queriesPerSecondCounter / seconds);
+        selectsPerSecond = (int) (selectsPerSecondCounter / seconds);
+        insertsPerSecond = (int) (insertsPerSecondCounter / seconds);
+        deletesPerSecond = (int) (deletesPerSecondCounter / seconds);
+        updatesPerSecond = (int) (updatesPerSecondCounter / seconds);
+        undefinedPerSecond = (int) (undefinedPerSecondCounter / seconds);
+        queriesPerSecondCounter = 0;
+        selectsPerSecondCounter = 0;
+        insertsPerSecondCounter = 0;
+        deletesPerSecondCounter = 0;
+        updatesPerSecondCounter = 0;
+        undefinedPerSecondCounter = 0;
+        queriesPerSecondTime = current;
+      }
+    }
+  }
+
+  /**
+   * A default DatabaseStatistics implementation.
+   */
+  public static final class DatabaseStatistics implements Database.Statistics, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    private final long timestamp = System.currentTimeMillis();
+    private final int queriesPerSecond;
+    private final int selectsPerSecond;
+    private final int insertsPerSecond;
+    private final int deletesPerSecond;
+    private final int updatesPerSecond;
+
+    /**
+     * Instantiates a new DatabaseStatistics object
+     * @param queriesPerSecond the number of queries being run per second
+     * @param selectsPerSecond the number of select queries being run per second
+     * @param insertsPerSecond the number of insert queries being run per second
+     * @param deletesPerSecond the number of delete queries being run per second
+     * @param updatesPerSecond the number of update queries being run per second
+     */
+    private DatabaseStatistics(final int queriesPerSecond, final int selectsPerSecond, final int insertsPerSecond,
+                               final int deletesPerSecond, final int updatesPerSecond) {
+      this.queriesPerSecond = queriesPerSecond;
+      this.selectsPerSecond = selectsPerSecond;
+      this.insertsPerSecond = insertsPerSecond;
+      this.deletesPerSecond = deletesPerSecond;
+      this.updatesPerSecond = updatesPerSecond;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getQueriesPerSecond() {
+      return queriesPerSecond;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getDeletesPerSecond() {
+      return deletesPerSecond;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getInsertsPerSecond() {
+      return insertsPerSecond;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getSelectsPerSecond() {
+      return selectsPerSecond;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public int getUpdatesPerSecond() {
+      return updatesPerSecond;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public long getTimestamp() {
+      return timestamp;
+    }
   }
 }

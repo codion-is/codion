@@ -18,11 +18,6 @@ import static org.junit.Assert.assertTrue;
 public class DatabasesTest {
 
   @Test
-  public void getDatabaseStatistics() {
-    Databases.getDatabaseStatistics();
-  }
-
-  @Test
   public void test() {
     final String type = System.getProperty(Database.DATABASE_TYPE);
     final String host = System.getProperty(Database.DATABASE_HOST);

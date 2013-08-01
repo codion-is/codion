@@ -58,20 +58,20 @@ public class DefaultEntityEditModel implements EntityEditModel {
   private static final String FOREIGN_KEY_PROPERTY = "foreignKeyProperty";
   private static final String PROPERTY = "property";
 
-  private final Event evtBeforeInsert = Events.event();
-  private final Event evtAfterInsert = Events.event();
-  private final Event evtBeforeUpdate = Events.event();
-  private final Event evtAfterUpdate = Events.event();
-  private final Event evtBeforeDelete = Events.event();
-  private final Event evtAfterDelete = Events.event();
-  private final Event evtEntitiesChanged = Events.event();
-  private final Event evtRefreshStarted = Events.event();
-  private final Event evtRefreshDone = Events.event();
+  private final Event beforeInsertEvent = Events.event();
+  private final Event afterInsertEvent = Events.event();
+  private final Event beforeUpdateEvent = Events.event();
+  private final Event afterUpdateEvent = Events.event();
+  private final Event beforeDeleteEvent = Events.event();
+  private final Event afterDeleteEvent = Events.event();
+  private final Event entitiesChangedEvent = Events.event();
+  private final Event refreshStartedEvent = Events.event();
+  private final Event refreshDoneEvent = Events.event();
 
-  private final State stPrimaryKeyNull = States.state(true);
-  private final State stAllowInsert = States.state(true);
-  private final State stAllowUpdate = States.state(true);
-  private final State stAllowDelete = States.state(true);
+  private final State primaryKeyNullState = States.state(true);
+  private final State allowInsertState = States.state(true);
+  private final State allowUpdateState = States.state(true);
+  private final State allowDeleteState = States.state(true);
 
   /**
    * The ID of the entity this edit model is based on
@@ -109,7 +109,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
    * Fired when the active entity is set.
    * @see #setEntity(org.jminor.framework.domain.Entity)
    */
-  private final Event evtEntitySet = Events.event();
+  private final Event entitySetEvent = Events.event();
 
   /**
    * Holds events signaling value changes made via the ui
@@ -130,7 +130,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
    * A state indicating whether or not the entity being edited is in a valid state
    * according the the validator
    */
-  private final State stValid = States.state();
+  private final State validState = States.state();
 
   /**
    * Holds the read only status of this edit model
@@ -209,58 +209,58 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final boolean isInsertAllowed() {
-    return stAllowInsert.isActive();
+    return allowInsertState.isActive();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityEditModel setInsertAllowed(final boolean value) {
-    stAllowInsert.setActive(value);
+    allowInsertState.setActive(value);
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
   public final StateObserver getAllowInsertObserver() {
-    return stAllowInsert.getObserver();
+    return allowInsertState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean isUpdateAllowed() {
-    return stAllowUpdate.isActive();
+    return allowUpdateState.isActive();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityEditModel setUpdateAllowed(final boolean value) {
-    stAllowUpdate.setActive(value);
+    allowUpdateState.setActive(value);
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
   public final StateObserver getAllowUpdateObserver() {
-    return stAllowUpdate.getObserver();
+    return allowUpdateState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean isDeleteAllowed() {
-    return stAllowDelete.isActive();
+    return allowDeleteState.isActive();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EntityEditModel setDeleteAllowed(final boolean value) {
-    stAllowDelete.setActive(value);
+    allowDeleteState.setActive(value);
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
   public final StateObserver getAllowDeleteObserver() {
-    return stAllowDelete.getObserver();
+    return allowDeleteState.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -289,20 +289,20 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final StateObserver getValidObserver() {
-    return stValid.getObserver();
+    return validState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final StateObserver getPrimaryKeyNullObserver() {
-    return stPrimaryKeyNull.getObserver();
+    return primaryKeyNullState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setEntity(final Entity entity) {
     this.entity.setAs(entity == null ? getDefaultEntity() : entity);
-    evtEntitySet.fire(entity);
+    entitySetEvent.fire(entity);
   }
 
   /** {@inheritDoc} */
@@ -452,7 +452,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       entity.saveValue(primaryKeyProperty.getPropertyID());
     }
 
-    evtAfterInsert.fire(new InsertEventImpl(insertedEntities));
+    afterInsertEvent.fire(new InsertEventImpl(insertedEntities));
 
     return insertedEntities;
   }
@@ -462,7 +462,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   public final List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException {
     final List<Entity> insertedEntities = insertEntities(entities);
 
-    evtAfterInsert.fire(new InsertEventImpl(insertedEntities));
+    afterInsertEvent.fire(new InsertEventImpl(insertedEntities));
 
     return insertedEntities;
   }
@@ -494,7 +494,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       return Collections.emptyList();
     }
 
-    evtBeforeUpdate.fire();
+    beforeUpdateEvent.fire();
     validator.validate(modifiedEntities);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
@@ -503,7 +503,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       setEntity(updatedEntities.get(index));
     }
 
-    evtAfterUpdate.fire(new UpdateEventImpl(updatedEntities, EntityUtil.isPrimaryKeyModified(modifiedEntities)));
+    afterUpdateEvent.fire(new UpdateEventImpl(updatedEntities, EntityUtil.isPrimaryKeyModified(modifiedEntities)));
 
     return updatedEntities;
   }
@@ -530,14 +530,14 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
     LOG.debug("{} - delete {}", this, Util.getCollectionContentsAsString(entities, false));
 
-    evtBeforeDelete.fire();
+    beforeDeleteEvent.fire();
 
     doDelete(entities);
     if (entities.contains(getEntity())) {
       setEntity(null);
     }
 
-    evtAfterDelete.fire(new DeleteEventImpl(entities));
+    afterDeleteEvent.fire(new DeleteEventImpl(entities));
 
     return entities;
   }
@@ -546,11 +546,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void refresh() {
     try {
-      evtRefreshStarted.fire();
+      refreshStartedEvent.fire();
       refreshComboBoxModels();
     }
     finally {
-      evtRefreshDone.fire();
+      refreshDoneEvent.fire();
     }
   }
 
@@ -623,7 +623,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property) {
     Util.rejectNullValue(property, PROPERTY);
-    final FilteredComboBoxModel model = new DefaultPropertyComboBoxModel(entityID, connectionProvider, property, null, evtEntitiesChanged);
+    final FilteredComboBoxModel model = new DefaultPropertyComboBoxModel(entityID, connectionProvider, property, null, entitiesChangedEvent);
     model.setNullValueString(getValidator().isNullable(getEntity(), property.getPropertyID()) ?
             (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM) : null);
     model.refresh();
@@ -728,121 +728,121 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final void removeEntitySetListener(final EventListener listener) {
-    evtEntitySet.removeListener(listener);
+    entitySetEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addEntitySetListener(final EventListener<Entity> listener) {
-    evtEntitySet.addListener(listener);
+    entitySetEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeBeforeInsertListener(final EventListener listener) {
-    evtBeforeInsert.removeListener(listener);
+    beforeInsertEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addBeforeInsertListener(final EventListener listener) {
-    evtBeforeInsert.addListener(listener);
+    beforeInsertEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeAfterInsertListener(final EventListener listener) {
-    evtAfterInsert.removeListener(listener);
+    afterInsertEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addAfterInsertListener(final EventListener<InsertEvent> listener) {
-    evtAfterInsert.addListener(listener);
+    afterInsertEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeBeforeUpdateListener(final EventListener listener) {
-    evtBeforeUpdate.removeListener(listener);
+    beforeUpdateEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addBeforeUpdateListener(final EventListener listener) {
-    evtBeforeUpdate.addListener(listener);
+    beforeUpdateEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeAfterUpdateListener(final EventListener listener) {
-    evtAfterUpdate.removeListener(listener);
+    afterUpdateEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addAfterUpdateListener(final EventListener<UpdateEvent> listener) {
-    evtAfterUpdate.addListener(listener);
+    afterUpdateEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addBeforeDeleteListener(final EventListener listener) {
-    evtBeforeDelete.addListener(listener);
+    beforeDeleteEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeBeforeDeleteListener(final EventListener listener) {
-    evtBeforeDelete.removeListener(listener);
+    beforeDeleteEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeAfterDeleteListener(final EventListener listener) {
-    evtAfterDelete.removeListener(listener);
+    afterDeleteEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addAfterDeleteListener(final EventListener<DeleteEvent> listener) {
-    evtAfterDelete.addListener(listener);
+    afterDeleteEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeEntitiesChangedListener(final EventListener listener) {
-    evtEntitiesChanged.removeListener(listener);
+    entitiesChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addEntitiesChangedListener(final EventListener listener) {
-    evtEntitiesChanged.addListener(listener);
+    entitiesChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addBeforeRefreshListener(final EventListener listener) {
-    evtRefreshStarted.addListener(listener);
+    refreshStartedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeBeforeRefreshListener(final EventListener listener) {
-    evtRefreshStarted.removeListener(listener);
+    refreshStartedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addAfterRefreshListener(final EventListener listener) {
-    evtRefreshDone.addListener(listener);
+    refreshDoneEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeAfterRefreshListener(final EventListener listener) {
-    evtRefreshDone.removeListener(listener);
+    refreshDoneEvent.removeListener(listener);
   }
 
   /**
@@ -920,7 +920,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
     LOG.debug("{} - insert {}", this, Util.getCollectionContentsAsString(entities, false));
 
-    evtBeforeInsert.fire();
+    beforeInsertEvent.fire();
     validator.validate(entities);
 
     return connectionProvider.getConnection().selectMany(doInsert(entities));
@@ -952,14 +952,14 @@ public class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private void bindEventsInternal() {
-    evtAfterDelete.addListener(evtEntitiesChanged);
-    evtAfterInsert.addListener(evtEntitiesChanged);
-    evtAfterUpdate.addListener(evtEntitiesChanged);
+    afterDeleteEvent.addListener(entitiesChangedEvent);
+    afterInsertEvent.addListener(entitiesChangedEvent);
+    afterUpdateEvent.addListener(entitiesChangedEvent);
     entity.addValueListener(new ValueChangeListener<String, Object>() {
       @Override
       protected void valueChanged(final ValueChangeEvent<String, Object> event) {
-        stPrimaryKeyNull.setActive(entity.isPrimaryKeyNull());
-        stValid.setActive(validator.isValid(entity));
+        primaryKeyNullState.setActive(entity.isPrimaryKeyNull());
+        validState.setActive(validator.isValid(entity));
         final Event valueChangeEvent = valueChangeEventMap.get(event.getKey());
         if (valueChangeEvent != null) {
           valueChangeEvent.fire(event);

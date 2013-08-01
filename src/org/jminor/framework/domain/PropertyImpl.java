@@ -502,7 +502,7 @@ class PropertyImpl implements Property {
       return numberFormat;
     }
 
-    return new Util.NullFormat();
+    return Util.NULL_FORMAT;
   }
 
   /**

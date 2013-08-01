@@ -27,14 +27,13 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 10;
   protected static final String IS_CONNECTED = "isConnected";
   protected static final String IS_VALID = "isValid";
-  private final State stConnectionValid = States.state();
+  private final State connectedState = States.state();
   private final TaskScheduler validityCheckScheduler = new TaskScheduler(new Runnable() {
     /** {@inheritDoc} */
     @Override
     public void run() {
-      final boolean valid = isConnectionValid();
-      stConnectionValid.setActive(valid);
-      if (!valid) {
+      connectedState.setActive(isConnectionValid());
+      if (!connectedState.isActive()) {
         validityCheckScheduler.stop();
       }
     }
@@ -61,7 +60,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   /** {@inheritDoc} */
   @Override
   public final StateObserver getConnectedObserver() {
-    return stConnectionValid.getObserver();
+    return connectedState.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -118,10 +117,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   private void validateConnection() {
     if (entityConnection == null) {
-      entityConnection = connect();
-      if (SCHEDULE_VALIDITY_CHECK) {
-        validityCheckScheduler.start();
-      }
+      doConnect();
     }
     else if (!isConnectionValid()) {
       LOG.info("Previous connection invalid, reconnecting");
@@ -129,10 +125,14 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
         entityConnection.disconnect();
       }
       catch (Exception ignored) {}
-      entityConnection = connect();
-      if (SCHEDULE_VALIDITY_CHECK) {
-        validityCheckScheduler.start();
-      }
+      doConnect();
+    }
+  }
+
+  private void doConnect() {
+    entityConnection = connect();
+    if (SCHEDULE_VALIDITY_CHECK) {
+      validityCheckScheduler.start();
     }
   }
 }

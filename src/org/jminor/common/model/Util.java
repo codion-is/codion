@@ -70,6 +70,10 @@ public final class Util {
    * The system property key for specifying a ssl truststore
    */
   public static final String JAVAX_NET_NET_TRUSTSTORE = "javax.net.ssl.trustStore";
+  /**
+   * A Format object performing no formatting
+   */
+  public static final Format NULL_FORMAT = new NullFormat();
 
   private static final Logger LOG = LoggerFactory.getLogger(Util.class);
   private static final Random RANDOM = new Random();
@@ -1208,7 +1212,7 @@ public final class Util {
   /**
    * A simple null format, which performs no formatting
    */
-  public static final class NullFormat extends Format {
+  private static final class NullFormat extends Format {
 
     private static final long serialVersionUID = 1;
 

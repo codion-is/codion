@@ -32,7 +32,7 @@ import java.util.Set;
  */
 public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Entity> implements EntityComboBoxModel {
 
-  private final Event evtRefreshDone = Events.event();
+  private final Event refreshDoneEvent = Events.event();
 
   /**
    * the ID of the underlying entity
@@ -260,13 +260,13 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   /** {@inheritDoc} */
   @Override
   public final void addRefreshListener(final EventListener listener) {
-    evtRefreshDone.addListener(listener);
+    refreshDoneEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeRefreshListener(final EventListener listener) {
-    evtRefreshDone.removeListener(listener);
+    refreshDoneEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -309,7 +309,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       return performQuery(selectCriteria);
     }
     finally {
-      evtRefreshDone.fire();
+      refreshDoneEvent.fire();
     }
   }
 

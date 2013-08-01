@@ -19,12 +19,12 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   /**
    * An Event fired when a weight value has changed
    */
-  private final Event evtWeightsChanged = Events.event();
+  private final Event weightsChangedEvent = Events.event();
 
   /**
    * An Event fired when the enabled status of an item has changed
    */
-  private final Event evtEnabledChanged = Events.event();
+  private final Event enabledChangedEvent = Events.event();
 
   /**
    * The items contained in this model
@@ -66,21 +66,21 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   @Override
   public void incrementWeight(final T item) {
     getRandomItem(item).incrementWeight();
-    evtWeightsChanged.fire();
+    weightsChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
   @Override
   public void decrementWeight(final T item) {
     getRandomItem(item).decrementWeight();
-    evtWeightsChanged.fire();
+    weightsChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setWeight(final T item, final int weight) {
     getRandomItem(item).setWeight(weight);
-    evtWeightsChanged.fire();
+    weightsChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -93,7 +93,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   @Override
   public void setItemEnabled(final T item, final boolean value) {
     getRandomItem(item).setEnabled(value);
-    evtEnabledChanged.fire();
+    enabledChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -117,13 +117,13 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   /** {@inheritDoc} */
   @Override
   public final EventObserver getWeightsObserver() {
-    return evtWeightsChanged.getObserver();
+    return weightsChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver getEnabledObserver() {
-    return evtEnabledChanged.getObserver();
+    return enabledChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -183,7 +183,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
    * Notifies this model that the item weights have changed.
    */
   protected final void fireWeightsChangedEvent() {
-    evtWeightsChanged.fire();
+    weightsChangedEvent.fire();
   }
 
   /**

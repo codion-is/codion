@@ -144,9 +144,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private static final int STATUS_MESSAGE_FONT_SIZE = 12;
   private static final String TRIPLEDOT = "...";
 
-  private final Event evtTableDoubleClicked = Events.event();
-  private final Event evtSearchPanelVisibilityChanged = Events.event();
-  private final Event evtSummaryPanelVisibilityChanged = Events.event();
+  private final Event tableDoubleClickedEvent = Events.event();
+  private final Event searchPanelVisibilityChangedEvent = Events.event();
+  private final Event summaryPanelVisibilityChangedEvent = Events.event();
 
   private final Map<String, Control> controlMap = new HashMap<String, Control>();
 
@@ -411,7 +411,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         getTableScrollPane().setHorizontalScrollBar(horizontalTableScrollBar);
       }
       revalidate();
-      evtSummaryPanelVisibilityChanged.fire();
+      summaryPanelVisibilityChangedEvent.fire();
     }
   }
 
@@ -437,7 +437,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         refreshToolBar.setVisible(visible);
       }
       revalidate();
-      evtSearchPanelVisibilityChanged.fire();
+      searchPanelVisibilityChangedEvent.fire();
     }
   }
 
@@ -719,7 +719,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public final Control getToggleSummaryPanelControl() {
     final Control toggleControl = Controls.toggleControl(this, "summaryPanelVisible", null,
-            evtSummaryPanelVisibilityChanged);
+            summaryPanelVisibilityChangedEvent);
     toggleControl.setIcon(Images.loadImage("Sum16.gif"));
     toggleControl.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_SUMMARY_TIP));
 
@@ -786,42 +786,42 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param listener a listener notified each time the search panel visibility changes
    */
   public final void addSearchPanelVisibleListener(final EventListener listener) {
-    evtSearchPanelVisibilityChanged.addListener(listener);
+    searchPanelVisibilityChangedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public final void removeSearchPanelVisibleListener(final EventListener listener) {
-    evtSearchPanelVisibilityChanged.removeListener(listener);
+    searchPanelVisibilityChangedEvent.removeListener(listener);
   }
 
   /**
    * @param listener a listener notified each time the summary panel visibility changes
    */
   public final void addSummaryPanelVisibleListener(final EventListener listener) {
-    evtSummaryPanelVisibilityChanged.addListener(listener);
+    summaryPanelVisibilityChangedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public final void removeSummaryPanelVisibleListener(final EventListener listener) {
-    evtSummaryPanelVisibilityChanged.removeListener(listener);
+    summaryPanelVisibilityChangedEvent.removeListener(listener);
   }
 
   /**
    * @param listener a listener notified each time the table is double clicked
    */
   public final void addTableDoubleClickListener(final EventListener listener) {
-    evtTableDoubleClicked.addListener(listener);
+    tableDoubleClickedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public final void removeTableDoubleClickListener(final EventListener listener) {
-    evtTableDoubleClicked.removeListener(listener);
+    tableDoubleClickedEvent.removeListener(listener);
   }
 
   /**
@@ -1098,7 +1098,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   protected final Control getSearchPanelControl() {
     return Controls.toggleControl(this, "searchPanelVisible",
-            FrameworkMessages.get(FrameworkMessages.SHOW), evtSearchPanelVisibilityChanged);
+            FrameworkMessages.get(FrameworkMessages.SHOW), searchPanelVisibilityChangedEvent);
   }
 
   protected final ControlSet getCopyControlSet() {

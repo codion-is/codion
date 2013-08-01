@@ -168,7 +168,7 @@ public final class UiValues {
       else {
         this.formatter = null;
       }
-      this.format = format == null ? new Util.NullFormat() : format;
+      this.format = format == null ? Util.NULL_FORMAT : format;
       if (immediateUpdate) {
         document.addDocumentListener(new DocumentAdapter() {
           /** {@inheritDoc} */

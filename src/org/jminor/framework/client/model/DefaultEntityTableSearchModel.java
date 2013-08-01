@@ -35,9 +35,9 @@ import java.util.Map;
  */
 public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
-  private final State stSearchStateChanged = States.state();
-  private final Event evtSimpleSearchStringChanged = Events.event();
-  private final Event evtSimpleSearchPerformed = Events.event();
+  private final State searchStateChangedState = States.state();
+  private final Event simpleSearchStringChangedEvent = Events.event();
+  private final Event simpleSearchPerformedEvent = Events.event();
 
   private final String entityID;
   private final Map<String, ColumnSearchModel<Property>> propertyFilterModels = new LinkedHashMap<String, ColumnSearchModel<Property>>();
@@ -88,13 +88,13 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   @Override
   public final void rememberCurrentSearchState() {
     rememberedSearchState = getSearchModelState();
-    stSearchStateChanged.setActive(false);
+    searchStateChangedState.setActive(false);
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean hasSearchStateChanged() {
-    return stSearchStateChanged.isActive();
+    return searchStateChangedState.isActive();
   }
 
   /** {@inheritDoc} */
@@ -252,7 +252,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     if (this.simpleSearchString.length() != 0) {
       setSearchString(this.simpleSearchString);
     }
-    evtSimpleSearchStringChanged.fire();
+    simpleSearchStringChangedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -261,7 +261,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     final Conjunction conjunction = getSearchConjunction();
     try {
       setSearchConjunction(Conjunction.OR);
-      evtSimpleSearchPerformed.fire();
+      simpleSearchPerformedEvent.fire();
     }
     finally {
       setSearchConjunction(conjunction);
@@ -290,25 +290,25 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   @Override
   public final EventObserver getSimpleSearchStringObserver() {
-    return evtSimpleSearchStringChanged.getObserver();
+    return simpleSearchStringChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final StateObserver getSearchStateObserver() {
-    return stSearchStateChanged.getObserver();
+    return searchStateChangedState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addSimpleSearchListener(final EventListener listener) {
-    evtSimpleSearchPerformed.addListener(listener);
+    simpleSearchPerformedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeSimpleSearchListener(final EventListener listener) {
-    evtSimpleSearchPerformed.removeListener(listener);
+    simpleSearchPerformedEvent.removeListener(listener);
   }
 
   private void bindEvents() {
@@ -317,7 +317,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
-          stSearchStateChanged.setActive(!rememberedSearchState.equals(getSearchModelState()));
+          searchStateChangedState.setActive(!rememberedSearchState.equals(getSearchModelState()));
         }
       });
     }

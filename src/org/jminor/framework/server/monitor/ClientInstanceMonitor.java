@@ -18,7 +18,7 @@ import java.rmi.RemoteException;
  */
 public final class ClientInstanceMonitor {
 
-  private final Event evtLoggingStatusChanged = Events.event();
+  private final Event æoggingStatusChangedEvent = Events.event();
 
   private final ClientInfo client;
   private final EntityConnectionServerAdmin server;
@@ -31,7 +31,7 @@ public final class ClientInstanceMonitor {
 
   public ButtonModel getLoggingEnabledButtonModel() {
     if (loggingEnabledButtonModel == null) {
-      loggingEnabledButtonModel = ValueLinks.toggleValueLink(this, "loggingEnabled", evtLoggingStatusChanged);
+      loggingEnabledButtonModel = ValueLinks.toggleValueLink(this, "loggingEnabled", æoggingStatusChangedEvent);
     }
 
     return loggingEnabledButtonModel;
@@ -52,7 +52,7 @@ public final class ClientInstanceMonitor {
 
   public void setLoggingEnabled(final boolean status) throws RemoteException {
     server.setLoggingEnabled(client.getClientID(), status);
-    evtLoggingStatusChanged.fire();
+    æoggingStatusChangedEvent.fire();
   }
 
   public void disconnect() throws RemoteException {

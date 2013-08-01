@@ -27,8 +27,8 @@ public final class HostMonitor {
 
   private static final Logger LOG = LoggerFactory.getLogger(HostMonitor.class);
 
-  private final Event evtRefreshed = Events.event();
-  private final Event evtServerMonitorRemoved = Events.event();
+  private final Event refreshedEvent = Events.event();
+  private final Event serverMonitorRemovedEvent = Events.event();
 
   private final String hostName;
   private final int[] registryPorts;
@@ -59,7 +59,7 @@ public final class HostMonitor {
         }
       }
     }
-    evtRefreshed.fire();
+    refreshedEvent.fire();
   }
 
   public Collection<ServerMonitor> getServerMonitors() {
@@ -67,16 +67,16 @@ public final class HostMonitor {
   }
 
   public EventObserver getServerMonitorRemovedObserver() {
-    return evtServerMonitorRemoved.getObserver();
+    return serverMonitorRemovedEvent.getObserver();
   }
 
   public EventObserver getRefreshObserver() {
-    return evtRefreshed.getObserver();
+    return refreshedEvent.getObserver();
   }
 
   private void removeServer(final ServerMonitor serverMonitor) {
     serverMonitors.remove(serverMonitor);
-    evtServerMonitorRemoved.fire();
+    serverMonitorRemovedEvent.fire();
   }
 
   private boolean containsServerMonitor(final String serverName) {

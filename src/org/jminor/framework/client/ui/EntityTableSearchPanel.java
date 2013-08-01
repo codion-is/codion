@@ -37,8 +37,8 @@ import java.util.List;
  */
 public final class EntityTableSearchPanel extends JPanel {
 
-  private final Event evtAdvancedChanged = Events.event();
-  private final Event evtSimpleSearchChanged = Events.event();
+  private final Event advancedChangedEvent = Events.event();
+  private final Event simpleSearchChangedEvent = Events.event();
 
   private final EntityTableSearchModel searchModel;
   private final List<TableColumn> columns;
@@ -93,7 +93,7 @@ public final class EntityTableSearchPanel extends JPanel {
     else {
       layoutPanel(value);
     }
-    evtAdvancedChanged.fire();
+    advancedChangedEvent.fire();
   }
 
   /**
@@ -153,7 +153,7 @@ public final class EntityTableSearchPanel extends JPanel {
     controlSet.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     if (canToggleAdvanced()) {
       controlSet.add(Controls.toggleControl(this, "advanced",
-              FrameworkMessages.get(FrameworkMessages.ADVANCED), evtAdvancedChanged));
+              FrameworkMessages.get(FrameworkMessages.ADVANCED), advancedChangedEvent));
     }
     controlSet.add(Controls.methodControl(searchModel, "clearPropertySearchModels", FrameworkMessages.get(FrameworkMessages.CLEAR)));
 
@@ -181,28 +181,28 @@ public final class EntityTableSearchPanel extends JPanel {
    * @param listener a listener notified each time the simple search state changes
    */
   public void addSimpleSearchListener(final EventListener listener) {
-    evtSimpleSearchChanged.addListener(listener);
+    simpleSearchChangedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public void removeSimpleSearchListener(final EventListener listener) {
-    evtAdvancedChanged.removeListener(listener);
+    advancedChangedEvent.removeListener(listener);
   }
 
   /**
    * @param listener a listener notified each time the advanced search state changes
    */
   public void addAdvancedListener(final EventListener listener) {
-    evtAdvancedChanged.addListener(listener);
+    advancedChangedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public void removeAdvancedListener(final EventListener listener) {
-    evtAdvancedChanged.removeListener(listener);
+    advancedChangedEvent.removeListener(listener);
   }
 
   private static JPanel initializeSimpleSearchPanel(final EntityTableSearchModel searchModel) {

@@ -25,11 +25,11 @@ import java.util.List;
  */
 public final class DefaultTableSelectionModel<R> extends DefaultListSelectionModel implements TableSelectionModel<R> {
 
-  private final Event evtSelectionChanged = Events.event();
-  private final Event evtSelectedIndexChanged = Events.event();
-  private final State stSelectionEmpty = States.state(true);
-  private final State stMultipleSelection = States.state(false);
-  private final State stSingleSelection = States.state(false);
+  private final Event selectionChangedEvent = Events.event();
+  private final Event selectedIndexChangedEvent = Events.event();
+  private final State selectionEmptyState = States.state(true);
+  private final State multipleSelectionState = States.state(false);
+  private final State singleSelectionState = States.state(false);
 
   /**
    * true while the selection is being updated
@@ -289,59 +289,59 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
   @Override
   public void fireValueChanged(final int firstIndex, final int lastIndex, final boolean isAdjusting) {
     super.fireValueChanged(firstIndex, lastIndex, isAdjusting);
-    stSelectionEmpty.setActive(isSelectionEmpty());
-    stSingleSelection.setActive(getSelectionCount() == 1);
-    stMultipleSelection.setActive(!stSelectionEmpty.isActive() && !stSingleSelection.isActive());
+    selectionEmptyState.setActive(isSelectionEmpty());
+    singleSelectionState.setActive(getSelectionCount() == 1);
+    multipleSelectionState.setActive(!selectionEmptyState.isActive() && !singleSelectionState.isActive());
     final int minSelIndex = getMinSelectionIndex();
     if (selectedIndex != minSelIndex) {
       selectedIndex = minSelIndex;
-      evtSelectedIndexChanged.fire();
+      selectedIndexChangedEvent.fire();
     }
     if (!(isAdjusting || isUpdatingSelection)) {
-      evtSelectionChanged.fire();
+      selectionChangedEvent.fire();
     }
   }
 
   /** {@inheritDoc} */
   @Override
   public void addSelectedIndexListener(final EventListener listener) {
-    evtSelectedIndexChanged.addListener(listener);
+    selectedIndexChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public void removeSelectedIndexListener(final EventListener listener) {
-    evtSelectedIndexChanged.addListener(listener);
+    selectedIndexChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public void addSelectionChangedListener(final EventListener listener) {
-    evtSelectionChanged.addListener(listener);
+    selectionChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public void removeSelectionChangedListener(final EventListener listener) {
-    evtSelectionChanged.addListener(listener);
+    selectionChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public StateObserver getMultipleSelectionObserver() {
-    return stMultipleSelection.getObserver();
+    return multipleSelectionState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public StateObserver getSingleSelectionObserver() {
-    return stSingleSelection.getObserver();
+    return singleSelectionState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public StateObserver getSelectionEmptyObserver() {
-    return stSelectionEmpty.getObserver();
+    return selectionEmptyState.getObserver();
   }
 
   private void checkIndexes(final Collection<Integer> indexes) {

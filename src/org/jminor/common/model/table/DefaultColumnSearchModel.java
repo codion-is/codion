@@ -29,15 +29,15 @@ import java.util.regex.Pattern;
 @SuppressWarnings({"unchecked"})
 public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
-  private final Event evtUpperBoundChanged = Events.event();
-  private final Event evtLowerBoundChanged = Events.event();
-  private final Event evtSearchTypeChanged = Events.event();
-  private final Event evtSearchStateChanged = Events.event();
-  private final Event evtSearchModelCleared = Events.event();
-  private final Event evtEnabledChanged = Events.event();
+  private final Event upperBoundChangedEvent = Events.event();
+  private final Event lowerBoundChangedEvent = Events.event();
+  private final Event searchTypeChangedEvent = Events.event();
+  private final Event searchStateChangedEvent = Events.event();
+  private final Event searchModelClearedEvent = Events.event();
+  private final Event enabledChangedEvent = Events.event();
 
-  private final State stLocked = States.state();
-  private final State stLowerBoundRequired = States.state();
+  private final State lockedState = States.state();
+  private final State lowerBoundRequiredState = States.state();
 
   private final K columnIdentifier;
   private final int type;
@@ -106,13 +106,13 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void setLocked(final boolean value) {
-    stLocked.setActive(value);
+    lockedState.setActive(value);
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean isLocked() {
-    return stLocked.isActive();
+    return lockedState.isActive();
   }
 
   /** {@inheritDoc} */
@@ -138,7 +138,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     checkLock();
     if (!Util.equal(upperBound, upper)) {
       upperBound = upper;
-      evtUpperBoundChanged.fire();
+      upperBoundChangedEvent.fire();
     }
   }
 
@@ -167,7 +167,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     checkLock();
     if (!Util.equal(lowerBound, value)) {
       lowerBound = value;
-      evtLowerBoundChanged.fire();
+      lowerBoundChangedEvent.fire();
     }
   }
 
@@ -299,14 +299,14 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     checkLock();
     if (!this.searchType.equals(searchType)) {
       this.searchType = searchType;
-      evtSearchTypeChanged.fire();
+      searchTypeChangedEvent.fire();
     }
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean isLowerBoundRequired() {
-    return stLowerBoundRequired.isActive();
+    return lowerBoundRequiredState.isActive();
   }
 
   /**
@@ -347,7 +347,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     checkLock();
     if (enabled != value) {
       enabled = value;
-      evtEnabledChanged.fire();
+      enabledChangedEvent.fire();
     }
   }
 
@@ -370,121 +370,121 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     setUpperBound((Object) null);
     setLowerBound((Object) null);
     setSearchType(SearchType.LIKE);
-    evtSearchModelCleared.fire();
+    searchModelClearedEvent.fire();
   }
 
   /** {@inheritDoc} */
   @Override
   public final StateObserver getLockedObserver() {
-    return stLocked.getObserver();
+    return lockedState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver getEnabledObserver() {
-    return evtEnabledChanged.getObserver();
+    return enabledChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver getLowerBoundObserver() {
-    return evtLowerBoundChanged.getObserver();
+    return lowerBoundChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver getUpperBoundObserver() {
-    return evtUpperBoundChanged.getObserver();
+    return upperBoundChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addEnabledListener(final EventListener listener) {
-    evtEnabledChanged.addListener(listener);
+    enabledChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeEnabledListener(final EventListener listener) {
-    evtEnabledChanged.removeListener(listener);
+    enabledChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addUpperBoundListener(final EventListener listener) {
-    evtUpperBoundChanged.addListener(listener);
+    upperBoundChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeUpperBoundListener(final EventListener listener) {
-    evtUpperBoundChanged.removeListener(listener);
+    upperBoundChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addLowerBoundListener(final EventListener listener) {
-    evtLowerBoundChanged.addListener(listener);
+    lowerBoundChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeLowerBoundListener(final EventListener listener) {
-    evtLowerBoundChanged.removeListener(listener);
+    lowerBoundChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addLowerBoundRequiredListener(final EventListener listener) {
-    stLowerBoundRequired.addListener(listener);
+    lowerBoundRequiredState.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeLowerBoundRequiredListener(final EventListener listener) {
-    stLowerBoundRequired.removeListener(listener);
+    lowerBoundRequiredState.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addClearedListener(final EventListener listener) {
-    evtSearchModelCleared.addListener(listener);
+    searchModelClearedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeClearedListener(final EventListener listener) {
-    evtSearchModelCleared.removeListener(listener);
+    searchModelClearedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addSearchStateListener(final EventListener listener) {
-    evtSearchStateChanged.addListener(listener);
+    searchStateChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeSearchStateListener(final EventListener listener) {
-    evtSearchStateChanged.removeListener(listener);
+    searchStateChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addSearchTypeListener(final EventListener listener) {
-    evtSearchTypeChanged.addListener(listener);
+    searchTypeChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeSearchTypeListener(final EventListener listener) {
-    evtSearchTypeChanged.removeListener(listener);
+    searchTypeChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver getSearchTypeObserver() {
-    return evtSearchTypeChanged.getObserver();
+    return searchTypeChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -680,23 +680,23 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
         }
       }
     };
-    evtUpperBoundChanged.addListener(autoEnableListener);
-    evtLowerBoundChanged.addListener(autoEnableListener);
-    evtUpperBoundChanged.addListener(evtSearchStateChanged);
-    evtLowerBoundChanged.addListener(evtSearchStateChanged);
-    evtSearchTypeChanged.addListener(evtSearchStateChanged);
-    evtEnabledChanged.addListener(evtSearchStateChanged);
-    evtSearchTypeChanged.addListener(new EventAdapter() {
+    upperBoundChangedEvent.addListener(autoEnableListener);
+    lowerBoundChangedEvent.addListener(autoEnableListener);
+    upperBoundChangedEvent.addListener(searchStateChangedEvent);
+    lowerBoundChangedEvent.addListener(searchStateChangedEvent);
+    searchTypeChangedEvent.addListener(searchStateChangedEvent);
+    enabledChangedEvent.addListener(searchStateChangedEvent);
+    searchTypeChangedEvent.addListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
-        stLowerBoundRequired.setActive(getSearchType() == SearchType.WITHIN_RANGE || getSearchType() == SearchType.OUTSIDE_RANGE);
+        lowerBoundRequiredState.setActive(getSearchType() == SearchType.WITHIN_RANGE || getSearchType() == SearchType.OUTSIDE_RANGE);
       }
     });
   }
 
   private void checkLock() {
-    if (stLocked.isActive()) {
+    if (lockedState.isActive()) {
       throw new IllegalStateException("Search model for key " + columnIdentifier + " is locked");
     }
   }

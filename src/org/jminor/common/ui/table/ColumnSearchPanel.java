@@ -82,7 +82,7 @@ public class ColumnSearchPanel<K> extends JPanel {
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
 
-  private final State stAdvancedSearch = States.state();
+  private final State advancedSearchState = States.state();
 
   private JDialog dialog;
   private Point lastDialogPosition;
@@ -155,7 +155,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     }
     if (includeToggleAdvancedSearchButton) {
       this.toggleSearchAdvanced = ControlProvider.createToggleButton(
-              Controls.toggleControl(this, "advancedSearchOn", null, stAdvancedSearch.getObserver()));
+              Controls.toggleControl(this, "advancedSearchOn", null, advancedSearchState.getObserver()));
       toggleSearchAdvanced.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
     }
     else {
@@ -261,14 +261,14 @@ public class ColumnSearchPanel<K> extends JPanel {
    * @param value true if advanced search should be enabled
    */
   public final void setAdvancedSearchOn(final boolean value) {
-    stAdvancedSearch.setActive(value);
+    advancedSearchState.setActive(value);
   }
 
   /**
    * @return true if the advanced search is enabled
    */
   public final boolean isAdvancedSearchOn() {
-    return stAdvancedSearch.isActive();
+    return advancedSearchState.isActive();
   }
 
   /**
@@ -286,11 +286,11 @@ public class ColumnSearchPanel<K> extends JPanel {
   }
 
   public final void addAdvancedSearchListener(final EventListener listener) {
-    stAdvancedSearch.addListener(listener);
+    advancedSearchState.addListener(listener);
   }
 
   public final void removeAdvancedSearchListener(final EventListener listener) {
-    stAdvancedSearch.removeListener(listener);
+    advancedSearchState.removeListener(listener);
   }
 
   /**
@@ -410,7 +410,7 @@ public class ColumnSearchPanel<K> extends JPanel {
    * Binds events to relevant GUI actions
    */
   private void bindEvents() {
-    stAdvancedSearch.addListener(new EventAdapter() {
+    advancedSearchState.addListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -435,7 +435,7 @@ public class ColumnSearchPanel<K> extends JPanel {
   }
 
   private void initializePanel() {
-    if (stAdvancedSearch.isActive()) {
+    if (advancedSearchState.isActive()) {
       initializeAdvancedPanel();
     }
     else {

@@ -37,7 +37,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   /**
    * Fired when a value changes, null until initialized by a call to getValueChangedEvent().
    */
-  private Event evtValueChanged;
+  private Event valueChangedEvent;
 
   private static final int MAGIC_NUMBER = 23;
 
@@ -131,7 +131,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
     if (values.containsKey(key)) {
       final V value = values.remove(key);
       removeOriginalValue(key);
-      if (evtValueChanged != null) {
+      if (valueChangedEvent != null) {
         notifyValueChange(key, null, value, false);
       }
       handleValueRemoved(key, value);
@@ -288,8 +288,8 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public final void removeValueListener(final ValueChangeListener valueListener) {
-    if (evtValueChanged != null) {
-      evtValueChanged.removeListener(valueListener);
+    if (valueChangedEvent != null) {
+      valueChangedEvent.removeListener(valueListener);
     }
   }
 
@@ -315,8 +315,8 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   }
 
   protected final void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
-    if (evtValueChanged != null) {
-      evtValueChanged.fire(new ValueChangeEvent<K, V>(this, key, value, oldValue, initialization));
+    if (valueChangedEvent != null) {
+      valueChangedEvent.fire(new ValueChangeEvent<K, V>(this, key, value, oldValue, initialization));
     }
   }
 
@@ -382,11 +382,11 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   }
 
   private Event getValueChangedEvent() {
-    if (evtValueChanged == null) {
-      evtValueChanged = Events.event();
+    if (valueChangedEvent == null) {
+      valueChangedEvent = Events.event();
       handleValueChangedEventInitialized();
     }
 
-    return evtValueChanged;
+    return valueChangedEvent;
   }
 }

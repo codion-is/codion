@@ -57,8 +57,8 @@ public final class EntityGeneratorModel {
   private final DatabaseMetaData metaData;
   private final AbstractFilteredTableModel<Table, Integer> tableModel;
   private final Document document = new DefaultStyledDocument();
-  private final Event evtRefreshStarted = Events.event();
-  private final Event evtRefreshEnded = Events.event();
+  private final Event refreshStartedEvent = Events.event();
+  private final Event refreshEndedEvent = Events.event();
 
   /**
    * Instantiates a new EntityGeneratorModel.
@@ -123,28 +123,28 @@ public final class EntityGeneratorModel {
    * @param listener a listener notified each time a refresh has started
    */
   public void addRefreshStartedListener(final EventListener listener) {
-    evtRefreshStarted.addListener(listener);
+    refreshStartedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public void removeRefreshStartedListener(final EventListener listener) {
-    evtRefreshStarted.removeListener(listener);
+    refreshStartedEvent.removeListener(listener);
   }
 
   /**
    * @param listener a listener notified each time a refresh has ended
    */
   public void addRefreshDoneListener(final EventListener listener) {
-    evtRefreshEnded.addListener(listener);
+    refreshEndedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
   public void removeRefreshDoneListener(final EventListener listener) {
-    evtRefreshEnded.removeListener(listener);
+    refreshEndedEvent.removeListener(listener);
   }
 
   /**
@@ -178,11 +178,11 @@ public final class EntityGeneratorModel {
       @Override
       public void eventOccurred() {
         try {
-          evtRefreshStarted.fire();
+          refreshStartedEvent.fire();
           generateDefinitions(tableModel.getSelectionModel().getSelectedItems());
         }
         finally {
-          evtRefreshEnded.fire();
+          refreshEndedEvent.fire();
         }
       }
     });

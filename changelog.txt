@@ -3534,3 +3534,7 @@
   ValueChangeEvent.toString() added
   DefaultEntityEditModel.delete() now clears the model if the active entity was deleted
   EntityUiUtil.createTextArea() overloaded with enabledState
+  Databases.getDatabaseStatistics() moved to DatabaseUtil along with associated classes
+  DefaultFilteredComboBoxModel.acceptAllCriteria now static and final
+  Util.NullFormat() privatized, NULL_FORMAT constant introduced
+  Naming prefixes for State and Event instances removed (st, evt)
