@@ -3538,3 +3538,4 @@
   DefaultFilteredComboBoxModel.acceptAllCriteria now static and final
   Util.NullFormat() privatized, NULL_FORMAT constant introduced
   Naming prefixes for State and Event instances removed (st, evt)
+  FilteredTableModel.setColumns() moved to FilteredTableColumnModel

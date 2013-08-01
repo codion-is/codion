@@ -139,10 +139,4 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableSelecti
    * @return the sorting model
    */
   TableSortModel<R, C> getSortModel();
-
-  /**
-   * Arranges the column model so that only the given columns are visible and in the given order
-   * @param columnIdentifiers the column identifiers
-   */
-  void setColumns(final C... columnIdentifiers);
 }

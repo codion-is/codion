@@ -529,7 +529,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   @Override
   public void setColumns(final String... propertyIDs) {
     final List<Property> properties = Entities.getProperties(getEntityID(), propertyIDs);
-    super.setColumns(properties.toArray(new Property[properties.size()]));
+    getColumnModel().setColumns(properties.toArray(new Property[properties.size()]));
   }
 
   /** {@inheritDoc} */

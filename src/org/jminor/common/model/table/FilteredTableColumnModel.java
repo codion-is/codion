@@ -40,6 +40,12 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
   void setColumnVisible(final C columnIdentifier, final boolean visible);
 
   /**
+   * Arranges the columns so that only the given columns are visible and in the given order
+   * @param columnIdentifiers the column identifiers
+   */
+  void setColumns(final C... columnIdentifiers);
+
+  /**
    * Returns the TableColumn with the given identifier
    * @param identifier the column identifier
    * @return the TableColumn with the given identifier

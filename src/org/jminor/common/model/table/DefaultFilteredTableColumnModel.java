@@ -113,6 +113,24 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
 
   /** {@inheritDoc} */
   @Override
+  public final void setColumns(final C... columnIdentifiers) {
+    if (columnIdentifiers != null) {
+      final List<C> identifiers = Arrays.asList(columnIdentifiers);
+      int columnIndex = 0;
+      for (final C identifier : identifiers) {
+        setColumnVisible(identifier, true);
+        moveColumn(getColumnIndex(identifier), columnIndex++);
+      }
+      for (final TableColumn column : getAllColumns()) {
+        if (!identifiers.contains(column.getIdentifier())) {
+          setColumnVisible((C) column.getIdentifier(), false);
+        }
+      }
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final List<TableColumn> getHiddenColumns() {
     return new ArrayList<TableColumn>(hiddenColumns.values());
   }
