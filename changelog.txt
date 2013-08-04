@@ -3546,3 +3546,4 @@
   ValueMapImpl.setAs() improved, now fires value change events only after all values have been set
   EntityConnectionImpl.executeFunction/Procedure() does not check for transaction states before or after execution, leaving the responsibility in the hands of the programmer
   EntityConnectionLogger now package private, instantiated via EntityConnections.createLogger()
+  DatabaseConnectionImpl.checkConnectionStatement field removed

@@ -150,19 +150,6 @@ public final class DatabaseUtil {
    * @return true if the connection is valid
    */
   public static boolean isValid(final Connection connection, final Database database, final int timeoutInSeconds) {
-    return isValid(connection, database, null, timeoutInSeconds);
-  }
-
-  /**
-   * Returns true if the given connection is valid, if the underlying driver supports <code>isValid()</code>
-   * it is used, otherwise a simple query is run
-   * @param connection the connection to validate
-   * @param database the underlying database implementation
-   * @param statement an optional statement to use when validating with a query
-   * @param timeoutInSeconds the timeout
-   * @return true if the connection is valid
-   */
-  public static boolean isValid(final Connection connection, final Database database, final Statement statement, final int timeoutInSeconds) {
     Util.rejectNullValue(connection, "connection");
     Util.rejectNullValue(database, "database");
     try {
@@ -170,7 +157,7 @@ public final class DatabaseUtil {
         return connection.isValid(0);
       }
 
-      return validateWithQuery(connection, database, statement, timeoutInSeconds);
+      return validateWithQuery(connection, database, timeoutInSeconds);
     }
     catch (SQLException e) {
       return false;
@@ -189,13 +176,11 @@ public final class DatabaseUtil {
   }
 
   private static boolean validateWithQuery(final Connection connection, final Database database,
-                                           final Statement providedStatement, final int timeoutInSeconds) throws SQLException {
+                                           final int timeoutInSeconds) throws SQLException {
     ResultSet rs = null;
-    Statement statement = providedStatement;
+    Statement statement = null;
     try {
-      if (statement == null) {
-        statement = connection.createStatement();
-      }
+      statement = connection.createStatement();
       if (timeoutInSeconds > 0) {
         statement.setQueryTimeout(timeoutInSeconds);
       }
@@ -205,9 +190,7 @@ public final class DatabaseUtil {
     }
     finally {
       closeSilently(rs);
-      if (providedStatement != null) {
-        closeSilently(statement);
-      }
+      closeSilently(statement);
     }
   }
 

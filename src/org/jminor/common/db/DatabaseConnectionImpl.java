@@ -28,7 +28,6 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   private final Database database;
 
   private Connection connection;
-  private Statement checkConnectionStatement;
   private boolean transactionOpen = false;
 
   private long poolTime = -1;
@@ -111,7 +110,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public final boolean isValid() {
-    return connection != null && DatabaseUtil.isValid(connection, database, checkConnectionStatement, 0);
+    return connection != null && DatabaseUtil.isValid(connection, database, 0);
   }
 
   /** {@inheritDoc} */
@@ -121,7 +120,6 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       return;
     }
 
-    DatabaseUtil.closeSilently(checkConnectionStatement);
     try {
       if (!connection.isClosed()) {
         connection.rollback();
@@ -132,7 +130,6 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
       LOG.error(ex.getMessage(), ex);
     }
     connection = null;
-    checkConnectionStatement = null;
   }
 
   /** {@inheritDoc} */

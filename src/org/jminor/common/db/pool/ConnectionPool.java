@@ -151,7 +151,7 @@ public interface ConnectionPool {
   /**
    * Facilitates the counting of connection pool events
    */
-  public interface Counter {
+  interface Counter {
 
     /**
      * Increments the number of the requests made counter
