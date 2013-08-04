@@ -37,4 +37,45 @@ public final class DatabaseConnections {
   public static DatabaseConnection createConnection(final Database database, final Connection connection) throws DatabaseException {
     return new DatabaseConnectionImpl(database, connection);
   }
+
+  /**
+   * Instantiates a default DatabaseConnectionProvider instance
+   * @param database the underlying database
+   * @param user the user
+   */
+  public static DatabaseConnectionProvider connectionProvider(final Database database, final User user) {
+    return new ConnectionProvider(database, user);
+  }
+
+  /**
+   * A connection provider
+   */
+  private static final class ConnectionProvider implements DatabaseConnectionProvider {
+
+    private final Database database;
+    private final User user;
+
+    private ConnectionProvider(final Database database, final User user) {
+      this.database = database;
+      this.user = user;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public DatabaseConnection createConnection() throws DatabaseException {
+      return DatabaseConnections.createConnection(database, user);
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void destroyConnection(final DatabaseConnection connection) {
+      connection.disconnect();
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public User getUser() {
+      return user;
+    }
+  }
 }

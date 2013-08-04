@@ -21,9 +21,7 @@ import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import java.io.IOException;
 import java.io.InputStream;
-import java.net.URISyntaxException;
 import java.net.URL;
 import java.rmi.RemoteException;
 import java.util.Collection;
@@ -70,10 +68,6 @@ public class EntityConnectionServerTest {
     assertEquals(1, admin.getConnectionCount());
     admin.setPoolConnectionThreshold(User.UNIT_TEST_USER, 505);
     assertEquals(505, admin.getPoolConnectionThreshold(User.UNIT_TEST_USER));
-    assertTrue(admin.isConnectionPoolEnabled(User.UNIT_TEST_USER));
-    admin.setConnectionPoolEnabled(User.UNIT_TEST_USER, false);
-    assertFalse(admin.isConnectionPoolEnabled(User.UNIT_TEST_USER));
-    admin.setConnectionPoolEnabled(User.UNIT_TEST_USER, true);
     admin.setPooledConnectionTimeout(User.UNIT_TEST_USER, 60005);
     assertEquals(60005, admin.getPooledConnectionTimeout(User.UNIT_TEST_USER));
     admin.setMaximumPoolCheckOutTime(User.UNIT_TEST_USER, 2005);
@@ -171,10 +165,11 @@ public class EntityConnectionServerTest {
   }
 
   @Test
-  public void testWebServer() throws URISyntaxException, IOException {
+  public void testWebServer() throws Exception {
     InputStream input = null;
     try {
-      input = new URL("http://localhost:12345/file_templates/EntityEditPanel.template").openStream();
+      Thread.sleep(3000);
+      input = new URL("http://localhost:8080/file_templates/EntityEditPanel.template").openStream();
       assertTrue(input.read() > 0);
     }
     finally {
@@ -246,7 +241,7 @@ public class EntityConnectionServerTest {
     assertEquals(30, admin.getConnectionTimeout());
     admin.getDatabaseStatistics();
     admin.getDatabaseURL();
-    admin.getEnabledConnectionPools();
+    admin.getConnectionPools();
     admin.getEntityDefinitions();
     admin.setLoggingLevel(Level.INFO);
     assertEquals(Level.INFO, admin.getLoggingLevel());
@@ -273,7 +268,7 @@ public class EntityConnectionServerTest {
     Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept");
     Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.demos.empdept.server.EmpDeptLoginProxy");
     Configuration.setValue(Configuration.WEB_SERVER_DOCUMENT_ROOT, System.getProperty("user.dir") + System.getProperty("file.separator") + "resources");
-    Configuration.setValue(Configuration.WEB_SERVER_PORT, 12345);
+    Configuration.setValue(Configuration.WEB_SERVER_PORT, 8080);
     Configuration.setValue("java.rmi.server.hostname", "localhost");
     Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
     Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");

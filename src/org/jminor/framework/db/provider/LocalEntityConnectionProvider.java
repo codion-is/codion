@@ -11,7 +11,6 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnectionLogger;
 import org.jminor.framework.db.EntityConnections;
 
 import org.slf4j.Logger;
@@ -109,7 +108,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   private static final class LocalConnectionHandler implements InvocationHandler {
     private final EntityConnection connection;
-    private final MethodLogger methodLogger = new EntityConnectionLogger();
+    private final MethodLogger methodLogger = EntityConnections.createLogger();
 
     private LocalConnectionHandler(final EntityConnection connection) {
       this.connection = connection;
@@ -141,7 +140,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
         final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
         if (methodLogger.isEnabled()) {
           final StringBuilder messageBuilder = new StringBuilder(connection.getUser().toString()).append("\n");
-          EntityConnectionLogger.appendLogEntry(messageBuilder, entry, 0);
+          MethodLogger.appendLogEntry(messageBuilder, entry, 0);
           LOG.info(messageBuilder.toString());
         }
       }

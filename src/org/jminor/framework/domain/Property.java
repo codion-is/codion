@@ -434,13 +434,13 @@ public interface Property extends Attribute {
   interface PrimaryKeyProperty extends ColumnProperty {
 
     /**
-     * @return this property's index in the primary key
+     * @return this property's zero based index in the primary key
      */
     int getIndex();
 
     /**
-     * Sets the primary key index of this property
-     * @param index the index
+     * Sets the zero based primary key index of this property
+     * @param index the zero based index
      * @return this PrimaryKeyProperty instance
      */
     PrimaryKeyProperty setIndex(final int index);

@@ -228,33 +228,7 @@ public class EntityConnectionImplTest {
   public void executeFunction() throws DatabaseException {
     final DatabaseConnection.Function func = new AbstractFunction("executeFunction", "executeFunction") {
       @Override
-      public List<Object> execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {
-        return null;
-      }
-    };
-    Databases.addOperation(func);
-    connection.executeFunction(func.getID());
-  }
-
-  @Test(expected = DatabaseException.class)
-  public void executeFunctionOpenTransaction() throws DatabaseException {
-    final DatabaseConnection.Function func = new AbstractFunction("executeFunctionOpenTransaction", "executeFunctionOpenTransaction") {
-      @Override
-      public List<Object> execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {
-        return null;
-      }
-    };
-    Databases.addOperation(func);
-    connection.beginTransaction();
-    connection.executeFunction(func.getID());
-  }
-
-  @Test(expected = DatabaseException.class)
-  public void executeFunctionUnclosedTransaction() throws DatabaseException {
-    final DatabaseConnection.Function func = new AbstractFunction("executeFunctionUnclosedTransaction", "executeFunctionUnclosedTransaction") {
-      @Override
-      public List<Object> execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {
-        connection.beginTransaction();
+      public List execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {
         return null;
       }
     };
@@ -267,29 +241,6 @@ public class EntityConnectionImplTest {
     final DatabaseConnection.Procedure proc = new AbstractProcedure("executeProcedure", "executeProcedure") {
       @Override
       public void execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {}
-    };
-    Databases.addOperation(proc);
-    connection.executeProcedure(proc.getID());
-  }
-
-  @Test(expected = DatabaseException.class)
-  public void executeProcedureOpenTransaction() throws DatabaseException {
-    final DatabaseConnection.Procedure proc = new AbstractProcedure("executeProcedureOpenTransaction", "executeProcedureOpenTransaction") {
-      @Override
-      public void execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {}
-    };
-    Databases.addOperation(proc);
-    connection.beginTransaction();
-    connection.executeProcedure(proc.getID());
-  }
-
-  @Test(expected = DatabaseException.class)
-  public void executeProcedureUnclosedTransaction() throws DatabaseException {
-    final DatabaseConnection.Procedure proc = new AbstractProcedure("executeProcedureUnclosedTransaction", "executeProcedureUnclosedTransaction") {
-      @Override
-      public void execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {
-        connection.beginTransaction();
-      }
     };
     Databases.addOperation(proc);
     connection.executeProcedure(proc.getID());

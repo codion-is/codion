@@ -47,7 +47,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     Util.rejectNullValue(user, "user");
     this.database = database;
     this.user = user;
-    setConnection(database.createConnection(user));
+    initializeAndValidate(database.createConnection(user));
   }
 
   /**
@@ -62,7 +62,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   public DatabaseConnectionImpl(final Database database, final Connection connection) throws DatabaseException {
     Util.rejectNullValue(database, "database");
     this.database = database;
-    setConnection(connection);
+    initializeAndValidate(connection);
     this.user = getUser(connection);
   }
 
@@ -111,20 +111,7 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public final boolean isValid() {
-    if (connection == null) {
-      return false;
-    }
-    try {
-      if (database.supportsIsValid()) {
-        return connection.isValid(0);
-      }
-
-      return checkConnectionWithQuery();
-    }
-    catch (SQLException e) {
-      LOG.error(e.getMessage(), e);
-      return false;
-    }
+    return connection != null && DatabaseUtil.isValid(connection, database, checkConnectionStatement, 0);
   }
 
   /** {@inheritDoc} */
@@ -309,7 +296,16 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
   }
 
-  protected MethodLogger.Entry logExit(final String method, final Throwable exception, final String exitMessage) {
+  /**
+   * Sets the internal connection to use, note that no validation or
+   * transaction checking is performed, it is simply used 'as is'
+   * @param connection the connection
+   */
+  public final void setConnection(final Connection connection) {
+    this.connection = connection;
+  }
+
+  protected final MethodLogger.Entry logExit(final String method, final Throwable exception, final String exitMessage) {
     if (methodLogger != null) {
       return methodLogger.logExit(method, exception, exitMessage);
     }
@@ -317,13 +313,13 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     return null;
   }
 
-  protected void logAccess(final String method, final Object[] arguments) {
+  protected final void logAccess(final String method, final Object[] arguments) {
     if (methodLogger != null) {
       methodLogger.logAccess(method, arguments);
     }
   }
 
-  private void setConnection(final Connection connection) throws DatabaseException {
+  private void initializeAndValidate(final Connection connection) throws DatabaseException {
     if (isConnected()) {
       throw new IllegalStateException("Already connected");
     }
@@ -337,24 +333,6 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
     }
     catch (SQLException e) {
       throw new DatabaseException(e, "Unable to disable auto commit on the given connection");
-    }
-  }
-
-  private boolean checkConnectionWithQuery() {
-    ResultSet rs = null;
-    try {
-      if (checkConnectionStatement == null) {
-        checkConnectionStatement = connection.createStatement();
-      }
-
-      rs = checkConnectionStatement.executeQuery(database.getCheckConnectionQuery());
-      return true;
-    }
-    catch (SQLException e) {
-      return false;
-    }
-    finally {
-      DatabaseUtil.closeSilently(rs);
     }
   }
 

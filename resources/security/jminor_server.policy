@@ -7,8 +7,8 @@ grant {
   //permission java.io.FilePermission "/home/webstart/-", "read";
 
   //Web Start server port
-  permission java.net.SocketPermission "*:80", "listen";
-  permission java.net.SocketPermission "*:80-", "connect,listen,resolve";
+  permission java.net.SocketPermission "*:8080", "listen";
+  permission java.net.SocketPermission "*:8080-", "connect,listen,resolve";
   //Database port
   permission java.net.SocketPermission "*:3306", "connect";
   //Client service port
@@ -35,4 +35,21 @@ grant {
   permission java.lang.RuntimePermission "accessClassInPackage.sun.rmi.transport.tcp";
   permission java.lang.RuntimePermission "accessClassInPackage.sun.net.www.protocol.http";
   permission java.lang.RuntimePermission "accessClassInPackage.sun.net.www.http";
+
+  //for jetty, --incomplete, use all_permissions.policy when using the rest server plugin--
+  permission java.util.PropertyPermission "*", "read,write";
+  permission java.io.FilePermission "${user.dir}${/}-", "read";
+  permission java.io.FilePermission "${user.dir}${/}logs${/}*", "read,write,delete";
+  permission java.io.FilePermission "${java.io.tmpdir}${/}-", "read,write,delete";
+  permission java.security.SecurityPermission "putProviderProperty.SunJSSE";
+  permission java.security.SecurityPermission "insertProvider.SunJSSE";
+  permission java.lang.RuntimePermission "setSecurityManager";
+  permission java.lang.RuntimePermission "createClassLoader";
+  permission java.lang.RuntimePermission "setContextClassLoader";
+  permission java.lang.RuntimePermission "accessClassInPackage.sun.tools.*";
+  permission java.lang.RuntimePermission "getClassLoader";
+  permission java.lang.RuntimePermission "accessClassInPackage.sun.tools.*";
+  permission java.security.SecurityPermission "getPolicy";
+  permission java.lang.RuntimePermission "setIO";
+  permission java.lang.reflect.ReflectPermission "suppressAccessChecks";
 };

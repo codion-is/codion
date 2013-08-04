@@ -54,6 +54,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
   /**
    * After a call to this method this ValueMap contains the same values and original values as the given map.
    * A null argument to this method clears the destination map of all values and original values.
+   * Value change events for affected keys are fired only after all values have been copied.
    * @param sourceMap the map to copy or null for clearing the destination map
    */
   void setAs(final ValueMap<K, V> sourceMap);

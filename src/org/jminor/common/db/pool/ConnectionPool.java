@@ -3,9 +3,10 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
+
+import java.sql.Connection;
 
 /**
  * Defines a simple connection pool.
@@ -20,14 +21,14 @@ public interface ConnectionPool {
    * @throws IllegalStateException if the pool is closed
    * @see #setMaximumCheckOutTime(int)
    */
-  DatabaseConnection getConnection() throws DatabaseException;
+  Connection getConnection() throws DatabaseException;
 
   /**
    * Return the given connection to the pool.
    * If the pool has been closed the connection is disconnected and discarded.
    * @param connection the database connection to return to the pool
    */
-  void returnConnection(final DatabaseConnection connection);
+  void returnConnection(final Connection connection);
 
   /**
    * @return the user this connection pool is based on.
@@ -67,16 +68,6 @@ public interface ConnectionPool {
   void setCollectFineGrainedStatistics(final boolean value);
 
   /**
-   * @return true if this pool is enabled, false otherwise
-   */
-  boolean isEnabled();
-
-  /**
-   * @param enabled true to enable this pool, false to disable
-   */
-  void setEnabled(final boolean enabled);
-
-  /**
    * @return the pool cleanup interval in milliseconds
    */
   int getCleanupInterval();
@@ -87,12 +78,14 @@ public interface ConnectionPool {
   void setCleanupInterval(final int poolCleanupInterval);
 
   /**
-   * @return the connection timeout in milliseconds
+   * @return the pooled connection timeout in milliseconds, that is, the time that needs
+   * to pass before an idle connection can be harvested
    */
   int getConnectionTimeout();
 
   /**
-   * @param timeout the connection timeout in milliseconds
+   * @param timeout the pooled connection timeout in milliseconds, that is, the time that needs
+   * to pass before an idle connection can be harvested
    */
   void setConnectionTimeout(final int timeout);
 
@@ -133,12 +126,13 @@ public interface ConnectionPool {
 
   /**
    * @return the maximum number of milliseconds to retry connection checkout before throwing an exception
-   * @see org.jminor.common.db.pool.ConnectionPoolException.NoConnectionAvailable
+   * @see ConnectionPoolException.NoConnectionAvailable
    */
   int getMaximumCheckOutTime();
 
   /**
-   * @param value the maximum number of milliseconds to retry connection checkout before throwing an exception
+   * @param value the maximum number of milliseconds to retry connection checkout before throwing an exception,
+   * note that this also modifies the new connection threshold, keeping it's value to 1/4 of this one
    * @throws IllegalArgumentException if value is less than 0
    */
   void setMaximumCheckOutTime(final int value);
@@ -153,4 +147,40 @@ public interface ConnectionPool {
    * @throws IllegalArgumentException in case value is negative or larger than <code>maximumCheckOutTime</code>
    */
   void setNewConnectionThreshold(final int value);
+
+  /**
+   * Facilitates the counting of connection pool events
+   */
+  public interface Counter {
+
+    /**
+     * Increments the number of the requests made counter
+     */
+    void incrementRequestCounter();
+
+    /**
+     * Increments the number of requests made that failed counter
+     */
+    void incrementFailedRequestCounter();
+
+    /**
+     * Increments the number of the connections created counter
+     */
+    void incrementConnectionsCreatedCounter();
+
+    /**
+     * Increments the number of the connections destroyed counter
+     */
+    void incrementConnectionsDestroyedCounter();
+
+    /**
+     * Increments the number of requests made that had to wait for a connection counter
+     */
+    void incrementDelayedRequestCounter();
+
+    /**
+     * Adds a connection check out time
+     */
+    void addCheckOutTime(final long milliseconds);
+  }
 }

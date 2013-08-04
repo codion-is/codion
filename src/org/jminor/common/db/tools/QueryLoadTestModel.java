@@ -4,8 +4,6 @@
 package org.jminor.common.db.tools;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.exception.DatabaseException;
@@ -18,6 +16,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.common.model.tools.ScenarioException;
 
+import java.sql.Connection;
 import java.sql.PreparedStatement;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -47,7 +46,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    */
   public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) throws ClassNotFoundException, DatabaseException {
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE, DEFAULT_QUERY_WARNING_TIME_MS);
-    this.pool = ConnectionPools.createPool(new ConnectionProvider(database, user));
+    this.pool = ConnectionPools.createDefaultConnectionPool(DatabaseConnections.connectionProvider(database, user));
     addExitListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
@@ -124,12 +123,12 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
      */
     @Override
     protected final void performScenario(final QueryApplication application) throws ScenarioException {
-      DatabaseConnection connection = null;
+      Connection connection = null;
       PreparedStatement statement = null;
       ResultSet resultSet = null;
       try {
         connection = application.pool.getConnection();
-        statement = connection.getConnection().prepareCall(query);
+        statement = connection.prepareCall(query);
         final List<Object> parameters = getParameters();
         if (!Util.nullOrEmpty(parameters)) {
           int index = 1;
@@ -175,35 +174,6 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
      */
     protected List<Object> getParameters() {
       return Collections.emptyList();
-    }
-  }
-
-  private static final class ConnectionProvider implements DatabaseConnectionProvider {
-
-    private final Database database;
-    private final User user;
-
-    private ConnectionProvider(final Database database, final User user) {
-      this.database = database;
-      this.user = user;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public DatabaseConnection createConnection() throws DatabaseException {
-      return DatabaseConnections.createConnection(database, user);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void destroyConnection(final DatabaseConnection connection) {
-      connection.disconnect();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public User getUser() {
-      return user;
     }
   }
 }

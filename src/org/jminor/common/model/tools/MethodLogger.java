@@ -227,6 +227,36 @@ public class MethodLogger implements Serializable {
   }
 
   /**
+   * Appends  the given log entries to the log
+   * @param log the log
+   * @param entry the log entry to append
+   * @param indentationLevel the indentation to use for the given log entries
+   */
+  public static void appendLogEntry(final StringBuilder log, final Entry entry, final int indentationLevel) {
+    if (entry != null) {
+      log.append(entry.toString(indentationLevel)).append("\n");
+      final List<Entry> subLog = entry.getSubLog();
+      appendLogEntries(log, subLog, indentationLevel + 1);
+    }
+  }
+
+  /**
+   * Appends  the given log entries to the log
+   * @param log the log
+   * @param logger the log containing the entries to append
+   * @param indentationLevel the indentation to use for the given log entries
+   */
+  public static void appendLogEntries(final StringBuilder log, final List<Entry> logger, final int indentationLevel) {
+    if (logger != null) {
+      for (final MethodLogger.Entry logEntry : logger) {
+        log.append(logEntry.toString(indentationLevel)).append("\n");
+        final List<Entry> subLog = logEntry.getSubLog();
+        appendLogEntries(log, subLog, indentationLevel + 1);
+      }
+    }
+  }
+
+  /**
    * Override to exclude certain methods from being logged
    * @param method the method
    * @return true if the given method should be logged

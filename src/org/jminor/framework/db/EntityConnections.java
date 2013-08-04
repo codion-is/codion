@@ -4,8 +4,10 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseConnectionImpl;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
+import org.jminor.common.model.tools.MethodLogger;
 
 import java.sql.Connection;
 
@@ -39,5 +41,22 @@ public final class EntityConnections {
    */
   public static EntityConnection createConnection(final Database database, final Connection connection) throws DatabaseException {
     return new EntityConnectionImpl(database, connection);
+  }
+
+  /**
+   * @return A {@link MethodLogger} implementation tailored for EntityConnections
+   */
+  public static MethodLogger createLogger() {
+    return new EntityConnectionImpl.Logger();
+  }
+
+  /**
+   * Sets the internal connection for the given EntityConnection, note that no checking
+   * of validity or open transactions is performed on the given connection, it is used 'as is'
+   * @param entityConnection
+   * @param connection
+   */
+  public static void setConnection(final EntityConnection entityConnection, final Connection connection) {
+    ((DatabaseConnectionImpl) entityConnection).setConnection(connection);
   }
 }

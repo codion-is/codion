@@ -29,7 +29,6 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
@@ -63,7 +62,7 @@ import java.util.Set;
  */
 final class EntityConnectionImpl extends DatabaseConnectionImpl implements EntityConnection {
 
-  private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionImpl.class);
+  private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(EntityConnectionImpl.class);
   private static final String CRITERIA_PARAM_NAME = "criteria";
 
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
@@ -417,20 +416,11 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
+  public synchronized List executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
       logAccess("executeFunction: " + functionID, arguments);
-      if (isTransactionOpen()) {
-        throw new DatabaseException("Can not execute a function within an open transaction");
-      }
-      final List<Object> returnArguments = Databases.getFunction(functionID).execute(this, arguments);
-      if (isTransactionOpen()) {
-        rollbackTransaction();
-        throw new DatabaseException("Function with ID: " + functionID + " did not end its transaction, rollback was performed");
-      }
-
-      return returnArguments;
+      return Databases.getFunction(functionID).execute(this, arguments);
     }
     catch (DatabaseException e) {
       exception = e;
@@ -451,14 +441,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     DatabaseException exception = null;
     try {
       logAccess("executeProcedure: " + procedureID, arguments);
-      if (isTransactionOpen()) {
-        throw new DatabaseException("Can not execute a procedure within an open transaction");
-      }
       Databases.getProcedure(procedureID).execute(this, arguments);
-      if (isTransactionOpen()) {
-        rollbackTransaction();
-        throw new DatabaseException("Procedure with ID: " + procedureID + " did not end its transaction, rollback was performed");
-      }
     }
     catch (DatabaseException e) {
       exception = e;
@@ -1224,6 +1207,101 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
       }
 
       return entity;
+    }
+  }
+
+  /**
+   * A MethodLogger implementation tailored for EntityConnections
+   */
+  static final class Logger extends MethodLogger {
+
+    private static final long serialVersionUID = 1;
+
+    private static final String IS_CONNECTED = "isConnected";
+    private static final String IS_VALID = "isValid";
+
+    /**
+     * Instantiates a new Logger
+     */
+    Logger() {
+      super(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LOG_SIZE));
+    }
+
+    /**
+     * @param methodName the method name
+     * @return true if this method logger should log the given method
+     */
+    @Override
+    protected boolean shouldMethodBeLogged(final String methodName) {
+      return !(methodName.equals(IS_CONNECTED) || methodName.equals(IS_VALID));
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    protected String getMethodArgumentAsString(final Object argument) {
+      if (argument == null) {
+        return "";
+      }
+
+      final StringBuilder builder = new StringBuilder();
+      if (argument instanceof EntityCriteria) {
+        builder.append(appendEntityCriteria((EntityCriteria) argument));
+      }
+      else if (argument instanceof Object[] && ((Object[]) argument).length > 0) {
+        builder.append("[").append(argumentArrayToString((Object[]) argument)).append("]");
+      }
+      else if (argument instanceof Collection && !((Collection) argument).isEmpty()) {
+        builder.append("[").append(argumentArrayToString(((Collection) argument).toArray())).append("]");
+      }
+      else if (argument instanceof Entity) {
+        builder.append(getEntityParameterString((Entity) argument));
+      }
+      else if (argument instanceof Entity.Key) {
+        builder.append(getEntityKeyParameterString((Entity.Key) argument));
+      }
+      else {
+        builder.append(argument.toString());
+      }
+
+      return builder.toString();
+    }
+
+    private String appendEntityCriteria(final EntityCriteria criteria) {
+      final StringBuilder builder = new StringBuilder();
+      builder.append(criteria.getEntityID());
+      final String whereClause = criteria.getWhereClause(true);
+      if (!Util.nullOrEmpty(whereClause)) {
+        builder.append(", ").append(whereClause);
+      }
+      final List<?> values = criteria.getValues();
+      if (values != null) {
+        builder.append(", ").append(getMethodArgumentAsString(values));
+      }
+
+      return builder.toString();
+    }
+
+    private static String getEntityParameterString(final Entity entity) {
+      final StringBuilder builder = new StringBuilder();
+      builder.append(entity.getEntityID()).append(" {");
+      for (final Property property : Entities.getColumnProperties(entity.getEntityID(), true, true, true)) {
+        final boolean modified = entity.isModified(property.getPropertyID());
+        if (property instanceof Property.PrimaryKeyProperty || modified) {
+          final StringBuilder valueString = new StringBuilder();
+          if (modified) {
+            valueString.append(entity.getOriginalValue(property.getPropertyID())).append("->");
+          }
+          valueString.append(entity.getValue(property.getPropertyID()));
+          builder.append(property.getPropertyID()).append(":").append(valueString).append(",");
+        }
+      }
+      builder.deleteCharAt(builder.length() - 1);
+
+      return builder.append("}").toString();
+    }
+
+    private static String getEntityKeyParameterString(final Entity.Key argument) {
+      return argument.getEntityID() + ", " + argument.toString();
     }
   }
 }

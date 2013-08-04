@@ -3,9 +3,13 @@
  */
 package org.jminor.common.db.pool;
 
+import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnectionProvider;
+import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
+import org.jminor.framework.Configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -26,13 +30,30 @@ public final class ConnectionPools {
   private ConnectionPools() {}
 
   /**
+   * Initializes connection pools for the given users
+   * @param database the underlying database
+   * @param users the users to initialize connection pools for
+   * @throws DatabaseException in case of a database exception
+   * @throws ClassNotFoundException in case the specified connection pool provider class in not on the classpath
+   * @see Configuration#SERVER_CONNECTION_POOL_PROVIDER_CLASS
+   */
+  public static synchronized void initializeConnectionPools(final Database database, final Collection<User> users) throws DatabaseException, ClassNotFoundException {
+    Util.rejectNullValue(database, "database");
+    Util.rejectNullValue(users, "users");
+    for (final User user : users) {
+      final ConnectionPoolProvider poolProvider = initializeConnectionPoolProvider(database, user);
+      CONNECTION_POOLS.put(user, poolProvider.createConnectionPool(user, database));
+    }
+  }
+
+  /**
    * Instantiates a new ConnectionPool and associates it with the given user
    * @param connectionProvider the connection provider
    * @return a new connection pool
    * @throws ClassNotFoundException in case the jdbc class is not found when constructing the initial connections
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
-  public static synchronized ConnectionPool createPool(final DatabaseConnectionProvider connectionProvider) throws ClassNotFoundException, DatabaseException {
+  public static synchronized ConnectionPool createDefaultConnectionPool(final DatabaseConnectionProvider connectionProvider) throws ClassNotFoundException, DatabaseException {
     final ConnectionPool connectionPool = new ConnectionPoolImpl(connectionProvider);
     CONNECTION_POOLS.put(connectionProvider.getUser(), connectionPool);
 
@@ -80,5 +101,34 @@ public final class ConnectionPools {
    */
   public static synchronized Collection<ConnectionPool> getConnectionPools() {
     return new ArrayList<ConnectionPool>(CONNECTION_POOLS.values());
+  }
+
+  private static ConnectionPoolProvider initializeConnectionPoolProvider(final Database database, final User user) throws ClassNotFoundException {
+    final String connectionPoolProviderClassName = Configuration.getStringValue(Configuration.SERVER_CONNECTION_POOL_PROVIDER_CLASS);
+    if (!Util.nullOrEmpty(connectionPoolProviderClassName)) {
+      final Class providerClass = Class.forName(connectionPoolProviderClassName);
+      try {
+        return (ConnectionPoolProvider) providerClass.getConstructor().newInstance();
+      }
+      catch (Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    return createDefaultConnectionPoolProvider(DatabaseConnections.connectionProvider(database, user));
+  }
+
+  /**
+   * Creates a connection pool based on the the default internal implementation
+   * @param connectionProvider the connection provider
+   * @return a default connection pool provider
+   */
+  private static ConnectionPoolProvider createDefaultConnectionPoolProvider(final DatabaseConnectionProvider connectionProvider) {
+    return new ConnectionPoolProvider() {
+      @Override
+      public ConnectionPool createConnectionPool(final User user, final Database database) throws DatabaseException {
+        return new ConnectionPoolImpl(connectionProvider);
+      }
+    };
   }
 }

@@ -152,6 +152,7 @@ public final class ConnectionPoolMonitor {
     final XYSeriesCollection poolDataset = new XYSeriesCollection();
     poolDataset.addSeries(fineGrainedStatisticsCollection.getSeries(0));
     poolDataset.addSeries(fineGrainedStatisticsCollection.getSeries(1));
+    poolDataset.addSeries(fineGrainedStatisticsCollection.getSeries(2));
 
     return poolDataset;
   }
@@ -226,14 +227,17 @@ public final class ConnectionPoolMonitor {
     if (!stats.isEmpty()) {
       final XYSeries fineGrainedInPoolSeries = new XYSeries("In pool");
       final XYSeries fineGrainedInUseSeries = new XYSeries("In use");
+      final XYSeries fineGrainedWaitingSeries = new XYSeries("Waiting");
       for (final ConnectionPoolState inPool : stats) {
         fineGrainedInPoolSeries.add(inPool.getTimestamp(), inPool.getSize());
         fineGrainedInUseSeries.add(inPool.getTimestamp(), inPool.getInUse());
+        fineGrainedWaitingSeries.add(inPool.getTimestamp(), inPool.getWaiting());
       }
 
       this.fineGrainedStatisticsCollection.removeAllSeries();
       this.fineGrainedStatisticsCollection.addSeries(fineGrainedInPoolSeries);
       this.fineGrainedStatisticsCollection.addSeries(fineGrainedInUseSeries);
+      this.fineGrainedStatisticsCollection.addSeries(fineGrainedWaitingSeries);
     }
     statisticsUpdatedEvent.fire();
   }

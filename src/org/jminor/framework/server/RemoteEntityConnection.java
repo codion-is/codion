@@ -89,7 +89,7 @@ public interface RemoteEntityConnection extends Remote {
    * @throws DatabaseException in case anything goes wrong during the execution
    * @throws RemoteException in case of a remote exception
    */
-  List<?> executeFunction(final String functionID, final Object... arguments) throws RemoteException, DatabaseException;
+  List executeFunction(final String functionID, final Object... arguments) throws RemoteException, DatabaseException;
 
   /**
    * Executes the procedure with the given id

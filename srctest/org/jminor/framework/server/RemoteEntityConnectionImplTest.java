@@ -5,15 +5,12 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.pool.ConnectionPoolException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.server.provider.RemoteEntityConnectionProvider;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -22,7 +19,6 @@ import org.junit.Test;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
-import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Arrays;
@@ -100,31 +96,6 @@ public class RemoteEntityConnectionImplTest {
         }
       }
       catch (Exception e) {}
-    }
-  }
-
-  @Test(expected = ConnectionPoolException.NoConnectionAvailable.class)
-  public void connectionPool() throws RemoteException, DatabaseException {
-    final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider(User.UNIT_TEST_USER, UUID.randomUUID(), "RemoteEntityConnectionImplTest");
-    final RemoteEntityConnectionProvider provider2 = new RemoteEntityConnectionProvider(User.UNIT_TEST_USER, UUID.randomUUID(), "RemoteEntityConnectionImplTest");
-    try {
-      EntityConnectionServerTest.getServerAdmin().setConnectionPoolEnabled(User.UNIT_TEST_USER, false);
-      EntityConnectionServerTest.getServerAdmin().setConnectionPoolEnabled(User.UNIT_TEST_USER, true);
-      EntityConnectionServerTest.getServerAdmin().setMinimumConnectionPoolSize(User.UNIT_TEST_USER, 1);
-      EntityConnectionServerTest.getServerAdmin().setMaximumConnectionPoolSize(User.UNIT_TEST_USER, 1);
-
-      final EntityConnection connection = provider.getConnection();
-
-      connection.beginTransaction();
-      connection.selectAll(EmpDept.T_DEPARTMENT);
-
-      final EntityConnection connection2 = provider2.getConnection();
-
-      connection2.selectAll(EmpDept.T_DEPARTMENT);
-    }
-    finally {
-      provider.disconnect();
-      provider2.disconnect();
     }
   }
 }

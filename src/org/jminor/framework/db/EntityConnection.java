@@ -78,7 +78,7 @@ public interface EntityConnection {
    * @return the function return arguments
    * @throws DatabaseException in case anything goes wrong during the execution
    */
-  List<?> executeFunction(final String functionID, final Object... arguments) throws DatabaseException;
+  List executeFunction(final String functionID, final Object... arguments) throws DatabaseException;
 
   /**
    * Executes the procedure with the given id

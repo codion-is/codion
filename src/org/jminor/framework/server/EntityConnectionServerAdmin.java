@@ -218,10 +218,10 @@ public interface EntityConnectionServerAdmin extends Remote {
   Collection<String> getClientTypes() throws RemoteException;
 
   /**
-   * @return a list of the usernames behind the active connection pools
+   * @return a list containing users backed by a connection pool
    * @throws RemoteException in case of an exception
    */
-  List<User> getEnabledConnectionPools() throws RemoteException;
+  List<User> getConnectionPools() throws RemoteException;
 
   /**
    * @param user the pool user
@@ -316,20 +316,6 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @throws RemoteException in case of an exception
    */
   void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException;
-
-  /**
-   * @param user the pool user
-   * @return the pool enabled status
-   * @throws RemoteException in case of an exception
-   */
-  boolean isConnectionPoolEnabled(final User user) throws RemoteException;
-
-  /**
-   * @param user the pool user
-   * @param enabled the pool enabled status
-   * @throws RemoteException in case of an exception
-   */
-  void setConnectionPoolEnabled(final User user, final boolean enabled) throws RemoteException;
 
   /**
    * @param user the pool user

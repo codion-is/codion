@@ -3539,3 +3539,10 @@
   Util.NullFormat() privatized, NULL_FORMAT constant introduced
   Naming prefixes for State and Event instances removed (st, evt)
   FilteredTableModel.setColumns() moved to FilteredTableColumnModel
+0.7.0
+  Tomcat jdbc connection pool plugin added, lots of refactoring in common.db.pool and elsewhere
+  EntityRESTService plugin added, some refactoring of related components
+  ivy.xml reorganized and improved
+  ValueMapImpl.setAs() improved, now fires value change events only after all values have been set
+  EntityConnectionImpl.executeFunction/Procedure() does not check for transaction states before or after execution, leaving the responsibility in the hands of the programmer
+  EntityConnectionLogger now package private, instantiated via EntityConnections.createLogger()

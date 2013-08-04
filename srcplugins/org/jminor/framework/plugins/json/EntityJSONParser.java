@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2010, BjÃ¶rn Darri SigurÃ°sson. All Rights Reserved.
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.framework.plugins.json;
 
@@ -34,7 +34,6 @@ public final class EntityJSONParser implements Serializer<Entity> {
   private static final String ENTITY_ID = "entityID";
   private static final String VALUES = "values";
   private static final String ORIGINAL_VALUES = "originalValues";
-  private static final String PK_VALUES = "pkValues";
   private static final String JSON_TIME_FORMAT = "HH:mm";
   private static final String JSON_DATE_FORMAT = "yyyy-MM-dd";
   private static final String JSON_TIMESTAMP_FORMAT = "yyyy-MM-dd HH:mm";
@@ -176,6 +175,67 @@ public final class EntityJSONParser implements Serializer<Entity> {
             DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT));
   }
 
+  public static String serializeEntity(final Entity entity, final boolean includeForeignKeyValues) throws JSONException {
+    return serializeEntity(entity, includeForeignKeyValues, DateFormats.getDateFormat(JSON_TIME_FORMAT),
+            DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT)).toString();
+  }
+
+  /**
+   * Parses an Entity.Key instance from the given JSON object string
+   * @param keyObject the JSON object string representing the entity
+   * @return the Entity.Key represented by the given JSON object
+   * @throws ParseException in case of an exception
+   * @throws JSONException in case of an exception
+   */
+  public static Entity.Key parseKey(final String keyObject) throws JSONException, ParseException {
+    return parseKey(new JSONObject(keyObject), DateFormats.getDateFormat(JSON_TIME_FORMAT),
+            DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT));
+  }
+
+  /**
+   * Parses an Entity.Key instance from the given JSON object
+   * @param keyObject the JSON object representing the entity key
+   * @param jsonDateFormat the format to use when parsing dates
+   * @param jsonTimestampFormat the format to use when parsing timestamps
+   * @return the Entity.Key represented by the given JSON object
+   * @throws ParseException in case of an exception
+   * @throws JSONException in case of an exception
+   */
+  public static Entity.Key parseKey(final JSONObject keyObject, final DateFormat jsonTimeFormat,
+                                    final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException, ParseException {
+    final String entityID = keyObject.getString(ENTITY_ID);
+    if (!Entities.isDefined(entityID)) {
+      throw new RuntimeException("Undefined entity found in JSON string: '" + entityID + "'");
+    }
+
+    final Entity.Key key = Entities.key(entityID);
+    final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
+    for (int j = 0; j < propertyValues.names().length(); j++) {
+      final String propertyID = propertyValues.names().get(j).toString();
+      key.setValue(propertyID, parseValue(Entities.getProperty(entityID, propertyID), propertyValues, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
+    }
+
+    return key;
+  }
+
+  public static String serializeKey(final Entity.Key key) throws JSONException {
+    return serializeKey(key, DateFormats.getDateFormat(JSON_TIME_FORMAT), DateFormats.getDateFormat(JSON_DATE_FORMAT),
+            DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT)).toString();
+  }
+
+  /**
+   * Fetches the value of the given property from the given JSONObject
+   * @param property the property
+   * @param propertyValues the JSONObject containing the value
+   * @return the value for the given property
+   * @throws JSONException in case of an exception
+   * @throws ParseException in case of an exception
+   */
+  public static Object parseValue(final Property property, final JSONObject propertyValues) throws JSONException, ParseException {
+    return parseValue(property, propertyValues, DateFormats.getDateFormat(JSON_TIME_FORMAT), DateFormats.getDateFormat(JSON_DATE_FORMAT),
+            DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT));
+  }
+
   /**
    * Parses an Entity instance from the given JSON object
    * @param entityObject the JSON object representing the entity
@@ -211,54 +271,6 @@ public final class EntityJSONParser implements Serializer<Entity> {
     }
 
     return Entities.entity(entityID, propertyValueMap, originalValueMap);
-  }
-
-  public static String serializeEntity(final Entity entity, final boolean includeForeignKeyValues) throws JSONException {
-    return serializeEntity(entity, includeForeignKeyValues, DateFormats.getDateFormat(JSON_TIME_FORMAT),
-            DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT)).toString();
-  }
-
-  /**
-   * Parses an Entity.Key instance from the given JSON object string
-   * @param keyObject the JSON object string representing the entity
-   * @return the Entity.Key represented by the given JSON object
-   * @throws ParseException in case of an exception
-   * @throws JSONException in case of an exception
-   */
-  public static Entity.Key parseKey(final String keyObject) throws JSONException, ParseException {
-    return parseKey(new JSONObject(keyObject), DateFormats.getDateFormat(JSON_TIME_FORMAT),
-            DateFormats.getDateFormat(JSON_DATE_FORMAT), DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT));
-  }
-
-  /**
-   * Parses an Entity.Key instance from the given JSON object
-   * @param keyObject the JSON object representing the entity key
-   * @param jsonDateFormat the format to use when parsing dates
-   * @param jsonTimestampFormat the format to use when parsing timestamps
-   * @return the Entity.Key represented by the given JSON object
-   * @throws ParseException in case of an exception
-   * @throws JSONException in case of an exception
-   */
-  public static Entity.Key parseKey(final JSONObject keyObject, final DateFormat jsonTimeFormat,
-                                    final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException, ParseException {
-    final String entityID = keyObject.getString(ENTITY_ID);
-    if (!Entities.isDefined(entityID)) {
-      throw new RuntimeException("Undefined entity found in JSON string: '" + entityID + "'");
-    }
-
-    final Entity.Key key = Entities.key(entityID);
-    final JSONObject propertyValues = keyObject.getJSONObject(PK_VALUES);
-    for (int j = 0; j < propertyValues.names().length(); j++) {
-      final String propertyID = propertyValues.names().get(j).toString();
-      key.setValue(propertyID, parseValue(Entities.getProperty(entityID, propertyID), propertyValues, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
-    }
-
-    return key;
-  }
-
-  public static String serializeKey(final Entity.Key key) throws JSONException {
-    return serializeKey(key, DateFormats.getDateFormat(JSON_TIME_FORMAT), DateFormats.getDateFormat(JSON_DATE_FORMAT),
-            DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT)).toString();
   }
 
   /**
@@ -323,7 +335,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
                                          final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException {
     final JSONObject jsonKey = new JSONObject();
     jsonKey.put(ENTITY_ID, key.getEntityID());
-    jsonKey.put(PK_VALUES, serializeValues(key, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
+    jsonKey.put(VALUES, serializeValues(key, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
 
     return jsonKey;
   }
@@ -332,7 +344,8 @@ public final class EntityJSONParser implements Serializer<Entity> {
                                             final DateFormat jsonTimeFormat, final DateFormat jsonDateFormat,
                                             final DateFormat jsonTimestampFormat) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
-    for (final Property property : Entities.getProperties(entity.getEntityID()).values()) {
+    for (final String propertyID : entity.getValueKeys()) {
+      final Property property = Entities.getProperty(entity.getEntityID(), propertyID);
       if (!(property instanceof Property.DenormalizedViewProperty) &&
               (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues)) {
         propertyValues.put(property.getPropertyID(),

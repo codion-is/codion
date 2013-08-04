@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.server.monitor;
 
-import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
@@ -11,6 +10,7 @@ import org.jminor.common.model.User;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import java.rmi.RemoteException;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 
@@ -29,7 +29,7 @@ public final class PoolMonitor {
   }
 
   public void refresh() throws RemoteException {
-    for (final User user : server.getEnabledConnectionPools()) {
+    for (final User user : server.getConnectionPools()) {
       connectionPoolMonitors.add(new ConnectionPoolMonitor(new MonitorPool(user, server)));
     }
   }
@@ -203,28 +203,6 @@ public final class PoolMonitor {
 
     /** {@inheritDoc} */
     @Override
-    public boolean isEnabled() {
-      try {
-        return server.isConnectionPoolEnabled(user);
-      }
-      catch (RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void setEnabled(final boolean enabled) {
-      try {
-        server.setConnectionPoolEnabled(user, enabled);
-      }
-      catch (RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    /** {@inheritDoc} */
-    @Override
     public void setCleanupInterval(final int poolCleanupInterval) {
       try {
         server.setConnectionPoolCleanupInterval(user, poolCleanupInterval);
@@ -286,11 +264,11 @@ public final class PoolMonitor {
 
     /** {@inheritDoc} */
     @Override
-    public void returnConnection(final DatabaseConnection databaseConnection) {}
+    public void returnConnection(final Connection connection) {}
 
     /** {@inheritDoc} */
     @Override
-    public DatabaseConnection getConnection() throws DatabaseException {return null;}
+    public Connection getConnection() throws DatabaseException {return null;}
 
     /** {@inheritDoc} */
     @Override

@@ -48,7 +48,7 @@ public interface DatabaseConnection {
   int getRetryCount();
 
   /**
-   * @return true if the connection is valid
+   * @return true if a connection is established and valid
    */
   boolean isValid();
 
@@ -161,6 +161,6 @@ public interface DatabaseConnection {
      * @return the function return arguments
      * @throws DatabaseException in case of an exception during the execution
      */
-    List<Object> execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException;
+    List execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException;
   }
 }

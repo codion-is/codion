@@ -30,7 +30,7 @@ public class EntityJSONParserTest {
     key.setValue(EmpDept.DEPARTMENT_ID, 42);
 
     final String keyJSON = EntityJSONParser.serializeKeys(Arrays.asList(key));
-    assertEquals("[{\"pkValues\":{\"deptno\":42},\"entityID\":\"scott.dept\"}]", keyJSON);
+    assertEquals("[{\"values\":{\"deptno\":42},\"entityID\":\"scott.dept\"}]", keyJSON);
     final Entity.Key keyParsed = EntityJSONParser.deserializeKeys(keyJSON).get(0);
     assertEquals(key.getEntityID(), keyParsed.getEntityID());
     assertEquals(key.getFirstKeyProperty(), keyParsed.getFirstKeyProperty());
@@ -99,10 +99,10 @@ public class EntityJSONParserTest {
     emp1.setValue(EmpDept.EMPLOYEE_MGR_FK, mgr30);
     emp1.setValue(EmpDept.EMPLOYEE_NAME, "A NAME");
     emp1.setValue(EmpDept.EMPLOYEE_SALARY, 2500.5);
-    String emp1JSON = "[{\"values\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"empno\":-500,\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"entityID\":\"scott.emp\"}]";
+    String emp1JSON = "[{\"values\":{\"comm\":500.5,\"hiredate\":\"2001-12-20\",\"empno\":-500,\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"entityID\":\"scott.emp\"}]";
     jsonString = EntityJSONParser.serializeEntities(Arrays.asList(emp1), false);
     assertEquals(emp1JSON, jsonString);
-    emp1JSON = "[{\"values\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"values\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"scott.dept\"},\"empno\":-500,\"mgr_fk\":{\"values\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"dept_fk\":{\"values\":{\"dname\":null,\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"scott.dept\"},\"empno\":-30,\"mgr_fk\":null,\"ename\":\"MGR NAME\",\"job\":\"MGR\",\"deptno\":-20,\"mgr\":null,\"sal\":2500.5},\"entityID\":\"scott.emp\"},\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"entityID\":\"scott.emp\"}]";
+    emp1JSON = "[{\"values\":{\"comm\":500.5,\"dept_fk\":{\"values\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"scott.dept\"},\"hiredate\":\"2001-12-20\",\"empno\":-500,\"mgr_fk\":{\"values\":{\"comm\":500.5,\"dept_fk\":{\"values\":{\"dname\":null,\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"scott.dept\"},\"hiredate\":\"2001-12-20\",\"empno\":-30,\"ename\":\"MGR NAME\",\"job\":\"MGR\",\"deptno\":-20,\"sal\":2500.5},\"entityID\":\"scott.emp\"},\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"entityID\":\"scott.emp\"}]";
     jsonString = EntityJSONParser.serializeEntities(Arrays.asList(emp1), true);
     assertEquals(emp1JSON, jsonString);
 
@@ -120,7 +120,7 @@ public class EntityJSONParserTest {
     emp1.setValue(EmpDept.EMPLOYEE_SALARY, 3500.5);
     emp1.setValue(EmpDept.EMPLOYEE_HIREDATE, newHiredate);
 
-    emp1JSON = "[{\"originalValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"values\":{\"hiredate\":\"2002-11-21\",\"comm\":550.55,\"empno\":-500,\"ename\":\"ANOTHER NAME\",\"job\":\"ANOTHER JOB\",\"deptno\":-20,\"mgr\":-50,\"sal\":3500.5},\"entityID\":\"scott.emp\"}]";
+    emp1JSON = "[{\"originalValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"values\":{\"comm\":550.55,\"hiredate\":\"2002-11-21\",\"empno\":-500,\"ename\":\"ANOTHER NAME\",\"job\":\"ANOTHER JOB\",\"deptno\":-20,\"mgr\":-50,\"sal\":3500.5},\"entityID\":\"scott.emp\"}]";
     jsonString = parser.serialize(Arrays.asList(emp1));
     assertEquals(emp1JSON, jsonString);
 
@@ -165,7 +165,7 @@ public class EntityJSONParserTest {
     final EntityJSONParser parser = new EntityJSONParser();
     assertEquals(0, parser.deserialize("").size());
     assertEquals(0, parser.deserialize(null).size());
-    assertEquals(0, EntityJSONParser.deserializeKeys("").size());
+    assertEquals(0, EntityJSONParser.deserializeEntities("").size());
     assertEquals(0, EntityJSONParser.deserializeKeys(null).size());
 
     final List<Entity> entities = Collections.emptyList();

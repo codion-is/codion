@@ -17,17 +17,18 @@
       <excludeFolder url="file://$MODULE_DIR$/../../docs/api" />
       <excludeFolder url="file://$MODULE_DIR$/../../docs/pluginsapi" />
       <excludeFolder url="file://$MODULE_DIR$/../../h2db" />
+      <excludeFolder url="file://$MODULE_DIR$/../../target" />
     </content>
-    <orderEntry type="jdk" jdkName="1.6" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library name="jminor-lib">
         <CLASSES>
-          <root url="file://$MODULE_DIR$/../../lib/build" />
+          <root url="file://$MODULE_DIR$/../../lib/runtime.tests" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/../../lib/build" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../../lib/runtime.tests" recursive="false" />
       </library>
     </orderEntry>
   </component>

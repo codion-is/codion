@@ -145,21 +145,22 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
     if (shuttingDown) {
       throw new RemoteException("Server is shutting down");
     }
-    if (connections.containsKey(clientInfo)) {
-      return connections.get(clientInfo);
-    }
-
-    if (maximumNumberOfConnectionReached()) {
-      throw ServerException.serverFullException();
-    }
-
-    final LoginProxy loginProxy = getLoginProxy(clientInfo);
-    final T connection = doConnect(loginProxy.doLogin(clientInfo));
     synchronized (connections) {
-      connections.put(clientInfo, connection);
-    }
+      T connection = connections.get(clientInfo);
+      if (connection != null) {
+        return connection;
+      }
 
-    return connection;
+      if (maximumNumberOfConnectionReached()) {
+        throw ServerException.serverFullException();
+      }
+
+      final LoginProxy loginProxy = getLoginProxy(clientInfo);
+      connection = doConnect(loginProxy.doLogin(clientInfo));
+      connections.put(clientInfo, connection);
+
+      return connection;
+    }
   }
 
   /** {@inheritDoc} */
@@ -257,7 +258,8 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
    * @return a connection servicing the given client
    * @throws RemoteException in case of an exception
    */
-  protected abstract T doConnect(final ClientInfo clientInfo) throws RemoteException;
+  protected abstract T doConnect(final ClientInfo clientInfo)
+          throws RemoteException, ServerException.LoginException, ServerException.ServerFullException;
 
   /**
    * Disconnects the given connection.

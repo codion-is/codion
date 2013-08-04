@@ -27,6 +27,9 @@ import java.util.Map;
  */
 class PropertyImpl implements Property {
 
+  private static final ColumnProperty.ValueConverter DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
+  private static final ColumnProperty.ValueConverter DATE_VALUE_CONVERTER = new DateValueConverter();
+
   /**
    * The ID of the entity this property is associated with
    */
@@ -739,10 +742,10 @@ class PropertyImpl implements Property {
 
     private static ValueConverter initializeValueConverter(final ColumnProperty property) {
       if (property.isDate()) {
-        return new DateValueConverter();
+        return DATE_VALUE_CONVERTER;
       }
 
-      return new DefaultValueConverter();
+      return DEFAULT_VALUE_CONVERTER;
     }
 
     private static ValueFetcher initializeValueFetcher(final ColumnPropertyImpl property) {

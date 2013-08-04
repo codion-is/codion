@@ -70,16 +70,18 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     super(serverAdminPort,
             server.isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
-    try {
-      this.server = server;
-      ServerUtil.getRegistry(server.getRegistryPort()).rebind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName(), this);
-      Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));
-    }
-    catch (RemoteException e) {
-      LOG.error("Exception on server admin startup", e);
-      shutdown();
-      throw e;
-    }
+    this.server = server;
+    Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));
+  }
+
+  /**
+   * Binds this admin instance to the registry
+   * @throws RemoteException in case of an exception
+   */
+  public void bindToRegistry() throws RemoteException {
+    final int registryPort = server.getRegistryPort();
+    ServerUtil.initializeRegistry(registryPort);
+    ServerUtil.getRegistry(registryPort).rebind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName(), this);
   }
 
   /** {@inheritDoc} */
@@ -285,28 +287,13 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public List<User> getEnabledConnectionPools() throws RemoteException {
-    final List<User> enabledPoolUsers = new ArrayList<User>();
+  public List<User> getConnectionPools() throws RemoteException {
+    final List<User> poolUsers = new ArrayList<User>();
     for (final ConnectionPool pool : ConnectionPools.getConnectionPools()) {
-      if (pool.isEnabled()) {
-        enabledPoolUsers.add(pool.getUser());
-      }
+      poolUsers.add(pool.getUser());
     }
 
-    return enabledPoolUsers;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public boolean isConnectionPoolEnabled(final User user) throws RemoteException {
-    return ConnectionPools.getConnectionPool(user).isEnabled();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setConnectionPoolEnabled(final User user, final boolean enabled) throws RemoteException {
-    LOG.info("setConnectionPoolEnabled({}, {})", user, enabled);
-    ConnectionPools.getConnectionPool(user).setEnabled(enabled);
+    return poolUsers;
   }
 
   /** {@inheritDoc} */
@@ -544,7 +531,15 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     final EntityConnectionServer server = new EntityConnectionServer(serverName, serverPort, registryPort, database,
             sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, getPoolUsers(initialPoolUsers),
             webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout);
-    adminInstance = new EntityConnectionServerAdminImpl(server, serverAdminPort);
+    try {
+      server.bindToRegistry();
+      adminInstance = new EntityConnectionServerAdminImpl(server, serverAdminPort);
+      adminInstance.bindToRegistry();
+    }
+    catch (Exception e) {
+      LOG.error("Exception on binding servers to registry", e);
+      shutdownServer();
+    }
   }
 
   /**

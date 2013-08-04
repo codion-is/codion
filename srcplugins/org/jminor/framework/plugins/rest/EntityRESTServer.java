@@ -1,0 +1,44 @@
+/*
+ * Copyright (c) 2004 - 2013, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package org.jminor.framework.plugins.rest;
+
+import org.jminor.framework.server.EntityConnectionServer;
+
+import com.sun.jersey.api.core.PackagesResourceConfig;
+import com.sun.jersey.spi.container.servlet.ServletContainer;
+import org.eclipse.jetty.server.Handler;
+import org.eclipse.jetty.server.Server;
+import org.eclipse.jetty.server.handler.HandlerList;
+import org.eclipse.jetty.server.handler.ResourceHandler;
+import org.eclipse.jetty.servlet.ServletContextHandler;
+import org.eclipse.jetty.servlet.ServletHolder;
+
+/**
+ * A simple Jetty/Jersey based REST and file server
+ */
+public final class EntityRESTServer extends Server implements EntityConnectionServer.AuxiliaryServer {
+
+  /**
+   * Instantiates a new EntityRESTServer on the given port.
+   * @param connectionServer the EntityConnectionServer serving the connection requests
+   * @param documentRoot the document root
+   * @param port the port on which to serve
+   */
+  public EntityRESTServer(final EntityConnectionServer connectionServer, final String documentRoot, final Integer port) throws Exception {
+    super(port);
+    EntityRESTService.setServer(connectionServer);
+    final ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);
+    servletHandler.setContextPath("/");
+    servletHandler.addServlet(new ServletHolder(
+            new ServletContainer(new PackagesResourceConfig("org.jminor.framework.plugins.rest"))), "/entities/*");
+
+    final ResourceHandler fileHandler = new ResourceHandler();
+    fileHandler.setResourceBase(documentRoot);
+
+    final HandlerList handlers = new HandlerList();
+    handlers.setHandlers(new Handler[] {fileHandler, servletHandler});
+
+    setHandler(handlers);
+  }
+}

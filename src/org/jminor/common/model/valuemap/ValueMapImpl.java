@@ -15,7 +15,9 @@ import org.jminor.common.model.Util;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A default ValueMap implementation.
@@ -30,7 +32,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   private final Map<K, V> values = new HashMap<K, V>();
 
   /**
-   * Holds the original value for keys which values have changed.
+   * Holds the original value for keys which values have changed since they were first set.
    */
   private Map<K, V> originalValues = null;
 
@@ -217,21 +219,24 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
     if (sourceMap == this) {
       return;
     }
+    final Set<K> affectedKeys = new HashSet<K>(getValueKeys());
     clear();
     if (sourceMap != null) {
-      for (final K entryKey : sourceMap.getValueKeys()) {
-        final V value = copyValue(sourceMap.getValue(entryKey));
-        setValue(entryKey, value);
+      final Collection<K> sourceValueKeys = sourceMap.getValueKeys();
+      affectedKeys.addAll(sourceValueKeys);
+      for (final K key : sourceValueKeys) {
+        final V value = copyValue(sourceMap.getValue(key));
+        values.put(key, value);
+        handleValueSet(key, value, null, true);
       }
       if (sourceMap.isModified()) {
-        if (originalValues == null) {
-          originalValues = new HashMap<K, V>();
-        }
-        for (final K entryKey : sourceMap.getOriginalValueKeys()) {
-          originalValues.put(entryKey, copyValue(sourceMap.getOriginalValue(entryKey)));
+        originalValues = new HashMap<K, V>();
+        for (final K key : sourceMap.getOriginalValueKeys()) {
+          originalValues.put(key, copyValue(sourceMap.getOriginalValue(key)));
         }
       }
     }
+    notifyInitialized(affectedKeys);
   }
 
   /** {@inheritDoc} */
@@ -378,6 +383,15 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
     }
     else if (!modified) {//only the first original value is kept
       setOriginalValue(key, previousValue);
+    }
+  }
+
+  private void notifyInitialized(final Set<K> valueKeys) {
+    if (valueChangedEvent != null) {
+      for (final K key : valueKeys) {
+        final V value = values.get(key);
+        valueChangedEvent.fire(new ValueChangeEvent<K, V>(this, key, value, null, true));
+      }
     }
   }
 

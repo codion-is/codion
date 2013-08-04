@@ -6,12 +6,20 @@
   <property file="build.properties"/>
   <property file="user.properties"/>
 
-  <path id="lib.build">
-    <fileset dir="${lib}/build"/>
+  <path id="lib.build.core">
+    <fileset dir="${lib}/build.core"/>
   </path>
 
-  <path id="lib.test">
-    <fileset dir="${lib}/test"/>
+  <path id="lib.build.demos">
+    <fileset dir="${lib}/build.demos"/>
+  </path>
+
+  <path id="lib.build.plugins">
+    <fileset dir="${lib}/build.plugins"/>
+  </path>
+
+  <path id="lib.runtime.test">
+    <fileset dir="${lib}/runtime.tests"/>
   </path>
 
   <path id="lib.runtime.client">
@@ -62,9 +70,6 @@
   <target name="resolve_libraries"
           description="Resolves all libraries according to ivy.xml">
     <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]" sync="false"/>
-    <copy file="lib/webserver.jar" todir="${lib}/build"/>
-    <copy file="lib/webserver.jar" todir="${lib}/runtime.server"/>
-    <copy file="lib/webserver.jar" todir="${lib}/test"/>
   </target>
 
   <target name="clean"
@@ -86,14 +91,14 @@
 
     <javac destdir="${build.base}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src}"/>
-      <classpath refid="lib.build"/>
+      <classpath refid="lib.build.core"/>
     </javac>
 
     <rmic base="${build.base}" stubversion="1.2"
           includes="org/jminor/common/server/AbstractRemoteServer.class,
                                          org/jminor/framework/server/RemoteEntityConnectionImpl.class,
                                          org/jminor/framework/server/EntityConnectionServerAdminImpl.class">
-      <classpath refid="lib.build"/>
+      <classpath refid="lib.build.core"/>
     </rmic>
 
     <copy todir="${build.base}">
@@ -104,7 +109,8 @@
     <javac destdir="${build.plugins}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${srcplugins}"/>
       <classpath>
-        <path refid="lib.build"/>
+        <path refid="lib.build.core"/>
+        <path refid="lib.build.plugins"/>
         <path location="${build.base}"/>
       </classpath>
     </javac>
@@ -116,7 +122,9 @@
     <javac destdir="${build.demos}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${srcdemos}"/>
       <classpath>
-        <path refid="lib.build"/>
+        <path refid="lib.build.core"/>
+        <path refid="lib.build.plugins"/>
+        <path refid="lib.build.demos"/>
         <path location="${build.base}"/>
         <path location="${build.plugins}"/>
       </classpath>
@@ -129,7 +137,8 @@
     <javac destdir="${build.test}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${srctest}"/>
       <classpath>
-        <path refid="lib.build"/>
+        <path refid="lib.build.core"/>
+        <path refid="lib.build.plugins"/>
         <path location="${build.base}"/>
         <path location="${build.plugins}"/>
         <path location="${build.demos}"/>
@@ -149,7 +158,7 @@
   <target name="compile_demo_reports" depends="resolve_libraries"
           description="Compile the demo jasper reports">
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
-      <classpath refid="lib.build"/>
+      <classpath refid="lib.runtime.test"/>
     </taskdef>
     <jrc srcdir="${resources.demos}" includes="**/*.jrxml"/>
   </target>
@@ -208,6 +217,8 @@
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
     <jar jarfile="${dist}/jminor-src.jar" basedir="${src}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"/>
+    <jar jarfile="${dist}/jminor-src-plugins.jar" basedir="${srcplugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
     <jar jarfile="${dist}/jminor-src-test.jar" basedir="${srctest}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
@@ -269,7 +280,7 @@
                     Db org.jminor.framework.db*,
                     Domain org.jminor.framework.domain*,
                     Server org.jminor.framework.server*">
-      <classpath refid="lib.build"/>
+      <classpath refid="lib.build.core"/>
       <link href="http://download.oracle.com/javase/6/docs/api/"/>
     </javadoc>
     <javadoc destdir="${pluginsapi}" sourcepath="${srcplugins}" packagenames="org.jminor.*" Encoding="UTF-8"
@@ -277,10 +288,11 @@
              windowtitle="JMinor v${version} Plugin API" doctitle="JMinor v${version} Plugin API"
              group="Plugins org.jminor.framework.plugins">
       <classpath>
-        <path refid="lib.build"/>
+        <path refid="lib.build.core"/>
+        <path refid="lib.build.plugins"/>
         <path location="${build.base}"/>
       </classpath>
-      <link href="http://download.oracle.com/javase/6/docs/api/"/>
+      <link href="http://download.oracle.com/javase/7/docs/api/"/>
       <link offline="true" href="http://jminor.org/data/media/project/docs/api/" packagelistloc="${docsapi}"/>
     </javadoc>
   </target>
@@ -440,7 +452,7 @@
         <classpath>
           <path refid="classes.base"/>
           <path refid="classes.test"/>
-          <path refid="lib.test"/>
+          <path refid="lib.runtime.test"/>
         </classpath>
         <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
         <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
@@ -595,7 +607,7 @@
   <target name="recreate_h2_db"
           description="Recreates the demo h2 database. The demo database includes the EmpDept, Petstore and Chinook schemas, used by unit tests and demo applications">
     <delete dir="${db.h2.dir}"/>
-    <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.test">
+    <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.runtime.test">
       <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -showResults -script ${db.init.h2}"/>
     </java>
   </target>

@@ -19,6 +19,11 @@ public interface ConnectionPoolState {
   int getInUse();
 
   /**
+   * @return the number of pending requests
+   */
+  int getWaiting();
+
+  /**
    * @return the timestamp associated with this pool state
    */
   long getTimestamp();

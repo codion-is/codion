@@ -142,6 +142,42 @@ public final class DatabaseUtil {
   }
 
   /**
+   * Returns true if the given connection is valid, if the underlying driver supports <code>isValid()</code>
+   * it is used, otherwise a simple query is run
+   * @param connection the connection to validate
+   * @param database the underlying database implementation
+   * @param timeoutInSeconds the timeout
+   * @return true if the connection is valid
+   */
+  public static boolean isValid(final Connection connection, final Database database, final int timeoutInSeconds) {
+    return isValid(connection, database, null, timeoutInSeconds);
+  }
+
+  /**
+   * Returns true if the given connection is valid, if the underlying driver supports <code>isValid()</code>
+   * it is used, otherwise a simple query is run
+   * @param connection the connection to validate
+   * @param database the underlying database implementation
+   * @param statement an optional statement to use when validating with a query
+   * @param timeoutInSeconds the timeout
+   * @return true if the connection is valid
+   */
+  public static boolean isValid(final Connection connection, final Database database, final Statement statement, final int timeoutInSeconds) {
+    Util.rejectNullValue(connection, "connection");
+    Util.rejectNullValue(database, "database");
+    try {
+      if (database.supportsIsValid()) {
+        return connection.isValid(0);
+      }
+
+      return validateWithQuery(connection, database, statement, timeoutInSeconds);
+    }
+    catch (SQLException e) {
+      return false;
+    }
+  }
+
+  /**
    * @return a DatabaseStatistics object containing query statistics collected since
    * the last time this function was called.
    */
@@ -150,6 +186,29 @@ public final class DatabaseUtil {
     return new DatabaseStatistics(QUERY_COUNTER.getQueriesPerSecond(),
             QUERY_COUNTER.getSelectsPerSecond(), QUERY_COUNTER.getInsertsPerSecond(),
             QUERY_COUNTER.getDeletesPerSecond(), QUERY_COUNTER.getUpdatesPerSecond());
+  }
+
+  private static boolean validateWithQuery(final Connection connection, final Database database,
+                                           final Statement providedStatement, final int timeoutInSeconds) throws SQLException {
+    ResultSet rs = null;
+    Statement statement = providedStatement;
+    try {
+      if (statement == null) {
+        statement = connection.createStatement();
+      }
+      if (timeoutInSeconds > 0) {
+        statement.setQueryTimeout(timeoutInSeconds);
+      }
+      rs = statement.executeQuery(database.getCheckConnectionQuery());
+
+      return true;
+    }
+    finally {
+      closeSilently(rs);
+      if (providedStatement != null) {
+        closeSilently(statement);
+      }
+    }
   }
 
   /**

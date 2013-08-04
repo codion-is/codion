@@ -379,6 +379,15 @@ public final class Configuration {
   public static final String SERVER_NAME_PREFIX = "jminor.server.namePrefix";
 
   /**
+   * Specifies the web server class, must implement EntityConnectionServer.AuxiliaryServer<br>
+   * and contain a constructor with the following signature: (EntityConnectionServer, String, Integer)<br>
+   * for the server, file document root and port respectively<br>
+   * Value type: String<br>
+   * Default value: org.jminor.framework.plugins.rest.EntityRESTServer
+   */
+  public static final String WEB_SERVER_IMPLEMENTATION_CLASS = "jminor.server.web.webServerClass";
+
+  /**
    * Specifies the document root for the WebStartServer, if no specified the web server will not be started<br>
    * Value type: String<br>
    * Default value: null
@@ -697,6 +706,7 @@ public final class Configuration {
     PROPERTIES.put(FOREIGN_KEY_FETCH_DEPTH, DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
     PROPERTIES.put(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
     PROPERTIES.put(WEB_SERVER_PORT, DEFAULT_WEB_SERVER_PORT);
+    PROPERTIES.put(WEB_SERVER_IMPLEMENTATION_CLASS, "org.jminor.framework.plugins.rest.EntityRESTServer");
     PROPERTIES.put(CACHE_REPORTS, true);
     PROPERTIES.put(SPLIT_PANE_DIVIDER_SIZE, DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
     PROPERTIES.put(STRICT_FOREIGN_KEYS, true);
@@ -761,6 +771,7 @@ public final class Configuration {
     parseStringSetting(WILDCARD_CHARACTER);
     parseStringSetting(WEB_SERVER_DOCUMENT_ROOT);
     parseIntegerSetting(WEB_SERVER_PORT);
+    parseStringSetting(WEB_SERVER_IMPLEMENTATION_CLASS);
     parseStringSetting(Util.JAVAX_NET_NET_TRUSTSTORE);
     parseBooleanSetting(CACHE_REPORTS);
     parseIntegerSetting(SPLIT_PANE_DIVIDER_SIZE);
