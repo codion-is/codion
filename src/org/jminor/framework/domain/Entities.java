@@ -57,7 +57,7 @@ public final class Entities {
    * @return a new {@link Entity} instance
    */
   public static Entity entity(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
-    return EntityImpl.entityInstance(EntityDefinitionImpl.getDefinition(entityID), values, originalValues);
+    return new EntityImpl(EntityDefinitionImpl.getDefinition(entityID), values, originalValues);
   }
 
   /**
@@ -928,7 +928,6 @@ public final class Entities {
         else {
           throw new NullValidationException(exceptionProperty.getPropertyID(),
                   FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + exceptionProperty);
-
         }
       }
     }

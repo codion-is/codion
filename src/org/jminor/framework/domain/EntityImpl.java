@@ -73,6 +73,27 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
     this.primaryKey = primaryKey;
   }
 
+  /**
+   * Instantiates a new EntityImpl based on the given values.
+   * @param definition the definition of the entity type
+   * @param values the values
+   * @param originalValues the original values, may be null
+   * @return an initialized Entity
+   */
+  EntityImpl(final Definition definition, final Map<String, Object> values, final Map<String, Object> originalValues) {
+    this(definition);
+    if (values != null) {
+      for (final Map.Entry<String, Object> entry : values.entrySet()) {
+        setValue(entry.getKey(), entry.getValue());
+      }
+    }
+    if (originalValues != null) {
+      for (final Map.Entry<String, Object> entry : originalValues.entrySet()) {
+        setOriginalValue(entry.getKey(), originalValues.get(entry.getKey()));
+      }
+    }
+  }
+
   /** {@inheritDoc} */
   @Override
   public String getEntityID() {
@@ -179,7 +200,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
 
   /**
    * Returns true if the value associated with the given property is null.
-   * In case of {@link Property.ForeignKeyProperty}'s the value is considered
+   * In case of {@link Property.ForeignKeyProperty}s the value is considered
    * to be null if the referenced entity has not been loaded.
    * @param propertyID the property ID
    * @return true if the value associated with the property is null
@@ -191,7 +212,7 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
 
   /**
    * Returns true if the value associated with the given property is null.
-   * In case of {@link Property.ForeignKeyProperty}'s the value is considered
+   * In case of {@link Property.ForeignKeyProperty}s the value is considered
    * to be null if the referenced entity has not been loaded. Use the underlying
    * reference property to check if the foreign key value is null.
    * @param property the property
@@ -452,28 +473,6 @@ final class EntityImpl extends ValueMapImpl<String, Object> implements Entity, S
     }
 
     return false;
-  }
-
-  /**
-   * Initializes a new Entity based on the given values.
-   * @param definition the entity definition
-   * @param values the values
-   * @param originalValues the original values
-   * @return an initialized Entity
-   */
-  static Entity entityInstance(final Definition definition, final Map<String, Object> values, final Map<String, Object> originalValues) {
-    Util.rejectNullValue(values, "values");
-    final EntityImpl entity = new EntityImpl(definition);
-    for (final Map.Entry<String, Object> entry : values.entrySet()) {
-      entity.setValue(entry.getKey(), entry.getValue());
-    }
-    if (originalValues != null) {
-      for (final Map.Entry<String, Object> entry : originalValues.entrySet()) {
-        entity.setOriginalValue(entry.getKey(), originalValues.get(entry.getKey()));
-      }
-    }
-
-    return entity;
   }
 
   /** {@inheritDoc} */

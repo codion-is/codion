@@ -176,20 +176,6 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
   void removeValueListener(final ValueChangeListener valueListener);
 
   /**
-   * Describes an object responsible for providing String representations of ValueMap instances
-   * @param <K> the value map key type
-   * @param <V> the valueMap type
-   */
-  interface ToString<K, V extends ValueMap<K, ?>> {
-    /**
-     * Returns a string representation of the given value map
-     * @param valueMap the value map
-     * @return a string representation of the value map
-     */
-    String toString(final V valueMap);
-  }
-
-  /**
    * A validator for ValueMaps
    * @param <K> the type identifying the keys in the value map
    * @param <V> the value map type

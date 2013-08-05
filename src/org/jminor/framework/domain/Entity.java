@@ -385,9 +385,16 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
   }
 
   /**
-   * Specifies an object responsible for creating String representations of entities
+   * Describes an object responsible for providing String representations of entity instances
    */
-  interface ToString extends ValueMap.ToString<String, Entity> {}
+  interface ToString {
+    /**
+     * Returns a string representation of the given entity
+     * @param entity the entity
+     * @return a string representation of the entity
+     */
+    String toString(final Entity entity);
+  }
 
   /**
    * Specifies a entity definition.
