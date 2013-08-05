@@ -5,7 +5,7 @@ http://jminor.org
 
 1. INTRODUCTION
 
-JMinor is a minimalistic Java rich client CRUD application framework based solely on J2SE components, it includes:
+JMinor is a minimalistic full-stack Java rich client CRUD application framework based solely on J2SE components, it includes:
 
 * Simple domain modelling in plain Java code, no XML files required.
 
@@ -28,7 +28,6 @@ JMinor is a minimalistic Java rich client CRUD application framework based solel
 Release contents (~20 MB):
 * "dist" contains the JMinor binary jar files
 * "docs" contains basic documentation as well as API javadocs
-* "lib" contains third-party libraries needed for building the framework and/or running the samples
 * "projects" contains project files for the IntelliJ and Netbeans IDEs
 * "resources" contains miscellaneous files required for running the JMinor server, the server monitor
               and the demo applications. resources/project_template contains an ant build file template
@@ -36,39 +35,50 @@ Release contents (~20 MB):
 * "src" contains the Java source files for the framework
 * "srcdemos" contains the Java source files for the framework demos: EmpDept, Petstore, Chinook and SchemaBrowser
 * "srctest" contains the JUnit test sources for the framework
+* "build.xml" ant build file
+* "build.properties" ant build properties
+* "ivy.xml" ivy dependency management configuration (ant->resolve_libraries)
+* "changelog.txt" the framework changelog
 
 
 3. DISTRIBUTION JAR FILES
 
 The "dist" directory contains the following distinct jar files for use in applications.
 
-* "jminor" (~1 MB)
-- Convenient jar file containing the full framework codebase
+* "jminor.jar" (~1.1 MB)
+- Convenience jar file containing the full framework codebase
 
-* "jminor-client (~450 KB)
-- Full client codebase, including both local and remote connection facilities
-- Dependencies: jminor-common
-
-* "jminor-client-remote (~420 KB)
-- Client codebase including only remote connection facilities
-- Dependencies: jminor-common
-
-* "jminor-common" (~450 KB)
+* "jminor-common.jar" (~500 KB)
 - Common codebase
 
-* "jminor-demos.jar" (~100 KB)
-- Three demo applications
-- Dependencies: jminor-client, jminor-common
+* "jminor-db.jar" (~500 KB)
+- Database access layer code
+- Dependencies: jminor-common.jar
 
-* "jminor_server" (~150 KB)
+* "jminor-client.jar" (~500 KB)
+- Full client codebase, including both local and remote connection facilities
+- Dependencies: jminor-common.jar
+
+* "jminor-plugins.jar" (~25 KB)
+- Framework plugin codebase, JasperReports, Tomcat connection pool, EntityJSONParser and EntityRESTService
+- Dependencies: jminor-common.jar
+
+* "jminor-server.jar" (~200 KB)
 - RMI server codebase
-- Dependencies: jminor-common
+- Dependencies: jminor-common.jar
 
-* "jminor_server_monitor" (~150 KB)
+* "jminor_server_monitor.jar" (~175 KB)
 - RMI server monitor codebase
-- Dependencies: jminor-common
+- Dependencies: jminor-common.jar
 
-* "jminor-api-doc" (~2.5 MB)
+* "jminor-demos.jar" (~125 KB)
+- Three demo applications
+- Dependencies: jminor-client.jar, jminor-common.jar
+
+* "jminor-android.jar" (~300 KB)
+- Android tailored library
+
+* "jminor-api-doc.jar" (~2.5 MB)
 - API documentation
 
 
@@ -80,7 +90,7 @@ a music web-store schema called Chinook and a SchemaBrowser, which is limited to
 An H2 database containing the required schemas can be generated via the ant target 'recreate_h2_db'.
 
 In order to run the demos you must first run the deploy_all target in the ant build file (info on how to run ant
-builds can be found at ant.apache.org), which deployes the demo applications into the folder dist/deployment along
+builds can be found at ant.apache.org), which deploys the demo applications into the folder dist/deployment along
 with the required database.
 
 dist/deployment
