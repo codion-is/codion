@@ -95,4 +95,9 @@ public class DatabasesTest {
       System.setProperty(Database.DATABASE_TYPE, type);
     }
   }
+
+  @Test
+  public void getDatabaseStatistics() {
+    Databases.getDatabaseStatistics();
+  }
 }
