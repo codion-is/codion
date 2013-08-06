@@ -234,7 +234,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param caption the caption to use when presenting this entity panel
    */
   public EntityPanel(final EntityModel entityModel, final String caption) {
-    this(entityModel, caption, (EntityEditPanel) null);
+    this(entityModel, caption, null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
   }
 
   /**
@@ -262,7 +262,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param editPanel the edit panel
    */
   public EntityPanel(final EntityModel entityModel, final String caption, final EntityEditPanel editPanel) {
-    this(entityModel, caption, editPanel, null);
+    this(entityModel, caption, editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
   }
 
   /**
@@ -298,12 +298,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     this.entityModel = entityModel;
     this.caption = caption == null ? Entities.getCaption(entityModel.getEntityID()) : caption;
     this.editPanel = editPanel;
-    if (tablePanel == null && entityModel.containsTableModel()) {
-      this.tablePanel = new EntityTablePanel(entityModel.getTableModel());
-    }
-    else {
-      this.tablePanel = tablePanel;
-    }
+    this.tablePanel = tablePanel;
   }
 
   /**

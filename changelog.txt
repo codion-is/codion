@@ -3549,3 +3549,5 @@
   DatabaseConnectionImpl.checkConnectionStatement field removed
   EntityImpl.entityInstance() changed into a constructor
   ValueMap.ToString interface removed, superfluous
+  EntityPanel no longer constructs a default EntityTablePanel in case the one received via the constructor is null
+  EntityTablePanel.tableDoubleClickedEvent was never fired

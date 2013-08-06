@@ -1253,6 +1253,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
           if (doubleClickAction != null) {
             doubleClickAction.actionPerformed(new ActionEvent(getJTable(), -1, "doubleClick"));
           }
+          tableDoubleClickedEvent.fire();
         }
         else if (e.isAltDown()) {
           showEntityMenu(e.getPoint());
