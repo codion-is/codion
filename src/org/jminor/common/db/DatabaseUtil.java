@@ -7,7 +7,6 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.MethodLogger;
 
-import java.io.Serializable;
 import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -21,7 +20,8 @@ import java.util.List;
 public final class DatabaseUtil {
 
   /**
-   * A synchronized query counter
+   * A synchronized query counter.
+   * @see #getDatabaseStatistics()
    */
   public static final QueryCounter QUERY_COUNTER = new QueryCounter();
 
@@ -165,12 +165,13 @@ public final class DatabaseUtil {
   }
 
   /**
+   * Returns the statistics gathered via {@link #QUERY_COUNTER}.
    * @return a DatabaseStatistics object containing query statistics collected since
    * the last time this function was called.
    */
   public static Database.Statistics getDatabaseStatistics() {
-    DatabaseUtil.QUERY_COUNTER.updateQueriesPerSecond();
-    return new DatabaseStatistics(QUERY_COUNTER.getQueriesPerSecond(),
+    QUERY_COUNTER.updateQueriesPerSecond();
+    return new Databases.DatabaseStatistics(QUERY_COUNTER.getQueriesPerSecond(),
             QUERY_COUNTER.getSelectsPerSecond(), QUERY_COUNTER.getInsertsPerSecond(),
             QUERY_COUNTER.getDeletesPerSecond(), QUERY_COUNTER.getUpdatesPerSecond());
   }
@@ -297,74 +298,6 @@ public final class DatabaseUtil {
         undefinedPerSecondCounter = 0;
         queriesPerSecondTime = current;
       }
-    }
-  }
-
-  /**
-   * A default DatabaseStatistics implementation.
-   */
-  public static final class DatabaseStatistics implements Database.Statistics, Serializable {
-
-    private static final long serialVersionUID = 1;
-
-    private final long timestamp = System.currentTimeMillis();
-    private final int queriesPerSecond;
-    private final int selectsPerSecond;
-    private final int insertsPerSecond;
-    private final int deletesPerSecond;
-    private final int updatesPerSecond;
-
-    /**
-     * Instantiates a new DatabaseStatistics object
-     * @param queriesPerSecond the number of queries being run per second
-     * @param selectsPerSecond the number of select queries being run per second
-     * @param insertsPerSecond the number of insert queries being run per second
-     * @param deletesPerSecond the number of delete queries being run per second
-     * @param updatesPerSecond the number of update queries being run per second
-     */
-    private DatabaseStatistics(final int queriesPerSecond, final int selectsPerSecond, final int insertsPerSecond,
-                               final int deletesPerSecond, final int updatesPerSecond) {
-      this.queriesPerSecond = queriesPerSecond;
-      this.selectsPerSecond = selectsPerSecond;
-      this.insertsPerSecond = insertsPerSecond;
-      this.deletesPerSecond = deletesPerSecond;
-      this.updatesPerSecond = updatesPerSecond;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int getQueriesPerSecond() {
-      return queriesPerSecond;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int getDeletesPerSecond() {
-      return deletesPerSecond;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int getInsertsPerSecond() {
-      return insertsPerSecond;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int getSelectsPerSecond() {
-      return selectsPerSecond;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public int getUpdatesPerSecond() {
-      return updatesPerSecond;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public long getTimestamp() {
-      return timestamp;
     }
   }
 }

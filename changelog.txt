@@ -3551,3 +3551,4 @@
   ValueMap.ToString interface removed, superfluous
   EntityPanel no longer constructs a default EntityTablePanel in case the one received via the constructor is null
   EntityTablePanel.tableDoubleClickedEvent was never fired
+  DatabaseUtil.DatabaseStatistics moved back to Databases, now package protected, no need for a backwards incompatible change, barely cosmetic
