@@ -4,7 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
@@ -280,7 +279,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   /** {@inheritDoc} */
   @Override
   public Database.Statistics getDatabaseStatistics() throws RemoteException {
-    return DatabaseUtil.getDatabaseStatistics();
+    return Databases.getDatabaseStatistics();
   }
 
   /** {@inheritDoc} */

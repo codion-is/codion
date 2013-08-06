@@ -21,9 +21,4 @@ public class DatabaseUtilTest {
     DatabaseUtil.closeSilently(new Statement[]{null, null});
     DatabaseUtil.closeSilently(new ResultSet[]{null, null});
   }
-
-  @Test
-  public void getDatabaseStatistics() {
-    DatabaseUtil.getDatabaseStatistics();
-  }
 }

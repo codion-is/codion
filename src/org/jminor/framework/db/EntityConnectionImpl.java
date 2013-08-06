@@ -516,7 +516,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
             " = ? " + criteria.getWhereClause();
     final List<Object> values = new ArrayList<Object>();
     final List<Property.ColumnProperty> properties = new ArrayList<Property.ColumnProperty>();
-    DatabaseUtil.QUERY_COUNTER.count(sql);
+    Databases.QUERY_COUNTER.count(sql);
     try {
       logAccess("writeBlob", new Object[]{sql});
       values.add(null);//the blob value, set explicitly later
@@ -561,7 +561,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
     final EntityCriteria criteria = EntityCriteriaUtil.criteria(primaryKey);
     final String sql = "select " + property.getColumnName() + " from " +
             Entities.getTableName(primaryKey.getEntityID()) + " " + criteria.getWhereClause();
-    DatabaseUtil.QUERY_COUNTER.count(sql);
+    Databases.QUERY_COUNTER.count(sql);
     try {
       logAccess("readBlob", new Object[]{sql});
       statement = getConnection().prepareStatement(sql);
@@ -782,7 +782,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   private void executePreparedUpdate(final PreparedStatement statement, final String sqlStatement,
                                      final List<?> values, final List<Property.ColumnProperty> properties) throws SQLException {
     SQLException exception = null;
-    DatabaseUtil.QUERY_COUNTER.count(sqlStatement);
+    Databases.QUERY_COUNTER.count(sqlStatement);
     try {
       logAccess("executePreparedUpdate", new Object[]{sqlStatement, values});
       setParameterValues(statement, values, properties);
@@ -803,7 +803,7 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   private ResultSet executePreparedSelect(final PreparedStatement statement, final String sqlStatement,
                                           final List<?> values, final List<Property.ColumnProperty> properties) throws SQLException {
     SQLException exception = null;
-    DatabaseUtil.QUERY_COUNTER.count(sqlStatement);
+    Databases.QUERY_COUNTER.count(sqlStatement);
     try {
       logAccess("executePreparedSelect", values == null ? new Object[]{sqlStatement} : new Object[]{sqlStatement, values});
       setParameterValues(statement, values, properties);
