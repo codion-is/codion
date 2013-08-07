@@ -132,15 +132,15 @@ public class Control extends AbstractAction {
    * @return this Control instance
    */
   public final Control setMnemonic(final int key) {
-    this.putValue(MNEMONIC_KEY, key);
-    return this;
+    return doSetMnemonic(key);
   }
 
   /**
-   * @return the mnemonic
+   * @return the mnemonic, 0 if none is specified
    */
   public final int getMnemonic() {
-    return (Integer) this.getValue(MNEMONIC_KEY);
+    final Integer mnemonic = (Integer) this.getValue(MNEMONIC_KEY);
+    return mnemonic == null ? 0 : mnemonic;
   }
 
   /**
@@ -166,5 +166,15 @@ public class Control extends AbstractAction {
    */
   public final Icon getIcon() {
     return (Icon) getValue(SMALL_ICON);
+  }
+
+  /**
+   * Sets the mnemonic key, if overridden remember to call super.doSetMnemonic()
+   * @param mnemonic the mnemonic key
+   * @return this Control instance
+   */
+  protected Control doSetMnemonic(final int mnemonic) {
+    this.putValue(MNEMONIC_KEY, mnemonic);
+    return this;
   }
 }

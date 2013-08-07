@@ -3539,7 +3539,7 @@
   Util.NullFormat() privatized, NULL_FORMAT constant introduced
   Naming prefixes for State and Event instances removed (st, evt)
   FilteredTableModel.setColumns() moved to FilteredTableColumnModel
-0.7.0
+0.7.0 [incompatible api: server monitor can not connect to servers of earlier versions]
   Tomcat jdbc connection pool plugin added, lots of refactoring in common.db.pool and elsewhere
   EntityRESTService plugin added, some refactoring of related components
   ivy.xml reorganized and improved
@@ -3552,3 +3552,6 @@
   EntityPanel no longer constructs a default EntityTablePanel in case the one received via the constructor is null
   EntityTablePanel.tableDoubleClickedEvent was never fired
   DatabaseUtil.DatabaseStatistics moved back to Databases, now package protected, no need for a backwards incompatible change, barely cosmetic
+  Control.doSetMnemonic() added protected
+  ToggleControl overrides doSetMnemonic() in order to set the mnemonic in the associated button model as well
+  Control.getMnemonic() now returns -1 in case no mnemonic is specified, instead of throwing a NullPointerException

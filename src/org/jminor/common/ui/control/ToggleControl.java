@@ -29,4 +29,10 @@ public final class ToggleControl extends Control {
   public ButtonModel getButtonModel() {
     return buttonModel;
   }
+
+  @Override
+  protected Control doSetMnemonic(final int mnemonic) {
+    this.buttonModel.setMnemonic(mnemonic);
+    return super.doSetMnemonic(mnemonic);
+  }
 }
