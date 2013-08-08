@@ -1421,6 +1421,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    */
   private void showEditDialog() {
     editPanelDialog = UiUtil.displayInDialog(this, editControlPanel, caption, false,
+            Configuration.getBooleanValue(Configuration.DISPOSE_EDIT_DIALOG_ON_ESCAPE),
             new AbstractAction() {
               /** {@inheritDoc} */
               @Override

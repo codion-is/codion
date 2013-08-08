@@ -232,6 +232,13 @@ public final class Configuration {
   public static final String COMPACT_ENTITY_PANEL_LAYOUT = "jminor.client.compactEntityPanelLayout";
 
   /**
+   * Indicates whether entity edit panel dialogs should be closed on escape<br>
+   * Value type: Boolean<br>
+   * Default value: true
+   */
+  public static final String DISPOSE_EDIT_DIALOG_ON_ESCAPE = "jminor.client.disposeEditDialogOnEscape";
+
+  /**
    * Indicates whether keyboard navigation will be enabled<br>
    * Value type: Boolean<br>
    * Default value: true
@@ -716,6 +723,7 @@ public final class Configuration {
     PROPERTIES.put(SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT, false);
     PROPERTIES.put(USE_CLIENT_PREFERENCES, Util.onClasspath("org.json.JSONObject"));
     PROPERTIES.put(SAVE_DEFAULT_USERNAME, true);
+    PROPERTIES.put(DISPOSE_EDIT_DIALOG_ON_ESCAPE, true);
     parseSystemSettings();
   }
 
@@ -783,6 +791,7 @@ public final class Configuration {
     parseBooleanSetting(USE_CLIENT_PREFERENCES);
     parseStringSetting(SERVER_CONNECTION_POOL_PROVIDER_CLASS);
     parseBooleanSetting(SAVE_DEFAULT_USERNAME);
+    parseBooleanSetting(DISPOSE_EDIT_DIALOG_ON_ESCAPE);
   }
 
   private static void parseIntegerSetting(final String setting) {
