@@ -8,6 +8,7 @@ import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.domain.Property;
 
 import javax.swing.JCheckBox;
+import javax.swing.JComponent;
 import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.table.DefaultTableCellRenderer;
@@ -32,6 +33,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   private static final Color DOUBLE_FILTERED_BACKGROUND = new Color(215, 215, 215);
 
   private boolean indicateSearch = true;
+  private boolean tooltipData = false;
 
   /**
    * Instantiates a new EntityTableCellRenderer
@@ -59,13 +61,30 @@ public class EntityTableCellRenderer implements TableCellRenderer {
     return indicateSearch;
   }
 
+  /**
+   * @param tooltipData if true then cells display their data in a tooltip
+   */
+  public void setTooltipData(final boolean tooltipData) {
+    this.tooltipData = tooltipData;
+  }
+
+  /**
+   * @return true if cells display their data in a tooltip
+   */
+  public boolean isTooltipData() {
+    return tooltipData;
+  }
+
   /** {@inheritDoc} */
   @Override
   public final Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                        final boolean hasFocus, final int row, final int column) {
     final Property property = (Property) tableModel.getColumnModel().getColumn(column).getIdentifier();
-    final Component component =
-            getRenderer(property).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    final JComponent component =
+            (JComponent) getRenderer(property).getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
+    if (tooltipData) {
+      component.setToolTipText(value == null ? "" : value.toString());
+    }
 
     if (isSelected) {
       return component;

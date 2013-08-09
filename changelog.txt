@@ -3557,3 +3557,4 @@
   Control.getMnemonic() now returns -1 in case no mnemonic is specified, instead of throwing a NullPointerException
   Configuration.DISPOSE_EDIT_DIALOG_ON_ESCAPE added, used in EntityEditPanel
   EntityTableCellRenderer.indicateSearch field added
+  EntityTableCellRenderer.tooltipData field added
