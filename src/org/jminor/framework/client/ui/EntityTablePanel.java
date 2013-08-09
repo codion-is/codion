@@ -1497,6 +1497,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private void initializeTable() {
     getJTable().addMouseListener(initializeTableMouseListener());
 
+    final TableCellRenderer tableCellRenderer = initializeTableCellRenderer();
+    final Enumeration<TableColumn> columnEnumeration = getTableModel().getColumnModel().getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      final TableColumn column = columnEnumeration.nextElement();
+      column.setCellRenderer(tableCellRenderer);
+      column.setResizable(true);
+    }
     final JTableHeader header = getJTable().getTableHeader();
     final TableCellRenderer defaultHeaderRenderer = header.getDefaultRenderer();
     final Font defaultFont = getJTable().getFont();
@@ -1510,7 +1517,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
                 hasFocus, row, column);
         final EntityTableModel tableModel = getEntityTableModel();
         final Property property = (Property) tableModel.getColumnModel().getColumn(column).getIdentifier();
-        label.setFont(tableModel.getSearchModel().isSearchEnabled(property.getPropertyID()) ? searchFont : defaultFont);
+        final boolean indicateSearch = tableCellRenderer instanceof EntityTableCellRenderer
+                && ((EntityTableCellRenderer) tableCellRenderer).isIndicateSearch()
+                && tableModel.getSearchModel().isSearchEnabled(property.getPropertyID());
+        label.setFont(indicateSearch ? searchFont : defaultFont);
 
         return label;
       }
@@ -1520,13 +1530,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     getJTable().setAutoResizeMode(Configuration.getIntValue(Configuration.TABLE_AUTO_RESIZE_MODE));
     UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(getJTable(), false));
     UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(getJTable(), true));
-    final TableCellRenderer tableCellRenderer = initializeTableCellRenderer();
-    final Enumeration<TableColumn> columnEnumeration = getTableModel().getColumnModel().getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      final TableColumn column = columnEnumeration.nextElement();
-      column.setCellRenderer(tableCellRenderer);
-      column.setResizable(true);
-    }
     if (includePopupMenu) {
       setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControlSets));
     }

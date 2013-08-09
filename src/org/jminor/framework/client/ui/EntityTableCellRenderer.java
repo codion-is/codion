@@ -31,6 +31,8 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   private static final Color SINGLE_FILTERED_BACKGROUND = new Color(235, 235, 235);
   private static final Color DOUBLE_FILTERED_BACKGROUND = new Color(215, 215, 215);
 
+  private boolean indicateSearch = true;
+
   /**
    * Instantiates a new EntityTableCellRenderer
    * @param tableModel the table model
@@ -40,6 +42,21 @@ public class EntityTableCellRenderer implements TableCellRenderer {
   public EntityTableCellRenderer(final EntityTableModel tableModel) {
     Util.rejectNullValue(tableModel, "tableModel");
     this.tableModel = tableModel;
+  }
+
+  /**
+   * If true then columns being search by have different background color
+   * @param indicateSearch the value
+   */
+  public final void setIndicateSearch(final boolean indicateSearch) {
+    this.indicateSearch = indicateSearch;
+  }
+
+  /**
+   * @return true if the search state should be represented visually
+   */
+  public boolean isIndicateSearch() {
+    return indicateSearch;
   }
 
   /** {@inheritDoc} */
@@ -65,7 +82,7 @@ public class EntityTableCellRenderer implements TableCellRenderer {
       if (cellColor != null) {
         component.setBackground(cellColor);
       }
-      else {
+      else if (indicateSearch) {
         component.setBackground((propertySearchEnabled && propertyFilterEnabled) ? DOUBLE_FILTERED_BACKGROUND : SINGLE_FILTERED_BACKGROUND);
       }
     }
