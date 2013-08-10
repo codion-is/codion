@@ -3558,3 +3558,4 @@
   Configuration.DISPOSE_EDIT_DIALOG_ON_ESCAPE added, used in EntityEditPanel
   EntityTableCellRenderer.indicateSearch field added
   EntityTableCellRenderer.tooltipData field added
+  ServerUtil.getServers() logging improved
