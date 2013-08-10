@@ -3560,3 +3560,4 @@
   EntityTableCellRenderer.tooltipData field added
   ServerUtil.getServers() logging improved
   ServerUtil.initializeRegistry() no longer logs an error when no registry is found during startup
+  Startup error message improved a bit
