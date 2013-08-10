@@ -3559,3 +3559,4 @@
   EntityTableCellRenderer.indicateSearch field added
   EntityTableCellRenderer.tooltipData field added
   ServerUtil.getServers() logging improved
+  ServerUtil.initializeRegistry() no longer logs an error when no registry is found during startup

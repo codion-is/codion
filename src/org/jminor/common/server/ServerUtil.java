@@ -37,7 +37,7 @@ public final class ServerUtil {
       localRegistry.list();
     }
     catch (Exception e) {
-      LOG.debug("Exception occurred while trying to locate registry", e);
+      LOG.info("Trying to locate registry: {}", e.getMessage());
       LOG.info("Creating registry on port: {}", port);
       LocateRegistry.createRegistry(port);
     }
