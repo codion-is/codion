@@ -1214,11 +1214,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Returns the TableCellRenderer used for this EntityTablePanel
-   * @return the TableCellRenderer
+   * Returns the TableCellRenderer used for the given property in this EntityTablePanel
+   * @param property the property
+   * @return the TableCellRenderer for the given property
    */
-  protected TableCellRenderer initializeTableCellRenderer() {
-    return new EntityTableCellRenderer(getEntityTableModel());
+  protected TableCellRenderer initializeTableCellRenderer(final Property property) {
+    return EntityTableCellRenderers.getTableCellRenderer(getEntityTableModel(), property);
   }
 
   /**
@@ -1497,11 +1498,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private void initializeTable() {
     getJTable().addMouseListener(initializeTableMouseListener());
 
-    final TableCellRenderer tableCellRenderer = initializeTableCellRenderer();
     final Enumeration<TableColumn> columnEnumeration = getTableModel().getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final TableColumn column = columnEnumeration.nextElement();
-      column.setCellRenderer(tableCellRenderer);
+      final Property property = (Property) column.getIdentifier();
+      column.setCellRenderer(initializeTableCellRenderer(property));
       column.setResizable(true);
     }
     final JTableHeader header = getJTable().getTableHeader();
@@ -1516,9 +1517,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
                 hasFocus, row, column);
         final EntityTableModel tableModel = getEntityTableModel();
-        final Property property = (Property) tableModel.getColumnModel().getColumn(column).getIdentifier();
-        final boolean indicateSearch = tableCellRenderer instanceof EntityTableCellRenderer
-                && ((EntityTableCellRenderer) tableCellRenderer).isIndicateSearch()
+        final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
+        final TableCellRenderer renderer = tableColumn.getCellRenderer();
+        final Property property = (Property) tableColumn.getIdentifier();
+        final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
+                && ((EntityTableCellRenderer) renderer).isIndicateSearch()
                 && tableModel.getSearchModel().isSearchEnabled(property.getPropertyID());
         label.setFont(indicateSearch ? searchFont : defaultFont);
 
@@ -1680,6 +1683,35 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         rootMenu.add(menuItem);
       }
     }
+  }
+
+  /**
+   * A TableCellRenderer with the added options of visually displaying if a
+   * cell (or column) is involved in a search criteria and showing its
+   * contents in a tooltip
+   */
+  public interface EntityTableCellRenderer extends TableCellRenderer {
+
+    /**
+     * If true then columns being search by have different background color
+     * @param indicateSearch the value
+     */
+    void setIndicateSearch(final boolean indicateSearch);
+
+    /**
+     * @return true if the search state should be represented visually
+     */
+    boolean isIndicateSearch();
+
+    /**
+     * @return if true then the cell data is added as a tool tip for the cell
+     */
+    boolean isTooltipData();
+
+    /**
+     * @param tooltipData if true then the cell data is added as a tool tip for the cell
+     */
+    void setTooltipData(final boolean tooltipData);
   }
 
   private static final class PopupMenuAction extends AbstractAction {

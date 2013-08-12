@@ -3561,3 +3561,7 @@
   ServerUtil.getServers() logging improved
   ServerUtil.initializeRegistry() no longer logs an error when no registry is found during startup
   Startup error message improved a bit
+  EntityTableCellRenderer removed and EntityTableCellRenderers added
+  EntityTableCellRenderers, renderer no longer uses hard coded search indicator colors
+  EntityTableCellRenderers, rendering of boolean columns fixed with setOpaque(true) (java bug workaround)
+  EntityTablePanel.initializeTableCellRenderer() now takes a Property parameter

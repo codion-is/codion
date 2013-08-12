@@ -148,7 +148,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @param columnProperty the column property for which to retrieve the background color
    * @return the background color for this row and property, specified by the row entity
    * @see org.jminor.framework.domain.Entity.Definition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
-   * @see org.jminor.framework.client.ui.EntityTableCellRenderer
+   * @see org.jminor.framework.client.ui.EntityTableCellRenderers
    */
   Color getPropertyBackgroundColor(final int row, final Property columnProperty);
 
