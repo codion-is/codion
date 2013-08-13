@@ -835,6 +835,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     private final EntityTableModel tableModel;
     private final Property property;
 
+    private boolean useValueSubset = true;
+
     private SummaryValueProvider(final EntityEditModel editModel, final EntityTableModel tableModel, final Property property) {
       this.editModel = editModel;
       this.tableModel = tableModel;
@@ -854,8 +856,20 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
     /** {@inheritDoc} */
     @Override
+    public boolean isUseValueSubset() {
+      return useValueSubset;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public void setUseValueSubset(final boolean useValueSubset) {
+      this.useValueSubset = useValueSubset;
+    }
+
+    /** {@inheritDoc} */
+    @Override
     public Collection getValues() {
-      return tableModel.getValues(property, isValueSubset());
+      return tableModel.getValues(property, useValueSubset && isValueSubset());
     }
 
     /** {@inheritDoc} */

@@ -3565,3 +3565,7 @@
   EntityTableCellRenderers, renderer no longer uses hard coded search indicator colors
   EntityTableCellRenderers, rendering of boolean columns fixed with setOpaque(true) (java bug workaround)
   EntityTablePanel.initializeTableCellRenderer() now takes a Property parameter
+  PropertySummaryModel.locked field added, DefaultPropertySummaryModel disables the changing of summary type if locked
+  PropertySummaryPanel only displays popup menu if the model is not locked
+  PropertySummaryModel.getValueProvider() added
+  PropertySummaryModel.PropertyValueProvider.useValueSubset field added, implemented in DefaultPropertySummaryModel

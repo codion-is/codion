@@ -35,6 +35,11 @@ public interface PropertySummaryModel {
   Property getProperty();
 
   /**
+   * @return the value provider
+   */
+  PropertyValueProvider getValueProvider();
+
+  /**
    * @param summary the type of summary to show
    */
   void setCurrentSummary(final Summary summary);
@@ -43,6 +48,16 @@ public interface PropertySummaryModel {
    * @return the current summary type
    */
   Summary getCurrentSummary();
+
+  /**
+   * @return true if changing the summary type is disabled
+   */
+  boolean isLocked();
+
+  /**
+   * @param value if true then changing summary type is disable
+   */
+  void setLocked(final boolean value);
 
   /**
    * @return a list containing the available summaries
@@ -88,6 +103,16 @@ public interface PropertySummaryModel {
      * @return true if the values provided by <code>getValues()</code> is a subset of the total available values
      */
     boolean isValueSubset();
+
+    /**
+     * @return true if this value provider returns a subset of the data if available
+     */
+    boolean isUseValueSubset();
+
+    /**
+     * @param value true if this value provider should return a subset of the data if available
+     */
+    void setUseValueSubset(final boolean value);
 
     /**
      * @param event the event to use when notifying changes to the underlying data which require a summary refresh

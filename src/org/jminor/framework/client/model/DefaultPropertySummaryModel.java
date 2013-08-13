@@ -28,6 +28,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
   private final PropertyValueProvider valueProvider;
 
   private Summary summary = SummaryType.NONE;
+  private boolean locked = false;
 
   /**
    * Instantiates a new DefaultPropertySummaryModel
@@ -51,7 +52,28 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
 
   /** {@inheritDoc} */
   @Override
+  public boolean isLocked() {
+    return locked;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setLocked(final boolean value) {
+    this.locked = value;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public PropertyValueProvider getValueProvider() {
+    return valueProvider;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void setCurrentSummary(final Summary summary) {
+    if (isLocked()) {
+      throw new IllegalStateException("Summary model is locked");
+    }
     Util.rejectNullValue(summary, "summary");
     if (!this.summary.equals(summary)) {
       this.summary = summary;
@@ -290,8 +312,12 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       }
     };
 
-    String addSubsetIndicator(final String txt, final PropertyValueProvider valueProvider) {
-      return txt.length() != 0 ? txt + (valueProvider.isValueSubset() ? "*" : "") : txt;
+    protected String addSubsetIndicator(final String txt, final PropertyValueProvider valueProvider) {
+      if (valueProvider.isUseValueSubset()) {
+        return txt.length() != 0 ? txt + (valueProvider.isValueSubset() ? "*" : "") : txt;
+      }
+
+      return txt;
     }
   }
 }

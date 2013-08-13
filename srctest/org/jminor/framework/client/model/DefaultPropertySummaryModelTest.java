@@ -32,6 +32,12 @@ public class DefaultPropertySummaryModelTest {
       return false;
     }
     @Override
+    public boolean isUseValueSubset() {
+      return false;
+    }
+    @Override
+    public void setUseValueSubset(final boolean value) {}
+    @Override
     public void bindValuesChangedEvent(final Event event) {}
   });
 
@@ -45,6 +51,12 @@ public class DefaultPropertySummaryModelTest {
     public boolean isValueSubset() {
       return false;
     }
+    @Override
+    public boolean isUseValueSubset() {
+      return false;
+    }
+    @Override
+    public void setUseValueSubset(final boolean value) {}
     @Override
     public void bindValuesChangedEvent(final Event event) {}
   });
@@ -125,5 +137,11 @@ public class DefaultPropertySummaryModelTest {
   public void doubleMininumMaximum() {
     testDoubleModel.setCurrentSummary(DefaultPropertySummaryModel.SummaryType.MINIMUM_MAXIMUM);
     assertEquals(numberFormat.format(1.1) + "/" + numberFormat.format(5.5), testDoubleModel.getSummaryText());
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void locked() {
+    testDoubleModel.setLocked(true);
+    testDoubleModel.setCurrentSummary(DefaultPropertySummaryModel.SummaryType.MINIMUM_MAXIMUM);
   }
 }

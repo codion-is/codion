@@ -60,7 +60,9 @@ public final class PropertySummaryPanel extends JPanel {
       /** {@inheritDoc} */
       @Override
       public void mouseReleased(final MouseEvent e) {
-        menu.show(txtSummary, e.getX(), e.getY() - menu.getPreferredSize().height);
+        if (!model.isLocked()) {
+          menu.show(txtSummary, e.getX(), e.getY() - menu.getPreferredSize().height);
+        }
       }
     });
   }
