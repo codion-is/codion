@@ -3571,3 +3571,4 @@
   PropertySummaryModel.PropertyValueProvider.useValueSubset field added, implemented in DefaultPropertySummaryModel
   EntityUiUtil.initializeTextField() now sets the allowed range for numerical properties with min and max defined
   EntityEditPanel now shows the entity menu on ctrl-alt-V
+  EntityEditPanel now shows the entity menu on alt-double click
