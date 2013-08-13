@@ -55,8 +55,6 @@ import javax.swing.BorderFactory;
 import javax.swing.InputMap;
 import javax.swing.JComponent;
 import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
@@ -943,7 +941,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
               /** {@inheritDoc} */
               @Override
               public void actionPerformed(final ActionEvent e) {
-                showEntityMenu(getPopupLocation(table));
+                EntityUiUtil.showEntityMenu(getEntityTableModel().getSelectionModel().getSelectedItem(), getTableScrollPane(),
+                        getPopupLocation(table), getEntityTableModel().getConnectionProvider());
               }
             });
   }
@@ -1240,7 +1239,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * double click and right click, or popup click with ALT down. Double clicking
    * simply invokes the action returned by {@link #getTableDoubleClickAction()}
    * with the JTable as the ActionEvent source while right click with ALT down
-   * invokes {@link #showEntityMenu(java.awt.Point)}
+   * invokes {@link EntityUiUtil#showEntityMenu(org.jminor.framework.domain.Entity, javax.swing.JComponent, java.awt.Point, org.jminor.framework.db.provider.EntityConnectionProvider)}
    * @return the MouseListener for the table
    * @see #getTableDoubleClickAction()
    */
@@ -1256,8 +1255,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
           }
           tableDoubleClickedEvent.fire();
         }
-        else if (e.isAltDown()) {
-          showEntityMenu(e.getPoint());
+        else if (e.isPopupTrigger() && e.isAltDown()) {
+          EntityUiUtil.showEntityMenu(getEntityTableModel().getSelectionModel().getSelectedItem(), getTableScrollPane(),
+                  e.getPoint(), getEntityTableModel().getConnectionProvider());
         }
       }
     };
@@ -1441,15 +1441,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return toolBar;
   }
 
-  private void showEntityMenu(final Point location) {
-    final Entity entity = getEntityTableModel().getSelectionModel().getSelectedItem();
-    if (entity != null) {
-      final JPopupMenu popupMenu = new JPopupMenu();
-      populateEntityMenu(popupMenu, (Entity) entity.getCopy(), getEntityTableModel().getConnectionProvider());
-      popupMenu.show(getTableScrollPane(), location.x, (int) location.getY() - (int) getTableScrollPane().getViewport().getViewPosition().getY());
-    }
-  }
-
   private void updateStatusMessage() {
     if (statusMessageLabel != null) {
       final String status = getEntityTableModel().getStatusMessage();
@@ -1587,102 +1578,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final int y = table.getSelectionModel().isSelectionEmpty() ? 100 : (table.getSelectedRow() + 1) * table.getRowHeight();
 
     return new Point(x, y);
-  }
-
-  /**
-   * Populates the given root menu with the property values of the given entity
-   * @param rootMenu the menu to populate
-   * @param entity the entity
-   * @param connectionProvider if provided then lazy loaded entity references are loaded so that the full object graph can be shown
-   */
-  private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
-                                         final EntityConnectionProvider connectionProvider) {
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<Property.PrimaryKeyProperty>(Entities.getPrimaryKeyProperties(entity.getEntityID())));
-    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<Property.ForeignKeyProperty>(Entities.getForeignKeyProperties(entity.getEntityID())));
-    populateValueMenu(rootMenu, entity, new ArrayList<Property>(Entities.getProperties(entity.getEntityID(), true)));
-  }
-
-  private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.PrimaryKeyProperty> primaryKeyProperties) {
-    Util.collate(primaryKeyProperties);
-    for (final Property.PrimaryKeyProperty property : primaryKeyProperties) {
-      final JMenuItem menuItem = new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID()));
-      menuItem.setToolTipText(property.getColumnName());
-      rootMenu.add(menuItem);
-    }
-  }
-
-  private static void populateForeignKeyMenu(final JComponent rootMenu, final Entity entity,
-                                             final EntityConnectionProvider connectionProvider,
-                                             final List<Property.ForeignKeyProperty> fkProperties) {
-    try {
-      Util.collate(fkProperties);
-      for (final Property.ForeignKeyProperty property : fkProperties) {
-        final String toolTipText = getReferenceColumnNames(property);
-        final boolean fkValueNull = entity.isForeignKeyNull(property);
-        if (!fkValueNull) {
-          boolean queried = false;
-          final Entity referencedEntity;
-          if (entity.isLoaded(property.getPropertyID())) {
-            referencedEntity = entity.getForeignKeyValue(property.getPropertyID());
-          }
-          else {
-            referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedPrimaryKey(property));
-            entity.removeValue(property.getPropertyID());
-            entity.setValue(property, referencedEntity);
-            queried = true;
-          }
-          final String text = "[FK" + (queried ? "+] " : "] ") + property.getCaption() + ": " + referencedEntity.toString();
-          final JMenu foreignKeyMenu = new JMenu(text);
-          foreignKeyMenu.setToolTipText(toolTipText);
-          populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), connectionProvider);
-          rootMenu.add(foreignKeyMenu);
-        }
-        else {
-          final String text = "[FK] " + property.getCaption() + ": <null>";
-          final JMenuItem menuItem = new JMenuItem(text);
-          menuItem.setToolTipText(toolTipText);
-          rootMenu.add(menuItem);
-        }
-      }
-    }
-    catch (DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-  }
-
-  private static String getReferenceColumnNames(final Property.ForeignKeyProperty property) {
-    final List<String> columnNames = new ArrayList<String>(property.getReferenceProperties().size());
-    for (final Property.ColumnProperty referenceProperty : property.getReferenceProperties()) {
-      columnNames.add(referenceProperty.getColumnName());
-    }
-
-    return Util.getArrayContentsAsString(columnNames.toArray(), false);
-  }
-
-  private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties) {
-    Util.collate(properties);
-    final int maxValueLength = 20;
-    for (final Property property : properties) {
-      final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
-              && ((Property.ColumnProperty) property).isForeignKeyProperty();
-      if (!isForeignKeyProperty && !(property instanceof Property.ForeignKeyProperty)) {
-        final String prefix = "[" + property.getTypeClass().getSimpleName().substring(0, 1)
-                + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
-                + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
-        final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
-        final boolean longValue = value != null && value.length() > maxValueLength;
-        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value));
-        String toolTipText = "";
-        if (property instanceof Property.ColumnProperty) {
-          toolTipText = ((Property.ColumnProperty) property).getColumnName();
-        }
-        if (longValue) {
-          toolTipText += (value.length() > 1000 ? value.substring(0, 1000) : value);
-        }
-        menuItem.setToolTipText(toolTipText);
-        rootMenu.add(menuItem);
-      }
-    }
   }
 
   /**

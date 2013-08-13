@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
@@ -62,8 +63,11 @@ import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
+import javax.swing.JMenu;
+import javax.swing.JMenuItem;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
+import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.KeyStroke;
@@ -72,6 +76,7 @@ import javax.swing.text.AbstractDocument;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -1033,6 +1038,15 @@ public final class EntityUiUtil {
             filterButtonTakesFocus);
   }
 
+  public static void showEntityMenu(final Entity entity, final JComponent component, final Point location,
+                                    final EntityConnectionProvider connectionProvider) {
+    if (entity != null) {
+      final JPopupMenu popupMenu = new JPopupMenu();
+      populateEntityMenu(popupMenu, (Entity) entity.getCopy(), connectionProvider);
+      popupMenu.show(component, location.x, (int) location.getY());
+    }
+  }
+
   private static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,
                                               final boolean buttonFocusable) {
     final JPanel panel = new JPanel(new BorderLayout());
@@ -1098,6 +1112,102 @@ public final class EntityUiUtil {
   private static void checkProperty(final Property property, final EntityEditModel editModel) {
     if (!property.getEntityID().equals(editModel.getEntityID())) {
       throw new IllegalArgumentException("Entity type mismatch: " + property.getEntityID() + ", should be: " + editModel.getEntityID());
+    }
+  }
+
+  /**
+   * Populates the given root menu with the property values of the given entity
+   * @param rootMenu the menu to populate
+   * @param entity the entity
+   * @param connectionProvider if provided then lazy loaded entity references are loaded so that the full object graph can be shown
+   */
+  private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
+                                         final EntityConnectionProvider connectionProvider) {
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<Property.PrimaryKeyProperty>(Entities.getPrimaryKeyProperties(entity.getEntityID())));
+    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<Property.ForeignKeyProperty>(Entities.getForeignKeyProperties(entity.getEntityID())));
+    populateValueMenu(rootMenu, entity, new ArrayList<Property>(Entities.getProperties(entity.getEntityID(), true)));
+  }
+
+  private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.PrimaryKeyProperty> primaryKeyProperties) {
+    Util.collate(primaryKeyProperties);
+    for (final Property.PrimaryKeyProperty property : primaryKeyProperties) {
+      final JMenuItem menuItem = new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID()));
+      menuItem.setToolTipText(property.getColumnName());
+      rootMenu.add(menuItem);
+    }
+  }
+
+  private static void populateForeignKeyMenu(final JComponent rootMenu, final Entity entity,
+                                             final EntityConnectionProvider connectionProvider,
+                                             final List<Property.ForeignKeyProperty> fkProperties) {
+    try {
+      Util.collate(fkProperties);
+      for (final Property.ForeignKeyProperty property : fkProperties) {
+        final String toolTipText = getReferenceColumnNames(property);
+        final boolean fkValueNull = entity.isForeignKeyNull(property);
+        if (!fkValueNull) {
+          boolean queried = false;
+          final Entity referencedEntity;
+          if (entity.isLoaded(property.getPropertyID())) {
+            referencedEntity = entity.getForeignKeyValue(property.getPropertyID());
+          }
+          else {
+            referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedPrimaryKey(property));
+            entity.removeValue(property.getPropertyID());
+            entity.setValue(property, referencedEntity);
+            queried = true;
+          }
+          final String text = "[FK" + (queried ? "+] " : "] ") + property.getCaption() + ": " + referencedEntity.toString();
+          final JMenu foreignKeyMenu = new JMenu(text);
+          foreignKeyMenu.setToolTipText(toolTipText);
+          populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), connectionProvider);
+          rootMenu.add(foreignKeyMenu);
+        }
+        else {
+          final String text = "[FK] " + property.getCaption() + ": <null>";
+          final JMenuItem menuItem = new JMenuItem(text);
+          menuItem.setToolTipText(toolTipText);
+          rootMenu.add(menuItem);
+        }
+      }
+    }
+    catch (DatabaseException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private static String getReferenceColumnNames(final Property.ForeignKeyProperty property) {
+    final List<String> columnNames = new ArrayList<String>(property.getReferenceProperties().size());
+    for (final Property.ColumnProperty referenceProperty : property.getReferenceProperties()) {
+      columnNames.add(referenceProperty.getColumnName());
+    }
+
+    return Util.getArrayContentsAsString(columnNames.toArray(), false);
+  }
+
+  private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties) {
+    Util.collate(properties);
+    final int maxValueLength = 20;
+    for (final Property property : properties) {
+      final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
+              && ((Property.ColumnProperty) property).isForeignKeyProperty();
+      if (!isForeignKeyProperty && !(property instanceof Property.ForeignKeyProperty)) {
+        final String prefix = "[" + property.getTypeClass().getSimpleName().substring(0, 1)
+                + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
+                + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
+        final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
+        final boolean longValue = value != null && value.length() > maxValueLength;
+        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value));
+        String toolTipText = "";
+        if (property instanceof Property.ColumnProperty) {
+          toolTipText = ((Property.ColumnProperty) property).getColumnName();
+        }
+        if (longValue) {
+          toolTipText += (value.length() > 1000 ? value.substring(0, 1000) : value);
+        }
+        menuItem.setToolTipText(toolTipText);
+        rootMenu.add(menuItem);
+      }
     }
   }
 

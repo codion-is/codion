@@ -34,6 +34,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.swing.AbstractAction;
 import javax.swing.ComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
@@ -46,7 +47,10 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
+import java.awt.Point;
 import java.awt.Window;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -1940,6 +1944,16 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   private void bindEvents() {
+    UiUtil.addKeyEvent(this, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
+            WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new AbstractAction("EntityEditPanel.showEntityMenu") {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        final int x = getBounds().getLocation().x + 42;
+        final int y = getHeight();
+
+        EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this, new Point(x, y), getEditModel().getConnectionProvider());
+      }
+    });
     editModel.addBeforeRefreshListener(new EventAdapter() {
       /** {@inheritDoc} */
       @Override
