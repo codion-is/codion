@@ -3569,3 +3569,4 @@
   PropertySummaryPanel only displays popup menu if the model is not locked
   PropertySummaryModel.getValueProvider() added
   PropertySummaryModel.PropertyValueProvider.useValueSubset field added, implemented in DefaultPropertySummaryModel
+  EntityUiUtil.initializeTextField() now sets the allowed range for numerical properties with min and max defined

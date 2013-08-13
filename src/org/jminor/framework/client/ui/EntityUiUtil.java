@@ -1052,11 +1052,17 @@ public final class EntityUiUtil {
     final JTextField field;
     if (property.isInteger()) {
       field = new IntField();
+      if (property.getMin() != null && property.getMax() != null) {
+        ((IntField) field).setRange(property.getMin(), property.getMax());
+      }
     }
     else if (property.isDouble()) {
       field = new DoubleField();
       if (property.getMaximumFractionDigits() > 0) {
         ((DoubleField) field).setMaximumFractionDigits(property.getMaximumFractionDigits());
+      }
+      if (property.getMin() != null && property.getMax() != null) {
+        ((DoubleField) field).setRange(property.getMin(), property.getMax());
       }
     }
     else if (property.isDateOrTime()) {
