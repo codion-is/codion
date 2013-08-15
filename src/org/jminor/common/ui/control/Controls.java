@@ -16,6 +16,7 @@ import javax.swing.Icon;
 import javax.swing.JToggleButton;
 import javax.swing.KeyStroke;
 import javax.swing.SwingUtilities;
+import java.awt.event.ActionEvent;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 
@@ -185,6 +186,20 @@ public final class Controls {
     Values.link(Values.stateValue(state), new BooleanValue(buttonModel));
 
     return new ToggleControl("toggleControl", buttonModel, enabledState);
+  }
+
+  /**
+   * Creates a Control which fires the given event on action performed
+   * @param event the event
+   * @return a control for firing the given event
+   */
+  public static Control eventControl(final Event event) {
+    return new Control() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        event.fire(e);
+      }
+    };
   }
 
   /**
