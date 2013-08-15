@@ -3574,3 +3574,4 @@
   EntityEditPanel now shows the entity menu on alt-double click
   Controls.eventControl() added
   EntityUiUtil.showEntityMenu() now displays validity info
+  EntityUiUtil.showEntityMenu() now displays original values

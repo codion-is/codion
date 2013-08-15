@@ -1077,7 +1077,7 @@ public final class EntityUiUtil {
         ((DoubleField) field).setMaximumFractionDigits(property.getMaximumFractionDigits());
       }
       if (property.getMin() != null && property.getMax() != null) {
-        ((DoubleField) field).setRange(property.getMin(), property.getMax());
+        ((DoubleField) field).setRange(Math.min(property.getMin(), 0), property.getMax());
       }
     }
     else if (property.isDateOrTime()) {
@@ -1132,7 +1132,11 @@ public final class EntityUiUtil {
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.PrimaryKeyProperty> primaryKeyProperties) {
     Util.collate(primaryKeyProperties);
     for (final Property.PrimaryKeyProperty property : primaryKeyProperties) {
-      final JMenuItem menuItem = new JMenuItem("[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID()));
+      String value = "[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID());
+      if (entity.isModified(property.getPropertyID())) {
+        value += getOriginalValue(entity, property);
+      }
+      final JMenuItem menuItem = new JMenuItem(value);
       menuItem.setToolTipText(property.getColumnName());
       rootMenu.add(menuItem);
     }
@@ -1168,6 +1172,9 @@ public final class EntityUiUtil {
             text += "#";
           }
           text += "] " + property.getCaption() + ": " + referencedEntity.toString();
+          if (entity.isModified(property.getPropertyID())) {
+            text += getOriginalValue(entity, property);
+          }
           final JMenu foreignKeyMenu = new JMenu(text);
           foreignKeyMenu.setToolTipText(toolTipText);
           populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), connectionProvider);
@@ -1179,6 +1186,9 @@ public final class EntityUiUtil {
             text += "#";
           }
           text += "] " + property.getCaption() + ": <null>";
+          if (entity.isModified(property.getPropertyID())) {
+            text += getOriginalValue(entity, property);
+          }
           final JMenuItem menuItem = new JMenuItem(text);
           menuItem.setToolTipText(toolTipText);
           rootMenu.add(menuItem);
@@ -1208,14 +1218,17 @@ public final class EntityUiUtil {
               && ((Property.ColumnProperty) property).isForeignKeyProperty();
       if (!isForeignKeyProperty && !(property instanceof Property.ForeignKeyProperty)) {
         final boolean valid = isValid(validator, entity, property);
-        System.out.println(property + " " + valid);
         final String prefix = "[" + property.getTypeClass().getSimpleName().substring(0, 1)
                 + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
                 + (property instanceof Property.DenormalizedProperty ? "+" : "")
                 + (!valid ? "#" : "") + "] ";
-        final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
+        String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
         final boolean longValue = value != null && value.length() > maxValueLength;
-        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value));
+        value = prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value);
+        if (entity.isModified(property.getPropertyID())) {
+          value += getOriginalValue(entity, property);
+        }
+        final JMenuItem menuItem = new JMenuItem(value);
         String toolTipText = "";
         if (property instanceof Property.ColumnProperty) {
           toolTipText = ((Property.ColumnProperty) property).getColumnName();
@@ -1227,6 +1240,12 @@ public final class EntityUiUtil {
         rootMenu.add(menuItem);
       }
     }
+  }
+
+  private static String getOriginalValue(final Entity entity, final Property property) {
+    final Object originalValue = entity.getOriginalValue(property.getPropertyID());
+
+    return " | " + (originalValue == null ? "<null>" : originalValue.toString());
   }
 
   private static boolean isValid(final Entity.Validator validator, final Entity entity, final Property property) {
