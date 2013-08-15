@@ -14,7 +14,7 @@ import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.EntityConnectionImplTest;
+import org.jminor.framework.db.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -47,7 +47,7 @@ public final class DefaultEntityEditModelTest {
     deptProperty = Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
     debugOutput = Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT);
     Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
-    employeeEditModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER) {
+    employeeEditModel = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, DefaultEntityConnectionTest.CONNECTION_PROVIDER) {
       @Override
       public Object getDefaultValue(final Property property) {
         if (property.is(EmpDept.EMPLOYEE_HIREDATE)) {
@@ -143,7 +143,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullEntityID() {
-    new DefaultEntityEditModel(null, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    new DefaultEntityEditModel(null, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -460,7 +460,7 @@ public final class DefaultEntityEditModelTest {
       }
     };
 
-    final DefaultEntityEditModel model = new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final DefaultEntityEditModel model = new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
 
     model.getValueChangeObserver().addListener(anyValueChangeListener);
     model.addValueListener(EmpDept.DEPARTMENT_ID, valueChangeListener);

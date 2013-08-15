@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.framework.db.EntityConnectionImplTest;
+import org.jminor.framework.db.DefaultEntityConnectionTest;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 
@@ -32,7 +32,7 @@ public class DefaultEntityModelProviderTest {
     assertEquals(CustomerEditModel.class, customerModelProvider.getEditModelClass());
     assertEquals(CustomerTableModel.class, customerModelProvider.getTableModelClass());
 
-    final EntityModel customerModel = customerModelProvider.createModel(EntityConnectionImplTest.CONNECTION_PROVIDER, false);
+    final EntityModel customerModel = customerModelProvider.createModel(DefaultEntityConnectionTest.CONNECTION_PROVIDER, false);
     assertTrue(customerModel.getEditModel() instanceof CustomerEditModel);
     assertTrue(customerModel.getTableModel() instanceof CustomerTableModel);
     assertTrue(customerModel.containsDetailModel(Chinook.T_INVOICE));

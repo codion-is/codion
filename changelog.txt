@@ -3575,3 +3575,5 @@
   Controls.eventControl() added
   EntityUiUtil.showEntityMenu() now displays validity info
   EntityUiUtil.showEntityMenu() now displays original values
+  DatabaseConnectionImpl renamed to DefaultDatabaseConnection
+  EntityConnectionImpl renamed to DefaultEntityConnection

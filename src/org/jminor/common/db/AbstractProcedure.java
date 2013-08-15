@@ -6,7 +6,7 @@ package org.jminor.common.db;
 /**
  * A base Procedure implementation
  */
-public abstract class AbstractProcedure extends DatabaseConnectionImpl.OperationImpl implements DatabaseConnection.Procedure {
+public abstract class AbstractProcedure extends DefaultDatabaseConnection.OperationImpl implements DatabaseConnection.Procedure {
 
   /**
    * Instantiates a new AbstractProcedure

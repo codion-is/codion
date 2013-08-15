@@ -8,7 +8,7 @@ import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.db.EntityConnectionImplTest;
+import org.jminor.framework.db.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest;
 import org.jminor.framework.server.EntityConnectionServerTest;
@@ -101,13 +101,13 @@ public class EntityLoadTestModelTest {
 
   @Test
   public void testMethods() {
-    final EntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionImplTest.CONNECTION_PROVIDER) {
+    final EntityApplicationModel model = new DefaultEntityApplicationModel(DefaultEntityConnectionTest.CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         EmpDept.init();
       }
     };
-    model.addEntityModel(new DefaultEntityModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER));
+    model.addEntityModel(new DefaultEntityModel(EmpDept.T_DEPARTMENT, DefaultEntityConnectionTest.CONNECTION_PROVIDER));
     final EntityTableModel tableModel = model.getEntityModel(EmpDept.T_DEPARTMENT).getTableModel();
     tableModel.setQueryCriteriaRequired(false);
     tableModel.refresh();

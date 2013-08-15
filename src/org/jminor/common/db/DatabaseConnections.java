@@ -23,7 +23,7 @@ public final class DatabaseConnections {
    * @throws DatabaseException in case there is a problem connecting to the database
    */
   public static DatabaseConnection createConnection(final Database database, final User user) throws DatabaseException {
-    return new DatabaseConnectionImpl(database, user);
+    return new DefaultDatabaseConnection(database, user);
   }
 
   /**
@@ -35,7 +35,7 @@ public final class DatabaseConnections {
    * @return a new DatabaseConnection instance
    */
   public static DatabaseConnection createConnection(final Database database, final Connection connection) throws DatabaseException {
-    return new DatabaseConnectionImpl(database, connection);
+    return new DefaultDatabaseConnection(database, connection);
   }
 
   /**

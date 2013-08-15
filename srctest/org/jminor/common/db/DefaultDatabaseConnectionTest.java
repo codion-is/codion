@@ -17,14 +17,14 @@ import static org.junit.Assert.*;
 /**
  * This test relies on the emp/dept schema
  */
-public class DatabaseConnectionImplTest {
+public class DefaultDatabaseConnectionTest {
 
   private static final Database DATABASE = Databases.createInstance();
-  private DatabaseConnectionImpl dbConnection;
+  private DefaultDatabaseConnection dbConnection;
 
   @Before
   public void before() throws Exception {
-    dbConnection = new DatabaseConnectionImpl(DATABASE, User.UNIT_TEST_USER);
+    dbConnection = new DefaultDatabaseConnection(DATABASE, User.UNIT_TEST_USER);
   }
 
   @After
@@ -41,12 +41,12 @@ public class DatabaseConnectionImplTest {
 
   @Test(expected = DatabaseException.class)
   public void wrongUsername() throws Exception {
-    new DatabaseConnectionImpl(DATABASE, new User("foo", "bar"));
+    new DefaultDatabaseConnection(DATABASE, new User("foo", "bar"));
   }
 
   @Test(expected = DatabaseException.class)
   public void wrongPassword() throws Exception {
-    new DatabaseConnectionImpl(DATABASE, new User(User.UNIT_TEST_USER.getUsername(), "xxxxx"));
+    new DefaultDatabaseConnection(DATABASE, new User(User.UNIT_TEST_USER.getUsername(), "xxxxx"));
   }
 
   @Test

@@ -2,7 +2,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Conjunction;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.EntityConnectionImplTest;
+import org.jminor.framework.db.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.Test;
@@ -13,7 +13,7 @@ import static org.junit.Assert.*;
 
 public class DefaultEntityTableSearchModelTest {
 
-  private final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, EntityConnectionImplTest.CONNECTION_PROVIDER);
+  private final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
   private final EntityTableSearchModel searchModel = tableModel.getSearchModel();
 
   public DefaultEntityTableSearchModelTest() {

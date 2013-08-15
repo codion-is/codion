@@ -1,7 +1,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.framework.db.EntityConnectionImplTest;
+import org.jminor.framework.db.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -18,16 +18,16 @@ public class DefaultForeignKeySearchModelTest {
   @Test
   public void getSearchEntitiesLookupModel() throws DatabaseException {
     EmpDept.init();
-    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER,
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(EmpDept.T_DEPARTMENT, DefaultEntityConnectionTest.CONNECTION_PROVIDER,
             Arrays.asList(Entities.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME)));
     final ForeignKeySearchModel searchModel = new DefaultForeignKeySearchModel(
             Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK), lookupModel);
-    final Entity sales = EntityConnectionImplTest.CONNECTION_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+    final Entity sales = DefaultEntityConnectionTest.CONNECTION_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     lookupModel.setSelectedEntity(sales);
     Collection<Entity> searchEntities = searchModel.getSearchEntities();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
-    final Entity accounting = EntityConnectionImplTest.CONNECTION_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
+    final Entity accounting = DefaultEntityConnectionTest.CONNECTION_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
     lookupModel.setSelectedEntities(Arrays.asList(sales, accounting));
     searchEntities = searchModel.getSearchEntities();
     assertEquals(2, searchEntities.size());
@@ -48,10 +48,10 @@ public class DefaultForeignKeySearchModelTest {
   @Test
   public void getSearchEntitiesComboBoxModel() throws DatabaseException {
     EmpDept.init();
-    final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(EmpDept.T_DEPARTMENT, EntityConnectionImplTest.CONNECTION_PROVIDER);
+    final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(EmpDept.T_DEPARTMENT, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
     final ForeignKeySearchModel searchModel = new DefaultForeignKeySearchModel(
             Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK), comboBoxModel);
-    final Entity sales = EntityConnectionImplTest.CONNECTION_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+    final Entity sales = DefaultEntityConnectionTest.CONNECTION_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
     comboBoxModel.setSelectedItem(sales);
     Collection<Entity> searchEntities = searchModel.getSearchEntities();
     assertEquals(1, searchEntities.size());

@@ -6,7 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.framework.client.model.DefaultEntityModelProvider;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityModelProvider;
-import org.jminor.framework.db.EntityConnectionImplTest;
+import org.jminor.framework.db.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entities;
 
@@ -27,7 +27,7 @@ public class EntityPanelProviderTest {
     customerModelProvider.addDetailModelProvider(invoiceModelProvider);
     invoiceModelProvider.addDetailModelProvider(invoiceLineModelProvider);
 
-    final EntityModel customerModel = customerModelProvider.createModel(EntityConnectionImplTest.CONNECTION_PROVIDER, false);
+    final EntityModel customerModel = customerModelProvider.createModel(DefaultEntityConnectionTest.CONNECTION_PROVIDER, false);
 
     final String customerCaption = "A customer caption";
     final EntityPanelProvider customerPanelProvider = new EntityPanelProvider(Chinook.T_CUSTOMER, customerCaption);

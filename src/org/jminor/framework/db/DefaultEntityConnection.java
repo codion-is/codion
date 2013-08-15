@@ -5,9 +5,9 @@ package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.DatabaseConnectionImpl;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.DefaultDatabaseConnection;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
@@ -53,16 +53,16 @@ import java.util.Set;
  * Database database = new H2Database("pathToDb");
  * User user = new User("scott", "tiger");
  *
- * EntityConnection connection = new EntityConnectionImpl(database, user);
+ * EntityConnection connection = new DefaultEntityConnection(database, user);
  *
  * List<Entity> entities = connection.selectAll("entityID");
  *
  * connection.disconnect();
  * </pre>
  */
-final class EntityConnectionImpl extends DatabaseConnectionImpl implements EntityConnection {
+final class DefaultEntityConnection extends DefaultDatabaseConnection implements EntityConnection {
 
-  private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(EntityConnectionImpl.class);
+  private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(DefaultEntityConnection.class);
   private static final String CRITERIA_PARAM_NAME = "criteria";
 
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
@@ -71,25 +71,25 @@ final class EntityConnectionImpl extends DatabaseConnectionImpl implements Entit
   private boolean limitForeignKeyFetchDepth = Configuration.getBooleanValue(Configuration.LIMIT_FOREIGN_KEY_FETCH_DEPTH);
 
   /**
-   * Constructs a new EntityConnectionImpl instance
+   * Constructs a new DefaultEntityConnection instance
    * @param database the Database instance
    * @param user the user used for connecting to the database
    * @throws DatabaseException in case there is a problem connecting to the database,
    * such as a wrong username or password being provided
    */
-  EntityConnectionImpl(final Database database, final User user) throws DatabaseException {
+  DefaultEntityConnection(final Database database, final User user) throws DatabaseException {
     super(database, user);
   }
 
   /**
-   * Constructs a new EntityConnectionImpl instance
+   * Constructs a new DefaultEntityConnection instance
    * @param database the Database instance
    * @param connection the connection object to base this entity connection on
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
    * @throws DatabaseException in case a validation statement is required but could not be created
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
-  EntityConnectionImpl(final Database database, final Connection connection) throws DatabaseException {
+  DefaultEntityConnection(final Database database, final Connection connection) throws DatabaseException {
     super(database, connection);
   }
 

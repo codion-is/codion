@@ -20,7 +20,7 @@ import java.util.List;
 /**
  * A default DatabaseConnection implementation, which wraps a standard JDBC Connection object.
  */
-public class DatabaseConnectionImpl implements DatabaseConnection {
+public class DefaultDatabaseConnection implements DatabaseConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(DatabaseConnection.class);
 
@@ -36,12 +36,12 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   private MethodLogger methodLogger;
 
   /**
-   * Constructs a new DatabaseConnectionImpl instance, initialized and ready for usage
+   * Constructs a new DefaultDatabaseConnection instance, initialized and ready for usage
    * @param database the database
    * @param user the user to base this database connection on
    * @throws DatabaseException in case there is a problem connecting to the database
    */
-  public DatabaseConnectionImpl(final Database database, final User user) throws DatabaseException {
+  public DefaultDatabaseConnection(final Database database, final User user) throws DatabaseException {
     Util.rejectNullValue(database, "database");
     Util.rejectNullValue(user, "user");
     this.database = database;
@@ -50,15 +50,15 @@ public class DatabaseConnectionImpl implements DatabaseConnection {
   }
 
   /**
-   * Constructs a new DatabaseConnectionImpl instance, based on the given Connection object.
+   * Constructs a new DefaultDatabaseConnection instance, based on the given Connection object.
    * NB. auto commit is disabled on the Connection that is provided.
    * @param database the database
-   * @param connection the Connection object to base this DatabaseConnectionImpl on
+   * @param connection the Connection object to base this DefaultDatabaseConnection on
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
    * @throws DatabaseException in case of an exception while retrieving the username from the connection
    * meta data or if a validation statement is required and creating it fails
    */
-  public DatabaseConnectionImpl(final Database database, final Connection connection) throws DatabaseException {
+  public DefaultDatabaseConnection(final Database database, final Connection connection) throws DatabaseException {
     Util.rejectNullValue(database, "database");
     this.database = database;
     initializeAndValidate(connection);

@@ -4,7 +4,7 @@
 package org.jminor.framework.db;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnectionImpl;
+import org.jminor.common.db.DefaultDatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.tools.MethodLogger;
@@ -26,7 +26,7 @@ public final class EntityConnections {
    * @throws DatabaseException in case there is a problem connecting to the database
    */
   public static EntityConnection createConnection(final Database database, final User user) throws DatabaseException {
-    return new EntityConnectionImpl(database, user);
+    return new DefaultEntityConnection(database, user);
   }
 
   /**
@@ -40,14 +40,14 @@ public final class EntityConnections {
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
   public static EntityConnection createConnection(final Database database, final Connection connection) throws DatabaseException {
-    return new EntityConnectionImpl(database, connection);
+    return new DefaultEntityConnection(database, connection);
   }
 
   /**
    * @return A {@link MethodLogger} implementation tailored for EntityConnections
    */
   public static MethodLogger createLogger() {
-    return new EntityConnectionImpl.Logger();
+    return new DefaultEntityConnection.Logger();
   }
 
   /**
@@ -57,6 +57,6 @@ public final class EntityConnections {
    * @param connection
    */
   public static void setConnection(final EntityConnection entityConnection, final Connection connection) {
-    ((DatabaseConnectionImpl) entityConnection).setConnection(connection);
+    ((DefaultDatabaseConnection) entityConnection).setConnection(connection);
   }
 }

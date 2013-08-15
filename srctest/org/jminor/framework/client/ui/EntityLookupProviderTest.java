@@ -5,7 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.framework.client.model.DefaultEntityLookupModel;
 import org.jminor.framework.client.model.EntityLookupModel;
-import org.jminor.framework.db.EntityConnectionImplTest;
+import org.jminor.framework.db.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -25,12 +25,12 @@ public class EntityLookupProviderTest {
   @Test
   public void test() throws Exception {
     final EntityLookupModel model = new DefaultEntityLookupModel(EmpDept.T_DEPARTMENT,
-            EntityConnectionImplTest.CONNECTION_PROVIDER, Entities.getSearchProperties(EmpDept.T_DEPARTMENT));
+            DefaultEntityConnectionTest.CONNECTION_PROVIDER, Entities.getSearchProperties(EmpDept.T_DEPARTMENT));
     final EntityLookupProvider provider = new EntityLookupProvider(model, null);
 
     assertNull(provider.getValue());
 
-    final Entity dept = EntityConnectionImplTest.CONNECTION_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
+    final Entity dept = DefaultEntityConnectionTest.CONNECTION_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
 
     model.setSelectedEntity(dept);
     assertEquals(dept, provider.getValue());
