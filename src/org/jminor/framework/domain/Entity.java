@@ -467,6 +467,20 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
     Definition setSmallDataset(final boolean smallDataset);
 
     /**
+     * @return true if the data in the underlying table can be regarded as static
+     */
+    boolean isStaticData();
+
+    /**
+     * Specifies whether or not this entity should be regarded as based on a static dataset, that is,
+     * one that changes only infrequently.
+     * This is false by default.
+     * @param staticData true if the underlying table data is static
+     * @return this {@link Entity.Definition} instance
+     */
+    Definition setStaticData(final boolean staticData);
+
+    /**
      * @return true if this entity type is read only
      */
     boolean isReadOnly();

@@ -86,6 +86,12 @@ final class EntityDefinitionImpl implements Entity.Definition {
   private boolean smallDataset = false;
 
   /**
+   * Another somewhat subjective indicator, indicating if the data in the underlying table can be regarded as static,
+   * this is useful in deciding how often to refresh, say, a combo box based on the entity
+   */
+  private boolean staticData = false;
+
+  /**
    * The default Entity.ToString instance used when toString() is called for this entity type
    */
   private Entity.ToString stringProvider = new Entity.ToString() {
@@ -220,6 +226,19 @@ final class EntityDefinitionImpl implements Entity.Definition {
   @Override
   public Entity.Definition setSmallDataset(final boolean smallDataset) {
     this.smallDataset = smallDataset;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isStaticData() {
+    return staticData;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity.Definition setStaticData(final boolean staticData) {
+    this.staticData = staticData;
     return this;
   }
 

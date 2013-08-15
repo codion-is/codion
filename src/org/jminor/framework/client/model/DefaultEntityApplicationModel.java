@@ -39,14 +39,6 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
 
   /** {@inheritDoc} */
   @Override
-  public final void logout() {
-    connectionProvider.setUser(null);
-    clear();
-    handleLogout();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final void login(final User user) {
     Util.rejectNullValue(user, "user");
     connectionProvider.setUser(user);
@@ -54,6 +46,14 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
       entityModel.refresh();
     }
     handleLogin();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void logout() {
+    connectionProvider.setUser(null);
+    clear();
+    handleLogout();
   }
 
   /** {@inheritDoc} */

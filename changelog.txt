@@ -3577,3 +3577,4 @@
   EntityUiUtil.showEntityMenu() now displays original values
   DatabaseConnectionImpl renamed to DefaultDatabaseConnection
   EntityConnectionImpl renamed to DefaultEntityConnection
+  EntityDefinition.staticData field added

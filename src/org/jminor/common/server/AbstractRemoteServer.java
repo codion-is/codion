@@ -20,6 +20,7 @@ import java.util.UUID;
 
 /**
  * A default RemoteServer implementation.
+ * @param <T> the type of remote interface served by this server
  */
 public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemoteObject implements RemoteServer<T> {
 

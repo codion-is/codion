@@ -91,6 +91,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
     this.selectCriteria = initializeSelectCriteria(entityID);
+    setStaticData(Entities.isStaticData(entityID));
     final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
     setFilterCriteria(new FilterCriteria<Entity>() {
       /** {@inheritDoc} */

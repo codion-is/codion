@@ -241,6 +241,15 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
+   * @return true if the entity identified by <code>entityID</code> is based on static data
+   * @throws IllegalArgumentException if the entity is undefined
+   */
+  public static boolean isStaticData(final String entityID) {
+    return EntityDefinitionImpl.getDefinition(entityID).isStaticData();
+  }
+
+  /**
+   * @param entityID the entity ID
    * @return a comma separated list of columns to use in the order by clause
    */
   public static String getOrderByClause(final String entityID) {
