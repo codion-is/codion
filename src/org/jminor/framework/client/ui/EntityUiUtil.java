@@ -21,6 +21,7 @@ import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.UiUtil;
@@ -1142,7 +1143,9 @@ public final class EntityUiUtil {
                                              final List<Property.ForeignKeyProperty> fkProperties) {
     try {
       Util.collate(fkProperties);
+      final Entity.Validator validator = Entities.getValidator(entity.getEntityID());
       for (final Property.ForeignKeyProperty property : fkProperties) {
+        final boolean valid = isValid(validator, entity, property);
         final String toolTipText = getReferenceColumnNames(property);
         final boolean fkValueNull = entity.isForeignKeyNull(property);
         if (!fkValueNull) {
@@ -1157,14 +1160,25 @@ public final class EntityUiUtil {
             entity.setValue(property, referencedEntity);
             queried = true;
           }
-          final String text = "[FK" + (queried ? "+] " : "] ") + property.getCaption() + ": " + referencedEntity.toString();
+          String text = "[FK";
+          if (queried) {
+            text += "+";
+          }
+          if (!valid) {
+            text += "#";
+          }
+          text += "] " + property.getCaption() + ": " + referencedEntity.toString();
           final JMenu foreignKeyMenu = new JMenu(text);
           foreignKeyMenu.setToolTipText(toolTipText);
           populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), connectionProvider);
           rootMenu.add(foreignKeyMenu);
         }
         else {
-          final String text = "[FK] " + property.getCaption() + ": <null>";
+          String text = "[FK";
+          if (!valid) {
+            text += "#";
+          }
+          text += "] " + property.getCaption() + ": <null>";
           final JMenuItem menuItem = new JMenuItem(text);
           menuItem.setToolTipText(toolTipText);
           rootMenu.add(menuItem);
@@ -1187,14 +1201,18 @@ public final class EntityUiUtil {
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties) {
     Util.collate(properties);
+    final Entity.Validator validator = Entities.getValidator(entity.getEntityID());
     final int maxValueLength = 20;
     for (final Property property : properties) {
       final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
               && ((Property.ColumnProperty) property).isForeignKeyProperty();
       if (!isForeignKeyProperty && !(property instanceof Property.ForeignKeyProperty)) {
+        final boolean valid = isValid(validator, entity, property);
+        System.out.println(property + " " + valid);
         final String prefix = "[" + property.getTypeClass().getSimpleName().substring(0, 1)
                 + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
-                + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
+                + (property instanceof Property.DenormalizedProperty ? "+" : "")
+                + (!valid ? "#" : "") + "] ";
         final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
         final boolean longValue = value != null && value.length() > maxValueLength;
         final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value));
@@ -1208,6 +1226,21 @@ public final class EntityUiUtil {
         menuItem.setToolTipText(toolTipText);
         rootMenu.add(menuItem);
       }
+    }
+  }
+
+  private static boolean isValid(final Entity.Validator validator, final Entity entity, final Property property) {
+    try {
+      if (property instanceof Property.ForeignKeyProperty) {
+        validator.validate(entity, ((Property.ForeignKeyProperty) property).getReferenceProperties().get(0).getPropertyID());
+      }
+      else {
+        validator.validate(entity, property.getPropertyID());
+      }
+      return true;
+    }
+    catch (ValidationException e) {
+      return false;
     }
   }
 
