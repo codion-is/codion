@@ -4,9 +4,12 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.Events;
+import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
@@ -29,11 +32,13 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
+import javax.swing.Timer;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Window;
 import java.awt.event.ActionEvent;
+import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
@@ -57,11 +62,17 @@ import java.util.List;
 public final class EntityLookupField extends JTextField {
 
   private static final int BORDER_SIZE = 15;
+  private static final int ENABLE_LOOKUP_DELAY = 250;
 
   private final EntityLookupModel model;
   private final TextFieldHint searchHint;
   private final Action transferFocusAction = new UiUtil.TransferFocusAction(this);
   private final Action transferFocusBackwardAction = new UiUtil.TransferFocusAction(this, true);
+  /**
+   * A hack used to prevent the lookup being triggered by the closing of
+   * the "empty result" message, which happens on windows
+   */
+  private final State lookupEnabledState = States.state(true);
 
   private Color validBackgroundColor;
   private Color invalidBackgroundColor;
@@ -218,7 +229,9 @@ public final class EntityLookupField extends JTextField {
         performLookup(true);
       }
     };
-    UiUtil.linkToEnabledState(getModel().getSearchStringRepresentsSelectedObserver().getReversedObserver(), lookupAction);
+    UiUtil.linkToEnabledState(States.aggregateState(Conjunction.AND,
+            getModel().getSearchStringRepresentsSelectedObserver().getReversedObserver(),
+            lookupEnabledState), lookupAction);
 
     return lookupAction;
   }
@@ -294,7 +307,27 @@ public final class EntityLookupField extends JTextField {
     final JPanel messagePanel = new JPanel(UiUtil.createBorderLayout());
     messagePanel.add(messageLabel, BorderLayout.CENTER);
     messagePanel.add(btnBase, BorderLayout.SOUTH);
+    disableLookup();
     UiUtil.displayInDialog(this, messagePanel, Messages.get("OptionPane.messageDialogTitle"), closeEvent);
+    enableLookup();
+  }
+
+  private void disableLookup() {
+    lookupEnabledState.setActive(false);
+  }
+
+  /**
+   * @see #lookupEnabledState
+   */
+  private void enableLookup() {
+    final Timer timer = new Timer(ENABLE_LOOKUP_DELAY, new ActionListener() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        lookupEnabledState.setActive(true);
+      }
+    });
+    timer.setRepeats(false);
+    timer.start();
   }
 
   private static final class SettingsAction extends AbstractAction {
