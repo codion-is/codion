@@ -102,7 +102,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private static final int DETAIL_DIALOG_OFFSET = 29;
   private static final double DETAIL_DIALOG_SIZE_RATIO = 1.5;
   private static final int DETAIL_DIALOG_HEIGHT_OFFSET = 54;
-  private static final int EDIT_DIALOG_LOCATION_OFFSET = 98;
 
   /**
    * The EntityModel instance used by this EntityPanel

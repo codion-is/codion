@@ -116,38 +116,38 @@ public final class EntityTableCellRenderers {
     return new BooleanRenderer(tableModel);
   }
 
-  private static class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer implements EntityTablePanel.EntityTableCellRenderer {
+  public static class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer implements EntityTablePanel.EntityTableCellRenderer {
 
     private final EntityTableModel tableModel;
 
     private boolean indicateSearch = true;
     private boolean tooltipData = false;
 
-    private DefaultEntityTableCellRenderer(final EntityTableModel tableModel) {
+    public DefaultEntityTableCellRenderer(final EntityTableModel tableModel) {
       this.tableModel = tableModel;
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean isIndicateSearch() {
+    public final boolean isIndicateSearch() {
       return indicateSearch;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setIndicateSearch(final boolean indicateSearch) {
+    public final void setIndicateSearch(final boolean indicateSearch) {
       this.indicateSearch = indicateSearch;
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean isTooltipData() {
+    public final boolean isTooltipData() {
       return tooltipData;
     }
 
     /** {@inheritDoc} */
     @Override
-    public void setTooltipData(final boolean tooltipData) {
+    public final void setTooltipData(final boolean tooltipData) {
       this.tooltipData = tooltipData;
     }
 
