@@ -75,8 +75,10 @@ import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.text.AbstractDocument;
 import java.awt.BorderLayout;
+import java.awt.Color;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.Point;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
@@ -98,6 +100,7 @@ public final class EntityUiUtil {
   private static final String PROPERTY_PARAM_NAME = "property";
   private static final String EDIT_MODEL_PARAM_NAME = "editModel";
   private static final int BOOLEAN_COMBO_BOX_POPUP_WIDTH = 40;
+  private static final Color INVALID_COLOR = Color.RED;
 
   private EntityUiUtil() {}
 
@@ -1164,32 +1167,21 @@ public final class EntityUiUtil {
             entity.setValue(property, referencedEntity);
             queried = true;
           }
-          String text = "[FK";
-          if (queried) {
-            text += "+";
-          }
-          if (!valid) {
-            text += "#";
-          }
-          text += "] " + property.getCaption() + ": " + referencedEntity.toString();
-          if (entity.isModified(property.getPropertyID())) {
-            text += getOriginalValue(entity, property);
-          }
+          final String text = "[FK" + (queried ? "+] " : "] ") + property.getCaption() + ": " + referencedEntity.toString();
           final JMenu foreignKeyMenu = new JMenu(text);
+          if (!valid) {
+            setInvalid(foreignKeyMenu);
+          }
           foreignKeyMenu.setToolTipText(toolTipText);
           populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), connectionProvider);
           rootMenu.add(foreignKeyMenu);
         }
         else {
-          String text = "[FK";
-          if (!valid) {
-            text += "#";
-          }
-          text += "] " + property.getCaption() + ": <null>";
-          if (entity.isModified(property.getPropertyID())) {
-            text += getOriginalValue(entity, property);
-          }
+          final String text = "[FK] " + property.getCaption() + ": <null>";
           final JMenuItem menuItem = new JMenuItem(text);
+          if (!valid) {
+            setInvalid(menuItem);
+          }
           menuItem.setToolTipText(toolTipText);
           rootMenu.add(menuItem);
         }
@@ -1211,24 +1203,22 @@ public final class EntityUiUtil {
 
   private static void populateValueMenu(final JComponent rootMenu, final Entity entity, final List<Property> properties) {
     Util.collate(properties);
-    final Entity.Validator validator = Entities.getValidator(entity.getEntityID());
     final int maxValueLength = 20;
+    final Entity.Validator validator = Entities.getValidator(entity.getEntityID());
     for (final Property property : properties) {
+      final boolean valid = isValid(validator, entity, property);
       final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
               && ((Property.ColumnProperty) property).isForeignKeyProperty();
       if (!isForeignKeyProperty && !(property instanceof Property.ForeignKeyProperty)) {
-        final boolean valid = isValid(validator, entity, property);
         final String prefix = "[" + property.getTypeClass().getSimpleName().substring(0, 1)
                 + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
-                + (property instanceof Property.DenormalizedProperty ? "+" : "")
-                + (!valid ? "#" : "") + "] ";
-        String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
+                + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
+        final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
         final boolean longValue = value != null && value.length() > maxValueLength;
-        value = prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value);
-        if (entity.isModified(property.getPropertyID())) {
-          value += getOriginalValue(entity, property);
+        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value));
+        if (!valid) {
+          setInvalid(menuItem);
         }
-        final JMenuItem menuItem = new JMenuItem(value);
         String toolTipText = "";
         if (property instanceof Property.ColumnProperty) {
           toolTipText = ((Property.ColumnProperty) property).getColumnName();
@@ -1242,6 +1232,12 @@ public final class EntityUiUtil {
     }
   }
 
+  private static void setInvalid(final JMenuItem menuItem) {
+    final Font currentFont = menuItem.getFont();
+    menuItem.setBackground(INVALID_COLOR);
+    menuItem.setFont(new Font(currentFont.getName(), Font.BOLD, currentFont.getSize()));
+  }
+
   private static String getOriginalValue(final Entity entity, final Property property) {
     final Object originalValue = entity.getOriginalValue(property.getPropertyID());
 
@@ -1250,12 +1246,7 @@ public final class EntityUiUtil {
 
   private static boolean isValid(final Entity.Validator validator, final Entity entity, final Property property) {
     try {
-      if (property instanceof Property.ForeignKeyProperty) {
-        validator.validate(entity, ((Property.ForeignKeyProperty) property).getReferenceProperties().get(0).getPropertyID());
-      }
-      else {
-        validator.validate(entity, property.getPropertyID());
-      }
+      validator.validate(entity, property.getPropertyID());
       return true;
     }
     catch (ValidationException e) {

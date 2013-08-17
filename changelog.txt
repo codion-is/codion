@@ -3580,3 +3580,4 @@
   EntityDefinition.staticData field added
   EntityLookupField.lookupEnabledState added as a hack to prevent the triggering of a lookup by closing the empty result message
   EntityTableCellRenderers.DefaultEntityTableCellRenderer made public
+  EntityUiUtil.showEntityMenu() improved
