@@ -51,7 +51,7 @@ public final class EntityTableCellRenderers {
    * @see org.jminor.framework.domain.Entity.BackgroundColorProvider
    * @see org.jminor.framework.domain.Entity.Definition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    */
-  public static EntityTablePanel.EntityTableCellRenderer getTableCellRenderer(final EntityTableModel tableModel, final Property property) {
+  public static EntityTableCellRenderer getTableCellRenderer(final EntityTableModel tableModel, final Property property) {
     if (property.isBoolean()) {
       return getBooleanRenderer(tableModel);
     }
@@ -79,7 +79,7 @@ public final class EntityTableCellRenderers {
     return new Color(r, g, b);
   }
 
-  private static EntityTablePanel.EntityTableCellRenderer getDateRenderer(final EntityTableModel tableModel, final Format format) {
+  private static EntityTableCellRenderer getDateRenderer(final EntityTableModel tableModel, final Format format) {
     return new AlignedFormattedRenderer(tableModel, format, JLabel.RIGHT) {
       /** {@inheritDoc} */
       @Override
@@ -97,7 +97,7 @@ public final class EntityTableCellRenderers {
     };
   }
 
-  private static EntityTablePanel.EntityTableCellRenderer getNumberRenderer(final EntityTableModel tableModel, final Format format) {
+  private static EntityTableCellRenderer getNumberRenderer(final EntityTableModel tableModel, final Format format) {
     return new AlignedFormattedRenderer(tableModel, format, JLabel.RIGHT) {
       /** {@inheritDoc} */
       @Override
@@ -112,11 +112,11 @@ public final class EntityTableCellRenderers {
     };
   }
 
-  private static EntityTablePanel.EntityTableCellRenderer getBooleanRenderer(final EntityTableModel tableModel) {
+  private static EntityTableCellRenderer getBooleanRenderer(final EntityTableModel tableModel) {
     return new BooleanRenderer(tableModel);
   }
 
-  public static class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer implements EntityTablePanel.EntityTableCellRenderer {
+  public static class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer implements EntityTableCellRenderer {
 
     private final EntityTableModel tableModel;
 

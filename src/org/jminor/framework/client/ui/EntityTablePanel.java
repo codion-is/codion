@@ -1580,35 +1580,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return new Point(x, y);
   }
 
-  /**
-   * A TableCellRenderer with the added options of visually displaying if a
-   * cell (or column) is involved in a search criteria and showing its
-   * contents in a tooltip
-   */
-  public interface EntityTableCellRenderer extends TableCellRenderer {
-
-    /**
-     * If true then columns being search by have different background color
-     * @param indicateSearch the value
-     */
-    void setIndicateSearch(final boolean indicateSearch);
-
-    /**
-     * @return true if the search state should be represented visually
-     */
-    boolean isIndicateSearch();
-
-    /**
-     * @return if true then the cell data is added as a tool tip for the cell
-     */
-    boolean isTooltipData();
-
-    /**
-     * @param tooltipData if true then the cell data is added as a tool tip for the cell
-     */
-    void setTooltipData(final boolean tooltipData);
-  }
-
   private static final class PopupMenuAction extends AbstractAction {
     private final JPopupMenu popupMenu;
     private final JTable table;

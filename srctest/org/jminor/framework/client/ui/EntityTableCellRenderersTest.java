@@ -17,7 +17,7 @@ public class EntityTableCellRenderersTest {
     EmpDept.init();
     final EntityTablePanel tablePanel = new EntityTablePanel(new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, DefaultEntityConnectionTest.CONNECTION_PROVIDER));
     tablePanel.getEntityTableModel().refresh();
-    final EntityTablePanel.EntityTableCellRenderer renderer = EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
+    final EntityTableCellRenderer renderer = EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
             Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME));
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, false, false, 0, 0);
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, false, 0, 0);
