@@ -28,7 +28,7 @@ public final class Values {
    * @return a Value for the given type with the given initial value
    */
   public static <V> Value<V> value(final V initialValue) {
-    return new ValueImpl<V>(initialValue);
+    return new DefaultValue<V>(initialValue);
   }
 
   /**
@@ -75,12 +75,12 @@ public final class Values {
     new ValueLink<V>(modelValue, uiValue, readOnly);
   }
 
-  private static final class ValueImpl<V> implements Value<V> {
+  private static final class DefaultValue<V> implements Value<V> {
 
     private final Event changeEvent = Events.event();
     private V value;
 
-    private ValueImpl(final V initialValue) {
+    private DefaultValue(final V initialValue) {
       this.value = initialValue;
     }
 

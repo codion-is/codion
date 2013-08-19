@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class ConnectionPoolImplTest {
+public class DefaultConnectionPoolTest {
 
   private static final int SLEEP_MILLIS = 2000;
   private static final int CLOSE_SLEEP_MILLIS = 2500;
@@ -43,31 +43,31 @@ public class ConnectionPoolImplTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void setMaximumPoolSizeLessThanMinSize() throws ClassNotFoundException, DatabaseException {
-    final ConnectionPool pool = new ConnectionPoolImpl(createConnectionProvider(User.UNIT_TEST_USER));
+    final ConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(User.UNIT_TEST_USER));
     pool.setMaximumPoolSize(3);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setMaximumPoolSizeInvalidNumber() throws ClassNotFoundException, DatabaseException {
-    final ConnectionPool pool = new ConnectionPoolImpl(createConnectionProvider(User.UNIT_TEST_USER));
+    final ConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(User.UNIT_TEST_USER));
     pool.setMaximumPoolSize(-1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setMinimumPoolSizeLargerThanMaxSize() throws ClassNotFoundException, DatabaseException {
-    final ConnectionPool pool = new ConnectionPoolImpl(createConnectionProvider(User.UNIT_TEST_USER));
+    final ConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(User.UNIT_TEST_USER));
     pool.setMinimumPoolSize(10);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setMinimumPoolSizeInvalidNumber() throws ClassNotFoundException, DatabaseException {
-    final ConnectionPool pool = new ConnectionPoolImpl(createConnectionProvider(User.UNIT_TEST_USER));
+    final ConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(User.UNIT_TEST_USER));
     pool.setMinimumPoolSize(-1);
   }
 
   @Test(expected = IllegalStateException.class)
   public void returnConnectionOpenTransaction() throws DatabaseException {
-    final ConnectionPoolImpl pool = new ConnectionPoolImpl(createConnectionProvider(User.UNIT_TEST_USER));
+    final DefaultConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(User.UNIT_TEST_USER));
     final DatabaseConnection connection = pool.getDatabaseConnection();
     try {
       connection.beginTransaction();
@@ -81,7 +81,7 @@ public class ConnectionPoolImplTest {
 
   @Test(expected = IllegalStateException.class)
   public void getConnectionClosedPool() throws DatabaseException {
-    final ConnectionPool pool = new ConnectionPoolImpl(createConnectionProvider(User.UNIT_TEST_USER));
+    final ConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(User.UNIT_TEST_USER));
     try {
       pool.close();
       pool.getConnection();
@@ -94,7 +94,7 @@ public class ConnectionPoolImplTest {
   @Test(expected = ConnectionPoolException.NoConnectionAvailable.class)
   public void noConnectionAvailable() throws DatabaseException {
     final User user = User.UNIT_TEST_USER;
-    final ConnectionPoolImpl pool = new ConnectionPoolImpl(createConnectionProvider(user));
+    final DefaultConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(user));
     pool.setMaximumCheckOutTime(50);
     pool.setNewConnectionThreshold(40);
     pool.getConnection();
@@ -112,13 +112,13 @@ public class ConnectionPoolImplTest {
   public void test() throws Exception {
     final Date startDate = new Date();
     final User user = User.UNIT_TEST_USER;
-    final ConnectionPoolImpl pool = new ConnectionPoolImpl(createConnectionProvider(user));
+    final DefaultConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(user));
     try {
       assertEquals(user, pool.getUser());
-      assertEquals(ConnectionPoolImpl.DEFAULT_CLEANUP_INTERVAL_MS, pool.getCleanupInterval());
-      assertEquals(ConnectionPoolImpl.DEFAULT_CONNECTION_TIMEOUT_MS, pool.getConnectionTimeout());
-      assertEquals(ConnectionPoolImpl.DEFAULT_MAXIMUM_POOL_SIZE, pool.getMaximumPoolSize());
-      final int minimumPoolSize = ConnectionPoolImpl.DEFAULT_MAXIMUM_POOL_SIZE / 2;
+      assertEquals(DefaultConnectionPool.DEFAULT_CLEANUP_INTERVAL_MS, pool.getCleanupInterval());
+      assertEquals(DefaultConnectionPool.DEFAULT_CONNECTION_TIMEOUT_MS, pool.getConnectionTimeout());
+      assertEquals(DefaultConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE, pool.getMaximumPoolSize());
+      final int minimumPoolSize = DefaultConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE / 2;
       assertEquals(minimumPoolSize, pool.getMinimumPoolSize());
       assertEquals(minimumPoolSize, pool.getStatistics(System.currentTimeMillis()).getAvailable());
       pool.setMaximumPoolSize(6);

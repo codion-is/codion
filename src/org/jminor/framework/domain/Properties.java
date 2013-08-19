@@ -39,7 +39,7 @@ public final class Properties {
    * @return a new column property
    */
   public static Property.ColumnProperty columnProperty(final String propertyID,final int type, final String caption) {
-    return new PropertyImpl.ColumnPropertyImpl(propertyID, type, caption);
+    return new DefaultProperty.DefaultColumnProperty(propertyID, type, caption);
   }
 
   /**
@@ -66,7 +66,7 @@ public final class Properties {
    * @return a new primary key property
    */
   public static Property.PrimaryKeyProperty primaryKeyProperty(final String propertyID, final int type, final String caption) {
-    return new PropertyImpl.PrimaryKeyPropertyImpl(propertyID, type, caption);
+    return new DefaultProperty.DefaultPrimaryKeyProperty(propertyID, type, caption);
   }
 
   /**
@@ -79,7 +79,7 @@ public final class Properties {
   public static Property.ForeignKeyProperty foreignKeyProperty(final String propertyID, final String caption,
                                                                final String referencedEntityID,
                                                                final Property.ColumnProperty referenceProperty) {
-    return new PropertyImpl.ForeignKeyPropertyImpl(propertyID, caption, referencedEntityID, referenceProperty);
+    return new DefaultProperty.DefaultForeignKeyProperty(propertyID, caption, referencedEntityID, referenceProperty);
   }
 
   /**
@@ -95,7 +95,7 @@ public final class Properties {
                                                                final String referencedEntityID,
                                                                final Property.ColumnProperty[] referenceProperties,
                                                                final String[] referencedPropertyIDs) {
-    return new PropertyImpl.ForeignKeyPropertyImpl(propertyID, caption, referencedEntityID, referenceProperties, referencedPropertyIDs);
+    return new DefaultProperty.DefaultForeignKeyProperty(propertyID, caption, referencedEntityID, referenceProperties, referencedPropertyIDs);
   }
 
   /**
@@ -108,7 +108,7 @@ public final class Properties {
    */
   public static Property.DenormalizedViewProperty denormalizedViewProperty(final String propertyID, final String foreignKeyPropertyID,
                                                                            final Property property, final String caption) {
-    return new PropertyImpl.DenormalizedViewPropertyImpl(propertyID, foreignKeyPropertyID, property, caption);
+    return new DefaultProperty.DefaultDenormalizedViewProperty(propertyID, foreignKeyPropertyID, property, caption);
   }
 
   /**
@@ -123,7 +123,7 @@ public final class Properties {
   public static Property.DerivedProperty derivedProperty(final String propertyID, final int type, final String caption,
                                                          final Property.DerivedProperty.Provider valueProvider,
                                                          final String... linkedPropertyIDs) {
-    return new PropertyImpl.DerivedPropertyImpl(propertyID, type, caption, valueProvider, linkedPropertyIDs);
+    return new DefaultProperty.DefaultDerivedProperty(propertyID, type, caption, valueProvider, linkedPropertyIDs);
   }
 
   /**
@@ -148,7 +148,7 @@ public final class Properties {
    */
   public static Property denormalizedProperty(final String propertyID, final String foreignKeyPropertyID,
                                               final Property denormalizedProperty, final String caption) {
-    return new PropertyImpl.DenormalizedPropertyImpl(propertyID, foreignKeyPropertyID, denormalizedProperty, caption);
+    return new DefaultProperty.DefaultDenormalizedProperty(propertyID, foreignKeyPropertyID, denormalizedProperty, caption);
   }
 
   /**
@@ -175,7 +175,7 @@ public final class Properties {
    */
   public static Property.SubqueryProperty subqueryProperty(final String propertyID, final int type, final String caption,
                                                            final String subquery, final int columnType) {
-    return new PropertyImpl.SubqueryPropertyImpl(propertyID, type, caption, subquery, columnType);
+    return new DefaultProperty.DefaultSubqueryProperty(propertyID, type, caption, subquery, columnType);
   }
 
   /**
@@ -188,7 +188,7 @@ public final class Properties {
    */
   public static <T> Property.ValueListProperty valueListProperty(final String propertyID, final int type, final String caption,
                                                                  final List<Item<T>> values) {
-    return new PropertyImpl.ValueListPropertyImpl<T>(propertyID, type, caption, values);
+    return new DefaultProperty.DefaultValueListProperty<T>(propertyID, type, caption, values);
   }
 
   /**
@@ -209,7 +209,7 @@ public final class Properties {
    * @return a new transient property
    */
   public static Property.TransientProperty transientProperty(final String propertyID, final int type, final String caption) {
-    return new PropertyImpl.TransientPropertyImpl(propertyID, type, caption);
+    return new DefaultProperty.DefautTransientProperty(propertyID, type, caption);
   }
 
   /**
@@ -219,7 +219,7 @@ public final class Properties {
    * @return a new boolean property
    */
   public static Property.ColumnProperty booleanProperty(final String propertyID, final int columnType, final String caption) {
-    return new PropertyImpl.ColumnPropertyImpl(propertyID, Types.BOOLEAN, caption, columnType)
+    return new DefaultProperty.DefaultColumnProperty(propertyID, Types.BOOLEAN, caption, columnType)
             .setValueConverter(booleanValueConverter());
   }
 
@@ -233,7 +233,7 @@ public final class Properties {
    */
   public static Property.ColumnProperty booleanProperty(final String propertyID, final int columnType, final String caption,
                                                         final Object trueValue, final Object falseValue) {
-    return new PropertyImpl.ColumnPropertyImpl(propertyID, Types.BOOLEAN, caption, columnType)
+    return new DefaultProperty.DefaultColumnProperty(propertyID, Types.BOOLEAN, caption, columnType)
             .setValueConverter(booleanValueConverter(trueValue, falseValue));
   }
 
@@ -251,7 +251,7 @@ public final class Properties {
    * @return a new audit insert time property
    */
   public static Property.AuditTimeProperty auditInsertTimeProperty(final String propertyID, final String caption) {
-    return new PropertyImpl.AuditTimePropertyImpl(propertyID, Property.AuditProperty.AuditAction.INSERT, caption);
+    return new DefaultProperty.DefaultAuditTimeProperty(propertyID, Property.AuditProperty.AuditAction.INSERT, caption);
   }
 
   /**
@@ -268,7 +268,7 @@ public final class Properties {
    * @return a new audit update time property
    */
   public static Property.AuditTimeProperty auditUpdateTimeProperty(final String propertyID, final String caption) {
-    return new PropertyImpl.AuditTimePropertyImpl(propertyID, Property.AuditProperty.AuditAction.UPDATE, caption);
+    return new DefaultProperty.DefaultAuditTimeProperty(propertyID, Property.AuditProperty.AuditAction.UPDATE, caption);
   }
 
   /**
@@ -285,7 +285,7 @@ public final class Properties {
    * @return a new audit insert user property
    */
   public static Property.AuditUserProperty auditInsertUserProperty(final String propertyID, final String caption) {
-    return new PropertyImpl.AuditUserPropertyImpl(propertyID, Property.AuditProperty.AuditAction.INSERT, caption);
+    return new DefaultProperty.DefaultAuditUserProperty(propertyID, Property.AuditProperty.AuditAction.INSERT, caption);
   }
 
   /**
@@ -302,7 +302,7 @@ public final class Properties {
    * @return a new audit update user property
    */
   public static Property.AuditUserProperty auditUpdateUserProperty(final String propertyID, final String caption) {
-    return new PropertyImpl.AuditUserPropertyImpl(propertyID, Property.AuditProperty.AuditAction.UPDATE, caption);
+    return new DefaultProperty.DefaultAuditUserProperty(propertyID, Property.AuditProperty.AuditAction.UPDATE, caption);
   }
 
   /**
@@ -310,7 +310,7 @@ public final class Properties {
    * @return a new mirror property
    */
   public static Property.MirrorProperty mirrorProperty(final String propertyID) {
-    return new PropertyImpl.MirrorPropertyImpl(propertyID);
+    return new DefaultProperty.DefaultMirrorProperty(propertyID);
   }
   /**
    * @return a value converter which converts an underlying database representation
@@ -319,7 +319,7 @@ public final class Properties {
    * @see org.jminor.framework.Configuration#SQL_BOOLEAN_VALUE_FALSE
    */
   public static Property.ColumnProperty.ValueConverter booleanValueConverter() {
-    return new PropertyImpl.BooleanValueConverter();
+    return new DefaultProperty.BooleanValueConverter();
   }
 
   /**
@@ -329,6 +329,6 @@ public final class Properties {
    * of a boolean value into an actual Boolean
    */
   public static Property.ColumnProperty.ValueConverter booleanValueConverter(final Object trueValue, final Object falseValue) {
-    return new PropertyImpl.BooleanValueConverter(trueValue, falseValue);
+    return new DefaultProperty.BooleanValueConverter(trueValue, falseValue);
   }
 }

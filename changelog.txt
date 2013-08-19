@@ -3583,3 +3583,5 @@
   EntityUiUtil.showEntityMenu() improved
   EntityTablePanel.EntityTableCellRenderer moved up to
   AbstractRemoteServer.disconnect() minor optimization
+  Impl postfix exchanged for Default prefix for consistency
+  Events.DefaultEventObserverImpl only fires when it has listeners

@@ -123,7 +123,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   /** {@inheritDoc} */
   @Override
   public int getServerLoad() throws RemoteException {
-    return RemoteEntityConnectionImpl.getRequestsPerSecond();
+    return DefaultRemoteEntityConnection.getRequestsPerSecond();
   }
 
   /**
@@ -171,7 +171,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   Collection<ClientInfo> getClients() throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
     for (final RemoteEntityConnection connection : getConnections().values()) {
-      clients.add(((RemoteEntityConnectionImpl) connection).getClientInfo());
+      clients.add(((DefaultRemoteEntityConnection) connection).getClientInfo());
     }
 
     return clients;
@@ -186,7 +186,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
     for (final RemoteEntityConnection connection : getConnections().values()) {
       if (user == null || connection.getUser().equals(user)) {
-        clients.add(((RemoteEntityConnectionImpl) connection).getClientInfo());
+        clients.add(((DefaultRemoteEntityConnection) connection).getClientInfo());
       }
     }
 
@@ -201,8 +201,8 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException {
     final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
     for (final RemoteEntityConnection connection : getConnections().values()) {
-      if (((RemoteEntityConnectionImpl) connection).getClientInfo().getClientTypeID().equals(clientTypeID)) {
-        clients.add(((RemoteEntityConnectionImpl) connection).getClientInfo());
+      if (((DefaultRemoteEntityConnection) connection).getClientInfo().getClientTypeID().equals(clientTypeID)) {
+        clients.add(((DefaultRemoteEntityConnection) connection).getClientInfo());
       }
     }
 
@@ -231,7 +231,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   ClientLog getClientLog(final UUID clientID) {
     final ClientInfo client = new ClientInfo(clientID);
     if (containsConnection(client)) {
-      return ((RemoteEntityConnectionImpl) getConnection(client)).getClientLog();
+      return ((DefaultRemoteEntityConnection) getConnection(client)).getClientLog();
     }
 
     return null;
@@ -244,8 +244,8 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   boolean isLoggingEnabled(final UUID clientID) {
     final ClientInfo client = new ClientInfo(clientID);
     for (final RemoteEntityConnection connection : getConnections().values()) {
-      if (((RemoteEntityConnectionImpl) connection).getClientInfo().equals(client)) {
-        return ((RemoteEntityConnectionImpl) connection).isLoggingEnabled();
+      if (((DefaultRemoteEntityConnection) connection).getClientInfo().equals(client)) {
+        return ((DefaultRemoteEntityConnection) connection).isLoggingEnabled();
       }
     }
 
@@ -259,8 +259,8 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   void setLoggingEnabled(final UUID clientID, final boolean status) {
     final ClientInfo client = new ClientInfo(clientID);
     for (final RemoteEntityConnection connection : getConnections().values()) {
-      if (((RemoteEntityConnectionImpl) connection).getClientInfo().equals(client)) {
-        ((RemoteEntityConnectionImpl) connection).setLoggingEnabled(status);
+      if (((DefaultRemoteEntityConnection) connection).getClientInfo().equals(client)) {
+        ((DefaultRemoteEntityConnection) connection).setLoggingEnabled(status);
         return;
       }
     }
@@ -294,7 +294,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   void removeConnections(final boolean inactiveOnly) throws RemoteException {
     final List<ClientInfo> clients = new ArrayList<ClientInfo>(getConnections().keySet());
     for (final ClientInfo client : clients) {
-      final RemoteEntityConnectionImpl connection = (RemoteEntityConnectionImpl) getConnection(client);
+      final DefaultRemoteEntityConnection connection = (DefaultRemoteEntityConnection) getConnection(client);
       if (inactiveOnly) {
         if (!connection.isActive() && connection.hasBeenInactive(connectionTimeout)) {
           disconnect(client.getClientID());
@@ -373,22 +373,22 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   @Override
   protected void doDisconnect(final RemoteEntityConnection connection) throws RemoteException {
     connection.disconnect();
-    LOG.debug("{} disconnected", ((RemoteEntityConnectionImpl) connection).getClientInfo());
+    LOG.debug("{} disconnected", ((DefaultRemoteEntityConnection) connection).getClientInfo());
   }
 
   /** {@inheritDoc} */
   @Override
-  protected RemoteEntityConnectionImpl doConnect(final ClientInfo clientInfo) throws RemoteException, ServerException.LoginException {
+  protected DefaultRemoteEntityConnection doConnect(final ClientInfo clientInfo) throws RemoteException, ServerException.LoginException {
     try {
-      final RemoteEntityConnectionImpl connection;
+      final DefaultRemoteEntityConnection connection;
       final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(clientInfo.getUser());
       if (connectionPool == null) {
-        connection = new RemoteEntityConnectionImpl(database, clientInfo, getServerPort(),
+        connection = new DefaultRemoteEntityConnection(database, clientInfo, getServerPort(),
                 clientLoggingEnabled, sslEnabled);
       }
       else {
         checkConnectionPoolCredentials(connectionPool.getUser(), clientInfo.getDatabaseUser());
-        connection = new RemoteEntityConnectionImpl(connectionPool, database, clientInfo, getServerPort(),
+        connection = new DefaultRemoteEntityConnection(connectionPool, database, clientInfo, getServerPort(),
                 clientLoggingEnabled, sslEnabled);
       }
       connection.addDisconnectListener(new EventAdapter() {

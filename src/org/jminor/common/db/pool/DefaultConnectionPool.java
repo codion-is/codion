@@ -22,9 +22,9 @@ import java.util.concurrent.TimeUnit;
 /**
  * A simple connection pool implementation, pools connections on username basis.
  */
-final class ConnectionPoolImpl extends AbstractConnectionPool<Deque<DatabaseConnection>> {
+final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseConnection>> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(ConnectionPoolImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultConnectionPool.class);
 
   public static final int DEFAULT_CONNECTION_TIMEOUT_MS = 60000;
   public static final int DEFAULT_CLEANUP_INTERVAL_MS = 20000;
@@ -57,11 +57,11 @@ final class ConnectionPoolImpl extends AbstractConnectionPool<Deque<DatabaseConn
   private boolean closed = false;
 
   /**
-   * Instantiates a new ConnectionPoolImpl.
+   * Instantiates a new DefaultConnectionPool.
    * @param connectionProvider the connection provider
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
-  ConnectionPoolImpl(final DatabaseConnectionProvider connectionProvider) throws DatabaseException {
+  DefaultConnectionPool(final DatabaseConnectionProvider connectionProvider) throws DatabaseException {
     super(new ArrayDeque<DatabaseConnection>(), connectionProvider.getUser());
     this.connectionProvider = connectionProvider;
     initializeConnections();

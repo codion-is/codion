@@ -351,19 +351,19 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
   }
 
   /**
-   * A base OperationImpl implementation
+   * A base Operation implementation
    */
-  public static class OperationImpl implements DatabaseConnection.Operation {
+  public static class DefaultOperation implements DatabaseConnection.Operation {
 
     private final String id;
     private final String name;
 
     /**
-     * Instantiates a new OperationImpl
+     * Instantiates a new DefaultOperation
      * @param id a unique operation ID
      * @param name the operation name
      */
-    public OperationImpl(final String id, final String name) {
+    public DefaultOperation(final String id, final String name) {
       this.id = id;
       this.name = name;
     }

@@ -452,7 +452,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       entity.saveValue(primaryKeyProperty.getPropertyID());
     }
 
-    afterInsertEvent.fire(new InsertEventImpl(insertedEntities));
+    afterInsertEvent.fire(new DefaultInsertEvent(insertedEntities));
 
     return insertedEntities;
   }
@@ -462,7 +462,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   public final List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException {
     final List<Entity> insertedEntities = insertEntities(entities);
 
-    afterInsertEvent.fire(new InsertEventImpl(insertedEntities));
+    afterInsertEvent.fire(new DefaultInsertEvent(insertedEntities));
 
     return insertedEntities;
   }
@@ -503,7 +503,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       setEntity(updatedEntities.get(index));
     }
 
-    afterUpdateEvent.fire(new UpdateEventImpl(updatedEntities, EntityUtil.isPrimaryKeyModified(modifiedEntities)));
+    afterUpdateEvent.fire(new DefaultUpdateEvent(updatedEntities, EntityUtil.isPrimaryKeyModified(modifiedEntities)));
 
     return updatedEntities;
   }
@@ -537,7 +537,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       setEntity(null);
     }
 
-    afterDeleteEvent.fire(new DeleteEventImpl(entities));
+    afterDeleteEvent.fire(new DefaultDeleteEvent(entities));
 
     return entities;
   }
@@ -1056,15 +1056,15 @@ public class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  private static final class InsertEventImpl implements InsertEvent {
+  private static final class DefaultInsertEvent implements InsertEvent {
 
     private final List<Entity> insertedEntities;
 
     /**
-     * Instantiates a new InsertEventImpl.
+     * Instantiates a new DefaultInsertEvent.
      * @param insertedEntities the inserted entities
      */
-    private InsertEventImpl(final List<Entity> insertedEntities) {
+    private DefaultInsertEvent(final List<Entity> insertedEntities) {
       this.insertedEntities = insertedEntities;
     }
 
@@ -1075,15 +1075,15 @@ public class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  private static final class DeleteEventImpl implements DeleteEvent {
+  private static final class DefaultDeleteEvent implements DeleteEvent {
 
     private final List<Entity> deletedEntities;
 
     /**
-     * Instantiates a new DeleteEventImpl.
+     * Instantiates a new DefaultDeleteEvent.
      * @param deletedEntities the deleted entities
      */
-    private DeleteEventImpl(final List<Entity> deletedEntities) {
+    private DefaultDeleteEvent(final List<Entity> deletedEntities) {
       this.deletedEntities = deletedEntities;
     }
 
@@ -1094,17 +1094,17 @@ public class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  private static final class UpdateEventImpl implements UpdateEvent {
+  private static final class DefaultUpdateEvent implements UpdateEvent {
 
     private final List<Entity> updatedEntities;
     private final boolean primaryKeyModified;
 
     /**
-     * Instantiates a new UpdateEventImpl.
+     * Instantiates a new DefaultUpdateEvent.
      * @param updatedEntities the updated entities
      * @param primaryKeyModified true if primary key values were modified during the update
      */
-    private UpdateEventImpl(final List<Entity> updatedEntities, final boolean primaryKeyModified) {
+    private DefaultUpdateEvent(final List<Entity> updatedEntities, final boolean primaryKeyModified) {
       this.updatedEntities = updatedEntities;
       this.primaryKeyModified = primaryKeyModified;
     }

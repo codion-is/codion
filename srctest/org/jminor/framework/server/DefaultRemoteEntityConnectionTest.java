@@ -27,7 +27,7 @@ import java.util.UUID;
 
 import static org.junit.Assert.assertTrue;
 
-public class RemoteEntityConnectionImplTest {
+public class DefaultRemoteEntityConnectionTest {
 
   @BeforeClass
   public static void setUp() throws Exception {
@@ -42,24 +42,24 @@ public class RemoteEntityConnectionImplTest {
   @Test(expected = DatabaseException.class)
   public void wrongUsername() throws Exception {
     final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", new User("foo", "bar"));
-    new RemoteEntityConnectionImpl(Databases.createInstance(), info, 1234, true, false);
+    new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
   }
 
   @Test(expected = DatabaseException.class)
   public void wrongPassword() throws Exception {
     final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", new User(User.UNIT_TEST_USER.getUsername(), "xxxxx"));
-    new RemoteEntityConnectionImpl(Databases.createInstance(), info, 1234, true, false);
+    new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
   }
 
   @Test
   public void test() throws Exception {
     Registry registry = null;
-    RemoteEntityConnectionImpl adapter = null;
-    final String serviceName = "RemoteEntityConnectionImplTest";
+    DefaultRemoteEntityConnection adapter = null;
+    final String serviceName = "DefaultRemoteEntityConnectionTest";
     try {
       Chinook.init();
       final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", User.UNIT_TEST_USER);
-      adapter = new RemoteEntityConnectionImpl(Databases.createInstance(), info, 1234, true, false);
+      adapter = new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
 
       ServerUtil.initializeRegistry(Registry.REGISTRY_PORT);
 
@@ -68,7 +68,7 @@ public class RemoteEntityConnectionImplTest {
       final Collection<String> boundNames = Arrays.asList(registry.list());
       assertTrue(boundNames.contains(serviceName));
 
-      final RemoteEntityConnectionImpl finalAdapter = adapter;
+      final DefaultRemoteEntityConnection finalAdapter = adapter;
       final EntityConnection proxy = Util.initializeProxy(EntityConnection.class, new InvocationHandler() {
         @Override
         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {

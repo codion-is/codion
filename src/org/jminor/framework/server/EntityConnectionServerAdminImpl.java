@@ -205,7 +205,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   /** {@inheritDoc} */
   @Override
   public int getActiveConnectionCount() throws RemoteException {
-    return RemoteEntityConnectionImpl.getActiveCount();
+    return DefaultRemoteEntityConnection.getActiveCount();
   }
 
   /** {@inheritDoc} */
@@ -251,26 +251,26 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   /** {@inheritDoc} */
   @Override
   public int getRequestsPerSecond() throws RemoteException {
-    return RemoteEntityConnectionImpl.getRequestsPerSecond();
+    return DefaultRemoteEntityConnection.getRequestsPerSecond();
   }
 
   /** {@inheritDoc} */
   @Override
   public int getWarningTimeThreshold() throws RemoteException {
-    return RemoteEntityConnectionImpl.getWarningThreshold();
+    return DefaultRemoteEntityConnection.getWarningThreshold();
   }
 
   /** {@inheritDoc} */
   @Override
   public void setWarningTimeThreshold(final int threshold) throws RemoteException {
     LOG.info("setWarningThreshold({})", threshold);
-    RemoteEntityConnectionImpl.setWarningThreshold(threshold);
+    DefaultRemoteEntityConnection.setWarningThreshold(threshold);
   }
 
   /** {@inheritDoc} */
   @Override
   public int getWarningTimeExceededPerSecond() throws RemoteException {
-    return RemoteEntityConnectionImpl.getWarningTimeExceededPerSecond();
+    return DefaultRemoteEntityConnection.getWarningTimeExceededPerSecond();
   }
 
   /** {@inheritDoc} */

@@ -29,7 +29,7 @@ public final class States {
    * @return a new State
    */
   public static State state(final boolean initialState) {
-    return new StateImpl(initialState);
+    return new DefaultState(initialState);
   }
 
   /**
@@ -40,7 +40,7 @@ public final class States {
    */
   public static State.AggregateState aggregateState(final Conjunction conjunction, final StateObserver... stateObservers) {
     Util.rejectNullValue(conjunction, "conjunction");
-    return new AggregateStateImpl(conjunction, stateObservers);
+    return new DefaultAggregateState(conjunction, stateObservers);
   }
 
   /**
@@ -49,19 +49,19 @@ public final class States {
    * @return a new State.Group
    */
   public static State.Group group(final State... states) {
-    return new GroupImpl(states);
+    return new DefaultGroup(states);
   }
 
-  private static class StateImpl implements State {
+  private static class DefaultState implements State {
 
     private StateObserver observer;
     private boolean active = false;
 
-    StateImpl() {
+    DefaultState() {
       this(false);
     }
 
-    StateImpl(final boolean initialState) {
+    DefaultState(final boolean initialState) {
       this.active = initialState;
     }
 
@@ -74,7 +74,7 @@ public final class States {
     public synchronized void setActive(final boolean active) {
       final boolean previousValue = this.active;
       this.active = active;
-      ((StateObserverImpl) getObserver()).notifyObservers(previousValue, active);
+      ((DefaultStateObserver) getObserver()).notifyObservers(previousValue, active);
     }
 
     @Override
@@ -85,7 +85,7 @@ public final class States {
     @Override
     public final synchronized StateObserver getObserver() {
       if (observer == null) {
-        observer = new StateObserverImpl(this, false);
+        observer = new DefaultStateObserver(this, false);
       }
 
       return observer;
@@ -132,23 +132,23 @@ public final class States {
     }
   }
 
-  private static final class AggregateStateImpl extends StateImpl implements State.AggregateState {
+  private static final class DefaultAggregateState extends DefaultState implements State.AggregateState {
 
     private final List<StateObserver> states = new ArrayList<StateObserver>();
     private final EventListener listener = new EventAdapter() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
-        ((StateObserverImpl) getObserver()).notifyObservers();
+        ((DefaultStateObserver) getObserver()).notifyObservers();
       }
     };
     private final Conjunction conjunction;
 
-    private AggregateStateImpl(final Conjunction conjunction) {
+    private DefaultAggregateState(final Conjunction conjunction) {
       this.conjunction = conjunction;
     }
 
-    private AggregateStateImpl(final Conjunction conjunction, final StateObserver... states) {
+    private DefaultAggregateState(final Conjunction conjunction, final StateObserver... states) {
       this(conjunction);
       if (states != null) {
         for (final StateObserver state : states) {
@@ -180,7 +180,7 @@ public final class States {
       states.add(state);
       state.addListener(listener);
       if (wasActive != isActive()) {
-        ((StateObserverImpl) getObserver()).notifyObservers();
+        ((DefaultStateObserver) getObserver()).notifyObservers();
       }
     }
 
@@ -191,7 +191,7 @@ public final class States {
       state.removeListener(listener);
       states.remove(state);
       if (wasActive != isActive()) {
-        ((StateObserverImpl) getObserver()).notifyObservers();
+        ((DefaultStateObserver) getObserver()).notifyObservers();
       }
     }
 
@@ -223,7 +223,7 @@ public final class States {
     }
   }
 
-  private static final class StateObserverImpl implements StateObserver {
+  private static final class DefaultStateObserver implements StateObserver {
 
     private final StateObserver stateObserver;
     private final boolean reversed;
@@ -232,9 +232,9 @@ public final class States {
     private final Event stateActivatedEvent = Events.event();
     private final Event stateDeactivatedEvent = Events.event();
 
-    private StateObserverImpl reversedStateObserver = null;
+    private DefaultStateObserver reversedStateObserver = null;
 
-    private StateObserverImpl(final StateObserver stateObserver, final boolean reversed) {
+    private DefaultStateObserver(final StateObserver stateObserver, final boolean reversed) {
       this.stateObserver = stateObserver;
       this.reversed = reversed;
     }
@@ -252,7 +252,7 @@ public final class States {
     @Override
     public synchronized StateObserver getReversedObserver() {
       if (reversedStateObserver == null) {
-        reversedStateObserver = new StateObserverImpl(this, true);
+        reversedStateObserver = new DefaultStateObserver(this, true);
       }
 
       return reversedStateObserver;
@@ -308,11 +308,11 @@ public final class States {
     }
   }
 
-  static final class GroupImpl implements State.Group {
+  static final class DefaultGroup implements State.Group {
 
     private final List<WeakReference<State>> members = new ArrayList<WeakReference<State>>();
 
-    public GroupImpl(final State... states) {
+    public DefaultGroup(final State... states) {
       if (states != null) {
         for (final State state : states) {
           addState(state);

@@ -52,11 +52,11 @@ import java.util.concurrent.TimeUnit;
  * An implementation of the RemoteEntityConnection interface, provides the logging of service calls
  * and database connection pooling.
  */
-final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements RemoteEntityConnection {
+final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements RemoteEntityConnection {
 
   private static final long serialVersionUID = 1;
 
-  private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultRemoteEntityConnection.class);
   private static final RequestCounter REQUEST_COUNTER = new RequestCounter();
   private static final String LOG_IDENTIFIER_PROPERTY = "logIdentifier";
 
@@ -113,7 +113,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   /**
    * Contains the active remote connections, that is, those connections that are in the process of serving a request
    */
-  private static final List<RemoteEntityConnectionImpl> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<RemoteEntityConnectionImpl>());
+  private static final List<DefaultRemoteEntityConnection> ACTIVE_CONNECTIONS = Collections.synchronizedList(new ArrayList<DefaultRemoteEntityConnection>());
 
   private static final String GET_CONNECTION = "getConnection";
   private static final String RETURN_CONNECTION = "returnConnection";
@@ -123,7 +123,7 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
   private final Event disconnectedEvent = Events.event();
 
   /**
-   * Instantiates a new RemoteEntityConnectionImpl and exports it on the given port number
+   * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
    * @param database defines the underlying database
    * @param clientInfo information about the client requesting the connection
    * @param port the port to use when exporting this remote connection
@@ -134,14 +134,14 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
    * if a wrong username or password is provided
    * @throws ClassNotFoundException in case the database driver class is not found
    */
-  RemoteEntityConnectionImpl(final Database database, final ClientInfo clientInfo, final int port,
-                             final boolean loggingEnabled, final boolean sslEnabled)
+  DefaultRemoteEntityConnection(final Database database, final ClientInfo clientInfo, final int port,
+                                final boolean loggingEnabled, final boolean sslEnabled)
           throws DatabaseException, ClassNotFoundException, RemoteException {
     this(null, database, clientInfo, port, loggingEnabled, sslEnabled);
   }
 
   /**
-   * Instantiates a new RemoteEntityConnectionImpl and exports it on the given port number
+   * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
    * @param connectionPool the connection pool to use, if none is provided a local connection is established
    * @param database defines the underlying database
    * @param clientInfo information about the client requesting the connection
@@ -153,8 +153,8 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
    * if a wrong username or password is provided
    * @throws ClassNotFoundException in case the database driver class is not found
    */
-  RemoteEntityConnectionImpl(final ConnectionPool connectionPool, final Database database, final ClientInfo clientInfo, final int port,
-                             final boolean loggingEnabled, final boolean sslEnabled)
+  DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final ClientInfo clientInfo, final int port,
+                                final boolean loggingEnabled, final boolean sslEnabled)
           throws DatabaseException, ClassNotFoundException, RemoteException {
     super(port, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
@@ -546,10 +546,10 @@ final class RemoteEntityConnectionImpl extends UnicastRemoteObject implements Re
 
   private static final class RemoteConnectionHandler implements InvocationHandler {
 
-    private final RemoteEntityConnectionImpl remoteEntityConnection;
+    private final DefaultRemoteEntityConnection remoteEntityConnection;
     private final MethodLogger methodLogger;
 
-    private RemoteConnectionHandler(final RemoteEntityConnectionImpl remoteEntityConnection) throws DatabaseException, ClassNotFoundException {
+    private RemoteConnectionHandler(final DefaultRemoteEntityConnection remoteEntityConnection) throws DatabaseException, ClassNotFoundException {
       this.remoteEntityConnection = remoteEntityConnection;
       this.methodLogger = remoteEntityConnection.methodLogger;
     }

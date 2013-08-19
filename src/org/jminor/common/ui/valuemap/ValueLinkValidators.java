@@ -147,7 +147,7 @@ public final class ValueLinkValidators {
     private final Color invalidBackgroundColor;
 
     /**
-     * Instantiates a new ValidatorImpl
+     * Instantiates a new TextValidator
      * @param key the key of the value to validate
      * @param textComponent the text component bound to the value
      * @param editModel the edit model handling the value editing

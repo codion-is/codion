@@ -19,12 +19,12 @@ public final class Events {
    * @return a new Event
    */
   public static Event event() {
-    return new EventImpl();
+    return new DefaultEvent();
   }
 
-  private static final class EventImpl implements Event {
+  private static final class DefaultEvent implements Event {
 
-    private volatile EventObserverImpl observer;
+    private volatile DefaultEventObserver observer;
 
     /** {@inheritDoc} */
     @Override
@@ -35,7 +35,7 @@ public final class Events {
     /** {@inheritDoc} */
     @Override
     public void fire(final Object eventInfo) {
-      if (observer != null) {
+      if (observer != null && observer.hasListeners()) {
         for (final EventListener listener : observer.getListeners()) {
           listener.eventOccurred(eventInfo);
         }
@@ -59,7 +59,7 @@ public final class Events {
     public EventObserver getObserver() {
       synchronized (this) {
         if (observer == null) {
-          observer = new EventObserverImpl();
+          observer = new DefaultEventObserver();
         }
       }
 
@@ -81,7 +81,7 @@ public final class Events {
     }
   }
 
-  private static final class EventObserverImpl implements EventObserver {
+  private static final class DefaultEventObserver implements EventObserver {
 
     private final Collection<EventListener> listeners = new ArrayList<EventListener>();
 
@@ -102,6 +102,10 @@ public final class Events {
 
     private synchronized Collection<EventListener> getListeners() {
       return new ArrayList<EventListener>(listeners);
+    }
+
+    private boolean hasListeners() {
+      return !listeners.isEmpty();
     }
   }
 }

@@ -25,7 +25,7 @@ import java.util.Map;
 /**
  * A default Property implementation
  */
-class PropertyImpl implements Property {
+class DefaultProperty implements Property {
 
   private static final ColumnProperty.ValueConverter DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
   private static final ColumnProperty.ValueConverter DATE_VALUE_CONVERTER = new DateValueConverter();
@@ -125,7 +125,7 @@ class PropertyImpl implements Property {
    * @param type the data type of this property
    * @param caption the caption of this property, if this is null then this property is defined as hidden
    */
-  PropertyImpl(final String propertyID, final int type, final String caption) {
+  DefaultProperty(final String propertyID, final int type, final String caption) {
     Util.rejectNullValue(propertyID, "propertyID");
     this.propertyID = propertyID;
     this.hashCode = propertyID.hashCode();
@@ -539,7 +539,7 @@ class PropertyImpl implements Property {
     }
   }
 
-  static class ColumnPropertyImpl extends PropertyImpl implements ColumnProperty {
+  static class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
 
     private final String columnName;
     private final int columnType;
@@ -553,11 +553,11 @@ class PropertyImpl implements Property {
     private boolean aggregateColumn = false;
     private ForeignKeyProperty foreignKeyProperty = null;
 
-    ColumnPropertyImpl(final String propertyID, final int type, final String caption) {
+    DefaultColumnProperty(final String propertyID, final int type, final String caption) {
       this(propertyID, type, caption, type);
     }
 
-    ColumnPropertyImpl(final String propertyID, final int type, final String caption, final int columnType) {
+    DefaultColumnProperty(final String propertyID, final int type, final String caption, final int columnType) {
       super(propertyID, type, caption);
       this.columnName = propertyID;
       this.columnType = columnType;
@@ -748,7 +748,7 @@ class PropertyImpl implements Property {
       return DEFAULT_VALUE_CONVERTER;
     }
 
-    private static ValueFetcher initializeValueFetcher(final ColumnPropertyImpl property) {
+    private static ValueFetcher initializeValueFetcher(final DefaultColumnProperty property) {
       if (property instanceof MirrorProperty) {
         return null;
       }
@@ -889,11 +889,11 @@ class PropertyImpl implements Property {
     }
   }
 
-  static final class PrimaryKeyPropertyImpl extends ColumnPropertyImpl implements PrimaryKeyProperty {
+  static final class DefaultPrimaryKeyProperty extends DefaultColumnProperty implements PrimaryKeyProperty {
 
     private int index = 0;
 
-    PrimaryKeyPropertyImpl(final String propertyID, final int type, final String caption) {
+    DefaultPrimaryKeyProperty(final String propertyID, final int type, final String caption) {
       super(propertyID, type, caption);
       setUpdatable(false);
     }
@@ -915,7 +915,7 @@ class PropertyImpl implements Property {
     }
   }
 
-  static final class ForeignKeyPropertyImpl extends PropertyImpl implements Property.ForeignKeyProperty {
+  static final class DefaultForeignKeyProperty extends DefaultProperty implements Property.ForeignKeyProperty {
 
     private final String referencedEntityID;
     private final List<ColumnProperty> referenceProperties;
@@ -930,8 +930,8 @@ class PropertyImpl implements Property {
      * @param referencedEntityID the ID of the referenced entity type
      * @param referenceProperty the actual column property involved in the reference
      */
-    ForeignKeyPropertyImpl(final String propertyID, final String caption, final String referencedEntityID,
-                           final ColumnProperty referenceProperty) {
+    DefaultForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
+                              final ColumnProperty referenceProperty) {
       this(propertyID, caption, referencedEntityID, new ColumnProperty[] {referenceProperty}, new String[0]);
     }
 
@@ -943,8 +943,8 @@ class PropertyImpl implements Property {
      * @param referenceProperties the actual column properties involved in the reference
      * @param referencedPropertyIDs the IDs of the properties referenced, in the same order as the reference properties
      */
-    ForeignKeyPropertyImpl(final String propertyID, final String caption, final String referencedEntityID,
-                           final ColumnProperty[] referenceProperties, final String[] referencedPropertyIDs) {
+    DefaultForeignKeyProperty(final String propertyID, final String caption, final String referencedEntityID,
+                              final ColumnProperty[] referenceProperties, final String[] referencedPropertyIDs) {
       super(propertyID, Types.REF, caption);
       Util.rejectNullValue(referencedEntityID, "referencedEntityID");
       for (final Property referenceProperty : referenceProperties) {
@@ -1044,9 +1044,9 @@ class PropertyImpl implements Property {
     }
   }
 
-  static final class MirrorPropertyImpl extends ColumnPropertyImpl implements MirrorProperty {
+  static final class DefaultMirrorProperty extends DefaultColumnProperty implements MirrorProperty {
 
-    MirrorPropertyImpl(final String propertyID) {
+    DefaultMirrorProperty(final String propertyID) {
       super(propertyID, -1, null);
     }
   }
@@ -1054,7 +1054,7 @@ class PropertyImpl implements Property {
   /**
    * A property representing a column that should get its value automatically from a column in a referenced table
    */
-  static final class DenormalizedPropertyImpl extends ColumnPropertyImpl implements DenormalizedProperty {
+  static final class DefaultDenormalizedProperty extends DefaultColumnProperty implements DenormalizedProperty {
 
     private final String foreignKeyPropertyID;
     private final Property denormalizedProperty;
@@ -1066,8 +1066,8 @@ class PropertyImpl implements Property {
      * @param denormalizedProperty the property from which this property should get its value
      * @param caption the caption if this property
      */
-    DenormalizedPropertyImpl(final String propertyID, final String foreignKeyPropertyID,
-                             final Property denormalizedProperty, final String caption) {
+    DefaultDenormalizedProperty(final String propertyID, final String foreignKeyPropertyID,
+                                final Property denormalizedProperty, final String caption) {
       super(propertyID, denormalizedProperty.getType(), caption);
       this.foreignKeyPropertyID = foreignKeyPropertyID;
       this.denormalizedProperty = denormalizedProperty;
@@ -1092,7 +1092,7 @@ class PropertyImpl implements Property {
     }
   }
 
-  static final class ValueListPropertyImpl<T> extends ColumnPropertyImpl implements ValueListProperty<T> {
+  static final class DefaultValueListProperty<T> extends DefaultColumnProperty implements ValueListProperty<T> {
 
     private final List<Item<T>> values;
 
@@ -1102,8 +1102,8 @@ class PropertyImpl implements Property {
      * @param caption the property caption
      * @param values the values to base this property on
      */
-    ValueListPropertyImpl(final String propertyID, final int type, final String caption,
-                          final List<Item<T>> values) {
+    DefaultValueListProperty(final String propertyID, final int type, final String caption,
+                             final List<Item<T>> values) {
       super(propertyID, type, caption);
       this.values = Collections.unmodifiableList(values);
     }
@@ -1133,7 +1133,7 @@ class PropertyImpl implements Property {
     }
   }
 
-  static class TransientPropertyImpl extends PropertyImpl implements TransientProperty {
+  static class DefautTransientProperty extends DefaultProperty implements TransientProperty {
 
     /**
      * @param propertyID the property ID, since TransientProperties do not map to underlying table columns,
@@ -1141,18 +1141,18 @@ class PropertyImpl implements Property {
      * @param type the data type of this property
      * @param caption the caption of this property
      */
-    TransientPropertyImpl(final String propertyID, final int type, final String caption) {
+    DefautTransientProperty(final String propertyID, final int type, final String caption) {
       super(propertyID, type, caption);
     }
   }
 
-  static final class DerivedPropertyImpl extends TransientPropertyImpl implements DerivedProperty {
+  static final class DefaultDerivedProperty extends DefautTransientProperty implements DerivedProperty {
 
     private final Provider valueProvider;
     private final List<String> linkedPropertyIDs;
 
-    DerivedPropertyImpl(final String propertyID, final int type, final String caption,
-                        final Provider valueProvider, final String... linkedPropertyIDs) {
+    DefaultDerivedProperty(final String propertyID, final int type, final String caption,
+                           final Provider valueProvider, final String... linkedPropertyIDs) {
       super(propertyID, type, caption);
       this.valueProvider = valueProvider;
       if (linkedPropertyIDs == null || linkedPropertyIDs.length == 0) {
@@ -1177,7 +1177,7 @@ class PropertyImpl implements Property {
     }
   }
 
-  static final class DenormalizedViewPropertyImpl extends TransientPropertyImpl implements DenormalizedViewProperty {
+  static final class DefaultDenormalizedViewProperty extends DefautTransientProperty implements DenormalizedViewProperty {
 
     private final String foreignKeyPropertyID;
     private final Property denormalizedProperty;
@@ -1189,8 +1189,8 @@ class PropertyImpl implements Property {
      * @param property the property from which this property gets its value
      * @param caption the caption of this property
      */
-    DenormalizedViewPropertyImpl(final String propertyID, final String foreignKeyPropertyID, final Property property,
-                                 final String caption) {
+    DefaultDenormalizedViewProperty(final String propertyID, final String foreignKeyPropertyID, final Property property,
+                                    final String caption) {
       super(propertyID, property.getType(), caption);
       this.foreignKeyPropertyID = foreignKeyPropertyID;
       this.denormalizedProperty = property;
@@ -1209,7 +1209,7 @@ class PropertyImpl implements Property {
     }
   }
 
-  static final class SubqueryPropertyImpl extends ColumnPropertyImpl implements SubqueryProperty {
+  static final class DefaultSubqueryProperty extends DefaultColumnProperty implements SubqueryProperty {
 
     private final String subquery;
 
@@ -1221,8 +1221,8 @@ class PropertyImpl implements Property {
      * @param subquery the sql query
      * @param columnType the actual column type
      */
-    SubqueryPropertyImpl(final String propertyID, final int type, final String caption, final String subquery,
-                         final int columnType) {
+    DefaultSubqueryProperty(final String propertyID, final int type, final String caption, final String subquery,
+                            final int columnType) {
       super(propertyID, type, caption, columnType);
       setReadOnly(true);
       setUpdatable(false);
@@ -1236,11 +1236,11 @@ class PropertyImpl implements Property {
     }
   }
 
-  static class AuditPropertyImpl extends ColumnPropertyImpl implements AuditProperty {
+  static class DefaultAuditProperty extends DefaultColumnProperty implements AuditProperty {
 
     private final AuditAction auditAction;
 
-    AuditPropertyImpl(final String propertyID, final int type, final AuditAction auditAction, final String caption) {
+    DefaultAuditProperty(final String propertyID, final int type, final AuditAction auditAction, final String caption) {
       super(propertyID, type, caption);
       this.auditAction = auditAction;
       setReadOnly(true);
@@ -1253,16 +1253,16 @@ class PropertyImpl implements Property {
     }
   }
 
-  static final class AuditTimePropertyImpl extends AuditPropertyImpl implements AuditTimeProperty {
+  static final class DefaultAuditTimeProperty extends DefaultAuditProperty implements AuditTimeProperty {
 
-    AuditTimePropertyImpl(final String propertyID, final AuditAction auditAction, final String caption) {
+    DefaultAuditTimeProperty(final String propertyID, final AuditAction auditAction, final String caption) {
       super(propertyID, Types.TIMESTAMP, auditAction, caption);
     }
   }
 
-  static final class AuditUserPropertyImpl extends AuditPropertyImpl implements AuditUserProperty {
+  static final class DefaultAuditUserProperty extends DefaultAuditProperty implements AuditUserProperty {
 
-    AuditUserPropertyImpl(final String propertyID, final AuditAction auditAction, final String caption) {
+    DefaultAuditUserProperty(final String propertyID, final AuditAction auditAction, final String caption) {
       super(propertyID, Types.VARCHAR, auditAction, caption);
     }
   }

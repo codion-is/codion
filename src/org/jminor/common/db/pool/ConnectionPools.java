@@ -54,7 +54,7 @@ public final class ConnectionPools {
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
   public static synchronized ConnectionPool createDefaultConnectionPool(final DatabaseConnectionProvider connectionProvider) throws ClassNotFoundException, DatabaseException {
-    final ConnectionPool connectionPool = new ConnectionPoolImpl(connectionProvider);
+    final ConnectionPool connectionPool = new DefaultConnectionPool(connectionProvider);
     CONNECTION_POOLS.put(connectionProvider.getUser(), connectionPool);
 
     return connectionPool;
@@ -127,7 +127,7 @@ public final class ConnectionPools {
     return new ConnectionPoolProvider() {
       @Override
       public ConnectionPool createConnectionPool(final User user, final Database database) throws DatabaseException {
-        return new ConnectionPoolImpl(connectionProvider);
+        return new DefaultConnectionPool(connectionProvider);
       }
     };
   }

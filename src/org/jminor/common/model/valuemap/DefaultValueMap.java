@@ -24,7 +24,7 @@ import java.util.Set;
  * @param <K> the key type
  * @param <V> the value type
  */
-public class ValueMapImpl<K, V> implements ValueMap<K, V> {
+public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /**
    * Holds the values contained in this value map.
@@ -84,17 +84,17 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   }
 
   /**
-   * Two ValueMapImpl objects are equal if they contain the
+   * Two DefaultValueMap objects are equal if they contain the
    * same number of values and all their values are equal.
    */
   @SuppressWarnings({"unchecked"})
   @Override
   public boolean equals(final Object obj) {
-    if (!(obj instanceof ValueMapImpl)) {
+    if (!(obj instanceof DefaultValueMap)) {
       return false;
     }
 
-    final ValueMapImpl<K, V> otherMap = (ValueMapImpl<K, V>) obj;
+    final DefaultValueMap<K, V> otherMap = (DefaultValueMap<K, V>) obj;
     if (size() != otherMap.size()) {
       return false;
     }
@@ -201,7 +201,7 @@ public class ValueMapImpl<K, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public ValueMap<K, V> getInstance() {
-    return new ValueMapImpl<K, V>();
+    return new DefaultValueMap<K, V>();
   }
 
   /** {@inheritDoc} */

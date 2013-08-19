@@ -15,7 +15,7 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public class EntityDefinitionImplTest {
+public class DefaultEntityDefinitionTest {
 
   @Test
   public void test() {
@@ -26,7 +26,7 @@ public class EntityDefinitionImplTest {
         return 0;
       }
     };
-    final Entity.Definition definition = new EntityDefinitionImpl("entityID", "tableName",
+    final Entity.Definition definition = new DefaultEntityDefinition("entityID", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR))
             .setSelectQuery("select * from dual").setOrderByClause("order by name")
@@ -49,7 +49,7 @@ public class EntityDefinitionImplTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void duplicatePropertyIDs() {
-    new EntityDefinitionImpl("entityID", "tableName",
+    new DefaultEntityDefinition("entityID", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR),
             Properties.columnProperty("id"));
@@ -57,7 +57,7 @@ public class EntityDefinitionImplTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void duplicateForeignKeyPropertyIDs() {
-    new EntityDefinitionImpl("entityID", "tableName",
+    new DefaultEntityDefinition("entityID", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR),
             Properties.foreignKeyProperty("fkProperty", null, "entityID",
@@ -66,7 +66,7 @@ public class EntityDefinitionImplTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void setSearchPropertyIDs() {
-    final Entity.Definition definition = new EntityDefinitionImpl("entityID", "tableName",
+    final Entity.Definition definition = new DefaultEntityDefinition("entityID", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR));
     definition.setSearchPropertyIDs("id");
@@ -74,7 +74,7 @@ public class EntityDefinitionImplTest {
 
   @Test
   public void derivedProperty() {
-    final Entity.Definition definition = new EntityDefinitionImpl("entityID", "tableName",
+    final Entity.Definition definition = new DefaultEntityDefinition("entityID", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR),
             Properties.columnProperty("info", Types.VARCHAR),
@@ -94,7 +94,7 @@ public class EntityDefinitionImplTest {
 
   @Test
   public void testGroupingProperties() {
-    final Entity.Definition definition = new EntityDefinitionImpl("entityID",
+    final Entity.Definition definition = new DefaultEntityDefinition("entityID",
             Properties.primaryKeyProperty("p0").setAggregateColumn(true),
             Properties.columnProperty("p1").setGroupingColumn(true),
             Properties.columnProperty("p2").setGroupingColumn(true));
@@ -103,7 +103,7 @@ public class EntityDefinitionImplTest {
 
   @Test(expected = IllegalStateException.class)
   public void testSetGroupByClauseWithGroupingProperties() {
-    final Entity.Definition definition = new EntityDefinitionImpl("entityID",
+    final Entity.Definition definition = new DefaultEntityDefinition("entityID",
             Properties.primaryKeyProperty("p0").setAggregateColumn(true),
             Properties.columnProperty("p1").setGroupingColumn(true),
             Properties.columnProperty("p2").setGroupingColumn(true));
@@ -112,14 +112,14 @@ public class EntityDefinitionImplTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testNoPrimaryKey() {
-    new EntityDefinitionImpl("entityID", "tableName",
+    new DefaultEntityDefinition("entityID", "tableName",
             Properties.columnProperty("propertyID", Types.INTEGER));
   }
 
   @Test
   public void testForeignPrimaryKey() {
     Configuration.setValue(Configuration.STRICT_FOREIGN_KEYS, false);
-    new EntityDefinitionImpl("entityID", "tableName",
+    new DefaultEntityDefinition("entityID", "tableName",
             Properties.foreignKeyProperty("fkPropertyID", "caption", "parent",
                     Properties.primaryKeyProperty("propertyID")));
     Configuration.setValue(Configuration.STRICT_FOREIGN_KEYS, true);
@@ -127,7 +127,7 @@ public class EntityDefinitionImplTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPropertyIDConflict() {
-    new EntityDefinitionImpl("entityId",
+    new DefaultEntityDefinition("entityId",
             Properties.primaryKeyProperty("pk"),
             Properties.columnProperty("col"),
             Properties.columnProperty("col"));
@@ -135,7 +135,7 @@ public class EntityDefinitionImplTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void testPropertyIDConflictInForeignKey() {
-    new EntityDefinitionImpl("entityId",
+    new DefaultEntityDefinition("entityId",
             Properties.primaryKeyProperty("pk"),
             Properties.columnProperty("col"),
             Properties.foreignKeyProperty("fk", "cap", "par",
@@ -144,7 +144,7 @@ public class EntityDefinitionImplTest {
 
   @Test
   public void testLinkedProperties() {
-    final EntityDefinitionImpl def = new EntityDefinitionImpl("entityId",
+    final DefaultEntityDefinition def = new DefaultEntityDefinition("entityId",
             Properties.primaryKeyProperty("pk"),
             Properties.columnProperty("1"),
             Properties.columnProperty("2"),

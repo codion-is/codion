@@ -18,12 +18,12 @@ import static org.junit.Assert.assertTrue;
  * Date: 24.7.2010
  * Time: 22:24:49
  */
-public class ValueMapImplTest {
+public class DefaultValueMapTest {
 
   @Test
   public void test() {
     final String key = "key";
-    final ValueMapImpl<String, Object> map = new ValueMapImpl<String, Object>();
+    final DefaultValueMap<String, Object> map = new DefaultValueMap<String, Object>();
     assertFalse(map.equals(key));
     assertEquals(0, map.size());
     assertFalse(map.containsValue(key));
@@ -45,7 +45,7 @@ public class ValueMapImplTest {
     assertFalse(map.containsValue(key));
     assertEquals(0, map.size());
 
-    final ValueMap<String, Integer> valueMap = new ValueMapImpl<String, Integer>();
+    final ValueMap<String, Integer> valueMap = new DefaultValueMap<String, Integer>();
 
     final ValueChangeListener<String, Integer> valueListener = new ValueChangeListener<String, Integer>() {
       @Override
@@ -126,9 +126,9 @@ public class ValueMapImplTest {
 
   @Test
   public void setAs() {
-    final ValueMap<Integer, String> dest = new ValueMapImpl<Integer, String>();
+    final ValueMap<Integer, String> dest = new DefaultValueMap<Integer, String>();
 
-    final ValueMap<Integer, String> source = new ValueMapImpl<Integer, String>();
+    final ValueMap<Integer, String> source = new DefaultValueMap<Integer, String>();
     source.setValue(1, "1");
     source.setValue(2, "2");
     source.setValue(2, "3");
@@ -150,7 +150,7 @@ public class ValueMapImplTest {
 
   @Test
   public void equals() {
-    final ValueMap<String, Integer> mapOne = new ValueMapImpl<String, Integer>();
+    final ValueMap<String, Integer> mapOne = new DefaultValueMap<String, Integer>();
     final ValueMap<String, Integer> mapTwo = mapOne.getInstance();
     mapOne.getValueChangeObserver();
     mapTwo.getValueChangeObserver();
@@ -188,7 +188,7 @@ public class ValueMapImplTest {
 
   @Test
   public void clear() {
-    final ValueMap<String, Integer> map = new ValueMapImpl<String, Integer>();
+    final ValueMap<String, Integer> map = new DefaultValueMap<String, Integer>();
     map.setValue("1", 1);
     map.setValue("2", 2);
     map.setValue("3", 3);
@@ -213,7 +213,7 @@ public class ValueMapImplTest {
 
   @Test
   public void testHashCode() {
-    final ValueMap<String, Integer> map = new ValueMapImpl<String, Integer>();
+    final ValueMap<String, Integer> map = new DefaultValueMap<String, Integer>();
     map.setValue("1", 1);
     map.setValue("2", 2);
     map.setValue("3", 3);

@@ -32,7 +32,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   };
   private static final Comparator LEXICAL_COMPARATOR = Util.getSpaceAwareCollator();
 
-  private static final SortingState EMPTY_SORTING_STATE = new SortingStateImpl(SortingDirective.UNSORTED, -1);
+  private static final SortingState EMPTY_SORTING_STATE = new DefaultSortingState(SortingDirective.UNSORTED, -1);
 
   /**
    * The columns available for sorting
@@ -119,10 +119,10 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
       final SortingState state = getSortingState(columnIdentifier);
       if (state.equals(EMPTY_SORTING_STATE)) {
         final int priority = getNextSortPriority();
-        sortingStates.put(columnIdentifier, new SortingStateImpl(directive, priority));
+        sortingStates.put(columnIdentifier, new DefaultSortingState(directive, priority));
       }
       else {
-        sortingStates.put(columnIdentifier, new SortingStateImpl(directive, state.getPriority()));
+        sortingStates.put(columnIdentifier, new DefaultSortingState(directive, state.getPriority()));
       }
     }
     sortingStateChangedEvent.fire();
@@ -256,12 +256,12 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     return maxPriority + 1;
   }
 
-  private static final class SortingStateImpl implements SortingState {
+  private static final class DefaultSortingState implements SortingState {
 
     private final SortingDirective direction;
     private final int priority;
 
-    private SortingStateImpl(final SortingDirective direction, final int priority) {
+    private DefaultSortingState(final SortingDirective direction, final int priority) {
       Util.rejectNullValue(direction, "direction");
       this.direction = direction;
       this.priority = priority;

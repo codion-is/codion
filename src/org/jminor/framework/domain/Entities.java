@@ -37,7 +37,7 @@ public final class Entities {
    * @return a new {@link Entity} instance
    */
   public static Entity entity(final String entityID) {
-    return new EntityImpl(EntityDefinitionImpl.getDefinition(entityID));
+    return new DefaultEntity(DefaultEntityDefinition.getDefinition(entityID));
   }
 
   /**
@@ -46,7 +46,7 @@ public final class Entities {
    * @return a new {@link Entity} instance
    */
   public static Entity entity(final Entity.Key key) {
-    return new EntityImpl(EntityDefinitionImpl.getDefinition(key.getEntityID()), key);
+    return new DefaultEntity(DefaultEntityDefinition.getDefinition(key.getEntityID()), key);
   }
 
   /**
@@ -57,7 +57,7 @@ public final class Entities {
    * @return a new {@link Entity} instance
    */
   public static Entity entity(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
-    return new EntityImpl(EntityDefinitionImpl.getDefinition(entityID), values, originalValues);
+    return new DefaultEntity(DefaultEntityDefinition.getDefinition(entityID), values, originalValues);
   }
 
   /**
@@ -66,7 +66,7 @@ public final class Entities {
    * @return a new {@link Entity.Key} instance
    */
   public static Entity.Key key(final String entityID) {
-    return new EntityImpl.KeyImpl(EntityDefinitionImpl.getDefinition(entityID));
+    return new DefaultEntity.DefaultKey(DefaultEntityDefinition.getDefinition(entityID));
   }
 
   /**
@@ -93,14 +93,14 @@ public final class Entities {
    * no primary key property is specified
    */
   public static Entity.Definition define(final String entityID, final String tableName, final Property... propertyDefinitions) {
-    if (EntityDefinitionImpl.getDefinitionMap().containsKey(entityID)) {
+    if (DefaultEntityDefinition.getDefinitionMap().containsKey(entityID)) {
       throw new IllegalArgumentException("Entity has already been defined: " + entityID + ", for table: " + tableName);
     }
-    final EntityDefinitionImpl entityImpl = new EntityDefinitionImpl(entityID, tableName, propertyDefinitions);
-    entityImpl.setValidator(new Validator(entityID));
-    EntityDefinitionImpl.getDefinitionMap().put(entityID, entityImpl);
+    final DefaultEntityDefinition entityDefinition = new DefaultEntityDefinition(entityID, tableName, propertyDefinitions);
+    entityDefinition.setValidator(new Validator(entityID));
+    DefaultEntityDefinition.getDefinitionMap().put(entityID, entityDefinition);
 
-    return entityImpl;
+    return entityDefinition;
   }
 
   /**
@@ -111,7 +111,7 @@ public final class Entities {
    * @return a incrementing primary key generator
    */
   public static Entity.KeyGenerator incrementKeyGenerator(final String tableName, final String columnName) {
-    return new EntityDefinitionImpl.IncrementKeyGenerator(tableName, columnName);
+    return new DefaultEntityDefinition.IncrementKeyGenerator(tableName, columnName);
   }
 
   /**
@@ -120,7 +120,7 @@ public final class Entities {
    * @return a sequence based primary key generator
    */
   public static Entity.KeyGenerator sequenceKeyGenerator(final String sequenceName) {
-    return new EntityDefinitionImpl.SequenceKeyGenerator(sequenceName);
+    return new DefaultEntityDefinition.SequenceKeyGenerator(sequenceName);
   }
 
   /**
@@ -129,7 +129,7 @@ public final class Entities {
    * @return a query based primary key generator
    */
   public static Entity.KeyGenerator queriedKeyGenerator(final String query) {
-    return EntityDefinitionImpl.queriedKeyGenerator(query);
+    return DefaultEntityDefinition.queriedKeyGenerator(query);
   }
 
   /**
@@ -138,7 +138,7 @@ public final class Entities {
    * @return a auto-increment based primary key generator
    */
   public static Entity.KeyGenerator automaticKeyGenerator(final String valueSource) {
-    return new EntityDefinitionImpl.AutomaticKeyGenerator(valueSource);
+    return new DefaultEntityDefinition.AutomaticKeyGenerator(valueSource);
   }
 
   /**
@@ -147,7 +147,7 @@ public final class Entities {
    */
   public static Collection<String> getDomainEntityIDs(final String domainID) {
     final Collection<String> entityIDs = new ArrayList<String>();
-    for (final Entity.Definition definition : EntityDefinitionImpl.getDefinitionMap().values()) {
+    for (final Entity.Definition definition : DefaultEntityDefinition.getDefinitionMap().values()) {
       if (definition.getDomainID().equals(domainID)) {
         entityIDs.add(definition.getEntityID());
       }
@@ -162,7 +162,7 @@ public final class Entities {
    * for entities identified by <code>entityID</code>
    */
   public static Collection<String> getSearchPropertyIDs(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getSearchPropertyIDs();
+    return DefaultEntityDefinition.getDefinition(entityID).getSearchPropertyIDs();
   }
 
   /**
@@ -218,7 +218,7 @@ public final class Entities {
    * @return a list containing the primary key properties of the entity identified by <code>entityID</code>
    */
   public static List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getPrimaryKeyProperties();
+    return DefaultEntityDefinition.getDefinition(entityID).getPrimaryKeyProperties();
   }
 
   /**
@@ -227,7 +227,7 @@ public final class Entities {
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static boolean isReadOnly(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).isReadOnly();
+    return DefaultEntityDefinition.getDefinition(entityID).isReadOnly();
   }
 
   /**
@@ -236,7 +236,7 @@ public final class Entities {
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static boolean isSmallDataset(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).isSmallDataset();
+    return DefaultEntityDefinition.getDefinition(entityID).isSmallDataset();
   }
 
   /**
@@ -245,7 +245,7 @@ public final class Entities {
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static boolean isStaticData(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).isStaticData();
+    return DefaultEntityDefinition.getDefinition(entityID).isStaticData();
   }
 
   /**
@@ -253,7 +253,7 @@ public final class Entities {
    * @return a comma separated list of columns to use in the order by clause
    */
   public static String getOrderByClause(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getOrderByClause();
+    return DefaultEntityDefinition.getDefinition(entityID).getOrderByClause();
   }
 
   /**
@@ -261,7 +261,7 @@ public final class Entities {
    * @return a comma separated list of columns to use in the group by clause
    */
   public static String getGroupByClause(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getGroupByClause();
+    return DefaultEntityDefinition.getDefinition(entityID).getGroupByClause();
   }
 
   /**
@@ -270,7 +270,7 @@ public final class Entities {
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static String getSelectTableName(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getSelectTableName();
+    return DefaultEntityDefinition.getDefinition(entityID).getSelectTableName();
   }
 
   /**
@@ -279,7 +279,7 @@ public final class Entities {
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static String getTableName(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getTableName();
+    return DefaultEntityDefinition.getDefinition(entityID).getTableName();
   }
 
   /**
@@ -288,7 +288,7 @@ public final class Entities {
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static String getSelectQuery(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getSelectQuery();
+    return DefaultEntityDefinition.getDefinition(entityID).getSelectQuery();
   }
 
   /**
@@ -297,7 +297,7 @@ public final class Entities {
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static String getSelectColumnsString(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getSelectColumnsString();
+    return DefaultEntityDefinition.getDefinition(entityID).getSelectColumnsString();
   }
 
   /**
@@ -306,7 +306,7 @@ public final class Entities {
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static Entity.KeyGenerator getKeyGenerator(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getKeyGenerator();
+    return DefaultEntityDefinition.getDefinition(entityID).getKeyGenerator();
   }
 
   /**
@@ -316,7 +316,7 @@ public final class Entities {
    * @throws IllegalArgumentException if the entity is undefined
    */
   public static Entity.ToString getStringProvider(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getStringProvider();
+    return DefaultEntityDefinition.getDefinition(entityID).getStringProvider();
   }
 
   /**
@@ -324,7 +324,7 @@ public final class Entities {
    * @return the default Comparator to use when sorting entities of the given type
    */
   public static Comparator<Entity> getComparator(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getComparator();
+    return DefaultEntityDefinition.getDefinition(entityID).getComparator();
   }
 
   /**
@@ -343,7 +343,7 @@ public final class Entities {
    * @return true if the primary key of the given type of entity is comprised of a single integer value
    */
   public static boolean hasSingleIntegerPrimaryKey(final String entityID) {
-    final List<Property.PrimaryKeyProperty> primaryKeyProperties = EntityDefinitionImpl.getDefinition(entityID).getPrimaryKeyProperties();
+    final List<Property.PrimaryKeyProperty> primaryKeyProperties = DefaultEntityDefinition.getDefinition(entityID).getPrimaryKeyProperties();
     return primaryKeyProperties.size() == 1 && primaryKeyProperties.get(0).isInteger();
   }
 
@@ -360,7 +360,7 @@ public final class Entities {
                                                                   final boolean includePrimaryKeyProperties,
                                                                   final boolean includeReadOnly,
                                                                   final boolean includeNonUpdatable) {
-    final List<Property.ColumnProperty> properties = new ArrayList<Property.ColumnProperty>(EntityDefinitionImpl.getDefinition(entityID).getColumnProperties());
+    final List<Property.ColumnProperty> properties = new ArrayList<Property.ColumnProperty>(DefaultEntityDefinition.getDefinition(entityID).getColumnProperties());
     final ListIterator<Property.ColumnProperty> iterator = properties.listIterator();
     while (iterator.hasNext()) {
       final Property.ColumnProperty property = iterator.next();
@@ -381,7 +381,7 @@ public final class Entities {
    */
   public static List<Property> getVisibleProperties(final String entityID) {
     Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
-    return EntityDefinitionImpl.getDefinition(entityID).getVisibleProperties();
+    return DefaultEntityDefinition.getDefinition(entityID).getVisibleProperties();
   }
 
   /**
@@ -478,7 +478,7 @@ public final class Entities {
    * that is, properties that map to database columns
    */
   public static Collection<Property.ColumnProperty> getColumnProperties(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getColumnProperties();
+    return DefaultEntityDefinition.getDefinition(entityID).getColumnProperties();
   }
 
   /**
@@ -487,7 +487,7 @@ public final class Entities {
    * that is, properties that do not map to database columns
    */
   public static Collection<Property.TransientProperty> getTransientProperties(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getTransientProperties();
+    return DefaultEntityDefinition.getDefinition(entityID).getTransientProperties();
   }
 
   /**
@@ -496,7 +496,7 @@ public final class Entities {
    * identified by <code>entityID</code>
    */
   public static Collection<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getForeignKeyProperties();
+    return DefaultEntityDefinition.getDefinition(entityID).getForeignKeyProperties();
   }
 
   /**
@@ -504,7 +504,7 @@ public final class Entities {
    * @return true if the given entity contains denormalized properties
    */
   public static boolean hasDenormalizedProperties(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).hasDenormalizedProperties();
+    return DefaultEntityDefinition.getDefinition(entityID).hasDenormalizedProperties();
   }
 
   /**
@@ -515,7 +515,7 @@ public final class Entities {
    */
   public static Collection<Property.DenormalizedProperty> getDenormalizedProperties(final String entityID,
                                                                                     final String foreignKeyPropertyID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getDenormalizedProperties(foreignKeyPropertyID);
+    return DefaultEntityDefinition.getDefinition(entityID).getDenormalizedProperties(foreignKeyPropertyID);
   }
 
   /**
@@ -525,7 +525,7 @@ public final class Entities {
    * which source is the entity identified by <code>propertyOwnerEntityID</code>
    */
   public static boolean hasDenormalizedProperties(final String entityID, final String foreignKeyPropertyID) {
-    return EntityDefinitionImpl.getDefinition(entityID).hasDenormalizedProperties(foreignKeyPropertyID);
+    return DefaultEntityDefinition.getDefinition(entityID).hasDenormalizedProperties(foreignKeyPropertyID);
   }
 
   /**
@@ -537,7 +537,7 @@ public final class Entities {
    * @return true if any derived properties are linked to the given property
    */
   public static boolean hasLinkedProperties(final String entityID, final String propertyID) {
-    return EntityDefinitionImpl.getDefinition(entityID).hasLinkedProperties(propertyID);
+    return DefaultEntityDefinition.getDefinition(entityID).hasLinkedProperties(propertyID);
   }
 
   /**
@@ -548,7 +548,7 @@ public final class Entities {
    * @return the IDs of any properties which values are linked to the given property
    */
   public static Collection<String> getLinkedPropertyIDs(final String entityID, final String propertyID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getLinkedPropertyIDs(propertyID);
+    return DefaultEntityDefinition.getDefinition(entityID).getLinkedPropertyIDs(propertyID);
   }
 
   /**
@@ -589,7 +589,7 @@ public final class Entities {
    * @return a map containing the properties the given entity is comprised of, mapped to their respective propertyIDs
    */
   public static Map<String, Property> getProperties(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getProperties();
+    return DefaultEntityDefinition.getDefinition(entityID).getProperties();
   }
 
   /**
@@ -597,7 +597,7 @@ public final class Entities {
    * @return the caption associated with the given entity type
    */
   public static String getCaption(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getCaption();
+    return DefaultEntityDefinition.getDefinition(entityID).getCaption();
   }
 
   /**
@@ -605,14 +605,14 @@ public final class Entities {
    * @return the validator for the given entity type
    */
   public static Entity.Validator getValidator(final String entityID) {
-    return EntityDefinitionImpl.getDefinition(entityID).getValidator();
+    return DefaultEntityDefinition.getDefinition(entityID).getValidator();
   }
 
   /**
    * @return the entityIDs of all defined entities
    */
   public static Collection<String> getDefinedEntities() {
-    return new ArrayList<String>(EntityDefinitionImpl.getDefinitionMap().keySet());
+    return new ArrayList<String>(DefaultEntityDefinition.getDefinitionMap().keySet());
   }
 
   /**
@@ -620,7 +620,7 @@ public final class Entities {
    * @return true if the entity is defined
    */
   public static boolean isDefined(final String entityID) {
-    return EntityDefinitionImpl.getDefinitionMap().containsKey(entityID);
+    return DefaultEntityDefinition.getDefinitionMap().containsKey(entityID);
   }
 
   /**
@@ -636,7 +636,7 @@ public final class Entities {
    */
   public static Map<String, String> getDefinitions(final String domainID) {
     final Map<String, String> definitions = new LinkedHashMap<String, String>();
-    for (final Entity.Definition definition : EntityDefinitionImpl.getDefinitionMap().values()) {
+    for (final Entity.Definition definition : DefaultEntityDefinition.getDefinitionMap().values()) {
       if (domainID == null) {
         definitions.put(definition.getEntityID(), definition.getTableName());
       }

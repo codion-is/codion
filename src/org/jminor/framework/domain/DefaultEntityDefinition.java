@@ -24,7 +24,7 @@ import java.util.Set;
 /**
  * A class encapsulating a entity definition, such as table name, order by clause and properties.
  */
-final class EntityDefinitionImpl implements Entity.Definition {
+final class DefaultEntityDefinition implements Entity.Definition {
 
   private static final Entity.KeyGenerator DEFAULT_KEY_GENERATOR = new DefaultKeyGenerator();
 
@@ -151,7 +151,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
    * @param propertyDefinitions the Property objects this entity should encompass
    * @throws IllegalArgumentException if no primary key property is specified
    */
-  EntityDefinitionImpl(final String entityID, final Property... propertyDefinitions) {
+  DefaultEntityDefinition(final String entityID, final Property... propertyDefinitions) {
     this(entityID, entityID, propertyDefinitions);
   }
 
@@ -162,7 +162,7 @@ final class EntityDefinitionImpl implements Entity.Definition {
    * @param propertyDefinitions the Property objects this entity should encompass
    * @throws IllegalArgumentException if no primary key property is specified
    */
-  EntityDefinitionImpl(final String entityID, final String tableName, final Property... propertyDefinitions) {
+  DefaultEntityDefinition(final String entityID, final String tableName, final Property... propertyDefinitions) {
     Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(tableName, "tableName");
     Util.rejectNullValue(propertyDefinitions, "entityDefinitions");

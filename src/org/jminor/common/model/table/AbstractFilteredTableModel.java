@@ -92,7 +92,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     this.sortModel = sortModel;
     this.columnModel = new DefaultFilteredTableColumnModel<C>(sortModel.getColumns(), columnFilterModels);
     this.selectionModel = new DefaultTableSelectionModel<R>(this);
-    this.filterCriteria = new FilterCriteriaImpl<R, C>(this.columnModel.getColumnFilterModels());
+    this.filterCriteria = new DefaultFilterCriteria<R, C>(this.columnModel.getColumnFilterModels());
     bindEventsInternal();
   }
 
@@ -574,11 +574,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
   }
 
-  private static final class FilterCriteriaImpl<R, C> implements FilterCriteria<R> {
+  private static final class DefaultFilterCriteria<R, C> implements FilterCriteria<R> {
 
     private final Collection<? extends ColumnSearchModel<C>> columnFilters;
 
-    private FilterCriteriaImpl(final Collection<? extends ColumnSearchModel<C>> columnFilters) {
+    private DefaultFilterCriteria(final Collection<? extends ColumnSearchModel<C>> columnFilters) {
       this.columnFilters = columnFilters;
     }
 
