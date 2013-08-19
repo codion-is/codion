@@ -173,8 +173,9 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
 
     final ClientInfo client = new ClientInfo(clientID);
     synchronized (connections) {
-      if (connections.containsKey(client)) {
-        doDisconnect(connections.remove(client));
+      final T connection = connections.remove(client);
+      if (connection != null) {
+        doDisconnect(connection);
       }
     }
   }

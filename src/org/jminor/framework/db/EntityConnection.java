@@ -151,7 +151,7 @@ public interface EntityConnection {
   /**
    * Selects a single entity by key
    * @param key the key of the entity to select
-   * @return an entity of the type <code>entityID</code>, having the key <code>key</code>
+   * @return an entity having the key <code>key</code>
    * @throws DatabaseException in case of a db exception
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
    */
