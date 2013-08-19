@@ -24,13 +24,13 @@ public final class EntityTableCellRenderers {
 
   private static final int SHADE_AMOUNT = 42;
 
-  private final static Color DEFAULT_BACKGROUND;
-  private final static Color SEARCH_BACKGROUND;
-  private final static Color DOUBLE_SEARCH_BACKGROUND;
+  private static final Color DEFAULT_BACKGROUND;
+  private static final Color SEARCH_BACKGROUND;
+  private static final Color DOUBLE_SEARCH_BACKGROUND;
 
-  private final static Color DEFAULT_ALTERNATE_BACKGROUND;
-  private final static Color SEARCH_ALTERNATE_BACKGROUND;
-  private final static Color DOUBLE_ALTERNATE_SEARCH_BACKGROUND;
+  private static final Color DEFAULT_ALTERNATE_BACKGROUND;
+  private static final Color SEARCH_ALTERNATE_BACKGROUND;
+  private static final Color DOUBLE_ALTERNATE_SEARCH_BACKGROUND;
 
   static {
     DEFAULT_BACKGROUND = UIManager.getColor("Table.background");
