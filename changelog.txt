@@ -3585,3 +3585,4 @@
   AbstractRemoteServer.disconnect() minor optimization
   Impl postfix exchanged for Default prefix for consistency
   Events.DefaultEventObserverImpl only fires when it has listeners
+  Entity and Key implementations renamed back to Impl, for serializations sake man

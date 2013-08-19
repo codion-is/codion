@@ -37,7 +37,7 @@ public final class Entities {
    * @return a new {@link Entity} instance
    */
   public static Entity entity(final String entityID) {
-    return new DefaultEntity(DefaultEntityDefinition.getDefinition(entityID));
+    return new EntityImpl(DefaultEntityDefinition.getDefinition(entityID));
   }
 
   /**
@@ -46,7 +46,7 @@ public final class Entities {
    * @return a new {@link Entity} instance
    */
   public static Entity entity(final Entity.Key key) {
-    return new DefaultEntity(DefaultEntityDefinition.getDefinition(key.getEntityID()), key);
+    return new EntityImpl(DefaultEntityDefinition.getDefinition(key.getEntityID()), key);
   }
 
   /**
@@ -57,7 +57,7 @@ public final class Entities {
    * @return a new {@link Entity} instance
    */
   public static Entity entity(final String entityID, final Map<String, Object> values, final Map<String, Object> originalValues) {
-    return new DefaultEntity(DefaultEntityDefinition.getDefinition(entityID), values, originalValues);
+    return new EntityImpl(DefaultEntityDefinition.getDefinition(entityID), values, originalValues);
   }
 
   /**
@@ -66,7 +66,7 @@ public final class Entities {
    * @return a new {@link Entity.Key} instance
    */
   public static Entity.Key key(final String entityID) {
-    return new DefaultEntity.DefaultKey(DefaultEntityDefinition.getDefinition(entityID));
+    return new EntityImpl.KeyImpl(DefaultEntityDefinition.getDefinition(entityID));
   }
 
   /**

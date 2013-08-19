@@ -20,7 +20,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class DefaultEntityTest {
+public class EntityImplTest {
 
   private final int detailId = 1;
   private final int detailInt = 2;
@@ -32,7 +32,7 @@ public class DefaultEntityTest {
 
   private final String masterName = "master";
 
-  public DefaultEntityTest() {
+  public EntityImplTest() {
     EntityTestDomain.init();
     EmpDept.init();
   }
@@ -46,7 +46,7 @@ public class DefaultEntityTest {
     final String originalStringValue = "string value";
     final Entity entity = getDetailEntity(10, 34, 23.4, originalStringValue, new Date(), new Timestamp(System.currentTimeMillis()), true, referencedEntityValue);
     entity.setValue(EntityTestDomain.DETAIL_STRING, "a new String value");
-    final File tmp = File.createTempFile("DefaultEntityTest", "serialization");
+    final File tmp = File.createTempFile("EntityImplTest", "serialization");
     Util.serializeToFile(Arrays.asList(entity), tmp);
     final List<Object> fromFile = Util.deserializeFromFile(tmp);
     assertEquals(1, fromFile.size());
@@ -57,7 +57,7 @@ public class DefaultEntityTest {
     assertEquals(originalStringValue, entityFromFile.getOriginalValue(EntityTestDomain.DETAIL_STRING));
 
     final Entity.Key key = entity.getPrimaryKey();
-    final File tmp2 = File.createTempFile("DefaultEntityTest", "serialization");
+    final File tmp2 = File.createTempFile("EntityImplTest", "serialization");
     Util.serializeToFile(Arrays.asList(key), tmp2);
     final List<Object> keyFromFile = Util.deserializeFromFile(tmp2);
     assertEquals(1, keyFromFile.size());
