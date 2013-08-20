@@ -16,6 +16,7 @@ import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
+import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
@@ -374,8 +375,16 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public void validate() throws ValidationException {
-    validator.validate(entity);
+  public final void validate() throws ValidationException {
+    validate(entity);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void validate(final Collection<? extends ValueMap<String, Object>> valueMaps) throws ValidationException {
+    for (final ValueMap<String, Object> entity : valueMaps) {
+      validate((Entity) entity);
+    }
   }
 
   /** {@inheritDoc} */
@@ -906,6 +915,16 @@ public class DefaultEntityEditModel implements EntityEditModel {
     return EntityUtil.getModifiedEntities(entities);
   }
 
+  /**
+   * Validates the given entity using the internal validator
+   * @param entity the entity to validate
+   * @throws ValidationException
+   * @see #getValidator()
+   */
+  protected void validate(final Entity entity) throws ValidationException {
+    validator.validate(entity);
+  }
+
   private List<Entity> insertEntities(final List<Entity> entities) throws DatabaseException, ValidationException {
     Util.rejectNullValue(entities, "entities");
     if (entities.isEmpty()) {
@@ -921,7 +940,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     LOG.debug("{} - insert {}", this, Util.getCollectionContentsAsString(entities, false));
 
     beforeInsertEvent.fire();
-    validator.validate(entities);
+    validate(entities);
 
     return connectionProvider.getConnection().selectMany(doInsert(entities));
   }

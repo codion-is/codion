@@ -3586,3 +3586,6 @@
   Impl postfix exchanged for Default prefix for consistency
   Events.DefaultEventObserverImpl only fires when it has listeners
   Entity and Key implementations renamed back to Impl, for serializations sake man
+  ValueMapEditModel.validate(final Collection<? extends ValueMap<K, V>> valueMaps) added
+  DefaultEntityEditModel implements the above
+  DefaultEntityEditModel.validate(Entity) added protected

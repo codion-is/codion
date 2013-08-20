@@ -8,6 +8,8 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
+import java.util.Collection;
+
 /**
  * Specifies an object which facilitates the editing of values in a ValueMap
  * @param <K> the type of the value map keys
@@ -109,6 +111,13 @@ public interface ValueMapEditModel<K, V> {
    * @throws ValidationException in case the ValueMap is invalid
    */
   void validate() throws ValidationException;
+
+  /**
+   * Validates the given ValueMaps
+   * @param valueMaps the value maps to validate
+   * @throws ValidationException on finding the first invalid ValueMap
+   */
+  void validate(final Collection<? extends ValueMap<K, V>> valueMaps) throws ValidationException;
 
   /**
    * Returns true if the value associated with the given key is valid, using the <code>validate</code> method

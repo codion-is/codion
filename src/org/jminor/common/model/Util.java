@@ -1014,7 +1014,7 @@ public final class Util {
         for (final Map.Entry entry : properties.entrySet()) {
           final Object key = entry.getKey();
           final String value = (String) properties.get(key);
-          LOG.debug("{} - > {}", key, value);
+          LOG.debug("{} -> {}", key, value);
           if (key.equals(ADDITIONAL_CONFIGURATION_FILES)) {
             additionalConfigurationFiles = value;
           }
