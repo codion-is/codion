@@ -174,13 +174,14 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   }
 
   /**
+   * Returns the value associated with the given property.
+   * Foreign key values which have non-null referencer but have not been loaded are simply returned
+   * as null, use {@link #getForeignKeyValue(org.jminor.framework.domain.Property.ForeignKeyProperty)}
+   * to get an empty entity instance
    * @param property the property for which to retrieve the value
    * @return the value associated with the given property.
-   * {@link Property.ForeignKeyProperty}'s are handled in a specific way,
-   * if the underlying reference property contains a value, that is,
-   * a foreign key value exists but the actual referenced entity has not
-   * been loaded, an "empty" entity is returned, containing only the primary
-   * key value.
+   * @see #getForeignKeyValue(org.jminor.framework.domain.Property.ForeignKeyProperty)
+   * @see #isLoaded(String)
    */
   @Override
   public Object getValue(final Property property) {
@@ -190,9 +191,6 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     }
     if (property instanceof Property.DerivedProperty) {
       return getDerivedValue((Property.DerivedProperty) property);
-    }
-    if (property instanceof Property.ForeignKeyProperty) {
-      return getForeignKeyValue((Property.ForeignKeyProperty) property);
     }
 
     return super.getValue(((DefaultProperty) property).propertyID);
@@ -233,7 +231,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   public Entity getForeignKeyValue(final String foreignKeyPropertyID) {
     final Property property = getProperty(foreignKeyPropertyID);
     if (property instanceof Property.ForeignKeyProperty) {
-      return (Entity) getValue(property.getPropertyID());
+      return getForeignKeyValue((Property.ForeignKeyProperty) property);
     }
 
     throw new IllegalArgumentException(foreignKeyPropertyID + " is not a foreign key property");

@@ -1152,22 +1152,21 @@ public final class EntityUiUtil {
       Util.collate(fkProperties);
       final Entity.Validator validator = Entities.getValidator(entity.getEntityID());
       for (final Property.ForeignKeyProperty property : fkProperties) {
+        final boolean isLoaded = entity.isLoaded(property.getPropertyID());
         final boolean valid = isValid(validator, entity, property);
         final String toolTipText = getReferenceColumnNames(property);
         final boolean fkValueNull = entity.isForeignKeyNull(property);
         if (!fkValueNull) {
-          boolean queried = false;
           final Entity referencedEntity;
-          if (entity.isLoaded(property.getPropertyID())) {
+          if (isLoaded) {
             referencedEntity = entity.getForeignKeyValue(property.getPropertyID());
           }
           else {
             referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedPrimaryKey(property));
             entity.removeValue(property.getPropertyID());
             entity.setValue(property, referencedEntity);
-            queried = true;
           }
-          final String text = "[FK" + (queried ? "+] " : "] ") + property.getCaption() + ": " + referencedEntity.toString();
+          final String text = "[FK" + (isLoaded ? "] " : "+] ") + property.getCaption() + ": " + referencedEntity.toString();
           final JMenu foreignKeyMenu = new JMenu(text);
           if (!valid) {
             setInvalid(foreignKeyMenu);

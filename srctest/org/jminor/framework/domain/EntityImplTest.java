@@ -237,7 +237,7 @@ public class EntityImplTest {
     testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_ID, 10);
 
     assertFalse(testEntity.isLoaded(EntityTestDomain.DETAIL_ENTITY_FK));
-    final Entity referencedEntityValue = (Entity) testEntity.getValue(EntityTestDomain.DETAIL_ENTITY_FK);
+    final Entity referencedEntityValue = testEntity.getForeignKeyValue(EntityTestDomain.DETAIL_ENTITY_FK);
     assertEquals(Integer.valueOf(10), referencedEntityValue.getIntValue(EntityTestDomain.MASTER_ID));
     assertFalse(testEntity.isLoaded(EntityTestDomain.DETAIL_ENTITY_FK));
     assertTrue(testEntity.isValueNull(EntityTestDomain.DETAIL_ENTITY_FK));

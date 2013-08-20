@@ -3589,3 +3589,5 @@
   ValueMapEditModel.validate(final Collection<? extends ValueMap<K, V>> valueMaps) added
   DefaultEntityEditModel implements the above
   DefaultEntityEditModel.validate(Entity) added protected
+  EntityUiUtil.populateForeignKeyMenu() improved
+  EntityImpl.getValue() now returns null for non-loaded foreign key values while getForeignKeyValue() returns a empty entity
