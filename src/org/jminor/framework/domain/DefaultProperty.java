@@ -3,6 +3,8 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.db.ValueConverter;
+import org.jminor.common.db.ValueFetcher;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
@@ -27,8 +29,8 @@ import java.util.Map;
  */
 class DefaultProperty implements Property {
 
-  private static final ColumnProperty.ValueConverter DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
-  private static final ColumnProperty.ValueConverter DATE_VALUE_CONVERTER = new DateValueConverter();
+  private static final ValueConverter DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
+  private static final ValueConverter DATE_VALUE_CONVERTER = new DateValueConverter();
 
   /**
    * The ID of the entity this property is associated with
@@ -1267,7 +1269,7 @@ class DefaultProperty implements Property {
     }
   }
 
-  static final class BooleanValueConverter implements ColumnProperty.ValueConverter {
+  static final class BooleanValueConverter implements ValueConverter {
 
     private final Object trueValue;
     private final Object falseValue;
@@ -1310,7 +1312,7 @@ class DefaultProperty implements Property {
     }
   }
 
-  private static final class DefaultValueConverter implements ColumnProperty.ValueConverter {
+  private static final class DefaultValueConverter implements ValueConverter {
     /** {@inheritDoc} */
     @Override
     public Object toColumnValue(final Object value) {
@@ -1324,7 +1326,7 @@ class DefaultProperty implements Property {
     }
   }
 
-  private static final class DateValueConverter implements ColumnProperty.ValueConverter {
+  private static final class DateValueConverter implements ValueConverter {
     /** {@inheritDoc} */
     @Override
     public Object toColumnValue(final Object value) {

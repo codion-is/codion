@@ -3594,3 +3594,4 @@
   EntityImpl.isValueNull() contract now respected for foreign key properties
   Entities.Validator takes advantage of the above, improved
   EntityImpl.validateValue() optimized, no longer initializes primary keys for entities during cyclical reference check
+  Property.ColumnProperty.ValueConverter and ValueFetcher moved to common.db

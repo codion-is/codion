@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.db.ValueConverter;
 import org.jminor.common.model.Item;
 
 import java.sql.Types;
@@ -318,17 +319,17 @@ public final class Properties {
    * @see org.jminor.framework.Configuration#SQL_BOOLEAN_VALUE_TRUE
    * @see org.jminor.framework.Configuration#SQL_BOOLEAN_VALUE_FALSE
    */
-  public static Property.ColumnProperty.ValueConverter booleanValueConverter() {
+  public static ValueConverter booleanValueConverter() {
     return new DefaultProperty.BooleanValueConverter();
   }
 
   /**
-   * @param trueValue the value used to represent 'true' in the underlying database
-   * @param falseValue the value used to represent 'false' in the underlying database
+   * @param trueValue the value used to represent 'true' in the underlying database, can be null
+   * @param falseValue the value used to represent 'false' in the underlying database, can be null
    * @return a value converter which converts an underlying database representation
    * of a boolean value into an actual Boolean
    */
-  public static Property.ColumnProperty.ValueConverter booleanValueConverter(final Object trueValue, final Object falseValue) {
+  public static ValueConverter booleanValueConverter(final Object trueValue, final Object falseValue) {
     return new DefaultProperty.BooleanValueConverter(trueValue, falseValue);
   }
 }
