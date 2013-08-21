@@ -234,13 +234,16 @@ public class EntityImplTest {
   public void isValueNull() {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, null);
+    assertTrue(testEntity.isValueNull(EntityTestDomain.DETAIL_ENTITY_ID));
+    assertTrue(testEntity.isValueNull(EntityTestDomain.DETAIL_ENTITY_FK));
+    assertTrue(testEntity.isForeignKeyNull(Entities.getForeignKeyProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_ENTITY_FK)));
     testEntity.setValue(EntityTestDomain.DETAIL_ENTITY_ID, 10);
 
     assertFalse(testEntity.isLoaded(EntityTestDomain.DETAIL_ENTITY_FK));
     final Entity referencedEntityValue = testEntity.getForeignKeyValue(EntityTestDomain.DETAIL_ENTITY_FK);
     assertEquals(Integer.valueOf(10), referencedEntityValue.getIntValue(EntityTestDomain.MASTER_ID));
     assertFalse(testEntity.isLoaded(EntityTestDomain.DETAIL_ENTITY_FK));
-    assertTrue(testEntity.isValueNull(EntityTestDomain.DETAIL_ENTITY_FK));
+    assertFalse(testEntity.isValueNull(EntityTestDomain.DETAIL_ENTITY_FK));
     assertFalse(testEntity.isValueNull(EntityTestDomain.DETAIL_ENTITY_ID));
   }
 

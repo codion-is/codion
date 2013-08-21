@@ -1152,10 +1152,10 @@ public final class EntityUiUtil {
       Util.collate(fkProperties);
       final Entity.Validator validator = Entities.getValidator(entity.getEntityID());
       for (final Property.ForeignKeyProperty property : fkProperties) {
+        final boolean fkValueNull = entity.isForeignKeyNull(property);
         final boolean isLoaded = entity.isLoaded(property.getPropertyID());
         final boolean valid = isValid(validator, entity, property);
         final String toolTipText = getReferenceColumnNames(property);
-        final boolean fkValueNull = entity.isForeignKeyNull(property);
         if (!fkValueNull) {
           final Entity referencedEntity;
           if (isLoaded) {

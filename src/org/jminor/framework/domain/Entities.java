@@ -884,8 +884,10 @@ public final class Entities {
     public void validate(final Entity entity, final String propertyID) throws ValidationException {
       Util.rejectNullValue(entity, ENTITY_PARAM);
       final Property property = entity.getProperty(propertyID);
-      if (performNullValidation && !(property instanceof Property.ForeignKeyProperty)) {
-        performNullValidation(entity, property);
+      if (performNullValidation) {
+        if (!(property instanceof Property.ColumnProperty) || !((Property.ColumnProperty) property).isForeignKeyProperty()) {
+          performNullValidation(entity, property);
+        }
       }
       if (property.isNumerical()) {
         performRangeValidation(entity, property);
@@ -919,24 +921,20 @@ public final class Entities {
       Util.rejectNullValue(entity, ENTITY_PARAM);
       Util.rejectNullValue(property, "property");
       if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
-        Property exceptionProperty = property;
-        if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isForeignKeyProperty()) {
-          exceptionProperty = ((Property.ColumnProperty) property).getForeignKeyProperty();
-        }
-        if (entity.getPrimaryKey().isNull() || entity.getOriginalPrimaryKey().isNull()) {
+        if ((entity.getPrimaryKey().isNull() || entity.getOriginalPrimaryKey().isNull()) && !(property instanceof Property.ForeignKeyProperty)) {
           //a new entity being inserted, allow null for columns with default values and auto generated primary key values
           final boolean columnPropertyWithoutDefaultValue = property instanceof Property.ColumnProperty &&
                   !((Property.ColumnProperty) property).columnHasDefaultValue();
           final boolean primaryKeyPropertyWithoutAutoGenerate = property instanceof Property.PrimaryKeyProperty &&
                   getKeyGenerator(entityID).isManual();
           if (columnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
-            throw new NullValidationException(exceptionProperty.getPropertyID(),
-                    FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + exceptionProperty);
+            throw new NullValidationException(property.getPropertyID(),
+                    FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
           }
         }
         else {
-          throw new NullValidationException(exceptionProperty.getPropertyID(),
-                  FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + exceptionProperty);
+          throw new NullValidationException(property.getPropertyID(),
+                  FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
         }
       }
     }

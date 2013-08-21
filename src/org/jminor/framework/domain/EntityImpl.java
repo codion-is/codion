@@ -175,7 +175,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
 
   /**
    * Returns the value associated with the given property.
-   * Foreign key values which have non-null referencer but have not been loaded are simply returned
+   * Foreign key values which have non-null references but have not been loaded are simply returned
    * as null, use {@link #getForeignKeyValue(org.jminor.framework.domain.Property.ForeignKeyProperty)}
    * to get an empty entity instance
    * @param property the property for which to retrieve the value
@@ -198,8 +198,8 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
 
   /**
    * Returns true if the value associated with the given property is null.
-   * In case of {@link Property.ForeignKeyProperty}s the value is considered
-   * to be null if the referenced entity has not been loaded.
+   * In case of foreign key properties the value of the underlying reference
+   * property is checked.
    * @param propertyID the property ID
    * @return true if the value associated with the property is null
    */
@@ -210,9 +210,8 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
 
   /**
    * Returns true if the value associated with the given property is null.
-   * In case of {@link Property.ForeignKeyProperty}s the value is considered
-   * to be null if the referenced entity has not been loaded. Use the underlying
-   * reference property to check if the foreign key value is null.
+   * In case of foreign key properties the value of the underlying reference
+   * property is checked.
    * @param property the property
    * @return true if the value associated with the property is null
    */
@@ -220,7 +219,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   public boolean isValueNull(final Property property) {
     Util.rejectNullValue(property, PROPERTY_PARAM);
     if (property instanceof Property.ForeignKeyProperty) {
-      return !isLoaded(property.getPropertyID());
+      return isForeignKeyNull((Property.ForeignKeyProperty) property);
     }
 
     return super.isValueNull(property.getPropertyID());

@@ -3591,3 +3591,5 @@
   DefaultEntityEditModel.validate(Entity) added protected
   EntityUiUtil.populateForeignKeyMenu() improved
   EntityImpl.getValue() now returns null for non-loaded foreign key values while getForeignKeyValue() returns a empty entity
+  EntityImpl.isValueNull() contract now respected for foreign key properties
+  Entities.Validator takes advantage of the above, improved

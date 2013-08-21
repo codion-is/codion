@@ -87,8 +87,14 @@ public class EntitiesTest {
       assertTrue(e instanceof NullValidationException);
       assertEquals(Chinook.INVOICELINE_INVOICEID_FK, e.getKey());
     }
-    invoiceLine.setValue(Chinook.INVOICELINE_UNITPRICE, null);
     invoiceLine.setValue(Chinook.INVOICELINE_INVOICEID, 1);
+    try {
+      validator.validate(invoiceLine);
+    }
+    catch (ValidationException e) {
+      fail();
+    }
+    invoiceLine.setValue(Chinook.INVOICELINE_UNITPRICE, null);
     try {
       validator.validate(invoiceLine);
       fail();
