@@ -3593,3 +3593,4 @@
   EntityImpl.getValue() now returns null for non-loaded foreign key values while getForeignKeyValue() returns a empty entity
   EntityImpl.isValueNull() contract now respected for foreign key properties
   Entities.Validator takes advantage of the above, improved
+  EntityImpl.validateValue() optimized, no longer initializes primary keys for entities during cyclical reference check

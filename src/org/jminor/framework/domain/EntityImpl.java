@@ -775,7 +775,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     return value;
   }
 
-  private static void validateValue(final Entity entity, final Property property, final Object value) {
+  private static void validateValue(final EntityImpl entity, final Property property, final Object value) {
     if (property instanceof Property.DenormalizedViewProperty) {
       throw new IllegalArgumentException("Can not set the value of a denormalized view property");
     }
@@ -785,9 +785,21 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     if (property instanceof Property.ValueListProperty && value != null && !((Property.ValueListProperty) property).isValid(value)) {
       throw new IllegalArgumentException("Invalid value list value: " + value + " for property " + property.getPropertyID());
     }
-    if (value instanceof Entity && value.equals(entity)) {//todo costs a lot in allocations, primary key initialized during equals
+    if (value instanceof Entity && primaryKeysEqual(entity, (Entity) value)) {
       throw new IllegalArgumentException("Circular entity reference detected: " + entity + "->" + property.getPropertyID());
     }
+  }
+
+  private static boolean primaryKeysEqual(final EntityImpl entity1, final Entity entity2) {
+    if (entity1.getEntityID().equals(entity2.getEntityID())) {
+      for (final Property.PrimaryKeyProperty property : entity1.definition.getPrimaryKeyProperties()) {
+        if (!Util.equal(entity1.getValue(property.getPropertyID()), entity2.getValue(property.getPropertyID()))) {
+          return false;
+        }
+      }
+    }
+
+    return false;
   }
 
   /**
