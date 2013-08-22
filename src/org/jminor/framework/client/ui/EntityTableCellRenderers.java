@@ -53,33 +53,20 @@ public final class EntityTableCellRenderers {
    */
   public static EntityTableCellRenderer getTableCellRenderer(final EntityTableModel tableModel, final Property property) {
     if (property.isBoolean()) {
-      return getBooleanRenderer(tableModel);
+      return booleanTableCellRenderer(tableModel);
     }
     if (property.isInteger() || property.isDouble()) {
-      return getNumberRenderer(tableModel, property.getFormat());
+      return numberTableCellRenderer(tableModel, property.getFormat());
     }
     if (property.isDateOrTime()) {
-      return getDateRenderer(tableModel, property.getFormat());
+      return dateTableCellRenderer(tableModel, property.getFormat());
     }
     else {
       return new DefaultEntityTableCellRenderer(tableModel);
     }
   }
 
-  private static Color shade(final Color color, final int amount) {
-    Util.rejectNullValue(color, "color");
-    int r = color.getRed();
-    int g = color.getGreen();
-    int b = color.getBlue();
-
-    r += r < 128 ? amount : -amount;
-    g += g < 128 ? amount : -amount;
-    b += b < 128 ? amount : -amount;
-
-    return new Color(r, g, b);
-  }
-
-  private static EntityTableCellRenderer getDateRenderer(final EntityTableModel tableModel, final Format format) {
+  public static EntityTableCellRenderer dateTableCellRenderer(final EntityTableModel tableModel, final Format format) {
     return new AlignedFormattedRenderer(tableModel, format, JLabel.RIGHT) {
       /** {@inheritDoc} */
       @Override
@@ -97,7 +84,7 @@ public final class EntityTableCellRenderers {
     };
   }
 
-  private static EntityTableCellRenderer getNumberRenderer(final EntityTableModel tableModel, final Format format) {
+  public static EntityTableCellRenderer numberTableCellRenderer(final EntityTableModel tableModel, final Format format) {
     return new AlignedFormattedRenderer(tableModel, format, JLabel.RIGHT) {
       /** {@inheritDoc} */
       @Override
@@ -112,8 +99,21 @@ public final class EntityTableCellRenderers {
     };
   }
 
-  private static EntityTableCellRenderer getBooleanRenderer(final EntityTableModel tableModel) {
+  public static EntityTableCellRenderer booleanTableCellRenderer(final EntityTableModel tableModel) {
     return new BooleanRenderer(tableModel);
+  }
+
+  private static Color shade(final Color color, final int amount) {
+    Util.rejectNullValue(color, "color");
+    int r = color.getRed();
+    int g = color.getGreen();
+    int b = color.getBlue();
+
+    r += r < 128 ? amount : -amount;
+    g += g < 128 ? amount : -amount;
+    b += b < 128 ? amount : -amount;
+
+    return new Color(r, g, b);
   }
 
   public static class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer implements EntityTableCellRenderer {
@@ -210,11 +210,11 @@ public final class EntityTableCellRenderers {
     }
   }
 
-  public static final class BooleanRenderer extends DefaultEntityTableCellRenderer {
+  private static final class BooleanRenderer extends DefaultEntityTableCellRenderer {
 
     private final JCheckBox checkBox = new JCheckBox();
 
-    public BooleanRenderer(final EntityTableModel tableModel) {
+    private BooleanRenderer(final EntityTableModel tableModel) {
       super(tableModel);
       checkBox.setHorizontalAlignment(CENTER);
       checkBox.setOpaque(true);
