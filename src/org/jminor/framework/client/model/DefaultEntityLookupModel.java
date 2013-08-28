@@ -20,13 +20,16 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -64,6 +67,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   private boolean caseSensitive = false;
   private boolean wildcardPrefix = true;
   private boolean wildcardPostfix = true;
+  private Comparator<Entity> resultSorter = new EntityComparator();
   private String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
   private String multipleValueSeparator = ",";
   private String description;
@@ -117,6 +121,12 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
+  public void setResultSorter(final Comparator<Entity> resultSorter) {
+    this.resultSorter = resultSorter;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final String getDescription() {
     return description;
   }
@@ -142,7 +152,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     if (entities != null && entities.size() > 1 && !multipleSelectionAllowed) {
       throw new IllegalArgumentException("This EntityLookupModel does not allow the selection of multiple entities");
     }
-
+//todo handle non-loaded entities, see if combo box behaves normally
     this.selectedEntities.clear();
     if (entities != null) {
       this.selectedEntities.addAll(entities);
@@ -263,7 +273,12 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   @Override
   public final List<Entity> performQuery() {
     try {
-      return connectionProvider.getConnection().selectMany(getEntitySelectCriteria());
+      final List<Entity> result = connectionProvider.getConnection().selectMany(getEntitySelectCriteria());
+      if (resultSorter != null) {
+        Collections.sort(result, resultSorter);
+      }
+
+      return result;
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -322,7 +337,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     }
 
     return EntityCriteriaUtil.selectCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
-            new CriteriaSet<Property.ColumnProperty>(Conjunction.AND, additionalLookupCriteria, baseCriteria));
+            new CriteriaSet<Property.ColumnProperty>(Conjunction.AND, additionalLookupCriteria, baseCriteria),
+            Entities.getOrderByClause(getEntityID()));
   }
 
   private String toString(final Collection<Entity> entities) {
@@ -337,5 +353,14 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     }
 
     return stringBuilder.toString();
+  }
+
+  private static final class EntityComparator implements Comparator<Entity>, Serializable {
+    private static final long serialVersionUID = 1;
+    /** {@inheritDoc} */
+    @Override
+    public int compare(final Entity o1, final Entity o2) {
+      return o1.compareTo(o2);
+    }
   }
 }
