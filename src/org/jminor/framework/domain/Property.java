@@ -390,7 +390,6 @@ public interface Property extends Attribute {
      * Set a value converter, for converting to and from a sql representation of the value
      */
     ColumnProperty setValueConverter(final ValueConverter valueConverter);
-
   }
 
   /**

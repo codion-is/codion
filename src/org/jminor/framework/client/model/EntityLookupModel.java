@@ -11,6 +11,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -61,6 +62,11 @@ public interface EntityLookupModel extends EntityDataProvider {
    * @param multipleSelectionAllowed if true then selection of multiple entities is allowed
    */
   void setMultipleSelectionAllowed(final boolean multipleSelectionAllowed);
+
+  /**
+   * @param resultSorter the comparator to use to sort the lookup result, null if the result should not be sorted
+   */
+  void setResultSorter(final Comparator<Entity> resultSorter);
 
   /**
    * Refreshes the search text so that is represents the selected entities

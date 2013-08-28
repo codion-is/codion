@@ -42,10 +42,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Collections;
-import java.util.Comparator;
 import java.util.List;
 
 /**
@@ -145,7 +142,6 @@ public final class EntityLookupField extends JTextField {
   }
 
   private boolean selectEntities(final List<Entity> entities) {
-    Collections.sort(entities, new EntityComparator());
     final JList list = new JList(entities.toArray());
     final Window owner = UiUtil.getParentWindow(this);
     final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
@@ -381,15 +377,6 @@ public final class EntityLookupField extends JTextField {
       };
       action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
       UiUtil.displayInDialog(lookupPanel, panel, Messages.get(Messages.SETTINGS), action);
-    }
-  }
-
-  private static final class EntityComparator implements Comparator<Entity>, Serializable {
-    private static final long serialVersionUID = 1;
-    /** {@inheritDoc} */
-    @Override
-    public int compare(final Entity o1, final Entity o2) {
-      return o1.compareTo(o2);
     }
   }
 

@@ -3596,3 +3596,4 @@
   EntityImpl.validateValue() optimized, no longer initializes primary keys for entities during cyclical reference check
   Property.ColumnProperty.ValueConverter and ValueFetcher moved to common.db
   EntityTableCellRenderers, some factory methods made public
+  EntityLookupModel.resultComparator field added

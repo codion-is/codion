@@ -78,7 +78,6 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
    * @param definition the definition of the entity type
    * @param values the values
    * @param originalValues the original values, may be null
-   * @return an initialized Entity
    */
   EntityImpl(final Definition definition, final Map<String, Object> values, final Map<String, Object> originalValues) {
     this(definition);
