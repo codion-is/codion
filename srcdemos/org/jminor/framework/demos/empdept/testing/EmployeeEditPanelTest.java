@@ -5,10 +5,10 @@ package org.jminor.framework.demos.empdept.testing;
 
 import org.jminor.common.model.User;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.ui.EntityEditPanelTestUnit;
 import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
 import org.jminor.framework.demos.empdept.beans.ui.EmployeeEditPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.tools.testing.EntityEditPanelTestUnit;
 
 import org.junit.Test;
 

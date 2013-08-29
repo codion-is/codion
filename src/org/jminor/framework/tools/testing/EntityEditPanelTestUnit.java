@@ -1,17 +1,18 @@
 /*
  * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.ui;
+package org.jminor.framework.tools.testing;
 
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityEditModel;
+import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.db.provider.EntityConnectionProviders;
 
 /**
- * A base class for testing a {@link EntityEditPanel}
+ * A base class for testing a {@link org.jminor.framework.client.ui.EntityEditPanel}
  */
 public abstract class EntityEditPanelTestUnit {
 

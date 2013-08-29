@@ -3597,3 +3597,4 @@
   Property.ColumnProperty.ValueConverter and ValueFetcher moved to common.db
   EntityTableCellRenderers, some factory methods made public
   EntityLookupModel.resultComparator field added
+  EntityEditPanelTestUnit and EntityApplicationPanelTestUnit moved to tools.testing

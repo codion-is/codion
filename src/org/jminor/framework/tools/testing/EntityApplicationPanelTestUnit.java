@@ -1,11 +1,12 @@
-package org.jminor.framework.client.ui;
+package org.jminor.framework.tools.testing;
 
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.client.ui.EntityApplicationPanel;
 
 /**
- * A class for testing {@link EntityApplicationPanel} classes
+ * A class for testing {@link org.jminor.framework.client.ui.EntityApplicationPanel} classes
  */
 public class EntityApplicationPanelTestUnit {
 
