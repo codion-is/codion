@@ -926,8 +926,8 @@ class DefaultProperty implements Property {
     private int fetchDepth = Configuration.getIntValue(Configuration.FOREIGN_KEY_FETCH_DEPTH);
 
     /**
-     * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not
-     * be a underlying table column, it must only be unique for this entity
+     * @param propertyID the property ID, since ForeignKeyProperties are meta properties, the property ID should not
+     * be na underlying table column, it must only be unique for the entity
      * @param caption the property caption
      * @param referencedEntityID the ID of the referenced entity type
      * @param referenceProperty the actual column property involved in the reference
@@ -938,8 +938,8 @@ class DefaultProperty implements Property {
     }
 
     /**
-     * @param propertyID the property ID, since EntityProperties are meta properties, the property ID should not
-     * be a underlying table column, it must only be unique for this entity
+     * @param propertyID the property ID, since ForeignKeyProperties are meta properties, the property ID should not
+     * be na underlying table column, it must only be unique for the entity
      * @param caption the property caption
      * @param referencedEntityID the ID of the referenced entity type
      * @param referenceProperties the actual column properties involved in the reference
