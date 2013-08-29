@@ -153,8 +153,8 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
    * if a wrong username or password is provided
    * @throws ClassNotFoundException in case the database driver class is not found
    */
-  DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final ClientInfo clientInfo, final int port,
-                                final boolean loggingEnabled, final boolean sslEnabled)
+  DefaultRemoteEntityConnection(final ConnectionPool connectionPool, final Database database, final ClientInfo clientInfo,
+                                final int port, final boolean loggingEnabled, final boolean sslEnabled)
           throws DatabaseException, ClassNotFoundException, RemoteException {
     super(port, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());

@@ -117,8 +117,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
                 !keyGenerator.isAutoIncrement(), includeReadOnly, includeNonUpdatable);
         keyGenerator.beforeInsert(entity, firstPrimaryKeyProperty, this);
 
-        final boolean inserting = true;
-        populateStatementPropertiesAndValues(inserting, entity, columnProperties, statementProperties, statementValues);
+        populateStatementPropertiesAndValues(true, entity, columnProperties, statementProperties, statementValues);
 
         insertSQL = createInsertSQL(entityID, statementProperties);
         statement = getConnection().prepareStatement(insertSQL);
@@ -178,8 +177,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
                 includePrimaryKeyProperties, includeReadOnlyProperties, includeNonUpdatableProperties);
 
         for (final Entity entity : hashedEntitiesMapEntry.getValue()) {
-          final boolean inserting = false;
-          populateStatementPropertiesAndValues(inserting, entity, columnProperties, statementProperties, statementValues);
+          populateStatementPropertiesAndValues(false, entity, columnProperties, statementProperties, statementValues);
 
           final List<Property.PrimaryKeyProperty> primaryKeyProperties = Entities.getPrimaryKeyProperties(entityID);
           updateSQL = createUpdateSQL(entity, statementProperties, primaryKeyProperties);
@@ -634,7 +632,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
    * the property values to the current values in the database.
    * The calling method is responsible for releasing the select for update lock.
    * @param entities the entities to check, hashed by entityID
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
+   * @throws DatabaseException in case of a database exception
    * @throws RecordModifiedException in case an entity has been modified, if an entity has been deleted,
    * the <code>modifiedRow</code> provided by the exception is null
    * @throws SQLException in case of an exception
@@ -731,7 +729,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
    * @param entities the entities for which to set the foreign key entity values
    * @param criteria the criteria
    * @param currentForeignKeyFetchDepth the current foreign key fetch depth
-   * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
+   * @throws DatabaseException in case of a database exception
    * @see #setLimitForeignKeyFetchDepth(boolean)
    * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setForeignKeyFetchDepthLimit(int)
    */
