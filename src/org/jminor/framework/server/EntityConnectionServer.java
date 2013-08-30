@@ -375,7 +375,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   protected DefaultRemoteEntityConnection doConnect(final ClientInfo clientInfo) throws RemoteException, ServerException.LoginException {
     try {
       final DefaultRemoteEntityConnection connection;
-      final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(clientInfo.getUser());
+      final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(clientInfo.getDatabaseUser());
       if (connectionPool == null) {
         connection = new DefaultRemoteEntityConnection(database, clientInfo, getServerPort(),
                 clientLoggingEnabled, sslEnabled);
@@ -445,7 +445,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
 
   /**
    * Checks the credentials provided by <code>clientInfo</code> against the credentials
-   * found in the connection pool user
+   * found in the connection pool user, assuming the user names match
    * @param connectionPoolUser the connection pool user credentials
    * @param user the user credentials to check
    * @throws DatabaseException in case the password does not match the one in the connection pool user

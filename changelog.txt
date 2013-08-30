@@ -3598,3 +3598,4 @@
   EntityTableCellRenderers, some factory methods made public
   EntityLookupModel.resultComparator field added
   EntityEditPanelTestUnit and EntityApplicationPanelTestUnit moved to tools.testing
+  EntityConnectionServer.doConnect() bug fixed, clientInfo.getUser() used when getDatabaseUser() was required
