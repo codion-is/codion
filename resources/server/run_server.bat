@@ -1,1 +1,1 @@
-java -Xmx256m -Djminor.configurationFile=h2_embedded.config -Djava.security.policy=config/jminor_server.policy -cp config;lib/* org.jminor.framework.server.EntityConnectionServerAdminImpl %1
+java -Xmx512m -Djminor.configurationFile=h2_embedded.config -Djava.security.policy=config/all_permissions.policy -cp config;lib/* org.jminor.framework.server.EntityConnectionServerAdminImpl %1

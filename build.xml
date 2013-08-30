@@ -519,7 +519,7 @@
       <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
       <jvmarg value="-Djminor.db.embeddedInMemory=${demo.db.embeddedInMemory}"/>
       <jvmarg value="-Djminor.db.initScript=${demo.db.initScript}"/>
-      <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports/"/>
+      <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports"/>
     </java>
   </target>
 
@@ -532,22 +532,22 @@
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports/"/>
+      <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_client.policy"/>
     </java>
   </target>
 
   <target name="run_demo_chinook_load_test" depends="build"
-          description="Runs the EmpDept load testing application with a remote db connection">
-    <java classname="org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest" fork="yes">
+          description="Runs the Chinook load testing application with a remote db connection">
+    <java classname="org.jminor.framework.demos.chinook.testing.ChinookLoadTest" fork="yes">
       <classpath>
         <path refid="classes.base"/>
         <path refid="lib.runtime.client"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports/"/>
+      <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_load_test.policy"/>
     </java>

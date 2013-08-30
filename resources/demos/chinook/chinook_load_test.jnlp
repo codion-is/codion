@@ -10,7 +10,7 @@
   </security>
 
   <resources>
-    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
+    <j2se version="1.7+" href="http://java.sun.com/products/autodl/j2se" />
 
     <jar href="lib/jminor-demos.jar" main="true" />
 

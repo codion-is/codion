@@ -25,7 +25,6 @@ import org.slf4j.LoggerFactory;
 
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
-import java.lang.reflect.InvocationTargetException;
 import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.util.ArrayList;
@@ -105,14 +104,9 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
       }
       loadLoginProxies(loginProxyClassNames);
       setConnectionLimit(connectionLimit);
-      try {
-        webServer = initializeWebServer(webDocumentRoot, webServerPort);
-        if (webServer != null) {
-          startWebServer(webDocumentRoot, webServerPort);
-        }
-      }
-      catch (Exception e) {
-        throw new RuntimeException("Trying to instantiate the web server", e);
+      webServer = initializeWebServer(webDocumentRoot, webServerPort);
+      if (webServer != null) {
+        startWebServer(webDocumentRoot, webServerPort);
       }
     }
     catch (Error e) {
@@ -434,16 +428,19 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
     }
   }
 
-  private AuxiliaryServer initializeWebServer(final String webDocumentRoot, final Integer webServerPort)
-          throws ClassNotFoundException, NoSuchMethodException, IllegalAccessException, InvocationTargetException, InstantiationException {
+  private AuxiliaryServer initializeWebServer(final String webDocumentRoot, final Integer webServerPort) {
     if (Util.nullOrEmpty(webDocumentRoot)) {
       return null;
     }
 
     final String webServerClassName = Configuration.getStringValue(Configuration.WEB_SERVER_IMPLEMENTATION_CLASS);
-
-    return (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
-            EntityConnectionServer.class, String.class, Integer.class).newInstance(this, webDocumentRoot, webServerPort);
+    try {
+      return (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
+              EntityConnectionServer.class, String.class, Integer.class).newInstance(this, webDocumentRoot, webServerPort);
+    }
+    catch (Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
