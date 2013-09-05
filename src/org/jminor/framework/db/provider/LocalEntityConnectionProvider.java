@@ -57,7 +57,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   }
 
   /**
-   * @return the service identifier (sid) of the underlying database or the hostname no sid is available
+   * @return the service identifier (sid) of the underlying database or the hostname if sid is not specified
    */
   @Override
   public String getDescription() {

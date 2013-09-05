@@ -45,7 +45,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    */
   public RemoteEntityConnectionProvider(final User user, final UUID clientID, final String clientTypeID) {
     super(user);
-    Util.rejectNullValue(user, "user");
+    Util.rejectNullValue(clientID, "clientID");
+    Util.rejectNullValue(clientTypeID, "clientTypeID");
     this.serverHostName = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
     this.clientID = clientID;
     this.clientTypeID = clientTypeID;
