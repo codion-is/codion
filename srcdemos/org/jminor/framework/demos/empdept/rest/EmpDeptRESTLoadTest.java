@@ -10,6 +10,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.common.model.tools.ScenarioException;
 import org.jminor.common.ui.tools.LoadTestPanel;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -46,7 +47,7 @@ import java.util.Scanner;
 public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> {
 
   private static final PoolingClientConnectionManager CONNECTION_MANAGER;
-  private static final String HOSTNAME = "localhost";
+  private static final String HOSTNAME = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
   private static final int PORT = 8080;
   private static final String BASEURL = HOSTNAME + ":" + PORT + "/entities/";
   private static final String BASIC = "Basic ";
