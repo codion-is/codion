@@ -193,4 +193,12 @@ public class EntitiesTest {
                     Properties.columnProperty("fk_id")));
     Configuration.setValue(Configuration.STRICT_FOREIGN_KEYS, true);
   }
+
+  @Test (expected = IllegalArgumentException.class)
+  public void setSearchPropertyIDsInvalidProperty() {
+    Entities.define("spids",
+            Properties.primaryKeyProperty("1"),
+            Properties.columnProperty("test"))
+            .setSearchPropertyIDs("invalid");
+  }
 }

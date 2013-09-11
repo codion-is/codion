@@ -57,7 +57,6 @@ public final class Util {
    * The name of the file containing the current version information
    */
   public static final String VERSION_FILE = "version.txt";
-
   /**
    * The name of the preferences key used to save the default username
    */
@@ -66,6 +65,10 @@ public final class Util {
    * The line separator for the current system
    */
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
+  /**
+   * The file separator for the current system
+   */
+  public static final String FILE_SEPARATOR = System.getProperty("file.separator");
   /**
    * The system property key for specifying a ssl truststore
    */

@@ -370,6 +370,10 @@ final class DefaultEntityDefinition implements Entity.Definition {
   public Entity.Definition setSearchPropertyIDs(final String... searchPropertyIDs) {
     Util.rejectNullValue(searchPropertyIDs, "searchPropertyIDs");
     for (final String propertyID : searchPropertyIDs) {
+      final Property property = properties.get(propertyID);
+      if (property == null) {
+        throw new IllegalArgumentException("Property with ID '" + propertyID + "' not found in entity '" + getEntityID() + "'");
+      }
       if (!properties.get(propertyID).isString()) {
         throw new IllegalArgumentException("Entity search property must be of type String: " + properties.get(propertyID));
       }
