@@ -3601,3 +3601,11 @@
   EntityConnectionServer.doConnect() bug fixed, clientInfo.getUser() used when getDatabaseUser() was required
   DefaultEntityDefinition.setSearchPropertyIDs() now handles invalid properties
   Util.FILE_SEPARATOR added
+0.8.0 [incompatible api: EventListener/Observer]
+  AbstractFilteredTableModel, access to visibleItems is now synchronized
+  AbstractFilteredTableModel, addItems() refactored
+  Property.ValueListProperty no longer generic, it gave only an illusion of type safety
+  EventInfoListener split from EventListener
+  EventInfoObserver split from EventObserver
+  EventAdapter removed
+  ValueChangeListener removed

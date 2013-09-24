@@ -3,7 +3,6 @@
  */
 package org.jminor.common.ui.input;
 
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 
 import org.junit.Test;
@@ -35,7 +34,7 @@ public class InputProviderPanelTest {
     assertEquals("hello", panel.getValue());
     assertFalse(panel.isInputAccepted());
     final Collection<Object> event = new ArrayList<Object>();
-    final EventListener listener = new EventAdapter() {
+    final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
         event.add(new Object());

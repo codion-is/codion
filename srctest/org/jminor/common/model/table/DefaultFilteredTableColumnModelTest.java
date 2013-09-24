@@ -3,8 +3,7 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.model.EventAdapter;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventInfoListener;
 
 import org.junit.Test;
 
@@ -23,16 +22,16 @@ public class DefaultFilteredTableColumnModelTest {
     final FilteredTableColumnModel<Integer> testModel = createTestModel();
     final Collection<Object> hidden = new ArrayList<Object>();
     final Collection<Object> shown = new ArrayList<Object>();
-    final EventListener<Integer> hideListener = new EventAdapter<Integer>() {
+    final EventInfoListener<Integer> hideListener = new EventInfoListener<Integer>() {
       @Override
-      public void eventOccurred() {
-        hidden.add(new Object());
+      public void eventOccurred(final Integer info) {
+        hidden.add(info);
       }
     };
-    final EventListener<Integer> showListener = new EventAdapter<Integer>() {
+    final EventInfoListener<Integer> showListener = new EventInfoListener<Integer>() {
       @Override
-      public void eventOccurred() {
-        shown.add(new Object());
+      public void eventOccurred(final Integer info) {
+        shown.add(info);
       }
     };
     testModel.addColumnHiddenListener(hideListener);

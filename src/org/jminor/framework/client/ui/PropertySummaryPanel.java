@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.framework.client.model.PropertySummaryModel;
 
 import javax.swing.AbstractAction;
@@ -30,7 +30,7 @@ public final class PropertySummaryPanel extends JPanel {
    */
   public PropertySummaryPanel(final PropertySummaryModel model) {
     this.model = model;
-    model.addSummaryValueListener(new EventAdapter() {
+    model.addSummaryValueListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -78,7 +78,7 @@ public final class PropertySummaryPanel extends JPanel {
           model.setCurrentSummary(summary);
         }
       });
-      model.addSummaryListener(new EventAdapter() {
+      model.addSummaryListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {

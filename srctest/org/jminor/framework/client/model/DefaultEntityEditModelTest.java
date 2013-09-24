@@ -6,12 +6,11 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
-import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.DefaultEntityConnectionTest;
@@ -163,13 +162,17 @@ public final class DefaultEntityEditModelTest {
     assertTrue(employeeEditModel.getAllowUpdateObserver().isActive());
     assertTrue(employeeEditModel.getAllowDeleteObserver().isActive());
 
-    final EventListener listener = new EventAdapter() {
+    final EventInfoListener infoListener = new EventInfoListener() {
+      @Override
+      public void eventOccurred(final Object eventInfo) {}
+    };
+    employeeEditModel.addAfterDeleteListener(infoListener);
+    employeeEditModel.addAfterInsertListener(infoListener);
+    employeeEditModel.addAfterUpdateListener(infoListener);
+    final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {}
     };
-    employeeEditModel.addAfterDeleteListener(listener);
-    employeeEditModel.addAfterInsertListener(listener);
-    employeeEditModel.addAfterUpdateListener(listener);
     employeeEditModel.addBeforeDeleteListener(listener);
     employeeEditModel.addBeforeInsertListener(listener);
     employeeEditModel.addBeforeUpdateListener(listener);
@@ -249,9 +252,9 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(null);
     assertTrue("Active entity is not null after model is cleared", employeeEditModel.getEntityCopy().isPrimaryKeyNull());
 
-    employeeEditModel.removeAfterDeleteListener(listener);
-    employeeEditModel.removeAfterInsertListener(listener);
-    employeeEditModel.removeAfterUpdateListener(listener);
+    employeeEditModel.removeAfterDeleteListener(infoListener);
+    employeeEditModel.removeAfterInsertListener(infoListener);
+    employeeEditModel.removeAfterUpdateListener(infoListener);
     employeeEditModel.removeBeforeDeleteListener(listener);
     employeeEditModel.removeBeforeInsertListener(listener);
     employeeEditModel.removeBeforeUpdateListener(listener);
@@ -298,7 +301,7 @@ public final class DefaultEntityEditModelTest {
 
       employeeEditModel.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
 
-      employeeEditModel.addAfterInsertListener(new EventAdapter<EntityEditModel.InsertEvent>() {
+      employeeEditModel.addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
         @Override
         public void eventOccurred(final EntityEditModel.InsertEvent eventInfo) {
           assertEquals(department, eventInfo.getInsertedEntities().get(0).getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
@@ -342,7 +345,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       employeeEditModel.setValue(EmpDept.EMPLOYEE_NAME, "BJORN");
       final List<Entity> toUpdate = Arrays.asList(employeeEditModel.getEntityCopy());
-      final EventListener<EntityEditModel.UpdateEvent> listener = new EventAdapter<EntityEditModel.UpdateEvent>() {
+      final EventInfoListener<EntityEditModel.UpdateEvent> listener = new EventInfoListener<EntityEditModel.UpdateEvent>() {
         @Override
         public void eventOccurred(final EntityEditModel.UpdateEvent eventInfo) {
           assertEquals(toUpdate, eventInfo.getUpdatedEntities());
@@ -375,7 +378,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       final List<Entity> toDelete = Arrays.asList(employeeEditModel.getEntityCopy());
-      employeeEditModel.addAfterDeleteListener(new EventAdapter<EntityEditModel.DeleteEvent>() {
+      employeeEditModel.addAfterDeleteListener(new EventInfoListener<EntityEditModel.DeleteEvent>() {
         @Override
         public void eventOccurred(final EntityEditModel.DeleteEvent eventInfo) {
           assertEquals(toDelete, eventInfo.getDeletedEntities());
@@ -435,34 +438,34 @@ public final class DefaultEntityEditModelTest {
     final Collection<Object> valueSetCounter = new ArrayList<Object>();
     final Collection<Object> valueMapSetCounter = new ArrayList<Object>();
 
-    final ValueChangeListener anyValueChangeListener = new ValueChangeListener() {
+    final EventInfoListener<ValueChangeEvent> anyValueChangeListener = new EventInfoListener<ValueChangeEvent>() {
       @Override
-      protected void valueChanged(final ValueChangeEvent event) {
-        anyValueChangeCounter.add(new Object());
+      public void eventOccurred(final ValueChangeEvent event) {
+        anyValueChangeCounter.add(event);
       }
     };
-    final ValueChangeListener valueChangeListener = new ValueChangeListener() {
+    final EventInfoListener<ValueChangeEvent> valueChangeListener = new EventInfoListener<ValueChangeEvent>() {
       @Override
-      protected void valueChanged(final ValueChangeEvent event) {
-        valueChangeCounter.add(new Object());
+      public void eventOccurred(final ValueChangeEvent event) {
+        valueChangeCounter.add(event);
       }
     };
-    final EventListener valueSetListener = new EventAdapter() {
+    final EventInfoListener valueSetListener = new EventInfoListener() {
       @Override
-      public void eventOccurred() {
-        valueSetCounter.add(new Object());
+      public void eventOccurred(final Object eventInfo) {
+        valueSetCounter.add(eventInfo);
       }
     };
-    final EventListener valueMapSetListener = new EventAdapter() {
+    final EventInfoListener valueMapSetListener = new EventInfoListener() {
       @Override
-      public void eventOccurred() {
-        valueMapSetCounter.add(new Object());
+      public void eventOccurred(final Object eventInfo) {
+        valueMapSetCounter.add(eventInfo);
       }
     };
 
     final DefaultEntityEditModel model = new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
 
-    model.getValueChangeObserver().addListener(anyValueChangeListener);
+    model.getValueChangeObserver().addInfoListener(anyValueChangeListener);
     model.addValueListener(EmpDept.DEPARTMENT_ID, valueChangeListener);
     model.addValueSetListener(EmpDept.DEPARTMENT_ID, valueSetListener);
     model.addEntitySetListener(valueMapSetListener);

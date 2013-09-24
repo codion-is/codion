@@ -4,7 +4,6 @@
 package org.jminor.common.ui.table;
 
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.SearchType;
@@ -410,7 +409,7 @@ public class ColumnSearchPanel<K> extends JPanel {
    * Binds events to relevant GUI actions
    */
   private void bindEvents() {
-    advancedSearchState.addListener(new EventAdapter() {
+    advancedSearchState.addListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -423,7 +422,7 @@ public class ColumnSearchPanel<K> extends JPanel {
         }
       }
     });
-    searchModel.addLowerBoundRequiredListener(new EventAdapter() {
+    searchModel.addLowerBoundRequiredListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -570,7 +569,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     dialog.getContentPane().add(searchPanel);
     dialog.pack();
 
-    addAdvancedSearchListener(new EventAdapter() {
+    addAdvancedSearchListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {

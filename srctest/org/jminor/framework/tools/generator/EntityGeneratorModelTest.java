@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.tools.generator;
 
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.SortingDirective;
@@ -131,7 +131,7 @@ public class EntityGeneratorModelTest {
   public void address() {
     assertNotNull(model.getDocument());
     final Collection<Object> counter = new ArrayList<Object>();
-    final EventAdapter listener = new EventAdapter() {
+    final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
         counter.add(new Object());

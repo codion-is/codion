@@ -33,8 +33,8 @@ public class EntityTestDomain {
   public static final String DETAIL_MASTER_CODE = "master_code";
   public static final String DETAIL_INT_VALUE_LIST = "int_value_list";
 
-  private static final List<Item<Integer>> ITEMS = Arrays.asList(new Item<Integer>(0, "0"), new Item<Integer>(1, "1"),
-          new Item<Integer>(2, "2"), new Item<Integer>(3, "3"));
+  private static final List<Item> ITEMS = Arrays.asList(new Item(0, "0"), new Item(1, "1"),
+          new Item(2, "2"), new Item(3, "3"));
 
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 

@@ -3,8 +3,10 @@
  */
 package org.jminor.common.ui.valuemap;
 
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventInfoListener;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.valuemap.ValueChangeEvent;
 import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
@@ -87,15 +89,19 @@ public final class ValueLinkValidators {
       this.component = component;
       this.editModel = editModel;
       this.defaultToolTip = defaultToolTip;
-      final EventAdapter listener = new EventAdapter() {
+      this.editModel.getValidator().addRevalidationListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
           validate();
         }
-      };
-      this.editModel.getValidator().addRevalidationListener(listener);
-      this.editModel.addValueListener(key, listener);
+      });
+      this.editModel.addValueListener(key, new EventInfoListener<ValueChangeEvent>() {
+        @Override
+        public void eventOccurred(final ValueChangeEvent eventInfo) {
+          validate();
+        }
+      });
     }
 
     /**

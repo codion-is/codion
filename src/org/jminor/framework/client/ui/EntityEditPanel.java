@@ -6,7 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Conjunction;
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
@@ -1964,14 +1964,14 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
         EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this, new Point(x, y), getEditModel().getConnectionProvider());
       }
     });
-    editModel.addBeforeRefreshListener(new EventAdapter() {
+    editModel.addBeforeRefreshListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         UiUtil.setWaitCursor(true, EntityEditPanel.this);
       }
     });
-    editModel.addAfterRefreshListener(new EventAdapter() {
+    editModel.addAfterRefreshListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {

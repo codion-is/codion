@@ -7,7 +7,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPools;
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -385,7 +385,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
         connection = new DefaultRemoteEntityConnection(connectionPool, database, clientInfo, getServerPort(),
                 clientLoggingEnabled, sslEnabled);
       }
-      connection.addDisconnectListener(new EventAdapter() {
+      connection.addDisconnectListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {

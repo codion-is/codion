@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -53,7 +52,7 @@ public class DefaultValueMapValidatorTest {
   public void revalidate() {
     final Collection<Object> counter = new ArrayList<Object>();
     final DefaultValueMapValidator<String, ValueMap<String, Integer>> validator = new DefaultValueMapValidator<String, ValueMap<String, Integer>>();
-    final EventListener listener = new EventAdapter() {
+    final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
         counter.add(new Object());

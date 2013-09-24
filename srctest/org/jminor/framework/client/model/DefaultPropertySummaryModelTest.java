@@ -4,7 +4,6 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.framework.domain.Properties;
 
@@ -69,7 +68,7 @@ public class DefaultPropertySummaryModelTest {
     assertEquals("TestProperty", testIntModel.getProperty().getPropertyID());
     assertEquals(DefaultPropertySummaryModel.SummaryType.SUM, testIntModel.getCurrentSummary());
     assertTrue(testIntModel.getAvailableSummaries().size() > 0);
-    final EventListener listener = new EventAdapter() {
+    final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {}
     };

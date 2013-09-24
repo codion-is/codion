@@ -5,18 +5,11 @@ package org.jminor.common.model;
 
 /**
  * An event listener
- * @param <T> the type of information provided by the event this listener is registered for
  */
-public interface EventListener<T> {
+public interface EventListener {
 
   /**
    * Called when an event this listener is registered for occurs
    */
   void eventOccurred();
-
-  /**
-   * Called when an event this listener is registered for occurs
-   * @param eventInfo information relating to the event
-   */
-  void eventOccurred(final T eventInfo);
 }

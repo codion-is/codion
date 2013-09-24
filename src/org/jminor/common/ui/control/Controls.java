@@ -193,7 +193,7 @@ public final class Controls {
    * @param event the event
    * @return a control for firing the given event
    */
-  public static Control eventControl(final Event event) {
+  public static Control eventControl(final Event<ActionEvent> event) {
     return new Control() {
       @Override
       public void actionPerformed(final ActionEvent e) {

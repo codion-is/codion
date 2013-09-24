@@ -3,6 +3,8 @@
  */
 package org.jminor.common.model.valuemap;
 
+import org.jminor.common.model.EventInfoListener;
+
 import org.junit.Assert;
 import org.junit.Test;
 
@@ -47,9 +49,9 @@ public class DefaultValueMapTest {
 
     final ValueMap<String, Integer> valueMap = new DefaultValueMap<String, Integer>();
 
-    final ValueChangeListener<String, Integer> valueListener = new ValueChangeListener<String, Integer>() {
+    final EventInfoListener<ValueChangeEvent> valueListener = new EventInfoListener<ValueChangeEvent>() {
       @Override
-      protected void valueChanged(final ValueChangeEvent<String, Integer> event) {
+      public void eventOccurred(final ValueChangeEvent event) {
         Assert.assertEquals(key, event.getKey());
         event.getOldValue();
         event.getNewValue();

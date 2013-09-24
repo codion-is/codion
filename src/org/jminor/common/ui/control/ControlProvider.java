@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 
@@ -234,7 +234,7 @@ public final class ControlProvider {
       final StateObserver enabledState = controlSet.getEnabledObserver();
       if (enabledState != null) {
         menu.setEnabled(enabledState.isActive());
-        enabledState.addListener(new EventAdapter() {
+        enabledState.addListener(new EventListener() {
           /** {@inheritDoc} */
           @Override
           public void eventOccurred() {

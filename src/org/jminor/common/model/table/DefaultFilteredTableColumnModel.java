@@ -4,7 +4,7 @@
 package org.jminor.common.model.table;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 
@@ -29,8 +29,8 @@ import java.util.Map;
  */
 public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel implements FilteredTableColumnModel<C> {
 
-  private final Event columnHiddenEvent = Events.event();
-  private final Event columnShownEvent = Events.event();
+  private final Event<C> columnHiddenEvent = Events.event();
+  private final Event<C> columnShownEvent = Events.event();
 
   /**
    * The columns available to this table model
@@ -92,7 +92,7 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
         hiddenColumns.remove(columnIdentifier);
         addColumn(column);
         moveColumn(getColumnCount() - 1, 0);
-        columnShownEvent.fire(column.getIdentifier());
+        columnShownEvent.fire((C) column.getIdentifier());
       }
     }
     else {
@@ -100,7 +100,7 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
         final TableColumn column = getTableColumn(columnIdentifier);
         removeColumn(column);
         hiddenColumns.put((C) column.getIdentifier(), column);
-        columnHiddenEvent.fire(column.getIdentifier());
+        columnHiddenEvent.fire((C) column.getIdentifier());
       }
     }
   }
@@ -171,26 +171,26 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
 
   /** {@inheritDoc} */
   @Override
-  public final void addColumnHiddenListener(final EventListener<C> listener) {
-    columnHiddenEvent.addListener(listener);
+  public final void addColumnHiddenListener(final EventInfoListener<C> listener) {
+    columnHiddenEvent.addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeColumnHiddenListener(final EventListener<C> listener) {
-    columnHiddenEvent.removeListener(listener);
+  public final void removeColumnHiddenListener(final EventInfoListener<C> listener) {
+    columnHiddenEvent.removeInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addColumnShownListener(final EventListener<C> listener) {
-    columnShownEvent.addListener(listener);
+  public final void addColumnShownListener(final EventInfoListener<C> listener) {
+    columnShownEvent.addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeColumnShownListener(final EventListener<C> listener) {
-    columnShownEvent.removeListener(listener);
+  public final void removeColumnShownListener(final EventInfoListener<C> listener) {
+    columnShownEvent.removeInfoListener(listener);
   }
 
   /**

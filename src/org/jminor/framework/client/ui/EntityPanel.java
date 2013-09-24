@@ -4,7 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.DefaultExceptionHandler;
 import org.jminor.common.ui.MasterDetailPanel;
@@ -1459,14 +1459,14 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   private void bindEvents() {
-    entityModel.addBeforeRefreshListener(new EventAdapter() {
+    entityModel.addBeforeRefreshListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         UiUtil.setWaitCursor(true, EntityPanel.this);
       }
     });
-    entityModel.addAfterRefreshListener(new EventAdapter() {
+    entityModel.addAfterRefreshListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {

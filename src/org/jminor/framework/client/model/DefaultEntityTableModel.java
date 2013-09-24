@@ -7,7 +7,8 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventInfoListener;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.AbstractFilteredTableModel;
 import org.jminor.common.model.table.AbstractTableSortModel;
@@ -621,14 +622,14 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   private void bindEvents() {
-    getColumnModel().addColumnHiddenListener(new EventAdapter<Property>() {
+    getColumnModel().addColumnHiddenListener(new EventInfoListener<Property>() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred(final Property eventInfo) {
         handleColumnHidden(eventInfo);
       }
     });
-    searchModel.addSimpleSearchListener(new EventAdapter() {
+    searchModel.addSimpleSearchListener(new EventListener() {
       @Override
       public void eventOccurred() {
         refresh();
@@ -637,35 +638,35 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   private void bindEditModelEventsInternal() {
-    editModel.addAfterInsertListener(new EventAdapter<EntityEditModel.InsertEvent>() {
+    editModel.addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred(final EntityEditModel.InsertEvent eventInfo) {
         handleInsert(eventInfo);
       }
     });
-    editModel.addAfterUpdateListener(new EventAdapter<EntityEditModel.UpdateEvent>() {
+    editModel.addAfterUpdateListener(new EventInfoListener<EntityEditModel.UpdateEvent>() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred(final EntityEditModel.UpdateEvent eventInfo) {
         handleUpdate(eventInfo);
       }
     });
-    editModel.addAfterDeleteListener(new EventAdapter<EntityEditModel.DeleteEvent>() {
+    editModel.addAfterDeleteListener(new EventInfoListener<EntityEditModel.DeleteEvent>() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred(final EntityEditModel.DeleteEvent eventInfo) {
         handleDeleteInternal(eventInfo);
       }
     });
-    editModel.addAfterRefreshListener(new EventAdapter() {
+    editModel.addAfterRefreshListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         refresh();
       }
     });
-    editModel.addEntitySetListener(new EventAdapter<Entity>() {
+    editModel.addEntitySetListener(new EventInfoListener<Entity>() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred(final Entity entity) {
@@ -674,7 +675,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
         }
       }
     });
-    getSelectionModel().addSelectedIndexListener(new EventAdapter() {
+    getSelectionModel().addSelectedIndexListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {

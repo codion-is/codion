@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.valuemap.EditModelValues;
@@ -182,11 +181,11 @@ public final class DefaultEntityModelTest {
     assertNotNull(departmentModel.getTableModel());
     assertTrue(departmentModel.containsTableModel());
 
-    final EventListener linkedListener = new EventAdapter() {
+    final EventListener linkedListener = new EventListener() {
       @Override
       public void eventOccurred() {}
     };
-    final EventListener listener = new EventAdapter() {
+    final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
         eventCount++;

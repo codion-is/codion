@@ -3,8 +3,9 @@
  */
 package org.jminor.common.model.valuemap;
 
+import org.jminor.common.model.EventInfoListener;
+import org.jminor.common.model.EventInfoObserver;
 import org.jminor.common.model.EventListener;
-import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
@@ -159,21 +160,21 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @return an EventObserver notified when a value changes.
    * @see org.jminor.common.model.valuemap.ValueChangeEvent
    */
-  EventObserver getValueChangeObserver();
+  EventInfoObserver<ValueChangeEvent> getValueChangeObserver();
 
   /**
-   * Adds a ValueChangeListener, this listener will be notified each time a value changes
+   * Adds a listener, this listener will be notified each time a value changes
    * Adding the same listener multiple times has no effect.
-   * @param valueListener the ValueChangeListener
+   * @param valueListener the listener
    * @see org.jminor.common.model.valuemap.ValueChangeEvent
    */
-  void addValueListener(final ValueChangeListener<K, V> valueListener);
+  void addValueListener(final EventInfoListener<ValueChangeEvent> valueListener);
 
   /**
    * Removes the given value listener if it has been registered with this value map.
-   * @param valueListener the ValueChangeListener to remove
+   * @param valueListener the listener to remove
    */
-  void removeValueListener(final ValueChangeListener valueListener);
+  void removeValueListener(final EventInfoListener<ValueChangeEvent> valueListener);
 
   /**
    * A validator for ValueMaps

@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
@@ -236,7 +235,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     if (!Util.nullOrEmpty(filterEntities)) {
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
     }
-    foreignKeyModel.addSelectionListener(new EventAdapter() {
+    foreignKeyModel.addSelectionListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -245,7 +244,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
                 selectedEntity == null ? new ArrayList<Entity>(0) : Arrays.asList(selectedEntity));
       }
     });
-    addSelectionListener(new EventAdapter() {
+    addSelectionListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -355,7 +354,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     return -1;
   }
 
-  private static final class ForeignKeyModelRefreshListener extends EventAdapter {
+  private static final class ForeignKeyModelRefreshListener implements EventListener {
 
     private final EntityComboBoxModel foreignKeyModel;
 

@@ -16,7 +16,7 @@ public class EventImplTest {
   public void test() throws Exception {
     final Event event = Events.event();
     final List<Object> res = new ArrayList<Object>();
-    final EventListener listener = new EventAdapter() {
+    final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
         res.add(new Object());

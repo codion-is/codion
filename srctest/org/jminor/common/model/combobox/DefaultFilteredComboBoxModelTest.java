@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model.combobox;
 
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilterCriteria;
 
@@ -103,7 +102,7 @@ public class DefaultFilteredComboBoxModelTest {
   @Test
   public void testSelection() {
     final Collection<Object> selectionChangedCounter = new ArrayList<Object>();
-    final EventListener selectionListener = new EventAdapter() {
+    final EventListener selectionListener = new EventListener() {
       @Override
       public void eventOccurred() {
         selectionChangedCounter.add(new Object());
@@ -150,7 +149,7 @@ public class DefaultFilteredComboBoxModelTest {
   @Test
   public void setFilterCriteria() {
     final Collection<Object> filteringEndedCounter = new ArrayList<Object>();
-    final EventListener filteringEndedListener = new EventAdapter() {
+    final EventListener filteringEndedListener = new EventListener() {
       @Override
       public void eventOccurred() {
         filteringEndedCounter.add(new Object());

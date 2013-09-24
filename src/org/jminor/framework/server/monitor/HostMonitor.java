@@ -4,7 +4,7 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.server.RemoteServer;
@@ -49,7 +49,7 @@ public final class HostMonitor {
       for (final String serverName : getRemoteEntityServers(hostName, registryPort)) {
         if (!containsServerMonitor(serverName)) {
           final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverName, registryPort);
-          serverMonitor.getServerShutDownObserver().addListener(new EventAdapter() {
+          serverMonitor.getServerShutDownObserver().addListener(new EventListener() {
             @Override
             public void eventOccurred() {
               removeServer(serverMonitor);

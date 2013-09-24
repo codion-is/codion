@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.framework.db.DefaultEntityConnectionTest;
@@ -127,7 +126,7 @@ public final class DefaultEntityComboBoxModelTest {
   @Test
   public void test() throws DatabaseException {
     final Collection<Object> refreshed = new ArrayList<Object>();
-    final EventListener refreshListener = new EventAdapter() {
+    final EventListener refreshListener = new EventListener() {
       @Override
       public void eventOccurred() {
         refreshed.add(new Object());

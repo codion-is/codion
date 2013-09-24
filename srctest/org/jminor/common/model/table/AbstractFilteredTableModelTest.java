@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilterCriteria;
 
@@ -117,19 +116,19 @@ public final class AbstractFilteredTableModelTest {
     final Collection<Object> started = new ArrayList<Object>();
     final Collection<Object> done = new ArrayList<Object>();
     final Collection<Object> cleared = new ArrayList<Object>();
-    final EventListener startListener = new EventAdapter() {
+    final EventListener startListener = new EventListener() {
       @Override
       public void eventOccurred() {
         started.add(new Object());
       }
     };
-    final EventListener doneListener = new EventAdapter() {
+    final EventListener doneListener = new EventListener() {
       @Override
       public void eventOccurred() {
         done.add(new Object());
       }
     };
-    final EventListener clearedListener = new EventAdapter() {
+    final EventListener clearedListener = new EventListener() {
       @Override
       public void eventOccurred() {
         cleared.add(new Object());
@@ -151,7 +150,7 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void removeItems() {
     final Collection<Object> events = new ArrayList<Object>();
-    final EventListener listener = new EventAdapter() {
+    final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
         events.add(new Object());
@@ -178,7 +177,7 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void removeItemsRange() {
     final Collection<Object> events = new ArrayList<Object>();
-    final EventListener listener = new EventAdapter() {
+    final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
         events.add(new Object());
@@ -357,7 +356,7 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void testSorting() {
     final Collection<Object> actionsPerformed = new ArrayList<Object>();
-    final EventListener listener = new EventAdapter() {
+    final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
         actionsPerformed.add(new Object());
@@ -466,7 +465,7 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void testSelection() {
     final Collection<Object> events = new ArrayList<Object>();
-    final EventListener listener = new EventAdapter() {
+    final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
         events.add(new Object());
@@ -659,7 +658,7 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void testFiltering() throws Exception {
     final Collection<Object> done = new ArrayList<Object>();
-    final EventListener listener = new EventAdapter() {
+    final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
         done.add(new Object());

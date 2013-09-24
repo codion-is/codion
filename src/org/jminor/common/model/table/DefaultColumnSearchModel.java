@@ -5,7 +5,6 @@ package org.jminor.common.model.table;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
@@ -664,7 +663,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   }
 
   private void bindEvents() {
-    final EventListener autoEnableListener = new EventAdapter() {
+    final EventListener autoEnableListener = new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -686,7 +685,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     lowerBoundChangedEvent.addListener(searchStateChangedEvent);
     searchTypeChangedEvent.addListener(searchStateChangedEvent);
     enabledChangedEvent.addListener(searchStateChangedEvent);
-    searchTypeChangedEvent.addListener(new EventAdapter() {
+    searchTypeChangedEvent.addListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {

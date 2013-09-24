@@ -8,7 +8,8 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventInfoListener;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.StateObserver;
@@ -20,7 +21,6 @@ import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
-import org.jminor.common.model.valuemap.ValueChangeListener;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
@@ -249,7 +249,7 @@ public final class EntityUiUtil {
 
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
     entityTablePanel.initializePanel();
-    entityTablePanel.addTableDoubleClickListener(new EventAdapter() {
+    entityTablePanel.addTableDoubleClickListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -507,13 +507,12 @@ public final class EntityUiUtil {
     textField.setEditable(false);
     textField.setFocusable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
-    editModel.addValueListener(foreignKeyProperty.getPropertyID(), new ValueChangeListener() {
+    editModel.addValueListener(foreignKeyProperty.getPropertyID(), new EventInfoListener<ValueChangeEvent>() {
       @Override
-      public void valueChanged(final ValueChangeEvent event) {
+      public void eventOccurred(final ValueChangeEvent event) {
         textField.setText(event.getNewValue() == null ? "" : event.getNewValue().toString());
       }
     });
-
     return textField;
   }
 
@@ -1309,7 +1308,7 @@ public final class EntityUiUtil {
     public void actionPerformed(final ActionEvent e) {
       final EntityEditPanel editPanel = panelProvider.createEditPanel(dataProvider.getConnectionProvider());
       editPanel.initializePanel();
-      editPanel.getEditModel().addAfterInsertListener(new EventAdapter<EntityEditModel.InsertEvent>() {
+      editPanel.getEditModel().addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred(final EntityEditModel.InsertEvent eventInfo) {

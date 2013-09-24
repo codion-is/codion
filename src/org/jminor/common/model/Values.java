@@ -178,9 +178,16 @@ public final class Values {
    */
   private static final class StateValue implements Value<Boolean> {
     private final State state;
+    private final Event<Boolean> changeEvent = Events.event();
 
     private StateValue(final State state) {
       this.state = state;
+      state.addListener(new EventListener() {
+        @Override
+        public void eventOccurred() {
+          changeEvent.fire(state.isActive());
+        }
+      });
     }
 
     /** {@inheritDoc} */
@@ -198,7 +205,7 @@ public final class Values {
     /** {@inheritDoc} */
     @Override
     public EventObserver getChangeEvent() {
-      return state.getStateChangeObserver();
+      return changeEvent.getObserver();
     }
   }
 
@@ -272,7 +279,7 @@ public final class Values {
 
     private void bindEvents(final Value<V> modelValue, final Value<V> uiValue, final boolean readOnly) {
       if (modelValue.getChangeEvent() != null) {
-        modelValue.getChangeEvent().addListener(new EventAdapter() {
+        modelValue.getChangeEvent().addListener(new EventListener() {
           /** {@inheritDoc} */
           @Override
           public void eventOccurred() {
@@ -281,7 +288,7 @@ public final class Values {
         });
       }
       if (!readOnly && uiValue.getChangeEvent() != null) {
-        uiValue.getChangeEvent().addListener(new EventAdapter() {
+        uiValue.getChangeEvent().addListener(new EventListener() {
           /** {@inheritDoc} */
           @Override
           public void eventOccurred() {

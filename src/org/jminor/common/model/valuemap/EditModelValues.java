@@ -3,7 +3,9 @@
  */
 package org.jminor.common.model.valuemap;
 
+import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Value;
 
 /**
@@ -28,6 +30,7 @@ public final class EditModelValues {
   private static final class EditModelValue<V> implements Value<V> {
 
     private final ValueMapEditModel<Object, V> editModel;
+    private final Event<ValueChangeEvent> changeEvent = Events.event();
     private final Object key;
 
     /**
@@ -38,6 +41,7 @@ public final class EditModelValues {
     private EditModelValue(final ValueMapEditModel editModel, final Object key) {
       this.editModel = editModel;
       this.key = key;
+      this.editModel.getValueChangeObserver(key).addInfoListener(changeEvent);
     }
 
     /** {@inheritDoc} */
@@ -55,7 +59,7 @@ public final class EditModelValues {
     /** {@inheritDoc} */
     @Override
     public EventObserver getChangeEvent() {
-      return editModel.getValueChangeObserver(key);
+      return changeEvent.getObserver();
     }
   }
 }

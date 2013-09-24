@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
@@ -56,7 +56,7 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.getRefreshObserver().addListener(new EventAdapter() {
+    model.getRefreshObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         try {
@@ -67,7 +67,7 @@ public final class HostMonitorPanel extends JPanel {
         }
       }
     });
-    model.getServerMonitorRemovedObserver().addListener(new EventAdapter() {
+    model.getServerMonitorRemovedObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         try {

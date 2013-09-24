@@ -8,7 +8,6 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
@@ -173,7 +172,7 @@ public final class EntityGeneratorModel {
   }
 
   private void bindEvents() {
-    tableModel.getSelectionModel().addSelectionChangedListener(new EventAdapter() {
+    tableModel.getSelectionModel().addSelectionChangedListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {

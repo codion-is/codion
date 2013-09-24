@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
@@ -546,8 +546,7 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   private void bindEvents() {
-    final EventListener initializer = new EventAdapter() {
-      /** {@inheritDoc} */
+    final EventListener initializer = new EventListener() {
       @Override
       public void eventOccurred() {
         initializeDetailModels();
@@ -558,26 +557,32 @@ public class DefaultEntityModel implements EntityModel {
       tableModel.getSelectionModel().addSelectionChangedListener(initializer);
     }
     else {
-      editModel.addEntitySetListener(initializer);
+      editModel.addEntitySetListener(new EventInfoListener<Entity>() {
+        /** {@inheritDoc} */
+        @Override
+        public void eventOccurred(final Entity eventInfo) {
+          initializeDetailModels();
+        }
+      });
     }
   }
 
   private void bindMasterModelEvents() {
-    masterModel.getEditModel().addAfterInsertListener(new EventAdapter<EntityEditModel.InsertEvent>() {
+    masterModel.getEditModel().addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred(final EntityEditModel.InsertEvent eventInfo) {
         handleMasterInsert(eventInfo);
       }
     });
-    masterModel.getEditModel().addAfterUpdateListener(new EventAdapter<EntityEditModel.UpdateEvent>() {
+    masterModel.getEditModel().addAfterUpdateListener(new EventInfoListener<EntityEditModel.UpdateEvent>() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred(final EntityEditModel.UpdateEvent eventInfo) {
         handleMasterUpdate(eventInfo);
       }
     });
-    masterModel.getEditModel().addAfterDeleteListener(new EventAdapter<EntityEditModel.DeleteEvent>() {
+    masterModel.getEditModel().addAfterDeleteListener(new EventInfoListener<EntityEditModel.DeleteEvent>() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred(final EntityEditModel.DeleteEvent eventInfo) {

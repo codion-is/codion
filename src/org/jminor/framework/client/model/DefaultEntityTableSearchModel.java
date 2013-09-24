@@ -7,7 +7,6 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
@@ -313,7 +312,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   private void bindEvents() {
     for (final PropertySearchModel searchModel : propertySearchModels.values()) {
-      searchModel.addSearchStateListener(new EventAdapter() {
+      searchModel.addSearchStateListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {

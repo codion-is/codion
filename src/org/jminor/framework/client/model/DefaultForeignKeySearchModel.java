@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.table.DefaultColumnSearchModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -133,7 +133,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
   }
 
   private void bindLookupModelEvents() {
-    entityLookupModel.addSelectedEntitiesListener(new EventAdapter() {
+    entityLookupModel.addSelectedEntitiesListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -147,7 +147,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
         }
       }
     });
-    addUpperBoundListener(new EventAdapter() {
+    addUpperBoundListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -165,7 +165,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
   }
 
   private void bindComboBoxEvents() {
-    entityComboBoxModel.addSelectionListener(new EventAdapter() {
+    entityComboBoxModel.addSelectionListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -174,7 +174,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
         }
       }
     });
-    addUpperBoundListener(new EventAdapter() {
+    addUpperBoundListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -194,7 +194,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
       }
     });
 
-    entityComboBoxModel.addRefreshListener(new EventAdapter() {
+    entityComboBoxModel.addRefreshListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {

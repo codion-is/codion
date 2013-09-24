@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.tools;
 
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 
 import org.junit.Test;
 
@@ -21,7 +21,7 @@ public class ItemRandomizerModelTest {
     final Object three = "three";
 
     final Collection<Object> weightChangeCounter = new ArrayList<Object>();
-    final EventAdapter weightListener = new EventAdapter() {
+    final EventListener weightListener = new EventListener() {
       @Override
       public void eventOccurred() {
         weightChangeCounter.add(new Object());

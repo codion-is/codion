@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
@@ -103,7 +103,7 @@ public final class EntityCriteriaPanel extends JPanel {
     return searchCriteria;
   }
 
-  private static final class RepaintListener extends EventAdapter {
+  private static final class RepaintListener implements EventListener {
     private final JList propertyList;
 
     private RepaintListener(final JList propertyList) {

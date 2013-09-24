@@ -3,8 +3,8 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.model.EventListener;
-import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.EventInfoListener;
+import org.jminor.common.model.EventInfoObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
@@ -36,37 +36,37 @@ public interface ValueMapEditModel<K, V> {
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of <code>key</code> is set via this model
    */
-  void addValueSetListener(final K key, final EventListener listener);
+  void addValueSetListener(final K key, final EventInfoListener<ValueChangeEvent> listener);
 
   /**
    * @param key the key
    * @param listener the listener to remove
    */
-  void removeValueSetListener(final K key, final EventListener listener);
+  void removeValueSetListener(final K key, final EventInfoListener listener);
 
   /**
    * Adds a listener notified each time the value associated with the given key changes
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of <code>key</code> changes
    */
-  void addValueListener(final K key, final EventListener listener);
+  void addValueListener(final K key, final EventInfoListener<ValueChangeEvent> listener);
 
   /**
    * @param key the key
    * @param listener the listener to remove
    */
-  void removeValueListener(final K key, final EventListener listener);
+  void removeValueListener(final K key, final EventInfoListener listener);
 
   /**
    * @return an EventObserver notified each time a value changes
    */
-  EventObserver getValueChangeObserver();
+  EventInfoObserver<ValueChangeEvent> getValueChangeObserver();
 
   /**
    * @param key the key for which to retrieve the event
    * @return an EventObserver notified when the value of <code>key</code> changes
    */
-  EventObserver getValueChangeObserver(K key);
+  EventInfoObserver<ValueChangeEvent> getValueChangeObserver(K key);
 
   /**
    * @return the validator

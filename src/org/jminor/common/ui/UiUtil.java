@@ -7,7 +7,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.StateObserver;
@@ -557,7 +557,7 @@ public final class UiUtil {
   public static Action linkToEnabledState(final StateObserver enabledState, final Action action) {
     if (enabledState != null && action != null) {
       action.setEnabled(enabledState.isActive());
-      enabledState.addListener(new EventAdapter() {
+      enabledState.addListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
@@ -580,7 +580,7 @@ public final class UiUtil {
       for (final JComponent component : components) {
         component.setEnabled(enabledState.isActive());
         component.setFocusable(enabledState.isActive());
-        enabledState.addListener(new EventAdapter() {
+        enabledState.addListener(new EventListener() {
           /** {@inheritDoc} */
           @Override
           public void eventOccurred() {
@@ -1434,7 +1434,7 @@ public final class UiUtil {
     }
     else {
       dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
-      closeEvent.addListener(new EventAdapter() {
+      closeEvent.addListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {

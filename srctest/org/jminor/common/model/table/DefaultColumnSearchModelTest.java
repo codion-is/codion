@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.SearchType;
 
@@ -25,37 +24,37 @@ public class DefaultColumnSearchModelTest {
   final Collection<Object> enabledCounter = new ArrayList<Object>();
   final Collection<Object> clearCounter = new ArrayList<Object>();
 
-  final EventListener upperBoundListener = new EventAdapter() {
+  final EventListener upperBoundListener = new EventListener() {
     @Override
     public void eventOccurred() {
       upperBoundCounter.add(new Object());
     }
   };
-  final EventListener lowerBoundListener = new EventAdapter() {
+  final EventListener lowerBoundListener = new EventListener() {
     @Override
     public void eventOccurred() {
       lowerBoundCounter.add(new Object());
     }
   };
-  final EventListener searchStateListener = new EventAdapter() {
+  final EventListener searchStateListener = new EventListener() {
     @Override
     public void eventOccurred() {
       searchStateCounter.add(new Object());
     }
   };
-  final EventListener searchTypeListener = new EventAdapter() {
+  final EventListener searchTypeListener = new EventListener() {
     @Override
     public void eventOccurred() {
       searchTypeCounter.add(new Object());
     }
   };
-  final EventListener enabledListener = new EventAdapter() {
+  final EventListener enabledListener = new EventListener() {
     @Override
     public void eventOccurred() {
       enabledCounter.add(new Object());
     }
   };
-  final EventListener clearListener = new EventAdapter() {
+  final EventListener clearListener = new EventListener() {
     @Override
     public void eventOccurred() {
       clearCounter.add(new Object());

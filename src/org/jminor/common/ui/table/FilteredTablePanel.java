@@ -5,7 +5,7 @@ package org.jminor.common.ui.table;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.DocumentAdapter;
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.common.model.table.FilteredTableModel;
@@ -437,14 +437,14 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
   @SuppressWarnings({"unchecked"})
   private void bindEvents() {
-    tableModel.addSortingListener(new EventAdapter() {
+    tableModel.addSortingListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         table.getTableHeader().repaint();
       }
     });
-    tableModel.getSelectionModel().addSelectedIndexListener(new EventAdapter() {
+    tableModel.getSelectionModel().addSelectedIndexListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -453,14 +453,14 @@ public class FilteredTablePanel<T, C> extends JPanel {
         }
       }
     });
-    tableModel.addRefreshStartedListener(new EventAdapter() {
+    tableModel.addRefreshStartedListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         UiUtil.setWaitCursor(true, FilteredTablePanel.this);
       }
     });
-    tableModel.addRefreshDoneListener(new EventAdapter() {
+    tableModel.addRefreshDoneListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -470,7 +470,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     for (final TableColumn column : tableModel.getColumnModel().getAllColumns()) {
       final ColumnSearchModel model = tableModel.getColumnModel().getFilterModel((C) column.getIdentifier());
       if (model != null) {
-        model.addSearchStateListener(new EventAdapter() {
+        model.addSearchStateListener(new EventListener() {
           /** {@inheritDoc} */
           @Override
           public void eventOccurred() {

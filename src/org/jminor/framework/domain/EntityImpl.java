@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.DefaultValueMap;
 import org.jminor.common.model.valuemap.ValueChangeEvent;
-import org.jminor.common.model.valuemap.ValueChangeListener;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -503,11 +503,11 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   /** {@inheritDoc} */
   @Override
   protected void handleValueChangedEventInitialized() {
-    addValueListener(new ValueChangeListener<String, Object>() {
+    addValueListener(new EventInfoListener<ValueChangeEvent>() {
       /** {@inheritDoc} */
       @Override
-      protected void valueChanged(final ValueChangeEvent<String, Object> event) {
-        final Collection<String> linkedPropertyIDs = definition.getLinkedPropertyIDs(event.getKey());
+      public void eventOccurred(final ValueChangeEvent event) {
+        final Collection<String> linkedPropertyIDs = definition.getLinkedPropertyIDs((String) event.getKey());
         for (final String propertyID : linkedPropertyIDs) {
           final Object linkedValue = getValue(propertyID);
           notifyValueChange(propertyID, linkedValue, linkedValue, false);

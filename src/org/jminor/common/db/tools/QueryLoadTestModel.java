@@ -10,7 +10,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.LoadTestModel;
@@ -47,7 +47,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
   public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) throws ClassNotFoundException, DatabaseException {
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE, DEFAULT_QUERY_WARNING_TIME_MS);
     this.pool = ConnectionPools.createDefaultConnectionPool(DatabaseConnections.connectionProvider(database, user));
-    addExitListener(new EventAdapter() {
+    addExitListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {

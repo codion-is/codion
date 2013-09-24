@@ -6,7 +6,6 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.StateObserver;
@@ -794,7 +793,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     for (final EntityPanel entityPanel : entityPanels) {
       applicationTabPane.addTab(entityPanel.getCaption(), entityPanel);
       if (entityPanel.getEditPanel() != null) {
-        entityPanel.getEditPanel().getActiveObserver().addListener(new EventAdapter() {
+        entityPanel.getEditPanel().getActiveObserver().addListener(new EventListener() {
           /** {@inheritDoc} */
           @Override
           public void eventOccurred() {
@@ -1074,14 +1073,14 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
 
   private void bindEventsInternal() {
     final StateObserver connected = applicationModel.getConnectionProvider().getConnectedObserver();
-    connected.addActivateListener(new EventAdapter() {
+    connected.addActivateListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         setParentWindowTitle(frameTitle);
       }
     });
-    connected.addDeactivateListener(new EventAdapter() {
+    connected.addDeactivateListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {

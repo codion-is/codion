@@ -3,7 +3,7 @@
  */
 package org.jminor.common.ui.tools;
 
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.ItemRandomizer;
@@ -166,7 +166,7 @@ public final class LoadTestPanel extends JPanel {
   private ItemRandomizerPanel initializeScenarioPanel() {
     final ItemRandomizerPanel<LoadTestModel.UsageScenario> scenarioPanel = new ItemRandomizerPanel<LoadTestModel.UsageScenario>(loadTestModel.getScenarioChooser());
     scenarioPanel.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
-    scenarioPanel.addSelectedItemListener(new EventAdapter() {
+    scenarioPanel.addSelectedItemListener(new EventListener() {
       @Override
       public void eventOccurred() {
         handleScenarioSelected();

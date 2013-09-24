@@ -4,7 +4,6 @@
 package org.jminor.common.model.table;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
@@ -510,7 +509,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       }
     });
     for (final ColumnSearchModel searchModel : columnModel.getColumnFilterModels()) {
-      searchModel.addSearchStateListener(new EventAdapter() {
+      searchModel.addSearchStateListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
@@ -518,7 +517,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         }
       });
     }
-    sortModel.addSortingStateChangedListener(new EventAdapter() {
+    sortModel.addSortingStateChangedListener(new EventListener() {
       @Override
       public void eventOccurred() {
         sortVisibleItems();

@@ -17,21 +17,21 @@ public class StateImplTest {
     final State state = States.state();
     state.getStateChangeObserver();
     final Collection<Object> stateChangeCounter = new ArrayList<Object>();
-    final EventListener stateChangeListener = new EventAdapter() {
+    final EventListener stateChangeListener = new EventListener() {
       @Override
       public void eventOccurred() {
         stateChangeCounter.add(new Object());
       }
     };
     final Collection<Object> activationCounter = new ArrayList<Object>();
-    final EventListener activationListener = new EventAdapter() {
+    final EventListener activationListener = new EventListener() {
       @Override
       public void eventOccurred() {
         activationCounter.add(new Object());
       }
     };
     final Collection<Object> deactivationCounter = new ArrayList<Object>();
-    final EventListener deactivationListener = new EventAdapter() {
+    final EventListener deactivationListener = new EventListener() {
       @Override
       public void eventOccurred() {
         deactivationCounter.add(new Object());
@@ -75,21 +75,21 @@ public class StateImplTest {
   @Test
   public void reversedState() {
     final Collection<Object> stateCounter = new ArrayList<Object>();
-    final EventListener listener = new EventAdapter() {
+    final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
         stateCounter.add(new Object());
       }
     };
     final Collection<Object> reversedStateCounter = new ArrayList<Object>();
-    final EventListener reversedListener = new EventAdapter() {
+    final EventListener reversedListener = new EventListener() {
       @Override
       public void eventOccurred() {
         reversedStateCounter.add(new Object());
       }
     };
     final Collection<Object> reversedReversedStateCounter = new ArrayList<Object>();
-    final EventListener reversedReversedListener = new EventAdapter() {
+    final EventListener reversedReversedListener = new EventListener() {
       @Override
       public void eventOccurred() {
         reversedReversedStateCounter.add(new Object());

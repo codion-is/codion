@@ -9,7 +9,6 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.SerializeException;
@@ -1370,7 +1369,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
       if (searchPanel.canToggleAdvanced()) {
         searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
-        searchPanel.addAdvancedListener(new EventAdapter() {
+        searchPanel.addAdvancedListener(new EventListener() {
           /** {@inheritDoc} */
           @Override
           public void eventOccurred() {
@@ -1453,7 +1452,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
       UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_DELETE, getDeleteSelectedControl());
     }
-    final EventListener statusListener = new EventAdapter() {
+    final EventListener statusListener = new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -1465,7 +1464,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     getEntityTableModel().addTableDataChangedListener(statusListener);
 
     for (final PropertySearchModel searchModel : getEntityTableModel().getSearchModel().getPropertySearchModels()) {
-      searchModel.addSearchStateListener(new EventAdapter() {
+      searchModel.addSearchStateListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
@@ -1476,7 +1475,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
 
     if (getEntityTableModel().hasEditModel()) {
-      getEntityTableModel().getEditModel().addEntitiesChangedListener(new EventAdapter() {
+      getEntityTableModel().getEditModel().addEntitiesChangedListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {

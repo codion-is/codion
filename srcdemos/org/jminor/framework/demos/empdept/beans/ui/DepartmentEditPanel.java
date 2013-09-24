@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
-import org.jminor.common.model.EventAdapter;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
@@ -30,7 +30,7 @@ public class DepartmentEditPanel extends EntityEditPanel {
     txtDepartmentNumber.setColumns(10);
 
     //we don't allow editing of the department number since it's a primary key
-    getEditModel().getPrimaryKeyNullObserver().addListener(new EventAdapter() {
+    getEditModel().getPrimaryKeyNullObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         if (getEditModel().isEntityNew()) {

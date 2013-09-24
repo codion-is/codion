@@ -127,6 +127,16 @@ public final class States {
     }
 
     @Override
+    public void addInfoListener(final EventInfoListener listener) {
+      getObserver().addInfoListener(listener);
+    }
+
+    @Override
+    public void removeInfoListener(final EventInfoListener listener) {
+      getObserver().removeInfoListener(listener);
+    }
+
+    @Override
     public final StateObserver getReversedObserver() {
       return getObserver().getReversedObserver();
     }
@@ -135,7 +145,7 @@ public final class States {
   private static final class DefaultAggregateState extends DefaultState implements State.AggregateState {
 
     private final List<StateObserver> states = new ArrayList<StateObserver>();
-    private final EventListener listener = new EventAdapter() {
+    private final EventListener listener = new EventListener() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
@@ -269,6 +279,16 @@ public final class States {
     }
 
     @Override
+    public void addInfoListener(final EventInfoListener listener) {
+      stateChangedEvent.addInfoListener(listener);
+    }
+
+    @Override
+    public void removeInfoListener(final EventInfoListener listener) {
+      stateChangedEvent.removeInfoListener(listener);
+    }
+
+    @Override
     public void addActivateListener(final EventListener listener) {
       stateActivatedEvent.addListener(listener);
     }
@@ -332,7 +352,7 @@ public final class States {
         members.add(new WeakReference<State>(state));
       }
       updateAccordingToState(state);
-      state.addListener(new EventAdapter() {
+      state.addListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {

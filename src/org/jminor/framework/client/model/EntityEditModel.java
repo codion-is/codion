@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.StateObserver;
@@ -280,7 +281,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
    * @see #addBeforeInsertListener(EventListener)
-   * @see #addAfterInsertListener(EventListener)
+   * @see #addAfterInsertListener(EventInfoListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
   List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException;
@@ -304,7 +305,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
    * @see #addBeforeUpdateListener(EventListener)
-   * @see #addAfterUpdateListener(EventListener)
+   * @see #addAfterUpdateListener(EventInfoListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
   List<Entity> update(final List<Entity> entities) throws DatabaseException, ValidationException;
@@ -314,7 +315,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @return the deleted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @see #addBeforeDeleteListener(EventListener)
-   * @see #addAfterDeleteListener(EventListener)
+   * @see #addAfterDeleteListener(EventInfoListener)
    */
   List<Entity> delete() throws DatabaseException;
 
@@ -324,7 +325,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @return the deleted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @see #addBeforeDeleteListener(EventListener)
-   * @see #addAfterDeleteListener(EventListener)
+   * @see #addAfterDeleteListener(EventInfoListener)
    */
   List<Entity> delete(final List<Entity> entities) throws DatabaseException;
 
@@ -357,12 +358,12 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   /**
    * @param listener a listener notified each time the entity is set
    */
-  void addEntitySetListener(final EventListener<Entity> listener);
+  void addEntitySetListener(final EventInfoListener<Entity> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeEntitySetListener(final EventListener listener);
+  void removeEntitySetListener(final EventInfoListener listener);
 
   /**
    * @param listener a listener to be notified before an insert is performed
@@ -377,12 +378,12 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   /**
    * @param listener a listener to be notified each time a insert has been performed
    */
-  void addAfterInsertListener(final EventListener<InsertEvent> listener);
+  void addAfterInsertListener(final EventInfoListener<InsertEvent> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterInsertListener(final EventListener listener);
+  void removeAfterInsertListener(final EventInfoListener listener);
 
   /**
    * @param listener a listener to be notified before an update is performed
@@ -397,12 +398,12 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   /**
    * @param listener a listener to be notified each time an update has been performed
    */
-  void addAfterUpdateListener(final EventListener<UpdateEvent> listener);
+  void addAfterUpdateListener(final EventInfoListener<UpdateEvent> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterUpdateListener(final EventListener listener);
+  void removeAfterUpdateListener(final EventInfoListener listener);
 
   /**
    * @param listener a listener to be notified before a delete is performed
@@ -417,12 +418,12 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   /**
    * @param listener a listener to be notified each time a delete has been performed
    */
-  void addAfterDeleteListener(final EventListener<DeleteEvent> listener);
+  void addAfterDeleteListener(final EventInfoListener<DeleteEvent> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeAfterDeleteListener(final EventListener listener);
+  void removeAfterDeleteListener(final EventInfoListener listener);
 
   /**
    * @param listener a listener to be notified before a refresh is performed

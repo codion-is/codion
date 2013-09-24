@@ -4,8 +4,8 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventAdapter;
-import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.EventInfoListener;
+import org.jminor.common.model.EventInfoObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
@@ -39,7 +39,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /**
    * Fired when a value changes, null until initialized by a call to getValueChangedEvent().
    */
-  private Event valueChangedEvent;
+  private Event<ValueChangeEvent> valueChangedEvent;
 
   private static final int MAGIC_NUMBER = 23;
 
@@ -286,15 +286,15 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueListener(final ValueChangeListener<K, V> valueListener) {
-    getValueChangeObserver().addListener(valueListener);
+  public final void addValueListener(final EventInfoListener<ValueChangeEvent> valueListener) {
+    getValueChangeObserver().addInfoListener(valueListener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeValueListener(final ValueChangeListener valueListener) {
+  public final void removeValueListener(final EventInfoListener<ValueChangeEvent> valueListener) {
     if (valueChangedEvent != null) {
-      valueChangedEvent.removeListener(valueListener);
+      valueChangedEvent.removeInfoListener(valueListener);
     }
   }
 
@@ -302,10 +302,10 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   @Override
   public final StateObserver getModifiedState() {
     final State state = States.state(isModified());
-    getValueChangeObserver().addListener(new EventAdapter() {
+    getValueChangeObserver().addInfoListener(new EventInfoListener<ValueChangeEvent>() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred() {
+      public void eventOccurred(final ValueChangeEvent eventInfo) {
         state.setActive(isModified());
       }
     });
@@ -315,8 +315,8 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver getValueChangeObserver() {
-    return getValueChangedEvent().getObserver();
+  public final EventInfoObserver<ValueChangeEvent> getValueChangeObserver() {
+    return getValueChangedEvent().getInfoObserver();
   }
 
   protected final void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
@@ -395,7 +395,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     }
   }
 
-  private Event getValueChangedEvent() {
+  private Event<ValueChangeEvent> getValueChangedEvent() {
     if (valueChangedEvent == null) {
       valueChangedEvent = Events.event();
       handleValueChangedEventInitialized();

@@ -1094,9 +1094,9 @@ class DefaultProperty implements Property {
     }
   }
 
-  static final class DefaultValueListProperty<T> extends DefaultColumnProperty implements ValueListProperty<T> {
+  static final class DefaultValueListProperty extends DefaultColumnProperty implements ValueListProperty {
 
-    private final List<Item<T>> values;
+    private final List<Item> values;
 
     /**
      * @param propertyID the property ID
@@ -1105,27 +1105,27 @@ class DefaultProperty implements Property {
      * @param values the values to base this property on
      */
     DefaultValueListProperty(final String propertyID, final int type, final String caption,
-                             final List<Item<T>> values) {
+                             final List<Item> values) {
       super(propertyID, type, caption);
       this.values = Collections.unmodifiableList(values);
     }
 
     /** {@inheritDoc} */
     @Override
-    public boolean isValid(final T value) {
-      return values.contains(new Item<T>(value, ""));
+    public boolean isValid(final Object value) {
+      return values.contains(new Item<Object>(value, ""));
     }
 
     /** {@inheritDoc} */
     @Override
-    public List<Item<T>> getValues() {
+    public List<Item> getValues() {
       return values;
     }
 
     /** {@inheritDoc} */
     @Override
-    public String getCaption(final T value) {
-      final Item<T> item = new Item<T>(value, "");
+    public String getCaption(final Object value) {
+      final Item<Object> item = new Item<Object>(value, "");
       final int index = values.indexOf(item);
       if (index >= 0) {
         return values.get(index).getCaption();
