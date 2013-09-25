@@ -95,9 +95,7 @@ public final class Events {
     /** {@inheritDoc} */
     @Override
     public void removeListener(final EventListener listener) {
-      if (observer != null) {
-        observer.removeListener(listener);
-      }
+      getObserver().removeListener(listener);
     }
 
     /** {@inheritDoc} */
@@ -109,9 +107,7 @@ public final class Events {
     /** {@inheritDoc} */
     @Override
     public void removeInfoListener(final EventInfoListener listener) {
-      if (observer != null) {
-        observer.removeInfoListener(listener);
-      }
+      getObserver().removeInfoListener(listener);
     }
   }
 
