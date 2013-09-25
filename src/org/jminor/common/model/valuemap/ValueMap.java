@@ -4,8 +4,8 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventInfoObserver;
 import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
@@ -156,25 +156,25 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
   StateObserver getModifiedState();
 
   /**
-   * Returns an EventObserver notified each time a value changes, with a {@link ValueChangeEvent} argument.
+   * Returns an EventObserver notified each time a value changes, with a {@link ValueChange} argument.
    * @return an EventObserver notified when a value changes.
-   * @see org.jminor.common.model.valuemap.ValueChangeEvent
+   * @see org.jminor.common.model.valuemap.ValueChange
    */
-  EventInfoObserver<ValueChangeEvent> getValueChangeObserver();
+  EventObserver<ValueChange> getValueChangeObserver();
 
   /**
    * Adds a listener, this listener will be notified each time a value changes
    * Adding the same listener multiple times has no effect.
    * @param valueListener the listener
-   * @see org.jminor.common.model.valuemap.ValueChangeEvent
+   * @see org.jminor.common.model.valuemap.ValueChange
    */
-  void addValueListener(final EventInfoListener<ValueChangeEvent> valueListener);
+  void addValueListener(final EventInfoListener<ValueChange> valueListener);
 
   /**
    * Removes the given value listener if it has been registered with this value map.
    * @param valueListener the listener to remove
    */
-  void removeValueListener(final EventInfoListener<ValueChangeEvent> valueListener);
+  void removeValueListener(final EventInfoListener<ValueChange> valueListener);
 
   /**
    * A validator for ValueMaps

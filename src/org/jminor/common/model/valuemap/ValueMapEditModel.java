@@ -4,7 +4,7 @@
 package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventInfoObserver;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
@@ -36,7 +36,7 @@ public interface ValueMapEditModel<K, V> {
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of <code>key</code> is set via this model
    */
-  void addValueSetListener(final K key, final EventInfoListener<ValueChangeEvent> listener);
+  void addValueSetListener(final K key, final EventInfoListener<ValueChange> listener);
 
   /**
    * @param key the key
@@ -49,7 +49,7 @@ public interface ValueMapEditModel<K, V> {
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of <code>key</code> changes
    */
-  void addValueListener(final K key, final EventInfoListener<ValueChangeEvent> listener);
+  void addValueListener(final K key, final EventInfoListener<ValueChange> listener);
 
   /**
    * @param key the key
@@ -60,13 +60,13 @@ public interface ValueMapEditModel<K, V> {
   /**
    * @return an EventObserver notified each time a value changes
    */
-  EventInfoObserver<ValueChangeEvent> getValueChangeObserver();
+  EventObserver<ValueChange> getValueChangeObserver();
 
   /**
    * @param key the key for which to retrieve the event
    * @return an EventObserver notified when the value of <code>key</code> changes
    */
-  EventInfoObserver<ValueChangeEvent> getValueChangeObserver(K key);
+  EventObserver<ValueChange> getValueChangeObserver(K key);
 
   /**
    * @return the validator

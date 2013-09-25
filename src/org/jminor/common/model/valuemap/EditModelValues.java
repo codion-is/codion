@@ -30,7 +30,7 @@ public final class EditModelValues {
   private static final class EditModelValue<V> implements Value<V> {
 
     private final ValueMapEditModel<Object, V> editModel;
-    private final Event<ValueChangeEvent> changeEvent = Events.event();
+    private final Event<ValueChange> changeEvent = Events.event();
     private final Object key;
 
     /**

@@ -92,7 +92,7 @@ public final class States {
     }
 
     @Override
-    public final EventObserver getStateChangeObserver() {
+    public final EventObserver<Boolean> getStateChangeObserver() {
       return getObserver().getStateChangeObserver();
     }
 
@@ -238,7 +238,7 @@ public final class States {
     private final StateObserver stateObserver;
     private final boolean reversed;
 
-    private final Event stateChangedEvent = Events.event();
+    private final Event<Boolean> stateChangedEvent = Events.event();
     private final Event stateActivatedEvent = Events.event();
     private final Event stateDeactivatedEvent = Events.event();
 
@@ -255,7 +255,7 @@ public final class States {
     }
 
     @Override
-    public EventObserver getStateChangeObserver() {
+    public EventObserver<Boolean> getStateChangeObserver() {
       return stateChangedEvent.getObserver();
     }
 
@@ -279,7 +279,7 @@ public final class States {
     }
 
     @Override
-    public void addInfoListener(final EventInfoListener listener) {
+    public void addInfoListener(final EventInfoListener<Boolean> listener) {
       stateChangedEvent.addInfoListener(listener);
     }
 
@@ -309,7 +309,7 @@ public final class States {
     }
 
     private synchronized void notifyObservers() {
-      stateChangedEvent.fire();
+      stateChangedEvent.fire(isActive());
       if (reversedStateObserver != null) {
         reversedStateObserver.notifyObservers();
       }

@@ -11,7 +11,7 @@ public interface EventInfoListener<T> {
 
   /**
    * Called when an event this listener is registered for occurs
-   * @param eventInfo information relating to the event
+   * @param info information relating to the event
    */
-  void eventOccurred(final T eventInfo);
+  void eventOccurred(final T info);
 }

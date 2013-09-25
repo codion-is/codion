@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 
 public class ValuesTest {
 
-  private final Event integerValueChangeEvent = Events.event();
+  private final Event integerValueChange = Events.event();
   private Integer integerValue = 42;
 
   public Integer getIntegerValue() {
@@ -22,7 +22,7 @@ public class ValuesTest {
   public void setIntegerValue(final Integer integerValue) {
     if (!Util.equal(this.integerValue, integerValue)) {
       this.integerValue = integerValue;
-      integerValueChangeEvent.fire();
+      integerValueChange.fire();
     }
   }
 
@@ -55,7 +55,7 @@ public class ValuesTest {
   @Test
   public void linkValues() {
     final Collection<Object> modelValueEventCounter = new ArrayList<Object>();
-    final Value<Integer> modelValue = Values.beanValue(this, "integerValue", Integer.class, integerValueChangeEvent.getObserver());
+    final Value<Integer> modelValue = Values.beanValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, false);
     modelValue.getChangeEvent().addListener(new EventListener() {
@@ -99,7 +99,7 @@ public class ValuesTest {
   @Test
   public void linkValuesReadOnly() {
     final Collection<Object> modelValueEventCounter = new ArrayList<Object>();
-    final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChangeEvent.getObserver());
+    final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, true);
     modelValue.getChangeEvent().addListener(new EventListener() {
@@ -156,27 +156,27 @@ public class ValuesTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void beanValueNoGetter() {
-    Values.beanValue(this, "nonexistent", Integer.class, integerValueChangeEvent.getObserver());
+    Values.beanValue(this, "nonexistent", Integer.class, integerValueChange.getObserver());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void beanValueNoOwner() {
-    Values.beanValue(null, "integerValue", Integer.class, integerValueChangeEvent.getObserver());
+    Values.beanValue(null, "integerValue", Integer.class, integerValueChange.getObserver());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void beanValueNoPropertyName() {
-    Values.beanValue(this, null, Integer.class, integerValueChangeEvent.getObserver());
+    Values.beanValue(this, null, Integer.class, integerValueChange.getObserver());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void beanValueNoValueClass() {
-    Values.beanValue(this, "integerValue", null, integerValueChangeEvent.getObserver());
+    Values.beanValue(this, "integerValue", null, integerValueChange.getObserver());
   }
 
   @Test(expected = IllegalStateException.class)
   public void setReadOnly() {
-    final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChangeEvent.getObserver());
+    final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChange.getObserver());
     modelValue.set(42);
   }
 }

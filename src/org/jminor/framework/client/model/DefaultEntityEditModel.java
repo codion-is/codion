@@ -6,15 +6,16 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventInfoObserver;
 import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.common.model.valuemap.ValueChangeEvent;
+import org.jminor.common.model.valuemap.ValueChange;
+import org.jminor.common.model.valuemap.ValueChanges;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -115,12 +116,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds events signaling value changes made via the ui
    */
-  private final Map<String, Event<ValueChangeEvent>> valueSetEventMap = new HashMap<String, Event<ValueChangeEvent>>();
+  private final Map<String, Event<ValueChange>> valueSetEventMap = new HashMap<String, Event<ValueChange>>();
 
   /**
    * Holds events signaling value changes made via the model or ui
    */
-  private final Map<String, Event<ValueChangeEvent>> valueChangeEventMap = new HashMap<String, Event<ValueChangeEvent>>();
+  private final Map<String, Event<ValueChange>> valueChangeEventMap = new HashMap<String, Event<ValueChange>>();
 
   /**
    * The validator used by this edit model
@@ -266,19 +267,19 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final EventInfoObserver<ValueChangeEvent> getValueChangeObserver() {
+  public final EventObserver<ValueChange> getValueChangeObserver() {
     return entity.getValueChangeObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventInfoObserver<ValueChangeEvent> getValueChangeObserver(final String propertyID) {
+  public final EventObserver<ValueChange> getValueChangeObserver(final String propertyID) {
     Util.rejectNullValue(propertyID, "propertyID");
     if (!valueChangeEventMap.containsKey(propertyID)) {
-      valueChangeEventMap.put(propertyID, Events.<ValueChangeEvent>event());
+      valueChangeEventMap.put(propertyID, Events.<ValueChange>event());
     }
 
-    return valueChangeEventMap.get(propertyID).getInfoObserver();
+    return valueChangeEventMap.get(propertyID).getObserver();
   }
 
   /** {@inheritDoc} */
@@ -407,7 +408,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     final Object oldValue = entity.getValue(propertyID);
     entity.setValue(propertyID, prepareNewValue(propertyID, value));
     if (!Util.equal(value, oldValue)) {
-      notifyValueSet(propertyID, new ValueChangeEvent<String, Object>(this, propertyID, value, oldValue, initialization));
+      notifyValueSet(propertyID, ValueChanges.valueChange(this, propertyID, value, oldValue, initialization));
     }
   }
 
@@ -718,19 +719,19 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueSetListener(final String propertyID, final EventInfoListener<ValueChangeEvent> listener) {
+  public final void addValueSetListener(final String propertyID, final EventInfoListener<ValueChange> listener) {
     getValueSetEvent(propertyID).addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeValueListener(final String propertyID, final EventInfoListener listener) {
-    getValueChangeEvent(propertyID).removeInfoListener(listener);
+    getValueChange(propertyID).removeInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueListener(final String propertyID, final EventInfoListener<ValueChangeEvent> listener) {
+  public final void addValueListener(final String propertyID, final EventInfoListener<ValueChange> listener) {
     getValueChangeObserver(propertyID).addInfoListener(listener);
   }
 
@@ -950,21 +951,21 @@ public class DefaultEntityEditModel implements EntityEditModel {
    * @param propertyID the propertyID
    * @param event the event describing the value change
    */
-  private void notifyValueSet(final String propertyID, final ValueChangeEvent<String, ?> event) {
+  private void notifyValueSet(final String propertyID, final ValueChange<String, ?> event) {
     getValueSetEvent(propertyID).fire(event);
   }
 
-  private Event<ValueChangeEvent> getValueSetEvent(final String propertyID) {
+  private Event<ValueChange> getValueSetEvent(final String propertyID) {
     if (!valueSetEventMap.containsKey(propertyID)) {
-      valueSetEventMap.put(propertyID, Events.<ValueChangeEvent>event());
+      valueSetEventMap.put(propertyID, Events.<ValueChange>event());
     }
 
     return valueSetEventMap.get(propertyID);
   }
 
-  private Event getValueChangeEvent(final String propertyID) {
+  private Event getValueChange(final String propertyID) {
     if (!valueChangeEventMap.containsKey(propertyID)) {
-      valueChangeEventMap.put(propertyID, Events.<ValueChangeEvent>event());
+      valueChangeEventMap.put(propertyID, Events.<ValueChange>event());
     }
 
     return valueChangeEventMap.get(propertyID);
@@ -974,14 +975,14 @@ public class DefaultEntityEditModel implements EntityEditModel {
     afterDeleteEvent.addListener(entitiesChangedEvent);
     afterInsertEvent.addListener(entitiesChangedEvent);
     afterUpdateEvent.addListener(entitiesChangedEvent);
-    entity.addValueListener(new EventInfoListener<ValueChangeEvent>() {
+    entity.addValueListener(new EventInfoListener<ValueChange>() {
       @Override
-      public void eventOccurred(final ValueChangeEvent event) {
+      public void eventOccurred(final ValueChange info) {
         primaryKeyNullState.setActive(entity.isPrimaryKeyNull());
         validState.setActive(validator.isValid(entity));
-        final Event<ValueChangeEvent> valueChangeEvent = valueChangeEventMap.get(event.getKey());
+        final Event<ValueChange> valueChangeEvent = valueChangeEventMap.get(info.getKey());
         if (valueChangeEvent != null) {
-          valueChangeEvent.fire(event);
+          valueChangeEvent.fire(info);
         }
       }
     });
@@ -989,12 +990,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
       for (final Property property : Entities.getProperties(entityID).values()) {
         addValueSetListener(property.getPropertyID(), new StatusMessageListener());
       }
-      entity.addValueListener(new EventInfoListener<ValueChangeEvent>() {
+      entity.addValueListener(new EventInfoListener<ValueChange>() {
         private final StatusMessageListener messageListener = new StatusMessageListener();
 
         @Override
-        public void eventOccurred(final ValueChangeEvent event) {
-          messageListener.eventOccurred(event);
+        public void eventOccurred(final ValueChange info) {
+          messageListener.eventOccurred(info);
         }
       });
     }
@@ -1008,7 +1009,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     return propertyComboBoxModels.containsKey(property);
   }
 
-  private String getValueChangeDebugString(final ValueChangeEvent event) {
+  private String getValueChangeDebugString(final ValueChange event) {
     final StringBuilder stringBuilder = new StringBuilder();
     if (event.getSource() instanceof Entity) {
       stringBuilder.append("[entity] ");
@@ -1048,11 +1049,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
     return stringBuilder.toString();
   }
 
-  private final class StatusMessageListener implements EventInfoListener<ValueChangeEvent> {
+  private final class StatusMessageListener implements EventInfoListener<ValueChange> {
 
     @Override
-    public void eventOccurred(final ValueChangeEvent event) {
-      final String msg = getValueChangeDebugString(event);
+    public void eventOccurred(final ValueChange info) {
+      final String msg = getValueChangeDebugString(info);
       System.out.println(msg);
       LOG.debug(msg);
     }

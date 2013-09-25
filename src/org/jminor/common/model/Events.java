@@ -34,7 +34,7 @@ public final class Events {
   public static <T> EventInfoListener<T> infoListener(final EventListener listener) {
     return new EventInfoListener<T>() {
       @Override
-      public void eventOccurred(final T eventInfo) {
+      public void eventOccurred(final T info) {
         listener.eventOccurred();
       }
     };
@@ -42,7 +42,7 @@ public final class Events {
 
   private static final class DefaultEvent<T> implements Event<T> {
 
-    private volatile DefaultObserver observer;
+    private volatile DefaultObserver<T> observer;
 
     /** {@inheritDoc} */
     @Override
@@ -52,15 +52,13 @@ public final class Events {
 
     /** {@inheritDoc} */
     @Override
-    public void fire(final T eventInfo) {
+    public void fire(final T info) {
       if (observer != null && observer.hasListeners()) {
-        for (final Object listener : observer.getListeners()) {
-          if (listener instanceof EventListener) {
-            ((EventListener) listener).eventOccurred();
-          }
-          else if (listener instanceof EventInfoListener) {
-            ((EventInfoListener<T>) listener).eventOccurred(eventInfo);
-          }
+        for (final EventListener listener : observer.getListeners()) {
+          listener.eventOccurred();
+        }
+        for (final EventInfoListener<T> infoListener : observer.getInfoListeners()) {
+          infoListener.eventOccurred(info);
         }
       }
     }
@@ -72,13 +70,13 @@ public final class Events {
     }
 
     @Override
-    public void eventOccurred(final T eventInfo) {
-      fire(eventInfo);
+    public void eventOccurred(final T info) {
+      fire(info);
     }
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getObserver() {
+    public EventObserver<T> getObserver() {
       synchronized (this) {
         if (observer == null) {
           observer = new DefaultObserver();
@@ -86,11 +84,6 @@ public final class Events {
       }
 
       return observer;
-    }
-
-    @Override
-    public EventInfoObserver<T> getInfoObserver() {
-      return (EventInfoObserver<T>) getObserver();
     }
 
     /** {@inheritDoc} */
@@ -110,7 +103,7 @@ public final class Events {
     /** {@inheritDoc} */
     @Override
     public void addInfoListener(final EventInfoListener<T> listener) {
-      getInfoObserver().addInfoListener(listener);
+      getObserver().addInfoListener(listener);
     }
 
     /** {@inheritDoc} */
@@ -122,51 +115,51 @@ public final class Events {
     }
   }
 
-  private static final class DefaultObserver implements EventObserver, EventInfoObserver {
+  private static final class DefaultObserver<T> implements EventObserver<T> {
 
-    private final Collection listeners = new ArrayList();
-
-    /** {@inheritDoc} */
-    @Override
-    public void addInfoListener(final EventInfoListener listener) {
-      doAddListener(listener);
-    }
+    private final Collection<EventListener> listeners = new ArrayList<EventListener>(0);
+    private final Collection<EventInfoListener<T>> infoListeners = new ArrayList<EventInfoListener<T>>(0);
 
     /** {@inheritDoc} */
     @Override
-    public void removeInfoListener(final EventInfoListener listener) {
-      doRemoveListener(listener);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public void addListener(final EventListener listener) {
-      doAddListener(listener);
+    public synchronized void addInfoListener(final EventInfoListener<T> listener) {
+      Util.rejectNullValue(listener, "listener");
+      if (!infoListeners.contains(listener)) {
+        infoListeners.add(listener);
+      }
     }
 
     /** {@inheritDoc} */
     @Override
-    public void removeListener(final EventListener listener) {
-      doRemoveListener(listener);
+    public synchronized void removeInfoListener(final EventInfoListener listener) {
+      infoListeners.remove(listener);
     }
 
-    private synchronized Collection<EventInfoListener> getListeners() {
-      return new ArrayList<EventInfoListener>(listeners);
-    }
-
-    private boolean hasListeners() {
-      return !listeners.isEmpty();
-    }
-
-    private void doAddListener(final Object listener) {
+    /** {@inheritDoc} */
+    @Override
+    public synchronized void addListener(final EventListener listener) {
       Util.rejectNullValue(listener, "listener");
       if (!listeners.contains(listener)) {
         listeners.add(listener);
       }
     }
 
-    private void doRemoveListener(final Object listener) {
+    /** {@inheritDoc} */
+    @Override
+    public synchronized void removeListener(final EventListener listener) {
       listeners.remove(listener);
+    }
+
+    private synchronized Collection<EventListener> getListeners() {
+      return new ArrayList<EventListener>(listeners);
+    }
+
+    private synchronized Collection<EventInfoListener<T>> getInfoListeners() {
+      return new ArrayList<EventInfoListener<T>>(infoListeners);
+    }
+
+    private boolean hasListeners() {
+      return !listeners.isEmpty() || !infoListeners.isEmpty();
     }
   }
 }

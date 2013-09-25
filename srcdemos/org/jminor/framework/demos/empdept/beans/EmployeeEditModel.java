@@ -8,7 +8,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.valuemap.ValueChangeEvent;
+import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.framework.client.model.DefaultEntityComboBoxModel;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
@@ -56,15 +56,15 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
     });
     //Filter the manager ComboBoxModel so that only managers from the selected department are shown,
     //this filtering happens each time the department value is changed
-    addValueListener(EMPLOYEE_DEPARTMENT_FK, new EventInfoListener<ValueChangeEvent>() {
+    addValueListener(EMPLOYEE_DEPARTMENT_FK, new EventInfoListener<ValueChange>() {
       @Override
-      public void eventOccurred(final ValueChangeEvent event) {
+      public void eventOccurred(final ValueChange info) {
         //only show managers in the same department as the active entity
         if (containsComboBoxModel(EMPLOYEE_MGR_FK)) {
           getEntityComboBoxModel(EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Entity>() {
             @Override
             public boolean include(final Entity item) {
-              return (Util.equal(item.getForeignKeyValue(EMPLOYEE_DEPARTMENT_FK), event.getNewValue())
+              return (Util.equal(item.getForeignKeyValue(EMPLOYEE_DEPARTMENT_FK), info.getNewValue())
                       && !Util.equal(item, getEntityCopy()));
             }
           });

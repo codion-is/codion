@@ -6,7 +6,7 @@ package org.jminor.framework.domain;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.DefaultValueMap;
-import org.jminor.common.model.valuemap.ValueChangeEvent;
+import org.jminor.common.model.valuemap.ValueChange;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -503,11 +503,11 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   /** {@inheritDoc} */
   @Override
   protected void handleValueChangedEventInitialized() {
-    addValueListener(new EventInfoListener<ValueChangeEvent>() {
+    addValueListener(new EventInfoListener<ValueChange>() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ValueChangeEvent event) {
-        final Collection<String> linkedPropertyIDs = definition.getLinkedPropertyIDs((String) event.getKey());
+      public void eventOccurred(final ValueChange info) {
+        final Collection<String> linkedPropertyIDs = definition.getLinkedPropertyIDs((String) info.getKey());
         for (final String propertyID : linkedPropertyIDs) {
           final Object linkedValue = getValue(propertyID);
           notifyValueChange(propertyID, linkedValue, linkedValue, false);
@@ -516,7 +516,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     });
   }
 
-  private void propagateForeignKeyValues(final DefaultProperty.DefaultForeignKeyProperty foreignKeyProperty, final Entity newValue,
+  private void propagateForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue,
                                          final Map<String, Definition> entityDefinitions) {
     setForeignKeyValues(foreignKeyProperty, newValue, entityDefinitions);
     if (definition.hasDenormalizedProperties()) {
@@ -533,7 +533,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
    * @param referencedEntity the referenced entity
    * @param entityDefinitions a global entity definition map
    */
-  private void setForeignKeyValues(final DefaultProperty.DefaultForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
+  private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
                                    final Map<String, Definition> entityDefinitions) {
     referencedPrimaryKeysCache = null;
     final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
@@ -559,7 +559,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
    * @param referencedEntity the entity value owning the denormalized values
    * @param entityDefinitions a global entity definition map
    */
-  private void setDenormalizedValues(final DefaultProperty.DefaultForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
+  private void setDenormalizedValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
                                      final Map<String, Definition> entityDefinitions) {
     final Collection<Property.DenormalizedProperty> denormalizedProperties =
             definition.getDenormalizedProperties(foreignKeyProperty.getPropertyID());
@@ -710,7 +710,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
 
     toString = null;
     if (property instanceof Property.ForeignKeyProperty) {
-      propagateForeignKeyValues((DefaultProperty.DefaultForeignKeyProperty) property, (Entity) value, entityDefinitions);
+      propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) value, entityDefinitions);
     }
 
     return super.setValue(property.propertyID, property.prepareValue(value));

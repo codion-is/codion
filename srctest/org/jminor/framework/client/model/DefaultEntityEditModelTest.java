@@ -10,7 +10,7 @@ import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.common.model.valuemap.ValueChangeEvent;
+import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.DefaultEntityConnectionTest;
@@ -164,7 +164,7 @@ public final class DefaultEntityEditModelTest {
 
     final EventInfoListener infoListener = new EventInfoListener() {
       @Override
-      public void eventOccurred(final Object eventInfo) {}
+      public void eventOccurred(final Object info) {}
     };
     employeeEditModel.addAfterDeleteListener(infoListener);
     employeeEditModel.addAfterInsertListener(infoListener);
@@ -303,8 +303,8 @@ public final class DefaultEntityEditModelTest {
 
       employeeEditModel.addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
         @Override
-        public void eventOccurred(final EntityEditModel.InsertEvent eventInfo) {
-          assertEquals(department, eventInfo.getInsertedEntities().get(0).getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+        public void eventOccurred(final EntityEditModel.InsertEvent info) {
+          assertEquals(department, info.getInsertedEntities().get(0).getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
         }
       });
       employeeEditModel.setInsertAllowed(false);
@@ -347,8 +347,8 @@ public final class DefaultEntityEditModelTest {
       final List<Entity> toUpdate = Arrays.asList(employeeEditModel.getEntityCopy());
       final EventInfoListener<EntityEditModel.UpdateEvent> listener = new EventInfoListener<EntityEditModel.UpdateEvent>() {
         @Override
-        public void eventOccurred(final EntityEditModel.UpdateEvent eventInfo) {
-          assertEquals(toUpdate, eventInfo.getUpdatedEntities());
+        public void eventOccurred(final EntityEditModel.UpdateEvent info) {
+          assertEquals(toUpdate, info.getUpdatedEntities());
         }
       };
       employeeEditModel.addAfterUpdateListener(listener);
@@ -380,8 +380,8 @@ public final class DefaultEntityEditModelTest {
       final List<Entity> toDelete = Arrays.asList(employeeEditModel.getEntityCopy());
       employeeEditModel.addAfterDeleteListener(new EventInfoListener<EntityEditModel.DeleteEvent>() {
         @Override
-        public void eventOccurred(final EntityEditModel.DeleteEvent eventInfo) {
-          assertEquals(toDelete, eventInfo.getDeletedEntities());
+        public void eventOccurred(final EntityEditModel.DeleteEvent info) {
+          assertEquals(toDelete, info.getDeletedEntities());
         }
       });
       employeeEditModel.setDeleteAllowed(false);
@@ -438,28 +438,28 @@ public final class DefaultEntityEditModelTest {
     final Collection<Object> valueSetCounter = new ArrayList<Object>();
     final Collection<Object> valueMapSetCounter = new ArrayList<Object>();
 
-    final EventInfoListener<ValueChangeEvent> anyValueChangeListener = new EventInfoListener<ValueChangeEvent>() {
+    final EventInfoListener<ValueChange> anyValueChangeListener = new EventInfoListener<ValueChange>() {
       @Override
-      public void eventOccurred(final ValueChangeEvent event) {
-        anyValueChangeCounter.add(event);
+      public void eventOccurred(final ValueChange info) {
+        anyValueChangeCounter.add(info);
       }
     };
-    final EventInfoListener<ValueChangeEvent> valueChangeListener = new EventInfoListener<ValueChangeEvent>() {
+    final EventInfoListener<ValueChange> valueChangeListener = new EventInfoListener<ValueChange>() {
       @Override
-      public void eventOccurred(final ValueChangeEvent event) {
-        valueChangeCounter.add(event);
+      public void eventOccurred(final ValueChange info) {
+        valueChangeCounter.add(info);
       }
     };
     final EventInfoListener valueSetListener = new EventInfoListener() {
       @Override
-      public void eventOccurred(final Object eventInfo) {
-        valueSetCounter.add(eventInfo);
+      public void eventOccurred(final Object info) {
+        valueSetCounter.add(info);
       }
     };
     final EventInfoListener valueMapSetListener = new EventInfoListener() {
       @Override
-      public void eventOccurred(final Object eventInfo) {
-        valueMapSetCounter.add(eventInfo);
+      public void eventOccurred(final Object info) {
+        valueMapSetCounter.add(info);
       }
     };
 

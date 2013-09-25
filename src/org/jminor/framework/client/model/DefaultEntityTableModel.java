@@ -625,8 +625,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     getColumnModel().addColumnHiddenListener(new EventInfoListener<Property>() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final Property eventInfo) {
-        handleColumnHidden(eventInfo);
+      public void eventOccurred(final Property info) {
+        handleColumnHidden(info);
       }
     });
     searchModel.addSimpleSearchListener(new EventListener() {
@@ -641,22 +641,22 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     editModel.addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final EntityEditModel.InsertEvent eventInfo) {
-        handleInsert(eventInfo);
+      public void eventOccurred(final EntityEditModel.InsertEvent info) {
+        handleInsert(info);
       }
     });
     editModel.addAfterUpdateListener(new EventInfoListener<EntityEditModel.UpdateEvent>() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final EntityEditModel.UpdateEvent eventInfo) {
-        handleUpdate(eventInfo);
+      public void eventOccurred(final EntityEditModel.UpdateEvent info) {
+        handleUpdate(info);
       }
     });
     editModel.addAfterDeleteListener(new EventInfoListener<EntityEditModel.DeleteEvent>() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final EntityEditModel.DeleteEvent eventInfo) {
-        handleDeleteInternal(eventInfo);
+      public void eventOccurred(final EntityEditModel.DeleteEvent info) {
+        handleDeleteInternal(info);
       }
     });
     editModel.addAfterRefreshListener(new EventListener() {
@@ -669,8 +669,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     editModel.addEntitySetListener(new EventInfoListener<Entity>() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final Entity entity) {
-        if (entity == null && !getSelectionModel().isSelectionEmpty()) {
+      public void eventOccurred(final Entity info) {
+        if (info == null && !getSelectionModel().isSelectionEmpty()) {
           getSelectionModel().clearSelection();
         }
       }

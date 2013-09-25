@@ -18,7 +18,7 @@ package org.jminor.common.model;
  * event.fire();
  * </pre>
  */
-public interface Event<T> extends EventListener, EventInfoListener<T>, EventObserver, EventInfoObserver<T> {
+public interface Event<T> extends EventListener, EventInfoListener<T>, EventObserver<T> {
 
   /**
    * Notifies all listeners that this event has occurred
@@ -27,17 +27,12 @@ public interface Event<T> extends EventListener, EventInfoListener<T>, EventObse
 
   /**
    * Notifies all listeners that this event has occurred
-   * @param eventInfo information to propagate to listeners when notifying
+   * @param info information to propagate to listeners when notifying
    */
-  void fire(final T eventInfo);
+  void fire(final T info);
 
   /**
    * @return an observer notified each time this event fires
    */
-  EventObserver getObserver();
-
-  /**
-   * @return an observer notified each time this event fires with some information attached
-   */
-  EventInfoObserver<T> getInfoObserver();
+  EventObserver<T> getObserver();
 }

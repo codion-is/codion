@@ -49,17 +49,17 @@ public class DefaultValueMapTest {
 
     final ValueMap<String, Integer> valueMap = new DefaultValueMap<String, Integer>();
 
-    final EventInfoListener<ValueChangeEvent> valueListener = new EventInfoListener<ValueChangeEvent>() {
+    final EventInfoListener<ValueChange> valueListener = new EventInfoListener<ValueChange>() {
       @Override
-      public void eventOccurred(final ValueChangeEvent event) {
-        Assert.assertEquals(key, event.getKey());
-        event.getOldValue();
-        event.getNewValue();
-        event.isInitialization();
-        event.isNewValueEqual(null);
-        event.isNewValueNull();
-        event.isOldValueEqual(null);
-        event.isOldValueNull();
+      public void eventOccurred(final ValueChange info) {
+        Assert.assertEquals(key, info.getKey());
+        info.getOldValue();
+        info.getNewValue();
+        info.isInitialization();
+        info.isNewValueEqual(null);
+        info.isNewValueNull();
+        info.isOldValueEqual(null);
+        info.isOldValueNull();
       }
     };
     valueMap.addValueListener(valueListener);

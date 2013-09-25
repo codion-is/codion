@@ -20,7 +20,7 @@ import org.jminor.common.model.checkbox.TristateButtonModel;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
 import org.jminor.common.model.valuemap.EditModelValues;
-import org.jminor.common.model.valuemap.ValueChangeEvent;
+import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.TextInputPanel;
@@ -109,11 +109,11 @@ public final class EntityUiUtil {
    * @param dialogParent the component serving as a dialog parent
    */
   public static void setLoggingLevel(final JComponent dialogParent) {
-    final DefaultComboBoxModel model = new DefaultComboBoxModel(
-            new Object[] {Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR});
+    final DefaultComboBoxModel<Level> model = new DefaultComboBoxModel<Level>(
+            new Level[] {Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR});
     final ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     model.setSelectedItem(rootLogger.getLevel());
-    JOptionPane.showMessageDialog(dialogParent, new JComboBox(model),
+    JOptionPane.showMessageDialog(dialogParent, new JComboBox<Level>(model),
             FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL), JOptionPane.QUESTION_MESSAGE);
     rootLogger.setLevel((Level) model.getSelectedItem());
   }
@@ -507,10 +507,10 @@ public final class EntityUiUtil {
     textField.setEditable(false);
     textField.setFocusable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
-    editModel.addValueListener(foreignKeyProperty.getPropertyID(), new EventInfoListener<ValueChangeEvent>() {
+    editModel.addValueListener(foreignKeyProperty.getPropertyID(), new EventInfoListener<ValueChange>() {
       @Override
-      public void eventOccurred(final ValueChangeEvent event) {
-        textField.setText(event.getNewValue() == null ? "" : event.getNewValue().toString());
+      public void eventOccurred(final ValueChange info) {
+        textField.setText(info.getNewValue() == null ? "" : info.getNewValue().toString());
       }
     });
     return textField;
@@ -1311,9 +1311,9 @@ public final class EntityUiUtil {
       editPanel.getEditModel().addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
         /** {@inheritDoc} */
         @Override
-        public void eventOccurred(final EntityEditModel.InsertEvent eventInfo) {
+        public void eventOccurred(final EntityEditModel.InsertEvent info) {
           lastInsertedEntities.clear();
-          lastInsertedEntities.addAll(eventInfo.getInsertedEntities());
+          lastInsertedEntities.addAll(info.getInsertedEntities());
         }
       });
       final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);

@@ -6,7 +6,7 @@ package org.jminor.common.model;
 /**
  * Specifies an Event observer, managing listeners for an Event.
  */
-public interface EventObserver {
+public interface EventObserver<T> {
 
   /**
    * Adds <code>listener</code> to this EventObserver, adding the same listener
@@ -22,4 +22,19 @@ public interface EventObserver {
    * @param listener the listener to remove
    */
   void removeListener(final EventListener listener);
+
+  /**
+   * Adds <code>listener</code> to this EventObserver, adding the same listener
+   * a second time has no effect.
+   * Adding a listener does not prevent it from being garbage collected.
+   * @param listener the listener to add
+   * @throws IllegalArgumentException in case listener is null
+   */
+  void addInfoListener(final EventInfoListener<T> listener);
+
+  /**
+   * Removes <code>listener</code> from this EventObserver
+   * @param listener the listener to remove
+   */
+  void removeInfoListener(final EventInfoListener listener);
 }

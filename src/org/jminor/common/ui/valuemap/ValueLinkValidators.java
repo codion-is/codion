@@ -6,7 +6,7 @@ package org.jminor.common.ui.valuemap;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.valuemap.ValueChangeEvent;
+import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
@@ -96,9 +96,9 @@ public final class ValueLinkValidators {
           validate();
         }
       });
-      this.editModel.addValueListener(key, new EventInfoListener<ValueChangeEvent>() {
+      this.editModel.addValueListener(key, new EventInfoListener<ValueChange>() {
         @Override
-        public void eventOccurred(final ValueChangeEvent eventInfo) {
+        public void eventOccurred(final ValueChange info) {
           validate();
         }
       });

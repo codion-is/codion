@@ -3,7 +3,7 @@ package org.jminor.common.model;
 /**
  * Specifies an observer for a {@link State} instance.
  */
-public interface StateObserver extends EventObserver, EventInfoObserver {
+public interface StateObserver extends EventObserver<Boolean> {
 
   /**
    * @return true if the state being observed is active, false otherwise
@@ -13,7 +13,7 @@ public interface StateObserver extends EventObserver, EventInfoObserver {
   /**
    * @return an EventObserver notified each time the observed state changes
    */
-  EventObserver getStateChangeObserver();
+  EventObserver<Boolean> getStateChangeObserver();
 
   /**
    * @return A StateObserver object that is always the reverse of the parent state

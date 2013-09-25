@@ -3609,3 +3609,5 @@
   EventInfoObserver split from EventObserver
   EventAdapter removed
   ValueChangeListener removed
+  ValueChangeEvent replaced with ValueChange interface and ValueChanges factory class
+  EventInfoObserver merged into EventObserver
