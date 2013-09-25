@@ -79,7 +79,7 @@ public final class Events {
     public EventObserver<T> getObserver() {
       synchronized (this) {
         if (observer == null) {
-          observer = new DefaultObserver();
+          observer = new DefaultObserver<T>();
         }
       }
 
