@@ -127,7 +127,7 @@ public final class UiValues {
 
     /** {@inheritDoc} */
     @Override
-    public final EventObserver getChangeEvent() {
+    public final EventObserver getChangeObserver() {
       return changeEvent.getObserver();
     }
 

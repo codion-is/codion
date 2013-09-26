@@ -250,7 +250,7 @@ public final class Controls {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeEvent() {
+    public EventObserver getChangeObserver() {
       return changeEvent.getObserver();
     }
   }

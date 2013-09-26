@@ -23,5 +23,5 @@ public interface Value<V> {
   /**
    * @return an event observer notified when the value changes
    */
-  EventObserver getChangeEvent();
+  EventObserver getChangeObserver();
 }

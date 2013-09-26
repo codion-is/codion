@@ -101,7 +101,7 @@ public final class Values {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeEvent() {
+    public EventObserver getChangeObserver() {
       return changeEvent.getObserver();
     }
   }
@@ -168,7 +168,7 @@ public final class Values {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeEvent() {
+    public EventObserver getChangeObserver() {
       return changeEvent;
     }
   }
@@ -204,7 +204,7 @@ public final class Values {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeEvent() {
+    public EventObserver getChangeObserver() {
       return changeEvent.getObserver();
     }
   }
@@ -278,8 +278,8 @@ public final class Values {
     }
 
     private void bindEvents(final Value<V> modelValue, final Value<V> uiValue, final boolean readOnly) {
-      if (modelValue.getChangeEvent() != null) {
-        modelValue.getChangeEvent().addListener(new EventListener() {
+      if (modelValue.getChangeObserver() != null) {
+        modelValue.getChangeObserver().addListener(new EventListener() {
           /** {@inheritDoc} */
           @Override
           public void eventOccurred() {
@@ -287,8 +287,8 @@ public final class Values {
           }
         });
       }
-      if (!readOnly && uiValue.getChangeEvent() != null) {
-        uiValue.getChangeEvent().addListener(new EventListener() {
+      if (!readOnly && uiValue.getChangeObserver() != null) {
+        uiValue.getChangeObserver().addListener(new EventListener() {
           /** {@inheritDoc} */
           @Override
           public void eventOccurred() {

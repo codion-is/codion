@@ -1276,7 +1276,7 @@ public final class EntityUiUtil {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeEvent() {
+    public EventObserver getChangeObserver() {
       return changeEvent.getObserver();
     }
   }

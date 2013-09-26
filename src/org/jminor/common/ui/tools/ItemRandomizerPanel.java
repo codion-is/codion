@@ -196,7 +196,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeEvent() {
+    public EventObserver getChangeObserver() {
       return getModel().getEnabledObserver();
     }
   }
@@ -230,7 +230,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeEvent() {
+    public EventObserver getChangeObserver() {
       return changeEvent.getObserver();
     }
   }
@@ -256,7 +256,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeEvent() {
+    public EventObserver getChangeObserver() {
       return getModel().getWeightsObserver();
     }
   }
@@ -290,7 +290,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeEvent() {
+    public EventObserver getChangeObserver() {
       return changeEvent.getObserver();
     }
   }

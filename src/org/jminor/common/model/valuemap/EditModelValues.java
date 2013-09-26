@@ -58,7 +58,7 @@ public final class EditModelValues {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeEvent() {
+    public EventObserver getChangeObserver() {
       return changeEvent.getObserver();
     }
   }

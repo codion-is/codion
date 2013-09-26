@@ -34,7 +34,7 @@ public class ValuesTest {
   public void value() {
     final Collection<Object> eventCounter = new ArrayList<Object>();
     final Value<Integer> intValue = Values.value(42);
-    intValue.getChangeEvent().addListener(new EventListener() {
+    intValue.getChangeObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         eventCounter.add(new Object());
@@ -58,14 +58,14 @@ public class ValuesTest {
     final Value<Integer> modelValue = Values.beanValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, false);
-    modelValue.getChangeEvent().addListener(new EventListener() {
+    modelValue.getChangeObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         modelValueEventCounter.add(new Object());
       }
     });
     final Collection<Object> uiValueEventCounter = new ArrayList<Object>();
-    uiValue.getChangeEvent().addListener(new EventListener() {
+    uiValue.getChangeObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         uiValueEventCounter.add(new Object());
@@ -102,14 +102,14 @@ public class ValuesTest {
     final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, true);
-    modelValue.getChangeEvent().addListener(new EventListener() {
+    modelValue.getChangeObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         modelValueEventCounter.add(new Object());
       }
     });
     final Collection<Object> uiValueEventCounter = new ArrayList<Object>();
-    uiValue.getChangeEvent().addListener(new EventListener() {
+    uiValue.getChangeObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         uiValueEventCounter.add(new Object());
@@ -144,7 +144,7 @@ public class ValuesTest {
   public void stateValue() {
     final State state = States.state(true);
     final Value<Boolean> stateValue = Values.stateValue(state);
-    assertNotNull(stateValue.getChangeEvent());
+    assertNotNull(stateValue.getChangeObserver());
     assertTrue(stateValue.get());
     stateValue.set(false);
     assertFalse(state.isActive());
