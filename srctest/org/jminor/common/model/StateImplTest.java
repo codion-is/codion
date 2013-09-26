@@ -15,7 +15,7 @@ public class StateImplTest {
   @Test
   public void listeners() {
     final State state = States.state();
-    state.getStateChangeObserver();
+    state.getChangeObserver();
     final Collection<Object> stateChangeCounter = new ArrayList<Object>();
     final EventListener stateChangeListener = new EventListener() {
       @Override

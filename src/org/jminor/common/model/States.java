@@ -92,8 +92,8 @@ public final class States {
     }
 
     @Override
-    public final EventObserver<Boolean> getStateChangeObserver() {
-      return getObserver().getStateChangeObserver();
+    public final EventObserver<Boolean> getChangeObserver() {
+      return getObserver().getChangeObserver();
     }
 
     @Override
@@ -127,7 +127,7 @@ public final class States {
     }
 
     @Override
-    public void addInfoListener(final EventInfoListener listener) {
+    public void addInfoListener(final EventInfoListener<Boolean> listener) {
       getObserver().addInfoListener(listener);
     }
 
@@ -255,7 +255,7 @@ public final class States {
     }
 
     @Override
-    public EventObserver<Boolean> getStateChangeObserver() {
+    public EventObserver<Boolean> getChangeObserver() {
       return stateChangedEvent.getObserver();
     }
 

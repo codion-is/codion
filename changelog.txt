@@ -3614,3 +3614,4 @@
   MaximumMatch, showPopupOnMatch parameter added, default false
   UiUtil.displayInDialog() overloaded
   DefaultEntityEditModel bug fixed, update() called validator.validate() directly, instead of going through it's own overridable validate()
+  State.getStateChangeObserver() renamed to getChangeObserver()

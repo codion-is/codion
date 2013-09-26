@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.common.model;
 
 /**
@@ -13,7 +16,7 @@ public interface StateObserver extends EventObserver<Boolean> {
   /**
    * @return an EventObserver notified each time the observed state changes
    */
-  EventObserver<Boolean> getStateChangeObserver();
+  EventObserver<Boolean> getChangeObserver();
 
   /**
    * @return A StateObserver object that is always the reverse of the parent state
