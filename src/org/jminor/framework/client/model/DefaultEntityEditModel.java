@@ -505,7 +505,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     }
 
     beforeUpdateEvent.fire();
-    validator.validate(modifiedEntities);
+    validate(modifiedEntities);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
     final int index = updatedEntities.indexOf(getEntity());

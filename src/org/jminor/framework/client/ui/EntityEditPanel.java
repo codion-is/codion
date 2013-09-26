@@ -651,7 +651,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * Performs an update on the active entity
    * @param confirm if true then confirmUpdate() is called
-   * @return true if the update operation was successful
+   * @return true if the update operation was successful or if no update was required
    */
   public final boolean update(final boolean confirm) {
     try {

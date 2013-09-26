@@ -2639,7 +2639,7 @@
   ColumnSearchPanel.initializeSimpleSearchPanel(), bug fixed, corrected order of search fields so that lower bound appears before upper bound
   EntityApplicationPanel.getSupportTableControlSet() and showEntityPanelDialog() now use the default entity caption if the panel provider does not provide one
   AbstractFunction now correctly implements DatabaseConnection.Function instead of DatabaseConnection.Procedure
-  EntityTablePanel.layoutPanel() added, overrideable
+  EntityTablePanel.layoutPanel() added, overridable
   UiUtil.addAcceptSingleFileDragAndDrop() now requests focus for the text field after drop is accepted
   ColumnSearchPanel, no longer uses UiUtil.getPreferredTextFieldHeight() to determine it's own preferred size
   NavigableImagePanel, previousPanelSize initialized during construction, seemed to cause NullPointerException on Windows
@@ -3611,3 +3611,6 @@
   ValueChangeListener removed
   ValueChangeEvent replaced with ValueChange interface and ValueChanges factory class
   EventInfoObserver merged into EventObserver
+  MaximumMatch, showPopupOnMatch parameter added, default false
+  UiUtil.displayInDialog() overloaded
+  DefaultEntityEditModel bug fixed, update() called validator.validate() directly, instead of going through it's own overridable validate()

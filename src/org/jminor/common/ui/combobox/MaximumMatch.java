@@ -33,8 +33,9 @@ public final class MaximumMatch extends PlainDocument {
   /**
    * Enables MaximumMatch on the given combobox
    * @param comboBox the combobox
+   * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
    */
-  private MaximumMatch(final JComboBox comboBox) {
+  private MaximumMatch(final JComboBox comboBox, final boolean showPopupOnMatch) {
     this.comboBox = comboBox;
     model = comboBox.getModel();
     editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
@@ -47,7 +48,7 @@ public final class MaximumMatch extends PlainDocument {
         }
       }
     });
-    editor.addKeyListener(new MatchKeyAdapter());
+    editor.addKeyListener(new MatchKeyAdapter(showPopupOnMatch));
     // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when tabbing out
     hidePopupOnFocusLoss = System.getProperty("java.version").startsWith("1.5");
     // Highlight whole text when gaining focus
@@ -72,11 +73,20 @@ public final class MaximumMatch extends PlainDocument {
     highlightCompletedText(0);
   }
 
+  /**
+   * @param comboBox the combobox on which to enable maximum match
+   */
   public static void enable(final JComboBox comboBox) {
-    // has to be editable
+    enable(comboBox, false);
+  }
+
+  /**
+   * @param comboBox the combobox on which to enable maximum match
+   * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
+   */
+  public static void enable(final JComboBox comboBox, final boolean showPopupOnMatch) {
     comboBox.setEditable(true);
-    // change the editor's document
-    new MaximumMatch(comboBox);
+    new MaximumMatch(comboBox, showPopupOnMatch);
   }
 
   /** {@inheritDoc} */
@@ -231,12 +241,19 @@ public final class MaximumMatch extends PlainDocument {
   }
 
   private final class MatchKeyAdapter extends KeyAdapter {
+
+    private final boolean showPopupOnMatch;
+
+    public MatchKeyAdapter(final boolean showPopupOnMatch) {
+      this.showPopupOnMatch = showPopupOnMatch;
+    }
+
     @Override
     public void keyPressed(final KeyEvent e) {
       if (e.getModifiers() != 0) {
         return;
       }
-      if (comboBox.isDisplayable() && Character.isLetterOrDigit(e.getKeyChar())) {
+      if (showPopupOnMatch && comboBox.isDisplayable() && Character.isLetterOrDigit(e.getKeyChar())) {
         comboBox.setPopupVisible(true);
       }
       hitBackspace = false;
