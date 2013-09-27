@@ -3,19 +3,15 @@
  */
 package org.jminor.common.model;
 
-import java.io.Serializable;
-import java.text.Collator;
+import java.util.Comparator;
 
 /**
  * A class encapsulating an item and caption.
  * @param <T> the type of the actual item
  */
-public class Item<T> implements Comparable<Item>, Serializable {
+public class Item<T> implements Comparable<Item> {
 
-  private static final long serialVersionUID = 1;
-
-  private static final ThreadLocal<Collator> COLLATOR = Util.getThreadLocalCollator();
-
+  private final Comparator<String> collator = Util.getSpaceAwareCollator();
   private final T item;
   private final String caption;
 
@@ -80,6 +76,6 @@ public class Item<T> implements Comparable<Item>, Serializable {
    */
   @Override
   public final int compareTo(final Item o) {
-    return COLLATOR.get().compare(caption, o.caption);
+    return collator.compare(caption, o.caption);
   }
 }

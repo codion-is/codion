@@ -98,8 +98,6 @@ public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> 
    */
   public static final class IconItem<T> extends Item<T> implements Icon {
 
-    private static final long serialVersionUID = 1;
-
     private final ImageIcon icon;
 
     /**

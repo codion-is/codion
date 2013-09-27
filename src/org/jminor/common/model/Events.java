@@ -5,6 +5,8 @@ package org.jminor.common.model;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashSet;
 
 /**
  * A factory class for Event objects.
@@ -62,10 +64,10 @@ public final class Events {
     @Override
     public void fire(final T info) {
       if (observer != null && observer.hasListeners()) {
-        for (final EventListener listener : observer.getListeners()) {
+        for (final EventListener listener : observer.getEventListeners()) {
           listener.eventOccurred();
         }
-        for (final EventInfoListener<T> infoListener : observer.getInfoListeners()) {
+        for (final EventInfoListener<T> infoListener : observer.getEventInfoListeners()) {
           infoListener.eventOccurred(info);
         }
       }
@@ -121,49 +123,69 @@ public final class Events {
 
   private static final class DefaultObserver<T> implements EventObserver<T> {
 
-    private final Collection<EventListener> listeners = new ArrayList<EventListener>(0);
-    private final Collection<EventInfoListener<T>> infoListeners = new ArrayList<EventInfoListener<T>>(0);
+    private Collection<EventListener> listeners;
+    private Collection<EventInfoListener<T>> infoListeners;
 
     /** {@inheritDoc} */
     @Override
     public synchronized void addInfoListener(final EventInfoListener<T> listener) {
       Util.rejectNullValue(listener, "listener");
-      if (!infoListeners.contains(listener)) {
-        infoListeners.add(listener);
-      }
+      getInfoListeners().add(listener);
     }
 
     /** {@inheritDoc} */
     @Override
     public synchronized void removeInfoListener(final EventInfoListener listener) {
-      infoListeners.remove(listener);
+      getInfoListeners().remove(listener);
     }
 
     /** {@inheritDoc} */
     @Override
     public synchronized void addListener(final EventListener listener) {
       Util.rejectNullValue(listener, "listener");
-      if (!listeners.contains(listener)) {
-        listeners.add(listener);
-      }
+      getListeners().add(listener);
     }
 
     /** {@inheritDoc} */
     @Override
     public synchronized void removeListener(final EventListener listener) {
-      listeners.remove(listener);
+      getListeners().remove(listener);
     }
 
-    private synchronized Collection<EventListener> getListeners() {
+    private synchronized Collection<EventListener> getEventListeners() {
+      if (listeners == null) {
+        return Collections.emptyList();
+      }
+
       return new ArrayList<EventListener>(listeners);
     }
 
-    private synchronized Collection<EventInfoListener<T>> getInfoListeners() {
+    private synchronized Collection<EventInfoListener<T>> getEventInfoListeners() {
+      if (infoListeners == null) {
+        return Collections.emptyList();
+      }
+
       return new ArrayList<EventInfoListener<T>>(infoListeners);
     }
 
-    private boolean hasListeners() {
-      return !listeners.isEmpty() || !infoListeners.isEmpty();
+    private synchronized boolean hasListeners() {
+      return (listeners != null && !listeners.isEmpty()) || (infoListeners != null && !infoListeners.isEmpty());
+    }
+
+    private Collection<EventListener> getListeners() {
+      if (listeners == null) {
+        listeners = new HashSet<EventListener>(1);
+      }
+
+      return listeners;
+    }
+
+    private Collection<EventInfoListener<T>> getInfoListeners() {
+      if (infoListeners == null) {
+        infoListeners = new HashSet<EventInfoListener<T>>(1);
+      }
+
+      return infoListeners;
     }
   }
 }

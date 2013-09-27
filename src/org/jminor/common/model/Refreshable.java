@@ -4,12 +4,12 @@
 package org.jminor.common.model;
 
 /**
- * Specifies an object that can be refreshed.
+ * Specifies some sort of data container that can be refreshed and cleared.
  */
 public interface Refreshable {
 
   /**
-   * Performs a refresh
+   * Performs a refresh, reloading the relevant data
    */
   void refresh();
 

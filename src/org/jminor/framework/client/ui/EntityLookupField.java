@@ -42,7 +42,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -142,14 +141,14 @@ public final class EntityLookupField extends JTextField {
   }
 
   private boolean selectEntities(final List<Entity> entities) {
-    final JList list = new JList(entities.toArray());
+    final JList<Entity> list = new JList<Entity>(entities.toArray(new Entity[entities.size()]));
     final Window owner = UiUtil.getParentWindow(this);
     final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
       /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
-        getModel().setSelectedEntities(toEntityList(list.getSelectedValues()));
+        getModel().setSelectedEntities(list.getSelectedValuesList());
         dialog.dispose();
       }
     };
@@ -272,15 +271,6 @@ public final class EntityLookupField extends JTextField {
     popupMenu.add(new SettingsAction(this));
 
     return popupMenu;
-  }
-
-  private List<Entity> toEntityList(final Object[] selectedValues) {
-    final List<Entity> entityList = new ArrayList<Entity>(selectedValues.length);
-    for (final Object object : selectedValues) {
-      entityList.add((Entity) object);
-    }
-
-    return entityList;
   }
 
   /**
