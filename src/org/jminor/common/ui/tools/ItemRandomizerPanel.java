@@ -86,7 +86,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   @SuppressWarnings({"unchecked"})
   public List<ItemRandomizer.RandomItem<T>> getSelectedItems() {
     final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<ItemRandomizer.RandomItem<T>>();
-    for (final Object object : itemList.getSelectedValues()) {
+    for (final Object object : itemList.getSelectedValuesList()) {
       items.add((ItemRandomizer.RandomItem<T>) object);
     }
 
