@@ -41,7 +41,7 @@ public final class Values {
    * @return a Value for the given bean property
    */
   public static <V> Value<V> beanValue(final Object owner, final String beanPropertyName, final Class valueClass,
-                                       final EventObserver valueChangeEvent) {
+                                       final EventObserver<V> valueChangeEvent) {
     return new BeanValue<>(owner, beanPropertyName, valueClass, valueChangeEvent);
   }
 
@@ -77,7 +77,7 @@ public final class Values {
 
   private static final class DefaultValue<V> implements Value<V> {
 
-    private final Event changeEvent = Events.event();
+    private final Event<V> changeEvent = Events.event();
     private V value;
 
     private DefaultValue(final V initialValue) {
@@ -101,19 +101,19 @@ public final class Values {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeObserver() {
+    public EventObserver<V> getChangeObserver() {
       return changeEvent.getObserver();
     }
   }
 
   private static final class BeanValue<V> implements Value<V> {
 
+    private final EventObserver<V> changeEvent;
     private final Object valueOwner;
     private final Method getMethod;
     private Method setMethod;
-    private final EventObserver changeEvent;
 
-    private BeanValue(final Object valueOwner, final String propertyName, final Class<?> valueClass, final EventObserver changeEvent) {
+    private BeanValue(final Object valueOwner, final String propertyName, final Class<?> valueClass, final EventObserver<V> changeEvent) {
       Util.rejectNullValue(valueOwner, "valueOwner");
       Util.rejectNullValue(valueClass, "valueClass");
       if (Util.nullOrEmpty(propertyName)) {
@@ -168,7 +168,7 @@ public final class Values {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeObserver() {
+    public EventObserver<V> getChangeObserver() {
       return changeEvent;
     }
   }
@@ -204,7 +204,7 @@ public final class Values {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeObserver() {
+    public EventObserver<Boolean> getChangeObserver() {
       return changeEvent.getObserver();
     }
   }

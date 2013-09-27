@@ -1253,12 +1253,18 @@ public final class EntityUiUtil {
   }
 
   private  static final class LookupUIValue implements Value<Entity> {
-    private final Event changeEvent = Events.event();
+    private final Event<Entity> changeEvent = Events.event();
     private final EntityLookupModel lookupModel;
 
     private LookupUIValue(final EntityLookupModel lookupModel) {
       this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(changeEvent);
+      this.lookupModel.addSelectedEntitiesListener(new EventListener() {
+        @Override
+        public void eventOccurred() {
+          final Collection<Entity> selected = lookupModel.getSelectedEntities();
+          changeEvent.eventOccurred(selected.isEmpty() ? null : selected.iterator().next());
+        }
+      });
     }
 
     /** {@inheritDoc} */
@@ -1276,7 +1282,7 @@ public final class EntityUiUtil {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeObserver() {
+    public EventObserver<Entity> getChangeObserver() {
       return changeEvent.getObserver();
     }
   }

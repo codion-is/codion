@@ -12,7 +12,7 @@ import static org.junit.Assert.*;
 
 public class ValuesTest {
 
-  private final Event integerValueChange = Events.event();
+  private final Event<Integer> integerValueChange = Events.event();
   private Integer integerValue = 42;
 
   public Integer getIntegerValue() {
@@ -22,7 +22,7 @@ public class ValuesTest {
   public void setIntegerValue(final Integer integerValue) {
     if (!Util.equal(this.integerValue, integerValue)) {
       this.integerValue = integerValue;
-      integerValueChange.fire();
+      integerValueChange.fire(integerValue);
     }
   }
 

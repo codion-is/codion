@@ -567,10 +567,10 @@ public final class Util {
   }
 
   /**
-   * True if the given objects are equal. Both objects being null results in true.
+   * True if the given objects are equal or if both are null
    * @param one the first object
    * @param two the second object
-   * @return true if the given objects are equal
+   * @return true if the given objects are equal or if both are null
    */
   public static boolean equal(final Object one, final Object two) {
     return one == null && two == null || !(one == null ^ two == null) && one.equals(two);

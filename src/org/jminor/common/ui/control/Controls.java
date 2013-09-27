@@ -145,7 +145,7 @@ public final class Controls {
    * @return a toggle control
    */
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
-                                            final EventObserver changeEvent) {
+                                            final EventObserver<Boolean> changeEvent) {
     return toggleControl(owner, beanPropertyName, caption, changeEvent, null);
   }
 
@@ -159,7 +159,7 @@ public final class Controls {
    * @return a toggle control
    */
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
-                                            final EventObserver changeEvent, final StateObserver enabledState) {
+                                            final EventObserver<Boolean> changeEvent, final StateObserver enabledState) {
     final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
     Values.link(Values.<Boolean>beanValue(owner, beanPropertyName, boolean.class, changeEvent), new BooleanValue(buttonModel));
 
@@ -207,7 +207,7 @@ public final class Controls {
    */
   private static final class BooleanValue implements Value<Boolean> {
     private final ButtonModel buttonModel;
-    private final Event changeEvent = Events.event();
+    private final Event<Boolean> changeEvent = Events.event();
 
     private BooleanValue(final ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
@@ -250,7 +250,7 @@ public final class Controls {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeObserver() {
+    public EventObserver<Boolean> getChangeObserver() {
       return changeEvent.getObserver();
     }
   }

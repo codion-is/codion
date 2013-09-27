@@ -3619,3 +3619,5 @@
   Java 7 syntax update
   Java 7 try with resources
   EntityConnectionServerTest, web server now uses port 8181 to prevent conflicts with server running on the same machine
+  Value.getChangeObserver() generified
+  UiValues refactored

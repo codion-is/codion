@@ -196,13 +196,13 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeObserver() {
+    public EventObserver<Boolean> getChangeObserver() {
       return getModel().getEnabledObserver();
     }
   }
 
   private final class EnabledUIValue implements Value<Boolean> {
-    private final Event changeEvent = Events.event();
+    private final Event<Boolean> changeEvent = Events.event();
     private final ButtonModel buttonModel;
 
     private EnabledUIValue(final ButtonModel buttonModel) {
@@ -230,7 +230,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeObserver() {
+    public EventObserver<Boolean> getChangeObserver() {
       return changeEvent.getObserver();
     }
   }
@@ -256,13 +256,13 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeObserver() {
+    public EventObserver<Integer> getChangeObserver() {
       return getModel().getWeightsObserver();
     }
   }
 
   private final class WeightUIValue implements Value<Integer> {
-    private final Event changeEvent = Events.event();
+    private final Event<Integer> changeEvent = Events.event();
     private final SpinnerNumberModel spinnerModel;
 
     private WeightUIValue(final SpinnerNumberModel spinnerModel) {
@@ -271,7 +271,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
         /** {@inheritDoc} */
         @Override
         public void stateChanged(final ChangeEvent e) {
-          changeEvent.fire();
+          changeEvent.fire((Integer) spinnerModel.getValue());
         }
       });
     }
@@ -290,7 +290,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
     /** {@inheritDoc} */
     @Override
-    public EventObserver getChangeObserver() {
+    public EventObserver<Integer> getChangeObserver() {
       return changeEvent.getObserver();
     }
   }

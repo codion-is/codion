@@ -107,14 +107,6 @@ public final class UiValues {
   }
 
   /**
-   * @param buttonModel the button model
-   * @return a Value bound to the given component
-   */
-  public static Value<Boolean> tristateValue(final TristateButtonModel buttonModel) {
-    return new TristateUIValue(buttonModel);
-  }
-
-  /**
    * @param box the combo box
    * @return a Value bound to the given component
    */
@@ -123,11 +115,11 @@ public final class UiValues {
   }
 
   private abstract static class UIValue<V> implements Value<V> {
-    protected final Event changeEvent = Events.event();
+    protected final Event<V> changeEvent = Events.event();
 
     /** {@inheritDoc} */
     @Override
-    public final EventObserver getChangeObserver() {
+    public final EventObserver<V> getChangeObserver() {
       return changeEvent.getObserver();
     }
 
@@ -335,7 +327,7 @@ public final class UiValues {
     }
   }
 
-  private static class ToggleUIValue extends UIValue<Boolean> {
+  private static final class ToggleUIValue extends UIValue<Boolean> {
     private final ButtonModel buttonModel;
 
     private ToggleUIValue(final ButtonModel buttonModel) {
@@ -344,7 +336,8 @@ public final class UiValues {
         /** {@inheritDoc} */
         @Override
         public void itemStateChanged(final ItemEvent e) {
-          changeEvent.fire();
+          changeEvent.fire(buttonModel instanceof TristateButtonModel &&
+                  ((TristateButtonModel) buttonModel).isIndeterminate() ? null : buttonModel.isSelected());
         }
       });
     }
@@ -352,6 +345,10 @@ public final class UiValues {
     /** {@inheritDoc} */
     @Override
     public Boolean get() {
+      if (buttonModel instanceof TristateButtonModel && ((TristateButtonModel) buttonModel).isIndeterminate()) {
+        return null;
+      }
+
       return buttonModel.isSelected();
     }
 
@@ -359,38 +356,13 @@ public final class UiValues {
     @Override
     protected void setInternal(final Boolean value) {
       buttonModel.setSelected(value != null && value);
+      if (buttonModel instanceof TristateButtonModel && value == null) {
+        ((TristateButtonModel) getButtonModel()).setIndeterminate();
+      }
     }
 
     protected ButtonModel getButtonModel() {
       return buttonModel;
-    }
-  }
-
-  private static final class TristateUIValue extends ToggleUIValue {
-
-    private TristateUIValue(final TristateButtonModel buttonModel) {
-      super(buttonModel);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public Boolean get() {
-      if (((TristateButtonModel) getButtonModel()).isIndeterminate()) {
-        return null;
-      }
-
-      return getButtonModel().isSelected();
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected void setInternal(final Boolean value) {
-      if (value == null) {
-        ((TristateButtonModel) getButtonModel()).setIndeterminate();
-      }
-      else {
-        getButtonModel().setSelected(value);
-      }
     }
   }
 

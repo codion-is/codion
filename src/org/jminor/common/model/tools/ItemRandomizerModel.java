@@ -19,12 +19,12 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   /**
    * An Event fired when a weight value has changed
    */
-  private final Event weightsChangedEvent = Events.event();
+  private final Event<Integer> weightsChangedEvent = Events.event();
 
   /**
    * An Event fired when the enabled status of an item has changed
    */
-  private final Event enabledChangedEvent = Events.event();
+  private final Event<Boolean> enabledChangedEvent = Events.event();
 
   /**
    * The items contained in this model
@@ -65,22 +65,24 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   /** {@inheritDoc} */
   @Override
   public void incrementWeight(final T item) {
-    getRandomItem(item).incrementWeight();
-    weightsChangedEvent.fire();
+    final RandomItem randomItem = getRandomItem(item);
+    randomItem.incrementWeight();
+    weightsChangedEvent.fire(randomItem.getWeight());
   }
 
   /** {@inheritDoc} */
   @Override
   public void decrementWeight(final T item) {
-    getRandomItem(item).decrementWeight();
-    weightsChangedEvent.fire();
+    final RandomItem randomItem = getRandomItem(item);
+    randomItem.decrementWeight();
+    weightsChangedEvent.fire(randomItem.getWeight());
   }
 
   /** {@inheritDoc} */
   @Override
   public void setWeight(final T item, final int weight) {
     getRandomItem(item).setWeight(weight);
-    weightsChangedEvent.fire();
+    weightsChangedEvent.fire(weight);
   }
 
   /** {@inheritDoc} */
@@ -93,7 +95,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   @Override
   public void setItemEnabled(final T item, final boolean value) {
     getRandomItem(item).setEnabled(value);
-    enabledChangedEvent.fire();
+    enabledChangedEvent.fire(value);
   }
 
   /** {@inheritDoc} */
@@ -116,13 +118,13 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver getWeightsObserver() {
+  public final EventObserver<Integer> getWeightsObserver() {
     return weightsChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver getEnabledObserver() {
+  public final EventObserver<Boolean> getEnabledObserver() {
     return enabledChangedEvent.getObserver();
   }
 

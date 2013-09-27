@@ -50,12 +50,12 @@ public interface ItemRandomizer<T> {
   /**
    * @return an EventObserver which fires each time a weight has been changed.
    */
-  EventObserver getWeightsObserver();
+  EventObserver<Integer> getWeightsObserver();
 
   /**
    * @return an EventObserver which fires each time the enabled status of an item has been changed.
    */
-  EventObserver getEnabledObserver();
+  EventObserver<Boolean> getEnabledObserver();
 
   /**
    * Sets the weight of the given item

@@ -10,7 +10,7 @@ package org.jminor.common.model;
 public interface Value<V> {
 
   /**
-   * Sets the value
+   * Sets the value, setting the same value again does not trigger a value change
    * @param value the value
    */
   void set(final V value);
@@ -21,7 +21,7 @@ public interface Value<V> {
   V get();
 
   /**
-   * @return an observer notified when the value changes
+   * @return an observer notified with the new value each time it changes
    */
-  EventObserver getChangeObserver();
+  EventObserver<V> getChangeObserver();
 }

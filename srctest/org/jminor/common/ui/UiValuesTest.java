@@ -206,7 +206,7 @@ public class UiValuesTest {
   public void tristateToggleUiValue() {
     final TristateButtonModel model = new TristateButtonModel();
     model.setIndeterminate();
-    final Value<Boolean> value = UiValues.tristateValue(model);
+    final Value<Boolean> value = UiValues.booleanValue(model);
 
     assertNull(value.get());
     model.setSelected(true);

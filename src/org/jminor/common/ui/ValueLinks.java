@@ -282,7 +282,7 @@ public final class ValueLinks {
    */
   public static void tristateValueLink(final TristateButtonModel buttonModel, final Value<Boolean> modelValue,
                                        final boolean readOnly) {
-    Values.link(modelValue, UiValues.tristateValue(buttonModel), readOnly);
+    Values.link(modelValue, UiValues.booleanValue(buttonModel), readOnly);
   }
 
   /**
