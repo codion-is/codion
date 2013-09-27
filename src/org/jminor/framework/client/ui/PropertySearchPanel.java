@@ -143,7 +143,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       }
       else if (!(property instanceof Property.ForeignKeyProperty)) {//entity based properties are bound in the model
         ValueLinks.textValueLink((JTextField) field, model,
-                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY, String.class,
+                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
       }
     }

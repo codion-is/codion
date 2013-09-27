@@ -35,7 +35,7 @@ import java.util.Map;
 public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   private final State searchStateChangedState = States.state();
-  private final Event simpleSearchStringChangedEvent = Events.event();
+  private final Event<String> simpleSearchStringChangedEvent = Events.event();
   private final Event simpleSearchPerformedEvent = Events.event();
 
   private final String entityID;
@@ -251,7 +251,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
     if (this.simpleSearchString.length() != 0) {
       setSearchString(this.simpleSearchString);
     }
-    simpleSearchStringChangedEvent.fire();
+    simpleSearchStringChangedEvent.fire(this.simpleSearchString);
   }
 
   /** {@inheritDoc} */
@@ -288,7 +288,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   }
 
   @Override
-  public final EventObserver getSimpleSearchStringObserver() {
+  public final EventObserver<String> getSimpleSearchStringObserver() {
     return simpleSearchStringChangedEvent.getObserver();
   }
 

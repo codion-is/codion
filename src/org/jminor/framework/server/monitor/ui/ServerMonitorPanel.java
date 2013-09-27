@@ -9,6 +9,7 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
+import org.jminor.common.ui.textfield.IntField;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.framework.server.monitor.ServerMonitor;
 
@@ -192,10 +193,10 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JTextField initializeConnectionCountField() {
-    final JTextField txtConnectionCount = new JTextField(6);
+    final IntField txtConnectionCount = new IntField();
     txtConnectionCount.setEditable(false);
     txtConnectionCount.setHorizontalAlignment(JLabel.CENTER);
-    ValueLinks.textValueLink(txtConnectionCount, model, "connectionCount", Integer.class, model.getStatisticsUpdatedObserver(), true);
+    ValueLinks.intValueLink(txtConnectionCount, model, "connectionCount", model.getStatisticsUpdatedObserver(), true);
 
     return txtConnectionCount;
   }
@@ -204,20 +205,20 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextField txtMemory = new JTextField(8);
     txtMemory.setEditable(false);
     txtMemory.setHorizontalAlignment(JLabel.CENTER);
-    ValueLinks.textValueLink(txtMemory, model, "memoryUsage", String.class, model.getStatisticsUpdatedObserver(), true);
+    ValueLinks.textValueLink(txtMemory, model, "memoryUsage", model.getStatisticsUpdatedObserver(), true);
 
     return txtMemory;
   }
 
   private JComboBox initializeLoggingLevelField() {
-    final DefaultComboBoxModel comboModel = new DefaultComboBoxModel();
+    final DefaultComboBoxModel<Level> comboModel = new DefaultComboBoxModel<>();
     comboModel.addElement(Level.TRACE);
     comboModel.addElement(Level.DEBUG);
     comboModel.addElement(Level.INFO);
     comboModel.addElement(Level.WARN);
     comboModel.addElement(Level.ERROR);
 
-    final JComboBox box = new JComboBox(comboModel);
+    final JComboBox<Level> box = new JComboBox<>(comboModel);
     ValueLinks.selectedItemValueLink(box, model, "loggingLevel", Level.class, model.getLoggingLevelObserver());
 
     return box;

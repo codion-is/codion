@@ -40,7 +40,7 @@ public final class Values {
    * @param <V> type to wrap
    * @return a Value for the given bean property
    */
-  public static <V> Value<V> beanValue(final Object owner, final String beanPropertyName, final Class valueClass,
+  public static <V> Value<V> beanValue(final Object owner, final String beanPropertyName, final Class<V> valueClass,
                                        final EventObserver<V> valueChangeEvent) {
     return new BeanValue<>(owner, beanPropertyName, valueClass, valueChangeEvent);
   }

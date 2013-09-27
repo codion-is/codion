@@ -400,7 +400,7 @@ public class ColumnSearchPanel<K> extends JPanel {
       else {
         ValueLinks.textValueLink((JTextField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                String.class, isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver());
+                isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver());
       }
     }
   }

@@ -174,7 +174,7 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   /**
    * @return an EventObserver notified each time the simple search text changes
    */
-  EventObserver getSimpleSearchStringObserver();
+  EventObserver<String> getSimpleSearchStringObserver();
 
   /**
    * @param listener a listener notified each time a simple search is performed

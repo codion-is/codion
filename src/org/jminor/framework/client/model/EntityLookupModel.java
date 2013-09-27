@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
@@ -177,12 +178,12 @@ public interface EntityLookupModel extends EntityDataProvider {
   /**
    * @return an EventObserver fired each time the search string changes
    */
-  EventObserver getSearchStringObserver();
+  EventObserver<String> getSearchStringObserver();
 
   /**
    * @param listener a listener to be notified each time the search string changes
    */
-  void addSearchStringListener(final EventListener listener);
+  void addSearchStringListener(final EventInfoListener<String> listener);
 
   /**
    * @param listener the listener to remove

@@ -8,6 +8,7 @@ import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
@@ -38,7 +39,7 @@ import java.util.List;
 public class DefaultEntityLookupModel implements EntityLookupModel {
 
   private final Event selectedEntitiesChangedEvent = Events.event();
-  private final Event searchStringChangedEvent = Events.event();
+  private final Event<String> searchStringChangedEvent = Events.event();
   private final State searchStringRepresentsSelectedState = States.state(true);
 
   /**
@@ -252,7 +253,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   public final void setSearchString(final String searchString) {
     this.searchString = searchString == null ? "" : searchString;
     searchStringRepresentsSelectedState.setActive(searchStringRepresentsSelected());
-    searchStringChangedEvent.fire();
+    searchStringChangedEvent.fire(this.searchString);
   }
 
   /** {@inheritDoc} */
@@ -287,14 +288,14 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver getSearchStringObserver() {
+  public final EventObserver<String> getSearchStringObserver() {
     return searchStringChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSearchStringListener(final EventListener listener) {
-    searchStringChangedEvent.addListener(listener);
+  public final void addSearchStringListener(final EventInfoListener<String> listener) {
+    searchStringChangedEvent.addInfoListener(listener);
   }
 
   /** {@inheritDoc} */

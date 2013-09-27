@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
@@ -161,11 +162,11 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void linkToModel() {
-    ValueLinks.textValueLink(this, getModel(), "searchString", String.class, getModel().getSearchStringObserver());
-    model.addSearchStringListener(new EventListener() {
+    ValueLinks.textValueLink(this, getModel(), "searchString", getModel().getSearchStringObserver());
+    model.addSearchStringListener(new EventInfoListener<String>() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred() {
+      public void eventOccurred(final String info) {
         updateColors();
       }
     });
