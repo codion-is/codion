@@ -15,13 +15,17 @@ public final class Events {
   private Events() {}
 
   /**
-   * Instantiates a new Event object.
+   * Instantiates a new Event.
    * @return a new Event
    */
   public static <T> Event<T> event() {
     return new DefaultEvent<T>();
   }
 
+  /**
+   * @param listener the info listener
+   * @return a listener causing the given info listener to be fired with null info on each occurrence
+   */
   public static EventListener listener(final EventInfoListener<?> listener) {
     return new EventListener() {
       @Override
@@ -31,6 +35,10 @@ public final class Events {
     };
   }
 
+  /**
+   * @param listener the listener
+   * @return a info listener causing the given listener to be fired on each occurrence
+   */
   public static <T> EventInfoListener<T> infoListener(final EventListener listener) {
     return new EventInfoListener<T>() {
       @Override
