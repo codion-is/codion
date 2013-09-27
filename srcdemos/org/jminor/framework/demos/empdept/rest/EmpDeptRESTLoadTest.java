@@ -98,16 +98,13 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
   }
 
   private static String getContentStream(final HttpEntity entity) throws IOException {
-    InputStream stream= null;
     Scanner scanner = null;
-    try {
-      stream = entity.getContent();
+    try (final InputStream stream = entity.getContent()) {
       scanner = new Scanner(stream).useDelimiter("\\A");
 
       return scanner.hasNext() ? scanner.next() : "";
     }
     finally {
-      Util.closeSilently(stream);
       if (scanner != null) {
         scanner.close();
       }

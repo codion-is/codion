@@ -40,34 +40,21 @@ public class UtilTest {
       Properties properties = new Properties();
       properties.put("main.property", "value");
       properties.put(Util.ADDITIONAL_CONFIGURATION_FILES, "UtilTestSecond.config");
-      FileOutputStream outputStream = null;
-      try {
-        outputStream = new FileOutputStream(mainConfigurationFile);
+      try (final FileOutputStream outputStream = new FileOutputStream(mainConfigurationFile)) {
         properties.store(outputStream, "");
-      }
-      finally {
-        Util.closeSilently(outputStream);
       }
 
       properties = new Properties();
       properties.put("second.property", "value");
       properties.put(Util.ADDITIONAL_CONFIGURATION_FILES, "UtilTestThird.config");
-      try {
-        outputStream = new FileOutputStream(secondConfigurationFile);
+      try (final FileOutputStream outputStream = new FileOutputStream(secondConfigurationFile)) {
         properties.store(outputStream, "");
-      }
-      finally {
-        Util.closeSilently(outputStream);
       }
 
       properties = new Properties();
       properties.put("third.property", "value");
-      try {
-        outputStream = new FileOutputStream(thirdConfigurationFile);
+      try (final FileOutputStream outputStream = new FileOutputStream(thirdConfigurationFile)) {
         properties.store(outputStream, "");
-      }
-      finally {
-        Util.closeSilently(outputStream);
       }
 
       //done prep, now the test

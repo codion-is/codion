@@ -368,9 +368,7 @@ public final class Util {
    * @throws java.io.IOException in case the file can not be read
    */
   public static int countLines(final File file, final String excludePrefix) throws IOException {
-    BufferedReader reader = null;
-    try {
-      reader = new BufferedReader(new FileReader(file));
+    try (final BufferedReader reader = new BufferedReader(new FileReader(file))) {
       int lines = 0;
       String line = reader.readLine();
       while (line != null) {
@@ -381,9 +379,6 @@ public final class Util {
       }
 
       return lines;
-    }
-    finally {
-      Util.closeSilently(reader);
     }
   }
 
@@ -439,18 +434,13 @@ public final class Util {
   public static String getTextFileContents(final InputStream inputStream, final Charset charset) throws IOException {
     rejectNullValue(inputStream, "inputStream");
     final StringBuilder contents = new StringBuilder();
-    BufferedReader input = null;
-    try {
-      input = new BufferedReader(new InputStreamReader(inputStream, charset));
+    try (final BufferedReader input = new BufferedReader(new InputStreamReader(inputStream, charset))) {
       String line = input.readLine();
       while (line != null) {
         contents.append(line);
         contents.append(LINE_SEPARATOR);
         line = input.readLine();
       }
-    }
-    finally {
-      closeSilently(input);
     }
 
     return contents.toString();
@@ -536,14 +526,8 @@ public final class Util {
   public static void writeFile(final String contents, final File file, final boolean append) throws IOException {
     rejectNullValue(contents, "contents");
     rejectNullValue(file, "file");
-    BufferedWriter writer = null;
-    try {
-      final FileWriter fileWriter = new FileWriter(file, append);
-      writer = new BufferedWriter(fileWriter);
+    try (final BufferedWriter writer = new BufferedWriter(new FileWriter(file, append))) {
       writer.write(contents);
-    }
-    finally {
-      closeSilently(writer);
     }
   }
 
@@ -554,9 +538,7 @@ public final class Util {
    */
   public static List<Object> deserializeFromFile(final File file) {
     final List<Object> objects = new ArrayList<>();
-    ObjectInputStream inputStream = null;
-    try {
-      inputStream = new ObjectInputStream(new FileInputStream(file));
+    try (final ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
       while (true) {
         objects.add(inputStream.readObject());
       }
@@ -564,9 +546,6 @@ public final class Util {
     catch (EOFException ignored) {}
     catch (Exception e) {
       throw new RuntimeException(e);
-    }
-    finally {
-      closeSilently(inputStream);
     }
 
     return objects;
@@ -577,18 +556,13 @@ public final class Util {
    * @param file the file
    */
   public static void serializeToFile(final Collection objects, final File file) {
-    ObjectOutputStream outputStream = null;
-    try {
-      outputStream = new ObjectOutputStream(new FileOutputStream(file));
+    try (final ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
       for (final Object object : objects) {
         outputStream.writeObject(object);
       }
     }
     catch (IOException e) {
       throw new RuntimeException(e);
-    }
-    finally {
-      closeSilently(outputStream);
     }
   }
 
@@ -679,10 +653,7 @@ public final class Util {
    */
   public static byte[] getBytesFromFile(final File file) throws IOException {
     rejectNullValue(file, "file");
-    InputStream inputStream = null;
-    try {
-      inputStream = new FileInputStream(file);
-
+    try (final InputStream inputStream = new FileInputStream(file)) {
       // Get the size of the file
       final long length = file.length();
 
@@ -703,9 +674,6 @@ public final class Util {
       }
 
       return bytes;
-    }
-    finally {
-      closeSilently(inputStream);
     }
   }
 

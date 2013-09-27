@@ -5,7 +5,6 @@ package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
@@ -166,14 +165,9 @@ public class EntityConnectionServerTest {
 
   @Test
   public void testWebServer() throws Exception {
-    InputStream input = null;
-    try {
+    try (final InputStream input = new URL("http://localhost:8080/file_templates/EntityEditPanel.template").openStream()) {
       Thread.sleep(3000);
-      input = new URL("http://localhost:8080/file_templates/EntityEditPanel.template").openStream();
       assertTrue(input.read() > 0);
-    }
-    finally {
-      Util.closeSilently(input);
     }
   }
 
