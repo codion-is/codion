@@ -272,18 +272,18 @@ public class PropertyCriteriaTest {
     final Property.ColumnProperty property2 = Properties.columnProperty("colName2", Types.INTEGER);
     final Criteria<Property.ColumnProperty> criteria1 = EntityCriteriaUtil.propertyCriteria(property1, SearchType.LIKE, "value");
     final Criteria<Property.ColumnProperty> criteria2 = EntityCriteriaUtil.propertyCriteria(property2, SearchType.LESS_THAN, 10);
-    final CriteriaSet set = new CriteriaSet<Property.ColumnProperty>(Conjunction.OR, criteria1, criteria2);
+    final CriteriaSet set = new CriteriaSet<>(Conjunction.OR, criteria1, criteria2);
     assertEquals("Set condition should fit", "(colName1 like ? or colName2 <= ?)", set.getWhereClause());
 
     final Property.ColumnProperty property3 = Properties.columnProperty("colName3", Types.DOUBLE);
     final Criteria<Property.ColumnProperty> criteria3 = EntityCriteriaUtil.propertyCriteria(property3, SearchType.NOT_LIKE, 34.5);
-    final CriteriaSet set2 = new CriteriaSet<Property.ColumnProperty>(Conjunction.AND, set, criteria3);
+    final CriteriaSet set2 = new CriteriaSet<>(Conjunction.AND, set, criteria3);
     assertEquals("Set condition should fit", "((colName1 like ? or colName2 <= ?) and colName3 <> ?)",
             set2.getWhereClause());
 
     final Property.ColumnProperty property4 = Properties.columnProperty("colName4", Types.CHAR);
     final Criteria<Property.ColumnProperty> criteria4 = EntityCriteriaUtil.propertyCriteria(property4, SearchType.LIKE, 'a', 'b', 'c');
-    final CriteriaSet set3 = new CriteriaSet<Property.ColumnProperty>(Conjunction.OR, set2, criteria4);
+    final CriteriaSet set3 = new CriteriaSet<>(Conjunction.OR, set2, criteria4);
     assertEquals("Set condition should fit", "(((colName1 like ? or colName2 <= ?) and colName3 <> ?)"
             + " or (colName4 in (?, ?, ?)))", set3.getWhereClause());
   }

@@ -21,7 +21,7 @@ public final class PoolMonitor {
 
   private final EntityConnectionServerAdmin server;
 
-  private final Collection<ConnectionPoolMonitor> connectionPoolMonitors = new ArrayList<ConnectionPoolMonitor>();
+  private final Collection<ConnectionPoolMonitor> connectionPoolMonitors = new ArrayList<>();
 
   public PoolMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
     this.server = server;

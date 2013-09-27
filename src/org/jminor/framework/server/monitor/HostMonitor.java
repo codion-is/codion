@@ -32,7 +32,7 @@ public final class HostMonitor {
 
   private final String hostName;
   private final int[] registryPorts;
-  private final Collection<ServerMonitor> serverMonitors = new ArrayList<ServerMonitor>();
+  private final Collection<ServerMonitor> serverMonitors = new ArrayList<>();
 
   public HostMonitor(final String hostName, final int[] registryPorts) throws RemoteException {
     this.hostName = hostName;
@@ -90,7 +90,7 @@ public final class HostMonitor {
   }
 
   private static List<String> getRemoteEntityServers(final String serverHostName, final int registryPort) {
-    final List<String> serverNames = new ArrayList<String>();
+    final List<String> serverNames = new ArrayList<>();
     try {
       LOG.debug("HostMonitor locating registry on host: {}, port: {}: ", serverHostName, registryPort);
       final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
@@ -112,7 +112,7 @@ public final class HostMonitor {
   }
 
   private static String[] getEntityServers(final Registry registry) throws RemoteException {
-    final List<String> serverNames = new ArrayList<String>();
+    final List<String> serverNames = new ArrayList<>();
     final String[] boundNames = registry.list();
     for (final String name : boundNames) {
       if (name.startsWith(RemoteServer.SERVER_ADMIN_PREFIX + Configuration.getValue(Configuration.SERVER_NAME_PREFIX))) {

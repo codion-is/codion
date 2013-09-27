@@ -20,7 +20,7 @@ public class ItemRandomizerModelTest {
     final Object two = "two";
     final Object three = "three";
 
-    final Collection<Object> weightChangeCounter = new ArrayList<Object>();
+    final Collection<Object> weightChangeCounter = new ArrayList<>();
     final EventListener weightListener = new EventListener() {
       @Override
       public void eventOccurred() {
@@ -28,7 +28,7 @@ public class ItemRandomizerModelTest {
       }
     };
 
-    final ItemRandomizerModel<Object> model = new ItemRandomizerModel<Object>(0, one, two, three);
+    final ItemRandomizerModel<Object> model = new ItemRandomizerModel<>(0, one, two, three);
     model.getWeightsObserver().addListener(weightListener);
     assertNotNull(model.getRandom());
     assertEquals(3, model.getItemCount());

@@ -633,7 +633,7 @@ public final class Configuration {
    * @return trimmed String values
    */
   public static Collection<String> parseCommaSeparatedValues(final String propertyName) {
-    final Collection<String> values = new ArrayList<String>();
+    final Collection<String> values = new ArrayList<>();
     final String commaSeparatedValues = Configuration.getStringValue(propertyName);
     if (!Util.nullOrEmpty(commaSeparatedValues)) {
       final String[] classNames = commaSeparatedValues.split(",");

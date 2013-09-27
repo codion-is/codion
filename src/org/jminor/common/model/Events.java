@@ -21,7 +21,7 @@ public final class Events {
    * @return a new Event
    */
   public static <T> Event<T> event() {
-    return new DefaultEvent<T>();
+    return new DefaultEvent<>();
   }
 
   /**
@@ -89,7 +89,7 @@ public final class Events {
     public EventObserver<T> getObserver() {
       synchronized (this) {
         if (observer == null) {
-          observer = new DefaultObserver<T>();
+          observer = new DefaultObserver<>();
         }
       }
 
@@ -157,7 +157,7 @@ public final class Events {
         return Collections.emptyList();
       }
 
-      return new ArrayList<EventListener>(listeners);
+      return new ArrayList<>(listeners);
     }
 
     private synchronized Collection<EventInfoListener<T>> getEventInfoListeners() {
@@ -165,7 +165,7 @@ public final class Events {
         return Collections.emptyList();
       }
 
-      return new ArrayList<EventInfoListener<T>>(infoListeners);
+      return new ArrayList<>(infoListeners);
     }
 
     private synchronized boolean hasListeners() {
@@ -174,7 +174,7 @@ public final class Events {
 
     private Collection<EventListener> getListeners() {
       if (listeners == null) {
-        listeners = new HashSet<EventListener>(1);
+        listeners = new HashSet<>(1);
       }
 
       return listeners;
@@ -182,7 +182,7 @@ public final class Events {
 
     private Collection<EventInfoListener<T>> getInfoListeners() {
       if (infoListeners == null) {
-        infoListeners = new HashSet<EventInfoListener<T>>(1);
+        infoListeners = new HashSet<>(1);
       }
 
       return infoListeners;

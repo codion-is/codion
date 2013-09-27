@@ -81,19 +81,19 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   private final EntityConnection connectionProxy;
 
   /**
+   * The connection pool to use, if any
+   */
+  private final ConnectionPool connectionPool;
+
+  /**
    * A local connection used in case no connection pool is provided, managed by getConnection()/returnConnection()
    */
-  private transient EntityConnection localEntityConnection;
+  private EntityConnection localEntityConnection;
 
   /**
    * A local connection used by the connection pool, managed by getConnection()/returnConnection()
    */
-  private transient EntityConnection poolEntityConnection;
-
-  /**
-   * The connection pool to use, if any
-   */
-  private transient ConnectionPool connectionPool;
+  private EntityConnection poolEntityConnection;
 
   /**
    * Indicates whether or not this remote connection has been disconnected

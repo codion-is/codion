@@ -19,7 +19,7 @@ public class EntityCriteriaTest {
 
   @Test
   public void test() {
-    final CriteriaSet<Property.ColumnProperty> set1 = new CriteriaSet<Property.ColumnProperty>(
+    final CriteriaSet<Property.ColumnProperty> set1 = new CriteriaSet<>(
             Conjunction.AND,
             EntityCriteriaUtil.propertyCriteria(Properties.columnProperty("stringProperty", Types.VARCHAR), SearchType.LIKE, "value"),
             EntityCriteriaUtil.propertyCriteria(Properties.columnProperty("intProperty", Types.INTEGER), SearchType.LIKE, 666)
@@ -27,12 +27,12 @@ public class EntityCriteriaTest {
     final EntityCriteria criteria = EntityCriteriaUtil.criteria("entityID", set1);
     assertEquals("where (stringProperty like ? and intProperty = ?)", criteria.getWhereClause());
     assertEquals(set1, criteria.getCriteria());
-    final CriteriaSet<Property.ColumnProperty> set2 = new CriteriaSet<Property.ColumnProperty>(
+    final CriteriaSet<Property.ColumnProperty> set2 = new CriteriaSet<>(
             Conjunction.AND,
             EntityCriteriaUtil.propertyCriteria(Properties.columnProperty("doubleProperty", Types.DOUBLE), SearchType.LIKE, 666.666),
             EntityCriteriaUtil.propertyCriteria(Properties.columnProperty("stringProperty2", Types.VARCHAR), false, SearchType.LIKE, "value2")
     );
-    final CriteriaSet<Property.ColumnProperty> set3 = new CriteriaSet<Property.ColumnProperty>(Conjunction.OR, set1, set2);
+    final CriteriaSet<Property.ColumnProperty> set3 = new CriteriaSet<>(Conjunction.OR, set1, set2);
     assertEquals("where ((stringProperty like ? and intProperty = ?) " + "or"
             + " (doubleProperty = ? and upper(stringProperty2) like upper(?)))",
             EntityCriteriaUtil.criteria("entityID", set3).getWhereClause());

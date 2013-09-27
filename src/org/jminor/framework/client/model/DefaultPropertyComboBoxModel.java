@@ -69,6 +69,6 @@ public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel {
   /** {@inheritDoc} */
   @Override
   protected final List<?> initializeContents() {
-    return new ArrayList<Object>(valueProvider.getValues());
+    return new ArrayList<>(valueProvider.getValues());
   }
 }

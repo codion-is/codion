@@ -30,7 +30,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JTable;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.table.TableModel;
 import javax.swing.table.TableRowSorter;
 import java.awt.BorderLayout;
 import java.awt.Color;
@@ -157,7 +156,7 @@ public final class ServerMonitorPanel extends JPanel {
   private JPanel initializeDomainModelPanel() {
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     final JTable table = new JTable(model.getDomainTableModel());
-    table.setRowSorter(new TableRowSorter<TableModel>(model.getDomainTableModel()));
+    table.setRowSorter(new TableRowSorter<>(model.getDomainTableModel()));
     final JScrollPane scroller = new JScrollPane(table);
 
     final JPanel refreshPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));

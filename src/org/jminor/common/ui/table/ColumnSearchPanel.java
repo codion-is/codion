@@ -108,7 +108,7 @@ public class ColumnSearchPanel<K> extends JPanel {
    */
   public ColumnSearchPanel(final ColumnSearchModel<K> searchModel, final boolean includeToggleSearchEnabledButton,
                            final boolean includeToggleAdvancedSearchButton, final SearchType... searchTypes) {
-    this(searchModel, includeToggleSearchEnabledButton, includeToggleAdvancedSearchButton, new DefaultInputFieldProvider<K>(searchModel), searchTypes);
+    this(searchModel, includeToggleSearchEnabledButton, includeToggleAdvancedSearchButton, new DefaultInputFieldProvider<>(searchModel), searchTypes);
   }
 
   /**
@@ -443,10 +443,10 @@ public class ColumnSearchPanel<K> extends JPanel {
   }
 
   private JComboBox initializeSearchTypeComboBox() {
-    final ItemComboBoxModel<SearchType> comboBoxModel = new ItemComboBoxModel<SearchType>();
+    final ItemComboBoxModel<SearchType> comboBoxModel = new ItemComboBoxModel<>();
     for (final SearchType type : SearchType.values()) {
       if (searchTypes.contains(type)) {
-        comboBoxModel.addItem(new Item<SearchType>(type, type.getCaption()));
+        comboBoxModel.addItem(new Item<>(type, type.getCaption()));
       }
     }
     final JComboBox comboBox = new SteppedComboBox(comboBoxModel);

@@ -20,7 +20,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
   private final String entityID;
 
-  private final List<EntityModelProvider> detailModelProviders = new ArrayList<EntityModelProvider>();
+  private final List<EntityModelProvider> detailModelProviders = new ArrayList<>();
 
   private Class<? extends EntityModel> modelClass = DefaultEntityModel.class;
   private Class<? extends EntityEditModel> editModelClass = DefaultEntityEditModel.class;

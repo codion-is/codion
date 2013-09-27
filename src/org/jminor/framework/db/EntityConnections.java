@@ -53,8 +53,8 @@ public final class EntityConnections {
   /**
    * Sets the internal connection for the given EntityConnection, note that no checking
    * of validity or open transactions is performed on the given connection, it is used 'as is'
-   * @param entityConnection
-   * @param connection
+   * @param entityConnection the entity connection for which to set the internal connection
+   * @param connection the internal connection to use
    */
   public static void setConnection(final EntityConnection entityConnection, final Connection connection) {
     ((DefaultDatabaseConnection) entityConnection).setConnection(connection);

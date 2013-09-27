@@ -131,7 +131,7 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
   /** {@inheritDoc} */
   @Override
   public List<Integer> getSelectedIndexes() {
-    final List<Integer> indexes = new ArrayList<Integer>();
+    final List<Integer> indexes = new ArrayList<>();
     final int min = getMinSelectionIndex();
     final int max = getMaxSelectionIndex();
     for (int i = min; i <= max; i++) {
@@ -171,7 +171,7 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
   @Override
   public List<R> getSelectedItems() {
     final Collection<Integer> selectedModelIndexes = getSelectedIndexes();
-    final List<R> selectedItems = new ArrayList<R>(selectedModelIndexes.size());
+    final List<R> selectedItems = new ArrayList<>(selectedModelIndexes.size());
     for (final int modelIndex : selectedModelIndexes) {
       selectedItems.add(tableModelProxy.getItemAt(modelIndex));
     }
@@ -203,7 +203,7 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
   /** {@inheritDoc} */
   @Override
   public void addSelectedItems(final Collection<R> items) {
-    final List<Integer> indexes = new ArrayList<Integer>();
+    final List<Integer> indexes = new ArrayList<>();
     for (final R item : items) {
       final int index = tableModelProxy.indexOf(item);
       if (index >= 0) {
@@ -258,7 +258,7 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
       }
       else {
         final Collection<Integer> selected = getSelectedIndexes();
-        final List<Integer> indexesToSelect = new ArrayList<Integer>(selected.size());
+        final List<Integer> indexesToSelect = new ArrayList<>(selected.size());
         for (final Integer index : selected) {
           indexesToSelect.add(index == 0 ? lastIndex : index - 1);
         }
@@ -276,7 +276,7 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
       }
       else {
         final Collection<Integer> selected = getSelectedIndexes();
-        final List<Integer> indexesToSelect = new ArrayList<Integer>(selected.size());
+        final List<Integer> indexesToSelect = new ArrayList<>(selected.size());
         for (final Integer index : selected) {
           indexesToSelect.add(index == tableModelProxy.getRowCount() - 1 ? 0 : index + 1);
         }

@@ -28,7 +28,7 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
   /**
    * The criteria in this set
    */
-  private List<Criteria<T>> criteriaList = new ArrayList<Criteria<T>>();
+  private List<Criteria<T>> criteriaList = new ArrayList<>();
 
   /**
    * Used for serialization, not for general use
@@ -94,7 +94,7 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
   /** {@inheritDoc} */
   @Override
   public List<Object> getValues() {
-    final List<Object> values = new ArrayList<Object>();
+    final List<Object> values = new ArrayList<>();
     for (final Criteria<T> criteria : criteriaList) {
       values.addAll(criteria.getValues());
     }
@@ -105,7 +105,7 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
   /** {@inheritDoc} */
   @Override
   public List<T> getValueKeys() {
-    final List<T> types = new ArrayList<T>();
+    final List<T> types = new ArrayList<>();
     for (final Criteria<T> criteria : criteriaList) {
       types.addAll(criteria.getValueKeys());
     }
@@ -125,7 +125,7 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
   private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
     conjunction = (Conjunction) stream.readObject();
     final int criteriaCount = stream.readInt();
-    criteriaList = new ArrayList<Criteria<T>>(criteriaCount);
+    criteriaList = new ArrayList<>(criteriaCount);
     for (int i = 0; i < criteriaCount; i++) {
       criteriaList.add((Criteria<T>) stream.readObject());
     }

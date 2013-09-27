@@ -20,11 +20,11 @@ public class ItemComboBoxModelTest {
   @Test
   public void test() throws Exception {
     new ItemComboBoxModel();
-    final Item<Integer> nullItem = new Item<Integer>(null, "");
-    final Item<Integer> aOne = new Item<Integer>(1, "AOne");
-    final Item<Integer> bTwo = new Item<Integer>(2, "BTwo");
-    final Item<Integer> cThree = new Item<Integer>(3, "CThree");
-    final Item<Integer> dFour = new Item<Integer>(4, "DFour");
+    final Item<Integer> nullItem = new Item<>(null, "");
+    final Item<Integer> aOne = new Item<>(1, "AOne");
+    final Item<Integer> bTwo = new Item<>(2, "BTwo");
+    final Item<Integer> cThree = new Item<>(3, "CThree");
+    final Item<Integer> dFour = new Item<>(4, "DFour");
 
     final List<Item<Integer>> items = Arrays.asList(nullItem, cThree, bTwo, aOne, dFour);
     final ItemComboBoxModel<Integer> model = new ItemComboBoxModel<Integer>(items) {
@@ -55,7 +55,7 @@ public class ItemComboBoxModelTest {
     assertTrue("The item representing null should be selected", model.getSelectedItem().equals(nullItem));
 
     final ImageIcon icon = Images.loadImage("jminor_logo32.gif");
-    final ItemComboBoxModel<String> iconModel = new ItemComboBoxModel<String>(new ItemComboBoxModel.IconItem<String>("test", icon));
+    final ItemComboBoxModel<String> iconModel = new ItemComboBoxModel<>(new ItemComboBoxModel.IconItem<>("test", icon));
     iconModel.setSelectedItem("test");
     final ItemComboBoxModel.IconItem item = (ItemComboBoxModel.IconItem) iconModel.getSelectedItem();
     assertEquals(icon.getIconHeight(), item.getIconHeight());

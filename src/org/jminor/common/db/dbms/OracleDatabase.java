@@ -21,7 +21,7 @@ public final class OracleDatabase extends AbstractDatabase {
   static final String URL_PREFIX = "jdbc:oracle:thin:@";
   static final String CHECK_QUERY = "select 1 from dual";
 
-  private static final Map<Integer, String> ERROR_CODE_MAP = new HashMap<Integer, String>();
+  private static final Map<Integer, String> ERROR_CODE_MAP = new HashMap<>();
 
   private static final int UNIQUE_KEY_ERROR = 1;
   private static final int CHILD_RECORD_ERROR = 2292;

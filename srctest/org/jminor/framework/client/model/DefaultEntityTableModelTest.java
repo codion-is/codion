@@ -354,7 +354,7 @@ public final class DefaultEntityTableModelTest {
   @Test
   public void getEntitiesByPropertyValues() {
     testModel.refresh();
-    final Map<String, Object> propValues = new HashMap<String, Object>();
+    final Map<String, Object> propValues = new HashMap<>();
     propValues.put(EntityTestDomain.DETAIL_STRING, "b");
     assertEquals(1, testModel.getEntitiesByPropertyValues(propValues).size());
     propValues.put(EntityTestDomain.DETAIL_STRING, "zz");
@@ -367,7 +367,7 @@ public final class DefaultEntityTableModelTest {
     Entity tmpEnt = Entities.entity(EntityTestDomain.T_DETAIL);
     tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 3);
     assertEquals("c", testModel.getEntityByPrimaryKey(tmpEnt.getPrimaryKey()).getValue(EntityTestDomain.DETAIL_STRING));
-    final List<Entity.Key> keys = new ArrayList<Entity.Key>();
+    final List<Entity.Key> keys = new ArrayList<>();
     keys.add(tmpEnt.getPrimaryKey());
     tmpEnt = Entities.entity(EntityTestDomain.T_DETAIL);
     tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 2);

@@ -62,7 +62,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
    * A map of entities used to filter the contents of this model by foreign key value.
    * The key in the map is the ID of the relevant foreign key property.
    */
-  private final Map<String, Set<Entity>> foreignKeyFilterEntities = new HashMap<String, Set<Entity>>();
+  private final Map<String, Set<Entity>> foreignKeyFilterEntities = new HashMap<>();
 
   private final FilterCriteria<Entity> foreignKeyFilterCriteria = new FilterCriteria<Entity>() {
     /** {@inheritDoc} */
@@ -190,7 +190,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   /** {@inheritDoc} */
   @Override
   public final void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities) {
-    final Set<Entity> filterEntities = new HashSet<Entity>();
+    final Set<Entity> filterEntities = new HashSet<>();
     if (entities != null) {
       filterEntities.addAll(entities);
     }
@@ -202,7 +202,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   /** {@inheritDoc} */
   @Override
   public final Collection<Entity> getForeignKeyFilterEntities(final String foreignKeyPropertyID) {
-    final Collection<Entity> filterEntities = new ArrayList<Entity>();
+    final Collection<Entity> filterEntities = new ArrayList<>();
     if (foreignKeyFilterEntities.containsKey(foreignKeyPropertyID)) {
       filterEntities.addAll(foreignKeyFilterEntities.get(foreignKeyPropertyID));
     }

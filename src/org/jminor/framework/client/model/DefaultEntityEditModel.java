@@ -89,18 +89,18 @@ public class DefaultEntityEditModel implements EntityEditModel {
    * Holds the ComboBoxModels used by this {@link EntityEditModel},
    * @see org.jminor.common.model.Refreshable
    */
-  private final Map<Property, FilteredComboBoxModel> propertyComboBoxModels = new HashMap<Property, FilteredComboBoxModel>();
+  private final Map<Property, FilteredComboBoxModel> propertyComboBoxModels = new HashMap<>();
 
   /**
    * Holds the EntityLookupModels used by this {@link EntityEditModel}
    */
   private final Map<Property.ForeignKeyProperty, EntityLookupModel> entityLookupModels =
-          new HashMap<Property.ForeignKeyProperty, EntityLookupModel>();
+          new HashMap<>();
 
   /**
    * Contains true if values should persist for the given property when the model is cleared
    */
-  private final Map<String, Boolean> persistentValues = new HashMap<String, Boolean>();
+  private final Map<String, Boolean> persistentValues = new HashMap<>();
 
   /**
    * The entity instance edited by this edit model.
@@ -116,12 +116,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds events signaling value changes made via the ui
    */
-  private final Map<String, Event<ValueChange>> valueSetEventMap = new HashMap<String, Event<ValueChange>>();
+  private final Map<String, Event<ValueChange>> valueSetEventMap = new HashMap<>();
 
   /**
    * Holds events signaling value changes made via the model or ui
    */
-  private final Map<String, Event<ValueChange>> valueChangeEventMap = new HashMap<String, Event<ValueChange>>();
+  private final Map<String, Event<ValueChange>> valueChangeEventMap = new HashMap<>();
 
   /**
    * The validator used by this edit model

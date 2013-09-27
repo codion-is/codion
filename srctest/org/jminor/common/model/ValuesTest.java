@@ -32,7 +32,7 @@ public class ValuesTest {
 
   @Test
   public void value() {
-    final Collection<Object> eventCounter = new ArrayList<Object>();
+    final Collection<Object> eventCounter = new ArrayList<>();
     final Value<Integer> intValue = Values.value(42);
     intValue.getChangeObserver().addListener(new EventListener() {
       @Override
@@ -54,7 +54,7 @@ public class ValuesTest {
 
   @Test
   public void linkValues() {
-    final Collection<Object> modelValueEventCounter = new ArrayList<Object>();
+    final Collection<Object> modelValueEventCounter = new ArrayList<>();
     final Value<Integer> modelValue = Values.beanValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, false);
@@ -64,7 +64,7 @@ public class ValuesTest {
         modelValueEventCounter.add(new Object());
       }
     });
-    final Collection<Object> uiValueEventCounter = new ArrayList<Object>();
+    final Collection<Object> uiValueEventCounter = new ArrayList<>();
     uiValue.getChangeObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
@@ -98,7 +98,7 @@ public class ValuesTest {
 
   @Test
   public void linkValuesReadOnly() {
-    final Collection<Object> modelValueEventCounter = new ArrayList<Object>();
+    final Collection<Object> modelValueEventCounter = new ArrayList<>();
     final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, true);
@@ -108,7 +108,7 @@ public class ValuesTest {
         modelValueEventCounter.add(new Object());
       }
     });
-    final Collection<Object> uiValueEventCounter = new ArrayList<Object>();
+    final Collection<Object> uiValueEventCounter = new ArrayList<>();
     uiValue.getChangeObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {

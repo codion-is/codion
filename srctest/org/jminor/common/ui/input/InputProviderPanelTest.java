@@ -33,7 +33,7 @@ public class InputProviderPanelTest {
     txt.setText("hello");
     assertEquals("hello", panel.getValue());
     assertFalse(panel.isInputAccepted());
-    final Collection<Object> event = new ArrayList<Object>();
+    final Collection<Object> event = new ArrayList<>();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {

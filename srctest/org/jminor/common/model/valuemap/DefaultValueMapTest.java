@@ -25,7 +25,7 @@ public class DefaultValueMapTest {
   @Test
   public void test() {
     final String key = "key";
-    final DefaultValueMap<String, Object> map = new DefaultValueMap<String, Object>();
+    final DefaultValueMap<String, Object> map = new DefaultValueMap<>();
     assertFalse(map.equals(key));
     assertEquals(0, map.size());
     assertFalse(map.containsValue(key));
@@ -47,7 +47,7 @@ public class DefaultValueMapTest {
     assertFalse(map.containsValue(key));
     assertEquals(0, map.size());
 
-    final ValueMap<String, Integer> valueMap = new DefaultValueMap<String, Integer>();
+    final ValueMap<String, Integer> valueMap = new DefaultValueMap<>();
 
     final EventInfoListener<ValueChange> valueListener = new EventInfoListener<ValueChange>() {
       @Override
@@ -128,9 +128,9 @@ public class DefaultValueMapTest {
 
   @Test
   public void setAs() {
-    final ValueMap<Integer, String> dest = new DefaultValueMap<Integer, String>();
+    final ValueMap<Integer, String> dest = new DefaultValueMap<>();
 
-    final ValueMap<Integer, String> source = new DefaultValueMap<Integer, String>();
+    final ValueMap<Integer, String> source = new DefaultValueMap<>();
     source.setValue(1, "1");
     source.setValue(2, "2");
     source.setValue(2, "3");
@@ -152,7 +152,7 @@ public class DefaultValueMapTest {
 
   @Test
   public void equals() {
-    final ValueMap<String, Integer> mapOne = new DefaultValueMap<String, Integer>();
+    final ValueMap<String, Integer> mapOne = new DefaultValueMap<>();
     final ValueMap<String, Integer> mapTwo = mapOne.getInstance();
     mapOne.getValueChangeObserver();
     mapTwo.getValueChangeObserver();
@@ -190,7 +190,7 @@ public class DefaultValueMapTest {
 
   @Test
   public void clear() {
-    final ValueMap<String, Integer> map = new DefaultValueMap<String, Integer>();
+    final ValueMap<String, Integer> map = new DefaultValueMap<>();
     map.setValue("1", 1);
     map.setValue("2", 2);
     map.setValue("3", 3);
@@ -215,7 +215,7 @@ public class DefaultValueMapTest {
 
   @Test
   public void testHashCode() {
-    final ValueMap<String, Integer> map = new DefaultValueMap<String, Integer>();
+    final ValueMap<String, Integer> map = new DefaultValueMap<>();
     map.setValue("1", 1);
     map.setValue("2", 2);
     map.setValue("3", 3);

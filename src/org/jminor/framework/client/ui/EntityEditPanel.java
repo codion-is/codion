@@ -88,12 +88,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * Input components mapped to their respective propertyIDs
    */
-  private final Map<String, JComponent> components = new HashMap<String, JComponent>();
+  private final Map<String, JComponent> components = new HashMap<>();
 
   /**
    * Controls mapped to their respective control codes
    */
-  private final Map<String, Control> controls = new HashMap<String, Control>();
+  private final Map<String, Control> controls = new HashMap<>();
 
   /**
    * Indicates whether the panel is active and ready to receive input
@@ -257,7 +257,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return the propertyIDs that have been associated with components.
    */
   public final Collection<String> getComponentPropertyIDs() {
-    return new ArrayList<String>(components.keySet());
+    return new ArrayList<>(components.keySet());
   }
 
   /**
@@ -302,7 +302,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   public final List<String> getSelectComponentPropertyIDs() {
     final Collection<String> propertyIDs = getComponentPropertyIDs();
-    final List<String> selectableComponentPropertyIDs = new ArrayList<String>(propertyIDs.size());
+    final List<String> selectableComponentPropertyIDs = new ArrayList<>(propertyIDs.size());
     for (final String propertyID : propertyIDs) {
       final JComponent component = getComponent(propertyID);
       if (component != null && includeComponentSelectionPropertyID(propertyID) && component.isVisible() &&
@@ -596,11 +596,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
         return true;
       }
     }
-    catch (ValidationException v) {
+    catch (ValidationException | DatabaseException v) {
       handleException(v);
-    }
-    catch (DatabaseException ex) {
-      handleException(ex);
     }
 
     return false;
@@ -669,11 +666,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
         return true;
       }
     }
-    catch (ValidationException v) {
+    catch (ValidationException | DatabaseException v) {
       handleException(v);
-    }
-    catch (DatabaseException ex) {
-      handleException(ex);
     }
 
     return false;

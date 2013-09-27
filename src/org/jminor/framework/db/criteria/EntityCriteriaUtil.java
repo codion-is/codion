@@ -541,7 +541,7 @@ public final class EntityCriteriaUtil {
     @Override
     public EntitySelectCriteria setForeignKeyFetchDepthLimit(final String foreignKeyPropertyID, final int fetchDepthLimit) {
       if (foreignKeyFetchDepthLimits == null) {
-        foreignKeyFetchDepthLimits = new HashMap<String, Integer>();
+        foreignKeyFetchDepthLimits = new HashMap<>();
       }
       this.foreignKeyFetchDepthLimits.put(foreignKeyPropertyID, fetchDepthLimit);
       return this;
@@ -624,7 +624,7 @@ public final class EntityCriteriaUtil {
      * @param keys the keys
      */
     private EntityKeyCriteria(final List<Property.ColumnProperty> properties, final Collection<Entity.Key> keys) {
-      criteria = new CriteriaSet<Property.ColumnProperty>(Conjunction.OR);
+      criteria = new CriteriaSet<>(Conjunction.OR);
       Util.rejectNullValue(keys, "keys");
       if (keys.isEmpty()) {
         throw new IllegalArgumentException("EntityKeyCriteria requires at least one key");
@@ -669,7 +669,7 @@ public final class EntityCriteriaUtil {
         final List<? extends Property.ColumnProperty> propertyList = properties == null ? pkProperties : properties;
         //(a = b and c = d) or (a = g and c = d)
         for (final Entity.Key key : keys) {
-          final CriteriaSet<Property.ColumnProperty> andSet = new CriteriaSet<Property.ColumnProperty>(Conjunction.AND);
+          final CriteriaSet<Property.ColumnProperty> andSet = new CriteriaSet<>(Conjunction.AND);
           int i = 0;
           for (final Property.ColumnProperty property : propertyList) {
             andSet.add(new PropertyCriteria(property, SearchType.LIKE, key.getValue(pkProperties.get(i++).getPropertyID())));
@@ -898,7 +898,7 @@ public final class EntityCriteriaUtil {
       isNullCriteria = stream.readBoolean();
       caseSensitive = stream.readBoolean();
       final int valueCount = stream.readInt();
-      values = new ArrayList<Object>(valueCount);
+      values = new ArrayList<>(valueCount);
       for (int i = 0; i < valueCount; i++) {
         values.add(stream.readObject());
       }
@@ -910,7 +910,7 @@ public final class EntityCriteriaUtil {
      */
     @SuppressWarnings({"unchecked"})
     private static List<Object> initializeValues(final Object... values) {
-      final List<Object> ret = new ArrayList<Object>();
+      final List<Object> ret = new ArrayList<>();
       if (values == null) {
         ret.add(null);
       }
@@ -1024,7 +1024,7 @@ public final class EntityCriteriaUtil {
     }
 
     private Criteria<Property.ColumnProperty> createMultipleCompositeForeignKeyCriteria() {
-      final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(Conjunction.OR);
+      final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<>(Conjunction.OR);
       for (final Object entityKey : values) {
         criteriaSet.add(createSingleForeignKeyCriteria((Entity.Key) entityKey));
       }
@@ -1035,7 +1035,7 @@ public final class EntityCriteriaUtil {
     private Criteria<Property.ColumnProperty> createSingleForeignKeyCriteria(final Entity.Key entityKey) {
       final Property.ForeignKeyProperty foreignKeyProperty = property;
       if (foreignKeyProperty.isCompositeReference()) {
-        final CriteriaSet<Property.ColumnProperty> pkSet = new CriteriaSet<Property.ColumnProperty>(Conjunction.AND);
+        final CriteriaSet<Property.ColumnProperty> pkSet = new CriteriaSet<>(Conjunction.AND);
         for (final Property.ColumnProperty referencedProperty : foreignKeyProperty.getReferenceProperties()) {
           final String referencedPropertyID = foreignKeyProperty.getReferencedPropertyID(referencedProperty);
           final Object referencedValue = entityKey == null ? null : entityKey.getValue(referencedPropertyID);
@@ -1086,7 +1086,7 @@ public final class EntityCriteriaUtil {
       property = (Property.ForeignKeyProperty) Entities.getProperty(entityID, propertyID);
       searchType = (SearchType) stream.readObject();
       final int valueCount = stream.readInt();
-      values = new ArrayList<Entity.Key>(valueCount);
+      values = new ArrayList<>(valueCount);
       for (int i = 0; i < valueCount; i++) {
         values.add((Entity.Key) stream.readObject());
       }
@@ -1098,7 +1098,7 @@ public final class EntityCriteriaUtil {
      */
     @SuppressWarnings({"unchecked"})
     private static List<Entity.Key> initializeValues(final Object... values) {
-      final List<Entity.Key> ret = new ArrayList<Entity.Key>();
+      final List<Entity.Key> ret = new ArrayList<>();
       if (values == null) {
         ret.add(null);
       }

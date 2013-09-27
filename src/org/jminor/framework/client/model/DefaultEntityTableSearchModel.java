@@ -39,8 +39,8 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   private final Event simpleSearchPerformedEvent = Events.event();
 
   private final String entityID;
-  private final Map<String, ColumnSearchModel<Property>> propertyFilterModels = new LinkedHashMap<String, ColumnSearchModel<Property>>();
-  private final Map<String, PropertySearchModel<? extends Property.SearchableProperty>> propertySearchModels = new HashMap<String, PropertySearchModel<? extends Property.SearchableProperty>>();
+  private final Map<String, ColumnSearchModel<Property>> propertyFilterModels = new LinkedHashMap<>();
+  private final Map<String, PropertySearchModel<? extends Property.SearchableProperty>> propertySearchModels = new HashMap<>();
   private Criteria<Property.ColumnProperty> additionalSearchCriteria;
   private Conjunction searchConjunction = Conjunction.AND;
   private String rememberedSearchState = "";
@@ -211,7 +211,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   /** {@inheritDoc} */
   @Override
   public final Criteria<Property.ColumnProperty> getSearchCriteria() {
-    final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<Property.ColumnProperty>(searchConjunction);
+    final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<>(searchConjunction);
     for (final PropertySearchModel<? extends Property.SearchableProperty> criteria : propertySearchModels.values()) {
       if (criteria.isEnabled()) {
         criteriaSet.add(criteria.getCriteria());

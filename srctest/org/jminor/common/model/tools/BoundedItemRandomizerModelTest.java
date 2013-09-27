@@ -24,7 +24,7 @@ public class BoundedItemRandomizerModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructWithoutParemeters() {
-    new BoundedItemRandomizerModel<Object>();
+    new BoundedItemRandomizerModel<>();
   }
 
   @Test(expected = IllegalArgumentException.class)

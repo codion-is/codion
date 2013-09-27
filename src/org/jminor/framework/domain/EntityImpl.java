@@ -623,7 +623,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
 
   private void cacheReferencedKey(final String fkPropertyID, final Key referencedPrimaryKey) {
     if (referencedPrimaryKeysCache == null) {
-      referencedPrimaryKeysCache = new HashMap<String, Key>();
+      referencedPrimaryKeysCache = new HashMap<>();
     }
     referencedPrimaryKeysCache.put(fkPropertyID, referencedPrimaryKey);
   }
@@ -652,7 +652,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   }
 
   private Object getDerivedValue(final Property.DerivedProperty derivedProperty) {
-    final Map<String, Object> values = new HashMap<String, Object>(derivedProperty.getLinkedPropertyIDs().size());
+    final Map<String, Object> values = new HashMap<>(derivedProperty.getLinkedPropertyIDs().size());
     for (final String linkedPropertyID : derivedProperty.getLinkedPropertyIDs()) {
       values.put(linkedPropertyID, getValue(linkedPropertyID));
     }

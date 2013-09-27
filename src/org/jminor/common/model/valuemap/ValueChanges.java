@@ -22,7 +22,7 @@ public final class ValueChanges {
    */
   public static <K, V> ValueChange<K, V> valueChange(final Object source, final K key, final V newValue, final V oldValue,
                                                      final boolean initialization) {
-    return new DefaultValueChange<K, V>(source, key, newValue, oldValue, initialization);
+    return new DefaultValueChange<>(source, key, newValue, oldValue, initialization);
   }
 
   private static final class DefaultValueChange<K, V> implements ValueChange<K, V> {

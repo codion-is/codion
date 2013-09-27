@@ -58,7 +58,7 @@ public final class ValueLinkValidators {
   public static <K> void addValidator(final K key, final JTextComponent textComponent,
                                       final ValueMapEditModel<K, Object> editModel, final Color validBackgroundColor,
                                       final Color invalidBackgroundColor, final String defaultToolTip) {
-    new TextValidator<K>(key, textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip).validate();
+    new TextValidator<>(key, textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip).validate();
   }
 
   /**
@@ -74,7 +74,7 @@ public final class ValueLinkValidators {
   public static <K> void addFormattedValidator(final K key, final JTextComponent textComponent,
                                                final ValueMapEditModel<K, Object> editModel, final Color validBackgroundColor,
                                                final Color invalidBackgroundColor, final String defaultToolTip) {
-    new FormattedTextValidator<K>(key, textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip).validate();
+    new FormattedTextValidator<>(key, textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip).validate();
   }
 
   private abstract static class AbstractValidator<K> {

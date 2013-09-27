@@ -36,7 +36,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
   private static final long NANO_IN_MILLI = 1000000;
 
   private final DatabaseConnectionProvider connectionProvider;
-  private final Collection<DatabaseConnection> inUse = new ArrayList<DatabaseConnection>();
+  private final Collection<DatabaseConnection> inUse = new ArrayList<>();
   private final Random random = new Random();
 
   private final TaskScheduler poolCleanupScheduler = new TaskScheduler(new Runnable() {
@@ -355,7 +355,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
     final long currentTime = System.currentTimeMillis();
     synchronized (pool) {
       final int inUseCount = inUse.size();
-      final Collection<DatabaseConnection> pooledConnections = new ArrayList<DatabaseConnection>(pool);
+      final Collection<DatabaseConnection> pooledConnections = new ArrayList<>(pool);
       for (final DatabaseConnection connection : pooledConnections) {
         if (pool.size() + inUseCount <= minimumPoolSize) {
           return;

@@ -94,7 +94,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
         final String reportPath = Configuration.getReportPath() + "/customer_report.jasper";
         final Collection customerIDs =
                 EntityUtil.getDistinctPropertyValues(CUSTOMER_CUSTOMERID, customerModel.getSelectionModel().getSelectedItems());
-        final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
+        final HashMap<String, Object> reportParameters = new HashMap<>();
         reportParameters.put("CUSTOMER_IDS", customerIDs);
         EntityReportUtil.fillReport(new JasperReportsWrapper(reportPath, reportParameters),
                 customerModel.getConnectionProvider());

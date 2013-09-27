@@ -1040,7 +1040,7 @@ class DefaultProperty implements Property {
 
     private void link(final Property referenceProperty, final String referencedPropertyID) {
       if (linkedReferenceProperties == null) {
-        linkedReferenceProperties = new HashMap<Property, String>();
+        linkedReferenceProperties = new HashMap<>();
       }
       linkedReferenceProperties.put(referenceProperty, referencedPropertyID);
     }
@@ -1113,7 +1113,7 @@ class DefaultProperty implements Property {
     /** {@inheritDoc} */
     @Override
     public boolean isValid(final Object value) {
-      return values.contains(new Item<Object>(value, ""));
+      return values.contains(new Item<>(value, ""));
     }
 
     /** {@inheritDoc} */
@@ -1125,7 +1125,7 @@ class DefaultProperty implements Property {
     /** {@inheritDoc} */
     @Override
     public String getCaption(final Object value) {
-      final Item<Object> item = new Item<Object>(value, "");
+      final Item<Object> item = new Item<>(value, "");
       final int index = values.indexOf(item);
       if (index >= 0) {
         return values.get(index).getCaption();

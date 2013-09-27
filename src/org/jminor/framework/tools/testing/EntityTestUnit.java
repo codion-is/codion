@@ -47,7 +47,7 @@ public abstract class EntityTestUnit {
   private static final String ENTITY_PARAM = "entity";
 
   private EntityConnection connection;
-  private final Map<String, Entity> referencedEntities = new HashMap<String, Entity>();
+  private final Map<String, Entity> referencedEntities = new HashMap<>();
 
   /**
    * Instantiates a new EntityTestUnit.
@@ -252,8 +252,7 @@ public abstract class EntityTestUnit {
    */
   @SuppressWarnings({"UnusedDeclaration"})
   private void initializeReferencedEntities(final String entityID) throws DatabaseException {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties =
-            new ArrayList<Property.ForeignKeyProperty>(Entities.getForeignKeyProperties(entityID));
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<>(Entities.getForeignKeyProperties(entityID));
     Collections.sort(foreignKeyProperties, new Comparator<Property.ForeignKeyProperty>() {
       //we initialize the self references last, to insure that all required reference entities have been initialized
       @Override//before trying to initialize an instance of this entity

@@ -130,7 +130,7 @@ public class EntityGeneratorModelTest {
   @Test
   public void address() {
     assertNotNull(model.getDocument());
-    final Collection<Object> counter = new ArrayList<Object>();
+    final Collection<Object> counter = new ArrayList<>();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {

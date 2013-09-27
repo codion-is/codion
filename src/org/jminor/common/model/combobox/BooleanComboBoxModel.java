@@ -25,6 +25,6 @@ public final class BooleanComboBoxModel extends ItemComboBoxModel<Boolean> {
    * @param falseString the string representing the boolean value 'false'
    */
   public BooleanComboBoxModel(final String nullString, final String trueString, final String falseString) {
-    super(new Item<Boolean>(null, nullString), new Item<Boolean>(true, trueString), new Item<Boolean>(false, falseString));
+    super(new Item<Boolean>(null, nullString), new Item<>(true, trueString), new Item<>(false, falseString));
   }
 }

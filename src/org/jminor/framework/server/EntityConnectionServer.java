@@ -150,7 +150,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
    * @throws RemoteException in case of an exception
    */
   Collection<User> getUsers() throws RemoteException {
-    final Set<User> users = new HashSet<User>();
+    final Set<User> users = new HashSet<>();
     for (final RemoteEntityConnection connection : getConnections().values()) {
       users.add(connection.getUser());
     }
@@ -163,7 +163,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
    * @throws RemoteException in case of an exception
    */
   Collection<ClientInfo> getClients() throws RemoteException {
-    final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
+    final Collection<ClientInfo> clients = new ArrayList<>();
     for (final RemoteEntityConnection connection : getConnections().values()) {
       clients.add(((DefaultRemoteEntityConnection) connection).getClientInfo());
     }
@@ -177,7 +177,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
    * @throws RemoteException in case of an exception
    */
   Collection<ClientInfo> getClients(final User user) throws RemoteException {
-    final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
+    final Collection<ClientInfo> clients = new ArrayList<>();
     for (final RemoteEntityConnection connection : getConnections().values()) {
       if (user == null || connection.getUser().equals(user)) {
         clients.add(((DefaultRemoteEntityConnection) connection).getClientInfo());
@@ -193,7 +193,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
    * @throws RemoteException in case of an exception
    */
   Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException {
-    final Collection<ClientInfo> clients = new ArrayList<ClientInfo>();
+    final Collection<ClientInfo> clients = new ArrayList<>();
     for (final RemoteEntityConnection connection : getConnections().values()) {
       if (((DefaultRemoteEntityConnection) connection).getClientInfo().getClientTypeID().equals(clientTypeID)) {
         clients.add(((DefaultRemoteEntityConnection) connection).getClientInfo());
@@ -286,7 +286,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
    * @throws RemoteException in case of an exception
    */
   void removeConnections(final boolean inactiveOnly) throws RemoteException {
-    final List<ClientInfo> clients = new ArrayList<ClientInfo>(getConnections().keySet());
+    final List<ClientInfo> clients = new ArrayList<>(getConnections().keySet());
     for (final ClientInfo client : clients) {
       final DefaultRemoteEntityConnection connection = (DefaultRemoteEntityConnection) getConnection(client);
       if (inactiveOnly) {

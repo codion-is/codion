@@ -125,7 +125,7 @@ public final class DefaultEntityComboBoxModelTest {
 
   @Test
   public void test() throws DatabaseException {
-    final Collection<Object> refreshed = new ArrayList<Object>();
+    final Collection<Object> refreshed = new ArrayList<>();
     final EventListener refreshListener = new EventListener() {
       @Override
       public void eventOccurred() {
@@ -164,7 +164,7 @@ public final class DefaultEntityComboBoxModelTest {
   @Test
   public void staticData() throws DatabaseException {
     comboBoxModel.refresh();
-    List<Entity> items = new ArrayList<Entity>(comboBoxModel.getVisibleItems());
+    List<Entity> items = new ArrayList<>(comboBoxModel.getVisibleItems());
     comboBoxModel.refresh();
     List<Entity> refreshedItems = comboBoxModel.getVisibleItems();
 
@@ -183,7 +183,7 @@ public final class DefaultEntityComboBoxModelTest {
     assertTrue(comboBoxModel.isStaticData());
 
     comboBoxModel.refresh();
-    items = new ArrayList<Entity>(comboBoxModel.getVisibleItems());
+    items = new ArrayList<>(comboBoxModel.getVisibleItems());
     comboBoxModel.refresh();
     refreshedItems = comboBoxModel.getVisibleItems();
 

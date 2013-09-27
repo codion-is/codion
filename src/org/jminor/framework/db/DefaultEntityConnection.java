@@ -65,8 +65,8 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
   private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(DefaultEntityConnection.class);
   private static final String CRITERIA_PARAM_NAME = "criteria";
 
-  private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<String, EntityResultPacker>();
-  private final Map<Integer, ResultPacker> propertyResultPackers = new HashMap<Integer, ResultPacker>();
+  private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<>();
+  private final Map<Integer, ResultPacker> propertyResultPackers = new HashMap<>();
   private boolean optimisticLocking = Configuration.getBooleanValue(Configuration.USE_OPTIMISTIC_LOCKING);
   private boolean limitForeignKeyFetchDepth = Configuration.getBooleanValue(Configuration.LIMIT_FOREIGN_KEY_FETCH_DEPTH);
 
@@ -97,16 +97,16 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
   @Override
   public synchronized List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     if (Util.nullOrEmpty(entities)) {
-      return new ArrayList<Entity.Key>();
+      return new ArrayList<>();
     }
     checkReadOnly(entities);
 
-    final List<Entity.Key> insertedKeys = new ArrayList<Entity.Key>(entities.size());
-    final List<Object> statementValues = new ArrayList<Object>();
+    final List<Entity.Key> insertedKeys = new ArrayList<>(entities.size());
+    final List<Object> statementValues = new ArrayList<>();
     PreparedStatement statement = null;
     String insertSQL = null;
     try {
-      final List<Property.ColumnProperty> statementProperties = new ArrayList<Property.ColumnProperty>();
+      final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
       for (final Entity entity : entities) {
         final String entityID = entity.getEntityID();
         final Property.PrimaryKeyProperty firstPrimaryKeyProperty = Entities.getPrimaryKeyProperties(entityID).get(0);
@@ -152,7 +152,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     }
     checkReadOnly(entities);
 
-    final List<Object> statementValues = new ArrayList<Object>();
+    final List<Object> statementValues = new ArrayList<>();
     PreparedStatement statement = null;
     String updateSQL = null;
     try {
@@ -167,7 +167,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
         }
       }
 
-      final List<Property.ColumnProperty> statementProperties = new ArrayList<Property.ColumnProperty>();
+      final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
       for (final Map.Entry<String, Collection<Entity>> hashedEntitiesMapEntry : hashedEntities.entrySet()) {
         final String entityID = hashedEntitiesMapEntry.getKey();
         final boolean includePrimaryKeyProperties = true;
@@ -245,7 +245,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
       for (final String entityID : hashedKeys.keySet()) {
         checkReadOnly(entityID);
       }
-      final List<Entity.Key> criteriaKeys = new ArrayList<Entity.Key>();
+      final List<Entity.Key> criteriaKeys = new ArrayList<>();
       for (final Map.Entry<String, Collection<Entity.Key>> hashedKeysEntry : hashedKeys.entrySet()) {
         criteriaKeys.addAll(hashedKeysEntry.getValue());
         final EntityCriteria criteria = EntityCriteriaUtil.criteria(criteriaKeys);
@@ -297,7 +297,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
   @Override
   public synchronized List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
     if (Util.nullOrEmpty(keys)) {
-      return new ArrayList<Entity>(0);
+      return new ArrayList<>(0);
     }
 
     return selectMany(EntityCriteriaUtil.selectCriteria(keys));
@@ -395,7 +395,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
   /** {@inheritDoc} */
   @Override
   public synchronized Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
-    final Map<String, Collection<Entity>> dependencyMap = new HashMap<String, Collection<Entity>>();
+    final Map<String, Collection<Entity>> dependencyMap = new HashMap<>();
     if (Util.nullOrEmpty(entities)) {
       return dependencyMap;
     }
@@ -495,8 +495,8 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     final EntityCriteria criteria = EntityCriteriaUtil.criteria(primaryKey);
     final String sql = "update " + Entities.getTableName(primaryKey.getEntityID()) + " set " + property.getColumnName() +
             " = ? " + criteria.getWhereClause();
-    final List<Object> values = new ArrayList<Object>();
-    final List<Property.ColumnProperty> properties = new ArrayList<Property.ColumnProperty>();
+    final List<Object> values = new ArrayList<>();
+    final List<Property.ColumnProperty> properties = new ArrayList<>();
     DatabaseUtil.QUERY_COUNTER.count(sql);
     try {
       logAccess("writeBlob", new Object[]{sql});
@@ -867,7 +867,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
 
   private static Collection<Entity.Key> getReferencedPrimaryKeys(final List<Entity> entities,
                                                                  final Property.ForeignKeyProperty foreignKeyProperty) {
-    final Set<Entity.Key> keySet = new HashSet<Entity.Key>(entities.size());
+    final Set<Entity.Key> keySet = new HashSet<>(entities.size());
     for (final Entity entity : entities) {
       final Entity.Key key = entity.getReferencedPrimaryKey(foreignKeyProperty);
       if (key != null) {
@@ -1067,7 +1067,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
 
   private static Set<Dependency> resolveEntityDependencies(final String entityID) {
     final Collection<String> entityIDs = Entities.getDefinedEntities();
-    final Set<Dependency> dependencies = new HashSet<Dependency>();
+    final Set<Dependency> dependencies = new HashSet<>();
     for (final String entityIDToCheck : entityIDs) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityIDToCheck)) {
         if (foreignKeyProperty.getReferencedEntityID().equals(entityID)) {
@@ -1107,7 +1107,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     /** {@inheritDoc} */
     @Override
     public List<Object> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Object> result = new ArrayList<Object>(50);
+      final List<Object> result = new ArrayList<>(50);
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         if (property.isInteger()) {
@@ -1133,7 +1133,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     /** {@inheritDoc} */
     @Override
     public List<Blob> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Blob> blobs = new ArrayList<Blob>();
+      final List<Blob> blobs = new ArrayList<>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         blobs.add(resultSet.getBlob(1));
@@ -1176,7 +1176,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     @Override
     public List<Entity> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       Util.rejectNullValue(resultSet, "resultSet");
-      final List<Entity> entities = new ArrayList<Entity>();
+      final List<Entity> entities = new ArrayList<>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         entities.add(loadEntity(resultSet));

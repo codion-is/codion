@@ -17,12 +17,12 @@ import java.util.Date;
 import static org.junit.Assert.*;
 
 public class DefaultColumnSearchModelTest {
-  final Collection<Object> upperBoundCounter = new ArrayList<Object>();
-  final Collection<Object> lowerBoundCounter = new ArrayList<Object>();
-  final Collection<Object> searchStateCounter = new ArrayList<Object>();
-  final Collection<Object> searchTypeCounter = new ArrayList<Object>();
-  final Collection<Object> enabledCounter = new ArrayList<Object>();
-  final Collection<Object> clearCounter = new ArrayList<Object>();
+  final Collection<Object> upperBoundCounter = new ArrayList<>();
+  final Collection<Object> lowerBoundCounter = new ArrayList<>();
+  final Collection<Object> searchStateCounter = new ArrayList<>();
+  final Collection<Object> searchTypeCounter = new ArrayList<>();
+  final Collection<Object> enabledCounter = new ArrayList<>();
+  final Collection<Object> clearCounter = new ArrayList<>();
 
   final EventListener upperBoundListener = new EventListener() {
     @Override
@@ -63,7 +63,7 @@ public class DefaultColumnSearchModelTest {
 
   @Test
   public void testSetBounds() {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
     model.setAutoEnable(false);
     assertFalse(model.isAutoEnable());
     model.addUpperBoundListener(upperBoundListener);
@@ -119,7 +119,7 @@ public class DefaultColumnSearchModelTest {
 
   @Test
   public void testSearchType() {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
     model.addSearchTypeListener(searchTypeListener);
     assertEquals(SearchType.LIKE, model.getSearchType());
     model.setSearchType(SearchType.LESS_THAN);
@@ -137,7 +137,7 @@ public class DefaultColumnSearchModelTest {
 
   @Test
   public void test() throws Exception {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
     assertTrue(model.isAutoEnable());
     model.setUpperBound("test");
     assertTrue(model.isEnabled());
@@ -168,35 +168,35 @@ public class DefaultColumnSearchModelTest {
 
   @Test(expected = IllegalStateException.class)
   public void setUpperBoundLocked() {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
     model.setUpperBound("test");
   }
 
   @Test(expected = IllegalStateException.class)
   public void setLowerBoundLocked() {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
     model.setLowerBound("test");
   }
 
   @Test(expected = IllegalStateException.class)
   public void setEnabledLocked() {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
     model.setEnabled(true);
   }
 
   @Test(expected = IllegalStateException.class)
   public void setSearchTypeLocked() {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<String>("test", Types.VARCHAR, "%");
+    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
     model.setSearchType(SearchType.NOT_LIKE);
   }
 
   @Test
   public void include() {
-    final DefaultColumnSearchModel<String> searchModel = new DefaultColumnSearchModel<String>("test", Types.INTEGER, "%");
+    final DefaultColumnSearchModel<String> searchModel = new DefaultColumnSearchModel<>("test", Types.INTEGER, "%");
     searchModel.setUpperBound(10);
     searchModel.setSearchType(SearchType.LIKE);
     assertFalse(searchModel.include(9));

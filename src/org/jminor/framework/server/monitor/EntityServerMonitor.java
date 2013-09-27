@@ -20,7 +20,7 @@ public final class EntityServerMonitor {
   private final Event hostAddedEvent = Events.event();
   private final Event hostRemovedEvent = Events.event();
 
-  private final Collection<HostMonitor> hostMonitors = new ArrayList<HostMonitor>();
+  private final Collection<HostMonitor> hostMonitors = new ArrayList<>();
 
   public EntityServerMonitor(final String hostNames, final int[] registryPorts) throws RemoteException {
     if (Util.nullOrEmpty(hostNames)) {

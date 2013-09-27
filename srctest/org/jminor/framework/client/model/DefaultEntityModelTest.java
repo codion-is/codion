@@ -74,7 +74,7 @@ public final class DefaultEntityModelTest {
     departmentsComboBoxModel.refresh();
     final Entity.Key primaryKey = Entities.key(EmpDept.T_DEPARTMENT);
     primaryKey.setValue(EmpDept.DEPARTMENT_ID, 40);//operations, no employees
-    final List<Entity.Key> keys = new ArrayList<Entity.Key>();
+    final List<Entity.Key> keys = new ArrayList<>();
     keys.add(primaryKey);
     departmentModel.getTableModel().setSelectedByPrimaryKeys(keys);
     final Entity operations = departmentModel.getTableModel().getSelectionModel().getSelectedItem();

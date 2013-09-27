@@ -109,7 +109,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     final DateFormat jsonDateFormat = DateFormats.getDateFormat(JSON_DATE_FORMAT);
     final DateFormat jsonTimestampFormat = DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT);
     final JSONArray jsonArray = new JSONArray(jsonString);
-    final List<Entity> entities = new ArrayList<Entity>();
+    final List<Entity> entities = new ArrayList<>();
     for (int i = 0; i < jsonArray.length(); i++) {
       entities.add(parseEntity(jsonArray.getJSONObject(i), jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
     }
@@ -155,7 +155,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     final DateFormat jsonDateFormat = DateFormats.getDateFormat(JSON_DATE_FORMAT);
     final DateFormat jsonTimestampFormat = DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT);
     final JSONArray jsonArray = new JSONArray(jsonString);
-    final List<Entity.Key> keys = new ArrayList<Entity.Key>();
+    final List<Entity.Key> keys = new ArrayList<>();
     for (int i = 0; i < jsonArray.length(); i++) {
       keys.add(parseKey(jsonArray.getJSONObject(i), jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
     }
@@ -247,7 +247,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
    */
   private static Entity parseEntity(final JSONObject entityObject, final DateFormat jsonTimeFormat,
                                     final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException, ParseException {
-    final Map<String, Object> propertyValueMap = new HashMap<String, Object>();
+    final Map<String, Object> propertyValueMap = new HashMap<>();
     final String entityID = entityObject.getString(ENTITY_ID);
     if (!Entities.isDefined(entityID)) {
       throw new RuntimeException("Undefined entity found in JSON string: '" + entityID + "'");
@@ -261,7 +261,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     }
     Map<String, Object> originalValueMap = null;
     if (!entityObject.isNull(ORIGINAL_VALUES)) {
-      originalValueMap = new HashMap<String, Object>();
+      originalValueMap = new HashMap<>();
       final JSONObject originalValues = entityObject.getJSONObject(ORIGINAL_VALUES);
       for (int j = 0; j < originalValues.names().length(); j++) {
         final String propertyID = originalValues.names().get(j).toString();

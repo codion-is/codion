@@ -29,7 +29,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   /**
    * The items contained in this model
    */
-  private final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<ItemRandomizer.RandomItem<T>>();
+  private final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>();
 
   /**
    * The Random instance used by this randomizer
@@ -51,7 +51,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   public ItemRandomizerModel(final int defaultWeight, final T... items) {
     if (items != null) {
       for (final T item : items) {
-        this.items.add(new DefaultRandomItem<T>(item, defaultWeight));
+        this.items.add(new DefaultRandomItem<>(item, defaultWeight));
       }
     }
   }
@@ -59,7 +59,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
   /** {@inheritDoc} */
   @Override
   public void addItem(final T item, final int weight) {
-    items.add(new DefaultRandomItem<T>(item, weight));
+    items.add(new DefaultRandomItem<>(item, weight));
   }
 
   /** {@inheritDoc} */

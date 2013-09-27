@@ -14,7 +14,7 @@ public class FilteredTablePanelTest {
   @Test
   public void test() {
     final FilteredTablePanel<String, Integer> panel =
-            new FilteredTablePanel<String, Integer>(AbstractFilteredTableModelTest.createTestModel());
+            new FilteredTablePanel<>(AbstractFilteredTableModelTest.createTestModel());
     assertNotNull(panel.getJTable());
     assertNotNull(panel.getSearchField());
   }

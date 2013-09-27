@@ -40,12 +40,12 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
   /**
    * Contains columns that have been hidden
    */
-  private final Map<C, TableColumn> hiddenColumns = new HashMap<C, TableColumn>();
+  private final Map<C, TableColumn> hiddenColumns = new HashMap<>();
 
   /**
    * The ColumnSearchModels used for filtering
    */
-  private final Map<C, ColumnSearchModel<C>> columnFilterModels = new HashMap<C, ColumnSearchModel<C>>();
+  private final Map<C, ColumnSearchModel<C>> columnFilterModels = new HashMap<>();
 
   /**
    * Caches the column indexes in the model
@@ -132,7 +132,7 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
   /** {@inheritDoc} */
   @Override
   public final List<TableColumn> getHiddenColumns() {
-    return new ArrayList<TableColumn>(hiddenColumns.values());
+    return new ArrayList<>(hiddenColumns.values());
   }
 
   /** {@inheritDoc} */

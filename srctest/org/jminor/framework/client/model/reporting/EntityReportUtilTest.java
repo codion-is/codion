@@ -18,7 +18,7 @@ public class EntityReportUtilTest {
 
   @Test
   public void fillJdbcReport() throws Exception {
-    final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
+    final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
     final JasperPrint print = EntityReportUtil.fillReport(
             new JasperReportsWrapper("resources/demos/empdept/reports/empdept_employees.jasper", reportParameters),

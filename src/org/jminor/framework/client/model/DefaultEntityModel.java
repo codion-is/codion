@@ -72,17 +72,17 @@ public class DefaultEntityModel implements EntityModel {
   /**
    * Holds the detail EntityModels used by this EntityModel
    */
-  private final Collection<EntityModel> detailModels = new ArrayList<EntityModel>();
+  private final Collection<EntityModel> detailModels = new ArrayList<>();
 
   /**
    * Holds linked detail models that should be updated and filtered according to the selected entity/entities
    */
-  private final Set<EntityModel> linkedDetailModels = new HashSet<EntityModel>();
+  private final Set<EntityModel> linkedDetailModels = new HashSet<>();
 
   /**
    * Maps detail models to the foreign key property they are based on
    */
-  private final Map<EntityModel, Property.ForeignKeyProperty> detailModelForeignKeys = new HashMap<EntityModel, Property.ForeignKeyProperty>();
+  private final Map<EntityModel, Property.ForeignKeyProperty> detailModelForeignKeys = new HashMap<>();
 
   /**
    * The master model, if any, so that detail models can refer to their masters

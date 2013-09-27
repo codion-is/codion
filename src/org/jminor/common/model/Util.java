@@ -471,7 +471,7 @@ public final class Util {
     }
     final Properties props = System.getProperties();
     final Enumeration propNames = props.propertyNames();
-    final List<String> orderedPropertyNames = new ArrayList<String>(props.size());
+    final List<String> orderedPropertyNames = new ArrayList<>(props.size());
     while (propNames.hasMoreElements()) {
       orderedPropertyNames.add((String) propNames.nextElement());
     }
@@ -553,7 +553,7 @@ public final class Util {
    * @return deserialized objects
    */
   public static List<Object> deserializeFromFile(final File file) {
-    final List<Object> objects = new ArrayList<Object>();
+    final List<Object> objects = new ArrayList<>();
     ObjectInputStream inputStream = null;
     try {
       inputStream = new ObjectInputStream(new FileInputStream(file));
@@ -757,7 +757,7 @@ public final class Util {
    * @throws URISyntaxException in case of an exception
    */
   public static Collection<URI> getURIs(final Collection<String> urlsOrPaths) throws URISyntaxException {
-    final Collection<URI> urls = new ArrayList<URI>();
+    final Collection<URI> urls = new ArrayList<>();
     for (final String urlsOrPath : urlsOrPaths) {
       if (urlsOrPath.toLowerCase().startsWith("http")) {
         urls.add(new URI(urlsOrPath.trim()));
@@ -889,7 +889,7 @@ public final class Util {
   public static <K, V> LinkedHashMap<K, Collection<V>> map(final Collection<V> values, final HashKeyProvider<K, V> keyProvider) {
     rejectNullValue(values, "values");
     rejectNullValue(keyProvider, "keyProvider");
-    final LinkedHashMap<K, Collection<V>> map = new LinkedHashMap<K, Collection<V>>(values.size());
+    final LinkedHashMap<K, Collection<V>> map = new LinkedHashMap<>(values.size());
     for (final V value : values) {
       map(map, value, keyProvider.getKey(value));
     }

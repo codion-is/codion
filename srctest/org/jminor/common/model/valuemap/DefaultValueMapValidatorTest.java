@@ -24,7 +24,7 @@ public class DefaultValueMapValidatorTest {
         return super.isNullable(valueMap, key) && !key.equals("1");
       }
     };
-    final ValueMap<String, Integer> map = new DefaultValueMap<String, Integer>();
+    final ValueMap<String, Integer> map = new DefaultValueMap<>();
     map.setValue("1", null);
     validator.validate(map);
     map.setValue("1", 1);
@@ -42,7 +42,7 @@ public class DefaultValueMapValidatorTest {
         throw new ValidationException("1", valueMap.getValue("1"), "Invalid");
       }
     };
-    final ValueMap<String, Integer> map = new DefaultValueMap<String, Integer>();
+    final ValueMap<String, Integer> map = new DefaultValueMap<>();
     map.setValue("1", 1);
 
     validator.validate(map);
@@ -50,8 +50,8 @@ public class DefaultValueMapValidatorTest {
 
   @Test
   public void revalidate() {
-    final Collection<Object> counter = new ArrayList<Object>();
-    final DefaultValueMapValidator<String, ValueMap<String, Integer>> validator = new DefaultValueMapValidator<String, ValueMap<String, Integer>>();
+    final Collection<Object> counter = new ArrayList<>();
+    final DefaultValueMapValidator<String, ValueMap<String, Integer>> validator = new DefaultValueMapValidator<>();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {

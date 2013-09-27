@@ -50,7 +50,7 @@ public class TaskSchedulerTest {
 
   @Test
   public void startStop() throws InterruptedException {
-    final Collection<Object> counter = new ArrayList<Object>();
+    final Collection<Object> counter = new ArrayList<>();
     final TaskScheduler scheduler = new TaskScheduler(new Runnable() {
       @Override
       public void run() {

@@ -97,7 +97,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
   }
 
   private Map<TableColumn, JPanel> initializeColumnPanels() {
-    final Map<TableColumn, JPanel> panels = new HashMap<TableColumn, JPanel>();
+    final Map<TableColumn, JPanel> panels = new HashMap<>();
     for (final TableColumn column : columns) {
       panels.put(column, initializeColumnPanel(column));
     }

@@ -54,7 +54,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /**
    * The selected entities
    */
-  private final Collection<Entity> selectedEntities = new ArrayList<Entity>();
+  private final Collection<Entity> selectedEntities = new ArrayList<>();
 
   /**
    * The EntityConnectionProvider instance used by this EntityLookupModel
@@ -326,7 +326,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    * @see #setAdditionalLookupCriteria(org.jminor.common.db.criteria.Criteria)
    */
   private EntitySelectCriteria getEntitySelectCriteria() {
-    final CriteriaSet<Property.ColumnProperty> baseCriteria = new CriteriaSet<Property.ColumnProperty>(Conjunction.OR);
+    final CriteriaSet<Property.ColumnProperty> baseCriteria = new CriteriaSet<>(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowed ? searchString.split(multipleValueSeparator) : new String[] {searchString};
     for (final Property.ColumnProperty lookupProperty : lookupProperties) {
       for (final String rawLookupText : lookupTexts) {
@@ -337,7 +337,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     }
 
     return EntityCriteriaUtil.selectCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
-            new CriteriaSet<Property.ColumnProperty>(Conjunction.AND, additionalLookupCriteria, baseCriteria),
+            new CriteriaSet<>(Conjunction.AND, additionalLookupCriteria, baseCriteria),
             Entities.getOrderByClause(getEntityID()));
   }
 

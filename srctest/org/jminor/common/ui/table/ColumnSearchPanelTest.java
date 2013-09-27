@@ -18,8 +18,8 @@ public class ColumnSearchPanelTest {
   @Test
   public void test() {
     final String key = "key";
-    final ColumnSearchModel<String> model = new DefaultColumnSearchModel<String>(key, Types.VARCHAR, "%");
-    final ColumnSearchPanel<String> panel = new ColumnSearchPanel<String>(model, true, true);
+    final ColumnSearchModel<String> model = new DefaultColumnSearchModel<>(key, Types.VARCHAR, "%");
+    final ColumnSearchPanel<String> panel = new ColumnSearchPanel<>(model, true, true);
     assertEquals(model, panel.getSearchModel());
     assertNotNull(panel.getUpperBoundField());
     assertNotNull(panel.getLowerBoundField());

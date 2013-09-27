@@ -77,7 +77,7 @@ public class AbstractRemoteServerTest {
     RemoteServerTest connection = server.connect(baseClientInfo);
     assertNotNull(connection);
     assertEquals(baseClientInfo, connection.getClientInfo());
-    final Collection<Object> closeIndicator = new ArrayList<Object>();
+    final Collection<Object> closeIndicator = new ArrayList<>();
     final LoginProxy loginProxy = new LoginProxy() {
       @Override
       public String getClientTypeID() {

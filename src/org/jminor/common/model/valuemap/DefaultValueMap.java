@@ -29,7 +29,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /**
    * Holds the values contained in this value map.
    */
-  private final Map<K, V> values = new HashMap<K, V>();
+  private final Map<K, V> values = new HashMap<>();
 
   /**
    * Holds the original value for keys which values have changed since they were first set.
@@ -201,7 +201,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public ValueMap<K, V> getInstance() {
-    return new DefaultValueMap<K, V>();
+    return new DefaultValueMap<>();
   }
 
   /** {@inheritDoc} */
@@ -219,7 +219,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     if (sourceMap == this) {
       return;
     }
-    final Set<K> affectedKeys = new HashSet<K>(getValueKeys());
+    final Set<K> affectedKeys = new HashSet<>(getValueKeys());
     clear();
     if (sourceMap != null) {
       final Collection<K> sourceValueKeys = sourceMap.getValueKeys();
@@ -230,7 +230,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
         handleValueSet(key, value, null, true);
       }
       if (sourceMap.isModified()) {
-        originalValues = new HashMap<K, V>();
+        originalValues = new HashMap<>();
         for (final K key : sourceMap.getOriginalValueKeys()) {
           originalValues.put(key, copyValue(sourceMap.getOriginalValue(key)));
         }
@@ -327,7 +327,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   protected final void setOriginalValue(final K key, final V oldValue) {
     if (originalValues == null) {
-      originalValues = new HashMap<K, V>();
+      originalValues = new HashMap<>();
     }
     originalValues.put(key, oldValue);
   }

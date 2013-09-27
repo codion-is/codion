@@ -78,7 +78,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
   /**
    * the property filter panels
    */
-  private final Map<TableColumn, ColumnSearchPanel<C>> columnFilterPanels = new HashMap<TableColumn, ColumnSearchPanel<C>>();
+  private final Map<TableColumn, ColumnSearchPanel<C>> columnFilterPanels = new HashMap<>();
 
   /**
    * the JTable for showing the underlying entities
@@ -120,7 +120,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
       @Override
       public ColumnSearchPanel<C> createColumnSearchPanel(final TableColumn column) {
         //noinspection unchecked
-        return new ColumnSearchPanel<C>(tableModel.getColumnModel().getFilterModel((C) column.getIdentifier()), true, true);
+        return new ColumnSearchPanel<>(tableModel.getColumnModel().getFilterModel((C) column.getIdentifier()), true, true);
       }
     });
   }
@@ -293,7 +293,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
    */
   @SuppressWarnings({"unchecked"})
   public final void selectTableColumns() {
-    final List<TableColumn> allColumns = new ArrayList<TableColumn>(tableModel.getColumnModel().getAllColumns());
+    final List<TableColumn> allColumns = new ArrayList<>(tableModel.getColumnModel().getAllColumns());
     Collections.sort(allColumns, new Comparator<TableColumn>() {
       private final Collator collator = Collator.getInstance();
       /** {@inheritDoc} */
@@ -303,7 +303,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
       }
     });
     final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, allColumns.size()), 0));
-    final List<JCheckBox> buttonList = new ArrayList<JCheckBox>();
+    final List<JCheckBox> buttonList = new ArrayList<>();
     for (final TableColumn column : allColumns) {
       final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()));
       buttonList.add(chkColumn);

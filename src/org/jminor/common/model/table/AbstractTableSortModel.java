@@ -42,7 +42,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   /**
    * The comparators used to compare column values
    */
-  private final Map<C, Comparator> columnComparators = new HashMap<C, Comparator>();
+  private final Map<C, Comparator> columnComparators = new HashMap<>();
 
   /**
    * Fired when a column sorting state changes
@@ -52,7 +52,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   /**
    * holds the column sorting states
    */
-  private final Map<C, SortingState> sortingStates = new HashMap<C, SortingState>();
+  private final Map<C, SortingState> sortingStates = new HashMap<>();
 
   /**
    * The comparator used when comparing row objects
@@ -210,7 +210,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   }
 
   private List<Map.Entry<C, SortingState>> getOrderedSortingStates() {
-    final ArrayList<Map.Entry<C, SortingState>> entries = new ArrayList<Map.Entry<C, SortingState>>();
+    final ArrayList<Map.Entry<C, SortingState>> entries = new ArrayList<>();
     for (final Map.Entry<C, SortingState> entry : sortingStates.entrySet()) {
       if (!EMPTY_SORTING_STATE.equals(entry.getValue())) {
         entries.add(entry);

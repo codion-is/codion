@@ -32,7 +32,7 @@ public final class DatabaseUtil {
     /** {@inheritDoc} */
     @Override
     public List<Integer> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Integer> integers = new ArrayList<Integer>();
+      final List<Integer> integers = new ArrayList<>();
       int counter = 0;
       while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
         integers.add(resultSet.getInt(1));

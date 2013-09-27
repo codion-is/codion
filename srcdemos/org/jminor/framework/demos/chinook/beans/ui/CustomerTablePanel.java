@@ -33,7 +33,7 @@ public class CustomerTablePanel extends EntityTablePanel {
     final String reportPath = Configuration.getReportPath() + "/customer_report.jasper";
     final Collection customerIDs =
             EntityUtil.getDistinctPropertyValues(CUSTOMER_CUSTOMERID, getEntityTableModel().getSelectionModel().getSelectedItems());
-    final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
+    final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
     new SwingWorker() {
       @Override

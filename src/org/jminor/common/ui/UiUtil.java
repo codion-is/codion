@@ -123,7 +123,7 @@ public final class UiUtil {
   public static final Dimension DIMENSION_TEXT_FIELD_SQUARE =
           new Dimension(getPreferredTextFieldHeight(), getPreferredTextFieldHeight());
 
-  private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<RootPaneContainer, Integer>();
+  private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
   private static int defaultHorizontalVerticalComponentGap = 5;
   /**
    * Caching the file chooser since the constructor is quite slow, especially on Win. with many mapped network drives

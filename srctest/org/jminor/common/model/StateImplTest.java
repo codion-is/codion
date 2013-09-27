@@ -16,21 +16,21 @@ public class StateImplTest {
   public void listeners() {
     final State state = States.state();
     state.getChangeObserver();
-    final Collection<Object> stateChangeCounter = new ArrayList<Object>();
+    final Collection<Object> stateChangeCounter = new ArrayList<>();
     final EventListener stateChangeListener = new EventListener() {
       @Override
       public void eventOccurred() {
         stateChangeCounter.add(new Object());
       }
     };
-    final Collection<Object> activationCounter = new ArrayList<Object>();
+    final Collection<Object> activationCounter = new ArrayList<>();
     final EventListener activationListener = new EventListener() {
       @Override
       public void eventOccurred() {
         activationCounter.add(new Object());
       }
     };
-    final Collection<Object> deactivationCounter = new ArrayList<Object>();
+    final Collection<Object> deactivationCounter = new ArrayList<>();
     final EventListener deactivationListener = new EventListener() {
       @Override
       public void eventOccurred() {
@@ -74,21 +74,21 @@ public class StateImplTest {
 
   @Test
   public void reversedState() {
-    final Collection<Object> stateCounter = new ArrayList<Object>();
+    final Collection<Object> stateCounter = new ArrayList<>();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
         stateCounter.add(new Object());
       }
     };
-    final Collection<Object> reversedStateCounter = new ArrayList<Object>();
+    final Collection<Object> reversedStateCounter = new ArrayList<>();
     final EventListener reversedListener = new EventListener() {
       @Override
       public void eventOccurred() {
         reversedStateCounter.add(new Object());
       }
     };
-    final Collection<Object> reversedReversedStateCounter = new ArrayList<Object>();
+    final Collection<Object> reversedReversedStateCounter = new ArrayList<>();
     final EventListener reversedReversedListener = new EventListener() {
       @Override
       public void eventOccurred() {

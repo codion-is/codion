@@ -116,7 +116,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /**
    * A List containing the detail panels, if any
    */
-  private final List<EntityPanel> detailEntityPanels = new ArrayList<EntityPanel>();
+  private final List<EntityPanel> detailEntityPanels = new ArrayList<>();
 
   /**
    * The EntityEditPanel instance
@@ -462,7 +462,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    */
   public final Collection<EntityPanel> getLinkedDetailPanels() {
     final Collection<EntityModel> linkedDetailModels = entityModel.getLinkedDetailModels();
-    final Collection<EntityPanel> linkedDetailPanels = new ArrayList<EntityPanel>(linkedDetailModels.size());
+    final Collection<EntityPanel> linkedDetailPanels = new ArrayList<>(linkedDetailModels.size());
     for (final EntityPanel detailPanel : detailEntityPanels) {
       if (linkedDetailModels.contains(detailPanel.entityModel)) {
         linkedDetailPanels.add(detailPanel);

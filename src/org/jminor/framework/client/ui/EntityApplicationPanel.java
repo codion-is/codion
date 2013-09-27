@@ -84,9 +84,9 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   public static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
   private static final Dimension MINIMUM_HELP_WINDOW_SIZE = new Dimension(600, 750);
 
-  private final List<EntityPanelProvider> entityPanelProviders = new ArrayList<EntityPanelProvider>();
-  private final List<EntityPanelProvider> supportPanelProviders = new ArrayList<EntityPanelProvider>();
-  private final List<EntityPanel> entityPanels = new ArrayList<EntityPanel>();
+  private final List<EntityPanelProvider> entityPanelProviders = new ArrayList<>();
+  private final List<EntityPanelProvider> supportPanelProviders = new ArrayList<>();
+  private final List<EntityPanel> entityPanels = new ArrayList<>();
 
   private Model applicationModel;
   private JTabbedPane applicationTabPane;
@@ -96,7 +96,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   private final Event onExitEvent = Events.event();
 
   private final boolean persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
-  private final Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<EntityPanelProvider, EntityPanel>();
+  private final Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<>();
 
   private boolean loginRequired = Configuration.getBooleanValue(Configuration.AUTHENTICATION_REQUIRED);
   private boolean showStartupDialog = Configuration.getBooleanValue(Configuration.SHOW_STARTUP_DIALOG);
@@ -674,7 +674,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @return a List of ControlSet objects which are to be added to the main menu bar
    */
   protected List<ControlSet> getAdditionalMenuControlSet() {
-    return new ArrayList<ControlSet>(0);
+    return new ArrayList<>(0);
   }
 
   /**
@@ -824,7 +824,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @see #addEntityPanelProvider(EntityPanelProvider)
    */
   protected List<EntityPanel> initializeEntityPanels(final Model applicationModel) {
-    final List<EntityPanel> panels = new ArrayList<EntityPanel>();
+    final List<EntityPanel> panels = new ArrayList<>();
     for (final EntityPanelProvider provider : entityPanelProviders) {
       final EntityPanel entityPanel;
       if (applicationModel.containsEntityModel(provider.getEntityID())) {

@@ -243,7 +243,7 @@ public final class ConnectionPoolMonitor {
   }
 
   private static List<ConnectionPoolState> sortAndRemoveDuplicates(final List<ConnectionPoolState> stats) {
-    final List<ConnectionPoolState> poolStates = new ArrayList<ConnectionPoolState>(stats.size());
+    final List<ConnectionPoolState> poolStates = new ArrayList<>(stats.size());
     Collections.sort(poolStates, new StateComparator());
     long time = -1;
     for (int i = stats.size()-1; i >= 0; i--) {

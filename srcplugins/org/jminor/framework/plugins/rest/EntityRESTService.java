@@ -110,8 +110,8 @@ public final class EntityRESTService extends Application {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
       final List<Entity> parsedEntities = EntityJSONParser.deserializeEntities(entities);
-      final List<Entity> toInsert = new ArrayList<Entity>(parsedEntities.size());
-      final List<Entity> toUpdate = new ArrayList<Entity>(parsedEntities.size());
+      final List<Entity> toInsert = new ArrayList<>(parsedEntities.size());
+      final List<Entity> toUpdate = new ArrayList<>(parsedEntities.size());
       for (final Entity entity : parsedEntities) {
         if (entity.isPrimaryKeyNull()) {
           toInsert.add(entity);
@@ -120,7 +120,7 @@ public final class EntityRESTService extends Application {
           toUpdate.add(entity);
         }
       }
-      final List<Entity> savedEntities = new ArrayList<Entity>(parsedEntities.size());
+      final List<Entity> savedEntities = new ArrayList<>(parsedEntities.size());
       try {
         connection.beginTransaction();
         if (!toInsert.isEmpty()) {
@@ -224,7 +224,7 @@ public final class EntityRESTService extends Application {
       return null;
     }
     final JSONObject jsonObject = new JSONObject(values);
-    final CriteriaSet<Property.ColumnProperty> set = new CriteriaSet<Property.ColumnProperty>(Conjunction.AND);
+    final CriteriaSet<Property.ColumnProperty> set = new CriteriaSet<>(Conjunction.AND);
     for (final String propertyID : JSONObject.getNames(jsonObject)) {
       final Property.ColumnProperty property = Entities.getColumnProperty(entityID, propertyID);
       final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.propertyCriteria(property,

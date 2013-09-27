@@ -41,7 +41,7 @@ public class EntityGeneratorPanel extends JPanel {
   public EntityGeneratorPanel(final EntityGeneratorModel generatorModel) {
     this.model = generatorModel;
     final FilteredTablePanel<EntityGeneratorModel.Table, Integer> table =
-            new FilteredTablePanel<EntityGeneratorModel.Table, Integer>(generatorModel.getTableModel());
+            new FilteredTablePanel<>(generatorModel.getTableModel());
     final JScrollPane scroller = new JScrollPane(table.getJTable());
 
     final JSplitPane splitPane = new JSplitPane();

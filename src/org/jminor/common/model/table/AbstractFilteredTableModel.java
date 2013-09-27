@@ -48,12 +48,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * Holds visible items
    */
-  private final List<R> visibleItems = new ArrayList<R>();
+  private final List<R> visibleItems = new ArrayList<>();
 
   /**
    * Holds items that are filtered
    */
-  private final List<R> filteredItems = new ArrayList<R>();
+  private final List<R> filteredItems = new ArrayList<>();
 
   /**
    * The selection model
@@ -89,9 +89,9 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   public AbstractFilteredTableModel(final TableSortModel<R, C> sortModel, final Collection<? extends ColumnSearchModel<C>> columnFilterModels) {
     Util.rejectNullValue(sortModel, "sortModel");
     this.sortModel = sortModel;
-    this.columnModel = new DefaultFilteredTableColumnModel<C>(sortModel.getColumns(), columnFilterModels);
-    this.selectionModel = new DefaultTableSelectionModel<R>(this);
-    this.filterCriteria = new DefaultFilterCriteria<R, C>(this.columnModel.getColumnFilterModels());
+    this.columnModel = new DefaultFilteredTableColumnModel<>(sortModel.getColumns(), columnFilterModels);
+    this.selectionModel = new DefaultTableSelectionModel<>(this);
+    this.filterCriteria = new DefaultFilterCriteria<>(this.columnModel.getColumnFilterModels());
     bindEventsInternal();
   }
 
@@ -191,7 +191,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   public final void refresh() {
     try {
       refreshStartedEvent.fire();
-      final List<R> selectedItems = new ArrayList<R>(selectionModel.getSelectedItems());
+      final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
       doRefresh();
       selectionModel.setSelectedItems(selectedItems);
     }
@@ -290,7 +290,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final List<R> getAllItems() {
-    final List<R> entities = new ArrayList<R>(visibleItems);
+    final List<R> entities = new ArrayList<>(visibleItems);
     entities.addAll(filteredItems);
 
     return entities;
@@ -488,7 +488,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    */
   protected final FilterCriteria<Object> getSearchCriteria(final String searchText) {
     if (regularExpressionSearch) {
-      return new RegexFilterCriteria<Object>(searchText);
+      return new RegexFilterCriteria<>(searchText);
     }
 
     return new FilterCriteria<Object>() {
@@ -540,7 +540,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   private void sortVisibleItems() {
     try {
       sortingStartedEvent.fire();
-      final List<R> selectedItems = new ArrayList<R>(selectionModel.getSelectedItems());
+      final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
       sortModel.sort(visibleItems);
       fireTableDataChanged();
       selectionModel.setSelectedItems(selectedItems);

@@ -24,7 +24,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   protected final T pool;
   private final User user;
 
-  private final LinkedList<DefaultConnectionPoolState> connectionPoolStatistics = new LinkedList<DefaultConnectionPoolState>();
+  private final LinkedList<DefaultConnectionPoolState> connectionPoolStatistics = new LinkedList<>();
   private boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "false").equalsIgnoreCase("true");
 
   private final DefaultConnectionPoolCounter counter = new DefaultConnectionPoolCounter();

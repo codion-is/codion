@@ -85,7 +85,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   @SuppressWarnings({"unchecked"})
   public List<ItemRandomizer.RandomItem<T>> getSelectedItems() {
-    final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<ItemRandomizer.RandomItem<T>>();
+    final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>();
     for (final Object object : itemList.getSelectedValuesList()) {
       items.add((ItemRandomizer.RandomItem<T>) object);
     }
@@ -97,7 +97,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    * Initializes the UI
    */
   private void initializeUI() {
-    final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<ItemRandomizer.RandomItem<T>>(model.getItems());
+    final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>(model.getItems());
     Collections.sort(items, new Comparator<ItemRandomizer.RandomItem<T>>() {
       @Override
       public int compare(final ItemRandomizer.RandomItem<T> o1, final ItemRandomizer.RandomItem<T> o2) {

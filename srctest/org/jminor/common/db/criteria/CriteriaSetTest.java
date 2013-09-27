@@ -28,13 +28,13 @@ public final class CriteriaSetTest {
     final List<Object> keys = orSet.getValueKeys();
     assertEquals(2, keys.size());
 
-    final CriteriaSet<Object> andOrAndSet = new CriteriaSet<Object>(Conjunction.AND, andSet, orSet);
+    final CriteriaSet<Object> andOrAndSet = new CriteriaSet<>(Conjunction.AND, andSet, orSet);
     assertEquals("AND OR AND criteria set should be working", "((criteria and criteria) and (criteria or criteria))", andOrAndSet.getWhereClause());
 
-    final CriteriaSet<Object> andOrOrSet = new CriteriaSet<Object>(Conjunction.OR, andSet, orSet);
+    final CriteriaSet<Object> andOrOrSet = new CriteriaSet<>(Conjunction.OR, andSet, orSet);
     assertEquals("AND OR OR criteria set should be working", "((criteria and criteria) or (criteria or criteria))", andOrOrSet.getWhereClause());
 
-    final CriteriaSet<Object> set = new CriteriaSet<Object>(Conjunction.OR);
+    final CriteriaSet<Object> set = new CriteriaSet<>(Conjunction.OR);
     assertEquals(0, set.getCriteriaCount());
   }
 
@@ -46,14 +46,14 @@ public final class CriteriaSetTest {
 
     @Override
     public List<Object> getValues() {
-      final List<Object> values =  new ArrayList<Object>();
+      final List<Object> values =  new ArrayList<>();
       values.add(1);
       return values;
     }
 
     @Override
     public List<?> getValueKeys() {
-      final List<Object> keys =  new ArrayList<Object>();
+      final List<Object> keys =  new ArrayList<>();
       keys.add("key");
       return keys;
     }

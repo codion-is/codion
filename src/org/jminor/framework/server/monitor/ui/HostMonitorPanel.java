@@ -81,7 +81,7 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private void refreshServerTabs() throws RemoteException {
-    final Collection<ServerMonitorPanel> serverTabs = new ArrayList<ServerMonitorPanel>();
+    final Collection<ServerMonitorPanel> serverTabs = new ArrayList<>();
     for (int i = 0; i < serverPane.getTabCount(); i++) {
       serverTabs.add((ServerMonitorPanel) serverPane.getComponentAt(i));
     }

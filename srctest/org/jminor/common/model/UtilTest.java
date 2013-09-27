@@ -202,7 +202,7 @@ public class UtilTest {
 
   @Test
   public void getListContentsAsString() throws Exception {
-    final List<Integer> list = new ArrayList<Integer>();
+    final List<Integer> list = new ArrayList<>();
     list.add(1);
     list.add(2);
     list.add(3);
@@ -262,7 +262,7 @@ public class UtilTest {
     assertTrue(Util.nullOrEmpty(Arrays.asList(""), null));
     assertTrue(Util.nullOrEmpty(Arrays.asList(""), Collections.emptyList()));
 
-    final Map<Integer, String> map = new HashMap<Integer, String>();
+    final Map<Integer, String> map = new HashMap<>();
     map.put(1, "1");
     assertTrue(Util.nullOrEmpty((Map[]) null));
     assertTrue(Util.nullOrEmpty(map, null));

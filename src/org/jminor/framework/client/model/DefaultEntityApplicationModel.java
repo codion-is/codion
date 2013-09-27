@@ -24,7 +24,7 @@ import java.util.List;
 public abstract class DefaultEntityApplicationModel implements EntityApplicationModel {
 
   private final EntityConnectionProvider connectionProvider;
-  private final List<EntityModel> entityModels = new ArrayList<EntityModel>();
+  private final List<EntityModel> entityModels = new ArrayList<>();
 
   /**
    * Instantiates a new DefaultEntityApplicationModel
@@ -239,7 +239,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
 
     private List<EntityDependencyTreeNode> initializeChildren() {
-      final List<EntityDependencyTreeNode> childrenList = new ArrayList<EntityDependencyTreeNode>();
+      final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
       for (final String entityID : Entities.getDefinitions(domainID).keySet()) {
         for (final Property.ForeignKeyProperty fkProperty : Entities.getForeignKeyProperties(entityID)) {
           if (fkProperty.getReferencedEntityID().equals(getEntityID()) && !foreignKeyCycle(fkProperty.getReferencedEntityID())) {

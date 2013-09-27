@@ -163,7 +163,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   /** {@inheritDoc} */
   @Override
   public Collection<String> getClientTypes() throws RemoteException {
-    final Set<String> clientTypes = new HashSet<String>();
+    final Set<String> clientTypes = new HashSet<>();
     for (final ClientInfo client : getClients()) {
       clientTypes.add(client.getClientTypeID());
     }
@@ -288,7 +288,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   /** {@inheritDoc} */
   @Override
   public List<User> getConnectionPools() throws RemoteException {
-    final List<User> poolUsers = new ArrayList<User>();
+    final List<User> poolUsers = new ArrayList<>();
     for (final ConnectionPool pool : ConnectionPools.getConnectionPools()) {
       poolUsers.add(pool.getUser());
     }
@@ -573,7 +573,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   }
 
   private static Collection<User> getPoolUsers(final Collection<String> poolUsers) {
-    final Collection<User> users = new ArrayList<User>();
+    final Collection<User> users = new ArrayList<>();
     for (final String usernamePassword : poolUsers) {
       final int splitIndex = usernamePassword.indexOf(':');
       if (splitIndex == -1) {

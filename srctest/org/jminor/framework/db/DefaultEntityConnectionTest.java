@@ -120,7 +120,7 @@ public class DefaultEntityConnectionTest {
 
   @Test
   public void fillReport() throws Exception {
-    final Map<String, Object> reportParameters = new HashMap<String, Object>();
+    final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
     final ReportResult print = connection.fillReport(
             new JasperReportsWrapper("resources/demos/empdept/reports/empdept_employees.jasper", reportParameters));

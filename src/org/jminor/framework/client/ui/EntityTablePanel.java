@@ -145,7 +145,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private final Event searchPanelVisibilityChangedEvent = Events.event();
   private final Event summaryPanelVisibilityChangedEvent = Events.event();
 
-  private final Map<String, Control> controlMap = new HashMap<String, Control>();
+  private final Map<String, Control> controlMap = new HashMap<>();
 
   /**
    * the search panel
@@ -192,8 +192,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   private final JLabel statusMessageLabel;
 
-  private final List<ControlSet> additionalPopupControlSets = new ArrayList<ControlSet>();
-  private final List<ControlSet> additionalToolbarControlSets = new ArrayList<ControlSet>();
+  private final List<ControlSet> additionalPopupControlSets = new ArrayList<>();
+  private final List<ControlSet> additionalToolbarControlSets = new ArrayList<>();
 
   /**
    * the action performed when the table is double clicked
@@ -604,13 +604,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         UiUtil.setWaitCursor(true, this);
         getEntityTableModel().update(selectedEntities);
       }
-      catch (ValidationException e) {
-        handleException(e);
-      }
-      catch (DatabaseException e) {
-        handleException(e);
-      }
-      catch (CancelException e) {
+      catch (ValidationException | CancelException | DatabaseException e) {
         handleException(e);
       }
       finally {
@@ -658,10 +652,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         UiUtil.setWaitCursor(true, this);
         getEntityTableModel().deleteSelected();
       }
-      catch (DatabaseException e) {
-        handleException(e);
-      }
-      catch (CancelException e) {
+      catch (DatabaseException | CancelException e) {
         handleException(e);
       }
       finally {
@@ -681,13 +672,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       Util.writeFile(EntityUtil.getEntitySerializer().serialize(selected), UiUtil.chooseFileToSave(this, null, null));
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
     }
-    catch (IOException e) {
-      handleException(e);
-    }
-    catch (SerializeException e) {
-      handleException(e);
-    }
-    catch (CancelException e) {
+    catch (IOException | CancelException | SerializeException e) {
       handleException(e);
     }
   }
@@ -851,7 +836,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       /** {@inheritDoc} */
       @Override
       protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
-        return new ArrayList<Entity>(entities);
+        return new ArrayList<>(entities);
       }
     };
     tableModel.setQueryConfigurationAllowed(false);
@@ -1338,8 +1323,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   private void copyTableAsDelimitedString() {
-    final List<String> headerValues = new ArrayList<String>();
-    final List<Property> properties = new ArrayList<Property>();
+    final List<String> headerValues = new ArrayList<>();
+    final List<Property> properties = new ArrayList<>();
     final Enumeration<TableColumn> columnEnumeration = getEntityTableModel().getColumnModel().getColumns();
     while (columnEnumeration.hasMoreElements()) {
       final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
@@ -1354,7 +1339,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
     final String[][] data = new String[entities.size()][];
     for (int i = 0; i < data.length; i++) {
-      final List<String> line = new ArrayList<String>();
+      final List<String> line = new ArrayList<>();
       for (final Property property : properties) {
         line.add(entities.get(i).getValueAsString(property));
       }

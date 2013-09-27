@@ -146,7 +146,7 @@ public final class Entities {
    * @return all entity IDs associated with the given domain
    */
   public static Collection<String> getDomainEntityIDs(final String domainID) {
-    final Collection<String> entityIDs = new ArrayList<String>();
+    final Collection<String> entityIDs = new ArrayList<>();
     for (final Entity.Definition definition : DefaultEntityDefinition.getDefinitionMap().values()) {
       if (definition.getDomainID().equals(domainID)) {
         entityIDs.add(definition.getEntityID());
@@ -185,7 +185,7 @@ public final class Entities {
    */
   public static Collection<Property.ColumnProperty> getSearchProperties(final String entityID, final String... searchPropertyIds) {
     if (searchPropertyIds != null && searchPropertyIds.length > 0) {
-      final List<Property.ColumnProperty> searchProperties = new ArrayList<Property.ColumnProperty>();
+      final List<Property.ColumnProperty> searchProperties = new ArrayList<>();
       for (final String propertyID : searchPropertyIds) {
         searchProperties.add(getColumnProperty(entityID, propertyID));
       }
@@ -203,7 +203,7 @@ public final class Entities {
    * @return all searchable string-based properties for the given entity type
    */
   public static Collection<String> getSearchablePropertyIDs(final String entityID) {
-    final Collection<String> searchProperties = new ArrayList<String>();
+    final Collection<String> searchProperties = new ArrayList<>();
     for (final Property.ColumnProperty property : getColumnProperties(entityID)) {
       if (property.isString() && property.isSearchable()) {
         searchProperties.add(property.getPropertyID());
@@ -360,7 +360,7 @@ public final class Entities {
                                                                   final boolean includePrimaryKeyProperties,
                                                                   final boolean includeReadOnly,
                                                                   final boolean includeNonUpdatable) {
-    final List<Property.ColumnProperty> properties = new ArrayList<Property.ColumnProperty>(DefaultEntityDefinition.getDefinition(entityID).getColumnProperties());
+    final List<Property.ColumnProperty> properties = new ArrayList<>(DefaultEntityDefinition.getDefinition(entityID).getColumnProperties());
     final ListIterator<Property.ColumnProperty> iterator = properties.listIterator();
     while (iterator.hasNext()) {
       final Property.ColumnProperty property = iterator.next();
@@ -391,7 +391,7 @@ public final class Entities {
    * @throws IllegalArgumentException in case a given propertyID does not represent a {@link Property.ColumnProperty}
    */
   public static List<Property.ColumnProperty> getColumnProperties(final String entityID, final String... propertyIDs) {
-    final List<Property.ColumnProperty> columnProperties = new ArrayList<Property.ColumnProperty>();
+    final List<Property.ColumnProperty> columnProperties = new ArrayList<>();
     if (propertyIDs == null || propertyIDs.length == 0) {
       return columnProperties;
     }
@@ -455,7 +455,7 @@ public final class Entities {
   public static List<Property> getProperties(final String entityID, final String... propertyIDs) {
     Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
     Util.rejectNullValue(propertyIDs, "propertyIDs");
-    final List<Property> properties = new ArrayList<Property>();
+    final List<Property> properties = new ArrayList<>();
     for (final String propertyID : propertyIDs) {
       properties.add(getProperty(entityID, propertyID));
     }
@@ -558,7 +558,7 @@ public final class Entities {
    * @return a List containing the properties, an empty list is returned in case no properties fit the criteria
    */
   public static List<Property.ForeignKeyProperty> getForeignKeyProperties(final String entityID, final String referenceEntityID) {
-    final List<Property.ForeignKeyProperty> properties = new ArrayList<Property.ForeignKeyProperty>();
+    final List<Property.ForeignKeyProperty> properties = new ArrayList<>();
     for (final Property.ForeignKeyProperty foreignKeyProperty : getForeignKeyProperties(entityID)) {
       if (foreignKeyProperty.getReferencedEntityID().equals(referenceEntityID)) {
         properties.add(foreignKeyProperty);
@@ -612,7 +612,7 @@ public final class Entities {
    * @return the entityIDs of all defined entities
    */
   public static Collection<String> getDefinedEntities() {
-    return new ArrayList<String>(DefaultEntityDefinition.getDefinitionMap().keySet());
+    return new ArrayList<>(DefaultEntityDefinition.getDefinitionMap().keySet());
   }
 
   /**
@@ -635,7 +635,7 @@ public final class Entities {
    * @return a map containing all defined entityIDs, with their respective table names as an associated value
    */
   public static Map<String, String> getDefinitions(final String domainID) {
-    final Map<String, String> definitions = new LinkedHashMap<String, String>();
+    final Map<String, String> definitions = new LinkedHashMap<>();
     for (final Entity.Definition definition : DefaultEntityDefinition.getDefinitionMap().values()) {
       if (domainID == null) {
         definitions.put(definition.getEntityID(), definition.getTableName());
@@ -676,7 +676,7 @@ public final class Entities {
     /**
      * Holds the ValueProviders used when constructing the String representation
      */
-    private final List<ValueProvider> valueProviders = new ArrayList<ValueProvider>();
+    private final List<ValueProvider> valueProviders = new ArrayList<>();
 
     /**
      * Instantiates a new {@link StringProvider} instance

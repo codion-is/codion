@@ -95,7 +95,7 @@ public final class UiValues {
    * @return a Value bound to the given component
    */
   public static Value<String> textValue(final JTextComponent textComponent, final Format format, final boolean immediateUpdate) {
-    return new TextUIValue<String>(textComponent, format, immediateUpdate);
+    return new TextUIValue<>(textComponent, format, immediateUpdate);
   }
 
   /**

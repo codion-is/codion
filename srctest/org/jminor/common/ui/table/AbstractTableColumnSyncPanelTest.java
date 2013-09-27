@@ -23,7 +23,7 @@ public class AbstractTableColumnSyncPanelTest {
     columnModel = new DefaultTableColumnModel();
     columnModel.addColumn(new TableColumn(0, 20));
     columnModel.addColumn(new TableColumn(1, 20));
-    final List<TableColumn> columns = new ArrayList<TableColumn>();
+    final List<TableColumn> columns = new ArrayList<>();
     columns.add(columnModel.getColumn(0));
     columns.add(columnModel.getColumn(1));
     panel = new TableColumnSyncPanelImpl(columnModel, columns);

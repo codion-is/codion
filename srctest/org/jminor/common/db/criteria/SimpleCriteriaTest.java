@@ -11,7 +11,7 @@ public class SimpleCriteriaTest {
   @Test
   public void test() {
     final String crit = "id = 1";
-    final SimpleCriteria<Object> criteria = new SimpleCriteria<Object>(crit);
+    final SimpleCriteria<Object> criteria = new SimpleCriteria<>(crit);
     assertEquals(crit, criteria.getWhereClause());
     assertEquals(0, criteria.getValueKeys().size());
     assertEquals(0, criteria.getValues().size());
@@ -24,7 +24,7 @@ public class SimpleCriteriaTest {
 
   @Test (expected = IllegalArgumentException.class)
   public void nullValues() {
-    new SimpleCriteria<String>("some is null", null, Collections.<String>emptyList());
+    new SimpleCriteria<>("some is null", null, Collections.<String>emptyList());
   }
 
   @Test (expected = IllegalArgumentException.class)

@@ -10,7 +10,7 @@ import java.util.Map;
 
 public final class EmpDeptLoginProxy implements LoginProxy {
 
-  private final Map<String, String> users = new HashMap<String, String>();
+  private final Map<String, String> users = new HashMap<>();
   private final User databaseUser = new User("scott", "tiger");
 
   public EmpDeptLoginProxy() {

@@ -36,7 +36,7 @@ public final class EntityUtil {
    */
   public static List<Entity> getModifiedEntities(final Collection<Entity> entities) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
-    final List<Entity> modifiedEntities = new ArrayList<Entity>();
+    final List<Entity> modifiedEntities = new ArrayList<>();
     for (final Entity entity : entities) {
       if (entity.isModified()) {
         modifiedEntities.add(entity);
@@ -53,7 +53,7 @@ public final class EntityUtil {
    */
   public static Map<Entity.Key, Entity> hashByPrimaryKey(final Collection<Entity> entities) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
-    final Map<Entity.Key, Entity> entityMap = new HashMap<Entity.Key, Entity>();
+    final Map<Entity.Key, Entity> entityMap = new HashMap<>();
     for (final Entity entity : entities) {
       entityMap.put(entity.getPrimaryKey(), entity);
     }
@@ -76,7 +76,7 @@ public final class EntityUtil {
    */
   public static List<Entity.Key> getPrimaryKeys(final Collection<Entity> entities, final boolean originalValue) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
-    final List<Entity.Key> keys = new ArrayList<Entity.Key>(entities.size());
+    final List<Entity.Key> keys = new ArrayList<>(entities.size());
     for (final Entity entity : entities) {
       keys.add(originalValue ? entity.getOriginalPrimaryKey() : entity.getPrimaryKey());
     }
@@ -91,7 +91,7 @@ public final class EntityUtil {
    */
   public static Collection getPropertyValues(final Collection<Entity.Key> keys) {
     Util.rejectNullValue(keys, "keys");
-    final List<Object> list = new ArrayList<Object>(keys.size());
+    final List<Object> list = new ArrayList<>(keys.size());
     for (final Entity.Key key : keys) {
       list.add(key.getValue(key.getFirstKeyProperty().getPropertyID()));
     }
@@ -143,7 +143,7 @@ public final class EntityUtil {
   public static Collection getPropertyValues(final Property property, final Collection<Entity> entities,
                                              final boolean includeNullValues) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
-    final List<Object> values = new ArrayList<Object>(entities.size());
+    final List<Object> values = new ArrayList<>(entities.size());
     for (final Entity entity : entities) {
       if (includeNullValues) {
         values.add(entity.getValue(property));
@@ -177,7 +177,7 @@ public final class EntityUtil {
    */
   public static Collection getDistinctPropertyValues(final String propertyID, final Collection<Entity> entities,
                                                      final boolean includeNullValue) {
-    final Set<Object> values = new HashSet<Object>();
+    final Set<Object> values = new HashSet<>();
     if (entities == null) {
       return values;
     }
@@ -202,7 +202,7 @@ public final class EntityUtil {
   public static Map<Entity.Key, Object> setPropertyValue(final String propertyID, final Object value,
                                                          final Collection<Entity> entities) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
-    final Map<Entity.Key, Object> oldValues = new HashMap<Entity.Key, Object>(entities.size());
+    final Map<Entity.Key, Object> oldValues = new HashMap<>(entities.size());
     for (final Entity entity : entities) {
       oldValues.put(entity.getPrimaryKey(), entity.setValue(propertyID, value));
     }
@@ -260,10 +260,10 @@ public final class EntityUtil {
    */
   public static Collection<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
     if (Util.nullOrEmpty(propertyIDs)) {
-      return new ArrayList<Property>(0);
+      return new ArrayList<>(0);
     }
 
-    final List<Property> properties = new ArrayList<Property>(propertyIDs.size());
+    final List<Property> properties = new ArrayList<>(propertyIDs.size());
     for (final String propertyID : propertyIDs) {
       properties.add(Entities.getProperty(entityID, propertyID));
     }
@@ -277,7 +277,7 @@ public final class EntityUtil {
    * @return the given properties sorted by caption, or if that is not available, property ID
    */
   public static List<Property> getSortedProperties(final String entityID, final Collection<String> propertyIDs) {
-    final List<Property> properties = new ArrayList<Property>(getProperties(entityID, propertyIDs));
+    final List<Property> properties = new ArrayList<>(getProperties(entityID, propertyIDs));
     sort(properties);
 
     return properties;
@@ -330,7 +330,7 @@ public final class EntityUtil {
    */
   public static List<Entity> copyEntities(final List<Entity> entities) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
-    final List<Entity> copies = new ArrayList<Entity>(entities.size());
+    final List<Entity> copies = new ArrayList<>(entities.size());
     for (final Entity entity : entities) {
       copies.add((Entity) entity.getCopy());
     }
@@ -386,8 +386,8 @@ public final class EntityUtil {
     private static final String PROPERTY_ID_PARAM = "propertyID";
     private static final String PROPERTY_NAME_PARAM = "propertyName";
 
-    private final Map<Class, String> entityIDMap = new HashMap<Class, String>();
-    private final Map<Class, Map<String, String>> propertyMap = new HashMap<Class, Map<String, String>>();
+    private final Map<Class, String> entityIDMap = new HashMap<>();
+    private final Map<Class, Map<String, String>> propertyMap = new HashMap<>();
 
     /**
      * Associates the given bean class with the given entityID
@@ -437,7 +437,7 @@ public final class EntityUtil {
       Util.rejectNullValue(propertyName, PROPERTY_NAME_PARAM);
       Map<String, String> beanPropertyMap = propertyMap.get(beanClass);
       if (beanPropertyMap == null) {
-        beanPropertyMap = new HashMap<String, String>();
+        beanPropertyMap = new HashMap<>();
         propertyMap.put(beanClass, beanPropertyMap);
       }
       beanPropertyMap.put(propertyID, propertyName);
@@ -490,7 +490,7 @@ public final class EntityUtil {
       if (Util.nullOrEmpty(beans)) {
         return Collections.emptyList();
       }
-      final List<Entity> entities = new ArrayList<Entity>(beans.size());
+      final List<Entity> entities = new ArrayList<>(beans.size());
       for (final Object bean : beans) {
         entities.add(toEntity(bean));
       }
@@ -539,7 +539,7 @@ public final class EntityUtil {
       if (Util.nullOrEmpty(entities)) {
         return Collections.emptyList();
       }
-      final List<Object> beans = new ArrayList<Object>(entities.size());
+      final List<Object> beans = new ArrayList<>(entities.size());
       for (final Entity entity : entities) {
         beans.add(toBean(entity));
       }

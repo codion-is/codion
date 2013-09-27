@@ -78,7 +78,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
 
   @Override
   protected List<EntityPanel> initializeEntityPanels(final EntityApplicationModel applicationModel) {
-    final List<EntityPanel> panels = new ArrayList<EntityPanel>();
+    final List<EntityPanel> panels = new ArrayList<>();
 
     final EntityModel artistModel = applicationModel.getEntityModel(Chinook.T_ARTIST);
     final EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.getEditModel()));

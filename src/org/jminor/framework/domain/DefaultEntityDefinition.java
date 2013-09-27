@@ -131,7 +131,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /**
    * Links a set of derived property ids to a parent property id
    */
-  private final Map<String, Set<String>> linkedProperties = new HashMap<String, Set<String>>();
+  private final Map<String, Set<String>> linkedProperties = new HashMap<>();
 
   private List<Property.PrimaryKeyProperty> primaryKeyProperties;
   private List<Property.ForeignKeyProperty> foreignKeyProperties;
@@ -142,7 +142,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private String selectColumnsString;
   private boolean hasDenormalizedProperties;
 
-  private static final Map<String, Entity.Definition> ENTITY_DEFINITIONS = new LinkedHashMap<String, Entity.Definition>();
+  private static final Map<String, Entity.Definition> ENTITY_DEFINITIONS = new LinkedHashMap<>();
 
   /**
    * Defines a new entity type, with the entityID serving as the initial entity caption
@@ -542,7 +542,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   }
 
   private static Map<String, Property> initializeProperties(final String entityID, final Property... propertyDefinitions) {
-    final Map<String, Property> properties = new LinkedHashMap<String, Property>(propertyDefinitions.length);
+    final Map<String, Property> properties = new LinkedHashMap<>(propertyDefinitions.length);
     for (final Property property : propertyDefinitions) {
       if (properties.containsKey(property.getPropertyID())) {
         throw new IllegalArgumentException("Property with ID " + property.getPropertyID()
@@ -642,13 +642,13 @@ final class DefaultEntityDefinition implements Entity.Definition {
   }
 
   private static Map<String, Collection<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
-    final Map<String, Collection<Property.DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<String, Collection<Property.DenormalizedProperty>>(properties.size());
+    final Map<String, Collection<Property.DenormalizedProperty>> denormalizedPropertiesMap = new HashMap<>(properties.size());
     for (final Property property : properties) {
       if (property instanceof Property.DenormalizedProperty) {
         final Property.DenormalizedProperty denormalizedProperty = (Property.DenormalizedProperty) property;
         Collection<Property.DenormalizedProperty> denormalizedProperties = denormalizedPropertiesMap.get(denormalizedProperty.getForeignKeyPropertyID());
         if (denormalizedProperties == null) {
-          denormalizedProperties = new ArrayList<Property.DenormalizedProperty>();
+          denormalizedProperties = new ArrayList<>();
           denormalizedPropertiesMap.put(denormalizedProperty.getForeignKeyPropertyID(), denormalizedProperties);
         }
         denormalizedProperties.add(denormalizedProperty);
@@ -659,7 +659,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   }
 
   private static List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
-    final List<Property.PrimaryKeyProperty> primaryKeyProperties = new ArrayList<Property.PrimaryKeyProperty>(properties.size());
+    final List<Property.PrimaryKeyProperty> primaryKeyProperties = new ArrayList<>(properties.size());
     for (final Property property : properties) {
       if (property instanceof Property.PrimaryKeyProperty) {
         primaryKeyProperties.add((Property.PrimaryKeyProperty) property);
@@ -679,7 +679,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   }
 
   private static List<Property.ForeignKeyProperty> getForeignKeyProperties(final Collection<Property> properties) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<Property.ForeignKeyProperty>(properties.size());
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<>(properties.size());
     for (final Property property : properties) {
       if (property instanceof Property.ForeignKeyProperty) {
         foreignKeyProperties.add((Property.ForeignKeyProperty) property);
@@ -690,7 +690,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   }
 
   private static List<Property.ColumnProperty> getColumnProperties(final Collection<Property> properties) {
-    final List<Property.ColumnProperty> columnProperties = new ArrayList<Property.ColumnProperty>(properties.size());
+    final List<Property.ColumnProperty> columnProperties = new ArrayList<>(properties.size());
     for (final Property property : properties) {
       if (property instanceof Property.ColumnProperty) {
         columnProperties.add((Property.ColumnProperty) property);
@@ -701,7 +701,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   }
 
   private static List<Property.TransientProperty> getTransientProperties(final Collection<Property> properties) {
-    final List<Property.TransientProperty> transientProperties = new ArrayList<Property.TransientProperty>(properties.size());
+    final List<Property.TransientProperty> transientProperties = new ArrayList<>(properties.size());
     for (final Property property : properties) {
       if (property instanceof Property.TransientProperty) {
         transientProperties.add((Property.TransientProperty) property);
@@ -712,7 +712,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   }
 
   private static List<Property> getVisibleProperties(final Collection<Property> properties) {
-    final List<Property> visibleProperties = new ArrayList<Property>(properties.size());
+    final List<Property> visibleProperties = new ArrayList<>(properties.size());
     for (final Property property : properties) {
       if (!property.isHidden()) {
         visibleProperties.add(property);
@@ -727,7 +727,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * @return the column names used to select an entity of this type from the database
    */
   private static String[] initializeSelectColumnNames(final Collection<Property.ColumnProperty> databaseProperties) {
-    final List<String> columnNames = new ArrayList<String>();
+    final List<String> columnNames = new ArrayList<>();
     for (final Property property : databaseProperties) {
       columnNames.add(property.getPropertyID());
     }
@@ -741,7 +741,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * null if no grouping properties are defined
    */
   private static String initializeGroupByClause(final Collection<Property.ColumnProperty> databaseProperties) {
-    final List<Property> groupingProperties = new ArrayList<Property>(databaseProperties.size());
+    final List<Property> groupingProperties = new ArrayList<>(databaseProperties.size());
     for (final Property.ColumnProperty property : databaseProperties) {
       if (property.isGroupingColumn()) {
         groupingProperties.add(property);
@@ -764,7 +764,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   }
 
   private static String initializeSelectColumnsString(final Collection<Property.ColumnProperty> databaseProperties) {
-    final List<Property> selectProperties = new ArrayList<Property>(databaseProperties.size());
+    final List<Property> selectProperties = new ArrayList<>(databaseProperties.size());
     for (final Property.ColumnProperty property : databaseProperties) {
       selectProperties.add(property);
     }

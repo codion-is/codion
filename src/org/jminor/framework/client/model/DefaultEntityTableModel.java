@@ -90,7 +90,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /**
    * Maps PropertySummaryModels to their respective properties
    */
-  private final Map<String, PropertySummaryModel> propertySummaryModels = new HashMap<String, PropertySummaryModel>();
+  private final Map<String, PropertySummaryModel> propertySummaryModels = new HashMap<>();
 
   /**
    * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
@@ -419,8 +419,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final void setSelectedByPrimaryKeys(final Collection<Entity.Key> keys) {
-    final List<Entity.Key> keyList = new ArrayList<Entity.Key>(keys);
-    final List<Integer> indexes = new ArrayList<Integer>();
+    final List<Entity.Key> keyList = new ArrayList<>(keys);
+    final List<Integer> indexes = new ArrayList<>();
     for (final Entity visibleEntity : getVisibleItems()) {
       final int index = keyList.indexOf(visibleEntity.getPrimaryKey());
       if (index >= 0) {
@@ -435,7 +435,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final Collection<Entity> getEntitiesByPrimaryKeys(final Collection<Entity.Key> keys) {
-    final List<Entity> entities = new ArrayList<Entity>();
+    final List<Entity> entities = new ArrayList<>();
     for (final Entity entity : getAllItems()) {
       for (final Entity.Key key : keys) {
         if (entity.getPrimaryKey().equals(key)) {
@@ -451,7 +451,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final Collection<Entity> getEntitiesByPropertyValues(final Map<String, Object> values) {
-    final List<Entity> entities = new ArrayList<Entity>();
+    final List<Entity> entities = new ArrayList<>();
     for (final Entity entity : getAllItems()) {
       boolean equal = true;
       for (final Map.Entry<String, Object> entries : values.entrySet()) {
@@ -569,7 +569,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    */
   protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
     if (criteria == null && queryCriteriaRequired) {
-      return new ArrayList<Entity>();
+      return new ArrayList<>();
     }
 
     try {
@@ -707,7 +707,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       refresh();//best we can do under the circumstances
     }
     else {//replace the updated entities in the table model
-      final List<Entity> updated = new ArrayList<Entity>();
+      final List<Entity> updated = new ArrayList<>();
       for (final Entity entity : updatedEntities) {
         if (entity.is(entityID)) {
           updated.add(entity);
@@ -790,7 +790,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     if (visibleProperties.isEmpty()) {
       throw new IllegalStateException("No visible properties defined for entity: " + entityID);
     }
-    final List<TableColumn> columns = new ArrayList<TableColumn>(visibleProperties.size());
+    final List<TableColumn> columns = new ArrayList<>(visibleProperties.size());
     for (final Property property : visibleProperties) {
       final TableColumn column = new TableColumn(modelIndex++);
       column.setIdentifier(property);

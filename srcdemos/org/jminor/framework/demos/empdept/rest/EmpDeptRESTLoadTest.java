@@ -134,8 +134,8 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
                 .addParameter("entityID", EmpDept.T_DEPARTMENT);
         HttpResponse response = client.execute(new HttpGet(builder.build()));
-        String queryResult = getContentStream(response.getEntity());
-        List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
+        final String queryResult = getContentStream(response.getEntity());
+        final List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
 
         final Entity entity = queryEntities.get(new Random().nextInt(queryEntities.size()));
         entity.setValue(EmpDept.DEPARTMENT_LOCATION, Util.createRandomString(10, 13));
@@ -167,8 +167,8 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
                 .addParameter("searchType", SearchType.NOT_LIKE.toString())
                 .addParameter("values", "{\"dname\":\"ACCOUNTING\"}");
         final HttpResponse response = client.execute(new HttpGet(builder.build()));
-        String queryResult = getContentStream(response.getEntity());
-        List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
+        final String queryResult = getContentStream(response.getEntity());
+        final List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
       }
       catch (Exception e) {
         e.printStackTrace();
@@ -255,8 +255,8 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
                 .addParameter("entityID", EmpDept.T_DEPARTMENT);
         final HttpResponse response = client.execute(new HttpGet(builder.build()));
 
-        String queryResult = getContentStream(response.getEntity());
-        List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
+        final String queryResult = getContentStream(response.getEntity());
+        final List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
         final Entity department = queryEntities.get(0);
       }
       catch (Exception e) {

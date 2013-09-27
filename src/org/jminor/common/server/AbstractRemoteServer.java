@@ -25,7 +25,7 @@ import java.util.UUID;
 public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemoteObject implements RemoteServer<T> {
 
   private final Map<ClientInfo, T> connections = Collections.synchronizedMap(new HashMap<ClientInfo, T>());
-  private final Map<String, LoginProxy> loginProxies = new HashMap<String, LoginProxy>();
+  private final Map<String, LoginProxy> loginProxies = new HashMap<>();
   private final LoginProxy defaultLoginProxy = new LoginProxy() {
     /** {@inheritDoc} */
     @Override
@@ -77,7 +77,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
    */
   public final Map<ClientInfo, T> getConnections() {
     synchronized (connections) {
-      return new HashMap<ClientInfo, T>(connections);
+      return new HashMap<>(connections);
     }
   }
 

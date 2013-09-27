@@ -64,7 +64,7 @@ public class DefaultFilteredComboBoxModelTest {
 
     testModel.setSortComparator(null);
     assertNull(testModel.getSortComparator());
-    final List<String> names = new ArrayList<String>();
+    final List<String> names = new ArrayList<>();
     names.add(ANNA);
     names.add(KALLI);
     names.add(SIGGI);
@@ -101,7 +101,7 @@ public class DefaultFilteredComboBoxModelTest {
 
   @Test
   public void testSelection() {
-    final Collection<Object> selectionChangedCounter = new ArrayList<Object>();
+    final Collection<Object> selectionChangedCounter = new ArrayList<>();
     final EventListener selectionListener = new EventListener() {
       @Override
       public void eventOccurred() {
@@ -148,7 +148,7 @@ public class DefaultFilteredComboBoxModelTest {
 
   @Test
   public void setFilterCriteria() {
-    final Collection<Object> filteringEndedCounter = new ArrayList<Object>();
+    final Collection<Object> filteringEndedCounter = new ArrayList<>();
     final EventListener filteringEndedListener = new EventListener() {
       @Override
       public void eventOccurred() {
@@ -264,9 +264,9 @@ public class DefaultFilteredComboBoxModelTest {
 
   @Before
   public void setUp() throws Exception {
-    testModel = new DefaultFilteredComboBoxModel<String>();
+    testModel = new DefaultFilteredComboBoxModel<>();
     testModel.setNullValueString(NULL);
-    final List<String> names = new ArrayList<String>();
+    final List<String> names = new ArrayList<>();
     names.add(ANNA);
     names.add(KALLI);
     names.add(SIGGI);

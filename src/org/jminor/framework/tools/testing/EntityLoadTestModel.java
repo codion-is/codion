@@ -56,7 +56,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
     }
     else {
       final int startIdx = RANDOM.nextInt(tableModel.getRowCount() - count);
-      final List<Integer> indexes = new ArrayList<Integer>();
+      final List<Integer> indexes = new ArrayList<>();
       for (int i = startIdx; i < count + startIdx; i++) {
         indexes.add(i);
       }
@@ -76,7 +76,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
     }
 
     final int toSelect = ratio > 0 ? (int) Math.floor(tableModel.getRowCount() * ratio) : 1;
-    final List<Integer> indexes = new ArrayList<Integer>();
+    final List<Integer> indexes = new ArrayList<>();
     for (int i = 0; i < toSelect; i++) {
       indexes.add(i);
     }

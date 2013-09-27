@@ -17,7 +17,7 @@ import java.util.List;
  */
 public final class ControlSet extends Control {
 
-  private final List<Action> actions = new ArrayList<Action>();
+  private final List<Action> actions = new ArrayList<>();
 
   /**
    * Constructs a new ControlSet.
@@ -126,7 +126,7 @@ public final class ControlSet extends Control {
    * @return a list containing all ControlSets this ControlSet contains
    */
   public List<ControlSet> getControlSets() {
-    final List<ControlSet> controlSets = new ArrayList<ControlSet>();
+    final List<ControlSet> controlSets = new ArrayList<>();
     for (final Action control : actions) {
       if (control instanceof ControlSet) {
         controlSets.add((ControlSet) control);

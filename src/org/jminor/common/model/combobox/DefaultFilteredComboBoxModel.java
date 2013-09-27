@@ -30,8 +30,8 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private final Event selectionChangedEvent = Events.event();
   private final Event filteringDoneEvent = Events.event();
 
-  private final List<T> visibleItems = new ArrayList<T>();
-  private final List<T> filteredItems = new ArrayList<T>();
+  private final List<T> visibleItems = new ArrayList<>();
+  private final List<T> filteredItems = new ArrayList<>();
 
   /**
    * set during setContents
@@ -44,7 +44,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private FilterCriteria<T> filterCriteria = ACCEPT_ALL_CRITERIA;
   private boolean filterSelectedItem = true;
 
-  private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<ListDataListener>();
+  private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<>();
 
   /**
    * Instantiates a new DefaultFilteredComboBoxModel, without a nullValueString.
@@ -175,7 +175,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   /** {@inheritDoc} */
   @Override
   public final List<T> getAllItems() {
-    final List<T> entities = new ArrayList<T>(visibleItems);
+    final List<T> entities = new ArrayList<>(visibleItems);
     entities.addAll(filteredItems);
 
     return entities;
@@ -400,7 +400,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    * both filtered and visible, excluding the null value.
    */
   protected List<T> initializeContents() {
-    final List<T> contents = new ArrayList<T>(visibleItems);
+    final List<T> contents = new ArrayList<>(visibleItems);
     if (nullValueString != null) {
       contents.remove(null);
     }

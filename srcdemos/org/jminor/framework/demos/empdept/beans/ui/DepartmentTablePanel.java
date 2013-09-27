@@ -35,7 +35,7 @@ public class DepartmentTablePanel extends EntityTablePanel {
     final String reportPath = Configuration.getReportPath() + "/empdept_employees.jasper";
     final Collection departmentNumbers =
             EntityUtil.getDistinctPropertyValues(DEPARTMENT_ID, getEntityTableModel().getSelectionModel().getSelectedItems());
-    final HashMap<String, Object> reportParameters = new HashMap<String, Object>();
+    final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);
     new SwingWorker() {
       @Override

@@ -144,7 +144,7 @@ public final class States {
 
   private static final class DefaultAggregateState extends DefaultState implements State.AggregateState {
 
-    private final List<StateObserver> states = new ArrayList<StateObserver>();
+    private final List<StateObserver> states = new ArrayList<>();
     private final EventListener listener = new EventListener() {
       /** {@inheritDoc} */
       @Override
@@ -330,7 +330,7 @@ public final class States {
 
   static final class DefaultGroup implements State.Group {
 
-    private final List<WeakReference<State>> members = new ArrayList<WeakReference<State>>();
+    private final List<WeakReference<State>> members = new ArrayList<>();
 
     public DefaultGroup(final State... states) {
       if (states != null) {
@@ -349,7 +349,7 @@ public final class States {
           }
         }//no duplicate states
 
-        members.add(new WeakReference<State>(state));
+        members.add(new WeakReference<>(state));
       }
       updateAccordingToState(state);
       state.addListener(new EventListener() {

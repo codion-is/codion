@@ -100,7 +100,7 @@ public final class ConnectionPools {
    * @return all available connection pools
    */
   public static synchronized Collection<ConnectionPool> getConnectionPools() {
-    return new ArrayList<ConnectionPool>(CONNECTION_POOLS.values());
+    return new ArrayList<>(CONNECTION_POOLS.values());
   }
 
   private static ConnectionPoolProvider initializeConnectionPoolProvider(final Database database, final User user) throws ClassNotFoundException {

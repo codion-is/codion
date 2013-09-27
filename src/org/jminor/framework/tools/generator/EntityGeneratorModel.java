@@ -408,8 +408,8 @@ public final class EntityGeneratorModel {
         protected Class getColumnClass(final Integer columnIdentifier) {
           return String.class;
         }
-      }, Arrays.asList(new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%"),
-              new DefaultColumnSearchModel<Integer>(1, Types.VARCHAR, "%")));
+      }, Arrays.asList(new DefaultColumnSearchModel<>(0, Types.VARCHAR, "%"),
+              new DefaultColumnSearchModel<>(1, Types.VARCHAR, "%")));
       this.metaData = metaData;
       this.schema = schema;
       this.catalog = catalog;
@@ -419,7 +419,7 @@ public final class EntityGeneratorModel {
     protected void doRefresh() {
       try {
         clear();
-        final Set<Table> items = new HashSet<Table>();
+        final Set<Table> items = new HashSet<>();
         final List<Table> tables = new TablePacker(schema).pack(metaData.getTables(catalog, schema, null, null), -1);
         for (final Table table : tables) {
           populateTable(table);
@@ -430,7 +430,7 @@ public final class EntityGeneratorModel {
           }
         }
         items.addAll(tables);
-        addItems(new ArrayList<Table>(items), true);
+        addItems(new ArrayList<>(items), true);
       }
       catch (SQLException e) {
         LOG.error(e.getMessage(), e);
@@ -656,7 +656,7 @@ public final class EntityGeneratorModel {
 
     @Override
     public List<Table> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Table> tables = new ArrayList<Table>();
+      final List<Table> tables = new ArrayList<>();
       while (resultSet.next()) {
         final String tableName = resultSet.getString("TABLE_NAME");
         String dbSchema = resultSet.getString(TABLE_SCHEMA);
@@ -682,7 +682,7 @@ public final class EntityGeneratorModel {
 
     @Override
     public List<Column> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Column> columns = new ArrayList<Column>();
+      final List<Column> columns = new ArrayList<>();
       while (resultSet.next()) {
         final int dataType = resultSet.getInt("DATA_TYPE");
         int decimalDigits = resultSet.getInt("DECIMAL_DIGITS");
@@ -729,7 +729,7 @@ public final class EntityGeneratorModel {
   private static final class ForeignKeyColumnPacker implements ResultPacker<ForeignKeyColumn> {
     @Override
     public List<ForeignKeyColumn> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<ForeignKeyColumn> foreignKeys = new ArrayList<ForeignKeyColumn>();
+      final List<ForeignKeyColumn> foreignKeys = new ArrayList<>();
       while (resultSet.next()) {
         foreignKeys.add(new ForeignKeyColumn(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
                 resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME"), resultSet.getShort("KEY_SEQ")));
@@ -744,7 +744,7 @@ public final class EntityGeneratorModel {
   private static final class PrimaryKeyColumnPacker implements ResultPacker<PrimaryKeyColumn> {
     @Override
     public List<PrimaryKeyColumn> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<PrimaryKeyColumn> primaryKeys = new ArrayList<PrimaryKeyColumn>();
+      final List<PrimaryKeyColumn> primaryKeys = new ArrayList<>();
       while (resultSet.next()) {
         primaryKeys.add(new PrimaryKeyColumn(resultSet.getString("COLUMN_NAME"), resultSet.getInt("KEY_SEQ")));
       }

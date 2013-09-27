@@ -29,7 +29,7 @@ final class DefaultConnectionPoolCounter implements ConnectionPool.Counter {
   private long averageCheckOutTime = 0;
   private long minimumCheckOutTime = 0;
   private long maximumCheckOutTime = 0;
-  private final List<Long> checkOutTimes = new ArrayList<Long>();
+  private final List<Long> checkOutTimes = new ArrayList<>();
   private long requestsPerSecondTime = creationDate;
 
   /** {@inheritDoc} */

@@ -61,7 +61,7 @@ public final class AbstractFilteredTableModelTest {
   public static TestAbstractFilteredTableModel createTestModel(final Comparator<String> customComparator) {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%");
+    final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<>(0, Types.VARCHAR, "%");
     return new TestAbstractFilteredTableModel(new AbstractTableSortModel<String, Integer>(Arrays.asList(column)) {
       @Override
       protected Comparable getComparable(final String rowObject, final Integer columnIdentifier) {
@@ -113,9 +113,9 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void refresh() {
-    final Collection<Object> started = new ArrayList<Object>();
-    final Collection<Object> done = new ArrayList<Object>();
-    final Collection<Object> cleared = new ArrayList<Object>();
+    final Collection<Object> started = new ArrayList<>();
+    final Collection<Object> done = new ArrayList<>();
+    final Collection<Object> cleared = new ArrayList<>();
     final EventListener startListener = new EventListener() {
       @Override
       public void eventOccurred() {
@@ -149,7 +149,7 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void removeItems() {
-    final Collection<Object> events = new ArrayList<Object>();
+    final Collection<Object> events = new ArrayList<>();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
@@ -176,7 +176,7 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void removeItemsRange() {
-    final Collection<Object> events = new ArrayList<Object>();
+    final Collection<Object> events = new ArrayList<>();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
@@ -355,7 +355,7 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void testSorting() {
-    final Collection<Object> actionsPerformed = new ArrayList<Object>();
+    final Collection<Object> actionsPerformed = new ArrayList<>();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
@@ -381,7 +381,7 @@ public final class AbstractFilteredTableModelTest {
     assertEquals("e", tableModel.getItemAt(0));
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
 
-    final List<String> items = new ArrayList<String>();
+    final List<String> items = new ArrayList<>();
     items.add(null);
     tableModel.addItems(items, true);
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
@@ -412,7 +412,7 @@ public final class AbstractFilteredTableModelTest {
 
   @Test(expected = IndexOutOfBoundsException.class)
   public void addSelectedIndexesNegative() {
-    final Collection<Integer> indexes = new ArrayList<Integer>();
+    final Collection<Integer> indexes = new ArrayList<>();
     indexes.add(1);
     indexes.add(-1);
     tableModel.getSelectionModel().addSelectedIndexes(indexes);
@@ -420,7 +420,7 @@ public final class AbstractFilteredTableModelTest {
 
   @Test(expected = IndexOutOfBoundsException.class)
   public void addSelectedIndexesOutOfBounds() {
-    final Collection<Integer> indexes = new ArrayList<Integer>();
+    final Collection<Integer> indexes = new ArrayList<>();
     indexes.add(1);
     indexes.add(10);
     tableModel.getSelectionModel().addSelectedIndexes(indexes);
@@ -428,7 +428,7 @@ public final class AbstractFilteredTableModelTest {
 
   @Test(expected = IndexOutOfBoundsException.class)
   public void setSelectedIndexesNegative() {
-    final Collection<Integer> indexes = new ArrayList<Integer>();
+    final Collection<Integer> indexes = new ArrayList<>();
     indexes.add(1);
     indexes.add(-1);
     tableModel.getSelectionModel().setSelectedIndexes(indexes);
@@ -436,7 +436,7 @@ public final class AbstractFilteredTableModelTest {
 
   @Test(expected = IndexOutOfBoundsException.class)
   public void setSelectedIndexesOutOfBounds() {
-    final Collection<Integer> indexes = new ArrayList<Integer>();
+    final Collection<Integer> indexes = new ArrayList<>();
     indexes.add(1);
     indexes.add(10);
     tableModel.getSelectionModel().setSelectedIndexes(indexes);
@@ -464,7 +464,7 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void testSelection() {
-    final Collection<Object> events = new ArrayList<Object>();
+    final Collection<Object> events = new ArrayList<>();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
@@ -657,7 +657,7 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void testFiltering() throws Exception {
-    final Collection<Object> done = new ArrayList<Object>();
+    final Collection<Object> done = new ArrayList<>();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {

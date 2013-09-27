@@ -188,8 +188,8 @@ public class EntityUtilTest {
   @Test
   public void getPropertyValues() {
     EmpDept.init();
-    final List<Entity> entities = new ArrayList<Entity>();
-    final List<Object> values = new ArrayList<Object>();
+    final List<Entity> entities = new ArrayList<>();
+    final List<Object> values = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
       final Entity entity = Entities.entity(EmpDept.T_DEPARTMENT);
       entity.setValue(EmpDept.DEPARTMENT_ID, i);
@@ -206,8 +206,8 @@ public class EntityUtilTest {
   @Test
   public void getDistinctPropertyValues() {
     EmpDept.init();
-    final List<Entity> entities = new ArrayList<Entity>();
-    final List<Object> values = new ArrayList<Object>();
+    final List<Entity> entities = new ArrayList<>();
+    final List<Object> values = new ArrayList<>();
 
     Entity entity = Entities.entity(EmpDept.T_DEPARTMENT);
     entity.setValue(EmpDept.DEPARTMENT_ID, null);
@@ -289,7 +289,7 @@ public class EntityUtilTest {
   @Test
   public void testSetPropertyValue() {
     EmpDept.init();
-    final Collection<Entity> entities = new ArrayList<Entity>();
+    final Collection<Entity> entities = new ArrayList<>();
     entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
     entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
     entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
@@ -309,7 +309,7 @@ public class EntityUtilTest {
   @Test
   public void hashByPropertyValue() {
     EmpDept.init();
-    final List<Entity> entities = new ArrayList<Entity>();
+    final List<Entity> entities = new ArrayList<>();
 
     final Entity entityOne = Entities.entity(EmpDept.T_DEPARTMENT);
     entityOne.setValue(EmpDept.DEPARTMENT_ID, 1);
@@ -371,7 +371,7 @@ public class EntityUtilTest {
   @Test
   public void getProperties() {
     EmpDept.init();
-    final List<String> propertyIDs = new ArrayList<String>();
+    final List<String> propertyIDs = new ArrayList<>();
     propertyIDs.add(EmpDept.DEPARTMENT_ID);
     propertyIDs.add(EmpDept.DEPARTMENT_NAME);
 

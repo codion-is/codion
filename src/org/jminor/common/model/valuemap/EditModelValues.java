@@ -24,7 +24,7 @@ public final class EditModelValues {
    * @return a Value base on the given edit model value
    */
   public static <V> Value<V> value(final ValueMapEditModel editModel, final Object key) {
-    return new EditModelValue<V>(editModel, key);
+    return new EditModelValue<>(editModel, key);
   }
 
   private static final class EditModelValue<V> implements Value<V> {

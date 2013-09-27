@@ -77,7 +77,7 @@ public class ControlProviderTest {
     assertEquals("two", menu.getMenu(0).getItem(1).getText());
     assertEquals("three", menu.getMenu(0).getItem(2).getText());
 
-    final List<ControlSet> sets = new ArrayList<ControlSet>();
+    final List<ControlSet> sets = new ArrayList<>();
     sets.add(set);
     sets.add(base);
     ControlProvider.createMenuBar(sets);

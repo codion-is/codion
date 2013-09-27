@@ -433,10 +433,10 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void testListeners() throws Exception {
-    final Collection<Object> anyValueChangeCounter = new ArrayList<Object>();
-    final Collection<Object> valueChangeCounter = new ArrayList<Object>();
-    final Collection<Object> valueSetCounter = new ArrayList<Object>();
-    final Collection<Object> valueMapSetCounter = new ArrayList<Object>();
+    final Collection<Object> anyValueChangeCounter = new ArrayList<>();
+    final Collection<Object> valueChangeCounter = new ArrayList<>();
+    final Collection<Object> valueSetCounter = new ArrayList<>();
+    final Collection<Object> valueMapSetCounter = new ArrayList<>();
 
     final EventInfoListener<ValueChange> anyValueChangeListener = new EventInfoListener<ValueChange>() {
       @Override

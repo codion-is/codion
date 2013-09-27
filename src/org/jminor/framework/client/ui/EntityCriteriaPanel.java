@@ -45,7 +45,7 @@ public final class EntityCriteriaPanel extends JPanel {
   private static final int DEFAULT_WIDTH = 200;
   private static final int DEFAULT_HEIGHT = 40;
 
-  private final Map<PropertySearchModel, ColumnSearchPanel> panels = new HashMap<PropertySearchModel, ColumnSearchPanel>();
+  private final Map<PropertySearchModel, ColumnSearchPanel> panels = new HashMap<>();
 
   /**
    * Instantiates a new EntityCriteriaPanel for the given table model

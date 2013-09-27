@@ -109,11 +109,11 @@ public final class EntityUiUtil {
    * @param dialogParent the component serving as a dialog parent
    */
   public static void setLoggingLevel(final JComponent dialogParent) {
-    final DefaultComboBoxModel<Level> model = new DefaultComboBoxModel<Level>(
+    final DefaultComboBoxModel<Level> model = new DefaultComboBoxModel<>(
             new Level[] {Level.TRACE, Level.DEBUG, Level.INFO, Level.WARN, Level.ERROR});
     final ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     model.setSelectedItem(rootLogger.getLevel());
-    JOptionPane.showMessageDialog(dialogParent, new JComboBox<Level>(model),
+    JOptionPane.showMessageDialog(dialogParent, new JComboBox<>(model),
             FrameworkMessages.get(FrameworkMessages.SET_LOG_LEVEL), JOptionPane.QUESTION_MESSAGE);
     rootLogger.setLevel((Level) model.getSelectedItem());
   }
@@ -225,7 +225,7 @@ public final class EntityUiUtil {
                                                   final boolean singleSelection, final String dialogTitle,
                                                   final Dimension preferredSize) throws CancelException {
     Util.rejectNullValue(lookupModel, "lookupModel");
-    final Collection<Entity> selected = new ArrayList<Entity>();
+    final Collection<Entity> selected = new ArrayList<>();
     final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogOwner), dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
@@ -1126,9 +1126,9 @@ public final class EntityUiUtil {
    */
   private static void populateEntityMenu(final JComponent rootMenu, final Entity entity,
                                          final EntityConnectionProvider connectionProvider) {
-    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<Property.PrimaryKeyProperty>(Entities.getPrimaryKeyProperties(entity.getEntityID())));
-    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<Property.ForeignKeyProperty>(Entities.getForeignKeyProperties(entity.getEntityID())));
-    populateValueMenu(rootMenu, entity, new ArrayList<Property>(Entities.getProperties(entity.getEntityID(), true)));
+    populatePrimaryKeyMenu(rootMenu, entity, new ArrayList<>(Entities.getPrimaryKeyProperties(entity.getEntityID())));
+    populateForeignKeyMenu(rootMenu, entity, connectionProvider, new ArrayList<>(Entities.getForeignKeyProperties(entity.getEntityID())));
+    populateValueMenu(rootMenu, entity, new ArrayList<>(Entities.getProperties(entity.getEntityID(), true)));
   }
 
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.PrimaryKeyProperty> primaryKeyProperties) {
@@ -1191,7 +1191,7 @@ public final class EntityUiUtil {
   }
 
   private static String getReferenceColumnNames(final Property.ForeignKeyProperty property) {
-    final List<String> columnNames = new ArrayList<String>(property.getReferenceProperties().size());
+    final List<String> columnNames = new ArrayList<>(property.getReferenceProperties().size());
     for (final Property.ColumnProperty referenceProperty : property.getReferenceProperties()) {
       columnNames.add(referenceProperty.getColumnName());
     }
@@ -1286,7 +1286,7 @@ public final class EntityUiUtil {
     private final JComponent component;
     private final EntityDataProvider dataProvider;
     private final EntityPanelProvider panelProvider;
-    private final List<Entity> lastInsertedEntities = new ArrayList<Entity>();
+    private final List<Entity> lastInsertedEntities = new ArrayList<>();
 
     private CreateEntityAction(final JComponent component, final EntityPanelProvider panelProvider) {
       super("", Images.loadImage(Images.IMG_ADD_16));

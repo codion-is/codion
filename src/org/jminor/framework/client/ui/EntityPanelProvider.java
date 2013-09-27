@@ -41,7 +41,7 @@ public class EntityPanelProvider implements Comparable {
 
   private final EntityModelProvider modelProvider;
 
-  private final List<EntityPanelProvider> detailPanelProviders = new ArrayList<EntityPanelProvider>();
+  private final List<EntityPanelProvider> detailPanelProviders = new ArrayList<>();
 
   /**
    * Instantiates a new EntityPanelProvider for the given entity type

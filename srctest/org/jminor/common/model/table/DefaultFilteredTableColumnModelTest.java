@@ -20,8 +20,8 @@ public class DefaultFilteredTableColumnModelTest {
   @Test
   public void testModel() {
     final FilteredTableColumnModel<Integer> testModel = createTestModel();
-    final Collection<Object> hidden = new ArrayList<Object>();
-    final Collection<Object> shown = new ArrayList<Object>();
+    final Collection<Object> hidden = new ArrayList<>();
+    final Collection<Object> shown = new ArrayList<>();
     final EventInfoListener<Integer> hideListener = new EventInfoListener<Integer>() {
       @Override
       public void eventOccurred(final Integer info) {
@@ -61,8 +61,8 @@ public class DefaultFilteredTableColumnModelTest {
   private FilteredTableColumnModel<Integer> createTestModel() {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<Integer>(0, Types.VARCHAR, "%");
+    final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<>(0, Types.VARCHAR, "%");
 
-    return new DefaultFilteredTableColumnModel<Integer>(Arrays.asList(column), Arrays.asList(filterModel));
+    return new DefaultFilteredTableColumnModel<>(Arrays.asList(column), Arrays.asList(filterModel));
   }
 }

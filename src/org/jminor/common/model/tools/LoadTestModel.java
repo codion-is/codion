@@ -65,7 +65,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private volatile boolean paused = false;
   private volatile boolean collectChartData = false;
 
-  private final Stack<ApplicationRunner<T>> applications = new Stack<ApplicationRunner<T>>();
+  private final Stack<ApplicationRunner<T>> applications = new Stack<>();
   private final Collection<? extends UsageScenario<T>> usageScenarios;
   private final ItemRandomizer<UsageScenario> scenarioChooser;
   private final ExecutorService executor = Executors.newCachedThreadPool();
@@ -92,9 +92,9 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private final XYSeries usedMemoryCollection = new XYSeries("Used");
   private final XYSeries maxMemoryCollection = new XYSeries("Available");
   private final XYSeriesCollection memoryUsageCollection = new XYSeriesCollection();
-  private final Collection<XYSeries> usageSeries = new ArrayList<XYSeries>();
-  private final Map<String, YIntervalSeries> durationSeries = new HashMap<String, YIntervalSeries>();
-  private final Collection<XYSeries> failureSeries = new ArrayList<XYSeries>();
+  private final Collection<XYSeries> usageSeries = new ArrayList<>();
+  private final Map<String, YIntervalSeries> durationSeries = new HashMap<>();
+  private final Collection<XYSeries> failureSeries = new ArrayList<>();
 
   /**
    * Constructs a new LoadTestModel.
@@ -211,7 +211,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   /** {@inheritDoc} */
   @Override
   public final Collection<String> getUsageScenarios() {
-    final Collection<String> ret = new ArrayList<String>();
+    final Collection<String> ret = new ArrayList<>();
     for (final UsageScenario scenario : usageScenarios) {
       ret.add(scenario.getName());
     }
@@ -363,7 +363,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   @Override
   public final void addApplicationBatch() {
     for (int i = 0; i < applicationBatchSize; i++) {
-      final ApplicationRunner<T> runner = new ApplicationRunner<T>(this);
+      final ApplicationRunner<T> runner = new ApplicationRunner<>(this);
       synchronized (applications) {
         applications.push(runner);
       }
@@ -584,7 +584,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   }
 
   private ItemRandomizer<UsageScenario> initializeScenarioChooser() {
-    final ItemRandomizer<UsageScenario> model = new ItemRandomizerModel<UsageScenario>();
+    final ItemRandomizer<UsageScenario> model = new ItemRandomizerModel<>();
     for (final UsageScenario scenario : this.usageScenarios) {
       model.addItem(scenario, scenario.getDefaultWeight());
     }
@@ -729,7 +729,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     private final String name;
     private volatile int successfulRunCount = 0;
     private volatile int unsuccessfulRunCount = 0;
-    private final List<ScenarioException> exceptions = new ArrayList<ScenarioException>();
+    private final List<ScenarioException> exceptions = new ArrayList<>();
 
     /**
      * Instantiates a new UsageScenario using the simple class name as scenario name
@@ -774,7 +774,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     @Override
     public final List<ScenarioException> getExceptions() {
       synchronized (exceptions) {
-        return new ArrayList<ScenarioException>(exceptions);
+        return new ArrayList<>(exceptions);
       }
     }
 
@@ -867,12 +867,12 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private static final class Counter {
 
     private final Collection<? extends UsageScenario> usageScenarios;
-    private final Map<String, Integer> usageScenarioRates = new HashMap<String, Integer>();
-    private final Map<String, Integer> usageScenarioAvgDurations = new HashMap<String, Integer>();
-    private final Map<String, Integer> usageScenarioMaxDurations = new HashMap<String, Integer>();
-    private final Map<String, Integer> usageScenarioMinDurations = new HashMap<String, Integer>();
-    private final Map<String, Double> usageScenarioFailures = new HashMap<String, Double>();
-    private final Map<String, Collection<Integer>> scenarioDurations = new HashMap<String, Collection<Integer>>();
+    private final Map<String, Integer> usageScenarioRates = new HashMap<>();
+    private final Map<String, Integer> usageScenarioAvgDurations = new HashMap<>();
+    private final Map<String, Integer> usageScenarioMaxDurations = new HashMap<>();
+    private final Map<String, Integer> usageScenarioMinDurations = new HashMap<>();
+    private final Map<String, Double> usageScenarioFailures = new HashMap<>();
+    private final Map<String, Collection<Integer>> scenarioDurations = new HashMap<>();
 
     private double workRequestsPerSecond = 0;
     private int workRequestCounter = 0;

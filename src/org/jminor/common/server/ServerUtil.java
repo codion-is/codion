@@ -77,7 +77,7 @@ public final class ServerUtil {
 
   private static List<RemoteServer> getServers(final String hostNames, final String serverNamePrefix,
                                                final int registryPort, final int serverPort) throws RemoteException {
-    final List<RemoteServer> servers = new ArrayList<RemoteServer>();
+    final List<RemoteServer> servers = new ArrayList<>();
     for (final String serverHostName : hostNames.split(",")) {
       LOG.info("Searching for servers,  host: \"{}\", server name prefix: \"{}\", server port: {}, registry port {}",
               new Object[] {serverHostName, serverNamePrefix, serverPort, registryPort});

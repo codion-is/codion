@@ -28,7 +28,7 @@ public final class Values {
    * @return a Value for the given type with the given initial value
    */
   public static <V> Value<V> value(final V initialValue) {
-    return new DefaultValue<V>(initialValue);
+    return new DefaultValue<>(initialValue);
   }
 
   /**
@@ -42,7 +42,7 @@ public final class Values {
    */
   public static <V> Value<V> beanValue(final Object owner, final String beanPropertyName, final Class valueClass,
                                        final EventObserver valueChangeEvent) {
-    return new BeanValue<V>(owner, beanPropertyName, valueClass, valueChangeEvent);
+    return new BeanValue<>(owner, beanPropertyName, valueClass, valueChangeEvent);
   }
 
   /**
@@ -72,7 +72,7 @@ public final class Values {
    * @param <V> the value type
    */
   public static <V> void link(final Value<V> modelValue, final Value<V> uiValue, final boolean readOnly) {
-    new ValueLink<V>(modelValue, uiValue, readOnly);
+    new ValueLink<>(modelValue, uiValue, readOnly);
   }
 
   private static final class DefaultValue<V> implements Value<V> {
