@@ -69,9 +69,9 @@ public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> 
   }
 
   @Override
-  protected final Object translateSelectionItem(final Object item) {
+  protected final Item<T> translateSelectionItem(final Object item) {
     if (item instanceof Item) {
-      return item;
+      return (Item<T>) item;
     }
 
     final int index = indexOf((T) item);

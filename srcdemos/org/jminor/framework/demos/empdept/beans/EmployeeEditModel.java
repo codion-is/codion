@@ -15,6 +15,7 @@ import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
 import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
@@ -31,7 +32,7 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     if (foreignKeyProperty.is(EMPLOYEE_MGR_FK)) {
       final EntityComboBoxModel managerModel = new DefaultEntityComboBoxModel(T_EMPLOYEE, getConnectionProvider());
-      managerModel.setNullValueString(getString(NONE));
+      managerModel.setNullValue(EntityUtil.createToStringEntity(T_EMPLOYEE, getString(NONE)));
       managerModel.setFilterSelectedItem(false);
       //Only show the president and managers
       managerModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(T_EMPLOYEE, EMPLOYEE_JOB,

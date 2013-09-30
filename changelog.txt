@@ -3621,3 +3621,6 @@
   EntityConnectionServerTest, web server now uses port 8181 to prevent conflicts with server running on the same machine
   Value.getChangeObserver() generified
   UiValues refactored
+  FilteredComboBoxModel generified further with java 7
+  FilteredComboBoxModel nullValueString replaced with T nullValue
+  EntityUtil.createToStringEntity() added

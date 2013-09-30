@@ -40,7 +40,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   private Comparator<? super T> sortComparator;
   private T selectedItem = null;
-  private String nullValueString;
+  private T nullValue;
   private FilterCriteria<T> filterCriteria = ACCEPT_ALL_CRITERIA;
   private boolean filterSelectedItem = true;
 
@@ -57,21 +57,21 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   /**
    * Instantiates a new DefaultFilteredComboBoxModel, without a nullValueString.
    * The model contents are sorted automatically with a default collation based comparator.
-   * @param nullValueString a string representing a null value, which is shown at the top of the item list
+   * @param nullValue a value representing a null value, which is shown at the top of the item list
    */
-  public DefaultFilteredComboBoxModel(final String nullValueString) {
-    this(nullValueString, new SortComparator<T>(nullValueString));
+  public DefaultFilteredComboBoxModel(final T nullValue) {
+    this(nullValue, new SortComparator<>(nullValue));
   }
 
   /**
    * Instantiates a new DefaultFilteredComboBoxModel with the given nullValueString.
-   * @param nullValueString a string representing a null value, which is shown at the top of the item list
+   * @param nullValue a value representing a null value, which is shown at the top of the item list
    * @param sortComparator the Comparator used to sort the contents of this combo box model, if null then
    * the contents are not sorted
    * @see #isNullValueSelected()
    */
-  public DefaultFilteredComboBoxModel(final String nullValueString, final Comparator<? super T> sortComparator) {
-    this.nullValueString = nullValueString;
+  public DefaultFilteredComboBoxModel(final T nullValue, final Comparator<? super T> sortComparator) {
+    this.nullValue = nullValue;
     this.sortComparator = sortComparator;
   }
 
@@ -105,7 +105,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     if (contents != null) {
       visibleItems.addAll(contents);
       filterContents();
-      if (nullValueString != null) {
+      if (nullValue != null) {
         visibleItems.add(0, null);
       }
     }
@@ -147,7 +147,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   /** {@inheritDoc} */
   @Override
   public final List<T> getVisibleItems() {
-    if (nullValueString == null) {
+    if (nullValue == null) {
       return Collections.unmodifiableList(visibleItems);
     }
 
@@ -197,7 +197,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   @Override
   public final boolean isVisible(final T item) {
     if (item == null) {
-      return nullValueString != null;
+      return nullValue != null;
     }
 
     return visibleItems.contains(item);
@@ -259,14 +259,14 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   /** {@inheritDoc} */
   @Override
-  public final String getNullValueString() {
-    return nullValueString;
+  public final T getNullValue() {
+    return nullValue;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setNullValueString(final String nullValueString) {
-    this.nullValueString = nullValueString;
+  public final void setNullValue(final T nullValue) {
+    this.nullValue = nullValue;
     if (selectedItem == null) {
       setSelectedItem(null);
     }
@@ -275,11 +275,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   /** {@inheritDoc} */
   @Override
   public final boolean isNullValueSelected() {
-    if (selectedItem instanceof String && nullValueString == null) {
-      return ((String) selectedItem).length() == 0;
-    }
-
-    return selectedItem == null && nullValueString != null;
+    return selectedItem == null && nullValue != null;
   }
 
   /** {@inheritDoc} */
@@ -293,13 +289,13 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /**
-   * @return the selected item, N.B. this can include the <code>nullValueString</code>
+   * @return the selected item, N.B. this can include the <code>nullValue</code>
    * in case it has been set, {@link #getSelectedValue()} is usually what you want
    */
   @Override
-  public final Object getSelectedItem() {
-    if (selectedItem == null && nullValueString != null) {
-      return nullValueString;
+  public final T getSelectedItem() {
+    if (selectedItem == null && nullValue != null) {
+      return nullValue;
     }
 
     return selectedItem;
@@ -308,7 +304,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   /** {@inheritDoc} */
   @Override
   public final void setSelectedItem(final Object anItem) {
-    final Object toSelect = translateSelectionItem(anItem);
+    final T toSelect = translateSelectionItem(anItem);
     if (vetoSelectionChange(toSelect)) {
       return;
     }
@@ -316,12 +312,12 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
       return;
     }
 
-    if (nullValueString != null && nullValueString.equals(toSelect)) {
+    if (nullValue != null && nullValue.equals(toSelect)) {
       selectedItem = null;
     }
     else {
       //noinspection unchecked
-      selectedItem = (T) toSelect;
+      selectedItem = toSelect;
     }
     fireContentsChanged();
     selectionChangedEvent.fire();
@@ -355,10 +351,10 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   /** {@inheritDoc} */
   @Override
-  public final Object getElementAt(final int index) {
-    final Object element = visibleItems.get(index);
+  public final T getElementAt(final int index) {
+    final T element = visibleItems.get(index);
     if (element == null) {
-      return nullValueString;
+      return nullValue;
     }
 
     return element;
@@ -401,7 +397,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    */
   protected List<T> initializeContents() {
     final List<T> contents = new ArrayList<>(visibleItems);
-    if (nullValueString != null) {
+    if (nullValue != null) {
       contents.remove(null);
     }
     contents.addAll(filteredItems);
@@ -413,7 +409,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    * @param item the item to be selected
    * @return true if the selection change is ok, false if it should be vetoed
    */
-  protected boolean vetoSelectionChange(final Object item) {
+  protected boolean vetoSelectionChange(final T item) {
     return false;
   }
 
@@ -421,8 +417,8 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    * @param item the item to be selected
    * @return the actual item to select
    */
-  protected Object translateSelectionItem(final Object item) {
-    return item;
+  protected T translateSelectionItem(final Object item) {
+    return (T) item;
   }
 
   /**
@@ -448,11 +444,11 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private static final class SortComparator<T> implements Comparator<T>, Serializable {
     private static final long serialVersionUID = 1;
 
-    private final String nullValueString;
+    private final T nullValue;
     private final Comparator comparator = Util.getSpaceAwareCollator();
 
-    SortComparator(final String nullValueString) {
-      this.nullValueString = nullValueString;
+    SortComparator(final T nullValue) {
+      this.nullValue = nullValue;
     }
 
     /** {@inheritDoc} */
@@ -468,11 +464,11 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
       if (o2 == null) {
         return 1;
       }
-      if (nullValueString != null) {
-        if (o1.equals(nullValueString)) {
+      if (nullValue != null) {
+        if (o1.equals(nullValue)) {
           return -1;
         }
-        if (o2.equals(nullValueString)) {
+        if (o2.equals(nullValue)) {
           return 1;
         }
       }

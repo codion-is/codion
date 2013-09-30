@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
 /**
@@ -30,7 +31,7 @@ public class DefaultPropertySearchModelProvider implements PropertySearchModelPr
           final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
     if (Entities.isSmallDataset(property.getReferencedEntityID())) {
       final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(property.getReferencedEntityID(), connectionProvider);
-      comboBoxModel.setNullValueString("");
+      comboBoxModel.setNullValue(EntityUtil.createToStringEntity(property.getReferencedEntityID(), ""));
       return new DefaultForeignKeySearchModel(property, comboBoxModel);
     }
     else {

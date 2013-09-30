@@ -252,7 +252,7 @@ public class DefaultFilteredComboBoxModelTest {
     assertTrue(testModel.isVisible(null));
     testModel.refresh();
     assertEquals(5, testModel.getVisibleItems().size());
-    assertTrue(testModel.getNullValueString().equals(NULL));
+    assertTrue(testModel.getNullValue().equals(NULL));
     testModel.setSelectedItem(null);
     assertEquals(testModel.getSelectedItem(), NULL);
     assertTrue(testModel.isNullValueSelected());
@@ -265,7 +265,7 @@ public class DefaultFilteredComboBoxModelTest {
   @Before
   public void setUp() throws Exception {
     testModel = new DefaultFilteredComboBoxModel<>();
-    testModel.setNullValueString(NULL);
+    testModel.setNullValue(NULL);
     final List<String> names = new ArrayList<>();
     names.add(ANNA);
     names.add(KALLI);

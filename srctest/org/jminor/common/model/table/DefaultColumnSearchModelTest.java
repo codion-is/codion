@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model.table;
 
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.SearchType;
 
@@ -42,9 +43,9 @@ public class DefaultColumnSearchModelTest {
       searchStateCounter.add(new Object());
     }
   };
-  final EventListener searchTypeListener = new EventListener() {
+  final EventInfoListener<SearchType> searchTypeListener = new EventInfoListener<SearchType>() {
     @Override
-    public void eventOccurred() {
+    public void eventOccurred(final SearchType info) {
       searchTypeCounter.add(new Object());
     }
   };

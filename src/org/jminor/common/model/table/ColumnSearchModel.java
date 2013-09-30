@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model.table;
 
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.SearchType;
@@ -237,7 +238,7 @@ public interface ColumnSearchModel<K> {
   /**
    * @return an observer notified each time the enabled state changes
    */
-  EventObserver getEnabledObserver();
+  EventObserver<Boolean> getEnabledObserver();
 
   /**
    * @return an observer notified each time the lower bound changes
@@ -252,7 +253,7 @@ public interface ColumnSearchModel<K> {
   /**
    * @return an observer notified each time the search type changes
    */
-  EventObserver getSearchTypeObserver();
+  EventObserver<SearchType> getSearchTypeObserver();
 
   /**
    * @param listener a listener to be notified each time the enabled state changes
@@ -267,12 +268,12 @@ public interface ColumnSearchModel<K> {
   /**
    * @param listener a listener to be notified each time the search type changes
    */
-  void addSearchTypeListener(final EventListener listener);
+  void addSearchTypeListener(final EventInfoListener<SearchType> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSearchTypeListener(final EventListener listener);
+  void removeSearchTypeListener(final EventInfoListener listener);
 
   /**
    * @param listener a listener to be notified each time the lower bound changes

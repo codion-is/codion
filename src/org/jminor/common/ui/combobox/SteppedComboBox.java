@@ -18,7 +18,7 @@ import java.util.Collection;
  * Slightly modified, automatic popup size according to getDisplaySize().
  * @author Nobuo Tamemasa
  */
-public class SteppedComboBox extends JComboBox {
+public class SteppedComboBox<V> extends JComboBox<V> {
 
   private final boolean hidePopupOnFocusLoss;
   private int popupWidth = 0;
@@ -27,23 +27,15 @@ public class SteppedComboBox extends JComboBox {
    * Instantiates a new SteppedComboBox.
    * @param items the items this combo box should contain
    */
-  public SteppedComboBox(final Collection items) {
-    this(items.toArray());
-  }
-
-  /**
-   * Instantiates a new SteppedComboBox.
-   * @param items the items this combo box should contain
-   */
-  public SteppedComboBox(final Object[] items) {
-    this(new DefaultComboBoxModel(items));
+  public SteppedComboBox(final Collection<V> items) {
+    this(new DefaultComboBoxModel(items.toArray(new Object[items.size()])));
   }
 
   /**
    * Instantiates a new SteppedComboBox.
    * @param boxModel the combo box model
    */
-  public SteppedComboBox(final ComboBoxModel boxModel) {
+  public SteppedComboBox(final ComboBoxModel<V> boxModel) {
     super(boxModel);
     initUI();
     // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when tabbing out

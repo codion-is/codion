@@ -5,6 +5,7 @@ package org.jminor.common.model.table;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
@@ -30,10 +31,10 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   private final Event upperBoundChangedEvent = Events.event();
   private final Event lowerBoundChangedEvent = Events.event();
-  private final Event searchTypeChangedEvent = Events.event();
+  private final Event<SearchType> searchTypeChangedEvent = Events.event();
   private final Event searchStateChangedEvent = Events.event();
   private final Event searchModelClearedEvent = Events.event();
-  private final Event enabledChangedEvent = Events.event();
+  private final Event<Boolean> enabledChangedEvent = Events.event();
 
   private final State lockedState = States.state();
   private final State lowerBoundRequiredState = States.state();
@@ -298,7 +299,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     checkLock();
     if (!this.searchType.equals(searchType)) {
       this.searchType = searchType;
-      searchTypeChangedEvent.fire();
+      searchTypeChangedEvent.fire(this.searchType);
     }
   }
 
@@ -342,11 +343,11 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final void setEnabled(final boolean value) {
+  public final void setEnabled(final boolean enabled) {
     checkLock();
-    if (enabled != value) {
-      enabled = value;
-      enabledChangedEvent.fire();
+    if (this.enabled != enabled) {
+      this.enabled = enabled;
+      enabledChangedEvent.fire(this.enabled);
     }
   }
 
@@ -380,7 +381,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver getEnabledObserver() {
+  public final EventObserver<Boolean> getEnabledObserver() {
     return enabledChangedEvent.getObserver();
   }
 
@@ -470,19 +471,19 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final void addSearchTypeListener(final EventListener listener) {
-    searchTypeChangedEvent.addListener(listener);
+  public final void addSearchTypeListener(final EventInfoListener<SearchType> listener) {
+    searchTypeChangedEvent.addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSearchTypeListener(final EventListener listener) {
-    searchTypeChangedEvent.removeListener(listener);
+  public final void removeSearchTypeListener(final EventInfoListener listener) {
+    searchTypeChangedEvent.removeInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver getSearchTypeObserver() {
+  public final EventObserver<SearchType> getSearchTypeObserver() {
     return searchTypeChangedEvent.getObserver();
   }
 

@@ -16,9 +16,9 @@ import static org.junit.Assert.assertNull;
 public class IntValueLinkTest {
 
   private Integer integerValue;
-  private final Event evtIntegerValueChanged = Events.event();
+  private final Event<Integer> evtIntegerValueChanged = Events.event();
   private int intValue;
-  private final Event evtIntValueChanged = Events.event();
+  private final Event<Integer> evtIntValueChanged = Events.event();
 
   @Test
   public void testInteger() throws Exception {
@@ -52,7 +52,7 @@ public class IntValueLinkTest {
 
   public void setIntegerValue(final Integer integerValue) {
     this.integerValue = integerValue;
-    evtIntegerValueChanged.fire();
+    evtIntegerValueChanged.fire(this.integerValue);
   }
 
   public int getIntValue() {
@@ -61,6 +61,6 @@ public class IntValueLinkTest {
 
   public void setIntValue(final int intValue) {
     this.intValue = intValue;
-    evtIntValueChanged.fire();
+    evtIntValueChanged.fire(this.intValue);
   }
 }

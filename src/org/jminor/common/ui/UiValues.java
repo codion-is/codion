@@ -110,8 +110,8 @@ public final class UiValues {
    * @param box the combo box
    * @return a Value bound to the given component
    */
-  public static Value selectedItemValue(final JComboBox box) {
-    return new SelectedItemUIValue(box);
+  public static <V> Value<V> selectedItemValue(final JComboBox<V> box) {
+    return new SelectedItemUIValue<>(box);
   }
 
   private abstract static class UIValue<V> implements Value<V> {
@@ -366,10 +366,10 @@ public final class UiValues {
     }
   }
 
-  private static final class SelectedItemUIValue extends UIValue {
-    private final JComboBox comboBox;
+  private static final class SelectedItemUIValue<V> extends UIValue<V> {
+    private final JComboBox<V> comboBox;
 
-    private SelectedItemUIValue(final JComboBox comboBox) {
+    private SelectedItemUIValue(final JComboBox<V> comboBox) {
       this.comboBox = comboBox;
       comboBox.addItemListener(new ItemListener() {
         /** {@inheritDoc} */
@@ -384,16 +384,16 @@ public final class UiValues {
 
     /** {@inheritDoc} */
     @Override
-    public Object get() {
-      final ComboBoxModel comboBoxModel = comboBox.getModel();
+    public V get() {
+      final ComboBoxModel<V> comboBoxModel = comboBox.getModel();
       if (comboBoxModel instanceof ItemComboBoxModel) {
-        return ((Item) comboBoxModel.getSelectedItem()).getItem();
+        return (V) ((Item) comboBoxModel.getSelectedItem()).getItem();
       }
       else if (comboBoxModel instanceof FilteredComboBoxModel) {
-        return ((FilteredComboBoxModel) comboBoxModel).getSelectedValue();
+        return (V) ((FilteredComboBoxModel) comboBoxModel).getSelectedValue();
       }
 
-      return comboBoxModel.getSelectedItem();
+      return (V) comboBoxModel.getSelectedItem();
     }
 
     /** {@inheritDoc} */

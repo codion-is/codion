@@ -145,8 +145,6 @@ public final class DefaultEntityComboBoxModelTest {
     final Entity clark = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "CLARK");
     comboBoxModel.setSelectedItem(clark);
     assertEquals(clark, comboBoxModel.getSelectedValue());
-    comboBoxModel.setSelectedItem("test");
-    assertEquals("Selecting a string should not change the selection", clark, comboBoxModel.getSelectedValue());
 
     comboBoxModel.clear();
     assertTrue(comboBoxModel.getSize() == 0);
@@ -159,6 +157,11 @@ public final class DefaultEntityComboBoxModelTest {
     assertTrue(comboBoxModel.getSize() == 1);
     assertEquals(2, refreshed.size());
     comboBoxModel.removeRefreshListener(refreshListener);
+  }
+
+  @Test (expected = ClassCastException.class)
+  public void setSelectedItemWrongType() throws Exception {
+    comboBoxModel.setSelectedItem("test");
   }
 
   @Test

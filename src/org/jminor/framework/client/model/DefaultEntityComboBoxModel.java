@@ -15,6 +15,7 @@ import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
 import java.util.ArrayList;
@@ -216,7 +217,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID);
     final EntityComboBoxModel foreignKeyModel =
             new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
-    foreignKeyModel.setNullValueString("-");
+    foreignKeyModel.setNullValue(EntityUtil.createToStringEntity(foreignKeyProperty.getReferencedEntityID(), "-"));
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKeyPropertyID, foreignKeyModel);
 
@@ -271,31 +272,27 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
 
   /** {@inheritDoc} */
   @Override
-  protected Object translateSelectionItem(final Object item) {
-    if (item instanceof Entity) {
-      final int indexOfKey = getIndexOfKey(((Entity) item).getPrimaryKey());
-      if (indexOfKey >= 0) {
-        return getElementAt(indexOfKey);
-      }
-      else {
-        return item;
-      }
+  protected Entity translateSelectionItem(final Object item) {
+    if (item == null) {
+      return null;
     }
-    else {
-      return item;
+
+    final int indexOfKey = getIndexOfKey(((Entity) item).getPrimaryKey());
+    if (indexOfKey >= 0) {
+      return getElementAt(indexOfKey);
     }
+
+    return (Entity) item;
   }
 
   /**
-   * Returns true if the given item can not be selected, that is, if the item is not null, not the nullValueString and not an Entity instance.
+   * Returns true if the given item can not be selected
    * @param item the item to be selected
    * @return true if the item can not be selected in this model
    */
   @Override
-  protected final boolean vetoSelectionChange(final Object item) {
-    final Object theItem = item instanceof String && ((String) item).length() == 0 ? null : item;
-
-    return theItem != null && !theItem.equals(getNullValueString()) && !(theItem instanceof Entity);
+  protected final boolean vetoSelectionChange(final Entity item) {
+    return false;
   }
 
   /** {@inheritDoc} */

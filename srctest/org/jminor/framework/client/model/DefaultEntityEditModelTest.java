@@ -65,8 +65,8 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void getPropertyComboBoxModel() {
-    final FilteredComboBoxModel model = employeeEditModel.getPropertyComboBoxModel(jobProperty);
-    model.setNullValueString("null");
+    final FilteredComboBoxModel<String> model = employeeEditModel.getPropertyComboBoxModel(jobProperty);
+    model.setNullValue("null");
     assertNotNull(model);
     assertTrue(employeeEditModel.containsComboBoxModel(jobProperty.getPropertyID()));
     assertEquals(model, employeeEditModel.getPropertyComboBoxModel(jobProperty));

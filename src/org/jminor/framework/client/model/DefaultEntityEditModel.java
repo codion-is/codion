@@ -634,7 +634,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   public FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property) {
     Util.rejectNullValue(property, PROPERTY);
     final FilteredComboBoxModel model = new DefaultPropertyComboBoxModel(entityID, connectionProvider, property, null, entitiesChangedEvent);
-    model.setNullValueString(getValidator().isNullable(getEntity(), property.getPropertyID()) ?
+    model.setNullValue(getValidator().isNullable(getEntity(), property.getPropertyID()) ?
             (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM) : null);
     model.refresh();
 
@@ -646,8 +646,9 @@ public class DefaultEntityEditModel implements EntityEditModel {
   public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
     final EntityComboBoxModel model = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
-    model.setNullValueString(getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyID()) ?
-            (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM) : null);
+    if (getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyID())) {
+      model.setNullValue(EntityUtil.createToStringEntity(entityID, (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM)));
+    }
 
     return model;
   }

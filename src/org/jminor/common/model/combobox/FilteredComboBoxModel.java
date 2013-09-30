@@ -16,7 +16,7 @@ import java.util.Comparator;
  * @see org.jminor.common.model.FilterCriteria
  * @see #setFilterCriteria(org.jminor.common.model.FilterCriteria)
  */
-public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxModel, Refreshable {
+public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxModel<T>, Refreshable {
 
   /**
    * @param listener a listener notified each time the selection changes
@@ -77,12 +77,12 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxMode
    * Sets the nullValueItem, a refresh is required for it to show up
    * @param nullValueString a String representing a null value
    */
-  void setNullValueString(final String nullValueString);
+  void setNullValue(final T nullValueString);
 
   /**
-   * @return the String representing the null value, null if none has been specified
+   * @return the value representing the null value, null if none has been specified
    */
-  String getNullValueString();
+  T getNullValue();
 
   /**
    * Specifies whether or not filtering can change the selected item, if true then

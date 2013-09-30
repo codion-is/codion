@@ -7,7 +7,6 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
-import org.jminor.common.model.checkbox.TristateButtonModel;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
 
@@ -262,24 +261,14 @@ public final class ValueLinks {
   }
 
   /**
-   * @param buttonModel the button model
-   * @param modelValue the model value
-   * @param readOnly if true the component will be read only
-   */
-  public static void tristateValueLink(final TristateButtonModel buttonModel, final Value<Boolean> modelValue,
-                                       final boolean readOnly) {
-    Values.link(modelValue, UiValues.booleanValue(buttonModel), readOnly);
-  }
-
-  /**
    * @param box the combo box to link with the value
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueClass the value class
    * @param valueChangeEvent an EventObserver notified each time the value changes
    */
-  public static void selectedItemValueLink(final JComboBox box, final Object owner, final String beanPropertyName,
-                                           final Class valueClass, final EventObserver valueChangeEvent) {
+  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Object owner, final String beanPropertyName,
+                                               final Class<V> valueClass, final EventObserver<V> valueChangeEvent) {
     selectedItemValueLink(box, owner, beanPropertyName, valueClass, valueChangeEvent, false);
   }
 
@@ -291,9 +280,9 @@ public final class ValueLinks {
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
    */
-  public static void selectedItemValueLink(final JComboBox box, final Object owner, final String beanPropertyName,
-                                           final Class valueClass, final EventObserver valueChangeEvent,
-                                           final boolean readOnly) {
+  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Object owner, final String beanPropertyName,
+                                               final Class<V> valueClass, final EventObserver<V> valueChangeEvent,
+                                               final boolean readOnly) {
     selectedItemValueLink(box, Values.beanValue(owner, beanPropertyName, valueClass, valueChangeEvent), readOnly);
   }
 
@@ -301,7 +290,7 @@ public final class ValueLinks {
    * @param box the combo box to link with the value
    * @param modelValue the model value
    */
-  public static void selectedItemValueLink(final JComboBox box, final Value modelValue) {
+  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Value<V> modelValue) {
     Values.link(modelValue, UiValues.selectedItemValue(box), false);
   }
 
@@ -310,7 +299,7 @@ public final class ValueLinks {
    * @param modelValue the model value
    * @param readOnly if true the component will be read only
    */
-  public static void selectedItemValueLink(final JComboBox box, final Value modelValue, final boolean readOnly) {
+  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Value<V> modelValue, final boolean readOnly) {
     Values.link(modelValue, UiValues.selectedItemValue(box), readOnly);
   }
 
