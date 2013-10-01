@@ -96,7 +96,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   /** {@inheritDoc} */
   @Override
-  public final void setContents(final Collection<T> contents) {
+  public final void setContents(final Collection<? extends T> contents) {
     if (contents == null || !contents.contains(selectedItem)) {
       setSelectedItem(null);
     }

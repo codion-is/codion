@@ -6,6 +6,8 @@ package org.jminor.common.model.combobox;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Item;
 
+import java.util.Arrays;
+
 /**
  * A ComboBoxModel for boolean values, true, false and null.
  */
@@ -25,6 +27,6 @@ public final class BooleanComboBoxModel extends ItemComboBoxModel<Boolean> {
    * @param falseString the string representing the boolean value 'false'
    */
   public BooleanComboBoxModel(final String nullString, final String trueString, final String falseString) {
-    super(new Item<Boolean>(null, nullString), new Item<>(true, trueString), new Item<>(false, falseString));
+    super(null, Arrays.asList(new Item<Boolean>(null, nullString), new Item<>(true, trueString), new Item<>(false, falseString)));
   }
 }

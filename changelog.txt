@@ -3624,3 +3624,6 @@
   FilteredComboBoxModel generified further with java 7
   FilteredComboBoxModel nullValueString replaced with T nullValue
   EntityUtil.createToStringEntity() added
+0.8.1
+  FilteredComboBoxModel.setContents() signature modified slightly
+  ItemComboBoxModel refactored

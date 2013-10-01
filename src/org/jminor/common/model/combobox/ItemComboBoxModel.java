@@ -10,9 +10,8 @@ import javax.swing.Icon;
 import javax.swing.ImageIcon;
 import java.awt.Component;
 import java.awt.Graphics;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.Comparator;
-import java.util.List;
 
 /**
  * A ComboBoxModel implementation based on the {@link Item} class.
@@ -26,17 +25,8 @@ public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> 
    * Constructs a new ItemComboBoxModel
    * @param items the items
    */
-  public ItemComboBoxModel(final Item<T>... items) {
-    this(Arrays.asList(items));
-  }
-
-  /**
-   * Constructs a new ItemComboBoxModel
-   * @param items the items
-   */
-  public ItemComboBoxModel(final List<Item<T>> items) {
-    super(null);
-    setContents(items);
+  public ItemComboBoxModel(final Collection<? extends Item<T>> items) {
+    this(null, items);
   }
 
   /**
@@ -45,17 +35,7 @@ public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> 
    * if null then the original item order will be preserved
    * @param items the items
    */
-  public ItemComboBoxModel(final Comparator<? super Item<T>> sortComparator, final Item<T>... items) {
-    this(sortComparator, Arrays.asList(items));
-  }
-
-  /**
-   * Constructs a new ItemComboBoxModel
-   * @param sortComparator the Comparator used to sort the contents of this combo box model,
-   * if null then the original item order will be preserved
-   * @param items the items
-   */
-  public ItemComboBoxModel(final Comparator<? super Item<T>> sortComparator, final List<Item<T>> items) {
+  public ItemComboBoxModel(final Comparator<? super Item<T>> sortComparator, final Collection<? extends Item<T>> items) {
     super(null, sortComparator);
     setContents(items);
   }

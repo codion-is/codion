@@ -55,7 +55,7 @@ public class ItemComboBoxModelTest {
     assertTrue("The item representing null should be selected", model.getSelectedItem().equals(nullItem));
 
     final ImageIcon icon = Images.loadImage("jminor_logo32.gif");
-    final ItemComboBoxModel<String> iconModel = new ItemComboBoxModel<>(new ItemComboBoxModel.IconItem<>("test", icon));
+    final ItemComboBoxModel<String> iconModel = new ItemComboBoxModel<>(Arrays.asList(new ItemComboBoxModel.IconItem<>("test", icon)));
     iconModel.setSelectedItem("test");
     final ItemComboBoxModel.IconItem item = (ItemComboBoxModel.IconItem) iconModel.getSelectedItem();
     assertEquals(icon.getIconHeight(), item.getIconHeight());
