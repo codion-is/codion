@@ -1061,6 +1061,23 @@ public final class UiUtil {
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
                                         final EventObserver closeObserver, final EventInfoListener<State> confirmCloseListener) {
+    return displayInDialog(owner, component, title, true, closeObserver, confirmCloseListener);
+  }
+
+  /**
+   * @param owner the dialog owner
+   * @param component the component to display
+   * @param title the dialog title
+   * @param modal if true the dialog will be modal
+   * @param closeObserver the dialog will be closed when this observer notifies
+   * @param confirmCloseListener this listener, if specified, will be queried for confirmation before
+   * the dialog is closed, using the State info object to signal confirmation, the dialog
+   * will only be closed if that state is active after a call to {@link EventInfoListener#eventOccurred(Object)}
+   * @return the dialog
+   */
+  public static JDialog displayInDialog(final Container owner, final JComponent component, final String title,
+                                        final boolean modal, final EventObserver closeObserver,
+                                        final EventInfoListener<State> confirmCloseListener) {
     final JDialog dialog = new JDialog(getParentWindow(owner), title);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     dialog.addWindowListener(new WindowAdapter() {
@@ -1081,7 +1098,7 @@ public final class UiUtil {
     dialog.add(component, BorderLayout.CENTER);
     dialog.pack();
     dialog.setLocationRelativeTo(owner);
-    dialog.setModal(true);
+    dialog.setModal(modal);
     dialog.setResizable(true);
     dialog.setVisible(true);
 

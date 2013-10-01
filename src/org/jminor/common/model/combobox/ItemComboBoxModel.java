@@ -26,7 +26,7 @@ public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> 
    * @param items the items
    */
   public ItemComboBoxModel(final Collection<? extends Item<T>> items) {
-    this(null, items);
+    setContents(items);
   }
 
   /**
