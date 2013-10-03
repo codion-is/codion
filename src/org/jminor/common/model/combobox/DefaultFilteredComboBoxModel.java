@@ -97,19 +97,15 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   /** {@inheritDoc} */
   @Override
   public final void setContents(final Collection<? extends T> contents) {
-    if (contents == null || !contents.contains(selectedItem)) {
-      setSelectedItem(null);
-    }
     filteredItems.clear();
     visibleItems.clear();
     if (contents != null) {
       visibleItems.addAll(contents);
-      filterContents();
       if (nullValue != null) {
         visibleItems.add(0, null);
       }
     }
-    fireContentsChanged();
+    filterContents();
     cleared = contents == null;
   }
 
@@ -119,19 +115,22 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     try {
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
-      for (final ListIterator<T> itemIterator = visibleItems.listIterator(); itemIterator.hasNext();) {
-        final T item = itemIterator.next();
-        if (item != null && !filterCriteria.include(item)) {
-          filteredItems.add(item);
-          itemIterator.remove();
+      if (!visibleItems.isEmpty()) {
+        for (final ListIterator<T> itemIterator = visibleItems.listIterator(); itemIterator.hasNext();) {
+          final T item = itemIterator.next();
+          if (item != null && !filterCriteria.include(item)) {
+            filteredItems.add(item);
+            itemIterator.remove();
+          }
         }
+        sortVisibleItems();
       }
-      sortVisibleItems();
       if (selectedItem != null && !visibleItems.contains(selectedItem) && filterSelectedItem) {
         setSelectedItem(null);
       }
-
-      fireContentsChanged();
+      else {
+        fireContentsChanged();
+      }
     }
     finally {
       filteringDoneEvent.fire();

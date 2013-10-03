@@ -159,9 +159,17 @@ public final class DefaultEntityComboBoxModelTest {
     comboBoxModel.removeRefreshListener(refreshListener);
   }
 
-  @Test (expected = ClassCastException.class)
-  public void setSelectedItemWrongType() throws Exception {
+  @Test (expected = IllegalArgumentException.class)
+  public void setSelectedItemNonExistingString() throws Exception {
     comboBoxModel.setSelectedItem("test");
+  }
+
+  @Test
+  public void selectString() {
+    comboBoxModel.refresh();
+    comboBoxModel.setSelectedItem(comboBoxModel.getElementAt(0));
+    comboBoxModel.setSelectedItem("SCOTT");
+    assertEquals(comboBoxModel.getSelectedItem().getStringValue(EmpDept.EMPLOYEE_NAME), "SCOTT");
   }
 
   @Test

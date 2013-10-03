@@ -277,12 +277,22 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       return null;
     }
 
-    final int indexOfKey = getIndexOfKey(((Entity) item).getPrimaryKey());
-    if (indexOfKey >= 0) {
-      return getElementAt(indexOfKey);
+    if (item instanceof Entity) {
+      final int indexOfKey = getIndexOfKey(((Entity) item).getPrimaryKey());
+      if (indexOfKey >= 0) {
+        return getElementAt(indexOfKey);
+      }
+
+      return (Entity) item;
+    }
+    final String itemToString = item.toString();
+    for (final Entity visibleItem : getVisibleItems()) {
+      if (visibleItem != null && itemToString.equals(visibleItem.toString())) {
+        return visibleItem;
+      }
     }
 
-    return (Entity) item;
+    throw new IllegalArgumentException("Unable to select item: " + item + ", " + item.getClass());
   }
 
   /**
@@ -333,7 +343,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     final int size = getSize();
     for (int index = 0; index < size; index++) {
       final Object item = getElementAt(index);
-      if (item instanceof Entity && ((Entity) item).getPrimaryKey().equals(primaryKey)) {
+      if (item != null && ((Entity) item).getPrimaryKey().equals(primaryKey)) {
         return index;
       }
     }
