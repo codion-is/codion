@@ -374,7 +374,7 @@ public final class UiUtil {
    * @param startDate the starting date, if null the current date is used
    * @param message the message to display as dialog title
    * @param parent the dialog parent
-   * @return a Date from the user
+   * @return a Date from the user, null if the action was cancelled
    */
   public static Date getDateFromUser(final Date startDate, final String message, final Container parent) {
     final String jCalendarClassName = "com.toedter.calendar.JCalendar";
@@ -401,6 +401,7 @@ public final class UiUtil {
       datePanel.add(calendarPanel, BorderLayout.NORTH);
 
       final Event closeEvent = Events.event();
+      final State cancel = States.state();
       final Calendar returnTime = Calendar.getInstance();
       returnTime.setTime(cal.getTime());
       final JButton okBtn = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
@@ -420,6 +421,7 @@ public final class UiUtil {
         /** {@inheritDoc} */
         @Override
         public void actionPerformed(final ActionEvent e) {
+          cancel.setActive(true);
           closeEvent.fire();
         }
       });
@@ -431,7 +433,7 @@ public final class UiUtil {
 
       displayInDialog(parent, datePanel, message, closeEvent);
 
-      return new Date(returnTime.getTimeInMillis());
+      return cancel.isActive() ? null : new Date(returnTime.getTimeInMillis());
     }
     catch (Exception e) {
       throw new RuntimeException("Exception while using JCalendar", e);

@@ -3629,3 +3629,4 @@
   ItemComboBoxModel refactored
   DefaultPropertyComboBox generified
   EntityUiUtil.selectEntities() improved/bug fixed, now uses EntityPanel so keyboard shortcuts are enabled
+  UiUtil.getDateFromUser() bug fixed, now returns null on cancel
