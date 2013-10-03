@@ -37,10 +37,12 @@ import org.jminor.common.ui.textfield.SizedDocument;
 import org.jminor.common.ui.valuemap.ValueLinkValidators;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityLookupModel;
+import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityDataProvider;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityLookupModel;
+import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
@@ -246,8 +248,11 @@ public final class EntityUiUtil {
       }
     };
 
-    final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
-    entityTablePanel.initializePanel();
+    final EntityModel model = new DefaultEntityModel(lookupModel);
+    model.getEditModel().setReadOnly(true);
+    final EntityPanel entityPanel = new EntityPanel(model, new EntityTablePanel(lookupModel, (EntityTableSummaryPanel) null));
+    entityPanel.initializePanel();
+    final EntityTablePanel entityTablePanel = entityPanel.getTablePanel();
     entityTablePanel.addTableDoubleClickListener(new EventListener() {
       /** {@inheritDoc} */
       @Override
@@ -294,7 +299,7 @@ public final class EntityUiUtil {
     if (preferredSize != null) {
       entityTablePanel.setPreferredSize(preferredSize);
     }
-    dialog.add(entityTablePanel, BorderLayout.CENTER);
+    dialog.add(entityPanel, BorderLayout.CENTER);
     final JPanel buttonPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.RIGHT));
     buttonPanel.add(btnSearch);
     buttonPanel.add(btnOk);

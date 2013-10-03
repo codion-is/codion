@@ -18,45 +18,45 @@ import java.util.List;
 /**
  * A combo box model based on a single entity property.
  */
-public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel {
+public class DefaultPropertyComboBoxModel<T> extends DefaultFilteredComboBoxModel<T> {
 
-  private final ValueCollectionProvider<Object> valueProvider;
+  private final ValueCollectionProvider<T> valueProvider;
 
   /**
    * @param entityID the ID of the underlying entity
    * @param connectionProvider a EntityConnectionProvider instance
    * @param property the underlying property
-   * @param nullValueString the value to use to represent a null value
-   * @param refreshEvent triggers a refresh
+   * @param nullValue the value to use to represent a null value
+   * @param refreshObserver triggers a refresh
    */
   public DefaultPropertyComboBoxModel(final String entityID, final EntityConnectionProvider connectionProvider,
-                                      final Property.ColumnProperty property, final String nullValueString,
-                                      final EventObserver refreshEvent) {
-    this(new ValueCollectionProvider<Object>() {
+                                      final Property.ColumnProperty property, final T nullValue,
+                                      final EventObserver refreshObserver) {
+    this(new ValueCollectionProvider<T>() {
       /** {@inheritDoc} */
       @Override
-      public Collection<Object> getValues() {
+      public Collection<T> getValues() {
         try {
-          return connectionProvider.getConnection().selectPropertyValues(entityID, property.getPropertyID(), true);
+          return (Collection<T>) connectionProvider.getConnection().selectPropertyValues(entityID, property.getPropertyID(), true);
         }
         catch (DatabaseException e) {
           throw new RuntimeException(e);
         }
       }
-    }, nullValueString == null ? (property.isNullable() ? "" : null) : nullValueString, refreshEvent);
+    }, nullValue, refreshObserver);
   }
 
   /**
    * @param valueProvider provides the values to show in this combo box model
-   * @param nullValueString the value to use to represent a null value
-   * @param refreshEvent triggers a refresh
+   * @param nullValue the value to use to represent a null value
+   * @param refreshObserver triggers a refresh
    */
-  public DefaultPropertyComboBoxModel(final ValueCollectionProvider<Object> valueProvider, final String nullValueString,
-                                      final EventObserver refreshEvent) {
-    super(nullValueString);
+  public DefaultPropertyComboBoxModel(final ValueCollectionProvider<T> valueProvider, final T nullValue,
+                                      final EventObserver refreshObserver) {
+    super(nullValue);
     this.valueProvider = valueProvider;
-    if (refreshEvent != null) {
-      refreshEvent.addListener(new EventListener() {
+    if (refreshObserver != null) {
+      refreshObserver.addListener(new EventListener() {
         /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
@@ -68,7 +68,7 @@ public class DefaultPropertyComboBoxModel extends DefaultFilteredComboBoxModel {
 
   /** {@inheritDoc} */
   @Override
-  protected final List<?> initializeContents() {
+  protected final List<T> initializeContents() {
     return new ArrayList<>(valueProvider.getValues());
   }
 }

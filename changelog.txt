@@ -3627,3 +3627,5 @@
 0.8.1
   FilteredComboBoxModel.setContents() signature modified slightly
   ItemComboBoxModel refactored
+  DefaultPropertyComboBox generified
+  EntityUiUtil.selectEntities() improved/bug fixed, now uses EntityPanel so keyboard shortcuts are enabled
