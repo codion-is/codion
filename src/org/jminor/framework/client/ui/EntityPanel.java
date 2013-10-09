@@ -39,6 +39,7 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import java.awt.BorderLayout;
 import java.awt.Component;
+import java.awt.Container;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.KeyboardFocusManager;
@@ -1419,7 +1420,11 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Shows the edit panel in a non-modal dialog
    */
   private void showEditDialog() {
-    editPanelDialog = UiUtil.displayInDialog(this, editControlPanel, caption, false,
+    Container dialogOwner = this;
+    if (Configuration.getBooleanValue(Configuration.CENTER_APPLICATION_DIALOGS)) {
+      dialogOwner = UiUtil.getParentWindow(this);
+    }
+    editPanelDialog = UiUtil.displayInDialog(dialogOwner, editControlPanel, caption, false,
             Configuration.getBooleanValue(Configuration.DISPOSE_EDIT_DIALOG_ON_ESCAPE),
             new AbstractAction() {
               /** {@inheritDoc} */

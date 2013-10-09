@@ -3633,3 +3633,4 @@
   DefaultEntityComboBoxModel.translateSelectionItem() bug fixed, JComboBox uses getEditor().getValue() when setting the selected value in the model
   DefaultFilteredComboBoxModel.setContents() refactored to minimize the number of calls to fireContentsChanged()
   Events, bug fixed, listeners now LinkedHashMap for consistent iteration order
+  Configuration.CENTER_APPLICATION_DIALOGS added, used when showing the edit panel dialog in EntityPanel

@@ -239,6 +239,15 @@ public final class Configuration {
   public static final String DISPOSE_EDIT_DIALOG_ON_ESCAPE = "jminor.client.disposeEditDialogOnEscape";
 
   /**
+   * Indicates whether dialogs opened by child panels in the application should be centered
+   * on their respective parent panel or the application frame/dialog.
+   * This applies to edit panels.
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final String CENTER_APPLICATION_DIALOGS = "jminor.client.centerApplicationDialogs";
+
+  /**
    * Indicates whether keyboard navigation will be enabled<br>
    * Value type: Boolean<br>
    * Default value: true
@@ -724,6 +733,7 @@ public final class Configuration {
     PROPERTIES.put(USE_CLIENT_PREFERENCES, Util.onClasspath("org.json.JSONObject"));
     PROPERTIES.put(SAVE_DEFAULT_USERNAME, true);
     PROPERTIES.put(DISPOSE_EDIT_DIALOG_ON_ESCAPE, true);
+    PROPERTIES.put(CENTER_APPLICATION_DIALOGS, false);
     parseSystemSettings();
   }
 
@@ -792,6 +802,7 @@ public final class Configuration {
     parseStringSetting(SERVER_CONNECTION_POOL_PROVIDER_CLASS);
     parseBooleanSetting(SAVE_DEFAULT_USERNAME);
     parseBooleanSetting(DISPOSE_EDIT_DIALOG_ON_ESCAPE);
+    parseBooleanSetting(CENTER_APPLICATION_DIALOGS);
   }
 
   private static void parseIntegerSetting(final String setting) {
