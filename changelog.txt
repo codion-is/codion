@@ -3630,5 +3630,6 @@
   DefaultPropertyComboBox generified
   EntityUiUtil.selectEntities() improved/bug fixed, now uses EntityPanel so keyboard shortcuts are enabled
   UiUtil.getDateFromUser() bug fixed, now returns null on cancel
-  DefaultEntityComboBoxModel.translateSelectionItem() bug fixed, JComboBox uses getEditor().getValue() when setting the selected value in the
+  DefaultEntityComboBoxModel.translateSelectionItem() bug fixed, JComboBox uses getEditor().getValue() when setting the selected value in the model
   DefaultFilteredComboBoxModel.setContents() refactored to minimize the number of calls to fireContentsChanged()
+  Events, bug fixed, listeners now LinkedHashMap for consistent iteration order

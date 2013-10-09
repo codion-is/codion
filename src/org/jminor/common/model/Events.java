@@ -6,7 +6,7 @@ package org.jminor.common.model;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.HashSet;
+import java.util.LinkedHashSet;
 
 /**
  * A factory class for Event objects.
@@ -174,7 +174,7 @@ public final class Events {
 
     private Collection<EventListener> getListeners() {
       if (listeners == null) {
-        listeners = new HashSet<>(1);
+        listeners = new LinkedHashSet<>(1);
       }
 
       return listeners;
@@ -182,7 +182,7 @@ public final class Events {
 
     private Collection<EventInfoListener<T>> getInfoListeners() {
       if (infoListeners == null) {
-        infoListeners = new HashSet<>(1);
+        infoListeners = new LinkedHashSet<>(1);
       }
 
       return infoListeners;
