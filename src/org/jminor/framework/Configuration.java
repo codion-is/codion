@@ -479,6 +479,14 @@ public final class Configuration {
   public static final String STRICT_FOREIGN_KEYS = "jminor.strictForeignKeys";
 
   /**
+   * Specifies whether or not to allow entities to be re-defined, that is,
+   * allow a new definition to replace an old one.
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final String ALLOW_REDEFINE_ENTITY = "jminor.allowRedefineEntity";
+
+  /**
    * Specifies the default horizontal alignment used in labels<br>
    * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER)<br>
    * Default value: JLabel.LEFT
@@ -734,6 +742,7 @@ public final class Configuration {
     PROPERTIES.put(SAVE_DEFAULT_USERNAME, true);
     PROPERTIES.put(DISPOSE_EDIT_DIALOG_ON_ESCAPE, true);
     PROPERTIES.put(CENTER_APPLICATION_DIALOGS, false);
+    PROPERTIES.put(ALLOW_REDEFINE_ENTITY, false);
     parseSystemSettings();
   }
 
@@ -803,6 +812,7 @@ public final class Configuration {
     parseBooleanSetting(SAVE_DEFAULT_USERNAME);
     parseBooleanSetting(DISPOSE_EDIT_DIALOG_ON_ESCAPE);
     parseBooleanSetting(CENTER_APPLICATION_DIALOGS);
+    parseBooleanSetting(ALLOW_REDEFINE_ENTITY);
   }
 
   private static void parseIntegerSetting(final String setting) {

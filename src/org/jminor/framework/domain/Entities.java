@@ -93,7 +93,7 @@ public final class Entities {
    * no primary key property is specified
    */
   public static Entity.Definition define(final String entityID, final String tableName, final Property... propertyDefinitions) {
-    if (DefaultEntityDefinition.getDefinitionMap().containsKey(entityID)) {
+    if (DefaultEntityDefinition.getDefinitionMap().containsKey(entityID) && !Configuration.getBooleanValue(Configuration.ALLOW_REDEFINE_ENTITY)) {
       throw new IllegalArgumentException("Entity has already been defined: " + entityID + ", for table: " + tableName);
     }
     final DefaultEntityDefinition entityDefinition = new DefaultEntityDefinition(entityID, tableName, propertyDefinitions);

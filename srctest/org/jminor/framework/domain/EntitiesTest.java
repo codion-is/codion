@@ -69,6 +69,17 @@ public class EntitiesTest {
     Entities.define(entityID, Properties.primaryKeyProperty("propertyID"));
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void redefineAllowed() {
+    final String entityID = "entityID";
+    Entities.define(entityID, Properties.primaryKeyProperty("id"));
+    assertEquals("id", Entities.getPrimaryKeyProperties(entityID).get(0).getPropertyID());
+    Configuration.setValue(Configuration.ALLOW_REDEFINE_ENTITY, true);
+    Entities.define(entityID, Properties.primaryKeyProperty("id2"));
+    assertEquals("id2", Entities.getPrimaryKeyProperties(entityID).get(0).getPropertyID());
+    Configuration.setValue(Configuration.ALLOW_REDEFINE_ENTITY, false);
+  }
+
   @Test
   public void nullValidation() {
     Chinook.init();
