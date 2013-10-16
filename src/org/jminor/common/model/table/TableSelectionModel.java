@@ -168,9 +168,9 @@ public interface TableSelectionModel<R> extends ListSelectionModel {
     R getItemAt(final int index);
 
     /**
-     * @return true if an impending selection change should be vetoed
+     * @return true if an impending selection change should be allowed
      */
-    boolean vetoSelectionChange();
+    boolean allowSelectionChange();
 
     /**
      * Adds a listener to the list that's notified each time a change to the data model occurs.

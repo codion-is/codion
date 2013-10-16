@@ -215,35 +215,35 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
 
   @Override
   public void addSelectionInterval(final int fromIndex, final int toIndex) {
-    if (!tableModelProxy.vetoSelectionChange()) {
+    if (tableModelProxy.allowSelectionChange()) {
       super.addSelectionInterval(fromIndex, toIndex);
     }
   }
 
   @Override
   public void setSelectionInterval(final int fromIndex, final int toIndex) {
-    if (!tableModelProxy.vetoSelectionChange()) {
+    if (tableModelProxy.allowSelectionChange()) {
       super.setSelectionInterval(fromIndex, toIndex);
     }
   }
 
   @Override
   public void removeSelectionInterval(final int fromIndex, final int toIndex) {
-    if (!tableModelProxy.vetoSelectionChange()) {
+    if (tableModelProxy.allowSelectionChange()) {
       super.removeSelectionInterval(fromIndex, toIndex);
     }
   }
 
   @Override
   public void insertIndexInterval(final int fromIndex, final int length, final boolean before) {
-    if (!tableModelProxy.vetoSelectionChange()) {
+    if (tableModelProxy.allowSelectionChange()) {
       super.insertIndexInterval(fromIndex, length, before);
     }
   }
 
   @Override
   public void removeIndexInterval(final int fromIndex, final int toIndex) {
-    if (!tableModelProxy.vetoSelectionChange()) {
+    if (tableModelProxy.allowSelectionChange()) {
       super.removeIndexInterval(fromIndex, toIndex);
     }
   }

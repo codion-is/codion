@@ -327,12 +327,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   }
 
   /**
-   * A default implementation returning false
-   * @return false
+   * A default implementation returning true
+   * @return true
    */
   @Override
-  public boolean vetoSelectionChange() {
-    return false;
+  public boolean allowSelectionChange() {
+    return true;
   }
 
   /** {@inheritDoc} */

@@ -43,9 +43,9 @@ public class DefaultTableSelectionModelTest {
       }
 
       @Override
-      public boolean vetoSelectionChange() {
+      public boolean allowSelectionChange() {
         final String selected = getSelectionModel().getSelectedItem();
-        return selected != null && selected.equals("C");
+        return !"C".equals(selected);
       }
     };
     tableModel.refresh();
