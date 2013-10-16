@@ -9,6 +9,7 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.SerializeException;
@@ -142,8 +143,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private static final String TRIPLEDOT = "...";
 
   private final Event tableDoubleClickedEvent = Events.event();
-  private final Event searchPanelVisibilityChangedEvent = Events.event();
-  private final Event summaryPanelVisibilityChangedEvent = Events.event();
+  private final Event<Boolean> searchPanelVisibilityChangedEvent = Events.event();
+  private final Event<Boolean> summaryPanelVisibilityChangedEvent = Events.event();
 
   private final Map<String, Control> controlMap = new HashMap<>();
 
@@ -408,7 +409,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         getTableScrollPane().setHorizontalScrollBar(horizontalTableScrollBar);
       }
       revalidate();
-      summaryPanelVisibilityChangedEvent.fire();
+      summaryPanelVisibilityChangedEvent.fire(visible);
     }
   }
 
@@ -434,7 +435,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         refreshToolBar.setVisible(visible);
       }
       revalidate();
-      searchPanelVisibilityChangedEvent.fire();
+      searchPanelVisibilityChangedEvent.fire(visible);
     }
   }
 
@@ -1354,10 +1355,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
       if (searchPanel.canToggleAdvanced()) {
         searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
-        searchPanel.addAdvancedListener(new EventListener() {
+        searchPanel.addAdvancedListener(new EventInfoListener<Boolean>() {
           /** {@inheritDoc} */
           @Override
-          public void eventOccurred() {
+          public void eventOccurred(final Boolean info) {
             if (isSearchPanelVisible()) {
               revalidate();
             }

@@ -489,7 +489,7 @@ public final class EntityUiUtil {
     final EntityComboBoxModel boxModel = editModel.getEntityComboBoxModel(foreignKeyProperty);
     boxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(boxModel);
-    ValueLinks.selectedItemValueLink(comboBox, EditModelValues.value(editModel, foreignKeyProperty.getPropertyID()));
+    ValueLinks.selectedItemValueLink(comboBox, EditModelValues.<Entity>value(editModel, foreignKeyProperty.getPropertyID()));
     UiUtil.linkToEnabledState(enabledState, comboBox);
     MaximumMatch.enable(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());

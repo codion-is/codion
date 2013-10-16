@@ -21,7 +21,7 @@ import java.util.Collection;
  * A UI component based on the EntityComboBoxModel.
  * @see EntityComboBoxModel
  */
-public final class EntityComboBox extends SteppedComboBox {
+public final class EntityComboBox extends SteppedComboBox<Entity> {
 
   /**
    * Instantiates a new EntityComboBox

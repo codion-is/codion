@@ -139,12 +139,8 @@ public final class DoubleField extends IntField {
         preparedString = string.replace(POINT, COMMA);
       }
 
-      //convert "." or "," to "0." before proceeding
-      if (documentText.length() == 0 && (isDecimalSymbol(preparedString))) {
-        preparedString = "0" + preparedString;
-      }
-
       if (isDecimalSymbol(string)) {
+        //convert "." or "," to "0." before proceeding
         if (documentText.length() == 0) {
           preparedString = "0" + preparedString;
         }

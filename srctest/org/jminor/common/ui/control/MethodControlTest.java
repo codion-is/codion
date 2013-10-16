@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui.control;
 
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
@@ -13,13 +14,25 @@ import javax.swing.JButton;
 
 import static org.junit.Assert.*;
 
-public class MethodControlTest {
+public final class MethodControlTest {
 
   private int callCount = 0;
   private int actionPerformedCount = 0;
 
   public void method() {
     callCount++;
+  }
+
+  public void errorMethod() throws Exception {
+    throw new Exception("test");
+  }
+
+  public void runtimeErrorMethod() {
+    throw new RuntimeException("test");
+  }
+
+  public void cancelMethod() {
+    throw new CancelException();
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -49,5 +62,23 @@ public class MethodControlTest {
     assertEquals("Action performed should have resulted in a action performed count", 1, actionPerformedCount);
     control.removeActionPerformedListener(listener);
     new MethodControl("test", this, "method");
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void exceptionOnExecute() {
+    final MethodControl control = new MethodControl("test", this, "errorMethod", null);
+    control.actionPerformed(null);
+  }
+
+  @Test(expected = RuntimeException.class)
+  public void runtimeExceptionOnExecute() {
+    final MethodControl control = new MethodControl("test", this, "runtimeErrorMethod", null);
+    control.actionPerformed(null);
+  }
+
+  @Test
+  public void cancelOnExecute() {
+    final MethodControl control = new MethodControl("test", this, "cancelMethod", null);
+    control.actionPerformed(null);
   }
 }

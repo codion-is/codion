@@ -17,6 +17,7 @@ import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
+import javax.swing.DefaultListModel;
 import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JPanel;
@@ -83,8 +84,9 @@ public final class EntityCriteriaPanel extends JPanel {
 
   private JList initializePropertyList(final EntityTableSearchModel searchModel, final JPanel editorPanel) {
     final List<PropertySearchModel> searchCriteria = getSortedCriteria(searchModel);
-    final JList propertyList = new JList(searchCriteria.toArray());
+    final JList<PropertySearchModel> propertyList = new JList<>(new DefaultListModel<PropertySearchModel>());
     for (final PropertySearchModel model : searchCriteria) {
+      ((DefaultListModel<PropertySearchModel>) propertyList.getModel()).addElement(model);
       model.addSearchStateListener(new RepaintListener(propertyList));
     }
     propertyList.setCellRenderer(new CriteriaListCellRenderer());

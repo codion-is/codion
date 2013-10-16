@@ -9,8 +9,6 @@ import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.plaf.metal.MetalComboBoxUI;
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.awt.event.FocusAdapter;
-import java.awt.event.FocusEvent;
 import java.util.Collection;
 
 /**
@@ -20,7 +18,6 @@ import java.util.Collection;
  */
 public class SteppedComboBox<V> extends JComboBox<V> {
 
-  private final boolean hidePopupOnFocusLoss;
   private int popupWidth = 0;
 
   /**
@@ -28,7 +25,10 @@ public class SteppedComboBox<V> extends JComboBox<V> {
    * @param items the items this combo box should contain
    */
   public SteppedComboBox(final Collection<V> items) {
-    this(new DefaultComboBoxModel(items.toArray(new Object[items.size()])));
+    this(new DefaultComboBoxModel<V>());
+    for (final V item : items) {
+      ((DefaultComboBoxModel<V>) getModel()).addElement(item);
+    }
   }
 
   /**
@@ -38,9 +38,6 @@ public class SteppedComboBox<V> extends JComboBox<V> {
   public SteppedComboBox(final ComboBoxModel<V> boxModel) {
     super(boxModel);
     initUI();
-    // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when tabbing out
-    hidePopupOnFocusLoss = System.getProperty("java.version").startsWith("1.5");
-    bindEvents();
   }
 
   /**
@@ -58,18 +55,6 @@ public class SteppedComboBox<V> extends JComboBox<V> {
     final Dimension size = getSize();
 
     return new Dimension(Math.max(size.width, popupWidth <= 0 ? displaySize.width : popupWidth), size.height);
-  }
-
-  private void bindEvents() {
-    getEditor().getEditorComponent().addFocusListener(new FocusAdapter() {
-      @Override
-      public void focusLost(final FocusEvent e) {
-        // Workaround for Bug 5100422 - Hide Popup on focus loss
-        if (hidePopupOnFocusLoss) {
-          setPopupVisible(false);
-        }
-      }
-    });
   }
 
   private void initUI() {

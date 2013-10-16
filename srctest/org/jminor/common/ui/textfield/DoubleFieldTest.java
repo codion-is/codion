@@ -11,6 +11,8 @@ public class DoubleFieldTest {
   @Test
   public void test() {
     final DoubleField txt = new DoubleField();
+    txt.setText(",");
+    assertEquals("0,", txt.getText());
     txt.setDouble(42.2);
     assertEquals("42,2", txt.getText());
     txt.setText("22,3");

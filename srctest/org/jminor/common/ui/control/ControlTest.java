@@ -16,12 +16,19 @@ public class ControlTest {
   public void test() throws Exception {
     final Control test = new Control();
     test.setName("test");
+    assertEquals("test", test.toString());
     assertEquals("test", test.getName());
     test.setMnemonic(10);
     assertEquals(10, test.getMnemonic());
     assertNull(test.getIcon());
     test.setKeyStroke(null);
+    test.setDescription("description");
+    assertEquals("description", test.getDescription());
+    test.actionPerformed(null);
+  }
 
+  @Test
+  public void setEnabled() {
     final State enabledState = States.state();
     final Control control = new Control("control", enabledState);
     assertEquals("control", control.getName());
@@ -29,12 +36,13 @@ public class ControlTest {
     assertFalse(control.isEnabled());
     enabledState.setActive(true);
     assertTrue(control.isEnabled());
-
-    control.setDescription("description");
-    assertEquals("description", control.getDescription());
-
     enabledState.setActive(false);
-
     assertFalse(control.isEnabled());
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void setEnabledViaMethod() {
+    final Control test = new Control();
+    test.setEnabled(true);
   }
 }

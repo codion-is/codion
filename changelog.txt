@@ -3636,3 +3636,4 @@
   Configuration.CENTER_APPLICATION_DIALOGS added, used when showing the edit panel dialog in EntityPanel
 0.8.2
   TableSelectionModel.TableModelProxy.vetoSelectionChange() changed to allowSelectionChange()
+  Some unit test improvements

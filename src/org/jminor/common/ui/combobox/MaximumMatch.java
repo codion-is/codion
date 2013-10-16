@@ -23,7 +23,6 @@ public final class MaximumMatch extends PlainDocument {
   private final JComboBox comboBox;
   private final ComboBoxModel model;
   private final JTextComponent editor;
-  private final boolean hidePopupOnFocusLoss;
   // flag to indicate if setSelectedItem has been called
   // subsequent calls to remove/insertString should be ignored
   private boolean selecting = false;
@@ -49,20 +48,11 @@ public final class MaximumMatch extends PlainDocument {
       }
     });
     editor.addKeyListener(new MatchKeyAdapter(showPopupOnMatch));
-    // Bug 5100422 on Java 1.5: Editable JComboBox won't hide popup when tabbing out
-    hidePopupOnFocusLoss = System.getProperty("java.version").startsWith("1.5");
     // Highlight whole text when gaining focus
     editor.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
         highlightCompletedText(0);
-      }
-      @Override
-      public void focusLost(final FocusEvent e) {
-        // Workaround for Bug 5100422 - Hide Popup on focus loss
-        if (hidePopupOnFocusLoss) {
-          comboBox.setPopupVisible(false);
-        }
       }
     });
     // Handle initially selected object

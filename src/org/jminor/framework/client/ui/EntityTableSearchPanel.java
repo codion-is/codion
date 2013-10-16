@@ -4,7 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
@@ -37,8 +37,7 @@ import java.util.List;
  */
 public final class EntityTableSearchPanel extends JPanel {
 
-  private final Event advancedChangedEvent = Events.event();
-  private final Event simpleSearchChangedEvent = Events.event();
+  private final Event<Boolean> advancedChangedEvent = Events.event();
 
   private final EntityTableSearchModel searchModel;
   private final List<TableColumn> columns;
@@ -93,7 +92,7 @@ public final class EntityTableSearchPanel extends JPanel {
     else {
       layoutPanel(value);
     }
-    advancedChangedEvent.fire();
+    advancedChangedEvent.fire(value);
   }
 
   /**
@@ -178,31 +177,17 @@ public final class EntityTableSearchPanel extends JPanel {
   }
 
   /**
-   * @param listener a listener notified each time the simple search state changes
-   */
-  public void addSimpleSearchListener(final EventListener listener) {
-    simpleSearchChangedEvent.addListener(listener);
-  }
-
-  /**
-   * @param listener the listener to remove
-   */
-  public void removeSimpleSearchListener(final EventListener listener) {
-    advancedChangedEvent.removeListener(listener);
-  }
-
-  /**
    * @param listener a listener notified each time the advanced search state changes
    */
-  public void addAdvancedListener(final EventListener listener) {
-    advancedChangedEvent.addListener(listener);
+  public void addAdvancedListener(final EventInfoListener<Boolean> listener) {
+    advancedChangedEvent.addInfoListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public void removeAdvancedListener(final EventListener listener) {
-    advancedChangedEvent.removeListener(listener);
+  public void removeAdvancedListener(final EventInfoListener listener) {
+    advancedChangedEvent.removeInfoListener(listener);
   }
 
   private static JPanel initializeSimpleSearchPanel(final EntityTableSearchModel searchModel) {

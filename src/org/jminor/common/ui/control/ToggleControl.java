@@ -4,8 +4,10 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.checkbox.TristateButtonModel;
 
 import javax.swing.ButtonModel;
+import java.awt.event.ActionEvent;
 
 /**
  * A Control based on a boolean property
@@ -28,6 +30,16 @@ public final class ToggleControl extends Control {
    */
   public ButtonModel getButtonModel() {
     return buttonModel;
+  }
+
+  @Override
+  public void actionPerformed(final ActionEvent e) {
+    if (buttonModel instanceof TristateButtonModel) {
+      ((TristateButtonModel) buttonModel).iterateState();
+    }
+    else {
+      buttonModel.setSelected(!buttonModel.isSelected());
+    }
   }
 
   @Override
