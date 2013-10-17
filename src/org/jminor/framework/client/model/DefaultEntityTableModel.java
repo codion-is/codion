@@ -110,7 +110,13 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /**
    * If true then items deleted via the edit model are removed from this table model
    */
-  private boolean removeItemsOnDelete = true;
+  private boolean removeEntitiesOnDelete = true;
+
+  /**
+   * If true then entities inserted via the associated edit model are added
+   * to this table model automatically
+   */
+  private boolean addEntitiesOnInsert = true;
 
   /**
    * Indicates if multiple entities can be updated at a time
@@ -215,14 +221,27 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isRemoveItemsOnDelete() {
-    return removeItemsOnDelete;
+  public final boolean isAddEntitiesOnInsert() {
+    return addEntitiesOnInsert;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableModel setRemoveItemsOnDelete(final boolean value) {
-    this.removeItemsOnDelete = value;
+  public final EntityTableModel setAddEntitiesOnInsert(final boolean value) {
+    this.addEntitiesOnInsert = value;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isRemoveEntitiesOnDelete() {
+    return removeEntitiesOnDelete;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final EntityTableModel setRemoveEntitiesOnDelete(final boolean value) {
+    this.removeEntitiesOnDelete = value;
     return this;
   }
 
@@ -698,7 +717,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
     getSelectionModel().clearSelection();
-    addEntities(insertEvent.getInsertedEntities(), true);
+    if (addEntitiesOnInsert) {
+      addEntities(insertEvent.getInsertedEntities(), true);
+    }
   }
 
   private void handleUpdate(final EntityEditModel.UpdateEvent updateEvent) {
@@ -718,7 +739,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   private void handleDeleteInternal(final EntityEditModel.DeleteEvent e) {
-    if (removeItemsOnDelete) {
+    if (removeEntitiesOnDelete) {
       removeItems(e.getDeletedEntities());
     }
     handleDelete(e);

@@ -109,6 +109,11 @@ public final class DefaultEntityTableModelTest {
   }
 
   @Test
+  public void addOnInsert() throws CancelException, DatabaseException {
+    //todo
+  }
+
+  @Test
   public void removeOnDelete() throws CancelException, DatabaseException {
     final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
     tableModel.setEditModel(new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider()));
@@ -123,15 +128,15 @@ public final class DefaultEntityTableModelTest {
       tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk1));
       tableModel.getSelectionModel().setSelectedIndex(0);
       Entity selected = tableModel.getSelectionModel().getSelectedItem();
-      tableModel.setRemoveItemsOnDelete(true);
-      assertTrue(tableModel.isRemoveItemsOnDelete());
+      tableModel.setRemoveEntitiesOnDelete(true);
+      assertTrue(tableModel.isRemoveEntitiesOnDelete());
       tableModel.deleteSelected();
       assertFalse(tableModel.contains(selected, false));
 
       tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk2));
       selected = tableModel.getSelectionModel().getSelectedItem();
-      tableModel.setRemoveItemsOnDelete(false);
-      assertFalse(tableModel.isRemoveItemsOnDelete());
+      tableModel.setRemoveEntitiesOnDelete(false);
+      assertFalse(tableModel.isRemoveEntitiesOnDelete());
       tableModel.deleteSelected();
       assertTrue(tableModel.contains(selected, false));
     }

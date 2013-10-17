@@ -3638,3 +3638,5 @@
   TableSelectionModel.TableModelProxy.vetoSelectionChange() changed to allowSelectionChange()
   Some unit test improvements
   Configuration.ALLOW_REDEFINE_ENTITY added, used in Entities, default false
+  EntityTableModel.addEntitiesOnInsert attribute added, implemented and used in DefaultEntityTableModel
+  EntityTableModel.removeItemsOnDelete attribute renamed to removeEntitiesOnDelete

@@ -50,8 +50,8 @@ public final class DefaultEntityModelTest {
     final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
     final EntityEditModel employeeEditModel = employeeModel.getEditModel();
     final EntityTableModel employeeTableModel = employeeModel.getTableModel();
-    ValueLinks.selectedItemValueLink(new JComboBox(employeeEditModel.getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)),
-            EditModelValues.value(employeeEditModel, EmpDept.EMPLOYEE_MGR_FK));
+    ValueLinks.selectedItemValueLink(new JComboBox<>(employeeEditModel.getEntityComboBoxModel(EmpDept.EMPLOYEE_MGR_FK)),
+            EditModelValues.<Entity>value(employeeEditModel, EmpDept.EMPLOYEE_MGR_FK));
     employeeTableModel.refresh();
     for (final Entity employee : employeeTableModel.getAllItems()) {
       employeeTableModel.getSelectionModel().setSelectedItem(employee);

@@ -212,17 +212,29 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   EntityTableModel setQueryCriteriaRequired(final boolean value);
 
   /**
-   * @return true if items that are deleted via the associated edit model
+   * @return true if entities that are deleted via the associated edit model
    * should be automatically removed from this table model
    */
-  boolean isRemoveItemsOnDelete();
+  boolean isRemoveEntitiesOnDelete();
 
   /**
-   * @param value true if items that are deleted via the associated edit model
+   * @param value true if entities that are deleted via the associated edit model
    * should be automatically removed from this table model
    * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel setRemoveItemsOnDelete(final boolean value);
+  EntityTableModel setRemoveEntitiesOnDelete(final boolean value);
+
+  /**
+   * Specifies whether entities inserted via the associated edit model are added
+   * to this table model automatically
+   */
+  boolean isAddEntitiesOnInsert();
+
+  /**
+   * @param value if true then entities inserted via the associated edit model are added
+   * to this table model automatically
+   */
+  EntityTableModel setAddEntitiesOnInsert(final boolean value);
 
   /**
    * Finds entities according to the values in <code>keys</code>
