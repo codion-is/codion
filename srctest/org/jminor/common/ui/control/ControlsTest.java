@@ -32,9 +32,9 @@ public final class ControlsTest {
   @Test
   public void toggleControl() {
     final ToggleControl control = Controls.toggleControl(this, "value", "test", valueChangeEvent.getObserver());
-    control.actionPerformed(null);
+    control.getButtonModel().setSelected(true);
     assertTrue(value);
-    control.actionPerformed(null);
+    control.getButtonModel().setSelected(false);
     assertFalse(value);
     setValue(true);
     assertTrue(control.getButtonModel().isSelected());

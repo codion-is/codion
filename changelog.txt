@@ -3640,3 +3640,4 @@
   Configuration.ALLOW_REDEFINE_ENTITY added, used in Entities, default false
   EntityTableModel.addEntitiesOnInsert attribute added, implemented and used in DefaultEntityTableModel
   EntityTableModel.removeItemsOnDelete attribute renamed to removeEntitiesOnDelete
+  Recent ToggleControl changes undone, buggy stuff
