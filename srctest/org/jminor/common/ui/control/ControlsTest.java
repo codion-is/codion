@@ -11,6 +11,7 @@ import org.jminor.common.model.checkbox.TristateButtonModel;
 
 import org.junit.Test;
 
+import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
@@ -18,7 +19,7 @@ public final class ControlsTest {
 
   private final State state = States.state();
   private final Event<Boolean> valueChangeEvent = Events.event();
-  private boolean value = false;
+  private Boolean value = false;
 
   public void setValue(final boolean value) {
     this.value = value;
@@ -26,6 +27,15 @@ public final class ControlsTest {
   }
 
   public boolean isValue() {
+    return value;
+  }
+
+  public void setTristateValue(final Boolean value) {
+    this.value = value;
+    valueChangeEvent.fire(value);
+  }
+
+  public Boolean isTristateValue() {
     return value;
   }
 
@@ -67,14 +77,24 @@ public final class ControlsTest {
 
   @Test
   public void tristateToggleControl() {
-    final TristateButtonModel buttonModel = new TristateButtonModel();
-    final ToggleControl control = new ToggleControl("test", buttonModel, null);
+    final ToggleControl toggleControl = Controls.toggleControl(this, "tristateValue", "tristate", valueChangeEvent, null, true);
+    final TristateButtonModel buttonModel = (TristateButtonModel) toggleControl.getButtonModel();
+    buttonModel.setIndeterminate();
+    assertNull(value);
+    buttonModel.setSelected(false);
+    assertFalse(value);
+    buttonModel.setSelected(true);
+    assertTrue(value);
+    buttonModel.setIndeterminate();
+    assertNull(value);
+
+    setTristateValue(false);
     assertFalse(buttonModel.isSelected());
-    control.actionPerformed(null);
+    assertFalse(buttonModel.isIndeterminate());
+    setTristateValue(true);
     assertTrue(buttonModel.isSelected());
-    control.actionPerformed(null);
+    assertFalse(buttonModel.isIndeterminate());
+    setTristateValue(null);
     assertTrue(buttonModel.isIndeterminate());
-    control.actionPerformed(null);
-    assertFalse(buttonModel.isSelected());
   }
 }

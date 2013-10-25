@@ -3641,3 +3641,6 @@
   EntityTableModel.addEntitiesOnInsert attribute added, implemented and used in DefaultEntityTableModel
   EntityTableModel.removeItemsOnDelete attribute renamed to removeEntitiesOnDelete
   Recent ToggleControl changes undone, buggy stuff
+  DateInputPanel, bug fixed, did not handle UiUtil.getDateFromUser() returning null on cancel
+  MaximumMatch, enabled normalization of strings before matching
+  ControlsTest.tristateToggleControl() fixed

@@ -13,6 +13,7 @@ import java.awt.event.FocusAdapter;
 import java.awt.event.FocusEvent;
 import java.awt.event.KeyAdapter;
 import java.awt.event.KeyEvent;
+import java.text.Normalizer;
 
 /**
  * Selects an item in a JComboBox based values typed in on the keyboard.
@@ -23,6 +24,7 @@ public final class MaximumMatch extends PlainDocument {
   private final JComboBox comboBox;
   private final ComboBoxModel model;
   private final JTextComponent editor;
+  private final boolean normalize;
   // flag to indicate if setSelectedItem has been called
   // subsequent calls to remove/insertString should be ignored
   private boolean selecting = false;
@@ -33,9 +35,11 @@ public final class MaximumMatch extends PlainDocument {
    * Enables MaximumMatch on the given combobox
    * @param comboBox the combobox
    * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
+   * @param normalize if true then accented characters are normalized before matching
    */
-  private MaximumMatch(final JComboBox comboBox, final boolean showPopupOnMatch) {
+  private MaximumMatch(final JComboBox comboBox, final boolean showPopupOnMatch, final boolean normalize) {
     this.comboBox = comboBox;
+    this.normalize = normalize;
     model = comboBox.getModel();
     editor = (JTextComponent) comboBox.getEditor().getEditorComponent();
     editor.setDocument(this);
@@ -75,8 +79,17 @@ public final class MaximumMatch extends PlainDocument {
    * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
    */
   public static void enable(final JComboBox comboBox, final boolean showPopupOnMatch) {
+    enable(comboBox, showPopupOnMatch, true);
+  }
+
+  /**
+   * @param comboBox the combobox on which to enable maximum match
+   * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
+   * @param normalize if true then accented characters are normalized before matching
+   */
+  public static void enable(final JComboBox comboBox, final boolean showPopupOnMatch, final boolean normalize) {
     comboBox.setEditable(true);
-    new MaximumMatch(comboBox, showPopupOnMatch);
+    new MaximumMatch(comboBox, showPopupOnMatch, normalize);
   }
 
   /** {@inheritDoc} */
@@ -194,7 +207,19 @@ public final class MaximumMatch extends PlainDocument {
 
   // checks if str1 starts with str2 - ignores case
   private boolean startsWithIgnoreCase(final String str1, final String str2) {
-    return str1.toUpperCase().startsWith(str2.toUpperCase());
+    String one = str1;
+    String two = str2;
+    if (normalize) {
+      one = normalize(str1);
+      two = normalize(str2);
+    }
+
+    return one.toUpperCase().startsWith(two.toUpperCase());
+  }
+
+  private String normalize(final String str) {
+    //http://stackoverflow.com/a/4225698/317760
+    return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
   }
 
   // calculates how many characters are predetermined by the given pattern.

@@ -10,6 +10,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
+import org.jminor.common.model.checkbox.TristateButtonModel;
 
 import javax.swing.ButtonModel;
 import javax.swing.Icon;
@@ -160,8 +161,29 @@ public final class Controls {
    */
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
                                             final EventObserver<Boolean> changeEvent, final StateObserver enabledState) {
-    final ButtonModel buttonModel = new JToggleButton.ToggleButtonModel();
-    Values.link(Values.<Boolean>beanValue(owner, beanPropertyName, boolean.class, changeEvent), new BooleanValue(buttonModel));
+    return toggleControl(owner, beanPropertyName, caption, changeEvent, enabledState, false);
+  }
+
+  /**
+   * Creates a toggle control based on the boolean property <code>beanPropertyName</code> in the owner object
+   * @param owner the owner object
+   * @param beanPropertyName the name of the boolean bean property, must have a public setter and getter
+   * @param caption the control caption
+   * @param changeEvent an event fired each time the property value changes in the underlying object
+   * @param enabledState the state which controls the enabled state of the control
+   * @return a toggle control
+   */
+  public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,
+                                            final EventObserver<Boolean> changeEvent, final StateObserver enabledState,
+                                            final boolean tristate) {
+    final ButtonModel buttonModel;
+    if (tristate) {
+      buttonModel = new TristateButtonModel();
+    }
+    else {
+      buttonModel = new JToggleButton.ToggleButtonModel();
+    }
+    Values.link(Values.<Boolean>beanValue(owner, beanPropertyName, tristate ? Boolean.class : boolean.class, changeEvent), new BooleanValue(buttonModel));
 
     return new ToggleControl(caption, buttonModel, enabledState);
   }
@@ -223,6 +245,10 @@ public final class Controls {
     /** {@inheritDoc} */
     @Override
     public Boolean get() {
+      if (buttonModel instanceof TristateButtonModel && ((TristateButtonModel) buttonModel).isIndeterminate()) {
+        return null;
+      }
+
       return buttonModel.isSelected();
     }
 
@@ -230,7 +256,7 @@ public final class Controls {
     @Override
     public void set(final Boolean value) {
       if (SwingUtilities.isEventDispatchThread()) {
-        buttonModel.setSelected(value != null && value);
+        setValue(value);
       }
       else {
         try {
@@ -238,13 +264,22 @@ public final class Controls {
             /** {@inheritDoc} */
             @Override
             public void run() {
-              buttonModel.setSelected(value != null && value);
+              setValue(value);
             }
           });
         }
         catch (Exception e) {
           throw new RuntimeException(e);
         }
+      }
+    }
+
+    private void setValue(final Boolean value) {
+      if (value == null && buttonModel instanceof TristateButtonModel) {
+        ((TristateButtonModel) buttonModel).setIndeterminate();
+      }
+      else {
+        buttonModel.setSelected(value != null && value);
       }
     }
 
