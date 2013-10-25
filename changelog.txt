@@ -3644,3 +3644,5 @@
   DateInputPanel, bug fixed, did not handle UiUtil.getDateFromUser() returning null on cancel
   MaximumMatch, enabled normalization of strings before matching
   ControlsTest.tristateToggleControl() fixed
+0.8.3
+  UiUtil.displayInDialog(), modality functionality improved, well, changed at least

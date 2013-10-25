@@ -56,6 +56,7 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.awt.GraphicsEnvironment;
@@ -1495,7 +1496,8 @@ public final class UiUtil {
   private static JDialog displayInDialog(final Container owner, final JComponent component, final String title, final boolean modal,
                                          final JButton defaultButton, final EventObserver closeEvent, final boolean disposeOnEscape,
                                          final Action onClosedAction) {
-    final JDialog dialog = new JDialog(getParentWindow(owner), title);
+    final Window dialogOwner = owner instanceof Window ? (Window) owner : getParentWindow(owner);
+    final JDialog dialog = new JDialog(dialogOwner, title, modal ? Dialog.ModalityType.APPLICATION_MODAL : Dialog.ModalityType.MODELESS);
     if (defaultButton != null) {
       dialog.getRootPane().setDefaultButton(defaultButton);
     }
@@ -1531,7 +1533,6 @@ public final class UiUtil {
     dialog.add(component, BorderLayout.CENTER);
     dialog.pack();
     dialog.setLocationRelativeTo(owner);
-    dialog.setModal(modal);
     dialog.setResizable(true);
     dialog.setVisible(true);
 
