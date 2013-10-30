@@ -66,7 +66,6 @@ public final class FrameworkMessages {
   public static final String INSERT = "insert";
   public static final String INSERT_NEW = "insert_new";
   public static final String INSERT_MNEMONIC = "insert_mnemonic";
-  public static final String INSERT_UPDATE = "insert_update";
   public static final String INSERT_UPDATE_TIP = "insert_update_tip";
   public static final String INSERT_TIP = "insert_tip";
   public static final String SELECT_PROPERTY_FOR_UPDATE = "select_property_for_update";
@@ -75,6 +74,8 @@ public final class FrameworkMessages {
   public static final String CONFIGURE_QUERY = "configure_query";
   public static final String CONFIRM_EXIT = "confirm_exit";
   public static final String CONFIRM_EXIT_TITLE = "confirm_exit_title";
+  public static final String UNSAVED_DATA_WARNING = "unsaved_data_warning";
+  public static final String UNSAVED_DATA_WARNING_TITLE = "unsaved_data_warning_title";
   public static final String UPDATE_OR_INSERT = "update_or_insert";
   public static final String UPDATE_OR_INSERT_TITLE = "update_or_insert_title";
   public static final String CONFIRM_UPDATE = "confirm_update";

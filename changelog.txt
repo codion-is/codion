@@ -3646,3 +3646,6 @@
   ControlsTest.tristateToggleControl() fixed
 0.8.3
   UiUtil.displayInDialog(), modality functionality improved, well, changed at least
+  EntityEditPanel, SAVE control code added, used by default instead of INSERT (which actually performed a save)
+  Configuration.WARN_ABOUT_UNSAVED_DATA added, default false, used in EntityApplicationPanel.exit()
+  EntityApplicationModel.containsUnsavedData() added to accommodate the above

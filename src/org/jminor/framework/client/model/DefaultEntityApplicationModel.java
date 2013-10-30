@@ -15,6 +15,7 @@ import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeModel;
 import javax.swing.tree.TreeNode;
 import java.util.ArrayList;
+import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -161,6 +162,12 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     throw new IllegalArgumentException("EntityModel for type " + entityID + " not  found in model: " + this);
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public final boolean containsUnsavedData() {
+    return containsUnsavedData(entityModels);
+  }
+
   /**
    * @return a tree model showing the dependencies between entities via foreign keys
    */
@@ -209,6 +216,20 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
     }
 
     return true;
+  }
+
+  private static boolean containsUnsavedData(final Collection<? extends EntityModel> models) {
+    for (final EntityModel model : models) {
+      final EntityEditModel editModel = model.getEditModel();
+      if (!editModel.isEntityNew() && editModel.isModified()) {
+        return true;
+      }
+      else if (containsUnsavedData(model.getDetailModels())) {
+        return true;
+      }
+    }
+
+    return false;
   }
 
   private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {

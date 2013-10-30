@@ -375,12 +375,20 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   public final void activatePanel() {}
 
   /**
-   * Exists this application
+   * Exits this application
    * @see #addOnExitListener(org.jminor.common.model.EventListener)
+   * @see Configuration#CONFIRM_EXIT
+   * @see Configuration#WARN_ABOUT_UNSAVED_DATA
    * @throws CancelException if the exit is cancelled
    */
   public final void exit() throws CancelException {
-    if (Configuration.getBooleanValue(Configuration.CONFIRM_EXIT) && JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
+    if (Configuration.getBooleanValue(Configuration.WARN_ABOUT_UNSAVED_DATA) && getModel().containsUnsavedData() &&
+            JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING),
+                    FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
+                    JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
+        throw new CancelException();
+    }
+    else if (Configuration.getBooleanValue(Configuration.CONFIRM_EXIT) && JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
             FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
       throw new CancelException();
     }

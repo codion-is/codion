@@ -68,6 +68,12 @@ public interface EntityApplicationModel extends Refreshable {
   boolean containsEntityModel(final EntityModel entityModel);
 
   /**
+   * @return true if any edit model associated with this application model contains
+   * modified and unsaved data, that is, existing entities that have been modified but not saved
+   */
+  boolean containsUnsavedData();
+
+  /**
    * @return an unmodifiable List containing the EntityModel instances contained
    * in this EntityApplicationModel
    */

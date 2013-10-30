@@ -72,6 +72,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   public static final int CONFIRM_TYPE_DELETE = 3;
 
   //Control codes
+  public static final String SAVE = "EntityEditPanel.save";
   public static final String INSERT = "EntityEditPanel.insert";
   public static final String UPDATE = "EntityEditPanel.update";
   public static final String DELETE = "EntityEditPanel.delete";
@@ -136,7 +137,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    */
   public EntityEditPanel(final EntityEditModel editModel) {
-    this(editModel, INSERT, UPDATE, DELETE, CLEAR, REFRESH);
+    this(editModel, SAVE, UPDATE, DELETE, CLEAR, REFRESH);
   }
 
   /**
@@ -428,24 +429,25 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   public final Control getInsertControl() {
     final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
-    return Controls.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
+    return Controls.methodControl(this, "insert", FrameworkMessages.get(FrameworkMessages.INSERT),
             States.aggregateState(Conjunction.AND, getActiveObserver(), editModel.getAllowInsertObserver()),
             FrameworkMessages.get(FrameworkMessages.INSERT_TIP) + ALT_PREFIX + mnemonic + ")",
             mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
 
   /**
-   * @return a control for performing a save on the active entity
+   * @return a control for performing a save on the active entity, that is, update if an entity
+   * is selected and modified or insert otherwise
    */
   public final Control getSaveControl() {
-    final String insertCaption = FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE);
+    final String mnemonic = FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC);
     final State insertUpdateState = States.aggregateState(Conjunction.OR, editModel.getAllowInsertObserver(),
             States.aggregateState(Conjunction.AND, editModel.getAllowUpdateObserver(),
                     editModel.getModifiedObserver()));
-    return Controls.methodControl(this, "save", insertCaption,
+    return Controls.methodControl(this, "save", FrameworkMessages.get(FrameworkMessages.INSERT),
             States.aggregateState(Conjunction.AND, getActiveObserver(), insertUpdateState),
-            FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP),
-            insertCaption.charAt(0), null, Images.loadImage(Images.IMG_SAVE_16));
+            FrameworkMessages.get(FrameworkMessages.INSERT_UPDATE_TIP) + ALT_PREFIX + mnemonic + ")",
+            mnemonic.charAt(0), null, Images.loadImage("Add16.gif"));
   }
 
   /**
@@ -765,6 +767,9 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    */
   protected ControlSet initializeControlPanelControlSet() {
     final ControlSet controlSet = new ControlSet("Actions");
+    if (controls.containsKey(SAVE)) {
+      controlSet.add(controls.get(SAVE));
+    }
     if (controls.containsKey(INSERT)) {
       controlSet.add(controls.get(INSERT));
     }
@@ -1921,6 +1926,9 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     }
     final Collection<String> keys = Arrays.asList(controlKeys);
     if (!editModel.isReadOnly()) {
+      if (editModel.isInsertAllowed() && editModel.isUpdateAllowed() && keys.contains(SAVE)) {
+        setControl(SAVE, getSaveControl());
+      }
       if (editModel.isInsertAllowed() && keys.contains(INSERT)) {
         setControl(INSERT, getInsertControl());
       }
