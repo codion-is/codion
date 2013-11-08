@@ -1215,14 +1215,9 @@ public final class UiUtil {
     addKeyEvent(txtField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, new AbstractAction("UiUtil.lookupValue") {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        try {
-          final Object value = selectValue(txtField, valueCollectionProvider.getValues());
-          if (value != null) {
-            txtField.setText(value.toString());
-          }
-        }
-        catch (Exception ex) {
-          throw new RuntimeException(ex);
+        final Object value = selectValue(txtField, valueCollectionProvider.getValues());
+        if (value != null) {
+          txtField.setText(value.toString());
         }
       }
     });
@@ -1248,7 +1243,7 @@ public final class UiUtil {
    * @param <T> the type of values being selected
    */
   public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
-    final JList list = new JList(values.toArray());
+    final JList<T> list = new JList<>((T[]) values.toArray());
     final Window owner = getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
     final Action okAction = new DisposeWindowAction(dialog);

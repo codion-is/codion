@@ -4,6 +4,7 @@
 package org.jminor.framework.tools.generator;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
@@ -150,14 +151,7 @@ public final class EntityGeneratorModel {
    * Closes the connection to the database
    */
   public void exit() {
-    try {
-      if (connection != null) {
-        connection.close();
-      }
-    }
-    catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
+    DatabaseUtil.closeSilently(connection);
   }
 
   private TableModel initializeTableModel() {

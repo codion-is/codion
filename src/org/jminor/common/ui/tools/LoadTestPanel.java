@@ -239,16 +239,11 @@ public final class LoadTestPanel extends JPanel {
     final JButton btn = new JButton(new Control(add ? "+" : "-") {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        try {
-          if (add) {
-            loadTestModel.addApplicationBatch();
-          }
-          else {
-            loadTestModel.removeApplicationBatch();
-          }
+        if (add) {
+          loadTestModel.addApplicationBatch();
         }
-        catch (Exception ex) {
-          throw new RuntimeException(ex);
+        else {
+          loadTestModel.removeApplicationBatch();
         }
       }
     });

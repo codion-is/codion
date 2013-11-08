@@ -961,6 +961,7 @@ public final class Util {
    * If the {@link #ADDITIONAL_CONFIGURATION_FILES} property is found, the files specified are parsed as well,
    * note that the actual property value is not added to the system properties.
    * @param filename the configuration filename
+   * @throws IllegalArgumentException in case the configuration file is not found
    * @see #CONFIGURATION_FILE
    */
   public static void parseConfigurationFile(final String filename) {
@@ -972,7 +973,7 @@ public final class Util {
         if (inputStream == null) {//not on classpath
           final File configurationFile = new File(System.getProperty("user.dir") + File.separator + filename);
           if (!configurationFile.exists()) {
-            throw new RuntimeException("Configuration file not found on classpath (" + filename + ") or as a file (" + configurationFile.getPath() + ")");
+            throw new IllegalArgumentException("Configuration file not found on classpath (" + filename + ") or as a file (" + configurationFile.getPath() + ")");
           }
           inputStream = new FileInputStream(configurationFile);
           LOG.debug("Reading configuration file from filesystem: {}", filename);

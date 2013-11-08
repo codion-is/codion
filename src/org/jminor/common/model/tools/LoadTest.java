@@ -155,12 +155,12 @@ public interface LoadTest {
   /**
    * @return an observer notified each time the application count changes
    */
-  EventObserver applicationCountObserver();
+  EventObserver<Integer> applicationCountObserver();
 
   /**
    * @return an observer notified each time the application batch size changes
    */
-  EventObserver applicationBatchSizeObserver();
+  EventObserver<Integer> applicationBatchSizeObserver();
 
   /**
    * Adds a batch of applications.
@@ -178,11 +178,6 @@ public interface LoadTest {
    * Resets the accumulated chart data
    */
   void resetChartData();
-
-  /**
-   * @return an observer notified each time the collect chart data state changes
-   */
-  EventObserver collectChartDataObserver();
 
   /**
    * @return a dataset plotting the average scenario duration
@@ -216,24 +211,29 @@ public interface LoadTest {
   XYDataset getUsageScenarioFailureDataset();
 
   /**
+   * @return an observer notified each time the collect chart data state changes
+   */
+  EventObserver<Boolean> collectChartDataObserver();
+
+  /**
    * @return an observer notified each time the maximum think time changes
    */
-  EventObserver maximumThinkTimeObserver();
+  EventObserver<Integer> maximumThinkTimeObserver();
 
   /**
    * @return an observer notified each time the minimum think time changes
    */
-  EventObserver getMinimumThinkTimeObserver();
+  EventObserver<Integer> getMinimumThinkTimeObserver();
 
   /**
    * @return an observer notified each time the warning time changes
    */
-  EventObserver getWarningTimeObserver();
+  EventObserver<Integer> getWarningTimeObserver();
 
   /**
    * @return an observer notified each time the paused state changes
    */
-  EventObserver getPauseObserver();
+  EventObserver<Boolean> getPauseObserver();
 
   /**
    * @return the randomizer used to select scenarios

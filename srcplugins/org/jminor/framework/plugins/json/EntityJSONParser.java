@@ -198,6 +198,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @param jsonDateFormat the format to use when parsing dates
    * @param jsonTimestampFormat the format to use when parsing timestamps
    * @return the Entity.Key represented by the given JSON object
+   * @throws IllegalArgumentException in case of an undefined entity
    * @throws ParseException in case of an exception
    * @throws JSONException in case of an exception
    */
@@ -205,7 +206,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
                                     final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException, ParseException {
     final String entityID = keyObject.getString(ENTITY_ID);
     if (!Entities.isDefined(entityID)) {
-      throw new RuntimeException("Undefined entity found in JSON string: '" + entityID + "'");
+      throw new IllegalArgumentException("Undefined entity found in JSON string: '" + entityID + "'");
     }
 
     final Entity.Key key = Entities.key(entityID);
@@ -218,6 +219,12 @@ public final class EntityJSONParser implements Serializer<Entity> {
     return key;
   }
 
+  /**
+   * Serializes the given key
+   * @param key the key
+   * @return a JSON serialized representation of the key
+   * @throws JSONException
+   */
   public static String serializeKey(final Entity.Key key) throws JSONException {
     return serializeKey(key, DateFormats.getDateFormat(JSON_TIME_FORMAT), DateFormats.getDateFormat(JSON_DATE_FORMAT),
             DateFormats.getDateFormat(JSON_TIMESTAMP_FORMAT)).toString();
@@ -242,6 +249,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * @param jsonDateFormat the format to use when parsing dates
    * @param jsonTimestampFormat the format to use when parsing timestamps
    * @return the Entity represented by the given JSON object
+   * @throws IllegalArgumentException in case of an undefined entity
    * @throws ParseException in case of an exception
    * @throws JSONException in case of an exception
    */
@@ -250,7 +258,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     final Map<String, Object> propertyValueMap = new HashMap<>();
     final String entityID = entityObject.getString(ENTITY_ID);
     if (!Entities.isDefined(entityID)) {
-      throw new RuntimeException("Undefined entity found in JSON string: '" + entityID + "'");
+      throw new IllegalArgumentException("Undefined entity found in JSON string: '" + entityID + "'");
     }
 
     final JSONObject propertyValues = entityObject.getJSONObject(VALUES);

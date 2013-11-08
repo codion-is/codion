@@ -76,11 +76,11 @@ public final class Databases {
   /**
    * Adds the given Operation to this repository
    * @param operation the operation to add
-   * @throws RuntimeException in case an operation with the same ID has already been added
+   * @throws IllegalArgumentException in case an operation with the same ID has already been added
    */
   public static void addOperation(final DatabaseConnection.Operation operation) {
     if (OPERATIONS.containsKey(operation.getID())) {
-      throw new RuntimeException("Operation already defined: " + OPERATIONS.get(operation.getID()).getName());
+      throw new IllegalArgumentException("Operation already defined: " + OPERATIONS.get(operation.getID()).getName());
     }
 
     OPERATIONS.put(operation.getID(), operation);
@@ -89,12 +89,12 @@ public final class Databases {
   /**
    * @param procedureID the procedure ID
    * @return the procedure
-   * @throws RuntimeException in case the procedure is not found
+   * @throws IllegalArgumentException in case the procedure is not found
    */
   public static DatabaseConnection.Procedure getProcedure(final String procedureID) {
     final DatabaseConnection.Operation operation = OPERATIONS.get(procedureID);
     if (operation == null) {
-      throw new RuntimeException("Procedure not found: " + procedureID);
+      throw new IllegalArgumentException("Procedure not found: " + procedureID);
     }
 
     return (DatabaseConnection.Procedure) operation;
@@ -103,12 +103,12 @@ public final class Databases {
   /**
    * @param functionID the function ID
    * @return the function
-   * @throws RuntimeException in case the function is not found
+   * @throws IllegalArgumentException in case the function is not found
    */
   public static DatabaseConnection.Function getFunction(final String functionID) {
     final DatabaseConnection.Operation operation = OPERATIONS.get(functionID);
     if (operation == null) {
-      throw new RuntimeException("Function not found: " + functionID);
+      throw new IllegalArgumentException("Function not found: " + functionID);
     }
 
     return (DatabaseConnection.Function) operation;

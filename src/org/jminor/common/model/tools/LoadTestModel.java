@@ -45,14 +45,14 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   private static final long NANO_IN_MILLI = 1000000;
 
-  private final Event pausedChangedEvent = Events.event();
-  private final Event collectChartDataChangedEvent = Events.event();
-  private final Event maximumThinkTimeChangedEvent = Events.event();
-  private final Event minimumThinkTimeChangedEvent = Events.event();
-  private final Event warningTimeChangedEvent = Events.event();
-  private final Event loginDelayFactorChangedEvent = Events.event();
-  private final Event applicationCountChangedEvent = Events.event();
-  private final Event applicationBatchSizeChangedEvent = Events.event();
+  private final Event<Boolean> pausedChangedEvent = Events.event();
+  private final Event<Boolean> collectChartDataChangedEvent = Events.event();
+  private final Event<Integer> maximumThinkTimeChangedEvent = Events.event();
+  private final Event<Integer> minimumThinkTimeChangedEvent = Events.event();
+  private final Event<Integer> warningTimeChangedEvent = Events.event();
+  private final Event<Integer> loginDelayFactorChangedEvent = Events.event();
+  private final Event<Integer> applicationCountChangedEvent = Events.event();
+  private final Event<Integer> applicationBatchSizeChangedEvent = Events.event();
   private final Event exitingDoneEvent = Events.event();
 
   private int maximumThinkTime;
@@ -320,7 +320,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
     if (this.warningTime != warningTime) {
       this.warningTime = warningTime;
-      warningTimeChangedEvent.fire();
+      warningTimeChangedEvent.fire(this.warningTime);
     }
   }
 
@@ -356,7 +356,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     this.applicationBatchSize = applicationBatchSize;
-    applicationBatchSizeChangedEvent.fire();
+    applicationBatchSizeChangedEvent.fire(this.applicationBatchSize);
   }
 
   /** {@inheritDoc} */
@@ -391,7 +391,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   @Override
   public final void setPaused(final boolean value) {
     this.paused = value;
-    pausedChangedEvent.fire();
+    pausedChangedEvent.fire(this.paused);
   }
 
   /** {@inheritDoc} */
@@ -404,7 +404,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   @Override
   public final void setCollectChartData(final boolean value) {
     this.collectChartData = value;
-    collectChartDataChangedEvent.fire();
+    collectChartDataChangedEvent.fire(this.collectChartData);
   }
 
   /** {@inheritDoc} */
@@ -442,7 +442,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     this.maximumThinkTime = maximumThinkTime;
-    maximumThinkTimeChangedEvent.fire();
+    maximumThinkTimeChangedEvent.fire(this.maximumThinkTime);
   }
 
   /** {@inheritDoc} */
@@ -459,7 +459,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     this.minimumThinkTime = minimumThinkTime;
-    minimumThinkTimeChangedEvent.fire();
+    minimumThinkTimeChangedEvent.fire(this.minimumThinkTime);
   }
 
   /** {@inheritDoc} */
@@ -476,48 +476,48 @@ public abstract class LoadTestModel<T> implements LoadTest {
     }
 
     this.loginDelayFactor = loginDelayFactor;
-    loginDelayFactorChangedEvent.fire();
+    loginDelayFactorChangedEvent.fire(this.loginDelayFactor);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver applicationBatchSizeObserver() {
+  public final EventObserver<Integer> applicationBatchSizeObserver() {
     return applicationBatchSizeChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver applicationCountObserver() {
+  public final EventObserver<Integer> applicationCountObserver() {
     return applicationCountChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver maximumThinkTimeObserver() {
+  public final EventObserver<Integer> maximumThinkTimeObserver() {
     return maximumThinkTimeChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver getMinimumThinkTimeObserver() {
+  public final EventObserver<Integer> getMinimumThinkTimeObserver() {
     return minimumThinkTimeChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver getPauseObserver() {
+  public final EventObserver<Boolean> getPauseObserver() {
     return pausedChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver collectChartDataObserver() {
+  public final EventObserver<Boolean> collectChartDataObserver() {
     return collectChartDataChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver getWarningTimeObserver() {
+  public final EventObserver<Integer> getWarningTimeObserver() {
     return warningTimeChangedEvent.getObserver();
   }
 
@@ -580,7 +580,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     synchronized (applications) {
       applications.pop().stop();
     }
-    applicationCountChangedEvent.fire();
+    applicationCountChangedEvent.fire(applications.size());
   }
 
   private ItemRandomizer<UsageScenario> initializeScenarioChooser() {

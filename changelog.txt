@@ -3649,3 +3649,4 @@
   EntityEditPanel, SAVE control code added, used by default instead of INSERT (which actually performed a save)
   Configuration.WARN_ABOUT_UNSAVED_DATA added, default false, used in EntityApplicationPanel.exit()
   EntityApplicationModel.containsUnsavedData() added to accommodate the above
+  Code cleanup, some generification, RuntimeException replaced by IllegalArgumentException where applicable
