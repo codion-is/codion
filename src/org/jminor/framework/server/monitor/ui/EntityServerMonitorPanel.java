@@ -47,7 +47,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   private static final String JDK_PREFERENCE_KEY = EntityServerMonitorPanel.class.getSimpleName() + ".jdkPathPreferenceKey";
   private static String jdkDir = Util.getUserPreference(JDK_PREFERENCE_KEY, null);
 
-  private final Event alwaysOnTopChangedEvent = Events.event();
+  private final Event<Boolean> alwaysOnTopChangedEvent = Events.event();
   private static final int MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private final EntityServerMonitor model;
   private JFrame monitorFrame;
@@ -92,7 +92,7 @@ public final class EntityServerMonitorPanel extends JPanel {
    */
   public void setAlwaysOnTop(final boolean value) {
     monitorFrame.setAlwaysOnTop(value);
-    alwaysOnTopChangedEvent.fire();
+    alwaysOnTopChangedEvent.fire(value);
   }
 
   public void runJConsole() throws IOException {

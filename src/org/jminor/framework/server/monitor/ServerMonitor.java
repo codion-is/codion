@@ -35,9 +35,9 @@ public final class ServerMonitor {
 
   private final Event serverShutDownEvent = Events.event();
   private final Event statisticsUpdatedEvent = Events.event();
-  private final Event warningThresholdChangedEvent = Events.event();
+  private final Event<Integer> warningThresholdChangedEvent = Events.event();
   private final Event loggingLevelChangedEvent = Events.event();
-  private final Event connectionLimitChangedEvent = Events.event();
+  private final Event<Integer> connectionLimitChangedEvent = Events.event();
 
   private final String hostName;
   private final String serverName;
@@ -128,7 +128,7 @@ public final class ServerMonitor {
 
   public void setWarningThreshold(final int threshold) throws RemoteException {
     server.setWarningTimeThreshold(threshold);
-    warningThresholdChangedEvent.fire();
+    warningThresholdChangedEvent.fire(threshold);
   }
 
   public int getConnectionLimit() throws RemoteException {
@@ -137,7 +137,7 @@ public final class ServerMonitor {
 
   public void setConnectionLimit(final int value) throws RemoteException {
     server.setConnectionLimit(value);
-    connectionLimitChangedEvent.fire();
+    connectionLimitChangedEvent.fire(value);
   }
 
   public Level getLoggingLevel() throws RemoteException {
@@ -208,11 +208,11 @@ public final class ServerMonitor {
     return serverShutDownEvent.getObserver();
   }
 
-  public EventObserver getWarningThresholdObserver() {
+  public EventObserver<Integer> getWarningThresholdObserver() {
     return warningThresholdChangedEvent.getObserver();
   }
 
-  public EventObserver getConnectionLimitObserver() {
+  public EventObserver<Integer> getConnectionLimitObserver() {
     return connectionLimitChangedEvent.getObserver();
   }
 

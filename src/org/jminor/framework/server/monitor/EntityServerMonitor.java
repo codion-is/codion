@@ -17,7 +17,7 @@ import java.util.Collection;
  */
 public final class EntityServerMonitor {
 
-  private final Event hostAddedEvent = Events.event();
+  private final Event<String> hostAddedEvent = Events.event();
   private final Event hostRemovedEvent = Events.event();
 
   private final Collection<HostMonitor> hostMonitors = new ArrayList<>();
@@ -33,7 +33,7 @@ public final class EntityServerMonitor {
 
   public void addHost(final String hostname, final int[] registryPorts) throws RemoteException {
     hostMonitors.add(new HostMonitor(hostname, registryPorts));
-    hostAddedEvent.fire();
+    hostAddedEvent.fire(hostname);
   }
 
   public void removeHost(final HostMonitor hostMonitor) {

@@ -18,10 +18,10 @@ import java.rmi.RemoteException;
 public final class ClientUserMonitor {
 
   private final EntityConnectionServerAdmin server;
-  private final Event connectionTimeoutChangedEvent = Events.event();
+  private final Event<Integer> connectionTimeoutChangedEvent = Events.event();
 
-  private final DefaultListModel clientTypeListModel = new DefaultListModel();
-  private final DefaultListModel userListModel = new DefaultListModel();
+  private final DefaultListModel<ClientMonitor> clientTypeListModel = new DefaultListModel<>();
+  private final DefaultListModel<ClientMonitor> userListModel = new DefaultListModel<>();
 
   public ClientUserMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
     this.server = server;
@@ -71,10 +71,10 @@ public final class ClientUserMonitor {
 
   public void setConnectionTimeout(final int timeout) throws RemoteException {
     server.setConnectionTimeout(timeout * 1000);
-    connectionTimeoutChangedEvent.fire();
+    connectionTimeoutChangedEvent.fire(timeout);
   }
 
-  public EventObserver getConnectionTimeoutObserver() {
+  public EventObserver<Integer> getConnectionTimeoutObserver() {
     return connectionTimeoutChangedEvent.getObserver();
   }
 }

@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.framework.domain.Properties;
 
@@ -72,10 +73,14 @@ public class DefaultPropertySummaryModelTest {
       @Override
       public void eventOccurred() {}
     };
+    final EventInfoListener<PropertySummaryModel.Summary> summaryListener = new EventInfoListener<PropertySummaryModel.Summary>() {
+      @Override
+      public void eventOccurred(final PropertySummaryModel.Summary info) {}
+    };
     testIntModel.addSummaryValueListener(listener);
-    testIntModel.addSummaryListener(listener);
+    testIntModel.addSummaryListener(summaryListener);
     testIntModel.removeSummaryValueListener(listener);
-    testIntModel.removeSummaryListener(listener);
+    testIntModel.removeSummaryListener(summaryListener);
   }
 
   @Test

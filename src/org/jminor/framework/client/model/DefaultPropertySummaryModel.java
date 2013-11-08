@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
@@ -21,7 +22,7 @@ import java.util.List;
  */
 public class DefaultPropertySummaryModel implements PropertySummaryModel {
 
-  private final Event summaryChangedEvent = Events.event();
+  private final Event<Summary> summaryChangedEvent = Events.event();
   private final Event summaryValueChangedEvent = Events.event();
 
   private final Property property;
@@ -77,7 +78,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     Util.rejectNullValue(summary, "summary");
     if (!this.summary.equals(summary)) {
       this.summary = summary;
-      summaryChangedEvent.fire();
+      summaryChangedEvent.fire(this.summary);
     }
   }
 
@@ -117,14 +118,14 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addSummaryListener(final EventListener listener) {
-    summaryChangedEvent.addListener(listener);
+  public final void addSummaryListener(final EventInfoListener<Summary> listener) {
+    summaryChangedEvent.addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSummaryListener(final EventListener listener) {
-    summaryChangedEvent.removeListener(listener);
+  public final void removeSummaryListener(final EventInfoListener listener) {
+    summaryChangedEvent.removeInfoListener(listener);
   }
 
   /**

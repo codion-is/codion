@@ -34,7 +34,7 @@ public final class TaskScheduler {
   private final int initialDelay;
   private final TimeUnit timeUnit;
   private final ThreadFactory threadFactory;
-  private final Event intervalChangedEvent = Events.event();
+  private final Event<Integer> intervalChangedEvent = Events.event();
 
   private ScheduledExecutorService executorService;
   private int interval;
@@ -106,13 +106,13 @@ public final class TaskScheduler {
         start();
       }
     }
-    intervalChangedEvent.fire();
+    intervalChangedEvent.fire(this.interval);
   }
 
   /**
    * @return an EventObserver notified each time the interval changes
    */
-  public EventObserver getIntervalObserver() {
+  public EventObserver<Integer> getIntervalObserver() {
     return intervalChangedEvent.getObserver();
   }
 

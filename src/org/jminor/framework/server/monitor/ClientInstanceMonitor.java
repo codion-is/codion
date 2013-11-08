@@ -18,7 +18,7 @@ import java.rmi.RemoteException;
  */
 public final class ClientInstanceMonitor {
 
-  private final Event loggingStatusChangedEvent = Events.event();
+  private final Event<Boolean> loggingStatusChangedEvent = Events.event();
 
   private final ClientInfo client;
   private final EntityConnectionServerAdmin server;
@@ -52,7 +52,7 @@ public final class ClientInstanceMonitor {
 
   public void setLoggingEnabled(final boolean status) throws RemoteException {
     server.setLoggingEnabled(client.getClientID(), status);
-    loggingStatusChangedEvent.fire();
+    loggingStatusChangedEvent.fire(status);
   }
 
   public void disconnect() throws RemoteException {

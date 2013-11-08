@@ -3650,3 +3650,4 @@
   Configuration.WARN_ABOUT_UNSAVED_DATA added, default false, used in EntityApplicationPanel.exit()
   EntityApplicationModel.containsUnsavedData() added to accommodate the above
   Code cleanup, some generification, RuntimeException replaced by IllegalArgumentException where applicable
+  Some generification of Events

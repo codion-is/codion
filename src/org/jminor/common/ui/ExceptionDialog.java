@@ -7,7 +7,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.control.Control;
@@ -86,7 +86,7 @@ public final class ExceptionDialog extends JDialog {
   private Control ctrCopy;
   private Control ctrEmail;
 
-  private final Event showDetailsChangedEvent = Events.event();
+  private final Event<Boolean> showDetailsChangedEvent = Events.event();
   private boolean showDetails = false;
 
   private static String lastUsedEmailAddress = "";
@@ -173,7 +173,7 @@ public final class ExceptionDialog extends JDialog {
    */
   public void setShowDetails(final boolean show) {
     showDetails = show;
-    showDetailsChangedEvent.fire();
+    showDetailsChangedEvent.fire(showDetails);
   }
 
   /**
@@ -281,11 +281,11 @@ public final class ExceptionDialog extends JDialog {
 
   private void bindEvents() {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
-    showDetailsChangedEvent.addListener(new EventListener() {
+    showDetailsChangedEvent.addInfoListener(new EventInfoListener<Boolean>() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred() {
-        initializeDetailView(isShowDetails());
+      public void eventOccurred(final Boolean value) {
+        initializeDetailView(value);
       }
     });
   }

@@ -19,7 +19,6 @@ import org.jfree.data.xy.YIntervalSeries;
 import org.jfree.data.xy.YIntervalSeriesCollection;
 
 import java.io.Serializable;
-import java.rmi.RemoteException;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -34,7 +33,7 @@ public final class ConnectionPoolMonitor {
   private static final int THOUSAND = 1000;
 
   private final Event statisticsUpdatedEvent = Events.event();
-  private final Event collectFineGrainedStatisticsChangedEvent = Events.event();
+  private final Event<Boolean> collectFineGrainedStatisticsChangedEvent = Events.event();
 
   private final User user;
   private final ConnectionPool connectionPool;
@@ -63,7 +62,7 @@ public final class ConnectionPoolMonitor {
 
   private long lastStatisticsUpdateTime = 0;
 
-  public ConnectionPoolMonitor(final ConnectionPool connectionPool) throws RemoteException {
+  public ConnectionPoolMonitor(final ConnectionPool connectionPool) {
     this.user = connectionPool.getUser();
     this.connectionPool = connectionPool;
     this.statisticsCollection.addSeries(inPoolSeries);
@@ -187,7 +186,7 @@ public final class ConnectionPoolMonitor {
 
   public void setCollectFineGrainedStatistics(final boolean value) {
     connectionPool.setCollectFineGrainedStatistics(value);
-    collectFineGrainedStatisticsChangedEvent.fire();
+    collectFineGrainedStatisticsChangedEvent.fire(value);
   }
 
   public boolean isCollectFineGrainedStatistics() {
@@ -198,7 +197,7 @@ public final class ConnectionPoolMonitor {
     updateScheduler.stop();
   }
 
-  public EventObserver getCollectFineGrainedStatisticsObserver() {
+  public EventObserver<Boolean> getCollectFineGrainedStatisticsObserver() {
     return collectFineGrainedStatisticsChangedEvent.getObserver();
   }
 

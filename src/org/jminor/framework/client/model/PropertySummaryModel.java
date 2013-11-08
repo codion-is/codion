@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.framework.domain.Property;
 
@@ -82,12 +83,12 @@ public interface PropertySummaryModel {
   /**
    * @param listener a listener to be notified each time the summary type changes
    */
-  void addSummaryListener(final EventListener listener);
+  void addSummaryListener(final EventInfoListener<Summary> listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSummaryListener(final EventListener listener);
+  void removeSummaryListener(final EventInfoListener<Summary> listener);
 
   /**
    * Provides the values used when creating the summary value.

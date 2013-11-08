@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.StateObserver;
@@ -92,7 +93,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   private JTabbedPane applicationTabPane;
 
   private final Event applicationStartedEvent = Events.event();
-  private final Event alwaysOnTopChangedEvent = Events.event();
+  private final Event<Boolean> alwaysOnTopChangedEvent = Events.event();
   private final Event onExitEvent = Events.event();
 
   private final boolean persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
@@ -222,7 +223,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     final Window parent = getParentWindow();
     if (parent != null) {
       parent.setAlwaysOnTop(value);
-      alwaysOnTopChangedEvent.fire();
+      alwaysOnTopChangedEvent.fire(value);
     }
   }
 
@@ -458,8 +459,8 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   /**
    * @param listener a listener notified each time the always on top status changes
    */
-  public final void addAlwaysOnTopListener(final EventListener listener) {
-    alwaysOnTopChangedEvent.addListener(listener);
+  public final void addAlwaysOnTopListener(final EventInfoListener<Boolean> listener) {
+    alwaysOnTopChangedEvent.addInfoListener(listener);
   }
 
   /**

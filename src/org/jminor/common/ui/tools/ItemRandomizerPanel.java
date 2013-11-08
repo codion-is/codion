@@ -45,7 +45,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
 
   private final ItemRandomizer<T> model;
   private final JPanel configPanel = new JPanel(UiUtil.createGridLayout(0, 1));
-  private final JList itemList = new JList(new DefaultListModel());
+  private final JList<ItemRandomizer.RandomItem<T>> itemList = new JList<>(new DefaultListModel<ItemRandomizer.RandomItem<T>>());
   private final Event selectedItemChangedEvent = Events.event();
 
   /**
@@ -85,12 +85,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
    */
   @SuppressWarnings({"unchecked"})
   public List<ItemRandomizer.RandomItem<T>> getSelectedItems() {
-    final List<ItemRandomizer.RandomItem<T>> items = new ArrayList<>();
-    for (final Object object : itemList.getSelectedValuesList()) {
-      items.add((ItemRandomizer.RandomItem<T>) object);
-    }
-
-    return items;
+    return itemList.getSelectedValuesList();
   }
 
   /**
@@ -105,7 +100,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
       }
     });
     for (final ItemRandomizer.RandomItem<T> item : items) {
-      ((DefaultListModel) itemList.getModel()).addElement(item);
+      ((DefaultListModel<ItemRandomizer.RandomItem<T>>) itemList.getModel()).addElement(item);
     }
     itemList.setSelectionMode(ListSelectionModel.MULTIPLE_INTERVAL_SELECTION);
     itemList.addListSelectionListener(new ListSelectionListener() {
