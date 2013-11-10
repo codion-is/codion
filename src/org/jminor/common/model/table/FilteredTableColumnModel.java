@@ -54,6 +54,12 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
   TableColumn getTableColumn(final C identifier);
 
   /**
+   * @param identifier the column identifier
+   * @return true if this column model contains a column with the given identifier
+   */
+  boolean containsColumn(final C identifier);
+
+  /**
    * @param modelColumnIndex the column model index
    * @return the column identifier
    */

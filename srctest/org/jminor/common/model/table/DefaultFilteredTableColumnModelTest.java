@@ -50,6 +50,9 @@ public class DefaultFilteredTableColumnModelTest {
 
     testModel.removeColumnHiddenListener(hideListener);
     testModel.removeColumnShownListener(showListener);
+
+    assertTrue(testModel.containsColumn(0));
+    assertFalse(testModel.containsColumn(1));
   }
 
   @Test(expected = IllegalArgumentException.class)

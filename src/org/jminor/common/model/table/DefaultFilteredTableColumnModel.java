@@ -152,6 +152,19 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
 
   /** {@inheritDoc} */
   @Override
+  public boolean containsColumn(final C identifier) {
+    Util.rejectNullValue(identifier, "identifier");
+    for (final TableColumn column : getAllColumns()) {
+      if (identifier.equals(column.getIdentifier())) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final ColumnSearchModel<C> getFilterModel(final C columnIdentifier) {
     return columnFilterModels.get(columnIdentifier);
   }

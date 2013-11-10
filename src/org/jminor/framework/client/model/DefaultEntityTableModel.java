@@ -12,6 +12,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.AbstractFilteredTableModel;
 import org.jminor.common.model.table.AbstractTableSortModel;
+import org.jminor.common.model.table.FilteredTableColumnModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.table.TableSortModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -559,7 +560,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       try {
         Util.putUserPreference(getPreferencesKey(), createPreferences().toString());
       }
-      catch (Exception e) {
+      catch (org.json.JSONException e) {
         LOG.error("Error while saving preferences", e);
       }
     }
@@ -754,14 +755,14 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return getClass().getSimpleName() + "-" + getEntityID();
   }
 
-  private org.json.JSONObject createPreferences() throws Exception {
+  private org.json.JSONObject createPreferences() throws org.json.JSONException {
     final org.json.JSONObject preferencesRoot = new org.json.JSONObject();
     preferencesRoot.put(PREFERENCES_COLUMNS, createColumnPreferences());
 
     return preferencesRoot;
   }
 
-  private org.json.JSONObject createColumnPreferences() throws Exception {
+  private org.json.JSONObject createColumnPreferences() throws org.json.JSONException {
     final org.json.JSONObject columnPreferencesRoot = new org.json.JSONObject();
     for (final TableColumn column : getColumnModel().getAllColumns()) {
       final Property property = (Property) column.getIdentifier();
@@ -784,23 +785,32 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
           applyColumnPreferences(new org.json.JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS));
         }
       }
-      catch (Exception e) {
+      catch (org.json.JSONException e) {
         LOG.error("Error while applying preferences: " + preferencesString, e);
       }
     }
   }
 
-  private void applyColumnPreferences(final org.json.JSONObject preferences) throws Exception {
-    final List<TableColumn> allColumns = Collections.list(getColumnModel().getColumns());
+  private void applyColumnPreferences(final org.json.JSONObject preferences) {
+    final FilteredTableColumnModel<Property> columnModel = getColumnModel();
+    final List<TableColumn> allColumns = Collections.list(columnModel.getColumns());
     for (final TableColumn column : allColumns) {
       final Property property = (Property) column.getIdentifier();
-      final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getPropertyID());
-      column.setPreferredWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
-      if (columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
-        getColumnModel().moveColumn(getColumnModel().getColumnIndex(column.getIdentifier()), columnPreferences.getInt(PREFERENCES_COLUMN_INDEX));
-      }
-      else {
-        getColumnModel().setColumnVisible((Property) column.getIdentifier(), false);
+      if (columnModel.containsColumn(property)) {
+        try {
+          final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getPropertyID());
+          column.setPreferredWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
+          if (columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
+            final int index = Math.min(columnModel.getColumnCount() - 1, columnPreferences.getInt(PREFERENCES_COLUMN_INDEX));
+            columnModel.moveColumn(getColumnModel().getColumnIndex(column.getIdentifier()), index);
+          }
+          else {
+            columnModel.setColumnVisible((Property) column.getIdentifier(), false);
+          }
+        }
+        catch (org.json.JSONException e) {
+          LOG.info("Property preferences not found: " + property, e);
+        }
       }
     }
   }
