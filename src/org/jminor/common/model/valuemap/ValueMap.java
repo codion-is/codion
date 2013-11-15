@@ -160,7 +160,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @return an EventObserver notified when a value changes.
    * @see org.jminor.common.model.valuemap.ValueChange
    */
-  EventObserver<ValueChange> getValueChangeObserver();
+  EventObserver<ValueChange<K, ?>> getValueChangeObserver();
 
   /**
    * Adds a listener, this listener will be notified each time a value changes
@@ -168,13 +168,13 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @param valueListener the listener
    * @see org.jminor.common.model.valuemap.ValueChange
    */
-  void addValueListener(final EventInfoListener<ValueChange> valueListener);
+  void addValueListener(final EventInfoListener<ValueChange<K, ?>> valueListener);
 
   /**
    * Removes the given value listener if it has been registered with this value map.
    * @param valueListener the listener to remove
    */
-  void removeValueListener(final EventInfoListener<ValueChange> valueListener);
+  void removeValueListener(final EventInfoListener valueListener);
 
   /**
    * A validator for ValueMaps

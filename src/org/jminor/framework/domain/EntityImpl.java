@@ -503,11 +503,11 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   /** {@inheritDoc} */
   @Override
   protected void handleValueChangedEventInitialized() {
-    addValueListener(new EventInfoListener<ValueChange>() {
+    addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
       /** {@inheritDoc} */
       @Override
-      public void eventOccurred(final ValueChange info) {
-        final Collection<String> linkedPropertyIDs = definition.getLinkedPropertyIDs((String) info.getKey());
+      public void eventOccurred(final ValueChange<String, ?> info) {
+        final Collection<String> linkedPropertyIDs = definition.getLinkedPropertyIDs(info.getKey());
         for (final String propertyID : linkedPropertyIDs) {
           final Object linkedValue = getValue(propertyID);
           notifyValueChange(propertyID, linkedValue, linkedValue, false);

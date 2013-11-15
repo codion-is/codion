@@ -369,7 +369,7 @@ public class EntityImplTest {
     employee.setValue(EmpDept.EMPLOYEE_NAME, "noname");
     assertEquals(employee.getValue(EmpDept.EMPLOYEE_NAME), "noname");
 
-    employee.addValueListener(new EventInfoListener<ValueChange>() {
+    employee.addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
       @Override
       public void eventOccurred(final ValueChange info) {
         if (info.getKey().equals(EmpDept.EMPLOYEE_DEPARTMENT_FK)) {

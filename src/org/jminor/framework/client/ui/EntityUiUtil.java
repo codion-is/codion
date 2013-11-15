@@ -510,7 +510,7 @@ public final class EntityUiUtil {
     textField.setEditable(false);
     textField.setFocusable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
-    editModel.addValueListener(foreignKeyProperty.getPropertyID(), new EventInfoListener<ValueChange>() {
+    editModel.addValueListener(foreignKeyProperty.getPropertyID(), new EventInfoListener<ValueChange<String, ?>>() {
       @Override
       public void eventOccurred(final ValueChange info) {
         textField.setText(info.getNewValue() == null ? "" : info.getNewValue().toString());

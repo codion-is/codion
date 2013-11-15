@@ -3655,3 +3655,5 @@
   DefaultEntityTableModel, loading of property preferences for previously non-existing properties no longer crashes the application
   DefaultEntityTableModel, removed org.json.JSONException from signatures
   UiUtil.linkToEnabledState() overloaded with includeFocusable parameter
+0.8.4
+  Usages of ValueChange re-generified throughout

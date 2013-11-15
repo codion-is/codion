@@ -116,12 +116,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds events signaling value changes made via the ui
    */
-  private final Map<String, Event<ValueChange>> valueSetEventMap = new HashMap<>();
+  private final Map<String, Event<ValueChange<String, ?>>> valueSetEventMap = new HashMap<>();
 
   /**
    * Holds events signaling value changes made via the model or ui
    */
-  private final Map<String, Event<ValueChange>> valueChangeEventMap = new HashMap<>();
+  private final Map<String, Event<ValueChange<String, ?>>> valueChangeEventMap = new HashMap<>();
 
   /**
    * The validator used by this edit model
@@ -267,16 +267,16 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<ValueChange> getValueChangeObserver() {
+  public final EventObserver<ValueChange<String, ?>> getValueChangeObserver() {
     return entity.getValueChangeObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<ValueChange> getValueChangeObserver(final String propertyID) {
+  public final EventObserver<ValueChange<String, ?>> getValueChangeObserver(final String propertyID) {
     Util.rejectNullValue(propertyID, "propertyID");
     if (!valueChangeEventMap.containsKey(propertyID)) {
-      valueChangeEventMap.put(propertyID, Events.<ValueChange>event());
+      valueChangeEventMap.put(propertyID, Events.<ValueChange<String, ?>>event());
     }
 
     return valueChangeEventMap.get(propertyID).getObserver();
@@ -723,7 +723,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueSetListener(final String propertyID, final EventInfoListener<ValueChange> listener) {
+  public final void addValueSetListener(final String propertyID, final EventInfoListener<ValueChange<String, ?>> listener) {
     getValueSetEvent(propertyID).addInfoListener(listener);
   }
 
@@ -735,7 +735,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueListener(final String propertyID, final EventInfoListener<ValueChange> listener) {
+  public final void addValueListener(final String propertyID, final EventInfoListener<ValueChange<String, ?>> listener) {
     getValueChangeObserver(propertyID).addInfoListener(listener);
   }
 
@@ -959,9 +959,9 @@ public class DefaultEntityEditModel implements EntityEditModel {
     getValueSetEvent(propertyID).fire(event);
   }
 
-  private Event<ValueChange> getValueSetEvent(final String propertyID) {
+  private Event<ValueChange<String, ?>> getValueSetEvent(final String propertyID) {
     if (!valueSetEventMap.containsKey(propertyID)) {
-      valueSetEventMap.put(propertyID, Events.<ValueChange>event());
+      valueSetEventMap.put(propertyID, Events.<ValueChange<String, ?>>event());
     }
 
     return valueSetEventMap.get(propertyID);
@@ -969,7 +969,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   private Event getValueChange(final String propertyID) {
     if (!valueChangeEventMap.containsKey(propertyID)) {
-      valueChangeEventMap.put(propertyID, Events.<ValueChange>event());
+      valueChangeEventMap.put(propertyID, Events.<ValueChange<String, ?>>event());
     }
 
     return valueChangeEventMap.get(propertyID);
@@ -979,12 +979,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
     afterDeleteEvent.addListener(entitiesChangedEvent);
     afterInsertEvent.addListener(entitiesChangedEvent);
     afterUpdateEvent.addListener(entitiesChangedEvent);
-    entity.addValueListener(new EventInfoListener<ValueChange>() {
+    entity.addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
       @Override
-      public void eventOccurred(final ValueChange info) {
+      public void eventOccurred(final ValueChange<String, ?> info) {
         primaryKeyNullState.setActive(entity.isPrimaryKeyNull());
         validState.setActive(validator.isValid(entity));
-        final Event<ValueChange> valueChangeEvent = valueChangeEventMap.get(info.getKey());
+        final Event<ValueChange<String, ?>> valueChangeEvent = valueChangeEventMap.get(info.getKey());
         if (valueChangeEvent != null) {
           valueChangeEvent.fire(info);
         }
@@ -994,7 +994,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       for (final Property property : Entities.getProperties(entityID).values()) {
         addValueSetListener(property.getPropertyID(), new StatusMessageListener());
       }
-      entity.addValueListener(new EventInfoListener<ValueChange>() {
+      entity.addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
         private final StatusMessageListener messageListener = new StatusMessageListener();
 
         @Override
@@ -1053,7 +1053,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     return stringBuilder.toString();
   }
 
-  private final class StatusMessageListener implements EventInfoListener<ValueChange> {
+  private final class StatusMessageListener implements EventInfoListener<ValueChange<String, ?>> {
 
     @Override
     public void eventOccurred(final ValueChange info) {

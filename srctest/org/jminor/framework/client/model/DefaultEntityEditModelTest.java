@@ -276,7 +276,7 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test(expected = UnsupportedOperationException.class)
-  public void deleteReadOnly() throws CancelException, ValidationException, DatabaseException {
+  public void deleteReadOnly() throws CancelException, DatabaseException {
     employeeEditModel.setReadOnly(true);
     employeeEditModel.delete();
   }
@@ -438,27 +438,27 @@ public final class DefaultEntityEditModelTest {
     final Collection<Object> valueSetCounter = new ArrayList<>();
     final Collection<Object> valueMapSetCounter = new ArrayList<>();
 
-    final EventInfoListener<ValueChange> anyValueChangeListener = new EventInfoListener<ValueChange>() {
+    final EventInfoListener<ValueChange<String, ?>> anyValueChangeListener = new EventInfoListener<ValueChange<String, ?>>() {
       @Override
       public void eventOccurred(final ValueChange info) {
         anyValueChangeCounter.add(info);
       }
     };
-    final EventInfoListener<ValueChange> valueChangeListener = new EventInfoListener<ValueChange>() {
+    final EventInfoListener<ValueChange<String, ?>> valueChangeListener = new EventInfoListener<ValueChange<String, ?>>() {
       @Override
       public void eventOccurred(final ValueChange info) {
         valueChangeCounter.add(info);
       }
     };
-    final EventInfoListener valueSetListener = new EventInfoListener() {
+    final EventInfoListener<ValueChange<String, ?>> valueSetListener = new EventInfoListener<ValueChange<String, ?>>() {
       @Override
-      public void eventOccurred(final Object info) {
+      public void eventOccurred(final ValueChange<String, ?> info) {
         valueSetCounter.add(info);
       }
     };
-    final EventInfoListener valueMapSetListener = new EventInfoListener() {
+    final EventInfoListener<Entity> valueMapSetListener = new EventInfoListener<Entity>() {
       @Override
-      public void eventOccurred(final Object info) {
+      public void eventOccurred(final Entity info) {
         valueMapSetCounter.add(info);
       }
     };

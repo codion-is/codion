@@ -49,9 +49,9 @@ public class DefaultValueMapTest {
 
     final ValueMap<String, Integer> valueMap = new DefaultValueMap<>();
 
-    final EventInfoListener<ValueChange> valueListener = new EventInfoListener<ValueChange>() {
+    final EventInfoListener<ValueChange<String, ?>> valueListener = new EventInfoListener<ValueChange<String, ?>>() {
       @Override
-      public void eventOccurred(final ValueChange info) {
+      public void eventOccurred(final ValueChange<String, ?> info) {
         Assert.assertEquals(key, info.getKey());
         info.getOldValue();
         info.getNewValue();

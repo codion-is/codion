@@ -29,7 +29,7 @@ public final class ValueLinkValidators {
    * @param <K> the type of the edit model value keys
    */
   public static <K> void addValidator(final K key, final JTextComponent textComponent,
-                                      final ValueMapEditModel<K, Object> editModel) {
+                                      final ValueMapEditModel<K, ?> editModel) {
     addValidator(key, textComponent, editModel, textComponent.getBackground(), Color.LIGHT_GRAY, textComponent.getToolTipText());
   }
 
@@ -56,7 +56,7 @@ public final class ValueLinkValidators {
    * @param <K> the type of the edit model value keys
    */
   public static <K> void addValidator(final K key, final JTextComponent textComponent,
-                                      final ValueMapEditModel<K, Object> editModel, final Color validBackgroundColor,
+                                      final ValueMapEditModel<K, ?> editModel, final Color validBackgroundColor,
                                       final Color invalidBackgroundColor, final String defaultToolTip) {
     new TextValidator<>(key, textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip).validate();
   }
@@ -72,7 +72,7 @@ public final class ValueLinkValidators {
    * @param <K> the type of the edit model value keys
    */
   public static <K> void addFormattedValidator(final K key, final JTextComponent textComponent,
-                                               final ValueMapEditModel<K, Object> editModel, final Color validBackgroundColor,
+                                               final ValueMapEditModel<K, ?> editModel, final Color validBackgroundColor,
                                                final Color invalidBackgroundColor, final String defaultToolTip) {
     new FormattedTextValidator<>(key, textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip).validate();
   }
@@ -81,10 +81,10 @@ public final class ValueLinkValidators {
 
     private final K key;
     private final JComponent component;
-    private final ValueMapEditModel<K, Object> editModel;
+    private final ValueMapEditModel<K, ?> editModel;
     private final String defaultToolTip;
 
-    private AbstractValidator(final K key, final JComponent component, final ValueMapEditModel<K, Object> editModel, final String defaultToolTip) {
+    private AbstractValidator(final K key, final JComponent component, final ValueMapEditModel<K, ?> editModel, final String defaultToolTip) {
       this.key = key;
       this.component = component;
       this.editModel = editModel;
@@ -96,7 +96,7 @@ public final class ValueLinkValidators {
           validate();
         }
       });
-      this.editModel.addValueListener(key, new EventInfoListener<ValueChange>() {
+      this.editModel.addValueListener(key, new EventInfoListener<ValueChange<K, ?>>() {
         @Override
         public void eventOccurred(final ValueChange info) {
           validate();
@@ -161,7 +161,7 @@ public final class ValueLinkValidators {
      * @param invalidBackgroundColor the background color to use when the field value is invalid
      * @param defaultToolTip the default tooltip to show when the field value is valid
      */
-    protected TextValidator(final K key, final JTextComponent textComponent, final ValueMapEditModel<K, Object> editModel,
+    protected TextValidator(final K key, final JTextComponent textComponent, final ValueMapEditModel<K, ?> editModel,
                             final Color validBackgroundColor, final Color invalidBackgroundColor, final String defaultToolTip) {
       super(key, textComponent, editModel, defaultToolTip);
       if (invalidBackgroundColor.equals(validBackgroundColor)) {
@@ -200,7 +200,7 @@ public final class ValueLinkValidators {
     private final String maskString;
 
     private FormattedTextValidator(final K key, final JTextComponent textComponent,
-                                   final ValueMapEditModel<K, Object> editModel, final Color validBackgroundColor,
+                                   final ValueMapEditModel<K, ?> editModel, final Color validBackgroundColor,
                                    final Color invalidBackgroundColor, final String defaultToolTip) {
       super(key, textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip);
       this.maskString = textComponent.getText();

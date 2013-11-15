@@ -36,7 +36,7 @@ public interface ValueMapEditModel<K, V> {
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of <code>key</code> is set via this model
    */
-  void addValueSetListener(final K key, final EventInfoListener<ValueChange> listener);
+  void addValueSetListener(final K key, final EventInfoListener<ValueChange<K, ?>> listener);
 
   /**
    * @param key the key
@@ -49,7 +49,7 @@ public interface ValueMapEditModel<K, V> {
    * @param key the key for which to monitor value changes
    * @param listener a listener notified each time the value of <code>key</code> changes
    */
-  void addValueListener(final K key, final EventInfoListener<ValueChange> listener);
+  void addValueListener(final K key, final EventInfoListener<ValueChange<K, ?>> listener);
 
   /**
    * @param key the key
@@ -60,13 +60,13 @@ public interface ValueMapEditModel<K, V> {
   /**
    * @return an EventObserver notified each time a value changes
    */
-  EventObserver<ValueChange> getValueChangeObserver();
+  EventObserver<ValueChange<K, ?>> getValueChangeObserver();
 
   /**
    * @param key the key for which to retrieve the event
    * @return an EventObserver notified when the value of <code>key</code> changes
    */
-  EventObserver<ValueChange> getValueChangeObserver(K key);
+  EventObserver<ValueChange<K, ?>> getValueChangeObserver(K key);
 
   /**
    * @return the validator

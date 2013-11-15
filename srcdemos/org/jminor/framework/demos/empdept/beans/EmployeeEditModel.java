@@ -57,7 +57,7 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
     });
     //Filter the manager ComboBoxModel so that only managers from the selected department are shown,
     //this filtering happens each time the department value is changed
-    addValueListener(EMPLOYEE_DEPARTMENT_FK, new EventInfoListener<ValueChange>() {
+    addValueListener(EMPLOYEE_DEPARTMENT_FK, new EventInfoListener<ValueChange<String, ?>>() {
       @Override
       public void eventOccurred(final ValueChange info) {
         //only show managers in the same department as the active entity

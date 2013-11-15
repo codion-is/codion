@@ -39,7 +39,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /**
    * Fired when a value changes, null until initialized by a call to getValueChangedEvent().
    */
-  private Event<ValueChange> valueChangedEvent;
+  private Event<ValueChange<K, ?>> valueChangedEvent;
 
   private static final int MAGIC_NUMBER = 23;
 
@@ -286,13 +286,13 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final void addValueListener(final EventInfoListener<ValueChange> valueListener) {
+  public final void addValueListener(final EventInfoListener<ValueChange<K, ?>> valueListener) {
     getValueChangeObserver().addInfoListener(valueListener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeValueListener(final EventInfoListener<ValueChange> valueListener) {
+  public final void removeValueListener(final EventInfoListener valueListener) {
     if (valueChangedEvent != null) {
       valueChangedEvent.removeInfoListener(valueListener);
     }
@@ -302,7 +302,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   @Override
   public final StateObserver getModifiedState() {
     final State state = States.state(isModified());
-    getValueChangeObserver().addInfoListener(new EventInfoListener<ValueChange>() {
+    getValueChangeObserver().addInfoListener(new EventInfoListener<ValueChange<K, ?>>() {
       /** {@inheritDoc} */
       @Override
       public void eventOccurred(final ValueChange info) {
@@ -315,7 +315,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<ValueChange> getValueChangeObserver() {
+  public final EventObserver<ValueChange<K, ?>> getValueChangeObserver() {
     return getValueChangedEvent().getObserver();
   }
 
@@ -395,7 +395,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     }
   }
 
-  private Event<ValueChange> getValueChangedEvent() {
+  private Event<ValueChange<K, ?>> getValueChangedEvent() {
     if (valueChangedEvent == null) {
       valueChangedEvent = Events.event();
       handleValueChangedEventInitialized();
