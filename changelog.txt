@@ -3653,3 +3653,5 @@
   Some generification of Events
   FilteredTableColumnModel.containsColumn() added
   DefaultEntityTableModel, loading of property preferences for previously non-existing properties no longer crashes the application
+  DefaultEntityTableModel, removed org.json.JSONException from signatures
+  UiUtil.linkToEnabledState() overloaded with includeFocusable parameter

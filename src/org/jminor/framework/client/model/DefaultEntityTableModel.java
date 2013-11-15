@@ -560,7 +560,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       try {
         Util.putUserPreference(getPreferencesKey(), createPreferences().toString());
       }
-      catch (org.json.JSONException e) {
+      catch (Exception e) {
         LOG.error("Error while saving preferences", e);
       }
     }
@@ -755,14 +755,14 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     return getClass().getSimpleName() + "-" + getEntityID();
   }
 
-  private org.json.JSONObject createPreferences() throws org.json.JSONException {
+  private org.json.JSONObject createPreferences() throws Exception {
     final org.json.JSONObject preferencesRoot = new org.json.JSONObject();
     preferencesRoot.put(PREFERENCES_COLUMNS, createColumnPreferences());
 
     return preferencesRoot;
   }
 
-  private org.json.JSONObject createColumnPreferences() throws org.json.JSONException {
+  private org.json.JSONObject createColumnPreferences() throws Exception {
     final org.json.JSONObject columnPreferencesRoot = new org.json.JSONObject();
     for (final TableColumn column : getColumnModel().getAllColumns()) {
       final Property property = (Property) column.getIdentifier();
@@ -785,7 +785,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
           applyColumnPreferences(new org.json.JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS));
         }
       }
-      catch (org.json.JSONException e) {
+      catch (Exception e) {
         LOG.error("Error while applying preferences: " + preferencesString, e);
       }
     }
@@ -808,7 +808,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
             columnModel.setColumnVisible((Property) column.getIdentifier(), false);
           }
         }
-        catch (org.json.JSONException e) {
+        catch (Exception e) {
           LOG.info("Property preferences not found: " + property, e);
         }
       }

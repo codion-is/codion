@@ -583,16 +583,30 @@ public final class UiUtil {
    * @param components the components, if null nothing is done
    */
   public static void linkToEnabledState(final StateObserver enabledState, final JComponent... components) {
+    linkToEnabledState(enabledState, true, components);
+  }
+
+  /**
+   * Links the given components to the given StateObserver, so that each component is enabled only when the observed state is active
+   * @param enabledState the StateObserver with which to link the components, if null then nothing is done
+   * @param includeFocusable if true then the focusable attribute is set as well as the enabled attribute
+   * @param components the components, if null nothing is done
+   */
+  public static void linkToEnabledState(final StateObserver enabledState, final boolean includeFocusable, final JComponent... components) {
     if (enabledState != null && components != null) {
       for (final JComponent component : components) {
         component.setEnabled(enabledState.isActive());
-        component.setFocusable(enabledState.isActive());
+        if (includeFocusable) {
+          component.setFocusable(enabledState.isActive());
+        }
         enabledState.addListener(new EventListener() {
           /** {@inheritDoc} */
           @Override
           public void eventOccurred() {
             component.setEnabled(enabledState.isActive());
-            component.setFocusable(enabledState.isActive());
+            if (includeFocusable) {
+              component.setFocusable(enabledState.isActive());
+            }
           }
         });
       }
