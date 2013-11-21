@@ -112,7 +112,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   }
 
   /**
-   * Handles the given exception, which usually means simply displaying it to the user
+   * Handles the given exception, which simply means displaying it to the user
    * @param throwable the exception to handle
    */
   public final void handleException(final Throwable throwable) {
@@ -157,7 +157,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   }
 
   /**
-   * Adds support application panels, available via a support panel manu
+   * Adds support application panels, available via a support panel menu
    * @param panelProviders the support application panel providers
    * @return this application panel instance
    */
@@ -170,7 +170,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   }
 
   /**
-   * Adds a support application panel, available via a support panel manu
+   * Adds a support application panel, available via a support panel menu
    * @param panelProvider the support application panel provider
    * @return this application panel instance
    */
@@ -1130,26 +1130,30 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
                 + ": " + (System.currentTimeMillis() - initializationStarted) + " ms");
         return frame;
       }
-      catch (Throwable e) {
-        try {
-          if (connectionProvider != null) {
-            connectionProvider.disconnect();
-          }
-        }
-        catch (Exception ex) {
-          LOG.debug("Exception while disconnecting after a failed startup", ex);
-        }
-        handleException(e, null);
-        if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
-                FrameworkMessages.get(FrameworkMessages.RETRY),
-                FrameworkMessages.get(FrameworkMessages.RETRY_TITLE),
-                JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
-          if (startupDialog != null) {
-            startupDialog.dispose();
-          }
-          throw new CancelException();
-        }
+      catch (Throwable exception) {
+        handleStartupException(startupDialog, connectionProvider, exception);
       }
+    }
+  }
+
+  private void handleStartupException(final JDialog startupDialog, final EntityConnectionProvider connectionProvider, final Throwable e) {
+    try {
+      if (connectionProvider != null) {
+        connectionProvider.disconnect();
+      }
+    }
+    catch (Exception ex) {
+      LOG.debug("Exception while disconnecting after a failed startup", ex);
+    }
+    handleException(e, null);
+    if (JOptionPane.YES_OPTION != JOptionPane.showConfirmDialog(null,
+            FrameworkMessages.get(FrameworkMessages.RETRY),
+            FrameworkMessages.get(FrameworkMessages.RETRY_TITLE),
+            JOptionPane.YES_NO_OPTION, JOptionPane.QUESTION_MESSAGE)) {
+      if (startupDialog != null) {
+        startupDialog.dispose();
+      }
+      throw new CancelException();
     }
   }
 

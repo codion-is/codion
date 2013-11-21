@@ -207,6 +207,11 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private boolean showDetailPanelControls = Configuration.getBooleanValue(Configuration.SHOW_DETAIL_PANEL_CONTROLS);
 
   /**
+   * if true then the ESC key disposes the edit dialog
+   */
+  private boolean disposeEditDialogOnEscape = Configuration.getBooleanValue(Configuration.DISPOSE_EDIT_DIALOG_ON_ESCAPE);
+
+  /**
    * True after <code>initializePanel()</code> has been called
    */
   private boolean panelInitialized = false;
@@ -743,6 +748,22 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     checkIfInitialized();
     this.includeControlPanel = includeControlPanel;
     return this;
+  }
+
+  /**
+   * @return true if the edit dialog is disposed of on ESC
+   * @see Configuration#DISPOSE_EDIT_DIALOG_ON_ESCAPE
+   */
+  public final boolean isDisposeEditDialogOnEscape() {
+    return disposeEditDialogOnEscape;
+  }
+
+  /**
+   * @param disposeEditDialogOnEscape if true then the edit dialog is disposed of on ESC
+   * @see Configuration#DISPOSE_EDIT_DIALOG_ON_ESCAPE
+   */
+  public final void setDisposeEditDialogOnEscape(final boolean disposeEditDialogOnEscape) {
+    this.disposeEditDialogOnEscape = disposeEditDialogOnEscape;
   }
 
   /**
@@ -1424,8 +1445,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     if (Configuration.getBooleanValue(Configuration.CENTER_APPLICATION_DIALOGS)) {
       dialogOwner = UiUtil.getParentWindow(this);
     }
-    editPanelDialog = UiUtil.displayInDialog(dialogOwner, editControlPanel, caption, false,
-            Configuration.getBooleanValue(Configuration.DISPOSE_EDIT_DIALOG_ON_ESCAPE),
+    editPanelDialog = UiUtil.displayInDialog(dialogOwner, editControlPanel, caption, false, disposeEditDialogOnEscape,
             new AbstractAction() {
               /** {@inheritDoc} */
               @Override

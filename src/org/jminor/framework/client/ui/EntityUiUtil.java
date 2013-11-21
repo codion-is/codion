@@ -1137,11 +1137,15 @@ public final class EntityUiUtil {
   private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.PrimaryKeyProperty> primaryKeyProperties) {
     Util.collate(primaryKeyProperties);
     for (final Property.PrimaryKeyProperty property : primaryKeyProperties) {
+      final boolean modified = entity.isModified(property.getPropertyID());
       String value = "[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID());
-      if (entity.isModified(property.getPropertyID())) {
+      if (modified) {
         value += getOriginalValue(entity, property);
       }
       final JMenuItem menuItem = new JMenuItem(value);
+      if (modified) {
+        setModified(menuItem);
+      }
       menuItem.setToolTipText(property.getColumnName());
       rootMenu.add(menuItem);
     }
@@ -1157,6 +1161,7 @@ public final class EntityUiUtil {
         final boolean fkValueNull = entity.isForeignKeyNull(property);
         final boolean isLoaded = entity.isLoaded(property.getPropertyID());
         final boolean valid = isValid(validator, entity, property);
+        final boolean modified = entity.isModified(property.getPropertyID());
         final String toolTipText = getReferenceColumnNames(property);
         if (!fkValueNull) {
           final Entity referencedEntity;
@@ -1168,20 +1173,32 @@ public final class EntityUiUtil {
             entity.removeValue(property.getPropertyID());
             entity.setValue(property, referencedEntity);
           }
-          final String text = "[FK" + (isLoaded ? "] " : "+] ") + property.getCaption() + ": " + referencedEntity.toString();
+          String text = "[FK" + (isLoaded ? "] " : "+] ") + property.getCaption() + ": " + referencedEntity.toString();
+          if (modified) {
+            text += getOriginalValue(entity, property);
+          }
           final JMenu foreignKeyMenu = new JMenu(text);
           if (!valid) {
             setInvalid(foreignKeyMenu);
+          }
+          if (modified) {
+            setModified(foreignKeyMenu);
           }
           foreignKeyMenu.setToolTipText(toolTipText);
           populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), connectionProvider);
           rootMenu.add(foreignKeyMenu);
         }
         else {
-          final String text = "[FK] " + property.getCaption() + ": <null>";
+          String text = "[FK] " + property.getCaption() + ": <null>";
+          if (modified) {
+            text += getOriginalValue(entity, property);
+          }
           final JMenuItem menuItem = new JMenuItem(text);
           if (!valid) {
             setInvalid(menuItem);
+          }
+          if (modified) {
+            setModified(menuItem);
           }
           menuItem.setToolTipText(toolTipText);
           rootMenu.add(menuItem);
@@ -1208,6 +1225,7 @@ public final class EntityUiUtil {
     final Entity.Validator validator = Entities.getValidator(entity.getEntityID());
     for (final Property property : properties) {
       final boolean valid = isValid(validator, entity, property);
+      final boolean modified = entity.isModified(property.getPropertyID());
       final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
               && ((Property.ColumnProperty) property).isForeignKeyProperty();
       if (!isForeignKeyProperty && !(property instanceof Property.ForeignKeyProperty)) {
@@ -1216,9 +1234,16 @@ public final class EntityUiUtil {
                 + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
         final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
         final boolean longValue = value != null && value.length() > maxValueLength;
-        final JMenuItem menuItem = new JMenuItem(prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value));
+        String caption = prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value);
+        if (modified) {
+          caption += getOriginalValue(entity, property);
+        }
+        final JMenuItem menuItem = new JMenuItem(caption);
         if (!valid) {
           setInvalid(menuItem);
+        }
+        if (modified) {
+          setModified(menuItem);
         }
         String toolTipText = "";
         if (property instanceof Property.ColumnProperty) {
@@ -1231,6 +1256,11 @@ public final class EntityUiUtil {
         rootMenu.add(menuItem);
       }
     }
+  }
+
+  private static void setModified(final JMenuItem menuItem) {
+    final Font currentFont = menuItem.getFont();
+    menuItem.setFont(new Font(currentFont.getName(), currentFont.getStyle() | Font.ITALIC, currentFont.getSize()));
   }
 
   private static void setInvalid(final JMenuItem menuItem) {

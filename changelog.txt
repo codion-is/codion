@@ -3555,7 +3555,7 @@
   Control.doSetMnemonic() added protected
   ToggleControl overrides doSetMnemonic() in order to set the mnemonic in the associated button model as well
   Control.getMnemonic() now returns -1 in case no mnemonic is specified, instead of throwing a NullPointerException
-  Configuration.DISPOSE_EDIT_DIALOG_ON_ESCAPE added, used in EntityEditPanel
+  Configuration.DISPOSE_EDIT_DIALOG_ON_ESCAPE added, used in EntityPanel
   EntityTableCellRenderer.indicateSearch field added
   EntityTableCellRenderer.tooltipData field added
   ServerUtil.getServers() logging improved
@@ -3657,3 +3657,5 @@
   UiUtil.linkToEnabledState() overloaded with includeFocusable parameter
 0.8.4
   Usages of ValueChange re-generified throughout
+  EntityPanel.disposeEditDialogOnEscape attribute added, defaults to the value of Configuration.DISPOSE_EDIT_DIALOG_ON_ESCAPE
+  EntityUiUtil.showEntityMenu() improved, now indicates the modified state of properties along with the original value
