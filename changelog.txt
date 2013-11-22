@@ -3661,3 +3661,4 @@
   EntityUiUtil.showEntityMenu() improved, now indicates the modified state of properties along with the original value
   DefaultEntityApplicationModelTest.containsUnsavedData() added
   EntityTablePanel, key event to show entity values menu is now CTRL-ALT-V, like in EntityEditPanel
+  EntityPanel.setEditPanelState() bug fixed, now simply returns when the state being set is the same as the current state, instead of making a mess of it

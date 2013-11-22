@@ -860,7 +860,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param state the edit panel state, either HIDDEN, EMBEDDED or DIALOG
    */
   public final void setEditPanelState(final int state) {
-    if (!containsEditPanel()) {
+    if (!containsEditPanel() || (editPanelState == state)) {
       return;
     }
     if (editControlPanel == null) {
