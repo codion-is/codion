@@ -142,11 +142,11 @@ public interface DatabaseConnection {
 
     /**
      * Executes this procedure with the given connection
-     * @param connection the db connection to use when executing
+     * @param databaseConnection the db connection to use when executing
      * @param arguments the procedure arguments, if any
      * @throws DatabaseException in case of an exception during the execution
      */
-    void execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException;
+    void execute(final DatabaseConnection databaseConnection, final Object... arguments) throws DatabaseException;
   }
 
   /**
@@ -156,11 +156,11 @@ public interface DatabaseConnection {
 
     /**
      * Executes this function with the given connection
-     * @param connection the db connection to use when executing
+     * @param databaseConnection the db connection to use when executing
      * @param arguments the function arguments, if any
      * @return the function return arguments
      * @throws DatabaseException in case of an exception during the execution
      */
-    List execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException;
+    List execute(final DatabaseConnection databaseConnection, final Object... arguments) throws DatabaseException;
   }
 }

@@ -921,7 +921,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
     UiUtil.addKeyEvent(table, KeyEvent.VK_G, KeyEvent.CTRL_DOWN_MASK,
             new PopupMenuAction(popupMenu, table));
-    UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK,
+    UiUtil.addKeyEvent(table, KeyEvent.VK_V, KeyEvent.CTRL_DOWN_MASK + KeyEvent.ALT_DOWN_MASK,
             new AbstractAction("EntityTablePanel.showEntityMenu") {
               /** {@inheritDoc} */
               @Override

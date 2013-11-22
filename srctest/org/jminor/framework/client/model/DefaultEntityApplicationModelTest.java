@@ -173,6 +173,43 @@ public final class DefaultEntityApplicationModelTest {
     assertFalse(model.containsEntityModel(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE)));
   }
 
+  @Test
+  public void containsUnsavedData() {
+    final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(DefaultEntityConnectionTest.CONNECTION_PROVIDER) {
+      @Override
+      protected void loadDomainModel() {
+        EmpDept.init();
+      }
+    };
+    final EntityModel deptModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, model.getConnectionProvider());
+    final EntityModel empModel = new DefaultEntityModel(EmpDept.T_EMPLOYEE, model.getConnectionProvider());
+    deptModel.addDetailModel(empModel);
+    deptModel.addLinkedDetailModel(empModel);
+
+    model.addEntityModel(deptModel);
+
+    assertFalse(model.containsUnsavedData());
+
+    model.refresh();
+
+    deptModel.getTableModel().getSelectionModel().setSelectedIndex(0);
+    empModel.getTableModel().getSelectionModel().setSelectedIndex(0);
+
+    String name = (String) empModel.getEditModel().getValue(EmpDept.EMPLOYEE_NAME);
+    empModel.getEditModel().setValue(EmpDept.EMPLOYEE_NAME, "Darri");
+    assertTrue(model.containsUnsavedData());
+
+    empModel.getEditModel().setValue(EmpDept.EMPLOYEE_NAME, name);
+    assertFalse(model.containsUnsavedData());
+
+    name = (String) deptModel.getEditModel().getValue(EmpDept.DEPARTMENT_NAME);
+    deptModel.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, "Darri");
+    assertTrue(model.containsUnsavedData());
+
+    deptModel.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, name);
+    assertFalse(model.containsUnsavedData());
+  }
+
   private static class DeptModel extends DefaultEntityModel {
     private DeptModel(final EntityConnectionProvider connectionProvider) {
       super(EmpDept.T_DEPARTMENT, connectionProvider);

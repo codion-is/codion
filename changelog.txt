@@ -3659,3 +3659,5 @@
   Usages of ValueChange re-generified throughout
   EntityPanel.disposeEditDialogOnEscape attribute added, defaults to the value of Configuration.DISPOSE_EDIT_DIALOG_ON_ESCAPE
   EntityUiUtil.showEntityMenu() improved, now indicates the modified state of properties along with the original value
+  DefaultEntityApplicationModelTest.containsUnsavedData() added
+  EntityTablePanel, key event to show entity values menu is now CTRL-ALT-V, like in EntityEditPanel
