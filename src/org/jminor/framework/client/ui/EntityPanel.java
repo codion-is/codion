@@ -863,9 +863,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     if (!containsEditPanel() || (editPanelState == state)) {
       return;
     }
-    if (editControlPanel == null) {
-      editControlPanel = initializeEditControlPanel();
-    }
 
     editPanelState = state;
     if (state != DIALOG) {
@@ -1032,6 +1029,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
     if (editPanel != null) {
       editPanel.initializePanel();
+      editControlPanel = initializeEditControlPanel();
     }
     if (tablePanel != null) {
       final ControlSet toolbarControls = new ControlSet("");
