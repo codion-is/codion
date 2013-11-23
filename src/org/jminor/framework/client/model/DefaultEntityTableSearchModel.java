@@ -313,7 +313,6 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   private void bindEvents() {
     for (final PropertySearchModel searchModel : propertySearchModels.values()) {
       searchModel.addSearchStateListener(new EventListener() {
-        /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
           searchStateChangedState.setActive(!rememberedSearchState.equals(getSearchModelState()));

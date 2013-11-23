@@ -554,7 +554,6 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
       this.methodLogger = remoteEntityConnection.methodLogger;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       final String methodName = method.getName();

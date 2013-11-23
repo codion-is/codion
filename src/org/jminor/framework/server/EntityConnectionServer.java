@@ -56,7 +56,6 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   private final boolean sslEnabled;
   private final boolean clientLoggingEnabled;
   private final TaskScheduler connectionTimeoutScheduler = new TaskScheduler(new Runnable() {
-    /** {@inheritDoc} */
     @Override
     public void run() {
       try {
@@ -386,7 +385,6 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
                 clientLoggingEnabled, sslEnabled);
       }
       connection.addDisconnectListener(new EventListener() {
-        /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
           try {

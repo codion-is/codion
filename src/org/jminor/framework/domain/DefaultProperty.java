@@ -567,88 +567,74 @@ class DefaultProperty implements Property {
       this.valueFetcher = initializeValueFetcher(this);
     }
 
-    /** {@inheritDoc} */
     @Override
     public final String getColumnName() {
       return this.columnName;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final int getColumnType() {
       return columnType;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final Object toColumnValue(final Object value) {
       return valueConverter.toColumnValue(value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public final Object fromColumnValue(final Object object) {
       return valueConverter.fromColumnValue(object);
     }
 
-    /** {@inheritDoc} */
     @Override
     public final boolean columnHasDefaultValue() {
       return columnHasDefaultValue;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ColumnProperty setColumnHasDefaultValue(final boolean columnHasDefaultValue) {
       this.columnHasDefaultValue = columnHasDefaultValue;
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final boolean isUpdatable() {
       return this.updatable;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ColumnProperty setUpdatable(final boolean updatable) {
       this.updatable = updatable;
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ColumnProperty setSearchable(final boolean searchable) {
       this.searchable = searchable;
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final boolean isSearchable() {
       return searchable;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isDenormalized() {
       return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final void setSelectIndex(final int selectIndex) {
       this.selectIndex = selectIndex;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final int getSelectIndex() {
       return selectIndex;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ColumnProperty setGroupingColumn(final boolean groupingColumn) {
       if (aggregateColumn) {
@@ -658,13 +644,11 @@ class DefaultProperty implements Property {
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final boolean isGroupingColumn() {
       return groupingColumn;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ColumnProperty setAggregateColumn(final boolean aggregateColumn) {
       if (groupingColumn) {
@@ -674,31 +658,26 @@ class DefaultProperty implements Property {
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final boolean isAggregateColumn() {
       return aggregateColumn;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final void setForeignKeyProperty(final ForeignKeyProperty foreignKeyProperty) {
       this.foreignKeyProperty = foreignKeyProperty;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final ForeignKeyProperty getForeignKeyProperty() {
       return foreignKeyProperty;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final boolean isForeignKeyProperty() {
       return foreignKeyProperty != null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final Property setReadOnly(final boolean readOnly) {
       if (isForeignKeyProperty()) {
@@ -708,7 +687,6 @@ class DefaultProperty implements Property {
       return super.setReadOnly(readOnly);
     }
 
-    /** {@inheritDoc} */
     @Override
     public final boolean isReadOnly() {
       if (foreignKeyProperty != null) {
@@ -718,7 +696,6 @@ class DefaultProperty implements Property {
       return super.isReadOnly();
     }
 
-    /** {@inheritDoc} */
     @Override
     public final String getCaption() {
       final String superCaption = super.getCaption();
@@ -729,7 +706,6 @@ class DefaultProperty implements Property {
       return superCaption;
     }
 
-    /** {@inheritDoc} */
     @Override
     public final Object fetchValue(final ResultSet resultSet) throws SQLException {
       return valueFetcher.fetchValue(resultSet);
@@ -757,7 +733,6 @@ class DefaultProperty implements Property {
       switch (property.columnType) {
         case Types.INTEGER:
           return new ValueFetcher() {
-            /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
               return property.fromColumnValue(getInteger(resultSet, property.selectIndex));
@@ -765,7 +740,6 @@ class DefaultProperty implements Property {
           };
         case Types.BIGINT:
           return new ValueFetcher() {
-            /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
               return property.fromColumnValue(getLong(resultSet, property.selectIndex));
@@ -773,7 +747,6 @@ class DefaultProperty implements Property {
           };
         case Types.DOUBLE:
           return new ValueFetcher() {
-            /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
               return property.fromColumnValue(getDouble(resultSet, property.selectIndex));
@@ -781,7 +754,6 @@ class DefaultProperty implements Property {
           };
         case Types.DATE:
           return new ValueFetcher() {
-            /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
               return property.fromColumnValue(getDate(resultSet, property.selectIndex));
@@ -789,7 +761,6 @@ class DefaultProperty implements Property {
           };
         case Types.TIMESTAMP:
           return new ValueFetcher() {
-            /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
               return property.fromColumnValue(getTimestamp(resultSet, property.selectIndex));
@@ -797,7 +768,6 @@ class DefaultProperty implements Property {
           };
         case Types.TIME:
           return new ValueFetcher() {
-            /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
               return property.fromColumnValue(getTime(resultSet, property.selectIndex));
@@ -805,7 +775,6 @@ class DefaultProperty implements Property {
           };
         case Types.VARCHAR:
           return new ValueFetcher() {
-            /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
               return property.fromColumnValue(getString(resultSet, property.selectIndex));
@@ -813,7 +782,6 @@ class DefaultProperty implements Property {
           };
         case Types.BOOLEAN:
           return new ValueFetcher() {
-            /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
               return property.fromColumnValue(getBoolean(resultSet, property.selectIndex));
@@ -821,7 +789,6 @@ class DefaultProperty implements Property {
           };
         case Types.CHAR:
           return new ValueFetcher() {
-            /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
               return property.fromColumnValue(getCharacter(resultSet, property.selectIndex));
@@ -829,7 +796,6 @@ class DefaultProperty implements Property {
           };
         case Types.BLOB:
           return new ValueFetcher() {
-            /** {@inheritDoc} */
             @Override
             public Object fetchValue(final ResultSet resultSet) throws SQLException {
               return null;//blob columns are handled specifically
@@ -900,13 +866,11 @@ class DefaultProperty implements Property {
       setUpdatable(false);
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getIndex() {
       return index;
     }
 
-    /** {@inheritDoc} */
     @Override
     public PrimaryKeyProperty setIndex(final int index) {
       if (index < 0) {
@@ -971,7 +935,6 @@ class DefaultProperty implements Property {
       this.compositeReference = this.referenceProperties.size() > 1;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isUpdatable() {
       for (final ColumnProperty referenceProperty : referenceProperties) {
@@ -983,7 +946,6 @@ class DefaultProperty implements Property {
       return true;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ForeignKeyProperty setNullable(final boolean nullable) {
       for (final ColumnProperty columnProperty : referenceProperties) {
@@ -993,38 +955,32 @@ class DefaultProperty implements Property {
       return (ForeignKeyProperty) super.setNullable(nullable);
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getReferencedEntityID() {
       return referencedEntityID;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<ColumnProperty> getReferenceProperties() {
       return referenceProperties;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isCompositeReference() {
       return compositeReference;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getFetchDepth() {
       return fetchDepth;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ForeignKeyProperty setFetchDepth(final int fetchDepth) {
       this.fetchDepth = fetchDepth;
       return this;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getReferencedPropertyID(final Property referenceProperty) {
       if (linkedReferenceProperties == null) {
@@ -1075,19 +1031,16 @@ class DefaultProperty implements Property {
       this.denormalizedProperty = denormalizedProperty;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getForeignKeyPropertyID() {
       return foreignKeyPropertyID;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Property getDenormalizedProperty() {
       return denormalizedProperty;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isDenormalized() {
       return true;
@@ -1110,19 +1063,16 @@ class DefaultProperty implements Property {
       this.values = Collections.unmodifiableList(values);
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isValid(final Object value) {
       return values.contains(new Item<>(value, ""));
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<Item> getValues() {
       return values;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getCaption(final Object value) {
       final Item<Object> item = new Item<>(value, "");
@@ -1166,13 +1116,11 @@ class DefaultProperty implements Property {
       setReadOnly(true);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Provider getValueProvider() {
       return valueProvider;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<String> getLinkedPropertyIDs() {
       return linkedPropertyIDs;
@@ -1198,13 +1146,11 @@ class DefaultProperty implements Property {
       this.denormalizedProperty = property;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getForeignKeyPropertyID() {
       return foreignKeyPropertyID;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Property getDenormalizedProperty() {
       return denormalizedProperty;
@@ -1231,7 +1177,6 @@ class DefaultProperty implements Property {
       this.subquery = subquery;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getSubQuery() {
       return subquery;
@@ -1248,7 +1193,6 @@ class DefaultProperty implements Property {
       setReadOnly(true);
     }
 
-    /** {@inheritDoc} */
     @Override
     public final AuditAction getAuditAction() {
       return auditAction;
@@ -1284,7 +1228,6 @@ class DefaultProperty implements Property {
       this.falseValue = falseValue;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Boolean fromColumnValue(final Object columnValue) {
       if (Util.equal(trueValue, columnValue)) {
@@ -1297,7 +1240,6 @@ class DefaultProperty implements Property {
       return null;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Object toColumnValue(final Object value) {
       if (value == null) {
@@ -1313,13 +1255,11 @@ class DefaultProperty implements Property {
   }
 
   private static final class DefaultValueConverter implements ValueConverter {
-    /** {@inheritDoc} */
     @Override
     public Object toColumnValue(final Object value) {
       return value;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Object fromColumnValue(final Object columnValue) {
       return columnValue;
@@ -1327,7 +1267,6 @@ class DefaultProperty implements Property {
   }
 
   private static final class DateValueConverter implements ValueConverter {
-    /** {@inheritDoc} */
     @Override
     public Object toColumnValue(final Object value) {
       if (value != null && !(value instanceof java.sql.Date)) {
@@ -1336,7 +1275,6 @@ class DefaultProperty implements Property {
       return value;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Object fromColumnValue(final Object columnValue) {
       return columnValue;

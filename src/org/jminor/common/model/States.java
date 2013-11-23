@@ -146,7 +146,6 @@ public final class States {
 
     private final List<StateObserver> states = new ArrayList<>();
     private final EventListener listener = new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         ((DefaultStateObserver) getObserver()).notifyObservers();
@@ -353,7 +352,6 @@ public final class States {
       }
       updateAccordingToState(state);
       state.addListener(new EventListener() {
-        /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
           updateAccordingToState(state);

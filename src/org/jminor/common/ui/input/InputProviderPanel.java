@@ -113,7 +113,6 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
 
   private JButton createButton(final String caption, final String mnemonic, final int option) {
     final JButton button = new JButton(new AbstractAction(caption) {
-      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         buttonValue = option;

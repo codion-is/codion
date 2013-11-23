@@ -170,7 +170,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
     this.counter = new Counter(this.usageScenarios);
     initializeChartData();
     this.updateChartDataScheduler = new TaskScheduler(new Runnable() {
-      /** {@inheritDoc} */
       @Override
       public void run() {
         if (shuttingDown || paused) {
@@ -650,7 +649,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
       stopped = true;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void run() {
       try {

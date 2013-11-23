@@ -193,7 +193,6 @@ public final class EntityTableSearchPanel extends JPanel {
   private static JPanel initializeSimpleSearchPanel(final EntityTableSearchModel searchModel) {
     final JTextField simpleSearchTextField = new JTextField();
     final Action simpleSearchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
-      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         searchModel.performSimpleSearch();
@@ -212,7 +211,6 @@ public final class EntityTableSearchPanel extends JPanel {
 
   private static AbstractTableColumnSyncPanel initializeAdvancedSearchPanel(final EntityTableModel tableModel, final int verticalFillerWidth) {
     final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(tableModel.getColumnModel(), tableModel.getColumnModel().getAllColumns()) {
-      /** {@inheritDoc} */
       @Override
       protected JPanel initializeColumnPanel(final TableColumn column) {
         final Property property = (Property) column.getIdentifier();

@@ -1075,7 +1075,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
       this.propertyID = propertyID;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Collection<Object> getValues() {
       try {
@@ -1099,7 +1098,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
       this.insertedEntities = insertedEntities;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<Entity> getInsertedEntities() {
       return insertedEntities;
@@ -1118,7 +1116,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
       this.deletedEntities = deletedEntities;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<Entity> getDeletedEntities() {
       return deletedEntities;
@@ -1140,13 +1137,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
       this.primaryKeyModified = primaryKeyModified;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<Entity> getUpdatedEntities() {
       return updatedEntities;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isPrimaryKeyModified() {
       return primaryKeyModified;

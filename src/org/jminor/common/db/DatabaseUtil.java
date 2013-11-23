@@ -29,7 +29,6 @@ public final class DatabaseUtil {
    * A result packer for fetching integers from a result set containing a single integer column
    */
   public static final ResultPacker<Integer> INTEGER_RESULT_PACKER = new ResultPacker<Integer>() {
-    /** {@inheritDoc} */
     @Override
     public List<Integer> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Integer> integers = new ArrayList<>();

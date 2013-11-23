@@ -60,7 +60,7 @@ public final class ValueChanges {
      * @param oldValue the old value
      * @param initialization true if the value was being initialized, as in, no previous value exists
      */
-    public DefaultValueChange(final Object source, final K key, final V newValue, final V oldValue, final boolean initialization) {
+    private DefaultValueChange(final Object source, final K key, final V newValue, final V oldValue, final boolean initialization) {
       Util.rejectNullValue(key, "key");
       this.source = source;
       this.key = key;
@@ -145,7 +145,6 @@ public final class ValueChanges {
       return initialization;
     }
 
-    /** {@inheritDoc} */
     @Override
     public String toString() {
       if (initialization) {

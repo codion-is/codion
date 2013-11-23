@@ -54,7 +54,6 @@ public final class DateInputPanel extends JPanel {
     add(inputField, BorderLayout.CENTER);
     if (includeButton) {
       final AbstractAction buttonAction = new AbstractAction("...") {
-        /** {@inheritDoc} */
         @Override
         public void actionPerformed(final ActionEvent e) {
           Date currentValue = null;
@@ -115,7 +114,6 @@ public final class DateInputPanel extends JPanel {
       this.inputField = inputField;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void focusGained(final FocusEvent e) {
       inputField.requestFocusInWindow();

@@ -228,55 +228,46 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
       this.weight = weight;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getWeight() {
       return enabled ? weight : 0;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isEnabled() {
       return enabled;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setEnabled(final boolean value) {
       this.enabled = value;
     }
 
-    /** {@inheritDoc} */
     @Override
     public T getItem() {
       return item;
     }
 
-  /** {@inheritDoc} */
     @Override
     public String toString() {
       return item.toString();
     }
 
-  /** {@inheritDoc} */
     @Override
     public boolean equals(final Object obj) {
       return obj instanceof ItemRandomizer.RandomItem && (((ItemRandomizer.RandomItem) obj).getItem().equals(item));
     }
 
-  /** {@inheritDoc} */
     @Override
     public int hashCode() {
       return item.hashCode();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void incrementWeight() {
       weight++;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void decrementWeight() {
       if (weight == 0) {
@@ -286,7 +277,6 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
       weight--;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setWeight(final int weight) {
       if (weight < 0) {

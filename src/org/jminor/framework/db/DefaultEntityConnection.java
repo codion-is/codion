@@ -1104,7 +1104,6 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
       this.property = property;
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<Object> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Object> result = new ArrayList<>(50);
@@ -1130,7 +1129,6 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
    * A result packer for fetching blobs from a result set containing a single blob column
    */
   private static final ResultPacker<Blob> BLOB_RESULT_PACKER = new ResultPacker<Blob>() {
-    /** {@inheritDoc} */
     @Override
     public List<Blob> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
       final List<Blob> blobs = new ArrayList<>();
@@ -1234,7 +1232,6 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
       return !(methodName.equals(IS_CONNECTED) || methodName.equals(IS_VALID));
     }
 
-    /** {@inheritDoc} */
     @Override
     protected String getMethodArgumentAsString(final Object argument) {
       if (argument == null) {

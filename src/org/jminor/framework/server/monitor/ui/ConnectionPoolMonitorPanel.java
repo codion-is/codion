@@ -134,7 +134,6 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private void bindEvents() {
     model.getStatisticsObserver().addListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         updateView();

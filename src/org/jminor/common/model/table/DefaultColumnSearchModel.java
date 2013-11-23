@@ -665,7 +665,6 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   private void bindEvents() {
     final EventListener autoEnableListener = new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         if (autoEnable) {
@@ -687,7 +686,6 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     searchTypeChangedEvent.addListener(searchStateChangedEvent);
     enabledChangedEvent.addListener(searchStateChangedEvent);
     searchTypeChangedEvent.addListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         lowerBoundRequiredState.setActive(getSearchType() == SearchType.WITHIN_RANGE || getSearchType() == SearchType.OUTSIDE_RANGE);

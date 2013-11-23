@@ -188,11 +188,9 @@ public final class ControlProvider {
       this.vertical = vertical;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleSeparator() {}
 
-    /** {@inheritDoc} */
     @Override
     public void handleControl(final Control control) {
       if (control instanceof ToggleControl) {
@@ -203,7 +201,6 @@ public final class ControlProvider {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleControlSet(final ControlSet controlSet) {
       if (vertical) {
@@ -214,7 +211,6 @@ public final class ControlProvider {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleAction(final Action action) {
       btnPanel.add(new JButton(action));
@@ -235,7 +231,6 @@ public final class ControlProvider {
       if (enabledState != null) {
         menu.setEnabled(enabledState.isActive());
         enabledState.addListener(new EventListener() {
-          /** {@inheritDoc} */
           @Override
           public void eventOccurred() {
             menu.setEnabled(enabledState.isActive());
@@ -259,13 +254,11 @@ public final class ControlProvider {
       return menu;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleSeparator() {
       menu.addSeparator();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleControl(final Control control) {
       if (control instanceof ToggleControl) {
@@ -276,7 +269,6 @@ public final class ControlProvider {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleControlSet(final ControlSet controlSet) {
       final MenuControlIterator mv = new MenuControlIterator(controlSet);
@@ -284,7 +276,6 @@ public final class ControlProvider {
       menu.add(mv.menu);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleAction(final Action action) {
       menu.add(action);
@@ -305,13 +296,11 @@ public final class ControlProvider {
       this.includeCaption = includeCaption;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleSeparator() {
       toolbar.addSeparator();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleControl(final Control control) {
       if (control instanceof ToggleControl) {
@@ -322,13 +311,11 @@ public final class ControlProvider {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleControlSet(final ControlSet controlSet) {
       iterate(new ToolBarControlIterator(toolbar), controlSet);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void handleAction(final Action action) {
       toolbar.add(action);

@@ -145,15 +145,12 @@ public final class TextInputPanel extends JPanel {
       super("...");
     }
 
-    /** {@inheritDoc} */
     @Override
     public void actionPerformed(final ActionEvent e) {
       final JTextArea txtArea = new JTextArea(textComponent.getText()) {
         @Override
         protected Document createDefaultModel() {
-          /** {@inheritDoc} */
           return new PlainDocument() {
-            /** {@inheritDoc} */
             @Override
             public void insertString(final int offs, final String str, final AttributeSet a) throws BadLocationException {
               if (getMaxLength() > 0 && getLength() + (str != null ? str.length() : 0) > getMaxLength()) {
@@ -170,7 +167,6 @@ public final class TextInputPanel extends JPanel {
       txtArea.setWrapStyleWord(true);
       final JScrollPane scroller = new JScrollPane(txtArea);
       final AbstractAction okAction = new AbstractAction(Messages.get(Messages.OK)) {
-        /** {@inheritDoc} */
         @Override
         public void actionPerformed(final ActionEvent evt) {
           textComponent.setText(txtArea.getText());

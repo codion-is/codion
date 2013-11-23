@@ -450,7 +450,6 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
       this.nullValue = nullValue;
     }
 
-    /** {@inheritDoc} */
     @Override
     @SuppressWarnings({"unchecked"})
     public int compare(final T o1, final T o2) {

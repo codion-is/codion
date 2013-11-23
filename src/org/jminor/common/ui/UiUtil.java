@@ -98,6 +98,7 @@ import java.util.List;
 import java.util.Locale;
 import java.util.Map;
 import java.util.StringTokenizer;
+import java.util.Vector;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -205,7 +206,6 @@ public final class UiUtil {
     txt.setEditable(false);
     txt.setHorizontalAlignment(JTextField.CENTER);
     Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory()).scheduleWithFixedDelay(new Runnable() {
-      /** {@inheritDoc} */
       @Override
       public void run() {
         txt.setText(Util.getMemoryUsageString());
@@ -406,7 +406,6 @@ public final class UiUtil {
       final Calendar returnTime = Calendar.getInstance();
       returnTime.setTime(cal.getTime());
       final JButton okBtn = new JButton(new AbstractAction(Messages.get(Messages.OK)) {
-        /** {@inheritDoc} */
         @Override
         public void actionPerformed(final ActionEvent e) {
           try {
@@ -419,7 +418,6 @@ public final class UiUtil {
         }
       });
       final JButton cancelBtn = new JButton(new AbstractAction(Messages.get(Messages.CANCEL)) {
-        /** {@inheritDoc} */
         @Override
         public void actionPerformed(final ActionEvent e) {
           cancel.setActive(true);
@@ -528,7 +526,6 @@ public final class UiUtil {
                                                          final boolean charsAsUpper) {
     try {
       final MaskFormatter formatter = new MaskFormatter(mask) {
-        /** {@inheritDoc} */
         @Override
         public Object stringToValue(final String value) throws ParseException {
           String ret = value;
@@ -565,7 +562,6 @@ public final class UiUtil {
     if (enabledState != null && action != null) {
       action.setEnabled(enabledState.isActive());
       enabledState.addListener(new EventListener() {
-        /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
           action.setEnabled(enabledState.isActive());
@@ -600,7 +596,6 @@ public final class UiUtil {
           component.setFocusable(enabledState.isActive());
         }
         enabledState.addListener(new EventListener() {
-          /** {@inheritDoc} */
           @Override
           public void eventOccurred() {
             component.setEnabled(enabledState.isActive());
@@ -1257,12 +1252,11 @@ public final class UiUtil {
    * @param <T> the type of values being selected
    */
   public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
-    final JList<T> list = new JList<>((T[]) values.toArray());
+    final JList<T> list = new JList<>(new Vector<>(values));
     final Window owner = getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);
     final Action okAction = new DisposeWindowAction(dialog);
     final Action cancelAction = new AbstractAction("UiUtil.cancel") {
-      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         list.clearSelection();
@@ -1521,7 +1515,6 @@ public final class UiUtil {
     else {
       dialog.setDefaultCloseOperation(JDialog.DO_NOTHING_ON_CLOSE);
       closeEvent.addListener(new EventListener() {
-        /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
           disposeActionListener.actionPerformed(null);
@@ -1530,7 +1523,6 @@ public final class UiUtil {
     }
     if (onClosedAction != null) {
       dialog.addWindowListener(new WindowAdapter() {
-        /** {@inheritDoc} */
         @Override
         public void windowClosed(final WindowEvent e) {
           onClosedAction.actionPerformed(new ActionEvent(dialog, -1, null));
@@ -1634,13 +1626,11 @@ public final class UiUtil {
       this.textComponent = textComponent;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean canImport(final TransferSupport support) {
       return isFileDataFlavor(support);
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean importData(final TransferSupport support) {
       final File file = getFileDataFlavor(support);
@@ -1662,7 +1652,6 @@ public final class UiUtil {
       this.upperCase = upperCase;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void insertString(final FilterBypass bypass, final int offset, final String string,
                              final AttributeSet attributeSet) throws BadLocationException {
@@ -1670,7 +1659,6 @@ public final class UiUtil {
               (upperCase ? string.toUpperCase(Locale.getDefault()) : string.toLowerCase(Locale.getDefault())), attributeSet);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void replace(final FilterBypass bypass, final int offset, final int length, final String string,
                         final AttributeSet attributeSet) throws BadLocationException {

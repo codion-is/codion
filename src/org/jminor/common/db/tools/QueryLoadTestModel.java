@@ -48,7 +48,6 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE, DEFAULT_QUERY_WARNING_TIME_MS);
     this.pool = ConnectionPools.createDefaultConnectionPool(DatabaseConnections.connectionProvider(database, user));
     addExitListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         pool.close();

@@ -484,7 +484,6 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   private Runnable getShutdownHook() {
     return new Runnable() {
-      /** {@inheritDoc} */
       @Override
       public void run() {
         if (server.isShuttingDown()) {

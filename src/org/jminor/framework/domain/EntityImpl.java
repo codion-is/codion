@@ -504,7 +504,6 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   @Override
   protected void handleValueChangedEventInitialized() {
     addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred(final ValueChange<String, ?> info) {
         final Collection<String> linkedPropertyIDs = definition.getLinkedPropertyIDs(info.getKey());
@@ -863,19 +862,16 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
       setValue(property.getPropertyID(), value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public String getEntityID() {
       return definition.getEntityID();
     }
 
-    /** {@inheritDoc} */
     @Override
     public List<Property.PrimaryKeyProperty> getProperties() {
       return definition.getPrimaryKeyProperties();
     }
 
-    /** {@inheritDoc} */
     @Override
     public Property.PrimaryKeyProperty getFirstKeyProperty() {
       if (getPropertyCount() == 0) {
@@ -885,7 +881,6 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
       return getProperties().get(0);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Object getFirstKeyValue() {
       return getValue(getFirstKeyProperty().getPropertyID());
@@ -908,7 +903,6 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
       return stringBuilder.toString();
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getPropertyCount() {
       if (singleIntegerKey || !compositeKey) {
@@ -918,13 +912,11 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
       return getProperties().size();
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isSingleIntegerKey() {
       return singleIntegerKey;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isCompositeKey() {
       return compositeKey;
@@ -988,7 +980,6 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
       return hashCode;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isNull() {
       if (singleIntegerKey) {
@@ -1008,7 +999,6 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
       return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void handleValueSet(final String key, final Object value, final Object previousValue,
                                   final boolean initialization) {
@@ -1023,7 +1013,6 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void handleClear() {
       hashCode = INTEGER_NULL_VALUE;

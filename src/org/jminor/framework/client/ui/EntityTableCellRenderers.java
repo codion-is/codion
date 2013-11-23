@@ -68,7 +68,6 @@ public final class EntityTableCellRenderers {
 
   public static EntityTableCellRenderer dateTableCellRenderer(final EntityTableModel tableModel, final Format format) {
     return new AlignedFormattedRenderer(tableModel, format, JLabel.RIGHT) {
-      /** {@inheritDoc} */
       @Override
       public void setValue(final Object value) {
         String txt = "";
@@ -86,7 +85,6 @@ public final class EntityTableCellRenderers {
 
   public static EntityTableCellRenderer numberTableCellRenderer(final EntityTableModel tableModel, final Format format) {
     return new AlignedFormattedRenderer(tableModel, format, JLabel.RIGHT) {
-      /** {@inheritDoc} */
       @Override
       public void setValue(final Object value) {
         if (value instanceof String) {
@@ -123,6 +121,10 @@ public final class EntityTableCellRenderers {
     private boolean indicateSearch = true;
     private boolean tooltipData = false;
 
+    /**
+     * Instantiates a new DefaultEntityTableCellRenderer based on the data provided by the given EntityTableModel
+     * @param tableModel the table model providing the data to render
+     */
     public DefaultEntityTableCellRenderer(final EntityTableModel tableModel) {
       this.tableModel = tableModel;
     }

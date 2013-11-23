@@ -116,7 +116,6 @@ public class FilteredTablePanel<T, C> extends JPanel {
    */
   public FilteredTablePanel(final FilteredTableModel<T, C> tableModel) {
     this(tableModel, new ColumnSearchPanelProvider<C>() {
-      /** {@inheritDoc} */
       @Override
       public ColumnSearchPanel<C> createColumnSearchPanel(final TableColumn column) {
         //noinspection unchecked
@@ -296,7 +295,6 @@ public class FilteredTablePanel<T, C> extends JPanel {
     final List<TableColumn> allColumns = new ArrayList<>(tableModel.getColumnModel().getAllColumns());
     Collections.sort(allColumns, new Comparator<TableColumn>() {
       private final Collator collator = Collator.getInstance();
-      /** {@inheritDoc} */
       @Override
       public int compare(final TableColumn o1, final TableColumn o2) {
         return Util.collateSansSpaces(collator, o1.getIdentifier().toString(), o2.getIdentifier().toString());
@@ -336,14 +334,12 @@ public class FilteredTablePanel<T, C> extends JPanel {
     txtSearch.setColumns(SEARCH_FIELD_COLUMNS);
     TextFieldHint.enable(txtSearch, Messages.get(Messages.SEARCH_FIELD_HINT));
     txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
-      /** {@inheritDoc} */
       @Override
       public void contentsChanged(final DocumentEvent e) {
         doSearch(false, lastSearchResultCoordinate.y == -1 ? 0 : lastSearchResultCoordinate.y, true, txtSearch.getText());
       }
     });
     txtSearch.addKeyListener(new KeyAdapter() {
-      /** {@inheritDoc} */
       @Override
       public void keyReleased(final KeyEvent e) {
         if (e.getModifiers() != 0) {
@@ -359,7 +355,6 @@ public class FilteredTablePanel<T, C> extends JPanel {
     });
     UiUtil.selectAllOnFocusGained(txtSearch);
     UiUtil.addKeyEvent(txtSearch, KeyEvent.VK_ESCAPE, new AbstractAction("FilteredTablePanel.requestTableFocus") {
-      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         getJTable().requestFocusInWindow();
@@ -401,7 +396,6 @@ public class FilteredTablePanel<T, C> extends JPanel {
     panel.add(boxRegexp);
 
     final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
-      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         tableModel.setRegularExpressionSearch(boxRegexp.isSelected());
@@ -411,7 +405,6 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(new AbstractAction(Messages.get(Messages.SETTINGS)) {
-      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         UiUtil.displayInDialog(FilteredTablePanel.this, panel, Messages.get(Messages.SETTINGS), action);
@@ -425,7 +418,6 @@ public class FilteredTablePanel<T, C> extends JPanel {
     table.getTableHeader().addMouseListener(new MouseSortHandler());
     table.getTableHeader().setDefaultRenderer(new SortableHeaderRenderer(table.getTableHeader().getDefaultRenderer()));
     table.getTableHeader().addMouseListener(new MouseAdapter() {
-      /** {@inheritDoc} */
       @Override
       public void mouseClicked(final MouseEvent e) {
         if (e.isAltDown() && e.isControlDown()) {
@@ -438,14 +430,12 @@ public class FilteredTablePanel<T, C> extends JPanel {
   @SuppressWarnings({"unchecked"})
   private void bindEvents() {
     tableModel.addSortingListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         table.getTableHeader().repaint();
       }
     });
     tableModel.getSelectionModel().addSelectedIndexListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         if (scrollToSelectedItem && !tableModel.getSelectionModel().isSelectionEmpty()) {
@@ -454,14 +444,12 @@ public class FilteredTablePanel<T, C> extends JPanel {
       }
     });
     tableModel.addRefreshStartedListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         UiUtil.setWaitCursor(true, FilteredTablePanel.this);
       }
     });
     tableModel.addRefreshDoneListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         UiUtil.setWaitCursor(false, FilteredTablePanel.this);
@@ -471,7 +459,6 @@ public class FilteredTablePanel<T, C> extends JPanel {
       final ColumnSearchModel model = tableModel.getColumnModel().getFilterModel((C) column.getIdentifier());
       if (model != null) {
         model.addSearchStateListener(new EventListener() {
-          /** {@inheritDoc} */
           @Override
           public void eventOccurred() {
             if (model.isEnabled()) {
@@ -543,7 +530,6 @@ public class FilteredTablePanel<T, C> extends JPanel {
   }
 
   private final class MouseSortHandler extends MouseAdapter {
-    /** {@inheritDoc} */
     @SuppressWarnings({"unchecked"})
     @Override
     public void mouseClicked(final MouseEvent e) {
@@ -587,7 +573,6 @@ public class FilteredTablePanel<T, C> extends JPanel {
       this.tableCellRenderer = tableCellRenderer;
     }
 
-    /** {@inheritDoc} */
     @Override
     @SuppressWarnings({"unchecked"})
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
@@ -625,7 +610,6 @@ public class FilteredTablePanel<T, C> extends JPanel {
       this.priority = priority;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
       final Color color = c == null ? Color.GRAY : c.getBackground();
@@ -660,13 +644,11 @@ public class FilteredTablePanel<T, C> extends JPanel {
       g.translate(-x, -theY);
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getIconWidth() {
       return size;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getIconHeight() {
       return size;

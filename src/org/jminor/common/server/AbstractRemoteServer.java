@@ -27,17 +27,14 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   private final Map<ClientInfo, T> connections = Collections.synchronizedMap(new HashMap<ClientInfo, T>());
   private final Map<String, LoginProxy> loginProxies = new HashMap<>();
   private final LoginProxy defaultLoginProxy = new LoginProxy() {
-    /** {@inheritDoc} */
     @Override
     public String getClientTypeID() {
       return "defaultClient";
     }
-    /** {@inheritDoc} */
     @Override
     public ClientInfo doLogin(final ClientInfo clientInfo) {
       return clientInfo;
     }
-    /** {@inheritDoc} */
     @Override
     public void close() {}
   };

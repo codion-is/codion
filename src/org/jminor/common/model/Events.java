@@ -54,13 +54,11 @@ public final class Events {
 
     private volatile DefaultObserver<T> observer;
 
-    /** {@inheritDoc} */
     @Override
     public void fire() {
       fire(null);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void fire(final T info) {
       if (observer != null && observer.hasListeners()) {
@@ -73,7 +71,6 @@ public final class Events {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void eventOccurred() {
       eventOccurred(null);
@@ -84,7 +81,6 @@ public final class Events {
       fire(info);
     }
 
-    /** {@inheritDoc} */
     @Override
     public EventObserver<T> getObserver() {
       synchronized (this) {
@@ -96,25 +92,21 @@ public final class Events {
       return observer;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addListener(final EventListener listener) {
       getObserver().addListener(listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeListener(final EventListener listener) {
       getObserver().removeListener(listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void addInfoListener(final EventInfoListener<T> listener) {
       getObserver().addInfoListener(listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void removeInfoListener(final EventInfoListener listener) {
       getObserver().removeInfoListener(listener);
@@ -126,27 +118,23 @@ public final class Events {
     private Collection<EventListener> listeners;
     private Collection<EventInfoListener<T>> infoListeners;
 
-    /** {@inheritDoc} */
     @Override
     public synchronized void addInfoListener(final EventInfoListener<T> listener) {
       Util.rejectNullValue(listener, "listener");
       getInfoListeners().add(listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public synchronized void removeInfoListener(final EventInfoListener listener) {
       getInfoListeners().remove(listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public synchronized void addListener(final EventListener listener) {
       Util.rejectNullValue(listener, "listener");
       getListeners().add(listener);
     }
 
-    /** {@inheritDoc} */
     @Override
     public synchronized void removeListener(final EventListener listener) {
       getListeners().remove(listener);

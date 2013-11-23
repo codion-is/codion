@@ -90,7 +90,6 @@ public final class ValueLinkValidators {
       this.editModel = editModel;
       this.defaultToolTip = defaultToolTip;
       this.editModel.getValidator().addRevalidationListener(new EventListener() {
-        /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
           validate();
@@ -185,7 +184,6 @@ public final class ValueLinkValidators {
       return validBackgroundColor;
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void validate() {
       final String validationMessage = getValidationMessage();
@@ -206,7 +204,6 @@ public final class ValueLinkValidators {
       this.maskString = textComponent.getText();
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void validate() {
       final JTextComponent textComponent = (JTextComponent) getComponent();

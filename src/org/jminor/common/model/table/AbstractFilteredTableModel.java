@@ -492,7 +492,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
 
     return new FilterCriteria<Object>() {
-      /** {@inheritDoc} */
       @Override
       public boolean include(final Object item) {
         return !(item == null || searchText == null) && item.toString().toLowerCase().contains(searchText.toLowerCase());
@@ -502,7 +501,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private void bindEventsInternal() {
     addTableModelListener(new TableModelListener() {
-      /** {@inheritDoc} */
       @Override
       public void tableChanged(final TableModelEvent e) {
         tableDataChangedEvent.fire();
@@ -510,7 +508,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     });
     for (final ColumnSearchModel searchModel : columnModel.getColumnFilterModels()) {
       searchModel.addSearchStateListener(new EventListener() {
-        /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
           filterContents();
@@ -581,7 +578,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       this.columnFilters = columnFilters;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean include(final R item) {
       for (final ColumnSearchModel columnFilter : columnFilters) {

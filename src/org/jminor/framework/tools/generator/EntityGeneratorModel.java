@@ -167,7 +167,6 @@ public final class EntityGeneratorModel {
 
   private void bindEvents() {
     tableModel.getSelectionModel().addSelectionChangedListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         try {

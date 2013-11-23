@@ -117,7 +117,6 @@ public final class UiValues {
   private abstract static class UIValue<V> implements Value<V> {
     protected final Event<V> changeEvent = Events.event();
 
-    /** {@inheritDoc} */
     @Override
     public final EventObserver<V> getChangeObserver() {
       return changeEvent.getObserver();
@@ -131,7 +130,6 @@ public final class UiValues {
       else {
         try {
           SwingUtilities.invokeAndWait(new Runnable() {
-            /** {@inheritDoc} */
             @Override
             public void run() {
               setInternal(value);
@@ -163,7 +161,6 @@ public final class UiValues {
       this.format = format == null ? Util.NULL_FORMAT : format;
       if (immediateUpdate) {
         document.addDocumentListener(new DocumentAdapter() {
-          /** {@inheritDoc} */
           @Override
           public final void contentsChanged(final DocumentEvent e) {
             changeEvent.fire();
@@ -172,7 +169,6 @@ public final class UiValues {
       }
       else {
         textComponent.addFocusListener(new FocusAdapter() {
-          /** {@inheritDoc} */
           @Override
           public void focusLost(final FocusEvent e) {
             changeEvent.fire();
@@ -181,7 +177,6 @@ public final class UiValues {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void setInternal(final V value) {
       try {
@@ -198,7 +193,6 @@ public final class UiValues {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public V get() {
       return valueFromText(getText());
@@ -270,7 +264,6 @@ public final class UiValues {
       this.usePrimitive = usePrimitive;
     }
 
-    /** {@inheritDoc} */
     @Override
     protected Integer valueFromText(final String text) {
       if (text.length() == 0 && usePrimitive) {
@@ -289,7 +282,6 @@ public final class UiValues {
       this.usePrimitive = usePrimitive;
     }
 
-    /** {@inheritDoc} */
     @Override
     protected Double valueFromText(final String text) {
       if (text.length() == 0 && usePrimitive) {
@@ -333,7 +325,6 @@ public final class UiValues {
     private ToggleUIValue(final ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
       buttonModel.addItemListener(new ItemListener() {
-        /** {@inheritDoc} */
         @Override
         public void itemStateChanged(final ItemEvent e) {
           changeEvent.fire(buttonModel instanceof TristateButtonModel &&
@@ -342,7 +333,6 @@ public final class UiValues {
       });
     }
 
-    /** {@inheritDoc} */
     @Override
     public Boolean get() {
       if (buttonModel instanceof TristateButtonModel && ((TristateButtonModel) buttonModel).isIndeterminate()) {
@@ -352,7 +342,6 @@ public final class UiValues {
       return buttonModel.isSelected();
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void setInternal(final Boolean value) {
       buttonModel.setSelected(value != null && value);
@@ -372,7 +361,6 @@ public final class UiValues {
     private SelectedItemUIValue(final JComboBox<V> comboBox) {
       this.comboBox = comboBox;
       comboBox.addItemListener(new ItemListener() {
-        /** {@inheritDoc} */
         @Override
         public void itemStateChanged(final ItemEvent e) {
           if (e.getStateChange() == ItemEvent.SELECTED) {
@@ -382,7 +370,6 @@ public final class UiValues {
       });
     }
 
-    /** {@inheritDoc} */
     @Override
     public V get() {
       final ComboBoxModel<V> comboBoxModel = comboBox.getModel();
@@ -396,7 +383,6 @@ public final class UiValues {
       return (V) comboBoxModel.getSelectedItem();
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void setInternal(final Object value) {
       comboBox.getModel().setSelectedItem(value);
@@ -409,7 +395,6 @@ public final class UiValues {
     private IntSpinnerUIValue(final SpinnerNumberModel spinnerModel) {
       this.spinnerModel = spinnerModel;
       this.spinnerModel.addChangeListener(new ChangeListener() {
-        /** {@inheritDoc} */
         @Override
         public void stateChanged(final ChangeEvent e) {
           changeEvent.fire();
@@ -417,13 +402,11 @@ public final class UiValues {
       });
     }
 
-    /** {@inheritDoc} */
     @Override
     public Integer get() {
       return (Integer) spinnerModel.getValue();
     }
 
-    /** {@inheritDoc} */
     @Override
     protected void setInternal(final Integer value) {
       spinnerModel.setValue(value);

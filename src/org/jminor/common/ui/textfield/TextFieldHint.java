@@ -82,12 +82,10 @@ public final class TextFieldHint {
 
   private FocusListener initializeFocusListener() {
     return new FocusListener() {
-      /** {@inheritDoc} */
       @Override
       public void focusGained(final FocusEvent e) {
         updateState();
       }
-      /** {@inheritDoc} */
       @Override
       public void focusLost(final FocusEvent e) {
         updateState();
@@ -97,7 +95,6 @@ public final class TextFieldHint {
 
   private DocumentAdapter initializeDocumentListener() {
     return new DocumentAdapter() {
-      /** {@inheritDoc} */
       @Override
       public void contentsChanged(final DocumentEvent e) {
         updateColor();

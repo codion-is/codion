@@ -126,7 +126,6 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
       this.column = column;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
       if (evt.getPropertyName().equals("width")) {
@@ -136,7 +135,6 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
   }
 
   private final class SyncColumnModelListener implements TableColumnModelListener {
-    /** {@inheritDoc} */
     @Override
     public void columnAdded(final TableColumnModelEvent e) {
       final TableColumn column = columnModel.getColumn(e.getToIndex());
@@ -146,23 +144,19 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
       resetPanel();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void columnRemoved(final TableColumnModelEvent e) {
       resetPanel();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void columnMoved(final TableColumnModelEvent e) {
       resetPanel();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void columnMarginChanged(final ChangeEvent e) {}
 
-    /** {@inheritDoc} */
     @Override
     public void columnSelectionChanged(final ListSelectionEvent e) {}
   }

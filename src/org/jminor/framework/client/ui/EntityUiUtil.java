@@ -230,7 +230,6 @@ public final class EntityUiUtil {
     final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogOwner), dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
-      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         final List<Entity> entities = lookupModel.getSelectionModel().getSelectedItems();
@@ -254,7 +253,6 @@ public final class EntityUiUtil {
     entityPanel.initializePanel();
     final EntityTablePanel entityTablePanel = entityPanel.getTablePanel();
     entityTablePanel.addTableDoubleClickListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         if (!lookupModel.getSelectionModel().isSelectionEmpty()) {
@@ -1300,20 +1298,17 @@ public final class EntityUiUtil {
       });
     }
 
-    /** {@inheritDoc} */
     @Override
     public void set(final Entity value) {
       lookupModel.setSelectedEntity(value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Entity get() {
       final Collection<Entity> selectedEntities = lookupModel.getSelectedEntities();
       return selectedEntities.isEmpty() ? null : selectedEntities.iterator().next();
     }
 
-    /** {@inheritDoc} */
     @Override
     public EventObserver<Entity> getChangeObserver() {
       return changeEvent.getObserver();
@@ -1342,13 +1337,11 @@ public final class EntityUiUtil {
       this.panelProvider = panelProvider;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void actionPerformed(final ActionEvent e) {
       final EntityEditPanel editPanel = panelProvider.createEditPanel(dataProvider.getConnectionProvider());
       editPanel.initializePanel();
       editPanel.getEditModel().addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
-        /** {@inheritDoc} */
         @Override
         public void eventOccurred(final EntityEditModel.InsertEvent info) {
           lastInsertedEntities.clear();
@@ -1384,7 +1377,6 @@ public final class EntityUiUtil {
       this.editPanel = editPanel;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void actionPerformed(final ActionEvent e) {
       editPanel.setInitialFocus();

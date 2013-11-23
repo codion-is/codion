@@ -24,7 +24,6 @@ import java.util.Map;
 public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, C> {
 
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new Comparator<Comparable<Object>>() {
-    /** {@inheritDoc} */
     @Override
     public int compare(final Comparable<Object> o1, final Comparable<Object> o2) {
       return (o1.compareTo(o2));
@@ -58,7 +57,6 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
    * The comparator used when comparing row objects
    */
   private final Comparator<R> rowComparator = new Comparator<R>() {
-    /** {@inheritDoc} */
     @Override
     public int compare(final R o1, final R o2) {
       for (final Map.Entry<C, TableSortModel.SortingState> state : getOrderedSortingStates()) {
@@ -217,7 +215,6 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
       }
     }
     Collections.sort(entries, new Comparator<Map.Entry<C, SortingState>>() {
-      /** {@inheritDoc} */
       @Override
       public int compare(final Map.Entry<C, SortingState> o1, final Map.Entry<C, SortingState> o2) {
         final Integer priorityOne = o1.getValue().getPriority();
@@ -267,13 +264,11 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
       this.priority = priority;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getPriority() {
       return priority;
     }
 
-    /** {@inheritDoc} */
     @Override
     public SortingDirective getDirective() {
       return direction;

@@ -234,7 +234,6 @@ public final class Controls {
     private BooleanValue(final ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
       buttonModel.addItemListener(new ItemListener() {
-        /** {@inheritDoc} */
         @Override
         public void itemStateChanged(final ItemEvent e) {
           changeEvent.fire();
@@ -242,7 +241,6 @@ public final class Controls {
       });
     }
 
-    /** {@inheritDoc} */
     @Override
     public Boolean get() {
       if (buttonModel instanceof TristateButtonModel && ((TristateButtonModel) buttonModel).isIndeterminate()) {
@@ -252,7 +250,6 @@ public final class Controls {
       return buttonModel.isSelected();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void set(final Boolean value) {
       if (SwingUtilities.isEventDispatchThread()) {
@@ -261,7 +258,6 @@ public final class Controls {
       else {
         try {
           SwingUtilities.invokeAndWait(new Runnable() {
-            /** {@inheritDoc} */
             @Override
             public void run() {
               setValue(value);
@@ -283,7 +279,6 @@ public final class Controls {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public EventObserver<Boolean> getChangeObserver() {
       return changeEvent.getObserver();

@@ -134,7 +134,6 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
 
   private void bindLookupModelEvents() {
     entityLookupModel.addSelectedEntitiesListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         try {
@@ -148,7 +147,6 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
       }
     });
     addUpperBoundListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         if (!updatingModel) {//noinspection unchecked
@@ -166,7 +164,6 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
 
   private void bindComboBoxEvents() {
     entityComboBoxModel.addSelectionListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         if (!updatingModel) {
@@ -175,7 +172,6 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
       }
     });
     addUpperBoundListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         try {
@@ -195,7 +191,6 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
     });
 
     entityComboBoxModel.addRefreshListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         final Object upper = getUpperBound();

@@ -643,7 +643,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   private void bindEvents() {
     getColumnModel().addColumnHiddenListener(new EventInfoListener<Property>() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred(final Property info) {
         handleColumnHidden(info);
@@ -659,35 +658,30 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   private void bindEditModelEventsInternal() {
     editModel.addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred(final EntityEditModel.InsertEvent info) {
         handleInsert(info);
       }
     });
     editModel.addAfterUpdateListener(new EventInfoListener<EntityEditModel.UpdateEvent>() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred(final EntityEditModel.UpdateEvent info) {
         handleUpdate(info);
       }
     });
     editModel.addAfterDeleteListener(new EventInfoListener<EntityEditModel.DeleteEvent>() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred(final EntityEditModel.DeleteEvent info) {
         handleDeleteInternal(info);
       }
     });
     editModel.addAfterRefreshListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         refresh();
       }
     });
     editModel.addEntitySetListener(new EventInfoListener<Entity>() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred(final Entity info) {
         if (info == null && !getSelectionModel().isSelectionEmpty()) {
@@ -696,7 +690,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       }
     });
     getSelectionModel().addSelectedIndexListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         final Entity itemToSelect = getSelectionModel().isSelectionEmpty() ? null : getSelectionModel().getSelectedItem();
@@ -705,7 +698,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     });
 
     addTableModelListener(new TableModelListener() {
-      /** {@inheritDoc} */
       @Override
       public void tableChanged(final TableModelEvent e) {
         //if the selected record is being updated via the table model refresh the one in the edit model
@@ -875,7 +867,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       this.property = property;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void bindValuesChangedEvent(final Event event) {
       if (editModel != null) {
@@ -886,25 +877,21 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       tableModel.getSelectionModel().addSelectionChangedListener(event);
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isUseValueSubset() {
       return useValueSubset;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setUseValueSubset(final boolean useValueSubset) {
       this.useValueSubset = useValueSubset;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Collection getValues() {
       return tableModel.getValues(property, useValueSubset && isValueSubset());
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isValueSubset() {
       return !tableModel.getSelectionModel().isSelectionEmpty();

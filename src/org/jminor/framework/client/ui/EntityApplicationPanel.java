@@ -803,7 +803,6 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
       applicationTabPane.addTab(entityPanel.getCaption(), entityPanel);
       if (entityPanel.getEditPanel() != null) {
         entityPanel.getEditPanel().getActiveObserver().addListener(new EventListener() {
-          /** {@inheritDoc} */
           @Override
           public void eventOccurred() {
             if (entityPanel.getEditPanel().isActive()) {
@@ -1083,14 +1082,12 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   private void bindEventsInternal() {
     final StateObserver connected = applicationModel.getConnectionProvider().getConnectedObserver();
     connected.addActivateListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         setParentWindowTitle(frameTitle);
       }
     });
     connected.addDeactivateListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         setParentWindowTitle(frameTitle + " - " + Messages.get(Messages.NOT_CONNECTED));

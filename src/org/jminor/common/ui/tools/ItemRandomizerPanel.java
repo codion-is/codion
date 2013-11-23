@@ -177,19 +177,16 @@ public final class ItemRandomizerPanel<T> extends JPanel {
       this.item = item;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void set(final Boolean value) {
       getModel().setItemEnabled(item, value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Boolean get() {
       return getModel().isItemEnabled(item);
     }
 
-    /** {@inheritDoc} */
     @Override
     public EventObserver<Boolean> getChangeObserver() {
       return getModel().getEnabledObserver();
@@ -203,7 +200,6 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     private EnabledUIValue(final ButtonModel buttonModel) {
       this.buttonModel = buttonModel;
       buttonModel.addItemListener(new ItemListener() {
-        /** {@inheritDoc} */
         @Override
         public void itemStateChanged(final ItemEvent e) {
           changeEvent.fire();
@@ -211,19 +207,16 @@ public final class ItemRandomizerPanel<T> extends JPanel {
       });
     }
 
-    /** {@inheritDoc} */
     @Override
     public void set(final Boolean value) {
       buttonModel.setSelected(value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Boolean get() {
       return buttonModel.isSelected();
     }
 
-    /** {@inheritDoc} */
     @Override
     public EventObserver<Boolean> getChangeObserver() {
       return changeEvent.getObserver();
@@ -237,19 +230,16 @@ public final class ItemRandomizerPanel<T> extends JPanel {
       this.item = item;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void set(final Integer value) {
       getModel().setWeight(item, value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Integer get() {
       return getModel().getWeight(item);
     }
 
-    /** {@inheritDoc} */
     @Override
     public EventObserver<Integer> getChangeObserver() {
       return getModel().getWeightsObserver();
@@ -263,7 +253,6 @@ public final class ItemRandomizerPanel<T> extends JPanel {
     private WeightUIValue(final SpinnerNumberModel spinnerModel) {
       this.spinnerModel = spinnerModel;
       spinnerModel.addChangeListener(new ChangeListener() {
-        /** {@inheritDoc} */
         @Override
         public void stateChanged(final ChangeEvent e) {
           changeEvent.fire((Integer) spinnerModel.getValue());
@@ -271,19 +260,16 @@ public final class ItemRandomizerPanel<T> extends JPanel {
       });
     }
 
-    /** {@inheritDoc} */
     @Override
     public void set(final Integer value) {
       spinnerModel.setValue(value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Integer get() {
       return (Integer) spinnerModel.getValue();
     }
 
-    /** {@inheritDoc} */
     @Override
     public EventObserver<Integer> getChangeObserver() {
       return changeEvent.getObserver();

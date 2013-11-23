@@ -81,7 +81,6 @@ public final class EntityReportUiUtil {
    */
   public static <T> void viewReport(final ReportResult<T> reportResult, final ReportUIWrapper<T> uiWrapper, final String frameTitle) {
     SwingUtilities.invokeLater(new Runnable() {
-      /** {@inheritDoc} */
       @Override
       public void run() {
         final JFrame frame = new JFrame(frameTitle == null ? FrameworkMessages.get(FrameworkMessages.REPORT_PRINTER) : frameTitle);

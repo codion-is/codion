@@ -33,7 +33,6 @@ public class DefaultPropertyComboBoxModel<T> extends DefaultFilteredComboBoxMode
                                       final Property.ColumnProperty property, final T nullValue,
                                       final EventObserver refreshObserver) {
     this(new ValueCollectionProvider<T>() {
-      /** {@inheritDoc} */
       @Override
       public Collection<T> getValues() {
         try {
@@ -57,7 +56,6 @@ public class DefaultPropertyComboBoxModel<T> extends DefaultFilteredComboBoxMode
     this.valueProvider = valueProvider;
     if (refreshObserver != null) {
       refreshObserver.addListener(new EventListener() {
-        /** {@inheritDoc} */
         @Override
         public void eventOccurred() {
           refresh();

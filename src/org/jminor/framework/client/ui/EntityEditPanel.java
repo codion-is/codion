@@ -1967,14 +1967,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
       }
     });
     editModel.addBeforeRefreshListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         UiUtil.setWaitCursor(true, EntityEditPanel.this);
       }
     });
     editModel.addAfterRefreshListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         UiUtil.setWaitCursor(false, EntityEditPanel.this);

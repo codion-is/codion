@@ -378,36 +378,21 @@ public final class EntityUtil {
   }
 
   /**
-   * Creates an empty Entity instance returning the given string on a call to toString()
+   * Creates an empty Entity instance returning the given string on a call to toString(), all other
+   * method calls are routed to an empty Entity instance.
    * @param entityID the entityID
    * @param toStringValue the string to return by a call to toString() on the resulting entity
    * @return an empty entity wrapping a string
    */
   public static Entity createToStringEntity(final String entityID, final String toStringValue) {
-    return createToStringEntity(entityID, new Entity.ToString() {
-      @Override
-      public String toString(final Entity entity) {
-        return toStringValue;
-      }
-    });
-  }
-
-  /**
-   * Creates an empty Entity instance using the given Entity.ToString instance when toString() is called
-   * @param entityID the entityID
-   * @param toString the string provider
-   * @return an empty entity wrapping a toString provider
-   */
-  public static Entity createToStringEntity(final String entityID, final Entity.ToString toString) {
     final Entity entity = Entities.entity(entityID);
     return Util.initializeProxy(Entity.class, new InvocationHandler() {
       @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-        if (method.getName().equals("toString")) {
-          return toString.toString(entity);
+      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
+        switch (method.getName()) {
+          case "toString": return toStringValue;
+          default: return method.invoke(entity, args);
         }
-
-        return method.invoke(entity, args);
       }
     });
   }

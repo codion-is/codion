@@ -119,7 +119,6 @@ public final class ServerUtil {
 
   private static final class ServerComparator implements Comparator<RemoteServer>, Serializable {
     private static final long serialVersionUID = 1;
-    /** {@inheritDoc} */
     @Override
     public int compare(final RemoteServer o1, final RemoteServer o2) {
       try {

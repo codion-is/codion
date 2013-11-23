@@ -80,7 +80,6 @@ public class SteppedComboBox<V> extends JComboBox<V> {
       getAccessibleContext().setAccessibleParent(comboBox);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setVisible(final boolean visible) {
       if (visible) {

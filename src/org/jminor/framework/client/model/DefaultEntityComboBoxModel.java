@@ -66,7 +66,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   private final Map<String, Set<Entity>> foreignKeyFilterEntities = new HashMap<>();
 
   private final FilterCriteria<Entity> foreignKeyFilterCriteria = new FilterCriteria<Entity>() {
-    /** {@inheritDoc} */
     @Override
     public boolean include(final Entity item) {
       for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
@@ -94,7 +93,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     setStaticData(Entities.isStaticData(entityID));
     final FilterCriteria<Entity> superCriteria = super.getFilterCriteria();
     setFilterCriteria(new FilterCriteria<Entity>() {
-      /** {@inheritDoc} */
       @Override
       public boolean include(final Entity item) {
         return superCriteria.include(item) && foreignKeyFilterCriteria.include(item);
@@ -237,7 +235,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       foreignKeyModel.setSelectedItem(filterEntities.iterator().next());
     }
     foreignKeyModel.addSelectionListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         final Entity selectedEntity = foreignKeyModel.getSelectedValue();
@@ -246,7 +243,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       }
     });
     addSelectionListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         final Entity selected = getSelectedValue();
@@ -369,7 +365,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       this.foreignKeyModel = foreignKeyModel;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void eventOccurred() {
       foreignKeyModel.forceRefresh();

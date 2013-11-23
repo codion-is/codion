@@ -169,7 +169,6 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       this.remote = remote;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       if (method.getName().equals(IS_CONNECTED)) {

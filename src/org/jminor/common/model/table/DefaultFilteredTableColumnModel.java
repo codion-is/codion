@@ -238,25 +238,20 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
 
   private void bindEvents() {
     addColumnModelListener(new TableColumnModelListener() {
-      /** {@inheritDoc} */
       @Override
       public void columnAdded(final TableColumnModelEvent e) {
         Arrays.fill(columnIndexCache, -1);
       }
-      /** {@inheritDoc} */
       @Override
       public void columnRemoved(final TableColumnModelEvent e) {
         Arrays.fill(columnIndexCache, -1);
       }
-      /** {@inheritDoc} */
       @Override
       public void columnMoved(final TableColumnModelEvent e) {
         Arrays.fill(columnIndexCache, -1);
       }
-      /** {@inheritDoc} */
       @Override
       public void columnMarginChanged(final ChangeEvent e) {}
-      /** {@inheritDoc} */
       @Override
       public void columnSelectionChanged(final ListSelectionEvent e) {}
     });

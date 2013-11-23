@@ -29,7 +29,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   protected static final String IS_VALID = "isValid";
   private final State connectedState = States.state();
   private final TaskScheduler validityCheckScheduler = new TaskScheduler(new Runnable() {
-    /** {@inheritDoc} */
     @Override
     public void run() {
       connectedState.setActive(isConnectionValid());

@@ -764,7 +764,6 @@ public final class Entities {
         this.format = format;
       }
 
-      /** {@inheritDoc} */
       @Override
       public String toString(final Entity entity) {
         if (entity.isValueNull(propertyID)) {
@@ -785,7 +784,6 @@ public final class Entities {
         this.propertyID = propertyID;
       }
 
-      /** {@inheritDoc} */
       @Override
       public String toString(final Entity entity) {
         if (entity.isValueNull(foreignKeyPropertyID)) {
@@ -804,7 +802,6 @@ public final class Entities {
         this.propertyID = propertyID;
       }
 
-      /** {@inheritDoc} */
       @Override
       public String toString(final Entity entity) {
         return entity.getValueAsString(propertyID);
@@ -819,7 +816,6 @@ public final class Entities {
         this.text = text;
       }
 
-      /** {@inheritDoc} */
       @Override
       public String toString(final Entity entity) {
         return text;

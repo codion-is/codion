@@ -270,7 +270,6 @@ public final class ServerMonitor {
   }
 
   private static final class DomainTableModel extends DefaultTableModel {
-    /** {@inheritDoc} */
     @Override
     public boolean isCellEditable(final int row, final int column) {
       return false;

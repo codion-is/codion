@@ -358,7 +358,6 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   private static final class EntityComparator implements Comparator<Entity>, Serializable {
     private static final long serialVersionUID = 1;
-    /** {@inheritDoc} */
     @Override
     public int compare(final Entity o1, final Entity o2) {
       return o1.compareTo(o2);

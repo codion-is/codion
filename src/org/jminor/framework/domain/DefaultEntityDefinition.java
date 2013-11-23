@@ -95,7 +95,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * The default Entity.ToString instance used when toString() is called for this entity type
    */
   private Entity.ToString stringProvider = new Entity.ToString() {
-    /** {@inheritDoc} */
     @Override
     public String toString(final Entity entity) {
       Util.rejectNullValue(entity, "entity");
@@ -629,7 +628,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   static Entity.KeyGenerator queriedKeyGenerator(final String query) {
     final QueriedKeyGenerator keyGenerator = new QueriedKeyGenerator() {
-      /** {@inheritDoc} */
       @Override
       public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                                final DatabaseConnection connection) throws SQLException {
@@ -790,24 +788,20 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   private static class DefaultKeyGenerator implements Entity.KeyGenerator {
 
-    /** {@inheritDoc} */
     @Override
     public boolean isAutoIncrement() {
       return false;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isManual() {
       return true;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {}
 
-    /** {@inheritDoc} */
     @Override
     public void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                             final DatabaseConnection connection) throws SQLException {}
@@ -846,7 +840,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
       setQuery("select max(" + columnName + ") + 1 from " + tableName);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {
@@ -862,7 +855,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
       this.sequenceName = sequenceName;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {
@@ -883,13 +875,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
       this.valueSource = valueSource;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isAutoIncrement() {
       return true;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
                             final DatabaseConnection connection) throws SQLException {

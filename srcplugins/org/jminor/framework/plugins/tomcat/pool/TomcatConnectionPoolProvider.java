@@ -80,7 +80,6 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
       }));
     }
 
-    /** {@inheritDoc} */
     @Override
     public Connection getConnection() throws DatabaseException {
       final long nanoTime = System.nanoTime();
@@ -101,7 +100,6 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void returnConnection(final Connection connection) {
       try {
@@ -110,106 +108,88 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
       catch (SQLException ignored) {}
     }
 
-    /** {@inheritDoc} */
     @Override
     public void close() {
       pool.close();
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getCleanupInterval() {
       return pool.getTimeBetweenEvictionRunsMillis();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setCleanupInterval(final int poolCleanupInterval) {
       pool.setTimeBetweenEvictionRunsMillis(poolCleanupInterval);
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getConnectionTimeout() {
       return pool.getSuspectTimeout() * 1000;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setConnectionTimeout(final int timeout) {
       pool.setSuspectTimeout(timeout / 1000);
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getMaximumRetryWaitPeriod() {
       return 0;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {}
 
-    /** {@inheritDoc} */
     @Override
     public int getMinimumPoolSize() {
       return pool.getMinIdle();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setMinimumPoolSize(final int value) {
       pool.setMinIdle(value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getMaximumPoolSize() {
       return pool.getMaxActive();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setMaximumPoolSize(final int value) {
       pool.setMaxActive(value);
       pool.setMaxIdle(value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getMaximumCheckOutTime() {
       return pool.getMaxWait();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setMaximumCheckOutTime(final int value) {
       pool.setMaxWait(value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getNewConnectionThreshold() {
       return 0;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setNewConnectionThreshold(final int value) {}
 
-    /** {@inheritDoc} */
     @Override
     protected int getSize() {
       return pool.getSize() - pool.getActive();
     }
 
-    /** {@inheritDoc} */
     @Override
     protected int getInUse() {
       return pool.getActive();
     }
 
-    /** {@inheritDoc} */
     @Override
     protected int getWaiting() {
       return pool.getWaitCount();
@@ -224,7 +204,6 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
       this.database = database;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean validate(final Connection connection, final int i) {
       return DatabaseUtil.isValid(connection, database, 0);

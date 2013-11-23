@@ -320,7 +320,6 @@ public class ColumnSearchPanel<K> extends JPanel {
       this.searchModel = searchModel;
     }
 
-    /** {@inheritDoc} */
     @Override
     public ColumnSearchModel<K> getSearchModel() {
       return searchModel;
@@ -345,7 +344,6 @@ public class ColumnSearchPanel<K> extends JPanel {
 
       if (field instanceof JTextField) {//enter button toggles the filter on/off
         ((JTextField) field).addActionListener(new ActionListener() {
-          /** {@inheritDoc} */
           @Override
           public void actionPerformed(final ActionEvent e) {
             searchModel.setEnabled(!searchModel.isEnabled());
@@ -410,7 +408,6 @@ public class ColumnSearchPanel<K> extends JPanel {
    */
   private void bindEvents() {
     advancedSearchState.addListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         initializePanel();
@@ -423,7 +420,6 @@ public class ColumnSearchPanel<K> extends JPanel {
       }
     });
     searchModel.addLowerBoundRequiredListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         initializePanel();
@@ -452,7 +448,6 @@ public class ColumnSearchPanel<K> extends JPanel {
     final JComboBox<SearchType> comboBox = new SteppedComboBox(comboBoxModel);
     ValueLinks.selectedItemValueLink(comboBox, searchModel, "searchType", SearchType.class, searchModel.getSearchTypeObserver());
     comboBox.setRenderer(new DefaultListCellRenderer() {
-      /** {@inheritDoc} */
       @Override
       public Component getListCellRendererComponent(final JList list, final Object value, final int index,
                                                     final boolean isSelected, final boolean cellHasFocus) {
@@ -570,7 +565,6 @@ public class ColumnSearchPanel<K> extends JPanel {
     dialog.pack();
 
     addAdvancedSearchListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         dialog.pack();
@@ -578,7 +572,6 @@ public class ColumnSearchPanel<K> extends JPanel {
     });
 
     dialog.addWindowListener(new WindowAdapter() {
-      /** {@inheritDoc} */
       @Override
       public void windowClosing(final WindowEvent e) {
         disableDialog();

@@ -45,7 +45,6 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
    */
   public Action createForeignKeyFilterAction(final String foreignKeyPropertyID) {
     return new AbstractAction(null, Images.loadImage(Images.IMG_FILTER_16)) {
-      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         final Collection<Entity> current = getModel().getForeignKeyFilterEntities(foreignKeyPropertyID);
@@ -73,7 +72,6 @@ public final class EntityComboBox extends SteppedComboBox<Entity> {
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
     popupMenu.add(new AbstractAction(FrameworkMessages.get(FrameworkMessages.REFRESH)) {
-      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         getModel().forceRefresh();

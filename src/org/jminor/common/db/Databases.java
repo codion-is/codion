@@ -145,37 +145,31 @@ public final class Databases {
       this.updatesPerSecond = updatesPerSecond;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getQueriesPerSecond() {
       return queriesPerSecond;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getDeletesPerSecond() {
       return deletesPerSecond;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getInsertsPerSecond() {
       return insertsPerSecond;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getSelectsPerSecond() {
       return selectsPerSecond;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getUpdatesPerSecond() {
       return updatesPerSecond;
     }
 
-    /** {@inheritDoc} */
     @Override
     public long getTimestamp() {
       return timestamp;

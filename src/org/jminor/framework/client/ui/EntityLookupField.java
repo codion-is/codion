@@ -146,7 +146,6 @@ public final class EntityLookupField extends JTextField {
     final Window owner = UiUtil.getParentWindow(this);
     final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
     final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
-      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         getModel().setSelectedEntities(list.getSelectedValuesList());
@@ -164,7 +163,6 @@ public final class EntityLookupField extends JTextField {
   private void linkToModel() {
     ValueLinks.textValueLink(this, getModel(), "searchString", getModel().getSearchStringObserver());
     model.addSearchStringListener(new EventInfoListener<String>() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred(final String info) {
         updateColors();
@@ -180,7 +178,6 @@ public final class EntityLookupField extends JTextField {
 
   private void addEscapeListener() {
     final AbstractAction escapeAction = new AbstractAction("EntityLookupField.escape") {
-      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         getModel().refreshSearchText();
@@ -193,12 +190,10 @@ public final class EntityLookupField extends JTextField {
 
   private FocusListener initializeFocusListener() {
     return new FocusListener() {
-      /** {@inheritDoc} */
       @Override
       public void focusGained(final FocusEvent e) {
         updateColors();
       }
-      /** {@inheritDoc} */
       @Override
       public void focusLost(final FocusEvent e) {
         if (getText().length() == 0) {
@@ -219,7 +214,6 @@ public final class EntityLookupField extends JTextField {
 
   private AbstractAction initializeLookupAction() {
     final AbstractAction lookupAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
-      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         performLookup(true);
@@ -326,7 +320,6 @@ public final class EntityLookupField extends JTextField {
       this.lookupPanel = lookupPanel;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void actionPerformed(final ActionEvent e) {
       final JPanel panel = new JPanel(UiUtil.createGridLayout(5, 1));
@@ -354,7 +347,6 @@ public final class EntityLookupField extends JTextField {
 
       panel.add(pnlValueSeparator);
       final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
-        /** {@inheritDoc} */
         @Override
         public void actionPerformed(final ActionEvent e) {
           lookupPanel.getModel().setCaseSensitive(boxCaseSensitive.isSelected());
@@ -382,7 +374,6 @@ public final class EntityLookupField extends JTextField {
       this.okButton = okButton;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void actionPerformed(final ActionEvent e) {
       okButton.doClick();

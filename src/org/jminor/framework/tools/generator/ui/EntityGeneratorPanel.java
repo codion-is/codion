@@ -61,14 +61,12 @@ public class EntityGeneratorPanel extends JPanel {
 
   private void bindEvents() {
     model.addRefreshStartedListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         UiUtil.setWaitCursor(true, EntityGeneratorPanel.this);
       }
     });
     model.addRefreshDoneListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         UiUtil.setWaitCursor(false, EntityGeneratorPanel.this);
@@ -85,7 +83,6 @@ public class EntityGeneratorPanel extends JPanel {
   }
 
   private static final class Starter implements Runnable {
-    /** {@inheritDoc} */
     @Override
     public void run() {
       try {

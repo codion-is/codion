@@ -32,7 +32,6 @@ public final class PropertySummaryPanel extends JPanel {
   public PropertySummaryPanel(final PropertySummaryModel model) {
     this.model = model;
     model.addSummaryValueListener(new EventListener() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred() {
         final String summaryText = model.getSummaryText();
@@ -58,7 +57,6 @@ public final class PropertySummaryPanel extends JPanel {
     add(txtSummary, BorderLayout.CENTER);
     final JPopupMenu menu = createPopupMenu();
     txtSummary.addMouseListener(new MouseAdapter() {
-      /** {@inheritDoc} */
       @Override
       public void mouseReleased(final MouseEvent e) {
         if (!model.isLocked()) {
@@ -73,14 +71,12 @@ public final class PropertySummaryPanel extends JPanel {
     final ButtonGroup group = new ButtonGroup();
     for (final PropertySummaryModel.Summary summary : model.getAvailableSummaries()) {
       final JRadioButtonMenuItem item = new JRadioButtonMenuItem(new AbstractAction(summary.toString()) {
-        /** {@inheritDoc} */
         @Override
         public void actionPerformed(final ActionEvent e) {
           model.setCurrentSummary(summary);
         }
       });
       model.addSummaryListener(new EventInfoListener<PropertySummaryModel.Summary>() {
-        /** {@inheritDoc} */
         @Override
         public void eventOccurred(final PropertySummaryModel.Summary newSummary) {
           item.setSelected(newSummary == summary);

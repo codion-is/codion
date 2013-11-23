@@ -174,7 +174,6 @@ public final class LoginPanel extends JPanel {
     add(centerPanel, BorderLayout.CENTER);
     if (usernameField.getText().length() == 0) {
       UiUtil.addInitialFocusHack(usernameField, new AbstractAction() {
-        /** {@inheritDoc} */
         @Override
         public void actionPerformed(final ActionEvent e) {
           usernameField.setCaretPosition(usernameField.getText().length());
@@ -183,7 +182,6 @@ public final class LoginPanel extends JPanel {
     }
     else {
       UiUtil.addInitialFocusHack(passwordField, new AbstractAction() {
-        /** {@inheritDoc} */
         @Override
         public void actionPerformed(final ActionEvent e) {
           passwordField.setCaretPosition(passwordField.getPassword().length);

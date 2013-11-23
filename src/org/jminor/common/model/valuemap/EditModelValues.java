@@ -50,19 +50,16 @@ public final class EditModelValues {
       });
     }
 
-    /** {@inheritDoc} */
     @Override
     public V get() {
       return editModel.getValue(key);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void set(final V value) {
       editModel.setValue(key, value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public EventObserver<V> getChangeObserver() {
       return changeEvent.getObserver();

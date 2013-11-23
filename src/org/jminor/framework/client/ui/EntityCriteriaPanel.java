@@ -112,7 +112,6 @@ public final class EntityCriteriaPanel extends JPanel {
       this.propertyList = propertyList;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void eventOccurred() {
       propertyList.repaint();
@@ -120,7 +119,6 @@ public final class EntityCriteriaPanel extends JPanel {
   }
 
   private static final class CriteriaListCellRenderer extends DefaultListCellRenderer {
-    /** {@inheritDoc} */
     @Override
     public Component getListCellRendererComponent(final JList list, final Object value, final int index,
                                                   final boolean isSelected, final boolean cellHasFocus) {
@@ -135,7 +133,6 @@ public final class EntityCriteriaPanel extends JPanel {
 
   private static final class SearchModelComparator implements Comparator<PropertySearchModel>, Serializable {
     private static final long serialVersionUID = 1;
-    /** {@inheritDoc} */
     @Override
     public int compare(final PropertySearchModel o1, final PropertySearchModel o2) {
       final Property propertyOne = (Property) o1.getColumnIdentifier();
@@ -159,7 +156,6 @@ public final class EntityCriteriaPanel extends JPanel {
       this.propertyList = propertyList;
     }
 
-    /** {@inheritDoc} */
     @Override
     @SuppressWarnings({"unchecked"})
     public void valueChanged(final ListSelectionEvent e) {

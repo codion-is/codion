@@ -58,7 +58,6 @@ public final class PoolMonitor {
       this.server = server;
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getMaximumPoolSize() {
       try {
@@ -69,7 +68,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getMinimumPoolSize() {
       try {
@@ -80,7 +78,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getCleanupInterval() {
       try {
@@ -91,7 +88,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getMaximumRetryWaitPeriod() {
       try {
@@ -102,7 +98,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getConnectionTimeout() {
       try {
@@ -113,7 +108,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setMaximumPoolSize(final int value) {
       try {
@@ -124,7 +118,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setMinimumPoolSize(final int value) {
       try {
@@ -135,7 +128,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setConnectionTimeout(final int timeout) {
       try {
@@ -146,7 +138,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setMaximumRetryWaitPeriod(final int maximumRetryWaitPeriod) {
       try {
@@ -157,7 +148,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getMaximumCheckOutTime() {
       try {
@@ -168,7 +158,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setMaximumCheckOutTime(final int value) {
       try {
@@ -179,7 +168,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public int getNewConnectionThreshold() {
       try {
@@ -190,7 +178,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setNewConnectionThreshold(final int value) {
       try {
@@ -201,7 +188,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setCleanupInterval(final int poolCleanupInterval) {
       try {
@@ -212,7 +198,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public ConnectionPoolStatistics getStatistics(final long since) {
       try {
@@ -223,13 +208,11 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public User getUser() {
       return user;
     }
 
-    /** {@inheritDoc} */
     @Override
     public boolean isCollectFineGrainedStatistics() {
       try {
@@ -240,7 +223,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void resetStatistics() {
       try {
@@ -251,7 +233,6 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setCollectFineGrainedStatistics(final boolean value) {
       try {
@@ -262,15 +243,12 @@ public final class PoolMonitor {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void returnConnection(final Connection connection) {}
 
-    /** {@inheritDoc} */
     @Override
     public Connection getConnection() throws DatabaseException {return null;}
 
-    /** {@inheritDoc} */
     @Override
     public void close() {}
   }

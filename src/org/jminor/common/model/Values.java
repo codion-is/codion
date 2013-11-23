@@ -84,7 +84,6 @@ public final class Values {
       this.value = initialValue;
     }
 
-    /** {@inheritDoc} */
     @Override
     public void set(final V value) {
       if (!Util.equal(this.value, value)) {
@@ -93,13 +92,11 @@ public final class Values {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public V get() {
       return value;
     }
 
-    /** {@inheritDoc} */
     @Override
     public EventObserver<V> getChangeObserver() {
       return changeEvent.getObserver();
@@ -135,7 +132,6 @@ public final class Values {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public V get() {
       try {
@@ -149,7 +145,6 @@ public final class Values {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public void set(final V value) {
       if (setMethod == null) {
@@ -166,7 +161,6 @@ public final class Values {
       }
     }
 
-    /** {@inheritDoc} */
     @Override
     public EventObserver<V> getChangeObserver() {
       return changeEvent;
@@ -190,19 +184,16 @@ public final class Values {
       });
     }
 
-    /** {@inheritDoc} */
     @Override
     public void set(final Boolean value) {
       state.setActive(value);
     }
 
-    /** {@inheritDoc} */
     @Override
     public Boolean get() {
       return state.isActive();
     }
 
-    /** {@inheritDoc} */
     @Override
     public EventObserver<Boolean> getChangeObserver() {
       return changeEvent.getObserver();
@@ -280,7 +271,6 @@ public final class Values {
     private void bindEvents(final Value<V> modelValue, final Value<V> uiValue, final boolean readOnly) {
       if (modelValue.getChangeObserver() != null) {
         modelValue.getChangeObserver().addListener(new EventListener() {
-          /** {@inheritDoc} */
           @Override
           public void eventOccurred() {
             updateUI();
@@ -289,7 +279,6 @@ public final class Values {
       }
       if (!readOnly && uiValue.getChangeObserver() != null) {
         uiValue.getChangeObserver().addListener(new EventListener() {
-          /** {@inheritDoc} */
           @Override
           public void eventOccurred() {
             updateModel();

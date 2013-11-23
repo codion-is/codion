@@ -60,19 +60,16 @@ public final class DatabaseConnections {
       this.user = user;
     }
 
-    /** {@inheritDoc} */
     @Override
     public DatabaseConnection createConnection() throws DatabaseException {
       return DatabaseConnections.createConnection(database, user);
     }
 
-    /** {@inheritDoc} */
     @Override
     public void destroyConnection(final DatabaseConnection connection) {
       connection.disconnect();
     }
 
-    /** {@inheritDoc} */
     @Override
     public User getUser() {
       return user;

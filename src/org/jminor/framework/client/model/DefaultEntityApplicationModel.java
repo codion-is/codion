@@ -249,7 +249,6 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
       return (String) getUserObject();
     }
 
-    /** {@inheritDoc} */
     @Override
     public void setParent(final MutableTreeNode newParent) {
       super.setParent(newParent);

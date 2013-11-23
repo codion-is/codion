@@ -743,7 +743,6 @@ public final class Util {
    */
   public static ThreadLocal<Collator> getThreadLocalCollator() {
     return new ThreadLocal<Collator>() {
-      /** {@inheritDoc} */
       @Override
       protected synchronized Collator initialValue() {
         return Collator.getInstance();
@@ -773,7 +772,6 @@ public final class Util {
   public static <T> Comparator<T> getSpaceAwareCollator() {
     return new Comparator<T>() {
       private final Collator collator = Collator.getInstance();
-      /** {@inheritDoc} */
       @Override
       public int compare(final T o1, final T o2) {
         return collateSansSpaces(collator, o1.toString(), o2.toString());
@@ -1171,7 +1169,6 @@ public final class Util {
    * A ThreadFactory implementation producing daemon threads
    */
   public static final class DaemonThreadFactory implements ThreadFactory {
-    /** {@inheritDoc} */
     @Override
     public Thread newThread(final Runnable runnable) {
       final Thread thread = new Thread(runnable);
@@ -1188,14 +1185,12 @@ public final class Util {
 
     private static final long serialVersionUID = 1;
 
-    /** {@inheritDoc} */
     @Override
     public StringBuffer format(final Object obj, final StringBuffer toAppendTo, final FieldPosition pos) {
       toAppendTo.append(obj.toString());
       return toAppendTo;
     }
 
-    /** {@inheritDoc} */
     @Override
     public Object parseObject(final String source, final ParsePosition pos) {
       pos.setIndex(source.length());

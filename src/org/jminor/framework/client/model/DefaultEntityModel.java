@@ -558,7 +558,6 @@ public class DefaultEntityModel implements EntityModel {
     }
     else {
       editModel.addEntitySetListener(new EventInfoListener<Entity>() {
-        /** {@inheritDoc} */
         @Override
         public void eventOccurred(final Entity info) {
           initializeDetailModels();
@@ -569,21 +568,18 @@ public class DefaultEntityModel implements EntityModel {
 
   private void bindMasterModelEvents() {
     masterModel.getEditModel().addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred(final EntityEditModel.InsertEvent info) {
         handleMasterInsert(info);
       }
     });
     masterModel.getEditModel().addAfterUpdateListener(new EventInfoListener<EntityEditModel.UpdateEvent>() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred(final EntityEditModel.UpdateEvent info) {
         handleMasterUpdate(info);
       }
     });
     masterModel.getEditModel().addAfterDeleteListener(new EventInfoListener<EntityEditModel.DeleteEvent>() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred(final EntityEditModel.DeleteEvent info) {
         handleMasterDelete(info);

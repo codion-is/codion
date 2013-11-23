@@ -261,7 +261,6 @@ public final class ExceptionDialog extends JDialog {
 
   private void initializeUI() {
     final AbstractAction closeAction = new AbstractAction("close") {
-      /** {@inheritDoc} */
       @Override
       public void actionPerformed(final ActionEvent e) {
         dispose();
@@ -282,7 +281,6 @@ public final class ExceptionDialog extends JDialog {
   private void bindEvents() {
     setDefaultCloseOperation(DISPOSE_ON_CLOSE);
     showDetailsChangedEvent.addInfoListener(new EventInfoListener<Boolean>() {
-      /** {@inheritDoc} */
       @Override
       public void eventOccurred(final Boolean value) {
         initializeDetailView(value);

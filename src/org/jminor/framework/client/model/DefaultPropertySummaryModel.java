@@ -133,25 +133,21 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
    */
   public enum SummaryType implements Summary {
     NONE {
-      /** {@inheritDoc} */
       @Override
       public String toString() {
         return FrameworkMessages.get(FrameworkMessages.NONE);
       }
 
-      /** {@inheritDoc} */
       @Override
       public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
         return "";
       }
     }, SUM {
-      /** {@inheritDoc} */
       @Override
       public String toString() {
         return FrameworkMessages.get(FrameworkMessages.SUM);
       }
 
-      /** {@inheritDoc} */
       @Override
       public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
         final Format format = property.getFormat();
@@ -177,13 +173,11 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
         return addSubsetIndicator(txt, valueProvider);
       }
     }, AVERAGE {
-      /** {@inheritDoc} */
       @Override
       public String toString() {
         return FrameworkMessages.get(FrameworkMessages.AVERAGE);
       }
 
-      /** {@inheritDoc} */
       @Override
       public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
         final Format format = property.getFormat();
@@ -213,13 +207,11 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
         return addSubsetIndicator(txt, valueProvider);
       }
     }, MINIMUM {
-      /** {@inheritDoc} */
       @Override
       public String toString() {
         return FrameworkMessages.get(FrameworkMessages.MINIMUM);
       }
 
-      /** {@inheritDoc} */
       @Override
       public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
         final Format format = property.getFormat();
@@ -244,13 +236,11 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
         return addSubsetIndicator(txt, valueProvider);
       }
     }, MAXIMUM {
-      /** {@inheritDoc} */
       @Override
       public String toString() {
         return FrameworkMessages.get(FrameworkMessages.MAXIMUM);
       }
 
-      /** {@inheritDoc} */
       @Override
       public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
         final Format format = property.getFormat();
@@ -276,13 +266,11 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
         return addSubsetIndicator(txt, valueProvider);
       }
     }, MINIMUM_MAXIMUM {
-      /** {@inheritDoc} */
       @Override
       public String toString() {
         return FrameworkMessages.get(FrameworkMessages.MINIMUM_AND_MAXIMUM);
       }
 
-      /** {@inheritDoc} */
       @Override
       public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
         final Format format = property.getFormat();
