@@ -863,34 +863,12 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     if (!containsEditPanel() || (editPanelState == state)) {
       return;
     }
+    if (state != HIDDEN && state != EMBEDDED && state != DIALOG) {
+      throw new IllegalArgumentException("Edit panel state must be one of EMBEDDED, DIALOG or HIDDEN");
+    }
 
     editPanelState = state;
-    if (state != DIALOG) {
-      disposeEditDialog();
-    }
-
-    if (state == EMBEDDED) {
-      if (compactBase != null) {
-        compactBase.add(editControlPanel, BorderLayout.NORTH);
-      }
-      else {
-        add(editControlPanel, BorderLayout.NORTH);
-      }
-    }
-    else if (state == HIDDEN) {
-      if (compactBase != null && !detailEntityPanels.isEmpty()) {
-        compactBase.remove(editControlPanel);
-      }
-      else {
-        remove(editControlPanel);
-      }
-    }
-    else {
-      showEditDialog();
-    }
-    prepareUI(true, false);
-
-    revalidate();
+    updateEditPanelState();
   }
 
   /**
@@ -1074,7 +1052,9 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       }
     }
     setDetailPanelState(detailPanelState);
-    setEditPanelState(editPanelState);
+    if (containsEditPanel()) {
+      updateEditPanelState();
+    }
     setupKeyboardActions();
     if (Configuration.getBooleanValue(Configuration.USE_KEYBOARD_NAVIGATION)) {
       initializeNavigation();
@@ -1393,6 +1373,35 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   //#############################################################################################
   // End - initialization methods
   //#############################################################################################
+
+  private void updateEditPanelState() {
+    if (editPanelState != DIALOG) {
+      disposeEditDialog();
+    }
+
+    if (editPanelState == EMBEDDED) {
+      if (compactBase != null) {
+        compactBase.add(editControlPanel, BorderLayout.NORTH);
+      }
+      else {
+        add(editControlPanel, BorderLayout.NORTH);
+      }
+    }
+    else if (editPanelState == HIDDEN) {
+      if (compactBase != null && !detailEntityPanels.isEmpty()) {
+        compactBase.remove(editControlPanel);
+      }
+      else {
+        remove(editControlPanel);
+      }
+    }
+    else {
+      showEditDialog();
+    }
+    prepareUI(true, false);
+
+    revalidate();
+  }
 
   /**
    * Shows the detail panels in a non-modal dialog

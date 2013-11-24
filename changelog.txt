@@ -3667,3 +3667,4 @@
   Removed a bunch of redundant /** {@inheritDoc} */
   Removed redundant throws CancelException since it is unchecked, left in javadoc though
   EntityLoadTestModel constructor fixed to remove possible heap pollution
+  EntityPanel, yet another edit panel state initialization bug fixed
