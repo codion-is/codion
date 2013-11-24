@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.tools.testing;
 
-import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.framework.Configuration;
@@ -11,7 +10,7 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
 
 import java.util.ArrayList;
-import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -24,8 +23,8 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
    * @param user the default user
    * @param usageScenarios the usage scenarios
    */
-  public EntityLoadTestModel(final User user, final UsageScenario<EntityApplicationModel>... usageScenarios) {
-    super(user, Arrays.asList(usageScenarios), Configuration.getIntValue(Configuration.LOAD_TEST_THINKTIME),
+  public EntityLoadTestModel(final User user, final Collection<? extends UsageScenario<EntityApplicationModel>> usageScenarios) {
+    super(user, usageScenarios, Configuration.getIntValue(Configuration.LOAD_TEST_THINKTIME),
             Configuration.getIntValue(Configuration.LOAD_TEST_LOGIN_DELAY),
             Configuration.getIntValue(Configuration.LOAD_TEST_BATCH_SIZE));
   }
@@ -92,7 +91,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
 
   /** {@inheritDoc} */
   @Override
-  protected abstract EntityApplicationModel initializeApplication() throws CancelException;
+  protected abstract EntityApplicationModel initializeApplication();
 
   /**
    * An abstract base class for usage scenarios based on EntityApplicationModel instances

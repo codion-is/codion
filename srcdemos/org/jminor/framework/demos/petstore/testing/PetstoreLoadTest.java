@@ -17,12 +17,13 @@ import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import java.util.Arrays;
 import java.util.UUID;
 
 public final class PetstoreLoadTest extends EntityLoadTestModel {
 
   public PetstoreLoadTest() {
-    super(User.UNIT_TEST_USER, new LoadTestModel.AbstractUsageScenario("selectRecords") {
+    super(User.UNIT_TEST_USER, Arrays.asList(new LoadTestModel.AbstractUsageScenario("selectRecords") {
       @Override
       protected void performScenario(final Object application) throws ScenarioException {
         final EntityModel categoryModel = ((EntityApplicationModel) application).getEntityModels().iterator().next();
@@ -32,7 +33,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel {
         selectRandomRow(categoryModel.getDetailModels().iterator().next().getTableModel());
         selectRandomRow(categoryModel.getDetailModels().iterator().next().getDetailModels().iterator().next().getTableModel());
       }
-    });
+    }));
   }
 
   @Override

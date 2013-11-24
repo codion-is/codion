@@ -3665,3 +3665,5 @@
   EntityPanel, bug introduced by the change above fixed
   EntityUtil.createToStringEntity() simplified
   Removed a bunch of redundant /** {@inheritDoc} */
+  Removed redundant throws CancelException since it is unchecked, left in javadoc though
+  EntityLoadTestModel constructor fixed to remove possible heap pollution

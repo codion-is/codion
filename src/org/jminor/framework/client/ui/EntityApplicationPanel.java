@@ -232,7 +232,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @throws CancelException in case the login is cancelled
    * @see #getUser(String, org.jminor.common.model.User, javax.swing.ImageIcon)
    */
-  public final void login() throws CancelException {
+  public final void login() {
     applicationModel.login(getUser(frameTitle, null, null));
   }
 
@@ -382,7 +382,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @see Configuration#WARN_ABOUT_UNSAVED_DATA
    * @throws CancelException if the exit is cancelled
    */
-  public final void exit() throws CancelException {
+  public final void exit() {
     if (Configuration.getBooleanValue(Configuration.WARN_ABOUT_UNSAVED_DATA) && getModel().containsUnsavedData() &&
             JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING),
                     FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
@@ -653,7 +653,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @return an initialized EntityConnectionProvider
    * @throws CancelException in case the initialization is cancelled
    */
-  protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeID) throws CancelException {
+  protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeID) {
     return EntityConnectionProviders.createConnectionProvider(user, clientTypeID);
   }
 
@@ -663,7 +663,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @throws IllegalStateException if the application model has not been set
    * @throws CancelException in case the initialization is cancelled
    */
-  protected final void initialize(final Model applicationModel) throws CancelException {
+  protected final void initialize(final Model applicationModel) {
     Util.rejectNullValue(applicationModel, "applicationModel");
     this.applicationModel = applicationModel;
     setupEntityPanelProviders();
@@ -1031,7 +1031,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @return an initialized application model
    * @throws CancelException in case the initialization is cancelled
    */
-  protected abstract Model initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException;
+  protected abstract Model initializeApplicationModel(final EntityConnectionProvider connectionProvider);
 
   /**
    * Returns the user, either via a login dialog or via override, called during startup
@@ -1041,7 +1041,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @return the application user
    * @throws CancelException in case a login dialog is cancelled
    */
-  protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon) throws CancelException {
+  protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon) {
     final String defaultUserName = Configuration.getValue(Configuration.USERNAME_PREFIX) + System.getProperty("user.name");
     final User user = LoginPanel.showLoginPanel(null, defaultUser == null ? new User(Util.getDefaultUserName(getApplicationIdentifier(),
             defaultUserName), null) : defaultUser, applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);

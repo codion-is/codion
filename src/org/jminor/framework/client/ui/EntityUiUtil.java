@@ -208,7 +208,7 @@ public final class EntityUiUtil {
    * @throws CancelException in case the user cancels the operation
    */
   public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final JComponent dialogOwner,
-                                                  final boolean singleSelection, final String dialogTitle) throws CancelException {
+                                                  final boolean singleSelection, final String dialogTitle) {
     return selectEntities(lookupModel, dialogOwner, singleSelection, dialogTitle, null);
   }
 
@@ -224,7 +224,7 @@ public final class EntityUiUtil {
    */
   public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final JComponent dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle,
-                                                  final Dimension preferredSize) throws CancelException {
+                                                  final Dimension preferredSize) {
     Util.rejectNullValue(lookupModel, "lookupModel");
     final Collection<Entity> selected = new ArrayList<>();
     final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogOwner), dialogTitle);

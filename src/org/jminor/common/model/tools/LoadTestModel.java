@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model.tools;
 
-import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
@@ -541,7 +540,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
    * @return an initialized application.
    * @throws org.jminor.common.model.CancelException in case the initialization was cancelled
    */
-  protected abstract T initializeApplication() throws CancelException;
+  protected abstract T initializeApplication();
 
   /**
    * @param application the application to disconnect

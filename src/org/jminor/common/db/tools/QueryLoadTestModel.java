@@ -9,7 +9,6 @@ import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPools;
-import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -68,7 +67,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
   /** {@inheritDoc} */
   @Override
-  protected QueryApplication initializeApplication() throws CancelException {
+  protected QueryApplication initializeApplication() {
     return new QueryApplication(pool);
   }
 

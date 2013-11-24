@@ -5,7 +5,6 @@ package org.jminor.framework.demos.chinook.testing;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.model.tools.LoadTest;
 import org.jminor.common.model.tools.ScenarioException;
 import org.jminor.common.ui.tools.LoadTestPanel;
 import org.jminor.framework.Configuration;
@@ -25,6 +24,7 @@ import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import java.util.Arrays;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.List;
@@ -33,7 +33,7 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public final class ChinookLoadTest extends EntityLoadTestModel {
 
-  private static final LoadTest.UsageScenario UPDATE_TOTALS = new AbstractEntityUsageScenario("updateTotals") {
+  private static final UsageScenario<EntityApplicationModel> UPDATE_TOTALS = new AbstractEntityUsageScenario("updateTotals") {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
@@ -61,7 +61,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     }
   };
 
-  private static final LoadTest.UsageScenario VIEW_GENRE = new AbstractEntityUsageScenario("viewGenre") {
+  private static final UsageScenario<EntityApplicationModel> VIEW_GENRE = new AbstractEntityUsageScenario("viewGenre") {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
@@ -83,7 +83,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     }
   };
 
-  private static final LoadTest.UsageScenario VIEW_CUSTOMER_REPORT = new AbstractEntityUsageScenario("viewCustomerReport") {
+  private static final UsageScenario<EntityApplicationModel> VIEW_CUSTOMER_REPORT = new AbstractEntityUsageScenario("viewCustomerReport") {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
@@ -110,7 +110,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     }
   };
 
-  private static final UsageScenario VIEW_INVOICE = new AbstractEntityUsageScenario("viewInvoice") {
+  private static final UsageScenario<EntityApplicationModel> VIEW_INVOICE = new AbstractEntityUsageScenario("viewInvoice") {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
@@ -131,7 +131,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     }
   };
 
-  private static final UsageScenario VIEW_ALBUM = new AbstractEntityUsageScenario("viewAlbum") {
+  private static final UsageScenario<EntityApplicationModel> VIEW_ALBUM = new AbstractEntityUsageScenario("viewAlbum") {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       try {
@@ -153,7 +153,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
   };
 
   public ChinookLoadTest() {
-    super(User.UNIT_TEST_USER, VIEW_GENRE, VIEW_CUSTOMER_REPORT, VIEW_INVOICE, VIEW_ALBUM, UPDATE_TOTALS);
+    super(User.UNIT_TEST_USER, Arrays.asList(VIEW_GENRE, VIEW_CUSTOMER_REPORT, VIEW_INVOICE, VIEW_ALBUM, UPDATE_TOTALS));
   }
 
   @Override

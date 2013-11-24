@@ -80,7 +80,7 @@ public final class LoginPanel extends JPanel {
    * @return a User object based on the values found in this LoginPanel
    * @throws CancelException in case the user cancels
    */
-  public static User showLoginPanel(final JComponent parent, final User defaultUser) throws CancelException {
+  public static User showLoginPanel(final JComponent parent, final User defaultUser) {
     return showLoginPanel(parent, defaultUser, null);
   }
 
@@ -92,8 +92,7 @@ public final class LoginPanel extends JPanel {
    * @return a User object based on the values found in this LoginPanel
    * @throws CancelException in case the user cancels
    */
-  public static User showLoginPanel(final JComponent parent, final User defaultUser, final Icon icon)
-          throws CancelException {
+  public static User showLoginPanel(final JComponent parent, final User defaultUser, final Icon icon) {
     return showLoginPanel(parent, defaultUser, icon, null, null, null);
   }
 
@@ -109,7 +108,7 @@ public final class LoginPanel extends JPanel {
    */
   public static User showLoginPanel(final JComponent parent, final User defaultUser,
                                     final Icon icon, final String dialogTitle,
-                                    final String usernameLabel, final String passwordLabel) throws CancelException {
+                                    final String usernameLabel, final String passwordLabel) {
     return new LoginPanel(defaultUser, false, usernameLabel, passwordLabel).showLoginPanel(parent, icon, dialogTitle);
   }
 
@@ -120,7 +119,7 @@ public final class LoginPanel extends JPanel {
    * @return a User object based on the values found in this LoginPanel
    * @throws CancelException in case the user cancels
    */
-  public User showLoginPanel(final JComponent parent, final Icon icon, final String dialogTitle) throws CancelException {
+  public User showLoginPanel(final JComponent parent, final Icon icon, final String dialogTitle) {
     final JOptionPane pane = new JOptionPane(this, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, icon);
     final JDialog dialog = pane.createDialog(parent, dialogTitle == null ? Messages.get(Messages.LOGIN) : dialogTitle);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
@@ -144,7 +143,7 @@ public final class LoginPanel extends JPanel {
    * @return a User object based on the values found in this LoginPanel
    * @throws CancelException in case the user cancels
    */
-  public static User getUser(final JComponent parent, final User defaultUser) throws CancelException {
+  public static User getUser(final JComponent parent, final User defaultUser) {
     return showLoginPanel(parent, defaultUser);
   }
 

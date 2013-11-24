@@ -5,7 +5,6 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
@@ -491,7 +490,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final void deleteSelected() throws CancelException, DatabaseException {
+  public final void deleteSelected() throws DatabaseException {
     if (!isDeleteAllowed()) {
       throw new IllegalStateException("Deleting is not allowed via this table model");
     }
@@ -500,7 +499,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final void update(final List<Entity> entities) throws CancelException, ValidationException, DatabaseException {
+  public final void update(final List<Entity> entities) throws ValidationException, DatabaseException {
     if (!isUpdateAllowed()) {
       throw new IllegalStateException("Updating is not allowed via this table model");
     }

@@ -186,18 +186,18 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @throws CancelException in case the user cancels the operation
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
-   * @throws IllegalStateException in case this table model has no edit model
+   * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow updating
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
-  void update(final List<Entity> entities) throws CancelException, ValidationException, DatabaseException;
+  void update(final List<Entity> entities) throws ValidationException, DatabaseException;
 
   /**
    * Deletes the selected entities
    * @throws DatabaseException in case of a database exception
    * @throws CancelException in case the user cancels the operation
-   * @throws IllegalStateException in case this table model has no edit model
+   * @throws IllegalStateException in case this table model has no edit model or if the edit model does not allow deleting
    */
-  void deleteSelected() throws CancelException, DatabaseException;
+  void deleteSelected() throws DatabaseException;
 
   /**
    * @return whether to show all underlying entities when no criteria is applied.

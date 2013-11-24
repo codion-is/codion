@@ -222,7 +222,7 @@ public final class UiUtil {
    * @return the selected file
    * @throws CancelException in case the user cancels
    */
-  public static File selectDirectory(final JComponent dialogParent, final String startDir) throws CancelException {
+  public static File selectDirectory(final JComponent dialogParent, final String startDir) {
     return selectDirectory(dialogParent, startDir, Messages.get(Messages.SELECT_DIRECTORY));
   }
 
@@ -234,7 +234,7 @@ public final class UiUtil {
    * @return the selected file
    * @throws CancelException in case the user cancels
    */
-  public static File selectDirectory(final JComponent dialogParent, final String startDir, final String dialogTitle) throws CancelException {
+  public static File selectDirectory(final JComponent dialogParent, final String startDir, final String dialogTitle) {
     return selectFileOrDirectory(dialogParent, startDir, false, dialogTitle);
   }
 
@@ -245,7 +245,7 @@ public final class UiUtil {
    * @return the selected file
    * @throws CancelException in case the user cancels
    */
-  public static File selectFile(final JComponent dialogParent, final String startDir) throws CancelException {
+  public static File selectFile(final JComponent dialogParent, final String startDir) {
     return selectFile(dialogParent, startDir, Messages.get(Messages.SELECT_FILE));
   }
 
@@ -257,7 +257,7 @@ public final class UiUtil {
    * @return the selected file
    * @throws CancelException in case the user cancels
    */
-  public static File selectFile(final JComponent dialogParent, final String startDir, final String dialogTitle) throws CancelException {
+  public static File selectFile(final JComponent dialogParent, final String startDir, final String dialogTitle) {
     return selectFileOrDirectory(dialogParent, startDir, true, dialogTitle);
   }
 
@@ -271,7 +271,7 @@ public final class UiUtil {
    * @throws CancelException in case the user cancels
    */
   public static File selectFileOrDirectory(final JComponent dialogParent, final String startDir, final boolean files,
-                                           final String dialogTitle) throws CancelException {
+                                           final String dialogTitle) {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
@@ -314,8 +314,7 @@ public final class UiUtil {
    * @return the selected file
    * @throws CancelException in case the user cancels
    */
-  public static File chooseFileToSave(final JComponent dialogParent, final String startDir,
-                                      final String defaultFileName) throws CancelException {
+  public static File chooseFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName) {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);

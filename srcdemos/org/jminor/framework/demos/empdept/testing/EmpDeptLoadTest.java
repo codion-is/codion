@@ -19,6 +19,7 @@ import org.jminor.framework.tools.testing.EntityTestUnit;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import java.util.Arrays;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.Random;
@@ -27,8 +28,8 @@ import java.util.Random;
 public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   public EmpDeptLoadTest() {
-    super(User.UNIT_TEST_USER, new InsertDepartment(), new InsertEmployee(), new LoginLogout(),
-            new SelectDepartment(), new UpdateEmployee());
+    super(User.UNIT_TEST_USER, Arrays.asList(new InsertDepartment(), new InsertEmployee(), new LoginLogout(),
+            new SelectDepartment(), new UpdateEmployee()));
   }
 
   @Override

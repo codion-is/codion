@@ -16,11 +16,12 @@ import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
+import java.util.Arrays;
 import java.util.UUID;
 
 public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
 
-  private static final UsageScenario SCENARIO = new AbstractEntityUsageScenario() {
+  private static final UsageScenario<EntityApplicationModel> SCENARIO = new AbstractEntityUsageScenario() {
     @Override
     protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
       final EntityModel schemaModel = application.getEntityModels().iterator().next();
@@ -32,7 +33,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
   };
 
   public SchemaBrowserLoadTest() {
-    super(User.UNIT_TEST_USER, SCENARIO);
+    super(User.UNIT_TEST_USER, Arrays.asList(SCENARIO));
   }
 
   @Override
