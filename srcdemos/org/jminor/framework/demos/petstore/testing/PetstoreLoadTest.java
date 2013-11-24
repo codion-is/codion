@@ -23,10 +23,10 @@ import java.util.UUID;
 public final class PetstoreLoadTest extends EntityLoadTestModel {
 
   public PetstoreLoadTest() {
-    super(User.UNIT_TEST_USER, Arrays.asList(new LoadTestModel.AbstractUsageScenario("selectRecords") {
+    super(User.UNIT_TEST_USER, Arrays.asList(new LoadTestModel.AbstractUsageScenario<EntityApplicationModel>("selectRecords") {
       @Override
-      protected void performScenario(final Object application) throws ScenarioException {
-        final EntityModel categoryModel = ((EntityApplicationModel) application).getEntityModels().iterator().next();
+      protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
+        final EntityModel categoryModel = application.getEntityModels().iterator().next();
         categoryModel.getTableModel().getSelectionModel().clearSelection();
         categoryModel.refresh();
         selectRandomRow(categoryModel.getTableModel());
