@@ -3653,7 +3653,7 @@
   Some generification of Events
   FilteredTableColumnModel.containsColumn() added
   DefaultEntityTableModel, loading of property preferences for previously non-existing properties no longer crashes the application
-  DefaultEntityTableModel, removed org.json.JSONException from signatures
+  DefaultEntityTableModel, removed org.json.JSONException from signatures to remove a direct dependency to JSON
   UiUtil.linkToEnabledState() overloaded with includeFocusable parameter
 0.8.4
   Usages of ValueChange re-generified throughout
@@ -3668,3 +3668,4 @@
   Removed redundant throws CancelException since it is unchecked, left in javadoc though
   EntityLoadTestModel constructor fixed to remove possible heap pollution
   EntityPanel, yet another edit panel state initialization bug fixed
+  EntityPanel, editControlPanel made final and initialized during construction

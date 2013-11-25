@@ -132,7 +132,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /**
    * The edit panel which contains the controls required for editing a entity
    */
-  private JPanel editControlPanel;
+  private final JPanel editControlPanel;
 
   /**
    * The horizontal split pane, which is used in case this entity panel has detail panels.
@@ -304,6 +304,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     this.caption = caption == null ? Entities.getCaption(entityModel.getEntityID()) : caption;
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
+    this.editControlPanel = editPanel == null ? null : initializeEditControlPanel();
   }
 
   /**
@@ -1007,7 +1008,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
     if (editPanel != null) {
       editPanel.initializePanel();
-      editControlPanel = initializeEditControlPanel();
     }
     if (tablePanel != null) {
       final ControlSet toolbarControls = new ControlSet("");
