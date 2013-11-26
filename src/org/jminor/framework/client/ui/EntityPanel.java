@@ -130,9 +130,9 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private final EntityTablePanel tablePanel;
 
   /**
-   * The edit panel which contains the controls required for editing a entity
+   * The base edit panel which contains the controls required for editing a entity
    */
-  private final JPanel editControlPanel;
+  private final JPanel editControlPanel = new JPanel(UiUtil.createBorderLayout());
 
   /**
    * The horizontal split pane, which is used in case this entity panel has detail panels.
@@ -304,7 +304,6 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     this.caption = caption == null ? Entities.getCaption(entityModel.getEntityID()) : caption;
     this.editPanel = editPanel;
     this.tablePanel = tablePanel;
-    this.editControlPanel = editPanel == null ? null : initializeEditControlPanel();
   }
 
   /**
@@ -336,12 +335,40 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
+   * Sets the layout constraints to use for the control panel
+   *<pre>
+   * The default layout is as follows (BorderLayout.WEST):
+   * __________________________________
+   * |   edit panel           |control|
+   * |  (EntityEditPanel)     | panel | } edit control panel
+   * |________________________|_______|
+   *
+   * With  (BorderLayout.SOUTH):
+   * __________________________
+   * |         edit           |
+   * |        panel           |
+   * |________________________| } edit control panel
+   * |     control panel      |
+   * |________________________|
+   *
+   * etc.
+   *</pre>
    * @param controlPanelConstraints the control panel layout constraints (BorderLayout constraints)
    * @return this entity panel
    * @throws IllegalStateException if the panel has been initialized
+   * @throws IllegalArgumentException in case the given constraint is not one of BorderLayout.SOUTH, NORTH, EAST or WEST
    */
   public final EntityPanel setControlPanelConstraints(final String controlPanelConstraints) {
     checkIfInitialized();
+    switch (controlPanelConstraints) {
+      case BorderLayout.SOUTH:
+      case BorderLayout.NORTH:
+      case BorderLayout.EAST:
+      case BorderLayout.WEST:
+        break;
+      default:
+        throw new IllegalArgumentException("Control panel constraint must be one of BorderLayout.SOUTH, NORTH, EAST or WEST");
+    }
     this.controlPanelConstraints = controlPanelConstraints;
     return this;
   }
@@ -1008,6 +1035,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
     if (editPanel != null) {
       editPanel.initializePanel();
+      initializeEditControlPanel();
     }
     if (tablePanel != null) {
       final ControlSet toolbarControls = new ControlSet("");
@@ -1175,46 +1203,19 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     this.masterPanel = masterPanel;
   }
 
-  /**
-   * Initializes the edit control panel.
-   *<pre>
-   * The default layout is as follows:
-   * __________________________________
-   * |   edit panel           |control|
-   * |  (EntityEditPanel)     | panel | } edit control panel
-   * |________________________|_______|
-   *
-   * or, if the <code>horizontalButtons</code> constructor parameter was true:
-   * __________________________
-   * |         edit           |
-   * |        panel           |
-   * |________________________| } edit control panel
-   * |     control panel      |
-   * |________________________|
-   *</pre>
-   * @return a panel used for editing entities, if <code>initializeEditPanel()</code>
-   * returns null then by default this method returns null as well
-   */
-  private JPanel initializeEditControlPanel() {
-    if (!containsEditPanel()) {
-      return null;
-    }
-
-    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
-    panel.setMinimumSize(new Dimension(0, 0));
+  private void initializeEditControlPanel() {
+    editControlPanel.setMinimumSize(new Dimension(0, 0));
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
     final JPanel propertyBase = new JPanel(UiUtil.createFlowLayout(alignment));
     propertyBase.add(editPanel);
-    panel.add(propertyBase, BorderLayout.CENTER);
+    editControlPanel.add(propertyBase, BorderLayout.CENTER);
     if (includeControlPanel) {
       final JComponent controlPanel = Configuration.getBooleanValue(Configuration.TOOLBAR_BUTTONS) ?
               editPanel.createControlToolBar(JToolBar.VERTICAL) : editPanel.createControlPanel(alignment == FlowLayout.CENTER);
       if (controlPanel != null) {
-        panel.add(controlPanel, controlPanelConstraints);
+        editControlPanel.add(controlPanel, controlPanelConstraints);
       }
     }
-
-    return panel;
   }
 
   /**
@@ -1334,8 +1335,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     return new AbstractAction() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        if (editControlPanel != null || (!detailEntityPanels.isEmpty() && includeDetailPanelTabPane)) {
-          if (editControlPanel != null && getEditPanelState() == HIDDEN) {
+        if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailPanelTabPane)) {
+          if (containsEditPanel() && getEditPanelState() == HIDDEN) {
             setEditPanelState(DIALOG);
           }
           else if (getDetailPanelState() == HIDDEN) {
@@ -1430,7 +1431,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @return the size to use when showing the detail dialog
    */
   private Dimension getDetailDialogSize(final Dimension parentSize) {
-    return new Dimension((int) (parentSize.width / DETAIL_DIALOG_SIZE_RATIO), (editControlPanel != null) ?
+    return new Dimension((int) (parentSize.width / DETAIL_DIALOG_SIZE_RATIO), (containsEditPanel()) ?
             (int) (parentSize.height / DETAIL_DIALOG_SIZE_RATIO) : parentSize.height - DETAIL_DIALOG_HEIGHT_OFFSET);
   }
 

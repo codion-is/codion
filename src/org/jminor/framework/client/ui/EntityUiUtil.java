@@ -1141,9 +1141,7 @@ public final class EntityUiUtil {
         value += getOriginalValue(entity, property);
       }
       final JMenuItem menuItem = new JMenuItem(value);
-      if (modified) {
-        setModified(menuItem);
-      }
+      setInvalidModified(menuItem, true, modified);
       menuItem.setToolTipText(property.getColumnName());
       rootMenu.add(menuItem);
     }
@@ -1176,12 +1174,7 @@ public final class EntityUiUtil {
             text += getOriginalValue(entity, property);
           }
           final JMenu foreignKeyMenu = new JMenu(text);
-          if (!valid) {
-            setInvalid(foreignKeyMenu);
-          }
-          if (modified) {
-            setModified(foreignKeyMenu);
-          }
+          setInvalidModified(foreignKeyMenu, valid, modified);
           foreignKeyMenu.setToolTipText(toolTipText);
           populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), connectionProvider);
           rootMenu.add(foreignKeyMenu);
@@ -1192,12 +1185,7 @@ public final class EntityUiUtil {
             text += getOriginalValue(entity, property);
           }
           final JMenuItem menuItem = new JMenuItem(text);
-          if (!valid) {
-            setInvalid(menuItem);
-          }
-          if (modified) {
-            setModified(menuItem);
-          }
+          setInvalidModified(menuItem, valid, modified);
           menuItem.setToolTipText(toolTipText);
           rootMenu.add(menuItem);
         }
@@ -1237,12 +1225,7 @@ public final class EntityUiUtil {
           caption += getOriginalValue(entity, property);
         }
         final JMenuItem menuItem = new JMenuItem(caption);
-        if (!valid) {
-          setInvalid(menuItem);
-        }
-        if (modified) {
-          setModified(menuItem);
-        }
+        setInvalidModified(menuItem, valid, modified);
         String toolTipText = "";
         if (property instanceof Property.ColumnProperty) {
           toolTipText = ((Property.ColumnProperty) property).getColumnName();
@@ -1256,15 +1239,15 @@ public final class EntityUiUtil {
     }
   }
 
-  private static void setModified(final JMenuItem menuItem) {
+  private static void setInvalidModified(final JMenuItem menuItem, final boolean valid, final boolean modified) {
     final Font currentFont = menuItem.getFont();
-    menuItem.setFont(new Font(currentFont.getName(), currentFont.getStyle() | Font.ITALIC, currentFont.getSize()));
-  }
-
-  private static void setInvalid(final JMenuItem menuItem) {
-    final Font currentFont = menuItem.getFont();
-    menuItem.setBackground(INVALID_COLOR);
-    menuItem.setFont(new Font(currentFont.getName(), Font.BOLD, currentFont.getSize()));
+    if (!valid) {
+      menuItem.setBackground(INVALID_COLOR);
+      menuItem.setFont(new Font(currentFont.getName(), Font.BOLD, currentFont.getSize()));
+    }
+    if (modified) {
+      menuItem.setFont(new Font(currentFont.getName(), currentFont.getStyle() | Font.ITALIC, currentFont.getSize()));
+    }
   }
 
   private static String getOriginalValue(final Entity entity, final Property property) {
