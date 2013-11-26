@@ -106,7 +106,7 @@ public final class TaskScheduler {
         start();
       }
     }
-    intervalChangedEvent.fire(this.interval);
+    intervalChangedEvent.fire(interval);
   }
 
   /**

@@ -3669,5 +3669,4 @@
   EntityLoadTestModel constructor fixed to remove possible heap pollution
   EntityPanel, yet another edit panel state initialization bug fixed
   EntityPanel, editControlPanel made final and initialized during construction
-  EntityPanel, more edit panel initialization changes
-  EntityUiUtil.showEntityMenu() refactored
+  H2Database, in memory database initialization improved

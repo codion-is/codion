@@ -37,10 +37,20 @@ public final class H2Database extends AbstractDatabase {
   static final String URL_PREFIX = "jdbc:h2:";
   static final String URL_PREFIX_MEM = "jdbc:h2:mem:";
 
-  private static boolean inMemoryDatabaseInitialized;
-
   private final boolean embeddedInMemory;
   private String urlAppend = "";
+
+  static {
+    if (EMBEDDED_IN_MEMORY) {
+      try {
+        initializeMemoryDatabase(URL_PREFIX_MEM + System.getProperty(DATABASE_HOST) + ";user=" + SYSADMIN_USERNAME,
+                System.getProperty(DATABASE_INIT_SCRIPT));
+      }
+      catch (SQLException e) {
+        throw new RuntimeException("Exception while initializing H2 memory database", e);
+      }
+    }
+  }
 
   /**
    * Instantiates a new H2Database.
@@ -64,15 +74,6 @@ public final class H2Database extends AbstractDatabase {
   public H2Database(final String databaseName, final boolean embeddedInMemory) {
     super(H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
     this.embeddedInMemory = embeddedInMemory;
-    try {
-      if (embeddedInMemory && !inMemoryDatabaseInitialized) {
-        initializeMemoryDatabase(System.getProperty(DATABASE_INIT_SCRIPT));
-        inMemoryDatabaseInitialized = true;
-      }
-    }
-    catch (SQLException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   /**
@@ -130,24 +131,6 @@ public final class H2Database extends AbstractDatabase {
   }
 
   /**
-   * Initializes a new H2 database, with the given script
-   * @param scriptPath the path to the initialization script
-   * @throws java.sql.SQLException in case of an exception
-   */
-  public void initializeMemoryDatabase(final String scriptPath) throws SQLException {
-    if (!embeddedInMemory) {
-      throw new IllegalArgumentException("Database is not configured as in memory database");
-    }
-    final Properties properties = new Properties();
-    properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
-    String initializerString = ";DB_CLOSE_DELAY=-1";
-    if (scriptPath != null) {
-      initializerString += ";INIT=RUNSCRIPT FROM '" + scriptPath + "'";
-    }
-    DriverManager.getConnection(getURL(properties) + initializerString).close();
-  }
-
-  /**
    * Runs the given script using the RunScript tool
    * @param scriptPath the path to the script
    * @throws SQLException in case of an exception
@@ -170,5 +153,20 @@ public final class H2Database extends AbstractDatabase {
     catch (Exception e) {
       throw new RuntimeException(e);
     }
+  }
+
+  /**
+   * Initializes a new H2 database, with the given script
+   * @param scriptPath the path to the initialization script
+   * @throws java.sql.SQLException in case of an exception
+   */
+  private static void initializeMemoryDatabase(final String URL, final String scriptPath) throws SQLException {
+    final Properties properties = new Properties();
+    properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
+    String initializerString = ";DB_CLOSE_DELAY=-1";
+    if (scriptPath != null) {
+      initializerString += ";INIT=RUNSCRIPT FROM '" + scriptPath + "'";
+    }
+    DriverManager.getConnection(URL + initializerString).close();
   }
 }

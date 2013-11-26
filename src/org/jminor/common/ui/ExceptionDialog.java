@@ -221,7 +221,7 @@ public final class ExceptionDialog extends JDialog {
     if (Util.nullOrEmpty(address)) {
       return;
     }
-    lastUsedEmailAddress = address;
+    setLastUsedEmailAddress(address);
     try {
       final String uriStr = String.format("mailto:%s?subject=%s&body=%s", address,
               URLEncoder.encode(errorReportEmailSubjectPrefix + descriptionLabel.getText(), "UTF-8").replace("+", "%20"),
@@ -442,5 +442,9 @@ public final class ExceptionDialog extends JDialog {
     }
 
     return exceptionClass.getSimpleName();
+  }
+
+  private static void setLastUsedEmailAddress(final String lastUsedEmailAddress) {
+    ExceptionDialog.lastUsedEmailAddress = lastUsedEmailAddress;
   }
 }
