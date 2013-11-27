@@ -3671,3 +3671,4 @@
   EntityPanel, editControlPanel made final and initialized during construction
   H2Database, in memory database initialization improved
   ValueLinkValidators, validBackgroundColor parameter removed, now uses the UI default
+  ValueLinkValidators, bug fix, the above change did consider the enabled/disabled state of the component

@@ -11,7 +11,7 @@ import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import javax.swing.JComponent;
-import javax.swing.UIManager;
+import javax.swing.JTextField;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 
@@ -147,7 +147,16 @@ public final class ValueLinkValidators {
 
   private static class TextValidator<K> extends AbstractValidator<K> {
 
-    private static final Color VALID_BACKGROUND_COLOR = UIManager.getColor("TextField.background");
+    protected static final Color VALID_ENABLED_BACKGROUND_COLOR;
+    protected static final Color VALID_DISABLED_BACKGROUND_COLOR;
+
+    static {
+      final JTextField txtField = new JTextField();
+      VALID_ENABLED_BACKGROUND_COLOR = txtField.getBackground();
+      txtField.setEnabled(false);
+      VALID_DISABLED_BACKGROUND_COLOR = txtField.getBackground();
+    }
+
     private final Color invalidBackgroundColor;
 
     /**
@@ -161,7 +170,7 @@ public final class ValueLinkValidators {
     protected TextValidator(final K key, final JTextComponent textComponent, final ValueMapEditModel<K, ?> editModel,
                             final Color invalidBackgroundColor, final String defaultToolTip) {
       super(key, textComponent, editModel, defaultToolTip);
-      if (invalidBackgroundColor.equals(VALID_BACKGROUND_COLOR)) {
+      if (invalidBackgroundColor.equals(VALID_ENABLED_BACKGROUND_COLOR)) {
         throw new IllegalArgumentException("Invalid background color is the same as the valid background color");
       }
       this.invalidBackgroundColor = invalidBackgroundColor;
@@ -174,17 +183,12 @@ public final class ValueLinkValidators {
       return invalidBackgroundColor;
     }
 
-    /**
-     * @return the background color to use when the field value is valid
-     */
-    protected final Color getValidBackgroundColor() {
-      return VALID_BACKGROUND_COLOR;
-    }
-
     @Override
     protected void validate() {
+      final boolean enabled = getComponent().isEnabled();
       final String validationMessage = getValidationMessage();
-      getComponent().setBackground(validationMessage == null ? VALID_BACKGROUND_COLOR : invalidBackgroundColor);
+      getComponent().setBackground(validationMessage == null ?
+              (enabled ? VALID_ENABLED_BACKGROUND_COLOR : VALID_DISABLED_BACKGROUND_COLOR) : invalidBackgroundColor);
       getComponent().setToolTipText(validationMessage == null ? getDefaultToolTip() :
               (!Util.nullOrEmpty(getDefaultToolTip()) ? getDefaultToolTip() + ": " : "") + validationMessage);
     }
@@ -203,11 +207,12 @@ public final class ValueLinkValidators {
     @Override
     protected void validate() {
       final JTextComponent textComponent = (JTextComponent) getComponent();
+      final boolean enabled = textComponent.isEnabled();
       final boolean stringEqualsMask = textComponent.getText().equals(maskString);
       final boolean validInput = !isModelValueNull() || (stringEqualsMask && isNullable());
       final String validationMessage = getValidationMessage();
       if (validInput && validationMessage == null) {
-        textComponent.setBackground(getValidBackgroundColor());
+        textComponent.setBackground(enabled ? VALID_ENABLED_BACKGROUND_COLOR : VALID_DISABLED_BACKGROUND_COLOR);
       }
       else {
         textComponent.setBackground(getInvalidBackgroundColor());
