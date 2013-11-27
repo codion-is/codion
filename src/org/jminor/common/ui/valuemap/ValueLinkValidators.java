@@ -11,6 +11,7 @@ import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import javax.swing.JComponent;
+import javax.swing.UIManager;
 import javax.swing.text.JTextComponent;
 import java.awt.Color;
 
@@ -28,9 +29,8 @@ public final class ValueLinkValidators {
    * @param editModel the edit model
    * @param <K> the type of the edit model value keys
    */
-  public static <K> void addValidator(final K key, final JTextComponent textComponent,
-                                      final ValueMapEditModel<K, ?> editModel) {
-    addValidator(key, textComponent, editModel, textComponent.getBackground(), Color.LIGHT_GRAY, textComponent.getToolTipText());
+  public static <K> void addValidator(final K key, final JTextComponent textComponent, final ValueMapEditModel<K, ?> editModel) {
+    addValidator(key, textComponent, editModel, Color.LIGHT_GRAY, textComponent.getToolTipText());
   }
 
   /**
@@ -42,7 +42,7 @@ public final class ValueLinkValidators {
    */
   public static <K> void addFormattedValidator(final K key, final JTextComponent textComponent,
                                                final ValueMapEditModel<K, Object> editModel) {
-    addFormattedValidator(key, textComponent, editModel, textComponent.getBackground(), Color.LIGHT_GRAY, textComponent.getToolTipText());
+    addFormattedValidator(key, textComponent, editModel, Color.LIGHT_GRAY, textComponent.getToolTipText());
   }
 
   /**
@@ -50,15 +50,14 @@ public final class ValueLinkValidators {
    * @param key the key of the value to validate
    * @param textComponent the text component
    * @param editModel the edit model
-   * @param validBackgroundColor the background color indicating a valid value
    * @param invalidBackgroundColor the background color indicating in invalid value
    * @param defaultToolTip the tooltip to use while the value is valid
    * @param <K> the type of the edit model value keys
    */
   public static <K> void addValidator(final K key, final JTextComponent textComponent,
-                                      final ValueMapEditModel<K, ?> editModel, final Color validBackgroundColor,
-                                      final Color invalidBackgroundColor, final String defaultToolTip) {
-    new TextValidator<>(key, textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip).validate();
+                                      final ValueMapEditModel<K, ?> editModel, final Color invalidBackgroundColor,
+                                      final String defaultToolTip) {
+    new TextValidator<>(key, textComponent, editModel, invalidBackgroundColor, defaultToolTip).validate();
   }
 
   /**
@@ -66,15 +65,14 @@ public final class ValueLinkValidators {
    * @param key the key of the value to validate
    * @param textComponent the text component
    * @param editModel the edit model
-   * @param validBackgroundColor the background color indicating a valid value
    * @param invalidBackgroundColor the background color indicating in invalid value
    * @param defaultToolTip the tooltip to use while the value is valid
    * @param <K> the type of the edit model value keys
    */
   public static <K> void addFormattedValidator(final K key, final JTextComponent textComponent,
-                                               final ValueMapEditModel<K, ?> editModel, final Color validBackgroundColor,
-                                               final Color invalidBackgroundColor, final String defaultToolTip) {
-    new FormattedTextValidator<>(key, textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip).validate();
+                                               final ValueMapEditModel<K, ?> editModel, final Color invalidBackgroundColor,
+                                               final String defaultToolTip) {
+    new FormattedTextValidator<>(key, textComponent, editModel, invalidBackgroundColor, defaultToolTip).validate();
   }
 
   private abstract static class AbstractValidator<K> {
@@ -84,7 +82,8 @@ public final class ValueLinkValidators {
     private final ValueMapEditModel<K, ?> editModel;
     private final String defaultToolTip;
 
-    private AbstractValidator(final K key, final JComponent component, final ValueMapEditModel<K, ?> editModel, final String defaultToolTip) {
+    private AbstractValidator(final K key, final JComponent component, final ValueMapEditModel<K, ?> editModel,
+                              final String defaultToolTip) {
       this.key = key;
       this.component = component;
       this.editModel = editModel;
@@ -141,14 +140,14 @@ public final class ValueLinkValidators {
     }
 
     /**
-     * Updates the underlying component indicating the validity of the value being shown
+     * Updates the underlying component indicating the validity of the value being displayed
      */
     protected abstract void validate();
   }
 
   private static class TextValidator<K> extends AbstractValidator<K> {
 
-    private final Color validBackgroundColor;
+    private static final Color VALID_BACKGROUND_COLOR = UIManager.getColor("TextField.background");
     private final Color invalidBackgroundColor;
 
     /**
@@ -156,17 +155,15 @@ public final class ValueLinkValidators {
      * @param key the key of the value to validate
      * @param textComponent the text component bound to the value
      * @param editModel the edit model handling the value editing
-     * @param validBackgroundColor the background color to use when the field value is valid
      * @param invalidBackgroundColor the background color to use when the field value is invalid
      * @param defaultToolTip the default tooltip to show when the field value is valid
      */
     protected TextValidator(final K key, final JTextComponent textComponent, final ValueMapEditModel<K, ?> editModel,
-                            final Color validBackgroundColor, final Color invalidBackgroundColor, final String defaultToolTip) {
+                            final Color invalidBackgroundColor, final String defaultToolTip) {
       super(key, textComponent, editModel, defaultToolTip);
-      if (invalidBackgroundColor.equals(validBackgroundColor)) {
+      if (invalidBackgroundColor.equals(VALID_BACKGROUND_COLOR)) {
         throw new IllegalArgumentException("Invalid background color is the same as the valid background color");
       }
-      this.validBackgroundColor = validBackgroundColor;
       this.invalidBackgroundColor = invalidBackgroundColor;
     }
 
@@ -181,13 +178,13 @@ public final class ValueLinkValidators {
      * @return the background color to use when the field value is valid
      */
     protected final Color getValidBackgroundColor() {
-      return validBackgroundColor;
+      return VALID_BACKGROUND_COLOR;
     }
 
     @Override
     protected void validate() {
       final String validationMessage = getValidationMessage();
-      getComponent().setBackground(validationMessage == null ? validBackgroundColor : invalidBackgroundColor);
+      getComponent().setBackground(validationMessage == null ? VALID_BACKGROUND_COLOR : invalidBackgroundColor);
       getComponent().setToolTipText(validationMessage == null ? getDefaultToolTip() :
               (!Util.nullOrEmpty(getDefaultToolTip()) ? getDefaultToolTip() + ": " : "") + validationMessage);
     }
@@ -197,10 +194,9 @@ public final class ValueLinkValidators {
 
     private final String maskString;
 
-    private FormattedTextValidator(final K key, final JTextComponent textComponent,
-                                   final ValueMapEditModel<K, ?> editModel, final Color validBackgroundColor,
+    private FormattedTextValidator(final K key, final JTextComponent textComponent, final ValueMapEditModel<K, ?> editModel,
                                    final Color invalidBackgroundColor, final String defaultToolTip) {
-      super(key, textComponent, editModel, validBackgroundColor, invalidBackgroundColor, defaultToolTip);
+      super(key, textComponent, editModel, invalidBackgroundColor, defaultToolTip);
       this.maskString = textComponent.getText();
     }
 

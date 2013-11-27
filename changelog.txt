@@ -3670,3 +3670,4 @@
   EntityPanel, yet another edit panel state initialization bug fixed
   EntityPanel, editControlPanel made final and initialized during construction
   H2Database, in memory database initialization improved
+  ValueLinkValidators, validBackgroundColor parameter removed, now uses the UI default
