@@ -3672,3 +3672,4 @@
   H2Database, in memory database initialization improved
   ValueLinkValidators, validBackgroundColor parameter removed, now uses the UI default
   ValueLinkValidators, bug fix, the above change did consider the enabled/disabled state of the component
+  AbstractEntityConnectionProvider.scheduleValidityCheck attribute added, constructor overloaded

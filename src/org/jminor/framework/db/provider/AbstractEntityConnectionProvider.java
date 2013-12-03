@@ -28,6 +28,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   protected static final String IS_CONNECTED = "isConnected";
   protected static final String IS_VALID = "isValid";
   private final State connectedState = States.state();
+  private final boolean scheduleValidityCheck;
   private final TaskScheduler validityCheckScheduler = new TaskScheduler(new Runnable() {
     @Override
     public void run() {
@@ -49,9 +50,19 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    * @param user the user to base the db provider on
    */
   public AbstractEntityConnectionProvider(final User user) {
+    this(user, SCHEDULE_VALIDITY_CHECK);
+  }
+
+  /**
+   * Instantiates a new AbstractEntityConnectionProvider.
+   * @param user the user to base the db provider on
+   * @param scheduleValidityCheck if true then a connection validity check is run every 10 seconds
+   */
+  public AbstractEntityConnectionProvider(final User user, final boolean scheduleValidityCheck) {
     Util.rejectNullValue(user, "user");
     this.user = user;
-    if (SCHEDULE_VALIDITY_CHECK) {
+    this.scheduleValidityCheck = scheduleValidityCheck;
+    if (this.scheduleValidityCheck) {
       this.validityCheckScheduler.start();
     }
   }
@@ -130,7 +141,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   private void doConnect() {
     entityConnection = connect();
-    if (SCHEDULE_VALIDITY_CHECK) {
+    if (scheduleValidityCheck) {
       validityCheckScheduler.start();
     }
   }
