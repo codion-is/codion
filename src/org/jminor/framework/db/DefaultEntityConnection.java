@@ -753,11 +753,26 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
           final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCriteria, currentForeignKeyFetchDepth + 1);
           final Map<Entity.Key, Entity> hashedReferencedEntities = EntityUtil.hashByPrimaryKey(referencedEntities);
           for (final Entity entity : entities) {
-            entity.setValue(foreignKeyProperty, hashedReferencedEntities.get(entity.getReferencedPrimaryKey(foreignKeyProperty)), false);
+            final Entity.Key referencedPrimaryKey = entity.getReferencedPrimaryKey(foreignKeyProperty);
+            entity.setValue(foreignKeyProperty, getReferencedEntity(referencedPrimaryKey, hashedReferencedEntities), false);
           }
         }
       }
     }
+  }
+
+  private Entity getReferencedEntity(final Entity.Key referencedPrimaryKey, final Map<Entity.Key, Entity> hashedReferencedEntities) {
+    if (referencedPrimaryKey == null) {
+      return null;
+    }
+    Entity referencedEntity = hashedReferencedEntities.get(referencedPrimaryKey);
+    if (referencedEntity == null) {
+      //if the referenced entity is not found (it's been deleted or has been filtered out of an underlying view for example),
+      //we create an empty entity wrapping the primary key since that's the best we can do under the circumstances
+      referencedEntity = Entities.entity(referencedPrimaryKey);
+    }
+
+    return referencedEntity;
   }
 
   private void executePreparedUpdate(final PreparedStatement statement, final String sqlStatement,
