@@ -110,7 +110,7 @@ public class MethodLogger implements Serializable {
           throw new IllegalStateException("Call stack is empty when trying to log method exit");
         }
         final Entry entry = callStack.pop();
-        if (!entry.getMethod().equals(method)) {
+        if (!entry.getMethod().equals(method)) {//todo pop until found or empty?
           throw new IllegalStateException("Expecting method " + entry.getMethod() + " but got " + method + " when trying to log method exit");
         }
         entry.setExitTime();

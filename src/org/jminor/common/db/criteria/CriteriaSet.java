@@ -10,6 +10,8 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
+import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 /**
@@ -45,10 +47,68 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
 
   /**
    * Initializes a new CriteriaSet instance
+   * @param conjunction the Conjunction to use
+   * @param criteria the criteria
+   */
+  public CriteriaSet(final Conjunction conjunction, final Criteria<T> criteria) {
+    this(conjunction, criteria, null);
+  }
+
+  /**
+   * Initializes a new CriteriaSet instance
+   * @param conjunction the Conjunction to use
+   * @param firstCriteria the first criteria
+   * @param secondCriteria the second criteria
+   */
+  public CriteriaSet(final Conjunction conjunction, final Criteria<T> firstCriteria, final Criteria<T> secondCriteria) {
+    this(conjunction, firstCriteria, secondCriteria, null);
+  }
+
+  /**
+   * Initializes a new CriteriaSet instance
+   * @param conjunction the Conjunction to use
+   * @param firstCriteria the first criteria
+   * @param secondCriteria the second criteria
+   * @param thirdCriteria the third criteria
+   */
+  public CriteriaSet(final Conjunction conjunction, final Criteria<T> firstCriteria, final Criteria<T> secondCriteria,
+                     final Criteria<T> thirdCriteria) {
+    this(conjunction, firstCriteria, secondCriteria, thirdCriteria, null);
+  }
+
+  /**
+   * Initializes a new CriteriaSet instance
+   * @param conjunction the Conjunction to use
+   * @param firstCriteria the first criteria
+   * @param secondCriteria the second criteria
+   * @param thirdCriteria the third criteria
+   * @param fourthCriteria the fourth criteria
+   */
+  public CriteriaSet(final Conjunction conjunction, final Criteria<T> firstCriteria, final Criteria<T> secondCriteria,
+                     final Criteria<T> thirdCriteria, final Criteria<T> fourthCriteria) {
+    this(conjunction, firstCriteria, secondCriteria, thirdCriteria, fourthCriteria, null);
+  }
+
+  /**
+   * Initializes a new CriteriaSet instance
+   * @param conjunction the Conjunction to use
+   * @param firstCriteria the first criteria
+   * @param secondCriteria the second criteria
+   * @param thirdCriteria the third criteria
+   * @param fourthCriteria the fourth criteria
+   * @param fifthCriteria the fifth criteria
+   */
+  public CriteriaSet(final Conjunction conjunction, final Criteria<T> firstCriteria, final Criteria<T> secondCriteria,
+                     final Criteria<T> thirdCriteria, final Criteria<T> fourthCriteria, final Criteria<T> fifthCriteria) {
+    this(conjunction, Arrays.asList(firstCriteria, secondCriteria, thirdCriteria, fourthCriteria, fifthCriteria));
+  }
+
+  /**
+   * Initializes a new CriteriaSet instance
    * @param conjunction the conjunction to use
    * @param criteria the Criteria objects to be included in this set
    */
-  public CriteriaSet(final Conjunction conjunction, final Criteria<T>... criteria) {
+  public CriteriaSet(final Conjunction conjunction, final Collection<Criteria<T>> criteria) {
     this.conjunction = conjunction;
     for (final Criteria<T> criterion : criteria) {
       add(criterion);
@@ -56,7 +116,7 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
   }
 
   /**
-   * Adds a new Criteria object to this set
+   * Adds a new Criteria object to this set, adding a null criteria has no effect
    * @param criteria the Criteria to add
    */
   public void add(final Criteria<T> criteria) {

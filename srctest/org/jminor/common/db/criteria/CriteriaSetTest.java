@@ -34,8 +34,14 @@ public final class CriteriaSetTest {
     final CriteriaSet<Object> andOrOrSet = new CriteriaSet<>(Conjunction.OR, andSet, orSet);
     assertEquals("AND OR OR criteria set should be working", "((criteria and criteria) or (criteria or criteria))", andOrOrSet.getWhereClause());
 
-    final CriteriaSet<Object> set = new CriteriaSet<>(Conjunction.OR);
+    CriteriaSet<Object> set = new CriteriaSet<>(Conjunction.OR);
     assertEquals(0, set.getCriteriaCount());
+
+    set = new CriteriaSet<Object>(Conjunction.OR, new TestCriteria(), null, null);
+    assertEquals(1, set.getCriteriaCount());
+
+    set = new CriteriaSet<Object>(Conjunction.OR, new TestCriteria(), new TestCriteria(), null, new TestCriteria());
+    assertEquals(3, set.getCriteriaCount());
   }
 
   private static class TestCriteria implements Criteria {
