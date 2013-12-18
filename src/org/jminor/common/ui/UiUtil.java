@@ -524,22 +524,8 @@ public final class UiUtil {
   public static JFormattedTextField createFormattedField(final String mask, final boolean valueContainsLiteralCharacter,
                                                          final boolean charsAsUpper) {
     try {
-      final MaskFormatter formatter = new MaskFormatter(mask) {
-        @Override
-        public Object stringToValue(final String value) throws ParseException {
-          String ret = value;
-          if (charsAsUpper) {
-            ret = ret.toUpperCase(Locale.getDefault());
-          }
-
-          return super.stringToValue(ret);
-        }
-      };
-      formatter.setPlaceholderCharacter('_');
-      formatter.setAllowsInvalid(false);
-      formatter.setValueContainsLiteralCharacters(valueContainsLiteralCharacter);
-
-      final JFormattedTextField formattedTextField = new JFormattedTextField(formatter);
+      final JFormattedTextField formattedTextField =
+              new JFormattedTextField(new FieldFormatter(mask, charsAsUpper, valueContainsLiteralCharacter));
       formattedTextField.setFocusLostBehavior(JFormattedTextField.COMMIT);
       moveCaretToStartOnFocusGained(formattedTextField);
 
@@ -1663,6 +1649,52 @@ public final class UiUtil {
                         final AttributeSet attributeSet) throws BadLocationException {
       super.replace(bypass, offset, length, string == null ? null :
               (upperCase ? string.toUpperCase(Locale.getDefault()) : string.toLowerCase(Locale.getDefault())), attributeSet);
+    }
+  }
+
+  /**
+   * Somewhat of a hack to keep the current field selection and caret position when
+   * the field gains focus, in case the content length has not changed
+   * http://stackoverflow.com/a/2202073/317760
+   */
+  private static final class FieldFormatter extends MaskFormatter {
+
+    private final boolean toUpperCase;
+
+    private FieldFormatter(final String mask, final boolean toUpperCase, final boolean valueContainsLiteralCharacter) throws ParseException {
+      super(mask);
+      this.toUpperCase = toUpperCase;
+      setPlaceholderCharacter('_');
+      setAllowsInvalid(false);
+      setValueContainsLiteralCharacters(valueContainsLiteralCharacter);
+    }
+
+    @Override
+    public Object stringToValue(final String value) throws ParseException {
+      String ret = value;
+      if (toUpperCase) {
+        ret = ret.toUpperCase(Locale.getDefault());
+      }
+
+      return super.stringToValue(ret);
+    }
+
+    @Override
+    public void install(final JFormattedTextField field) {
+      final int previousLength = field.getDocument().getLength();
+      final int currentCaretPosition = field.getCaretPosition();
+      final int currentSelectionStart = field.getSelectionStart();
+      final int currentSelectionEnd = field.getSelectionEnd();
+      super.install(field);
+      if (previousLength == field.getDocument().getLength()) {
+        if (currentSelectionEnd - currentSelectionStart > 0) {
+          field.setCaretPosition(currentSelectionStart);
+          field.moveCaretPosition(currentSelectionEnd);
+        }
+        else {
+          field.setCaretPosition(currentCaretPosition);
+        }
+      }
     }
   }
 }
