@@ -17,6 +17,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.ListIterator;
 import java.util.Map;
@@ -212,12 +213,13 @@ public final class EntityUtil {
   }
 
   /**
-   * Returns a Map containing the given entities hashed by the value of the property with ID <code>propertyID</code>
+   * Returns a LinkedHashMap containing the given entities hashed by the value of the property with ID <code>propertyID</code>,
+   * respecting the iteration order of the given collection
    * @param propertyID the ID of the property which value should be used for mapping
    * @param entities the entities to map by property value
    * @return a Map of entities hashed by property value
    */
-  public static Map<Object, Collection<Entity>> hashByPropertyValue(final String propertyID, final Collection<Entity> entities) {
+  public static LinkedHashMap<Object, Collection<Entity>> hashByPropertyValue(final String propertyID, final Collection<Entity> entities) {
     return Util.map(entities, new Util.HashKeyProvider<Object, Entity>() {
       @Override
       public Object getKey(final Entity value) {
@@ -227,11 +229,12 @@ public final class EntityUtil {
   }
 
   /**
-   * Returns a Map containing the given entities hashed by their entityIDs
+   * Returns a LinkedHashMap containing the given entities hashed by their entityIDs,
+   * respecting the iteration order of the given collection
    * @param entities the entities to map by entityID
    * @return a Map of entities hashed by entityID
    */
-  public static Map<String, Collection<Entity>> hashByEntityID(final Collection<Entity> entities) {
+  public static LinkedHashMap<String, Collection<Entity>> hashByEntityID(final Collection<Entity> entities) {
     return Util.map(entities, new Util.HashKeyProvider<String, Entity>() {
       @Override
       public String getKey(final Entity value) {
@@ -241,11 +244,12 @@ public final class EntityUtil {
   }
 
   /**
-   * Returns a Map containing the given entity keys hashed by their entityIDs
+   * Returns a LinkedHashMap containing the given entity keys hashed by their entityIDs,
+   * respecting the iteration order of the given collection
    * @param keys the entity keys to map by entityID
    * @return a Map of entity keys hashed by entityID
    */
-  public static Map<String, Collection<Entity.Key>> hashKeysByEntityID(final Collection<Entity.Key> keys) {
+  public static LinkedHashMap<String, Collection<Entity.Key>> hashKeysByEntityID(final Collection<Entity.Key> keys) {
     return Util.map(keys, new Util.HashKeyProvider<String, Entity.Key>() {
       @Override
       public String getKey(final Entity.Key value) {

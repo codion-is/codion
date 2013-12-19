@@ -170,6 +170,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
       final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
       for (final Map.Entry<String, Collection<Entity>> hashedEntitiesMapEntry : hashedEntities.entrySet()) {
         final String entityID = hashedEntitiesMapEntry.getKey();
+        final String tableName = Entities.getTableName(entityID);
         final boolean includePrimaryKeyProperties = true;
         final boolean includeReadOnlyProperties = false;
         final boolean includeNonUpdatableProperties = false;
@@ -179,12 +180,10 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
         for (final Entity entity : hashedEntitiesMapEntry.getValue()) {
           populateStatementPropertiesAndValues(false, entity, columnProperties, statementProperties, statementValues);
 
-          final List<Property.PrimaryKeyProperty> primaryKeyProperties = Entities.getPrimaryKeyProperties(entityID);
-          updateSQL = createUpdateSQL(entity, statementProperties, primaryKeyProperties);
-          statementProperties.addAll(primaryKeyProperties);
-          for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKeyProperties) {
-            statementValues.add(entity.getOriginalValue(primaryKeyProperty.getPropertyID()));
-          }
+          final EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getOriginalPrimaryKey());
+          updateSQL = createUpdateSQL(tableName, statementProperties, criteria);
+          statementProperties.addAll(criteria.getValueKeys());
+          statementValues.addAll(criteria.getValues());
           statement = getConnection().prepareStatement(updateSQL);
           executePreparedUpdate(statement, updateSQL, statementValues, statementProperties);
 
@@ -853,7 +852,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
       return;
     }
     if (parameterProperties == null || parameterProperties.size() != values.size()) {
-      throw new SQLException("Parameter properties not specified: " + (parameterProperties == null ?
+      throw new SQLException("Parameter property value count mismatch: " + (parameterProperties == null ?
               "no properties" : ("expected: " + values.size() + ", got: " + parameterProperties.size())));
     }
 
@@ -941,24 +940,24 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
   }
 
   /**
-   * @param entity the Entity instance
-   * @param properties the properties being updated
-   * @param primaryKeyProperties the primary key properties for the given entity
+   * @param tableName the table name
+   * @param updateProperties the properties being updated
+   * @param criteria the primary key criteria for the given entity
    * @return a query for updating this entity instance
    */
-  private static String createUpdateSQL(final Entity entity, final Collection<Property.ColumnProperty> properties,
-                                        final List<Property.PrimaryKeyProperty> primaryKeyProperties) {
+  private static String createUpdateSQL(final String tableName, final Collection<Property.ColumnProperty> updateProperties,
+                                        final EntityCriteria criteria) {
     final StringBuilder sql = new StringBuilder("update ");
-    sql.append(Entities.getTableName(entity.getEntityID())).append(" set ");
+    sql.append(tableName).append(" set ");
     int columnIndex = 0;
-    for (final Property.ColumnProperty property : properties) {
+    for (final Property.ColumnProperty property : updateProperties) {
       sql.append(property.getColumnName()).append(" = ?");
-      if (columnIndex++ < properties.size() - 1) {
+      if (columnIndex++ < updateProperties.size() - 1) {
         sql.append(", ");
       }
     }
 
-    return sql.append(createWhereCondition(primaryKeyProperties)).toString();
+    return sql.append(" ").append(criteria.getWhereClause()).toString();
   }
 
   /**
@@ -1016,25 +1015,6 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     }
 
     return sql.toString();
-  }
-
-  /**
-   * Constructs a where condition based on the given primary key properties
-   * @param properties the properties to use when constructing the condition
-   * @return a where clause according to the given properties
-   * e.g. " where (idCol = ?)" or in case of multiple properties " where (idCol1 = ? and idCol2 = ?)"
-   */
-  private static String createWhereCondition(final List<Property.PrimaryKeyProperty> properties) {
-    final StringBuilder stringBuilder = new StringBuilder(" where (");
-    int i = 0;
-    for (final Property.PrimaryKeyProperty property : properties) {
-      stringBuilder.append(property.getColumnName()).append(" = ?");
-      if (i++ < properties.size() - 1) {
-        stringBuilder.append(" and ");
-      }
-    }
-
-    return stringBuilder.append(")").toString();
   }
 
   /**

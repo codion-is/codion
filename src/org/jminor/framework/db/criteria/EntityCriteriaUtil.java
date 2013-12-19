@@ -174,6 +174,7 @@ public final class EntityCriteriaUtil {
   }
 
   /**
+   * Creates a criteria based on the given primary keys, it is assumed they are all for the same entityID
    * @param keys the primary keys
    * @return a criteria specifying the entities having the given primary keys
    */

@@ -850,7 +850,7 @@ public final class Util {
    * @param keyProvider the object providing keys to use when hashing the values
    * @param <K> the key type
    * @param <V> the value type
-   * @return a map with the values hashed by their respective key values, respecting the iteration order of the given collection
+   * @return a LinkedHashMap with the values hashed by their respective key values, respecting the iteration order of the given collection
    */
   public static <K, V> LinkedHashMap<K, Collection<V>> map(final Collection<V> values, final HashKeyProvider<K, V> keyProvider) {
     rejectNullValue(values, "values");
