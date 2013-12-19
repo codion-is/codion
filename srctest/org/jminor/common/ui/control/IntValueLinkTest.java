@@ -23,7 +23,7 @@ public class IntValueLinkTest {
   @Test
   public void testInteger() throws Exception {
     final IntField txtInt = new IntField();
-    ValueLinks.intValueLink(txtInt, this, "integerValue", evtIntegerValueChanged, false);
+    ValueLinks.intValueLink(txtInt, this, "integerValue", evtIntegerValueChanged, false, true);
     assertNull("Integer value should be null on initialization", txtInt.getInt());
     setIntegerValue(2);
     assertEquals("Integer value should be 2", 2, txtInt.getInt().intValue());
@@ -36,7 +36,7 @@ public class IntValueLinkTest {
   @Test
   public void testInt() throws Exception {
     final IntField txtInt = new IntField();
-    ValueLinks.intValueLink(txtInt, this, "intValue", evtIntValueChanged, true);
+    ValueLinks.intValueLink(txtInt, this, "intValue", evtIntValueChanged, true, true);
     assertEquals("Int value should be 0 on initialization", (Integer) 0, txtInt.getInt());
     setIntValue(2);
     assertEquals("Int value should be 2", 2, txtInt.getInt().intValue());

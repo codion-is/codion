@@ -864,15 +864,15 @@ public final class EntityUiUtil {
     }
     else if (property.isInteger()) {
       ValueLinks.intValueLink((IntField) textField, EditModelValues.<Integer>value(editModel, propertyID),
-              (NumberFormat) property.getFormat(), false, readOnly);
+              (NumberFormat) property.getFormat(), false, readOnly, immediateUpdate);
     }
     else if (property.isDouble()) {
       ValueLinks.doubleValueLink((DoubleField) textField, EditModelValues.<Double>value(editModel, propertyID),
-              (NumberFormat) property.getFormat(), false, readOnly);
+              (NumberFormat) property.getFormat(), false, readOnly, immediateUpdate);
     }
     else if (property.isDateOrTime()) {
       ValueLinks.dateValueLink((JFormattedTextField) textField, EditModelValues.<Date>value(editModel, propertyID),
-              readOnly, (SimpleDateFormat) property.getFormat(), property.getType());
+              readOnly, (SimpleDateFormat) property.getFormat(), property.getType(), immediateUpdate);
     }
     else {
       throw new IllegalArgumentException("Not a text based property: " + property);

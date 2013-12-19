@@ -206,7 +206,7 @@ public final class LoadTestPanel extends JPanel {
   private JPanel initializeApplicationPanel() {
     final IntField applicationCountField = new IntField();
     applicationCountField.setHorizontalAlignment(JTextField.CENTER);
-    ValueLinks.intValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.applicationCountObserver(), true, true);
+    ValueLinks.intValueLink(applicationCountField, loadTestModel, "applicationCount", loadTestModel.applicationCountObserver(), true, true, true);
 
     final JPanel applicationPanel = new JPanel(UiUtil.createBorderLayout());
     applicationPanel.setBorder(BorderFactory.createTitledBorder("Applications"));

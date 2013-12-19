@@ -32,7 +32,7 @@ public class UiValuesTest {
   public void timeUiValue() throws ParseException {
     final SimpleDateFormat format = DateFormats.getDateFormat("HH:mm");
     final JFormattedTextField txt = UiUtil.createFormattedField(DateUtil.getDateMask(format));//HH:mm
-    final Value<Date> value = UiValues.dateValue(txt, format, Types.TIME);
+    final Value<Date> value = UiValues.dateValue(txt, format, Types.TIME, true);
 
     assertNull(value.get());
     final String timeString = "22:42";
@@ -59,7 +59,7 @@ public class UiValuesTest {
   public void dateUiValue() throws ParseException {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DASH);
     final JFormattedTextField txt = UiUtil.createFormattedField(DateUtil.getDateMask(format));//dd-MM-yyyy
-    final Value<Date> value = UiValues.dateValue(txt, format, Types.DATE);
+    final Value<Date> value = UiValues.dateValue(txt, format, Types.DATE, true);
 
     assertNull(value.get());
     final String dateString = "03-10-1975";
@@ -79,7 +79,7 @@ public class UiValuesTest {
   public void timestampUiValue() throws ParseException {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.TIMESTAMP);
     final JFormattedTextField txt = UiUtil.createFormattedField(DateUtil.getDateMask(format));//dd-MM-yyyy HH:mm
-    final Value<Date> value = UiValues.dateValue (txt, format, Types.TIMESTAMP);
+    final Value<Date> value = UiValues.dateValue (txt, format, Types.TIMESTAMP, true);
 
     assertNull(value.get());
     final String dateString = "03-10-1975 22:45";
@@ -113,7 +113,7 @@ public class UiValuesTest {
   @Test
   public void integerTextUiValue() {
     final IntField txt = new IntField();
-    final Value<Integer> value = UiValues.integerValue(txt, false, null);
+    final Value<Integer> value = UiValues.integerValue(txt, false, null, true);
 
     assertNull(value.get());
     txt.setText("122");
@@ -128,7 +128,7 @@ public class UiValuesTest {
   @Test
   public void integerPrimitiveTextUiValue() {
     final IntField txt = new IntField();
-    final Value<Integer> value = UiValues.integerValue(txt, true, null);
+    final Value<Integer> value = UiValues.integerValue(txt, true, null, true);
 
     assertEquals(Integer.valueOf(0), value.get());
     txt.setText("122");
@@ -144,7 +144,7 @@ public class UiValuesTest {
   public void doubleTextUiValue() {
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(".");
-    final Value<Double> value = UiValues.doubleValue(txt, false, null);
+    final Value<Double> value = UiValues.doubleValue(txt, false, null, true);
 
     assertNull(value.get());
     txt.setText("122.2");
@@ -160,7 +160,7 @@ public class UiValuesTest {
   public void doublePrimitiveTextUiValue() {
     final DoubleField txt = new DoubleField();
     txt.setDecimalSymbol(".");
-    final Value<Double> value = UiValues.doubleValue(txt, true, null);
+    final Value<Double> value = UiValues.doubleValue(txt, true, null, true);
 
     assertEquals(Double.valueOf(0), value.get());
     txt.setText("122.2");

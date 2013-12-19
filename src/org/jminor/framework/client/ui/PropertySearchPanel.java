@@ -121,18 +121,18 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
         ValueLinks.dateValueLink((JFormattedTextField) field, model,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
-                false, (SimpleDateFormat) model.getFormat(), property.getType());
+                false, (SimpleDateFormat) model.getFormat(), property.getType(), true);
 
       }
       else if (property.isDouble()) {
         ValueLinks.doubleValueLink((DoubleField) field, model,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false);
+                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false, true);
       }
       else if (property.isInteger()) {
         ValueLinks.intValueLink((IntField) field, model,
                 isUpper ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false);
+                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false, true);
       }
       else if (property.isBoolean()) {
         ValueLinks.selectedItemValueLink((JComboBox) field, model,

@@ -40,13 +40,15 @@ public final class ValueLinks {
    * @param readOnly if true the component will be read only
    * @param dateFormat the data format
    * @param sqlType the actual sql type (Types.DATE, Types.TIMESTAMP or Types.TIME)
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   @SuppressWarnings("unchecked")
   public static void dateValueLink(final JFormattedTextField textComponent, final Object owner,
                                    final String beanPropertyName, final EventObserver<Date> valueChangeEvent,
-                                   final boolean readOnly, final DateFormat dateFormat, final int sqlType) {
+                                   final boolean readOnly, final DateFormat dateFormat, final int sqlType,
+                                   final boolean immediateUpdate) {
     dateValueLink(textComponent, Values.<Date>beanValue(owner, beanPropertyName, getDateTypeClass(sqlType),
-            valueChangeEvent), readOnly, dateFormat, sqlType);
+            valueChangeEvent), readOnly, dateFormat, sqlType, immediateUpdate);
   }
 
   /**
@@ -56,11 +58,13 @@ public final class ValueLinks {
    * @param readOnly if true the component will be read only
    * @param dateFormat the data format
    * @param sqlType the actual sql type (Types.DATE, Types.TIMESTAMP or Types.TIME)
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void dateValueLink(final JFormattedTextField textComponent, final Value<Date> modelValue,
-                                   final boolean readOnly, final DateFormat dateFormat, final int sqlType) {
+                                   final boolean readOnly, final DateFormat dateFormat, final int sqlType,
+                                   final boolean immediateUpdate) {
     textComponent.setEditable(!readOnly);
-    Values.link(modelValue, UiValues.dateValue(textComponent, dateFormat, sqlType), readOnly);
+    Values.link(modelValue, UiValues.dateValue(textComponent, dateFormat, sqlType, immediateUpdate), readOnly);
   }
 
   /**
@@ -69,11 +73,13 @@ public final class ValueLinks {
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void intValueLink(final IntField intField, final Object owner, final String beanPropertyName,
-                                  final EventObserver<Integer> valueChangeEvent, final boolean usePrimitive) {
+                                  final EventObserver<Integer> valueChangeEvent, final boolean usePrimitive,
+                                  final boolean immediateUpdate) {
     intValueLink(intField, Values.<Integer>beanValue(owner, beanPropertyName, usePrimitive ? int.class : Integer.class,
-            valueChangeEvent), Util.getNonGroupingNumberFormat(true), usePrimitive, false);
+            valueChangeEvent), Util.getNonGroupingNumberFormat(true), usePrimitive, false, immediateUpdate);
   }
 
   /**
@@ -83,11 +89,13 @@ public final class ValueLinks {
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
    * @param readOnly if true the component will be read only
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void intValueLink(final IntField intField, final Object owner, final String beanPropertyName,
-                                  final EventObserver<Integer> valueChangeEvent, final boolean usePrimitive, final boolean readOnly) {
+                                  final EventObserver<Integer> valueChangeEvent, final boolean usePrimitive,
+                                  final boolean readOnly, final boolean immediateUpdate) {
     intValueLink(intField, Values.<Integer>beanValue(owner, beanPropertyName, usePrimitive ? int.class : Integer.class,
-            valueChangeEvent), Util.getNonGroupingNumberFormat(true), usePrimitive, readOnly);
+            valueChangeEvent), Util.getNonGroupingNumberFormat(true), usePrimitive, readOnly, immediateUpdate);
   }
 
   /**
@@ -95,11 +103,12 @@ public final class ValueLinks {
    * @param modelValue the model value
    * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
    * @param readOnly if true the component will be read only
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void intValueLink(final IntField intField, final Value<Integer> modelValue, final NumberFormat format,
-                                  final boolean usePrimitive, final boolean readOnly) {
+                                  final boolean usePrimitive, final boolean readOnly, final boolean immediateUpdate) {
     intField.setEditable(!readOnly);
-    Values.link(modelValue, UiValues.integerValue(intField, usePrimitive, format), readOnly);
+    Values.link(modelValue, UiValues.integerValue(intField, usePrimitive, format, immediateUpdate), readOnly);
   }
 
   /**
@@ -108,10 +117,12 @@ public final class ValueLinks {
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void doubleValueLink(final DoubleField doubleField, final Object owner, final String beanPropertyName,
-                                     final EventObserver<Double> valueChangeEvent, final boolean usePrimitive) {
-    doubleValueLink(doubleField, owner, beanPropertyName, valueChangeEvent, usePrimitive, false);
+                                     final EventObserver<Double> valueChangeEvent, final boolean usePrimitive,
+                                     final boolean immediateUpdate) {
+    doubleValueLink(doubleField, owner, beanPropertyName, valueChangeEvent, usePrimitive, false, immediateUpdate);
   }
 
   /**
@@ -121,11 +132,13 @@ public final class ValueLinks {
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
    * @param readOnly if true the component will be read only
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void doubleValueLink(final DoubleField doubleField, final Object owner, final String beanPropertyName,
-                                     final EventObserver<Double> valueChangeEvent, final boolean usePrimitive, final boolean readOnly) {
+                                     final EventObserver<Double> valueChangeEvent, final boolean usePrimitive,
+                                     final boolean readOnly, final boolean immediateUpdate) {
     doubleValueLink(doubleField, Values.<Double>beanValue(owner, beanPropertyName, usePrimitive ? double.class : Double.class,
-            valueChangeEvent), Util.getNonGroupingNumberFormat(), usePrimitive, readOnly);
+            valueChangeEvent), Util.getNonGroupingNumberFormat(), usePrimitive, readOnly, immediateUpdate);
   }
 
   /**
@@ -133,11 +146,12 @@ public final class ValueLinks {
    * @param modelValue the model value
    * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
    * @param readOnly if true the component will be read only
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
   public static void doubleValueLink(final DoubleField doubleField, final Value<Double> modelValue, final NumberFormat format,
-                                     final boolean usePrimitive, final boolean readOnly) {
+                                     final boolean usePrimitive, final boolean readOnly, final boolean immediateUpdate) {
     doubleField.setEditable(!readOnly);
-    Values.link(modelValue, UiValues.doubleValue(doubleField, usePrimitive, format), readOnly);
+    Values.link(modelValue, UiValues.doubleValue(doubleField, usePrimitive, format, immediateUpdate), readOnly);
   }
 
   /**
@@ -168,7 +182,7 @@ public final class ValueLinks {
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
-   * @param format the format to use when displaying the linked value,
+   * @param format the format to use when displaying the linked value
    * @param readOnly if true the component will be read only
    */
   public static void textValueLink(final JTextComponent textComponent, final Object owner, final String beanPropertyName,
@@ -183,7 +197,7 @@ public final class ValueLinks {
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param format the format to use when displaying the linked value, null if no formatting should be performed
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    * @param readOnly if true the component will be read only
    */
   public static void textValueLink(final JTextComponent textComponent, final Object owner, final String beanPropertyName,
@@ -196,7 +210,7 @@ public final class ValueLinks {
    * @param textComponent the text component to link with the value
    * @param format the format to use when displaying the linked value,
    * null if no formatting should be performed
-   * @param immediateUpdate if true then the underlying model value is updated on each keystroke,
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    * @param readOnly if true the component will be read only
    */
   public static void textValueLink(final JTextComponent textComponent, final Value<String> modelValue, final Format format,

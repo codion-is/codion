@@ -382,18 +382,18 @@ public class ColumnSearchPanel<K> extends JPanel {
       if (searchModel.getType() == Types.INTEGER) {
         ValueLinks.intValueLink((IntField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false);
+                isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false, true);
       }
       else if (searchModel.getType() == Types.DOUBLE) {
         ValueLinks.doubleValueLink((DoubleField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false);
+                isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(), false, true);
       }
       else if (searchModel.getType() == Types.TIMESTAMP || searchModel.getType() == Types.DATE || searchModel.getType() == Types.TIME) {
         ValueLinks.dateValueLink((JFormattedTextField) component, searchModel,
                 isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
                 isUpper ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver(),
-                false, (DateFormat) searchModel.getFormat(), searchModel.getType());
+                false, (DateFormat) searchModel.getFormat(), searchModel.getType(), true);
       }
       else {
         ValueLinks.textValueLink((JTextField) component, searchModel,

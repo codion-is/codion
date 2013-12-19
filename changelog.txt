@@ -3679,3 +3679,5 @@
   UiUtil.createFormattedField() now uses a MaskFormatter extension which preserves selection and caret position on focus gained
   DefaultEntityConnection.update() bug fixed, did not handle null values in the where condition, "x = null" used instead of the correct "x is null", solved by using EntityCriteria which handles this case correctly
   EntityUtil.hashBy...() functions return value made more specific in order to convey the fact that they respect the iteration order of the collection
+  ValueLinks.dateValueLink(), dateValue(), integerValue() and doubleValue(), immediateUpdate parameter added
+  EntityUiUtil.createTextField() now also propagates the immediateUpdate parameter in case of date, int and double based values, see above

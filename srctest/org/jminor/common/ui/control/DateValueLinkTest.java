@@ -36,7 +36,7 @@ public class DateValueLinkTest {
     final SimpleDateFormat format = DateFormats.getDateFormat("HH:mm");
 
     final JFormattedTextField txtString = UiUtil.createFormattedField(DateUtil.getDateMask(format));
-    ValueLinks.dateValueLink(txtString, this, "time", evtTimeValueChanged, false, format, Types.TIME);
+    ValueLinks.dateValueLink(txtString, this, "time", evtTimeValueChanged, false, format, Types.TIME, true);
     assertEquals("String value should be empty on initialization", "__:__", txtString.getText());
 
     final Time date = new Time(format.parse("22:42").getTime());
@@ -54,7 +54,7 @@ public class DateValueLinkTest {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
 
     final JFormattedTextField txtString = UiUtil.createFormattedField(DateUtil.getDateMask(format));
-    ValueLinks.dateValueLink(txtString, this, "date", evtDateValueChanged, false, format, Types.DATE);
+    ValueLinks.dateValueLink(txtString, this, "date", evtDateValueChanged, false, format, Types.DATE, true);
     assertEquals("String value should be empty on initialization", "__.__.____", txtString.getText());
 
     final Date date = format.parse("03.10.1975");
@@ -72,7 +72,7 @@ public class DateValueLinkTest {
     final SimpleDateFormat format = DateFormats.getDateFormat(DateFormats.SHORT_TIMESTAMP);
 
     final JFormattedTextField txtString = UiUtil.createFormattedField(DateUtil.getDateMask(format));
-    ValueLinks.dateValueLink(txtString, this, "timestamp", evtTimestampValueChanged, false, format, Types.TIMESTAMP);
+    ValueLinks.dateValueLink(txtString, this, "timestamp", evtTimestampValueChanged, false, format, Types.TIMESTAMP, true);
     assertEquals("String value should be empty on initialization", "__-__-__ __:__", txtString.getText());
 
     final Timestamp date = new Timestamp(format.parse("03-10-75 10:34").getTime());

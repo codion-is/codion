@@ -54,20 +54,24 @@ public final class UiValues {
    * @param textComponent the component
    * @param dateFormat the date format
    * @param sqlType the actual sql type (Types.DATE, Types.TIMESTAMP or Types.TIME)
+   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static Value<Date> dateValue(final JFormattedTextField textComponent, final DateFormat dateFormat, final int sqlType) {
-    return new DateUIValue(textComponent, dateFormat, sqlType);
+  public static Value<Date> dateValue(final JFormattedTextField textComponent, final DateFormat dateFormat,
+                                      final int sqlType, final boolean immediateUpdate) {
+    return new DateUIValue(textComponent, dateFormat, sqlType, immediateUpdate);
   }
 
   /**
    * @param intField the component
    * @param usePrimitive if true then the int primitive is used, Integer otherwise
    * @param format the number format
+   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static Value<Integer> integerValue(final IntField intField, final boolean usePrimitive, final NumberFormat format) {
-    return new IntUIValue(intField, format, usePrimitive);
+  public static Value<Integer> integerValue(final IntField intField, final boolean usePrimitive,
+                                            final NumberFormat format, final boolean immediateUpdate) {
+    return new IntUIValue(intField, format, usePrimitive, immediateUpdate);
   }
 
   /**
@@ -82,10 +86,12 @@ public final class UiValues {
    * @param doubleField the component
    * @param usePrimitive if true then the double primitive is used, Double otherwise
    * @param format the number format
+   * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static Value<Double> doubleValue(final DoubleField doubleField, final boolean usePrimitive, final NumberFormat format) {
-    return new DoubleUIValue(doubleField, format, usePrimitive);
+  public static Value<Double> doubleValue(final DoubleField doubleField, final boolean usePrimitive,
+                                          final NumberFormat format, final boolean immediateUpdate) {
+    return new DoubleUIValue(doubleField, format, usePrimitive, immediateUpdate);
   }
 
   /**
@@ -259,8 +265,9 @@ public final class UiValues {
   private static final class IntUIValue extends TextUIValue<Integer> {
     private final boolean usePrimitive;
 
-    private IntUIValue(final JTextComponent textComponent, final NumberFormat format, final boolean usePrimitive) {
-      super(textComponent, format, true);
+    private IntUIValue(final JTextComponent textComponent, final NumberFormat format, final boolean usePrimitive,
+                       final boolean immediateUpdate) {
+      super(textComponent, format, immediateUpdate);
       this.usePrimitive = usePrimitive;
     }
 
@@ -277,8 +284,9 @@ public final class UiValues {
   private static final class DoubleUIValue extends TextUIValue<Double> {
     private final boolean usePrimitive;
 
-    private DoubleUIValue(final JTextComponent textComponent, final NumberFormat format, final boolean usePrimitive) {
-      super(textComponent, format, true);
+    private DoubleUIValue(final JTextComponent textComponent, final NumberFormat format, final boolean usePrimitive,
+                          final boolean immediateUpdate) {
+      super(textComponent, format, immediateUpdate);
       this.usePrimitive = usePrimitive;
     }
 
@@ -295,8 +303,9 @@ public final class UiValues {
   private static final class DateUIValue extends TextUIValue<Date> {
     private final int sqlType;
 
-    private DateUIValue(final JFormattedTextField textComponent, final Format format, final int sqlType) {
-      super(textComponent, Util.rejectNullValue(format, "format"), true);
+    private DateUIValue(final JFormattedTextField textComponent, final Format format, final int sqlType,
+                        final boolean immediateUpdate) {
+      super(textComponent, Util.rejectNullValue(format, "format"), immediateUpdate);
       if (sqlType != Types.DATE && sqlType != Types.TIMESTAMP && sqlType != Types.TIME) {
         throw new IllegalArgumentException("DateUIValue only applicable to: Types.DATE, Types.TIMESTAMP and Types.TIME");
       }

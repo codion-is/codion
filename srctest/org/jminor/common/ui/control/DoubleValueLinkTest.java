@@ -24,7 +24,7 @@ public class DoubleValueLinkTest {
   public void testDouble() throws Exception {
     final DoubleField txtDouble = new DoubleField();
     txtDouble.setDecimalSymbol(DoubleField.POINT);
-    ValueLinks.doubleValueLink(txtDouble, this, "doubleValue", evtDoubleValueChanged, false);
+    ValueLinks.doubleValueLink(txtDouble, this, "doubleValue", evtDoubleValueChanged, false, true);
     assertNull("Double value should be null on initialization", txtDouble.getDouble());
     setDoubleValue(2.2);
     assertEquals("Double value should be 2.2", new Double(2.2), txtDouble.getDouble());
@@ -38,7 +38,7 @@ public class DoubleValueLinkTest {
   public void testDoublePrimitive() throws Exception {
     final DoubleField txtDouble = new DoubleField();
     txtDouble.setDecimalSymbol(DoubleField.POINT);
-    ValueLinks.doubleValueLink(txtDouble, this, "doublePrimitiveValue", evtDoublePrimitiveValueValueChanged, true);
+    ValueLinks.doubleValueLink(txtDouble, this, "doublePrimitiveValue", evtDoublePrimitiveValueValueChanged, true, true);
     assertEquals("Double value should be 0 on initialization", (Double) 0.0, txtDouble.getDouble());
     setDoublePrimitiveValue(2.2);
     assertEquals("Double value should be 2.2", new Double(2.2), txtDouble.getDouble());
