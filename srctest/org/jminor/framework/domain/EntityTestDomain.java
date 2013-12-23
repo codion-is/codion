@@ -7,6 +7,7 @@ import org.jminor.common.model.Item;
 
 import java.sql.Types;
 import java.util.Arrays;
+import java.util.Comparator;
 import java.util.List;
 
 public class EntityTestDomain {
@@ -43,6 +44,15 @@ public class EntityTestDomain {
             Properties.primaryKeyProperty(MASTER_ID),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
             Properties.columnProperty(MASTER_CODE, Types.INTEGER))
+            .setComparator(new Comparator<Entity>() {
+              @Override
+              public int compare(final Entity o1, final Entity o2) {
+                final Integer code1 = o1.getIntValue(MASTER_CODE);
+                final Integer code2 = o2.getIntValue(MASTER_CODE);
+
+                return code1.compareTo(code2);
+              }
+            })
             .setStringProvider(new Entities.StringProvider(MASTER_NAME));
 
     Entities.define(T_DETAIL,
@@ -60,7 +70,9 @@ public class EntityTestDomain {
             Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
                     Entities.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE),
             Properties.valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST, ITEMS))
-            .setOrderByClause(DETAIL_STRING).setSelectTableName(DETAIL_SELECT_TABLE_NAME)
-            .setSmallDataset(true).setStringProvider(new Entities.StringProvider(DETAIL_STRING));
+            .setOrderByClause(DETAIL_STRING)
+            .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
+            .setSmallDataset(true)
+            .setStringProvider(new Entities.StringProvider(DETAIL_STRING));
   }
 }

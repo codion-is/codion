@@ -34,6 +34,7 @@ import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -837,6 +838,15 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
      */
     public DefaultEntityTableSortModel(final String entityID) {
       super(initializeColumns(entityID));
+    }
+
+    @Override
+    protected Comparator initializeColumnComparator(final Property property) {
+      if (property instanceof Property.ForeignKeyProperty) {
+        return Entities.getComparator(((Property.ForeignKeyProperty) property).getReferencedEntityID());
+      }
+
+      return super.initializeColumnComparator(property);
     }
 
     /** {@inheritDoc} */

@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -354,6 +355,13 @@ public final class DefaultEntityTableModelTest {
     assertTrue(values.contains("d"));
     assertTrue(values.contains("e"));
     assertFalse(values.contains("zz"));
+  }
+
+  @Test
+  public void testSortComparator() {
+    final Property masterFKProperty = Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_ENTITY_FK);
+    final Comparator comparator = ((DefaultEntityTableModel.DefaultEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(masterFKProperty);
+    assertEquals(comparator, Entities.getComparator(EntityTestDomain.T_MASTER));
   }
 
   @Test

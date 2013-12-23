@@ -3681,3 +3681,4 @@
   EntityUtil.hashBy...() functions return value made more specific in order to convey the fact that they respect the iteration order of the collection
   ValueLinks.dateValueLink(), dateValue(), integerValue() and doubleValue(), immediateUpdate parameter added
   EntityUiUtil.createTextField() now also propagates the immediateUpdate parameter in case of date, int and double based values, see above
+  DefaultEntityTableModel.DefaultEntityTableSortModel.initializeColumnComparator() now uses the comparator associated with the underlying entity for columns based on foreign key properties
