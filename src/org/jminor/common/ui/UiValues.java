@@ -177,7 +177,9 @@ public final class UiValues {
         textComponent.addFocusListener(new FocusAdapter() {
           @Override
           public void focusLost(final FocusEvent e) {
-            changeEvent.fire();
+            if (!e.isTemporary()) {
+              changeEvent.fire();
+            }
           }
         });
       }

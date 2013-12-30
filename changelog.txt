@@ -3682,3 +3682,4 @@
   ValueLinks.dateValueLink(), dateValue(), integerValue() and doubleValue(), immediateUpdate parameter added
   EntityUiUtil.createTextField() now also propagates the immediateUpdate parameter in case of date, int and double based values, see above
   DefaultEntityTableModel.DefaultEntityTableSortModel.initializeColumnComparator() now uses the comparator associated with the underlying entity for columns based on foreign key properties
+  UiValues.TextUiValue fires change event on focus lost only if the focus event isn't temporary
