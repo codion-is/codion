@@ -3671,7 +3671,7 @@
   EntityPanel, editControlPanel made final and initialized during construction
   H2Database, in memory database initialization improved
   ValueLinkValidators, validBackgroundColor parameter removed, now uses the UI default
-  ValueLinkValidators, bug fix, the above change did consider the enabled/disabled state of the component
+  ValueLinkValidators, bug fix, the above change did not consider the enabled/disabled state of the component
   AbstractEntityConnectionProvider.scheduleValidityCheck attribute added, constructor overloaded
   DefaultEntityConnection, bug fixed, setForeignKeyValues() incorrectly handled the case when the referenced entity was not available (deleted or filtered out of an underlying view), it simply set the reference to null, whereas now it populates it with an empty entity wrapping the referenced primary key
 0.8.5

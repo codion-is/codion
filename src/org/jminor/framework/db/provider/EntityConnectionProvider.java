@@ -30,11 +30,14 @@ public interface EntityConnectionProvider {
   String getHostName();
 
   /**
-   * @return true if a connection has been established
+   * @return true if a connection has been established, note that this does not check if the actual
+   * connection is healthy, only that one has been established.
    */
   boolean isConnected();
 
   /**
+   * Returns a state which is active when this provider is connected, note that this state is only updated
+   * if {@link org.jminor.framework.Configuration#CLIENT_SCHEDULE_CONNECTION_VALIDATION} is set to true
    * @return a state active when this provider is connected
    */
   StateObserver getConnectedObserver();

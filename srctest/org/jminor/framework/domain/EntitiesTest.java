@@ -69,9 +69,9 @@ public class EntitiesTest {
     Entities.define(entityID, Properties.primaryKeyProperty("propertyID"));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void redefineAllowed() {
-    final String entityID = "entityID";
+    final String entityID = "entityID2";
     Entities.define(entityID, Properties.primaryKeyProperty("id"));
     assertEquals("id", Entities.getPrimaryKeyProperties(entityID).get(0).getPropertyID());
     Configuration.setValue(Configuration.ALLOW_REDEFINE_ENTITY, true);
