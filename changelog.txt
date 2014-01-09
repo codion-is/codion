@@ -3683,3 +3683,8 @@
   EntityUiUtil.createTextField() now also propagates the immediateUpdate parameter in case of date, int and double based values, see above
   DefaultEntityTableModel.DefaultEntityTableSortModel.initializeColumnComparator() now uses the comparator associated with the underlying entity for columns based on foreign key properties
   UiValues.TextUiValue fires change event on focus lost only if the focus event isn't temporary
+  FilteredTablePanelTest, some additions
+  FilteredTablePanel, minor refactoring to accomodate the above
+  UiUtilTest, some additions
+  DefaultEntityConnection.selectRowCount() bug fixed, did not work correctly for entities defined with a select query
+  DefaultEntityConnectionTest.rowCount() improved due to the above

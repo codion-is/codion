@@ -11,6 +11,7 @@ import javax.swing.Action;
 import javax.swing.JComponent;
 import javax.swing.JTextField;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 import static org.junit.Assert.*;
 
@@ -68,5 +69,14 @@ public class UiUtilTest {
     UiUtil.makeLowerCase(txt);
     txt.setText("HELLO");
     assertEquals("hello", txt.getText());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void addKeyEventWithoutName() {
+    final JTextField txt = new JTextField();
+    UiUtil.addKeyEvent(txt, KeyEvent.VK_ENTER, new AbstractAction() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {}
+    });
   }
 }

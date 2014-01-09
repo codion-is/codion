@@ -12,7 +12,9 @@ public enum SearchType {
 
   LIKE("  = ", Messages.get(Messages.LIKE)),
   NOT_LIKE("  \u2260 ", Messages.get(Messages.NOT_LIKE)),
+  /** Less than or equals*/
   LESS_THAN("  \u2264 ", Messages.get(Messages.LESS_THAN)),
+  /** Greater than or equals*/
   GREATER_THAN("  \u2265 ", Messages.get(Messages.GREATER_THAN)),
   WITHIN_RANGE("\u2265 \u2264", Messages.get(Messages.WITHIN_RANGE)),
   OUTSIDE_RANGE("\u2264 \u2265", Messages.get(Messages.OUTSIDE_RANGE));

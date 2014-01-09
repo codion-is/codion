@@ -324,6 +324,16 @@ public class FilteredTablePanel<T, C> extends JPanel {
     }
   }
 
+  /**
+   * Performs a text search in the underlying table model, relative to the last search result coordinate.
+   * @param addToSelection if true then the items found are added to the selection
+   * @param forward if true then the search direction is forward (down), otherwise it's backward (up)
+   * @param searchText the text to search for
+   */
+  void findNextValue(final boolean addToSelection, final boolean forward, final String searchText) {
+    performSearch(addToSelection, lastSearchResultCoordinate.y + (forward ?  1 : -1), forward, searchText);
+  }
+
   private JTable initializeJTable() {
     return new JTable(tableModel, tableModel.getColumnModel(), tableModel.getSelectionModel());
   }
@@ -336,7 +346,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
     txtSearch.getDocument().addDocumentListener(new DocumentAdapter() {
       @Override
       public void contentsChanged(final DocumentEvent e) {
-        doSearch(false, lastSearchResultCoordinate.y == -1 ? 0 : lastSearchResultCoordinate.y, true, txtSearch.getText());
+        performSearch(false, lastSearchResultCoordinate.y == -1 ? 0 : lastSearchResultCoordinate.y, true, txtSearch.getText());
       }
     });
     txtSearch.addKeyListener(new KeyAdapter() {
@@ -346,28 +356,24 @@ public class FilteredTablePanel<T, C> extends JPanel {
           return;
         }
         if (e.getKeyCode() == KeyEvent.VK_ENTER || e.getKeyCode() == KeyEvent.VK_DOWN) {
-          doSearch(e.isShiftDown(), lastSearchResultCoordinate.y + 1, true, txtSearch.getText());
+          findNextValue(e.isShiftDown(), true, txtSearch.getText());
         }
         else if (e.getKeyCode() == KeyEvent.VK_UP) {
-          doSearch(e.isShiftDown(), lastSearchResultCoordinate.y - 1, false, txtSearch.getText());
+          findNextValue(e.isShiftDown(), false, txtSearch.getText());
+        }
+        else if (e.getKeyCode() == KeyEvent.VK_ESCAPE) {
+          getJTable().requestFocusInWindow();
         }
       }
     });
     UiUtil.selectAllOnFocusGained(txtSearch);
-    UiUtil.addKeyEvent(txtSearch, KeyEvent.VK_ESCAPE, new AbstractAction("FilteredTablePanel.requestTableFocus") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        getJTable().requestFocusInWindow();
-      }
-    });
 
     txtSearch.setComponentPopupMenu(initializeSearchFieldPopupMenu());
 
     return txtSearch;
   }
 
-  private void doSearch(final boolean addToSelection, final int fromIndex, final boolean forward,
-                        final String searchText) {
+  private void performSearch(final boolean addToSelection, final int fromIndex, final boolean forward, final String searchText) {
     if (searchText.length() != 0) {
       final Point coordinate = tableModel.findNextItemCoordinate(fromIndex, forward, searchText);
       if (coordinate != null) {

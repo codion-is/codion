@@ -31,7 +31,7 @@ public final class AbstractFilteredTableModelTest {
 
   private TestAbstractFilteredTableModel tableModel;
 
-  private static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<String, Integer> {
+  public static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<String, Integer> {
 
     private TestAbstractFilteredTableModel(final AbstractTableSortModel<String, Integer> sortModel,
                                            final List<ColumnSearchModel<Integer>> columnFilterModels) {

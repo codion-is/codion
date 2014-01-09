@@ -8,6 +8,7 @@ import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
@@ -62,8 +63,8 @@ public class DefaultEntityConnectionTest {
   static {
     EmpDept.init();
     Entities.define(JOINED_QUERY_ENTITY_ID,
-            Properties.primaryKeyProperty("empno"),
-            Properties.columnProperty("deptno", Types.INTEGER))
+            Properties.primaryKeyProperty("e.empno"),
+            Properties.columnProperty("d.deptno", Types.INTEGER))
             .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno");
 
     Entities.define(ENTITY_ID,
@@ -71,7 +72,7 @@ public class DefaultEntityConnectionTest {
             Properties.columnProperty(DATA, Types.BLOB));
   }
 
-  public DefaultEntityConnectionTest() throws ClassNotFoundException, SQLException {
+  public DefaultEntityConnectionTest() {
     EntityTestDomain.init();
   }
 
@@ -206,8 +207,16 @@ public class DefaultEntityConnectionTest {
   public void selectRowCount() throws Exception {
     int rowCount = connection.selectRowCount(EntityCriteriaUtil.criteria(EmpDept.T_DEPARTMENT));
     assertEquals(4, rowCount);
+    Criteria<Property.ColumnProperty> deptNoCriteria = EntityCriteriaUtil.propertyCriteria(EmpDept.T_DEPARTMENT,
+            EmpDept.DEPARTMENT_ID, SearchType.GREATER_THAN, 30);
+    rowCount = connection.selectRowCount(EntityCriteriaUtil.criteria(EmpDept.T_DEPARTMENT, deptNoCriteria));
+    assertEquals(2, rowCount);
+
     rowCount = connection.selectRowCount(EntityCriteriaUtil.criteria(JOINED_QUERY_ENTITY_ID));
     assertEquals(16, rowCount);
+    deptNoCriteria = EntityCriteriaUtil.propertyCriteria(JOINED_QUERY_ENTITY_ID, "d.deptno", SearchType.GREATER_THAN, 30);
+    rowCount = connection.selectRowCount(EntityCriteriaUtil.criteria(JOINED_QUERY_ENTITY_ID, deptNoCriteria));
+    assertEquals(4, rowCount);
   }
 
   @Test
@@ -228,7 +237,7 @@ public class DefaultEntityConnectionTest {
   public void executeFunction() throws DatabaseException {
     final DatabaseConnection.Function func = new AbstractFunction("executeFunction", "executeFunction") {
       @Override
-      public List execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {
+      public List execute(final DatabaseConnection connection, final Object... arguments) {
         return null;
       }
     };
@@ -240,7 +249,7 @@ public class DefaultEntityConnectionTest {
   public void executeProcedure() throws DatabaseException {
     final DatabaseConnection.Procedure proc = new AbstractProcedure("executeProcedure", "executeProcedure") {
       @Override
-      public void execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {}
+      public void execute(final DatabaseConnection connection, final Object... arguments) {}
     };
     Databases.addOperation(proc);
     connection.executeProcedure(proc.getID());

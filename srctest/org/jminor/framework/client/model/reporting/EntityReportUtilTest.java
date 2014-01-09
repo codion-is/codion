@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.model.reporting;
 
+import org.jminor.common.model.reports.ReportException;
 import org.jminor.framework.db.DefaultEntityConnectionTest;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 
@@ -24,5 +25,11 @@ public class EntityReportUtilTest {
             new JasperReportsWrapper("resources/demos/empdept/reports/empdept_employees.jasper", reportParameters),
             DefaultEntityConnectionTest.CONNECTION_PROVIDER).getResult();
     assertNotNull(print);
+  }
+
+  @Test(expected = ReportException.class)
+  public void fillJdbcReportInvalidReport() throws Exception {
+    EntityReportUtil.fillReport( new JasperReportsWrapper("resources/demos/empdept/reports/non_existing_report.jasper",
+            new HashMap<String, Object>()), DefaultEntityConnectionTest.CONNECTION_PROVIDER).getResult();
   }
 }

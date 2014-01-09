@@ -366,10 +366,16 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     ResultSet resultSet = null;
     String selectSQL = null;
     try {
-      selectSQL = Entities.getSelectQuery(criteria.getEntityID());
-      selectSQL = createSelectSQL(selectSQL == null ? Entities.getSelectTableName(criteria.getEntityID()) :
-              "(" + selectSQL + " " + criteria.getWhereClause(!selectSQL.toLowerCase().contains("where ")) + ") alias", "count(*)", null, null);
-      selectSQL += " " + criteria.getWhereClause(!containsWhereClause(selectSQL));
+      final String entitySelectQuery = Entities.getSelectQuery(criteria.getEntityID());
+      if (entitySelectQuery == null) {
+        selectSQL = createSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), "count(*)",
+                criteria.getWhereClause(true), null);
+      }
+      else {
+        final boolean containsWhereClause = entitySelectQuery.toLowerCase().contains("where ");
+        selectSQL = createSelectSQL("(" + entitySelectQuery + " " + criteria.getWhereClause(!containsWhereClause) + ") alias",
+                "count(*)", null, null);
+      }
       statement = getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
       final List<Integer> result = DatabaseUtil.INTEGER_RESULT_PACKER.pack(resultSet, -1);
