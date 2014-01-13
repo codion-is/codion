@@ -181,7 +181,7 @@ public class EntityConnectionServerTest {
         return clientTypeID;
       }
       @Override
-      public ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException {
+      public ClientInfo doLogin(final ClientInfo clientInfo) {
         return new ClientInfo(clientInfo.getClientID(), clientInfo.getClientTypeID(), clientInfo.getUser(), User.UNIT_TEST_USER);
       }
       @Override

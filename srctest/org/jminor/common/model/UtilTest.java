@@ -9,6 +9,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -185,6 +186,15 @@ public class UtilTest {
     assertEquals("getInt should work with a digit string", new Integer(4), Util.getInt("4"));
     assertEquals("getInt should work with single minus sign", new Integer(-1), Util.getInt("-"));
     assertNull("getInt should work with an empty string", Util.getInt(""));
+    assertNull("getInt should work with a null value", Util.getInt(null));
+  }
+
+  @Test
+  public void getLong() throws Exception {
+    assertEquals("getLong should work with a digit string", new Long(4), Util.getLong("4"));
+    assertEquals("getLong should work with single minus sign", new Long(-1), Util.getLong("-"));
+    assertNull("getLong should work with an empty string", Util.getLong(""));
+    assertNull("getLong should work with a null value", Util.getInt(null));
   }
 
   @Test
@@ -199,10 +209,24 @@ public class UtilTest {
   }
 
   @Test
-  public void getLong() throws Exception {
-    assertEquals("getLong should work with a digit string", new Long(4), Util.getLong("4"));
-    assertEquals("getLong should work with single minus sign", new Long(-1), Util.getLong("-"));
-    assertNull("getLong should work with an empty string", Util.getLong(""));
+  public void countLines() throws IOException {
+    assertEquals(3, Util.countLines(new File("resources/security/all_permissions.policy")));
+    assertEquals(2, Util.countLines(new File("resources/security/all_permissions.policy"), "}"));
+  }
+
+  @Test
+  public void getTextFileContents() throws IOException {
+    final String contents = "grant {\n" +
+            "  permission java.security.AllPermission;\n" +
+            "};\n";
+    assertEquals(contents, Util.getTextFileContents("resources/security/all_permissions.policy", Charset.defaultCharset()));
+  }
+
+  @Test
+  public void getDelimitedString() {
+    final String result = "test\ttest2\ndata1\tdata2\ndata3\tdata4\n";
+    assertEquals(result, Util.getDelimitedString(new String[][] {new String[] {"test", "test2"}},
+            new String[][] {new String[] {"data1", "data2"}, new String[] {"data3", "data4"}}, "\t"));
   }
 
   @Test

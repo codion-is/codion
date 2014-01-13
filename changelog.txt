@@ -3688,3 +3688,4 @@
   UiUtilTest, some additions
   DefaultEntityConnection.selectRowCount() bug fixed, did not work correctly for entities defined with a select query
   DefaultEntityConnectionTest.rowCount() improved due to the above
+  UtilTest, some additions
