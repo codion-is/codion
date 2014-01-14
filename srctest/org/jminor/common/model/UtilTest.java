@@ -217,9 +217,9 @@ public class UtilTest {
 
   @Test
   public void getTextFileContents() throws IOException {
-    final String contents = "grant {\n" +
-            "  permission java.security.AllPermission;\n" +
-            "};\n";
+    final String contents = "grant {" + Util.LINE_SEPARATOR +
+            "  permission java.security.AllPermission;" + Util.LINE_SEPARATOR +
+            "};" + Util.LINE_SEPARATOR;
     assertEquals(contents, Util.getTextFileContents("resources/security/all_permissions.policy", Charset.defaultCharset()));
   }
 
