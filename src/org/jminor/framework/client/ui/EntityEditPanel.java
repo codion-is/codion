@@ -286,6 +286,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
+   * Request focus for the component associated with the given propertyID
    * @param propertyID the propertyID of the component to select
    */
   public final void selectComponent(final String propertyID) {
@@ -318,8 +319,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * Override to exclude components from the component selection.
    * @param propertyID the component propertyID
-   * @return true if the component associated with the given propertyID should be included when selecting a input component in this panel,
-   * returns true by default.
+   * @return true if the component associated with the given propertyID should be included when allowing the user
+   * to select a input component in this panel, true by default.
    */
   public boolean includeComponentSelectionPropertyID(final String propertyID) {
     return true;
@@ -365,7 +366,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * @param controlCode the control code
    * @return the control associated with <code>controlCode</code>
-   * @throws RuntimeException in case no control is associated with the given control code
+   * @throws IllegalArgumentException in case no control is associated with the given control code
    */
   public final Control getControl(final String controlCode) {
     if (!controls.containsKey(controlCode)) {
@@ -580,12 +581,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   /**
    * Performs a insert on the active entity
-   * @param confirm if true then confirmInsert() is called
+   * @param confirmRequired if true then confirmInsert() is called
    * @return true in case of successful insert, false otherwise
    */
-  public final boolean insert(final boolean confirm) {
+  public final boolean insert(final boolean confirmRequired) {
     try {
-      if (!confirm || confirmInsert()) {
+      if (!confirmRequired || confirmInsert()) {
         validateData();
         try {
           UiUtil.setWaitCursor(true, this);
@@ -615,12 +616,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   /**
    * Performs a delete on the active entity
-   * @param confirm if true then confirmDelete() is called
+   * @param confirmRequired if true then confirmDelete() is called
    * @return true if the delete operation was successful
    */
-  public final boolean delete(final boolean confirm) {
+  public final boolean delete(final boolean confirmRequired) {
     try {
-      if (!confirm || confirmDelete()) {
+      if (!confirmRequired || confirmDelete()) {
         try {
           UiUtil.setWaitCursor(true, this);
           editModel.delete();
@@ -649,12 +650,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   /**
    * Performs an update on the active entity
-   * @param confirm if true then confirmUpdate() is called
+   * @param confirmRequired if true then confirmUpdate() is called
    * @return true if the update operation was successful or if no update was required
    */
-  public final boolean update(final boolean confirm) {
+  public final boolean update(final boolean confirmRequired) {
     try {
-      if (!confirm || confirmUpdate()) {
+      if (!confirmRequired || confirmUpdate()) {
         validateData();
         try {
           UiUtil.setWaitCursor(true, this);
@@ -790,12 +791,23 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Initializes this EntityEditPanel UI
+   * Initializes this EntityEditPanel UI, that is, creates and lays out the components
+   * required for editing the underlying entity type.
+   * <pre>
+   *   protected void initializeUI() {
+   *      JTextField txtName = createTextField(DomainModel.USER_NAME);
+   *      JTextField txtAddress = createTextField(DomainModel.USER_ADDRESS);
+   *      setLayout(new GridLayout(2, 1, 5, 5);
+   *      addPropertyPanel(DomainModel.USER_NAME);
+   *      addPropertyPanel(DomainModel.USER_ADDRESS);
+   *  }
+   * </pre>
    */
   protected abstract void initializeUI();
 
   /**
-   * @return the component that should get the initial focus
+   * @return the component that should get the initial focus when the UI is prepared
+   * @see #prepareUI(boolean, boolean)
    */
   protected JComponent getInitialFocusComponent() {
     if (initialFocusComponent != null) {

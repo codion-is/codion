@@ -3690,3 +3690,4 @@
   DefaultEntityConnectionTest.rowCount() improved due to the above
   UtilTest, some additions
   Unit test coverage improved
+  Javadoc improvements
