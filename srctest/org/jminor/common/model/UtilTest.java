@@ -225,7 +225,7 @@ public class UtilTest {
 
   @Test
   public void getDelimitedString() {
-    final String result = "test\ttest2\ndata1\tdata2\ndata3\tdata4\n";
+    final String result = "test\ttest2" + Util.LINE_SEPARATOR + "data1\tdata2" + Util.LINE_SEPARATOR + "data3\tdata4" + Util.LINE_SEPARATOR;
     assertEquals(result, Util.getDelimitedString(new String[][]{new String[]{"test", "test2"}},
             new String[][]{new String[]{"data1", "data2"}, new String[]{"data3", "data4"}}, "\t"));
   }
