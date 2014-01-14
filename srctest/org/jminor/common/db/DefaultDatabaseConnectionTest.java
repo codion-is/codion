@@ -34,9 +34,7 @@ public class DefaultDatabaseConnectionTest {
         dbConnection.disconnect();
       }
     }
-    catch (Exception e) {
-      e.printStackTrace();
-    }
+    catch (Exception ignored) {}
   }
 
   @Test(expected = DatabaseException.class)
@@ -76,6 +74,12 @@ public class DefaultDatabaseConnectionTest {
 
   @Test
   public void getConnection() throws Exception {
+    assertNotNull(dbConnection.getConnection());
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void getConnectionDisconnected() throws Exception {
+    dbConnection.disconnect();
     assertNotNull(dbConnection.getConnection());
   }
 

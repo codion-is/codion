@@ -5,6 +5,7 @@ package org.jminor.common.db;
 
 import org.junit.Test;
 
+import java.sql.Connection;
 import java.sql.ResultSet;
 import java.sql.Statement;
 
@@ -12,6 +13,7 @@ public class DatabaseUtilTest {
 
   @Test
   public void closeSilently() {
+    DatabaseUtil.closeSilently((Connection) null);
     DatabaseUtil.closeSilently((Statement) null);
     DatabaseUtil.closeSilently((ResultSet) null);
 

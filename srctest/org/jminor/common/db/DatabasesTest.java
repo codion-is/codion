@@ -73,6 +73,26 @@ public class DatabasesTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
+  public void addOperationExisting() {
+    final DatabaseConnection.Operation operation = new AbstractProcedure("operationId", "test") {
+      @Override
+      public void execute(final DatabaseConnection databaseConnection, final Object... arguments) {}
+    };
+    Databases.addOperation(operation);
+    Databases.addOperation(operation);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getFunctionNonExisting() {
+    Databases.getFunction("nonexistingfunctionid");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getProcedureNonExisting() {
+    Databases.getProcedure("nonexistingprocedureid");
+  }
+
+  @Test(expected = IllegalArgumentException.class)
   public void createInstanceUnknownDatabaseType() {
     final String type = System.getProperty(Database.DATABASE_TYPE);
     try {

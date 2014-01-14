@@ -4,12 +4,17 @@
 package org.jminor.common.ui.control;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
 import org.jminor.common.model.checkbox.TristateButtonModel;
 
 import org.junit.Test;
+
+import java.awt.event.ActionEvent;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static junit.framework.Assert.assertNull;
 import static org.junit.Assert.assertFalse;
@@ -96,5 +101,21 @@ public final class ControlsTest {
     assertFalse(buttonModel.isIndeterminate());
     setTristateValue(null);
     assertTrue(buttonModel.isIndeterminate());
+  }
+
+  @Test
+  public void eventControl() {
+    final Event<ActionEvent> event = Events.event();
+    final Collection<ActionEvent> firedEvents = new ArrayList<>();
+    event.addInfoListener(new EventInfoListener<ActionEvent>() {
+      @Override
+      public void eventOccurred(final ActionEvent info) {
+        firedEvents.add(info);
+      }
+    });
+    final Control control = Controls.eventControl(event);
+    final ActionEvent actionEvent = new ActionEvent(this, 0, "command");
+    control.actionPerformed(actionEvent);
+    assertTrue(firedEvents.contains(actionEvent));
   }
 }

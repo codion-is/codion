@@ -23,6 +23,36 @@ import static org.junit.Assert.*;
 public class EntitiesTest {
 
   @Test
+  public void key() {
+    final String entityID = "EntitiesTest.key";
+    final String propertyID1 = "id1";
+    final String propertyID2 = "id2";
+    final String propertyID3 = "id3";
+    Entities.define(entityID,
+            Properties.primaryKeyProperty(propertyID1),
+            Properties.primaryKeyProperty(propertyID2),
+            Properties.primaryKeyProperty(propertyID3));
+
+    final Entity.Key key = Entities.key(entityID);
+    assertEquals(Integer.MAX_VALUE, key.hashCode());
+    assertTrue(key.isCompositeKey());
+    assertTrue(key.isNull());
+
+    key.setValue(propertyID1, 1);
+    key.setValue(propertyID2, 2);
+    key.setValue(propertyID3, 3);
+    assertFalse(key.isNull());
+    assertEquals(6, key.hashCode());
+
+    key.setValue(propertyID2, 3);
+    assertEquals(7, key.hashCode());
+
+    key.setValue(propertyID3, null);
+    assertTrue(key.isNull());
+    assertEquals(Integer.MAX_VALUE, key.hashCode());
+  }
+
+  @Test
   public void entity() {
     Chinook.init();
     final Entity.Key key = Entities.key(Chinook.T_ALBUM);

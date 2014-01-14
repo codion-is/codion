@@ -9,6 +9,7 @@ import java.io.Closeable;
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
+import java.lang.reflect.Method;
 import java.nio.charset.Charset;
 import java.text.Collator;
 import java.util.ArrayList;
@@ -225,8 +226,8 @@ public class UtilTest {
   @Test
   public void getDelimitedString() {
     final String result = "test\ttest2\ndata1\tdata2\ndata3\tdata4\n";
-    assertEquals(result, Util.getDelimitedString(new String[][] {new String[] {"test", "test2"}},
-            new String[][] {new String[] {"data1", "data2"}, new String[] {"data3", "data4"}}, "\t"));
+    assertEquals(result, Util.getDelimitedString(new String[][]{new String[]{"test", "test2"}},
+            new String[][]{new String[]{"data1", "data2"}, new String[]{"data3", "data4"}}, "\t"));
   }
 
   @Test
@@ -300,5 +301,68 @@ public class UtilTest {
       public void run() {}
     });
     assertTrue(thread.isDaemon());
+  }
+
+  @Test
+  public void getGetMethod() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    Method getMethod = Util.getGetMethod(boolean.class, "booleanValue", bean);
+    assertEquals("isBooleanValue", getMethod.getName());
+    getMethod = Util.getGetMethod(int.class, "intValue", bean);
+    assertEquals("getIntValue", getMethod.getName());
+  }
+
+  @Test
+  public void getSetMethod() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    Method setMethod = Util.getSetMethod(boolean.class, "booleanValue", bean);
+    assertEquals("setBooleanValue", setMethod.getName());
+    setMethod = Util.getSetMethod(int.class, "intValue", bean);
+    assertEquals("setIntValue", setMethod.getName());
+  }
+
+  @Test(expected = NoSuchMethodException.class)
+  public void getGetMethodInvalidMethod() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    Util.getGetMethod(boolean.class, "invalidValue", bean);
+  }
+
+  @Test(expected = NoSuchMethodException.class)
+  public void getSetMethodInvalidMethod() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    Util.getSetMethod(boolean.class, "invalidValue", bean);
+  }
+
+  @Test
+  public void collate() {
+    final String one = "Bláskuggi";
+    final String two = "Blá skuggi";
+    final String three = "Blár skuggi";
+    final List<String> values = Arrays.asList(one, two, three);
+    Util.collate(values);
+    assertEquals(0, values.indexOf(two));
+    assertEquals(1, values.indexOf(three));
+    assertEquals(2, values.indexOf(one));
+  }
+
+  public static final class Bean {
+    boolean booleanValue;
+    int intValue;
+
+    public boolean isBooleanValue() {
+      return booleanValue;
+    }
+
+    public void setBooleanValue(final boolean booleanValue) {
+      this.booleanValue = booleanValue;
+    }
+
+    public int getIntValue() {
+      return intValue;
+    }
+
+    public void setIntValue(final int intValue) {
+      this.intValue = intValue;
+    }
   }
 }

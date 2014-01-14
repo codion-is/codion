@@ -175,14 +175,6 @@ public final class ControlSet extends Control {
   }
 
   /**
-   * @param controlSet the control set to remove
-   * @return true if the set was removed
-   */
-  public boolean remove(final ControlSet controlSet) {
-    return controlSet != null && actions.remove(controlSet);
-  }
-
-  /**
    * Removes all actions from this control set
    */
   public void removeAll() {

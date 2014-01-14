@@ -11,9 +11,7 @@ import java.sql.Types;
 import java.text.NumberFormat;
 import java.util.Map;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public final class PropertiesTest {
 
@@ -128,5 +126,41 @@ public final class PropertiesTest {
             "referencedEntityID", new Property.ColumnProperty[] {updatableReferenceProperty, nonUpdatableReferenceProperty},
             new String[] {"test", "testing"});
     assertFalse(nonUpdatableCompositeForeignKeyProperty.isUpdatable());
+  }
+
+  @Test
+  public void foreignKeyPropertyCompositeKey() {
+    final Property.ColumnProperty columnProperty1 = Properties.columnProperty("fk1");
+    final Property.ColumnProperty columnProperty2 = Properties.columnProperty("fk2");
+    final Property.ForeignKeyProperty foreignKeyProperty = Properties.foreignKeyProperty("propertyID", "caption",
+            "referencedEntityID", new Property.ColumnProperty[] {columnProperty1, columnProperty2}, new String[] {"id1", "id2"});
+    assertEquals("id1", foreignKeyProperty.getReferencedPropertyID(columnProperty1));
+    assertEquals("id2", foreignKeyProperty.getReferencedPropertyID(columnProperty2));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void foreignKeyPropertyNullProperty() {
+    Properties.foreignKeyProperty("id", "caption", "entityID", null);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void foreignKeyPropertyNoProperties() {
+    Properties.foreignKeyProperty("id", "caption", "entityID", new Property.ColumnProperty[0], new String[0]);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void foreignKeyPropertyCountMismatch() {
+    final Property.ColumnProperty columnProperty1 = Properties.columnProperty("fk1");
+    final Property.ColumnProperty columnProperty2 = Properties.columnProperty("fk2");
+    Properties.foreignKeyProperty("propertyID", "caption", "referencedEntityID",
+            new Property.ColumnProperty[] {columnProperty1, columnProperty2}, new String[] {"id1"});
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void foreignKeyPropertyNullProperties() {
+    final Property.ColumnProperty columnProperty1 = Properties.columnProperty("fk1");
+    final Property.ColumnProperty columnProperty2 = Properties.columnProperty("fk2");
+    Properties.foreignKeyProperty("propertyID", "caption", "referencedEntityID",
+            new Property.ColumnProperty[] {columnProperty1, columnProperty2}, null);
   }
 }
