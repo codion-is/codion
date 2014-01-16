@@ -59,7 +59,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   private final Comparator<R> rowComparator = new Comparator<R>() {
     @Override
     public int compare(final R o1, final R o2) {
-      for (final Map.Entry<C, TableSortModel.SortingState> state : getOrderedSortingStates()) {
+      for (final Map.Entry<C, TableSortModel.SortingState> state : getSortingStatesOrderedByPriority()) {
         final int comparison = compareRows(o1, o2, state.getKey(), state.getValue().getDirective());
         if (comparison != 0) {
           return comparison;
@@ -174,7 +174,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
       return COMPARABLE_COMPARATOR;
     }
 
-    return LEXICAL_COMPARATOR;
+    throw new IllegalArgumentException("Column identified by " + columnIdentifier  + " does not implement Comparable");
   }
 
   private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortingDirective directive) {
@@ -207,7 +207,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
     return 0;
   }
 
-  private List<Map.Entry<C, SortingState>> getOrderedSortingStates() {
+  private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {
     final ArrayList<Map.Entry<C, SortingState>> entries = new ArrayList<>();
     for (final Map.Entry<C, SortingState> entry : sortingStates.entrySet()) {
       if (!EMPTY_SORTING_STATE.equals(entry.getValue())) {

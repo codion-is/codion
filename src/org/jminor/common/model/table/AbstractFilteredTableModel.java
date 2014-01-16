@@ -251,18 +251,17 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final void filterContents() {
-    if (filterCriteria == null) {
-      return;
-    }
     try {
       final List<R> selectedItems = selectionModel.getSelectedItems();
       visibleItems.addAll(filteredItems);
       filteredItems.clear();
-      for (final ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext();) {
-        final R item = iterator.next();
-        if (!filterCriteria.include(item)) {
-          filteredItems.add(item);
-          iterator.remove();
+      if (filterCriteria != null) {
+        for (final ListIterator<R> iterator = visibleItems.listIterator(); iterator.hasNext();) {
+          final R item = iterator.next();
+          if (!filterCriteria.include(item)) {
+            filteredItems.add(item);
+            iterator.remove();
+          }
         }
       }
       sortModel.sort(visibleItems);

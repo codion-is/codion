@@ -36,6 +36,7 @@ public class SizedDocumentTest {
     assertEquals("HELLO", txt.getText());
 
     document.setLowerCase(true);
+    assertTrue(document.isLowerCase());
     txt.setText("HELLO");
     assertEquals("hello", txt.getText());
   }

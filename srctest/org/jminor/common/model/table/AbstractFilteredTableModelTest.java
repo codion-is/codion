@@ -90,6 +90,31 @@ public final class AbstractFilteredTableModelTest {
   }
 
   @Test
+  public void test() {
+    assertEquals(1, tableModel.getColumnCount());
+  }
+
+  @Test
+  public void filterContents() {
+    tableModel.refresh();
+    tableModel.setFilterCriteria(new FilterCriteria<String>() {
+      @Override
+      public boolean include(final String item) {
+        return !item.equals("b") && !item.equals("f");
+      }
+    });
+    assertFalse(tableModel.contains("b", false));
+    assertTrue(tableModel.contains("b", true));
+    tableModel.addItemsAt(Arrays.asList("f"), 0);
+    tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
+    assertFalse(tableModel.contains("f", false));
+    assertTrue(tableModel.contains("f", true));
+    tableModel.setFilterCriteria(null);
+    assertTrue(tableModel.contains("b", false));
+    assertTrue(tableModel.contains("f", false));
+  }
+
+  @Test
   public void addItemsAt() {
     tableModel.refresh();
     tableModel.addItemsAt(Arrays.asList("f", "g"), 2);
@@ -643,7 +668,7 @@ public final class AbstractFilteredTableModelTest {
     assertEquals("selected item should fit", ITEMS[3], tableModel.getSelectionModel().getSelectedItem());
   }
 
-  @Test()
+  @Test
   public void setFilterCriteria() {
     tableModel.refresh();
     tableModel.setFilterCriteria(new FilterCriteria<String>() {

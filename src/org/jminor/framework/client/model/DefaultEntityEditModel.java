@@ -730,7 +730,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final void removeValueListener(final String propertyID, final EventInfoListener listener) {
-    getValueChange(propertyID).removeInfoListener(listener);
+    getValueChangeEvent(propertyID).removeInfoListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -967,7 +967,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     return valueSetEventMap.get(propertyID);
   }
 
-  private Event getValueChange(final String propertyID) {
+  private Event getValueChangeEvent(final String propertyID) {
     if (!valueChangeEventMap.containsKey(propertyID)) {
       valueChangeEventMap.put(propertyID, Events.<ValueChange<String, ?>>event());
     }

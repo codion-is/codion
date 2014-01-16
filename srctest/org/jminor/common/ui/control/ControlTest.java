@@ -18,6 +18,7 @@ public class ControlTest {
     test.setName("test");
     assertEquals("test", test.toString());
     assertEquals("test", test.getName());
+    assertEquals(0, test.getMnemonic());
     test.setMnemonic(10);
     assertEquals(10, test.getMnemonic());
     assertNull(test.getIcon());

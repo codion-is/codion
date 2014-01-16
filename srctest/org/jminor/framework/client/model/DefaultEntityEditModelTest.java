@@ -512,7 +512,7 @@ public final class DefaultEntityEditModelTest {
 
     model.setValue(EmpDept.DEPARTMENT_ID, null);
     try {
-      model.validate(EmpDept.DEPARTMENT_ID);
+      model.validate();
       fail();
     }
     catch (ValidationException e) {}

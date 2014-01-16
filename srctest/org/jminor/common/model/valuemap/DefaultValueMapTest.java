@@ -108,6 +108,10 @@ public class DefaultValueMapTest {
     assertTrue(valueMap.isValueNull(key));
     assertTrue(valueMap.isModified());
     assertTrue(valueMap.isModified(key));
+    valueMap.revertValue(key);
+    assertFalse(valueMap.isModified());
+    valueMap.revertValue(key);
+    valueMap.setValue(key, null);
 
     valueMap.removeValue(key);
     assertFalse(valueMap.containsValue(key));
@@ -124,6 +128,7 @@ public class DefaultValueMapTest {
     assertFalse(valueMap.isModified(key));
 
     valueMap.removeValueListener(valueListener);
+    valueMap.removeValueListener(null);
   }
 
   @Test
@@ -148,6 +153,11 @@ public class DefaultValueMapTest {
     Assert.assertEquals("1", dest.getValue(1));
     Assert.assertEquals("3", dest.getValue(2));
     Assert.assertEquals("2", dest.getOriginalValue(2));
+
+    dest.setAs(null);
+    assertFalse(dest.containsValue(1));
+    assertFalse(dest.containsValue(2));
+    assertFalse(dest.containsValue(3));
   }
 
   @Test

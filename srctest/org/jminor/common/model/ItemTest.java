@@ -21,5 +21,7 @@ public class ItemTest {
     final Item<String> thirdItem = new Item<>("hello");
     assertEquals("hello".hashCode(), thirdItem.hashCode());
     assertEquals("hello", thirdItem.getCaption());
+
+    assertEquals(0, new Item<String>(null).hashCode());
   }
 }
