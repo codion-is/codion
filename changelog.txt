@@ -3693,3 +3693,4 @@
   Javadoc improvements
   AbstractFilteredTableModel.filterContents() bug fixed, it now resets the filtering if filterCriteria is set to null
   Unit test coverage improved
+  UiUtil.selectFilesOrDirectories() added

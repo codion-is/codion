@@ -272,6 +272,22 @@ public final class UiUtil {
    */
   public static File selectFileOrDirectory(final JComponent dialogParent, final String startDir, final boolean files,
                                            final String dialogTitle) {
+    return selectFilesOrDirectories(dialogParent, startDir, files, false, dialogTitle).get(0);
+  }
+
+  /**
+   * Displays a file selection dialog for selecting files or directories
+   * @param dialogParent the dialog parent
+   * @param startDir the start directory, user.home if not specified
+   * @param files if true then files are displayed, otherwise only directories
+   * @param multiSelection if true then the dialog will allow selection of multiple items
+   * @param dialogTitle the dialog title
+   * @return a List containing the selected files, contains at least one file
+   * @throws CancelException in case the user cancels or no files are selected
+   */
+  public static List<File> selectFilesOrDirectories(final JComponent dialogParent, final String startDir,
+                                                    final boolean files, final boolean multiSelection,
+                                                    final String dialogTitle) {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
@@ -288,7 +304,7 @@ public final class UiUtil {
       fileChooser.setFileSelectionMode(JFileChooser.DIRECTORIES_ONLY);
     }
     fileChooser.removeChoosableFileFilter(fileChooser.getFileFilter());
-    fileChooser.setMultiSelectionEnabled(false);
+    fileChooser.setMultiSelectionEnabled(multiSelection);
     if (!Util.nullOrEmpty(startDir)) {
       fileChooser.setCurrentDirectory(new File(startDir));
     }
@@ -297,9 +313,9 @@ public final class UiUtil {
     }
     final int option = fileChooser.showOpenDialog(dialogParent);
     if (option == JFileChooser.APPROVE_OPTION) {
-      final File selectedFile = fileChooser.getSelectedFile();
-      if (selectedFile.exists()) {
-        return selectedFile;
+      final List<File> selectedFiles = Arrays.asList(fileChooser.getSelectedFiles());
+      if (!selectedFiles.isEmpty()) {
+        return selectedFiles;
       }
     }
 
