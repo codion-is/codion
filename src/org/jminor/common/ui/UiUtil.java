@@ -313,7 +313,13 @@ public final class UiUtil {
     }
     final int option = fileChooser.showOpenDialog(dialogParent);
     if (option == JFileChooser.APPROVE_OPTION) {
-      final List<File> selectedFiles = Arrays.asList(fileChooser.getSelectedFiles());
+      final List<File> selectedFiles;
+      if (multiSelection) {
+        selectedFiles = Arrays.asList(fileChooser.getSelectedFiles());
+      }
+      else {
+        selectedFiles = Arrays.asList(fileChooser.getSelectedFile());
+      }
       if (!selectedFiles.isEmpty()) {
         return selectedFiles;
       }
