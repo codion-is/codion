@@ -168,19 +168,19 @@ public class EntityUtilTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void setPropertyNullBeanClass() {
+  public void setPropertyNullBeanClass() throws NoSuchMethodException {
     final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
     beanMapper.setProperty(null, "", "");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void setPropertyNullPropertyID() {
+  public void setPropertyNullPropertyID() throws NoSuchMethodException {
     final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
     beanMapper.setProperty(EmployeeBean.class, null, "");
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void setPropertyNullPropertyName() {
+  public void setPropertyNullPropertyName() throws NoSuchMethodException {
     final EntityUtil.EntityBeanMapper beanMapper = new EntityUtil.EntityBeanMapper();
     beanMapper.setProperty(EmployeeBean.class, "", null);
   }
@@ -397,7 +397,7 @@ public class EntityUtilTest {
     Configuration.clearValue(Configuration.ENTITY_SERIALIZER_CLASS);
   }
 
-  private EntityUtil.EntityBeanMapper createEmpDeptBeanMapper() {
+  private EntityUtil.EntityBeanMapper createEmpDeptBeanMapper() throws NoSuchMethodException {
     final EntityUtil.EntityBeanMapper beanMap = new EntityUtil.EntityBeanMapper();
     beanMap.setEntityID(DepartmentBean.class, EmpDept.T_DEPARTMENT);
     beanMap.setProperty(DepartmentBean.class, EmpDept.DEPARTMENT_ID, "deptNo");

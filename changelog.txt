@@ -3695,3 +3695,7 @@
   Unit test coverage improved
   UiUtil.selectFilesOrDirectories() added
   UiUtil.selectFilesOrDirectories() bug fixed
+  Util.getGetMethod() and getSetMethod() overloaded with Class parameter
+  Util.unwrapAndLog(), fixed possible heap pollution
+  DefaultRemoteEntityConnection, removed redundant throws clauses
+  EntityUtil.EntityBeanMapper improved, exceptions thrown earlier in case of invalid methods

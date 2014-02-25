@@ -412,7 +412,7 @@ public final class EntityUtil {
     private static final String PROPERTY_NAME_PARAM = "propertyName";
 
     private final Map<Class, String> entityIDMap = new HashMap<>();
-    private final Map<Class, Map<String, String>> propertyMap = new HashMap<>();
+    private final Map<Class, Map<String, GetterSetter>> propertyMap = new HashMap<>();
 
     /**
      * Associates the given bean class with the given entityID
@@ -456,23 +456,26 @@ public final class EntityUtil {
      * @param propertyID the propertyID of the entity property
      * @param propertyName the name of the bean property
      */
-    public final void setProperty(final Class beanClass, final String propertyID, final String propertyName) {
+    public final void setProperty(final Class beanClass, final String propertyID, final String propertyName) throws NoSuchMethodException {
       Util.rejectNullValue(beanClass, BEAN_CLASS_PARAM);
       Util.rejectNullValue(propertyID, PROPERTY_ID_PARAM);
       Util.rejectNullValue(propertyName, PROPERTY_NAME_PARAM);
-      Map<String, String> beanPropertyMap = propertyMap.get(beanClass);
+      Map<String, GetterSetter> beanPropertyMap = propertyMap.get(beanClass);
       if (beanPropertyMap == null) {
         beanPropertyMap = new HashMap<>();
         propertyMap.put(beanClass, beanPropertyMap);
       }
-      beanPropertyMap.put(propertyID, propertyName);
+      final Property property = Entities.getProperty(getEntityID(beanClass), propertyID);
+      final Method getter = Util.getGetMethod(property.getTypeClass(), propertyName, beanClass);
+      final Method setter = Util.getSetMethod(property.getTypeClass(), propertyName, beanClass);
+      beanPropertyMap.put(propertyID, new GetterSetter(getter, setter));
     }
 
     /**
      * @param beanClass the bean class
      * @return a Map mapping bean property names to propertyIDs for the given bean class
      */
-    public final Map<String, String> getPropertyMap(final Class beanClass) {
+    public final Map<String, GetterSetter> getPropertyMap(final Class beanClass) {
       Util.rejectNullValue(beanClass, BEAN_CLASS_PARAM);
       return propertyMap.get(beanClass);
     }
@@ -492,11 +495,10 @@ public final class EntityUtil {
       }
 
       final Entity entity = Entities.entity(getEntityID(bean.getClass()));
-      final Map<String, String> beanPropertyMap = getPropertyMap(bean.getClass());
-      for (final Map.Entry<String, String> propertyEntry : beanPropertyMap.entrySet()) {
+      final Map<String, GetterSetter> beanPropertyMap = getPropertyMap(bean.getClass());
+      for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = Entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
-        final Method getter = Util.getGetMethod(property.getTypeClass(), propertyEntry.getValue(), bean);
-        entity.setValue(property, getter.invoke(bean));
+        entity.setValue(property, propertyEntry.getValue().getter.invoke(bean));
       }
 
       return entity;
@@ -540,11 +542,10 @@ public final class EntityUtil {
 
       final Class<?> beanClass = getBeanClass(entity.getEntityID());
       final Object bean = beanClass.getConstructor().newInstance();
-      final Map<String, String> beanPropertyMap = getPropertyMap(beanClass);
-      for (final Map.Entry<String, String> propertyEntry : beanPropertyMap.entrySet()) {
+      final Map<String, GetterSetter> beanPropertyMap = getPropertyMap(beanClass);
+      for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = Entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
-        final Method setter = Util.getSetMethod(property.getTypeClass(), propertyEntry.getValue(), bean);
-        setter.invoke(bean, entity.getValue(property));
+        propertyEntry.getValue().setter.invoke(bean, entity.getValue(property));
       }
 
       return bean;
@@ -570,6 +571,16 @@ public final class EntityUtil {
       }
 
       return beans;
+    }
+
+    private static final class GetterSetter {
+      private final Method getter;
+      private final Method setter;
+
+      private GetterSetter(final Method getter, final Method setter) {
+        this.getter = getter;
+        this.setter = setter;
+      }
     }
   }
 }

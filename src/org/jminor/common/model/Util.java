@@ -1022,22 +1022,18 @@ public final class Util {
 
   public static Exception unwrapAndLog(final Exception exception, final Class<? extends Exception> wrappingExceptionClass,
                                        final Logger logger) {
-    return unwrapAndLog(exception, wrappingExceptionClass, logger, (Class<? extends Exception>[]) null);
+    return unwrapAndLog(exception, wrappingExceptionClass, logger, Collections.<Class<? extends Exception>>emptyList());
   }
 
   public static Exception unwrapAndLog(final Exception exception, final Class<? extends Exception> wrappingExceptionClass,
-                                       final Logger logger, final Class<? extends Exception>... dontLog) {
+                                       final Logger logger, final Collection<Class<? extends Exception>> dontLog) {
     if (exception.getCause() instanceof Exception) {//else we can't really unwrap it
       if (wrappingExceptionClass.equals(exception.getClass())) {
         return unwrapAndLog((Exception) exception.getCause(), wrappingExceptionClass, logger);
       }
 
-      if (dontLog != null) {
-        for (final Class<? extends Exception> noLog : dontLog) {
-          if (exception.getClass().equals(noLog)) {
-            return exception;
-          }
-        }
+      if (dontLog != null && dontLog.contains(exception.getClass())) {
+        return exception;
       }
     }
     if (logger != null) {
@@ -1048,51 +1044,75 @@ public final class Util {
   }
 
   /**
-   * @param valueClass the class of the value for the given bean property
+   * @param valueType the class of the value for the given bean property
    * @param property the name of the bean property for which to retrieve the set method
-   * @param valueOwner the bean object
+   * @param valueOwner a bean instance
    * @return the method used to set the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
-  public static Method getSetMethod(final Class valueClass, final String property, final Object valueOwner) throws NoSuchMethodException {
-    Util.rejectNullValue(valueClass, "valueClass");
-    Util.rejectNullValue(property, "property");
+  public static Method getSetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
     Util.rejectNullValue(valueOwner, "valueOwner");
-    if (property.length() == 0) {
-      throw new IllegalArgumentException("Property must be specified");
-    }
-    final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
-    return valueOwner.getClass().getMethod("set" + propertyName, valueClass);
+    return getSetMethod(valueType, property, valueOwner.getClass());
   }
 
   /**
-   * @param valueClass the class of the value for the given bean property
-   * @param property the name of the bean property for which to retrieve the get method
-   * @param valueOwner the bean object
-   * @return the method used to get the value of the linked property
+   * @param valueType the class of the value for the given bean property
+   * @param property the name of the bean property for which to retrieve the set method
+   * @param ownerClass the bean class
+   * @return the method used to set the value of the linked property
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
-  public static Method getGetMethod(final Class valueClass, final String property, final Object valueOwner) throws NoSuchMethodException {
-    Util.rejectNullValue(valueClass, "valueClass");
+  public static Method getSetMethod(final Class valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
+    Util.rejectNullValue(valueType, "valueType");
     Util.rejectNullValue(property, "property");
-    Util.rejectNullValue(valueOwner, "valueOwner");
+    Util.rejectNullValue(ownerClass, "ownerClass");
     if (property.length() == 0) {
       throw new IllegalArgumentException("Property must be specified");
     }
     final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
-    if (valueClass.equals(boolean.class) || valueClass.equals(Boolean.class)) {
+    return ownerClass.getMethod("set" + propertyName, valueType);
+  }
+
+  /**
+   * @param valueType the class of the value for the given bean property
+   * @param property the name of the bean property for which to retrieve the get method
+   * @param valueOwner a bean instance
+   * @return the method used to get the value of the linked property
+   * @throws NoSuchMethodException if the method does not exist in the owner class
+   */
+  public static Method getGetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
+    Util.rejectNullValue(valueOwner, "valueOwner");
+    return getGetMethod(valueType, property, valueOwner.getClass());
+  }
+
+  /**
+   * @param valueType the class of the value for the given bean property
+   * @param property the name of the bean property for which to retrieve the get method
+   * @param ownerClass the bean class
+   * @return the method used to get the value of the linked property
+   * @throws NoSuchMethodException if the method does not exist in the owner class
+   */
+  public static Method getGetMethod(final Class valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
+    Util.rejectNullValue(valueType, "valueType");
+    Util.rejectNullValue(property, "property");
+    Util.rejectNullValue(ownerClass, "ownerClass");
+    if (property.length() == 0) {
+      throw new IllegalArgumentException("Property must be specified");
+    }
+    final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
+    if (valueType.equals(boolean.class) || valueType.equals(Boolean.class)) {
       try {
-        return valueOwner.getClass().getMethod("is" + propertyName);
+        return ownerClass.getMethod("is" + propertyName);
       }
       catch (NoSuchMethodException ignored) {}
       try {
-        return valueOwner.getClass().getMethod(propertyName.substring(0, 1).toLowerCase()
+        return ownerClass.getMethod(propertyName.substring(0, 1).toLowerCase()
                 + propertyName.substring(1, propertyName.length()));
       }
       catch (NoSuchMethodException ignored) {}
     }
 
-    return valueOwner.getClass().getMethod("get" + propertyName);
+    return ownerClass.getMethod("get" + propertyName);
   }
 
   /**
