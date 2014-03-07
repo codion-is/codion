@@ -3699,3 +3699,4 @@
   Util.unwrapAndLog(), fixed possible heap pollution
   DefaultRemoteEntityConnection, removed redundant throws clauses
   EntityUtil.EntityBeanMapper improved, exceptions thrown earlier in case of invalid methods
+  EntityImpl, minor refactoring

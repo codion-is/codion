@@ -186,7 +186,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   public Object getValue(final Property property) {
     Util.rejectNullValue(property, PROPERTY_PARAM);
     if (property instanceof Property.DenormalizedViewProperty) {
-      return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
+      return getDenormalizedViewValue((Property.DenormalizedViewProperty) property, false);
     }
     if (property instanceof Property.DerivedProperty) {
       return getDerivedValue((Property.DerivedProperty) property);
@@ -286,9 +286,6 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   /** {@inheritDoc} */
   @Override
   public String getValueAsString(final Property property) {
-    if (property instanceof Property.DenormalizedViewProperty) {
-      return getDenormalizedViewValueFormatted((Property.DenormalizedViewProperty) property);
-    }
     if (property instanceof Property.ValueListProperty) {
       return ((Property.ValueListProperty) property).getCaption(getValue(property));
     }
@@ -318,6 +315,10 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   @Override
   public String getFormattedValue(final Property property) {
     Util.rejectNullValue(property, PROPERTY_PARAM);
+    if (property instanceof Property.DenormalizedViewProperty) {
+      return (String) getDenormalizedViewValue((Property.DenormalizedViewProperty) property, true);
+    }
+
     return getFormattedValue(property, property.getFormat());
   }
 
@@ -576,22 +577,17 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     }
   }
 
-  private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
+  private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty, final boolean formatted) {
     final Entity valueOwner = (Entity) getValue(denormalizedViewProperty.getForeignKeyPropertyID());
     if (valueOwner == null) {
       return null;
+    }
+
+    if (formatted) {
+      return valueOwner.getFormattedValue(denormalizedViewProperty.getDenormalizedProperty());
     }
 
     return valueOwner.getValue(denormalizedViewProperty.getDenormalizedProperty().getPropertyID());
-  }
-
-  private String getDenormalizedViewValueFormatted(final Property.DenormalizedViewProperty denormalizedViewProperty) {
-    final Entity valueOwner = (Entity) getValue(denormalizedViewProperty.getForeignKeyPropertyID());
-    if (valueOwner == null) {
-      return null;
-    }
-
-    return valueOwner.getFormattedValue(denormalizedViewProperty.getDenormalizedProperty());
   }
 
   private Key initializeReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
