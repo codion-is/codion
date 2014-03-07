@@ -184,7 +184,7 @@ public final class AbstractFilteredTableModelTest {
     tableModel.addTableDataChangedListener(listener);
     tableModel.refresh();
     assertEquals(1, events.size());
-    tableModel.getColumnModel().getFilterModel(0).setLikeValue("a");
+    tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("a");
     tableModel.removeItem("b");
     assertEquals(3, events.size());
     assertFalse(tableModel.contains("b", false));
@@ -627,8 +627,8 @@ public final class AbstractFilteredTableModelTest {
     tableModel.getSelectionModel().addSelectedIndexes(Arrays.asList(3));
     assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
 
-    tableModel.getColumnModel().getFilterModel(0).setLikeValue("d");
-    tableModel.getColumnModel().getFilterModel(0).setEnabled(false);
+    tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("d");
+    tableModel.getColumnModel().getColumnFilterModel(0).setEnabled(false);
 
     tableModel.getSelectionModel().setSelectedIndexes(Arrays.asList(3));
     assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
@@ -658,11 +658,11 @@ public final class AbstractFilteredTableModelTest {
     tableModel.getSelectionModel().addSelectedIndexes(Arrays.asList(3));
     assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
 
-    tableModel.getColumnModel().getFilterModel(0).setLikeValue("d");
+    tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("d");
     assertEquals("current index should fit", 0,
             tableModel.getSelectionModel().getMinSelectionIndex());
     assertEquals("selected indexes should fit", Arrays.asList(0), tableModel.getSelectionModel().getSelectedIndexes());
-    tableModel.getColumnModel().getFilterModel(0).setEnabled(false);
+    tableModel.getColumnModel().getColumnFilterModel(0).setEnabled(false);
     assertEquals("current index should fit", 0,
             tableModel.getSelectionModel().getMinSelectionIndex());
     assertEquals("selected item should fit", ITEMS[3], tableModel.getSelectionModel().getSelectedItem());
@@ -696,12 +696,12 @@ public final class AbstractFilteredTableModelTest {
     assertNotNull(tableModel.getFilterCriteria());
 
     //test filters
-    tableModel.getColumnModel().getFilterModel(0).setLikeValue("a");
+    tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("a");
     assertEquals(2, done.size());
     assertTrue(tableModel.isVisible("a"));
     assertFalse(tableModel.isVisible("b"));
     assertTrue(tableModel.isFiltered("d"));
-    assertTrue("filter should be enabled", tableModel.getColumnModel().getFilterModel(0).isEnabled());
+    assertTrue("filter should be enabled", tableModel.getColumnModel().getColumnFilterModel(0).isEnabled());
     assertEquals("4 entities should be filtered", 4, tableModel.getFilteredItemCount());
     assertFalse("Model should not contain all entities",
             tableModelContainsAll(ITEMS, false, tableModel));
@@ -712,24 +712,24 @@ public final class AbstractFilteredTableModelTest {
     assertTrue(tableModel.getFilteredItems().size() > 0);
     assertTrue(tableModel.getAllItems().size() > 0);
 
-    tableModel.getColumnModel().getFilterModel(0).setEnabled(false);
+    tableModel.getColumnModel().getColumnFilterModel(0).setEnabled(false);
     assertEquals(3, done.size());
-    assertFalse("filter should not be enabled", tableModel.getColumnModel().getFilterModel(0).isEnabled());
+    assertFalse("filter should not be enabled", tableModel.getColumnModel().getColumnFilterModel(0).isEnabled());
 
     assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));
 
-    tableModel.getColumnModel().getFilterModel(0).setLikeValue("t"); // ekki til
-    assertTrue("filter should be enabled", tableModel.getColumnModel().getFilterModel(0).isEnabled());
+    tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("t"); // ekki til
+    assertTrue("filter should be enabled", tableModel.getColumnModel().getColumnFilterModel(0).isEnabled());
     assertEquals("all 5 entities should be filtered", 5, tableModel.getFilteredItemCount());
     assertFalse("Model should not contain all entities",
             tableModelContainsAll(ITEMS, false, tableModel));
     assertTrue("Model should contain all entities, including filtered",
             tableModelContainsAll(ITEMS, true, tableModel));
-    tableModel.getColumnModel().getFilterModel(0).setEnabled(false);
+    tableModel.getColumnModel().getColumnFilterModel(0).setEnabled(false);
     assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));
-    assertFalse("filter should not be enabled", tableModel.getColumnModel().getFilterModel(0).isEnabled());
+    assertFalse("filter should not be enabled", tableModel.getColumnModel().getColumnFilterModel(0).isEnabled());
 
-    tableModel.getColumnModel().getFilterModel(0).setLikeValue("b");
+    tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("b");
     final int rowCount = tableModel.getRowCount();
     tableModel.addItems(Arrays.asList("x"), true);
     assertEquals(rowCount, tableModel.getRowCount());

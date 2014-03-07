@@ -501,6 +501,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final void update(final List<Entity> entities) throws ValidationException, DatabaseException {
+    Util.rejectNullValue(entities, "entities");
     if (!isUpdateAllowed()) {
       throw new IllegalStateException("Updating is not allowed via this table model");
     }

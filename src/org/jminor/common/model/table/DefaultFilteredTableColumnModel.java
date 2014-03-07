@@ -165,7 +165,7 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
 
   /** {@inheritDoc} */
   @Override
-  public final ColumnSearchModel<C> getFilterModel(final C columnIdentifier) {
+  public final ColumnSearchModel<C> getColumnFilterModel(final C columnIdentifier) {
     return columnFilterModels.get(columnIdentifier);
   }
 

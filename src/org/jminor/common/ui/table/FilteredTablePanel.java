@@ -119,7 +119,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
       @Override
       public ColumnSearchPanel<C> createColumnSearchPanel(final TableColumn column) {
         //noinspection unchecked
-        return new ColumnSearchPanel<>(tableModel.getColumnModel().getFilterModel((C) column.getIdentifier()), true, true);
+        return new ColumnSearchPanel<>(tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier()), true, true);
       }
     });
   }
@@ -462,7 +462,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
       }
     });
     for (final TableColumn column : tableModel.getColumnModel().getAllColumns()) {
-      final ColumnSearchModel model = tableModel.getColumnModel().getFilterModel((C) column.getIdentifier());
+      final ColumnSearchModel model = tableModel.getColumnModel().getColumnFilterModel((C) column.getIdentifier());
       if (model != null) {
         model.addSearchStateListener(new EventListener() {
           @Override

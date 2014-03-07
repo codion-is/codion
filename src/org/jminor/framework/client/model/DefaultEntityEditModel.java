@@ -636,7 +636,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property) {
     Util.rejectNullValue(property, PROPERTY);
-    final FilteredComboBoxModel model = new DefaultPropertyComboBoxModel(entityID, connectionProvider, property, null, entitiesChangedEvent);
+    final FilteredComboBoxModel<Object> model = new DefaultPropertyComboBoxModel<>(entityID, connectionProvider, property, null, entitiesChangedEvent);
     model.setNullValue(getValidator().isNullable(getEntity(), property.getPropertyID()) ?
             (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM) : null);
     model.refresh();
@@ -860,6 +860,13 @@ public class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
+   * @return the actual {@link Entity} instance being edited
+   */
+  protected final Entity getEntity() {
+    return entity;
+  }
+
+  /**
    * Inserts the given entities into the database
    * @param entities the entities to insert
    * @return a list containing the primary keys of the inserted entities
@@ -889,13 +896,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * @return the actual {@link Entity} instance being edited
-   */
-  protected final Entity getEntity() {
-    return entity;
-  }
-
-  /**
    * Provides a hook into the value setting mechanism, override to
    * translate or otherwise manipulate the value being set
    * @param propertyID the propertyID
@@ -921,7 +921,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Validates the given entity using the internal validator
+   * Validates the given entity.
+   * By default the internal validator is used.
    * @param entity the entity to validate
    * @throws ValidationException
    * @see #getValidator()

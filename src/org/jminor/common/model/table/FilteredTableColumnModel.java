@@ -69,7 +69,7 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
    * @param columnIdentifier the column identifier
    * @return the SearchModel at the given column index
    */
-  ColumnSearchModel<C> getFilterModel(final C columnIdentifier);
+  ColumnSearchModel<C> getColumnFilterModel(final C columnIdentifier);
 
   /**
    * @return the ColumnFilterModel instances
