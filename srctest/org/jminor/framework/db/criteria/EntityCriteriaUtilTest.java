@@ -89,11 +89,11 @@ public class EntityCriteriaUtilTest {
     department2.setValue(EmpDept.DEPARTMENT_ID, 11);
     criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department, department2);
-    assertEquals("deptno in (?, ?)", criteria.getWhereClause());
+    assertEquals("(deptno in (?, ?))", criteria.getWhereClause());
 
     criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
             EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.NOT_LIKE, department, department2);
-    assertEquals("deptno not in (?, ?)", criteria.getWhereClause());
+    assertEquals("(deptno not in (?, ?))", criteria.getWhereClause());
   }
 
   @Test

@@ -782,9 +782,9 @@ public final class EntityCriteriaUtil {
 
       switch(searchType) {
         case LIKE:
-          return getLikeCondition(columnIdentifier, sqlValue);
+          return getLikeCondition(columnIdentifier, sqlValue, false);
         case NOT_LIKE:
-          return getNotLikeCondition(columnIdentifier, sqlValue);
+          return getLikeCondition(columnIdentifier, sqlValue, true);
         case LESS_THAN:
           return columnIdentifier + " <= " + sqlValue;
         case GREATER_THAN:
@@ -802,38 +802,35 @@ public final class EntityCriteriaUtil {
       return property.isString() && !caseSensitive ? "upper(" + sqlStringValue + ")" : sqlStringValue;
     }
 
-    private String getNotLikeCondition(final String columnIdentifier, final String likeValue) {
-      return getValueCount() > 1 ? getInList(true) :
-              columnIdentifier + (property.isString() ? " not like "  + likeValue: " <> " + likeValue);
+    private String getLikeCondition(final String columnIdentifier, final String value, final boolean not) {
+      if (getValueCount() > 1) {
+        return getInList(columnIdentifier, value, getValueCount(), not);
+      }
+
+      if (property.isString()) {
+        return columnIdentifier + (not ? " not like " : " like ") + value;
+      }
+      else {
+        return columnIdentifier + (not ? " <> " : " = ") + value;
+      }
     }
 
-    private String getInList(final boolean notIn) {
-      final boolean isStringProperty = property.isString();
-      final StringBuilder stringBuilder = new StringBuilder("(").append(initializeColumnIdentifier(isStringProperty)).append((notIn ? " not in (" : IN_PREFIX));
+    private static String getInList(final String columnIdentifier, final String value, final int valueCount, final boolean not) {
+      final StringBuilder stringBuilder = new StringBuilder("(").append(columnIdentifier).append((not ? " not in (" : IN_PREFIX));
       int cnt = 1;
-      for (int i = 0; i < getValueCount(); i++) {
-        if (isStringProperty && !caseSensitive) {
-          stringBuilder.append("upper(?)");
-        }
-        else {
-          stringBuilder.append("?");
-        }
-        if (cnt++ == IN_CLAUSE_LIMIT && i < getValueCount() - 1) {
-          stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(IN_PREFIX);
+      for (int i = 0; i < valueCount; i++) {
+        stringBuilder.append(value);
+        if (cnt++ == IN_CLAUSE_LIMIT && i < valueCount - 1) {
+          stringBuilder.append(not ? ") and " : ") or ").append(columnIdentifier).append(IN_PREFIX);
           cnt = 1;
         }
-        else if (i < getValueCount() - 1) {
+        else if (i < valueCount - 1) {
           stringBuilder.append(", ");
         }
       }
       stringBuilder.append("))");
 
       return stringBuilder.toString();
-    }
-
-    private String getLikeCondition(final String columnIdentifier, final String likeValue) {
-      return getValueCount() > 1 ? getInList(false) : columnIdentifier +
-              (property.isString() ? " like " + likeValue : " = " + likeValue);
     }
 
     private String initializeColumnIdentifier(final boolean isStringProperty) {
@@ -971,7 +968,8 @@ public final class EntityCriteriaUtil {
         return createMultipleCompositeForeignKeyCriteria().getWhereClause();
       }
       else {
-        return getInList(property.getReferenceProperties().get(0), searchType == SearchType.NOT_LIKE);
+        return PropertyCriteria.getInList(property.getReferenceProperties().get(0).getColumnName(), "?",
+                getValues().size(), searchType == SearchType.NOT_LIKE);
       }
     }
 
@@ -1019,24 +1017,6 @@ public final class EntityCriteriaUtil {
       else {
         return new PropertyCriteria(foreignKeyProperty.getReferenceProperties().get(0), searchType, entityKey == null ? null : entityKey.getFirstKeyValue());
       }
-    }
-
-    private String getInList(final Property.ColumnProperty property, final boolean notIn) {
-      final StringBuilder stringBuilder = new StringBuilder(property.getColumnName()).append((notIn ? " not in (" : IN_PREFIX));
-      int cnt = 1;
-      for (int i = 0; i < getValues().size(); i++) {
-        stringBuilder.append("?");
-        if (cnt++ == IN_CLAUSE_LIMIT && i < getValues().size() - 1) {
-          stringBuilder.append(notIn ? ") and " : ") or ").append(property.getColumnName()).append(IN_PREFIX);
-          cnt = 1;
-        }
-        else if (i < getValues().size() - 1) {
-          stringBuilder.append(", ");
-        }
-      }
-      stringBuilder.append(")");
-
-      return stringBuilder.toString();
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
