@@ -569,6 +569,19 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
+  public final void refreshEntity() {
+    try {
+      if (!isEntityNew()) {
+        setEntity(getConnectionProvider().getConnection().selectSingle(getEntity().getPrimaryKey()));
+      }
+    }
+    catch (DatabaseException e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void clear() {
     clearComboBoxModels();
   }

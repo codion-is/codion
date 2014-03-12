@@ -3701,3 +3701,4 @@
   EntityUtil.EntityBeanMapper improved, exceptions thrown earlier in case of invalid methods
   EntityImpl, minor refactoring
   FilteredTableColumnModel.getFilterModel() renamed to getColumnFilterModel()
+  EntityEditModel.refreshEntity() added, tested

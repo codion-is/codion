@@ -14,6 +14,7 @@ import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.DefaultEntityConnectionTest;
+import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -127,6 +128,24 @@ public final class DefaultEntityEditModelTest {
     final EntityLookupModel model = employeeEditModel.createEntityLookupModel(Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertNotNull(model);
     assertEquals(EmpDept.T_DEPARTMENT, model.getEntityID());
+  }
+
+  @Test
+  public void refreshEntity() throws DatabaseException {
+    final EntityConnection connection = employeeEditModel.getConnectionProvider().getConnection();
+    try {
+      connection.beginTransaction();
+      final Entity employee = connection.selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
+      employeeEditModel.refreshEntity();
+      employeeEditModel.setEntity(employee);
+      employee.setValue(EmpDept.EMPLOYEE_NAME, "NOONE");
+      connection.update(Arrays.asList(employee));
+      employeeEditModel.refreshEntity();
+      assertEquals("NOONE", employeeEditModel.getValue(EmpDept.EMPLOYEE_NAME));
+    }
+    finally {
+      connection.rollbackTransaction();
+    }
   }
 
   @Test

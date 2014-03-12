@@ -38,6 +38,12 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   void setEntity(final Entity entity);
 
   /**
+   * Refreshes the active Entity from the database, discarding all changes.
+   * If the active Entity is new then calling this method has no effect.
+   */
+  void refreshEntity();
+
+  /**
    * @return a deep copy of the active entity
    * @see org.jminor.framework.domain.Entity#getCopy()
    */
