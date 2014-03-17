@@ -62,7 +62,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    */
   private final EntityConnectionProvider connectionProvider;
 
-  private Criteria additionalLookupCriteria;
+  private Criteria<Property.ColumnProperty> additionalLookupCriteria;
   private String searchString = "";
   private boolean multipleSelectionAllowed = true;
   private boolean caseSensitive = false;
@@ -236,7 +236,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public final EntityLookupModel setAdditionalLookupCriteria(final Criteria additionalLookupCriteria) {
+  public final EntityLookupModel setAdditionalLookupCriteria(final Criteria<Property.ColumnProperty> additionalLookupCriteria) {
     this.additionalLookupCriteria = additionalLookupCriteria;
     return this;
   }

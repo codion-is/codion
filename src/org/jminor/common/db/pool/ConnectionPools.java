@@ -50,10 +50,9 @@ public final class ConnectionPools {
    * Instantiates a new ConnectionPool and associates it with the given user
    * @param connectionProvider the connection provider
    * @return a new connection pool
-   * @throws ClassNotFoundException in case the jdbc class is not found when constructing the initial connections
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
-  public static synchronized ConnectionPool createDefaultConnectionPool(final DatabaseConnectionProvider connectionProvider) throws ClassNotFoundException, DatabaseException {
+  public static synchronized ConnectionPool createDefaultConnectionPool(final DatabaseConnectionProvider connectionProvider) throws DatabaseException {
     final ConnectionPool connectionPool = new DefaultConnectionPool(connectionProvider);
     CONNECTION_POOLS.put(connectionProvider.getUser(), connectionPool);
 
@@ -106,7 +105,7 @@ public final class ConnectionPools {
   private static ConnectionPoolProvider initializeConnectionPoolProvider(final Database database, final User user) throws ClassNotFoundException {
     final String connectionPoolProviderClassName = Configuration.getStringValue(Configuration.SERVER_CONNECTION_POOL_PROVIDER_CLASS);
     if (!Util.nullOrEmpty(connectionPoolProviderClassName)) {
-      final Class providerClass = Class.forName(connectionPoolProviderClassName);
+      final Class<?> providerClass = Class.forName(connectionPoolProviderClassName);
       try {
         return (ConnectionPoolProvider) providerClass.getConstructor().newInstance();
       }

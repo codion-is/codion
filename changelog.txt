@@ -3703,3 +3703,4 @@
   FilteredTableColumnModel.getFilterModel() renamed to getColumnFilterModel()
   EntityEditModel.refreshEntity() added, tested
   EntityCriteriaUtil, some refactoring of getConditionString()
+  Code cleanup

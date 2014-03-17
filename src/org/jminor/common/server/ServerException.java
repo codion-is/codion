@@ -10,10 +10,6 @@ import org.jminor.common.i18n.Messages;
  */
 public class ServerException extends Exception {
 
-  private ServerException() {
-    super();
-  }
-
   private ServerException(final String message) {
     super(message);
   }

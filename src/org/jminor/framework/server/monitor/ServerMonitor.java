@@ -34,9 +34,9 @@ public final class ServerMonitor {
   private static final double THOUSAND = 1000d;
 
   private final Event serverShutDownEvent = Events.event();
-  private final Event statisticsUpdatedEvent = Events.event();
+  private final Event<String> statisticsUpdatedEvent = Events.event();
   private final Event<Integer> warningThresholdChangedEvent = Events.event();
-  private final Event loggingLevelChangedEvent = Events.event();
+  private final Event<Level> loggingLevelChangedEvent = Events.event();
   private final Event<Integer> connectionLimitChangedEvent = Events.event();
 
   private final String hostName;
@@ -146,7 +146,7 @@ public final class ServerMonitor {
 
   public void setLoggingLevel(final Level level) throws RemoteException {
     server.setLoggingLevel(level);
-    loggingLevelChangedEvent.fire();
+    loggingLevelChangedEvent.fire(level);
   }
 
   public XYSeriesCollection getConnectionRequestsDataset() {
@@ -220,7 +220,7 @@ public final class ServerMonitor {
     return statisticsUpdatedEvent.getObserver();
   }
 
-  public EventObserver getLoggingLevelObserver() {
+  public EventObserver<Level> getLoggingLevelObserver() {
     return loggingLevelChangedEvent.getObserver();
   }
 

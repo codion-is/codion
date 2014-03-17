@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.server.monitor;
 
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
@@ -247,7 +246,7 @@ public final class PoolMonitor {
     public void returnConnection(final Connection connection) {}
 
     @Override
-    public Connection getConnection() throws DatabaseException {return null;}
+    public Connection getConnection() {return null;}
 
     @Override
     public void close() {}

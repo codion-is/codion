@@ -39,7 +39,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   private final ClientUserMonitor model;
 
   private final ClientMonitorPanel clientTypeMonitorPanel = new ClientMonitorPanel();
-  private JComboBox cmbMaintenance;
+  private JComboBox<Integer> cmbMaintenance;
 
   /**
    * Instantiates a new ClientUserMonitorPanel
@@ -59,7 +59,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private void initializeUI() throws RemoteException {
-    final JList clientTypeList = new JList(model.getClientTypeListModel());
+    final JList clientTypeList = new JList<>(model.getClientTypeListModel());
 
     clientTypeList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     clientTypeList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -69,7 +69,7 @@ public final class ClientUserMonitorPanel extends JPanel {
       }
     });
 
-    final JList userList = new JList(model.getUserListModel());
+    final JList userList = new JList<>(model.getUserListModel());
 
     userList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     userList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
@@ -124,7 +124,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private JComponent initializeMaintenanceIntervalComponent() throws RemoteException {
-    cmbMaintenance = new JComboBox(new Integer[] {1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,120,180,340,6000,10000});
+    cmbMaintenance = new JComboBox<>(new Integer[] {1,2,3,4,5,6,7,8,9,10,20,30,40,50,60,120,180,340,6000,10000});
     cmbMaintenance.setSelectedItem(model.getMaintenanceInterval());
     cmbMaintenance.addItemListener(new ItemListener() {
       @Override

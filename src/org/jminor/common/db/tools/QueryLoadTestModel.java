@@ -40,10 +40,9 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
    * @param database the database
    * @param user the user
    * @param scenarios the query scenarios
-   * @throws ClassNotFoundException in case the jdbc class is not found when constructing the initial connections
    * @throws DatabaseException in case of an exception while constructing the initial connections
    */
-  public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) throws ClassNotFoundException, DatabaseException {
+  public QueryLoadTestModel(final Database database, final User user, final Collection<? extends QueryScenario> scenarios) throws DatabaseException {
     super(user, scenarios, DEFAULT_MAXIMUM_THINK_TIME_MS, DEFAULT_LOGIN_DELAY_MS, DEFAULT_BATCH_SIZE, DEFAULT_QUERY_WARNING_TIME_MS);
     this.pool = ConnectionPools.createDefaultConnectionPool(DatabaseConnections.connectionProvider(database, user));
     addExitListener(new EventListener() {

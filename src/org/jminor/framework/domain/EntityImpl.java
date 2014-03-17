@@ -761,7 +761,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
       return value;
     }
 
-    final Class type = property.getTypeClass();
+    final Class<?> type = property.getTypeClass();
     if (!type.equals(value.getClass()) && !type.isAssignableFrom(value.getClass())) {
       throw new IllegalArgumentException("Value of type " + type + " expected for property " + property + ", got: " + value.getClass());
     }

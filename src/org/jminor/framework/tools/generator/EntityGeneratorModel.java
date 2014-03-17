@@ -64,10 +64,9 @@ public final class EntityGeneratorModel {
    * Instantiates a new EntityGeneratorModel.
    * @param user the user
    * @param schema the schema name
-   * @throws ClassNotFoundException in case the JDBC driver class was not found on the classpath
    * @throws DatabaseException in case of an exception while connecting to the database
    */
-  public EntityGeneratorModel(final User user, final String schema) throws ClassNotFoundException, DatabaseException {
+  public EntityGeneratorModel(final User user, final String schema) throws DatabaseException {
     this(Databases.createInstance(), user, schema);
   }
 
@@ -201,13 +200,9 @@ public final class EntityGeneratorModel {
     catch (BadLocationException e) {
       throw new RuntimeException(e);
     }
-    catch (SQLException e) {
-      LOG.error(e.getMessage(), e);
-      throw new RuntimeException(e);
-    }
   }
 
-  private String getPropertyConstants(final Table table) throws SQLException {
+  private String getPropertyConstants(final Table table) {
     final StringBuilder builder = new StringBuilder();
     appendPropertyConstants(builder, table);
 

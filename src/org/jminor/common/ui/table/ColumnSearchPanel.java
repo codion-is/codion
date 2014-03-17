@@ -5,6 +5,7 @@ package org.jminor.common.ui.table;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
@@ -445,8 +446,8 @@ public class ColumnSearchPanel<K> extends JPanel {
         comboBoxModel.addItem(new Item<>(type, type.getCaption()));
       }
     }
-    final JComboBox<SearchType> comboBox = new SteppedComboBox(comboBoxModel);
-    ValueLinks.selectedItemValueLink(comboBox, searchModel, "searchType", SearchType.class, searchModel.getSearchTypeObserver());
+    final JComboBox<Item> comboBox = new SteppedComboBox(comboBoxModel);
+    ValueLinks.selectedItemValueLink(comboBox, searchModel, "searchType", Item.class, (EventObserver) searchModel.getSearchTypeObserver());
     comboBox.setRenderer(new DefaultListCellRenderer() {
       @Override
       public Component getListCellRendererComponent(final JList list, final Object value, final int index,

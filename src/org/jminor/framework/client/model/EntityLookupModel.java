@@ -163,7 +163,7 @@ public interface EntityLookupModel extends EntityDataProvider {
    * @param additionalLookupCriteria the additional lookup criteria
    * @return this EntityLookupModel instance
    */
-  EntityLookupModel setAdditionalLookupCriteria(final Criteria additionalLookupCriteria);
+  EntityLookupModel setAdditionalLookupCriteria(final Criteria<Property.ColumnProperty> additionalLookupCriteria);
 
   /**
    * @param listener a listener to be notified each time the selected entities are changed

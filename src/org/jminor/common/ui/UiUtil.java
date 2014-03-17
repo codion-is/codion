@@ -415,7 +415,7 @@ public final class UiUtil {
       cal.set(Calendar.SECOND, 0);
       cal.set(Calendar.MILLISECOND, 0);
 
-      final Class jCalendarClass = Class.forName(jCalendarClassName);
+      final Class<?> jCalendarClass = Class.forName(jCalendarClassName);
       final Method getCalendar = jCalendarClass.getMethod("getCalendar");
       final Constructor constructor = jCalendarClass.getConstructor(Calendar.class);
       final JPanel calendarPanel = (JPanel) constructor.newInstance(cal);

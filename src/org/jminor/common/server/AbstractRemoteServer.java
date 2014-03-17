@@ -119,7 +119,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
 
   /** {@inheritDoc} */
   @Override
-  public final boolean connectionsAvailable() throws RemoteException {
+  public final boolean connectionsAvailable() {
     return !maximumNumberOfConnectionReached();
   }
 

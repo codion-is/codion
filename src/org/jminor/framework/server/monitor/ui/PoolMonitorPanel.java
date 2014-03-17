@@ -12,7 +12,6 @@ import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
-import java.rmi.RemoteException;
 
 /**
  * A PoolMonitorPanel
@@ -24,9 +23,8 @@ public final class PoolMonitorPanel extends JPanel {
   /**
    * Instantiates a new PoolMonitorPanel
    * @param model the PoolMonitor to base this panel on
-   * @throws RemoteException in case of an exception
    */
-  public PoolMonitorPanel(final PoolMonitor model) throws RemoteException {
+  public PoolMonitorPanel(final PoolMonitor model) {
     this.model = model;
     initializeUI();
   }
@@ -38,7 +36,7 @@ public final class PoolMonitorPanel extends JPanel {
     }
   }
 
-  private void initializeUI() throws RemoteException {
+  private void initializeUI() {
     setLayout(new BorderLayout());
     final JTabbedPane connectionPoolPane = new JTabbedPane();
     connectionPoolPane.setUI(UiUtil.getBorderlessTabbedPaneUI());

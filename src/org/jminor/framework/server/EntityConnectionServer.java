@@ -115,7 +115,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
 
   /** {@inheritDoc} */
   @Override
-  public int getServerLoad() throws RemoteException {
+  public int getServerLoad() {
     return DefaultRemoteEntityConnection.getRequestsPerSecond();
   }
 
@@ -159,9 +159,8 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
 
   /**
    * @return info on all connected clients
-   * @throws RemoteException in case of an exception
    */
-  Collection<ClientInfo> getClients() throws RemoteException {
+  Collection<ClientInfo> getClients() {
     final Collection<ClientInfo> clients = new ArrayList<>();
     for (final RemoteEntityConnection connection : getConnections().values()) {
       clients.add(((DefaultRemoteEntityConnection) connection).getClientInfo());
@@ -189,9 +188,8 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   /**
    * @param clientTypeID the client type ID
    * @return all clients of the given type
-   * @throws RemoteException in case of an exception
    */
-  Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException {
+  Collection<ClientInfo> getClients(final String clientTypeID) {
     final Collection<ClientInfo> clients = new ArrayList<>();
     for (final RemoteEntityConnection connection : getConnections().values()) {
       if (((DefaultRemoteEntityConnection) connection).getClientInfo().getClientTypeID().equals(clientTypeID)) {
@@ -413,7 +411,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
       for (final String loginProxyClassName : loginProxyClassNames) {
         final String message = "Server loading login proxy class '" + loginProxyClassName + "' from classpath";
         LOG.info(message);
-        final Class loginProxyClass = Class.forName(loginProxyClassName);
+        final Class<?> loginProxyClass = Class.forName(loginProxyClassName);
         try {
           final LoginProxy proxy = (LoginProxy) loginProxyClass.getConstructor().newInstance();
           setLoginProxy(proxy.getClientTypeID(), proxy);

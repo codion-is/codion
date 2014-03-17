@@ -31,7 +31,7 @@ public final class ClientMonitorPanel extends JPanel {
 
   private ClientMonitor model;
   private final ClientInstanceMonitorPanel clientInstancePanel;
-  private final JList clientInstanceList = new JList();
+  private final JList<ClientInstanceMonitor> clientInstanceList = new JList<>();
 
   /**
    * Instantiates a new ClientMonitorPanel
@@ -62,7 +62,7 @@ public final class ClientMonitorPanel extends JPanel {
       @Override
       public void valueChanged(final ListSelectionEvent e) {
         try {
-          final ClientInstanceMonitor clientMonitor = (ClientInstanceMonitor) clientInstanceList.getSelectedValue();
+          final ClientInstanceMonitor clientMonitor = clientInstanceList.getSelectedValue();
           if (clientMonitor != null) {
             clientInstancePanel.setModel(clientMonitor);
             repaint();
@@ -94,7 +94,7 @@ public final class ClientMonitorPanel extends JPanel {
     controls.add(new AbstractAction("Disconnect") {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        final ClientInstanceMonitor clientMonitor = (ClientInstanceMonitor) clientInstanceList.getSelectedValue();
+        final ClientInstanceMonitor clientMonitor = clientInstanceList.getSelectedValue();
         if (clientMonitor != null) {
           try {
             clientMonitor.disconnect();

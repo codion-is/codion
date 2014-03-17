@@ -98,7 +98,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public int getServerPort() throws RemoteException {
+  public int getServerPort() {
     return server.getServerPort();
   }
 
@@ -122,7 +122,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public Level getLoggingLevel() throws RemoteException {
+  public Level getLoggingLevel() {
     final ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
 
     return rootLogger.getLevel();
@@ -130,7 +130,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public void setLoggingLevel(final Level level) throws RemoteException {
+  public void setLoggingLevel(final Level level) {
     LOG.info("setLoggingLevel({})", level);
     final ch.qos.logback.classic.Logger rootLogger = (ch.qos.logback.classic.Logger) LoggerFactory.getLogger(Logger.ROOT_LOGGER_NAME);
     rootLogger.setLevel(level);
@@ -150,19 +150,19 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public Collection<ClientInfo> getClients(final String clientTypeID) throws RemoteException {
+  public Collection<ClientInfo> getClients(final String clientTypeID) {
     return server.getClients(clientTypeID);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Collection<ClientInfo> getClients() throws RemoteException {
+  public Collection<ClientInfo> getClients() {
     return server.getClients();
   }
 
   /** {@inheritDoc} */
   @Override
-  public Collection<String> getClientTypes() throws RemoteException {
+  public Collection<String> getClientTypes() {
     final Set<String> clientTypes = new HashSet<>();
     for (final ClientInfo client : getClients()) {
       clientTypes.add(client.getClientTypeID());
@@ -204,7 +204,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public int getActiveConnectionCount() throws RemoteException {
+  public int getActiveConnectionCount() {
     return DefaultRemoteEntityConnection.getActiveCount();
   }
 
@@ -230,64 +230,64 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public void resetConnectionPoolStatistics(final User user) throws RemoteException {
+  public void resetConnectionPoolStatistics(final User user) {
     LOG.info("resetConnectionPoolStatistics({})", user);
     ConnectionPools.getConnectionPool(user).resetStatistics();
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean isCollectFineGrainedPoolStatistics(final User user) throws RemoteException {
+  public boolean isCollectFineGrainedPoolStatistics(final User user) {
     return ConnectionPools.getConnectionPool(user).isCollectFineGrainedStatistics();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setCollectFineGrainedPoolStatistics(final User user, final boolean value) throws RemoteException {
+  public void setCollectFineGrainedPoolStatistics(final User user, final boolean value) {
     LOG.info("setCollectFineGrainedPoolStatistics({}, {})", user, value);
     ConnectionPools.getConnectionPool(user).setCollectFineGrainedStatistics(value);
   }
 
   /** {@inheritDoc} */
   @Override
-  public int getRequestsPerSecond() throws RemoteException {
+  public int getRequestsPerSecond() {
     return DefaultRemoteEntityConnection.getRequestsPerSecond();
   }
 
   /** {@inheritDoc} */
   @Override
-  public int getWarningTimeThreshold() throws RemoteException {
+  public int getWarningTimeThreshold() {
     return DefaultRemoteEntityConnection.getWarningThreshold();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setWarningTimeThreshold(final int threshold) throws RemoteException {
+  public void setWarningTimeThreshold(final int threshold) {
     LOG.info("setWarningThreshold({})", threshold);
     DefaultRemoteEntityConnection.setWarningThreshold(threshold);
   }
 
   /** {@inheritDoc} */
   @Override
-  public int getWarningTimeExceededPerSecond() throws RemoteException {
+  public int getWarningTimeExceededPerSecond() {
     return DefaultRemoteEntityConnection.getWarningTimeExceededPerSecond();
   }
 
   /** {@inheritDoc} */
   @Override
-  public ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) throws RemoteException {
+  public ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) {
     return ConnectionPools.getConnectionPool(user).getStatistics(since);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Database.Statistics getDatabaseStatistics() throws RemoteException {
+  public Database.Statistics getDatabaseStatistics() {
     return DatabaseUtil.getDatabaseStatistics();
   }
 
   /** {@inheritDoc} */
   @Override
-  public List<User> getConnectionPools() throws RemoteException {
+  public List<User> getConnectionPools() {
     final List<User> poolUsers = new ArrayList<>();
     for (final ConnectionPool pool : ConnectionPools.getConnectionPools()) {
       poolUsers.add(pool.getUser());
@@ -298,122 +298,122 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public int getConnectionPoolCleanupInterval(final User user) throws RemoteException {
+  public int getConnectionPoolCleanupInterval(final User user) {
     return ConnectionPools.getConnectionPool(user).getCleanupInterval();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) throws RemoteException {
+  public void setConnectionPoolCleanupInterval(final User user, final int poolCleanupInterval) {
     LOG.info("setConnectionPoolCleanupInterval({}, {})", user, poolCleanupInterval);
     ConnectionPools.getConnectionPool(user).setCleanupInterval(poolCleanupInterval);
   }
 
   /** {@inheritDoc} */
   @Override
-  public int getMaximumConnectionPoolSize(final User user) throws RemoteException {
+  public int getMaximumConnectionPoolSize(final User user) {
     return ConnectionPools.getConnectionPool(user).getMaximumPoolSize();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setMaximumConnectionPoolSize(final User user, final int value) throws RemoteException {
+  public void setMaximumConnectionPoolSize(final User user, final int value) {
     LOG.info("setMaximumConnectionPoolSize({}, {})", user, value);
     ConnectionPools.getConnectionPool(user).setMaximumPoolSize(value);
   }
 
   /** {@inheritDoc} */
   @Override
-  public int getMinimumConnectionPoolSize(final User user) throws RemoteException {
+  public int getMinimumConnectionPoolSize(final User user) {
     return ConnectionPools.getConnectionPool(user).getMinimumPoolSize();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setMinimumConnectionPoolSize(final User user, final int value) throws RemoteException {
+  public void setMinimumConnectionPoolSize(final User user, final int value) {
     LOG.info("setMinimumConnectionPoolSize({}, {})", user, value);
     ConnectionPools.getConnectionPool(user).setMinimumPoolSize(value);
   }
 
   /** {@inheritDoc} */
   @Override
-  public int getPoolConnectionThreshold(final User user) throws RemoteException {
+  public int getPoolConnectionThreshold(final User user) {
     return ConnectionPools.getConnectionPool(user).getNewConnectionThreshold();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setPoolConnectionThreshold(final User user, final int value) throws RemoteException {
+  public void setPoolConnectionThreshold(final User user, final int value) {
     LOG.info("setPoolConnectionThreshold({}, {})", user, value);
     ConnectionPools.getConnectionPool(user).setNewConnectionThreshold(value);
   }
 
   /** {@inheritDoc} */
   @Override
-  public int getPooledConnectionTimeout(final User user) throws RemoteException {
+  public int getPooledConnectionTimeout(final User user) {
     return ConnectionPools.getConnectionPool(user).getConnectionTimeout();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setPooledConnectionTimeout(final User user, final int timeout) throws RemoteException {
+  public void setPooledConnectionTimeout(final User user, final int timeout) {
     LOG.info("setPooledConnectionTimeout({}, {})", user, timeout);
     ConnectionPools.getConnectionPool(user).setConnectionTimeout(timeout);
   }
 
   /** {@inheritDoc} */
   @Override
-  public int getMaximumPoolRetryWaitPeriod(final User user) throws RemoteException {
+  public int getMaximumPoolRetryWaitPeriod(final User user) {
     return ConnectionPools.getConnectionPool(user).getMaximumRetryWaitPeriod();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setMaximumPoolRetryWaitPeriod(final User user, final int value) throws RemoteException {
+  public void setMaximumPoolRetryWaitPeriod(final User user, final int value) {
     LOG.info("setMaximumPoolRetryWaitPeriod({}, {})", user, value);
     ConnectionPools.getConnectionPool(user).setMaximumRetryWaitPeriod(value);
   }
 
   /** {@inheritDoc} */
   @Override
-  public int getMaximumPoolCheckOutTime(final User user) throws RemoteException {
+  public int getMaximumPoolCheckOutTime(final User user) {
     return ConnectionPools.getConnectionPool(user).getMaximumCheckOutTime();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setMaximumPoolCheckOutTime(final User user, final int value) throws RemoteException {
+  public void setMaximumPoolCheckOutTime(final User user, final int value) {
     LOG.info("setMaximumPoolCheckOutTime({}, {})", user, value);
     ConnectionPools.getConnectionPool(user).setMaximumCheckOutTime(value);
   }
 
   /** {@inheritDoc} */
   @Override
-  public String getMemoryUsage() throws RemoteException {
+  public String getMemoryUsage() {
     return Util.getMemoryUsageString();
   }
 
   /** {@inheritDoc} */
   @Override
-  public long getAllocatedMemory() throws RemoteException {
+  public long getAllocatedMemory() {
     return Util.getAllocatedMemory();
   }
 
   /** {@inheritDoc} */
   @Override
-  public long getUsedMemory() throws RemoteException {
+  public long getUsedMemory() {
     return Util.getUsedMemory();
   }
 
   /** {@inheritDoc} */
   @Override
-  public long getMaxMemory() throws RemoteException {
+  public long getMaxMemory() {
     return Util.getMaxMemory();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void performGC() throws RemoteException {
+  public void performGC() {
     LOG.info("performGG()");
     Runtime.getRuntime().gc();
   }
@@ -426,13 +426,13 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public int getConnectionLimit() throws RemoteException {
+  public int getConnectionLimit() {
     return server.getConnectionLimit();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setConnectionLimit(final int value) throws RemoteException {
+  public void setConnectionLimit(final int value) {
     LOG.info("setConnectionLimit", value);
     server.setConnectionLimit(value);
   }
@@ -445,7 +445,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public boolean isLoggingEnabled(final UUID clientID) throws RemoteException {
+  public boolean isLoggingEnabled(final UUID clientID) {
     return server.isLoggingEnabled(clientID);
   }
 
@@ -458,20 +458,20 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public int getConnectionTimeout() throws RemoteException {
+  public int getConnectionTimeout() {
     return server.getConnectionTimeout();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setConnectionTimeout(final int timeout) throws RemoteException {
+  public void setConnectionTimeout(final int timeout) {
     LOG.info("setConnectionTimeout({})", timeout);
     server.setConnectionTimeout(timeout);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Map<String,String> getEntityDefinitions() throws RemoteException {
+  public Map<String,String> getEntityDefinitions() {
     return EntityConnectionServer.getEntityDefinitions();
   }
 

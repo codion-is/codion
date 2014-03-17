@@ -20,7 +20,7 @@ public final class ClientMonitor {
   private final String clientTypeID;
   private final User user;
 
-  private final DefaultListModel clientInstanceListModel = new DefaultListModel();
+  private final DefaultListModel<ClientInstanceMonitor> clientInstanceListModel = new DefaultListModel<>();
 
   public ClientMonitor(final EntityConnectionServerAdmin server, final String clientTypeID, final User user) throws RemoteException {
     this.server = server;
@@ -37,7 +37,7 @@ public final class ClientMonitor {
     }
   }
 
-  public DefaultListModel getClientInstanceListModel() {
+  public DefaultListModel<ClientInstanceMonitor> getClientInstanceListModel() {
     return clientInstanceListModel;
   }
 

@@ -18,7 +18,7 @@ public final class BooleanInputProvider extends AbstractInputProvider<Boolean, J
    * @param initialValue the initial value
    */
   public BooleanInputProvider(final Boolean initialValue) {
-    super(new JComboBox(new BooleanComboBoxModel()));
+    super(new JComboBox<>(new BooleanComboBoxModel()));
     if (initialValue != null) {
       getInputComponent().getModel().setSelectedItem(initialValue);
     }

@@ -797,7 +797,7 @@ class DefaultProperty implements Property {
         case Types.BLOB:
           return new ValueFetcher() {
             @Override
-            public Object fetchValue(final ResultSet resultSet) throws SQLException {
+            public Object fetchValue(final ResultSet resultSet) {
               return null;//blob columns are handled specifically
             }
           };

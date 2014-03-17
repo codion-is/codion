@@ -28,11 +28,11 @@ public final class ClientUserMonitor {
     refresh();
   }
 
-  public DefaultListModel getClientTypeListModel() {
+  public DefaultListModel<ClientMonitor> getClientTypeListModel() {
     return clientTypeListModel;
   }
 
-  public DefaultListModel getUserListModel() {
+  public DefaultListModel<ClientMonitor> getUserListModel() {
     return userListModel;
   }
 

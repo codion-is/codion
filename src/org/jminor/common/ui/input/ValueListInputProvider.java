@@ -36,7 +36,7 @@ public final class ValueListInputProvider<T> extends AbstractInputProvider<T, JC
 
   private static <T> JComboBox createComboBox(final T currentValue, final List<Item<T>> values) {
     final ItemComboBoxModel<T> boxModel = new ItemComboBoxModel<>(values);
-    final JComboBox box = new SteppedComboBox(boxModel);
+    final JComboBox box = new SteppedComboBox<>(boxModel);
     MaximumMatch.enable(box);
     final Item<T> currentItem = new Item<>(currentValue, "");
     final int currentValueIndex = values.indexOf(currentItem);
