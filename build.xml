@@ -376,7 +376,7 @@
     </signjar>
   </target>
 
-  <target name="deploy_demos" depends="recreate_h2_db, compile_demo_reports"
+  <target name="deploy_demos" depends="dist, recreate_h2_db, compile_demo_reports"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <tstamp />
     <mkdir dir="${dist}/current" />
@@ -394,6 +394,9 @@
     <mkdir dir="${deploy.demos.dir}/chinook"/>
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
+      <zipfileset file="${dist}/jminor-common.jar" excludes="META-INF/**/*"/>
+      <zipfileset file="${dist}/jminor-client.jar" excludes="META-INF/**/*"/>
+      <zipfileset file="${dist}/jminor-plugins.jar" excludes="META-INF/**/*"/>
     </jar>
     <jar jarfile="${deploy.demos.dir}/empdept/empdept.jar" duplicate="preserve" filesetmanifest="mergewithoutmain">
       <zipfileset dir="${build.demos}"/>
