@@ -394,9 +394,7 @@
     <mkdir dir="${deploy.demos.dir}/chinook"/>
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
-      <zipfileset file="${dist}/jminor-common.jar" excludes="META-INF/**/*"/>
-      <zipfileset file="${dist}/jminor-client.jar" excludes="META-INF/**/*"/>
-      <zipfileset file="${dist}/jminor-plugins.jar" excludes="META-INF/**/*"/>
+      <zipgroupfileset dir="${dist}" includes="jminor-common.jar, jminor-client.jar, jminor-plugins.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
     </jar>
     <jar jarfile="${deploy.demos.dir}/empdept/empdept.jar" duplicate="preserve" filesetmanifest="mergewithoutmain">
       <zipfileset dir="${build.demos}"/>
