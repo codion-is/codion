@@ -393,8 +393,9 @@
     <mkdir dir="${deploy.demos.dir}/empdept"/>
     <mkdir dir="${deploy.demos.dir}/chinook"/>
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
-      <zipgroupfileset dir="${lib}" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
+      <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
       <zipgroupfileset dir="${dist}" includes="jminor-common.jar, jminor-client.jar, jminor-plugins.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
+      <fileset file="${deploy.demos.truststore}"/>
     </jar>
     <jar jarfile="${deploy.demos.dir}/empdept/empdept.jar" duplicate="preserve" filesetmanifest="mergewithoutmain">
       <zipfileset dir="${build.demos}"/>
