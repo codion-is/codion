@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/webstart/demos/" href="empdept.jnlp">
+<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/jminor/demos/empdept" href="empdept.jnlp">
 
   <information>
     <title>EmpDept JMinor Demo</title>
@@ -10,19 +10,9 @@
   </security>
 
   <resources>
-    <j2se version="1.6+" href="http://java.sun.com/products/autodl/j2se" />
+    <j2se version="1.7+" />
 
-    <jar href="lib/jminor-demos.jar" main="true" />
-
-    <!--  libraries-->
-    <jar href="lib/jminor-client.jar"/>
-    <jar href="lib/jminor-common.jar"/>
-    <jar href="lib/jminor-plugins.jar"/>
-    <jar href="lib/jcalendar-1.3.2.jar"/>
-    <jar href="lib/slf4j-api-1.6.1.jar"/>
-    <jar href="lib/logback-core-0.9.27.jar"/>
-    <jar href="lib/logback-classic-0.9.27.jar"/>
-    <jar href="lib/jasperreports-4.1.2.jar"/>
+    <jar href="empdept.jar" main="true" />
 
     <property name="jminor.client.connectionType" value="remote"/>
     <property name="javax.net.ssl.trustStore" value="JMinorClientTruststore"/>

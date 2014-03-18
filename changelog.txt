@@ -3704,3 +3704,5 @@
   EntityEditModel.refreshEntity() added, tested
   EntityCriteriaUtil, some refactoring of getConditionString()
   Code cleanup
+0.8.6
+  Demo deployment updated according to latest java security requirements

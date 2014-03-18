@@ -378,47 +378,42 @@
 
   <target name="deploy_demos" depends="recreate_h2_db, compile_demo_reports"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
-    <mkdir dir="${deploy.demos.dir}"/>
-    <copy file="${dist}/jminor-client.jar" todir="${deploy.demos.lib}"/>
-    <copy file="${dist}/jminor-plugins.jar" todir="${deploy.demos.lib}"/>
-    <copy file="${dist}/jminor-demos.jar" todir="${deploy.demos.lib}"/>
-    <copy file="${dist}/jminor-common.jar" todir="${deploy.demos.lib}"/>
-    <copy todir="${deploy.demos.lib}">
-      <fileset dir="${lib}/runtime.client"/>
-    </copy>
-    <copy todir="${deploy.demos.config.dir}">
-      <fileset dir="${deploy.demos.config}"/>
-    </copy>
-    <copy file="${deploy.demos.policy}" todir="${deploy.demos.config.dir}"/>
-    <copy file="${deploy.loadtest.policy}" todir="${deploy.demos.config.dir}"/>
-    <copy file="${deploy.loadtest.server.policy}" todir="${deploy.demos.config.dir}"/>
-    <copy file="${deploy.demos.truststore}" todir="${deploy.demos.config.dir}"/>
-    <zip file="${deploy.demos.lib}/jminor-demos.jar" update="true">
-      <fileset file="${build.base}/logback.xml"/>
-      <fileset file="${deploy.demos.truststore}"/>
-    </zip>
-    <copy todir="${deploy.demos.dir}">
-      <fileset dir="${basedir}/resources/demos/empdept/" excludes="**/*.jrxml,**/*.bak"/>
-      <fileset dir="${basedir}/resources/demos/petstore/" excludes="**/*.jrxml,**/*.bak"/>
-      <fileset dir="${basedir}/resources/demos/chinook/" excludes="**/*.jrxml,**/*.bak"/>
-      <fileset dir="${basedir}/resources/demos/schemabrowser/"/>
-    </copy>
-    <concat destfile="${deploy.demos.dir}/scripts/create_h2_db.sql" >
-      <fileset file="${basedir}/resources/demos/chinook/scripts/ddl.sql" />
-      <fileset file="${basedir}/resources/demos/chinook/scripts/dml.sql" />
-    </concat>
-    <chmod dir="${deploy.demos.dir}" perm="u+x" type="file" includes="*.sh"/>
-    <copy todir="${deploy.demos.dir}/h2db">
-      <fileset dir="${db.h2.dir}"/>
-    </copy>
-    <antcall target="sign_demo_jars"/>
-  </target>
+    <tstamp />
+    <mkdir dir="${dist}/current" />
+    <mkdir dir="${build.demos}/META-INF"/>
+    <manifest file="${build.demos}/META-INF/MANIFEST.MF">
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Application-Name" value="${ant.project.name}"/>
+      <attribute name="Specification-Title" value="${ant.project.name}"/>
+      <attribute name="Specification-Name" value="${ant.project.name}"/>
+      <attribute name="Specification-Vendor" value="${deploy.demos.codebase}"/>
+      <attribute name="Permissions" value="all-permissions"/>
+      <attribute name="Codebase" value="${deploy.demos.codebase}"/>
+    </manifest>
+    <mkdir dir="${deploy.demos.dir}/empdept"/>
+    <mkdir dir="${deploy.demos.dir}/chinook"/>
+    <jar jarfile="${deploy.demos.dir}/libraries.jar">
+      <zipgroupfileset dir="${lib}" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
+    </jar>
+    <jar jarfile="${deploy.demos.dir}/empdept/empdept.jar" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${build.demos}"/>
+      <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
+      <zipfileset dir="${basedir}/resources/demos/empdept" includes="empdept.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
+    </jar>
+    <jar jarfile="${deploy.demos.dir}/chinook/chinook.jar" duplicate="preserve" filesetmanifest="mergewithoutmain">
+      <zipfileset dir="${build.demos}"/>
+      <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
+      <zipfileset dir="${basedir}/resources/demos/chinook" includes="chinook.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
+    </jar>
+    <signjar jar="${deploy.demos.dir}/empdept/empdept.jar" alias="${jar.sign.alias}"
+             storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
+    <signjar jar="${deploy.demos.dir}/chinook/chinook.jar" alias="${jar.sign.alias}"
+             storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
+    <copy file="${basedir}/resources/demos/empdept/empdept.jnlp" todir="${deploy.demos.dir}/empdept"/>
+    <copy file="${basedir}/resources/demos/chinook/chinook.jnlp" todir="${deploy.demos.dir}/chinook"/>
 
-  <target name="sign_demo_jars" depends="dist"
-          description="Signs the jars found in the 'deploy.demos.path'">
-    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}">
-      <fileset dir="${deploy.demos.lib}" />
-    </signjar>
+    <delete dir="${build.demos}/META-INF"/>
+    <delete file="${deploy.demos.dir}/libraries.jar"/>
   </target>
 
   <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos, deploy_generator"
@@ -432,10 +427,9 @@
   <target name="deploy_project"
           description="Creates a jminor-project.zip file in the base directory">
     <delete file="${basedir}/jminor-${version}-project.zip"/>
-    <delete file="${basedir}/derby.log"/>
     <zip destfile="${basedir}/jminor-${version}-project.zip">
       <fileset dir="${basedir}"
-               excludes="*.log,target/**,test/**,dist/deployment/**,classes/**,derbydb/**,h2db/**"/>
+               excludes="*.log,target/**,test/**,dist/deployment/**,classes/**,h2db/**"/>
     </zip>
   </target>
 
