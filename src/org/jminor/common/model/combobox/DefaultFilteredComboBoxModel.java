@@ -304,10 +304,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   @Override
   public final void setSelectedItem(final Object anItem) {
     final T toSelect = translateSelectionItem(anItem);
-    if (vetoSelectionChange(toSelect)) {
-      return;
-    }
-    if (Util.equal(selectedItem, toSelect)) {
+    if (!allowSelectionChange(toSelect) || Util.equal(selectedItem, toSelect)) {
       return;
     }
 
@@ -408,8 +405,8 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
    * @param item the item to be selected
    * @return true if the selection change is ok, false if it should be vetoed
    */
-  protected boolean vetoSelectionChange(final T item) {
-    return false;
+  protected boolean allowSelectionChange(final T item) {
+    return true;
   }
 
   /**

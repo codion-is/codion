@@ -3707,3 +3707,5 @@
 0.8.6
   Demo deployment updated according to latest java security requirements
   EntityJSONParserTest.entity() improved, no longer depends on the order of values (failed in Java 8)
+  DefaultEntityComboBoxModel no longer overrides vetoSelectionChange() with a final method
+  DefaultFilteredComboBoxModel.vetoSelectionChange() renamed to allowSelectionChange() for consistency

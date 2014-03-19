@@ -291,16 +291,6 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     throw new IllegalArgumentException("Unable to select item: " + item + ", " + item.getClass());
   }
 
-  /**
-   * Returns true if the given item can not be selected
-   * @param item the item to be selected
-   * @return true if the item can not be selected in this model
-   */
-  @Override
-  protected final boolean vetoSelectionChange(final Entity item) {
-    return false;
-  }
-
   /** {@inheritDoc} */
   @Override
   protected final List<Entity> initializeContents() {
