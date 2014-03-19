@@ -50,24 +50,16 @@ public class EntityJSONParserTest {
     dept10.setValue(EmpDept.DEPARTMENT_NAME, "DEPTNAME");
     dept10.setValue(EmpDept.DEPARTMENT_LOCATION, "LOCATION");
 
-    final String dept10JSON = "[{\"values\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"scott.dept\"}]";
     String jsonString = parser.serialize(Arrays.asList(dept10));
-    assertEquals(dept10JSON, jsonString);
+    assertTrue(dept10.propertyValuesEqual(parser.deserialize(jsonString).get(0)));
 
     final Entity dept20 = Entities.entity(EmpDept.T_DEPARTMENT);
     dept20.setValue(EmpDept.DEPARTMENT_ID, -20);
     dept20.setValue(EmpDept.DEPARTMENT_NAME, null);
     dept20.setValue(EmpDept.DEPARTMENT_LOCATION, "ALOC");
 
-    final String dept20JSON = "[{\"values\":{\"dname\":null,\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"scott.dept\"}]";
     jsonString = parser.serialize(Arrays.asList(dept20));
-    assertEquals(dept20JSON, jsonString);
-
-    final Entity dept20Des = parser.deserialize(dept20JSON).get(0);
-    assertEquals(EmpDept.T_DEPARTMENT, dept20Des.getEntityID());
-    assertEquals(-20, dept20Des.getValue(EmpDept.DEPARTMENT_ID));
-    assertTrue(dept20Des.isValueNull(EmpDept.DEPARTMENT_NAME));
-    assertEquals("ALOC", dept20Des.getValue(EmpDept.DEPARTMENT_LOCATION));
+    assertTrue(dept20.propertyValuesEqual(parser.deserialize(jsonString).get(0)));
 
     final String twoDepts = parser.serialize(Arrays.asList(dept10, dept20));
     parser.deserialize(twoDepts);
@@ -99,14 +91,12 @@ public class EntityJSONParserTest {
     emp1.setValue(EmpDept.EMPLOYEE_MGR_FK, mgr30);
     emp1.setValue(EmpDept.EMPLOYEE_NAME, "A NAME");
     emp1.setValue(EmpDept.EMPLOYEE_SALARY, 2500.5);
-    String emp1JSON = "[{\"values\":{\"comm\":500.5,\"hiredate\":\"2001-12-20\",\"empno\":-500,\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"entityID\":\"scott.emp\"}]";
-    jsonString = EntityJSONParser.serializeEntities(Arrays.asList(emp1), false);
-    assertEquals(emp1JSON, jsonString);
-    emp1JSON = "[{\"values\":{\"comm\":500.5,\"dept_fk\":{\"values\":{\"dname\":\"DEPTNAME\",\"loc\":\"LOCATION\",\"deptno\":-10},\"entityID\":\"scott.dept\"},\"hiredate\":\"2001-12-20\",\"empno\":-500,\"mgr_fk\":{\"values\":{\"comm\":500.5,\"dept_fk\":{\"values\":{\"dname\":null,\"loc\":\"ALOC\",\"deptno\":-20},\"entityID\":\"scott.dept\"},\"hiredate\":\"2001-12-20\",\"empno\":-30,\"ename\":\"MGR NAME\",\"job\":\"MGR\",\"deptno\":-20,\"sal\":2500.5},\"entityID\":\"scott.emp\"},\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"entityID\":\"scott.emp\"}]";
-    jsonString = EntityJSONParser.serializeEntities(Arrays.asList(emp1), true);
-    assertEquals(emp1JSON, jsonString);
 
-    final Entity emp1Deserialized = parser.deserialize(emp1JSON).get(0);
+    jsonString = EntityJSONParser.serializeEntities(Arrays.asList(emp1), false);
+    assertTrue(emp1.propertyValuesEqual(parser.deserialize(jsonString).get(0)));
+
+    jsonString = EntityJSONParser.serializeEntities(Arrays.asList(emp1), true);
+    Entity emp1Deserialized = parser.deserialize(jsonString).get(0);
     assertTrue(emp1.propertyValuesEqual(emp1Deserialized));
     assertTrue(emp1.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK).propertyValuesEqual(emp1Deserialized.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK)));
     assertTrue(emp1.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK).propertyValuesEqual(emp1Deserialized.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK)));
@@ -120,9 +110,20 @@ public class EntityJSONParserTest {
     emp1.setValue(EmpDept.EMPLOYEE_SALARY, 3500.5);
     emp1.setValue(EmpDept.EMPLOYEE_HIREDATE, newHiredate);
 
-    emp1JSON = "[{\"originalValues\":{\"hiredate\":\"2001-12-20\",\"comm\":500.5,\"ename\":\"A NAME\",\"job\":\"A JOB\",\"deptno\":-10,\"mgr\":-30,\"sal\":2500.5},\"values\":{\"comm\":550.55,\"hiredate\":\"2002-11-21\",\"empno\":-500,\"ename\":\"ANOTHER NAME\",\"job\":\"ANOTHER JOB\",\"deptno\":-20,\"mgr\":-50,\"sal\":3500.5},\"entityID\":\"scott.emp\"}]";
-    jsonString = parser.serialize(Arrays.asList(emp1));
-    assertEquals(emp1JSON, jsonString);
+    jsonString = EntityJSONParser.serializeEntities(Arrays.asList(emp1), true);
+    emp1Deserialized = parser.deserialize(jsonString).get(0);
+    assertTrue(emp1.propertyValuesEqual(emp1Deserialized));
+
+    assertEquals(500.5, emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_COMMISSION));
+    assertEquals(dept10, emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertEquals("A JOB", emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_JOB));
+    assertEquals(mgr30, emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_MGR_FK));
+    assertEquals(hiredate, emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_HIREDATE));
+    assertEquals("A NAME", emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_NAME));
+    assertEquals(2500.5, emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_SALARY));
+
+    assertTrue(((Entity) emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_DEPARTMENT_FK)).propertyValuesEqual(dept10));
+    assertTrue(((Entity) emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_MGR_FK)).propertyValuesEqual(mgr30));
 
     final Entity emp2 = Entities.entity(EmpDept.T_EMPLOYEE);
     emp2.setValue(EmpDept.EMPLOYEE_COMMISSION, 300.5);
@@ -144,8 +145,7 @@ public class EntityJSONParserTest {
       assertTrue(parsed.propertyValuesEqual(entity));
     }
 
-    emp1JSON = parser.serialize(Arrays.asList(emp1));
-    final List<Entity> entities = parser.deserialize(emp1JSON);
+    final List<Entity> entities = parser.deserialize(parser.serialize(Arrays.asList(emp1)));
     assertEquals(1, entities.size());
     final Entity parsedEntity = entities.iterator().next();
     assertTrue(emp1.propertyValuesEqual(parsedEntity));
