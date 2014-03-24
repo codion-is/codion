@@ -22,13 +22,24 @@ public final class EntityConnectionProviders {
           Configuration.getStringValue(Configuration.LOCAL_CONNECTION_PROVIDER);
 
   /**
-   * Returns a EntityConnectionProvider according to system properties
+   * Returns a EntityConnectionProvider according to system properties, using a randomly generated clientID
    * @param user the user for the connection
    * @param clientTypeID the client type id
    * @return a EntityConnectionProvider
    */
   public static EntityConnectionProvider createConnectionProvider(final User user, final String clientTypeID) {
-    return createConnectionProvider(user, UUID.randomUUID(), clientTypeID);
+    return createConnectionProvider(user, clientTypeID, UUID.randomUUID());
+  }
+
+  /**
+   * Returns a EntityConnectionProvider according to system properties
+   * @param user the user for the connection
+   * @param clientTypeID the client type id
+   * @param clientID the unique identifier for the client requesting the connection provider
+   * @return a EntityConnectionProvider
+   */
+  public static EntityConnectionProvider createConnectionProvider(final User user, final String clientTypeID, final UUID clientID) {
+    return createConnectionProvider(user, clientID, clientTypeID);
   }
 
   /**

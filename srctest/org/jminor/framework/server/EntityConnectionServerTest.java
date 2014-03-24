@@ -185,6 +185,8 @@ public class EntityConnectionServerTest {
         return new ClientInfo(clientInfo.getClientID(), clientInfo.getClientTypeID(), clientInfo.getUser(), User.UNIT_TEST_USER);
       }
       @Override
+      public void doLogout(final ClientInfo clientInfo) {}
+      @Override
       public void close() {}
     };
 

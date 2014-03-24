@@ -22,6 +22,12 @@ public interface LoginProxy {
   ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException;
 
   /**
+   * Called after the given client has been disconnected
+   * @param clientInfo the client info
+   */
+  void doLogout(final ClientInfo clientInfo);
+
+  /**
    * Disposes of all resources used by this LoginProxy, after a call to this
    * method the proxy should be regarded as unusable.
    * This method should be called by a server using this LoginProxy on shutdown,

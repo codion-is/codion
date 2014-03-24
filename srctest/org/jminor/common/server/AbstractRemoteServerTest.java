@@ -84,9 +84,11 @@ public class AbstractRemoteServerTest {
         return clientTypeID;
       }
       @Override
-      public ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException {
+      public ClientInfo doLogin(final ClientInfo clientInfo) {
         return proxyClientInfo;
       }
+      @Override
+      public void doLogout(final ClientInfo clientInfo) {}
       @Override
       public void close() {
         closeIndicator.add(new Object());
@@ -120,12 +122,12 @@ public class AbstractRemoteServerTest {
         public String getClientTypeID() {
           return null;
         }
-
         @Override
-        public ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException {
+        public ClientInfo doLogin(final ClientInfo clientInfo) {
           return null;
         }
-
+        @Override
+        public void doLogout(final ClientInfo clientInfo) {}
         @Override
         public void close() {}
       };
@@ -162,15 +164,15 @@ public class AbstractRemoteServerTest {
     }
 
     @Override
-    protected RemoteServerTest doConnect(final ClientInfo clientInfo) throws RemoteException {
+    protected RemoteServerTest doConnect(final ClientInfo clientInfo) {
       return new RemoteServerTestImpl(clientInfo);
     }
 
     @Override
-    protected void doDisconnect(final RemoteServerTest connection) throws RemoteException {}
+    protected void doDisconnect(final RemoteServerTest connection) {}
 
     @Override
-    public int getServerLoad() throws RemoteException {
+    public int getServerLoad() {
       return 0;
     }
   }

@@ -24,7 +24,7 @@ import java.util.UUID;
  */
 public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemoteObject implements RemoteServer<T> {
 
-  private final Map<ClientInfo, T> connections = Collections.synchronizedMap(new HashMap<ClientInfo, T>());
+  private final Map<UUID, ConnectionInfo<T>> connections = Collections.synchronizedMap(new HashMap<UUID, ConnectionInfo<T>>());
   private final Map<String, LoginProxy> loginProxies = new HashMap<>();
   private final LoginProxy defaultLoginProxy = new LoginProxy() {
     @Override
@@ -35,6 +35,8 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
     public ClientInfo doLogin(final ClientInfo clientInfo) {
       return clientInfo;
     }
+    @Override
+    public void doLogout(final ClientInfo clientInfo) {}
     @Override
     public void close() {}
   };
@@ -74,7 +76,12 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
    */
   public final Map<ClientInfo, T> getConnections() {
     synchronized (connections) {
-      return new HashMap<>(connections);
+      final Map<ClientInfo, T> clients = new HashMap<>(connections.size());
+      for (final ConnectionInfo<T> connectionInfo : connections.values()) {
+        clients.put(connectionInfo.getClientInfo(), connectionInfo.getConnection());
+      }
+
+      return clients;
     }
   }
 
@@ -83,7 +90,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
    * @return true if such a client is connected
    */
   public final boolean containsConnection(final ClientInfo client) {
-    return connections.containsKey(client);
+    return connections.containsKey(client.getClientID());
   }
 
   /**
@@ -91,7 +98,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
    * @return the connection associated with the given client, null if none exists
    */
   public final T getConnection(final ClientInfo client) {
-    return connections.get(client);
+    return connections.get(client.getClientID()).getConnection();
   }
 
   /**
@@ -131,8 +138,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
       return null;
     }
 
-    final ClientInfo client = new ClientInfo(clientID, clientTypeID, user);
-    return connect(client);
+    return connect(new ClientInfo(clientID, clientTypeID, user));
   }
 
   //todo review synchronization
@@ -144,9 +150,9 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
       throw new RemoteException("Server is shutting down");
     }
     synchronized (connections) {
-      T connection = connections.get(clientInfo);
-      if (connection != null) {
-        return connection;
+      ConnectionInfo<T> connectionInfo = connections.get(clientInfo.getClientID());
+      if (connectionInfo != null) {
+        return connectionInfo.getConnection();
       }
 
       if (maximumNumberOfConnectionReached()) {
@@ -154,10 +160,10 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
       }
 
       final LoginProxy loginProxy = getLoginProxy(clientInfo);
-      connection = doConnect(loginProxy.doLogin(clientInfo));
-      connections.put(clientInfo, connection);
+      connectionInfo = new ConnectionInfo<>(clientInfo, doConnect(loginProxy.doLogin(clientInfo)));
+      connections.put(clientInfo.getClientID(), connectionInfo);
 
-      return connection;
+      return connectionInfo.getConnection();
     }
   }
 
@@ -168,11 +174,12 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
       return;
     }
 
-    final ClientInfo client = new ClientInfo(clientID);
     synchronized (connections) {
-      final T connection = connections.remove(client);
-      if (connection != null) {
-        doDisconnect(connection);
+      final ConnectionInfo<T> connectionInfo = connections.remove(clientID);
+      if (connectionInfo != null) {
+        doDisconnect(connectionInfo.getConnection());
+        final ClientInfo clientInfo = connectionInfo.getClientInfo();
+        getLoginProxy(clientInfo).doLogout(clientInfo);
       }
     }
   }
@@ -279,6 +286,24 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
       }
 
       return loginProxy;
+    }
+  }
+
+  private static final class ConnectionInfo<T> {
+    private final T connection;
+    private final ClientInfo clientInfo;
+
+    private ConnectionInfo(final ClientInfo clientInfo, final T connection) {
+      this.clientInfo = clientInfo;
+      this.connection = connection;
+    }
+
+    private ClientInfo getClientInfo() {
+      return clientInfo;
+    }
+
+    private T getConnection() {
+      return connection;
     }
   }
 }

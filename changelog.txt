@@ -3709,3 +3709,5 @@
   EntityJSONParserTest.entity() improved, no longer depends on the order of values (failed in Java 8)
   DefaultEntityComboBoxModel no longer overrides vetoSelectionChange() with a final method
   DefaultFilteredComboBoxModel.vetoSelectionChange() renamed to allowSelectionChange() for consistency
+  LoginProxy.doLogout() added
+  EntityConnectionProviders.createConnectionProvider() overloaded with clientID parameter

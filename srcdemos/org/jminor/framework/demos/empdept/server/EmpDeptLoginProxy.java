@@ -31,15 +31,18 @@ public final class EmpDeptLoginProxy implements LoginProxy {
     return new ClientInfo(clientInfo.getClientID(), clientInfo.getClientTypeID(), clientInfo.getUser(), databaseUser);
   }
 
+  @Override
+  public void doLogout(final ClientInfo clientInfo) {}
+
+  @Override
+  public void close() {
+    users.clear();
+  }
+
   private void authenticateUser(final User user) throws ServerException.LoginException {
     final String password = users.get(user.getUsername());
     if (password == null || !password.equals(user.getPassword())) {
       throw ServerException.loginException("Wrong username or password");
     }
-  }
-
-  @Override
-  public void close() {
-    users.clear();
   }
 }
