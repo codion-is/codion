@@ -3711,3 +3711,5 @@
   DefaultFilteredComboBoxModel.vetoSelectionChange() renamed to allowSelectionChange() for consistency
   LoginProxy.doLogout() added
   EntityConnectionProviders.createConnectionProvider() overloaded with clientID parameter
+  Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT added, used in EntityConnectionServer
+  EntityConnectionServerAdminImpl, minor refactoring

@@ -122,7 +122,15 @@ public final class Configuration {
   public static final String SERVER_CONNECTION_LIMIT = "jminor.server.connectionLimit";
 
   /**
-   * Specifies the default client connection timeout.
+   * Specifies the default client connection timeout (ms) in a comma separated list.
+   * Example: org.jminor.demos.empdept.client.ui.EmpDeptAppPanel:60000,org.jminor.demos.chinook.ui.ChinookAppPanel:120000
+   * Value type: String<br>
+   * Default value: none
+   */
+  public static final String SERVER_CLIENT_CONNECTION_TIMEOUT = "jminor.server.clientConnectionTimeout";
+
+  /**
+   * Specifies a specific connection timeout for different client types
    * Value type: Integer<br>
    * Default value: 120000ms (2 minutes)
    */

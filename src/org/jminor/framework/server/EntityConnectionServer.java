@@ -29,6 +29,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -55,6 +56,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   private final Database database;
   private final boolean sslEnabled;
   private final boolean clientLoggingEnabled;
+  private final Map<String, Integer> clientTimeouts = new HashMap<>();
   private final TaskScheduler connectionTimeoutScheduler = new TaskScheduler(new Runnable() {
     @Override
     public void run() {
@@ -77,6 +79,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
    * @param database the Database implementation
    * @param sslEnabled if true then ssl is enabled
    * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
+   * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeID
    * @throws RemoteException in case of a remote exception
    * @throws ClassNotFoundException in case the domain model classes are not found on the classpath or
    * if the jdbc driver class is not found
@@ -86,7 +89,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
                                 final boolean sslEnabled, final int connectionLimit, final Collection<String> domainModelClassNames,
                                 final Collection<String> loginProxyClassNames, final Collection<User> initialPoolUsers,
                                 final String webDocumentRoot, final int webServerPort, final boolean clientLoggingEnabled,
-                                final int connectionTimeout)
+                                final int connectionTimeout, final Map<String, Integer> clientSpecificConnectionTimeouts)
           throws RemoteException, ClassNotFoundException, DatabaseException {
     super(serverPort, serverName,
             sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
@@ -97,6 +100,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
       this.sslEnabled = sslEnabled;
       this.clientLoggingEnabled = clientLoggingEnabled;
       setConnectionTimeout(connectionTimeout);
+      setClientSpecificConnectionTimeout(clientSpecificConnectionTimeouts);
       loadDomainModels(domainModelClassNames);
       if (initialPoolUsers != null) {
         ConnectionPools.initializeConnectionPools(database, initialPoolUsers);
@@ -142,6 +146,13 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
       throw new IllegalArgumentException("Connection timeout must be a positive integer");
     }
     this.connectionTimeout = timeout;
+  }
+
+  /**
+   * @param clientSpecificTimeouts the timeout values mapped to each clientTypeID
+   */
+  void setClientSpecificConnectionTimeout(final Map<String, Integer> clientSpecificTimeouts) {
+    this.clientTimeouts.putAll(clientSpecificTimeouts);
   }
 
   /**
@@ -287,7 +298,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
     for (final ClientInfo client : clients) {
       final DefaultRemoteEntityConnection connection = (DefaultRemoteEntityConnection) getConnection(client);
       if (inactiveOnly) {
-        if (!connection.isActive() && connection.hasBeenInactive(connectionTimeout)) {
+        if (!connection.isActive() && hasConnectionTimedOut(client, connection)) {
           disconnect(client.getClientID());
         }
       }
@@ -450,6 +461,12 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
     if (!connectionPoolUser.getPassword().equals(user.getPassword())) {
       throw new DatabaseException("Wrong username or password for connection pool");
     }
+  }
+
+  private boolean hasConnectionTimedOut(final ClientInfo clientInfo, final DefaultRemoteEntityConnection connection) {
+    final Integer clientSpecificTimeout = clientTimeouts.get(clientInfo.getClientTypeID());
+
+    return connection.hasBeenInactive(clientSpecificTimeout == null ? connectionTimeout : clientSpecificTimeout);
   }
 
   private static void loadDomainModels(final Collection<String> domainModelClassNames) throws ClassNotFoundException {

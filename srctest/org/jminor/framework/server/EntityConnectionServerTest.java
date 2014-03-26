@@ -261,6 +261,7 @@ public class EntityConnectionServerTest {
     Configuration.setValue(Configuration.SERVER_PORT, 2222);
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
     Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
+    Configuration.setValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT, "org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel:10000");
     Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept");
     Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.demos.empdept.server.EmpDeptLoginProxy");
     Configuration.setValue(Configuration.WEB_SERVER_DOCUMENT_ROOT, System.getProperty("user.dir") + System.getProperty("file.separator") + "resources");
@@ -276,6 +277,7 @@ public class EntityConnectionServerTest {
     Configuration.clearValue(Configuration.SERVER_PORT);
     Configuration.clearValue(Configuration.SERVER_HOST_NAME);
     Configuration.clearValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
+    Configuration.clearValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT);
     Configuration.clearValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
     Configuration.clearValue(Configuration.SERVER_LOGIN_PROXY_CLASSES);
     Configuration.clearValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);

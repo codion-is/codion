@@ -33,6 +33,7 @@ import java.rmi.server.RMISocketFactory;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
@@ -527,9 +528,10 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     final int webServerPort = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
     final boolean clientLoggingEnabled = Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
     final int connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
+    final Map<String, Integer> clientTimeouts = getClientTimeoutValues();
     final EntityConnectionServer server = new EntityConnectionServer(serverName, serverPort, registryPort, database,
             sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, getPoolUsers(initialPoolUsers),
-            webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout);
+            webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout, clientTimeouts);
     try {
       server.bindToRegistry();
       adminInstance = new EntityConnectionServerAdminImpl(server, serverAdminPort);
@@ -574,16 +576,36 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   private static Collection<User> getPoolUsers(final Collection<String> poolUsers) {
     final Collection<User> users = new ArrayList<>();
     for (final String usernamePassword : poolUsers) {
-      final int splitIndex = usernamePassword.indexOf(':');
-      if (splitIndex == -1) {
-        throw new IllegalArgumentException("Username and password for pooled connection should be separated by ':', " + usernamePassword);
-      }
-      final String username = usernamePassword.substring(0, splitIndex);
-      final String password = usernamePassword.substring(splitIndex + 1, usernamePassword.length());
-      users.add(new User(username, password));
+      final String[] split = splitString(usernamePassword);
+      users.add(new User(split[0], split[1]));
     }
 
     return users;
+  }
+
+  private static Map<String, Integer> getClientTimeoutValues() {
+    final Collection<String> values = Configuration.parseCommaSeparatedValues(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT);
+
+    return getClientTimeouts(values);
+  }
+
+  private static Map<String, Integer> getClientTimeouts(final Collection<String> values) {
+    final Map<String, Integer> timeoutMap = new HashMap<>();
+    for (final String clientTimeout : values) {
+      final String[] split = splitString(clientTimeout);
+      timeoutMap.put(split[0], Integer.parseInt(split[1]));
+    }
+
+    return timeoutMap;
+  }
+
+  private static String[] splitString(final String usernamePassword) {
+    final String[] splitResult = usernamePassword.split(":");
+    if (splitResult.length < 2) {
+      throw new IllegalArgumentException("Expecting a ':' delimiter");
+    }
+
+    return splitResult;
   }
 
   /**
