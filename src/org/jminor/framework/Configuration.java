@@ -797,6 +797,7 @@ public final class Configuration {
     parseBooleanSetting(SERVER_CLIENT_LOGGING_ENABLED);
     parseIntegerSetting(SERVER_CONNECTION_LIMIT);
     parseIntegerSetting(SERVER_CONNECTION_TIMEOUT);
+    parseStringSetting(SERVER_CLIENT_CONNECTION_TIMEOUT);
     parseIntegerSetting(SERVER_CONNECTION_LOG_SIZE);
     parseStringSetting(SERVER_CONNECTION_POOLING_INITIAL);
     parseStringSetting(SERVER_DOMAIN_MODEL_CLASSES);

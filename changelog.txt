@@ -3713,3 +3713,4 @@
   EntityConnectionProviders.createConnectionProvider() overloaded with clientID parameter
   Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT added, used in EntityConnectionServer
   EntityConnectionServerAdminImpl, minor refactoring
+  Configuration bug fixed, now initializes SERVER_CLIENT_CONNECTION_TIMEOUT correctly
