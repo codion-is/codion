@@ -3714,3 +3714,5 @@
   Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT added, used in EntityConnectionServer
   EntityConnectionServerAdminImpl, minor refactoring
   Configuration bug fixed, now initializes SERVER_CLIENT_CONNECTION_TIMEOUT correctly
+  AbstractTableSearchModel.initializeColumnComparator(), bug fixed, should use lexical comparator for Object types
+  UiUtil.runWithProgressBar() added

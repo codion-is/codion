@@ -174,7 +174,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
       return COMPARABLE_COMPARATOR;
     }
 
-    throw new IllegalArgumentException("Column identified by " + columnIdentifier  + " does not implement Comparable");
+    return LEXICAL_COMPARATOR;
   }
 
   private int compareRows(final R rowOne, final R rowTwo, final C columnIdentifier, final SortingDirective directive) {
