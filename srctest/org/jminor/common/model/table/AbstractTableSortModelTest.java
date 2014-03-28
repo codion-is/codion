@@ -69,7 +69,7 @@ public class AbstractTableSortModelTest {
     assertEquals(2, items.indexOf(thirdRow));
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test
   public void nonComparableColumnClass() {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);

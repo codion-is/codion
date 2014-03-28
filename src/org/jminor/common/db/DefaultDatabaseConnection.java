@@ -116,18 +116,14 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public final void disconnect() {
-    if (connection == null) {
-      return;
-    }
-
-    try {
-      if (!connection.isClosed()) {
+    if (isValid()) {
+      try {
         connection.rollback();
-        connection.close();
       }
-    }
-    catch (SQLException ex) {
-      LOG.error(ex.getMessage(), ex);
+      catch (SQLException ex) {
+        LOG.error(ex.getMessage(), ex);
+      }
+      DatabaseUtil.closeSilently(connection);
     }
     connection = null;
   }
