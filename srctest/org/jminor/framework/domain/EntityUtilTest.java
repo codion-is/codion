@@ -13,6 +13,7 @@ import java.lang.reflect.InvocationTargetException;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Map;
@@ -201,6 +202,29 @@ public class EntityUtilTest {
     assertTrue(propertyValues.containsAll(values));
     propertyValues = EntityUtil.getPropertyValues(property, entities);
     assertTrue(propertyValues.containsAll(values));
+    assertTrue(EntityUtil.getPropertyValues(EmpDept.DEPARTMENT_ID, null).isEmpty());
+    assertTrue(EntityUtil.getPropertyValues(EmpDept.DEPARTMENT_ID, Collections.<Entity>emptyList()).isEmpty());
+  }
+
+  @Test
+  public void isPrimaryKeyModified() {
+    assertFalse(EntityUtil.isPrimaryKeyModified(null));
+    assertFalse(EntityUtil.isPrimaryKeyModified(Collections.<Entity>emptyList()));
+
+    final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
+    department.setValue(EmpDept.DEPARTMENT_ID, 1);
+    department.setValue(EmpDept.DEPARTMENT_NAME, "name");
+    department.setValue(EmpDept.DEPARTMENT_LOCATION, "loc");
+    assertFalse(EntityUtil.isPrimaryKeyModified(Arrays.asList(department)));
+
+    department.setValue(EmpDept.DEPARTMENT_NAME, "new name");
+    assertFalse(EntityUtil.isPrimaryKeyModified(Arrays.asList(department)));
+
+    department.setValue(EmpDept.DEPARTMENT_ID, 2);
+    assertTrue(EntityUtil.isPrimaryKeyModified(Arrays.asList(department)));
+
+    department.revertValue(EmpDept.DEPARTMENT_ID);
+    assertFalse(EntityUtil.isPrimaryKeyModified(Arrays.asList(department)));
   }
 
   @Test

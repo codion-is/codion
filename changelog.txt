@@ -3717,3 +3717,5 @@
   AbstractTableSearchModel.initializeColumnComparator(), bug fixed, should use lexical comparator for Object types
   UiUtil.runWithProgressBar() added
   DefaultDatabaseConnection.disconnect() now uses isValid() instead of !con.isClosed() to check if connection is alive
+  EntityUtil.getPropertyValues() re-generified
+  EntityUtilTest.isPrimaryKeyModified() added
