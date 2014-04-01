@@ -57,7 +57,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
 
   private static final class SelectDepartment extends AbstractEntityUsageScenario {
     @Override
-    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
+    protected void performScenario(final EntityApplicationModel application) {
       selectRandomRow(application.getEntityModel(EmpDept.T_DEPARTMENT).getTableModel());
     }
     @Override
@@ -154,7 +154,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
   private static final class LoginLogout extends AbstractEntityUsageScenario {
     final Random random = new Random();
     @Override
-    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
+    protected void performScenario(final EntityApplicationModel application) {
       try {
         application.getConnectionProvider().disconnect();
         Thread.sleep(random.nextInt(1500));
