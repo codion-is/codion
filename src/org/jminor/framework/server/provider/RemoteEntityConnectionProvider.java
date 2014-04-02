@@ -30,6 +30,7 @@ import java.util.UUID;
 public final class RemoteEntityConnectionProvider extends AbstractEntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
+  private static final boolean SCHEDULE_VALIDITY_CHECK = Configuration.getBooleanValue(Configuration.CONNECTION_SCHEDULE_VALIDATION);
 
   private final String serverHostName;
   private final UUID clientID;
@@ -44,7 +45,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param clientTypeID a string identifying the client type
    */
   public RemoteEntityConnectionProvider(final User user, final UUID clientID, final String clientTypeID) {
-    super(user);
+    super(user, SCHEDULE_VALIDITY_CHECK);
     Util.rejectNullValue(clientID, "clientID");
     Util.rejectNullValue(clientTypeID, "clientTypeID");
     this.serverHostName = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);

@@ -27,6 +27,7 @@ import java.util.Properties;
 public final class LocalEntityConnectionProvider extends AbstractEntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnectionProvider.class);
+  private static final boolean SCHEDULE_VALIDITY_CHECK = Configuration.getBooleanValue(Configuration.CONNECTION_SCHEDULE_VALIDATION);
 
   /**
    * The underlying database implementation
@@ -49,7 +50,17 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * @param database the Database implementation
    */
   public LocalEntityConnectionProvider(final User user, final Database database) {
-    super(user);
+    this(user, database, SCHEDULE_VALIDITY_CHECK);
+  }
+
+  /**
+   * Instantiates a new LocalEntityConnectionProvider
+   * @param user the user
+   * @param database the Database implementation
+   * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
+   */
+  public LocalEntityConnectionProvider(final User user, final Database database, final boolean scheduleValidityCheck) {
+    super(user, scheduleValidityCheck);
     Util.rejectNullValue(database, "database");
     this.database = database;
     this.connectionProperties.put(Database.USER_PROPERTY, user.getUsername());

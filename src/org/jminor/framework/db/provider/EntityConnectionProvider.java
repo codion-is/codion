@@ -37,7 +37,7 @@ public interface EntityConnectionProvider {
 
   /**
    * Returns a state which is active when this provider is connected, note that this state is only updated
-   * if {@link org.jminor.framework.Configuration#CLIENT_SCHEDULE_CONNECTION_VALIDATION} is set to true
+   * if {@link org.jminor.framework.Configuration#CONNECTION_SCHEDULE_VALIDATION} is set to true
    * @return a state active when this provider is connected
    */
   StateObserver getConnectedObserver();

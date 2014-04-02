@@ -3719,3 +3719,6 @@
   DefaultDatabaseConnection.disconnect() now uses isValid() instead of !con.isClosed() to check if connection is alive
   EntityUtil.getPropertyValues() re-generified
   EntityUtilTest.isPrimaryKeyModified() added
+  Configuration.CLIENT_SCHEDULE_CONNECTION_VALIDATION renamed to CONNECTION_SCHEDULE_VALIDATION, constant changed
+  LocalEntityConnectionProvider constructor overloaded with a scheduleValidityCheck parameter
+  RemoteEntityConnectionProvider, some refactoring due to the above

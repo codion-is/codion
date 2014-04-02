@@ -193,7 +193,7 @@ public final class ServerMonitorPanel extends JPanel {
   }
 
   private JTextField initializeConnectionCountField() {
-    final IntField txtConnectionCount = new IntField();
+    final IntField txtConnectionCount = new IntField(4);
     txtConnectionCount.setEditable(false);
     txtConnectionCount.setHorizontalAlignment(JLabel.CENTER);
     ValueLinks.intValueLink(txtConnectionCount, model, "connectionCount", model.getStatisticsUpdatedObserver(), true, true, true);

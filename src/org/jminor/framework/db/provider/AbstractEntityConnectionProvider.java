@@ -9,7 +9,6 @@ import org.jminor.common.model.States;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 
 import org.slf4j.Logger;
@@ -23,7 +22,6 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractEntityConnectionProvider implements EntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
-  private static final boolean SCHEDULE_VALIDITY_CHECK = Configuration.getBooleanValue(Configuration.CLIENT_SCHEDULE_CONNECTION_VALIDATION);
   private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 10;
   protected static final String IS_CONNECTED = "isConnected";
   protected static final String IS_VALID = "isValid";
@@ -47,15 +45,15 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   /**
    * Instantiates a new AbstractEntityConnectionProvider.
-   * @param user the user to base the db provider on
+   * @param user the user to base the connection provider on
    */
   public AbstractEntityConnectionProvider(final User user) {
-    this(user, SCHEDULE_VALIDITY_CHECK);
+    this(user, false);
   }
 
   /**
    * Instantiates a new AbstractEntityConnectionProvider.
-   * @param user the user to base the db provider on
+   * @param user the user to base the connection provider on
    * @param scheduleValidityCheck if true then a connection validity check is run every 10 seconds
    */
   public AbstractEntityConnectionProvider(final User user, final boolean scheduleValidityCheck) {
