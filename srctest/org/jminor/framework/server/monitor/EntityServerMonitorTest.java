@@ -3,13 +3,12 @@
  */
 package org.jminor.framework.server.monitor;
 
+import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerTest;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.rmi.registry.Registry;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -28,7 +27,8 @@ public class EntityServerMonitorTest {
 
   @Test
   public void test() throws Exception {
-    final EntityServerMonitor model = new EntityServerMonitor("localhost", new int[] {Registry.REGISTRY_PORT});
+    final EntityServerMonitor model = new EntityServerMonitor("localhost",
+            new int[] {Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER)});
     model.refresh();
     final HostMonitor hostMonitor = model.getHostMonitors().iterator().next();
     assertEquals("localhost", hostMonitor.getHostName());

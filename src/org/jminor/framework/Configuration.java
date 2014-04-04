@@ -6,6 +6,7 @@ package org.jminor.framework;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
 
+import java.rmi.registry.Registry;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -79,7 +80,7 @@ public final class Configuration {
   /**
    * The port on which to locate the server registry<br>
    * Value type: Integer<br>
-   * Default value: 1099
+   * Default value: Registry.REGISTRY_PORT (1099)
    */
   public static final String REGISTRY_PORT_NUMBER = "jminor.server.registryPort";
 
@@ -686,7 +687,6 @@ public final class Configuration {
   private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 120000;
   private static final int DEFAULT_SERVER_CONNECTION_LOG_SIZE = 40;
   private static final int DEFAULT_SERVER_ADMIN_PORT = 3333;
-  private static final int DEFAULT_REGISTRY_PORT_NUMBER = 1099;
   private static final int DEFAULT_TABLE_AUTO_RESIZE_MODE = 0;//JTable.AUTO_RESIZE_OFF
   private static final int DEFAULT_TAB_PLACEMENT = 1;//JTabbedPane.TOP
   private static final int DEFAULT_LABEL_TEXT_ALIGNMENT = 2;//JLabel.LEFT
@@ -711,7 +711,7 @@ public final class Configuration {
     PROPERTIES.put(SERVER_CONNECTION_SSL_ENABLED, true);
     PROPERTIES.put(SERVER_ADMIN_PORT, DEFAULT_SERVER_ADMIN_PORT);
     PROPERTIES.put(SERVER_HOST_NAME, "localhost");
-    PROPERTIES.put(REGISTRY_PORT_NUMBER, DEFAULT_REGISTRY_PORT_NUMBER);
+    PROPERTIES.put(REGISTRY_PORT_NUMBER, Registry.REGISTRY_PORT);
     PROPERTIES.put(TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
     PROPERTIES.put(DATE_FORMAT, "dd-MM-yyyy");
     PROPERTIES.put(TIME_FORMAT, "HH:mm");

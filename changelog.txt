@@ -3726,3 +3726,4 @@
   DefaultDatabaseConnection.isValid() now uses a hardcoded (1 sec) timeout during validity check instead of 0 (meaning no timeout)
   ServerException.LoginException is no longer final
   ServerException.AuthenticationException added
+  EntityConnectionServerTest, no longer uses the default server/registry ports

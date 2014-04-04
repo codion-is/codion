@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
+import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerTest;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 import org.jminor.framework.server.monitor.DatabaseMonitor;
@@ -12,8 +13,6 @@ import org.jminor.framework.server.monitor.ServerMonitor;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
-
-import java.rmi.registry.Registry;
 
 public class EntityServerMonitorPanelTest {
 
@@ -29,7 +28,8 @@ public class EntityServerMonitorPanelTest {
 
   @Test
   public void test() throws Exception {
-    final EntityServerMonitorPanel panel = new EntityServerMonitorPanel(new EntityServerMonitor("localhost", new int[] {Registry.REGISTRY_PORT}));
+    final EntityServerMonitorPanel panel = new EntityServerMonitorPanel(new EntityServerMonitor("localhost",
+            new int[] {Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER)}));
     final ServerMonitor serverMonitor = panel.getModel().getHostMonitors().iterator().next().getServerMonitors().iterator().next();
     serverMonitor.getUpdateScheduler().setInterval(350);
     final DatabaseMonitor databaseMonitor = serverMonitor.getDatabaseMonitor();
