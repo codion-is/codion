@@ -1508,7 +1508,7 @@ public final class UiUtil {
     bar.setPreferredSize(new Dimension(400, bar.getPreferredSize().height));
     final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogParent), progressBarTitle, Dialog.ModalityType.APPLICATION_MODAL);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
-    dialog.setLayout(new BorderLayout(5, 5));
+    dialog.setLayout(createBorderLayout());
     dialog.add(bar, BorderLayout.SOUTH);
     dialog.pack();
     UiUtil.centerWindow(dialog);
