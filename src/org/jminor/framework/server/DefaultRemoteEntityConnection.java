@@ -157,12 +157,17 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
           throws DatabaseException, RemoteException {
     super(port, sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
+    this.database = database;
+    this.connectionPool = connectionPool;
+    this.clientInfo = clientInfo;
+    this.methodLogger.setEnabled(loggingEnabled);
+    this.logIdentifier = getUser().getUsername().toLowerCase() +"@" + clientInfo.getClientTypeID();
+    this.connectionProxy = initializeProxy();
     try {
-      this.database = database;
-      this.connectionPool = connectionPool;
-      this.clientInfo = clientInfo;
-      this.methodLogger.setEnabled(loggingEnabled);
-      this.logIdentifier = getUser().getUsername().toLowerCase() +"@" + clientInfo.getClientTypeID();
+      clientInfo.setClientHost(getClientHost());
+    }
+    catch (ServerNotActiveException ignored) {}
+    try {
       if (connectionPool == null) {
         localEntityConnection = EntityConnections.createConnection(database, clientInfo.getDatabaseUser());
         localEntityConnection.setMethodLogger(methodLogger);
@@ -171,11 +176,6 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
         poolEntityConnection = EntityConnections.createConnection(database, connectionPool.getConnection());
         returnConnectionToPool();
       }
-      this.connectionProxy = initializeProxy();
-      try {
-        clientInfo.setClientHost(getClientHost());
-      }
-      catch (ServerNotActiveException ignored) {}
     }
     catch (DatabaseException e) {
       disconnect();

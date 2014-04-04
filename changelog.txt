@@ -3722,3 +3722,7 @@
   Configuration.CLIENT_SCHEDULE_CONNECTION_VALIDATION renamed to CONNECTION_SCHEDULE_VALIDATION, constant changed
   LocalEntityConnectionProvider constructor overloaded with a scheduleValidityCheck parameter
   RemoteEntityConnectionProvider, some refactoring due to the above
+  DefaultDatabaseConnection.disconnect(), isValid() call moved within try clause
+  DefaultDatabaseConnection.isValid() now uses a hardcoded (1 sec) timeout during validity check instead of 0 (meaning no timeout)
+  ServerException.LoginException is no longer final
+  ServerException.AuthenticationException added

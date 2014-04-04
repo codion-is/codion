@@ -32,8 +32,18 @@ public class ServerException extends Exception {
   /**
    * An exception indicating that a login has failed
    */
-  public static final class LoginException extends ServerException {
-    private LoginException(final String message) {
+  public static class LoginException extends ServerException {
+    public LoginException(final String message) {
+      super(message);
+    }
+  }
+
+  /**
+   * An exception indicating that a login has failed due to an authentication error,
+   * invalid username or password
+   */
+  public static class AuthenticationException extends LoginException {
+    public AuthenticationException(final String message) {
       super(message);
     }
   }

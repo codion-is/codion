@@ -153,7 +153,7 @@ public final class DatabaseUtil {
     Util.rejectNullValue(database, "database");
     try {
       if (database.supportsIsValid()) {
-        return connection.isValid(0);
+        return connection.isValid(timeoutInSeconds);
       }
 
       return validateWithQuery(connection, database, timeoutInSeconds);

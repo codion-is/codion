@@ -22,7 +22,8 @@ import java.util.List;
  */
 public class DefaultDatabaseConnection implements DatabaseConnection {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DatabaseConnection.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultDatabaseConnection.class);
+  private static final int VALIDITY_CHECK_TIMEOUT = 1;
 
   private final User user;
   private final Database database;
@@ -110,21 +111,21 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public final boolean isValid() {
-    return connection != null && DatabaseUtil.isValid(connection, database, 0);
+    return connection != null && DatabaseUtil.isValid(connection, database, VALIDITY_CHECK_TIMEOUT);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void disconnect() {
-    if (isValid()) {
-      try {
+    try {
+      if (isValid()) {
         connection.rollback();
       }
-      catch (SQLException ex) {
-        LOG.error(ex.getMessage(), ex);
-      }
-      DatabaseUtil.closeSilently(connection);
     }
+    catch (SQLException ex) {
+      LOG.error(ex.getMessage(), ex);
+    }
+    DatabaseUtil.closeSilently(connection);
     connection = null;
   }
 
