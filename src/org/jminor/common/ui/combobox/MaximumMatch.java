@@ -207,19 +207,10 @@ public final class MaximumMatch extends PlainDocument {
 
   // checks if str1 starts with str2 - ignores case
   private boolean startsWithIgnoreCase(final String str1, final String str2) {
-    String one = str1;
-    String two = str2;
-    if (normalize) {
-      one = normalize(str1);
-      two = normalize(str2);
-    }
+    final String one = normalize ? normalize(str1) : str1;
+    final String two = normalize ? normalize(str2) : str2;
 
     return one.toUpperCase().startsWith(two.toUpperCase());
-  }
-
-  private String normalize(final String str) {
-    //http://stackoverflow.com/a/4225698/317760
-    return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
   }
 
   // calculates how many characters are predetermined by the given pattern.
@@ -243,9 +234,11 @@ public final class MaximumMatch extends PlainDocument {
   }
 
   // returns how many leading characters two strings have in common?
-  private static int equalStartLength(final String str1, final String str2) {
-    final char[] ch1 = str1.toUpperCase().toCharArray();
-    final char[] ch2 = str2.toUpperCase().toCharArray();
+  private int equalStartLength(final String str1, final String str2) {
+    final String one = normalize ? normalize(str1) : str1;
+    final String two = normalize ? normalize(str2) : str2;
+    final char[] ch1 = one.toUpperCase().toCharArray();
+    final char[] ch2 = two.toUpperCase().toCharArray();
     final int n = ch1.length > ch2.length ? ch2.length : ch1.length;
     for (int i = 0; i < n; i++) {
       if (ch1[i] != ch2[i]) {
@@ -253,6 +246,11 @@ public final class MaximumMatch extends PlainDocument {
       }
     }
     return n;
+  }
+
+  private static String normalize(final String str) {
+    //http://stackoverflow.com/a/4225698/317760
+    return Normalizer.normalize(str, Normalizer.Form.NFD).replaceAll("\\p{InCombiningDiacriticalMarks}+", "");
   }
 
   private final class MatchKeyAdapter extends KeyAdapter {

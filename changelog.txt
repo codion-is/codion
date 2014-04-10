@@ -3727,3 +3727,4 @@
   ServerException.LoginException is no longer final
   ServerException.AuthenticationException added
   EntityConnectionServerTest, no longer uses the default server/registry ports
+  MaximumMatch, bug fixed, equalStartLength() did not normalize the strings before matching
