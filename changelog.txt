@@ -3728,3 +3728,4 @@
   ServerException.AuthenticationException added
   EntityConnectionServerTest, no longer uses the default server/registry ports
   MaximumMatch, bug fixed, equalStartLength() did not normalize the strings before matching
+  DefaultDatabaseConnection.disconnect() change reverted, calling isValid() is an overkill (especially with a query) when we are about to discard the connection, so we're back to !con.isClosed()
