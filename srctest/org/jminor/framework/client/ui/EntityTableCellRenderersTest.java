@@ -18,7 +18,7 @@ public class EntityTableCellRenderersTest {
     final EntityTablePanel tablePanel = new EntityTablePanel(new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, DefaultEntityConnectionTest.CONNECTION_PROVIDER));
     tablePanel.getEntityTableModel().refresh();
     final EntityTableCellRenderer renderer = EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
-            Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME));
+            Entities.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME));
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, false, false, 0, 0);
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, false, 0, 0);
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, true, 0, 0);
@@ -30,5 +30,14 @@ public class EntityTableCellRenderersTest {
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, false, false, 0, 7);
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, false, 0, 7);
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, true, 0, 7);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void entityMismatch() {
+    EmpDept.init();
+    final EntityTablePanel tablePanel = new EntityTablePanel(new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, DefaultEntityConnectionTest.CONNECTION_PROVIDER));
+    tablePanel.getEntityTableModel().refresh();
+    EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
+            Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME));
   }
 }

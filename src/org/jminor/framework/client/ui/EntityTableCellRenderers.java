@@ -8,14 +8,12 @@ import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.domain.Property;
 
 import javax.swing.JCheckBox;
-import javax.swing.JLabel;
 import javax.swing.JTable;
 import javax.swing.UIManager;
 import javax.swing.table.DefaultTableCellRenderer;
 import java.awt.Color;
 import java.awt.Component;
 import java.text.Format;
-import java.util.Date;
 
 /**
  * Provides TableCellRenderer implementations for EntityTablePanels
@@ -52,53 +50,14 @@ public final class EntityTableCellRenderers {
    * @see org.jminor.framework.domain.Entity.Definition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    */
   public static EntityTableCellRenderer getTableCellRenderer(final EntityTableModel tableModel, final Property property) {
+    if (!Util.equal(tableModel.getEntityID(), property.getEntityID())) {
+      throw new IllegalArgumentException("Property " + property + " not found in entity : " + tableModel.getEntityID());
+    }
     if (property.isBoolean()) {
-      return booleanTableCellRenderer(tableModel);
+      return new BooleanRenderer(tableModel, property);
     }
-    if (property.isInteger() || property.isDouble()) {
-      return numberTableCellRenderer(tableModel, property.getFormat());
-    }
-    if (property.isDateOrTime()) {
-      return dateTableCellRenderer(tableModel, property.getFormat());
-    }
-    else {
-      return new DefaultEntityTableCellRenderer(tableModel);
-    }
-  }
 
-  public static EntityTableCellRenderer dateTableCellRenderer(final EntityTableModel tableModel, final Format format) {
-    return new AlignedFormattedRenderer(tableModel, format, JLabel.RIGHT) {
-      @Override
-      public void setValue(final Object value) {
-        String txt = "";
-        if (value instanceof Date) {
-          txt = getFormat().format(value);
-        }
-        else if (value instanceof String) {
-          txt = (String) value;
-        }
-
-        setText(txt);
-      }
-    };
-  }
-
-  public static EntityTableCellRenderer numberTableCellRenderer(final EntityTableModel tableModel, final Format format) {
-    return new AlignedFormattedRenderer(tableModel, format, JLabel.RIGHT) {
-      @Override
-      public void setValue(final Object value) {
-        if (value instanceof String) {
-          setText((String) value);
-        }
-        else {
-          setText((value == null) ? "" : getFormat().format(value));
-        }
-      }
-    };
-  }
-
-  public static EntityTableCellRenderer booleanTableCellRenderer(final EntityTableModel tableModel) {
-    return new BooleanRenderer(tableModel);
+    return new DefaultEntityTableCellRenderer(tableModel, property);
   }
 
   private static Color shade(final Color color, final int amount) {
@@ -117,6 +76,8 @@ public final class EntityTableCellRenderers {
   public static class DefaultEntityTableCellRenderer extends DefaultTableCellRenderer implements EntityTableCellRenderer {
 
     private final EntityTableModel tableModel;
+    private final Property property;
+    private final Format format;
 
     private boolean indicateSearch = true;
     private boolean tooltipData = false;
@@ -124,9 +85,34 @@ public final class EntityTableCellRenderers {
     /**
      * Instantiates a new DefaultEntityTableCellRenderer based on the data provided by the given EntityTableModel
      * @param tableModel the table model providing the data to render
+     * @param property the property
      */
-    public DefaultEntityTableCellRenderer(final EntityTableModel tableModel) {
-      this.tableModel = tableModel;
+    public DefaultEntityTableCellRenderer(final EntityTableModel tableModel, final Property property) {
+      this(tableModel, property, property.getFormat(), property.isNumerical() || property.isDateOrTime() ? RIGHT : LEFT);
+    }
+
+    /**
+     * Instantiates a new DefaultEntityTableCellRenderer based on the data provided by the given EntityTableModel
+     * @param tableModel the table model providing the data to render
+     * @param property the property
+     * @param format the format, overrides the format associated with the property
+     */
+    public DefaultEntityTableCellRenderer(final EntityTableModel tableModel, final Property property, final Format format) {
+      this(tableModel, property, format, LEFT);
+    }
+
+    /**
+     * Instantiates a new DefaultEntityTableCellRenderer based on the data provided by the given EntityTableModel
+     * @param tableModel the table model providing the data to render
+     * @param property the property
+     * @param horizontalAlignment the horizontal alignment
+     */
+    public DefaultEntityTableCellRenderer(final EntityTableModel tableModel, final Property property, final Format format,
+                                          final int horizontalAlignment) {
+      this.tableModel = Util.rejectNullValue(tableModel, "tableModel");
+      this.property = Util.rejectNullValue(property, "property");
+      this.format = format == null ? property.getFormat() : format;
+      setHorizontalAlignment(horizontalAlignment);
     }
 
     /** {@inheritDoc} */
@@ -155,9 +141,9 @@ public final class EntityTableCellRenderers {
 
     /** {@inheritDoc} */
     @Override
-    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected, final boolean hasFocus, final int row, final int column) {
+    public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
+                                                   final boolean hasFocus, final int row, final int column) {
       super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-      final Property property = (Property) tableModel.getColumnModel().getColumn(column).getIdentifier();
       if (tooltipData) {
         setToolTipText(value == null ? "" : value.toString());
       }
@@ -193,22 +179,20 @@ public final class EntityTableCellRenderers {
       }
       return this;
     }
-  }
 
-  /**
-   * An aligned and formatted TableCellRenderer
-   */
-  private static class AlignedFormattedRenderer extends DefaultEntityTableCellRenderer {
-    private final Format format;
-
-    private AlignedFormattedRenderer(final EntityTableModel tableModel, final Format format, final int horizontalAlignment) {
-      super(tableModel);
-      setHorizontalAlignment(horizontalAlignment);
-      this.format = format;
-    }
-
-    protected Format getFormat() {
-      return format;
+    @Override
+    protected void setValue(final Object value) {
+      if (format == null) {
+        super.setValue(value);
+      }
+      else {
+        if (value instanceof String) {
+          setText((String) value);
+        }
+        else {
+          setText(value == null ? "" : format.format(value));
+        }
+      }
     }
   }
 
@@ -216,9 +200,8 @@ public final class EntityTableCellRenderers {
 
     private final JCheckBox checkBox = new JCheckBox();
 
-    private BooleanRenderer(final EntityTableModel tableModel) {
-      super(tableModel);
-      checkBox.setHorizontalAlignment(CENTER);
+    private BooleanRenderer(final EntityTableModel tableModel, final Property property) {
+      super(tableModel, property, null, CENTER);
       checkBox.setOpaque(true);
     }
 

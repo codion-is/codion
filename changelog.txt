@@ -3731,3 +3731,4 @@
   DefaultDatabaseConnection.disconnect() change reverted, calling isValid() is an overkill (especially with a query) when we are about to discard the connection, so we're back to !con.isClosed()
   Entities.Validator no longer validates read-only values
   DefaultDenormalizedViewProperty bug fixed, is now read-only, along with MirrorProperty
+  EntityTableCellRenderers refactored
