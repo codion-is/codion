@@ -858,7 +858,11 @@ public final class Entities {
       return getProperty(entityID, key).isNullable();
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Validates all writable properties in the given entities
+     * @param entities the entities to validate
+     * @throws ValidationException in case validation fails
+     */
     @Override
     public final void validate(final Collection<Entity> entities) throws ValidationException {
       for (final Entity entity : entities) {
@@ -866,12 +870,18 @@ public final class Entities {
       }
     }
 
-    /** {@inheritDoc} */
+    /**
+     * Validates all writable properties in the given entity
+     * @param entity the entity to validate
+     * @throws ValidationException in case validation fails
+     */
     @Override
     public void validate(final Entity entity) throws ValidationException {
       Util.rejectNullValue(entity, ENTITY_PARAM);
       for (final Property property : getProperties(entityID).values()) {
-        validate(entity, property.getPropertyID());
+        if (!property.isReadOnly()) {
+          validate(entity, property.getPropertyID());
+        }
       }
     }
 

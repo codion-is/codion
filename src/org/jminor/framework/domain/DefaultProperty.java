@@ -1012,6 +1012,7 @@ class DefaultProperty implements Property {
 
     DefaultMirrorProperty(final String propertyID) {
       super(propertyID, -1, null);
+      setReadOnly(true);
     }
   }
 
@@ -1150,6 +1151,7 @@ class DefaultProperty implements Property {
       super(propertyID, property.getType(), caption);
       this.foreignKeyPropertyID = foreignKeyPropertyID;
       this.denormalizedProperty = property;
+      setReadOnly(true);
     }
 
     @Override
