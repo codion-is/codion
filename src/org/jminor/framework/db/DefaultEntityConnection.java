@@ -78,7 +78,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
    * such as a wrong username or password being provided
    */
   DefaultEntityConnection(final Database database, final User user) throws DatabaseException {
-    super(database, user);
+    super(database, user, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
   }
 
   /**
@@ -90,7 +90,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
   DefaultEntityConnection(final Database database, final Connection connection) throws DatabaseException {
-    super(database, connection);
+    super(database, connection, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
   }
 
   /** {@inheritDoc} */

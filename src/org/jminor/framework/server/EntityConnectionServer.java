@@ -103,7 +103,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
       setClientSpecificConnectionTimeout(clientSpecificConnectionTimeouts);
       loadDomainModels(domainModelClassNames);
       if (initialPoolUsers != null) {
-        ConnectionPools.initializeConnectionPools(database, initialPoolUsers);
+        ConnectionPools.initializeConnectionPools(database, initialPoolUsers, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
       }
       loadLoginProxies(loginProxyClassNames);
       setConnectionLimit(connectionLimit);

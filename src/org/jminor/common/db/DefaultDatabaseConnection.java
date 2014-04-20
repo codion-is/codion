@@ -23,10 +23,10 @@ import java.util.List;
 public class DefaultDatabaseConnection implements DatabaseConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultDatabaseConnection.class);
-  private static final int VALIDITY_CHECK_TIMEOUT = 1;
 
   private final User user;
   private final Database database;
+  private final int validityCheckTimeout;
 
   private Connection connection;
   private boolean transactionOpen = false;
@@ -43,10 +43,23 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
    * @throws DatabaseException in case there is a problem connecting to the database
    */
   public DefaultDatabaseConnection(final Database database, final User user) throws DatabaseException {
+    this(database, user, 0);
+  }
+
+  /**
+   * Constructs a new DefaultDatabaseConnection instance, initialized and ready for usage
+   * @param database the database
+   * @param user the user to base this database connection on
+   * @param validityCheckTimeout the number of seconds specified when checking if this connection is valid
+   * @throws DatabaseException in case there is a problem connecting to the database
+   */
+  public DefaultDatabaseConnection(final Database database, final User user,
+                                   final int validityCheckTimeout) throws DatabaseException {
     Util.rejectNullValue(database, "database");
     Util.rejectNullValue(user, "user");
     this.database = database;
     this.user = user;
+    this.validityCheckTimeout = validityCheckTimeout;
     initializeAndValidate(database.createConnection(user));
   }
 
@@ -60,8 +73,25 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
    * meta data or if a validation statement is required and creating it fails
    */
   public DefaultDatabaseConnection(final Database database, final Connection connection) throws DatabaseException {
+    this(database, connection, 0);
+  }
+
+  /**
+   * Constructs a new DefaultDatabaseConnection instance, based on the given Connection object.
+   * NB. auto commit is disabled on the Connection that is provided.
+   * @param database the database
+   * @param connection the Connection object to base this DefaultDatabaseConnection on
+   * @param validityCheckTimeout the number of seconds specified when checking if this connection is valid
+   * @throws IllegalArgumentException in case the given connection is invalid or disconnected
+   * @throws DatabaseException in case of an exception while retrieving the username from the connection
+   * meta data or if a validation statement is required and creating it fails
+   */
+  public DefaultDatabaseConnection(final Database database, final Connection connection,
+                                   final int validityCheckTimeout) throws DatabaseException {
     Util.rejectNullValue(database, "database");
+    Util.rejectNullValue(connection, "connection");
     this.database = database;
+    this.validityCheckTimeout = validityCheckTimeout;
     initializeAndValidate(connection);
     this.user = getUser(connection);
   }
@@ -92,6 +122,12 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
+  public int getValidityCheckTimeout() {
+    return validityCheckTimeout;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + user.getUsername();
   }
@@ -111,7 +147,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public final boolean isValid() {
-    return connection != null && DatabaseUtil.isValid(connection, database, VALIDITY_CHECK_TIMEOUT);
+    return connection != null && DatabaseUtil.isValid(connection, database, validityCheckTimeout);
   }
 
   /** {@inheritDoc} */
@@ -318,11 +354,14 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
       throw new IllegalStateException("Already connected");
     }
 
-    this.connection = connection;
-    if (!isValid()) {
-      throw new IllegalArgumentException("Connection invalid during instantiation");
-    }
     try {
+      if (connection.isClosed()) {
+        throw new IllegalArgumentException("Connection closed");
+      }
+      this.connection = connection;
+      if (!isValid()) {
+        throw new IllegalArgumentException("Connection invalid during instantiation");
+      }
       connection.setAutoCommit(false);
     }
     catch (SQLException e) {

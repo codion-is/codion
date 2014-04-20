@@ -10,6 +10,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
+import java.sql.Connection;
 import java.sql.SQLException;
 
 import static org.junit.Assert.*;
@@ -35,6 +36,20 @@ public class DefaultDatabaseConnectionTest {
       }
     }
     catch (Exception ignored) {}
+  }
+
+  @Test
+  public void constructorWithConnection() throws DatabaseException, SQLException {
+    final Connection connection = DATABASE.createConnection(User.UNIT_TEST_USER);
+    new DefaultDatabaseConnection(DATABASE, connection).disconnect();
+    assertTrue(connection.isClosed());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorWithInvalidConnection() throws DatabaseException, SQLException {
+    final Connection connection = DATABASE.createConnection(User.UNIT_TEST_USER);
+    connection.close();
+    new DefaultDatabaseConnection(DATABASE, connection);
   }
 
   @Test(expected = DatabaseException.class)

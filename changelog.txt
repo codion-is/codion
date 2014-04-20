@@ -3732,3 +3732,7 @@
   Entities.Validator no longer validates read-only values
   DefaultDenormalizedViewProperty bug fixed, is now read-only, along with MirrorProperty
   EntityTableCellRenderers refactored
+  DefaultDatabaseConnection constructor overloaded with validityCheckTimeout parameter, added to factory classes as well
+  Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT added, default 0 seconds (no timeout)
+  DatabaseUtil.validateWithQuery() now guards against databases that have not implemented setQueryTimeout()
+  DefaultDatabaseConnection constructor throws exception if the connection parameter is closed

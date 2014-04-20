@@ -48,6 +48,11 @@ public interface DatabaseConnection {
   int getRetryCount();
 
   /**
+   * @return the number of seconds specified when checking if this connection is valid
+   */
+  int getValidityCheckTimeout();
+
+  /**
    * @return true if a connection is established and valid
    */
   boolean isValid();

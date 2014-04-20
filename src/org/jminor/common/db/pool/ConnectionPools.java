@@ -33,15 +33,17 @@ public final class ConnectionPools {
    * Initializes connection pools for the given users
    * @param database the underlying database
    * @param users the users to initialize connection pools for
+   * @param validityCheckTimeout the number of seconds specified when checking if a connection is valid
    * @throws DatabaseException in case of a database exception
    * @throws ClassNotFoundException in case the specified connection pool provider class in not on the classpath
    * @see Configuration#SERVER_CONNECTION_POOL_PROVIDER_CLASS
    */
-  public static synchronized void initializeConnectionPools(final Database database, final Collection<User> users) throws DatabaseException, ClassNotFoundException {
+  public static synchronized void initializeConnectionPools(final Database database, final Collection<User> users,
+                                                            final int validityCheckTimeout) throws DatabaseException, ClassNotFoundException {
     Util.rejectNullValue(database, "database");
     Util.rejectNullValue(users, "users");
     for (final User user : users) {
-      final ConnectionPoolProvider poolProvider = initializeConnectionPoolProvider(database, user);
+      final ConnectionPoolProvider poolProvider = initializeConnectionPoolProvider(database, user, validityCheckTimeout);
       CONNECTION_POOLS.put(user, poolProvider.createConnectionPool(user, database));
     }
   }
@@ -102,7 +104,8 @@ public final class ConnectionPools {
     return new ArrayList<>(CONNECTION_POOLS.values());
   }
 
-  private static ConnectionPoolProvider initializeConnectionPoolProvider(final Database database, final User user) throws ClassNotFoundException {
+  private static ConnectionPoolProvider initializeConnectionPoolProvider(final Database database, final User user,
+                                                                         final int validityCheckTimeout) throws ClassNotFoundException {
     final String connectionPoolProviderClassName = Configuration.getStringValue(Configuration.SERVER_CONNECTION_POOL_PROVIDER_CLASS);
     if (!Util.nullOrEmpty(connectionPoolProviderClassName)) {
       final Class<?> providerClass = Class.forName(connectionPoolProviderClassName);
@@ -114,7 +117,7 @@ public final class ConnectionPools {
       }
     }
 
-    return createDefaultConnectionPoolProvider(DatabaseConnections.connectionProvider(database, user));
+    return createDefaultConnectionPoolProvider(DatabaseConnections.connectionProvider(database, user, validityCheckTimeout));
   }
 
   /**

@@ -182,7 +182,10 @@ public final class DatabaseUtil {
     try {
       statement = connection.createStatement();
       if (timeoutInSeconds > 0) {
-        statement.setQueryTimeout(timeoutInSeconds);
+        try {
+          statement.setQueryTimeout(timeoutInSeconds);
+        }
+        catch (SQLException ignored) {/*Not all databases have implemented this feature*/}
       }
       rs = statement.executeQuery(database.getCheckConnectionQuery());
 

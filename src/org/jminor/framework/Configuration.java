@@ -56,6 +56,13 @@ public final class Configuration {
   public static final String CONNECTION_SCHEDULE_VALIDATION = "jminor.connection.scheduleValidation";
 
   /**
+   * Specifies the timeout (in seconds) to specify when checking if database connections are valid.
+   * Value type: Integer<br>
+   * Default value: 0
+   */
+  public static final String CONNECTION_VALIDITY_CHECK_TIMEOUT = "jminor.connection.validityCheckTimeout";
+
+  /**
    * The report path used for the default report generation,
    * either file or http based
    */
@@ -704,6 +711,7 @@ public final class Configuration {
     PROPERTIES.put(LOAD_TEST_REMOTE_HOSTNAME, "localhost");
     PROPERTIES.put(CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_LOCAL);
     PROPERTIES.put(CONNECTION_SCHEDULE_VALIDATION, true);
+    PROPERTIES.put(CONNECTION_VALIDITY_CHECK_TIMEOUT, 0);
     PROPERTIES.put(SERVER_CLIENT_LOGGING_ENABLED, true);
     PROPERTIES.put(SERVER_CONNECTION_LIMIT, DEFAULT_SERVER_CONNECTION_LIMIT);
     PROPERTIES.put(SERVER_CONNECTION_TIMEOUT, DEFAULT_SERVER_CONNECTION_TIMEOUT);
@@ -768,6 +776,7 @@ public final class Configuration {
     parseBooleanSetting(AUTHENTICATION_REQUIRED);
     parseStringSetting(CLIENT_CONNECTION_TYPE);
     parseBooleanSetting(CONNECTION_SCHEDULE_VALIDATION);
+    parseIntegerSetting(CONNECTION_VALIDITY_CHECK_TIMEOUT);
     parseBooleanSetting(COMPACT_ENTITY_PANEL_LAYOUT);
     parseBooleanSetting(CONFIRM_EXIT);
     parseBooleanSetting(WARN_ABOUT_UNSAVED_DATA);
