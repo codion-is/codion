@@ -376,7 +376,7 @@ public final class Configuration {
    * Specifies whether optimistic locking should be performed, that is, if entities should
    * be selected for update and checked for modification before being updated<br>
    * Value type: Boolean<br>
-   * Default value: false
+   * Default value: true
    */
   public static final String USE_OPTIMISTIC_LOCKING = "jminor.db.useOptimisticLocking";
 
@@ -738,7 +738,7 @@ public final class Configuration {
     PROPERTIES.put(AUTHENTICATION_REQUIRED, true);
     PROPERTIES.put(SHOW_STARTUP_DIALOG, true);
     PROPERTIES.put(TRANSFER_FOCUS_ON_ENTER, true);
-    PROPERTIES.put(USE_OPTIMISTIC_LOCKING, false);
+    PROPERTIES.put(USE_OPTIMISTIC_LOCKING, true);
     PROPERTIES.put(SQL_BOOLEAN_VALUE_FALSE, 0);
     PROPERTIES.put(SQL_BOOLEAN_VALUE_TRUE, 1);
     PROPERTIES.put(PERSIST_ENTITY_PANELS, false);

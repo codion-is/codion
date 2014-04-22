@@ -446,8 +446,8 @@ public class ColumnSearchPanel<K> extends JPanel {
         comboBoxModel.addItem(new Item<>(type, type.getCaption()));
       }
     }
-    final JComboBox<Item> comboBox = new SteppedComboBox(comboBoxModel);
-    ValueLinks.selectedItemValueLink(comboBox, searchModel, "searchType", Item.class, (EventObserver) searchModel.getSearchTypeObserver());
+    final JComboBox<SearchType> comboBox = new SteppedComboBox(comboBoxModel);
+    ValueLinks.selectedItemValueLink(comboBox, searchModel, "searchType", SearchType.class, (EventObserver) searchModel.getSearchTypeObserver());
     comboBox.setRenderer(new DefaultListCellRenderer() {
       @Override
       public Component getListCellRendererComponent(final JList list, final Object value, final int index,

@@ -3736,3 +3736,6 @@
   Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT added, default 0 seconds (no timeout)
   DatabaseUtil.validateWithQuery() now guards against databases that have not implemented setQueryTimeout()
   DefaultDatabaseConnection constructor throws exception if the connection parameter is closed
+  Configuration.USE_OPTIMISTIC_LOCKING default value changed to true
+  DefaultEntityConnection.lockAndCheckForUpdate() bug fixed, now excludes Types.BLOB properties from the modified check
+  ColumnSearchPanel.initializeSearchTypeComboBox() bug fixed, SearchType was read-only due to incorrect type parameter in a call to ValueLinks.selectedItemValueLink()

@@ -634,7 +634,8 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
 
   /**
    * Selects the given entities for update and checks if they have been modified by comparing
-   * the property values to the current values in the database.
+   * the property values to the current values in the database. Note that this does not
+   * include BLOB properties.
    * The calling method is responsible for releasing the select for update lock.
    * @param entities the entities to check, hashed by entityID
    * @throws DatabaseException in case of a database exception
@@ -656,7 +657,9 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
           throw new RecordModifiedException(entity, null);
         }
         for (final String propertyID : current.getValueKeys()) {
-          if (!entity.containsValue(propertyID) || !Util.equal(current.getValue(propertyID), entity.getOriginalValue(propertyID))) {
+          final Property property = Entities.getProperty(entry.getKey(), propertyID);
+          //BLOB property values are not loaded, so we can't compare those
+          if (!property.isType(Types.BLOB) && valueMissingOrModified(entity, current, propertyID)) {
             throw new RecordModifiedException(entity, current);
           }
         }
@@ -1052,6 +1055,10 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
         throw new SQLException("Unable to update entity " + entity.getEntityID() + ", no modified values found");
       }
     }
+  }
+
+  private static boolean valueMissingOrModified(final Entity entity, final Entity current, final String propertyID) {
+    return !entity.containsValue(propertyID) || !Util.equal(current.getValue(propertyID), entity.getOriginalValue(propertyID));
   }
 
   private static void checkReadOnly(final Collection<Entity> entities) throws DatabaseException {
