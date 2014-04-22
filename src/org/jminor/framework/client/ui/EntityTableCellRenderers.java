@@ -202,6 +202,7 @@ public final class EntityTableCellRenderers {
 
     private BooleanRenderer(final EntityTableModel tableModel, final Property property) {
       super(tableModel, property, null, CENTER);
+      checkBox.setHorizontalAlignment(CENTER);
       checkBox.setOpaque(true);
     }
 

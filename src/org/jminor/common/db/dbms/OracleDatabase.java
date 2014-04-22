@@ -27,7 +27,7 @@ public final class OracleDatabase extends AbstractDatabase {
   private static final int CHILD_RECORD_ERROR = 2292;
   private static final int NULL_VALUE_ERROR = 1400;
   private static final int INTEGRITY_CONSTRAINT_ERROR = 2291;
-  private static final int NULL_VALU_ERROR_2 = 1407;
+  private static final int NULL_VALUE_ERROR_2 = 1407;
   private static final int CHECK_CONSTRAINT_ERROR = 2290;
   private static final int MISSING_PRIVS_ERROR = 1031;
   private static final int LOGIN_CREDS_ERROR = 1017;
@@ -41,7 +41,7 @@ public final class OracleDatabase extends AbstractDatabase {
     ERROR_CODE_MAP.put(CHILD_RECORD_ERROR, Messages.get(Messages.CHILD_RECORD_ERROR));
     ERROR_CODE_MAP.put(NULL_VALUE_ERROR, Messages.get(Messages.NULL_VALUE_ERROR));
     ERROR_CODE_MAP.put(INTEGRITY_CONSTRAINT_ERROR, Messages.get(Messages.INTEGRITY_CONSTRAINT_ERROR));
-    ERROR_CODE_MAP.put(NULL_VALU_ERROR_2, Messages.get(Messages.NULL_VALUE_ERROR));
+    ERROR_CODE_MAP.put(NULL_VALUE_ERROR_2, Messages.get(Messages.NULL_VALUE_ERROR));
     ERROR_CODE_MAP.put(CHECK_CONSTRAINT_ERROR, Messages.get(Messages.CHECK_CONSTRAINT_ERROR));
     ERROR_CODE_MAP.put(MISSING_PRIVS_ERROR, Messages.get(Messages.MISSING_PRIVILEGES_ERROR));
     ERROR_CODE_MAP.put(LOGIN_CREDS_ERROR, Messages.get(Messages.LOGIN_CREDENTIALS_ERROR));
@@ -108,7 +108,7 @@ public final class OracleDatabase extends AbstractDatabase {
   /** {@inheritDoc} */
   @Override
   public String getErrorMessage(final SQLException exception) {
-    if (exception.getErrorCode() == NULL_VALUE_ERROR || exception.getErrorCode() == NULL_VALU_ERROR_2) {
+    if (exception.getErrorCode() == NULL_VALUE_ERROR || exception.getErrorCode() == NULL_VALUE_ERROR_2) {
       String exceptionMessage = exception.getMessage();
       if (exceptionMessage.contains("\n")) {
         exceptionMessage = exceptionMessage.substring(0, exception.getMessage().indexOf("\n"));
