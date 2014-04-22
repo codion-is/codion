@@ -18,7 +18,7 @@ public class Item<T> implements Comparable<Item> {
   /**
    * Instantiates a new Item, with the caption as item.toString(),
    * zero length string in case of a null item
-   * @param item the item
+   * @param item the item, may be null
    */
   public Item(final T item) {
     this(item, item == null ? "" : item.toString());
@@ -26,8 +26,9 @@ public class Item<T> implements Comparable<Item> {
 
   /**
    * Instantiates a new Item.
-   * @param item the item
+   * @param item the item, may be null
    * @param caption the caption
+   * @throws IllegalArgumentException if caption is null
    */
   public Item(final T item, final String caption) {
     Util.rejectNullValue(caption, "caption");

@@ -6,10 +6,6 @@ package org.jminor.common.model.combobox;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.Util;
 
-import javax.swing.Icon;
-import javax.swing.ImageIcon;
-import java.awt.Component;
-import java.awt.Graphics;
 import java.util.Collection;
 import java.util.Comparator;
 
@@ -44,8 +40,14 @@ public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> 
    * @param item the item
    * @return the index of the given item
    */
-  public final int getIndexOfItem(final T item) {
-    return indexOf(item);
+  public final int indexOf(final T item) {
+    for (int i = 0; i < getSize(); i++) {
+      if (Util.equal(((Item) getElementAt(i)).getItem(), item)) {
+        return i;
+      }
+    }
+
+    return -1;
   }
 
   @Override
@@ -60,50 +62,5 @@ public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> 
     }
 
     return null;
-  }
-
-  private int indexOf(final T item) {
-    final int size = getSize();
-    for (int i = 0; i < size; i++) {
-      if (Util.equal(((Item) getElementAt(i)).getItem(), item)) {
-        return i;
-      }
-    }
-
-    return -1;
-  }
-
-  /**
-   * An IconItem to use in a ItemComboBoxModel.
-   */
-  public static final class IconItem<T> extends Item<T> implements Icon {
-
-    private final ImageIcon icon;
-
-    /**
-     * Constructs a new IconItem.
-     * @param item the item this IconItem represents
-     * @param icon the icon
-     */
-    public IconItem(final T item, final ImageIcon icon) {
-      super(item, "");
-      Util.rejectNullValue(icon, "icon");
-      this.icon = icon;
-    }
-
-    @Override
-    public int getIconHeight() {
-      return icon.getIconHeight();
-    }
-
-    @Override
-    public int getIconWidth() {
-      return icon.getIconWidth();
-    }
-
-    @Override
-    public void paintIcon(final Component c, final Graphics g, final int x, final int y) {
-      icon.paintIcon(c, g, x, y);
-    }
   }
 }

@@ -4,11 +4,9 @@
 package org.jminor.common.model.combobox;
 
 import org.jminor.common.model.Item;
-import org.jminor.common.ui.images.Images;
 
 import org.junit.Test;
 
-import javax.swing.ImageIcon;
 import java.util.Arrays;
 import java.util.List;
 
@@ -34,11 +32,11 @@ public class ItemComboBoxModelTest {
       }
     };
 
-    assertEquals("The item representing null should be at index 0", 0, model.getIndexOfItem(null));
-    assertEquals("The item representing 1 should be at index 1", 1, model.getIndexOfItem(1));
-    assertEquals("The item representing 2 should be at index 2", 2, model.getIndexOfItem(2));
-    assertEquals("The item representing 3 should be at index 3", 3, model.getIndexOfItem(3));
-    assertEquals("The item representing 4 should be at index 4", 4, model.getIndexOfItem(4));
+    assertEquals("The item representing null should be at index 0", 0, model.indexOf(null));
+    assertEquals("The item representing 1 should be at index 1", 1, model.indexOf(1));
+    assertEquals("The item representing 2 should be at index 2", 2, model.indexOf(2));
+    assertEquals("The item representing 3 should be at index 3", 3, model.indexOf(3));
+    assertEquals("The item representing 4 should be at index 4", 4, model.indexOf(4));
 
     model.setSelectedItem(1);
     assertTrue("The item representing 1 should be selected", model.getSelectedItem().equals(aOne));
@@ -54,23 +52,15 @@ public class ItemComboBoxModelTest {
     assertEquals(null, model.getSelectedValue().getItem());
     assertTrue("The item representing null should be selected", model.getSelectedItem().equals(nullItem));
 
-    final ImageIcon icon = Images.loadImage("jminor_logo32.gif");
-    final ItemComboBoxModel<String> iconModel = new ItemComboBoxModel<>(Arrays.asList(new ItemComboBoxModel.IconItem<>("test", icon)));
-    iconModel.setSelectedItem("test");
-    final ItemComboBoxModel.IconItem item = (ItemComboBoxModel.IconItem) iconModel.getSelectedItem();
-    assertEquals(icon.getIconHeight(), item.getIconHeight());
-    assertEquals(icon.getIconWidth(), item.getIconWidth());
-    assertEquals("", item.toString());
-
     model.clear();
     assertEquals(0, model.getSize());
     model.refresh();
 
-    assertEquals("The item representing null should be at index 0", 0, model.getIndexOfItem(null));
-    assertEquals("The item representing 1 should be at index 1", 1, model.getIndexOfItem(1));
-    assertEquals("The item representing 2 should be at index 2", 2, model.getIndexOfItem(2));
-    assertEquals("The item representing 3 should be at index 3", 3, model.getIndexOfItem(3));
-    assertEquals("The item representing 4 should be at index 4", 4, model.getIndexOfItem(4));
+    assertEquals("The item representing null should be at index 0", 0, model.indexOf(null));
+    assertEquals("The item representing 1 should be at index 1", 1, model.indexOf(1));
+    assertEquals("The item representing 2 should be at index 2", 2, model.indexOf(2));
+    assertEquals("The item representing 3 should be at index 3", 3, model.indexOf(3));
+    assertEquals("The item representing 4 should be at index 4", 4, model.indexOf(4));
 
     //test unsorted final List<Item<Integer>> items = Arrays.asList(nullItem, cThree, bTwo, aOne, dFour);
     final ItemComboBoxModel<Integer> unsortedModel = new ItemComboBoxModel<Integer>(null, items) {
@@ -80,10 +70,10 @@ public class ItemComboBoxModelTest {
       }
     };
 
-    assertEquals("The item representing null should be at index 0", 0, unsortedModel.getIndexOfItem(null));
-    assertEquals("The item representing 3 should be at index 1", 1, unsortedModel.getIndexOfItem(3));
-    assertEquals("The item representing 2 should be at index 2", 2, unsortedModel.getIndexOfItem(2));
-    assertEquals("The item representing 1 should be at index 3", 3, unsortedModel.getIndexOfItem(1));
-    assertEquals("The item representing 4 should be at index 4", 4, unsortedModel.getIndexOfItem(4));
+    assertEquals("The item representing null should be at index 0", 0, unsortedModel.indexOf(null));
+    assertEquals("The item representing 3 should be at index 1", 1, unsortedModel.indexOf(3));
+    assertEquals("The item representing 2 should be at index 2", 2, unsortedModel.indexOf(2));
+    assertEquals("The item representing 1 should be at index 3", 3, unsortedModel.indexOf(1));
+    assertEquals("The item representing 4 should be at index 4", 4, unsortedModel.indexOf(4));
   }
 }

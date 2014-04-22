@@ -3739,3 +3739,4 @@
   Configuration.USE_OPTIMISTIC_LOCKING default value changed to true
   DefaultEntityConnection.lockAndCheckForUpdate() bug fixed, now excludes Types.BLOB properties from the modified check
   ColumnSearchPanel.initializeSearchTypeComboBox() bug fixed, SearchType was read-only due to incorrect type parameter in a call to ValueLinks.selectedItemValueLink()
+  ItemComboBoxModel, some refactoring

@@ -44,6 +44,9 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private FilterCriteria<T> filterCriteria = ACCEPT_ALL_CRITERIA;
   private boolean filterSelectedItem = true;
 
+  /**
+   * Due to a java.util.ConcurrentModificationException in OSX
+   */
   private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<>();
 
   /**
