@@ -1,6 +1,8 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Conjunction;
+import org.jminor.common.model.EventListener;
+import org.jminor.common.model.SearchType;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -8,6 +10,8 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.junit.Test;
 
 import java.sql.Types;
+import java.util.ArrayList;
+import java.util.Collection;
 
 import static org.junit.Assert.*;
 
@@ -35,6 +39,32 @@ public class DefaultEntityTableSearchModelTest {
 
     assertFalse(searchModel.isFilterEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK));
     assertFalse(searchModel.isSearchEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+
+    assertFalse(searchModel.isSearchEnabled());
+    searchModel.setSearchEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK, true);
+    assertTrue(searchModel.isSearchEnabled());
+  }
+
+  @Test
+  public void searchStateListener() {
+    final Collection<Object> counter = new ArrayList<>();
+    final EventListener listener = new EventListener() {
+      @Override
+      public void eventOccurred() {
+        counter.add(new Object());
+      }
+    };
+    searchModel.addSearchStateListener(listener);
+    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION).setEnabled(true);
+    assertEquals(1, counter.size());
+    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION).setEnabled(false);
+    assertEquals(2, counter.size());
+    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION).setUpperBound(1200d);
+    //automatically set enabled when upper bound is set
+    assertEquals(4, counter.size());
+    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION).setSearchType(SearchType.GREATER_THAN);
+    assertEquals(5, counter.size());
+    searchModel.removeSearchStateListener(listener);
   }
 
   @Test

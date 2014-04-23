@@ -3742,3 +3742,4 @@
   ItemComboBoxModel, some refactoring
 0.8.7
   EntityTableCellRenderer.BooleanRenderer bug fixed (from last refactoring), BooleanRenderer is now aligned in center
+  EntityTableSearchModel.addSearchStateListener(), removeSearchStateListener() and isSearchEnabled() added

@@ -35,6 +35,7 @@ import java.util.Map;
 public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   private final State searchStateChangedState = States.state();
+  private final Event searchStateChangedEvent = Events.event();
   private final Event<String> simpleSearchStringChangedEvent = Events.event();
   private final Event simpleSearchPerformedEvent = Events.event();
 
@@ -176,6 +177,18 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   /** {@inheritDoc} */
   @Override
+  public final boolean isSearchEnabled() {
+    for (final PropertySearchModel searchModel : propertySearchModels.values()) {
+      if (searchModel.isEnabled()) {
+        return true;
+      }
+    }
+
+    return false;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final boolean isSearchEnabled(final String propertyID) {
     return containsPropertySearchModel(propertyID) && getPropertySearchModel(propertyID).isEnabled();
   }
@@ -212,9 +225,9 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   @Override
   public final Criteria<Property.ColumnProperty> getSearchCriteria() {
     final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<>(searchConjunction);
-    for (final PropertySearchModel<? extends Property.SearchableProperty> criteria : propertySearchModels.values()) {
-      if (criteria.isEnabled()) {
-        criteriaSet.add(criteria.getCriteria());
+    for (final PropertySearchModel<? extends Property.SearchableProperty> searchModel : propertySearchModels.values()) {
+      if (searchModel.isEnabled()) {
+        criteriaSet.add(searchModel.getCriteria());
       }
     }
     if (additionalSearchCriteria != null) {
@@ -300,6 +313,18 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
 
   /** {@inheritDoc} */
   @Override
+  public final void addSearchStateListener(final EventListener listener) {
+    searchStateChangedEvent.addListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void removeSearchStateListener(final EventListener listener) {
+    searchStateChangedEvent.removeListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void addSimpleSearchListener(final EventListener listener) {
     simpleSearchPerformedEvent.addListener(listener);
   }
@@ -316,6 +341,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
         @Override
         public void eventOccurred() {
           searchStateChangedState.setActive(!rememberedSearchState.equals(getSearchModelState()));
+          searchStateChangedEvent.fire();
         }
       });
     }

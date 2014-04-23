@@ -61,6 +61,11 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
   EntityTableSearchModel setAdditionalSearchCriteria(final Criteria<Property.ColumnProperty> criteria);
 
   /**
+   * @return true if any of the PropertySearchModels is enabled
+   */
+  boolean isSearchEnabled();
+
+  /**
    * @param propertyID the column propertyID
    * @return true if the PropertySearchModel behind column with index <code>columnIndex</code> is enabled
    */
@@ -175,6 +180,16 @@ public interface EntityTableSearchModel extends FilterCriteria<Entity>, Refresha
    * @return an EventObserver notified each time the simple search text changes
    */
   EventObserver<String> getSimpleSearchStringObserver();
+
+  /**
+   * @param listener a listener notified each time the search state changes
+   */
+  void addSearchStateListener(final EventListener listener);
+
+  /**
+   * @param listener the listener to remove
+   */
+  void removeSearchStateListener(final EventListener listener);
 
   /**
    * @param listener a listener notified each time a simple search is performed
