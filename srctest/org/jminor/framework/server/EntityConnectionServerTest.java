@@ -23,12 +23,15 @@ import org.junit.Test;
 import java.io.InputStream;
 import java.net.URL;
 import java.rmi.RemoteException;
+import java.rmi.registry.Registry;
 import java.util.Collection;
 import java.util.UUID;
 
 import static org.junit.Assert.*;
 
 public class EntityConnectionServerTest {
+
+  private static final int WEB_SERVER_PORT_NUMBER = 8089;
 
   private static EntityConnectionServer server;
   private static EntityConnectionServerAdminImpl admin;
@@ -165,7 +168,7 @@ public class EntityConnectionServerTest {
 
   @Test
   public void testWebServer() throws Exception {
-    try (final InputStream input = new URL("http://localhost:8181/file_templates/EntityEditPanel.template").openStream()) {
+    try (final InputStream input = new URL("http://localhost:" + WEB_SERVER_PORT_NUMBER + "/file_templates/EntityEditPanel.template").openStream()) {
       Thread.sleep(3000);
       assertTrue(input.read() > 0);
     }
@@ -266,7 +269,7 @@ public class EntityConnectionServerTest {
     Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept");
     Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.demos.empdept.server.EmpDeptLoginProxy");
     Configuration.setValue(Configuration.WEB_SERVER_DOCUMENT_ROOT, System.getProperty("user.dir") + System.getProperty("file.separator") + "resources");
-    Configuration.setValue(Configuration.WEB_SERVER_PORT, 8181);
+    Configuration.setValue(Configuration.WEB_SERVER_PORT, WEB_SERVER_PORT_NUMBER);
     Configuration.setValue("java.rmi.server.hostname", "localhost");
     Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
     Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
@@ -275,7 +278,7 @@ public class EntityConnectionServerTest {
   }
 
   private static void deconfigure() {
-    Configuration.setValue(Configuration.REGISTRY_PORT_NUMBER, 1099);
+    Configuration.setValue(Configuration.REGISTRY_PORT_NUMBER, Registry.REGISTRY_PORT);
     Configuration.clearValue(Configuration.SERVER_PORT);
     Configuration.clearValue(Configuration.SERVER_HOST_NAME);
     Configuration.clearValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
