@@ -890,10 +890,8 @@ public final class Entities {
     public void validate(final Entity entity, final String propertyID) throws ValidationException {
       Util.rejectNullValue(entity, ENTITY_PARAM);
       final Property property = entity.getProperty(propertyID);
-      if (performNullValidation) {
-        if (!(property instanceof Property.ColumnProperty) || !((Property.ColumnProperty) property).isForeignKeyProperty()) {
-          performNullValidation(entity, property);
-        }
+      if (performNullValidation && !isForeignKeyProperty(property)) {
+        performNullValidation(entity, property);
       }
       if (property.isNumerical()) {
         performRangeValidation(entity, property);
@@ -943,6 +941,14 @@ public final class Entities {
                   FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
         }
       }
+    }
+
+    /**
+     * @param property the property
+     * @return true if the property is a part of a foreign key
+     */
+    private static boolean isForeignKeyProperty(final Property property) {
+      return property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isForeignKeyProperty();
     }
   }
 }

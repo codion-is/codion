@@ -121,7 +121,7 @@ public final class UiValues {
   }
 
   private abstract static class UIValue<V> implements Value<V> {
-    protected final Event<V> changeEvent = Events.event();
+    private final Event<V> changeEvent = Events.event();
 
     @Override
     public final EventObserver<V> getChangeObserver() {
@@ -148,6 +148,10 @@ public final class UiValues {
       }
     }
 
+    protected final void fireChangeEvent() {
+      changeEvent.fire();
+    }
+
     protected abstract void setInternal(final V value);
   }
 
@@ -169,7 +173,7 @@ public final class UiValues {
         document.addDocumentListener(new DocumentAdapter() {
           @Override
           public final void contentsChanged(final DocumentEvent e) {
-            changeEvent.fire();
+            fireChangeEvent();
           }
         });
       }
@@ -178,7 +182,7 @@ public final class UiValues {
           @Override
           public void focusLost(final FocusEvent e) {
             if (!e.isTemporary()) {
-              changeEvent.fire();
+              fireChangeEvent();
             }
           }
         });
@@ -338,8 +342,7 @@ public final class UiValues {
       buttonModel.addItemListener(new ItemListener() {
         @Override
         public void itemStateChanged(final ItemEvent e) {
-          changeEvent.fire(buttonModel instanceof TristateButtonModel &&
-                  ((TristateButtonModel) buttonModel).isIndeterminate() ? null : buttonModel.isSelected());
+          fireChangeEvent();
         }
       });
     }
@@ -375,7 +378,7 @@ public final class UiValues {
         @Override
         public void itemStateChanged(final ItemEvent e) {
           if (e.getStateChange() == ItemEvent.SELECTED) {
-            changeEvent.fire();
+            fireChangeEvent();
           }
         }
       });
@@ -408,7 +411,7 @@ public final class UiValues {
       this.spinnerModel.addChangeListener(new ChangeListener() {
         @Override
         public void stateChanged(final ChangeEvent e) {
-          changeEvent.fire();
+          fireChangeEvent();
         }
       });
     }

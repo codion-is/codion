@@ -186,13 +186,13 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   public Object getValue(final Property property) {
     Util.rejectNullValue(property, PROPERTY_PARAM);
     if (property instanceof Property.DenormalizedViewProperty) {
-      return getDenormalizedViewValue((Property.DenormalizedViewProperty) property, false);
+      return getDenormalizedViewValue((Property.DenormalizedViewProperty) property);
     }
     if (property instanceof Property.DerivedProperty) {
       return getDerivedValue((Property.DerivedProperty) property);
     }
 
-    return super.getValue(((DefaultProperty) property).propertyID);
+    return super.getValue(property.getPropertyID());
   }
 
   /**
@@ -296,30 +296,13 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
       }
     }
 
-    return getFormattedValue(property);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getFormattedValue(final String propertyID) {
-    return getFormattedValue(getProperty(propertyID));
+    return getFormattedValue(property, property.getFormat());
   }
 
   /** {@inheritDoc} */
   @Override
   public String getFormattedValue(final String propertyID, final Format format) {
     return getFormattedValue(getProperty(propertyID), format);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public String getFormattedValue(final Property property) {
-    Util.rejectNullValue(property, PROPERTY_PARAM);
-    if (property instanceof Property.DenormalizedViewProperty) {
-      return (String) getDenormalizedViewValue((Property.DenormalizedViewProperty) property, true);
-    }
-
-    return getFormattedValue(property, property.getFormat());
   }
 
   /** {@inheritDoc} */
@@ -577,14 +560,10 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     }
   }
 
-  private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty, final boolean formatted) {
+  private Object getDenormalizedViewValue(final Property.DenormalizedViewProperty denormalizedViewProperty) {
     final Entity valueOwner = (Entity) getValue(denormalizedViewProperty.getForeignKeyPropertyID());
     if (valueOwner == null) {
       return null;
-    }
-
-    if (formatted) {
-      return valueOwner.getFormattedValue(denormalizedViewProperty.getDenormalizedProperty());
     }
 
     return valueOwner.getValue(denormalizedViewProperty.getDenormalizedProperty().getPropertyID());
@@ -639,7 +618,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   private Key initializePrimaryKey(final boolean originalValues) {
     final Key key = new KeyImpl(definition);
     for (final Property.PrimaryKeyProperty property : definition.getPrimaryKeyProperties()) {
-      final String propertyID = ((DefaultProperty) property).propertyID;
+      final String propertyID = property.getPropertyID();
       key.setValue(propertyID, originalValues ? getOriginalValue(propertyID) : super.getValue(propertyID));
     }
 
@@ -695,20 +674,19 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   private Object setValue(final DefaultProperty property, final Object value, final boolean validateType,
                           final Map<String, Definition> entityDefinitions) {
     Util.rejectNullValue(property, PROPERTY_PARAM);
-    if (property instanceof Property.PrimaryKeyProperty) {
-      primaryKey = null;
-    }
     validateValue(this, property, value);
     if (validateType) {
       validateType(property, value);
     }
-
+    if (property instanceof Property.PrimaryKeyProperty) {
+      primaryKey = null;
+    }
     toString = null;
     if (property instanceof Property.ForeignKeyProperty) {
       propagateForeignKeyValues((Property.ForeignKeyProperty) property, (Entity) value, entityDefinitions);
     }
 
-    return super.setValue(property.propertyID, property.prepareValue(value));
+    return super.setValue(property.getPropertyID(), property.prepareValue(value));
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -717,7 +695,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     stream.writeBoolean(isModified);
     for (final Property property : definition.getProperties().values()) {
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
-        final String propertyID = ((DefaultProperty) property).propertyID;
+        final String propertyID = property.getPropertyID();
         stream.writeObject(super.getValue(propertyID));
         if (isModified) {
           final boolean valueModified = isModified(propertyID);
@@ -739,7 +717,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     }
     for (final Property property : definition.getProperties().values()) {
       if (!(property instanceof Property.DerivedProperty) && !(property instanceof Property.DenormalizedViewProperty)) {
-        final String propertyID = ((DefaultProperty) property).propertyID;
+        final String propertyID = property.getPropertyID();
         super.setValue(propertyID, stream.readObject());
         if (isModified && stream.readBoolean()) {
           setOriginalValue(propertyID, stream.readObject());
@@ -1043,7 +1021,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
       singleIntegerKey = propertyCount == 1 && properties.get(0).isInteger();
       compositeKey = propertyCount > 1;
       for (final Property property : properties) {
-        setValue(((DefaultProperty) property).propertyID, stream.readObject());
+        setValue(property.getPropertyID(), stream.readObject());
       }
     }
   }

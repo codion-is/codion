@@ -157,16 +157,17 @@ public final class H2Database extends AbstractDatabase {
 
   /**
    * Initializes a new H2 database, with the given script
+   * @param url the database url
    * @param scriptPath the path to the initialization script
    * @throws java.sql.SQLException in case of an exception
    */
-  private static void initializeMemoryDatabase(final String URL, final String scriptPath) throws SQLException {
+  private static void initializeMemoryDatabase(final String url, final String scriptPath) throws SQLException {
     final Properties properties = new Properties();
     properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
     String initializerString = ";DB_CLOSE_DELAY=-1";
     if (scriptPath != null) {
       initializerString += ";INIT=RUNSCRIPT FROM '" + scriptPath + "'";
     }
-    DriverManager.getConnection(URL + initializerString).close();
+    DriverManager.getConnection(url + initializerString).close();
   }
 }

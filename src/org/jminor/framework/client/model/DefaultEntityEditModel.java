@@ -383,8 +383,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final void validate(final Collection<? extends ValueMap<String, Object>> valueMaps) throws ValidationException {
-    for (final ValueMap<String, Object> entity : valueMaps) {
-      validate((Entity) entity);
+    for (final ValueMap<String, Object> entityToValidate : valueMaps) {
+      validate((Entity) entityToValidate);
     }
   }
 

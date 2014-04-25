@@ -1277,7 +1277,7 @@ public final class UiUtil {
       dialog.setSize(new Dimension(500, dialog.getSize().height));
     }
 
-    return (T) list.getSelectedValue();
+    return list.getSelectedValue();
   }
 
   /**

@@ -42,7 +42,7 @@ class DefaultProperty implements Property {
    * By default this ID serves as column name for database properties.
    * @see #getPropertyID()
    */
-  final String propertyID;
+  private final String propertyID;
 
   /**
    * The property type, java.sql.Types
@@ -143,11 +143,7 @@ class DefaultProperty implements Property {
    */
   @Override
   public final String toString() {
-    if (caption == null) {
-      return propertyID;
-    }
-
-    return caption;
+    return getCaption();
   }
 
   /** {@inheritDoc} */

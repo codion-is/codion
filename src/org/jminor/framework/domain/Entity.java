@@ -112,23 +112,10 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
 
   /**
    * @param propertyID the ID of the property for which to retrieve the formatted value
-   * @return the value of the property identified by <code>propertyID</code>, formatting it
-   * with the format object associated with the property
-   */
-  String getFormattedValue(final String propertyID);
-
-  /**
-   * @param propertyID the ID of the property for which to retrieve the formatted value
    * @param format the format object
    * @return the value of the property identified by <code>propertyID</code>, formatted with <code>format</code>
    */
   String getFormattedValue(final String propertyID, final Format format);
-
-  /**
-   * @param property the property for which to retrieve the formatted value
-   * @return the value of the given property formatted with the format object associated with the property
-   */
-  String getFormattedValue(final Property property);
 
   /**
    * @param property the property for which to retrieve the formatted value

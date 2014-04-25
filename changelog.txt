@@ -3744,3 +3744,6 @@
   EntityTableCellRenderer.BooleanRenderer bug fixed (from last refactoring), BooleanRenderer is now aligned in center
   EntityTableSearchModel.addSearchStateListener(), removeSearchStateListener() and isSearchEnabled() added
   DefaultEntityTableModel.getOrderByClause() added
+  Sonar run
+  Entity, redundant getFormattedValue() removed
+  EntityImpl, bug fixed, setValue() set the primary key to null to early, before validation had been performed
