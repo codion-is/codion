@@ -583,7 +583,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   /**
-   * Queries for the data used to populate this EntityTableModel when it is refreshed
+   * Queries for the data used to populate this EntityTableModel when it is refreshed,
+   * using the order by clause returned by {@link #getOrderByClause()}
    * @param criteria a criteria
    * @return entities selected from the database according the the query criteria.
    * @see EntityTableSearchModel#getSearchCriteria()
@@ -595,7 +596,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
     try {
       return connectionProvider.getConnection().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
-              Entities.getOrderByClause(entityID), fetchCount));
+              getOrderByClause(), fetchCount));
     }
     catch (DatabaseException e) {
       throw new RuntimeException(e);
@@ -625,6 +626,16 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   @Override
   protected final String getSearchValueAt(final int rowIndex, final TableColumn column) {
     return getItemAt(rowIndex).getValueAsString((Property) column.getIdentifier());
+  }
+
+  /**
+   * The order by clause to use when selecting the data for this model,
+   * by default the order by clause defined for the underlying entity
+   * @return the order by clause
+   * @see Entities#getOrderByClause(String)
+   */
+  protected String getOrderByClause() {
+    return Entities.getOrderByClause(entityID);
   }
 
   @SuppressWarnings({"UnusedDeclaration"})

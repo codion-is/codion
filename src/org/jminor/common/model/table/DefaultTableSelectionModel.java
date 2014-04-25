@@ -104,8 +104,8 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
     }
     checkIndexes(indexes);
     final Iterator<Integer> iterator = indexes.iterator();
-    //keep the first index and add last in order to avoid firing evtSelectionChanged
-    //for each index being added, see fireValueChanged() above
+    /** hold on to the first index and add last in order to avoid firing evtSelectionChanged
+     *  for each index being added, see {@link #fireValueChanged(int, int, boolean)} */
     final int firstIndex = iterator.next();
     try {
       isUpdatingSelection = true;
