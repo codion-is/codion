@@ -180,6 +180,13 @@ public final class Configuration {
   public static final String SERVER_LOGIN_PROXY_CLASSES = "jminor.server.loginProxyClasses";
 
   /**
+   * Specifies the statistics polling rate for the server monitor, in seconds.
+   * Value type: Integer<br>
+   * Default value: 5
+   */
+  public static final String SERVER_MONITOR_UPDATE_RATE = "jminor.server.monitor.updateRate";
+
+  /**
    * Specifies the initial think time setting for the load test client
    * (max think time = thinktime, min think time = max think time / 2)<br>
    * Value type: Integer<br>
@@ -701,6 +708,7 @@ public final class Configuration {
   private static final int DEFAULT_WEB_SERVER_PORT = 80;
   private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
   private static final int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
+  private static final int DEFAULT_SERVER_MONITOR_UPDATE_RATE = 5;
 
   static {
     Util.parseConfigurationFile();
@@ -767,6 +775,7 @@ public final class Configuration {
     PROPERTIES.put(DISPOSE_EDIT_DIALOG_ON_ESCAPE, true);
     PROPERTIES.put(CENTER_APPLICATION_DIALOGS, false);
     PROPERTIES.put(ALLOW_REDEFINE_ENTITY, false);
+    PROPERTIES.put(SERVER_MONITOR_UPDATE_RATE, DEFAULT_SERVER_MONITOR_UPDATE_RATE);
     parseSystemSettings();
   }
 
@@ -840,6 +849,7 @@ public final class Configuration {
     parseBooleanSetting(DISPOSE_EDIT_DIALOG_ON_ESCAPE);
     parseBooleanSetting(CENTER_APPLICATION_DIALOGS);
     parseBooleanSetting(ALLOW_REDEFINE_ENTITY);
+    parseIntegerSetting(SERVER_MONITOR_UPDATE_RATE);
   }
 
   private static void parseIntegerSetting(final String setting) {

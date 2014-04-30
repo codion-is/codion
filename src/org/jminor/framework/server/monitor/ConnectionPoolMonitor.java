@@ -11,6 +11,7 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
+import org.jminor.framework.Configuration;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.XYSeries;
@@ -58,7 +59,7 @@ public final class ConnectionPoolMonitor {
     public void run() {
       updateStatistics();
     }
-  }, 2, 2, TimeUnit.SECONDS).start();
+  }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
 
   private long lastStatisticsUpdateTime = 0;
 

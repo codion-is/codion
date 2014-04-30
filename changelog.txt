@@ -3747,3 +3747,4 @@
   Sonar run
   Entity, redundant getFormattedValue() removed
   EntityImpl, bug fixed, setValue() set the primary key to null to early, before validation had been performed
+  Configuration.SERVER_MONITOR_UPDATE_RATE added

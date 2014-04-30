@@ -5,6 +5,7 @@ package org.jminor.framework.server.monitor;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.model.TaskScheduler;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.jfree.data.xy.XYSeries;
@@ -35,7 +36,7 @@ public final class DatabaseMonitor {
       }
       catch (RemoteException ignored) {}
     }
-  }, 2, 2, TimeUnit.SECONDS).start();
+  }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
 
   public DatabaseMonitor(final EntityConnectionServerAdmin server) throws RemoteException {
     this.server = server;

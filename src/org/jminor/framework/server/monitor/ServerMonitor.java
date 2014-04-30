@@ -54,7 +54,7 @@ public final class ServerMonitor {
       }
       catch (RemoteException ignored) {}
     }
-  }, 2, 2, TimeUnit.SECONDS).start();
+  }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
 
   private final DatabaseMonitor databaseMonitor;
   private final ClientUserMonitor clientMonitor;
