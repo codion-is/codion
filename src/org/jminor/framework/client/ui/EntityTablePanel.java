@@ -583,6 +583,25 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
+   * @return a Control for refreshing the underlying table data
+   */
+  public final Control getRefreshControl() {
+    final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
+    return Controls.methodControl(getEntityTableModel(), "refresh", refreshCaption,
+            null, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP), refreshCaption.charAt(0),
+            null, Images.loadImage(Images.IMG_REFRESH_16));
+  }
+
+  /**
+   * @return a Control for clearing the underlying table model, that is, removing all rows
+   */
+  public final Control getClearControl() {
+    final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
+    return Controls.methodControl(getEntityTableModel(), "clear", clearCaption,
+            null, null, clearCaption.charAt(0), null, null);
+  }
+
+  /**
    * Retrieves a new property value via input dialog and performs an update on the selected entities
    * @param propertyToUpdate the property to update
    * @see #getInputProvider(org.jminor.framework.domain.Property, java.util.List)
@@ -1112,25 +1131,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   protected String[] getConfirmDeleteMessages() {
     return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED),
             FrameworkMessages.get(FrameworkMessages.DELETE)};
-  }
-
-  /**
-   * @return a Control for refreshing the underlying table data
-   */
-  protected final Control getRefreshControl() {
-    final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
-    return Controls.methodControl(getEntityTableModel(), "refresh", refreshCaption,
-            null, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP), refreshCaption.charAt(0),
-            null, Images.loadImage(Images.IMG_REFRESH_16));
-  }
-
-  /**
-   * @return a Control for clearing the underlying table model, that is, removing all rows
-   */
-  protected final Control getClearControl() {
-    final String clearCaption = FrameworkMessages.get(FrameworkMessages.CLEAR);
-    return Controls.methodControl(getEntityTableModel(), "clear", clearCaption,
-            null, null, clearCaption.charAt(0), null, null);
   }
 
   /**

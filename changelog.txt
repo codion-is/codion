@@ -3748,3 +3748,5 @@
   Entity, redundant getFormattedValue() removed
   EntityImpl, bug fixed, setValue() set the primary key to null to early, before validation had been performed
   Configuration.SERVER_MONITOR_UPDATE_RATE added
+  EntityApplicationPanel.getFrameTitle() signature change, now takes a EntityConnectionProvider parameter instead of User
+  EntityTablePanel.getRefreshControl() and getClearControl() made public

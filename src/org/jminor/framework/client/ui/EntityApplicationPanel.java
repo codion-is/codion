@@ -934,11 +934,11 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
 
   /**
    * @param frameCaption the caption for the frame
-   * @param user the user
-   * @return a frame title based on the caption and user information
+   * @param provider the EntityConnectionProvider this application is using
+   * @return a frame title based on the logged in user
    */
-  protected String getFrameTitle(final String frameCaption, final User user) {
-    return frameCaption + " - " + getUserInfo(user, applicationModel.getConnectionProvider().getDescription());
+  protected String getFrameTitle(final String frameCaption, final EntityConnectionProvider provider) {
+    return frameCaption + " - " + getUserInfo(provider);
   }
 
   /**
@@ -1120,7 +1120,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
         if (Configuration.getBooleanValue(Configuration.SAVE_DEFAULT_USERNAME)) {
           saveDefaultUserName(connectionProvider.getUser().getUsername());
         }
-        this.frameTitle = getFrameTitle(frameCaption, connectionProvider.getUser());
+        this.frameTitle = getFrameTitle(frameCaption, connectionProvider);
         final JFrame frame = prepareFrame(this.frameTitle, maximize, true, frameSize, applicationIcon, showFrame);
         this.applicationStartedEvent.fire();
         LOG.info(this.frameTitle + ", application started successfully, " + connectionProvider.getUser().getUsername()
@@ -1199,8 +1199,10 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     }
   }
 
-  private static String getUserInfo(final User user, final String dbDescription) {
-    return getUsername(user.getUsername().toUpperCase()) + (dbDescription != null ? "@" + dbDescription.toUpperCase() : "");
+  private static String getUserInfo(final EntityConnectionProvider provider) {
+    final String dbDescription = provider.getDescription();
+
+    return getUsername(provider.getUser().getUsername().toUpperCase()) + (dbDescription != null ? "@" + dbDescription.toUpperCase() : "");
   }
 
   private static String getUsername(final String username) {
