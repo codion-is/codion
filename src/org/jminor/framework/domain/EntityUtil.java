@@ -372,7 +372,7 @@ public final class EntityUtil {
     }
     for (final Entity entity : entities) {
       if (entity != null) {
-        for (final Property.PrimaryKeyProperty property : Entities.getPrimaryKeyProperties(entity.getEntityID())) {
+        for (final Property.ColumnProperty property : Entities.getPrimaryKeyProperties(entity.getEntityID())) {
           if (entity.isModified(property.getPropertyID())) {
             return true;
           }

@@ -543,7 +543,8 @@ class DefaultProperty implements Property {
     private final int columnType;
     private final ValueFetcher valueFetcher;
     private ValueConverter valueConverter;
-    private int selectIndex;
+    private int selectIndex = -1;
+    private int primaryKeyIndex = -1;
     private boolean columnHasDefaultValue = false;
     private boolean updatable = true;
     private boolean searchable = true;
@@ -632,6 +633,21 @@ class DefaultProperty implements Property {
     }
 
     @Override
+    public ColumnProperty setPrimaryKeyIndex(final int index) {
+      if (index < 0) {
+        throw new IllegalArgumentException("Primary key index must be at least 0");
+      }
+      this.primaryKeyIndex = index;
+      setUpdatable(false);
+      return this;
+    }
+
+    @Override
+    public int getPrimaryKeyIndex() {
+      return primaryKeyIndex;
+    }
+
+    @Override
     public final ColumnProperty setGroupingColumn(final boolean groupingColumn) {
       if (aggregateColumn) {
         throw new IllegalStateException(columnName + " is an aggregate column");
@@ -672,6 +688,11 @@ class DefaultProperty implements Property {
     @Override
     public final boolean isForeignKeyProperty() {
       return foreignKeyProperty != null;
+    }
+
+    @Override
+    public boolean isPrimaryKeyProperty() {
+      return primaryKeyIndex >= 0;
     }
 
     @Override
@@ -850,30 +871,6 @@ class DefaultProperty implements Property {
       else {
         return null;
       }
-    }
-  }
-
-  static final class DefaultPrimaryKeyProperty extends DefaultColumnProperty implements PrimaryKeyProperty {
-
-    private int index = 0;
-
-    DefaultPrimaryKeyProperty(final String propertyID, final int type, final String caption) {
-      super(propertyID, type, caption);
-      setUpdatable(false);
-    }
-
-    @Override
-    public int getIndex() {
-      return index;
-    }
-
-    @Override
-    public PrimaryKeyProperty setIndex(final int index) {
-      if (index < 0) {
-        throw new IllegalArgumentException("Primary key index must be at least 0");
-      }
-      this.index = index;
-      return this;
     }
   }
 

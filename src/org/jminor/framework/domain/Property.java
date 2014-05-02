@@ -329,6 +329,27 @@ public interface Property extends Attribute {
     ColumnProperty setSearchable(final boolean searchable);
 
     /**
+     * @return this property's zero based index in the primary key, -1 if this property is not part of a primary key
+     */
+    int getPrimaryKeyIndex();
+
+    /**
+     * Sets the zero based primary key index of this property.
+     * Note that setting the primary key index renders this property non-updatable by default,
+     * this can be reverted by setting it as updatable after setting the primary key index.
+     * @param index the zero based index
+     * @return this ColumnProperty instance
+     * @throws IllegalArgumentException in case index is a negative number
+     * @see #setUpdatable(boolean)
+     */
+    ColumnProperty setPrimaryKeyIndex(final int index);
+
+    /**
+     * @return true if this property is part of a primary key
+     */
+    boolean isPrimaryKeyProperty();
+
+    /**
      * @param groupingColumn true if this column should be used in a group by clause
      * @throws IllegalStateException in case the column has already been defined as an aggregate column
      * @return this Property instance
@@ -390,25 +411,6 @@ public interface Property extends Attribute {
      * Set a value converter, for converting to and from a sql representation of the value
      */
     ColumnProperty setValueConverter(final ValueConverter valueConverter);
-  }
-
-  /**
-   * A property that is part of a entities primary key.
-   * A primary key property is by default non-updatable.
-   */
-  interface PrimaryKeyProperty extends ColumnProperty {
-
-    /**
-     * @return this property's zero based index in the primary key
-     */
-    int getIndex();
-
-    /**
-     * Sets the zero based primary key index of this property
-     * @param index the zero based index
-     * @return this PrimaryKeyProperty instance
-     */
-    PrimaryKeyProperty setIndex(final int index);
   }
 
   /**

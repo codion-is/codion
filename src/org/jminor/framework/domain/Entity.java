@@ -243,7 +243,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
     /**
      * @return a List containing the properties comprising this key
      */
-    List<Property.PrimaryKeyProperty> getProperties();
+    List<Property.ColumnProperty> getProperties();
 
     /**
      * @return the number of properties comprising this key
@@ -268,7 +268,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
     /**
      * @return the first key property, useful for single property keys
      */
-    Property.PrimaryKeyProperty getFirstKeyProperty();
+    Property.ColumnProperty getFirstKeyProperty();
 
     /**
      * @return the first value contained in this key, useful for single property keys
@@ -296,7 +296,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
      * @param connection the connection to use
      * @throws SQLException in case of an exception
      */
-    void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+    void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                       final DatabaseConnection connection) throws SQLException;
 
     /**
@@ -307,7 +307,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
      * @param connection the connection to use
      * @throws SQLException in case of an exception
      */
-    void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+    void afterInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                      final DatabaseConnection connection) throws SQLException;
 
     /**
@@ -610,7 +610,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
     /**
      * @return the primary key properties of this entity type, sorted by primary key column index
      */
-    List<Property.PrimaryKeyProperty> getPrimaryKeyProperties();
+    List<Property.ColumnProperty> getPrimaryKeyProperties();
 
     /**
      * Retrieves the column list to use when constructing a select query for this entity type

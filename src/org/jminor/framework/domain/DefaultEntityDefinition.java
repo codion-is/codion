@@ -132,7 +132,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
    */
   private final Map<String, Set<String>> linkedProperties = new HashMap<>();
 
-  private List<Property.PrimaryKeyProperty> primaryKeyProperties;
+  private List<Property.ColumnProperty> primaryKeyProperties;
   private List<Property.ForeignKeyProperty> foreignKeyProperties;
   private List<Property.TransientProperty> transientProperties;
   private List<Property> visibleProperties;
@@ -406,7 +406,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public List<Property.PrimaryKeyProperty> getPrimaryKeyProperties() {
+  public List<Property.ColumnProperty> getPrimaryKeyProperties() {
     if (primaryKeyProperties == null) {
       primaryKeyProperties = Collections.unmodifiableList(getPrimaryKeyProperties(properties.values()));
     }
@@ -583,7 +583,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   private static void checkForPrimaryKey(final String entityID, final Map<String, Property> propertyDefinitions) {
     for (final Property property : propertyDefinitions.values()) {
-      if (property instanceof Property.PrimaryKeyProperty) {
+      if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) {
         return;
       }
     }
@@ -629,7 +629,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   static Entity.KeyGenerator queriedKeyGenerator(final String query) {
     final QueriedKeyGenerator keyGenerator = new QueriedKeyGenerator() {
       @Override
-      public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+      public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                                final DatabaseConnection connection) throws SQLException {
         queryAndSet(entity, primaryKeyProperty, connection);
       }
@@ -656,18 +656,18 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return denormalizedPropertiesMap;
   }
 
-  private static List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
-    final List<Property.PrimaryKeyProperty> primaryKeyProperties = new ArrayList<>(properties.size());
+  private static List<Property.ColumnProperty> getPrimaryKeyProperties(final Collection<Property> properties) {
+    final List<Property.ColumnProperty> primaryKeyProperties = new ArrayList<>(properties.size());
     for (final Property property : properties) {
-      if (property instanceof Property.PrimaryKeyProperty) {
-        primaryKeyProperties.add((Property.PrimaryKeyProperty) property);
+      if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) {
+        primaryKeyProperties.add((Property.ColumnProperty) property);
       }
     }
-    Collections.sort(primaryKeyProperties, new Comparator<Property.PrimaryKeyProperty>() {
+    Collections.sort(primaryKeyProperties, new Comparator<Property.ColumnProperty>() {
       @Override
-      public int compare(final Property.PrimaryKeyProperty pk1, final Property.PrimaryKeyProperty pk2) {
-        final Integer index1 = pk1.getIndex();
-        final Integer index2 = pk2.getIndex();
+      public int compare(final Property.ColumnProperty pk1, final Property.ColumnProperty pk2) {
+        final Integer index1 = pk1.getPrimaryKeyIndex();
+        final Integer index2 = pk2.getPrimaryKeyIndex();
 
         return index1.compareTo(index2);
       }
@@ -799,11 +799,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     @Override
-    public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+    public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {}
 
     @Override
-    public void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+    public void afterInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                             final DatabaseConnection connection) throws SQLException {}
   }
 
@@ -819,7 +819,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
       return false;
     }
 
-    protected final void queryAndSet(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+    protected final void queryAndSet(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                                      final DatabaseConnection connection) throws SQLException {
       final int primaryKeyValue = DatabaseUtil.queryInteger(connection, query);
       entity.setValue(primaryKeyProperty, primaryKeyValue);
@@ -841,7 +841,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     @Override
-    public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+    public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {
       queryAndSet(entity, primaryKeyProperty, connection);
     }
@@ -856,7 +856,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     @Override
-    public void beforeInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+    public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {
       if (entity.isValueNull(primaryKeyProperty)) {
         if (getQuery() == null) {
@@ -881,7 +881,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     @Override
-    public void afterInsert(final Entity entity, final Property.PrimaryKeyProperty primaryKeyProperty,
+    public void afterInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                             final DatabaseConnection connection) throws SQLException {
       if (getQuery() == null) {
         setQuery(connection.getDatabase().getAutoIncrementValueSQL(valueSource));

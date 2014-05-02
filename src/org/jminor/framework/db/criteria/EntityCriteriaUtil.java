@@ -643,7 +643,7 @@ public final class EntityCriteriaUtil {
     private void setupCriteria(final List<Property.ColumnProperty> properties, final Collection<Entity.Key> keys,
                                final Entity.Key firstKey) {
       if (firstKey.isCompositeKey()) {//multiple column key
-        final List<Property.PrimaryKeyProperty> pkProperties = firstKey.getProperties();
+        final List<Property.ColumnProperty> pkProperties = firstKey.getProperties();
         final List<? extends Property.ColumnProperty> propertyList = properties == null ? pkProperties : properties;
         //(a = b and c = d) or (a = g and c = d)
         for (final Entity.Key key : keys) {

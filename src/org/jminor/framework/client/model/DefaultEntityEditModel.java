@@ -460,7 +460,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       throw new RuntimeException("Insert did not return an entity, usually caused by a misconfigured key generator");
     }
     final Entity.Key primaryKey = insertedEntities.get(0).getPrimaryKey();
-    for (final Property.PrimaryKeyProperty primaryKeyProperty : primaryKey.getProperties()) {
+    for (final Property.ColumnProperty primaryKeyProperty : primaryKey.getProperties()) {
       entity.setValue(primaryKeyProperty, primaryKey.getValue(primaryKeyProperty.getPropertyID()));
       entity.saveValue(primaryKeyProperty.getPropertyID());
     }

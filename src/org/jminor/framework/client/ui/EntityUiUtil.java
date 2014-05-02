@@ -1132,9 +1132,9 @@ public final class EntityUiUtil {
     populateValueMenu(rootMenu, entity, new ArrayList<>(Entities.getProperties(entity.getEntityID(), true)));
   }
 
-  private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.PrimaryKeyProperty> primaryKeyProperties) {
+  private static void populatePrimaryKeyMenu(final JComponent rootMenu, final Entity entity, final List<Property.ColumnProperty> primaryKeyProperties) {
     Util.collate(primaryKeyProperties);
-    for (final Property.PrimaryKeyProperty property : primaryKeyProperties) {
+    for (final Property.ColumnProperty property : primaryKeyProperties) {
       final boolean modified = entity.isModified(property.getPropertyID());
       String value = "[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID());
       if (modified) {

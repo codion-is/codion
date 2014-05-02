@@ -3750,3 +3750,6 @@
   Configuration.SERVER_MONITOR_UPDATE_RATE added
   EntityApplicationPanel.getFrameTitle() signature change, now takes a EntityConnectionProvider parameter instead of User
   EntityTablePanel.getRefreshControl() and getClearControl() made public
+0.8.8 [incompatible api: Property]
+  Property.PrimaryKeyProperty removed
+  Property.ColumnProperty, get/setPrimaryKeyIndex() and isPrimaryKeyProperty() added

@@ -155,9 +155,9 @@ public class Petstore {
 
     Entities.define(T_TAG_ITEM, "petstore.tag_item",
             Properties.foreignKeyProperty(TAG_ITEM_ITEM_FK, "Item", T_ITEM,
-                    Properties.primaryKeyProperty(TAG_ITEM_ITEM_ID, Types.INTEGER).setIndex(0)).setNullable(false),
+                    Properties.primaryKeyProperty(TAG_ITEM_ITEM_ID, Types.INTEGER).setPrimaryKeyIndex(0)).setNullable(false),
             Properties.foreignKeyProperty(TAG_ITEM_TAG_FK, "Tag", T_TAG,
-                    Properties.primaryKeyProperty(TAG_ITEM_TAG_ID, Types.INTEGER).setIndex(1)).setNullable(false))
+                    Properties.primaryKeyProperty(TAG_ITEM_TAG_ID, Types.INTEGER).setPrimaryKeyIndex(1)).setNullable(false))
             .setStringProvider(new Entities.StringProvider(TAG_ITEM_ITEM_FK).addText(" - ").addValue(TAG_ITEM_TAG_FK))
             .setCaption("Item tags");
   }

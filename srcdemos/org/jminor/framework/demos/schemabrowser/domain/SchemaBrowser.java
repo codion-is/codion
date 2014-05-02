@@ -61,8 +61,8 @@ public class SchemaBrowser {
 
     Entities.define(T_TABLE, bundle.getString("t_table"),
             Properties.foreignKeyProperty(TABLE_SCHEMA_FK, "Schema", T_SCHEMA,
-                    Properties.primaryKeyProperty(TABLE_SCHEMA, Types.VARCHAR).setIndex(0)),
-            Properties.primaryKeyProperty(TABLE_NAME, Types.VARCHAR, "Name").setIndex(1))
+                    Properties.primaryKeyProperty(TABLE_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0)),
+            Properties.primaryKeyProperty(TABLE_NAME, Types.VARCHAR, "Name").setPrimaryKeyIndex(1))
             .setOrderByClause(TABLE_SCHEMA + ", " + TABLE_NAME)
             .setReadOnly(true)
             .setStringProvider(new Entities.StringProvider(TABLE_SCHEMA_FK).addText(".").addValue(TABLE_NAME))
@@ -71,10 +71,10 @@ public class SchemaBrowser {
     Entities.define(T_COLUMN, bundle.getString("t_column"),
             Properties.foreignKeyProperty(COLUMN_TABLE_FK, "Table", T_TABLE,
                     new Property.ColumnProperty[] {
-                            Properties.primaryKeyProperty(COLUMN_SCHEMA, Types.VARCHAR).setIndex(0),
-                            Properties.primaryKeyProperty(COLUMN_TABLE_NAME, Types.VARCHAR).setIndex(1)},
+                            Properties.primaryKeyProperty(COLUMN_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
+                            Properties.primaryKeyProperty(COLUMN_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)},
                     new String[] {TABLE_SCHEMA, TABLE_NAME}),
-            Properties.primaryKeyProperty(COLUMN_NAME, Types.VARCHAR, "Column name").setIndex(2),
+            Properties.primaryKeyProperty(COLUMN_NAME, Types.VARCHAR, "Column name").setPrimaryKeyIndex(2),
             Properties.columnProperty(COLUMN_DATA_TYPE, Types.VARCHAR, "Data type"))
             .setOrderByClause(COLUMN_SCHEMA + ", " + COLUMN_TABLE_NAME + ", " + COLUMN_NAME)
             .setReadOnly(true)
@@ -84,10 +84,10 @@ public class SchemaBrowser {
     Entities.define(T_CONSTRAINT, bundle.getString("t_constraint"),
             Properties.foreignKeyProperty(CONSTRAINT_TABLE_FK, "Table", T_TABLE,
                     new Property.ColumnProperty[] {
-                            Properties.primaryKeyProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).setIndex(0),
-                            Properties.primaryKeyProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).setIndex(1)},
+                            Properties.primaryKeyProperty(CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
+                            Properties.primaryKeyProperty(CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1)},
                     new String[] {TABLE_SCHEMA, TABLE_NAME}),
-            Properties.primaryKeyProperty(CONSTRAINT_NAME, Types.VARCHAR, "Constraint name").setIndex(2),
+            Properties.primaryKeyProperty(CONSTRAINT_NAME, Types.VARCHAR, "Constraint name").setPrimaryKeyIndex(2),
             Properties.columnProperty(CONSTRAINT_TYPE, Types.VARCHAR, "Type"))
             .setOrderByClause(CONSTRAINT_SCHEMA + ", " + CONSTRAINT_TABLE_NAME + ", " + CONSTRAINT_NAME)
             .setReadOnly(true)
@@ -97,9 +97,9 @@ public class SchemaBrowser {
     Entities.define(T_COLUMN_CONSTRAINT, bundle.getString("t_column_constraint"),
             Properties.foreignKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_FK, "Constraint", T_CONSTRAINT,
                     new Property.ColumnProperty[] {
-                            Properties.primaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).setIndex(0),
-                            Properties.primaryKeyProperty(COLUMN_CONSTRAINT_TABLE_NAME, Types.VARCHAR).setIndex(1),
-                            Properties.primaryKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).setIndex(2)},
+                            Properties.primaryKeyProperty(COLUMN_CONSTRAINT_SCHEMA, Types.VARCHAR).setPrimaryKeyIndex(0),
+                            Properties.primaryKeyProperty(COLUMN_CONSTRAINT_TABLE_NAME, Types.VARCHAR).setPrimaryKeyIndex(1),
+                            Properties.primaryKeyProperty(COLUMN_CONSTRAINT_CONSTRAINT_NAME, Types.VARCHAR).setPrimaryKeyIndex(2)},
                     new String[] {CONSTRAINT_SCHEMA, CONSTRAINT_TABLE_NAME, CONSTRAINT_NAME}),
             Properties.columnProperty(COLUMN_CONSTRAINT_COLUMN_NAME, Types.VARCHAR, "Column name"),
             Properties.columnProperty(COLUMN_CONSTRAINT_POSITION, Types.INTEGER, "Position"))

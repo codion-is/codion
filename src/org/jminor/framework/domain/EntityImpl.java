@@ -67,7 +67,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   EntityImpl(final Definition definition, final Key primaryKey) {
     this(definition);
     Util.rejectNullValue(primaryKey, "primaryKey");
-    for (final Property.PrimaryKeyProperty property : primaryKey.getProperties()) {
+    for (final Property.ColumnProperty property : primaryKey.getProperties()) {
       setValue(property, primaryKey.getValue(property.getPropertyID()));
     }
     this.primaryKey = primaryKey;
@@ -339,7 +339,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   /** {@inheritDoc} */
   @Override
   public void clearPrimaryKeyValues() {
-    for (final Property.PrimaryKeyProperty primaryKeyProperty : definition.getPrimaryKeyProperties()) {
+    for (final Property.ColumnProperty primaryKeyProperty : definition.getPrimaryKeyProperties()) {
       removeValue(primaryKeyProperty.getPropertyID());
       removeOriginalValue(primaryKeyProperty.getPropertyID());
     }
@@ -519,10 +519,10 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   private void setForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity referencedEntity,
                                    final Map<String, Definition> entityDefinitions) {
     referencedPrimaryKeysCache = null;
-    final Collection<Property.PrimaryKeyProperty> referenceEntityPKProperties =
+    final Collection<Property.ColumnProperty> referenceEntityPKProperties =
             entityDefinitions.get(foreignKeyProperty.getReferencedEntityID()).getPrimaryKeyProperties();
-    for (final Property.PrimaryKeyProperty primaryKeyProperty : referenceEntityPKProperties) {
-      final DefaultProperty referenceProperty = (DefaultProperty) foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getIndex());
+    for (final Property.ColumnProperty primaryKeyProperty : referenceEntityPKProperties) {
+      final DefaultProperty referenceProperty = (DefaultProperty) foreignKeyProperty.getReferenceProperties().get(primaryKeyProperty.getPrimaryKeyIndex());
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         final Object value;
         if (referencedEntity == null) {
@@ -617,7 +617,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
    */
   private Key initializePrimaryKey(final boolean originalValues) {
     final Key key = new KeyImpl(definition);
-    for (final Property.PrimaryKeyProperty property : definition.getPrimaryKeyProperties()) {
+    for (final Property.ColumnProperty property : definition.getPrimaryKeyProperties()) {
       final String propertyID = property.getPropertyID();
       key.setValue(propertyID, originalValues ? getOriginalValue(propertyID) : super.getValue(propertyID));
     }
@@ -678,7 +678,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     if (validateType) {
       validateType(property, value);
     }
-    if (property instanceof Property.PrimaryKeyProperty) {
+    if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) {
       primaryKey = null;
     }
     toString = null;
@@ -764,7 +764,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
 
   private static boolean primaryKeysEqual(final EntityImpl entity1, final Entity entity2) {
     if (entity1.getEntityID().equals(entity2.getEntityID())) {
-      for (final Property.PrimaryKeyProperty property : entity1.definition.getPrimaryKeyProperties()) {
+      for (final Property.ColumnProperty property : entity1.definition.getPrimaryKeyProperties()) {
         if (!Util.equal(entity1.getValue(property.getPropertyID()), entity2.getValue(property.getPropertyID()))) {
           return false;
         }
@@ -814,7 +814,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
      */
     KeyImpl(final Definition definition) {
       this.definition = definition;
-      final List<Property.PrimaryKeyProperty> properties = definition.getPrimaryKeyProperties();
+      final List<Property.ColumnProperty> properties = definition.getPrimaryKeyProperties();
       final int propertyCount = properties.size();
       this.singleIntegerKey = propertyCount == 1 && properties.get(0).isInteger();
       this.compositeKey = propertyCount > 1;
@@ -842,12 +842,12 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     }
 
     @Override
-    public List<Property.PrimaryKeyProperty> getProperties() {
+    public List<Property.ColumnProperty> getProperties() {
       return definition.getPrimaryKeyProperties();
     }
 
     @Override
-    public Property.PrimaryKeyProperty getFirstKeyProperty() {
+    public Property.ColumnProperty getFirstKeyProperty() {
       if (getPropertyCount() == 0) {
         throw new IllegalStateException(definition.getEntityID() + " has no primary key properties");
       }
@@ -867,7 +867,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     public String toString() {
       final StringBuilder stringBuilder = new StringBuilder();
       int i = 0;
-      for (final Property.PrimaryKeyProperty property : getProperties()) {
+      for (final Property.ColumnProperty property : getProperties()) {
         stringBuilder.append(property.getPropertyID()).append(":").append(getValue(property.getPropertyID()));
         if (i++ < getPropertyCount() - 1) {
           stringBuilder.append(",");
@@ -1016,7 +1016,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
       if (definition == null) {
         throw new IllegalArgumentException("Undefined entity: " + entityID);
       }
-      final List<Property.PrimaryKeyProperty> properties = definition.getPrimaryKeyProperties();
+      final List<Property.ColumnProperty> properties = definition.getPrimaryKeyProperties();
       final int propertyCount = properties.size();
       singleIntegerKey = propertyCount == 1 && properties.get(0).isInteger();
       compositeKey = propertyCount > 1;

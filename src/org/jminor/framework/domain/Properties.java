@@ -45,18 +45,18 @@ public final class Properties {
 
   /**
    * @param propertyID the property ID
-   * @return a new primary key property
+   * @return a new primary key property with index 0
    */
-  public static Property.PrimaryKeyProperty primaryKeyProperty(final String propertyID) {
+  public static Property.ColumnProperty primaryKeyProperty(final String propertyID) {
     return primaryKeyProperty(propertyID, Types.INTEGER);
   }
 
   /**
    * @param propertyID the property ID
    * @param type the property type
-   * @return a new primary key property
+   * @return a new primary key property with index 0
    */
-  public static Property.PrimaryKeyProperty primaryKeyProperty(final String propertyID, final int type) {
+  public static Property.ColumnProperty primaryKeyProperty(final String propertyID, final int type) {
     return primaryKeyProperty(propertyID, type, null);
   }
 
@@ -64,10 +64,10 @@ public final class Properties {
    * @param propertyID the property ID
    * @param type the property type
    * @param caption the caption
-   * @return a new primary key property
+   * @return a new primary key property with index 0
    */
-  public static Property.PrimaryKeyProperty primaryKeyProperty(final String propertyID, final int type, final String caption) {
-    return new DefaultProperty.DefaultPrimaryKeyProperty(propertyID, type, caption);
+  public static Property.ColumnProperty primaryKeyProperty(final String propertyID, final int type, final String caption) {
+    return new DefaultProperty.DefaultColumnProperty(propertyID, type, caption).setPrimaryKeyIndex(0);
   }
 
   /**

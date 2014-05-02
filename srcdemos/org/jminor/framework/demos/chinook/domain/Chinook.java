@@ -381,7 +381,7 @@ public class Chinook {
                     .setPreferredColumnWidth(160),
             Properties.foreignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
                     Properties.primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.INTEGER)
-                            .setIndex(1)
+                            .setPrimaryKeyIndex(1)
                             .setUpdatable(true))
                     .setFetchDepth(3)
                     .setNullable(false)

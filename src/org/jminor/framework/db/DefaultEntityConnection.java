@@ -109,7 +109,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
       final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
       for (final Entity entity : entities) {
         final String entityID = entity.getEntityID();
-        final Property.PrimaryKeyProperty firstPrimaryKeyProperty = Entities.getPrimaryKeyProperties(entityID).get(0);
+        final Property.ColumnProperty firstPrimaryKeyProperty = Entities.getPrimaryKeyProperties(entityID).get(0);
         final Entity.KeyGenerator keyGenerator = Entities.getKeyGenerator(entityID);
         final boolean includeReadOnly = false;
         final boolean includeNonUpdatable = true;
@@ -1287,9 +1287,9 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     private static String getEntityParameterString(final Entity entity) {
       final StringBuilder builder = new StringBuilder();
       builder.append(entity.getEntityID()).append(" {");
-      for (final Property property : Entities.getColumnProperties(entity.getEntityID(), true, true, true)) {
+      for (final Property.ColumnProperty property : Entities.getColumnProperties(entity.getEntityID(), true, true, true)) {
         final boolean modified = entity.isModified(property.getPropertyID());
-        if (property instanceof Property.PrimaryKeyProperty || modified) {
+        if (property.isPrimaryKeyProperty() || modified) {
           final StringBuilder valueString = new StringBuilder();
           if (modified) {
             valueString.append(entity.getOriginalValue(property.getPropertyID())).append("->");

@@ -368,7 +368,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
   private static JSONObject serializeValues(final Entity.Key key, final DateFormat jsonTimeFormat,
                                             final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
-    for (final Property.PrimaryKeyProperty property : Entities.getPrimaryKeyProperties(key.getEntityID())) {
+    for (final Property.ColumnProperty property : Entities.getPrimaryKeyProperties(key.getEntityID())) {
       propertyValues.put(property.getPropertyID(), serializeValue(key.getValue(property.getPropertyID()), property,
               false, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
     }

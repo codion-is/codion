@@ -217,7 +217,7 @@ public final class Entities {
    * @param entityID the entity ID
    * @return a list containing the primary key properties of the entity identified by <code>entityID</code>
    */
-  public static List<Property.PrimaryKeyProperty> getPrimaryKeyProperties(final String entityID) {
+  public static List<Property.ColumnProperty> getPrimaryKeyProperties(final String entityID) {
     return DefaultEntityDefinition.getDefinition(entityID).getPrimaryKeyProperties();
   }
 
@@ -343,7 +343,7 @@ public final class Entities {
    * @return true if the primary key of the given type of entity is comprised of a single integer value
    */
   public static boolean hasSingleIntegerPrimaryKey(final String entityID) {
-    final List<Property.PrimaryKeyProperty> primaryKeyProperties = DefaultEntityDefinition.getDefinition(entityID).getPrimaryKeyProperties();
+    final List<Property.ColumnProperty> primaryKeyProperties = DefaultEntityDefinition.getDefinition(entityID).getPrimaryKeyProperties();
     return primaryKeyProperties.size() == 1 && primaryKeyProperties.get(0).isInteger();
   }
 
@@ -366,7 +366,7 @@ public final class Entities {
       final Property.ColumnProperty property = iterator.next();
       if (!includeReadOnly && property.isReadOnly()
               || !includeNonUpdatable && !property.isUpdatable()
-              || !includePrimaryKeyProperties && property instanceof Property.PrimaryKeyProperty) {
+              || !includePrimaryKeyProperties && property.isPrimaryKeyProperty()) {
         iterator.remove();
       }
     }
@@ -929,8 +929,8 @@ public final class Entities {
           //a new entity being inserted, allow null for columns with default values and auto generated primary key values
           final boolean columnPropertyWithoutDefaultValue = property instanceof Property.ColumnProperty &&
                   !((Property.ColumnProperty) property).columnHasDefaultValue();
-          final boolean primaryKeyPropertyWithoutAutoGenerate = property instanceof Property.PrimaryKeyProperty &&
-                  getKeyGenerator(entityID).isManual();
+          final boolean primaryKeyPropertyWithoutAutoGenerate = (property instanceof Property.ColumnProperty
+                  && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) && getKeyGenerator(entityID).isManual();
           if (columnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
             throw new NullValidationException(property.getPropertyID(),
                     FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
