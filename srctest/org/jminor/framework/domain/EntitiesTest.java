@@ -34,7 +34,7 @@ public class EntitiesTest {
             Properties.primaryKeyProperty(propertyID3));
 
     final Entity.Key key = Entities.key(entityID);
-    assertEquals(Integer.MAX_VALUE, key.hashCode());
+    assertEquals(0, key.hashCode());
     assertTrue(key.isCompositeKey());
     assertTrue(key.isNull());
 
@@ -49,7 +49,7 @@ public class EntitiesTest {
 
     key.setValue(propertyID3, null);
     assertTrue(key.isNull());
-    assertEquals(Integer.MAX_VALUE, key.hashCode());
+    assertEquals(0, key.hashCode());
   }
 
   @Test

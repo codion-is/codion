@@ -3755,3 +3755,4 @@
   Property.ColumnProperty, get/setPrimaryKeyIndex() and isPrimaryKeyProperty() added
 0.8.9
   EntityCriteriaUtil, possible heap pollution due to generic vararg parameters fixed
+  EntityImpl.KeyImpl no longer relies on Integer.MAX_VALUE to a represent null value

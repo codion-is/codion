@@ -781,8 +781,6 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
 
     private static final long serialVersionUID = 1;
 
-    private static final int INTEGER_NULL_VALUE = Integer.MAX_VALUE;
-
     /**
      * true if this key consists of a single integer value
      */
@@ -796,7 +794,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     /**
      * Caching the hash code
      */
-    private int hashCode = INTEGER_NULL_VALUE;
+    private Integer hashCode = null;
 
     /**
      * True if the value of a key property has changed, thereby invalidating the cached hash code value
@@ -926,41 +924,19 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
      */
     @Override
     public int hashCode() {
-      if (hashCodeDirty) {
-        final Collection values = getValues();
-        boolean nullValue = values.isEmpty();
-        int hash = 0;
-        if (!nullValue) {
-          for (final Object value : values) {
-            if (value != null) {
-              hash = hash + value.hashCode();
-            }
-            else {
-              nullValue = true;
-              break;
-            }
-          }
-        }
+      updateHashCode();
 
-        if (nullValue) {
-          hashCode = INTEGER_NULL_VALUE;
-        }
-        else {
-          hashCode = hash;
-        }
-        hashCodeDirty = false;
-      }
-
-      return hashCode;
+      return hashCode == null ? 0 : hashCode;
     }
 
     @Override
     public boolean isNull() {
+      updateHashCode();
       if (singleIntegerKey) {
-        return hashCode() == INTEGER_NULL_VALUE;
+        return hashCode == null;
       }
 
-      if (hashCode() == INTEGER_NULL_VALUE) {
+      if (hashCode == null) {
         return true;
       }
 
@@ -989,18 +965,48 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
 
     @Override
     protected void handleClear() {
-      hashCode = INTEGER_NULL_VALUE;
+      hashCode = null;
       hashCodeDirty = false;
     }
 
     private void setHashCode(final Integer value) {
       if (value == null) {
-        hashCode = INTEGER_NULL_VALUE;
+        hashCode = null;
       }
       else {
         hashCode = value;
       }
       hashCodeDirty = false;
+    }
+
+    /**
+     * Updates the cached hashCode in case it is dirty
+     */
+    private void updateHashCode() {
+      if (hashCodeDirty) {
+        final Collection values = getValues();
+        boolean nullValue = values.isEmpty();
+        int hash = 0;
+        if (!nullValue) {
+          for (final Object value : values) {
+            if (value != null) {
+              hash = hash + value.hashCode();
+            }
+            else {
+              nullValue = true;
+              break;
+            }
+          }
+        }
+
+        if (nullValue) {
+          hashCode = null;
+        }
+        else {
+          hashCode = hash;
+        }
+        hashCodeDirty = false;
+      }
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
