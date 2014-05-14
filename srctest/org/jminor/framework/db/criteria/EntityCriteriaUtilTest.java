@@ -64,7 +64,7 @@ public class EntityCriteriaUtilTest {
 
   @Test
   public void propertyCriteria() {
-    final Criteria<Property.ColumnProperty> critOne = EntityCriteriaUtil.<String>propertyCriteria(EmpDept.T_DEPARTMENT,
+    final Criteria<Property.ColumnProperty> critOne = EntityCriteriaUtil.propertyCriteria(EmpDept.T_DEPARTMENT,
             EmpDept.DEPARTMENT_LOCATION, SearchType.LIKE, true, "New York");
     assertEquals("loc like ?", critOne.getWhereClause());
     assertNotNull(critOne);
@@ -88,11 +88,11 @@ public class EntityCriteriaUtilTest {
     final Entity department2 = Entities.entity(EmpDept.T_DEPARTMENT);
     department2.setValue(EmpDept.DEPARTMENT_ID, 11);
     criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
-            EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department, department2);
+            EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, Arrays.asList(department, department2));
     assertEquals("(deptno in (?, ?))", criteria.getWhereClause());
 
     criteria = EntityCriteriaUtil.foreignKeyCriteria(EmpDept.T_EMPLOYEE,
-            EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.NOT_LIKE, department, department2);
+            EmpDept.EMPLOYEE_DEPARTMENT_FK, SearchType.NOT_LIKE, Arrays.asList(department, department2));
     assertEquals("(deptno not in (?, ?))", criteria.getWhereClause());
   }
 

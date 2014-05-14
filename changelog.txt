@@ -3753,3 +3753,5 @@
 0.8.8 [incompatible api: Property]
   Property.PrimaryKeyProperty removed
   Property.ColumnProperty, get/setPrimaryKeyIndex() and isPrimaryKeyProperty() added
+0.8.9
+  EntityCriteriaUtil, possible heap pollution due to generic vararg parameters fixed

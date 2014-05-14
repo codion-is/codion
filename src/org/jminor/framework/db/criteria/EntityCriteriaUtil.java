@@ -56,12 +56,38 @@ public final class EntityCriteriaUtil {
    * @param entityID the entity ID
    * @param propertyID the property ID
    * @param searchType the search type
+   * @param value the criteria value
+   * @return a select criteria based on the given value
+   */
+  public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
+                                                    final SearchType searchType, final Object value) {
+    return selectCriteria(entityID, propertyID, searchType, Arrays.asList(value));
+  }
+
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @param searchType the search type
    * @param values the criteria values
    * @return a select criteria based on the given values
    */
   public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
-                                                    final SearchType searchType, final Object... values) {
+                                                    final SearchType searchType, final Collection values) {
     return selectCriteria(entityID, propertyID, searchType, -1, values);
+  }
+
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @param searchType the search type
+   * @param fetchCount the maximum number of entities to fetch
+   * @param value the criteria value
+   * @return a select criteria based on the given value
+   */
+  public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
+                                                    final SearchType searchType, final int fetchCount,
+                                                    final Object value) {
+    return selectCriteria(entityID, propertyID, searchType, fetchCount, Arrays.asList(value));
   }
 
   /**
@@ -74,8 +100,23 @@ public final class EntityCriteriaUtil {
    */
   public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
                                                     final SearchType searchType, final int fetchCount,
-                                                    final Object... values) {
+                                                    final Collection values) {
     return selectCriteria(entityID, propertyID, searchType, null, fetchCount, values);
+  }
+
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @param searchType the search type
+   * @param orderByClause the order by clause, without the 'order by' keywords
+   * @param fetchCount the maximum number of entities to fetch
+   * @param value the criteria value
+   * @return a select criteria based on the given value
+   */
+  public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
+                                                    final SearchType searchType, final String orderByClause,
+                                                    final int fetchCount, final Object value) {
+    return selectCriteria(entityID, propertyID, searchType, orderByClause, fetchCount, Arrays.asList(value));
   }
 
   /**
@@ -89,7 +130,7 @@ public final class EntityCriteriaUtil {
    */
   public static EntitySelectCriteria selectCriteria(final String entityID, final String propertyID,
                                                     final SearchType searchType, final String orderByClause,
-                                                    final int fetchCount, final Object... values) {
+                                                    final int fetchCount, final Collection values) {
     return new DefaultEntitySelectCriteria(entityID, createPropertyCriteria(entityID, propertyID, searchType, values),
             orderByClause, fetchCount);
   }
@@ -125,7 +166,6 @@ public final class EntityCriteriaUtil {
                                                     final String orderByClause) {
     return selectCriteria(entityID, criteria, orderByClause, -1);
   }
-
 
   /**
    * @param entityID the entity ID
@@ -178,7 +218,7 @@ public final class EntityCriteriaUtil {
    * @param keys the primary keys
    * @return a criteria specifying the entities having the given primary keys
    */
-  public static EntityCriteria criteria(final List<Entity.Key> keys) {
+  public static EntityCriteria criteria(final Collection<Entity.Key> keys) {
     final EntityKeyCriteria keyCriteria = new EntityKeyCriteria(keys);
     return new DefaultEntityCriteria(keyCriteria.getEntityID(), keyCriteria);
   }
@@ -195,12 +235,36 @@ public final class EntityCriteriaUtil {
    * @param entityID the entity ID
    * @param propertyID the property ID
    * @param searchType the search type
+   * @param value the criteria value
+   * @return a criteria based on the given value
+   */
+  public static EntityCriteria criteria(final String entityID, final String propertyID,
+                                        final SearchType searchType, final Object value) {
+    return criteria(entityID, propertyID, searchType, Arrays.asList(value));
+  }
+
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @param searchType the search type
    * @param values the criteria values
    * @return a criteria based on the given values
    */
-  public static <T> EntityCriteria criteria(final String entityID, final String propertyID,
-                                            final SearchType searchType, final T... values) {
+  public static EntityCriteria criteria(final String entityID, final String propertyID,
+                                        final SearchType searchType, final Collection  values) {
     return new DefaultEntityCriteria(entityID, createPropertyCriteria(entityID, propertyID, searchType, values));
+  }
+
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @param searchType the search type
+   * @param value the criteria value
+   * @return a property criteria based on the given value
+   */
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID,
+                                                                   final SearchType searchType, final Object value) {
+    return propertyCriteria(entityID, propertyID, searchType, Arrays.asList(value));
   }
 
   /**
@@ -210,8 +274,8 @@ public final class EntityCriteriaUtil {
    * @param values the criteria values
    * @return a property criteria based on the given values
    */
-  public static <T> Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID,
-                                                                       final SearchType searchType, final T... values) {
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID,
+                                                                   final SearchType searchType, final Collection values) {
     return propertyCriteria(entityID, propertyID, searchType, true, values);
   }
 
@@ -220,18 +284,43 @@ public final class EntityCriteriaUtil {
    * @param propertyID the property ID
    * @param searchType the search type
    * @param caseSensitive true if the criteria should be case sensitive, only applicable to string properties
+   * @param value the criteria value
+   * @return a property criteria based on the given value
+   */
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID,
+                                                                   final SearchType searchType, final boolean caseSensitive,
+                                                                   final Object value) {
+    return propertyCriteria(entityID, propertyID, searchType, caseSensitive, Arrays.asList(value));
+  }
+
+  /**
+   * @param entityID the entity ID
+   * @param propertyID the property ID
+   * @param searchType the search type
+   * @param caseSensitive true if the criteria should be case sensitive, only applicable to string properties
    * @param values the criteria values
    * @return a property criteria based on the given values
    */
-  public static <T> Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID,
-                                                                       final SearchType searchType, final boolean caseSensitive,
-                                                                       final T... values) {
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final String entityID, final String propertyID,
+                                                                   final SearchType searchType, final boolean caseSensitive,
+                                                                   final Collection values) {
     final Property property = Entities.getProperty(entityID, propertyID);
     if (!(property instanceof Property.ColumnProperty)) {
       throw new IllegalArgumentException(property + " is not a " + Property.ColumnProperty.class.getName());
     }
 
-    return propertyCriteria((Property.ColumnProperty) property, caseSensitive, searchType, values);
+    return propertyCriteria((Property.ColumnProperty) property, searchType, caseSensitive, values);
+  }
+
+  /**
+   * @param property the property
+   * @param searchType the search type
+   * @param value the criteria value
+   * @return a property criteria based on the given value
+   */
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final Property.ColumnProperty property,
+                                                                   final SearchType searchType, final Object value) {
+    return propertyCriteria(property, searchType, Arrays.asList(value));
   }
 
   /**
@@ -240,10 +329,22 @@ public final class EntityCriteriaUtil {
    * @param values the criteria values
    * @return a property criteria based on the given values
    */
-  public static <T> Criteria<Property.ColumnProperty> propertyCriteria(final Property.ColumnProperty property,
-                                                                       final SearchType searchType,
-                                                                       final T... values) {
-    return propertyCriteria(property, true, searchType, values);
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final Property.ColumnProperty property,
+                                                                   final SearchType searchType, final Collection values) {
+    return propertyCriteria(property, searchType, true, values);
+  }
+
+  /**
+   * @param property the property
+   * @param searchType the search type
+   * @param caseSensitive true if the criteria should be case sensitive, only applicable to string properties
+   * @param value the criteria value
+   * @return a property criteria based on the given value
+   */
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final Property.ColumnProperty property,
+                                                                   final SearchType searchType, final boolean caseSensitive,
+                                                                   final Object value) {
+    return propertyCriteria(property, searchType, caseSensitive, Arrays.asList(value));
   }
 
   /**
@@ -253,9 +354,9 @@ public final class EntityCriteriaUtil {
    * @param values the criteria values
    * @return a property criteria based on the given values
    */
-  public static <T> Criteria<Property.ColumnProperty> propertyCriteria(final Property.ColumnProperty property,
-                                                                       final boolean caseSensitive, final SearchType searchType,
-                                                                       final T... values) {
+  public static Criteria<Property.ColumnProperty> propertyCriteria(final Property.ColumnProperty property,
+                                                                   final SearchType searchType, final boolean caseSensitive,
+                                                                   final Collection values) {
     return new PropertyCriteria(property, searchType, values).setCaseSensitive(caseSensitive);
   }
 
@@ -263,12 +364,24 @@ public final class EntityCriteriaUtil {
    * @param entityID the entity ID
    * @param fkPropertyID the property ID
    * @param searchType the search type
-   * @param values the criteria values
-   * @return a foreign key property criteria based on the given values
+   * @param value the criteria value
+   * @return a foreign key property criteria based on the given value
    */
   public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final String entityID, final String fkPropertyID,
-                                                                     final SearchType searchType, final Entity.Key... values) {
-    return foreignKeyCriteria(Entities.getForeignKeyProperty(entityID, fkPropertyID), searchType, values);
+                                                                     final SearchType searchType, final Entity value) {
+    return foreignKeyCriteria(entityID, fkPropertyID, searchType, Arrays.asList(value));
+  }
+
+  /**
+   * @param entityID the entity ID
+   * @param fkPropertyID the property ID
+   * @param searchType the search type
+   * @param value the criteria value
+   * @return a foreign key property criteria based on the given value
+   */
+  public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final String entityID, final String fkPropertyID,
+                                                                     final SearchType searchType, final Entity.Key value) {
+    return foreignKeyCriteria(entityID, fkPropertyID, searchType, Arrays.asList(value));
   }
 
   /**
@@ -279,19 +392,30 @@ public final class EntityCriteriaUtil {
    * @return a foreign key property criteria based on the given values
    */
   public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final String entityID, final String fkPropertyID,
-                                                                     final SearchType searchType, final Entity... values) {
+                                                                     final SearchType searchType, final Collection values) {
     return foreignKeyCriteria(Entities.getForeignKeyProperty(entityID, fkPropertyID), searchType, values);
   }
 
   /**
    * @param foreignKeyProperty the foreign key property
    * @param searchType the search type
-   * @param values the criteria values
-   * @return a property criteria based on the given values
+   * @param value the criteria value
+   * @return a property criteria based on the given value
    */
   public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                                     final SearchType searchType, final Entity.Key... values) {
-    return new ForeignKeyCriteria(foreignKeyProperty, searchType, Arrays.asList(values));
+                                                                     final SearchType searchType, final Entity value) {
+    return foreignKeyCriteria(foreignKeyProperty, searchType, Arrays.asList(value));
+  }
+
+  /**
+   * @param foreignKeyProperty the foreign key property
+   * @param searchType the search type
+   * @param value the criteria value
+   * @return a property criteria based on the given value
+   */
+  public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                                     final SearchType searchType, final Entity.Key value) {
+    return foreignKeyCriteria(foreignKeyProperty, searchType, Arrays.asList(value));
   }
 
   /**
@@ -301,8 +425,8 @@ public final class EntityCriteriaUtil {
    * @return a property criteria based on the given values
    */
   public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                                     final SearchType searchType, final Entity... values) {
-    return new ForeignKeyCriteria(foreignKeyProperty, searchType, (Object[]) values);
+                                                                     final SearchType searchType, final Collection values) {
+    return new ForeignKeyCriteria(foreignKeyProperty, searchType, values);
   }
 
   /**
@@ -315,7 +439,7 @@ public final class EntityCriteriaUtil {
   }
 
   private static Criteria<Property.ColumnProperty> createPropertyCriteria(final String entityID, final String propertyID,
-                                                                          final SearchType searchType, final Object[] values) {
+                                                                          final SearchType searchType, final Collection values) {
     final Property property = Entities.getProperty(entityID, propertyID);
     final Criteria<Property.ColumnProperty> criteria;
     if (property instanceof Property.ForeignKeyProperty) {
@@ -920,15 +1044,15 @@ public final class EntityCriteriaUtil {
     private SearchType searchType;
     private boolean isNullCriteria;
 
-    private ForeignKeyCriteria(final Property.ForeignKeyProperty property, final SearchType searchType, final Object... values) {
+    private ForeignKeyCriteria(final Property.ForeignKeyProperty property, final SearchType searchType, final Collection values) {
       Util.rejectNullValue(property, "property");
       Util.rejectNullValue(searchType, "searchType");
-      if (values != null && values.length == 0) {
+      if (Util.nullOrEmpty(values)) {
         throw new IllegalArgumentException("No values specified for ForeignKeyCriteria: " + property);
       }
       this.property = property;
       this.searchType = searchType;
-      this.isNullCriteria = values == null || (values.length == 1 && values[0] == null);
+      this.isNullCriteria = values == null || (values.size() == 1 && values.iterator().next() == null);
       this.values = initializeValues(values);
     }
 
@@ -1049,14 +1173,14 @@ public final class EntityCriteriaUtil {
      * @return a list containing the values
      */
     @SuppressWarnings({"unchecked"})
-    private static List<Entity.Key> initializeValues(final Object... values) {
+    private static List<Entity.Key> initializeValues(final Collection values) {
       final List<Entity.Key> ret = new ArrayList<>();
       if (values == null) {
         ret.add(null);
       }
       else {
-        if (values.length == 1 && values[0] instanceof Collection) {
-          ret.addAll(getValueList(((Collection) values[0]).toArray()));
+        if (values.size() == 1 && values.iterator().next() instanceof Collection) {
+          ret.addAll(getValueList((Collection) values.iterator().next()));
         }
         else {
           ret.addAll(getValueList(values));
@@ -1067,16 +1191,16 @@ public final class EntityCriteriaUtil {
     }
 
     @SuppressWarnings({"unchecked"})
-    private static Collection getValueList(final Object... values) {
-      if (values.length == 0) {
+    private static Collection getValueList(final Collection values) {
+      if (values.isEmpty()) {
         return new ArrayList();
       }
-      final Object value = values[0];
+      final Object value = values.iterator().next();
       if (value == null || value instanceof Entity.Key) {
-        return Arrays.asList(values);
+        return values;
       }
       else if (value instanceof Entity) {
-        return EntityUtil.getPrimaryKeys((List) Arrays.asList(values));
+        return EntityUtil.getPrimaryKeys(values);
       }
 
       throw new IllegalArgumentException("Foreign key criteria uses only Entity or Entity.Key instances for values");

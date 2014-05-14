@@ -22,6 +22,7 @@ import org.jminor.framework.domain.Property;
 import java.awt.Dimension;
 import java.awt.GridLayout;
 import java.sql.Types;
+import java.util.Arrays;
 import java.util.Locale;
 
 /**
@@ -100,7 +101,7 @@ public class EmpDeptMinimalApp {
       final EntityComboBoxModel comboBoxModel = super.createEntityComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
         comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(
-                "scott.emp", "job", SearchType.LIKE, "MANAGER", "PRESIDENT"));
+                "scott.emp", "job", SearchType.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
         comboBoxModel.refresh();
       }
 

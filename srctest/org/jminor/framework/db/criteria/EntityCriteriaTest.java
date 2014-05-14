@@ -30,7 +30,7 @@ public class EntityCriteriaTest {
     final CriteriaSet<Property.ColumnProperty> set2 = new CriteriaSet<>(
             Conjunction.AND,
             EntityCriteriaUtil.propertyCriteria(Properties.columnProperty("doubleProperty", Types.DOUBLE), SearchType.LIKE, 666.666),
-            EntityCriteriaUtil.propertyCriteria(Properties.columnProperty("stringProperty2", Types.VARCHAR), false, SearchType.LIKE, "value2")
+            EntityCriteriaUtil.propertyCriteria(Properties.columnProperty("stringProperty2", Types.VARCHAR), SearchType.LIKE, false, "value2")
     );
     final CriteriaSet<Property.ColumnProperty> set3 = new CriteriaSet<>(Conjunction.OR, set1, set2);
     assertEquals("where ((stringProperty like ? and intProperty = ?) " + "or"

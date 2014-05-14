@@ -9,6 +9,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Property;
 
+import java.util.Arrays;
 import java.util.Collection;
 
 /**
@@ -44,8 +45,8 @@ public class DefaultPropertySearchModel extends DefaultColumnSearchModel<Propert
   @Override
   public final Criteria<Property.ColumnProperty> getCriteria() {
     return getValueCount(getSearchType()) == 1 ?
-            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), isCaseSensitive(), getSearchType(), getUpperBound()) :
-            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), isCaseSensitive(), getSearchType(), getLowerBound(), getUpperBound());
+            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), getSearchType(), isCaseSensitive(), getUpperBound()) :
+            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), getSearchType(), isCaseSensitive(), Arrays.asList(getLowerBound(), getUpperBound()));
   }
 
   private String toString(final Object object) {

@@ -18,6 +18,8 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
+import java.util.Arrays;
+
 import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 
 public final class EmployeeEditModel extends DefaultEntityEditModel {
@@ -36,7 +38,7 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
       managerModel.setFilterSelectedItem(false);
       //Only show the president and managers
       managerModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(T_EMPLOYEE, EMPLOYEE_JOB,
-              SearchType.LIKE, "MANAGER", "PRESIDENT"));
+              SearchType.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));
 
       return managerModel;
     }

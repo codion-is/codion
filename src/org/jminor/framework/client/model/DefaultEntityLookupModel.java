@@ -333,7 +333,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
       for (final String rawLookupText : lookupTexts) {
         final String lookupText = rawLookupText.trim();
         final String modifiedLookupText = searchString.equals(wildcard) ? wildcard : ((wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : ""));
-        baseCriteria.add(EntityCriteriaUtil.propertyCriteria(lookupProperty, caseSensitive, SearchType.LIKE, modifiedLookupText));
+        baseCriteria.add(EntityCriteriaUtil.propertyCriteria(lookupProperty, SearchType.LIKE, caseSensitive, modifiedLookupText));
       }
     }
 

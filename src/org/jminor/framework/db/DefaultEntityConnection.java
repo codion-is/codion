@@ -305,7 +305,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
   /** {@inheritDoc} */
   @Override
   public synchronized List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DatabaseException {
-    return selectMany(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, values));
+    return selectMany(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, Arrays.asList(values)));
   }
 
   /** {@inheritDoc} */
