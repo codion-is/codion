@@ -3758,3 +3758,5 @@
   EntityImpl.KeyImpl no longer relies on Integer.MAX_VALUE to a represent null value
   EntityLookupModel.setToStringProvider() added
   DefaultEntityDefinition.checkForPrimaryKey() renamed to checkPrimaryKey(), now checks if the same index is used twice
+  DefaultEntityEditModel, minor refactoring
+  EntityCriteriaUtil, bugs fixed, methods overloaded with a "Collection values" parameter removed, all other methods now handle a Collection parameter

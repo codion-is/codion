@@ -275,11 +275,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final EventObserver<ValueChange<String, ?>> getValueChangeObserver(final String propertyID) {
     Util.rejectNullValue(propertyID, "propertyID");
-    if (!valueChangeEventMap.containsKey(propertyID)) {
-      valueChangeEventMap.put(propertyID, Events.<ValueChange<String, ?>>event());
-    }
-
-    return valueChangeEventMap.get(propertyID).getObserver();
+    return getValueChangeEvent(propertyID).getObserver();
   }
 
   /** {@inheritDoc} */
@@ -731,7 +727,9 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final void removeValueSetListener(final String propertyID, final EventInfoListener listener) {
-    getValueSetEvent(propertyID).removeInfoListener(listener);
+    if (valueSetEventMap.containsKey(propertyID)) {
+      valueSetEventMap.get(propertyID).removeInfoListener(listener);
+    }
   }
 
   /** {@inheritDoc} */
@@ -743,7 +741,9 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final void removeValueListener(final String propertyID, final EventInfoListener listener) {
-    getValueChangeEvent(propertyID).removeInfoListener(listener);
+    if (valueChangeEventMap.containsKey(propertyID)) {
+      valueChangeEventMap.get(propertyID).removeInfoListener(listener);
+    }
   }
 
   /** {@inheritDoc} */
@@ -981,7 +981,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     return valueSetEventMap.get(propertyID);
   }
 
-  private Event getValueChangeEvent(final String propertyID) {
+  private Event<ValueChange<String, ?>> getValueChangeEvent(final String propertyID) {
     if (!valueChangeEventMap.containsKey(propertyID)) {
       valueChangeEventMap.put(propertyID, Events.<ValueChange<String, ?>>event());
     }
