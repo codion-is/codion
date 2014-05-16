@@ -67,6 +67,24 @@ public final class DefaultEntityLookupModelTest {
   }
 
   @Test
+  public void setToStringProvider() {
+    lookupModel.setToStringProvider(new Entity.ToString() {
+      @Override
+      public String toString(final Entity entity) {
+        return entity.getValueAsString(EmpDept.EMPLOYEE_JOB);
+      }
+    });
+    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    employee.setValue(EmpDept.EMPLOYEE_NAME, "Darri");
+    employee.setValue(EmpDept.EMPLOYEE_JOB, "Test");
+    lookupModel.setSelectedEntities(Arrays.asList(employee));
+    assertEquals(lookupModel.getSearchString(), "Test");
+    lookupModel.setToStringProvider(null);
+    lookupModel.setSelectedEntities(Arrays.asList(employee));
+    assertEquals(lookupModel.getSearchString(), "Darri");
+  }
+
+  @Test
   public void lookupModel() throws Exception {
     lookupModel.setMultipleSelectionAllowed(true);
     lookupModel.setWildcard("%");

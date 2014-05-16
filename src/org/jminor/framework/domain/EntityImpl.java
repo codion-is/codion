@@ -794,7 +794,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     /**
      * Caching the hash code
      */
-    private Integer hashCode = null;
+    private Integer cachedHashCode = null;
 
     /**
      * True if the value of a key property has changed, thereby invalidating the cached hash code value
@@ -926,17 +926,17 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     public int hashCode() {
       updateHashCode();
 
-      return hashCode == null ? 0 : hashCode;
+      return cachedHashCode == null ? 0 : cachedHashCode;
     }
 
     @Override
     public boolean isNull() {
       updateHashCode();
       if (singleIntegerKey) {
-        return hashCode == null;
+        return cachedHashCode == null;
       }
 
-      if (hashCode == null) {
+      if (cachedHashCode == null) {
         return true;
       }
 
@@ -965,16 +965,16 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
 
     @Override
     protected void handleClear() {
-      hashCode = null;
+      cachedHashCode = null;
       hashCodeDirty = false;
     }
 
     private void setHashCode(final Integer value) {
       if (value == null) {
-        hashCode = null;
+        cachedHashCode = null;
       }
       else {
-        hashCode = value;
+        cachedHashCode = value;
       }
       hashCodeDirty = false;
     }
@@ -1000,10 +1000,10 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
         }
 
         if (nullValue) {
-          hashCode = null;
+          cachedHashCode = null;
         }
         else {
-          hashCode = hash;
+          cachedHashCode = hash;
         }
         hashCodeDirty = false;
       }

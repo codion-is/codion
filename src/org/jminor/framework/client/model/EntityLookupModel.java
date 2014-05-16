@@ -166,6 +166,18 @@ public interface EntityLookupModel extends EntityDataProvider {
   EntityLookupModel setAdditionalLookupCriteria(final Criteria<Property.ColumnProperty> additionalLookupCriteria);
 
   /**
+   * Override the default toString() for lookup elements when displayed
+   * in a field based on this model
+   * @param toStringProvider provides string representations
+   */
+  EntityLookupModel setToStringProvider(Entity.ToString toStringProvider);
+
+  /**
+   * @return the toString provider, null if none is specified
+   */
+  Entity.ToString getToStringProvider();
+
+  /**
    * @param listener a listener to be notified each time the selected entities are changed
    */
   void addSelectedEntitiesListener(final EventListener listener);

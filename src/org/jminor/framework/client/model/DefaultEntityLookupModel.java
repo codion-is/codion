@@ -62,6 +62,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    */
   private final EntityConnectionProvider connectionProvider;
 
+  private Entity.ToString toStringProvider = null;
   private Criteria<Property.ColumnProperty> additionalLookupCriteria;
   private String searchString = "";
   private boolean multipleSelectionAllowed = true;
@@ -243,6 +244,19 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
+  public Entity.ToString getToStringProvider() {
+    return toStringProvider;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public EntityLookupModel setToStringProvider(final Entity.ToString toStringProvider) {
+    this.toStringProvider = toStringProvider;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void refreshSearchText() {
     setSearchString(selectedEntities.isEmpty() ? "" : toString(getSelectedEntities()));
     searchStringRepresentsSelectedState.setActive(searchStringRepresentsSelected());
@@ -346,7 +360,12 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     final StringBuilder stringBuilder = new StringBuilder();
     int counter = 0;
     for (final Entity entity : entities) {
-      stringBuilder.append(entity.toString());
+      if (toStringProvider != null) {
+        stringBuilder.append(toStringProvider.toString(entity));
+      }
+      else {
+        stringBuilder.append(entity.toString());
+      }
       counter++;
       if (counter < entities.size()) {
         stringBuilder.append(multipleValueSeparator);
