@@ -30,8 +30,8 @@ public class EntitiesTest {
     final String propertyID3 = "id3";
     Entities.define(entityID,
             Properties.primaryKeyProperty(propertyID1),
-            Properties.primaryKeyProperty(propertyID2),
-            Properties.primaryKeyProperty(propertyID3));
+            Properties.primaryKeyProperty(propertyID2).setPrimaryKeyIndex(1),
+            Properties.primaryKeyProperty(propertyID3).setPrimaryKeyIndex(2));
 
     final Entity.Key key = Entities.key(entityID);
     assertEquals(0, key.hashCode());
@@ -50,6 +50,22 @@ public class EntitiesTest {
     key.setValue(propertyID3, null);
     assertTrue(key.isNull());
     assertEquals(0, key.hashCode());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void keyWithSameIndex() {
+    Entities.define("keyWithSameIndex",
+            Properties.primaryKeyProperty("1").setPrimaryKeyIndex(0),
+            Properties.primaryKeyProperty("2").setPrimaryKeyIndex(1),
+            Properties.primaryKeyProperty("3").setPrimaryKeyIndex(1));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void keyWithSameIndex2() {
+    Entities.define("keyWithSameIndex2",
+            Properties.primaryKeyProperty("1"),
+            Properties.primaryKeyProperty("2"),
+            Properties.primaryKeyProperty("3"));
   }
 
   @Test

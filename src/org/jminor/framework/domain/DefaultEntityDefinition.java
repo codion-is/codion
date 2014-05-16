@@ -554,7 +554,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
         initializeForeignKeyProperty(entityID, properties, (Property.ForeignKeyProperty) property);
       }
     }
-    checkForPrimaryKey(entityID, properties);
+    checkPrimaryKey(entityID, properties);
 
     return properties;
   }
@@ -581,12 +581,23 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
   }
 
-  private static void checkForPrimaryKey(final String entityID, final Map<String, Property> propertyDefinitions) {
+  private static void checkPrimaryKey(final String entityID, final Map<String, Property> propertyDefinitions) {
+    final Collection<Integer> usedPrimaryKeyIndexes = new ArrayList<>();
+    boolean primaryKeyPropertyFound = false;
     for (final Property property : propertyDefinitions.values()) {
       if (property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) {
-        return;
+        final Integer index = ((Property.ColumnProperty) property).getPrimaryKeyIndex();
+        if (usedPrimaryKeyIndexes.contains(index)) {
+          throw new IllegalArgumentException("Primary key index " + index + " in property " + property + " has already been used");
+        }
+        usedPrimaryKeyIndexes.add(index);
+        primaryKeyPropertyFound = true;
       }
     }
+    if (primaryKeyPropertyFound) {
+      return;
+    }
+
     throw new IllegalArgumentException("Entity is missing a primary key: " + entityID);
   }
 
