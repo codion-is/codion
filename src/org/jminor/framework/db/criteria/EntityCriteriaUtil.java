@@ -340,12 +340,7 @@ public final class EntityCriteriaUtil {
     final Property property = Entities.getProperty(entityID, propertyID);
     final Criteria<Property.ColumnProperty> criteria;
     if (property instanceof Property.ForeignKeyProperty) {
-      if (value instanceof Collection) {
-        criteria = new ForeignKeyCriteria((Property.ForeignKeyProperty) property, searchType, (Collection) value);
-      }
-      else {
-        criteria = new ForeignKeyCriteria((Property.ForeignKeyProperty) property, searchType, Arrays.asList(value));
-      }
+      criteria = new ForeignKeyCriteria((Property.ForeignKeyProperty) property, searchType, value);
     }
     else {
       criteria = new PropertyCriteria((Property.ColumnProperty) property, searchType, value);
@@ -676,7 +671,7 @@ public final class EntityCriteriaUtil {
           final CriteriaSet<Property.ColumnProperty> andSet = new CriteriaSet<>(Conjunction.AND);
           int i = 0;
           for (final Property.ColumnProperty property : propertyList) {
-            andSet.add(new PropertyCriteria(property, SearchType.LIKE, Arrays.asList(key.getValue(pkProperties.get(i++).getPropertyID()))));
+            andSet.add(new PropertyCriteria(property, SearchType.LIKE, key.getValue(pkProperties.get(i++).getPropertyID())));
           }
 
           criteria.add(andSet);
@@ -687,7 +682,7 @@ public final class EntityCriteriaUtil {
         final Property primaryKeyProperty = properties == null ? property : firstKey.getFirstKeyProperty();
         //a = b
         if (keys.size() == 1) {
-          criteria.add(new PropertyCriteria(property, SearchType.LIKE, Arrays.asList(firstKey.getValue(primaryKeyProperty.getPropertyID()))));
+          criteria.add(new PropertyCriteria(property, SearchType.LIKE, firstKey.getValue(primaryKeyProperty.getPropertyID())));
         }
         else { //a in (c, v, d, s)
           criteria.add(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getPropertyValues(keys)));
@@ -925,16 +920,13 @@ public final class EntityCriteriaUtil {
     private SearchType searchType;
     private boolean isNullCriteria;
 
-    private ForeignKeyCriteria(final Property.ForeignKeyProperty property, final SearchType searchType, final Collection values) {
+    private ForeignKeyCriteria(final Property.ForeignKeyProperty property, final SearchType searchType, final Object value) {
       Util.rejectNullValue(property, "property");
       Util.rejectNullValue(searchType, "searchType");
-      if (Util.nullOrEmpty(values)) {
-        throw new IllegalArgumentException("No values specified for ForeignKeyCriteria: " + property);
-      }
       this.property = property;
       this.searchType = searchType;
-      this.isNullCriteria = values == null || (values.size() == 1 && values.iterator().next() == null);
-      this.values = getEntityKeys(values);
+      this.values = getEntityKeys(value);
+      this.isNullCriteria = this.values.size() == 1 && this.values.iterator().next() == null;
     }
 
     @Override
@@ -1014,14 +1006,14 @@ public final class EntityCriteriaUtil {
         for (final Property.ColumnProperty referencedProperty : foreignKeyProperty.getReferenceProperties()) {
           final String referencedPropertyID = foreignKeyProperty.getReferencedPropertyID(referencedProperty);
           final Object referencedValue = entityKey == null ? null : entityKey.getValue(referencedPropertyID);
-          pkSet.add(new PropertyCriteria(referencedProperty, searchType, Arrays.asList(referencedValue)));
+          pkSet.add(new PropertyCriteria(referencedProperty, searchType, referencedValue));
         }
 
         return pkSet;
       }
       else {
         return new PropertyCriteria(foreignKeyProperty.getReferenceProperties().get(0), searchType,
-                Arrays.asList(entityKey == null ? null : entityKey.getFirstKeyValue()));
+                entityKey == null ? null : entityKey.getFirstKeyValue());
       }
     }
 
@@ -1051,16 +1043,31 @@ public final class EntityCriteriaUtil {
     }
 
     @SuppressWarnings({"unchecked"})
-    private static Collection<Entity.Key> getEntityKeys(final Collection values) {
-      if (values.isEmpty()) {
-        return new ArrayList();
+    private static Collection<Entity.Key> getEntityKeys(final Object value) {
+      final Collection<Entity.Key> keys = new ArrayList<>();
+      if (value instanceof Collection) {
+        if (((Collection) value).isEmpty()) {
+          keys.add(null);
+        }
+        else {
+          for (final Object object : ((Collection) value)) {
+            keys.add(getKey(object));
+          }
+        }
       }
-      final Object value = values.iterator().next();
+      else {
+        keys.add(getKey(value));
+      }
+
+      return keys;
+    }
+
+    private static Entity.Key getKey(final Object value) {
       if (value == null || value instanceof Entity.Key) {
-        return values;
+        return (Entity.Key) value;
       }
       else if (value instanceof Entity) {
-        return EntityUtil.getPrimaryKeys(values);
+        return ((Entity) value).getPrimaryKey();
       }
 
       throw new IllegalArgumentException("Foreign key criteria uses only Entity or Entity.Key instances for values");
