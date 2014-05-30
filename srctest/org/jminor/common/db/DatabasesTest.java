@@ -74,7 +74,7 @@ public class DatabasesTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void addOperationExisting() {
-    final DatabaseConnection.Operation operation = new AbstractProcedure("operationId", "test") {
+    final DatabaseConnection.Operation operation = new AbstractProcedure<DatabaseConnection>("operationId", "test") {
       @Override
       public void execute(final DatabaseConnection databaseConnection, final Object... arguments) {}
     };

@@ -3761,3 +3761,7 @@
   DefaultEntityEditModel, minor refactoring
   EntityCriteriaUtil, bugs fixed, methods overloaded with a "Collection values" parameter removed, all other methods now handle a Collection parameter
   EntityCriteriaUtil, bug fixed, ForeignKeyCriteria refactored
+0.9.0
+  DefaultEntityConnection no longer extends DefaultDatabaseConnection, composition used instead
+  DefaultEntityConnection now synchronizes on it's internal connection instead of itself
+  DatabaseConnection.Procedure and Function generified to accommodate the above inheritance change

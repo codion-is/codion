@@ -161,10 +161,9 @@ public class Chinook {
 
   public static final String P_UPDATE_TOTALS = "chinook.update_totals_procedure";
 
-  private static final DatabaseConnection.Procedure UPDATE_TOTALS_PROCEDURE = new AbstractProcedure(P_UPDATE_TOTALS, "Update invoice totals") {
+  private static final DatabaseConnection.Procedure UPDATE_TOTALS_PROCEDURE = new AbstractProcedure<EntityConnection>(P_UPDATE_TOTALS, "Update invoice totals") {
     @Override
-    public void execute(final DatabaseConnection connection, final Object... arguments) throws DatabaseException {
-      final EntityConnection entityConnection = (EntityConnection) connection;
+    public void execute(final EntityConnection entityConnection, final Object... arguments) throws DatabaseException {
       try {
         entityConnection.beginTransaction();
         final EntitySelectCriteria selectCriteria = EntityCriteriaUtil.selectCriteria(T_INVOICE);

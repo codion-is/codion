@@ -4,7 +4,6 @@
 package org.jminor.framework.db.provider;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -91,9 +90,9 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   public void disconnect() {
     if (getConnectionInternal() != null && getConnectionInternal().isValid()) {
       getConnectionInternal().disconnect();
-      final DatabaseConnection databaseConnection = getConnectionInternal().getDatabaseConnection();
-      if (databaseConnection.getDatabase().isEmbedded() && Configuration.getBooleanValue(Configuration.SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT)) {
-        databaseConnection.getDatabase().shutdownEmbedded(connectionProperties);
+      final Database database = getConnectionInternal().getDatabaseConnection().getDatabase();
+      if (database.isEmbedded() && Configuration.getBooleanValue(Configuration.SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT)) {
+        database.shutdownEmbedded(connectionProperties);
       }
       setConnection(null);
     }

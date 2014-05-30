@@ -48,11 +48,6 @@ public interface DatabaseConnection {
   int getRetryCount();
 
   /**
-   * @return the number of seconds specified when checking if this connection is valid
-   */
-  int getValidityCheckTimeout();
-
-  /**
    * @return true if a connection is established and valid
    */
   boolean isValid();
@@ -142,30 +137,32 @@ public interface DatabaseConnection {
 
   /**
    * A database procedure
+   * @param <C> the connection type required by this procedure
    */
-  interface Procedure extends Operation {
+  interface Procedure<C> extends Operation {
 
     /**
      * Executes this procedure with the given connection
-     * @param databaseConnection the db connection to use when executing
+     * @param connection the connection to use when executing
      * @param arguments the procedure arguments, if any
      * @throws DatabaseException in case of an exception during the execution
      */
-    void execute(final DatabaseConnection databaseConnection, final Object... arguments) throws DatabaseException;
+    void execute(final C connection, final Object... arguments) throws DatabaseException;
   }
 
   /**
    * A database function
+   * @param <C> the connection type required by this function
    */
-  interface Function extends Operation {
+  interface Function<C> extends Operation {
 
     /**
      * Executes this function with the given connection
-     * @param databaseConnection the db connection to use when executing
+     * @param connection the connection to use when executing
      * @param arguments the function arguments, if any
      * @return the function return arguments
      * @throws DatabaseException in case of an exception during the execution
      */
-    List execute(final DatabaseConnection databaseConnection, final Object... arguments) throws DatabaseException;
+    List execute(final C connection, final Object... arguments) throws DatabaseException;
   }
 }

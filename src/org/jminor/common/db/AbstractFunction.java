@@ -5,8 +5,9 @@ package org.jminor.common.db;
 
 /**
  * A base Function implementation
+ * @param <C> the connection type to use when executing this function
  */
-public abstract class AbstractFunction extends DefaultDatabaseConnection.DefaultOperation implements DatabaseConnection.Function {
+public abstract class AbstractFunction<C> extends DefaultDatabaseConnection.DefaultOperation implements DatabaseConnection.Function<C> {
 
   /**
    * Instantiates a new AbstractFunction.

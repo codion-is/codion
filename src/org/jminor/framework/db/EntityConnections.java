@@ -57,6 +57,6 @@ public final class EntityConnections {
    * @param connection the internal connection to use
    */
   public static void setConnection(final EntityConnection entityConnection, final Connection connection) {
-    ((DefaultDatabaseConnection) entityConnection).setConnection(connection);
+    ((DefaultDatabaseConnection) entityConnection.getDatabaseConnection()).setConnection(connection);
   }
 }

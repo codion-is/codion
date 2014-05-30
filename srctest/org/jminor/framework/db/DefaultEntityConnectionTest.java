@@ -235,9 +235,9 @@ public class DefaultEntityConnectionTest {
 
   @Test
   public void executeFunction() throws DatabaseException {
-    final DatabaseConnection.Function func = new AbstractFunction("executeFunction", "executeFunction") {
+    final DatabaseConnection.Function func = new AbstractFunction<EntityConnection>("executeFunction", "executeFunction") {
       @Override
-      public List execute(final DatabaseConnection connection, final Object... arguments) {
+      public List execute(final EntityConnection connection, final Object... arguments) {
         return null;
       }
     };
@@ -247,9 +247,9 @@ public class DefaultEntityConnectionTest {
 
   @Test
   public void executeProcedure() throws DatabaseException {
-    final DatabaseConnection.Procedure proc = new AbstractProcedure("executeProcedure", "executeProcedure") {
+    final DatabaseConnection.Procedure proc = new AbstractProcedure<EntityConnection>("executeProcedure", "executeProcedure") {
       @Override
-      public void execute(final DatabaseConnection connection, final Object... arguments) {}
+      public void execute(final EntityConnection connection, final Object... arguments) {}
     };
     Databases.addOperation(proc);
     connection.executeProcedure(proc.getID());
@@ -500,7 +500,6 @@ public class DefaultEntityConnectionTest {
       assertNull(blobRecordFromDb.getValue(DATA));
     }
     finally {
-      connection.rollback();
       if (statement != null) {
         statement.close();
       }
@@ -548,7 +547,6 @@ public class DefaultEntityConnectionTest {
       assertTrue(Arrays.equals(newBytes, fromDb));
     }
     finally {
-      connection.rollback();
       if (statement != null) {
         statement.close();
       }

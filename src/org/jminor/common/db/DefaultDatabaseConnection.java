@@ -122,12 +122,6 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
-  public int getValidityCheckTimeout() {
-    return validityCheckTimeout;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final String toString() {
     return getClass().getSimpleName() + ": " + user.getUsername();
   }

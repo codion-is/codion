@@ -91,7 +91,7 @@ public final class Databases {
    * @return the procedure
    * @throws IllegalArgumentException in case the procedure is not found
    */
-  public static DatabaseConnection.Procedure getProcedure(final String procedureID) {
+  public static <C> DatabaseConnection.Procedure<C> getProcedure(final String procedureID) {
     final DatabaseConnection.Operation operation = OPERATIONS.get(procedureID);
     if (operation == null) {
       throw new IllegalArgumentException("Procedure not found: " + procedureID);
@@ -105,7 +105,7 @@ public final class Databases {
    * @return the function
    * @throws IllegalArgumentException in case the function is not found
    */
-  public static DatabaseConnection.Function getFunction(final String functionID) {
+  public static <C> DatabaseConnection.Function<C> getFunction(final String functionID) {
     final DatabaseConnection.Operation operation = OPERATIONS.get(functionID);
     if (operation == null) {
       throw new IllegalArgumentException("Function not found: " + functionID);

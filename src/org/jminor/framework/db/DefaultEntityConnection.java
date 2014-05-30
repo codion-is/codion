@@ -60,15 +60,18 @@ import java.util.Set;
  * connection.disconnect();
  * </pre>
  */
-final class DefaultEntityConnection extends DefaultDatabaseConnection implements EntityConnection {
+final class DefaultEntityConnection implements EntityConnection {
 
   private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(DefaultEntityConnection.class);
   private static final String CRITERIA_PARAM_NAME = "criteria";
 
+  private final DatabaseConnection connection;
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<>();
   private final Map<Integer, ResultPacker> propertyResultPackers = new HashMap<>();
   private boolean optimisticLocking = Configuration.getBooleanValue(Configuration.USE_OPTIMISTIC_LOCKING);
   private boolean limitForeignKeyFetchDepth = Configuration.getBooleanValue(Configuration.LIMIT_FOREIGN_KEY_FETCH_DEPTH);
+
+  private MethodLogger methodLogger;
 
   /**
    * Constructs a new DefaultEntityConnection instance
@@ -78,7 +81,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
    * such as a wrong username or password being provided
    */
   DefaultEntityConnection(final Database database, final User user) throws DatabaseException {
-    super(database, user, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
+    this.connection = new DefaultDatabaseConnection(database, user, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
   }
 
   /**
@@ -90,12 +93,83 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
   DefaultEntityConnection(final Database database, final Connection connection) throws DatabaseException {
-    super(database, connection, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
+    this.connection = new DefaultDatabaseConnection(database, connection, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
+  public void setMethodLogger(final MethodLogger methodLogger) {
+    synchronized (connection) {
+      this.methodLogger = methodLogger;
+      connection.setMethodLogger(methodLogger);
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public User getUser() {
+    return connection.getUser();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isConnected() {
+    synchronized (connection) {
+      return connection.isConnected();
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void disconnect() {
+    synchronized (connection) {
+      connection.disconnect();
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isValid() {
+    synchronized (connection) {
+      return connection.isValid();
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void beginTransaction() {
+    synchronized (connection) {
+      connection.beginTransaction();
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isTransactionOpen() {
+    synchronized (connection) {
+      return connection.isTransactionOpen();
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void rollbackTransaction() {
+    synchronized (connection) {
+      connection.rollbackTransaction();
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void commitTransaction() {
+    synchronized (connection) {
+      connection.commitTransaction();
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
     if (Util.nullOrEmpty(entities)) {
       return new ArrayList<>();
     }
@@ -105,48 +179,50 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     final List<Object> statementValues = new ArrayList<>();
     PreparedStatement statement = null;
     String insertSQL = null;
-    try {
-      final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
-      for (final Entity entity : entities) {
-        final String entityID = entity.getEntityID();
-        final Property.ColumnProperty firstPrimaryKeyProperty = Entities.getPrimaryKeyProperties(entityID).get(0);
-        final Entity.KeyGenerator keyGenerator = Entities.getKeyGenerator(entityID);
-        final boolean includeReadOnly = false;
-        final boolean includeNonUpdatable = true;
-        final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
-                !keyGenerator.isAutoIncrement(), includeReadOnly, includeNonUpdatable);
-        keyGenerator.beforeInsert(entity, firstPrimaryKeyProperty, this);
+    synchronized (connection) {
+      try {
+        final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
+        for (final Entity entity : entities) {
+          final String entityID = entity.getEntityID();
+          final Property.ColumnProperty firstPrimaryKeyProperty = Entities.getPrimaryKeyProperties(entityID).get(0);
+          final Entity.KeyGenerator keyGenerator = Entities.getKeyGenerator(entityID);
+          final boolean includeReadOnly = false;
+          final boolean includeNonUpdatable = true;
+          final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
+                  !keyGenerator.isAutoIncrement(), includeReadOnly, includeNonUpdatable);
+          keyGenerator.beforeInsert(entity, firstPrimaryKeyProperty, connection);
 
-        populateStatementPropertiesAndValues(true, entity, columnProperties, statementProperties, statementValues);
+          populateStatementPropertiesAndValues(true, entity, columnProperties, statementProperties, statementValues);
 
-        insertSQL = createInsertSQL(entityID, statementProperties);
-        statement = getConnection().prepareStatement(insertSQL);
-        executePreparedUpdate(statement, insertSQL, statementValues, statementProperties);
-        keyGenerator.afterInsert(entity, firstPrimaryKeyProperty, this);
+          insertSQL = createInsertSQL(entityID, statementProperties);
+          statement = connection.getConnection().prepareStatement(insertSQL);
+          executePreparedUpdate(statement, insertSQL, statementValues, statementProperties);
+          keyGenerator.afterInsert(entity, firstPrimaryKeyProperty, connection);
 
-        insertedKeys.add(entity.getPrimaryKey());
+          insertedKeys.add(entity.getPrimaryKey());
 
-        statement.close();
-        statementProperties.clear();
-        statementValues.clear();
+          statement.close();
+          statementProperties.clear();
+          statementValues.clear();
+        }
+        commitIfTransactionIsNotOpen();
+
+        return insertedKeys;
       }
-      commitIfTransactionIsNotOpen();
-
-      return insertedKeys;
-    }
-    catch (SQLException e) {
-      rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(DatabaseUtil.createLogMessage(getUser(), insertSQL, statementValues, e, null));
-      throw new DatabaseException(e, getDatabase().getErrorMessage(e));
-    }
-    finally {
-      DatabaseUtil.closeSilently(statement);
+      catch (SQLException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), insertSQL, statementValues, e, null));
+        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+      }
+      finally {
+        DatabaseUtil.closeSilently(statement);
+      }
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Entity> update(final List<Entity> entities) throws DatabaseException {
+  public List<Entity> update(final List<Entity> entities) throws DatabaseException {
     if (Util.nullOrEmpty(entities)) {
       return entities;
     }
@@ -155,132 +231,138 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     final List<Object> statementValues = new ArrayList<>();
     PreparedStatement statement = null;
     String updateSQL = null;
-    try {
-      final Map<String, Collection<Entity>> hashedEntities = EntityUtil.hashByEntityID(entities);
-      if (optimisticLocking) {
-        try {
-          lockAndCheckForUpdate(hashedEntities);
+    synchronized (connection) {
+      try {
+        final Map<String, Collection<Entity>> hashedEntities = EntityUtil.hashByEntityID(entities);
+        if (optimisticLocking) {
+          try {
+            lockAndCheckForUpdate(hashedEntities);
+          }
+          catch (RecordModifiedException e) {
+            rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
+            throw e;
+          }
         }
-        catch (RecordModifiedException e) {
-          rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
-          throw e;
+
+        final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
+        for (final Map.Entry<String, Collection<Entity>> hashedEntitiesMapEntry : hashedEntities.entrySet()) {
+          final String entityID = hashedEntitiesMapEntry.getKey();
+          final String tableName = Entities.getTableName(entityID);
+          final boolean includePrimaryKeyProperties = true;
+          final boolean includeReadOnlyProperties = false;
+          final boolean includeNonUpdatableProperties = false;
+          final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
+                  includePrimaryKeyProperties, includeReadOnlyProperties, includeNonUpdatableProperties);
+
+          for (final Entity entity : hashedEntitiesMapEntry.getValue()) {
+            populateStatementPropertiesAndValues(false, entity, columnProperties, statementProperties, statementValues);
+
+            final EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getOriginalPrimaryKey());
+            updateSQL = createUpdateSQL(tableName, statementProperties, criteria);
+            statementProperties.addAll(criteria.getValueKeys());
+            statementValues.addAll(criteria.getValues());
+            statement = connection.getConnection().prepareStatement(updateSQL);
+            executePreparedUpdate(statement, updateSQL, statementValues, statementProperties);
+
+            statement.close();
+            statementProperties.clear();
+            statementValues.clear();
+          }
         }
+        commitIfTransactionIsNotOpen();
+
+        return selectMany(EntityUtil.getPrimaryKeys(entities));
       }
-
-      final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
-      for (final Map.Entry<String, Collection<Entity>> hashedEntitiesMapEntry : hashedEntities.entrySet()) {
-        final String entityID = hashedEntitiesMapEntry.getKey();
-        final String tableName = Entities.getTableName(entityID);
-        final boolean includePrimaryKeyProperties = true;
-        final boolean includeReadOnlyProperties = false;
-        final boolean includeNonUpdatableProperties = false;
-        final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
-                includePrimaryKeyProperties, includeReadOnlyProperties, includeNonUpdatableProperties);
-
-        for (final Entity entity : hashedEntitiesMapEntry.getValue()) {
-          populateStatementPropertiesAndValues(false, entity, columnProperties, statementProperties, statementValues);
-
-          final EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getOriginalPrimaryKey());
-          updateSQL = createUpdateSQL(tableName, statementProperties, criteria);
-          statementProperties.addAll(criteria.getValueKeys());
-          statementValues.addAll(criteria.getValues());
-          statement = getConnection().prepareStatement(updateSQL);
-          executePreparedUpdate(statement, updateSQL, statementValues, statementProperties);
-
-          statement.close();
-          statementProperties.clear();
-          statementValues.clear();
-        }
+      catch (SQLException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), updateSQL, statementValues, e, null));
+        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
-      commitIfTransactionIsNotOpen();
+      finally {
+        DatabaseUtil.closeSilently(statement);
+      }
     }
-    catch (SQLException e) {
-      rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(DatabaseUtil.createLogMessage(getUser(), updateSQL, statementValues, e, null));
-      throw new DatabaseException(e, getDatabase().getErrorMessage(e));
-    }
-    finally {
-      DatabaseUtil.closeSilently(statement);
-    }
-
-    return selectMany(EntityUtil.getPrimaryKeys(entities));
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void delete(final EntityCriteria criteria) throws DatabaseException {
+  public void delete(final EntityCriteria criteria) throws DatabaseException {
     Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
     checkReadOnly(criteria.getEntityID());
 
     PreparedStatement statement = null;
     String deleteSQL = null;
-    try {
-      deleteSQL = createDeleteSQL(criteria);
-      statement = getConnection().prepareStatement(deleteSQL);
-      executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueKeys());
-      commitIfTransactionIsNotOpen();
-    }
-    catch (SQLException e) {
-      rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(DatabaseUtil.createLogMessage(getUser(), deleteSQL, criteria.getValues(), e, null));
-      throw new DatabaseException(e, getDatabase().getErrorMessage(e));
-    }
-    finally {
-      DatabaseUtil.closeSilently(statement);
+    synchronized (connection) {
+      try {
+        deleteSQL = createDeleteSQL(criteria);
+        statement = connection.getConnection().prepareStatement(deleteSQL);
+        executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueKeys());
+        commitIfTransactionIsNotOpen();
+      }
+      catch (SQLException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), deleteSQL, criteria.getValues(), e, null));
+        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+      }
+      finally {
+        DatabaseUtil.closeSilently(statement);
+      }
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void delete(final List<Entity.Key> entityKeys) throws DatabaseException {
+  public void delete(final List<Entity.Key> entityKeys) throws DatabaseException {
     if (Util.nullOrEmpty(entityKeys)) {
       return;
     }
 
     PreparedStatement statement = null;
     String deleteSQL = null;
-    try {
-      final Map<String, Collection<Entity.Key>> hashedKeys = EntityUtil.hashKeysByEntityID(entityKeys);
-      for (final String entityID : hashedKeys.keySet()) {
-        checkReadOnly(entityID);
+    synchronized (connection) {
+      try {
+        final Map<String, Collection<Entity.Key>> hashedKeys = EntityUtil.hashKeysByEntityID(entityKeys);
+        for (final String entityID : hashedKeys.keySet()) {
+          checkReadOnly(entityID);
+        }
+        final List<Entity.Key> criteriaKeys = new ArrayList<>();
+        for (final Map.Entry<String, Collection<Entity.Key>> hashedKeysEntry : hashedKeys.entrySet()) {
+          criteriaKeys.addAll(hashedKeysEntry.getValue());
+          final EntityCriteria criteria = EntityCriteriaUtil.criteria(criteriaKeys);
+          deleteSQL = "delete from " + Entities.getTableName(hashedKeysEntry.getKey()) + " " + criteria.getWhereClause();
+          statement = connection.getConnection().prepareStatement(deleteSQL);
+          executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueKeys());
+          statement.close();
+          criteriaKeys.clear();
+        }
+        commitIfTransactionIsNotOpen();
       }
-      final List<Entity.Key> criteriaKeys = new ArrayList<>();
-      for (final Map.Entry<String, Collection<Entity.Key>> hashedKeysEntry : hashedKeys.entrySet()) {
-        criteriaKeys.addAll(hashedKeysEntry.getValue());
-        final EntityCriteria criteria = EntityCriteriaUtil.criteria(criteriaKeys);
-        deleteSQL = "delete from " + Entities.getTableName(hashedKeysEntry.getKey()) + " " + criteria.getWhereClause();
-        statement = getConnection().prepareStatement(deleteSQL);
-        executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueKeys());
-        statement.close();
-        criteriaKeys.clear();
+      catch (SQLException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), deleteSQL, entityKeys, e, null));
+        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
       }
-      commitIfTransactionIsNotOpen();
-    }
-    catch (SQLException e) {
-      rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(DatabaseUtil.createLogMessage(getUser(), deleteSQL, entityKeys, e, null));
-      throw new DatabaseException(e, getDatabase().getErrorMessage(e));
-    }
-    finally {
-      DatabaseUtil.closeSilently(statement);
+      finally {
+        DatabaseUtil.closeSilently(statement);
+      }
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException {
+  public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException {
     return selectSingle(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, value));
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized Entity selectSingle(final Entity.Key key) throws DatabaseException {
+  public Entity selectSingle(final Entity.Key key) throws DatabaseException {
     return selectSingle(EntityCriteriaUtil.selectCriteria(key));
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized Entity selectSingle(final EntitySelectCriteria criteria) throws DatabaseException {
+  public Entity selectSingle(final EntitySelectCriteria criteria) throws DatabaseException {
     final List<Entity> entities = selectMany(criteria);
     if (entities.isEmpty()) {
       throw new RecordNotFoundException(FrameworkMessages.get(FrameworkMessages.RECORD_NOT_FOUND));
@@ -294,7 +376,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
+  public List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
     if (Util.nullOrEmpty(keys)) {
       return new ArrayList<>(0);
     }
@@ -304,102 +386,105 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DatabaseException {
+  public List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DatabaseException {
     return selectMany(EntityCriteriaUtil.selectCriteria(entityID, propertyID, SearchType.LIKE, Arrays.asList(values)));
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Entity> selectAll(final String entityID) throws DatabaseException {
+  public List<Entity> selectAll(final String entityID) throws DatabaseException {
     return selectMany(EntityCriteriaUtil.selectCriteria(entityID, Entities.getOrderByClause(entityID)));
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException {
-    try {
-      final List<Entity> result = doSelectMany(criteria, 0);
-      if (!isTransactionOpen() && !criteria.isForUpdate()) {
-        commitQuietly();
-      }
+  public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException {
+    synchronized (connection) {
+      try {
+        final List<Entity> result = doSelectMany(criteria, 0);
+        if (!isTransactionOpen() && !criteria.isForUpdate()) {
+          commitQuietly();
+        }
 
-      return result;
-    }
-    catch (DatabaseException dbe) {
-      rollbackQuietlyIfTransactionIsNotOpen();
-      throw dbe;
+        return result;
+      }
+      catch (DatabaseException dbe) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        throw dbe;
+      }
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws DatabaseException {
-    String selectSQL = null;
-    try {
-      if (Entities.getSelectQuery(entityID) != null) {
-        throw new UnsupportedOperationException("selectPropertyValues is not implemented for entities with custom select queries");
-      }
-
-      final Property.ColumnProperty property = Entities.getColumnProperty(entityID, propertyID);
-      final String columnName = property.getColumnName();
-      selectSQL = createSelectSQL(Entities.getSelectTableName(entityID), "distinct " + columnName,
-              "where " + columnName + " is not null", order ? columnName : null);
-
-      //noinspection unchecked
-      final List<Object> result = query(selectSQL, getPropertyResultPacker(property), -1);
-      commitIfTransactionIsNotOpen();
-
-      return result;
+  public List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws DatabaseException {
+    if (Entities.getSelectQuery(entityID) != null) {
+      throw new UnsupportedOperationException("selectPropertyValues is not implemented for entities with custom select queries");
     }
-    catch (SQLException e) {
-      rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, Arrays.asList(entityID, propertyID, order), e, null));
-      throw new DatabaseException(e, getDatabase().getErrorMessage(e));
+    final Property.ColumnProperty property = Entities.getColumnProperty(entityID, propertyID);
+    final String columnName = property.getColumnName();
+    final String selectSQL = createSelectSQL(Entities.getSelectTableName(entityID), "distinct " + columnName,
+            "where " + columnName + " is not null", order ? columnName : null);
+    synchronized (connection) {
+      try {
+        //noinspection unchecked
+        final List<Object> result = connection.query(selectSQL, getPropertyResultPacker(property), -1);
+        commitIfTransactionIsNotOpen();
+
+        return result;
+      }
+      catch (SQLException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, Arrays.asList(entityID, propertyID, order), e, null));
+        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+      }
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
+  public int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
     Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
-    String selectSQL = null;
-    try {
-      final String entitySelectQuery = Entities.getSelectQuery(criteria.getEntityID());
-      if (entitySelectQuery == null) {
-        selectSQL = createSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), "count(*)",
-                criteria.getWhereClause(true), null);
-      }
-      else {
-        final boolean containsWhereClause = entitySelectQuery.toLowerCase().contains("where ");
-        selectSQL = createSelectSQL("(" + entitySelectQuery + " " + criteria.getWhereClause(!containsWhereClause) + ") alias",
-                "count(*)", null, null);
-      }
-      statement = getConnection().prepareStatement(selectSQL);
-      resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
-      final List<Integer> result = DatabaseUtil.INTEGER_RESULT_PACKER.pack(resultSet, -1);
-      commitIfTransactionIsNotOpen();
-      if (result.isEmpty()) {
-        throw new SQLException("Record count query returned no value");
-      }
+    final String selectSQL;
+    final String entitySelectQuery = Entities.getSelectQuery(criteria.getEntityID());
+    if (entitySelectQuery == null) {
+      selectSQL = createSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), "count(*)",
+              criteria.getWhereClause(true), null);
+    }
+    else {
+      final boolean containsWhereClause = entitySelectQuery.toLowerCase().contains("where ");
+      selectSQL = createSelectSQL("(" + entitySelectQuery + " " + criteria.getWhereClause(!containsWhereClause) + ") alias",
+              "count(*)", null, null);
+    }
+    synchronized (connection) {
+      try {
+        statement = connection.getConnection().prepareStatement(selectSQL);
+        resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
+        final List<Integer> result = DatabaseUtil.INTEGER_RESULT_PACKER.pack(resultSet, -1);
+        commitIfTransactionIsNotOpen();
+        if (result.isEmpty()) {
+          throw new SQLException("Record count query returned no value");
+        }
 
-      return result.get(0);
-    }
-    catch (SQLException e) {
-      rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
-      throw new DatabaseException(e, getDatabase().getErrorMessage(e));
-    }
-    finally {
-      DatabaseUtil.closeSilently(resultSet);
-      DatabaseUtil.closeSilently(statement);
+        return result.get(0);
+      }
+      catch (SQLException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
+        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+      }
+      finally {
+        DatabaseUtil.closeSilently(resultSet);
+        DatabaseUtil.closeSilently(statement);
+      }
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
+  public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
     final Map<String, Collection<Entity>> dependencyMap = new HashMap<>();
     if (Util.nullOrEmpty(entities)) {
       return dependencyMap;
@@ -419,11 +504,13 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
+  public List executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
       logAccess("executeFunction: " + functionID, arguments);
-      return Databases.getFunction(functionID).execute(this, arguments);
+      synchronized (connection) {
+        return Databases.getFunction(functionID).execute(this, arguments);
+      }
     }
     catch (DatabaseException e) {
       exception = e;
@@ -444,7 +531,9 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     DatabaseException exception = null;
     try {
       logAccess("executeProcedure: " + procedureID, arguments);
-      Databases.getProcedure(procedureID).execute(this, arguments);
+      synchronized (connection) {
+        Databases.getProcedure(procedureID).execute(this, arguments);
+      }
     }
     catch (DatabaseException e) {
       exception = e;
@@ -461,81 +550,85 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
 
   /** {@inheritDoc} */
   @Override
-  public synchronized ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
+  public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException {
     ReportException exception = null;
-    try {
-      logAccess("fillReport", new Object[]{reportWrapper.getReportName()});
-      final ReportResult result = reportWrapper.fillReport(getConnection());
-      if (!isTransactionOpen()) {
-        commitQuietly();
-      }
+    synchronized (connection) {
+      try {
+        logAccess("fillReport", new Object[]{reportWrapper.getReportName()});
+        final ReportResult result = reportWrapper.fillReport(connection.getConnection());
+        if (!isTransactionOpen()) {
+          commitQuietly();
+        }
 
-      return result;
-    }
-    catch (ReportException e) {
-      exception = e;
-      rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(DatabaseUtil.createLogMessage(getUser(), null, Arrays.asList(reportWrapper.getReportName()), e, null));
-      throw e;
-    }
-    finally {
-      final MethodLogger.Entry logEntry = logExit("fillReport", exception, null);
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(DatabaseUtil.createLogMessage(getUser(), null, Arrays.asList(reportWrapper.getReportName()), exception, logEntry));
+        return result;
+      }
+      catch (ReportException e) {
+        exception = e;
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), null, Arrays.asList(reportWrapper.getReportName()), e, null));
+        throw e;
+      }
+      finally {
+        final MethodLogger.Entry logEntry = logExit("fillReport", exception, null);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug(DatabaseUtil.createLogMessage(getUser(), null, Arrays.asList(reportWrapper.getReportName()), exception, logEntry));
+        }
       }
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws DatabaseException {
+  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws DatabaseException {
     final Property.ColumnProperty property = Entities.getColumnProperty(primaryKey.getEntityID(), blobPropertyID);
     if (property.getColumnType() != Types.BLOB) {
       throw new IllegalArgumentException("Property " + property.getPropertyID() + " in entity " +
               primaryKey.getEntityID() + " does not have column type BLOB");
     }
-    SQLException exception = null;
-    ByteArrayInputStream inputStream = null;
-    PreparedStatement statement = null;
     final EntityCriteria criteria = EntityCriteriaUtil.criteria(primaryKey);
     final String sql = "update " + Entities.getTableName(primaryKey.getEntityID()) + " set " + property.getColumnName() +
             " = ? " + criteria.getWhereClause();
     final List<Object> values = new ArrayList<>();
     final List<Property.ColumnProperty> properties = new ArrayList<>();
     DatabaseUtil.QUERY_COUNTER.count(sql);
-    try {
-      logAccess("writeBlob", new Object[]{sql});
-      values.add(null);//the blob value, set explicitly later
-      values.addAll(criteria.getValues());
-      properties.add(property);
-      properties.addAll(criteria.getValueKeys());
+    synchronized (connection) {
+      SQLException exception = null;
+      ByteArrayInputStream inputStream = null;
+      PreparedStatement statement = null;
+      try {
+        logAccess("writeBlob", new Object[]{sql});
+        values.add(null);//the blob value, set explicitly later
+        values.addAll(criteria.getValues());
+        properties.add(property);
+        properties.addAll(criteria.getValueKeys());
 
-      statement = getConnection().prepareStatement(sql);
-      setParameterValues(statement, values, properties);
-      inputStream = new ByteArrayInputStream(blobData);
-      statement.setBinaryStream(1, inputStream);
-      statement.executeUpdate();
-      commitIfTransactionIsNotOpen();
-    }
-    catch (SQLException e) {
-      exception = e;
-      rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(DatabaseUtil.createLogMessage(getUser(), sql, values, exception, null));
-      throw new DatabaseException(e, getDatabase().getErrorMessage(e));
-    }
-    finally {
-      Util.closeSilently(inputStream);
-      DatabaseUtil.closeSilently(statement);
-      final MethodLogger.Entry logEntry = logExit("writeBlob", exception, null);
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(DatabaseUtil.createLogMessage(getUser(), sql, values, exception, logEntry));
+        statement = connection.getConnection().prepareStatement(sql);
+        setParameterValues(statement, values, properties);
+        inputStream = new ByteArrayInputStream(blobData);
+        statement.setBinaryStream(1, inputStream);
+        statement.executeUpdate();
+        commitIfTransactionIsNotOpen();
+      }
+      catch (SQLException e) {
+        exception = e;
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), sql, values, exception, null));
+        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+      }
+      finally {
+        Util.closeSilently(inputStream);
+        DatabaseUtil.closeSilently(statement);
+        final MethodLogger.Entry logEntry = logExit("writeBlob", exception, null);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug(DatabaseUtil.createLogMessage(getUser(), sql, values, exception, logEntry));
+        }
       }
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException {
+  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException {
     final Property.ColumnProperty property = Entities.getColumnProperty(primaryKey.getEntityID(), blobPropertyID);
     if (property.getColumnType() != Types.BLOB) {
       throw new IllegalArgumentException("Property " + property.getPropertyID() + " in entity " +
@@ -548,31 +641,33 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     final String sql = "select " + property.getColumnName() + " from " +
             Entities.getTableName(primaryKey.getEntityID()) + " " + criteria.getWhereClause();
     DatabaseUtil.QUERY_COUNTER.count(sql);
-    try {
-      logAccess("readBlob", new Object[]{sql});
-      statement = getConnection().prepareStatement(sql);
-      setParameterValues(statement, criteria.getValues(), criteria.getValueKeys());
+    synchronized (connection) {
+      try {
+        logAccess("readBlob", new Object[]{sql});
+        statement = connection.getConnection().prepareStatement(sql);
+        setParameterValues(statement, criteria.getValues(), criteria.getValueKeys());
 
-      resultSet = statement.executeQuery();
-      final List<Blob> result = BLOB_RESULT_PACKER.pack(resultSet, 1);
-      final Blob blob = result.get(0);
-      final byte[] byteResult = blob.getBytes(1, (int) blob.length());
-      commitIfTransactionIsNotOpen();
+        resultSet = statement.executeQuery();
+        final List<Blob> result = BLOB_RESULT_PACKER.pack(resultSet, 1);
+        final Blob blob = result.get(0);
+        final byte[] byteResult = blob.getBytes(1, (int) blob.length());
+        commitIfTransactionIsNotOpen();
 
-      return byteResult;
-    }
-    catch (SQLException e) {
-      exception = e;
-      rollbackQuietlyIfTransactionIsNotOpen();
-      LOG.error(DatabaseUtil.createLogMessage(getUser(), sql, criteria.getValues(), exception, null));
-      throw new DatabaseException(e, getDatabase().getErrorMessage(e));
-    }
-    finally {
-      DatabaseUtil.closeSilently(statement);
-      DatabaseUtil.closeSilently(resultSet);
-      final MethodLogger.Entry logEntry = logExit("readBlob", exception, null);
-      if (LOG.isDebugEnabled()) {
-        LOG.debug(DatabaseUtil.createLogMessage(getUser(), sql, criteria.getValues(), exception, logEntry));
+        return byteResult;
+      }
+      catch (SQLException e) {
+        exception = e;
+        rollbackQuietlyIfTransactionIsNotOpen();
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), sql, criteria.getValues(), exception, null));
+        throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+      }
+      finally {
+        DatabaseUtil.closeSilently(statement);
+        DatabaseUtil.closeSilently(resultSet);
+        final MethodLogger.Entry logEntry = logExit("readBlob", exception, null);
+        if (LOG.isDebugEnabled()) {
+          LOG.debug(DatabaseUtil.createLogMessage(getUser(), sql, criteria.getValues(), exception, logEntry));
+        }
       }
     }
   }
@@ -580,7 +675,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
   /** {@inheritDoc} */
   @Override
   public DatabaseConnection getDatabaseConnection() {
-    return this;
+    return connection;
   }
 
   /**
@@ -675,7 +770,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     try {
       selectSQL = getSelectSQL(criteria, Entities.getSelectColumnsString(criteria.getEntityID()),
               criteria.getOrderByClause(), Entities.getGroupByClause(criteria.getEntityID()), criteria.isForUpdate());
-      statement = getConnection().prepareStatement(selectSQL);
+      statement = connection.getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
       List<Entity> result = null;
       SQLException packingException = null;
@@ -697,7 +792,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     }
     catch (SQLException e) {
       LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
-      throw new DatabaseException(e, getDatabase().getErrorMessage(e), selectSQL);
+      throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e), selectSQL);
     }
     finally {
       DatabaseUtil.closeSilently(resultSet);
@@ -717,7 +812,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     String selectSQL = null;
     try {
       selectSQL = getSelectSQL(criteria, "*", null, null, true);
-      statement = getConnection().prepareStatement(selectSQL);
+      statement = connection.getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
     }
     catch (SQLException e) {
@@ -827,7 +922,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
 
   private void commitQuietly() {
     try {
-      commit();
+      connection.commit();
     }
     catch (SQLException ignored) {
       LOG.error("Exception while performing a quiet commit", ignored);
@@ -836,7 +931,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
 
   private void rollbackQuietly() {
     try {
-      rollback();
+      connection.rollback();
     }
     catch (SQLException ignored) {
       LOG.error("Exception while performing a quiet rollback", ignored);
@@ -845,13 +940,27 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
 
   private void commitIfTransactionIsNotOpen() throws SQLException {
     if (!isTransactionOpen()) {
-      commit();
+      connection.commit();
     }
   }
 
   private void rollbackQuietlyIfTransactionIsNotOpen() {
     if (!isTransactionOpen()) {
       rollbackQuietly();
+    }
+  }
+
+  private MethodLogger.Entry logExit(final String method, final Throwable exception, final String exitMessage) {
+    if (methodLogger != null) {
+      return methodLogger.logExit(method, exception, exitMessage);
+    }
+
+    return null;
+  }
+
+  private void logAccess(final String method, final Object[] arguments) {
+    if (methodLogger != null) {
+      methodLogger.logAccess(method, arguments);
     }
   }
 
@@ -928,7 +1037,7 @@ final class DefaultEntityConnection extends DefaultDatabaseConnection implements
     }
     if (selectForUpdate) {
       queryBuilder.append(" for update");
-      if (getDatabase().supportsNowait()) {
+      if (connection.getDatabase().supportsNowait()) {
         queryBuilder.append(" nowait");
       }
     }
