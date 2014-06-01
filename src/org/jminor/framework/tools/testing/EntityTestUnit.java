@@ -43,6 +43,9 @@ import static org.junit.Assert.*;
  */
 public abstract class EntityTestUnit {
 
+  private static final int MININUM_RANDOM_NUMBER = -10000000;
+  private static final int MAXIMUM_RANDOM_NUMBER = 10000000;
+  private static final int MAXIMUM_RANDOM_STRING_LENGTH = 10;
   private static final Random RANDOM = new Random();
   private static final String ENTITY_PARAM = "entity";
 
@@ -426,7 +429,7 @@ public abstract class EntityTestUnit {
   }
 
   private static String getRandomString(final Property property) {
-    final int length = property.getMaxLength() < 0 ? 10 : property.getMaxLength();
+    final int length = property.getMaxLength() < 0 ? MAXIMUM_RANDOM_STRING_LENGTH : property.getMaxLength();
 
     return Util.createRandomString(length, length);
   }
@@ -442,15 +445,15 @@ public abstract class EntityTestUnit {
   }
 
   private static int getRandomInteger(final Property property) {
-    final double min = property.getMin() == null ? -10000000 : property.getMin();
-    final double max = property.getMax() == null ? 10000000 : property.getMax();
+    final double min = property.getMin() == null ? MININUM_RANDOM_NUMBER : property.getMin();
+    final double max = property.getMax() == null ? MAXIMUM_RANDOM_NUMBER : property.getMax();
 
     return (int) (min + (RANDOM.nextDouble() * ((max - min) + 1)));
   }
 
   private static double getRandomDouble(final Property property) {
-    final double min = property.getMin() == null ? -10000000 : property.getMin();
-    final double max = property.getMax() == null ? 10000000 : property.getMax();
+    final double min = property.getMin() == null ? MININUM_RANDOM_NUMBER : property.getMin();
+    final double max = property.getMax() == null ? MAXIMUM_RANDOM_NUMBER : property.getMax();
 
     return Util.roundDouble((RANDOM.nextDouble() * ((max - min))) + min, property.getMaximumFractionDigits());
   }

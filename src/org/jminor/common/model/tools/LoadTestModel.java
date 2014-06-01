@@ -43,6 +43,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   protected static final Random RANDOM = new Random();
 
   private static final long NANO_IN_MILLI = 1000000;
+  private static final double THOUSAND = 1000d;
 
   private final Event<Boolean> pausedChangedEvent = Events.event();
   private final Event<Boolean> collectChartDataChangedEvent = Events.event();
@@ -617,9 +618,9 @@ public abstract class LoadTestModel<T> implements LoadTest {
     minimumThinkTimeSeries.add(time, minimumThinkTime);
     maximumThinkTimeSeries.add(time, maximumThinkTime);
     numberOfApplicationsSeries.add(time, applications.size());
-    allocatedMemoryCollection.add(time, Util.getAllocatedMemory() / 1000d);
-    usedMemoryCollection.add(time, Util.getUsedMemory() / 1000d);
-    maxMemoryCollection.add(time, Util.getMaxMemory() / 1000d);
+    allocatedMemoryCollection.add(time, Util.getAllocatedMemory() / THOUSAND);
+    usedMemoryCollection.add(time, Util.getUsedMemory() / THOUSAND);
+    maxMemoryCollection.add(time, Util.getMaxMemory() / THOUSAND);
     scenariosRunSeries.add(time, counter.getWorkRequestsPerSecond());
     warningTimeSeries.add(time, warningTime);
     for (final XYSeries series : usageSeries) {
@@ -863,6 +864,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
   private static final class Counter {
 
+    private static final int UPDATE_INTERVAL = 5;
+
     private final Collection<? extends UsageScenario> usageScenarios;
     private final Map<String, Integer> usageScenarioRates = new HashMap<>();
     private final Map<String, Integer> usageScenarioAvgDurations = new HashMap<>();
@@ -948,8 +951,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
     private void updateRequestsPerSecond() {
       final long current = System.currentTimeMillis();
-      final double elapsedSeconds = (current - time) / 1000d;
-      if (elapsedSeconds > 5) {
+      final double elapsedSeconds = (current - time) / THOUSAND;
+      if (elapsedSeconds > UPDATE_INTERVAL) {
         usageScenarioAvgDurations.clear();
         usageScenarioMinDurations.clear();
         usageScenarioMaxDurations.clear();
