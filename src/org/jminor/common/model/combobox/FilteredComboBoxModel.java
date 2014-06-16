@@ -77,7 +77,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxMode
 
   /**
    * Sets the nullValueItem, a refresh is required for it to show up
-   * @param nullValueString a String representing a null value
+   * @param nullValueString a value which is used to represent a null value
    */
   void setNullValue(final T nullValueString);
 
