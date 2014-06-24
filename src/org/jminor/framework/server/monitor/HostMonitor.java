@@ -31,12 +31,12 @@ public final class HostMonitor {
   private final Event serverMonitorRemovedEvent = Events.event();
 
   private final String hostName;
-  private final int[] registryPorts;
+  private final int registryPort;
   private final Collection<ServerMonitor> serverMonitors = new ArrayList<>();
 
-  public HostMonitor(final String hostName, final int[] registryPorts) throws RemoteException {
+  public HostMonitor(final String hostName, final int registryPort) throws RemoteException {
     this.hostName = hostName;
-    this.registryPorts = registryPorts.clone();
+    this.registryPort = registryPort;
     refresh();
   }
 
@@ -44,19 +44,21 @@ public final class HostMonitor {
     return hostName;
   }
 
+  public int getRegistryPort() {
+    return registryPort;
+  }
+
   public void refresh() throws RemoteException {
-    for (final int registryPort : registryPorts) {
-      for (final String serverName : getRemoteEntityServers(hostName, registryPort)) {
-        if (!containsServerMonitor(serverName)) {
-          final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverName, registryPort);
-          serverMonitor.getServerShutDownObserver().addListener(new EventListener() {
-            @Override
-            public void eventOccurred() {
-              removeServer(serverMonitor);
-            }
-          });
-          serverMonitors.add(serverMonitor);
-        }
+    for (final String serverName : getRemoteEntityServers(hostName, registryPort)) {
+      if (!containsServerMonitor(ServerMonitor.removeAdminPrefix(serverName))) {
+        final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverName, registryPort);
+        serverMonitor.getServerShutDownObserver().addListener(new EventListener() {
+          @Override
+          public void eventOccurred() {
+            removeServer(serverMonitor);
+          }
+        });
+        serverMonitors.add(serverMonitor);
       }
     }
     refreshedEvent.fire();

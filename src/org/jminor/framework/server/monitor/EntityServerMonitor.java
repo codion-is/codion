@@ -22,17 +22,17 @@ public final class EntityServerMonitor {
 
   private final Collection<HostMonitor> hostMonitors = new ArrayList<>();
 
-  public EntityServerMonitor(final String hostNames, final int[] registryPorts) throws RemoteException {
+  public EntityServerMonitor(final String hostNames, final int registryPort) throws RemoteException {
     if (Util.nullOrEmpty(hostNames)) {
       throw new IllegalArgumentException("No server host names specified for server monitor");
     }
     for (final String hostname : Arrays.asList(hostNames.split(","))) {
-      addHost(hostname, registryPorts);
+      addHost(hostname, registryPort);
     }
   }
 
-  public void addHost(final String hostname, final int[] registryPorts) throws RemoteException {
-    hostMonitors.add(new HostMonitor(hostname, registryPorts));
+  public void addHost(final String hostname, final int registryPort) throws RemoteException {
+    hostMonitors.add(new HostMonitor(hostname, registryPort));
     hostAddedEvent.fire(hostname);
   }
 

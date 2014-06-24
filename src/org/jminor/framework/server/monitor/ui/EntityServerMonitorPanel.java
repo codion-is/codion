@@ -35,7 +35,6 @@ import java.awt.FlowLayout;
 import java.io.File;
 import java.io.IOException;
 import java.rmi.RemoteException;
-import java.rmi.registry.Registry;
 
 /**
  * A UI based on the EntityServerMonitor model
@@ -57,7 +56,8 @@ public final class EntityServerMonitorPanel extends JPanel {
    * @throws RemoteException in case of an exception
    */
   public EntityServerMonitorPanel() throws RemoteException {
-    this(new EntityServerMonitor(Configuration.getStringValue(Configuration.SERVER_HOST_NAME), getRegistryPorts()));
+    this(new EntityServerMonitor(Configuration.getStringValue(Configuration.SERVER_HOST_NAME),
+            Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER)));
     Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
       @Override
       public void uncaughtException(final Thread t, final Throwable e) {
@@ -142,7 +142,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     final JTabbedPane hostPane = new JTabbedPane();
     hostPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     for (final HostMonitor hostMonitor : model.getHostMonitors()) {
-      hostPane.addTab(hostMonitor.getHostName(), new HostMonitorPanel(hostMonitor));
+      hostPane.addTab(hostMonitor.getHostName() + ":" + hostMonitor.getRegistryPort(), new HostMonitorPanel(hostMonitor));
     }
     add(hostPane, BorderLayout.CENTER);
     add(initializeSouthPanel(), BorderLayout.SOUTH);
@@ -207,16 +207,6 @@ public final class EntityServerMonitorPanel extends JPanel {
     southPanel.add(UiUtil.createMemoryUsageField(MEMORY_USAGE_UPDATE_INTERVAL_MS));
 
     return southPanel;
-  }
-
-  private static int[] getRegistryPorts() {
-    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
-    if (registryPort == Registry.REGISTRY_PORT) {//just the default registry port
-      return new int[] {registryPort};
-    }
-    else {
-      return new int[] {registryPort, Registry.REGISTRY_PORT};
-    }
   }
 
   public static void main(final String[] arguments) {

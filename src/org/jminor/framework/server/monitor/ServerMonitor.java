@@ -261,7 +261,7 @@ public final class ServerMonitor {
     statisticsUpdatedEvent.fire();
   }
 
-  private static String removeAdminPrefix(final String serverName) {
+  static String removeAdminPrefix(final String serverName) {
     if (serverName.startsWith(RemoteServer.SERVER_ADMIN_PREFIX)) {
       return serverName.substring(RemoteServer.SERVER_ADMIN_PREFIX.length(), serverName.length());
     }

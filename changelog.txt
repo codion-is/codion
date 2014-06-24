@@ -3765,3 +3765,4 @@
   DefaultEntityConnection no longer extends DefaultDatabaseConnection, composition used instead
   DefaultEntityConnection now synchronizes on it's internal connection instead of itself
   DatabaseConnection.Procedure and Function generified to accommodate the above inheritance change
+  HostMonitor bug fixed, now removes admin server name prefix before checking if the server is already open
