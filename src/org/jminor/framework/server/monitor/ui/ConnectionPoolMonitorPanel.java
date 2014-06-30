@@ -37,9 +37,11 @@ import java.text.NumberFormat;
  */
 public final class ConnectionPoolMonitorPanel extends JPanel {
 
-  private final ConnectionPoolMonitor model;
-
   private static final int RESET_FIELD_COLUMNS = 14;
+  private static final int HUNDRED = 100;
+  private static final int SPINNER_COLUMNS = 3;
+
+  private final ConnectionPoolMonitor model;
 
   private final NumberFormat format = NumberFormat.getInstance();
   private final JFreeChart inPoolFineGrainedChart = ChartFactory.createXYStepChart(null,
@@ -81,10 +83,10 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
     txtDestroyed.setText(format.format(statistics.getDestroyed()));
     txtResetTime.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(statistics.getResetTime()));
     txtRequested.setText(format.format(statistics.getRequests()));
-    double prc = (double) statistics.getDelayedRequests() / (double) statistics.getRequests() * 100;
+    double prc = (double) statistics.getDelayedRequests() / (double) statistics.getRequests() * HUNDRED;
     txtDelayed.setText(format.format(statistics.getDelayedRequests())
             + (prc > 0 ? " (" + format.format(prc)+"%)" : ""));
-    prc = (double) statistics.getFailedRequests() / (double) statistics.getRequests() * 100;
+    prc = (double) statistics.getFailedRequests() / (double) statistics.getRequests() * HUNDRED;
     txtFailed.setText(format.format(statistics.getFailedRequests())
             + (prc > 0 ? " (" + format.format(prc)+"%)" : ""));
     if (model.datasetContainsData()) {
@@ -214,7 +216,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
 
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(spnUpdateInterval);

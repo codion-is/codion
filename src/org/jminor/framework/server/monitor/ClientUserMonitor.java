@@ -17,6 +17,8 @@ import java.rmi.RemoteException;
  */
 public final class ClientUserMonitor {
 
+  private static final int THOUSAND = 1000;
+
   private final EntityConnectionServerAdmin server;
   private final Event<Integer> connectionTimeoutChangedEvent = Events.event();
 
@@ -58,19 +60,19 @@ public final class ClientUserMonitor {
   }
 
   public void setMaintenanceInterval(final int interval) throws RemoteException {
-    server.setMaintenanceInterval(interval * 1000);
+    server.setMaintenanceInterval(interval * THOUSAND);
   }
 
   public int getMaintenanceInterval() throws RemoteException {
-    return server.getMaintenanceInterval() / 1000;
+    return server.getMaintenanceInterval() / THOUSAND;
   }
 
   public int getConnectionTimeout() throws RemoteException {
-    return server.getConnectionTimeout() / 1000;
+    return server.getConnectionTimeout() / THOUSAND;
   }
 
   public void setConnectionTimeout(final int timeout) throws RemoteException {
-    server.setConnectionTimeout(timeout * 1000);
+    server.setConnectionTimeout(timeout * THOUSAND);
     connectionTimeoutChangedEvent.fire(timeout);
   }
 

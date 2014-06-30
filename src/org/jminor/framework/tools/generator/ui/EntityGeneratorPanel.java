@@ -32,6 +32,8 @@ import java.awt.BorderLayout;
  */
 public class EntityGeneratorPanel extends JPanel {
 
+  private static final double RESIZE_WEIGHT = 0.2;
+
   private final EntityGeneratorModel model;
 
   /**
@@ -51,7 +53,7 @@ public class EntityGeneratorPanel extends JPanel {
     final JScrollPane documentScroller = new JScrollPane(textArea);
     splitPane.setRightComponent(documentScroller);
 
-    splitPane.setResizeWeight(0.2);
+    splitPane.setResizeWeight(RESIZE_WEIGHT);
 
     setLayout(UiUtil.createBorderLayout());
     add(splitPane, BorderLayout.CENTER);
@@ -94,7 +96,7 @@ public class EntityGeneratorPanel extends JPanel {
           return;
         }
 
-        final User user = LoginPanel.getUser(null, new User(schemaName, null));
+        final User user = new LoginPanel(new User(schemaName, null)).showLoginPanel(null);
         final EntityGeneratorModel model = new EntityGeneratorModel(user, schemaName);
         final EntityGeneratorPanel panel = new EntityGeneratorPanel(model);
         final ImageIcon icon = Images.loadImage("jminor_logo32.gif");

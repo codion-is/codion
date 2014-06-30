@@ -80,6 +80,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   public static final String CLEAR = "EntityEditPanel.clear";
 
   private static final String ALT_PREFIX = " (ALT-";
+  private static final int ENTITY_MENU_X_OFFSET = 42;
 
   /**
    * The edit model this edit panel is associated with
@@ -1972,7 +1973,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
             WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new AbstractAction("EntityEditPanel.showEntityMenu") {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        final int x = getBounds().getLocation().x + 42;
+        final int x = getBounds().getLocation().x + ENTITY_MENU_X_OFFSET;
         final int y = getHeight();
 
         EntityUiUtil.showEntityMenu(getEditModel().getEntityCopy(), EntityEditPanel.this, new Point(x, y), getEditModel().getConnectionProvider());

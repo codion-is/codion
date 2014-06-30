@@ -24,6 +24,7 @@ import java.awt.Dimension;
 public final class EntityReportUiUtil {
 
   private static final Dimension MINIMUM_REPORT_WINDOW_SIZE = new Dimension(800, 600);
+  private static final double SCREEN_SIZE_RATIO = 0.8;
 
   private EntityReportUiUtil() {}
 
@@ -86,7 +87,7 @@ public final class EntityReportUiUtil {
         final JFrame frame = new JFrame(frameTitle == null ? FrameworkMessages.get(FrameworkMessages.REPORT_PRINTER) : frameTitle);
         frame.setDefaultCloseOperation(JFrame.DISPOSE_ON_CLOSE);
         frame.getContentPane().add(uiWrapper.createReportComponent(reportResult));
-        UiUtil.resizeWindow(frame, 0.8, MINIMUM_REPORT_WINDOW_SIZE);
+        UiUtil.resizeWindow(frame, SCREEN_SIZE_RATIO, MINIMUM_REPORT_WINDOW_SIZE);
         UiUtil.centerWindow(frame);
         frame.setVisible(true);
       }

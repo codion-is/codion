@@ -498,7 +498,7 @@ public final class EntityGeneratorModel {
     @Override
     public int hashCode() {
       int result = schemaName != null ? schemaName.hashCode() : 0;
-      result = 31 * result + (tableName != null ? tableName.hashCode() : 0);
+      result = result + (tableName != null ? tableName.hashCode() : 0);
 
       return result;
     }

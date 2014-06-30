@@ -30,6 +30,8 @@ public final class EntityTableCellRenderers {
   private static final Color SEARCH_ALTERNATE_BACKGROUND;
   private static final Color DOUBLE_ALTERNATE_SEARCH_BACKGROUND;
 
+  private static final int RGB_CENTER = 128;
+
   static {
     DEFAULT_BACKGROUND = UIManager.getColor("Table.background");
     SEARCH_BACKGROUND = shade(DEFAULT_BACKGROUND, SHADE_AMOUNT);
@@ -66,9 +68,9 @@ public final class EntityTableCellRenderers {
     int g = color.getGreen();
     int b = color.getBlue();
 
-    r += r < 128 ? amount : -amount;
-    g += g < 128 ? amount : -amount;
-    b += b < 128 ? amount : -amount;
+    r += r < RGB_CENTER ? amount : -amount;
+    g += g < RGB_CENTER ? amount : -amount;
+    b += b < RGB_CENTER ? amount : -amount;
 
     return new Color(r, g, b);
   }
@@ -144,7 +146,7 @@ public final class EntityTableCellRenderers {
     public Component getTableCellRendererComponent(final JTable table, final Object value, final boolean isSelected,
                                                    final boolean hasFocus, final int row, final int column) {
       super.getTableCellRendererComponent(table, value, isSelected, hasFocus, row, column);
-      if (tooltipData) {
+      if (isTooltipData()) {
         setToolTipText(value == null ? "" : value.toString());
       }
       if (isSelected) {

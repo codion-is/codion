@@ -113,12 +113,15 @@ public class DefaultConnectionPoolTest {
     final Date startDate = new Date();
     final User user = User.UNIT_TEST_USER;
     final DefaultConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(user));
+    pool.setCleanupInterval(2000);
+    pool.setConnectionTimeout(6000);
+    pool.setMaximumPoolSize(8);
     try {
       assertEquals(user, pool.getUser());
-      assertEquals(DefaultConnectionPool.DEFAULT_CLEANUP_INTERVAL_MS, pool.getCleanupInterval());
-      assertEquals(DefaultConnectionPool.DEFAULT_CONNECTION_TIMEOUT_MS, pool.getConnectionTimeout());
-      assertEquals(DefaultConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE, pool.getMaximumPoolSize());
-      final int minimumPoolSize = DefaultConnectionPool.DEFAULT_MAXIMUM_POOL_SIZE / 2;
+      assertEquals(2000, pool.getCleanupInterval());
+      assertEquals(6000, pool.getConnectionTimeout());
+      assertEquals(8, pool.getMaximumPoolSize());
+      final int minimumPoolSize = 4;
       assertEquals(minimumPoolSize, pool.getMinimumPoolSize());
       assertEquals(minimumPoolSize, pool.getStatistics(System.currentTimeMillis()).getAvailable());
       pool.setMaximumPoolSize(6);

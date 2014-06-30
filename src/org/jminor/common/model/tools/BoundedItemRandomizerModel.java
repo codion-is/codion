@@ -5,6 +5,9 @@ package org.jminor.common.model.tools;
 
 import org.jminor.common.model.Util;
 
+import java.util.Collection;
+import java.util.Iterator;
+
 /**
  * A ItemRandomizer with the added constraint that the total item weights can not exceed a defined maximum.
  * When the weight of one item is incremented the weight of another is decremented in a round robin kind of fashion
@@ -24,7 +27,7 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
    * Instantiates a new BoundedRandomItemModel with a default bounded weight of 100.
    * @param items the items
    */
-  public BoundedItemRandomizerModel(final T... items) {
+  public BoundedItemRandomizerModel(final Collection<T> items) {
     this(100, items);
   }
 
@@ -33,12 +36,12 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
    * @param boundedWeight the maximum total weight
    * @param items the items
    */
-  public BoundedItemRandomizerModel(final int boundedWeight, final T... items) {
+  public BoundedItemRandomizerModel(final int boundedWeight, final Collection<T> items) {
     if (boundedWeight <= 0) {
       throw new IllegalArgumentException("Bounded weight must be a positive integer");
     }
     Util.rejectNullValue(items, "items");
-    if (items.length == 0) {
+    if (items.isEmpty()) {
       throw new IllegalArgumentException("Items must not be empty");
     }
 
@@ -84,7 +87,7 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
   /** {@inheritDoc} */
   @Override
   public void setWeight(final T item, final int weight) {
-    throw new UnsupportedOperationException("setWeigth is not implemented in " + getClass().getSimpleName());
+    throw new UnsupportedOperationException("setWeight is not implemented in " + getClass().getSimpleName());
   }
 
   /** {@inheritDoc} */
@@ -93,11 +96,13 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
     throw new UnsupportedOperationException("addItem is not implemented in " + getClass().getSimpleName());
   }
 
-  private void initializeItems(final T... items) {
-    final int rest = weightBounds % items.length;
-    final int amountEach = weightBounds / items.length;
-    for (int i = 0; i < items.length; i++) {
-      super.addItem(items[i], i < items.length - 1 ? amountEach : amountEach + rest);
+  private void initializeItems(final Collection<T> items) {
+    final int rest = weightBounds % items.size();
+    final int amountEach = weightBounds / items.size();
+    final Iterator<T> itemIterator = items.iterator();
+    int i = 0;
+    while (itemIterator.hasNext()) {
+      super.addItem(itemIterator.next(), i++ < items.size() - 1 ?  amountEach : amountEach + rest);
     }
   }
 

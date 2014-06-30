@@ -123,11 +123,13 @@ public final class UiUtil {
    * A square dimension which sides are the same as the preferred height of a JTextField.
    * This comes in handy when f.ex. adding "..." lookup buttons next to text fields.
    */
-  public static final Dimension DIMENSION_TEXT_FIELD_SQUARE =
-          new Dimension(getPreferredTextFieldHeight(), getPreferredTextFieldHeight());
-
+  public static final Dimension DIMENSION_TEXT_FIELD_SQUARE = new Dimension(getPreferredTextFieldHeight(), getPreferredTextFieldHeight());
+  private static final int DEFAULT_HOR_VERT_GAP = 5;
+  private static final int DEFAULT_DATE_FIELD_COLUMNS = 12;
+  private static final int MAX_SELECT_VALUE_DIALOG_WIDTH = 500;
+  private static final int DEFAULT_PROGRESS_BAR_WIDTH = 400;
+  private static final double DEFAULT_IMAGE_PANEL_SCREEN_SIZE_RATIO = 0.5;
   private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
-  private static int defaultHorizontalVerticalComponentGap = 5;
   /**
    * Caching the file chooser since the constructor is quite slow, especially on Win. with many mapped network drives
    */
@@ -137,6 +139,8 @@ public final class UiUtil {
    */
   private static JTextField textField;
   private static JScrollBar verticalScrollBar;
+
+  private static int horizontalVerticalComponentGap = DEFAULT_HOR_VERT_GAP;
 
   private UiUtil() {}
 
@@ -148,27 +152,27 @@ public final class UiUtil {
    * @see #createGridLayout(int, int)
    * @see #createFlexibleGridLayout(int, int, boolean, boolean)
    */
-  public static void setDefaultHorizontalVerticalComponentGap(final int gap) {
-    defaultHorizontalVerticalComponentGap = gap;
+  public static void setHorizontalVerticalComponentGap(final int gap) {
+    horizontalVerticalComponentGap = gap;
   }
 
   /**
    * Creates a BorderLayout using the default vertical and horizontal gap value
    * @return a BorderLayout
-   * @see #setDefaultHorizontalVerticalComponentGap(int)
+   * @see #setHorizontalVerticalComponentGap(int)
    */
   public static BorderLayout createBorderLayout() {
-    return new BorderLayout(defaultHorizontalVerticalComponentGap, defaultHorizontalVerticalComponentGap);
+    return new BorderLayout(horizontalVerticalComponentGap, horizontalVerticalComponentGap);
   }
 
   /**
    * Creates a FlowLayout using the default vertical and horizontal gap value
    * @param alignment the alignment
    * @return a FlowLayout
-   * @see #setDefaultHorizontalVerticalComponentGap(int)
+   * @see #setHorizontalVerticalComponentGap(int)
    */
   public static FlowLayout createFlowLayout(final int alignment) {
-    return new FlowLayout(alignment, defaultHorizontalVerticalComponentGap, defaultHorizontalVerticalComponentGap);
+    return new FlowLayout(alignment, horizontalVerticalComponentGap, horizontalVerticalComponentGap);
   }
 
   /**
@@ -176,10 +180,10 @@ public final class UiUtil {
    * @param rows the number of rows
    * @param columns the number of columns
    * @return a GridLayout
-   * @see #setDefaultHorizontalVerticalComponentGap(int)
+   * @see #setHorizontalVerticalComponentGap(int)
    */
   public static GridLayout createGridLayout(final int rows, final int columns) {
-    return new GridLayout(rows, columns, defaultHorizontalVerticalComponentGap, defaultHorizontalVerticalComponentGap);
+    return new GridLayout(rows, columns, horizontalVerticalComponentGap, horizontalVerticalComponentGap);
   }
 
   /**
@@ -189,12 +193,12 @@ public final class UiUtil {
    * @param fixRowHeights if true then the height of the rows is fixed as the largest value
    * @param fixColumnWidths if true then the width of the columns is fixed as the largest value
    * @return a FlexibleGridLayout
-   * @see #setDefaultHorizontalVerticalComponentGap(int)
+   * @see #setHorizontalVerticalComponentGap(int)
    */
   public static FlexibleGridLayout createFlexibleGridLayout(final int rows, final int columns,
                                                             final boolean fixRowHeights, final boolean fixColumnWidths) {
-    return new FlexibleGridLayout(rows, columns, defaultHorizontalVerticalComponentGap,
-            defaultHorizontalVerticalComponentGap, fixRowHeights, fixColumnWidths);
+    return new FlexibleGridLayout(rows, columns, horizontalVerticalComponentGap,
+            horizontalVerticalComponentGap, fixRowHeights, fixColumnWidths);
   }
 
   /**
@@ -486,7 +490,7 @@ public final class UiUtil {
       final MaskFormatter formatter = new MaskFormatter(DateUtil.getDateMask(inputDateFormat));
       formatter.setPlaceholderCharacter('_');
       final JFormattedTextField txtField = new JFormattedTextField(inputDateFormat);
-      txtField.setColumns(12);
+      txtField.setColumns(DEFAULT_DATE_FIELD_COLUMNS);
       txtField.setValue(startDate);
 
       final JPanel datePanel = new JPanel(createGridLayout(1, 1));
@@ -1273,8 +1277,8 @@ public final class UiUtil {
     };
     list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     prepareScrollPanelDialog(dialog, dialogOwner, list, okAction, cancelAction);
-    if (dialog.getSize().width > 500) {
-      dialog.setSize(new Dimension(500, dialog.getSize().height));
+    if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
+      dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
     }
 
     return list.getSelectedValue();
@@ -1399,7 +1403,7 @@ public final class UiUtil {
     finally {
       setWaitCursor(false, dialogParent);
     }
-    imagePanel.setPreferredSize(getScreenSizeRatio(0.5));
+    imagePanel.setPreferredSize(getScreenSizeRatio(DEFAULT_IMAGE_PANEL_SCREEN_SIZE_RATIO));
     displayInDialog(dialogParent, imagePanel, imagePath, false);
   }
 
@@ -1505,7 +1509,7 @@ public final class UiUtil {
                                         final Runnable task) {
     final JProgressBar bar = new JProgressBar();
     bar.setIndeterminate(true);
-    bar.setPreferredSize(new Dimension(400, bar.getPreferredSize().height));
+    bar.setPreferredSize(new Dimension(DEFAULT_PROGRESS_BAR_WIDTH, bar.getPreferredSize().height));
     final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogParent), progressBarTitle, Dialog.ModalityType.APPLICATION_MODAL);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     dialog.setLayout(createBorderLayout());

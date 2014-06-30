@@ -26,13 +26,13 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultConnectionPool.class);
 
-  public static final int DEFAULT_CONNECTION_TIMEOUT_MS = 60000;
-  public static final int DEFAULT_CLEANUP_INTERVAL_MS = 20000;
-  public static final int DEFAULT_MAXIMUM_POOL_SIZE = 8;
-  public static final int DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS = 50;
-  public static final int DEFAULT_MAXIMUM_CHECK_OUT_TIME = 2000;
-  public static final int DEFAULT_NEW_CONNECTION_THRESHOLD = 500;
-
+  private static final int DEFAULT_CONNECTION_TIMEOUT_MS = 60000;
+  private static final int DEFAULT_CLEANUP_INTERVAL_MS = 20000;
+  private static final int DEFAULT_MAXIMUM_POOL_SIZE = 8;
+  private static final int DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS = 50;
+  private static final int DEFAULT_MAXIMUM_CHECK_OUT_TIME = 2000;
+  private static final int DEFAULT_NEW_CONNECTION_THRESHOLD = 500;
+  private static final int NEW_CONNECTION_THRESHOLD_RATIO = 4;
   private static final long NANO_IN_MILLI = 1000000;
 
   private final DatabaseConnectionProvider connectionProvider;
@@ -190,7 +190,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
     }
     this.maximumCheckOutTime = value;
     if (newConnectionThreshold > this.maximumCheckOutTime) {
-      newConnectionThreshold = Math.max(0, this.maximumCheckOutTime / 4);
+      newConnectionThreshold = Math.max(0, this.maximumCheckOutTime / NEW_CONNECTION_THRESHOLD_RATIO);
     }
   }
 

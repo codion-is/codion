@@ -102,6 +102,7 @@ public final class EntityUiUtil {
   private static final String EDIT_MODEL_PARAM_NAME = "editModel";
   private static final int BOOLEAN_COMBO_BOX_POPUP_WIDTH = 40;
   private static final Color INVALID_COLOR = Color.RED;
+  private static final int MAXIMUM_VALUE_LENGTH = 1000;
 
   private EntityUiUtil() {}
 
@@ -1231,7 +1232,7 @@ public final class EntityUiUtil {
           toolTipText = ((Property.ColumnProperty) property).getColumnName();
         }
         if (longValue) {
-          toolTipText += (value.length() > 1000 ? value.substring(0, 1000) : value);
+          toolTipText += (value.length() > MAXIMUM_VALUE_LENGTH ? value.substring(0, MAXIMUM_VALUE_LENGTH) : value);
         }
         menuItem.setToolTipText(toolTipText);
         rootMenu.add(menuItem);

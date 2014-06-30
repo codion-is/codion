@@ -64,6 +64,7 @@ public final class LoadTestPanel extends JPanel {
   private static final int SMALL_TEXT_FIELD_COLUMNS = 3;
   private static final int SPINNER_STEP_SIZE = 10;
   private static final int COMPONENT_GAP = 0;
+  private static final double RESIZE_WEIGHT = 0.8;
 
   private final LoadTest loadTestModel;
 
@@ -314,7 +315,7 @@ public final class LoadTestPanel extends JPanel {
     two.setOneTouchExpandable(true);
     two.setLeftComponent(twoTab);
     two.setRightComponent(bottomPanel);
-    two.setResizeWeight(0.8);
+    two.setResizeWeight(RESIZE_WEIGHT);
 
     final JPanel chartBase = new JPanel(new BorderLayout(COMPONENT_GAP, COMPONENT_GAP));
 

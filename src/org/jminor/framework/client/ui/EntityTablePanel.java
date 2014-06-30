@@ -140,6 +140,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   private static final Dimension TOOLBAR_BUTTON_SIZE = new Dimension(20, 20);
   private static final int STATUS_MESSAGE_FONT_SIZE = 12;
+  private static final int POPUP_LOCATION_X_OFFSET = 42;
+  private static final int POPUP_LOCATION_EMPTY_SELECTION = 100;
   private static final String TRIPLEDOT = "...";
 
   private final Event tableDoubleClickedEvent = Events.event();
@@ -1545,8 +1547,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   private static Point getPopupLocation(final JTable table) {
-    final int x = table.getBounds().getLocation().x + 42;
-    final int y = table.getSelectionModel().isSelectionEmpty() ? 100 : (table.getSelectedRow() + 1) * table.getRowHeight();
+    final int x = table.getBounds().getLocation().x + POPUP_LOCATION_X_OFFSET;
+    final int y = table.getSelectionModel().isSelectionEmpty() ? POPUP_LOCATION_EMPTY_SELECTION : (table.getSelectedRow() + 1) * table.getRowHeight();
 
     return new Point(x, y);
   }
@@ -1573,6 +1575,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   private static final class ResizeSelectedColumnAction extends  AbstractAction {
 
+    private static final int RESIZE_AMOUNT = 10;
     private final JTable table;
     private final boolean enlarge;
 
@@ -1587,7 +1590,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       final int selectedColumnIndex = table.getSelectedColumn();
       if (selectedColumnIndex != -1) {
         final TableColumn column = table.getColumnModel().getColumn(selectedColumnIndex);
-        column.setPreferredWidth(column.getWidth() + (enlarge ? 10 : -10));
+        column.setPreferredWidth(column.getWidth() + (enlarge ? RESIZE_AMOUNT : -RESIZE_AMOUNT));
       }
     }
   }

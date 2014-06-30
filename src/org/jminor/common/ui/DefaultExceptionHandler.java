@@ -21,6 +21,7 @@ import java.rmi.RemoteException;
 public final class DefaultExceptionHandler implements ExceptionHandler {
 
   private static final DefaultExceptionHandler INSTANCE = new DefaultExceptionHandler();
+  private static final int MAXIMUM_MESSAGE_LENGTH = 50;
 
   /**
    * @return an ExceptionHandler singleton
@@ -105,8 +106,8 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
 
   private static String trimMessage(final Throwable e) {
     final String msg = e.getMessage();
-    if (msg.length() > 50) {
-      return msg.substring(0, 50) + "...";
+    if (msg.length() > MAXIMUM_MESSAGE_LENGTH) {
+      return msg.substring(0, MAXIMUM_MESSAGE_LENGTH) + "...";
     }
 
     return msg;

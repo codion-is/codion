@@ -85,6 +85,7 @@ public final class Util {
   private static final String UNDERSCORE = "_";
   private static final String KEY = "key";
   private static final int INPUT_BUFFER_SIZE = 8192;
+  private static final int TEN = 10;
   private static Preferences userPreferences;
 
   private Util() {}
@@ -607,7 +608,7 @@ public final class Util {
    * @return the rounded value
    */
   public static double roundDouble(final double d, final int places) {
-    return Math.round(d * Math.pow(10, (double) places)) / Math.pow(10, (double) places);
+    return Math.round(d * Math.pow(TEN, (double) places)) / Math.pow(TEN, (double) places);
   }
 
   /**

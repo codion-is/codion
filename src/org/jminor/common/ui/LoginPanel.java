@@ -26,30 +26,17 @@ import java.awt.event.ActionEvent;
 public final class LoginPanel extends JPanel {
 
   private static final int DEFAULT_FIELD_COLUMNS = 8;
+  private static final int GRID_SIZE = 2;
 
   private final JTextField usernameField = new JTextField(DEFAULT_FIELD_COLUMNS);
   private final JPasswordField passwordField = new JPasswordField(DEFAULT_FIELD_COLUMNS);
-
-  private final JLabel lblUser = new JLabel("", JLabel.RIGHT);
-  private final JLabel lblPass = new JLabel("", JLabel.RIGHT);
-
-  private final User defaultUser;
 
   /**
    * Instantiates a new LoginPanel
    * @param defaultUser the default user
    */
   public LoginPanel(final User defaultUser) {
-    this(defaultUser, false, null, null);
-  }
-
-  /**
-   * Instantiates a new LoginPanel
-   * @param defaultUser the default user
-   */
-  public LoginPanel(final User defaultUser, final boolean labelsOnTop, final String userLabel, final String passLabel) {
-    this.defaultUser = defaultUser;
-    initUI(labelsOnTop, userLabel, passLabel);
+    initUI(defaultUser);
   }
 
   /**
@@ -76,52 +63,24 @@ public final class LoginPanel extends JPanel {
   /**
    * Displays a LoginPanel
    * @param parent the dialog parent component
-   * @param defaultUser the default user
    * @return a User object based on the values found in this LoginPanel
    * @throws CancelException in case the user cancels
    */
-  public static User showLoginPanel(final JComponent parent, final User defaultUser) {
-    return showLoginPanel(parent, defaultUser, null);
+  public User showLoginPanel(final JComponent parent) {
+    return showLoginPanel(parent, null, null);
   }
 
   /**
    * Displays a LoginPanel
    * @param parent the dialog parent component
-   * @param defaultUser the default user
+   * @param title the dialog title
    * @param icon the dialog icon
    * @return a User object based on the values found in this LoginPanel
    * @throws CancelException in case the user cancels
    */
-  public static User showLoginPanel(final JComponent parent, final User defaultUser, final Icon icon) {
-    return showLoginPanel(parent, defaultUser, icon, null, null, null);
-  }
-
-  /**
-   * Displays a LoginPanel
-   * @param parent the dialog parent component
-   * @param defaultUser the default user
-   * @param icon the dialog icon
-   * @param usernameLabel the caption for the username label
-   * @param passwordLabel the caption for the password label
-   * @return a User object based on the values found in this LoginPanel
-   * @throws CancelException in case the user cancels
-   */
-  public static User showLoginPanel(final JComponent parent, final User defaultUser,
-                                    final Icon icon, final String dialogTitle,
-                                    final String usernameLabel, final String passwordLabel) {
-    return new LoginPanel(defaultUser, false, usernameLabel, passwordLabel).showLoginPanel(parent, icon, dialogTitle);
-  }
-
-  /**
-   * Displays a LoginPanel
-   * @param parent the dialog parent component
-   * @param icon the dialog icon
-   * @return a User object based on the values found in this LoginPanel
-   * @throws CancelException in case the user cancels
-   */
-  public User showLoginPanel(final JComponent parent, final Icon icon, final String dialogTitle) {
+  public User showLoginPanel(final JComponent parent, final String title, final Icon icon) {
     final JOptionPane pane = new JOptionPane(this, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION, icon);
-    final JDialog dialog = pane.createDialog(parent, dialogTitle == null ? Messages.get(Messages.LOGIN) : dialogTitle);
+    final JDialog dialog = pane.createDialog(parent, title == null ? Messages.get(Messages.LOGIN) : title);
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
     dialog.pack();
     UiUtil.centerWindow(dialog);
@@ -136,39 +95,22 @@ public final class LoginPanel extends JPanel {
     }
   }
 
-  /**
-   * Displays a LoginPanel for logging in
-   * @param parent the dialog parent
-   * @param defaultUser the default user
-   * @return a User object based on the values found in this LoginPanel
-   * @throws CancelException in case the user cancels
-   */
-  public static User getUser(final JComponent parent, final User defaultUser) {
-    return showLoginPanel(parent, defaultUser);
-  }
-
-  private void initUI(final boolean labelsOnTop, final String userLabel, final String passLabel) {
-    final JPanel retBase = new JPanel(UiUtil.createFlexibleGridLayout(labelsOnTop ? 4 : 2, labelsOnTop ? 1 : 2, true, false));
-    lblUser.setHorizontalAlignment(labelsOnTop ? JLabel.LEADING : JLabel.RIGHT);
-    lblPass.setHorizontalAlignment(labelsOnTop ? JLabel.LEADING : JLabel.RIGHT);
-    lblUser.setText(userLabel == null ? Messages.get(Messages.USERNAME) : userLabel);
-    lblPass.setText(passLabel == null ? Messages.get(Messages.PASSWORD) : passLabel);
+  private void initUI(final User defaultUser) {
     usernameField.setText(defaultUser == null ? "" : defaultUser.getUsername());
-    passwordField.setText(defaultUser == null ? "" : defaultUser.getPassword());
-
     usernameField.setColumns(DEFAULT_FIELD_COLUMNS);
-    passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     UiUtil.selectAllOnFocusGained(usernameField);
+    passwordField.setText(defaultUser == null ? "" : defaultUser.getPassword());
+    passwordField.setColumns(DEFAULT_FIELD_COLUMNS);
     UiUtil.selectAllOnFocusGained(passwordField);
 
-    retBase.add(lblUser);
-    retBase.add(usernameField);
-
-    retBase.add(lblPass);
-    retBase.add(passwordField);
+    final JPanel basePanel = new JPanel(UiUtil.createFlexibleGridLayout(GRID_SIZE, GRID_SIZE, true, false));
+    basePanel.add(new JLabel(Messages.get(Messages.USERNAME), JLabel.RIGHT));
+    basePanel.add(usernameField);
+    basePanel.add(new JLabel(Messages.get(Messages.PASSWORD), JLabel.RIGHT));
+    basePanel.add(passwordField);
 
     final JPanel centerPanel = new JPanel(new FlowLayout(FlowLayout.CENTER));
-    centerPanel.add(retBase);
+    centerPanel.add(basePanel);
     setLayout(UiUtil.createBorderLayout());
     add(centerPanel, BorderLayout.CENTER);
     if (usernameField.getText().length() == 0) {

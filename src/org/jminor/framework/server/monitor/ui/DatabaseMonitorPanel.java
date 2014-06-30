@@ -23,12 +23,13 @@ import javax.swing.JTabbedPane;
 import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
-import java.rmi.RemoteException;
 
 /**
  * A DatabaseMonitorPanel
  */
 public final class DatabaseMonitorPanel extends JPanel {
+
+  private static final int SPINNER_COLUMNS = 3;
 
   private final DatabaseMonitor model;
 
@@ -40,9 +41,8 @@ public final class DatabaseMonitorPanel extends JPanel {
   /**
    * Instantiates a new DatabaseMonitorPanel
    * @param model the DatabaseMonitor to base this panel on
-   * @throws RemoteException in case of an exception
    */
-  public DatabaseMonitorPanel(final DatabaseMonitor model) throws RemoteException {
+  public DatabaseMonitorPanel(final DatabaseMonitor model) {
     this.model = model;
     queriesPerSecondChart.getXYPlot().setDataset(model.getQueriesPerSecondCollection());
     queriesPerSecondChart.getXYPlot().setBackgroundPaint(Color.BLACK);
@@ -50,7 +50,7 @@ public final class DatabaseMonitorPanel extends JPanel {
     initializeUI();
   }
 
-  private void initializeUI() throws RemoteException {
+  private void initializeUI() {
     setLayout(new BorderLayout());
     final JTabbedPane tabPane = new JTabbedPane();
     tabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
@@ -65,7 +65,7 @@ public final class DatabaseMonitorPanel extends JPanel {
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
 
     ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
 
     chartConfig.add(new JLabel("Update interval (s)"));
     chartConfig.add(spnUpdateInterval);

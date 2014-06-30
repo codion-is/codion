@@ -43,6 +43,8 @@ import java.util.List;
  */
 public final class ItemRandomizerPanel<T> extends JPanel {
 
+  private static final int SPINNER_COLUMNS = 3;
+
   private final ItemRandomizer<T> model;
   private final JPanel configPanel = new JPanel(UiUtil.createGridLayout(0, 1));
   private final JList<ItemRandomizer.RandomItem<T>> itemList = new JList<>(new DefaultListModel<ItemRandomizer.RandomItem<T>>());
@@ -132,7 +134,7 @@ public final class ItemRandomizerPanel<T> extends JPanel {
   private JPanel initializeWeightPanel(final ItemRandomizerModel.RandomItem<T> item) {
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
     final JSpinner spinner = new JSpinner(createWeightSpinnerModel(item.getItem()));
-    ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setColumns(3);
+    ((JSpinner.DefaultEditor) spinner.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
     spinner.setToolTipText(item.getItem().toString());
     final JCheckBox chkEnabled = createEnabledCheckBox(item.getItem());
     final JLabel lblWeight = new JLabel("Weight");

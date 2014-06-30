@@ -202,6 +202,8 @@ public final class DatabaseUtil {
    */
   public static final class QueryCounter {
 
+    private static final double THOUSAND = 1000d;
+
     private long queriesPerSecondTime = System.currentTimeMillis();
     private int queriesPerSecond = 0;
     private int queriesPerSecondCounter = 0;
@@ -284,7 +286,7 @@ public final class DatabaseUtil {
 
     private synchronized void updateQueriesPerSecond() {
       final long current = System.currentTimeMillis();
-      final double seconds = (current - queriesPerSecondTime) / 1000d;
+      final double seconds = (current - queriesPerSecondTime) / THOUSAND;
       if (seconds > 0) {
         queriesPerSecond = (int) (queriesPerSecondCounter / seconds);
         selectsPerSecond = (int) (selectsPerSecondCounter / seconds);

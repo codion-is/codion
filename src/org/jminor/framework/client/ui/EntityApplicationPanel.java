@@ -82,8 +82,9 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
-  public static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
+  private static final String TIPS_AND_TRICKS_FILE = "TipsAndTricks.txt";
   private static final Dimension MINIMUM_HELP_WINDOW_SIZE = new Dimension(600, 750);
+  private static final double HELP_DIALOG_SCREEN_SIZE_RATIO = 0.1;
 
   private final List<EntityPanelProvider> entityPanelProviders = new ArrayList<>();
   private final List<EntityPanelProvider> supportPanelProviders = new ArrayList<>();
@@ -387,7 +388,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
             JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING),
                     FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
                     JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
-        throw new CancelException();
+      throw new CancelException();
     }
     else if (Configuration.getBooleanValue(Configuration.CONFIRM_EXIT) && JOptionPane.showConfirmDialog(this, FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT),
             FrameworkMessages.get(FrameworkMessages.CONFIRM_EXIT_TITLE), JOptionPane.YES_NO_OPTION) == JOptionPane.NO_OPTION) {
@@ -433,7 +434,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     final JDialog dialog = pane.createDialog(EntityApplicationPanel.this,
             FrameworkMessages.get(FrameworkMessages.HELP));
     dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    UiUtil.resizeWindow(dialog, 0.1, MINIMUM_HELP_WINDOW_SIZE);
+    UiUtil.resizeWindow(dialog, HELP_DIALOG_SCREEN_SIZE_RATIO, MINIMUM_HELP_WINDOW_SIZE);
     dialog.setLocationRelativeTo(this);
     dialog.setResizable(true);
     dialog.setModal(false);
@@ -1031,8 +1032,9 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    */
   protected User getUser(final String frameCaption, final User defaultUser, final ImageIcon applicationIcon) {
     final String defaultUserName = Configuration.getValue(Configuration.USERNAME_PREFIX) + System.getProperty("user.name");
-    final User user = LoginPanel.showLoginPanel(null, defaultUser == null ? new User(Util.getDefaultUserName(getApplicationIdentifier(),
-            defaultUserName), null) : defaultUser, applicationIcon, frameCaption + " - " + Messages.get(Messages.LOGIN), null, null);
+    final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? new User(Util.getDefaultUserName(getApplicationIdentifier(),
+            defaultUserName), null) : defaultUser);
+    final User user = loginPanel.showLoginPanel(null, frameCaption + " - " + Messages.get(Messages.LOGIN), applicationIcon);
     if (Util.nullOrEmpty(user.getUsername())) {
       throw new IllegalArgumentException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
     }

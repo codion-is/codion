@@ -44,10 +44,11 @@ public final class EntityServerMonitorPanel extends JPanel {
   private static final Logger LOG = LoggerFactory.getLogger(EntityServerMonitorPanel.class);
 
   private static final String JDK_PREFERENCE_KEY = EntityServerMonitorPanel.class.getSimpleName() + ".jdkPathPreferenceKey";
+  private static final double SCREEN_SIZE_RATIO = 0.75;
+  private static final int MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private static String jdkDir = Util.getUserPreference(JDK_PREFERENCE_KEY, null);
 
   private final Event<Boolean> alwaysOnTopChangedEvent = Events.event();
-  private static final int MEMORY_USAGE_UPDATE_INTERVAL_MS = 2000;
   private final EntityServerMonitor model;
   private JFrame monitorFrame;
 
@@ -124,7 +125,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     monitorFrame.setTitle("JMinor Server Monitor");
     monitorFrame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
     monitorFrame.getContentPane().add(this);
-    UiUtil.resizeWindow(monitorFrame, 0.75);
+    UiUtil.resizeWindow(monitorFrame, SCREEN_SIZE_RATIO);
     UiUtil.centerWindow(monitorFrame);
     monitorFrame.setVisible(true);
   }

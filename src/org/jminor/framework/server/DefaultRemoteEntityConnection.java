@@ -596,11 +596,14 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
   private static final class RequestCounter {
 
+    private static final int DEFAULT_WARNING_THRESHOLD = 60;
+    private static final double THOUSAND = 1000d;
+
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
     private long requestsPerSecondTime = System.currentTimeMillis();
     private int requestsPerSecond = 0;
     private int requestsPerSecondCounter = 0;
-    private int warningThreshold = 60;
+    private int warningThreshold = DEFAULT_WARNING_THRESHOLD;
     private int warningTimeExceededPerSecond = 0;
     private int warningTimeExceededCounter = 0;
 
@@ -615,7 +618,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
     private void updateRequestsPerSecond() {
       final long current = System.currentTimeMillis();
-      final double seconds = (current - requestsPerSecondTime) / 1000d;
+      final double seconds = (current - requestsPerSecondTime) / THOUSAND;
       if (seconds > 0) {
         requestsPerSecond = (int) ((double) requestsPerSecondCounter / seconds);
         warningTimeExceededPerSecond = (int) ((double) warningTimeExceededCounter / seconds);

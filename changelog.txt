@@ -3767,3 +3767,5 @@
   DatabaseConnection.Procedure and Function generified to accommodate the above inheritance change
   HostMonitor bug fixed, now removes admin server name prefix before checking if the server is already open
   Sonar run
+  LoginPanel, refactored, static methods removed
+  Sonar run, magic numbers
