@@ -330,7 +330,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
    * @param forward if true then the search direction is forward (down), otherwise it's backward (up)
    * @param searchText the text to search for
    */
-  void findNextValue(final boolean addToSelection, final boolean forward, final String searchText) {
+  final void findNextValue(final boolean addToSelection, final boolean forward, final String searchText) {
     performSearch(addToSelection, lastSearchResultCoordinate.y + (forward ?  1 : -1), forward, searchText);
   }
 

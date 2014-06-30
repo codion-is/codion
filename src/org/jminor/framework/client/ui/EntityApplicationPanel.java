@@ -1014,18 +1014,6 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   }
 
   /**
-   * Sets the uncaught exception handler, override to add specific uncaught exception handling
-   */
-  protected void setUncaughtExceptionHandler() {
-    Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
-      @Override
-      public void uncaughtException(final Thread t, final Throwable e) {
-        DefaultExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityApplicationPanel.this));
-      }
-    });
-  }
-
-  /**
    * Initializes the application model
    * @param connectionProvider the db provider
    * @return an initialized application model
@@ -1077,6 +1065,18 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     for (final EntityPanel entityPanel : entityPanels) {
       entityPanel.savePreferences();
     }
+  }
+
+  /**
+   * Sets the uncaught exception handler, override to add specific uncaught exception handling
+   */
+  private void setUncaughtExceptionHandler() {
+    Thread.setDefaultUncaughtExceptionHandler(new Thread.UncaughtExceptionHandler() {
+      @Override
+      public void uncaughtException(final Thread t, final Throwable e) {
+        DefaultExceptionHandler.getInstance().handleException(e, UiUtil.getParentWindow(EntityApplicationPanel.this));
+      }
+    });
   }
 
   private void bindEventsInternal() {

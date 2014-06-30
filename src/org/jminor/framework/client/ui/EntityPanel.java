@@ -957,6 +957,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
           }
         }
         break;
+      default:
+        throw new IllegalArgumentException("Undefined resize direction: " + direction);
     }
   }
 

@@ -50,14 +50,9 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
 
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
 
-  private final AuxiliaryServer webServer;
-  private final long startDate = System.currentTimeMillis();
-  private final int registryPort;
-  private final Database database;
-  private final boolean sslEnabled;
-  private final boolean clientLoggingEnabled;
-  private final Map<String, Integer> clientTimeouts = new HashMap<>();
-  private final TaskScheduler connectionTimeoutScheduler = new TaskScheduler(new Runnable() {
+  private transient final AuxiliaryServer webServer;
+  private transient final Database database;
+  private transient final TaskScheduler connectionTimeoutScheduler = new TaskScheduler(new Runnable() {
     @Override
     public void run() {
       try {
@@ -68,6 +63,11 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
       }
     }
   }, DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
+  private final long startDate = System.currentTimeMillis();
+  private final int registryPort;
+  private final boolean sslEnabled;
+  private final boolean clientLoggingEnabled;
+  private final Map<String, Integer> clientTimeouts = new HashMap<>();
 
   private int connectionTimeout;
 

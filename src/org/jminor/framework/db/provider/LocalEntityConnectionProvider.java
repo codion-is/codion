@@ -126,7 +126,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     }
 
     @Override
-    public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
+    public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
       final String methodName = method.getName();
       if (methodName.equals(IS_CONNECTED)) {
         return connection.isConnected();

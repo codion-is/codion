@@ -74,27 +74,32 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   /**
    * Contains information about the underlying database
    */
-  private final Database database;
+  private transient final Database database;
 
   /**
    * A Proxy for logging method calls
    */
-  private final EntityConnection connectionProxy;
+  private transient final EntityConnection connectionProxy;
 
   /**
    * The connection pool to use, if any
    */
-  private final ConnectionPool connectionPool;
+  private transient final ConnectionPool connectionPool;
 
   /**
    * A local connection used in case no connection pool is provided, managed by getConnection()/returnConnection()
    */
-  private EntityConnection localEntityConnection;
+  private transient EntityConnection localEntityConnection;
 
   /**
    * A local connection used by the connection pool, managed by getConnection()/returnConnection()
    */
-  private EntityConnection poolEntityConnection;
+  private transient EntityConnection poolEntityConnection;
+
+  /**
+   * An event notified when this connection is disconnected
+   */
+  private transient final Event disconnectedEvent = Events.event();
 
   /**
    * Indicates whether or not this remote connection has been disconnected
@@ -120,8 +125,6 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   private static final String RETURN_CONNECTION = "returnConnection";
 
   private static final int DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL = 2500;
-
-  private final Event disconnectedEvent = Events.event();
 
   /**
    * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
@@ -554,7 +557,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
       final String methodName = method.getName();
       Exception exception = null;
       final long startTime = System.currentTimeMillis();

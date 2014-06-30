@@ -906,22 +906,7 @@ class DefaultProperty implements Property {
                               final ColumnProperty[] referenceProperties, final String[] referencedPropertyIDs) {
       super(propertyID, Types.REF, caption);
       Util.rejectNullValue(referencedEntityID, "referencedEntityID");
-      if (referenceProperties == null || referenceProperties.length == 0) {
-        throw new IllegalArgumentException("No reference properties specified");
-      }
-      for (final Property referenceProperty : referenceProperties) {
-        Util.rejectNullValue(referenceProperty, "referenceProperty");
-        if (referenceProperty.getPropertyID().equals(propertyID)) {
-          throw new IllegalArgumentException(referencedEntityID + ", reference property does not have a unique name: " + propertyID);
-        }
-      }
-      if (referenceProperties.length > 1 && referencedPropertyIDs == null) {
-        throw new IllegalArgumentException("Referenced properties must be specified when referencing a composite key");
-      }
-      if (referenceProperties.length > 1 && referencedPropertyIDs.length != referenceProperties.length) {
-        throw new IllegalArgumentException("The number of referenced properties must be equal to the number of reference properties");
-      }
-
+      validateParameters(propertyID, referencedEntityID, referenceProperties, referencedPropertyIDs);
       for (int i = 0; i < referenceProperties.length; i++) {
         final ColumnProperty referenceProperty = referenceProperties[i];
         referenceProperty.setForeignKeyProperty(this);
@@ -998,6 +983,25 @@ class DefaultProperty implements Property {
         linkedReferenceProperties = new HashMap<>();
       }
       linkedReferenceProperties.put(referenceProperty, referencedPropertyID);
+    }
+
+    private static void validateParameters(final String propertyID, final String referencedEntityID,
+                                           final ColumnProperty[] referenceProperties, final String[] referencedPropertyIDs) {
+      if (referenceProperties == null || referenceProperties.length == 0) {
+        throw new IllegalArgumentException("No reference properties specified");
+      }
+      for (final Property referenceProperty : referenceProperties) {
+        Util.rejectNullValue(referenceProperty, "referenceProperty");
+        if (referenceProperty.getPropertyID().equals(propertyID)) {
+          throw new IllegalArgumentException(referencedEntityID + ", reference property does not have a unique name: " + propertyID);
+        }
+      }
+      if (referenceProperties.length > 1 && referencedPropertyIDs == null) {
+        throw new IllegalArgumentException("Referenced properties must be specified when referencing a composite key");
+      }
+      if (referenceProperties.length > 1 && referencedPropertyIDs.length != referenceProperties.length) {
+        throw new IllegalArgumentException("The number of referenced properties must be equal to the number of reference properties");
+      }
     }
   }
 

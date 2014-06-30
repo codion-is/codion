@@ -171,7 +171,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
+    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
       if (method.getName().equals(IS_CONNECTED)) {
         return isConnected();
       }
