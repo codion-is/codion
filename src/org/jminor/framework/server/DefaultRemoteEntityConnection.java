@@ -74,17 +74,17 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   /**
    * Contains information about the underlying database
    */
-  private transient final Database database;
+  private final transient Database database;
 
   /**
    * A Proxy for logging method calls
    */
-  private transient final EntityConnection connectionProxy;
+  private final transient EntityConnection connectionProxy;
 
   /**
    * The connection pool to use, if any
    */
-  private transient final ConnectionPool connectionPool;
+  private final transient ConnectionPool connectionPool;
 
   /**
    * A local connection used in case no connection pool is provided, managed by getConnection()/returnConnection()
@@ -99,7 +99,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   /**
    * An event notified when this connection is disconnected
    */
-  private transient final Event disconnectedEvent = Events.event();
+  private final transient Event disconnectedEvent = Events.event();
 
   /**
    * Indicates whether or not this remote connection has been disconnected

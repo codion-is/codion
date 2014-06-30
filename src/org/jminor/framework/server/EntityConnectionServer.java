@@ -50,9 +50,9 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
 
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
 
-  private transient final AuxiliaryServer webServer;
-  private transient final Database database;
-  private transient final TaskScheduler connectionTimeoutScheduler = new TaskScheduler(new Runnable() {
+  private final transient AuxiliaryServer webServer;
+  private final transient Database database;
+  private final transient TaskScheduler connectionTimeoutScheduler = new TaskScheduler(new Runnable() {
     @Override
     public void run() {
       try {
