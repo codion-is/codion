@@ -35,7 +35,6 @@ import java.util.List;
 import java.util.Map;
 import java.util.Set;
 import java.util.UUID;
-import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
 
@@ -107,10 +106,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
       }
       loadLoginProxies(loginProxyClassNames);
       setConnectionLimit(connectionLimit);
-      webServer = initializeWebServer(webDocumentRoot, webServerPort);
-      if (webServer != null) {
-        startWebServer(webDocumentRoot, webServerPort);
-      }
+      webServer = startWebServer(webDocumentRoot, webServerPort);
     }
     catch (Error e) {
       throw logShutdownAndReturn(e, this);
@@ -321,35 +317,6 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   }
 
   /**
-   * Starts the web server in case the web document root is specified
-   */
-  private void startWebServer(final String webDocumentRoot, final Integer webServerPort) {
-    final ExecutorService executor = Executors.newSingleThreadExecutor();
-    executor.execute(new Runnable() {
-      @Override
-      public void run() {
-        LOG.info("Starting web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
-        try {
-          webServer.start();
-        }
-        catch (Exception e) {
-          LOG.error("Trying to start web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
-        }
-      }
-    });
-  }
-
-  /**
-   * Stops the web server in case it's running
-   */
-  private void shutdownWebServer() throws Exception {
-    if (webServer != null) {
-      LOG.info("Shutting down web server");
-      webServer.stop();
-    }
-  }
-
-  /**
    * @return a map containing all defined entityIDs, with their respective table names as an associated value
    */
   static Map<String, String> getEntityDefinitions() {
@@ -363,7 +330,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
     removeConnections(false);
     ConnectionPools.closeConnectionPools();
     try {
-      shutdownWebServer();
+      stopWebServer();
     }
     catch (Exception ignored) {}
     if (database.isEmbedded()) {
@@ -435,18 +402,42 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
     }
   }
 
-  private AuxiliaryServer initializeWebServer(final String webDocumentRoot, final Integer webServerPort) {
+  private AuxiliaryServer startWebServer(final String webDocumentRoot, final Integer webServerPort) {
     if (Util.nullOrEmpty(webDocumentRoot)) {
       return null;
     }
 
     final String webServerClassName = Configuration.getStringValue(Configuration.WEB_SERVER_IMPLEMENTATION_CLASS);
     try {
-      return (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
+      final AuxiliaryServer webServer = (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
               EntityConnectionServer.class, String.class, Integer.class).newInstance(this, webDocumentRoot, webServerPort);
+      Executors.newSingleThreadExecutor().execute(new Runnable() {
+        @Override
+        public void run() {
+          LOG.info("Starting web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
+          try {
+            webServer.start();
+          }
+          catch (Exception e) {
+            LOG.error("Trying to start web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
+          }
+        }
+      });
+
+      return webServer;
     }
     catch (Exception e) {
       throw new RuntimeException(e);
+    }
+  }
+
+  /**
+   * Stops the web server in case it's running
+   */
+  private void stopWebServer() throws Exception {
+    if (webServer != null) {
+      LOG.info("Shutting down web server");
+      webServer.stop();
     }
   }
 
