@@ -3770,3 +3770,4 @@
   LoginPanel, refactored, static methods removed
   Sonar run, magic numbers
   EntityConnectionServer, some refactoring
+  Util.resolveTrustStore() renamed to resolveTrustStoreFromClasspath()

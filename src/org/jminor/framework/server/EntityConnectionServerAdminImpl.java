@@ -551,7 +551,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     final String sid = System.getProperty(Database.DATABASE_SID);
     final String host = System.getProperty(Database.DATABASE_HOST);
     final String serverName = RemoteServer.SERVER_ADMIN_PREFIX + initializeServerName(host, sid);
-    Util.resolveTrustStore(EntityConnectionServerAdminImpl.class.getSimpleName());
+    Util.resolveTrustStoreFromClasspath(EntityConnectionServerAdminImpl.class.getSimpleName());
     try {
       final Registry registry = ServerUtil.getRegistry(registryPort);
       final EntityConnectionServerAdmin serverAdmin = (EntityConnectionServerAdmin) registry.lookup(serverName);

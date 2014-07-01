@@ -211,7 +211,7 @@ public final class EntityServerMonitorPanel extends JPanel {
   }
 
   public static void main(final String[] arguments) {
-    Util.resolveTrustStore(EntityServerMonitorPanel.class.getSimpleName());
+    Util.resolveTrustStoreFromClasspath(EntityServerMonitorPanel.class.getSimpleName());
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {

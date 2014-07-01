@@ -1118,13 +1118,14 @@ public final class Util {
 
   /**
    * Reads the trust store specified by "javax.net.ssl.trustStore" from the classpath, copies it
-   * to a temporary file and sets the trust store property so that it points to that temporary file
+   * to a temporary file and sets the trust store property so that it points to that temporary file.
+   * If the trust store file specified is not found on the classpath this method has no effect.
    * @param temporaryFileNamePrefix the prefix to use for the temporary filename
    */
-  public static void resolveTrustStore(final String temporaryFileNamePrefix) {
+  public static void resolveTrustStoreFromClasspath(final String temporaryFileNamePrefix) {
     final String value = System.getProperty(JAVAX_NET_NET_TRUSTSTORE);
     if (nullOrEmpty(value)) {
-      LOG.debug("resolveTrustStoreProperty: {} is empty", JAVAX_NET_NET_TRUSTSTORE);
+      LOG.debug("No trust store specified via {}", JAVAX_NET_NET_TRUSTSTORE);
       return;
     }
     FileOutputStream out = null;
@@ -1133,7 +1134,7 @@ public final class Util {
       final ClassLoader loader = Util.class.getClassLoader();
       in = loader.getResourceAsStream(value);
       if (in == null) {
-        LOG.debug("resolveTrustStoreProperty: {} not found on classpath", value);
+        LOG.debug("Specified trust store not found on classpath: {}", value);
         return;
       }
       final File file = File.createTempFile(temporaryFileNamePrefix, "tmp");
@@ -1145,7 +1146,7 @@ public final class Util {
         out.write(buf, 0, br);
         br = in.read(buf);
       }
-      LOG.debug("resolveTrustStoreProperty: {} -> {}", JAVAX_NET_NET_TRUSTSTORE, file);
+      LOG.debug("Classpath trust store resolved to file: {} -> {}", JAVAX_NET_NET_TRUSTSTORE, file);
 
       System.setProperty(JAVAX_NET_NET_TRUSTSTORE, file.getPath());
     }
