@@ -409,14 +409,14 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
 
     final String webServerClassName = Configuration.getStringValue(Configuration.WEB_SERVER_IMPLEMENTATION_CLASS);
     try {
-      final AuxiliaryServer webServer = (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
+      final AuxiliaryServer auxiliaryServer = (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
               EntityConnectionServer.class, String.class, Integer.class).newInstance(this, webDocumentRoot, webServerPort);
       Executors.newSingleThreadExecutor().execute(new Runnable() {
         @Override
         public void run() {
           LOG.info("Starting web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
           try {
-            webServer.start();
+            auxiliaryServer.start();
           }
           catch (Exception e) {
             LOG.error("Trying to start web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
@@ -424,7 +424,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
         }
       });
 
-      return webServer;
+      return auxiliaryServer;
     }
     catch (Exception e) {
       throw new RuntimeException(e);
