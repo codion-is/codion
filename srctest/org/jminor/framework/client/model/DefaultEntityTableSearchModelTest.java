@@ -3,9 +3,11 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.Property;
 
 import org.junit.Test;
 
@@ -43,6 +45,32 @@ public class DefaultEntityTableSearchModelTest {
     assertFalse(searchModel.isSearchEnabled());
     searchModel.setSearchEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK, true);
     assertTrue(searchModel.isSearchEnabled());
+  }
+
+  @Test
+  public void getPropertyFilterModel() {
+    assertNotNull(searchModel.getPropertyFilterModel(EmpDept.EMPLOYEE_COMMISSION));
+    assertNull(searchModel.getPropertyFilterModel("bla bla"));
+  }
+
+  @Test
+  public void getPropertySearchModel() {
+    assertNotNull(searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getPropertySearchModelNonExisting() {
+    searchModel.getPropertySearchModel("bla bla");
+  }
+
+  @Test
+  public void setFilterValue() {
+    searchModel.setFilterValue(EmpDept.EMPLOYEE_COMMISSION, 1400);
+    searchModel.setFilterValue("bla bla", "bla");
+    final ColumnSearchModel<Property> propertySearchModel = searchModel.getPropertyFilterModel(EmpDept.EMPLOYEE_COMMISSION);
+    assertTrue(propertySearchModel.isEnabled());
+    assertEquals(SearchType.LIKE, propertySearchModel.getSearchType());
+    assertEquals(1400, propertySearchModel.getUpperBound());
   }
 
   @Test

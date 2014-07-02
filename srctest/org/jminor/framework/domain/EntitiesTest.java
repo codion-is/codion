@@ -12,6 +12,7 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.Test;
 
+import java.sql.Types;
 import java.text.DateFormat;
 import java.util.Arrays;
 import java.util.Collection;
@@ -257,5 +258,26 @@ public class EntitiesTest {
             Properties.primaryKeyProperty("1"),
             Properties.columnProperty("test"))
             .setSearchPropertyIDs("invalid");
+  }
+
+  @Test
+  public void hasSingleIntegerPrimaryKey() {
+    String entityId = "hasSingleIntegerPrimaryKey";
+    Entities.define(entityId,
+            Properties.columnProperty("test")
+                    .setPrimaryKeyIndex(0));
+    assertTrue(Entities.hasSingleIntegerPrimaryKey(entityId));
+    entityId = "hasSingleIntegerPrimaryKey2";
+    Entities.define(entityId,
+            Properties.columnProperty("test")
+                    .setPrimaryKeyIndex(0),
+            Properties.columnProperty("test2")
+                    .setPrimaryKeyIndex(1));
+    assertFalse(Entities.hasSingleIntegerPrimaryKey(entityId));
+    entityId = "hasSingleIntegerPrimaryKey3";
+    Entities.define(entityId,
+            Properties.columnProperty("test", Types.VARCHAR)
+                    .setPrimaryKeyIndex(0));
+    assertFalse(Entities.hasSingleIntegerPrimaryKey(entityId));
   }
 }

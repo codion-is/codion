@@ -13,7 +13,7 @@ public class DatabaseUtilTest {
 
   @Test
   public void closeSilently() {
-    DatabaseUtil.closeSilently((Connection) null);
+    DatabaseUtil.closeSilently((Connection[]) null);
     DatabaseUtil.closeSilently((Statement) null);
     DatabaseUtil.closeSilently((ResultSet) null);
 

@@ -3771,3 +3771,5 @@
   Sonar run, magic numbers
   EntityConnectionServer, some refactoring
   Util.resolveTrustStore() renamed to resolveTrustStoreFromClasspath()
+  EntityDataUtilTest added
+  Unit test coverage improved

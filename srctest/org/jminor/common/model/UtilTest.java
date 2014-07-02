@@ -170,8 +170,11 @@ public class UtilTest {
 
   @Test
   public void getArrayContentsAsString() throws Exception {
-    final String res = Util.getArrayContentsAsString(new Integer[] {1,2,3,4}, false);
+    assertEquals("", Util.getArrayContentsAsString(null, true));
+    String res = Util.getArrayContentsAsString(new Object[] {1, 2,new Object[] {3, 4}}, false);
     assertEquals("Integer array as string should work", "1, 2, 3, 4", res);
+    res = Util.getArrayContentsAsString(new Object[] {1, 2,new Object[] {3, 4}}, true);
+    assertEquals("Integer array as string should work", "1\n2\n3\n4\n", res);
   }
 
   @Test
@@ -195,7 +198,7 @@ public class UtilTest {
     assertEquals("getLong should work with a digit string", new Long(4), Util.getLong("4"));
     assertEquals("getLong should work with single minus sign", new Long(-1), Util.getLong("-"));
     assertNull("getLong should work with an empty string", Util.getLong(""));
-    assertNull("getLong should work with a null value", Util.getInt(null));
+    assertNull("getLong should work with a null value", Util.getLong(null));
   }
 
   @Test
@@ -211,6 +214,7 @@ public class UtilTest {
 
   @Test
   public void countLines() throws IOException {
+    assertEquals(3, Util.countLines("resources/security/all_permissions.policy"));
     assertEquals(3, Util.countLines(new File("resources/security/all_permissions.policy")));
     assertEquals(2, Util.countLines(new File("resources/security/all_permissions.policy"), "}"));
   }
@@ -237,6 +241,7 @@ public class UtilTest {
     assertFalse(Util.notNull(new Object(), null, new Object()));
     final Object ob = null;
     assertFalse(Util.notNull(ob));
+    assertFalse(Util.notNull((Object[]) null));
   }
 
   @Test
@@ -313,6 +318,13 @@ public class UtilTest {
   }
 
   @Test
+  public void getGetMethodBoolean() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    final Method getMethod = Util.getGetMethod(boolean.class, "anotherBooleanValue", bean);
+    assertEquals("getAnotherBooleanValue", getMethod.getName());
+  }
+
+  @Test
   public void getSetMethod() throws NoSuchMethodException {
     final Bean bean = new Bean();
     Method setMethod = Util.getSetMethod(boolean.class, "booleanValue", bean);
@@ -333,6 +345,18 @@ public class UtilTest {
     Util.getSetMethod(boolean.class, "invalidValue", bean);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void getSetMethodNoProperty() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    Util.getSetMethod(boolean.class, "", bean);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void getGetMethodNoProperty() throws NoSuchMethodException {
+    final Bean bean = new Bean();
+    Util.getGetMethod(boolean.class, "", bean);
+  }
+
   @Test
   public void collate() {
     final String one = "Bláskuggi";
@@ -345,8 +369,15 @@ public class UtilTest {
     assertEquals(2, values.indexOf(one));
   }
 
+  @Test
+  public void isHostReachable() {
+    assertTrue(Util.isHostReachable("localhost", 5));
+    assertFalse(Util.isHostReachable("darrium.darko321.is", 1));
+  }
+
   public static final class Bean {
     boolean booleanValue;
+    boolean anotherBooleanValue;
     int intValue;
 
     public boolean isBooleanValue() {
@@ -355,6 +386,10 @@ public class UtilTest {
 
     public void setBooleanValue(final boolean booleanValue) {
       this.booleanValue = booleanValue;
+    }
+
+    public boolean getAnotherBooleanValue() {
+      return anotherBooleanValue;
     }
 
     public int getIntValue() {

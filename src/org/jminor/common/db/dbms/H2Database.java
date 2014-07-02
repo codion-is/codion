@@ -88,6 +88,18 @@ public final class H2Database extends AbstractDatabase {
   }
 
   /**
+   * Instantiates a new H2Database instance, embedded in memory, based on the given script
+   * @param databaseName the database name
+   * @param initScript the script to use for initializing the database
+   * @throws SQLException in case of an error during initialization
+   */
+  public H2Database(final String databaseName, final String initScript) throws SQLException {
+    super(H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
+    this.embeddedInMemory = true;
+    initializeMemoryDatabase(URL_PREFIX_MEM + databaseName + ";user=" + SYSADMIN_USERNAME, initScript);
+  }
+
+  /**
    * @param urlAppend a string to append to the connection URL
    * @return this H2Database instance
    */

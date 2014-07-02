@@ -7,6 +7,7 @@ import org.jminor.common.db.Databases;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.db.EntityConnection;
@@ -19,6 +20,7 @@ import org.junit.Test;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.Arrays;
@@ -49,6 +51,42 @@ public class DefaultRemoteEntityConnectionTest {
   public void wrongPassword() throws Exception {
     final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", new User(User.UNIT_TEST_USER.getUsername(), "xxxxx"));
     new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void setMethodLogger() throws DatabaseException, RemoteException {
+    DefaultRemoteEntityConnection connection = null;
+    try {
+      final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", User.UNIT_TEST_USER);
+      connection = new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
+      connection.setMethodLogger(new MethodLogger(10));
+    }
+    finally {
+      try {
+        if (connection != null) {
+          connection.disconnect();
+        }
+      }
+      catch (Exception e) {}
+    }
+  }
+
+  @Test(expected = UnsupportedOperationException.class)
+  public void getDatabaseConnection() throws DatabaseException, RemoteException {
+    DefaultRemoteEntityConnection connection = null;
+    try {
+      final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", User.UNIT_TEST_USER);
+      connection = new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
+      connection.getDatabaseConnection();
+    }
+    finally {
+      try {
+        if (connection != null) {
+          connection.disconnect();
+        }
+      }
+      catch (Exception e) {}
+    }
   }
 
   @Test

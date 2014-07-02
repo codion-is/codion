@@ -208,7 +208,7 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void updateColors() {
-    final boolean validBackground = model.searchStringRepresentsSelected() || (searchHint !=null && searchHint.isHintTextVisible());
+    final boolean validBackground = model.searchStringRepresentsSelected() || (searchHint != null && searchHint.isHintTextVisible());
     setBackground(validBackground ? validBackgroundColor : invalidBackgroundColor);
   }
 

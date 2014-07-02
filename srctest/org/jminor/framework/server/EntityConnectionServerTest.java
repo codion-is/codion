@@ -80,6 +80,8 @@ public class EntityConnectionServerTest {
     final EntityConnection remoteConnectionTwo = providerTwo.getConnection();
     admin.setLoggingEnabled(providerOne.getClientID(), true);
     assertTrue(admin.isLoggingEnabled(providerOne.getClientID()));
+    assertFalse(admin.isLoggingEnabled(UUID.randomUUID()));
+    admin.setLoggingEnabled(UUID.randomUUID(), true);
     assertTrue(remoteConnectionTwo.isValid());
     assertEquals(2, admin.getConnectionCount());
 
@@ -103,10 +105,13 @@ public class EntityConnectionServerTest {
 
     final ClientLog log = admin.getClientLog(providerTwo.getClientID());
     assertNotNull(log.getConnectionCreationDate());
+    assertNull(admin.getClientLog(UUID.randomUUID()));
 
     final MethodLogger.Entry entry = log.getEntries().get(0);
     assertEquals("getConnection", entry.getMethod());
     assertTrue(entry.getDelta() >= 0);
+
+    admin.removeConnections(true);
 
     providerOne.disconnect();
     assertEquals(1, admin.getConnectionCount());
@@ -126,6 +131,8 @@ public class EntityConnectionServerTest {
     admin.setConnectionLimit(2);
     providerTwo.getConnection();
     assertEquals(2, admin.getConnectionCount());
+
+    admin.getServer().getServerLoad();
 
     providerOne.disconnect();
     assertEquals(1, admin.getConnectionCount());

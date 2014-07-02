@@ -110,8 +110,32 @@ public final class DefaultEntityTableModelTest {
   }
 
   @Test
-  public void addOnInsert() throws CancelException, DatabaseException {
-    //todo
+  public void addOnInsert() throws CancelException, DatabaseException, ValidationException {
+    final DefaultEntityTableModel deptModel = new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, testModel.getConnectionProvider());
+    deptModel.setEditModel(new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, testModel.getConnectionProvider()));
+    deptModel.refresh();
+
+    deptModel.setAddEntitiesOnInsert(true);
+    final Entity dept = Entities.entity(EmpDept.T_DEPARTMENT);
+    dept.setValue(EmpDept.DEPARTMENT_ID, -10);
+    dept.setValue(EmpDept.DEPARTMENT_LOCATION, "Nowhere");
+    dept.setValue(EmpDept.DEPARTMENT_NAME, "Noname");
+    final int count = deptModel.getRowCount();
+    deptModel.getEditModel().insert(Arrays.asList(dept));
+    assertEquals(count + 1, deptModel.getRowCount());
+
+    deptModel.setAddEntitiesOnInsert(false);
+    final Entity dept2 = Entities.entity(EmpDept.T_DEPARTMENT);
+    dept2.setValue(EmpDept.DEPARTMENT_ID, -20);
+    dept2.setValue(EmpDept.DEPARTMENT_LOCATION, "Nowhere2");
+    dept2.setValue(EmpDept.DEPARTMENT_NAME, "Noname2");
+    deptModel.getEditModel().insert(Arrays.asList(dept2));
+    assertEquals(count + 1, deptModel.getRowCount());
+
+    deptModel.refresh();
+    assertEquals(count + 2, deptModel.getRowCount());
+
+    deptModel.getEditModel().delete(Arrays.asList(dept, dept2));
   }
 
   @Test
