@@ -85,8 +85,6 @@ public class EntityDataUtilTest {
             DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_PLAYLIST)));
 
     EntityDataUtil.batchInsert(DESTINATION_CONNECTION, Collections.<Entity>emptyList(), null, 10, null);
-
-    DESTINATION_CONNECTION.disconnect();
   }
 
   @Test(expected = IllegalArgumentException.class)

@@ -371,7 +371,6 @@ public class UtilTest {
 
   @Test
   public void isHostReachable() {
-    assertTrue(Util.isHostReachable("localhost", 5));
     assertFalse(Util.isHostReachable("darrium.darko321.is", 1));
   }
 
