@@ -514,7 +514,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     if (serverPort == null) {
       throw new IllegalArgumentException("Configuration property '" + Configuration.SERVER_PORT + "' is required");
     }
-    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
+    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT);
     final int serverAdminPort = Configuration.getIntValue(Configuration.SERVER_ADMIN_PORT);
     final boolean sslEnabled = Configuration.getBooleanValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
     final int connectionLimit = Configuration.getIntValue(Configuration.SERVER_CONNECTION_LIMIT);
@@ -547,7 +547,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
    * Connects to the server and shuts it down
    */
   static synchronized void shutdownServer() {
-    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
+    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT);
     final String sid = System.getProperty(Database.DATABASE_SID);
     final String host = System.getProperty(Database.DATABASE_HOST);
     final String serverName = RemoteServer.SERVER_ADMIN_PREFIX + initializeServerName(host, sid);

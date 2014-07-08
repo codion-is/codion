@@ -28,7 +28,7 @@ public class EntityServerMonitorTest {
   @Test
   public void test() throws Exception {
     final EntityServerMonitor model = new EntityServerMonitor("localhost",
-            Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER));
+            Configuration.getIntValue(Configuration.REGISTRY_PORT));
     model.refresh();
     final HostMonitor hostMonitor = model.getHostMonitors().iterator().next();
     assertEquals("localhost", hostMonitor.getHostName());

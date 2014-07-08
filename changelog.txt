@@ -3773,3 +3773,5 @@
   Util.resolveTrustStore() renamed to resolveTrustStoreFromClasspath()
   EntityDataUtilTest added
   Unit test coverage improved
+  Configuration.REGISTRY_PORT_NUMBER renamed to Configuration.REGISTRY_PORT
+  HostMonitor bug fixed, only listed servers named RemoteServer.SERVER_ADMIN_PREFIX + Configuration.SERVER_NAME_PREFIX

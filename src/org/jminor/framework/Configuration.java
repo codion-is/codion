@@ -89,7 +89,7 @@ public final class Configuration {
    * Value type: Integer<br>
    * Default value: Registry.REGISTRY_PORT (1099)
    */
-  public static final String REGISTRY_PORT_NUMBER = "jminor.server.registryPort";
+  public static final String REGISTRY_PORT = "jminor.server.registryPort";
 
   /**
    * The port on which the server is made available to clients.<br>
@@ -727,7 +727,7 @@ public final class Configuration {
     PROPERTIES.put(SERVER_CONNECTION_SSL_ENABLED, true);
     PROPERTIES.put(SERVER_ADMIN_PORT, DEFAULT_SERVER_ADMIN_PORT);
     PROPERTIES.put(SERVER_HOST_NAME, "localhost");
-    PROPERTIES.put(REGISTRY_PORT_NUMBER, Registry.REGISTRY_PORT);
+    PROPERTIES.put(REGISTRY_PORT, Registry.REGISTRY_PORT);
     PROPERTIES.put(TIMESTAMP_FORMAT, "dd-MM-yyyy HH:mm");
     PROPERTIES.put(DATE_FORMAT, "dd-MM-yyyy");
     PROPERTIES.put(TIME_FORMAT, "HH:mm");
@@ -811,7 +811,7 @@ public final class Configuration {
     parseIntegerSetting(SERVER_PORT);
     parseStringSetting(SERVER_HOST_NAME);
     parseStringSetting(REPORT_PATH);
-    parseIntegerSetting(REGISTRY_PORT_NUMBER);
+    parseIntegerSetting(REGISTRY_PORT);
     parseBooleanSetting(SERVER_CLIENT_LOGGING_ENABLED);
     parseIntegerSetting(SERVER_CONNECTION_LIMIT);
     parseIntegerSetting(SERVER_CONNECTION_TIMEOUT);

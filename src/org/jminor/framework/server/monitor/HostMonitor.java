@@ -8,7 +8,6 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.server.RemoteServer;
-import org.jminor.framework.Configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -97,8 +96,8 @@ public final class HostMonitor {
       LOG.debug("HostMonitor locating registry on host: {}, port: {}: ", serverHostName, registryPort);
       final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
       LOG.debug("HostMonitor located registry: {} on port: {}", registry, registryPort);
-      final String[] boundNames = getEntityServers(registry);
-      if (boundNames.length == 0) {
+      final Collection<String> boundNames = getEntityServers(registry);
+      if (boundNames.isEmpty()) {
         LOG.debug("HostMonitor found no server bound to registry: {} on port: {}", registry, registryPort);
       }
       for (final String name : boundNames) {
@@ -113,15 +112,15 @@ public final class HostMonitor {
     return serverNames;
   }
 
-  private static String[] getEntityServers(final Registry registry) throws RemoteException {
+  private static Collection<String> getEntityServers(final Registry registry) throws RemoteException {
     final List<String> serverNames = new ArrayList<>();
     final String[] boundNames = registry.list();
     for (final String name : boundNames) {
-      if (name.startsWith(RemoteServer.SERVER_ADMIN_PREFIX + Configuration.getValue(Configuration.SERVER_NAME_PREFIX))) {
+      if (name.startsWith(RemoteServer.SERVER_ADMIN_PREFIX)) {
         serverNames.add(name);
       }
     }
 
-    return serverNames.toArray(new String[serverNames.size()]);
+    return serverNames;
   }
 }

@@ -157,7 +157,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     if (serverPort == null) {
       serverPort = -1;
     }
-    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT_NUMBER);
+    final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT);
     this.server = ServerUtil.getServer(serverHostName,
             Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX), registryPort, serverPort);
     this.serverName = this.server.getServerName();

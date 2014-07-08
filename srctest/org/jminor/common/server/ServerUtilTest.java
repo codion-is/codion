@@ -26,15 +26,11 @@ public class ServerUtilTest {
     ServerUtil.initializeRegistry(Registry.REGISTRY_PORT);
     server = new AbstractRemoteServer(12345, SERVER_NAME) {
       @Override
-      protected Remote doConnect(final ClientInfo clientInfo) throws RemoteException {
-        return null;
-      }
+      protected Remote doConnect(final ClientInfo clientInfo) {return null;}
       @Override
-      protected void doDisconnect(final Remote connection) throws RemoteException {}
+      protected void doDisconnect(final Remote connection) {}
       @Override
-      public int getServerLoad() throws RemoteException {
-        return 0;
-      }
+      public int getServerLoad() {return 0;}
     };
     ServerUtil.getRegistry(Registry.REGISTRY_PORT).rebind(SERVER_NAME, server);
   }

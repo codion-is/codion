@@ -35,6 +35,7 @@ public final class ServerUtil {
     final Registry localRegistry = getRegistry(port);
     try {
       localRegistry.list();
+      LOG.info("Registry listing available on port: {}", port);
     }
     catch (Exception e) {
       LOG.info("Trying to locate registry: {}", e.getMessage());
@@ -54,7 +55,7 @@ public final class ServerUtil {
 
   /**
    * Retrieves a RemoteServer from a registry running on the given host, using the
-   * given prefix as a criteria.
+   * given server name prefix as a criteria. Returns the first server satisfying the criteria.
    * @param serverHostName the name of the host
    * @param serverNamePrefix the server name prefix, an empty string results in all servers being returned
    * @param registryPort the port on which to lookup the registry

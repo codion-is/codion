@@ -268,7 +268,7 @@ public class EntityConnectionServerTest {
   }
 
   private static void configure() {
-    Configuration.setValue(Configuration.REGISTRY_PORT_NUMBER, 2221);
+    Configuration.setValue(Configuration.REGISTRY_PORT, 2221);
     Configuration.setValue(Configuration.SERVER_PORT, 2223);
     Configuration.setValue(Configuration.SERVER_ADMIN_PORT, 2223);
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
@@ -286,7 +286,7 @@ public class EntityConnectionServerTest {
   }
 
   private static void deconfigure() {
-    Configuration.setValue(Configuration.REGISTRY_PORT_NUMBER, Registry.REGISTRY_PORT);
+    Configuration.setValue(Configuration.REGISTRY_PORT, Registry.REGISTRY_PORT);
     Configuration.clearValue(Configuration.SERVER_PORT);
     Configuration.clearValue(Configuration.SERVER_ADMIN_PORT);
     Configuration.clearValue(Configuration.SERVER_HOST_NAME);
