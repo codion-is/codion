@@ -196,7 +196,7 @@ public class DefaultFilteredComboBoxModelTest {
     assertEquals(1, testModel.getVisibleItems().size());
     assertEquals(4, testModel.getFilteredItemCount());
     assertEquals(2, testModel.getVisibleItemCount());
-    assertEquals(6, testModel.getAllItems().size());
+    assertEquals(5, testModel.getAllItems().size());
 
     testModel.addItem(BJORN);
     assertEquals(5, testModel.getFilteredItemCount());

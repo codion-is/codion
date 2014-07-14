@@ -142,18 +142,27 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   /** {@inheritDoc} */
   @Override
-  public final List<T> getFilteredItems() {
-    return Collections.unmodifiableList(filteredItems);
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final List<T> getVisibleItems() {
     if (nullValue == null) {
       return Collections.unmodifiableList(visibleItems);
     }
 
     return Collections.unmodifiableList(visibleItems.subList(1, getSize()));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final List<T> getFilteredItems() {
+    return Collections.unmodifiableList(filteredItems);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final List<T> getAllItems() {
+    final List<T> entities = new ArrayList<>(getVisibleItems());
+    entities.addAll(filteredItems);
+
+    return entities;
   }
 
   /** {@inheritDoc} */
@@ -172,15 +181,6 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   @Override
   public final FilterCriteria<T> getFilterCriteria() {
     return filterCriteria;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final List<T> getAllItems() {
-    final List<T> entities = new ArrayList<>(visibleItems);
-    entities.addAll(filteredItems);
-
-    return entities;
   }
 
   /** {@inheritDoc} */

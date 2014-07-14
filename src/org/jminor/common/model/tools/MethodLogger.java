@@ -275,7 +275,7 @@ public class MethodLogger implements Serializable {
   }
 
   protected final String argumentArrayToString(final Object[] arguments) {
-    if (arguments == null) {
+    if (arguments == null || arguments.length == 0) {
       return "";
     }
 
