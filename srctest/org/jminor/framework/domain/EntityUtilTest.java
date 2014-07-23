@@ -421,6 +421,21 @@ public class EntityUtilTest {
     Configuration.clearValue(Configuration.ENTITY_SERIALIZER_CLASS);
   }
 
+  @Test
+  public void setNull() {
+    final Entity dept = Entities.entity(EmpDept.T_DEPARTMENT);
+    for (final Property property : Entities.getProperties(EmpDept.T_DEPARTMENT, true)) {
+      assertFalse(dept.containsValue(property));
+      assertTrue(dept.isValueNull(property));
+    }
+    EntityUtil.setNull(dept);
+    assertFalse(dept.isModified());
+    for (final Property property : Entities.getProperties(EmpDept.T_DEPARTMENT, true)) {
+      assertTrue(dept.containsValue(property));
+      assertTrue(dept.isValueNull(property));
+    }
+  }
+
   private EntityUtil.EntityBeanMapper createEmpDeptBeanMapper() throws NoSuchMethodException {
     final EntityUtil.EntityBeanMapper beanMap = new EntityUtil.EntityBeanMapper();
     beanMap.setEntityID(DepartmentBean.class, EmpDept.T_DEPARTMENT);

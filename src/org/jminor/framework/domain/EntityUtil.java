@@ -404,6 +404,19 @@ public final class EntityUtil {
   }
 
   /**
+   * Sets all property values to null
+   * @param entity the entity
+   */
+  public static Entity setNull(final Entity entity) {
+    Util.rejectNullValue(entity, "entity");
+    for (final Property property : Entities.getProperties(entity.getEntityID(), true)) {
+      entity.setValue(property, null);
+    }
+
+    return entity;
+  }
+
+  /**
    * A class for mapping between entities and corresponding bean classes
    */
   public static class EntityBeanMapper {
