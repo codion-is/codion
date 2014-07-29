@@ -117,7 +117,8 @@ public class DefaultEntityModel implements EntityModel {
    * @param tableModel the table model
    */
   public DefaultEntityModel(final EntityTableModel tableModel) {
-    this(new DefaultEntityEditModel(tableModel.getEntityID(), tableModel.getConnectionProvider()), tableModel);
+    this(tableModel.hasEditModel() ? tableModel.getEditModel() : new DefaultEntityEditModel(tableModel.getEntityID(),
+            tableModel.getConnectionProvider()), tableModel);
   }
 
   /**
@@ -536,7 +537,7 @@ public class DefaultEntityModel implements EntityModel {
     if (tableModel != null) {
       if (tableModel.hasEditModel()) {
         if (tableModel.getEditModel() != editModel) {
-          throw new IllegalArgumentException("Edit model type or instance mismatch, found: " + tableModel.getEditModel() + ", required: " + editModel);
+          throw new IllegalArgumentException("Edit model instance mismatch, found: " + tableModel.getEditModel() + ", required: " + editModel);
         }
       }
       else {
