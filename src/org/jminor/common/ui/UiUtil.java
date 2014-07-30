@@ -401,7 +401,7 @@ public final class UiUtil {
    * @param startDate the starting date, if null the current date is used
    * @param message the message to display as dialog title
    * @param parent the dialog parent
-   * @return a Date from the user, null if the action was cancelled
+   * @return a Date from the user with all time base fields set to zero, null if the action was cancelled
    */
   public static Date getDateFromUser(final Date startDate, final String message, final Container parent) {
     final String jCalendarClassName = "com.toedter.calendar.JCalendar";
@@ -414,11 +414,7 @@ public final class UiUtil {
       if (startDate != null) {
         cal.setTime(startDate);
       }
-
-      cal.set(Calendar.HOUR_OF_DAY, 0);
-      cal.set(Calendar.MINUTE, 0);
-      cal.set(Calendar.SECOND, 0);
-      cal.set(Calendar.MILLISECOND, 0);
+      cal.setTime(DateUtil.floorDate(cal.getTime()));
 
       final Class<?> jCalendarClass = Class.forName(jCalendarClassName);
       final Method getCalendar = jCalendarClass.getMethod("getCalendar");
@@ -443,20 +439,22 @@ public final class UiUtil {
           }
         }
       });
-      final JButton cancelBtn = new JButton(new AbstractAction(Messages.get(Messages.CANCEL)) {
+      final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
         @Override
         public void actionPerformed(final ActionEvent e) {
           cancel.setActive(true);
           closeEvent.fire();
         }
-      });
+      };
+      final JButton cancelBtn = new JButton(cancelAction);
       final JPanel buttonPanel = new JPanel(new GridLayout(1, 2, 5, 5));
       buttonPanel.add(okBtn);
       buttonPanel.add(cancelBtn);
 
       datePanel.add(buttonPanel, BorderLayout.SOUTH);
 
-      displayInDialog(parent, datePanel, message, closeEvent);
+      addKeyEvent(datePanel, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelAction);
+      displayInDialog(parent, datePanel, message, true, okBtn, closeEvent, true, null);
 
       return cancel.isActive() ? null : new Date(returnTime.getTimeInMillis());
     }
@@ -497,6 +495,7 @@ public final class UiUtil {
       datePanel.add(txtField);
 
       displayInDialog(parent, datePanel, message);
+
       return inputDateFormat.parse(txtField.getText());
     }
     catch (ParseException e) {
@@ -1548,9 +1547,9 @@ public final class UiUtil {
    * @param title the dialog title
    * @param modal if true then the dialog is modal
    * @param defaultButton the the default dialog button
-   * @param closeEvent the dialog will be disposed of when and only when this event occurs
+   * @param closeEvent if specified the dialog will be disposed of when and only when this event occurs
    * @param disposeOnEscape if true then the dialog is disposed when the ESC button is pressed,
-   * overridden if <ocde>closeEvent</ocde> is specified
+   * has no effect if a <ocde>closeEvent</ocde> is specified
    * @param onClosedAction this action will be registered as a windowClosed action for the dialog
    * @return the dialog used to display the component
    */
