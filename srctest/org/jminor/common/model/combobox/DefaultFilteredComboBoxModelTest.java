@@ -113,10 +113,18 @@ public class DefaultFilteredComboBoxModelTest {
     assertEquals(1, selectionChangedCounter.size());
     assertEquals(BJORN, testModel.getSelectedItem());
     assertEquals(BJORN, testModel.getSelectedValue());
+    assertFalse(testModel.isSelectionEmpty());
+    assertFalse(testModel.isNullValueSelected());
     testModel.setSelectedItem(null);
+    assertTrue(testModel.isSelectionEmpty());
     assertEquals(2, selectionChangedCounter.size());
     assertEquals(NULL, testModel.getSelectedItem());
+    assertTrue(testModel.isNullValueSelected());
+    assertTrue(testModel.isSelectionEmpty());
     assertNull(testModel.getSelectedValue());
+    testModel.setSelectedItem(SIGGI);
+    testModel.clear();
+    assertEquals(4, selectionChangedCounter.size());
     testModel.removeSelectionListener(selectionListener);
   }
 

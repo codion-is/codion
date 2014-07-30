@@ -282,6 +282,12 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
 
   /** {@inheritDoc} */
   @Override
+  public final boolean isSelectionEmpty() {
+    return getSelectedValue() == null;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final T getSelectedValue() {
     if (isNullValueSelected()) {
       return null;

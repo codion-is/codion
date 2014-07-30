@@ -3778,3 +3778,4 @@
   DefaultFilteredComboBoxModel.getAllItems() no longer includes the null value
   EntityUtil.setNull() added
   DefaultEntityModel bug fixed, no longer creates an edit model if the supplied table model contains one
+  FilteredComboBoxModel.isSelectionEmpty() added, implemented in DefaultFilteredComboBoxModel, tested

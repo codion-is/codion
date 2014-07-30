@@ -48,17 +48,26 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxMode
   void removeItem(final T item);
 
   /**
-   * @return true if the model data needs to be refreshed
+   * @return true if the model data has been cleared and needs to be refreshed
    */
   boolean isCleared();
 
   /**
-   * @return true if a value representing null is selected
+   * @return true if no value is selected or if the value representing null is selected
+   */
+  boolean isSelectionEmpty();
+
+  /**
+   * Returns true if the value representing null is selected, false if no such value has been
+   * specified or if it is not selected.
+   * @return true if the value representing null is selected, false otherwise
+   * @see #setNullValue(Object)
    */
   boolean isNullValueSelected();
 
   /**
-   * @return the selected item, null in case the <code>nullValueString</code> is selected
+   * @return the selected item, null in case the value representing null is selected
+   * @see #setNullValue(Object)
    */
   T getSelectedValue();
 
@@ -76,13 +85,13 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxMode
   Comparator<? super T> getSortComparator();
 
   /**
-   * Sets the nullValueItem, a refresh is required for it to show up
-   * @param nullValueString a value which is used to represent a null value
+   * Sets the value which should represent a null value, a refresh is required for it to show up
+   * @param nullValue a value which is used to represent a null value
    */
-  void setNullValue(final T nullValueString);
+  void setNullValue(final T nullValue);
 
   /**
-   * @return the value representing the null value, null if none has been specified
+   * @return the value representing the null value, null if no such value has been specified
    */
   T getNullValue();
 
