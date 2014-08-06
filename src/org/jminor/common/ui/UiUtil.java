@@ -1498,7 +1498,7 @@ public final class UiUtil {
    * Runs the given Runnable instance while displaying a simple indeterminate progress bar
    * @param dialogParent the dialog parent
    * @param progressBarTitle the progress bar title
-   * @param successMessage the message to display after the task has run
+   * @param successMessage if specified then this message is displayed after the task has successfully run
    * @param successTitle the title for the success message dialog
    * @param failTitle the title of the failure dialog
    * @param task the task to run
@@ -1506,13 +1506,33 @@ public final class UiUtil {
   public static void runWithProgressBar(final JComponent dialogParent, final String progressBarTitle,
                                         final String successMessage, final String successTitle, final String failTitle,
                                         final Runnable task) {
+    runWithProgressBar(dialogParent, progressBarTitle, successMessage, successTitle, failTitle, null, task);
+  }
+
+  /**
+   * Runs the given Runnable instance while displaying a simple indeterminate progress bar, along with a button based
+   * on the <code>buttonAction</code> parameter, if specified
+   * @param dialogParent the dialog parent
+   * @param progressBarTitle the progress bar title
+   * @param successMessage if specified then this message is displayed after the task has successfully run
+   * @param successTitle the title for the success message dialog
+   * @param failTitle the title of the failure dialog
+   * @param buttonAction if specified this action will be displayed as a button, useful for adding a cancel action
+   * @param task the task to run
+   */
+  public static void runWithProgressBar(final JComponent dialogParent, final String progressBarTitle,
+                                        final String successMessage, final String successTitle, final String failTitle,
+                                        final Action buttonAction, final Runnable task) {
     final JProgressBar bar = new JProgressBar();
     bar.setIndeterminate(true);
     bar.setPreferredSize(new Dimension(DEFAULT_PROGRESS_BAR_WIDTH, bar.getPreferredSize().height));
     final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogParent), progressBarTitle, Dialog.ModalityType.APPLICATION_MODAL);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     dialog.setLayout(createBorderLayout());
-    dialog.add(bar, BorderLayout.SOUTH);
+    dialog.add(bar, BorderLayout.CENTER);
+    if (buttonAction != null) {
+      dialog.add(new JButton(buttonAction), BorderLayout.EAST);
+    }
     dialog.pack();
     UiUtil.centerWindow(dialog);
     SwingUtilities.invokeLater(new Runnable() {
@@ -1521,21 +1541,37 @@ public final class UiUtil {
         dialog.setVisible(true);
       }
     });
-    //todo move UI work to EDT
+
+    final class Finisher implements Runnable {
+      private final Exception exception;
+
+      private Finisher(final Exception exception) {
+        this.exception = exception;
+      }
+
+      @Override
+      public void run() {
+        dialog.dispose();
+        if (exception == null && !Util.nullOrEmpty(successMessage)) {
+          JOptionPane.showMessageDialog(UiUtil.getParentWindow(dialogParent), successMessage, successTitle, JOptionPane.INFORMATION_MESSAGE);
+        }
+        if (exception != null && !(exception instanceof CancelException)) {
+          ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, exception);
+        }
+      }
+    }
+
     Executors.newSingleThreadExecutor().execute(new Runnable() {
       @Override
       public void run() {
+        Exception exception = null;
         try {
           task.run();
-          dialog.dispose();
-          if (!Util.nullOrEmpty(successMessage)) {
-            JOptionPane.showMessageDialog(UiUtil.getParentWindow(dialogParent), successMessage, successTitle, JOptionPane.INFORMATION_MESSAGE);
-          }
         }
         catch (Exception ex) {
-          dialog.dispose();
-          ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, ex);
+          exception = ex;
         }
+        SwingUtilities.invokeLater(new Finisher(exception));
       }
     });
   }

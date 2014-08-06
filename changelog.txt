@@ -3780,3 +3780,4 @@
   DefaultEntityModel bug fixed, no longer creates an edit model if the supplied table model contains one
   FilteredComboBoxModel.isSelectionEmpty() added, implemented in DefaultFilteredComboBoxModel, tested
   UiUtil.getDateFromUser() dialog using JCalendar now responds to enter (OK) and escape (Cancel) keys
+  UiUtil.runWithProgressBar() refactored and overloaded with a cancelAction, now quits silently on CancelException
