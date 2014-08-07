@@ -6,7 +6,7 @@ package org.jminor.common.db.exception;
 import org.jminor.common.i18n.Messages;
 
 /**
- * An exception indicating that the row in question has been modifiedor deleted since it was loaded.
+ * An exception indicating that the row in question has been modified or deleted since it was loaded.
  */
 public final class RecordModifiedException extends DatabaseException {
 

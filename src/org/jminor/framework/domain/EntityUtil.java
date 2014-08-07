@@ -406,6 +406,7 @@ public final class EntityUtil {
   /**
    * Sets all property values to null
    * @param entity the entity
+   * @return the same entity instance
    */
   public static Entity setNull(final Entity entity) {
     Util.rejectNullValue(entity, "entity");
