@@ -200,172 +200,223 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
   /** {@inheritDoc} */
   @Override
-  public synchronized boolean isConnected() {
-    return connected;
+  public boolean isConnected() {
+    synchronized (connectionProxy) {
+      return connected;
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void disconnect() {
+  public void disconnect() {
     if (!isConnected()) {
       return;
     }
-
-    connected = false;
-    try {
-      UnicastRemoteObject.unexportObject(this, true);
+    synchronized (connectionProxy) {
+      connected = false;
+      try {
+        UnicastRemoteObject.unexportObject(this, true);
+      }
+      catch (NoSuchObjectException e) {
+        LOG.error(e.getMessage(), e);
+      }
+      cleanupLocalConnections();
     }
-    catch (NoSuchObjectException e) {
-      LOG.error(e.getMessage(), e);
-    }
-    cleanupLocalConnections();
     disconnectedEvent.fire();
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
-    return connectionProxy.selectRowCount(criteria);
+  public int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.selectRowCount(criteria);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException, DatabaseException {
-    return connectionProxy.fillReport(reportWrapper);
+  public ReportResult fillReport(final ReportWrapper reportWrapper) throws ReportException, DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.fillReport(reportWrapper);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
-    connectionProxy.executeProcedure(procedureID, arguments);
+  public void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
+    synchronized (connectionProxy) {
+      connectionProxy.executeProcedure(procedureID, arguments);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
-    return connectionProxy.executeFunction(functionID, arguments);
+  public List executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.executeFunction(functionID, arguments);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized boolean isValid() {
-    return connectionProxy.isValid();
+  public boolean isValid() {
+    synchronized (connectionProxy) {
+      return connectionProxy.isValid();
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void beginTransaction() {
-    connectionProxy.beginTransaction();
+  public void beginTransaction() {
+    synchronized (connectionProxy) {
+      connectionProxy.beginTransaction();
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void commitTransaction() {
-    connectionProxy.commitTransaction();
+  public void commitTransaction() {
+    synchronized (connectionProxy) {
+      connectionProxy.commitTransaction();
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void rollbackTransaction() {
-    connectionProxy.rollbackTransaction();
+  public void rollbackTransaction() {
+    synchronized (connectionProxy) {
+      connectionProxy.rollbackTransaction();
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized boolean isTransactionOpen() {
-    return connectionProxy.isTransactionOpen();
+  public boolean isTransactionOpen() {
+    synchronized (connectionProxy) {
+      return connectionProxy.isTransactionOpen();
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
-    return connectionProxy.insert(entities);
+  public List<Entity.Key> insert(final List<Entity> entities) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.insert(entities);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Entity> update(final List<Entity> entities) throws DatabaseException {
-    return connectionProxy.update(entities);
+  public List<Entity> update(final List<Entity> entities) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.update(entities);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void delete(final List<Entity.Key> entityKeys) throws DatabaseException {
-    connectionProxy.delete(entityKeys);
+  public void delete(final List<Entity.Key> entityKeys) throws DatabaseException {
+    synchronized (connectionProxy) {
+      connectionProxy.delete(entityKeys);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void delete(final EntityCriteria criteria) throws DatabaseException {
-    connectionProxy.delete(criteria);
+  public void delete(final EntityCriteria criteria) throws DatabaseException {
+    synchronized (connectionProxy) {
+      connectionProxy.delete(criteria);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Object> selectPropertyValues(final String entityID, final String propertyID,
-                                                        final boolean order) throws DatabaseException {
-    return connectionProxy.selectPropertyValues(entityID, propertyID, order);
+  public List<Object> selectPropertyValues(final String entityID, final String propertyID,
+                                           final boolean order) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.selectPropertyValues(entityID, propertyID, order);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException {
-    return connectionProxy.selectSingle(entityID, propertyID, value);
+  public Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.selectSingle(entityID, propertyID, value);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized Entity selectSingle(final Entity.Key key) throws DatabaseException {
-    return connectionProxy.selectSingle(key);
+  public Entity selectSingle(final Entity.Key key) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.selectSingle(key);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized Entity selectSingle(final EntitySelectCriteria criteria) throws DatabaseException {
-    return connectionProxy.selectSingle(criteria);
+  public Entity selectSingle(final EntitySelectCriteria criteria) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.selectSingle(criteria);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
-    return connectionProxy.selectMany(keys);
+  public List<Entity> selectMany(final List<Entity.Key> keys) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.selectMany(keys);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException {
-    return connectionProxy.selectMany(criteria);
+  public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.selectMany(criteria);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Entity> selectMany(final String entityID, final String propertyID,
-                                              final Object... values) throws DatabaseException {
-    return connectionProxy.selectMany(entityID, propertyID, values);
+  public List<Entity> selectMany(final String entityID, final String propertyID,
+                                 final Object... values) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.selectMany(entityID, propertyID, values);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized List<Entity> selectAll(final String entityID) throws DatabaseException {
-    return connectionProxy.selectAll(entityID);
+  public List<Entity> selectAll(final String entityID) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.selectAll(entityID);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
-    return connectionProxy.selectDependentEntities(entities);
+  public Map<String, Collection<Entity>> selectDependentEntities(final Collection<Entity> entities) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.selectDependentEntities(entities);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws DatabaseException {
-    connectionProxy.writeBlob(primaryKey, blobPropertyID, blobData);
+  public void writeBlob(final Entity.Key primaryKey, final String blobPropertyID, final byte[] blobData) throws DatabaseException {
+    synchronized (connectionProxy) {
+      connectionProxy.writeBlob(primaryKey, blobPropertyID, blobData);
+    }
   }
 
   /** {@inheritDoc} */
   @Override
-  public synchronized byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException {
-    return connectionProxy.readBlob(primaryKey, blobPropertyID);
+  public byte[] readBlob(final Entity.Key primaryKey, final String blobPropertyID) throws DatabaseException {
+    synchronized (connectionProxy) {
+      return connectionProxy.readBlob(primaryKey, blobPropertyID);
+    }
   }
 
   /** {@inheritDoc} */
@@ -558,6 +609,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
     @Override
     public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+      //todo should this be synchronized (remoteEntityConnection)?
       final String methodName = method.getName();
       Exception exception = null;
       final long startTime = System.currentTimeMillis();
