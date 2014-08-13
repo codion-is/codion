@@ -90,7 +90,9 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
    * @return true if such a client is connected
    */
   public final boolean containsConnection(final ClientInfo client) {
-    return connections.containsKey(client.getClientID());
+    synchronized (connections) {
+      return connections.containsKey(client.getClientID());
+    }
   }
 
   /**
@@ -98,14 +100,18 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
    * @return the connection associated with the given client, null if none exists
    */
   public final T getConnection(final ClientInfo client) {
-    return connections.get(client.getClientID()).getConnection();
+    synchronized (connections) {
+      return connections.get(client.getClientID()).getConnection();
+    }
   }
 
   /**
    * @return the current number of connections
    */
   public final int getConnectionCount() {
-    return connections.size();
+    synchronized (connections) {
+      return connections.size();
+    }
   }
 
   /**
@@ -275,7 +281,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   protected abstract void doDisconnect(final T connection) throws RemoteException;
 
   private boolean maximumNumberOfConnectionReached() {
-    return connectionLimit > -1 && connections.size() >= connectionLimit;
+    return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
   }
 
   private LoginProxy getLoginProxy(final ClientInfo clientInfo) {

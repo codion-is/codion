@@ -3782,3 +3782,4 @@
   UiUtil.getDateFromUser() dialog using JCalendar now responds to enter (OK) and escape (Cancel) keys
   UiUtil.runWithProgressBar() refactored and overloaded with a cancelAction, now quits silently on CancelException
   DefaultRemoteEntityConnection now synchronizes on it's internal connection proxy instead of itself
+  AbstractRemoteServer, connections synchronization improved
