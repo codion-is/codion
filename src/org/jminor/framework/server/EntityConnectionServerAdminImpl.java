@@ -224,9 +224,9 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public void removeConnections(final boolean inactiveOnly) throws RemoteException {
-    LOG.info("removeConnections({})", inactiveOnly);
-    server.removeConnections(inactiveOnly);
+  public void removeConnections(final boolean timedOutOnly) throws RemoteException {
+    LOG.info("removeConnections({})", timedOutOnly);
+    server.removeConnections(timedOutOnly);
   }
 
   /** {@inheritDoc} */

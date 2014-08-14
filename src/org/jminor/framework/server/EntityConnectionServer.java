@@ -286,15 +286,20 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   }
 
   /**
-   * @param inactiveOnly if true only inactive connections are culled
+   * @param timedOutOnly if true only connections that have timed out are culled
    * @throws RemoteException in case of an exception
+   * @see #hasConnectionTimedOut(org.jminor.common.server.ClientInfo, DefaultRemoteEntityConnection)
    */
-  void removeConnections(final boolean inactiveOnly) throws RemoteException {
+  void removeConnections(final boolean timedOutOnly) throws RemoteException {
+    LOG.debug("Removing connections, idle only: " + timedOutOnly);
     final List<ClientInfo> clients = new ArrayList<>(getConnections().keySet());
+    LOG.debug("Found {} active connections", clients.size());
     for (final ClientInfo client : clients) {
       final DefaultRemoteEntityConnection connection = (DefaultRemoteEntityConnection) getConnection(client);
-      if (inactiveOnly) {
-        if (!connection.isActive() && hasConnectionTimedOut(client, connection)) {
+      if (timedOutOnly) {
+        final boolean active = connection.isActive();
+        LOG.debug("Checking connection {}, active: {}", client, active);
+        if (!active && hasConnectionTimedOut(client, connection)) {
           disconnect(client.getClientID());
         }
       }
@@ -302,6 +307,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
         disconnect(client.getClientID());
       }
     }
+    LOG.debug("Done removing connections, idle only: " + timedOutOnly);
   }
 
   /**

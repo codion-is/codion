@@ -38,7 +38,7 @@ public final class ClientUserMonitor {
     return userListModel;
   }
 
-  public void refresh() throws RemoteException{
+  public void refresh() throws RemoteException {
     clientTypeListModel.clear();
     for (final String clientType : server.getClientTypes()) {
       clientTypeListModel.addElement(new ClientMonitor(server, clientType, null));

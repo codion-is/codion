@@ -6,6 +6,9 @@ package org.jminor.common.server;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -23,6 +26,8 @@ import java.util.UUID;
  * @param <T> the type of remote interface served by this server
  */
 public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemoteObject implements RemoteServer<T> {
+
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractRemoteServer.class);
 
   private final Map<UUID, ConnectionInfo<T>> connections = Collections.synchronizedMap(new HashMap<UUID, ConnectionInfo<T>>());
   private final Map<String, LoginProxy> loginProxies = Collections.synchronizedMap(new HashMap<String, LoginProxy>());
@@ -156,9 +161,11 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
       throw ServerException.loginException("Server is shutting down");
     }
     final LoginProxy loginProxy = getLoginProxy(clientInfo);
+    LOG.debug("Connecting client {}, loginProxy {}", clientInfo, loginProxy);
     synchronized (connections) {
       ConnectionInfo<T> connectionInfo = connections.get(clientInfo.getClientID());
       if (connectionInfo != null) {
+        LOG.debug("Active connection exists {}", clientInfo);
         return connectionInfo.getConnection();
       }
 
@@ -166,7 +173,9 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
         throw ServerException.serverFullException();
       }
 
+      LOG.debug("No active connection found for client {}, establishing a new connection", clientInfo);
       connectionInfo = new ConnectionInfo<>(clientInfo, doConnect(loginProxy.doLogin(clientInfo)));
+      LOG.debug("Created a new connection {}", clientInfo);
       connections.put(clientInfo.getClientID(), connectionInfo);
 
       return connectionInfo.getConnection();
@@ -185,9 +194,11 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
       connectionInfo = connections.remove(clientID);
     }
     if (connectionInfo != null) {
+      LOG.debug("About to disconnect {}", connectionInfo.getClientInfo());
       doDisconnect(connectionInfo.getConnection());
       final ClientInfo clientInfo = connectionInfo.getClientInfo();
       getLoginProxy(clientInfo).doLogout(clientInfo);
+      LOG.debug("Finished disconnecting {}", clientInfo);
     }
   }
 

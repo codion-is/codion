@@ -3785,3 +3785,4 @@
   AbstractRemoteServer, connections synchronization improved
   AbstractRemoteServer, disconnect() reduced synchronization time
   AbstractRemoteServer, connect() getLoginProxy() moved out of synchronized block
+  AbstractRemoteServer, EntityConnectionServer added logging for connect/disconnect
