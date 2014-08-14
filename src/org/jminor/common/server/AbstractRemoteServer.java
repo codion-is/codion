@@ -175,7 +175,6 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
 
       LOG.debug("No active connection found for client {}, establishing a new connection", clientInfo);
       connectionInfo = new ConnectionInfo<>(clientInfo, doConnect(loginProxy.doLogin(clientInfo)));
-      LOG.debug("Created a new connection {}", clientInfo);
       connections.put(clientInfo.getClientID(), connectionInfo);
 
       return connectionInfo.getConnection();

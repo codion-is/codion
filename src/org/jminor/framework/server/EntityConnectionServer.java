@@ -461,9 +461,14 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   }
 
   private boolean hasConnectionTimedOut(final ClientInfo clientInfo, final DefaultRemoteEntityConnection connection) {
-    final Integer clientSpecificTimeout = clientTimeouts.get(clientInfo.getClientTypeID());
+    Integer timeout = clientTimeouts.get(clientInfo.getClientTypeID());
+    if (timeout == null) {
+      timeout = connectionTimeout;
+    }
+    final boolean isTimedOut = connection.hasBeenInactive(timeout);
+    LOG.debug("Connection {} (timeout: {}) has timed out: {}", new Object[] {clientInfo, timeout, isTimedOut});
 
-    return connection.hasBeenInactive(clientSpecificTimeout == null ? connectionTimeout : clientSpecificTimeout);
+    return isTimedOut;
   }
 
   private static void loadDomainModels(final Collection<String> domainModelClassNames) throws ClassNotFoundException {
