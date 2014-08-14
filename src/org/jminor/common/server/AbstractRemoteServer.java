@@ -25,7 +25,7 @@ import java.util.UUID;
 public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemoteObject implements RemoteServer<T> {
 
   private final Map<UUID, ConnectionInfo<T>> connections = Collections.synchronizedMap(new HashMap<UUID, ConnectionInfo<T>>());
-  private final Map<String, LoginProxy> loginProxies = new HashMap<>();
+  private final Map<String, LoginProxy> loginProxies = Collections.synchronizedMap(new HashMap<String, LoginProxy>());
   private final LoginProxy defaultLoginProxy = new LoginProxy() {
     @Override
     public String getClientTypeID() {
@@ -153,8 +153,9 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   public final T connect(final ClientInfo clientInfo) throws RemoteException,
           ServerException.ServerFullException, ServerException.LoginException {
     if (shuttingDown) {
-      throw new RemoteException("Server is shutting down");
+      throw ServerException.loginException("Server is shutting down");
     }
+    final LoginProxy loginProxy = getLoginProxy(clientInfo);
     synchronized (connections) {
       ConnectionInfo<T> connectionInfo = connections.get(clientInfo.getClientID());
       if (connectionInfo != null) {
@@ -165,7 +166,6 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
         throw ServerException.serverFullException();
       }
 
-      final LoginProxy loginProxy = getLoginProxy(clientInfo);
       connectionInfo = new ConnectionInfo<>(clientInfo, doConnect(loginProxy.doLogin(clientInfo)));
       connections.put(clientInfo.getClientID(), connectionInfo);
 
@@ -180,13 +180,14 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
       return;
     }
 
+    final ConnectionInfo<T> connectionInfo;
     synchronized (connections) {
-      final ConnectionInfo<T> connectionInfo = connections.remove(clientID);
-      if (connectionInfo != null) {
-        doDisconnect(connectionInfo.getConnection());
-        final ClientInfo clientInfo = connectionInfo.getClientInfo();
-        getLoginProxy(clientInfo).doLogout(clientInfo);
-      }
+      connectionInfo = connections.remove(clientID);
+    }
+    if (connectionInfo != null) {
+      doDisconnect(connectionInfo.getConnection());
+      final ClientInfo clientInfo = connectionInfo.getClientInfo();
+      getLoginProxy(clientInfo).doLogout(clientInfo);
     }
   }
 

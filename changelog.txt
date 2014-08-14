@@ -3783,3 +3783,5 @@
   UiUtil.runWithProgressBar() refactored and overloaded with a cancelAction, now quits silently on CancelException
   DefaultRemoteEntityConnection now synchronizes on it's internal connection proxy instead of itself
   AbstractRemoteServer, connections synchronization improved
+  AbstractRemoteServer, disconnect() reduced synchronization time
+  AbstractRemoteServer, connect() getLoginProxy() moved out of synchronized block
