@@ -193,11 +193,10 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
       connectionInfo = connections.remove(clientID);
     }
     if (connectionInfo != null) {
-      LOG.debug("About to disconnect {}", connectionInfo.getClientInfo());
       doDisconnect(connectionInfo.getConnection());
       final ClientInfo clientInfo = connectionInfo.getClientInfo();
       getLoginProxy(clientInfo).doLogout(clientInfo);
-      LOG.debug("Finished disconnecting {}", clientInfo);
+      LOG.debug("Client disconnected {}", clientInfo);
     }
   }
 

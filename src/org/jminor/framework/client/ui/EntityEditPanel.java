@@ -1932,6 +1932,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @see org.jminor.common.ui.control.Control
    * @see #setControl(String, org.jminor.common.ui.control.Control)
    * @see #getControl(String)
+   * todo updateAllowed(false) þá vantar Insert control nema það sé tiltekið í smið
    */
   private void setupDefaultControls(final String... controlKeys) {
     if (controlKeys == null || controlKeys.length == 0) {

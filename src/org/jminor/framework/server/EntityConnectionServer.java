@@ -51,11 +51,11 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
 
   private final transient AuxiliaryServer webServer;
   private final transient Database database;
-  private final transient TaskScheduler connectionTimeoutScheduler = new TaskScheduler(new Runnable() {
+  private final transient TaskScheduler connectionMaintenanceScheduler = new TaskScheduler(new Runnable() {
     @Override
     public void run() {
       try {
-        removeConnections(true);
+        maintainConnections();
       }
       catch (RemoteException e) {
         throw new RuntimeException(e);
@@ -211,14 +211,14 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
    * @return the maintenance check interval in ms
    */
   int getMaintenanceInterval() {
-    return connectionTimeoutScheduler.getInterval();
+    return connectionMaintenanceScheduler.getInterval();
   }
 
   /**
    * @param maintenanceInterval the new maintenance interval in ms
    */
   void setMaintenanceInterval(final int maintenanceInterval) {
-    connectionTimeoutScheduler.setInterval(maintenanceInterval);
+    connectionMaintenanceScheduler.setInterval(maintenanceInterval);
   }
 
   /**
@@ -286,19 +286,35 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   }
 
   /**
+   * Validates and keeps alive local connections and disconnects clients that have exceeded the idle timeout
+   * @throws RemoteException in case of an exception
+   */
+  void maintainConnections() throws RemoteException {
+    final List<ClientInfo> clients = new ArrayList<>(getConnections().keySet());
+    for (final ClientInfo client : clients) {
+      final DefaultRemoteEntityConnection connection = (DefaultRemoteEntityConnection) getConnection(client);
+      if (!connection.isActive()) {
+        final boolean valid = connection.isLocalConnectionValid();
+        final boolean timedOut = hasConnectionTimedOut(client, connection);
+        if (!valid || timedOut) {
+          LOG.debug("Removing connection {}, valid: {}, timeout: {}", new Object[] {client, valid, timedOut});
+          disconnect(client.getClientID());
+        }
+      }
+    }
+  }
+
+  /**
    * @param timedOutOnly if true only connections that have timed out are culled
    * @throws RemoteException in case of an exception
    * @see #hasConnectionTimedOut(org.jminor.common.server.ClientInfo, DefaultRemoteEntityConnection)
    */
   void removeConnections(final boolean timedOutOnly) throws RemoteException {
-    LOG.debug("Removing connections, idle only: " + timedOutOnly);
     final List<ClientInfo> clients = new ArrayList<>(getConnections().keySet());
-    LOG.debug("Found {} active connections", clients.size());
     for (final ClientInfo client : clients) {
       final DefaultRemoteEntityConnection connection = (DefaultRemoteEntityConnection) getConnection(client);
       if (timedOutOnly) {
         final boolean active = connection.isActive();
-        LOG.debug("Checking connection {}, active: {}", client, active);
         if (!active && hasConnectionTimedOut(client, connection)) {
           disconnect(client.getClientID());
         }
@@ -307,7 +323,6 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
         disconnect(client.getClientID());
       }
     }
-    LOG.debug("Done removing connections, idle only: " + timedOutOnly);
   }
 
   /**
@@ -332,7 +347,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   /** {@inheritDoc} */
   @Override
   protected void handleShutdown() throws RemoteException {
-    connectionTimeoutScheduler.stop();
+    connectionMaintenanceScheduler.stop();
     removeConnections(false);
     ConnectionPools.closeConnectionPools();
     try {
@@ -465,10 +480,8 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
     if (timeout == null) {
       timeout = connectionTimeout;
     }
-    final boolean isTimedOut = connection.hasBeenInactive(timeout);
-    LOG.debug("Connection {} (timeout: {}) has timed out: {}", new Object[] {clientInfo, timeout, isTimedOut});
 
-    return isTimedOut;
+    return connection.hasBeenInactive(timeout);
   }
 
   private static void loadDomainModels(final Collection<String> domainModelClassNames) throws ClassNotFoundException {

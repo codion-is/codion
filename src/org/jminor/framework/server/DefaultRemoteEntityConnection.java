@@ -426,6 +426,17 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   }
 
   /**
+   * Checks if the underlying local connection is valid without interrupting the idle time counter.
+   * If a connection pool is being used true will be returned
+   * @return true if a local connection is being used and is valid
+   */
+  public boolean isLocalConnectionValid() {
+    synchronized (connectionProxy) {
+      return localEntityConnection == null || localEntityConnection.isValid();
+    }
+  }
+
+  /**
    * @return information on the client using this remote connection
    */
   ClientInfo getClientInfo() {
