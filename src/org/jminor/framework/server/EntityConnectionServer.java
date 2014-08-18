@@ -363,7 +363,6 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   @Override
   protected void doDisconnect(final RemoteEntityConnection connection) throws RemoteException {
     connection.disconnect();
-    LOG.debug("{} disconnected", ((DefaultRemoteEntityConnection) connection).getClientInfo());
   }
 
   /** {@inheritDoc} */
