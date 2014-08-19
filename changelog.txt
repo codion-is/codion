@@ -3788,3 +3788,4 @@
   AbstractRemoteServer, EntityConnectionServer added logging for connect/disconnect
   DefaultRemoteEntityConnection.isLocalConnectionValid() added
   EntityConnectionServer, maintenance thread now keeps local connections alive via isLocalConnectionValid() along with disconnecting idle ones
+  EntityServerMonitorTest added some tests
