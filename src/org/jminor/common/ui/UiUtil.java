@@ -1523,12 +1523,33 @@ public final class UiUtil {
   public static void runWithProgressBar(final JComponent dialogParent, final String progressBarTitle,
                                         final String successMessage, final String successTitle, final String failTitle,
                                         final Action buttonAction, final Runnable task) {
+    runWithProgressBar(dialogParent, progressBarTitle, successMessage, successTitle, failTitle, buttonAction, null, task);
+  }
+
+  /**
+   * Runs the given Runnable instance while displaying a simple indeterminate progress bar, along with a button based
+   * on the <code>buttonAction</code> parameter, if specified
+   * @param dialogParent the dialog parent
+   * @param progressBarTitle the progress bar title
+   * @param successMessage if specified then this message is displayed after the task has successfully run
+   * @param successTitle the title for the success message dialog
+   * @param failTitle the title of the failure dialog
+   * @param buttonAction if specified this action will be displayed as a button, useful for adding a cancel action
+   * @param northPanel if specified this panel will be added to the BorderLayout.NORTH position of the dialog
+   * @param task the task to run
+   */
+  public static void runWithProgressBar(final JComponent dialogParent, final String progressBarTitle,
+                                        final String successMessage, final String successTitle, final String failTitle,
+                                        final Action buttonAction, final JPanel northPanel, final Runnable task) {
     final JProgressBar bar = new JProgressBar();
     bar.setIndeterminate(true);
     bar.setPreferredSize(new Dimension(DEFAULT_PROGRESS_BAR_WIDTH, bar.getPreferredSize().height));
     final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogParent), progressBarTitle, Dialog.ModalityType.APPLICATION_MODAL);
     dialog.setDefaultCloseOperation(WindowConstants.DO_NOTHING_ON_CLOSE);
     dialog.setLayout(createBorderLayout());
+    if (northPanel != null) {
+      dialog.add(northPanel, BorderLayout.NORTH);
+    }
     dialog.add(bar, BorderLayout.CENTER);
     if (buttonAction != null) {
       dialog.add(new JButton(buttonAction), BorderLayout.EAST);
