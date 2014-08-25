@@ -33,6 +33,27 @@ public class EntityUiUtilTest {
     assertEquals(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING).getCaption(), lbl.getText());
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void createTristateCheckBoxNonNullableBooleanProperty() {
+    EntityTestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
+    EntityUiUtil.createTristateCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_BOOLEAN), editModel, null, true);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void createTristateCheckBoxNonBooleanProperty() {
+    EntityTestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
+    EntityUiUtil.createTristateCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_TIMESTAMP), editModel, null, true);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void createCheckBoxNonBooleanProperty() {
+    EntityTestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
+    EntityUiUtil.createCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_TIMESTAMP), editModel);
+  }
+
   @Test
   public void createCheckBox() {
     EntityTestDomain.init();
@@ -104,7 +125,7 @@ public class EntityUiUtilTest {
   @Test
   public void createComboBox() {
     EntityTestDomain.init();
-    final DefaultComboBoxModel boxModel = new DefaultComboBoxModel(new Object[] {0, 1, 2, 3});
+    final DefaultComboBoxModel boxModel = new DefaultComboBoxModel<>(new Object[] {0, 1, 2, 3});
     final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
     final JComboBox box = EntityUiUtil.createComboBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
             EntityTestDomain.DETAIL_INT), editModel, boxModel, null);

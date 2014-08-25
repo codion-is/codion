@@ -14,6 +14,8 @@ import java.io.FileNotFoundException;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.UndeclaredThrowableException;
 import java.rmi.RemoteException;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * A default ExceptionHandler implementation
@@ -41,8 +43,8 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
 
   @Override
   public void handleException(final Throwable exception, final Window dialogParent) {
-    final Throwable rootCause = unwrapExceptions(exception, RemoteException.class, RuntimeException.class,
-            InvocationTargetException.class, ExceptionInInitializerError.class, UndeclaredThrowableException.class);
+    final Throwable rootCause = unwrapExceptions(exception, Arrays.asList(RemoteException.class, RuntimeException.class,
+            InvocationTargetException.class, ExceptionInInitializerError.class, UndeclaredThrowableException.class));
     if (rootCause instanceof CancelException) {
       return;
     }
@@ -73,7 +75,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
     ExceptionDialog.showExceptionDialog(dialogParent, Messages.get(Messages.EXCEPTION), errMsg, dbException);
   }
 
-  private static Throwable unwrapExceptions(final Throwable exception, final Class<? extends Throwable>... exceptions) {
+  static Throwable unwrapExceptions(final Throwable exception, final Collection<Class<? extends Throwable>> exceptions) {
     if (exception instanceof CancelException) {
       return exception;
     }

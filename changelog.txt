@@ -3790,3 +3790,6 @@
   EntityConnectionServer, maintenance thread now keeps local connections alive via isLocalConnectionValid() along with disconnecting idle ones
   EntityServerMonitorTest added some tests
   UiUtil.runWithProgressBar() overloaded with a northPanel parameter
+  DefaultExceptionHandlerTest added
+  EntityUiUtilTest improved
+  EntityUiUtil.createTristateCheckBox() bug fixed

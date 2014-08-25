@@ -417,7 +417,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(property, PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(property, editModel);
-    if (!property.isBoolean() && property.isNullable()) {
+    if (!property.isBoolean() || !property.isNullable()) {
       throw new IllegalArgumentException("Nullable boolean property required for createTristateCheckBox");
     }
 

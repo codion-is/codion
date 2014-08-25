@@ -62,7 +62,10 @@ public class EntityTestDomain {
             Properties.columnProperty(DETAIL_STRING, Types.VARCHAR, "Detail string"),
             Properties.columnProperty(DETAIL_DATE, Types.DATE, DETAIL_DATE),
             Properties.columnProperty(DETAIL_TIMESTAMP, Types.TIMESTAMP, DETAIL_TIMESTAMP),
-            Properties.columnProperty(DETAIL_BOOLEAN, Types.BOOLEAN, DETAIL_BOOLEAN).setDefaultValue(true),
+            Properties.columnProperty(DETAIL_BOOLEAN, Types.BOOLEAN, DETAIL_BOOLEAN)
+                    .setNullable(false)
+                    .setDefaultValue(true)
+                    .setDescription("A boolean property"),
             Properties.foreignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
                     Properties.columnProperty(DETAIL_ENTITY_ID)),
             Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,
