@@ -3793,3 +3793,4 @@
   DefaultExceptionHandlerTest added
   EntityUiUtilTest improved
   EntityUiUtil.createTristateCheckBox() bug fixed
+  EntityUiUtilTest fixed broken tests

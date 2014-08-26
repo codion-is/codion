@@ -77,16 +77,16 @@ public class EntityUiUtilTest {
     EntityTestDomain.init();
     final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
     final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
-            EntityTestDomain.DETAIL_BOOLEAN), editModel, null, false);
+            EntityTestDomain.DETAIL_BOOLEAN_NULLABLE), editModel, null, false);
     assertTrue(box.isSelected());//default value is true
-    assertTrue((Boolean) editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN));
+    assertTrue((Boolean) editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN_NULLABLE));
 
     box.getMouseListeners()[0].mousePressed(null);
 
     assertTrue(box.isIndeterminate());
-    assertNull(editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN));
+    assertNull(editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN_NULLABLE));
 
-    editModel.setValue(EntityTestDomain.DETAIL_BOOLEAN, false);
+    editModel.setValue(EntityTestDomain.DETAIL_BOOLEAN_NULLABLE, false);
     assertFalse(box.isSelected());
   }
 

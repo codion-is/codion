@@ -294,9 +294,10 @@ public final class DefaultEntityTableModelTest {
     assertEquals(3, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_DATE));
     assertEquals(4, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_TIMESTAMP));
     assertEquals(5, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_BOOLEAN));
-    assertEquals(6, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_ENTITY_FK));
-    assertEquals(7, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_MASTER_NAME));
-    assertEquals(8, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_MASTER_CODE));
+    assertEquals(6, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_BOOLEAN_NULLABLE));
+    assertEquals(7, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_ENTITY_FK));
+    assertEquals(8, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_MASTER_NAME));
+    assertEquals(9, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_MASTER_CODE));
   }
 
   @Test(expected = IllegalStateException.class)
@@ -357,7 +358,8 @@ public final class DefaultEntityTableModelTest {
     assertEquals(Date.class, testModel.getColumnClass(3));
     assertEquals(Timestamp.class, testModel.getColumnClass(4));
     assertEquals(Boolean.class, testModel.getColumnClass(5));
-    assertEquals(Object.class, testModel.getColumnClass(6));
+    assertEquals(Boolean.class, testModel.getColumnClass(6));
+    assertEquals(Object.class, testModel.getColumnClass(7));
   }
 
   @Test

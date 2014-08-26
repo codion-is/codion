@@ -28,6 +28,7 @@ public class EntityTestDomain {
   public static final String DETAIL_DATE = "date";
   public static final String DETAIL_TIMESTAMP = "timestamp";
   public static final String DETAIL_BOOLEAN = "boolean";
+  public static final String DETAIL_BOOLEAN_NULLABLE = "boolean_nullable";
   public static final String DETAIL_ENTITY_ID = "entity_id";
   public static final String DETAIL_ENTITY_FK = "entity_ref";
   public static final String DETAIL_MASTER_NAME = "master_name";
@@ -66,6 +67,8 @@ public class EntityTestDomain {
                     .setNullable(false)
                     .setDefaultValue(true)
                     .setDescription("A boolean property"),
+            Properties.columnProperty(DETAIL_BOOLEAN_NULLABLE, Types.BOOLEAN, DETAIL_BOOLEAN_NULLABLE)
+                    .setDefaultValue(true),
             Properties.foreignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
                     Properties.columnProperty(DETAIL_ENTITY_ID)),
             Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,
