@@ -452,7 +452,7 @@ class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public boolean equals(final Object obj) {
+  public final boolean equals(final Object obj) {
     return this == obj || obj instanceof Property && this.propertyID.equals(((Property) obj).getPropertyID());
   }
 
@@ -735,12 +735,6 @@ class DefaultProperty implements Property {
       return this;
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(final Object obj) {
-      return this == obj || obj instanceof ColumnProperty && getPropertyID().equals(((ColumnProperty) obj).getPropertyID());
-    }
-
     private static ValueConverter initializeValueConverter(final ColumnProperty property) {
       if (property.isDate()) {
         return DATE_VALUE_CONVERTER;
@@ -984,12 +978,6 @@ class DefaultProperty implements Property {
       return linkedReferenceProperties.get(referenceProperty);
     }
 
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(final Object obj) {
-      return this == obj || obj instanceof ForeignKeyProperty && getPropertyID().equals(((ForeignKeyProperty) obj).getPropertyID());
-    }
-
     private void link(final Property referenceProperty, final String referencedPropertyID) {
       if (linkedReferenceProperties == null) {
         linkedReferenceProperties = new HashMap<>();
@@ -1061,12 +1049,6 @@ class DefaultProperty implements Property {
     public boolean isDenormalized() {
       return true;
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(final Object obj) {
-      return this == obj || obj instanceof DenormalizedProperty && getPropertyID().equals(((DenormalizedProperty) obj).getPropertyID());
-    }
   }
 
   static final class DefaultValueListProperty extends DefaultColumnProperty implements ValueListProperty {
@@ -1104,12 +1086,6 @@ class DefaultProperty implements Property {
       }
 
       return "";
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(final Object obj) {
-      return this == obj || obj instanceof ValueListProperty && getPropertyID().equals(((ValueListProperty) obj).getPropertyID());
     }
   }
 
@@ -1153,12 +1129,6 @@ class DefaultProperty implements Property {
     public List<String> getLinkedPropertyIDs() {
       return linkedPropertyIDs;
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(final Object obj) {
-      return this == obj || obj instanceof DerivedProperty && getPropertyID().equals(((DerivedProperty) obj).getPropertyID());
-    }
   }
 
   static final class DefaultDenormalizedViewProperty extends DefautTransientProperty implements DenormalizedViewProperty {
@@ -1190,12 +1160,6 @@ class DefaultProperty implements Property {
     public Property getDenormalizedProperty() {
       return denormalizedProperty;
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(final Object obj) {
-      return this == obj || obj instanceof DenormalizedViewProperty && getPropertyID().equals(((DenormalizedViewProperty) obj).getPropertyID());
-    }
   }
 
   static final class DefaultSubqueryProperty extends DefaultColumnProperty implements SubqueryProperty {
@@ -1222,12 +1186,6 @@ class DefaultProperty implements Property {
     public String getSubQuery() {
       return subquery;
     }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(final Object obj) {
-      return this == obj || obj instanceof SubqueryProperty && getPropertyID().equals(((SubqueryProperty) obj).getPropertyID());
-    }
   }
 
   static class DefaultAuditProperty extends DefaultColumnProperty implements AuditProperty {
@@ -1243,12 +1201,6 @@ class DefaultProperty implements Property {
     @Override
     public final AuditAction getAuditAction() {
       return auditAction;
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    public boolean equals(final Object obj) {
-      return this == obj || obj instanceof AuditProperty && getPropertyID().equals(((AuditProperty) obj).getPropertyID());
     }
   }
 
