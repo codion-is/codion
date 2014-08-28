@@ -633,7 +633,7 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public ColumnProperty setPrimaryKeyIndex(final int index) {
+    public final ColumnProperty setPrimaryKeyIndex(final int index) {
       if (index < 0) {
         throw new IllegalArgumentException("Primary key index must be at least 0");
       }
@@ -643,7 +643,7 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public int getPrimaryKeyIndex() {
+    public final int getPrimaryKeyIndex() {
       return primaryKeyIndex;
     }
 
@@ -691,7 +691,7 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public boolean isPrimaryKeyProperty() {
+    public final boolean isPrimaryKeyProperty() {
       return primaryKeyIndex >= 0;
     }
 
@@ -733,6 +733,12 @@ class DefaultProperty implements Property {
       Util.rejectNullValue(valueConverter, "valueConverter");
       this.valueConverter = valueConverter;
       return this;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+      return this == obj || obj instanceof ColumnProperty && getPropertyID().equals(((ColumnProperty) obj).getPropertyID());
     }
 
     private static ValueConverter initializeValueConverter(final ColumnProperty property) {
@@ -978,6 +984,12 @@ class DefaultProperty implements Property {
       return linkedReferenceProperties.get(referenceProperty);
     }
 
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+      return this == obj || obj instanceof ForeignKeyProperty && getPropertyID().equals(((ForeignKeyProperty) obj).getPropertyID());
+    }
+
     private void link(final Property referenceProperty, final String referencedPropertyID) {
       if (linkedReferenceProperties == null) {
         linkedReferenceProperties = new HashMap<>();
@@ -1049,6 +1061,12 @@ class DefaultProperty implements Property {
     public boolean isDenormalized() {
       return true;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+      return this == obj || obj instanceof DenormalizedProperty && getPropertyID().equals(((DenormalizedProperty) obj).getPropertyID());
+    }
   }
 
   static final class DefaultValueListProperty extends DefaultColumnProperty implements ValueListProperty {
@@ -1086,6 +1104,12 @@ class DefaultProperty implements Property {
       }
 
       return "";
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+      return this == obj || obj instanceof ValueListProperty && getPropertyID().equals(((ValueListProperty) obj).getPropertyID());
     }
   }
 
@@ -1129,6 +1153,12 @@ class DefaultProperty implements Property {
     public List<String> getLinkedPropertyIDs() {
       return linkedPropertyIDs;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+      return this == obj || obj instanceof DerivedProperty && getPropertyID().equals(((DerivedProperty) obj).getPropertyID());
+    }
   }
 
   static final class DefaultDenormalizedViewProperty extends DefautTransientProperty implements DenormalizedViewProperty {
@@ -1160,6 +1190,12 @@ class DefaultProperty implements Property {
     public Property getDenormalizedProperty() {
       return denormalizedProperty;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+      return this == obj || obj instanceof DenormalizedViewProperty && getPropertyID().equals(((DenormalizedViewProperty) obj).getPropertyID());
+    }
   }
 
   static final class DefaultSubqueryProperty extends DefaultColumnProperty implements SubqueryProperty {
@@ -1186,6 +1222,12 @@ class DefaultProperty implements Property {
     public String getSubQuery() {
       return subquery;
     }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+      return this == obj || obj instanceof SubqueryProperty && getPropertyID().equals(((SubqueryProperty) obj).getPropertyID());
+    }
   }
 
   static class DefaultAuditProperty extends DefaultColumnProperty implements AuditProperty {
@@ -1201,6 +1243,12 @@ class DefaultProperty implements Property {
     @Override
     public final AuditAction getAuditAction() {
       return auditAction;
+    }
+
+    /** {@inheritDoc} */
+    @Override
+    public boolean equals(final Object obj) {
+      return this == obj || obj instanceof AuditProperty && getPropertyID().equals(((AuditProperty) obj).getPropertyID());
     }
   }
 

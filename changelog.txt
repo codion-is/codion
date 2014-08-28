@@ -3794,3 +3794,4 @@
   EntityUiUtilTest improved
   EntityUiUtil.createTristateCheckBox() bug fixed
   EntityUiUtilTest fixed broken tests
+  DefaultProperty, equals() overridden where required
