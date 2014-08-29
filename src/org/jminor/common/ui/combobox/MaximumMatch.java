@@ -281,6 +281,8 @@ public final class MaximumMatch extends PlainDocument {
           e.consume();
           comboBox.getToolkit().beep();
           break;
+        default:
+          break;
       }
     }
   }

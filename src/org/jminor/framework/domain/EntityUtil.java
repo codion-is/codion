@@ -394,7 +394,7 @@ public final class EntityUtil {
     final Entity entity = Entities.entity(entityID);
     return Util.initializeProxy(Entity.class, new InvocationHandler() {
       @Override
-      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+      public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
         switch (method.getName()) {
           case "toString": return toStringValue;
           default: return method.invoke(entity, args);

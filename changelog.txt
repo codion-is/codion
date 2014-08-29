@@ -3796,3 +3796,4 @@
   EntityUiUtilTest fixed broken tests
   DefaultEntityConnection, redundant synchronized instance removed
   MethodLogger, minor refactoring
+  Sonar run, some minor improvements

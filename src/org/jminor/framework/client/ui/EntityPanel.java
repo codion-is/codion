@@ -1517,7 +1517,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      MasterDetailPanel panel = null;
+      final MasterDetailPanel panel;
       switch(direction) {
         case LEFT:
           panel = entityPanel.getPreviousPanel();
@@ -1531,6 +1531,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         case DOWN:
           panel = entityPanel.getActiveDetailPanel();
           break;
+        default:
+          throw new IllegalArgumentException("Unknown direction: " + direction);
       }
 
       if (panel != null) {
