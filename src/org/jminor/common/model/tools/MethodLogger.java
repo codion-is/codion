@@ -28,7 +28,7 @@ public class MethodLogger implements Serializable {
   private static final long serialVersionUID = 1;
 
   private final transient Stack<Entry> callStack = new Stack<>();
-  private LinkedList<Entry> entries = new LinkedList<>();
+  private final LinkedList<Entry> entries = new LinkedList<>();
   private int maxSize;
   private boolean enabled = false;
   private long lastAccessTime = System.currentTimeMillis();
@@ -104,34 +104,32 @@ public class MethodLogger implements Serializable {
    * @return the Entry
    */
   public final synchronized Entry logExit(final String method, final Throwable exception, final String exitMessage) {
-    if (shouldMethodBeLogged(method)) {
-      if (enabled) {
-        if (callStack.isEmpty()) {
-          throw new IllegalStateException("Call stack is empty when trying to log method exit");
+    if (enabled && shouldMethodBeLogged(method)) {
+      if (callStack.isEmpty()) {
+        throw new IllegalStateException("Call stack is empty when trying to log method exit");
+      }
+      final Entry entry = callStack.pop();
+      if (!entry.getMethod().equals(method)) {//todo pop until found or empty?
+        throw new IllegalStateException("Expecting method " + entry.getMethod() + " but got " + method + " when trying to log method exit");
+      }
+      entry.setExitTime();
+      entry.setException(exception);
+      entry.setExitMessage(exitMessage);
+      setLastExitInfo(method, entry.getExitTime());
+      if (callStack.empty()) {
+        if (entries.size() == maxSize) {
+          entries.removeFirst();
         }
-        final Entry entry = callStack.pop();
-        if (!entry.getMethod().equals(method)) {//todo pop until found or empty?
-          throw new IllegalStateException("Expecting method " + entry.getMethod() + " but got " + method + " when trying to log method exit");
-        }
-        entry.setExitTime();
-        entry.setException(exception);
-        entry.setExitMessage(exitMessage);
-        setLastExitInfo(method, entry.getExitTime());
-        if (callStack.empty()) {
-          if (entries.size() == maxSize) {
-            entries.removeFirst();
-          }
-          entries.addLast(entry);
-        }
-        else {
-          callStack.peek().addSubEntry(entry);
-        }
-
-        return entry;
+        entries.addLast(entry);
       }
       else {
-        setLastExitInfo(method, System.currentTimeMillis());
+        callStack.peek().addSubEntry(entry);
       }
+
+      return entry;
+    }
+    else {
+      setLastExitInfo(method, System.currentTimeMillis());
     }
 
     return null;
@@ -323,7 +321,6 @@ public class MethodLogger implements Serializable {
     this.lastAccessedMethod = (String) stream.readObject();
     this.lastAccessMessage = (String) stream.readObject();
     this.lastExitedMethod = (String) stream.readObject();
-    this.entries = new LinkedList<>();
     final int entryCount = stream.readInt();
     for (int i = 0; i < entryCount; i++) {
       entries.add((Entry) stream.readObject());
@@ -338,6 +335,7 @@ public class MethodLogger implements Serializable {
     private static final long serialVersionUID = 1;
     private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);
 
+    private final LinkedList<Entry> subEntries = new LinkedList<>();
     private String method;
     private String accessMessage;
     private long accessTime;
@@ -346,7 +344,6 @@ public class MethodLogger implements Serializable {
     private long exitTime;
     private long exitTimeNano;
     private String stackTrace;
-    private LinkedList<Entry> subEntries = new LinkedList<>();
 
     /**
      * Instantiates a new Entry, using the current time
@@ -533,7 +530,6 @@ public class MethodLogger implements Serializable {
       this.accessTimeNano = stream.readLong();
       this.exitTimeNano = stream.readLong();
       this.stackTrace = (String) stream.readObject();
-      this.subEntries = new LinkedList<>();
       final int subLogSize = stream.readInt();
       for (int i = 0; i < subLogSize; i++) {
         this.subEntries.addLast((Entry) stream.readObject());

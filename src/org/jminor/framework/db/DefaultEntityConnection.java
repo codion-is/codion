@@ -527,7 +527,7 @@ final class DefaultEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public synchronized void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
+  public void executeProcedure(final String procedureID, final Object... arguments) throws DatabaseException {
     DatabaseException exception = null;
     try {
       logAccess("executeProcedure: " + procedureID, arguments);
