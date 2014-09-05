@@ -28,7 +28,7 @@ public class MethodLogger implements Serializable {
   private static final long serialVersionUID = 1;
 
   private final transient Stack<Entry> callStack = new Stack<>();
-  private final LinkedList<Entry> entries = new LinkedList<>();
+  private LinkedList<Entry> entries = new LinkedList<>();
   private int maxSize;
   private boolean enabled = false;
   private long lastAccessTime = System.currentTimeMillis();
@@ -322,6 +322,7 @@ public class MethodLogger implements Serializable {
     this.lastAccessMessage = (String) stream.readObject();
     this.lastExitedMethod = (String) stream.readObject();
     final int entryCount = stream.readInt();
+    this.entries = new LinkedList<>();
     for (int i = 0; i < entryCount; i++) {
       entries.add((Entry) stream.readObject());
     }
@@ -335,7 +336,7 @@ public class MethodLogger implements Serializable {
     private static final long serialVersionUID = 1;
     private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);
 
-    private final LinkedList<Entry> subEntries = new LinkedList<>();
+    private LinkedList<Entry> subEntries = new LinkedList<>();
     private String method;
     private String accessMessage;
     private long accessTime;
@@ -531,6 +532,7 @@ public class MethodLogger implements Serializable {
       this.exitTimeNano = stream.readLong();
       this.stackTrace = (String) stream.readObject();
       final int subLogSize = stream.readInt();
+      this.subEntries = new LinkedList<>();
       for (int i = 0; i < subLogSize; i++) {
         this.subEntries.addLast((Entry) stream.readObject());
       }

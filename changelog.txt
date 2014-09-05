@@ -3797,3 +3797,4 @@
   DefaultEntityConnection, redundant synchronized instance removed
   MethodLogger, minor refactoring
   Sonar run, some minor improvements
+  MethodLogger serialization bug introduced during refactoring fixed
