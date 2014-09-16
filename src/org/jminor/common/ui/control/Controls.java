@@ -264,7 +264,7 @@ public final class Controls {
             }
           });
         }
-        catch (Exception e) {
+        catch (final Exception e) {
           throw new RuntimeException(e);
         }
       }

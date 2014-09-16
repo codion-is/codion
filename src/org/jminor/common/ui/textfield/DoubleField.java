@@ -200,7 +200,7 @@ public final class DoubleField extends IntField {
           }
         }
       }
-      catch (BadLocationException e) {
+      catch (final BadLocationException e) {
         throw new RuntimeException(e);
       }
     }

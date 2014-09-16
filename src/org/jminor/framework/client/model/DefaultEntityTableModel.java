@@ -561,7 +561,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       try {
         Util.putUserPreference(getPreferencesKey(), createPreferences().toString());
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         LOG.error("Error while saving preferences", e);
       }
     }
@@ -598,7 +598,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       return connectionProvider.getConnection().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
               getOrderByClause(), fetchCount));
     }
-    catch (DatabaseException e) {
+    catch (final DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -789,7 +789,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
           applyColumnPreferences(new org.json.JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS));
         }
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         LOG.error("Error while applying preferences: " + preferencesString, e);
       }
     }
@@ -812,7 +812,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
             columnModel.setColumnVisible((Property) column.getIdentifier(), false);
           }
         }
-        catch (Exception e) {
+        catch (final Exception e) {
           LOG.info("Property preferences not found: " + property, e);
         }
       }

@@ -3798,3 +3798,4 @@
   MethodLogger, minor refactoring
   Sonar run, some minor improvements
   MethodLogger serialization bug introduced during refactoring fixed
+  final keyword added to catch clauses, quite the overkill but gets rid of annoying warnings in IntelliJ 13

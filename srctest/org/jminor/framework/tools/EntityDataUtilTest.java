@@ -39,7 +39,7 @@ public class EntityDataUtilTest {
       final H2Database destinationDatabase = new H2Database("TempDB", "resources/demos/chinook/scripts/ddl.sql");
       DESTINATION_CONNECTION = EntityConnections.createConnection(destinationDatabase, new User("sa", ""));
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }

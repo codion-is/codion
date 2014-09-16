@@ -34,7 +34,7 @@ public final class DatabaseMonitor {
       try {
         updateStatistics();
       }
-      catch (RemoteException ignored) {}
+      catch (final RemoteException ignored) {}
     }
   }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
 

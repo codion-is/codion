@@ -112,7 +112,7 @@ public final class ValueLinkValidators {
         editModel.validate(key);
         return null;
       }
-      catch (ValidationException e) {
+      catch (final ValidationException e) {
         return e.getMessage();
       }
     }

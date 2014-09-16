@@ -137,10 +137,10 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
       return model;
     }
-    catch (RuntimeException re) {
+    catch (final RuntimeException re) {
       throw re;
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -162,10 +162,10 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
       return editModel;
     }
-    catch (RuntimeException re) {
+    catch (final RuntimeException re) {
       throw re;
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -190,10 +190,10 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
       return tableModel;
     }
-    catch (RuntimeException re) {
+    catch (final RuntimeException re) {
       throw re;
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }

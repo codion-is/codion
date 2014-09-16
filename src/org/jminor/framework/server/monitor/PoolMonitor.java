@@ -62,7 +62,7 @@ public final class PoolMonitor {
       try {
         return server.getMaximumConnectionPoolSize(user);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -72,7 +72,7 @@ public final class PoolMonitor {
       try {
         return server.getMinimumConnectionPoolSize(user);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -82,7 +82,7 @@ public final class PoolMonitor {
       try {
         return server.getConnectionPoolCleanupInterval(user);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -92,7 +92,7 @@ public final class PoolMonitor {
       try {
         return server.getMaximumPoolRetryWaitPeriod(user);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -102,7 +102,7 @@ public final class PoolMonitor {
       try {
         return server.getPooledConnectionTimeout(user);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -112,7 +112,7 @@ public final class PoolMonitor {
       try {
         server.setMaximumConnectionPoolSize(user, value);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -122,7 +122,7 @@ public final class PoolMonitor {
       try {
         server.setMinimumConnectionPoolSize(user, value);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -132,7 +132,7 @@ public final class PoolMonitor {
       try {
         server.setPooledConnectionTimeout(user, timeout);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -142,7 +142,7 @@ public final class PoolMonitor {
       try {
         server.setMaximumPoolRetryWaitPeriod(user, maximumRetryWaitPeriod);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -152,7 +152,7 @@ public final class PoolMonitor {
       try {
         return server.getMaximumPoolCheckOutTime(user);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -162,7 +162,7 @@ public final class PoolMonitor {
       try {
         server.setMaximumPoolCheckOutTime(user, value);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -172,7 +172,7 @@ public final class PoolMonitor {
       try {
         return server.getPoolConnectionThreshold(user);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -182,7 +182,7 @@ public final class PoolMonitor {
       try {
         server.setPoolConnectionThreshold(user, value);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -192,7 +192,7 @@ public final class PoolMonitor {
       try {
         server.setConnectionPoolCleanupInterval(user, poolCleanupInterval);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -202,7 +202,7 @@ public final class PoolMonitor {
       try {
         return server.getConnectionPoolStatistics(user, since);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -217,7 +217,7 @@ public final class PoolMonitor {
       try {
         return server.isCollectFineGrainedPoolStatistics(user);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -227,7 +227,7 @@ public final class PoolMonitor {
       try {
         server.resetConnectionPoolStatistics(user);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -237,7 +237,7 @@ public final class PoolMonitor {
       try {
         server.setCollectFineGrainedPoolStatistics(user, value);
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }

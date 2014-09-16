@@ -49,7 +49,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     try {
       return serializeEntities(entities, false);
     }
-    catch (JSONException e) {
+    catch (final JSONException e) {
       throw new SerializeException(e.getMessage(), e);
     }
   }
@@ -65,7 +65,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     try {
       return deserializeEntities(jsonString);
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new SerializeException(e.getMessage(), e);
     }
   }

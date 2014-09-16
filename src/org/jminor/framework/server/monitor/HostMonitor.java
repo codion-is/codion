@@ -105,7 +105,7 @@ public final class HostMonitor {
         serverNames.add(name);
       }
     }
-    catch (RemoteException e) {
+    catch (final RemoteException e) {
       LOG.error(e.getMessage(), e);
     }
 

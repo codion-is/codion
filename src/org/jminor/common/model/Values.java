@@ -121,13 +121,13 @@ public final class Values {
         this.changeEvent = changeEvent;
         this.getMethod = Util.getGetMethod(valueClass, propertyName, valueOwner);
       }
-      catch (NoSuchMethodException e) {
+      catch (final NoSuchMethodException e) {
         throw new IllegalArgumentException("Bean property get method for " + propertyName + ", type: " + valueClass + " not found in class " + valueOwner.getClass().getName(), e);
       }
       try {
         this.setMethod = Util.getSetMethod(valueClass, propertyName, valueOwner);
       }
-      catch (NoSuchMethodException ignored) {
+      catch (final NoSuchMethodException ignored) {
         this.setMethod = null;
       }
     }
@@ -137,10 +137,10 @@ public final class Values {
       try {
         return (V) getMethod.invoke(valueOwner);
       }
-      catch (RuntimeException re) {
+      catch (final RuntimeException re) {
         throw re;
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         throw new RuntimeException(e);
       }
     }
@@ -153,10 +153,10 @@ public final class Values {
       try {
         setMethod.invoke(valueOwner, value);
       }
-      catch (RuntimeException re) {
+      catch (final RuntimeException re) {
         throw re;
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         throw new RuntimeException(e);
       }
     }

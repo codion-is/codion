@@ -434,7 +434,7 @@ public final class UiUtil {
             returnTime.setTimeInMillis(((Calendar) getCalendar.invoke(calendarPanel)).getTimeInMillis());
             closeEvent.fire();
           }
-          catch (Exception ex) {
+          catch (final Exception ex) {
             throw new RuntimeException("Exception while using JCalendar", ex);
           }
         }
@@ -458,7 +458,7 @@ public final class UiUtil {
 
       return cancel.isActive() ? null : new Date(returnTime.getTimeInMillis());
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException("Exception while using JCalendar", e);
     }
   }
@@ -498,7 +498,7 @@ public final class UiUtil {
 
       return inputDateFormat.parse(txtField.getText());
     }
-    catch (ParseException e) {
+    catch (final ParseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -557,7 +557,7 @@ public final class UiUtil {
 
       return formattedTextField;
     }
-    catch (ParseException e) {
+    catch (final ParseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -1345,7 +1345,7 @@ public final class UiUtil {
           final File file = selectFile(txtFilename, getParentPath(txtFilename.getText()));
           txtFilename.setText(file.getAbsolutePath());
         }
-        catch (CancelException ignored) {}
+        catch (final CancelException ignored) {}
       }
     };
   }
@@ -1421,7 +1421,7 @@ public final class UiUtil {
 
       return false;
     }
-    catch (ClassNotFoundException e) {
+    catch (final ClassNotFoundException e) {
       throw new RuntimeException(e);
     }
   }
@@ -1455,7 +1455,7 @@ public final class UiUtil {
         return new File(new URI(token));
       }
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
 
@@ -1495,7 +1495,8 @@ public final class UiUtil {
   }
 
   /**
-   * Runs the given Runnable instance while displaying a simple indeterminate progress bar
+   * Runs the given Runnable instance while displaying a simple indeterminate progress bar.
+   * Any exception thrown from the task is caught and displayed, rendering the execution unsuccessful.
    * @param dialogParent the dialog parent
    * @param progressBarTitle the progress bar title
    * @param successMessage if specified then this message is displayed after the task has successfully run
@@ -1512,6 +1513,7 @@ public final class UiUtil {
   /**
    * Runs the given Runnable instance while displaying a simple indeterminate progress bar, along with a button based
    * on the <code>buttonAction</code> parameter, if specified
+   * Any exception thrown from the task is caught and displayed, rendering the execution unsuccessful.
    * @param dialogParent the dialog parent
    * @param progressBarTitle the progress bar title
    * @param successMessage if specified then this message is displayed after the task has successfully run
@@ -1529,6 +1531,7 @@ public final class UiUtil {
   /**
    * Runs the given Runnable instance while displaying a simple indeterminate progress bar, along with a button based
    * on the <code>buttonAction</code> parameter, if specified
+   * Any exception thrown from the task is caught and displayed, rendering the execution unsuccessful.
    * @param dialogParent the dialog parent
    * @param progressBarTitle the progress bar title
    * @param successMessage if specified then this message is displayed after the task has successfully run
@@ -1589,7 +1592,7 @@ public final class UiUtil {
         try {
           task.run();
         }
-        catch (Exception ex) {
+        catch (final Exception ex) {
           exception = ex;
         }
         SwingUtilities.invokeLater(new Finisher(exception));
@@ -1661,7 +1664,7 @@ public final class UiUtil {
     try {
       return new File(text).getParentFile().getPath();
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       return null;
     }
   }

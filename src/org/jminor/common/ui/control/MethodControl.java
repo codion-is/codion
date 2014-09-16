@@ -51,7 +51,7 @@ public final class MethodControl extends Control {
     try {
       this.method = owner.getClass().getMethod(methodName);
     }
-    catch (NoSuchMethodException e) {
+    catch (final NoSuchMethodException e) {
       throw new IllegalArgumentException("Method " + methodName + " not found in class " + owner.getClass().getName(), e);
     }
   }
@@ -62,7 +62,7 @@ public final class MethodControl extends Control {
     try {
       method.invoke(owner);
     }
-    catch (InvocationTargetException ite) {
+    catch (final InvocationTargetException ite) {
       final Throwable targetException = ite.getTargetException();
       if (!(targetException instanceof CancelException)) {
         if (targetException instanceof RuntimeException) {
@@ -73,7 +73,7 @@ public final class MethodControl extends Control {
         }
       }
     }
-    catch (Exception ex) {
+    catch (final Exception ex) {
       throw new RuntimeException(ex);
     }
     finally {

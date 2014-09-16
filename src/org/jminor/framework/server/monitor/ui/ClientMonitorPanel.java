@@ -68,7 +68,7 @@ public final class ClientMonitorPanel extends JPanel {
             repaint();
           }
         }
-        catch (RemoteException ex) {
+        catch (final RemoteException ex) {
           throw new RuntimeException(ex);
         }
       }
@@ -100,7 +100,7 @@ public final class ClientMonitorPanel extends JPanel {
             clientMonitor.disconnect();
             model.getClientInstanceListModel().removeElement(clientMonitor);
           }
-          catch (RemoteException ex) {
+          catch (final RemoteException ex) {
             throw new RuntimeException(ex);
           }
         }

@@ -260,7 +260,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.validate(EmpDept.EMPLOYEE_COMMISSION);
       fail("Validation should fail on invalid commission value");
     }
-    catch (ValidationException e) {
+    catch (final ValidationException e) {
       assertEquals(EmpDept.EMPLOYEE_COMMISSION, e.getKey());
       assertEquals(50d, e.getValue());
       final Property property = Entities.getProperty(EmpDept.T_EMPLOYEE, (String) e.getKey());
@@ -332,7 +332,7 @@ public final class DefaultEntityEditModelTest {
         employeeEditModel.insert();
         fail("Should not be able to insert");
       }
-      catch (UnsupportedOperationException e) {}
+      catch (final UnsupportedOperationException ignored) {}
       employeeEditModel.setInsertAllowed(true);
       assertTrue(employeeEditModel.isInsertAllowed());
 
@@ -346,7 +346,7 @@ public final class DefaultEntityEditModelTest {
       try {
         employeeEditModel.insert();
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         fail("Should be able to insert again");
       }
     }
@@ -377,7 +377,7 @@ public final class DefaultEntityEditModelTest {
         employeeEditModel.update();
         fail("Should not be able to update");
       }
-      catch (UnsupportedOperationException e) {}
+      catch (final UnsupportedOperationException ignored) {}
       employeeEditModel.setUpdateAllowed(true);
       assertTrue(employeeEditModel.isUpdateAllowed());
 
@@ -409,7 +409,7 @@ public final class DefaultEntityEditModelTest {
         employeeEditModel.delete();
         fail("Should not be able to delete");
       }
-      catch (UnsupportedOperationException e) {}
+      catch (final UnsupportedOperationException ignored) {}
       employeeEditModel.setDeleteAllowed(true);
       assertTrue(employeeEditModel.isDeleteAllowed());
 
@@ -534,7 +534,7 @@ public final class DefaultEntityEditModelTest {
       model.validate();
       fail();
     }
-    catch (ValidationException e) {}
+    catch (final ValidationException ignored) {}
 
     assertFalse(model.isValid(EmpDept.DEPARTMENT_ID));
     assertFalse(model.isValid());

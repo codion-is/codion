@@ -71,19 +71,19 @@ public class UtilTest {
           mainConfigurationFile.delete();
         }
       }
-      catch (Exception ignored) {}
+      catch (final Exception ignored) {}
       try {
         if (secondConfigurationFile != null) {
           secondConfigurationFile.delete();
         }
       }
-      catch (Exception ignored) {}
+      catch (final Exception ignored) {}
       try {
         if (thirdConfigurationFile != null) {
           thirdConfigurationFile.delete();
         }
       }
-      catch (Exception ignored) {}
+      catch (final Exception ignored) {}
     }
   }
 
@@ -108,7 +108,7 @@ public class UtilTest {
     try {
       Util.rejectNullValue(null, "value");
     }
-    catch (IllegalArgumentException e) {}
+    catch (final IllegalArgumentException ignored) {}
   }
 
   @Test

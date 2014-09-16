@@ -50,7 +50,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
 
         ((ChinookAppPanel.ChinookApplicationModel) application).updateInvoiceTotals();
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         throw new ScenarioException(e);
       }
     }
@@ -72,7 +72,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
         selectRandomRows(trackModel.getTableModel(), 2);
         genreModel.getConnectionProvider().getConnection().selectDependentEntities(trackModel.getTableModel().getSelectionModel().getSelectedItems());
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         throw new ScenarioException(e);
       }
     }
@@ -99,7 +99,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
         EntityReportUtil.fillReport(new JasperReportsWrapper(reportPath, reportParameters),
                 customerModel.getConnectionProvider());
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         throw new ScenarioException(e);
       }
     }
@@ -120,7 +120,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
         final EntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
         selectRandomRow(invoiceModel.getTableModel());
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         throw new ScenarioException(e);
       }
     }
@@ -141,7 +141,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
         final EntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
         selectRandomRow(albumModel.getTableModel());
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         throw new ScenarioException(e);
       }
     }
@@ -209,7 +209,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
 
         new LoadTestPanel(new ChinookLoadTest()).showFrame();
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         e.printStackTrace();
       }
     }

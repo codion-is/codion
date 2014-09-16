@@ -66,7 +66,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
       return server.getServerName() + "@" + serverHostName;
     }
-    catch (RemoteException e) {
+    catch (final RemoteException e) {
       throw new RuntimeException(e);
     }
   }
@@ -86,7 +86,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       }
       setConnection(null);
     }
-    catch (RemoteException e) {
+    catch (final RemoteException e) {
       throw new RuntimeException(e);
     }
   }
@@ -107,7 +107,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
       return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(remote));
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -121,7 +121,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     try {
       return getConnectionInternal().isConnected();
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       LOG.debug("Remote connection invalid", e);
       return false;
     }
@@ -139,7 +139,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
         this.server.getServerPort();
       }//just to check the connection
     }
-    catch (RemoteException e) {
+    catch (final RemoteException e) {
       LOG.info("{} was unreachable, {} - {} reconnecting...", new Object[] {serverName, getUser(), clientID});
       unreachable = true;
     }
@@ -179,7 +179,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       try {
         return remoteMethod.invoke(remote, args);
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         throw Util.unwrapAndLog(e, InvocationTargetException.class, null);
       }
     }
@@ -188,7 +188,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
       try {
         return remote.isConnected();
       }
-      catch (NoSuchObjectException e) {
+      catch (final NoSuchObjectException e) {
         return false;
       }
     }

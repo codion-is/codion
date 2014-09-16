@@ -50,7 +50,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
     try {
       model.refresh();
     }
-    catch (Exception ignored) {}
+    catch (final Exception ignored) {}
 
     return applicationModel;
   }
@@ -100,7 +100,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
           }
         }
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         throw new ScenarioException(e);
       }
     }
@@ -122,7 +122,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         employeeModel.getEditModel().setEntity(EntityTestUnit.createRandomEntity(EmpDept.T_EMPLOYEE, references));
         employeeModel.getEditModel().insert();
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         throw new ScenarioException(e);
       }
     }
@@ -140,7 +140,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         departmentModel.getEditModel().setEntity(EntityTestUnit.createRandomEntity(EmpDept.T_DEPARTMENT, null));
         departmentModel.getEditModel().insert();
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         throw new ScenarioException(e);
       }
     }
@@ -160,7 +160,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         Thread.sleep(random.nextInt(1500));
         application.getConnectionProvider().getConnection();
       }
-      catch (InterruptedException ignored) {}
+      catch (final InterruptedException ignored) {}
     }
     @Override
     public int getDefaultWeight() {
@@ -179,7 +179,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         new LoadTestPanel(new EmpDeptLoadTest()).showFrame();
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         e.printStackTrace();
       }
     }

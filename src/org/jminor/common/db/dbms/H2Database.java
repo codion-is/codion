@@ -46,7 +46,7 @@ public final class H2Database extends AbstractDatabase {
         initializeMemoryDatabase(URL_PREFIX_MEM + System.getProperty(DATABASE_HOST) + ";user=" + SYSADMIN_USERNAME,
                 System.getProperty(DATABASE_INIT_SCRIPT));
       }
-      catch (SQLException e) {
+      catch (final SQLException e) {
         throw new RuntimeException("Exception while initializing H2 memory database", e);
       }
     }
@@ -153,16 +153,16 @@ public final class H2Database extends AbstractDatabase {
       final Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, String.class, boolean.class);
       execute.invoke(runScriptToolClass.newInstance(), getURL(null), SYSADMIN_USERNAME, "", scriptPath, null, false);
     }
-    catch (ClassNotFoundException cle) {
+    catch (final ClassNotFoundException cle) {
       throw new RuntimeException(RUN_TOOL_CLASS_NAME + " must be on classpath for creating an embedded H2 database", cle);
     }
-    catch (InvocationTargetException ite) {
+    catch (final InvocationTargetException ite) {
       if (ite.getCause() instanceof SQLException) {
         throw (SQLException) ite.getCause();
       }
       throw new RuntimeException(ite.getTargetException());
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }

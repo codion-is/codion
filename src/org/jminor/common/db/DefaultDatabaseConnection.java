@@ -152,7 +152,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
         connection.rollback();
       }
     }
-    catch (SQLException ex) {
+    catch (final SQLException ex) {
       LOG.warn("DefaultDatabaseConnection.disconnect(), connection invalid", ex);
     }
     DatabaseUtil.closeSilently(connection);
@@ -197,7 +197,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
 
       return resultPacker.pack(resultSet, fetchCount);
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       exception = e;
       throw e;
     }
@@ -237,7 +237,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
       logAccess("rollbackTransaction", new Object[0]);
       connection.rollback();
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       exception = e;
     }
     finally {
@@ -259,7 +259,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
       logAccess("commitTransaction", new Object[0]);
       connection.commit();
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       exception = e;
     }
     finally {
@@ -287,7 +287,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
     try {
       connection.commit();
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       LOG.error("Exception during commit: " + user.getUsername(), e);
       exception = e;
       throw e;
@@ -310,7 +310,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
     try {
       connection.rollback();
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       LOG.error("Exception during rollback: " + user.getUsername(), e);
       exception = e;
       throw e;
@@ -358,7 +358,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
       }
       connection.setAutoCommit(false);
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       throw new DatabaseException(e, "Unable to disable auto commit on the given connection");
     }
   }
@@ -375,7 +375,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
     try {
       return new User(connection.getMetaData().getUserName(), null);
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       throw new DatabaseException(e, "Exception while trying to retrieve username from meta data");
     }
   }

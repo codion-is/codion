@@ -209,7 +209,7 @@ final class DefaultEntityConnection implements EntityConnection {
 
         return insertedKeys;
       }
-      catch (SQLException e) {
+      catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(DatabaseUtil.createLogMessage(getUser(), insertSQL, statementValues, e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
@@ -238,7 +238,7 @@ final class DefaultEntityConnection implements EntityConnection {
           try {
             lockAndCheckForUpdate(hashedEntities);
           }
-          catch (RecordModifiedException e) {
+          catch (final RecordModifiedException e) {
             rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
             throw e;
           }
@@ -273,7 +273,7 @@ final class DefaultEntityConnection implements EntityConnection {
 
         return selectMany(EntityUtil.getPrimaryKeys(entities));
       }
-      catch (SQLException e) {
+      catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(DatabaseUtil.createLogMessage(getUser(), updateSQL, statementValues, e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
@@ -299,7 +299,7 @@ final class DefaultEntityConnection implements EntityConnection {
         executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueKeys());
         commitIfTransactionIsNotOpen();
       }
-      catch (SQLException e) {
+      catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(DatabaseUtil.createLogMessage(getUser(), deleteSQL, criteria.getValues(), e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
@@ -337,7 +337,7 @@ final class DefaultEntityConnection implements EntityConnection {
         }
         commitIfTransactionIsNotOpen();
       }
-      catch (SQLException e) {
+      catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(DatabaseUtil.createLogMessage(getUser(), deleteSQL, entityKeys, e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
@@ -408,7 +408,7 @@ final class DefaultEntityConnection implements EntityConnection {
 
         return result;
       }
-      catch (DatabaseException dbe) {
+      catch (final DatabaseException dbe) {
         rollbackQuietlyIfTransactionIsNotOpen();
         throw dbe;
       }
@@ -433,7 +433,7 @@ final class DefaultEntityConnection implements EntityConnection {
 
         return result;
       }
-      catch (SQLException e) {
+      catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, Arrays.asList(entityID, propertyID, order), e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
@@ -470,7 +470,7 @@ final class DefaultEntityConnection implements EntityConnection {
 
         return result.get(0);
       }
-      catch (SQLException e) {
+      catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
@@ -512,7 +512,7 @@ final class DefaultEntityConnection implements EntityConnection {
         return Databases.getFunction(functionID).execute(this, arguments);
       }
     }
-    catch (DatabaseException e) {
+    catch (final DatabaseException e) {
       exception = e;
       LOG.error(DatabaseUtil.createLogMessage(getUser(), functionID, arguments == null ? null : Arrays.asList(arguments), e, null));
       throw e;
@@ -535,7 +535,7 @@ final class DefaultEntityConnection implements EntityConnection {
         Databases.getProcedure(procedureID).execute(this, arguments);
       }
     }
-    catch (DatabaseException e) {
+    catch (final DatabaseException e) {
       exception = e;
       LOG.error(DatabaseUtil.createLogMessage(getUser(), procedureID, arguments == null ? null : Arrays.asList(arguments), e, null));
       throw e;
@@ -562,7 +562,7 @@ final class DefaultEntityConnection implements EntityConnection {
 
         return result;
       }
-      catch (ReportException e) {
+      catch (final ReportException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(DatabaseUtil.createLogMessage(getUser(), null, Arrays.asList(reportWrapper.getReportName()), e, null));
@@ -609,7 +609,7 @@ final class DefaultEntityConnection implements EntityConnection {
         statement.executeUpdate();
         commitIfTransactionIsNotOpen();
       }
-      catch (SQLException e) {
+      catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(DatabaseUtil.createLogMessage(getUser(), sql, values, exception, null));
@@ -655,7 +655,7 @@ final class DefaultEntityConnection implements EntityConnection {
 
         return byteResult;
       }
-      catch (SQLException e) {
+      catch (final SQLException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
         LOG.error(DatabaseUtil.createLogMessage(getUser(), sql, criteria.getValues(), exception, null));
@@ -778,7 +778,7 @@ final class DefaultEntityConnection implements EntityConnection {
         logAccess("packResult", new Object[0]);
         result = getEntityResultPacker(criteria.getEntityID()).pack(resultSet, criteria.getFetchCount());
       }
-      catch (SQLException e) {
+      catch (final SQLException e) {
         packingException = e;
         throw e;
       }
@@ -790,7 +790,7 @@ final class DefaultEntityConnection implements EntityConnection {
 
       return result;
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
       throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e), selectSQL);
     }
@@ -815,7 +815,7 @@ final class DefaultEntityConnection implements EntityConnection {
       statement = connection.getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
       throw e;
     }
@@ -887,7 +887,7 @@ final class DefaultEntityConnection implements EntityConnection {
       setParameterValues(statement, values, properties);
       statement.executeUpdate();
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       exception = e;
       throw e;
     }
@@ -908,7 +908,7 @@ final class DefaultEntityConnection implements EntityConnection {
       setParameterValues(statement, values, properties);
       return statement.executeQuery();
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       exception = e;
       throw e;
     }
@@ -924,7 +924,7 @@ final class DefaultEntityConnection implements EntityConnection {
     try {
       connection.commit();
     }
-    catch (SQLException ignored) {
+    catch (final SQLException ignored) {
       LOG.error("Exception while performing a quiet commit", ignored);
     }
   }
@@ -933,7 +933,7 @@ final class DefaultEntityConnection implements EntityConnection {
     try {
       connection.rollback();
     }
-    catch (SQLException ignored) {
+    catch (final SQLException ignored) {
       LOG.error("Exception while performing a quiet rollback", ignored);
     }
   }
@@ -991,7 +991,7 @@ final class DefaultEntityConnection implements EntityConnection {
         statement.setObject(parameterIndex, columnValue, property.getColumnType());
       }
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       LOG.error("Unable to set parameter: " + property + ", value: " + value + ", value class: " + (value == null ? "null" : value.getClass()), e);
       throw e;
     }
@@ -1314,7 +1314,7 @@ final class DefaultEntityConnection implements EntityConnection {
         try {
           entity.setValue(property, property.fetchValue(resultSet), false);
         }
-        catch (Exception e) {
+        catch (final Exception e) {
           throw new SQLException("Exception fetching: " + property + ", entity: " + entityID + " [" + e.getMessage() + "]", e);
         }
       }

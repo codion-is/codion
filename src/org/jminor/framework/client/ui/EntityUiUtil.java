@@ -144,7 +144,7 @@ public final class EntityUiUtil {
             }
           }
         }
-        catch (IOException ex) {
+        catch (final IOException ex) {
           throw new RuntimeException(ex);
         }
       }
@@ -972,7 +972,7 @@ public final class EntityUiUtil {
           lookupField.getModel().setSelectedEntities(selectEntities(tableModel, lookupField,
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null));
         }
-        catch (CancelException ignored) {}
+        catch (final CancelException ignored) {}
       }
     });
     btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
@@ -1192,7 +1192,7 @@ public final class EntityUiUtil {
         }
       }
     }
-    catch (DatabaseException e) {
+    catch (final DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -1262,7 +1262,7 @@ public final class EntityUiUtil {
       validator.validate(entity, property.getPropertyID());
       return true;
     }
-    catch (ValidationException e) {
+    catch (final ValidationException e) {
       return false;
     }
   }

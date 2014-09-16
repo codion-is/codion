@@ -312,10 +312,10 @@ public class EntityPanelProvider implements Comparable {
 
       return createPanel(entityModel);
     }
-    catch (RuntimeException e) {
+    catch (final RuntimeException e) {
       throw e;
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -350,10 +350,10 @@ public class EntityPanelProvider implements Comparable {
 
       return entityPanel;
     }
-    catch (RuntimeException e) {
+    catch (final RuntimeException e) {
       throw e;
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -415,10 +415,10 @@ public class EntityPanelProvider implements Comparable {
 
       return entityPanel;
     }
-    catch (RuntimeException e) {
+    catch (final RuntimeException e) {
       throw e;
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -436,10 +436,10 @@ public class EntityPanelProvider implements Comparable {
 
       return editPanel;
     }
-    catch (RuntimeException e) {
+    catch (final RuntimeException e) {
       throw e;
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -454,10 +454,10 @@ public class EntityPanelProvider implements Comparable {
 
       return tablePanel;
     }
-    catch (RuntimeException e) {
+    catch (final RuntimeException e) {
       throw e;
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }

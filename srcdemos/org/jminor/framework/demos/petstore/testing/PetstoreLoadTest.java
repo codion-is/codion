@@ -6,7 +6,6 @@ package org.jminor.framework.demos.petstore.testing;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.tools.LoadTestModel;
-import org.jminor.common.model.tools.ScenarioException;
 import org.jminor.common.ui.tools.LoadTestPanel;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -25,7 +24,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel {
   public PetstoreLoadTest() {
     super(User.UNIT_TEST_USER, Arrays.asList(new LoadTestModel.AbstractUsageScenario<EntityApplicationModel>("selectRecords") {
       @Override
-      protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
+      protected void performScenario(final EntityApplicationModel application) {
         final EntityModel categoryModel = application.getEntityModels().iterator().next();
         categoryModel.getTableModel().getSelectionModel().clearSelection();
         categoryModel.refresh();
@@ -66,7 +65,7 @@ public final class PetstoreLoadTest extends EntityLoadTestModel {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         new LoadTestPanel(new PetstoreLoadTest()).showFrame();
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         e.printStackTrace();
       }
     }

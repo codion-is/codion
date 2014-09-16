@@ -28,7 +28,7 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
 
   /** {@inheritDoc} */
   @Override
-  public final boolean next() throws JRException {
+  public final boolean next() {
     final boolean hasNext = reportIterator.hasNext();
     if (hasNext) {
       currentEntity = reportIterator.next();
@@ -56,7 +56,7 @@ public class JasperReportsEntityDataSource implements JRDataSource, ReportDataWr
     try {
       return currentEntity.getValue(jrField.getName());
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new JRException("Unable to get field value: " + jrField.getName(), e);
     }
   }

@@ -83,7 +83,7 @@ public final class DerbyDatabase extends AbstractDatabase {
       DriverManager.getConnection(URL_PREFIX + getHost() + ";shutdown=true"
                + (authentication == null ? "" : ";" + authentication)).close();
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       if (!e.getSQLState().equals("08006")) {//08006 is expected on Derby shutdown
         LOG.error("Embedded Derby database was did not successfully shut down!", e);
       }

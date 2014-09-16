@@ -149,7 +149,7 @@ public final class ExceptionDialog extends JDialog {
         });
       }
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -190,7 +190,7 @@ public final class ExceptionDialog extends JDialog {
     try {
       detailsArea.print();
     }
-    catch (PrinterException e) {
+    catch (final PrinterException e) {
       throw new RuntimeException(e);
     }
   }
@@ -203,7 +203,7 @@ public final class ExceptionDialog extends JDialog {
     try {
       Util.writeFile(detailsArea.getText(), UiUtil.chooseFileToSave(detailsArea, null, null));
     }
-    catch (CancelException ignored) {}
+    catch (final CancelException ignored) {}
   }
 
   /**
@@ -228,7 +228,7 @@ public final class ExceptionDialog extends JDialog {
               URLEncoder.encode(detailsArea.getText(), "UTF-8").replace("+", "%20"));
       Desktop.getDesktop().browse(new URI(uriStr));
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }

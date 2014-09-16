@@ -118,7 +118,7 @@ public final class Util {
     try {
       return InetAddress.getByName(host).isReachable(timeout);
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       return false;
     }
   }
@@ -457,7 +457,7 @@ public final class Util {
         manager.checkPropertiesAccess();
       }
     }
-    catch (SecurityException e) {
+    catch (final SecurityException e) {
       return "";
     }
     final Properties props = System.getProperties();
@@ -544,8 +544,8 @@ public final class Util {
         objects.add(inputStream.readObject());
       }
     }
-    catch (EOFException ignored) {}
-    catch (Exception e) {
+    catch (final EOFException ignored) {}
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
 
@@ -562,7 +562,7 @@ public final class Util {
         outputStream.writeObject(object);
       }
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       throw new RuntimeException(e);
     }
   }
@@ -596,7 +596,7 @@ public final class Util {
     try {
       return getTextFileContents(Util.class, VERSION_FILE);
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       return "N/A";
     }
   }
@@ -823,7 +823,7 @@ public final class Util {
           closeable.close();
         }
       }
-      catch (Exception ignored) {}
+      catch (final Exception ignored) {}
     }
   }
 
@@ -874,7 +874,7 @@ public final class Util {
       Class.forName(className);
       return true;
     }
-    catch (ClassNotFoundException e) {
+    catch (final ClassNotFoundException e) {
       return false;
     }
   }
@@ -994,7 +994,7 @@ public final class Util {
           }
         }
       }
-      catch (IOException e) {
+      catch (final IOException e) {
         throw new RuntimeException(e);
       }
       finally {
@@ -1105,12 +1105,12 @@ public final class Util {
       try {
         return ownerClass.getMethod("is" + propertyName);
       }
-      catch (NoSuchMethodException ignored) {}
+      catch (final NoSuchMethodException ignored) {}
       try {
         return ownerClass.getMethod(propertyName.substring(0, 1).toLowerCase()
                 + propertyName.substring(1, propertyName.length()));
       }
-      catch (NoSuchMethodException ignored) {}
+      catch (final NoSuchMethodException ignored) {}
     }
 
     return ownerClass.getMethod("get" + propertyName);
@@ -1150,7 +1150,7 @@ public final class Util {
 
       System.setProperty(JAVAX_NET_NET_TRUSTSTORE, file.getPath());
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       throw new RuntimeException(e);
     }
     finally {

@@ -70,8 +70,8 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
                 }
               });
             }
-            catch (DatabaseException e) {
-              throw (SQLException) e.getCause();
+            catch (final DatabaseException e) {
+              throw e.getCause();
             }
           }
 
@@ -91,7 +91,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
 
         return pool.getConnection();
       }
-      catch (SQLException e) {
+      catch (final SQLException e) {
         getCounter().incrementFailedRequestCounter();
         throw new DatabaseException(e, e.getMessage());
       }
@@ -105,7 +105,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
       try {
         connection.close();
       }
-      catch (SQLException ignored) {}
+      catch (final SQLException ignored) {}
     }
 
     @Override

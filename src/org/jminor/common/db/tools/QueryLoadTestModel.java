@@ -146,12 +146,12 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
           connection.commit();
         }
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         if (transactional && connection != null) {
           try {
             connection.rollback();
           }
-          catch (SQLException ignored) {}
+          catch (final SQLException ignored) {}
         }
         throw new ScenarioException(e);
       }

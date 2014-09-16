@@ -37,7 +37,7 @@ public final class ServerUtil {
       localRegistry.list();
       LOG.info("Registry listing available on port: {}", port);
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       LOG.info("Trying to locate registry: {}", e.getMessage());
       LOG.info("Creating registry on port: {}", port);
       LocateRegistry.createRegistry(port);
@@ -93,7 +93,7 @@ public final class ServerUtil {
               servers.add(server);
             }
           }
-          catch (Exception e) {
+          catch (final Exception e) {
             LOG.info("Server \"" + name + "\" is unreachable", e);
           }
         }
@@ -125,7 +125,7 @@ public final class ServerUtil {
       try {
         return Integer.valueOf(o1.getServerLoad()).compareTo(o2.getServerLoad());
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         return 1;
       }
     }

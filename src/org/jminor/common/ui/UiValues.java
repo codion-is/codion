@@ -142,7 +142,7 @@ public final class UiValues {
             }
           });
         }
-        catch (Exception e) {
+        catch (final Exception e) {
           throw new RuntimeException(e);
         }
       }
@@ -200,7 +200,7 @@ public final class UiValues {
           }
         }
       }
-      catch (BadLocationException e) {
+      catch (final BadLocationException e) {
         throw new RuntimeException(e);
       }
     }
@@ -234,7 +234,7 @@ public final class UiValues {
       try {
         return (V) format.parseObject(text);
       }
-      catch (ParseException e) {
+      catch (final ParseException e) {
         return null;
       }
     }
@@ -254,11 +254,11 @@ public final class UiValues {
         try {
           return (String) formatter.stringToValue(text);
         }
-        catch (ParseException e) {
+        catch (final ParseException e) {
           return null;
         }
       }
-      catch (BadLocationException e) {
+      catch (final BadLocationException e) {
         throw new RuntimeException(e);
       }
     }
@@ -364,7 +364,7 @@ public final class UiValues {
       }
     }
 
-    protected ButtonModel getButtonModel() {
+    private ButtonModel getButtonModel() {
       return buttonModel;
     }
   }

@@ -422,7 +422,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       validator.validate(entity, propertyID);
       return true;
     }
-    catch (ValidationException e) {
+    catch (final ValidationException e) {
       return false;
     }
   }
@@ -571,7 +571,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
         setEntity(getConnectionProvider().getConnection().selectSingle(getEntity().getPrimaryKey()));
       }
     }
-    catch (DatabaseException e) {
+    catch (final DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -1094,7 +1094,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       try {
         return connectionProvider.getConnection().selectPropertyValues(entityID, propertyID, true);
       }
-      catch (DatabaseException e) {
+      catch (final DatabaseException e) {
         throw new RuntimeException(e);
       }
     }

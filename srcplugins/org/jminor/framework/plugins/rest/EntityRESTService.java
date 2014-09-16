@@ -65,7 +65,7 @@ public final class EntityRESTService extends Application {
     try {
       return Response.ok(EntityJSONParser.serializeEntities(connection.selectMany(EntityJSONParser.deserializeKeys(primaryKeys)), false)).build();
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -83,7 +83,7 @@ public final class EntityRESTService extends Application {
       return Response.ok(EntityJSONParser.serializeEntities(connection.selectMany(
               EntityCriteriaUtil.selectCriteria(entityID, createPropertyCriteria(entityID, searchType, values))), false)).build();
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -97,7 +97,7 @@ public final class EntityRESTService extends Application {
     try {
       return Response.ok((EntityJSONParser.serializeKeys(connection.insert(EntityJSONParser.deserializeEntities(entities))))).build();
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -131,14 +131,14 @@ public final class EntityRESTService extends Application {
         }
         connection.commitTransaction();
       }
-      catch (DatabaseException dbe) {
+      catch (final DatabaseException dbe) {
         connection.rollbackTransaction();
         return Response.serverError().entity(dbe.getMessage()).build();
       }
 
       return Response.ok(EntityJSONParser.serializeEntities(savedEntities, false)).build();
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -154,7 +154,7 @@ public final class EntityRESTService extends Application {
 
       return Response.ok().build();
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -171,7 +171,7 @@ public final class EntityRESTService extends Application {
 
       return Response.ok().build();
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
     }
   }
@@ -203,13 +203,13 @@ public final class EntityRESTService extends Application {
     try {
       return server.connect(new User(credentials[0], credentials[1]), clientId, EntityRESTService.class.getName());
     }
-    catch (ServerException.LoginException e) {
+    catch (final ServerException.LoginException e) {
       if (e.getCause() instanceof DatabaseException) {
         throw new WebApplicationException(e, Response.Status.UNAUTHORIZED);
       }
       throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
     }
   }

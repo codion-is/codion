@@ -57,7 +57,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
       try {
         maintainConnections();
       }
-      catch (RemoteException e) {
+      catch (final RemoteException e) {
         throw new RuntimeException(e);
       }
     }
@@ -108,7 +108,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
       setConnectionLimit(connectionLimit);
       webServer = startWebServer(webDocumentRoot, webServerPort);
     }
-    catch (Error e) {
+    catch (final Error e) {
       throw logShutdownAndReturn(e, this);
     }
   }
@@ -353,7 +353,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
     try {
       stopWebServer();
     }
-    catch (Exception ignored) {}
+    catch (final Exception ignored) {}
     if (database.isEmbedded()) {
       database.shutdownEmbedded(null);
     }//todo does not work when shutdown requires user authentication, jminor.db.shutdownUser hmmm
@@ -386,7 +386,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
           try {
             disconnect(connection.getClientInfo().getClientID());
           }
-          catch (RemoteException ex) {
+          catch (final RemoteException ex) {
             LOG.error(ex.getMessage(), ex);
           }
         }
@@ -395,10 +395,10 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
 
       return connection;
     }
-    catch (RemoteException e) {
+    catch (final RemoteException e) {
       throw e;
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       LOG.debug(clientInfo + " unable to connect", e);
       throw ServerException.loginException(e.getMessage());
     }
@@ -414,7 +414,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
           final LoginProxy proxy = (LoginProxy) loginProxyClass.getConstructor().newInstance();
           setLoginProxy(proxy.getClientTypeID(), proxy);
         }
-        catch (Exception ex) {
+        catch (final Exception ex) {
           LOG.error("Exception while instantiating LoginProxy: " + loginProxyClassName, ex);
           throw new RuntimeException(ex);
         }
@@ -438,7 +438,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
           try {
             auxiliaryServer.start();
           }
-          catch (Exception e) {
+          catch (final Exception e) {
             LOG.error("Trying to start web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
           }
         }
@@ -446,7 +446,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
 
       return auxiliaryServer;
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -498,7 +498,7 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
     try {
       server.shutdown();
     }
-    catch (RemoteException ignored) {}
+    catch (final RemoteException ignored) {}
 
     return exception;
   }

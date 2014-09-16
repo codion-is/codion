@@ -47,7 +47,7 @@ public class ServerUtilTest {
       final RemoteServer remoteServer = ServerUtil.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, -1);
       assertNotNull(remoteServer);
     }
-    catch (NotBoundException e) {
+    catch (final NotBoundException e) {
       fail("Remote server not bound");
     }
   }

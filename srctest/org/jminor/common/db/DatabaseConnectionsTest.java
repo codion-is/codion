@@ -34,7 +34,7 @@ public class DatabaseConnectionsTest {
         try {
           connection.close();
         }
-        catch (Exception ignored) {}
+        catch (final Exception ignored) {}
       }
     }
   }
@@ -52,7 +52,7 @@ public class DatabaseConnectionsTest {
         try {
           connection.close();
         }
-        catch (Exception ignored) {}
+        catch (final Exception ignored) {}
       }
     }
   }

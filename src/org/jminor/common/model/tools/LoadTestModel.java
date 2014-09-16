@@ -422,7 +422,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
       try {
         Thread.sleep(maximumThinkTime);
       }
-      catch (InterruptedException ignored) {}
+      catch (final InterruptedException ignored) {}
     }
     exitingDoneEvent.fire();
   }
@@ -671,7 +671,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
                 try {
                   scenarioName = loadTestModel.performWork(application);
                 }
-                catch (ScenarioException ignored) {}
+                catch (final ScenarioException ignored) {}
               }
               finally {
                 final long workTimeMillis = (System.nanoTime() - currentTimeNano) / NANO_IN_MILLI;
@@ -684,7 +684,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
               }
             }
           }
-          catch (Exception e) {
+          catch (final Exception e) {
             final String message = "Exception during " + (application == null ? "application initialization" : ("run " + application));
             LOG.debug(message, e);
           }
@@ -694,7 +694,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
           LOG.debug("LoadTestModel disconnected application: {}", application);
         }
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         LOG.error("Exception while initializing application", e);
       }
     }
@@ -713,7 +713,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
                 (loadTestModel.getLoginDelayFactor() <= 0 ? 1 : loadTestModel.getLoginDelayFactor()));
         Thread.sleep(sleepyTime);// delay login a bit so all do not try to login at the same time
       }
-      catch (InterruptedException e) {
+      catch (final InterruptedException e) {
         LOG.error("Delay login sleep interrupted", e);
       }
     }
@@ -810,7 +810,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
         performScenario(application);
         successfulRunCount++;
       }
-      catch (ScenarioException e) {
+      catch (final ScenarioException e) {
         unsuccessfulRunCount++;
         synchronized (exceptions) {
           exceptions.add(e);

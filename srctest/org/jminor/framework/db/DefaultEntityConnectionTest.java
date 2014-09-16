@@ -98,7 +98,7 @@ public class DefaultEntityConnectionTest {
         connection.selectSingle(key);
         fail();
       }
-      catch (DatabaseException e) {}
+      catch (final DatabaseException ignored) {}
     }
     finally {
       connection.rollbackTransaction();
@@ -112,7 +112,7 @@ public class DefaultEntityConnectionTest {
         connection.selectSingle(key);
         fail();
       }
-      catch (DatabaseException e) {}
+      catch (final DatabaseException ignored) {}
     }
     finally {
       connection.rollbackTransaction();
@@ -332,7 +332,7 @@ public class DefaultEntityConnectionTest {
         connection2.update(Arrays.asList(sales));
         fail("Should not be able to update record selected for update by another connection");
       }
-      catch (DatabaseException ignored) {}
+      catch (final DatabaseException ignored) {}
 
       connection.selectAll(EmpDept.T_DEPARTMENT);//any query will do
 
@@ -341,7 +341,7 @@ public class DefaultEntityConnectionTest {
         sales.setValue(EmpDept.DEPARTMENT_LOCATION, originalLocation);
         connection2.update(Arrays.asList(sales));//revert changes to data
       }
-      catch (DatabaseException ignored) {
+      catch (final DatabaseException ignored) {
         fail("Should be able to update record after other connection released the select for update lock");
       }
     }
@@ -369,7 +369,7 @@ public class DefaultEntityConnectionTest {
         connection.update(Arrays.asList(allen));
         fail("Should not be able to update record deleted by another connection");
       }
-      catch (RecordModifiedException e) {
+      catch (final RecordModifiedException e) {
         assertNotNull(e.getRow());
         assertNull(e.getModifiedRow());
       }
@@ -377,7 +377,7 @@ public class DefaultEntityConnectionTest {
       try {
         connection2.insert(Arrays.asList(allen));//revert changes to data
       }
-      catch (DatabaseException ignored) {
+      catch (final DatabaseException ignored) {
         fail("Should be able to update record after other connection released the select for update lock");
       }
     }
@@ -403,7 +403,7 @@ public class DefaultEntityConnectionTest {
         optimisticConnection.update(Arrays.asList(department));
         fail("RecordModifiedException should have been thrown");
       }
-      catch (RecordModifiedException e) {
+      catch (final RecordModifiedException e) {
         assertTrue(((Entity) e.getModifiedRow()).propertyValuesEqual(updatedDepartment));
         assertTrue(((Entity) e.getRow()).propertyValuesEqual(department));
       }
@@ -415,7 +415,7 @@ public class DefaultEntityConnectionTest {
           baseConnection.update(Arrays.asList(updatedDepartment));
         }
       }
-      catch (DatabaseException e) {
+      catch (final DatabaseException e) {
         e.printStackTrace();
       }
       baseConnection.disconnect();
@@ -438,7 +438,7 @@ public class DefaultEntityConnectionTest {
         try {
           connection.close();
         }
-        catch (Exception e) {}
+        catch (final Exception ignored) {}
       }
     }
   }
@@ -457,7 +457,7 @@ public class DefaultEntityConnectionTest {
         try {
           connection.close();
         }
-        catch (Exception e) {}
+        catch (final Exception ignored) {}
       }
     }
   }

@@ -62,7 +62,7 @@ public final class HostMonitorPanel extends JPanel {
         try {
           refreshServerTabs();
         }
-        catch (RemoteException ex) {
+        catch (final RemoteException ex) {
           throw new RuntimeException(ex);
         }
       }
@@ -73,7 +73,7 @@ public final class HostMonitorPanel extends JPanel {
         try {
           refreshServerTabs();
         }
-        catch (RemoteException ex) {
+        catch (final RemoteException ex) {
           throw new RuntimeException(ex);
         }
       }

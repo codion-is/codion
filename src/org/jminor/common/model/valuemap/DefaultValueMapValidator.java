@@ -31,7 +31,7 @@ public class DefaultValueMapValidator<K, V extends ValueMap<K, ?>> implements Va
       validate(valueMap);
       return true;
     }
-    catch (ValidationException e) {
+    catch (final ValidationException e) {
       return false;
     }
   }

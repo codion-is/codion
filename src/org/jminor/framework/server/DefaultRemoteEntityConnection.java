@@ -169,7 +169,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     try {
       clientInfo.setClientHost(getClientHost());
     }
-    catch (ServerNotActiveException ignored) {}
+    catch (final ServerNotActiveException ignored) {}
     try {
       if (connectionPool == null) {
         localEntityConnection = EntityConnections.createConnection(database, clientInfo.getDatabaseUser());
@@ -180,7 +180,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
         returnConnectionToPool();
       }
     }
-    catch (DatabaseException e) {
+    catch (final DatabaseException e) {
       disconnect();
       throw e;
     }
@@ -217,7 +217,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
       try {
         UnicastRemoteObject.unexportObject(this, true);
       }
-      catch (NoSuchObjectException e) {
+      catch (final NoSuchObjectException e) {
         LOG.error(e.getMessage(), e);
       }
       cleanupLocalConnections();
@@ -548,7 +548,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
       return getLocalEntityConnection();
     }
-    catch (DatabaseException ex) {
+    catch (final DatabaseException ex) {
       exception = ex;
       throw ex;
     }
@@ -573,7 +573,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
       poolEntityConnection.setMethodLogger(null);
       returnConnectionToPool();
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       LOG.info("Exception while returning connection to pool", e);
     }
     finally {
@@ -633,7 +633,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
         return method.invoke(connection, args);
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         exception = Util.unwrapAndLog(e, InvocationTargetException.class, LOG,
                 Arrays.<Class<? extends Exception>>asList(ConnectionPoolException.NoConnectionAvailable.class));
         throw exception;

@@ -31,10 +31,10 @@ public final class Databases {
       final String databaseClassName = System.getProperty(Database.DATABASE_IMPLEMENTATION_CLASS, getDatabaseClassName());
       return (Database) Class.forName(databaseClassName).newInstance();
     }
-    catch (IllegalArgumentException e) {
+    catch (final IllegalArgumentException e) {
       throw e;
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }

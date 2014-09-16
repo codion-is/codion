@@ -30,7 +30,7 @@ public final class EntityReportUtil {
     try {
       return connectionProvider.getConnection().fillReport(reportWrapper);
     }
-    catch (DatabaseException e) {
+    catch (final DatabaseException e) {
       throw new RuntimeException(e);
     }
   }

@@ -132,7 +132,7 @@ public final class ClientUserMonitorPanel extends JPanel {
         try {
           model.setMaintenanceInterval((Integer) cmbMaintenance.getSelectedItem());
         }
-        catch (RemoteException ex) {
+        catch (final RemoteException ex) {
           handleException(ex);
         }
       }

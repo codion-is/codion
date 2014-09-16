@@ -43,7 +43,7 @@ public final class EntityReportUiUtil {
       UiUtil.setWaitCursor(true, component);
       viewReport(EntityReportUtil.fillReport(reportWrapper, connectionProvider), uiWrapper, reportTitle);
     }
-    catch (ReportException e) {
+    catch (final ReportException e) {
       throw new RuntimeException(e);
     }
     finally {
@@ -66,7 +66,7 @@ public final class EntityReportUiUtil {
       UiUtil.setWaitCursor(true, component);
       viewReport(EntityReportUtil.fillReport(reportWrapper, dataSource), uiWrapper, reportTitle);
     }
-    catch (ReportException e) {
+    catch (final ReportException e) {
       throw new RuntimeException(e);
     }
     finally {

@@ -58,7 +58,7 @@ public final class DateUtil {
         format.parse(dateString);
         return true;
       }
-      catch (ParseException ignored) {}
+      catch (final ParseException ignored) {}
     }
 
     return false;

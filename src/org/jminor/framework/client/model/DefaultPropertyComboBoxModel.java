@@ -38,7 +38,7 @@ public class DefaultPropertyComboBoxModel<T> extends DefaultFilteredComboBoxMode
         try {
           return (Collection<T>) connectionProvider.getConnection().selectPropertyValues(entityID, property.getPropertyID(), true);
         }
-        catch (DatabaseException e) {
+        catch (final DatabaseException e) {
           throw new RuntimeException(e);
         }
       }

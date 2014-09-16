@@ -166,7 +166,7 @@ public final class MaximumMatch extends PlainDocument {
       super.remove(0, getLength());
       super.insertString(0, text, null);
     }
-    catch (BadLocationException e) {
+    catch (final BadLocationException e) {
       throw new RuntimeException(e);
     }
   }

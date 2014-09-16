@@ -141,7 +141,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
         response = client.execute(new HttpPut(builder.build()));
         getContentStream(response.getEntity());
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         e.printStackTrace();
         throw new ScenarioException(e);
       }
@@ -167,7 +167,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
         final String queryResult = getContentStream(response.getEntity());
         final List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         e.printStackTrace();
         throw new ScenarioException(e);
       }
@@ -204,7 +204,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
         queryResult = getContentStream(response.getEntity());
         queryEntities = EntityJSONParser.deserializeEntities(queryResult);
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         e.printStackTrace();
         throw new ScenarioException(e);
       }
@@ -230,7 +230,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
         builder.addParameter("entities", EntityJSONParser.serializeEntities(Arrays.asList(propaganda), false));
         final HttpResponse response = client.execute(new HttpPost(builder.build()));
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         e.printStackTrace();
         throw new ScenarioException(e);
       }
@@ -256,7 +256,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
         final List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
         final Entity department = queryEntities.get(0);
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         e.printStackTrace();
         throw new ScenarioException(e);
       }

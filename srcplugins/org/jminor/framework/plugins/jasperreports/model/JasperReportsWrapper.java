@@ -60,7 +60,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
       final JasperReport report = loadJasperReport(reportPath);
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, connection));
     }
-    catch (JRException e) {
+    catch (final JRException e) {
       throw new ReportException(e);
     }
   }
@@ -73,7 +73,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
       final JasperReport report = loadJasperReport(reportPath);
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, dataWrapper.getDataSource()));
     }
-    catch (JRException e) {
+    catch (final JRException e) {
       throw new ReportException(e);
     }
   }
@@ -109,7 +109,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
       try {
         report = (JasperReport) JRLoader.loadObject(new URL(reportPath));
       }
-      catch (MalformedURLException e) {
+      catch (final MalformedURLException e) {
         throw new JRException("Unable to load report by URL: " + reportPath, e);
       }
     }

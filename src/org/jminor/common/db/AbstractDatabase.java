@@ -156,7 +156,7 @@ public abstract class AbstractDatabase implements Database {
     try {
       return DriverManager.getConnection(getURL(connectionProperties), addConnectionProperties(connectionProperties));
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       throw new DatabaseException(e, getErrorMessage(e));
     }
   }
@@ -245,7 +245,7 @@ public abstract class AbstractDatabase implements Database {
     try {
       Class.forName(driverClassName);
     }
-    catch (ClassNotFoundException e) {
+    catch (final ClassNotFoundException e) {
       LOG.warn(driverClassName + " not found on classpath", e);
     }
   }

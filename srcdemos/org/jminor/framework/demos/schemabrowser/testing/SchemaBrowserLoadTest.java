@@ -5,7 +5,6 @@ package org.jminor.framework.demos.schemabrowser.testing;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.model.tools.ScenarioException;
 import org.jminor.common.ui.tools.LoadTestPanel;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -23,7 +22,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
 
   private static final UsageScenario<EntityApplicationModel> SCENARIO = new AbstractEntityUsageScenario() {
     @Override
-    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
+    protected void performScenario(final EntityApplicationModel application) {
       final EntityModel schemaModel = application.getEntityModels().iterator().next();
       schemaModel.getTableModel().refresh();
       selectRandomRow(schemaModel.getTableModel());
@@ -70,7 +69,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
         UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
         new LoadTestPanel(new SchemaBrowserLoadTest()).showFrame();
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         e.printStackTrace();
       }
     }

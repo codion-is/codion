@@ -295,7 +295,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
       return result;
     }
-    catch (DatabaseException e) {
+    catch (final DatabaseException e) {
       throw new RuntimeException(e);
     }
   }

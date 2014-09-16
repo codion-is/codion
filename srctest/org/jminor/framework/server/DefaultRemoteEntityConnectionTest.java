@@ -67,7 +67,7 @@ public class DefaultRemoteEntityConnectionTest {
           connection.disconnect();
         }
       }
-      catch (Exception e) {}
+      catch (final Exception ignored) {}
     }
   }
 
@@ -85,7 +85,7 @@ public class DefaultRemoteEntityConnectionTest {
           connection.disconnect();
         }
       }
-      catch (Exception e) {}
+      catch (final Exception ignored) {}
     }
   }
 
@@ -114,7 +114,7 @@ public class DefaultRemoteEntityConnectionTest {
           try {
             return remoteMethod.invoke(finalAdapter, args);
           }
-          catch (InvocationTargetException ie) {
+          catch (final InvocationTargetException ie) {
             throw (Exception) ie.getTargetException();
           }
         }
@@ -126,14 +126,14 @@ public class DefaultRemoteEntityConnectionTest {
       if (registry != null) {
         try {
           registry.unbind(serviceName);
-        } catch (Exception e) {}
+        } catch (final Exception ignored) {}
       }
       try {
         if (adapter != null) {
           adapter.disconnect();
         }
       }
-      catch (Exception e) {}
+      catch (final Exception ignored) {}
     }
   }
 }

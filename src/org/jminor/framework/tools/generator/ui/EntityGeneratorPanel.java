@@ -109,8 +109,8 @@ public class EntityGeneratorPanel extends JPanel {
         UiUtil.centerWindow(frame);
         frame.setVisible(true);
       }
-      catch (CancelException ignored) {}
-      catch (Exception e) {
+      catch (final CancelException ignored) {}
+      catch (final Exception e) {
         throw new RuntimeException(e);
       }
     }

@@ -135,7 +135,7 @@ public final class EntityServerMonitorPanel extends JPanel {
       jdkDir = UiUtil.selectDirectory(dialogParent, jdkDir, "Set JDK home").getAbsolutePath();
       Util.putUserPreference(JDK_PREFERENCE_KEY, jdkDir);
     }
-    catch (CancelException ignored) {}
+    catch (final CancelException ignored) {}
   }
 
   private void initializeUI() throws RemoteException {
@@ -219,7 +219,7 @@ public final class EntityServerMonitorPanel extends JPanel {
           UIManager.setLookAndFeel(UIManager.getSystemLookAndFeelClassName());
           new EntityServerMonitorPanel().showFrame();
         }
-        catch (Exception e) {
+        catch (final Exception e) {
           LOG.error(e.getMessage(), e);
           System.exit(1);
         }

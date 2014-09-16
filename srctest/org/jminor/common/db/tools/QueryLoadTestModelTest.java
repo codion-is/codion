@@ -26,7 +26,7 @@ public final class QueryLoadTestModelTest {
   private static final QueryLoadTestModel.QueryScenario SELECT_PRODUCTS =
           new QueryLoadTestModel.QueryScenario("selectProducts", "select * from petstore.product");
   @Test
-  public void test() throws ClassNotFoundException, DatabaseException {
+  public void test() throws DatabaseException {
     final QueryLoadTestModel loadTest = new QueryLoadTestModel(Databases.createInstance(), User.UNIT_TEST_USER,
             Arrays.asList(SELECT_ALBUMS, SELECT_CUSTOMERS, SELECT_DEPARTMENTS,
                     SELECT_EMPLOYEE, SELECT_PRODUCTS));
@@ -38,12 +38,12 @@ public final class QueryLoadTestModelTest {
     try {
       Thread.sleep(1500);
     }
-    catch (InterruptedException ignored) {}
+    catch (final InterruptedException ignored) {}
     loadTest.removeApplicationBatch();
     try {
       Thread.sleep(500);
     }
-    catch (InterruptedException ignored) {}
+    catch (final InterruptedException ignored) {}
     assertTrue(SELECT_ALBUMS.getSuccessfulRunCount() > 0);
     assertTrue(SELECT_CUSTOMERS.getSuccessfulRunCount() > 0);
     assertTrue(SELECT_DEPARTMENTS.getSuccessfulRunCount() > 0);

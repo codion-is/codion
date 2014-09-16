@@ -285,7 +285,7 @@ public abstract class EntityTestUnit {
     try {
       return connection.selectSingle(keys.get(0));
     }
-    catch (RecordNotFoundException e) {
+    catch (final RecordNotFoundException e) {
       fail("Inserted entity of type " + testEntity.getEntityID() + " not returned by select after insert");
       throw e;
     }
@@ -349,7 +349,7 @@ public abstract class EntityTestUnit {
     try {
       connection.selectSingle(testEntity.getPrimaryKey());
     }
-    catch (DatabaseException e) {
+    catch (final DatabaseException e) {
       caught = true;
     }
     assertTrue("Entity of type " + testEntity.getEntityID() + " failed delete test", caught);

@@ -104,7 +104,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
       LOG.debug("Initializing connection for {}", getUser());
       return Util.initializeProxy(EntityConnection.class, new LocalConnectionHandler(EntityConnections.createConnection(database, getUser())));
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }
@@ -141,7 +141,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
         return method.invoke(connection, args);
       }
-      catch (Exception e) {
+      catch (final Exception e) {
         exception = Util.unwrapAndLog(e, InvocationTargetException.class, LOG);
         throw exception;
       }

@@ -57,7 +57,7 @@ public final class DatabaseUtil {
           resultSet.close();
         }
       }
-      catch (SQLException ignored) {}
+      catch (final SQLException ignored) {}
     }
   }
 
@@ -75,7 +75,7 @@ public final class DatabaseUtil {
           statement.close();
         }
       }
-      catch (SQLException ignored) {}
+      catch (final SQLException ignored) {}
     }
   }
 
@@ -93,7 +93,7 @@ public final class DatabaseUtil {
           connection.close();
         }
       }
-      catch (SQLException ignored) {}
+      catch (final SQLException ignored) {}
     }
   }
 
@@ -158,7 +158,7 @@ public final class DatabaseUtil {
 
       return validateWithQuery(connection, database, timeoutInSeconds);
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       return false;
     }
   }
@@ -185,7 +185,7 @@ public final class DatabaseUtil {
         try {
           statement.setQueryTimeout(timeoutInSeconds);
         }
-        catch (SQLException ignored) {/*Not all databases have implemented this feature*/}
+        catch (final SQLException ignored) {/*Not all databases have implemented this feature*/}
       }
       rs = statement.executeQuery(database.getCheckConnectionQuery());
 

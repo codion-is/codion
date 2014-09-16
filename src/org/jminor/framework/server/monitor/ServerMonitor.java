@@ -52,7 +52,7 @@ public final class ServerMonitor {
           updateStatistics();
         }
       }
-      catch (RemoteException ignored) {}
+      catch (final RemoteException ignored) {}
     }
   }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
 
@@ -192,7 +192,7 @@ public final class ServerMonitor {
     try {
       server.shutdown();
     }
-    catch (RemoteException ignored) {}
+    catch (final RemoteException ignored) {}
     serverShutDownEvent.fire();
   }
 
@@ -234,11 +234,11 @@ public final class ServerMonitor {
       LOG.info("ServerMonitor connected to server: {}", serverName);
       return serverAdmin;
     }
-    catch (RemoteException e) {
+    catch (final RemoteException e) {
       LOG.error("Server \"" + serverName + "\" is unreachable, host: " + hostName + ", registry port: " + registryPort, e);
       throw e;
     }
-    catch (NotBoundException e) {
+    catch (final NotBoundException e) {
       LOG.error(e.getMessage(), e);
       throw new RemoteException("Server " + serverName + " is not bound to registry on host: " + hostName + ", port: " + registryPort, e);
     }

@@ -654,7 +654,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
                 FrameworkMessages.get(FrameworkMessages.NO_DEPENDENT_RECORDS), JOptionPane.INFORMATION_MESSAGE);
       }
     }
-    catch (DatabaseException e) {
+    catch (final DatabaseException e) {
       handleException(e);
     }
     finally {

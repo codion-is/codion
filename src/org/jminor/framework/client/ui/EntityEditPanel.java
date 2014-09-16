@@ -634,7 +634,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
         return true;
       }
     }
-    catch (DatabaseException ex) {
+    catch (final DatabaseException ex) {
       handleException(ex);
     }
 

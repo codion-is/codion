@@ -324,10 +324,10 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     try {
       return startApplicationInternal(frameCaption, iconName, maximize, frameSize, defaultUser, showFrame, silentLoginUser);
     }
-    catch (CancelException e) {
+    catch (final CancelException e) {
       System.exit(0);
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       handleException(e, UiUtil.getParentWindow(this));
       System.exit(1);
     }
@@ -398,23 +398,23 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     try {
       onExitEvent.fire();
     }
-    catch (CancelException e) {
+    catch (final CancelException e) {
       throw e;
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       LOG.debug("Exception while exiting", e);
     }
     try {
       savePreferences();
       Util.flushUserPreferences();
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       LOG.debug("Exception while saving preferences", e);
     }
     try {
       applicationModel.getConnectionProvider().disconnect();
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       LOG.debug("Exception while disconnecting from database", e);
     }
     final Window parent = getParentWindow();
@@ -619,7 +619,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
 
       return panel;
     }
-    catch (IOException e) {
+    catch (final IOException e) {
       throw new RuntimeException(e);
     }
   }
@@ -965,7 +965,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
         try {
           exit();
         }
-        catch(CancelException ignored) {}
+        catch(final CancelException ignored) {}
       }
     });
     frame.getContentPane().setLayout(new BorderLayout());
@@ -1129,7 +1129,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
                 + ": " + (System.currentTimeMillis() - initializationStarted) + " ms");
         return frame;
       }
-      catch (Throwable exception) {
+      catch (final Throwable exception) {
         handleStartupException(startupDialog, connectionProvider, exception);
       }
     }
@@ -1141,7 +1141,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
         connectionProvider.disconnect();
       }
     }
-    catch (Exception ex) {
+    catch (final Exception ex) {
       LOG.debug("Exception while disconnecting after a failed startup", ex);
     }
     handleException(e, null);

@@ -179,7 +179,7 @@ public class Chinook {
         }
         entityConnection.commitTransaction();
       }
-      catch (DatabaseException dbException) {
+      catch (final DatabaseException dbException) {
         if (entityConnection.isTransactionOpen()) {
           entityConnection.rollbackTransaction();
         }

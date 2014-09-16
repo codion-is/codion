@@ -357,7 +357,7 @@ public final class EntityUtil {
 
       return (Serializer<Entity>) Class.forName(serializerClass).getConstructor().newInstance();
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }

@@ -185,11 +185,11 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     try {
       ServerUtil.getRegistry(server.getRegistryPort()).unbind(server.getServerName());
     }
-    catch (NotBoundException ignored) {}
+    catch (final NotBoundException ignored) {}
     try {
       ServerUtil.getRegistry(server.getRegistryPort()).unbind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName());
     }
-    catch (NotBoundException ignored) {}
+    catch (final NotBoundException ignored) {}
 
     final String shutdownInfo = server.getServerName() + " removed from registry";
     LOG.info(shutdownInfo);
@@ -200,7 +200,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     try {
       UnicastRemoteObject.unexportObject(this, true);
     }
-    catch (NoSuchObjectException ignored) {}
+    catch (final NoSuchObjectException ignored) {}
   }
 
   /** {@inheritDoc} */
@@ -493,7 +493,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
         try {
           shutdown();
         }
-        catch (RemoteException e) {
+        catch (final RemoteException e) {
           LOG.error("Exception during shutdown", e);
         }
       }
@@ -537,7 +537,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
       adminInstance = new EntityConnectionServerAdminImpl(server, serverAdminPort);
       adminInstance.bindToRegistry();
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       LOG.error("Exception on binding servers to registry", e);
       shutdownServer();
     }
@@ -560,10 +560,10 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
       System.out.println(shutDownInfo);
       serverAdmin.shutdown();
     }
-    catch (RemoteException e) {
+    catch (final RemoteException e) {
       System.out.println("No rmi registry running on port: " + registryPort);
     }
-    catch (NotBoundException e) {
+    catch (final NotBoundException e) {
       System.out.println(serverName + " not bound to registry on port: " + registryPort);
     }
     adminInstance = null;

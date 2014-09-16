@@ -87,7 +87,7 @@ public final class EntityGeneratorModel {
       this.tableModel.refresh();
       bindEvents();
     }
-    catch (SQLException e) {
+    catch (final SQLException e) {
       throw new DatabaseException(e, database.getErrorMessage(e));
     }
   }
@@ -113,7 +113,7 @@ public final class EntityGeneratorModel {
     try {
       return document.getText(0, document.getLength());
     }
-    catch (BadLocationException e) {
+    catch (final BadLocationException e) {
       throw new RuntimeException(e);
     }
   }
@@ -197,7 +197,7 @@ public final class EntityGeneratorModel {
         document.insertString(document.getLength(), entityString, null);
       }
     }
-    catch (BadLocationException e) {
+    catch (final BadLocationException e) {
       throw new RuntimeException(e);
     }
   }
@@ -420,7 +420,7 @@ public final class EntityGeneratorModel {
         items.addAll(tables);
         addItems(new ArrayList<>(items), true);
       }
-      catch (SQLException e) {
+      catch (final SQLException e) {
         LOG.error(e.getMessage(), e);
         throw new RuntimeException(e);
       }
@@ -523,7 +523,7 @@ public final class EntityGeneratorModel {
     private final boolean hasDefaultValue;
     private final String comment;
     private final int keySeq;
-    private ForeignKeyColumn foreignKeyColumn;
+    private final ForeignKeyColumn foreignKeyColumn;
 
     public Column(final String columnName, final int columnType, final String columnTypeName, final int columnSize,
                   final int decimalDigits, final int nullable, final boolean hasDefaultValue, final String comment,

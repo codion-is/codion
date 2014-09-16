@@ -67,17 +67,17 @@ public final class EntityConnectionProviders {
                 User.class).newInstance(user);
       }
     }
-    catch (InvocationTargetException ite) {
+    catch (final InvocationTargetException ite) {
       if (ite.getTargetException() instanceof RuntimeException) {
         throw (RuntimeException) ite.getTargetException();
       }
 
       throw new RuntimeException("Exception while initializing connection provider", ite);
     }
-    catch (RuntimeException re) {
+    catch (final RuntimeException re) {
       throw re;
     }
-    catch (Exception e) {
+    catch (final Exception e) {
       throw new RuntimeException("Exception while initializing connection provider", e);
     }
   }

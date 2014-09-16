@@ -35,7 +35,7 @@ public class DefaultDatabaseConnectionTest {
         dbConnection.disconnect();
       }
     }
-    catch (Exception ignored) {}
+    catch (final Exception ignored) {}
   }
 
   @Test

@@ -141,7 +141,7 @@ public class EntitiesTest {
       validator.validate(invoiceLine);
       fail();
     }
-    catch (ValidationException e) {
+    catch (final ValidationException e) {
       assertTrue(e instanceof NullValidationException);
       assertEquals(Chinook.INVOICELINE_INVOICEID_FK, e.getKey());
     }
@@ -149,7 +149,7 @@ public class EntitiesTest {
     try {
       validator.validate(invoiceLine);
     }
-    catch (ValidationException e) {
+    catch (final ValidationException e) {
       fail();
     }
     invoiceLine.setValue(Chinook.INVOICELINE_UNITPRICE, null);
@@ -157,7 +157,7 @@ public class EntitiesTest {
       validator.validate(invoiceLine);
       fail();
     }
-    catch (ValidationException e) {
+    catch (final ValidationException e) {
       assertTrue(e instanceof NullValidationException);
       assertEquals(Chinook.INVOICELINE_UNITPRICE, e.getKey());
     }

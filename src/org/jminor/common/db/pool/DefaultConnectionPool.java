@@ -308,7 +308,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
 
       return connection;
     }
-    catch (DatabaseException dbe) {
+    catch (final DatabaseException dbe) {
       LOG.error("Database error while creating a new connection", dbe);
       throw dbe;
     }
@@ -339,7 +339,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
     try {
       Thread.sleep(random.nextInt(maximumRetryWaitPeriod));
     }
-    catch (InterruptedException ignored) {}
+    catch (final InterruptedException ignored) {}
   }
 
   private boolean isNewConnectionWarranted(final long elapsedTime) {
