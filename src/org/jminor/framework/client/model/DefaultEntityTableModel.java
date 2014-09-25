@@ -35,6 +35,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -565,6 +566,36 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
         LOG.error("Error while saving preferences", e);
       }
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final String getTableDataAsDelimitedString(final char delimiter) {
+    final List<String> headerValues = new ArrayList<>();
+    final List<Property> properties = new ArrayList<>();
+    final Enumeration<TableColumn> columnEnumeration = getColumnModel().getColumns();
+    while (columnEnumeration.hasMoreElements()) {
+      final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
+      properties.add(property);
+      headerValues.add(property.getCaption());
+    }
+
+    final String[][] header = {headerValues.toArray(new String[headerValues.size()])};
+
+    final List<Entity> entities = getSelectionModel().isSelectionEmpty()
+            ? getVisibleItems() : getSelectionModel().getSelectedItems();
+
+    final String[][] data = new String[entities.size()][];
+    for (int i = 0; i < data.length; i++) {
+      final List<String> line = new ArrayList<>();
+      for (final Property property : properties) {
+        line.add(entities.get(i).getValueAsString(property));
+      }
+
+      data[i] = line.toArray(new String[line.size()]);
+    }
+
+    return Util.getDelimitedString(header, data, String.valueOf(delimiter));
   }
 
   /** {@inheritDoc} */

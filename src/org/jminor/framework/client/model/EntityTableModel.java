@@ -306,4 +306,10 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @param propertyIDs the column identifiers
    */
   void setColumns(final String... propertyIDs);
+
+  /**
+   * @param delimiter the delimiter
+   * @return the table data as a tab delimited string, with column names as a header
+   */
+  String getTableDataAsDelimitedString(final char delimiter);
 }

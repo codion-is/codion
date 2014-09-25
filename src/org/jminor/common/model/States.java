@@ -44,9 +44,11 @@ public final class States {
   }
 
   /**
-   * Instantiates a new State.Group object, which guarantees a single active state within the group
+   * Instantiates a new State.Group object, which guarantees that only a single
+   * state within the group is active at a time
    * @param states the states to add to the group initially, not required
    * @return a new State.Group
+   * @see State.Group
    */
   public static State.Group group(final State... states) {
     return new DefaultGroup(states);
@@ -78,7 +80,7 @@ public final class States {
     }
 
     @Override
-    public boolean isActive() {
+    public synchronized boolean isActive() {
       return active;
     }
 

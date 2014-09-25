@@ -85,6 +85,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(connectionProvider, "connectionProvider");
     Util.rejectNullValue(lookupProperties, "lookupProperties");
+    //todo check if properties are from the correct entity
     this.connectionProvider = connectionProvider;
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;

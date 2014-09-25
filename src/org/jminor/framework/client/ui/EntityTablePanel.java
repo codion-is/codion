@@ -1318,30 +1318,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   private void copyTableAsDelimitedString() {
-    final List<String> headerValues = new ArrayList<>();
-    final List<Property> properties = new ArrayList<>();
-    final Enumeration<TableColumn> columnEnumeration = getEntityTableModel().getColumnModel().getColumns();
-    while (columnEnumeration.hasMoreElements()) {
-      final Property property = (Property) columnEnumeration.nextElement().getIdentifier();
-      properties.add(property);
-      headerValues.add(property.getCaption());
-    }
-
-    final String[][] header = {headerValues.toArray(new String[headerValues.size()])};
-
-    final List<Entity> entities = getEntityTableModel().getSelectionModel().isSelectionEmpty()
-            ? getEntityTableModel().getVisibleItems() : getEntityTableModel().getSelectionModel().getSelectedItems();
-
-    final String[][] data = new String[entities.size()][];
-    for (int i = 0; i < data.length; i++) {
-      final List<String> line = new ArrayList<>();
-      for (final Property property : properties) {
-        line.add(entities.get(i).getValueAsString(property));
-      }
-
-      data[i] = line.toArray(new String[line.size()]);
-    }
-    UiUtil.setClipboard(Util.getDelimitedString(header, data, "\t"));
+    UiUtil.setClipboard(getEntityTableModel().getTableDataAsDelimitedString('\t'));
   }
 
   private void initializeUI() {
