@@ -1084,8 +1084,9 @@ final class DefaultEntityConnection implements EntityConnection {
    * @return a query for inserting this entity instance
    */
   private static String createInsertSQL(final String entityID, final Collection<Property.ColumnProperty> insertProperties) {
-    final StringBuilder sql = new StringBuilder("insert into ");
-    sql.append(Entities.getTableName(entityID)).append("(");
+    final String tableName = Entities.getTableName(entityID);
+    final StringBuilder sql = new StringBuilder("insert ").append(getInsertHint(tableName))
+            .append("into ").append(tableName).append("(");
     final StringBuilder columnValues = new StringBuilder(") values(");
     int columnIndex = 0;
     for (final Property.ColumnProperty property : insertProperties) {
@@ -1194,6 +1195,16 @@ final class DefaultEntityConnection implements EntityConnection {
     }
 
     return dependencies;
+  }
+
+  private static String getInsertHint(final String tableName) {
+    final String insertHint = Databases.getInsertHint(tableName);
+    if (Util.nullOrEmpty(insertHint)) {
+      return "";
+    }
+    else {
+      return insertHint + " ";
+    }
   }
 
   private static final class Dependency {

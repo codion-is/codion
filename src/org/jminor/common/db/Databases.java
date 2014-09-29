@@ -3,6 +3,8 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.model.Util;
+
 import java.io.Serializable;
 import java.util.Collections;
 import java.util.HashMap;
@@ -16,6 +18,7 @@ import java.util.Map;
 public final class Databases {
 
   private static final Map<String, DatabaseConnection.Operation> OPERATIONS = Collections.synchronizedMap(new HashMap<String, DatabaseConnection.Operation>());
+  private static final Map<String, String> INSERT_HINTS = Collections.synchronizedMap(new HashMap<String, String>());
 
   private Databases() {}
 
@@ -112,6 +115,30 @@ public final class Databases {
     }
 
     return (DatabaseConnection.Function) operation;
+  }
+
+  /**
+   * Sets a hint to insert between the 'insert' and 'into' keywords for a given table.
+   * @param tableName the table for which to use the hint
+   * @param insertHint the hint
+   * @throws IllegalStateException in case a insert hint has already been set for the given table
+   */
+  public static void setInsertHint(final String tableName, final String insertHint) {
+    Util.rejectNullValue(insertHint, "insertHint");
+    final String currentInsertHint = INSERT_HINTS.get(tableName);
+    if (currentInsertHint != null) {
+      throw new IllegalStateException("Insert hint already set for table '" + tableName + "': " + currentInsertHint);
+    }
+    INSERT_HINTS.put(tableName, insertHint);
+  }
+
+  /**
+   * Returns the insert hint associated with the given table, null if none has been specified.
+   * @param tableName the table
+   * @return the insert hint
+   */
+  public static String getInsertHint(final String tableName) {
+    return INSERT_HINTS.get(tableName);
   }
 
   /**
