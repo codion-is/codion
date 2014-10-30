@@ -274,18 +274,18 @@ public final class EntityGeneratorModel {
     final String caption = getCaption(column);
     if (column.getKeySeq() != -1) {
       if (column.getColumnTypeName().equals("Types.INTEGER")) {
-        builder.append("        Properties.primaryKeyProperty(").append(propertyID).append(")");
+        builder.append("        Properties.columnProperty(").append(propertyID).append(")");
       }
       else {
-        builder.append("        Properties.primaryKeyProperty(").append(propertyID).append(", ")
+        builder.append("        Properties.columnProperty(").append(propertyID).append(", ")
                 .append(column.getColumnTypeName()).append(")");
       }
-      if (column.getKeySeq() > 1) {
+      if (column.getKeySeq() > 0) {
         builder.append(Util.LINE_SEPARATOR);
         if (foreignKeyColumn) {
           builder.append("        ");
         }
-        builder.append("                .setIndex(").append(column.getKeySeq() - 1).append(")");
+        builder.append("                .setPrimaryKeyIndex(").append(column.getKeySeq() - 1).append(")");
       }
     }
     else {

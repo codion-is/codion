@@ -38,7 +38,8 @@ public class EntityGeneratorModelTest {
     addressBuilder.append(Util.LINE_SEPARATOR);
     addressBuilder.append("static {").append(Util.LINE_SEPARATOR);
     addressBuilder.append("  Entities.define(T_ADDRESS,").append(Util.LINE_SEPARATOR);
-    addressBuilder.append("          Properties.primaryKeyProperty(ADDRESS_ADDRESSID),").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("          Properties.columnProperty(ADDRESS_ADDRESSID)").append(Util.LINE_SEPARATOR);
+    addressBuilder.append("                .setPrimaryKeyIndex(0),").append(Util.LINE_SEPARATOR);
     addressBuilder.append("          Properties.columnProperty(ADDRESS_STREET1, Types.VARCHAR, \"Street1\")").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setNullable(false)").append(Util.LINE_SEPARATOR);
     addressBuilder.append("                .setMaxLength(55),").append(Util.LINE_SEPARATOR);
@@ -73,11 +74,12 @@ public class EntityGeneratorModelTest {
     tagItemBuilder.append("static {").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("  Entities.define(T_TAG_ITEM,").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("          Properties.foreignKeyProperty(TAG_ITEM_TAGID_FK, \"Tagid\", T_TAG,").append(Util.LINE_SEPARATOR);
-    tagItemBuilder.append("                Properties.primaryKeyProperty(TAG_ITEM_TAGID))").append(Util.LINE_SEPARATOR);
+    tagItemBuilder.append("                Properties.columnProperty(TAG_ITEM_TAGID)").append(Util.LINE_SEPARATOR);
+    tagItemBuilder.append("                        .setPrimaryKeyIndex(0))").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("                .setNullable(false),").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("          Properties.foreignKeyProperty(TAG_ITEM_ITEMID_FK, \"Itemid\", T_ITEM,").append(Util.LINE_SEPARATOR);
-    tagItemBuilder.append("                Properties.primaryKeyProperty(TAG_ITEM_ITEMID)").append(Util.LINE_SEPARATOR);
-    tagItemBuilder.append("                        .setIndex(1))").append(Util.LINE_SEPARATOR);
+    tagItemBuilder.append("                Properties.columnProperty(TAG_ITEM_ITEMID)").append(Util.LINE_SEPARATOR);
+    tagItemBuilder.append("                        .setPrimaryKeyIndex(1))").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("                .setNullable(false)").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("  );").append(Util.LINE_SEPARATOR);
     tagItemBuilder.append("}");
@@ -95,7 +97,8 @@ public class EntityGeneratorModelTest {
     productBuilder.append(Util.LINE_SEPARATOR);
     productBuilder.append("static {").append(Util.LINE_SEPARATOR);
     productBuilder.append("  Entities.define(T_PRODUCT,").append(Util.LINE_SEPARATOR);
-    productBuilder.append("          Properties.primaryKeyProperty(PRODUCT_PRODUCTID),").append(Util.LINE_SEPARATOR);
+    productBuilder.append("          Properties.columnProperty(PRODUCT_PRODUCTID)").append(Util.LINE_SEPARATOR);
+    productBuilder.append("                .setPrimaryKeyIndex(0),").append(Util.LINE_SEPARATOR);
     productBuilder.append("          Properties.foreignKeyProperty(PRODUCT_CATEGORYID_FK, \"Categoryid\", T_CATEGORY,").append(Util.LINE_SEPARATOR);
     productBuilder.append("                Properties.columnProperty(PRODUCT_CATEGORYID))").append(Util.LINE_SEPARATOR);
     productBuilder.append("                .setNullable(false),").append(Util.LINE_SEPARATOR);
