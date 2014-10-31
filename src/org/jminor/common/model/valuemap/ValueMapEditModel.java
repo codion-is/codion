@@ -18,8 +18,10 @@ import java.util.Collection;
 public interface ValueMapEditModel<K, V> {
 
   /**
-   * @return a StateObserver indicating if any values in the underlying value map have been modified
+   * Returns a StateObserver responsible for indicating when and if any values in the underlying value map are modified.
+   * @return a StateObserver indicating the modified state of this edit model
    * @see #isModified()
+   * @see ValueMap#getModifiedObserver()
    */
   StateObserver getModifiedObserver();
 

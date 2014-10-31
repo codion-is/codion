@@ -300,7 +300,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final StateObserver getModifiedState() {
+  public final StateObserver getModifiedObserver() {
     final State state = States.state(isModified());
     getValueChangeObserver().addInfoListener(new EventInfoListener<ValueChange<K, ?>>() {
       @Override

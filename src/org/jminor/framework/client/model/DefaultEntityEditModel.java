@@ -280,8 +280,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final StateObserver getModifiedObserver() {
-    return entity.getModifiedState();
+  public StateObserver getModifiedObserver() {
+    return entity.getModifiedObserver();
   }
 
   /** {@inheritDoc} */

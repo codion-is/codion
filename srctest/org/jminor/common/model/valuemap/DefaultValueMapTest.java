@@ -64,7 +64,7 @@ public class DefaultValueMapTest {
     };
     valueMap.addValueListener(valueListener);
 
-    valueMap.getModifiedState();
+    valueMap.getModifiedObserver();
     valueMap.getValueChangeObserver();
 
     assertFalse(valueMap.containsValue(key));

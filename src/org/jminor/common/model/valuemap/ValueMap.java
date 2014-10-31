@@ -153,7 +153,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
   /**
    * @return a StateObserver indicating if one or more values in this value map have been modified.
    */
-  StateObserver getModifiedState();
+  StateObserver getModifiedObserver();
 
   /**
    * Returns an EventObserver notified each time a value changes, with a {@link ValueChange} argument.
