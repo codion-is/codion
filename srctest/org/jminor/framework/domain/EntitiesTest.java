@@ -49,8 +49,18 @@ public class EntitiesTest {
     assertEquals(7, key.hashCode());
 
     key.setValue(propertyID3, null);
+    assertFalse(key.isNull());
+    assertEquals(4, key.hashCode());
+    key.setValue(propertyID2, null);
+    assertFalse(key.isNull());
+    assertEquals(1, key.hashCode());
+    key.setValue(propertyID1, null);
     assertTrue(key.isNull());
     assertEquals(0, key.hashCode());
+
+    key.setValue(propertyID2, 42);
+    assertFalse(key.isNull());
+    assertEquals(42, key.hashCode());
   }
 
   @Test(expected = IllegalArgumentException.class)

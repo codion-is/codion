@@ -3804,3 +3804,5 @@
   EntityGeneratorModel no longer uses Properties.primaryKeyProperty() but rather Properties.columnProperty() along with a call to setPrimaryKeyIndex()
   DefaultEntityEditModel.getModifiedObserver() no longer final
   Entity.getModifiedState() renamed to getModifiedObserver() for consistency
+0.9.1
+  Entity.isNull() only returns null if all primary key values are null, so primary keys can now contain null values

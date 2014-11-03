@@ -94,8 +94,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Holds the EntityLookupModels used by this {@link EntityEditModel}
    */
-  private final Map<Property.ForeignKeyProperty, EntityLookupModel> entityLookupModels =
-          new HashMap<>();
+  private final Map<Property.ForeignKeyProperty, EntityLookupModel> entityLookupModels = new HashMap<>();
 
   /**
    * Contains true if values should persist for the given property when the model is cleared
@@ -129,8 +128,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   private final Entity.Validator validator;
 
   /**
-   * A state indicating whether or not the entity being edited is in a valid state
-   * according the the validator
+   * A state indicating whether or not the entity being edited is in a valid state according the the validator
    */
   private final State validState = States.state();
 
@@ -404,7 +402,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     final Object oldValue = entity.getValue(propertyID);
     entity.setValue(propertyID, prepareNewValue(propertyID, value));
     if (!Util.equal(value, oldValue)) {
-      notifyValueSet(propertyID, ValueChanges.valueChange(this, propertyID, value, oldValue, initialization));
+      notifyValueChange(propertyID, ValueChanges.valueChange(this, propertyID, value, oldValue, initialization));
     }
   }
 
@@ -909,8 +907,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Provides a hook into the value setting mechanism, override to
-   * translate or otherwise manipulate the value being set
+   * Provides a hook into the value setting mechanism, override to translate or otherwise manipulate the value being set
    * @param propertyID the propertyID
    * @param value the value
    * @return the prepared value
@@ -969,7 +966,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
    * @param propertyID the propertyID
    * @param event the event describing the value change
    */
-  private void notifyValueSet(final String propertyID, final ValueChange<String, ?> event) {
+  private void notifyValueChange(final String propertyID, final ValueChange<String, ?> event) {
     getValueSetEvent(propertyID).fire(event);
   }
 

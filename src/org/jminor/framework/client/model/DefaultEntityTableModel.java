@@ -774,11 +774,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
   }
 
-  private void handleDeleteInternal(final EntityEditModel.DeleteEvent e) {
+  private void handleDeleteInternal(final EntityEditModel.DeleteEvent deleteEvent) {
     if (removeEntitiesOnDelete) {
-      removeItems(e.getDeletedEntities());
+      removeItems(deleteEvent.getDeletedEntities());
     }
-    handleDelete(e);
+    handleDelete(deleteEvent);
   }
 
   private void handleColumnHidden(final Property property) {

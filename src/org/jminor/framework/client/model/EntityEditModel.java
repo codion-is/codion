@@ -57,8 +57,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   Entity getEntityCopy(final boolean includePrimaryKeyValues);
 
   /**
-   * @return true if the active entity is new, that is, has a primary key with null value
-   * or a original null value
+   * @return true if the active entity is new, that is, has a current or original primary key containing only null values
    * @see #getPrimaryKeyNullObserver
    * @see org.jminor.framework.domain.Entity#isPrimaryKeyNull()
    */

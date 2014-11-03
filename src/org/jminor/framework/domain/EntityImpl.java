@@ -736,7 +736,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
    */
   private static Object validateType(final Property property, final Object value) {
     if (value == null) {
-      return value;
+      return null;
     }
 
     final Class<?> type = property.getTypeClass();
@@ -932,21 +932,17 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     @Override
     public boolean isNull() {
       updateHashCode();
-      if (singleIntegerKey) {
-        return cachedHashCode == null;
-      }
-
       if (cachedHashCode == null) {
         return true;
       }
 
       for (final Object value : getValues()) {
-        if (value == null) {
-          return true;
+        if (value != null) {
+          return false;
         }
       }
 
-      return false;
+      return true;
     }
 
     @Override
@@ -991,10 +987,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
           for (final Object value : values) {
             if (value != null) {
               hash = hash + value.hashCode();
-            }
-            else {
-              nullValue = true;
-              break;
+              nullValue = false;
             }
           }
         }
