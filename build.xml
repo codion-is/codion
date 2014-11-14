@@ -379,42 +379,56 @@
   <target name="deploy_demos" depends="dist, recreate_h2_db, compile_demo_reports"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <tstamp />
-    <mkdir dir="${dist}/current" />
-    <mkdir dir="${build.demos}/META-INF"/>
-    <manifest file="${build.demos}/META-INF/MANIFEST.MF">
-      <attribute name="Built-By" value="${user.name}"/>
-      <attribute name="Application-Name" value="${ant.project.name}"/>
-      <attribute name="Specification-Title" value="${ant.project.name}"/>
-      <attribute name="Specification-Name" value="${ant.project.name}"/>
-      <attribute name="Specification-Vendor" value="${deploy.demos.codebase}"/>
-      <attribute name="Permissions" value="all-permissions"/>
-      <attribute name="Codebase" value="${deploy.demos.codebase}"/>
-    </manifest>
-    <mkdir dir="${deploy.demos.dir}/empdept"/>
-    <mkdir dir="${deploy.demos.dir}/chinook"/>
+    <!--Setup-->
+    <mkdir dir="${dist}/current"/>
+    <mkdir dir="${deploy.demos.dir}/META-INF"/>
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
       <zipgroupfileset dir="${dist}" includes="jminor-common.jar, jminor-client.jar, jminor-plugins.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
       <fileset file="${deploy.demos.truststore}"/>
     </jar>
-    <jar jarfile="${deploy.demos.dir}/empdept/empdept.jar" duplicate="preserve" filesetmanifest="mergewithoutmain">
-      <zipfileset dir="${build.demos}"/>
+    <!--EmpDept WebStart-->
+    <mkdir dir="${deploy.demos.dir}/empdept"/>
+    <create_manifest destination="${deploy.demos.dir}" application-name="EmpDept JMinor Demo"
+                     main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>
+    <jar jarfile="${deploy.demos.dir}/empdept/empdept.jar" duplicate="preserve" filesetmanifest="mergewithoutmain"
+         manifest="${deploy.demos.dir}/META-INF/MANIFEST.MF">
+      <zipfileset dir="${build.demos}" includes="org/jminor/framework/demos/empdept/**/*"/>
       <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
       <zipfileset dir="${basedir}/resources/demos/empdept" includes="empdept.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
     </jar>
-    <jar jarfile="${deploy.demos.dir}/chinook/chinook.jar" duplicate="preserve" filesetmanifest="mergewithoutmain">
-      <zipfileset dir="${build.demos}"/>
+    <signjar jar="${deploy.demos.dir}/empdept/empdept.jar" alias="${jar.sign.alias}"
+             storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
+    <copy file="${basedir}/resources/demos/empdept/empdept.jnlp" todir="${deploy.demos.dir}/empdept"/>
+    <!--EmpDept without WebStart-->
+    <zip destfile="${deploy.demos.dir}/empdept/empdept.zip">
+      <zipfileset file="${deploy.demos.dir}/empdept/empdept.jar"/>
+      <zipfileset dir="${db.h2.dir}" prefix="h2db"/>
+      <zipfileset file="${basedir}/resources/demos/config/h2db.config"/>
+      <zipfileset file="${basedir}/resources/demos/config/remote.config"/>
+    </zip>
+    <!--Chinook WebStart-->
+    <mkdir dir="${deploy.demos.dir}/chinook"/>
+    <create_manifest destination="${deploy.demos.dir}" application-name="Chinook JMinor Demo"
+                     main-class="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"/>
+    <jar jarfile="${deploy.demos.dir}/chinook/chinook.jar" duplicate="preserve" filesetmanifest="mergewithoutmain"
+         manifest="${deploy.demos.dir}/META-INF/MANIFEST.MF">
+      <zipfileset dir="${build.demos}" includes="org/jminor/framework/demos/chinook/**/*"/>
       <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
       <zipfileset dir="${basedir}/resources/demos/chinook" includes="chinook.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
     </jar>
-    <signjar jar="${deploy.demos.dir}/empdept/empdept.jar" alias="${jar.sign.alias}"
-             storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
     <signjar jar="${deploy.demos.dir}/chinook/chinook.jar" alias="${jar.sign.alias}"
              storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
-    <copy file="${basedir}/resources/demos/empdept/empdept.jnlp" todir="${deploy.demos.dir}/empdept"/>
     <copy file="${basedir}/resources/demos/chinook/chinook.jnlp" todir="${deploy.demos.dir}/chinook"/>
-
-    <delete dir="${build.demos}/META-INF"/>
+    <!--Chinook without WebStart-->
+    <zip destfile="${deploy.demos.dir}/chinook/chinook.zip">
+      <zipfileset file="${deploy.demos.dir}/chinook/chinook.jar"/>
+      <zipfileset dir="${db.h2.dir}" prefix="h2db"/>
+      <zipfileset file="${basedir}/resources/demos/config/h2db.config"/>
+      <zipfileset file="${basedir}/resources/demos/config/remote.config"/>
+    </zip>
+    <!--Cleanup-->
+    <delete dir="${deploy.demos.dir}/META-INF"/>
     <delete file="${deploy.demos.dir}/libraries.jar"/>
   </target>
 
@@ -607,4 +621,22 @@
       <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -showResults -script ${db.init.h2}"/>
     </java>
   </target>
+
+  <macrodef name="create_manifest">
+    <attribute name="destination"/>
+    <attribute name="application-name"/>
+    <attribute name="main-class"/>
+    <sequential>
+      <manifest file="@{destination}/META-INF/MANIFEST.MF">
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Application-Name" value="@{application-name}"/>
+      <attribute name="Specification-Title" value="${ant.project.name}"/>
+      <attribute name="Specification-Name" value="${ant.project.name}"/>
+      <attribute name="Specification-Vendor" value="${deploy.demos.codebase}"/>
+      <attribute name="Permissions" value="all-permissions"/>
+      <attribute name="Codebase" value="${deploy.demos.codebase}"/>
+      <attribute name="Main-Class" value="@{main-class}"/>
+    </manifest>
+    </sequential>
+  </macrodef>
 </project>
