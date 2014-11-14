@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://webstart.jminor.org/demos/empdept" href="empdept.jnlp">
+<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/demos/empdept" href="empdept.jnlp">
 
   <information>
     <title>EmpDept JMinor Demo</title>

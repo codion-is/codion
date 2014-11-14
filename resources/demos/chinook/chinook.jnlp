@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jnlp spec="1.0+" codebase="http://webstart.jminor.org/demos/chinook" href="chinook.jnlp">
+<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/demos/chinook" href="chinook.jnlp">
 
   <information>
     <title>Chinook JMinor Demo</title>
