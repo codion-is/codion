@@ -705,7 +705,7 @@ public final class Util {
    * @see #getSpaceAwareCollator()
    * @param values the list to sort (collate)
    */
-  public static void collate(final List<?> values) {
+  public static void collate(final List values) {
     Collections.sort(values, getSpaceAwareCollator());
   }
 

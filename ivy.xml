@@ -29,7 +29,7 @@
 
   <dependencies>
     <!--logging-->
-    <dependency org="ch.qos.logback" name="logback-classic" rev="0.9.27" transitive="false"
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false"
                 conf="
                 build.core->master;
                 build.plugins->master;
@@ -37,7 +37,7 @@
                 runtime.client->master;
                 runtime.server->master;
                 runtime.server-monitor->master"/>
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.6.1" transitive="false"
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"
                 conf="
                 build.core->master;
                 build.plugins->master;
@@ -45,8 +45,9 @@
                 runtime.client->master;
                 runtime.server->master;
                 runtime.server-monitor->master"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="0.9.27" transitive="false"
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false"
                 conf="
+                build.core->master;
                 runtime.tests->master;
                 runtime.client->master;
                 runtime.server->master;
