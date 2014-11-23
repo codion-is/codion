@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
+import org.jminor.common.model.Util;
 import org.jminor.framework.db.provider.EntityConnectionProvider;
 
 import org.slf4j.Logger;
@@ -31,7 +32,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
    * @param entityID the entity ID
    */
   public DefaultEntityModelProvider(final String entityID) {
-    this(entityID, DefaultEntityModel.class);
+    this.entityID = entityID;
   }
 
   /**
@@ -53,6 +54,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   /** {@inheritDoc} */
   @Override
   public final EntityModelProvider setModelClass(final Class<? extends EntityModel> modelClass) {
+    Util.rejectNullValue(modelClass, "modelClass");
     this.modelClass = modelClass;
     return this;
   }
@@ -60,6 +62,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   /** {@inheritDoc} */
   @Override
   public final EntityModelProvider setEditModelClass(final Class<? extends EntityEditModel> editModelClass) {
+    Util.rejectNullValue(editModelClass, "editModelClass");
     this.editModelClass = editModelClass;
     return this;
   }
@@ -67,6 +70,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   /** {@inheritDoc} */
   @Override
   public final EntityModelProvider setTableModelClass(final Class<? extends EntityTableModel> tableModelClass) {
+    Util.rejectNullValue(tableModelClass, "tableModelClass");
     this.tableModelClass = tableModelClass;
     return this;
   }

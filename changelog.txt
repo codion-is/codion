@@ -3809,3 +3809,4 @@
   Util.collate() problematic wildcard removed
   logback and slf4j latest versions used
   logback-core added as compile time dependency
+  EntityPanelProvider.equals() improved, now takes the underlying EntityModel class into account

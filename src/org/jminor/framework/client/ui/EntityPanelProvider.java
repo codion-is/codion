@@ -281,13 +281,15 @@ public class EntityPanelProvider implements Comparable {
   /** {@inheritDoc} */
   @Override
   public final boolean equals(final Object obj) {
-    return obj instanceof EntityPanelProvider && ((EntityPanelProvider) obj).modelProvider.getEntityID().equals(modelProvider.getEntityID());
+    return obj instanceof EntityPanelProvider &&
+            ((EntityPanelProvider) obj).modelProvider.getEntityID().equals(modelProvider.getEntityID()) &&
+            ((EntityPanelProvider) obj).modelProvider.getModelClass().equals(modelProvider.getModelClass());
   }
 
   /** {@inheritDoc} */
   @Override
   public final int hashCode() {
-    return modelProvider.getEntityID().hashCode();
+    return modelProvider.getEntityID().hashCode() + modelProvider.getModelClass().hashCode();
   }
 
   /**

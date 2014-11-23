@@ -43,6 +43,7 @@ public interface EntityModelProvider {
    * Sets the model class
    * @param modelClass the class of the model provided
    * @return this EntityModelProvider instance
+   * @throws java.lang.IllegalArgumentException in case modelClass is null
    */
   EntityModelProvider setModelClass(final Class<? extends EntityModel> modelClass);
 
@@ -50,6 +51,7 @@ public interface EntityModelProvider {
    * Sets the edit model class
    * @param editModelClass the class of the edit model provided
    * @return this EntityModelProvider instance
+   * @throws java.lang.IllegalArgumentException in case editModelClass is null
    */
   EntityModelProvider setEditModelClass(final Class<? extends EntityEditModel> editModelClass);
 
@@ -57,6 +59,7 @@ public interface EntityModelProvider {
    * Sets the table model class
    * @param tableModelClass the class of the table model provided
    * @return this EntityModelProvider instance
+   * @throws java.lang.IllegalArgumentException in case tableModelClass is null
    */
   EntityModelProvider setTableModelClass(final Class<? extends EntityTableModel> tableModelClass);
 
