@@ -77,14 +77,13 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityPanel.class);
 
-  public static final int DIALOG = 1;
-  public static final int EMBEDDED = 2;
-  public static final int HIDDEN = 3;
+  public static enum PanelState {
+    DIALOG, EMBEDDED, HIDDEN
+  }
 
-  private static final int UP = 0;
-  private static final int DOWN = 1;
-  private static final int RIGHT = 2;
-  private static final int LEFT = 3;
+  public static enum Direction {
+    UP, DOWN, RIGHT, LEFT
+  }
 
   private static final String NAVIGATE_UP = "navigateUp";
   private static final String NAVIGATE_DOWN = "navigateDown";
@@ -179,12 +178,12 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /**
    * Holds the current state of the edit panel (HIDDEN, EMBEDDED or DIALOG)
    */
-  private int editPanelState = EMBEDDED;
+  private PanelState editPanelState = PanelState.EMBEDDED;
 
   /**
    * Holds the current state of the detail panels (HIDDEN, EMBEDDED or DIALOG)
    */
-  private int detailPanelState = EMBEDDED;
+  private PanelState detailPanelState = PanelState.EMBEDDED;
 
   /**
    * if true then the edit control panel should be included
@@ -586,22 +585,13 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   @Override
   public final void setActiveDetailPanel(final MasterDetailPanel detailPanel) {
     if (detailPanelTabbedPane != null) {
-      if (getDetailPanelState() == EntityPanel.HIDDEN) {
-        setDetailPanelState(EntityPanel.EMBEDDED);
-      }
+      final EntityModel lastLinkedDetailModel = getTabbedDetailPanel().getModel();
       detailPanelTabbedPane.setSelectedComponent((JComponent) detailPanel);
-      SwingUtilities.invokeLater(new Runnable() {
-        @Override
-        public void run() {
-          final EntityModel detailModel = getTabbedDetailPanel().getModel();
-          if (getDetailPanelState() == HIDDEN) {
-            entityModel.removeLinkedDetailModel(detailModel);
-          }
-          else {
-            entityModel.addLinkedDetailModel(detailModel);
-          }
-        }
-      });
+      final EntityModel currentLinkedDetailModel = getTabbedDetailPanel().getModel();
+      if (currentLinkedDetailModel != lastLinkedDetailModel) {
+        entityModel.removeLinkedDetailModel(lastLinkedDetailModel);
+        entityModel.addLinkedDetailModel(currentLinkedDetailModel);
+      }
     }
   }
 
@@ -798,14 +788,14 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Toggles the detail panel state between DIALOG, HIDDEN and EMBEDDED
    */
   public final void toggleDetailPanelState() {
-    if (detailPanelState == DIALOG) {
-      setDetailPanelState(HIDDEN);
+    if (detailPanelState == PanelState.DIALOG) {
+      setDetailPanelState(PanelState.HIDDEN);
     }
-    else if (detailPanelState == EMBEDDED) {
-      setDetailPanelState(DIALOG);
+    else if (detailPanelState == PanelState.EMBEDDED) {
+      setDetailPanelState(PanelState.DIALOG);
     }
     else {
-      setDetailPanelState(EMBEDDED);
+      setDetailPanelState(PanelState.EMBEDDED);
     }
   }
 
@@ -813,53 +803,53 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Toggles the edit panel state between DIALOG, HIDDEN and EMBEDDED
    */
   public final void toggleEditPanelState() {
-    if (editPanelState == DIALOG) {
-      setEditPanelState(HIDDEN);
+    if (editPanelState == PanelState.DIALOG) {
+      setEditPanelState(PanelState.HIDDEN);
     }
-    else if (editPanelState == EMBEDDED) {
-      setEditPanelState(DIALOG);
+    else if (editPanelState == PanelState.EMBEDDED) {
+      setEditPanelState(PanelState.DIALOG);
     }
     else {
-      setEditPanelState(EMBEDDED);
+      setEditPanelState(PanelState.EMBEDDED);
     }
   }
 
   /**
    * @return the detail panel state, either HIDDEN, EMBEDDED or DIALOG
    */
-  public final int getDetailPanelState() {
+  public final PanelState getDetailPanelState() {
     return detailPanelState;
   }
 
   /**
    * @return the edit panel state, either HIDDEN, EMBEDDED or DIALOG
    */
-  public final int getEditPanelState() {
+  public final PanelState getEditPanelState() {
     return editPanelState;
   }
 
   /**
    * @param state the detail panel state (HIDDEN or EMBEDDED, DIALOG)
    */
-  public final void setDetailPanelState(final int state) {
+  public final void setDetailPanelState(final PanelState state) {
     if (detailPanelTabbedPane == null) {
       this.detailPanelState = state;
       return;
     }
 
-    if (state != HIDDEN) {
+    if (state != PanelState.HIDDEN) {
       getTabbedDetailPanel().initializePanel();
     }
 
-    if (detailPanelState == DIALOG) {//if we are leaving the DIALOG state, hide all child detail dialogs
+    if (detailPanelState == PanelState.DIALOG) {//if we are leaving the DIALOG state, hide all child detail dialogs
       for (final EntityPanel detailPanel : detailEntityPanels) {
-        if (detailPanel.detailPanelState == DIALOG) {
-          detailPanel.setDetailPanelState(HIDDEN);
+        if (detailPanel.detailPanelState == PanelState.DIALOG) {
+          detailPanel.setDetailPanelState(PanelState.HIDDEN);
         }
       }
     }
 
-    if (state == HIDDEN) {
+    if (state == PanelState.HIDDEN) {
       entityModel.removeLinkedDetailModel(getTabbedDetailPanel().entityModel);
     }
     else {
@@ -867,14 +857,14 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
 
     detailPanelState = state;
-    if (state != DIALOG) {
+    if (state != PanelState.DIALOG) {
       disposeDetailDialog();
     }
 
-    if (state == EMBEDDED) {
+    if (state == PanelState.EMBEDDED) {
       horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
     }
-    else if (state == HIDDEN) {
+    else if (state == PanelState.HIDDEN) {
       horizontalSplitPane.setRightComponent(null);
     }
     else {
@@ -887,12 +877,9 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /**
    * @param state the edit panel state, either HIDDEN, EMBEDDED or DIALOG
    */
-  public final void setEditPanelState(final int state) {
+  public final void setEditPanelState(final PanelState state) {
     if (!containsEditPanel() || (editPanelState == state)) {
       return;
-    }
-    if (state != HIDDEN && state != EMBEDDED && state != DIALOG) {
-      throw new IllegalArgumentException("Edit panel state must be one of EMBEDDED, DIALOG or HIDDEN");
     }
 
     editPanelState = state;
@@ -922,17 +909,17 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param direction the resize direction
    * @param pixelAmount the resize amount
    */
-  public final void resizePanel(final int direction, final int pixelAmount) {
+  public final void resizePanel(final Direction direction, final int pixelAmount) {
     switch(direction) {
       case UP:
-        setEditPanelState(HIDDEN);
+        setEditPanelState(PanelState.HIDDEN);
         break;
       case DOWN:
-        if (editPanelState == EMBEDDED) {
-          setEditPanelState(DIALOG);
+        if (editPanelState == PanelState.EMBEDDED) {
+          setEditPanelState(PanelState.DIALOG);
         }
         else {
-          setEditPanelState(EMBEDDED);
+          setEditPanelState(PanelState.EMBEDDED);
         }
         break;
       case RIGHT:
@@ -972,8 +959,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @see EntityEditPanel#setInitialFocusComponent(javax.swing.JComponent)
    */
   public final void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
-    LOG.debug("{} prepareUI({}, {})", new Object[] {getEditModel().getEntityID(), setInitialFocus, clearUI});
-    if (editPanel != null && editPanelState != HIDDEN) {
+    LOG.debug("{} prepareUI({}, {})", getEditModel().getEntityID(), setInitialFocus, clearUI);
+    if (editPanel != null && editPanelState != PanelState.HIDDEN) {
       editPanel.prepareUI(setInitialFocus, clearUI);
     }
     else if (setInitialFocus) {
@@ -1103,8 +1090,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     final Action selectEditPanelAction = new AbstractAction("EntityPanel.selectEditPanel") {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        if (getEditPanelState() == HIDDEN) {
-          setEditPanelState(EMBEDDED);
+        if (getEditPanelState() == PanelState.HIDDEN) {
+          setEditPanelState(PanelState.EMBEDDED);
         }
         getEditPanel().prepareUI(true, false);
       }
@@ -1112,8 +1099,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     final Action selectInputComponentAction = new AbstractAction("EntityPanel.selectInputComponent") {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        if (getEditPanelState() == HIDDEN) {
-          setEditPanelState(EMBEDDED);
+        if (getEditPanelState() == PanelState.HIDDEN) {
+          setEditPanelState(PanelState.EMBEDDED);
         }
         final List<String> propertyIDs = editPanel.getSelectComponentPropertyIDs();
         final List<Property> properties = EntityUtil.getSortedProperties(entityModel.getEntityID(), propertyIDs);
@@ -1256,10 +1243,10 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         @Override
         public void mouseReleased(final MouseEvent e) {
           if (e.getClickCount() == 2 && e.getButton() == MouseEvent.BUTTON1) {
-            setDetailPanelState(getDetailPanelState() == DIALOG ? EMBEDDED : DIALOG);
+            setDetailPanelState(getDetailPanelState() == PanelState.DIALOG ? PanelState.EMBEDDED : PanelState.DIALOG);
           }
           else if (e.getButton() == MouseEvent.BUTTON2) {
-            setDetailPanelState(getDetailPanelState() == EMBEDDED ? HIDDEN : EMBEDDED);
+            setDetailPanelState(getDetailPanelState() == PanelState.EMBEDDED ? PanelState.HIDDEN : PanelState.EMBEDDED);
           }
         }
       });
@@ -1270,43 +1257,43 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   private void initializeResizing() {
     UiUtil.addKeyEvent(this, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_UP, UP));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_UP, Direction.UP));
     UiUtil.addKeyEvent(this, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_DOWN, DOWN));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_DOWN, Direction.DOWN));
     UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_RIGHT, RIGHT));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_RIGHT, Direction.RIGHT));
     UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_LEFT, LEFT));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_LEFT, Direction.LEFT));
     if (containsEditPanel()) {
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_UP, UP));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_UP, Direction.UP));
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_DOWN, DOWN));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeVerticallyAction(this, RESIZE_DOWN, Direction.DOWN));
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_RIGHT, RIGHT));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_RIGHT, Direction.RIGHT));
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.SHIFT_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_LEFT, LEFT));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new ResizeHorizontallyAction(this, RESIZE_LEFT, Direction.LEFT));
     }
   }
 
   private void initializeNavigation() {
     UiUtil.addKeyEvent(this, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_UP, UP));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_UP, Direction.UP));
     UiUtil.addKeyEvent(this, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_DOWN, DOWN));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_DOWN, Direction.DOWN));
     UiUtil.addKeyEvent(this, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_RIGHT, RIGHT));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_RIGHT, Direction.RIGHT));
     UiUtil.addKeyEvent(this, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_LEFT, LEFT));
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_LEFT, Direction.LEFT));
     if (containsEditPanel()) {
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_UP, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_UP, UP));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_UP, Direction.UP));
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_DOWN, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_DOWN, DOWN));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_DOWN, Direction.DOWN));
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_RIGHT, RIGHT));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_RIGHT, Direction.RIGHT));
       UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK + KeyEvent.CTRL_DOWN_MASK,
-              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_LEFT, LEFT));
+              JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, new NavigateAction(this, NAVIGATE_LEFT, Direction.LEFT));
     }
   }
 
@@ -1314,12 +1301,12 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Returns a ControlSet containing the detail panel controls, if no detail
    * panels exist null is returned.
    * @return a ControlSet for activating individual detail panels
-   * @see #getDetailPanelControls(int)
+   * @see #getDetailPanelControls(PanelState)
    */
   private ControlSet getDetailPanelControlSet() {
     if (!detailEntityPanels.isEmpty()) {
       final ControlSet controlSet = new ControlSet("");
-      controlSet.add(getDetailPanelControls(EMBEDDED));
+      controlSet.add(getDetailPanelControls(PanelState.EMBEDDED));
 
       return controlSet;
     }
@@ -1338,11 +1325,11 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       @Override
       public void actionPerformed(final ActionEvent e) {
         if (containsEditPanel() || (!detailEntityPanels.isEmpty() && includeDetailPanelTabPane)) {
-          if (containsEditPanel() && getEditPanelState() == HIDDEN) {
-            setEditPanelState(DIALOG);
+          if (containsEditPanel() && getEditPanelState() == PanelState.HIDDEN) {
+            setEditPanelState(PanelState.DIALOG);
           }
-          else if (getDetailPanelState() == HIDDEN) {
-            setDetailPanelState(DIALOG);
+          else if (getDetailPanelState() == PanelState.HIDDEN) {
+            setDetailPanelState(PanelState.DIALOG);
           }
         }
       }
@@ -1354,7 +1341,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param status the status
    * @return a ControlSet for controlling the state of the detail panels
    */
-  private ControlSet getDetailPanelControls(final int status) {
+  private ControlSet getDetailPanelControls(final PanelState status) {
     if (detailEntityPanels.isEmpty()) {
       return null;
     }
@@ -1378,11 +1365,11 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   //#############################################################################################
 
   private void updateEditPanelState() {
-    if (editPanelState != DIALOG) {
+    if (editPanelState != PanelState.DIALOG) {
       disposeEditDialog();
     }
 
-    if (editPanelState == EMBEDDED) {
+    if (editPanelState == PanelState.EMBEDDED) {
       if (compactBase != null) {
         compactBase.add(editControlPanel, BorderLayout.NORTH);
       }
@@ -1390,7 +1377,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         add(editControlPanel, BorderLayout.NORTH);
       }
     }
-    else if (editPanelState == HIDDEN) {
+    else if (editPanelState == PanelState.HIDDEN) {
       if (compactBase != null && !detailEntityPanels.isEmpty()) {
         compactBase.remove(editControlPanel);
       }
@@ -1421,7 +1408,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
             new AbstractAction() {
               @Override
               public void actionPerformed(final ActionEvent e) {
-                setDetailPanelState(HIDDEN);
+                setDetailPanelState(PanelState.HIDDEN);
               }
             });
     detailPanelDialog.setSize(size);
@@ -1449,7 +1436,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
             new AbstractAction() {
               @Override
               public void actionPerformed(final ActionEvent e) {
-                setEditPanelState(HIDDEN);
+                setEditPanelState(PanelState.HIDDEN);
               }
             });
   }
@@ -1507,9 +1494,9 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private static final class NavigateAction extends AbstractAction {
 
     private final EntityPanel entityPanel;
-    private final int direction;
+    private final Direction direction;
 
-    private NavigateAction(final EntityPanel entityPanel, final String name, final int direction) {
+    private NavigateAction(final EntityPanel entityPanel, final String name, final Direction direction) {
       super(name);
       this.entityPanel = entityPanel;
       this.direction = direction;
@@ -1529,6 +1516,9 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
           panel = entityPanel.getMasterPanel();
           break;
         case DOWN:
+          if (entityPanel.getDetailPanelState() == PanelState.HIDDEN) {
+            entityPanel.setDetailPanelState(PanelState.EMBEDDED);
+          }
           panel = entityPanel.getActiveDetailPanel();
           break;
         default:
@@ -1544,9 +1534,9 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private static final class ResizeHorizontallyAction extends AbstractAction {
 
     private final EntityPanel panel;
-    private final int direction;
+    private final Direction direction;
 
-    private ResizeHorizontallyAction(final EntityPanel panel, final String action, final int direction) {
+    private ResizeHorizontallyAction(final EntityPanel panel, final String action, final Direction direction) {
       super(action);
       this.panel = panel;
       this.direction = direction;
@@ -1564,9 +1554,9 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   private static final class ResizeVerticallyAction extends AbstractAction {
 
     private final EntityPanel panel;
-    private final int direction;
+    private final Direction direction;
 
-    private ResizeVerticallyAction(final EntityPanel panel, final String action, final int direction) {
+    private ResizeVerticallyAction(final EntityPanel panel, final String action, final Direction direction) {
       super(action);
       this.panel = panel;
       this.direction = direction;

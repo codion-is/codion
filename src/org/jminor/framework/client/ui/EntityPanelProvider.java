@@ -31,7 +31,7 @@ public class EntityPanelProvider implements Comparable {
 
   private final String caption;
   private boolean refreshOnInit = true;
-  private int detailPanelState = EntityPanel.EMBEDDED;
+  private EntityPanel.PanelState detailPanelState = EntityPanel.PanelState.EMBEDDED;
   private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
   private boolean tableSearchPanelVisible = Configuration.getBooleanValue(Configuration.SEARCH_PANEL_STATE);
 
@@ -187,16 +187,15 @@ public class EntityPanelProvider implements Comparable {
   /**
    * @return the state of the detail panels when this panel is initialized
    */
-  public final int getDetailPanelState() {
+  public final EntityPanel.PanelState getDetailPanelState() {
     return detailPanelState;
   }
 
   /**
-   * @param detailPanelState the state of the detail panels when this panel is initialized,
-   * ({@link EntityPanel#HIDDEN}, {@link EntityPanel#EMBEDDED}, {@link EntityPanel#DIALOG})
+   * @param detailPanelState the state of the detail panels when this panel is initialized
    * @return this EntityPanelProvider instance
    */
-  public final EntityPanelProvider setDetailPanelState(final int detailPanelState) {
+  public final EntityPanelProvider setDetailPanelState(final EntityPanel.PanelState detailPanelState) {
     this.detailPanelState = detailPanelState;
     return this;
   }

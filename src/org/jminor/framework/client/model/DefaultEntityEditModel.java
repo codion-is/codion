@@ -133,6 +133,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
   private final State validState = States.state();
 
   /**
+   * A state indicating whether or not the entity being edited is new
+   * @see #isEntityNew()
+   */
+  private final State entityNewState = States.state(true);
+
+  /**
    * Holds the read only status of this edit model
    */
   private boolean readOnly;
@@ -280,6 +286,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public StateObserver getModifiedObserver() {
     return entity.getModifiedObserver();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final StateObserver getEntityNewObserver() {
+    return entityNewState.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -439,7 +451,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isEntityNew() {
+  public boolean isEntityNew() {
     final Entity.Key key = entity.getPrimaryKey();
     final Entity.Key originalKey = entity.getOriginalPrimaryKey();
     return key.isNull() || originalKey.isNull();
@@ -995,6 +1007,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       public void eventOccurred(final ValueChange<String, ?> info) {
         primaryKeyNullState.setActive(entity.isPrimaryKeyNull());
         validState.setActive(validator.isValid(entity));
+        entityNewState.setActive(isEntityNew());
         final Event<ValueChange<String, ?>> valueChangeEvent = valueChangeEventMap.get(info.getKey());
         if (valueChangeEvent != null) {
           valueChangeEvent.fire(info);

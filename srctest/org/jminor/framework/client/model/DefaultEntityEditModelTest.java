@@ -172,8 +172,10 @@ public final class DefaultEntityEditModelTest {
   @Test
   public void test() throws Exception {
     final StateObserver primaryKeyNullState = employeeEditModel.getPrimaryKeyNullObserver();
+    final StateObserver entityNewState = employeeEditModel.getEntityNewObserver();
 
     assertTrue(primaryKeyNullState.isActive());
+    assertTrue(entityNewState.isActive());
 
     employeeEditModel.setReadOnly(false);
     assertFalse(employeeEditModel.isReadOnly());
@@ -210,6 +212,7 @@ public final class DefaultEntityEditModelTest {
     final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MARTIN");
     employeeEditModel.setEntity(employee);
     assertFalse(primaryKeyNullState.isActive());
+    assertFalse(entityNewState.isActive());
 
     assertTrue("Active entity is not equal to the entity just set", employeeEditModel.getEntityCopy().propertyValuesEqual(employee));
     assertFalse("Active entity is new after an entity is set", employeeEditModel.isEntityNew());
@@ -229,6 +232,7 @@ public final class DefaultEntityEditModelTest {
     assertFalse(primaryKeyNullState.isActive());
 
     employeeEditModel.setEntity(null);
+    assertTrue(entityNewState.isActive());
 
     final Double originalCommission = (Double) employeeEditModel.getValue(EmpDept.EMPLOYEE_COMMISSION);
     final double commission = 1500.5;

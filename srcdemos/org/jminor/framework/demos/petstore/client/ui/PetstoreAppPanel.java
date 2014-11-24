@@ -35,7 +35,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel {
     */
     final EntityPanelProvider tagItemProvider = new EntityPanelProvider(Petstore.T_TAG_ITEM).setEditPanelClass(TagItemPanel.class);
     final EntityPanelProvider itemProvider = new EntityPanelProvider(Petstore.T_ITEM).setEditPanelClass(ItemPanel.class);
-    itemProvider.addDetailPanelProvider(tagItemProvider).setDetailPanelState(EntityPanel.HIDDEN);
+    itemProvider.addDetailPanelProvider(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
     final EntityPanelProvider productProvider = new EntityPanelProvider(Petstore.T_PRODUCT).setEditPanelClass(ProductPanel.class);
     productProvider.addDetailPanelProvider(itemProvider).setDetailSplitPanelResizeWeight(0.3);
     final EntityPanelProvider categoryProvider = new EntityPanelProvider(Petstore.T_CATEGORY).setEditPanelClass(CategoryPanel.class);
@@ -47,7 +47,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel {
     final EntityPanelProvider contactInfoProvider = new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO).setEditPanelClass(ContactInfoPanel.class);
     contactInfoProvider.addDetailPanelProvider(itemProvider);
     final EntityPanelProvider tagProvider = new EntityPanelProvider(Petstore.T_TAG).setEditPanelClass(TagPanel.class);
-    tagProvider.addDetailPanelProvider(tagItemProvider).setDetailPanelState(EntityPanel.HIDDEN);
+    tagProvider.addDetailPanelProvider(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
     addSupportPanelProviders(addressProvider, contactInfoProvider, tagProvider);
   }

@@ -2514,7 +2514,7 @@
   DefaultColumnSearchModel, the above fix now works with collection upper/lower bounds
   MaximumMatch, reverted back to a past version, a bug must have crept in during refactoring
   UiUtil.showInDialog() now calls the close action on windowClosed() instead of windowClosing()
-  EntityPanel, navigation and resizing actions added to editControlPanel as well, some minor behavioural changes
+  EntityPanel, navigation and resizing actions added to editControlPanel as well, some minor behavioral changes
   AbstractFilteredTableModel, filterContents() now sorts the table model afterwards
   SearchFieldHint renamed to TextFieldHint, some fields/methods renamed, hintForegroundColor field added
   SearchType.getImageName() removed, getCaption() added, search type images removed
@@ -3810,3 +3810,8 @@
   logback and slf4j latest versions used
   logback-core added as compile time dependency
   EntityPanelProvider.equals() improved, now takes the underlying EntityModel class into account
+  EntityEditModel.getEntityNewObserver() added
+  DefaultEntityEditModel.isEntityNew() is no longer final
+  EntityEditPanel, update and delete actions enabled states now depend on the entityNewObserver provided by the underlying edit model
+  EntityPanel, bug fixed, navigation was broken when it came to detail panels, always selected first available panel
+  EntityPanel, navigation and panel state constants changed to enums

@@ -57,7 +57,11 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   Entity getEntityCopy(final boolean includePrimaryKeyValues);
 
   /**
-   * @return true if the active entity is new, that is, has a current or original primary key containing only null values
+   * Returns true if the active entity is new or false if it represents a row already persisted.
+   * By default an entity is new if either its primary key or the original primary key are null.
+   * It is not recommended to base the result of this function on a database query since it is called frequently,
+   * as in, every time a property value changes.
+   * @return true if the active entity is new, that is, does not represent a persistent row
    * @see #getPrimaryKeyNullObserver
    * @see org.jminor.framework.domain.Entity#isPrimaryKeyNull()
    */
@@ -333,6 +337,12 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @see #addAfterDeleteListener(EventInfoListener)
    */
   List<Entity> delete(final List<Entity> entities) throws DatabaseException;
+
+  /**
+   * @return an observer indicating whether or not the active entity is new
+   * @see #isEntityNew()
+   */
+  StateObserver getEntityNewObserver();
 
   /**
    * @return the state used to determine if deleting should be enabled
