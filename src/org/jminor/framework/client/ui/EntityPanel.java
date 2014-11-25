@@ -959,7 +959,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @see EntityEditPanel#setInitialFocusComponent(javax.swing.JComponent)
    */
   public final void prepareUI(final boolean setInitialFocus, final boolean clearUI) {
-    LOG.debug("{} prepareUI({}, {})", getEditModel().getEntityID(), setInitialFocus, clearUI);
+    LOG.debug("{} prepareUI({}, {})", new Object[] {getEditModel().getEntityID(), setInitialFocus, clearUI});
     if (editPanel != null && editPanelState != PanelState.HIDDEN) {
       editPanel.prepareUI(setInitialFocus, clearUI);
     }
