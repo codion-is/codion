@@ -67,10 +67,6 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityEditPanel.class);
 
-  public static final int CONFIRM_TYPE_INSERT = 1;
-  public static final int CONFIRM_TYPE_UPDATE = 2;
-  public static final int CONFIRM_TYPE_DELETE = 3;
-
   //Control codes
   public static final String SAVE = "EntityEditPanel.save";
   public static final String INSERT = "EntityEditPanel.insert";
@@ -78,6 +74,10 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   public static final String DELETE = "EntityEditPanel.delete";
   public static final String REFRESH = "EntityEditPanel.refresh";
   public static final String CLEAR = "EntityEditPanel.clear";
+
+  protected static enum ConfirmType {
+    INSERT, UPDATE, DELETE
+  }
 
   private static final String ALT_PREFIX = " (ALT-";
   private static final int ENTITY_MENU_X_OFFSET = 42;
@@ -700,7 +700,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return true if the delete action should be performed
    */
   protected boolean confirmDelete() {
-    final String[] messages = getConfirmationMessages(CONFIRM_TYPE_DELETE);
+    final String[] messages = getConfirmationMessages(ConfirmType.DELETE);
     return confirm(messages[0], messages[1]);
   }
 
@@ -709,7 +709,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @return true if the update action should be performed
    */
   protected boolean confirmUpdate() {
-    final String[] messages = getConfirmationMessages(CONFIRM_TYPE_UPDATE);
+    final String[] messages = getConfirmationMessages(ConfirmType.UPDATE);
     return confirm(messages[0], messages[1]);
   }
 
@@ -727,21 +727,20 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * @param type the confirmation message type, one of the following:
-   * EntityEditPanel.CONFIRM_TYPE_INSERT, EntityEditPanel.CONFIRM_TYPE_DELETE or EntityEditPanel.CONFIRM_TYPE_UPDATE
+   * @param type the confirmation message type
    * @return a string array containing two elements, the element at index 0 is used
    * as the message displayed in the dialog and the element at index 1 is used as the dialog title,
    * i.e. ["Are you sure you want to delete the selected records?", "About to delete selected records"]
    */
-  protected String[] getConfirmationMessages(final int type) {
+  protected String[] getConfirmationMessages(final ConfirmType type) {
     switch (type) {
-      case CONFIRM_TYPE_DELETE:
+      case DELETE:
         return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_ENTITY),
                 FrameworkMessages.get(FrameworkMessages.DELETE)};
-      case CONFIRM_TYPE_INSERT:
+      case INSERT:
         return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_INSERT),
                 FrameworkMessages.get(FrameworkMessages.INSERT)};
-      case CONFIRM_TYPE_UPDATE:
+      case UPDATE:
         return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE),
                 FrameworkMessages.get(FrameworkMessages.UPDATE)};
     }

@@ -3815,3 +3815,4 @@
   EntityEditPanel, update and delete actions enabled states now depend on the entityNewObserver provided by the underlying edit model
   EntityPanel, bug fixed, navigation was broken when it came to detail panels, always selected first available panel
   EntityPanel, navigation and panel state constants changed to enums
+  EntityEditPanel, confirm type constants changed to enum
