@@ -28,11 +28,45 @@ public class Chinook {
   public static final String ARTIST_ARTISTID = "artistid";
   public static final String ARTIST_NAME = "name";
 
+  static {
+    Entities.define(T_ARTIST,
+            Properties.primaryKeyProperty(ARTIST_ARTISTID),
+            Properties.columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
+                    .setNullable(false)
+                    .setMaxLength(120)
+                    .setPreferredColumnWidth(160))
+            .setDomainID(DOMAIN_ID)
+            .setKeyGenerator(Entities.automaticKeyGenerator(T_ARTIST))
+            .setStringProvider(new Entities.StringProvider(ARTIST_NAME))
+            .setSearchPropertyIDs(ARTIST_NAME)
+            .setOrderByClause(ARTIST_NAME)
+            .setCaption("Artists");
+  }
+
   public static final String T_ALBUM = "chinook.album";
   public static final String ALBUM_ALBUMID = "albumid";
   public static final String ALBUM_TITLE = "title";
   public static final String ALBUM_ARTISTID = "artistid";
   public static final String ALBUM_ARTISTID_FK = "artistid_fk";
+
+  static {
+    Entities.define(T_ALBUM,
+            Properties.primaryKeyProperty(ALBUM_ALBUMID),
+            Properties.foreignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
+                    Properties.columnProperty(ALBUM_ARTISTID))
+                    .setNullable(false)
+                    .setPreferredColumnWidth(160),
+            Properties.columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
+                    .setNullable(false)
+                    .setMaxLength(160)
+                    .setPreferredColumnWidth(160))
+            .setDomainID(DOMAIN_ID)
+            .setKeyGenerator(Entities.automaticKeyGenerator(T_ALBUM))
+            .setStringProvider(new Entities.StringProvider(ALBUM_TITLE))
+            .setSearchPropertyIDs(ALBUM_TITLE)
+            .setOrderByClause(ALBUM_ARTISTID + ", " + ALBUM_TITLE)
+            .setCaption("Albums");
+  }
 
   public static final String T_EMPLOYEE = "chinook.employee";
   public static final String EMPLOYEE_EMPLOYEEID = "employeeid";
@@ -52,175 +86,7 @@ public class Chinook {
   public static final String EMPLOYEE_FAX = "fax";
   public static final String EMPLOYEE_EMAIL = "email";
 
-  public static final String T_CUSTOMER = "chinook.customer";
-  public static final String CUSTOMER_CUSTOMERID = "customerid";
-  public static final String CUSTOMER_FIRSTNAME = "firstname";
-  public static final String CUSTOMER_LASTNAME = "lastname";
-  public static final String CUSTOMER_COMPANY = "company";
-  public static final String CUSTOMER_ADDRESS = "address";
-  public static final String CUSTOMER_CITY = "city";
-  public static final String CUSTOMER_STATE = "state";
-  public static final String CUSTOMER_COUNTRY = "country";
-  public static final String CUSTOMER_POSTALCODE = "postalcode";
-  public static final String CUSTOMER_PHONE = "phone";
-  public static final String CUSTOMER_FAX = "fax";
-  public static final String CUSTOMER_EMAIL = "email";
-  public static final String CUSTOMER_SUPPORTREPID = "supportrepid";
-  public static final String CUSTOMER_SUPPORTREPID_FK = "supportrepid_fk";
-
-  public static final String T_GENRE = "chinook.genre";
-  public static final String GENRE_GENREID = "genreid";
-  public static final String GENRE_NAME = "name";
-
-  public static final String T_INVOICE = "chinook.invoice";
-  public static final String INVOICE_INVOICEID = "invoiceid";
-  public static final String INVOICE_INVOICEID_AS_STRING = "invoiceid || ''";
-  public static final String INVOICE_CUSTOMERID = "customerid";
-  public static final String INVOICE_CUSTOMERID_FK = "customerid_fk";
-  public static final String INVOICE_INVOICEDATE = "invoicedate";
-  public static final String INVOICE_BILLINGADDRESS = "billingaddress";
-  public static final String INVOICE_BILLINGCITY = "billingcity";
-  public static final String INVOICE_BILLINGSTATE = "billingstate";
-  public static final String INVOICE_BILLINGCOUNTRY = "billingcountry";
-  public static final String INVOICE_BILLINGPOSTALCODE = "billingpostalcode";
-  public static final String INVOICE_TOTAL = "total";
-  public static final String INVOICE_TOTAL_SUB = "total_sub";
-  public static final String INVOICE_TOTAL_SUBQUERY = "select sum(unitprice * quantity) from chinook.invoiceline where invoiceid = invoice.invoiceid";
-
-  public static final String T_INVOICELINE = "chinook.invoiceline";
-  public static final String INVOICELINE_INVOICELINEID = "invoicelineid";
-  public static final String INVOICELINE_INVOICEID = "invoiceid";
-  public static final String INVOICELINE_INVOICEID_FK = "invoiceid_fk";
-  public static final String INVOICELINE_TRACKID = "trackid";
-  public static final String INVOICELINE_TRACKID_FK = "trackid_fk";
-  public static final String INVOICELINE_UNITPRICE = "unitprice";
-  public static final String INVOICELINE_QUANTITY = "quantity";
-  public static final String INVOICELINE_TOTAL = "total";
-
-  public static final Property.DerivedProperty.Provider INVOICELINE_TOTAL_PROVIDER =
-          new Property.DerivedProperty.Provider() {
-            @Override
-            public Object getValue(final Map<String, Object> linkedValues) {
-              final Integer quantity = (Integer) linkedValues.get(INVOICELINE_QUANTITY);
-              final Double unitPrice = (Double) linkedValues.get(INVOICELINE_UNITPRICE);
-              if (unitPrice == null || quantity == null) {
-                return null;
-              }
-
-              return quantity * unitPrice;
-            }
-          };
-
-  public static final String T_MEDIATYPE = "chinook.mediatype";
-  public static final String MEDIATYPE_MEDIATYPEID = "mediatypeid";
-  public static final String MEDIATYPE_NAME = "name";
-
-  public static final String T_PLAYLIST = "chinook.playlist";
-  public static final String PLAYLIST_PLAYLISTID = "playlistid";
-  public static final String PLAYLIST_NAME = "name";
-
-  public static final String T_PLAYLISTTRACK = "chinook.playlisttrack";
-  public static final String PLAYLISTTRACK_PLAYLISTID = "playlistid";
-  public static final String PLAYLISTTRACK_PLAYLISTID_FK = "playlistid_fk";
-  public static final String PLAYLISTTRACK_TRACKID = "trackid";
-  public static final String PLAYLISTTRACK_TRACKID_FK = "trackid_fk";
-  public static final String PLAYLISTTRACK_ALBUM_DENORM = "album_denorm";
-  public static final String PLAYLISTTRACK_ARTIST_DENORM = "artist_denorm";
-
-  public static final String T_TRACK = "chinook.track";
-  public static final String TRACK_TRACKID = "trackid";
-  public static final String TRACK_NAME = "name";
-  public static final String TRACK_ARTIST_DENORM = "artist_denorm";
-  public static final String TRACK_ALBUMID = "albumid";
-  public static final String TRACK_ALBUMID_FK = "albumid_fk";
-  public static final String TRACK_MEDIATYPEID = "mediatypeid";
-  public static final String TRACK_MEDIATYPEID_FK = "mediatypeid_fk";
-  public static final String TRACK_GENREID = "genreid";
-  public static final String TRACK_GENREID_FK = "genreid_fk";
-  public static final String TRACK_COMPOSER = "composer";
-  public static final String TRACK_MILLISECONDS = "milliseconds";
-  public static final String TRACK_MINUTES_SECONDS_DERIVED = "minutes_seconds_transient";
-  public static final String TRACK_BYTES = "bytes";
-  public static final String TRACK_UNITPRICE = "unitprice";
-
-  public static final Property.DerivedProperty.Provider TRACK_MIN_SEC_PROVIDER =
-          new Property.DerivedProperty.Provider() {
-            @Override
-            public Object getValue(final Map<String, Object> linkedValues) {
-              final Integer milliseconds = (Integer) linkedValues.get(TRACK_MILLISECONDS);
-              if (milliseconds == null || milliseconds <= 0) {
-                return "";
-              }
-
-              final int seconds = ((milliseconds / 1000) % 60);
-              final int minutes = ((milliseconds / 1000) / 60);
-
-              return minutes + " min " + seconds + " sec";
-            }
-          };
-
-  public static final String P_UPDATE_TOTALS = "chinook.update_totals_procedure";
-
-  private static final DatabaseConnection.Procedure UPDATE_TOTALS_PROCEDURE = new AbstractProcedure<EntityConnection>(P_UPDATE_TOTALS, "Update invoice totals") {
-    @Override
-    public void execute(final EntityConnection entityConnection, final Object... arguments) throws DatabaseException {
-      try {
-        entityConnection.beginTransaction();
-        final EntitySelectCriteria selectCriteria = EntityCriteriaUtil.selectCriteria(T_INVOICE);
-        selectCriteria.setForUpdate(true);
-        selectCriteria.setForeignKeyFetchDepthLimit(0);
-        final List<Entity> invoices = entityConnection.selectMany(selectCriteria);
-        for (final Entity invoice : invoices) {
-          invoice.setValue(INVOICE_TOTAL, invoice.getValue(INVOICE_TOTAL_SUB));
-        }
-        final List<Entity> modifiedInvoices = EntityUtil.getModifiedEntities(invoices);
-        if (!modifiedInvoices.isEmpty()) {
-          entityConnection.update(modifiedInvoices);
-        }
-        entityConnection.commitTransaction();
-      }
-      catch (final DatabaseException dbException) {
-        if (entityConnection.isTransactionOpen()) {
-          entityConnection.rollbackTransaction();
-        }
-        throw dbException;
-      }
-    }
-  };
-
   static {
-    Databases.addOperation(UPDATE_TOTALS_PROCEDURE);
-
-    Entities.define(T_ARTIST,
-            Properties.primaryKeyProperty(ARTIST_ARTISTID),
-            Properties.columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
-                    .setNullable(false)
-                    .setMaxLength(120)
-                    .setPreferredColumnWidth(160))
-            .setDomainID(DOMAIN_ID)
-            .setKeyGenerator(Entities.automaticKeyGenerator(T_ARTIST))
-            .setStringProvider(new Entities.StringProvider(ARTIST_NAME))
-            .setSearchPropertyIDs(ARTIST_NAME)
-            .setOrderByClause(ARTIST_NAME)
-            .setCaption("Artists");
-
-    Entities.define(T_ALBUM,
-            Properties.primaryKeyProperty(ALBUM_ALBUMID),
-            Properties.foreignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
-                    Properties.columnProperty(ALBUM_ARTISTID))
-                    .setNullable(false)
-                    .setPreferredColumnWidth(160),
-            Properties.columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
-                    .setNullable(false)
-                    .setMaxLength(160)
-                    .setPreferredColumnWidth(160))
-            .setDomainID(DOMAIN_ID)
-            .setKeyGenerator(Entities.automaticKeyGenerator(T_ALBUM))
-            .setStringProvider(new Entities.StringProvider(ALBUM_TITLE))
-            .setSearchPropertyIDs(ALBUM_TITLE)
-            .setOrderByClause(ALBUM_ARTISTID + ", " + ALBUM_TITLE)
-            .setCaption("Albums");
-
     Entities.define(T_EMPLOYEE,
             Properties.primaryKeyProperty(EMPLOYEE_EMPLOYEEID),
             Properties.columnProperty(EMPLOYEE_LASTNAME, Types.VARCHAR, "Last name")
@@ -258,7 +124,25 @@ public class Chinook {
             .setSearchPropertyIDs(EMPLOYEE_FIRSTNAME, EMPLOYEE_LASTNAME, EMPLOYEE_EMAIL)
             .setOrderByClause(EMPLOYEE_LASTNAME + ", " + EMPLOYEE_FIRSTNAME)
             .setCaption("Employees");
+  }
 
+  public static final String T_CUSTOMER = "chinook.customer";
+  public static final String CUSTOMER_CUSTOMERID = "customerid";
+  public static final String CUSTOMER_FIRSTNAME = "firstname";
+  public static final String CUSTOMER_LASTNAME = "lastname";
+  public static final String CUSTOMER_COMPANY = "company";
+  public static final String CUSTOMER_ADDRESS = "address";
+  public static final String CUSTOMER_CITY = "city";
+  public static final String CUSTOMER_STATE = "state";
+  public static final String CUSTOMER_COUNTRY = "country";
+  public static final String CUSTOMER_POSTALCODE = "postalcode";
+  public static final String CUSTOMER_PHONE = "phone";
+  public static final String CUSTOMER_FAX = "fax";
+  public static final String CUSTOMER_EMAIL = "email";
+  public static final String CUSTOMER_SUPPORTREPID = "supportrepid";
+  public static final String CUSTOMER_SUPPORTREPID_FK = "supportrepid_fk";
+
+  static {
     Entities.define(T_CUSTOMER,
             Properties.primaryKeyProperty(CUSTOMER_CUSTOMERID),
             Properties.columnProperty(CUSTOMER_LASTNAME, Types.VARCHAR, "Last name")
@@ -295,7 +179,13 @@ public class Chinook {
             .setSearchPropertyIDs(CUSTOMER_FIRSTNAME, CUSTOMER_LASTNAME, CUSTOMER_EMAIL)
             .setOrderByClause(CUSTOMER_LASTNAME + ", " + CUSTOMER_FIRSTNAME)
             .setCaption("Customers");
+  }
 
+  public static final String T_GENRE = "chinook.genre";
+  public static final String GENRE_GENREID = "genreid";
+  public static final String GENRE_NAME = "name";
+
+  static {
     Entities.define(T_GENRE,
             Properties.primaryKeyProperty(GENRE_GENREID),
             Properties.columnProperty(GENRE_NAME, Types.VARCHAR, "Name")
@@ -308,7 +198,13 @@ public class Chinook {
             .setSearchPropertyIDs(GENRE_NAME)
             .setOrderByClause(GENRE_NAME)
             .setCaption("Genres");
+  }
 
+  public static final String T_MEDIATYPE = "chinook.mediatype";
+  public static final String MEDIATYPE_MEDIATYPEID = "mediatypeid";
+  public static final String MEDIATYPE_NAME = "name";
+
+  static {
     Entities.define(T_MEDIATYPE,
             Properties.primaryKeyProperty(MEDIATYPE_MEDIATYPEID),
             Properties.columnProperty(MEDIATYPE_NAME, Types.VARCHAR, "Name")
@@ -320,7 +216,41 @@ public class Chinook {
             .setStringProvider(new Entities.StringProvider(MEDIATYPE_NAME))
             .setOrderByClause(MEDIATYPE_NAME)
             .setCaption("Media types");
+  }
 
+  public static final String T_TRACK = "chinook.track";
+  public static final String TRACK_TRACKID = "trackid";
+  public static final String TRACK_NAME = "name";
+  public static final String TRACK_ARTIST_DENORM = "artist_denorm";
+  public static final String TRACK_ALBUMID = "albumid";
+  public static final String TRACK_ALBUMID_FK = "albumid_fk";
+  public static final String TRACK_MEDIATYPEID = "mediatypeid";
+  public static final String TRACK_MEDIATYPEID_FK = "mediatypeid_fk";
+  public static final String TRACK_GENREID = "genreid";
+  public static final String TRACK_GENREID_FK = "genreid_fk";
+  public static final String TRACK_COMPOSER = "composer";
+  public static final String TRACK_MILLISECONDS = "milliseconds";
+  public static final String TRACK_MINUTES_SECONDS_DERIVED = "minutes_seconds_transient";
+  public static final String TRACK_BYTES = "bytes";
+  public static final String TRACK_UNITPRICE = "unitprice";
+
+  public static final Property.DerivedProperty.Provider TRACK_MIN_SEC_PROVIDER =
+          new Property.DerivedProperty.Provider() {
+            @Override
+            public Object getValue(final Map<String, Object> linkedValues) {
+              final Integer milliseconds = (Integer) linkedValues.get(TRACK_MILLISECONDS);
+              if (milliseconds == null || milliseconds <= 0) {
+                return "";
+              }
+
+              final int seconds = ((milliseconds / 1000) % 60);
+              final int minutes = ((milliseconds / 1000) / 60);
+
+              return minutes + " min " + seconds + " sec";
+            }
+          };
+
+  static {
     Entities.define(T_TRACK,
             Properties.primaryKeyProperty(TRACK_TRACKID),
             Properties.denormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUMID_FK,
@@ -355,44 +285,24 @@ public class Chinook {
             .setSearchPropertyIDs(TRACK_NAME)
             .setOrderByClause(TRACK_NAME)
             .setCaption("Tracks");
+  }
 
-    Entities.define(T_PLAYLIST,
-            Properties.primaryKeyProperty(PLAYLIST_PLAYLISTID),
-            Properties.columnProperty(PLAYLIST_NAME, Types.VARCHAR, "Name")
-                    .setNullable(false)
-                    .setMaxLength(120)
-                    .setPreferredColumnWidth(160))
-            .setDomainID(DOMAIN_ID)
-            .setKeyGenerator(Entities.automaticKeyGenerator(T_PLAYLIST))
-            .setStringProvider(new Entities.StringProvider(PLAYLIST_NAME))
-            .setSearchPropertyIDs(PLAYLIST_NAME)
-            .setOrderByClause(PLAYLIST_NAME)
-            .setCaption("Playlists");
+  public static final String T_INVOICE = "chinook.invoice";
+  public static final String INVOICE_INVOICEID = "invoiceid";
+  public static final String INVOICE_INVOICEID_AS_STRING = "invoiceid || ''";
+  public static final String INVOICE_CUSTOMERID = "customerid";
+  public static final String INVOICE_CUSTOMERID_FK = "customerid_fk";
+  public static final String INVOICE_INVOICEDATE = "invoicedate";
+  public static final String INVOICE_BILLINGADDRESS = "billingaddress";
+  public static final String INVOICE_BILLINGCITY = "billingcity";
+  public static final String INVOICE_BILLINGSTATE = "billingstate";
+  public static final String INVOICE_BILLINGCOUNTRY = "billingcountry";
+  public static final String INVOICE_BILLINGPOSTALCODE = "billingpostalcode";
+  public static final String INVOICE_TOTAL = "total";
+  public static final String INVOICE_TOTAL_SUB = "total_sub";
+  public static final String INVOICE_TOTAL_SUBQUERY = "select sum(unitprice * quantity) from chinook.invoiceline where invoiceid = invoice.invoiceid";
 
-    Entities.define(T_PLAYLISTTRACK,
-            Properties.foreignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
-                    Properties.primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID)
-                            .setUpdatable(true))
-                    .setNullable(false)
-                    .setPreferredColumnWidth(120),
-            Properties.denormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
-                    Entities.getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
-                    .setPreferredColumnWidth(160),
-            Properties.foreignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
-                    Properties.primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.INTEGER)
-                            .setPrimaryKeyIndex(1)
-                            .setUpdatable(true))
-                    .setFetchDepth(3)
-                    .setNullable(false)
-                    .setPreferredColumnWidth(160),
-            Properties.denormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,
-                    Entities.getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album")
-                    .setPreferredColumnWidth(160))
-            .setDomainID(DOMAIN_ID)
-            .setStringProvider(new Entities.StringProvider(PLAYLISTTRACK_PLAYLISTID_FK)
-                    .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
-            .setCaption("Playlist tracks");
-
+  static {
     Entities.define(T_INVOICE,
             Properties.primaryKeyProperty(INVOICE_INVOICEID, Types.INTEGER, "Invoice no."),
             Properties.columnProperty(INVOICE_INVOICEID_AS_STRING, Types.VARCHAR, "Invoice no.")
@@ -424,7 +334,33 @@ public class Chinook {
             .setSearchPropertyIDs(INVOICE_INVOICEID_AS_STRING)
             .setOrderByClause(INVOICE_CUSTOMERID + ", " + INVOICE_INVOICEDATE + " desc")
             .setCaption("Invoices");
+  }
 
+  public static final String T_INVOICELINE = "chinook.invoiceline";
+  public static final String INVOICELINE_INVOICELINEID = "invoicelineid";
+  public static final String INVOICELINE_INVOICEID = "invoiceid";
+  public static final String INVOICELINE_INVOICEID_FK = "invoiceid_fk";
+  public static final String INVOICELINE_TRACKID = "trackid";
+  public static final String INVOICELINE_TRACKID_FK = "trackid_fk";
+  public static final String INVOICELINE_UNITPRICE = "unitprice";
+  public static final String INVOICELINE_QUANTITY = "quantity";
+  public static final String INVOICELINE_TOTAL = "total";
+
+  public static final Property.DerivedProperty.Provider INVOICELINE_TOTAL_PROVIDER =
+          new Property.DerivedProperty.Provider() {
+            @Override
+            public Object getValue(final Map<String, Object> linkedValues) {
+              final Integer quantity = (Integer) linkedValues.get(INVOICELINE_QUANTITY);
+              final Double unitPrice = (Double) linkedValues.get(INVOICELINE_UNITPRICE);
+              if (unitPrice == null || quantity == null) {
+                return null;
+              }
+
+              return quantity * unitPrice;
+            }
+          };
+
+  static {
     Entities.define(T_INVOICELINE,
             Properties.primaryKeyProperty(INVOICELINE_INVOICELINEID),
             Properties.foreignKeyProperty(INVOICELINE_INVOICEID_FK, "Invoice", T_INVOICE,
@@ -445,5 +381,91 @@ public class Chinook {
             .setDomainID(DOMAIN_ID)
             .setKeyGenerator(Entities.automaticKeyGenerator(T_INVOICELINE))
             .setCaption("Invoice lines");
+  }
+
+  public static final String T_PLAYLIST = "chinook.playlist";
+  public static final String PLAYLIST_PLAYLISTID = "playlistid";
+  public static final String PLAYLIST_NAME = "name";
+
+  static {
+    Entities.define(T_PLAYLIST,
+            Properties.primaryKeyProperty(PLAYLIST_PLAYLISTID),
+            Properties.columnProperty(PLAYLIST_NAME, Types.VARCHAR, "Name")
+                    .setNullable(false)
+                    .setMaxLength(120)
+                    .setPreferredColumnWidth(160))
+            .setDomainID(DOMAIN_ID)
+            .setKeyGenerator(Entities.automaticKeyGenerator(T_PLAYLIST))
+            .setStringProvider(new Entities.StringProvider(PLAYLIST_NAME))
+            .setSearchPropertyIDs(PLAYLIST_NAME)
+            .setOrderByClause(PLAYLIST_NAME)
+            .setCaption("Playlists");
+  }
+
+  public static final String T_PLAYLISTTRACK = "chinook.playlisttrack";
+  public static final String PLAYLISTTRACK_PLAYLISTID = "playlistid";
+  public static final String PLAYLISTTRACK_PLAYLISTID_FK = "playlistid_fk";
+  public static final String PLAYLISTTRACK_TRACKID = "trackid";
+  public static final String PLAYLISTTRACK_TRACKID_FK = "trackid_fk";
+  public static final String PLAYLISTTRACK_ALBUM_DENORM = "album_denorm";
+  public static final String PLAYLISTTRACK_ARTIST_DENORM = "artist_denorm";
+
+  static {
+    Entities.define(T_PLAYLISTTRACK,
+            Properties.foreignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
+                    Properties.primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID)
+                            .setUpdatable(true))
+                    .setNullable(false)
+                    .setPreferredColumnWidth(120),
+            Properties.denormalizedViewProperty(PLAYLISTTRACK_ARTIST_DENORM, PLAYLISTTRACK_ALBUM_DENORM,
+                    Entities.getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
+                    .setPreferredColumnWidth(160),
+            Properties.foreignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
+                    Properties.primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.INTEGER)
+                            .setPrimaryKeyIndex(1)
+                            .setUpdatable(true))
+                    .setFetchDepth(3)
+                    .setNullable(false)
+                    .setPreferredColumnWidth(160),
+            Properties.denormalizedViewProperty(PLAYLISTTRACK_ALBUM_DENORM, PLAYLISTTRACK_TRACKID_FK,
+                    Entities.getProperty(T_TRACK, TRACK_ALBUMID_FK), "Album")
+                    .setPreferredColumnWidth(160))
+            .setDomainID(DOMAIN_ID)
+            .setStringProvider(new Entities.StringProvider(PLAYLISTTRACK_PLAYLISTID_FK)
+                    .addText(" - ").addValue(PLAYLISTTRACK_TRACKID_FK))
+            .setCaption("Playlist tracks");
+  }
+
+  public static final String P_UPDATE_TOTALS = "chinook.update_totals_procedure";
+
+  private static final DatabaseConnection.Procedure UPDATE_TOTALS_PROCEDURE = new AbstractProcedure<EntityConnection>(P_UPDATE_TOTALS, "Update invoice totals") {
+    @Override
+    public void execute(final EntityConnection entityConnection, final Object... arguments) throws DatabaseException {
+      try {
+        entityConnection.beginTransaction();
+        final EntitySelectCriteria selectCriteria = EntityCriteriaUtil.selectCriteria(T_INVOICE);
+        selectCriteria.setForUpdate(true);
+        selectCriteria.setForeignKeyFetchDepthLimit(0);
+        final List<Entity> invoices = entityConnection.selectMany(selectCriteria);
+        for (final Entity invoice : invoices) {
+          invoice.setValue(INVOICE_TOTAL, invoice.getValue(INVOICE_TOTAL_SUB));
+        }
+        final List<Entity> modifiedInvoices = EntityUtil.getModifiedEntities(invoices);
+        if (!modifiedInvoices.isEmpty()) {
+          entityConnection.update(modifiedInvoices);
+        }
+        entityConnection.commitTransaction();
+      }
+      catch (final DatabaseException dbException) {
+        if (entityConnection.isTransactionOpen()) {
+          entityConnection.rollbackTransaction();
+        }
+        throw dbException;
+      }
+    }
+  };
+
+  static {
+    Databases.addOperation(UPDATE_TOTALS_PROCEDURE);
   }
 }

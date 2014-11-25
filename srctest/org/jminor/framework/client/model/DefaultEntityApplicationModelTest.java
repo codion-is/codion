@@ -34,9 +34,9 @@ public final class DefaultEntityApplicationModelTest {
     node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_TRACK, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_PLAYLISTTRACK, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_INVOICELINE, node.getUserObject());
+    node = (DefaultMutableTreeNode) tree.nextElement();
+    assertEquals(Chinook.T_PLAYLISTTRACK, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_EMPLOYEE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
@@ -52,17 +52,17 @@ public final class DefaultEntityApplicationModelTest {
     node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_TRACK, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_PLAYLISTTRACK, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_INVOICELINE, node.getUserObject());
+    node = (DefaultMutableTreeNode) tree.nextElement();
+    assertEquals(Chinook.T_PLAYLISTTRACK, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_MEDIATYPE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_TRACK, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_PLAYLISTTRACK, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_INVOICELINE, node.getUserObject());
+    node = (DefaultMutableTreeNode) tree.nextElement();
+    assertEquals(Chinook.T_PLAYLISTTRACK, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
     assertEquals(Chinook.T_PLAYLIST, node.getUserObject());
   }
