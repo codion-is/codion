@@ -47,6 +47,7 @@ public final class EntityGeneratorModel {
   private static final String TABLE_SCHEMA = "TABLE_SCHEM";
   private static final String FOREIGN_KEY_PROPERTY_SUFFIX = "_FK";
   private static final String ENTITY_ID_PREFIX = "T_";
+  private static final String PROPERTIES_COLUMN_PROPERTY = "        Properties.columnProperty(";
 
   static final Integer SCHEMA_COLUMN_ID = 0;
   static final Integer TABLE_COLUMN_ID = 1;
@@ -274,10 +275,10 @@ public final class EntityGeneratorModel {
     final String caption = getCaption(column);
     if (column.getKeySeq() != -1) {
       if (column.getColumnTypeName().equals("Types.INTEGER")) {
-        builder.append("        Properties.columnProperty(").append(propertyID).append(")");
+        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyID).append(")");
       }
       else {
-        builder.append("        Properties.columnProperty(").append(propertyID).append(", ")
+        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyID).append(", ")
                 .append(column.getColumnTypeName()).append(")");
       }
       if (column.getKeySeq() > 0) {
@@ -290,10 +291,10 @@ public final class EntityGeneratorModel {
     }
     else {
       if (column.getForeignKeyColumn() != null && column.getColumnType() == Types.INTEGER) {
-        builder.append("        Properties.columnProperty(").append(propertyID).append(")");
+        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyID).append(")");
       }
       else {
-        builder.append("        Properties.columnProperty(").append(propertyID).append(", ")
+        builder.append(PROPERTIES_COLUMN_PROPERTY).append(propertyID).append(", ")
                 .append(column.getColumnTypeName()).append(", \"").append(caption).append("\")");
       }
     }
