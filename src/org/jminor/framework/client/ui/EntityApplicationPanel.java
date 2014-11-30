@@ -755,6 +755,12 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
         caption = Entities.getCaption(panelProvider.getEntityID());
       }
       dialog = new JDialog(getParentWindow(), caption);
+      dialog.addWindowListener(new WindowAdapter() {
+        @Override
+        public void windowClosed(final WindowEvent e) {
+          entityPanel.savePreferences();
+        }
+      });
       dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
       dialog.setLayout(new BorderLayout());
       dialog.add(entityPanel, BorderLayout.CENTER);
