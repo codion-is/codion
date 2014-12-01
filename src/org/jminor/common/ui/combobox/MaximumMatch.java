@@ -16,6 +16,8 @@ import java.awt.event.KeyEvent;
 import java.text.Normalizer;
 
 /**
+ * Code originally from: http://www.orbital-computer.de/JComboBox
+ *
  * Selects an item in a JComboBox based values typed in on the keyboard.
  * @author Thomas Bierhance
  */

@@ -478,9 +478,9 @@ public class DefaultEntityModel implements EntityModel {
    * @param updateEvent the update event
    */
   private void handleMasterUpdate(final EntityEditModel.UpdateEvent updateEvent) {
-    editModel.replaceForeignKeyValues(masterModel.getEntityID(), updateEvent.getUpdatedEntities());
+    editModel.replaceForeignKeyValues(masterModel.getEntityID(), updateEvent.getUpdatedEntities().values());
     if (containsTableModel()) {
-      getTableModel().replaceForeignKeyValues(masterModel.getEntityID(), updateEvent.getUpdatedEntities());
+      getTableModel().replaceForeignKeyValues(masterModel.getEntityID(), updateEvent.getUpdatedEntities().values());
     }
   }
 

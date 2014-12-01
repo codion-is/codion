@@ -62,7 +62,7 @@ public class EmpDept {
     /*Defining the entity type T_DEPARTMENT*/
     Entities.define(T_DEPARTMENT,
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, getString(DEPARTMENT_ID))
-                    .setNullable(false),
+                    .setUpdatable(true).setNullable(false),
             Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, getString(DEPARTMENT_NAME))
                     .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
             Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, getString(DEPARTMENT_LOCATION))

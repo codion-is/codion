@@ -371,7 +371,7 @@ public final class DefaultEntityEditModelTest {
       final EventInfoListener<EntityEditModel.UpdateEvent> listener = new EventInfoListener<EntityEditModel.UpdateEvent>() {
         @Override
         public void eventOccurred(final EntityEditModel.UpdateEvent info) {
-          assertEquals(toUpdate, info.getUpdatedEntities());
+          assertEquals(toUpdate, new ArrayList<>(info.getUpdatedEntities().values()));
         }
       };
       employeeEditModel.addAfterUpdateListener(listener);

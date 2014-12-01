@@ -6,7 +6,9 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventListener;
+import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.ValueLinks;
@@ -57,6 +59,37 @@ public final class DefaultEntityModelTest {
       employeeTableModel.getSelectionModel().setSelectedItem(employee);
       assertFalse(employeeEditModel.isModified());
     }
+  }
+
+  @Test
+  public void testUpdatePrimaryKey() throws DatabaseException, ValidationException {
+    departmentModel.refresh();
+    final EntityEditModel deptEditModel = departmentModel.getEditModel();
+    final EntityTableModel deptTableModel = departmentModel.getTableModel();
+    final Entity.Key operationsKey = Entities.key(EmpDept.T_DEPARTMENT);
+    operationsKey.setValue(EmpDept.DEPARTMENT_ID, 40);//operations
+    deptTableModel.setSelectedByPrimaryKeys(Arrays.asList(operationsKey));
+
+    deptEditModel.setValue(EmpDept.DEPARTMENT_ID, 80);
+    deptEditModel.update();
+
+    assertFalse(deptTableModel.getSelectionModel().isSelectionEmpty());
+    Entity operations = deptTableModel.getSelectionModel().getSelectedItem();
+    assertEquals(80, operations.getValue(EmpDept.DEPARTMENT_ID));
+
+    deptTableModel.setFilterCriteria(new FilterCriteria<Entity>() {
+      @Override
+      public boolean include(final Entity item) {
+        return !Util.equal(80, item.getValue(EmpDept.DEPARTMENT_ID));
+      }
+    });
+
+    deptEditModel.setEntity(operations);
+    deptEditModel.setValue(EmpDept.DEPARTMENT_ID, 40);
+    deptEditModel.update();
+
+    operations = deptTableModel.getFilteredItems().get(0);
+    assertEquals(40, operations.getValue(EmpDept.DEPARTMENT_ID));
   }
 
   @Test

@@ -388,23 +388,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final void replaceEntities(final Collection<Entity> entities) {
-    for (final Entity entity : getVisibleItems()) {
-      for (final Entity newEntity : entities) {
-        if (entity.getPrimaryKey().equals(newEntity.getPrimaryKey())) {
-          entity.setAs(newEntity);
-          final int index = indexOf(entity);
-          fireTableRowsUpdated(index, index);
-        }
-      }
-    }
-
-    for (final Entity entity : getFilteredItems()) {
-      for (final Entity newEntity : entities) {
-        if (entity.getPrimaryKey().equals(newEntity.getPrimaryKey())) {
-          entity.setAs(newEntity);
-        }
-      }
-    }
+    replaceEntitiesByKey(EntityUtil.hashByPrimaryKey(entities));
   }
 
   /** {@inheritDoc} */
@@ -447,6 +431,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       if (index >= 0) {
         indexes.add(indexOf(visibleEntity));
         keyList.remove(index);
+        if (keyList.isEmpty()) {
+          break;
+        }
       }
     }
 
@@ -759,18 +746,30 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   private void handleUpdate(final EntityEditModel.UpdateEvent updateEvent) {
-    final List<Entity> updatedEntities = updateEvent.getUpdatedEntities();
-    if (updateEvent.isPrimaryKeyModified()) {
-      refresh();//best we can do under the circumstances
-    }
-    else {//replace the updated entities in the table model
-      final List<Entity> updated = new ArrayList<>();
-      for (final Entity entity : updatedEntities) {
-        if (entity.is(entityID)) {
-          updated.add(entity);
+    replaceEntitiesByKey(new HashMap<>(updateEvent.getUpdatedEntities()));
+  }
+
+  /**
+   * Replace the entities identified by the Entity.Key map keys with their respective value
+   * @param entityMap the entities to replace mapped to the corresponding primary key found in this table model
+   */
+  private void replaceEntitiesByKey(final Map<Entity.Key, Entity> entityMap) {
+    for (final Entity entity : getAllItems()) {
+      final Iterator<Map.Entry<Entity.Key, Entity>> mapIterator = entityMap.entrySet().iterator();
+      while (mapIterator.hasNext()) {
+        final Map.Entry<Entity.Key, Entity> entry = mapIterator.next();
+        if (entity.getPrimaryKey().equals(entry.getKey())) {
+          mapIterator.remove();
+          entity.setAs(entry.getValue());
+          final int index = indexOf(entity);
+          if (index >= 0) {
+            fireTableRowsUpdated(index, index);
+          }
         }
       }
-      replaceEntities(updated);
+      if (entityMap.isEmpty()) {
+        break;
+      }
     }
   }
 

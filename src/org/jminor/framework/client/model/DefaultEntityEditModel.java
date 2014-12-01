@@ -29,11 +29,13 @@ import org.jminor.framework.domain.Property;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 
 /**
@@ -522,7 +524,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       setEntity(updatedEntities.get(index));
     }
 
-    afterUpdateEvent.fire(new DefaultUpdateEvent(updatedEntities, EntityUtil.isPrimaryKeyModified(modifiedEntities)));
+    afterUpdateEvent.fire(new DefaultUpdateEvent(getOriginalKeyMap(modifiedEntities, new ArrayList<>(updatedEntities))));
 
     return updatedEntities;
   }
@@ -1077,6 +1079,34 @@ public class DefaultEntityEditModel implements EntityEditModel {
     return stringBuilder.toString();
   }
 
+  /**
+   * @param entitiesBeforeUpdate the entities before update
+   * @param entitiesAfterUpdate the entities after update
+   * @return the updated entities mapped to their respective original primary keys
+   */
+  private static Map<Entity.Key, Entity> getOriginalKeyMap(final List<Entity> entitiesBeforeUpdate,
+                                                           final List<Entity> entitiesAfterUpdate) {
+    final Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
+    for (final Entity entity : entitiesBeforeUpdate) {
+      keyMap.put(entity.getOriginalPrimaryKey(), findAndRemove(entity.getPrimaryKey(), entitiesAfterUpdate.listIterator()));
+    }
+
+    return keyMap;
+  }
+
+  private static Entity findAndRemove(final Entity.Key primaryKey, final ListIterator<Entity> iterator) {
+    while (iterator.hasNext()) {
+      final Entity current = iterator.next();
+      if (current.getPrimaryKey().equals(primaryKey)) {
+        iterator.remove();
+
+        return current;
+      }
+    }
+
+    return null;
+  }
+
   private final class StatusMessageListener implements EventInfoListener<ValueChange<String, ?>> {
 
     @Override
@@ -1148,27 +1178,20 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   private static final class DefaultUpdateEvent implements UpdateEvent {
 
-    private final List<Entity> updatedEntities;
-    private final boolean primaryKeyModified;
+    private final Map<Entity.Key, Entity> updatedEntities;
 
     /**
      * Instantiates a new DefaultUpdateEvent.
-     * @param updatedEntities the updated entities
-     * @param primaryKeyModified true if primary key values were modified during the update
+     * @param updatedEntities the updated entities, mapped to their respective original primary key, that is,
+     * the primary key prior to the update
      */
-    private DefaultUpdateEvent(final List<Entity> updatedEntities, final boolean primaryKeyModified) {
+    private DefaultUpdateEvent(final Map<Entity.Key, Entity> updatedEntities) {
       this.updatedEntities = updatedEntities;
-      this.primaryKeyModified = primaryKeyModified;
     }
 
     @Override
-    public List<Entity> getUpdatedEntities() {
+    public Map<Entity.Key, Entity> getUpdatedEntities() {
       return updatedEntities;
-    }
-
-    @Override
-    public boolean isPrimaryKeyModified() {
-      return primaryKeyModified;
     }
   }
 }

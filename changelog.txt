@@ -3817,3 +3817,5 @@
   EntityPanel, navigation and panel state constants changed to enums
   EntityEditPanel, confirm type constants changed to enum
   EntityApplicationPanel, now saves preferences for support panels on dialog close
+  EntityEditModel.UpdateEvent now contains the updated entities mapped to their respective original primary keys
+  DefaultEntityTableModel, uses the above information to refresh the relevant rows after an update has been performed

@@ -17,6 +17,7 @@ import org.jminor.framework.domain.Property;
 
 import java.util.Collection;
 import java.util.List;
+import java.util.Map;
 
 /**
  * Specifies a class for editing {@link Entity} instances.
@@ -496,13 +497,9 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    */
   interface UpdateEvent {
     /**
-     * @return the updated entities
+     * @return the updated entities, mapped to their respective original primary keys, that is,
+     * the primary keys before the update was performed
      */
-    List<Entity> getUpdatedEntities();
-
-    /**
-     * @return true if primary key values were modified during the update
-     */
-    boolean isPrimaryKeyModified();
+    Map<Entity.Key, Entity> getUpdatedEntities();
   }
 }
