@@ -585,13 +585,11 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   @Override
   public final void setActiveDetailPanel(final MasterDetailPanel detailPanel) {
     if (detailPanelTabbedPane != null) {
-      final EntityModel lastLinkedDetailModel = getTabbedDetailPanel().getModel();
       detailPanelTabbedPane.setSelectedComponent((JComponent) detailPanel);
-      final EntityModel currentLinkedDetailModel = getTabbedDetailPanel().getModel();
-      if (!currentLinkedDetailModel.equals(lastLinkedDetailModel)) {
-        entityModel.removeLinkedDetailModel(lastLinkedDetailModel);
-        entityModel.addLinkedDetailModel(currentLinkedDetailModel);
+      for (final EntityModel linkedModel : new ArrayList<>(entityModel.getLinkedDetailModels())) {
+        entityModel.removeLinkedDetailModel(linkedModel);
       }
+      entityModel.addLinkedDetailModel(getTabbedDetailPanel().getModel());
     }
   }
 

@@ -3819,3 +3819,4 @@
   EntityApplicationPanel, now saves preferences for support panels on dialog close
   EntityEditModel.UpdateEvent now contains the updated entities mapped to their respective original primary keys
   DefaultEntityTableModel, uses the above information to refresh the relevant rows after an update has been performed
+  EntityPanel.setActiveDetailPanel() bug fixed, introduced in the navigation bug fix above, selecting a detail panel by tab did not work anymore
