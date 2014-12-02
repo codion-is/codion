@@ -532,7 +532,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final List<Entity> delete() throws DatabaseException {
-    return delete(Arrays.asList(getEntityCopy()));
+    return delete(Arrays.asList((Entity) getEntity().getOriginalCopy()));
   }
 
   /** {@inheritDoc} */
