@@ -4,29 +4,20 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
+import org.jminor.common.ui.table.FilteredTablePanel;
 import org.jminor.framework.server.monitor.ClientMonitor;
 import org.jminor.framework.server.monitor.ClientUserMonitor;
 
-import javax.swing.BorderFactory;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JLabel;
-import javax.swing.JList;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JScrollPane;
-import javax.swing.JSpinner;
-import javax.swing.JSplitPane;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.BorderLayout;
-import java.awt.FlowLayout;
+import java.awt.*;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
@@ -35,6 +26,8 @@ import java.rmi.RemoteException;
  * A ClientUserMonitorPanel
  */
 public final class ClientUserMonitorPanel extends JPanel {
+
+  private static final int SPINNER_COLUMNS = 3;
 
   private final ClientUserMonitor model;
 
@@ -79,6 +72,10 @@ public final class ClientUserMonitorPanel extends JPanel {
       }
     });
 
+    final FilteredTablePanel<ClientUserMonitor.UserInfo, Integer> userHistoryTable = new FilteredTablePanel<>(model.getUserHistoryTableModel());
+    final JPanel userHistoryTableBase = new JPanel(UiUtil.createBorderLayout());
+    userHistoryTableBase.add(userHistoryTable.getTableScrollPane(), BorderLayout.CENTER);
+
     final JPanel clientTypeBase = new JPanel(UiUtil.createBorderLayout());
     final JScrollPane clientTypeScroller = new JScrollPane(clientTypeList);
     final JScrollPane userScroller = new JScrollPane(userList);
@@ -114,13 +111,36 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     splitPane.setLeftComponent(clientTypeBase);
 
-    final JPanel rightPanel = new JPanel(UiUtil.createBorderLayout());
-    rightPanel.add(actionBase, BorderLayout.NORTH);
-    rightPanel.add(clientTypeMonitorPanel, BorderLayout.CENTER);
+    final JPanel currentConnectionsPanel = new JPanel(UiUtil.createBorderLayout());
+    currentConnectionsPanel.add(actionBase, BorderLayout.NORTH);
+    currentConnectionsPanel.add(clientTypeMonitorPanel, BorderLayout.CENTER);
 
-    splitPane.setRightComponent(rightPanel);
+    splitPane.setRightComponent(currentConnectionsPanel);
 
-    add(splitPane, BorderLayout.CENTER);
+    final JPanel configPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
+    final JSpinner spnUpdateInterval = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
+            TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
+
+    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setEditable(false);
+    ((JSpinner.DefaultEditor) spnUpdateInterval.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
+
+    configPanel.add(new JLabel("Update interval (s)"));
+    configPanel.add(spnUpdateInterval);
+
+    final JPanel configBase = new JPanel(UiUtil.createBorderLayout());
+    configBase.add(configPanel, BorderLayout.CENTER);
+    configBase.add(ControlProvider.createButton(
+            Controls.methodControl(model, "resetHistory", "Reset")), BorderLayout.EAST);
+
+    final JPanel connectionHistoryPanel = new JPanel(UiUtil.createBorderLayout());
+    connectionHistoryPanel.add(userHistoryTableBase, BorderLayout.CENTER);
+    connectionHistoryPanel.add(configBase, BorderLayout.SOUTH);
+
+    final JTabbedPane baseTabPane = new JTabbedPane();
+    baseTabPane.addTab("Current State", splitPane);
+    baseTabPane.addTab("History", connectionHistoryPanel);
+
+    add(baseTabPane, BorderLayout.CENTER);
   }
 
   private JComponent initializeMaintenanceIntervalComponent() throws RemoteException {
