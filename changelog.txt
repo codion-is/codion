@@ -3823,3 +3823,4 @@
   DefaultEntityEditModel.delete() bug fixed, now uses getEntity().getOriginalCopy() so that any non-persistent changes to the primary key do not interfere with the delete
   ServerMonitor, connection history tab added
   ServerMonitor, the above improved a bit
+  FilteredTablePanel.SortableHeaderRenderer bug fixed, now aligns the text correctly when sorting icon is visible

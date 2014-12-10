@@ -587,6 +587,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
       if (component instanceof JLabel) {
         final JLabel label = (JLabel) component;
         final TableColumn tableColumn = table.getColumnModel().getColumn(column);
+        label.setHorizontalTextPosition(JLabel.LEFT);
         label.setIcon(getHeaderRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + 5));
       }
 
