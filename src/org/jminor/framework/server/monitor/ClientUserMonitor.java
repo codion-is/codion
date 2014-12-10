@@ -16,11 +16,12 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
-import javax.swing.*;
+import javax.swing.DefaultListModel;
 import javax.swing.table.TableColumn;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
 /**
@@ -119,12 +120,16 @@ public final class ClientUserMonitor {
     private String clientTypeID;
     private String clientHost;
     private Date lastSeen;
+    private UUID clientID;
+    private int connectionCount = 1;
 
-    private UserInfo(User user, String clientTypeID, String clientHost, Date lastSeen) {
+    private UserInfo(final User user, final String clientTypeID, final String clientHost, final Date lastSeen,
+                     final UUID clientID) {
       this.user = user;
       this.clientTypeID = clientTypeID;
       this.clientHost = clientHost;
       this.lastSeen = lastSeen;
+      this.clientID = clientID;
     }
 
     public User getUser() {
@@ -143,26 +148,46 @@ public final class ClientUserMonitor {
       return lastSeen;
     }
 
-    public void setClientTypeID(String clientTypeID) {
+    public void setClientTypeID(final String clientTypeID) {
       this.clientTypeID = clientTypeID;
     }
 
-    public void setClientHost(String clientHost) {
+    public UUID getClientID() {
+      return clientID;
+    }
+
+    public int getConnectionCount() {
+      return connectionCount;
+    }
+
+    public void setClientHost(final String clientHost) {
       this.clientHost = clientHost;
     }
 
-    public void setLastSeen(Date lastSeen) {
+    public void setLastSeen(final Date lastSeen) {
       this.lastSeen = lastSeen;
     }
 
+    public void setClientID(final UUID clientID) {
+      this.clientID = clientID;
+    }
+
+    public void incrementConnectionCount() {
+      connectionCount++;
+    }
+
     @Override
-    public boolean equals(Object obj) {
+    public boolean equals(final Object obj) {
       return obj instanceof UserInfo && ((UserInfo) obj).user.equals(user);
     }
 
     @Override
     public int hashCode() {
       return user.hashCode();
+    }
+
+    public boolean isNewConnection(final UUID clientID) {
+      return !this.clientID.equals(clientID);
     }
   }
 
@@ -175,17 +200,22 @@ public final class ClientUserMonitor {
     protected void doRefresh() {
       try {
         for (final ClientInfo clientInfo : server.getClients()) {
-          final UserInfo userInfo = new UserInfo(clientInfo.getUser(), clientInfo.getClientTypeID(), clientInfo.getClientHost(), new Date());
-          if (contains(userInfo, true)) {
-            final int index = indexOf(userInfo);
-            final UserInfo info = getItemAt(index);
-            info.setClientHost(userInfo.getClientHost());
-            info.setClientTypeID(userInfo.getClientTypeID());
-            info.setLastSeen(userInfo.getLastSeen());
+          final UserInfo newUserInfo = new UserInfo(clientInfo.getUser(), clientInfo.getClientTypeID(),
+                  clientInfo.getClientHost(), new Date(), clientInfo.getClientID());
+          if (contains(newUserInfo, true)) {
+            final int index = indexOf(newUserInfo);
+            final UserInfo currentUserIinfo= getItemAt(index);
+            currentUserIinfo.setClientHost(newUserInfo.getClientHost());
+            currentUserIinfo.setClientTypeID(newUserInfo.getClientTypeID());
+            currentUserIinfo.setLastSeen(newUserInfo.getLastSeen());
+            if (currentUserIinfo.isNewConnection(newUserInfo.getClientID())) {
+              currentUserIinfo.incrementConnectionCount();
+              currentUserIinfo.setClientID(newUserInfo.getClientID());
+            }
             fireTableRowsUpdated(index, index);
           }
           else {
-            addItems(Arrays.asList(userInfo), true);
+            addItems(Arrays.asList(newUserInfo), false);
           }
         }
       }
@@ -202,6 +232,7 @@ public final class ClientUserMonitor {
         case 1: return rowObject.getClientTypeID();
         case 2: return rowObject.getClientHost();
         case 3: return rowObject.getLastSeen();
+        case 4: return rowObject.getConnectionCount();
       }
       throw new IllegalArgumentException(Integer.toString(column));
     }
@@ -220,15 +251,24 @@ public final class ClientUserMonitor {
     final TableColumn lastSeen = new TableColumn(3);
     lastSeen.setIdentifier(3);
     lastSeen.setHeaderValue("Last seen");
+    final TableColumn connectionCount = new TableColumn(4);
+    connectionCount.setIdentifier(4);
+    connectionCount.setHeaderValue("Connections");
 
-    return new AbstractTableSortModel<UserInfo, Integer>(Arrays.asList(username, clientType, host, lastSeen)) {
+    return new AbstractTableSortModel<UserInfo, Integer>(Arrays.asList(username, clientType, host, lastSeen, connectionCount)) {
       @Override
       protected Comparable getComparable(final UserInfo rowObject, final Integer columnIdentifier) {
         switch (columnIdentifier) {
-          case 0: return rowObject.getUser().getUsername();
-          case 1: return rowObject.getClientTypeID();
-          case 2: return rowObject.getClientHost();
-          case 3: return rowObject.getLastSeen();
+          case 0:
+            return rowObject.getUser().getUsername();
+          case 1:
+            return rowObject.getClientTypeID();
+          case 2:
+            return rowObject.getClientHost();
+          case 3:
+            return rowObject.getLastSeen();
+          case 4:
+            return rowObject.getConnectionCount();
         }
         throw new IllegalArgumentException(columnIdentifier.toString());
       }
@@ -240,6 +280,7 @@ public final class ClientUserMonitor {
           case 1: return String.class;
           case 2: return String.class;
           case 3: return Date.class;
+          case 4: return Integer.class;
         }
         throw new IllegalArgumentException(columnIdentifier.toString());
       }

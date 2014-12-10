@@ -14,10 +14,22 @@ import org.jminor.common.ui.table.FilteredTablePanel;
 import org.jminor.framework.server.monitor.ClientMonitor;
 import org.jminor.framework.server.monitor.ClientUserMonitor;
 
-import javax.swing.*;
+import javax.swing.BorderFactory;
+import javax.swing.JComboBox;
+import javax.swing.JComponent;
+import javax.swing.JLabel;
+import javax.swing.JList;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import javax.swing.JScrollPane;
+import javax.swing.JSpinner;
+import javax.swing.JSplitPane;
+import javax.swing.JTabbedPane;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
-import java.awt.*;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
 import java.awt.event.ItemEvent;
 import java.awt.event.ItemListener;
 import java.rmi.RemoteException;
@@ -137,7 +149,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     connectionHistoryPanel.add(configBase, BorderLayout.SOUTH);
 
     final JTabbedPane baseTabPane = new JTabbedPane();
-    baseTabPane.addTab("Current State", splitPane);
+    baseTabPane.addTab("Current", splitPane);
     baseTabPane.addTab("History", connectionHistoryPanel);
 
     add(baseTabPane, BorderLayout.CENTER);
