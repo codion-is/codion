@@ -102,6 +102,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     add(infoBase, BorderLayout.NORTH);
 
     txtLog.setLineWrap(false);
+    txtLog.setEditable(false);
     final JScrollPane scrollPane = new JScrollPane(txtLog);
     scrollPane.setBorder(BorderFactory.createTitledBorder("Connection log"));
 
