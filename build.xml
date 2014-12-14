@@ -48,13 +48,11 @@
     <pathelement path="${build.demos}"/>
   </path>
 
-  <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml">
-    <classpath path="${jacocoant.jar}" />
-  </taskdef>
+  <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpath="${jacocoant.jar}"/>
 
-  <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant">
-    <classpath path="${ivy.jar}" />
-  </taskdef>
+  <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${ivy.jar}"/>
+
+  <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpath="${getdown.jar}"/>
 
   <fileset id="common_resources" dir="${src}" includes=
           "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt"/>
@@ -376,7 +374,7 @@
     </signjar>
   </target>
 
-  <target name="deploy_demos" depends="dist, recreate_h2_db, compile_demo_reports"
+  <target name="deploy_demos"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <tstamp />
     <!--Setup-->
@@ -387,7 +385,7 @@
       <zipgroupfileset dir="${dist}" includes="jminor-common.jar, jminor-client.jar, jminor-plugins.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
       <fileset file="${deploy.demos.truststore}"/>
     </jar>
-    <!--EmpDept WebStart-->
+    <!--EmpDept WebStart & getdown-->
     <mkdir dir="${deploy.demos.dir}/empdept"/>
     <create_manifest destination="${deploy.demos.dir}" application-name="EmpDept JMinor Demo"
                      main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>
@@ -400,6 +398,8 @@
     <signjar jar="${deploy.demos.dir}/empdept/empdept.jar" alias="${jar.sign.alias}"
              storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
     <copy file="${basedir}/resources/demos/empdept/empdept.jnlp" todir="${deploy.demos.dir}/empdept"/>
+    <copy file="${basedir}/resources/demos/empdept/getdown.txt" todir="${deploy.demos.dir}/empdept"/>
+    <getdown_digest appdir="${deploy.demos.dir}/empdept"/>
     <!--EmpDept without WebStart-->
     <zip destfile="${deploy.demos.dir}/empdept/empdept.zip">
       <zipfileset file="${deploy.demos.dir}/empdept/empdept.jar"/>
@@ -407,7 +407,7 @@
       <zipfileset file="${basedir}/resources/demos/config/h2db.config"/>
       <zipfileset file="${basedir}/resources/demos/config/remote.config"/>
     </zip>
-    <!--Chinook WebStart-->
+    <!--Chinook WebStart & getdown-->
     <mkdir dir="${deploy.demos.dir}/chinook"/>
     <create_manifest destination="${deploy.demos.dir}" application-name="Chinook JMinor Demo"
                      main-class="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"/>
@@ -420,6 +420,8 @@
     <signjar jar="${deploy.demos.dir}/chinook/chinook.jar" alias="${jar.sign.alias}"
              storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
     <copy file="${basedir}/resources/demos/chinook/chinook.jnlp" todir="${deploy.demos.dir}/chinook"/>
+    <copy file="${basedir}/resources/demos/chinook/getdown.txt" todir="${deploy.demos.dir}/chinook"/>
+    <getdown_digest appdir="${deploy.demos.dir}/chinook"/>
     <!--Chinook without WebStart-->
     <zip destfile="${deploy.demos.dir}/chinook/chinook.zip">
       <zipfileset file="${deploy.demos.dir}/chinook/chinook.jar"/>
