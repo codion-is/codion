@@ -219,11 +219,11 @@ public final class EntityUtil {
    * @param entities the entities to map by property value
    * @return a Map of entities hashed by property value
    */
-  public static LinkedHashMap<Object, Collection<Entity>> hashByPropertyValue(final String propertyID, final Collection<Entity> entities) {
-    return Util.map(entities, new Util.HashKeyProvider<Object, Entity>() {
+  public static <K> LinkedHashMap<K, Collection<Entity>> hashByPropertyValue(final String propertyID, final Collection<Entity> entities) {
+    return Util.map(entities, new Util.HashKeyProvider<K, Entity>() {
       @Override
-      public Object getKey(final Entity value) {
-        return value.getValue(propertyID);
+      public K getKey(final Entity value) {
+        return (K) value.getValue(propertyID);
       }
     });
   }

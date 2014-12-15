@@ -198,7 +198,7 @@ public class EntityUtilTest {
       entities.add(entity);
     }
     final Property property = Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID);
-    Collection propertyValues = EntityUtil.getPropertyValues(EmpDept.DEPARTMENT_ID, entities);
+    Collection<Integer> propertyValues = EntityUtil.getPropertyValues(EmpDept.DEPARTMENT_ID, entities);
     assertTrue(propertyValues.containsAll(values));
     propertyValues = EntityUtil.getPropertyValues(property, entities);
     assertTrue(propertyValues.containsAll(values));
@@ -266,7 +266,7 @@ public class EntityUtilTest {
     values.add(3);
     values.add(4);
 
-    Collection propertyValues = EntityUtil.getDistinctPropertyValues(EmpDept.DEPARTMENT_ID, entities);
+    Collection<Integer> propertyValues = EntityUtil.getDistinctPropertyValues(EmpDept.DEPARTMENT_ID, entities);
     assertEquals(4, propertyValues.size());
     assertTrue(propertyValues.containsAll(values));
 
@@ -355,7 +355,7 @@ public class EntityUtilTest {
     entityFive.setValue(EmpDept.DEPARTMENT_ID, 3);
     entities.add(entityFive);
 
-    final Map<Object, Collection<Entity>> map = EntityUtil.hashByPropertyValue(EmpDept.DEPARTMENT_ID, entities);
+    final Map<Integer, Collection<Entity>> map = EntityUtil.hashByPropertyValue(EmpDept.DEPARTMENT_ID, entities);
     final Collection<Entity> ones = map.get(1);
     assertTrue(ones.contains(entityOne));
     assertTrue(ones.contains(entityTwo));
