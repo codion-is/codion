@@ -157,6 +157,21 @@ public class DefaultEntityConnectionTest {
   }
 
   @Test
+  public void selectManyLimitOffset() throws Exception {
+    final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE)
+            .setOrderByClause(EmpDept.EMPLOYEE_NAME).setLimit(2);
+    List<Entity> result = connection.selectMany(criteria);
+    assertEquals(2, result.size());
+    criteria.setLimit(3);
+    criteria.setOffset(3);
+    result = connection.selectMany(criteria);
+    assertEquals(3, result.size());
+    assertEquals("BLAKE", result.get(0).getValue(EmpDept.EMPLOYEE_NAME));
+    assertEquals("CLARK", result.get(1).getValue(EmpDept.EMPLOYEE_NAME));
+    assertEquals("FORD", result.get(2).getValue(EmpDept.EMPLOYEE_NAME));
+  }
+
+  @Test
   public void selectMany() throws Exception {
     List<Entity> result = connection.selectMany(new ArrayList<Entity.Key>());
     assertTrue(result.isEmpty());

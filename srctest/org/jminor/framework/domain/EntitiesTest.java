@@ -290,4 +290,12 @@ public class EntitiesTest {
                     .setPrimaryKeyIndex(0));
     assertFalse(Entities.hasSingleIntegerPrimaryKey(entityId));
   }
+
+  @Test
+  public void havingClause() {
+    final String havingClause = "p1 > 1";
+    Entities.define("entityID",
+            Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
+    assertEquals(havingClause, Entities.getHavingClause("entityID"));
+  }
 }

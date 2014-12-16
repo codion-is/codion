@@ -266,6 +266,14 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
+   * @return the having clause associated with this entity
+   */
+  public static String getHavingClause(final String entityID) {
+    return DefaultEntityDefinition.getDefinition(entityID).getHavingClause();
+  }
+
+  /**
+   * @param entityID the entity ID
    * @return the name of the table used to select entities identified by <code>entityID</code>
    * @throws IllegalArgumentException if the entity is undefined
    */

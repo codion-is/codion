@@ -3826,3 +3826,6 @@
   FilteredTablePanel.SortableHeaderRenderer bug fixed, now aligns the text correctly when sorting icon is visible
   ServerMonitor, ClientInstanceMonitorPanel, log JTextArea no longer editable
   EntityUtil.hashByPropertyValue() map key generified
+0.9.2 [incompatible api: EntityCritiera, EntityDefinition]
+  EntityCriteria, added support for limit/offset
+  EntityDefinition, added having clause

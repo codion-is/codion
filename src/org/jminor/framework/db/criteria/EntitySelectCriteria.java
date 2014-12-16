@@ -20,6 +20,28 @@ public interface EntitySelectCriteria extends EntityCriteria {
   EntitySelectCriteria setOrderByClause(final String orderByClause);
 
   /**
+   * @return the limit to use for the given criteria
+   */
+  int getLimit();
+
+  /**
+   * @param limit the limit to use for this criteria
+   * @return this EntityCriteriaInstance
+   */
+  EntitySelectCriteria setLimit(final int limit);
+
+  /**
+   * @return the offset to use for the given criteria
+   */
+  int getOffset();
+
+  /**
+   * @param offset the offset to use for this criteria
+   * @return this EntityCriteriaInstance
+   */
+  EntitySelectCriteria setOffset(final int offset);
+
+  /**
    * @return true if this select should lock the result for update
    */
   boolean isForUpdate();

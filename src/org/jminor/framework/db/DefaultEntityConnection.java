@@ -769,7 +769,8 @@ final class DefaultEntityConnection implements EntityConnection {
     String selectSQL = null;
     try {
       selectSQL = getSelectSQL(criteria, Entities.getSelectColumnsString(criteria.getEntityID()),
-              criteria.getOrderByClause(), Entities.getGroupByClause(criteria.getEntityID()), criteria.isForUpdate());
+              criteria.getOrderByClause(), Entities.getGroupByClause(criteria.getEntityID()),
+              Entities.getHavingClause(criteria.getEntityID()), criteria.isForUpdate());
       statement = connection.getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
       List<Entity> result = null;
@@ -811,7 +812,7 @@ final class DefaultEntityConnection implements EntityConnection {
     ResultSet resultSet = null;
     String selectSQL = null;
     try {
-      selectSQL = getSelectSQL(criteria, "*", null, null, true);
+      selectSQL = getSelectSQL(criteria, "*", null, null, null, true);
       statement = connection.getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
     }
@@ -1011,7 +1012,7 @@ final class DefaultEntityConnection implements EntityConnection {
   }
 
   private String getSelectSQL(final EntitySelectCriteria criteria, final String columnsString, final String orderByClause,
-                              final String groupByClause, final boolean selectForUpdate) {
+                              final String groupByClause, final String havingClause, final boolean selectForUpdate) {
     String selectSQL = Entities.getSelectQuery(criteria.getEntityID());
     if (selectSQL == null) {
       final String tableName;
@@ -1032,8 +1033,19 @@ final class DefaultEntityConnection implements EntityConnection {
     if (groupByClause != null) {
       queryBuilder.append(" group by ").append(groupByClause);
     }
+    if (havingClause != null) {
+      queryBuilder.append(" having ").append(havingClause);
+    }
     if (orderByClause != null) {
       queryBuilder.append(" order by ").append(orderByClause);
+    }
+    if (criteria.getLimit() > 0) {
+      queryBuilder.append(" limit ");
+      queryBuilder.append(criteria.getLimit());
+      if (criteria.getOffset() > 0) {
+        queryBuilder.append(" offset ");
+        queryBuilder.append(criteria.getOffset());
+      }
     }
     if (selectForUpdate) {
       queryBuilder.append(" for update");

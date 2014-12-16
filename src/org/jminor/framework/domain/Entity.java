@@ -524,6 +524,22 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
     Definition setGroupByClause(final String groupByClause);
 
     /**
+     * @return the having clause to use when querying entities of this type,
+     * without the "having" keyword
+     */
+    String getHavingClause();
+
+    /**
+     * Sets the having clause for this entity type, this clause should not
+     * include the "having" keyword.
+     * @param havingClause the having clause
+     * @return this {@link Entity.Definition} instance
+     * @throws IllegalStateException in case a having clause has already been set,
+     * for example automatically, based on grouping properties
+     */
+    Definition setHavingClause(final String havingClause);
+
+    /**
      * @return the name of the table to use when selecting entities of this type
      */
     String getSelectTableName();

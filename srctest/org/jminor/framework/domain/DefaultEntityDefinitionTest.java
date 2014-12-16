@@ -110,6 +110,22 @@ public class DefaultEntityDefinitionTest {
     definition.setGroupByClause("p1, p2");
   }
 
+  @Test
+  public void testSetHavingClause() {
+    final String havingClause = "p1 > 1";
+    final Entity.Definition definition = new DefaultEntityDefinition("entityID",
+            Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
+    assertEquals(havingClause, definition.getHavingClause());
+  }
+
+  @Test(expected = IllegalStateException.class)
+  public void testSetHavingClauseAlreadySet() {
+    final String havingClause = "p1 > 1";
+    final Entity.Definition definition = new DefaultEntityDefinition("entityID",
+            Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
+    definition.setHavingClause(havingClause);
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void testNoPrimaryKey() {
     new DefaultEntityDefinition("entityID", "tableName",

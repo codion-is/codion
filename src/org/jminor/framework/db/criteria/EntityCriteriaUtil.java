@@ -433,6 +433,8 @@ public final class EntityCriteriaUtil {
     private String orderByClause;
     private int fetchCount;
     private boolean forUpdate;
+    private int limit;
+    private int offset;
 
     /**
      * Instantiates a new DefaultEntityCriteria, which includes all the underlying entities
@@ -545,6 +547,28 @@ public final class EntityCriteriaUtil {
     }
 
     @Override
+    public int getLimit() {
+      return limit;
+    }
+
+    @Override
+    public EntitySelectCriteria setLimit(final int limit) {
+      this.limit = limit;
+      return this;
+    }
+
+    @Override
+    public int getOffset() {
+      return offset;
+    }
+
+    @Override
+    public EntitySelectCriteria setOffset(final int offset) {
+      this.offset = offset;
+      return this;
+    }
+
+    @Override
     public EntitySelectCriteria setForeignKeyFetchDepthLimit(final String foreignKeyPropertyID, final int fetchDepthLimit) {
       if (foreignKeyFetchDepthLimits == null) {
         foreignKeyFetchDepthLimits = new HashMap<>();
@@ -589,6 +613,8 @@ public final class EntityCriteriaUtil {
       stream.writeBoolean(forUpdate);
       stream.writeObject(foreignKeyFetchDepthLimits);
       stream.writeObject(criteria);
+      stream.writeInt(limit);
+      stream.writeInt(offset);
     }
 
     @SuppressWarnings({"unchecked"})
@@ -598,6 +624,8 @@ public final class EntityCriteriaUtil {
       forUpdate = stream.readBoolean();
       foreignKeyFetchDepthLimits = (HashMap<String, Integer>) stream.readObject();
       criteria = (EntityCriteria) stream.readObject();
+      limit = stream.readInt();
+      offset = stream.readInt();
     }
   }
 

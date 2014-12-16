@@ -70,6 +70,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private String groupByClause;
 
   /**
+   * Holds the having clause
+   */
+  private String havingClause;
+
+  /**
    * The primary key value generator
    */
   private Entity.KeyGenerator keyGenerator = DEFAULT_KEY_GENERATOR;
@@ -296,6 +301,23 @@ final class DefaultEntityDefinition implements Entity.Definition {
       throw new IllegalStateException("Group by clause has already been set: " + this.groupByClause);
     }
     this.groupByClause = groupByClause;
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public String getHavingClause() {
+    return havingClause;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity.Definition setHavingClause(final String havingClause) {
+    Util.rejectNullValue(havingClause, "havingClause");
+    if (this.havingClause != null) {
+      throw new IllegalStateException("Having clause has already been set: " + this.havingClause);
+    }
+    this.havingClause = havingClause;
     return this;
   }
 
