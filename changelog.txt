@@ -3830,3 +3830,5 @@
   EntityCriteria, added support for limit/offset
   EntityDefinition, added having clause
   ClientUserMonitor now logs errors occurring during the refresh of user history
+  build.xml, bug fixed, jminor-server-monitor.jar target did not include EntityConnectionServerAdminImpl_Stub.class
+  build.xml, removed redundant domain package from jminor-server-monitor.jar
