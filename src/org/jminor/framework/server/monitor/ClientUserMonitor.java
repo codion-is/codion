@@ -11,19 +11,18 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.table.AbstractFilteredTableModel;
 import org.jminor.common.model.table.AbstractTableSortModel;
 import org.jminor.common.model.table.FilteredTableModel;
-import org.jminor.common.model.table.TableSortModel;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.DefaultListModel;
+import javax.swing.*;
 import javax.swing.table.TableColumn;
 import java.rmi.RemoteException;
 import java.util.Arrays;
 import java.util.Date;
+import java.util.List;
 import java.util.UUID;
 import java.util.concurrent.TimeUnit;
 
@@ -202,8 +201,9 @@ public final class ClientUserMonitor {
   }
 
   private final class UserHistoryTableModel extends AbstractFilteredTableModel<UserInfo, Integer> {
+
     private UserHistoryTableModel() {
-      super(createSortModel(), null);
+      super(new UserHistoryTableSortModel(), null);
     }
 
     @Override
@@ -248,7 +248,38 @@ public final class ClientUserMonitor {
     }
   }
 
-  private static TableSortModel<UserInfo, Integer> createSortModel() {
+  private static final class UserHistoryTableSortModel extends AbstractTableSortModel<UserInfo, Integer> {
+
+    private UserHistoryTableSortModel() {
+      super(createUserHistoryColumns());
+    }
+
+    @Override
+    protected Comparable getComparable(final UserInfo rowObject, final Integer columnIdentifier) {
+      switch (columnIdentifier) {
+        case 0: return rowObject.getUser().getUsername();
+        case 1: return rowObject.getClientTypeID();
+        case 2: return rowObject.getClientHost();
+        case 3: return rowObject.getLastSeen();
+        case 4: return rowObject.getConnectionCount();
+      }
+      throw new IllegalArgumentException(columnIdentifier.toString());
+    }
+
+    @Override
+    protected Class getColumnClass(final Integer columnIdentifier) {
+      switch (columnIdentifier) {
+        case 0: return String.class;
+        case 1: return String.class;
+        case 2: return String.class;
+        case 3: return Date.class;
+        case 4: return Integer.class;
+      }
+      throw new IllegalArgumentException(columnIdentifier.toString());
+    }
+  }
+
+  private static List<TableColumn> createUserHistoryColumns() {
     final TableColumn username = new TableColumn(0);
     username.setIdentifier(0);
     username.setHeaderValue("Username");
@@ -265,35 +296,6 @@ public final class ClientUserMonitor {
     connectionCount.setIdentifier(4);
     connectionCount.setHeaderValue("Connections");
 
-    return new AbstractTableSortModel<UserInfo, Integer>(Arrays.asList(username, clientType, host, lastSeen, connectionCount)) {
-      @Override
-      protected Comparable getComparable(final UserInfo rowObject, final Integer columnIdentifier) {
-        switch (columnIdentifier) {
-          case 0:
-            return rowObject.getUser().getUsername();
-          case 1:
-            return rowObject.getClientTypeID();
-          case 2:
-            return rowObject.getClientHost();
-          case 3:
-            return rowObject.getLastSeen();
-          case 4:
-            return rowObject.getConnectionCount();
-        }
-        throw new IllegalArgumentException(columnIdentifier.toString());
-      }
-
-      @Override
-      protected Class getColumnClass(final Integer columnIdentifier) {
-        switch (columnIdentifier) {
-          case 0: return String.class;
-          case 1: return String.class;
-          case 2: return String.class;
-          case 3: return Date.class;
-          case 4: return Integer.class;
-        }
-        throw new IllegalArgumentException(columnIdentifier.toString());
-      }
-    };
+    return Arrays.asList(username, clientType, host, lastSeen, connectionCount);
   }
 }
