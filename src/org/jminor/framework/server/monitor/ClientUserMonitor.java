@@ -16,6 +16,9 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+
 import javax.swing.DefaultListModel;
 import javax.swing.table.TableColumn;
 import java.rmi.RemoteException;
@@ -29,6 +32,8 @@ import java.util.concurrent.TimeUnit;
  */
 public final class ClientUserMonitor {
 
+  private static final Logger LOG = LoggerFactory.getLogger(ClientUserMonitor.class);
+
   private static final int THOUSAND = 1000;
 
   private final EntityConnectionServerAdmin server;
@@ -40,7 +45,12 @@ public final class ClientUserMonitor {
   private final TaskScheduler updateScheduler = new TaskScheduler(new Runnable() {
     @Override
     public void run() {
-      userHistoryTableModel.refresh();
+      try {
+        userHistoryTableModel.refresh();
+      }
+      catch (final Exception e) {
+        LOG.error("Error while refreshing user history table model", e);
+      }
     }
   }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
 
