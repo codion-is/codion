@@ -3834,3 +3834,4 @@
   build.xml, removed redundant domain package from jminor-server-monitor.jar
   build.xml, minor changes to deploy_server_monitor and deploy_generator targets
   ClientUserMonitor refactoring
+  FilteredTableModel.sortContents() added, implemented in AbstractFilteredTableModel

@@ -9,7 +9,7 @@ import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 
 import javax.swing.table.TableModel;
-import java.awt.Point;
+import java.awt.*;
 import java.util.Collection;
 
 /**
@@ -129,6 +129,12 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableSelecti
    * @param value the value
    */
   void setRegularExpressionSearch(final boolean value);
+
+  /**
+   * Sorts the visible contents according to the {@link TableSortModel}, keeping the selection state intact
+   * @see #getSortModel()
+   */
+  void sortContents();
 
   /**
    * @return the selection model used by this table model

@@ -13,7 +13,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
-import java.awt.Point;
+import java.awt.*;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -246,6 +246,21 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final int indexOf(final R item) {
     return visibleItems.indexOf(item);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void sortContents() {
+    try {
+      sortingStartedEvent.fire();
+      final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
+      sortModel.sort(visibleItems);
+      fireTableDataChanged();
+      selectionModel.setSelectedItems(selectedItems);
+    }
+    finally {
+      sortingDoneEvent.fire();
+    }
   }
 
   /** {@inheritDoc} */
@@ -516,7 +531,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     sortModel.addSortingStateChangedListener(new EventListener() {
       @Override
       public void eventOccurred() {
-        sortVisibleItems();
+        sortContents();
       }
     });
   }
@@ -531,19 +546,6 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     }
 
     return null;
-  }
-
-  private void sortVisibleItems() {
-    try {
-      sortingStartedEvent.fire();
-      final List<R> selectedItems = new ArrayList<>(selectionModel.getSelectedItems());
-      sortModel.sort(visibleItems);
-      fireTableDataChanged();
-      selectionModel.setSelectedItems(selectedItems);
-    }
-    finally {
-      sortingDoneEvent.fire();
-    }
   }
 
   private static final class RegexFilterCriteria<T> implements FilterCriteria<T> {

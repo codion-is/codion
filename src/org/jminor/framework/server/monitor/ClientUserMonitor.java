@@ -222,12 +222,12 @@ public final class ClientUserMonitor {
               currentUserIinfo.incrementConnectionCount();
               currentUserIinfo.setClientID(newUserInfo.getClientID());
             }
-            fireTableRowsUpdated(index, index);
           }
           else {
-            addItems(Arrays.asList(newUserInfo), false);
+            addItems(Arrays.asList(newUserInfo), true);
           }
         }
+        sortContents();
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);
