@@ -327,18 +327,11 @@
     <copy todir="${deploy.server.monitor.path}/lib">
       <fileset dir="${lib}/runtime.server-monitor"/>
     </copy>
-    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}">
-      <fileset dir="${deploy.server.monitor.path}/lib" />
-    </signjar>
     <copy todir="${deploy.server.monitor.path}">
       <fileset dir="${basedir}/resources/server_monitor/"/>
     </copy>
     <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.config.path}"/>
     <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.config.path}"/>
-    <zip file="${deploy.server.monitor.path}/lib/jminor-server-monitor.jar" update="true">
-      <fileset file="${build.base}/logback.xml"/>
-      <fileset file="${deploy.server.monitor.truststore}"/>
-    </zip>
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
@@ -346,13 +339,9 @@
           description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">
     <mkdir dir="${deploy.generator.path}"/>
     <copy file="${dist}/jminor.jar" todir="${deploy.generator.path}/lib"/>
-    <copy file="${dist}/jminor-common.jar" todir="${deploy.generator.path}/lib"/>
     <copy todir="${deploy.generator.path}/lib">
       <fileset dir="${lib}/runtime.client"/>
     </copy>
-    <signjar alias="${jar.sign.alias}" storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}">
-      <fileset dir="${deploy.generator.path}/lib" />
-    </signjar>
     <copy todir="${deploy.generator.path}">
       <fileset dir="${basedir}/resources/entity_generator/"/>
     </copy>
