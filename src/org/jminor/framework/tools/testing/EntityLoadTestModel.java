@@ -20,6 +20,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
 
   /**
    * Instantiates a new EntityLoadTestModel.
+   * Note that {@link Configuration#CONNECTION_SCHEDULE_VALIDATION} is set to false when this class is instantiated
    * @param user the default user
    * @param usageScenarios the usage scenarios
    */
@@ -27,6 +28,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
     super(user, usageScenarios, Configuration.getIntValue(Configuration.LOAD_TEST_THINKTIME),
             Configuration.getIntValue(Configuration.LOAD_TEST_LOGIN_DELAY),
             Configuration.getIntValue(Configuration.LOAD_TEST_BATCH_SIZE));
+    Configuration.setValue(Configuration.CONNECTION_SCHEDULE_VALIDATION, false);
   }
 
   /**

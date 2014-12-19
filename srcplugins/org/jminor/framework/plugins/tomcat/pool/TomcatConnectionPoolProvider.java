@@ -42,6 +42,8 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
     pp.setDriverClassName(database.getDriverClassName());
     pp.setUrl(database.getURL(null));
     pp.setName(user.getUsername());
+    //JMinor does not validate connections coming from a connection pool
+    pp.setTestOnBorrow(true);
     pp.setValidator(new ConnectionValidator(database));
 
     return new DataSource(pp);

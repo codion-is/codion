@@ -94,7 +94,7 @@
 
     <rmic base="${build.base}" stubversion="1.2"
           includes="org/jminor/common/server/AbstractRemoteServer.class,
-                                         org/jminor/framework/server/RemoteEntityConnectionImpl.class,
+                                         org/jminor/framework/server/DefaultRemoteEntityConnection.class,
                                          org/jminor/framework/server/EntityConnectionServerAdminImpl.class">
       <classpath refid="lib.build.core"/>
     </rmic>
@@ -189,7 +189,7 @@
                    org/jminor/framework/tools/testing/**,
                    org/jminor/framework/server/provider/RemoteEntityConnectionProvider*,
                    org/jminor/framework/server/RemoteEntityConnection.class,
-                   org/jminor/framework/server/RemoteEntityConnectionImpl_Stub.class"/>
+                   org/jminor/framework/server/DefaultRemoteEntityConnection_Stub.class"/>
 
     <jar jarfile="${dist}/jminor-server.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"

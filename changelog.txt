@@ -3837,3 +3837,6 @@
   FilteredTableModel.sortContents() added, implemented in AbstractFilteredTableModel
   DefaultEntityConnection refactored, redundant select during update removed
   DefaultDatabaseConnection no longer validates connections received via constructor parameter
+  build.xml, bug fixed, jminor-client.jar target did not include DefaultRemoteEntityConnection.class
+  EntityLoadTestModel disables connection validation
+  TomcatConnectionPoolProvider now sets testOnBorrow to true since JMinor no longer validates connections coming from a connection pool
