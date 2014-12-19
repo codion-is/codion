@@ -60,7 +60,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
     this.database = database;
     this.user = user;
     this.validityCheckTimeout = validityCheckTimeout;
-    initializeAndValidate(database.createConnection(user));
+    initialize(database.createConnection(user));
   }
 
   /**
@@ -68,9 +68,8 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
    * NB. auto commit is disabled on the Connection that is provided.
    * @param database the database
    * @param connection the Connection object to base this DefaultDatabaseConnection on
-   * @throws IllegalArgumentException in case the given connection is invalid or disconnected
-   * @throws DatabaseException in case of an exception while retrieving the username from the connection
-   * meta data or if a validation statement is required and creating it fails
+   * @throws IllegalArgumentException in case the given connection is invalid
+   * @throws DatabaseException in case of an exception while retrieving the username from the connection meta data
    */
   public DefaultDatabaseConnection(final Database database, final Connection connection) throws DatabaseException {
     this(database, connection, 0);
@@ -80,11 +79,10 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
    * Constructs a new DefaultDatabaseConnection instance, based on the given Connection object.
    * NB. auto commit is disabled on the Connection that is provided.
    * @param database the database
-   * @param connection the Connection object to base this DefaultDatabaseConnection on
+   * @param connection the Connection object to base this DefaultDatabaseConnection on, it is assumed to be in a valid state
    * @param validityCheckTimeout the number of seconds specified when checking if this connection is valid
-   * @throws IllegalArgumentException in case the given connection is invalid or disconnected
-   * @throws DatabaseException in case of an exception while retrieving the username from the connection
-   * meta data or if a validation statement is required and creating it fails
+   * @throws IllegalArgumentException in case the given connection is invalid
+   * @throws DatabaseException in case of an exception while retrieving the username from the connection meta data
    */
   public DefaultDatabaseConnection(final Database database, final Connection connection,
                                    final int validityCheckTimeout) throws DatabaseException {
@@ -92,7 +90,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
     Util.rejectNullValue(connection, "connection");
     this.database = database;
     this.validityCheckTimeout = validityCheckTimeout;
-    initializeAndValidate(connection);
+    initialize(connection);
     this.user = getUser(connection);
   }
 
@@ -343,23 +341,18 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
     }
   }
 
-  private void initializeAndValidate(final Connection connection) throws DatabaseException {
+  private void initialize(final Connection connection) {
     if (isConnected()) {
       throw new IllegalStateException("Already connected");
     }
 
     try {
-      if (connection.isClosed()) {
-        throw new IllegalArgumentException("Connection closed");
-      }
-      this.connection = connection;
-      if (!isValid()) {
-        throw new IllegalArgumentException("Connection invalid during instantiation");
-      }
       connection.setAutoCommit(false);
+      this.connection = connection;
     }
     catch (final SQLException e) {
-      throw new DatabaseException(e, "Unable to disable auto commit on the given connection");
+      LOG.error("Unable to disable auto commit on connection, assuming invalid state", e);
+      throw new IllegalArgumentException("Connection invalid during instantiation");
     }
   }
 

@@ -32,7 +32,7 @@ public final class EntityConnections {
   /**
    * Constructs a new EntityConnection instance
    * @param database the Database instance
-   * @param connection the connection object to base the entity connection on
+   * @param connection the connection object to base the entity connection on, it is assumed to be in a valid state
    * @return a new EntityConnection instance, wrapping the given connection
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
    * @throws DatabaseException in case a validation statement is required

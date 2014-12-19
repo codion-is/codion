@@ -3835,3 +3835,5 @@
   build.xml, minor changes to deploy_server_monitor and deploy_generator targets
   ClientUserMonitor refactoring
   FilteredTableModel.sortContents() added, implemented in AbstractFilteredTableModel
+  DefaultEntityConnection refactored, redundant select during update removed
+  DefaultDatabaseConnection no longer validates connections received via constructor parameter

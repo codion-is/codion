@@ -55,7 +55,7 @@ public final class DatabaseConnections {
    * Constructs a new DatabaseConnection instance, based on the given Connection object.
    * NB. auto commit is disabled on the Connection that is provided.
    * @param database the database
-   * @param connection the Connection object to base this DatabaseConnection on
+   * @param connection the Connection object to base this DatabaseConnection on, it is assumed to be in a valid state
    * @param validityCheckTimeout the number of seconds specified when checking if the connection is valid
    * @throws DatabaseException in case there is a problem connecting to the database
    * @return a new DatabaseConnection instance

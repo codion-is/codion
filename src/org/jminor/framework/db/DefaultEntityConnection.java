@@ -87,7 +87,7 @@ final class DefaultEntityConnection implements EntityConnection {
   /**
    * Constructs a new DefaultEntityConnection instance
    * @param database the Database instance
-   * @param connection the connection object to base this entity connection on
+   * @param connection the Connection object to base this EntityConnection on, it is assumed to be in a valid state
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
    * @throws DatabaseException in case a validation statement is required but could not be created
    * @see org.jminor.common.db.Database#supportsIsValid()
@@ -736,14 +736,12 @@ final class DefaultEntityConnection implements EntityConnection {
    * @throws DatabaseException in case of a database exception
    * @throws RecordModifiedException in case an entity has been modified, if an entity has been deleted,
    * the <code>modifiedRow</code> provided by the exception is null
-   * @throws SQLException in case of an exception
    */
-  private void lockAndCheckForUpdate(final Map<String, Collection<Entity>> entities) throws DatabaseException, SQLException {
+  private void lockAndCheckForUpdate(final Map<String, Collection<Entity>> entities) throws DatabaseException {
     for (final Map.Entry<String, Collection<Entity>> entry : entities.entrySet()) {
       final List<Entity.Key> originalKeys = EntityUtil.getPrimaryKeys(entry.getValue(), true);
       final EntitySelectCriteria selectForUpdateCriteria = EntityCriteriaUtil.selectCriteria(originalKeys);
-      selectForUpdateCriteria.setForeignKeyFetchDepthLimit(0);
-      selectForUpdate(selectForUpdateCriteria);
+      selectForUpdateCriteria.setForUpdate(true);
       final List<Entity> currentValues = doSelectMany(selectForUpdateCriteria, 0);
       final Map<Entity.Key, Entity> hashedEntities = EntityUtil.hashByPrimaryKey(currentValues);
       for (final Entity entity : entry.getValue()) {
@@ -768,9 +766,7 @@ final class DefaultEntityConnection implements EntityConnection {
     ResultSet resultSet = null;
     String selectSQL = null;
     try {
-      selectSQL = getSelectSQL(criteria, Entities.getSelectColumnsString(criteria.getEntityID()),
-              criteria.getOrderByClause(), Entities.getGroupByClause(criteria.getEntityID()),
-              Entities.getHavingClause(criteria.getEntityID()), criteria.isForUpdate());
+      selectSQL = getSelectSQL(criteria);
       statement = connection.getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
       List<Entity> result = null;
@@ -787,38 +783,15 @@ final class DefaultEntityConnection implements EntityConnection {
         final String message = result != null ? "row count: " + result.size() : "";
         logExit("packResult", packingException, message);
       }
-      setForeignKeyValues(result, criteria, currentForeignKeyFetchDepth);
+      if (!criteria.isForUpdate()) {
+        setForeignKeyValues(result, criteria, currentForeignKeyFetchDepth);
+      }
 
       return result;
     }
     catch (final SQLException e) {
       LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
       throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e), selectSQL);
-    }
-    finally {
-      DatabaseUtil.closeSilently(resultSet);
-      DatabaseUtil.closeSilently(statement);
-    }
-  }
-
-  /**
-   * Performs a select for update on the entities specified by the given criteria, does not parse the result set
-   * @param criteria the criteria
-   * @throws SQLException in case of an exception
-   */
-  private void selectForUpdate(final EntitySelectCriteria criteria) throws SQLException {
-    Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
-    PreparedStatement statement = null;
-    ResultSet resultSet = null;
-    String selectSQL = null;
-    try {
-      selectSQL = getSelectSQL(criteria, "*", null, null, null, true);
-      statement = connection.getConnection().prepareStatement(selectSQL);
-      resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
-    }
-    catch (final SQLException e) {
-      LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, criteria.getValues(), e, null));
-      throw e;
     }
     finally {
       DatabaseUtil.closeSilently(resultSet);
@@ -1011,18 +984,18 @@ final class DefaultEntityConnection implements EntityConnection {
     return keySet;
   }
 
-  private String getSelectSQL(final EntitySelectCriteria criteria, final String columnsString, final String orderByClause,
-                              final String groupByClause, final String havingClause, final boolean selectForUpdate) {
-    String selectSQL = Entities.getSelectQuery(criteria.getEntityID());
+  private String getSelectSQL(final EntitySelectCriteria criteria) {
+    final String entityID = criteria.getEntityID();
+    String selectSQL = Entities.getSelectQuery(entityID);
     if (selectSQL == null) {
       final String tableName;
-      if (selectForUpdate) {
-        tableName = Entities.getTableName(criteria.getEntityID());
+      if (criteria.isForUpdate()) {
+        tableName = Entities.getTableName(entityID);
       }
       else {
-        tableName = Entities.getSelectTableName(criteria.getEntityID());
+        tableName = Entities.getSelectTableName(entityID);
       }
-      selectSQL = createSelectSQL(tableName, columnsString, null, null);
+      selectSQL = createSelectSQL(tableName, Entities.getSelectColumnsString(entityID), null, null);
     }
 
     final StringBuilder queryBuilder = new StringBuilder(selectSQL);
@@ -1030,27 +1003,32 @@ final class DefaultEntityConnection implements EntityConnection {
     if (whereClause.length() != 0) {
       queryBuilder.append(" ").append(whereClause);
     }
-    if (groupByClause != null) {
-      queryBuilder.append(" group by ").append(groupByClause);
-    }
-    if (havingClause != null) {
-      queryBuilder.append(" having ").append(havingClause);
-    }
-    if (orderByClause != null) {
-      queryBuilder.append(" order by ").append(orderByClause);
-    }
-    if (criteria.getLimit() > 0) {
-      queryBuilder.append(" limit ");
-      queryBuilder.append(criteria.getLimit());
-      if (criteria.getOffset() > 0) {
-        queryBuilder.append(" offset ");
-        queryBuilder.append(criteria.getOffset());
-      }
-    }
-    if (selectForUpdate) {
+    if (criteria.isForUpdate()) {
       queryBuilder.append(" for update");
       if (connection.getDatabase().supportsNowait()) {
         queryBuilder.append(" nowait");
+      }
+    }
+    else {
+      final String groupByClause = Entities.getGroupByClause(entityID);
+      if (groupByClause != null) {
+        queryBuilder.append(" group by ").append(groupByClause);
+      }
+      final String havingClause = Entities.getHavingClause(entityID);
+      if (havingClause != null) {
+        queryBuilder.append(" having ").append(havingClause);
+      }
+      final String orderByClause = criteria.getOrderByClause();
+      if (orderByClause != null) {
+        queryBuilder.append(" order by ").append(orderByClause);
+      }
+      if (criteria.getLimit() > 0) {
+        queryBuilder.append(" limit ");
+        queryBuilder.append(criteria.getLimit());
+        if (criteria.getOffset() > 0) {
+          queryBuilder.append(" offset ");
+          queryBuilder.append(criteria.getOffset());
+        }
       }
     }
 
@@ -1162,11 +1140,12 @@ final class DefaultEntityConnection implements EntityConnection {
                                                            final Collection<Property.ColumnProperty> properties,
                                                            final Collection<Object> values) throws SQLException {
     for (final Property.ColumnProperty property : columnProperties) {
-      final boolean insertingAndNonNull = inserting && !entity.isValueNull(property.getPropertyID());
+      final Object value = entity.getValue(property);
+      final boolean insertingAndNonNull = inserting && value != null;
       final boolean updatingAndModified = !inserting && entity.isModified(property.getPropertyID());
       if (insertingAndNonNull || updatingAndModified) {
         properties.add(property);
-        values.add(entity.getValue(property));
+        values.add(value);
       }
     }
     if (properties.isEmpty()) {
