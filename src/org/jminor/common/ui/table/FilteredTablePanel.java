@@ -33,6 +33,7 @@ import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
 import javax.swing.table.TableColumnModel;
+import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
@@ -55,6 +56,8 @@ import java.util.Map;
 
 /**
  * A UI component based on a FilteredTableModel.
+ * This panel uses a {@link BorderLayout} and contains a base panel {@link #getBasePanel()}, itself with
+ * a {@link BorderLayout}, containing the actual table at location {@link BorderLayout#CENTER}
  * @see FilteredTableModel
  */
 public class FilteredTablePanel<T, C> extends JPanel {
@@ -89,6 +92,11 @@ public class FilteredTablePanel<T, C> extends JPanel {
    * the scroll pane used by the JTable instance
    */
   private final JScrollPane tableScrollPane;
+
+  /**
+   * The base panel containing the table scrollpane
+   */
+  private final JPanel basePanel;
 
   /**
    * The coordinate of the last search result
@@ -137,6 +145,10 @@ public class FilteredTablePanel<T, C> extends JPanel {
     this.table = initializeJTable();
     this.tableScrollPane = new JScrollPane(table);
     this.searchField = initializeSearchField();
+    this.basePanel = new JPanel(new BorderLayout());
+    this.basePanel.add(tableScrollPane, BorderLayout.CENTER);
+    setLayout(new BorderLayout());
+    add(basePanel, BorderLayout.CENTER);
     initializeTableHeader();
     bindEvents();
   }
@@ -179,10 +191,18 @@ public class FilteredTablePanel<T, C> extends JPanel {
   }
 
   /**
-   * @return the scrollpane the containing the table
+   * @return the JScrollPane containing the table
    */
   public final JScrollPane getTableScrollPane() {
     return tableScrollPane;
+  }
+
+  /**
+   * Returns the base panel containing the table scroll pane (BorderLayout.CENTER).
+   * @return the panel containing the table scroll pane
+   */
+  public JPanel getBasePanel() {
+    return basePanel;
   }
 
   /**

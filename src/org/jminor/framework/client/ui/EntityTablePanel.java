@@ -171,11 +171,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private final EntityTableSummaryPanel summaryPanel;
 
   /**
-   * a panel for the table, column search and column summary panels
-   */
-  private final JPanel tableSearchAndSummaryPanel = new JPanel(new BorderLayout());
-
-  /**
    * the panel used as a base panel for the summary panels, used for showing/hiding the summary panels
    */
   private final JPanel summaryBasePanel;
@@ -942,7 +937,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
             new AbstractAction("EntityTablePanel.showEntityMenu") {
               @Override
               public void actionPerformed(final ActionEvent e) {
-                EntityUiUtil.showEntityMenu(getEntityTableModel().getSelectionModel().getSelectedItem(), getTableScrollPane(),
+                EntityUiUtil.showEntityMenu(getEntityTableModel().getSelectionModel().getSelectedItem(), EntityTablePanel.this,
                         getPopupLocation(table), getEntityTableModel().getConnectionProvider());
               }
             });
@@ -1204,13 +1199,12 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Sets the layout and lays out the given components, as well as any additional components, on this table panel
-   * @param tableSearchAndSummaryPanel the panel containing the actual table, with search and summary panels
-   * @param southPanel the panel to add to the bottom of the panel
+   * This method simply adds the given {@code southPanel} to the {@code BorderLayout.SOUTH} location, assuming the
+   * {@code basePanel} is at location BorderLayout.CENTER.
+   * By overriding this method you can override the default layout.
+   * @see #getBasePanel()
    */
-  protected void layoutPanel(final JPanel tableSearchAndSummaryPanel, final JPanel southPanel) {
-    setLayout(new BorderLayout());
-    add(tableSearchAndSummaryPanel, BorderLayout.CENTER);
+  protected void layoutPanel(final JPanel southPanel) {
     if (southPanel != null) {
       add(southPanel, BorderLayout.SOUTH);
     }
@@ -1221,7 +1215,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * double click and right click, or popup click with ALT down. Double clicking
    * simply invokes the action returned by {@link #getTableDoubleClickAction()}
    * with the JTable as the ActionEvent source while right click with ALT down
-   * invokes {@link EntityUiUtil#showEntityMenu(org.jminor.framework.domain.Entity, javax.swing.JComponent, java.awt.Point, org.jminor.framework.db.provider.EntityConnectionProvider)}
+   * invokes {@link EntityUiUtil#showEntityMenu(Entity, JComponent, Point, EntityConnectionProvider)}
    * @return the MouseListener for the table
    * @see #getTableDoubleClickAction()
    */
@@ -1237,7 +1231,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
           tableDoubleClickedEvent.fire();
         }
         else if (e.isPopupTrigger() && e.isAltDown()) {
-          EntityUiUtil.showEntityMenu(getEntityTableModel().getSelectionModel().getSelectedItem(), getTableScrollPane(),
+          EntityUiUtil.showEntityMenu(getEntityTableModel().getSelectionModel().getSelectedItem(), EntityTablePanel.this,
                   e.getPoint(), getEntityTableModel().getConnectionProvider());
         }
       }
@@ -1323,7 +1317,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   private void initializeUI() {
     if (includeSearchPanel && searchScrollPane != null) {
-      tableSearchAndSummaryPanel.add(searchScrollPane, BorderLayout.NORTH);
+      getBasePanel().add(searchScrollPane, BorderLayout.NORTH);
       if (searchPanel.canToggleAdvanced()) {
         searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
         searchPanel.addAdvancedListener(new EventInfoListener<Boolean>() {
@@ -1336,9 +1330,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         });
       }
     }
-    final JScrollPane tableScrollPane = getTableScrollPane();
-    tableSearchAndSummaryPanel.add(tableScrollPane, BorderLayout.CENTER);
     if (summaryScrollPane != null) {
+      final JScrollPane tableScrollPane = getTableScrollPane();
       tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
         @Override
         public void stateChanged(final ChangeEvent e) {
@@ -1347,8 +1340,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         }
       });
       summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
-      tableSearchAndSummaryPanel.add(summaryBasePanel, BorderLayout.SOUTH);
     }
+    getBasePanel().add(summaryBasePanel, BorderLayout.SOUTH);
 
     JPanel southPanel = null;
     if (includeSouthPanel) {
@@ -1362,7 +1355,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         southPanel.add(southPanelCenter, BorderLayout.SOUTH);
       }
     }
-    layoutPanel(tableSearchAndSummaryPanel, southPanel);
+    layoutPanel(southPanel);
   }
 
   /**

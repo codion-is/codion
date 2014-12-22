@@ -84,10 +84,6 @@ public final class ClientUserMonitorPanel extends JPanel {
       }
     });
 
-    final FilteredTablePanel<ClientUserMonitor.UserInfo, Integer> userHistoryTable = new FilteredTablePanel<>(model.getUserHistoryTableModel());
-    final JPanel userHistoryTableBase = new JPanel(UiUtil.createBorderLayout());
-    userHistoryTableBase.add(userHistoryTable.getTableScrollPane(), BorderLayout.CENTER);
-
     final JPanel clientTypeBase = new JPanel(UiUtil.createBorderLayout());
     final JScrollPane clientTypeScroller = new JScrollPane(clientTypeList);
     final JScrollPane userScroller = new JScrollPane(userList);
@@ -144,8 +140,10 @@ public final class ClientUserMonitorPanel extends JPanel {
     configBase.add(ControlProvider.createButton(
             Controls.methodControl(model, "resetHistory", "Reset")), BorderLayout.EAST);
 
+    final FilteredTablePanel<ClientUserMonitor.UserInfo, Integer> userHistoryTable = new FilteredTablePanel<>(model.getUserHistoryTableModel());
+
     final JPanel connectionHistoryPanel = new JPanel(UiUtil.createBorderLayout());
-    connectionHistoryPanel.add(userHistoryTableBase, BorderLayout.CENTER);
+    connectionHistoryPanel.add(userHistoryTable, BorderLayout.CENTER);
     connectionHistoryPanel.add(configBase, BorderLayout.SOUTH);
 
     final JTabbedPane baseTabPane = new JTabbedPane();

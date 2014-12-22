@@ -3844,3 +3844,5 @@
   AbstractTableSortModel.getColumnClass() removed
   AbstractFilteredTableModel now overrides getColumnClass(), delegating to the sort model
   DefaultEntityTableModel.getColumnClass() removed
+  FilteredTablePanel now contains a base panel which contains the JScrollPane containing the JTable
+  EntityTablePanel.layoutPanel() simplified
