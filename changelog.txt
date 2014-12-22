@@ -3684,7 +3684,7 @@
   DefaultEntityTableModel.DefaultEntityTableSortModel.initializeColumnComparator() now uses the comparator associated with the underlying entity for columns based on foreign key properties
   UiValues.TextUiValue fires change event on focus lost only if the focus event isn't temporary
   FilteredTablePanelTest, some additions
-  FilteredTablePanel, minor refactoring to accomodate the above
+  FilteredTablePanel, minor refactoring to accommodate the above
   UiUtilTest, some additions
   DefaultEntityConnection.selectRowCount() bug fixed, did not work correctly for entities defined with a select query
   DefaultEntityConnectionTest.rowCount() improved due to the above
@@ -3826,7 +3826,7 @@
   FilteredTablePanel.SortableHeaderRenderer bug fixed, now aligns the text correctly when sorting icon is visible
   ServerMonitor, ClientInstanceMonitorPanel, log JTextArea no longer editable
   EntityUtil.hashByPropertyValue() map key generified
-0.9.2 [incompatible api: EntityCritiera, EntityDefinition]
+0.9.2 [incompatible api: EntityCriteria, EntityDefinition]
   EntityCriteria, added support for limit/offset
   EntityDefinition, added having clause
   ClientUserMonitor now logs errors occurring during the refresh of user history
