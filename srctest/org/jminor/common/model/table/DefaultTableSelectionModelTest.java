@@ -21,13 +21,13 @@ public class DefaultTableSelectionModelTest {
     column.setIdentifier(0);
     final TableSortModel<String, Integer> sortModel = new AbstractTableSortModel<String, Integer>(Arrays.asList(column)) {
       @Override
-      protected Comparable getComparable(final String rowObject, final Integer columnIdentifier) {
-        return rowObject;
+      public Class getColumnClass(final Integer columnIdentifier) {
+        return String.class;
       }
 
       @Override
-      protected Class getColumnClass(final Integer columnIdentifier) {
-        return String.class;
+      protected Comparable getComparable(final String rowObject, final Integer columnIdentifier) {
+        return rowObject;
       }
     };
     final FilteredTableModel<String, Integer> tableModel = new AbstractFilteredTableModel<String, Integer>(sortModel, null) {

@@ -3840,3 +3840,7 @@
   build.xml, bug fixed, jminor-client.jar target did not include DefaultRemoteEntityConnection.class
   EntityLoadTestModel disables connection validation
   TomcatConnectionPoolProvider now sets testOnBorrow to true since JMinor no longer validates connections coming from a connection pool
+  TableSortModel.getColumnClass() added
+  AbstractTableSortModel.getColumnClass() removed
+  AbstractFilteredTableModel now overrides getColumnClass(), delegating to the sort model
+  DefaultEntityTableModel.getColumnClass() removed

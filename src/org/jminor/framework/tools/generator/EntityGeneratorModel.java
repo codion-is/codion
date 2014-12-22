@@ -384,6 +384,11 @@ public final class EntityGeneratorModel {
                        final String schema, final String catalog) {
       super(new AbstractTableSortModel<Table, Integer>(columns) {
         @Override
+        public Class getColumnClass(final Integer columnIdentifier) {
+          return String.class;
+        }
+
+        @Override
         protected Comparable getComparable(final Table rowObject, final Integer columnIdentifier) {
           if (columnIdentifier.equals(SCHEMA_COLUMN_ID)) {
             return rowObject.getSchemaName();
@@ -391,11 +396,6 @@ public final class EntityGeneratorModel {
           else {
             return rowObject.getTableName();
           }
-        }
-
-        @Override
-        protected Class getColumnClass(final Integer columnIdentifier) {
-          return String.class;
         }
       }, Arrays.asList(new DefaultColumnSearchModel<>(0, Types.VARCHAR, "%"),
               new DefaultColumnSearchModel<>(1, Types.VARCHAR, "%")));

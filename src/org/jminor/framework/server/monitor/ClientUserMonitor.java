@@ -14,10 +14,11 @@ import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.*;
+import javax.swing.DefaultListModel;
 import javax.swing.table.TableColumn;
 import java.rmi.RemoteException;
 import java.util.Arrays;
@@ -255,6 +256,19 @@ public final class ClientUserMonitor {
     }
 
     @Override
+    public Class getColumnClass(final Integer columnIdentifier) {
+      switch (columnIdentifier) {
+        case 0: return String.class;
+        case 1: return String.class;
+        case 2: return String.class;
+        //simple way to get fully formatted date values
+        case 3: return Object.class;
+        case 4: return Integer.class;
+      }
+      throw new IllegalArgumentException(columnIdentifier.toString());
+    }
+
+    @Override
     protected Comparable getComparable(final UserInfo rowObject, final Integer columnIdentifier) {
       switch (columnIdentifier) {
         case 0: return rowObject.getUser().getUsername();
@@ -262,18 +276,6 @@ public final class ClientUserMonitor {
         case 2: return rowObject.getClientHost();
         case 3: return rowObject.getLastSeen();
         case 4: return rowObject.getConnectionCount();
-      }
-      throw new IllegalArgumentException(columnIdentifier.toString());
-    }
-
-    @Override
-    protected Class getColumnClass(final Integer columnIdentifier) {
-      switch (columnIdentifier) {
-        case 0: return String.class;
-        case 1: return String.class;
-        case 2: return String.class;
-        case 3: return Date.class;
-        case 4: return Integer.class;
       }
       throw new IllegalArgumentException(columnIdentifier.toString());
     }

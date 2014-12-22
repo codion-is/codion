@@ -307,12 +307,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final Class<?> getColumnClass(final int columnIndex) {
-    return getColumnModel().getColumnIdentifier(columnIndex).getTypeClass();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final int getPropertyColumnIndex(final String propertyID) {
     return getColumnModel().getColumnIndex(Entities.getProperty(getEntityID(), propertyID));
   }
@@ -882,7 +876,14 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       super(initializeColumns(entityID));
     }
 
+    /** {@inheritDoc} */
     @Override
+    public final Class getColumnClass(final Property property) {
+      return property.getTypeClass();
+    }
+
+   /** {@inheritDoc} */
+   @Override
     protected Comparator initializeColumnComparator(final Property property) {
       if (property instanceof Property.ForeignKeyProperty) {
         return Entities.getComparator(((Property.ForeignKeyProperty) property).getReferencedEntityID());
@@ -895,12 +896,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     @Override
     protected final Comparable getComparable(final Entity entity, final Property property) {
       return (Comparable) entity.getValue(property);
-    }
-
-    /** {@inheritDoc} */
-    @Override
-    protected final Class getColumnClass(final Property property) {
-      return property.getTypeClass();
     }
   }
 

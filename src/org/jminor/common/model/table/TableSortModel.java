@@ -56,6 +56,13 @@ public interface TableSortModel<R, C> {
   List<TableColumn> getColumns();
 
   /**
+   * Returns the class of the column with the given identifier
+   * @param columnIdentifier the column identifier
+   * @return the Class representing the given column
+   */
+  Class getColumnClass(final C columnIdentifier);
+
+  /**
    * @param listener a listener notified each time the sorting state changes
    */
   void addSortingStateChangedListener(final EventListener listener);

@@ -64,13 +64,13 @@ public final class AbstractFilteredTableModelTest {
     final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<>(0, Types.VARCHAR, "%");
     return new TestAbstractFilteredTableModel(new AbstractTableSortModel<String, Integer>(Arrays.asList(column)) {
       @Override
-      protected Comparable getComparable(final String rowObject, final Integer columnIdentifier) {
-        return rowObject;
+      public Class getColumnClass(final Integer columnIdentifier) {
+        return String.class;
       }
 
       @Override
-      protected Class getColumnClass(final Integer columnIdentifier) {
-        return String.class;
+      protected Comparable getComparable(final String rowObject, final Integer columnIdentifier) {
+        return rowObject;
       }
 
       @Override
@@ -249,21 +249,21 @@ public final class AbstractFilteredTableModelTest {
     final AbstractFilteredTableModel<Row, Integer> testModel = new AbstractFilteredTableModel<Row, Integer>(
             new AbstractTableSortModel<Row, Integer>(Arrays.asList(columnId, columnValue)) {
               @Override
+              public Class getColumnClass(final Integer columnIdentifier) {
+                if (columnIdentifier == 0) {
+                  return Integer.class;
+                }
+
+                return String.class;
+              }
+
+              @Override
               protected Comparable getComparable(final Row rowObject, final Integer columnIdentifier) {
                 if (columnIdentifier == 0) {
                   return rowObject.id;
                 }
 
                 return rowObject.value;
-              }
-
-              @Override
-              protected Class getColumnClass(final Integer columnIdentifier) {
-                if (columnIdentifier == 0) {
-                  return Integer.class;
-                }
-
-                return String.class;
               }
             }, null) {
       @Override

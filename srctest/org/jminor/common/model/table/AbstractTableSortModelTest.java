@@ -75,7 +75,7 @@ public class AbstractTableSortModelTest {
     column.setIdentifier(0);
     final AbstractTableSortModel<ArrayList, Integer> model = new AbstractTableSortModel<ArrayList, Integer>(Arrays.asList(column)) {
       @Override
-      protected Class getColumnClass(final Integer columnIdentifier) {
+      public Class getColumnClass(final Integer columnIdentifier) {
         return ArrayList.class;
       }
 
@@ -121,7 +121,7 @@ public class AbstractTableSortModelTest {
     }
 
     @Override
-    protected Class getColumnClass(final Integer columnIdentifier) {
+    public Class getColumnClass(final Integer columnIdentifier) {
       if (columnIdentifier.equals(1)) {
         return String.class;
       }

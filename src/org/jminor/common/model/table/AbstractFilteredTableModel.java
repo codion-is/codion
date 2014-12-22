@@ -13,7 +13,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
-import java.awt.*;
+import java.awt.Point;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -353,6 +353,12 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final FilteredTableColumnModel<C> getColumnModel() {
     return columnModel;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Class<?> getColumnClass(final int columnIndex) {
+    return sortModel.getColumnClass(getColumnModel().getColumnIdentifier(columnIndex));
   }
 
   /** {@inheritDoc} */

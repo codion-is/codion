@@ -154,12 +154,6 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   protected abstract Comparable getComparable(final R rowObject, final C columnIdentifier);
 
   /**
-   * @param columnIdentifier the column identifier
-   * @return the class representing the values in the given column
-   */
-  protected abstract Class getColumnClass(final C columnIdentifier);
-
-  /**
    * Initializes a comparator used when sorting by the give column,
    * the comparator receives the column values, but never null.
    * @param columnIdentifier the column identifier
