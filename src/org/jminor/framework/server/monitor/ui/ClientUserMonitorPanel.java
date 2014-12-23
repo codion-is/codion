@@ -64,6 +64,14 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private void initializeUI() throws RemoteException {
+    final JTabbedPane baseTabPane = new JTabbedPane();
+    baseTabPane.addTab("Current", createCurrentConnectionsPanel());
+    baseTabPane.addTab("History", createConnectionHistoryPanel());
+
+    add(baseTabPane, BorderLayout.CENTER);
+  }
+
+  private JSplitPane createCurrentConnectionsPanel() throws RemoteException {
     final JList clientTypeList = new JList<>(model.getClientTypeListModel());
 
     clientTypeList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
@@ -125,6 +133,10 @@ public final class ClientUserMonitorPanel extends JPanel {
 
     splitPane.setRightComponent(currentConnectionsPanel);
 
+    return splitPane;
+  }
+
+  private JPanel createConnectionHistoryPanel() {
     final JPanel configPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
     final JSpinner spnUpdateInterval = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
             TaskScheduler.INTERVAL_PROPERTY, model.getUpdateScheduler().getIntervalObserver()));
@@ -146,11 +158,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     connectionHistoryPanel.add(userHistoryTable, BorderLayout.CENTER);
     connectionHistoryPanel.add(configBase, BorderLayout.SOUTH);
 
-    final JTabbedPane baseTabPane = new JTabbedPane();
-    baseTabPane.addTab("Current", splitPane);
-    baseTabPane.addTab("History", connectionHistoryPanel);
-
-    add(baseTabPane, BorderLayout.CENTER);
+    return connectionHistoryPanel;
   }
 
   private JComponent initializeMaintenanceIntervalComponent() throws RemoteException {

@@ -3846,3 +3846,4 @@
   DefaultEntityTableModel.getColumnClass() removed
   FilteredTablePanel now contains a base panel which contains the JScrollPane containing the JTable
   EntityTablePanel.layoutPanel() simplified
+  ClientUserMonitor and ClientUserMonitorPanel refactoring

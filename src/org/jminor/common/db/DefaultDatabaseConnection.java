@@ -352,7 +352,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
     }
     catch (final SQLException e) {
       LOG.error("Unable to disable auto commit on connection, assuming invalid state", e);
-      throw new IllegalArgumentException("Connection invalid during instantiation");
+      throw new IllegalArgumentException("Connection invalid during instantiation", e);
     }
   }
 

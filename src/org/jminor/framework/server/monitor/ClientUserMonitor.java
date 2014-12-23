@@ -36,6 +36,12 @@ public final class ClientUserMonitor {
 
   private static final int THOUSAND = 1000;
 
+  private static final int USERNAME_COLUMN = 0;
+  private static final int CLIENT_TYPE_COLUMN = 1;
+  private static final int CLIENT_HOST_COLUMN = 2;
+  private static final int LAST_SEEN_COLUMN = 3;
+  private static final int CONNECTION_COUNT_COLUMN = 4;
+
   private final EntityConnectionServerAdmin server;
   private final Event<Integer> connectionTimeoutChangedEvent = Events.event();
   private final DefaultListModel<ClientMonitor> clientTypeListModel = new DefaultListModel<>();
@@ -129,11 +135,11 @@ public final class ClientUserMonitor {
     private final User user;
     private String clientTypeID;
     private String clientHost;
-    private Date lastSeen;
+    private long lastSeen;
     private UUID clientID;
     private int connectionCount = 1;
 
-    private UserInfo(final User user, final String clientTypeID, final String clientHost, final Date lastSeen,
+    private UserInfo(final User user, final String clientTypeID, final String clientHost, final long lastSeen,
                      final UUID clientID) {
       this.user = user;
       this.clientTypeID = clientTypeID;
@@ -154,7 +160,7 @@ public final class ClientUserMonitor {
       return clientHost;
     }
 
-    public Date getLastSeen() {
+    public long getLastSeen() {
       return lastSeen;
     }
 
@@ -174,7 +180,7 @@ public final class ClientUserMonitor {
       this.clientHost = clientHost;
     }
 
-    public void setLastSeen(final Date lastSeen) {
+    public void setLastSeen(final long lastSeen) {
       this.lastSeen = lastSeen;
     }
 
@@ -212,7 +218,7 @@ public final class ClientUserMonitor {
       try {
         for (final ClientInfo clientInfo : server.getClients()) {
           final UserInfo newUserInfo = new UserInfo(clientInfo.getUser(), clientInfo.getClientTypeID(),
-                  clientInfo.getClientHost(), new Date(), clientInfo.getClientID());
+                  clientInfo.getClientHost(), System.currentTimeMillis(), clientInfo.getClientID());
           if (contains(newUserInfo, true)) {
             final int index = indexOf(newUserInfo);
             final UserInfo currentUserIinfo= getItemAt(index);
@@ -239,11 +245,11 @@ public final class ClientUserMonitor {
     public Object getValueAt(final int row, final int column) {
       final UserInfo rowObject = getItemAt(row);
       switch (column) {
-        case 0: return rowObject.getUser().getUsername();
-        case 1: return rowObject.getClientTypeID();
-        case 2: return rowObject.getClientHost();
-        case 3: return rowObject.getLastSeen();
-        case 4: return rowObject.getConnectionCount();
+        case USERNAME_COLUMN: return rowObject.getUser().getUsername();
+        case CLIENT_TYPE_COLUMN: return rowObject.getClientTypeID();
+        case CLIENT_HOST_COLUMN: return rowObject.getClientHost();
+        case LAST_SEEN_COLUMN: return new Date(rowObject.getLastSeen());
+        case CONNECTION_COUNT_COLUMN: return rowObject.getConnectionCount();
       }
       throw new IllegalArgumentException(Integer.toString(column));
     }
@@ -258,12 +264,12 @@ public final class ClientUserMonitor {
     @Override
     public Class getColumnClass(final Integer columnIdentifier) {
       switch (columnIdentifier) {
-        case 0: return String.class;
-        case 1: return String.class;
-        case 2: return String.class;
+        case USERNAME_COLUMN: return String.class;
+        case CLIENT_TYPE_COLUMN: return String.class;
+        case CLIENT_HOST_COLUMN: return String.class;
         //simple way to get fully formatted date values
-        case 3: return Object.class;
-        case 4: return Integer.class;
+        case LAST_SEEN_COLUMN: return Object.class;
+        case CONNECTION_COUNT_COLUMN: return Integer.class;
       }
       throw new IllegalArgumentException(columnIdentifier.toString());
     }
@@ -271,11 +277,11 @@ public final class ClientUserMonitor {
     @Override
     protected Comparable getComparable(final UserInfo rowObject, final Integer columnIdentifier) {
       switch (columnIdentifier) {
-        case 0: return rowObject.getUser().getUsername();
-        case 1: return rowObject.getClientTypeID();
-        case 2: return rowObject.getClientHost();
-        case 3: return rowObject.getLastSeen();
-        case 4: return rowObject.getConnectionCount();
+        case USERNAME_COLUMN: return rowObject.getUser().getUsername();
+        case CLIENT_TYPE_COLUMN: return rowObject.getClientTypeID();
+        case CLIENT_HOST_COLUMN: return rowObject.getClientHost();
+        case LAST_SEEN_COLUMN: return rowObject.getLastSeen();
+        case CONNECTION_COUNT_COLUMN: return rowObject.getConnectionCount();
       }
       throw new IllegalArgumentException(columnIdentifier.toString());
     }
