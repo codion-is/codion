@@ -296,6 +296,6 @@ public class EntitiesTest {
     final String havingClause = "p1 > 1";
     Entities.define("entityID3",
             Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
-    assertEquals(havingClause, Entities.getHavingClause("entityID"));
+    assertEquals(havingClause, Entities.getHavingClause("entityID3"));
   }
 }
