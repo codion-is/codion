@@ -444,6 +444,7 @@
           <path refid="classes.test"/>
           <path refid="lib.runtime.test"/>
         </classpath>
+        <jvmarg value="-Djava.security.policy=resources/security/all_permissions.policy"/>
         <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
         <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
         <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
