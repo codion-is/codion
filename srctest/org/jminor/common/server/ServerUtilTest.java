@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurösson. All Rights Reserved.
+ * Copyright (c) 2004 - 2015, Björn Darri Sigurösson. All Rights Reserved.
  */
 package org.jminor.common.server;
 

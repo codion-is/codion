@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.common.ui.tools;
 
 import org.jminor.common.model.User;

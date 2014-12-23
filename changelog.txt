@@ -3848,3 +3848,4 @@
   EntityTablePanel.layoutPanel() simplified
   ClientUserMonitor and ClientUserMonitorPanel refactoring
   DefaultEntityConnection, getSelectSQL() refactored
+  Copyright updated

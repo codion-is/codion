@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.common.db.exception;
 
 import org.junit.Test;

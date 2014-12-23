@@ -1,5 +1,5 @@
 /*
- * Copyright (c) 2004 - 2010, Björn Darri Sigurðsson. All Rights Reserved.
+ * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
 package org.jminor.common.model.table;
 
@@ -9,7 +9,7 @@ import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 
 import javax.swing.table.TableModel;
-import java.awt.*;
+import java.awt.Point;
 import java.util.Collection;
 
 /**
