@@ -766,7 +766,7 @@ final class DefaultEntityConnection implements EntityConnection {
     ResultSet resultSet = null;
     String selectSQL = null;
     try {
-      selectSQL = getSelectSQL(criteria);
+      selectSQL = getSelectSQL(criteria, connection.getDatabase());
       statement = connection.getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
       List<Entity> result = null;
@@ -984,7 +984,7 @@ final class DefaultEntityConnection implements EntityConnection {
     return keySet;
   }
 
-  private String getSelectSQL(final EntitySelectCriteria criteria) {
+  private static String getSelectSQL(final EntitySelectCriteria criteria, final Database database) {
     final String entityID = criteria.getEntityID();
     String selectSQL = Entities.getSelectQuery(entityID);
     if (selectSQL == null) {
@@ -1004,35 +1004,44 @@ final class DefaultEntityConnection implements EntityConnection {
       queryBuilder.append(" ").append(whereClause);
     }
     if (criteria.isForUpdate()) {
-      queryBuilder.append(" for update");
-      if (connection.getDatabase().supportsNowait()) {
-        queryBuilder.append(" nowait");
-      }
+      addForUpdate(database, queryBuilder);
     }
     else {
-      final String groupByClause = Entities.getGroupByClause(entityID);
-      if (groupByClause != null) {
-        queryBuilder.append(" group by ").append(groupByClause);
-      }
-      final String havingClause = Entities.getHavingClause(entityID);
-      if (havingClause != null) {
-        queryBuilder.append(" having ").append(havingClause);
-      }
-      final String orderByClause = criteria.getOrderByClause();
-      if (orderByClause != null) {
-        queryBuilder.append(" order by ").append(orderByClause);
-      }
-      if (criteria.getLimit() > 0) {
-        queryBuilder.append(" limit ");
-        queryBuilder.append(criteria.getLimit());
-        if (criteria.getOffset() > 0) {
-          queryBuilder.append(" offset ");
-          queryBuilder.append(criteria.getOffset());
-        }
-      }
+      addGroupAndLimit(criteria, queryBuilder);
     }
 
     return queryBuilder.toString();
+  }
+
+  private static void addForUpdate(final Database database, final StringBuilder queryBuilder) {
+    queryBuilder.append(" for update");
+    if (database.supportsNowait()) {
+      queryBuilder.append(" nowait");
+    }
+  }
+
+  private static void addGroupAndLimit(final EntitySelectCriteria criteria, final StringBuilder queryBuilder) {
+    final String entityID = criteria.getEntityID();
+    final String groupByClause = Entities.getGroupByClause(entityID);
+    if (groupByClause != null) {
+      queryBuilder.append(" group by ").append(groupByClause);
+    }
+    final String havingClause = Entities.getHavingClause(entityID);
+    if (havingClause != null) {
+      queryBuilder.append(" having ").append(havingClause);
+    }
+    final String orderByClause = criteria.getOrderByClause();
+    if (orderByClause != null) {
+      queryBuilder.append(" order by ").append(orderByClause);
+    }
+    if (criteria.getLimit() > 0) {
+      queryBuilder.append(" limit ");
+      queryBuilder.append(criteria.getLimit());
+      if (criteria.getOffset() > 0) {
+        queryBuilder.append(" offset ");
+        queryBuilder.append(criteria.getOffset());
+      }
+    }
   }
 
   /**

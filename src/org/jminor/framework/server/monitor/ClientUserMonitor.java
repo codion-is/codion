@@ -288,20 +288,20 @@ public final class ClientUserMonitor {
   }
 
   private static List<TableColumn> createUserHistoryColumns() {
-    final TableColumn username = new TableColumn(0);
-    username.setIdentifier(0);
+    final TableColumn username = new TableColumn(USERNAME_COLUMN);
+    username.setIdentifier(USERNAME_COLUMN);
     username.setHeaderValue("Username");
-    final TableColumn clientType = new TableColumn(1);
-    clientType.setIdentifier(1);
+    final TableColumn clientType = new TableColumn(CLIENT_TYPE_COLUMN);
+    clientType.setIdentifier(CLIENT_TYPE_COLUMN);
     clientType.setHeaderValue("Client type");
-    final TableColumn host = new TableColumn(2);
-    host.setIdentifier(2);
+    final TableColumn host = new TableColumn(CLIENT_HOST_COLUMN);
+    host.setIdentifier(CLIENT_HOST_COLUMN);
     host.setHeaderValue("Host");
-    final TableColumn lastSeen = new TableColumn(3);
-    lastSeen.setIdentifier(3);
+    final TableColumn lastSeen = new TableColumn(LAST_SEEN_COLUMN);
+    lastSeen.setIdentifier(LAST_SEEN_COLUMN);
     lastSeen.setHeaderValue("Last seen");
-    final TableColumn connectionCount = new TableColumn(4);
-    connectionCount.setIdentifier(4);
+    final TableColumn connectionCount = new TableColumn(CONNECTION_COUNT_COLUMN);
+    connectionCount.setIdentifier(CONNECTION_COUNT_COLUMN);
     connectionCount.setHeaderValue("Connections");
 
     return Arrays.asList(username, clientType, host, lastSeen, connectionCount);
