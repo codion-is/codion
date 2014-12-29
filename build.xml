@@ -483,10 +483,10 @@
 
       <structure name="JMinor JaCoCo Results">
         <classfiles>
-          <fileset dir="${build.base}"  excludes="org/jminor/framework/demos/**"/>
+          <fileset dir="${build.base}" excludes="org/jminor/framework/demos/**"/>
         </classfiles>
         <sourcefiles encoding="UTF-8">
-          <fileset dir="${src}"  excludes="org/jminor/framework/demos/**"/>
+          <fileset dir="${src}" excludes="org/jminor/framework/demos/**"/>
         </sourcefiles>
       </structure>
 

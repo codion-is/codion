@@ -3850,3 +3850,4 @@
   DefaultEntityConnection, getSelectSQL() refactored
   Copyright updated
   ClientUserMonitor bug fixed, user history table model did not sort correctly by 'last seen'
+  EntityServerMonitorPanel now displays startup errors instead of simply exiting

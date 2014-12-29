@@ -8,6 +8,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.ui.DefaultExceptionHandler;
+import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlProvider;
@@ -221,6 +222,7 @@ public final class EntityServerMonitorPanel extends JPanel {
         }
         catch (final Exception e) {
           LOG.error(e.getMessage(), e);
+          ExceptionDialog.showExceptionDialog(null, "Error during startup", e);
           System.exit(1);
         }
       }
