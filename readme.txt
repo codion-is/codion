@@ -25,7 +25,7 @@ JMinor is a minimalistic full-stack Java rich client CRUD application framework 
 
 2. RELEASE INFO
 
-Release contents (~20 MB):
+Release contents (~10 MB):
 * "dist" contains the JMinor binary jar files
 * "docs" contains basic documentation as well as API javadocs
 * "projects" contains project files for the IntelliJ and Netbeans IDEs
@@ -45,17 +45,17 @@ Release contents (~20 MB):
 
 The "dist" directory contains the following distinct jar files for use in applications.
 
-* "jminor.jar" (~1.1 MB)
+* "jminor.jar" (~1.2 MB)
 - Convenience jar file containing the full framework codebase
 
 * "jminor-common.jar" (~500 KB)
 - Common codebase
 
-* "jminor-db.jar" (~500 KB)
+* "jminor-db.jar" (~175 KB)
 - Database access layer code
 - Dependencies: jminor-common.jar
 
-* "jminor-client.jar" (~500 KB)
+* "jminor-client.jar" (~520 KB)
 - Full client codebase, including both local and remote connection facilities
 - Dependencies: jminor-common.jar
 
@@ -63,15 +63,15 @@ The "dist" directory contains the following distinct jar files for use in applic
 - Framework plugin codebase, JasperReports, Tomcat connection pool, EntityJSONParser and EntityRESTService
 - Dependencies: jminor-common.jar
 
-* "jminor-server.jar" (~200 KB)
+* "jminor-server.jar" (~210 KB)
 - RMI server codebase
 - Dependencies: jminor-common.jar
 
-* "jminor_server_monitor.jar" (~175 KB)
+* "jminor_server_monitor.jar" (~85 KB)
 - RMI server monitor codebase
 - Dependencies: jminor-common.jar
 
-* "jminor-demos.jar" (~125 KB)
+* "jminor-demos.jar" (~130 KB)
 - Three demo applications
 - Dependencies: jminor-client.jar, jminor-common.jar
 
@@ -122,3 +122,4 @@ Before you can run the unit tests you must define the following properties in 'u
 
 jacocoant.jar             - the path to the jacocoant.jar file for the JaCoCo coverage library
 ivy.jar                   - the path to the ivy.jar file for the ivy dependency management library
+getdown.jar               - the path to the getdown.jar file for the getdown distribution management library

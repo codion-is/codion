@@ -3849,3 +3849,4 @@
   ClientUserMonitor and ClientUserMonitorPanel refactoring
   DefaultEntityConnection, getSelectSQL() refactored
   Copyright updated
+  ClientUserMonitor bug fixed, user history table model did not sort correctly by 'last seen'

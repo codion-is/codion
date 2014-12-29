@@ -424,8 +424,7 @@
           description="Creates a jminor-project.zip file in the base directory">
     <delete file="${basedir}/jminor-${version}-project.zip"/>
     <zip destfile="${basedir}/jminor-${version}-project.zip">
-      <fileset dir="${basedir}"
-               excludes="*.log,target/**,test/**,dist/deployment/**,classes/**,h2db/**"/>
+      <fileset dir="${basedir}" excludes="test/**,dist/deployment/**,classes/**,h2db/**,lib/**"/>
     </zip>
   </target>
 

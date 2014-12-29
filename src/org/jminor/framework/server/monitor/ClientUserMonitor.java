@@ -8,6 +8,7 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
+import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.model.table.AbstractFilteredTableModel;
 import org.jminor.common.model.table.AbstractTableSortModel;
 import org.jminor.common.model.table.FilteredTableModel;
@@ -19,8 +20,10 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import javax.swing.DefaultListModel;
+import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.rmi.RemoteException;
+import java.text.Format;
 import java.util.Arrays;
 import java.util.Date;
 import java.util.List;
@@ -135,11 +138,11 @@ public final class ClientUserMonitor {
     private final User user;
     private String clientTypeID;
     private String clientHost;
-    private long lastSeen;
+    private Date lastSeen;
     private UUID clientID;
     private int connectionCount = 1;
 
-    private UserInfo(final User user, final String clientTypeID, final String clientHost, final long lastSeen,
+    private UserInfo(final User user, final String clientTypeID, final String clientHost, final Date lastSeen,
                      final UUID clientID) {
       this.user = user;
       this.clientTypeID = clientTypeID;
@@ -160,7 +163,7 @@ public final class ClientUserMonitor {
       return clientHost;
     }
 
-    public long getLastSeen() {
+    public Date getLastSeen() {
       return lastSeen;
     }
 
@@ -180,7 +183,7 @@ public final class ClientUserMonitor {
       this.clientHost = clientHost;
     }
 
-    public void setLastSeen(final long lastSeen) {
+    public void setLastSeen(final Date lastSeen) {
       this.lastSeen = lastSeen;
     }
 
@@ -218,16 +221,16 @@ public final class ClientUserMonitor {
       try {
         for (final ClientInfo clientInfo : server.getClients()) {
           final UserInfo newUserInfo = new UserInfo(clientInfo.getUser(), clientInfo.getClientTypeID(),
-                  clientInfo.getClientHost(), System.currentTimeMillis(), clientInfo.getClientID());
+                  clientInfo.getClientHost(), new Date(), clientInfo.getClientID());
           if (contains(newUserInfo, true)) {
             final int index = indexOf(newUserInfo);
-            final UserInfo currentUserIinfo= getItemAt(index);
-            currentUserIinfo.setClientHost(newUserInfo.getClientHost());
-            currentUserIinfo.setClientTypeID(newUserInfo.getClientTypeID());
-            currentUserIinfo.setLastSeen(newUserInfo.getLastSeen());
-            if (currentUserIinfo.isNewConnection(newUserInfo.getClientID())) {
-              currentUserIinfo.incrementConnectionCount();
-              currentUserIinfo.setClientID(newUserInfo.getClientID());
+            final UserInfo currentUserInfo= getItemAt(index);
+            currentUserInfo.setClientHost(newUserInfo.getClientHost());
+            currentUserInfo.setClientTypeID(newUserInfo.getClientTypeID());
+            currentUserInfo.setLastSeen(newUserInfo.getLastSeen());
+            if (currentUserInfo.isNewConnection(newUserInfo.getClientID())) {
+              currentUserInfo.incrementConnectionCount();
+              currentUserInfo.setClientID(newUserInfo.getClientID());
             }
           }
           else {
@@ -248,7 +251,7 @@ public final class ClientUserMonitor {
         case USERNAME_COLUMN: return rowObject.getUser().getUsername();
         case CLIENT_TYPE_COLUMN: return rowObject.getClientTypeID();
         case CLIENT_HOST_COLUMN: return rowObject.getClientHost();
-        case LAST_SEEN_COLUMN: return new Date(rowObject.getLastSeen());
+        case LAST_SEEN_COLUMN: return rowObject.getLastSeen();
         case CONNECTION_COUNT_COLUMN: return rowObject.getConnectionCount();
       }
       throw new IllegalArgumentException(Integer.toString(column));
@@ -267,8 +270,7 @@ public final class ClientUserMonitor {
         case USERNAME_COLUMN: return String.class;
         case CLIENT_TYPE_COLUMN: return String.class;
         case CLIENT_HOST_COLUMN: return String.class;
-        //simple way to get fully formatted date values
-        case LAST_SEEN_COLUMN: return Object.class;
+        case LAST_SEEN_COLUMN: return Date.class;
         case CONNECTION_COUNT_COLUMN: return Integer.class;
       }
       throw new IllegalArgumentException(columnIdentifier.toString());
@@ -300,10 +302,26 @@ public final class ClientUserMonitor {
     final TableColumn lastSeen = new TableColumn(LAST_SEEN_COLUMN);
     lastSeen.setIdentifier(LAST_SEEN_COLUMN);
     lastSeen.setHeaderValue("Last seen");
+    lastSeen.setCellRenderer(new LastSeenRenderer());
     final TableColumn connectionCount = new TableColumn(CONNECTION_COUNT_COLUMN);
     connectionCount.setIdentifier(CONNECTION_COUNT_COLUMN);
     connectionCount.setHeaderValue("Connections");
 
     return Arrays.asList(username, clientType, host, lastSeen, connectionCount);
+  }
+
+  private static final class LastSeenRenderer extends DefaultTableCellRenderer {
+
+    private final Format formatter = DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP);
+
+    @Override
+    protected void setValue(final Object value) {
+      if (value instanceof Date) {
+        super.setValue(formatter.format(value));
+      }
+      else {
+        super.setValue(value);
+      }
+    }
   }
 }
