@@ -3851,3 +3851,7 @@
   Copyright updated
   ClientUserMonitor bug fixed, user history table model did not sort correctly by 'last seen'
   EntityServerMonitorPanel now displays startup errors instead of simply exiting
+  DefaultDatabaseConnection is no longer extended, made final
+  DatabaseConnection.query() removed
+  DatabaseConnection.getMethodLogger() added
+  DefaultDatabaseConnection.query() moved to DatabaseUtil

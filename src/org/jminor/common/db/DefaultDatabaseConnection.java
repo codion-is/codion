@@ -12,15 +12,12 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.sql.Connection;
-import java.sql.ResultSet;
 import java.sql.SQLException;
-import java.sql.Statement;
-import java.util.List;
 
 /**
  * A default DatabaseConnection implementation, which wraps a standard JDBC Connection object.
  */
-public class DefaultDatabaseConnection implements DatabaseConnection {
+public final class DefaultDatabaseConnection implements DatabaseConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultDatabaseConnection.class);
 
@@ -96,55 +93,61 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
-  public final void setPoolTime(final long time) {
+  public void setPoolTime(final long time) {
     this.poolTime = time;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final long getPoolTime() {
+  public long getPoolTime() {
     return poolTime;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setRetryCount(final int retryCount) {
+  public void setRetryCount(final int retryCount) {
     this.poolRetryCount = retryCount;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final int getRetryCount() {
+  public int getRetryCount() {
     return poolRetryCount;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final String toString() {
+  public String toString() {
     return getClass().getSimpleName() + ": " + user.getUsername();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final User getUser() {
+  public User getUser() {
     return user;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void setMethodLogger(final MethodLogger methodLogger) {
+  public void setMethodLogger(final MethodLogger methodLogger) {
     this.methodLogger = methodLogger;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isValid() {
+  public MethodLogger getMethodLogger() {
+    return methodLogger;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isValid() {
     return connection != null && DatabaseUtil.isValid(connection, database, validityCheckTimeout);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void disconnect() {
+  public void disconnect() {
     try {
       if (connection != null && !connection.isClosed()) {
         connection.rollback();
@@ -159,7 +162,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isConnected() {
+  public boolean isConnected() {
     return connection != null;
   }
 
@@ -167,7 +170,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
    * @return the underlying Connection object
    */
   @Override
-  public final Connection getConnection() {
+  public Connection getConnection() {
     if (!isConnected()) {
       throw new IllegalStateException("Not connected");
     }
@@ -177,41 +180,13 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
-  public final Database getDatabase() {
+  public Database getDatabase() {
     return database;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final List query(final String sql, final ResultPacker resultPacker, final int fetchCount) throws SQLException {
-    DatabaseUtil.QUERY_COUNTER.count(sql);
-    Statement statement = null;
-    SQLException exception = null;
-    ResultSet resultSet = null;
-    try {
-      logAccess("query", new Object[] {sql});
-      statement = getConnection().createStatement();
-      resultSet = statement.executeQuery(sql);
-
-      return resultPacker.pack(resultSet, fetchCount);
-    }
-    catch (final SQLException e) {
-      exception = e;
-      throw e;
-    }
-    finally {
-      DatabaseUtil.closeSilently(statement);
-      DatabaseUtil.closeSilently(resultSet);
-      final MethodLogger.Entry logEntry = logExit("query", exception, null);
-      if (LOG != null && LOG.isDebugEnabled()) {
-        LOG.debug(DatabaseUtil.createLogMessage(getUser(), sql, null, exception, logEntry));
-      }
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void beginTransaction() {
+  public void beginTransaction() {
     if (transactionOpen) {
       throw new IllegalStateException("Transaction already open");
     }
@@ -224,7 +199,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
-  public final void rollbackTransaction() {
+  public void rollbackTransaction() {
     SQLException exception = null;
     try {
       if (!transactionOpen) {
@@ -246,7 +221,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
-  public final void commitTransaction() {
+  public void commitTransaction() {
     SQLException exception = null;
     try {
       if (!transactionOpen) {
@@ -268,15 +243,15 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isTransactionOpen() {
+  public boolean isTransactionOpen() {
     return transactionOpen;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void commit() throws SQLException {
+  public void commit() throws SQLException {
     if (transactionOpen) {
-      throw new IllegalStateException("Can not perform a commit during an open transaction");
+      throw new IllegalStateException("Can not perform a commit during an open transaction, use 'commitTransaction()'");
     }
 
     LOG.debug("{}: commit;", user.getUsername());
@@ -297,9 +272,9 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
-  public final void rollback() throws SQLException {
+  public void rollback() throws SQLException {
     if (transactionOpen) {
-      throw new IllegalStateException("Can not perform a rollback during an open transaction");
+      throw new IllegalStateException("Can not perform a rollback during an open transaction, use 'rollbackTransaction()'");
     }
 
     LOG.debug("{}: rollback;", user.getUsername());
@@ -323,11 +298,11 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
    * transaction checking is performed, it is simply used 'as is'
    * @param connection the connection
    */
-  public final void setConnection(final Connection connection) {
+  public void setConnection(final Connection connection) {
     this.connection = connection;
   }
 
-  protected final MethodLogger.Entry logExit(final String method, final Throwable exception, final String exitMessage) {
+  private MethodLogger.Entry logExit(final String method, final Throwable exception, final String exitMessage) {
     if (methodLogger != null) {
       return methodLogger.logExit(method, exception, exitMessage);
     }
@@ -335,7 +310,7 @@ public class DefaultDatabaseConnection implements DatabaseConnection {
     return null;
   }
 
-  protected final void logAccess(final String method, final Object[] arguments) {
+  private void logAccess(final String method, final Object[] arguments) {
     if (methodLogger != null) {
       methodLogger.logAccess(method, arguments);
     }

@@ -67,7 +67,7 @@ final class DefaultEntityConnection implements EntityConnection {
 
   private final DatabaseConnection connection;
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<>();
-  private final Map<Integer, ResultPacker> propertyResultPackers = new HashMap<>();
+  private final Map<Integer, ResultPacker<Object>> propertyResultPackers = new HashMap<>();
   private boolean optimisticLocking = Configuration.getBooleanValue(Configuration.USE_OPTIMISTIC_LOCKING);
   private boolean limitForeignKeyFetchDepth = Configuration.getBooleanValue(Configuration.LIMIT_FOREIGN_KEY_FETCH_DEPTH);
 
@@ -427,8 +427,7 @@ final class DefaultEntityConnection implements EntityConnection {
             "where " + columnName + " is not null", order ? columnName : null);
     synchronized (connection) {
       try {
-        //noinspection unchecked
-        final List<Object> result = connection.query(selectSQL, getPropertyResultPacker(property), -1);
+        final List<Object> result = DatabaseUtil.query(connection, selectSQL, getPropertyResultPacker(property), -1);
         commitIfTransactionIsNotOpen();
 
         return result;
@@ -717,10 +716,10 @@ final class DefaultEntityConnection implements EntityConnection {
     return packer;
   }
 
-  private ResultPacker getPropertyResultPacker(final Property.ColumnProperty property) {
-    ResultPacker packer = propertyResultPackers.get(property.getType());
+  private ResultPacker<Object> getPropertyResultPacker(final Property.ColumnProperty property) {
+    ResultPacker<Object> packer = propertyResultPackers.get(property.getType());
     if (packer == null) {
-      packer  = new PropertyResultPacker(property);
+      packer = new PropertyResultPacker(property);
       propertyResultPackers.put(property.getType(), packer);
     }
 
