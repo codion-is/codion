@@ -3855,3 +3855,4 @@
   DatabaseConnection.query() removed
   DatabaseConnection.getMethodLogger() added
   DefaultDatabaseConnection.query() moved to DatabaseUtil
+  UiUtil.setPreferredWidth() added, tested

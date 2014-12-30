@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
+import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.checkbox.TristateCheckBox;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityEditModel;
@@ -18,6 +19,7 @@ import javax.swing.DefaultComboBoxModel;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
+import java.awt.Dimension;
 
 import static junit.framework.Assert.assertNull;
 import static junit.framework.Assert.assertTrue;
@@ -139,5 +141,14 @@ public class EntityUiUtilTest {
     assertEquals(3, editModel.getValue(EntityTestDomain.DETAIL_INT));
     box.setSelectedItem(4);//does not exist
     assertEquals(3, editModel.getValue(EntityTestDomain.DETAIL_INT));
+  }
+
+  @Test
+  public void setPreferredWidth() {
+    final JComboBox box = new JComboBox();
+    box.setPreferredSize(new Dimension(10, 10));
+    UiUtil.setPreferredWidth(box, 42);
+    assertEquals(10, box.getPreferredSize().height);
+    assertEquals(42, box.getPreferredSize().width);
   }
 }
