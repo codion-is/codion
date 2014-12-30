@@ -4,10 +4,11 @@
 package org.jminor.framework.demos.world.beans.ui;
 
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.demos.world.domain.World;
+
+import java.awt.GridLayout;
 
 public final class CityEditPanel extends EntityEditPanel {
 
@@ -27,7 +28,7 @@ public final class CityEditPanel extends EntityEditPanel {
     createTextField(World.CITY_DISTRICT).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(World.CITY_POPULATION);
 
-    setLayout(new FlexibleGridLayout(2, 2, 5, 5, true, false));
+    setLayout(new GridLayout(2, 2, 5, 5));
 
     addPropertyPanel(World.CITY_COUNTRYCODE_FK);
     addPropertyPanel(World.CITY_NAME);

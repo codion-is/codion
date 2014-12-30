@@ -4,10 +4,11 @@
 package org.jminor.framework.demos.world.beans.ui;
 
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.demos.world.domain.World;
+
+import java.awt.GridLayout;
 
 public final class CountryEditPanel extends EntityEditPanel {
 
@@ -37,7 +38,7 @@ public final class CountryEditPanel extends EntityEditPanel {
     createTextField(World.COUNTRY_HEADOFSTATE).setColumns(TEXT_FIELD_COLUMNS);
     UiUtil.setPreferredWidth(createEntityComboBox(World.COUNTRY_CAPITAL_FK), COMBOBOX_WIDTH);
 
-    setLayout(new FlexibleGridLayout(4, 5, 5, 5, true, false));
+    setLayout(new GridLayout(4, 5, 5, 5));
 
     addPropertyPanel(World.COUNTRY_CODE);
     addPropertyPanel(World.COUNTRY_NAME);

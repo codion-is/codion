@@ -4,10 +4,11 @@
 package org.jminor.framework.demos.world.beans.ui;
 
 import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.demos.world.domain.World;
+
+import java.awt.GridLayout;
 
 public final class CountryLanguageEditPanel extends EntityEditPanel {
 
@@ -27,7 +28,7 @@ public final class CountryLanguageEditPanel extends EntityEditPanel {
     createCheckBox(World.COUNTRYLANGUAGE_ISOFFICIAL, null, false);
     createTextField(World.COUNTRYLANGUAGE_PERCENTAGE);
 
-    setLayout(new FlexibleGridLayout(2, 4, 5, 5, true, false));
+    setLayout(new GridLayout(2, 4, 5, 5));
 
     addPropertyPanel(World.COUNTRYLANGUAGE_COUNTRYCODE_FK);
     addPropertyPanel(World.COUNTRYLANGUAGE_LANGUAGE);
