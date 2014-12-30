@@ -597,6 +597,7 @@
                storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
       <copy file="${basedir}/resources/demos/@{app-id}/@{app-id}.jnlp" todir="${deploy.demos.dir}/@{app-id}"/>
       <copy file="${basedir}/resources/demos/@{app-id}/getdown.txt" todir="${deploy.demos.dir}/@{app-id}"/>
+      <copy file="${basedir}/docs/jminor.org/jminor_logo_medium.png" todir="${deploy.demos.dir}/@{app-id}"/>
       <getdown_digest appdir="${deploy.demos.dir}/@{app-id}"/>
       <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.zip">
         <zipfileset file="${deploy.demos.dir}/@{app-id}/@{app-id}.jar"/>

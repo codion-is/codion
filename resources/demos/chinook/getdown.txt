@@ -3,6 +3,7 @@ appbase = http://jminor.no-ip.org/demos/chinook/
 
 # UI Configuration
 ui.name = Chinook JMinor Demo
+ui.background_image = jminor_logo_medium.png
 
 # Application jar files
 code = chinook.jar
