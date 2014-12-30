@@ -1,0 +1,18 @@
+# The URL from which the client is downloaded
+appbase = http://jminor.no-ip.org/demos/world/
+
+# UI Configuration
+ui.name = World JMinor Demo
+
+# Application jar files
+code = world.jar
+
+# The main entry point for the application
+class = org.jminor.framework.demos.world.client.ui.WorldAppPanel
+
+allow_offline = true
+
+jvmarg = -Djminor.client.connectionType=remote
+jvmarg = -Djminor.server.hostname=jminor.no-ip.org
+jvmarg = -Djavax.net.ssl.trustStore=JMinorClientTruststore
+jvmarg = -Djminor.report.path=reports/demos

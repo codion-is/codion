@@ -352,7 +352,7 @@
     <chmod dir="${deploy.generator.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demos"
+  <target name="deploy_demo_apps"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <tstamp />
     <!--Setup-->
@@ -363,56 +363,15 @@
       <zipgroupfileset dir="${dist}" includes="jminor-common.jar, jminor-client.jar, jminor-plugins.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
       <fileset file="${deploy.demos.truststore}"/>
     </jar>
-    <!--EmpDept WebStart & getdown-->
-    <mkdir dir="${deploy.demos.dir}/empdept"/>
-    <create_manifest destination="${deploy.demos.dir}" application-name="EmpDept JMinor Demo"
-                     main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>
-    <jar jarfile="${deploy.demos.dir}/empdept/empdept.jar" duplicate="preserve" filesetmanifest="mergewithoutmain"
-         manifest="${deploy.demos.dir}/META-INF/MANIFEST.MF">
-      <zipfileset dir="${build.demos}" includes="org/jminor/framework/demos/empdept/**/*"/>
-      <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
-      <zipfileset dir="${basedir}/resources/demos/empdept" includes="empdept.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
-    </jar>
-    <signjar jar="${deploy.demos.dir}/empdept/empdept.jar" alias="${jar.sign.alias}"
-             storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
-    <copy file="${basedir}/resources/demos/empdept/empdept.jnlp" todir="${deploy.demos.dir}/empdept"/>
-    <copy file="${basedir}/resources/demos/empdept/getdown.txt" todir="${deploy.demos.dir}/empdept"/>
-    <getdown_digest appdir="${deploy.demos.dir}/empdept"/>
-    <!--EmpDept without WebStart-->
-    <zip destfile="${deploy.demos.dir}/empdept/empdept.zip">
-      <zipfileset file="${deploy.demos.dir}/empdept/empdept.jar"/>
-      <zipfileset dir="${db.h2.dir}" prefix="h2db"/>
-      <zipfileset file="${basedir}/resources/demos/config/h2db.config"/>
-      <zipfileset file="${basedir}/resources/demos/config/remote.config"/>
-    </zip>
-    <!--Chinook WebStart & getdown-->
-    <mkdir dir="${deploy.demos.dir}/chinook"/>
-    <create_manifest destination="${deploy.demos.dir}" application-name="Chinook JMinor Demo"
-                     main-class="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"/>
-    <jar jarfile="${deploy.demos.dir}/chinook/chinook.jar" duplicate="preserve" filesetmanifest="mergewithoutmain"
-         manifest="${deploy.demos.dir}/META-INF/MANIFEST.MF">
-      <zipfileset dir="${build.demos}" includes="org/jminor/framework/demos/chinook/**/*"/>
-      <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
-      <zipfileset dir="${basedir}/resources/demos/chinook" includes="chinook.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
-    </jar>
-    <signjar jar="${deploy.demos.dir}/chinook/chinook.jar" alias="${jar.sign.alias}"
-             storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
-    <copy file="${basedir}/resources/demos/chinook/chinook.jnlp" todir="${deploy.demos.dir}/chinook"/>
-    <copy file="${basedir}/resources/demos/chinook/getdown.txt" todir="${deploy.demos.dir}/chinook"/>
-    <getdown_digest appdir="${deploy.demos.dir}/chinook"/>
-    <!--Chinook without WebStart-->
-    <zip destfile="${deploy.demos.dir}/chinook/chinook.zip">
-      <zipfileset file="${deploy.demos.dir}/chinook/chinook.jar"/>
-      <zipfileset dir="${db.h2.dir}" prefix="h2db"/>
-      <zipfileset file="${basedir}/resources/demos/config/h2db.config"/>
-      <zipfileset file="${basedir}/resources/demos/config/remote.config"/>
-    </zip>
+    <deploy_demo_app app-id="empdept" app-name="EmpDept JMinor Demo" main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>
+    <deploy_demo_app app-id="chinook" app-name="Chinook JMinor Demo" main-class="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"/>
+    <deploy_demo_app app-id="world" app-name="World JMinor Demo" main-class="org.jminor.framework.demos.world.client.ui.WorldAppPanel"/>
     <!--Cleanup-->
     <delete dir="${deploy.demos.dir}/META-INF"/>
     <delete file="${deploy.demos.dir}/libraries.jar"/>
   </target>
 
-  <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos, deploy_generator"
+  <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demo_apps, deploy_generator"
           description="A convenience target for deploying the server, server monitor and demo applications">
     <delete file="${dist}/deployment/jminor-${version}.zip"/>
     <zip destfile="${dist}/deployment/jminor-${version}.zip">
@@ -608,15 +567,43 @@
     <attribute name="main-class"/>
     <sequential>
       <manifest file="@{destination}/META-INF/MANIFEST.MF">
-      <attribute name="Built-By" value="${user.name}"/>
-      <attribute name="Application-Name" value="@{application-name}"/>
-      <attribute name="Specification-Title" value="${ant.project.name}"/>
-      <attribute name="Specification-Name" value="${ant.project.name}"/>
-      <attribute name="Specification-Vendor" value="${deploy.demos.codebase}"/>
-      <attribute name="Permissions" value="all-permissions"/>
-      <attribute name="Codebase" value="${deploy.demos.codebase}"/>
-      <attribute name="Main-Class" value="@{main-class}"/>
-    </manifest>
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Application-Name" value="@{application-name}"/>
+        <attribute name="Specification-Title" value="${ant.project.name}"/>
+        <attribute name="Specification-Name" value="${ant.project.name}"/>
+        <attribute name="Specification-Vendor" value="${deploy.demos.codebase}"/>
+        <attribute name="Permissions" value="all-permissions"/>
+        <attribute name="Codebase" value="${deploy.demos.codebase}"/>
+        <attribute name="Main-Class" value="@{main-class}"/>
+      </manifest>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="deploy_demo_app">
+    <attribute name="app-id"/>
+    <attribute name="app-name"/>
+    <attribute name="main-class"/>
+    <sequential>
+      <mkdir dir="${deploy.demos.dir}/@{app-id}"/>
+      <create_manifest destination="${deploy.demos.dir}" application-name="@{app-name}"
+                       main-class="@{main-class}"/>
+      <jar jarfile="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" duplicate="preserve" filesetmanifest="mergewithoutmain"
+           manifest="${deploy.demos.dir}/META-INF/MANIFEST.MF">
+        <zipfileset dir="${build.demos}" includes="org/jminor/framework/demos/@{app-id}/**/*"/>
+        <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
+        <zipfileset dir="${basedir}/resources/demos/@{app-id}" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
+      </jar>
+      <signjar jar="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" alias="${jar.sign.alias}"
+               storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
+      <copy file="${basedir}/resources/demos/@{app-id}/@{app-id}.jnlp" todir="${deploy.demos.dir}/@{app-id}"/>
+      <copy file="${basedir}/resources/demos/@{app-id}/getdown.txt" todir="${deploy.demos.dir}/@{app-id}"/>
+      <getdown_digest appdir="${deploy.demos.dir}/@{app-id}"/>
+      <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.zip">
+        <zipfileset file="${deploy.demos.dir}/@{app-id}/@{app-id}.jar"/>
+        <zipfileset dir="${db.h2.dir}" prefix="h2db"/>
+        <zipfileset file="${basedir}/resources/demos/config/h2db.config"/>
+        <zipfileset file="${basedir}/resources/demos/config/remote.config"/>
+      </zip>
     </sequential>
   </macrodef>
 </project>

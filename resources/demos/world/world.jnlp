@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<jnlp spec="1.0+" codebase="http://jminor.no-ip.org/demos/world" href="world.jnlp">
+
+  <information>
+    <title>World JMinor Demo</title>
+    <vendor>JMinor.org</vendor>
+  </information>
+  <security>
+    <all-permissions/>
+  </security>
+
+  <resources>
+    <j2se version="1.7+" />
+
+    <jar href="world.jar" main="true" />
+
+    <property name="jminor.client.connectionType" value="remote"/>
+    <property name="javax.net.ssl.trustStore" value="JMinorClientTruststore"/>
+    <property name="jminor.server.hostname" value="jminor.no-ip.org" />
+  </resources>
+
+  <application-desc main-class="org.jminor.framework.demos.world.client.ui.WorldAppPanel"/>
+</jnlp>

@@ -4,5 +4,8 @@ RUNSCRIPT FROM './resources/demos/petstore/scripts/ddl.sql';
 RUNSCRIPT FROM './resources/demos/petstore/scripts/dml.sql';
 RUNSCRIPT FROM './resources/demos/chinook/scripts/ddl.sql';
 RUNSCRIPT FROM './resources/demos/chinook/scripts/dml.sql';
+RUNSCRIPT FROM './resources/demos/world/scripts/ddl.sql';
+RUNSCRIPT FROM './resources/demos/world/scripts/dml.sql';
+RUNSCRIPT FROM './resources/demos/world/scripts/ddl_fk.sql';
 create user scott password 'tiger';
 alter user scott admin true;
