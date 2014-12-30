@@ -27,7 +27,7 @@ public final class CityEditPanel extends EntityEditPanel {
     createTextField(World.CITY_DISTRICT).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(World.CITY_POPULATION);
 
-    setLayout(new FlexibleGridLayout(2, 2, 5, 5));
+    setLayout(new FlexibleGridLayout(2, 2, 5, 5, true, false));
 
     addPropertyPanel(World.CITY_COUNTRYCODE_FK);
     addPropertyPanel(World.CITY_NAME);

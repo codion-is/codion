@@ -37,7 +37,7 @@ public final class CountryEditPanel extends EntityEditPanel {
     createTextField(World.COUNTRY_HEADOFSTATE).setColumns(TEXT_FIELD_COLUMNS);
     UiUtil.setPreferredWidth(createEntityComboBox(World.COUNTRY_CAPITAL_FK), COMBOBOX_WIDTH);
 
-    setLayout(new FlexibleGridLayout(4, 5, 5, 5));
+    setLayout(new FlexibleGridLayout(4, 5, 5, 5, true, false));
 
     addPropertyPanel(World.COUNTRY_CODE);
     addPropertyPanel(World.COUNTRY_NAME);

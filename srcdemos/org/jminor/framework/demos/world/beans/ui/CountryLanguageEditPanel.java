@@ -27,7 +27,7 @@ public final class CountryLanguageEditPanel extends EntityEditPanel {
     createCheckBox(World.COUNTRYLANGUAGE_ISOFFICIAL, null, false);
     createTextField(World.COUNTRYLANGUAGE_PERCENTAGE);
 
-    setLayout(new FlexibleGridLayout(2, 4, 5, 5));
+    setLayout(new FlexibleGridLayout(2, 4, 5, 5, true, false));
 
     addPropertyPanel(World.COUNTRYLANGUAGE_COUNTRYCODE_FK);
     addPropertyPanel(World.COUNTRYLANGUAGE_LANGUAGE);
