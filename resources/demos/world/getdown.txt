@@ -1,8 +1,11 @@
 # The URL from which the client is downloaded
 appbase = http://jminor.no-ip.org/demos/world/
 
+resource = jminor_logo_medium.png
+
 # UI Configuration
 ui.name = World JMinor Demo
+ui.background_image = jminor_logo_medium.png
 
 # Application jar files
 code = world.jar
