@@ -3856,3 +3856,4 @@
   DatabaseConnection.getMethodLogger() added
   DefaultDatabaseConnection.query() moved to DatabaseUtil
   UiUtil.setPreferredWidth() added, tested
+  EntityTestUnit.initializeReferencedEntities() now short circuits the initialization of circular references

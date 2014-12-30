@@ -32,6 +32,7 @@ import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
+import java.util.HashSet;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
@@ -87,11 +88,11 @@ public abstract class EntityTestUnit {
   public final void testEntity(final String entityID) throws DatabaseException {
     connection.beginTransaction();
     try {
-      initializeReferencedEntities(entityID);
+      initializeReferencedEntities(entityID, new HashSet<String>());
       Entity testEntity = null;
       if (!Entities.isReadOnly(entityID)) {
         testEntity = testInsert(Util.rejectNullValue(initializeTestEntity(entityID), "test entity"));
-        testEntity.toString();
+        assertNotNull(testEntity.toString());
         testUpdate(testEntity);
       }
       testSelect(entityID, testEntity);
@@ -250,11 +251,13 @@ public abstract class EntityTestUnit {
   /**
    * Initializes the entities referenced by the entity identified by <code>entityID</code>
    * @param entityID the ID of the entity for which to initialize the referenced entities
+   * @param visited the entityIDs already visited
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    * @see #initializeReferenceEntity(String) (String, org.jminor.framework.domain.Entity)
    */
   @SuppressWarnings({"UnusedDeclaration"})
-  private void initializeReferencedEntities(final String entityID) throws DatabaseException {
+  private void initializeReferencedEntities(final String entityID, final Collection<String> visited) throws DatabaseException {
+    visited.add(entityID);
     final List<Property.ForeignKeyProperty> foreignKeyProperties = new ArrayList<>(Entities.getForeignKeyProperties(entityID));
     Collections.sort(foreignKeyProperties, new Comparator<Property.ForeignKeyProperty>() {
       //we initialize the self references last, to insure that all required reference entities have been initialized
@@ -265,8 +268,8 @@ public abstract class EntityTestUnit {
     });
     for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID)) {
       final String referencedEntityID = foreignKeyProperty.getReferencedEntityID();
-      if (!entityID.equals(referencedEntityID)) {
-        initializeReferencedEntities(referencedEntityID);
+      if (!visited.contains(referencedEntityID)) {
+        initializeReferencedEntities(referencedEntityID, visited);
       }
       if (!referencedEntities.containsKey(referencedEntityID)) {
         setReferenceEntity(referencedEntityID, initializeReferenceEntity(referencedEntityID));
