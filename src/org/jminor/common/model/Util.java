@@ -578,27 +578,34 @@ public final class Util {
   }
 
   /**
-   * @return a string containing the version number
+   * @return a string containing the framework version number, without any version metadata (fx. build no.)
    */
-  public static String getVersion() {
-    final String versionString = getVersionAndBuildNumber();
-    if (versionString.toLowerCase().contains("build")) {
-      return versionString.substring(0, versionString.toLowerCase().indexOf("build") - 1);
+  public static String getVersionString() {
+    final String versionString = getVersionAndBuildNumberString();
+    if (versionString.toLowerCase().contains("-")) {
+      return versionString.substring(0, versionString.toLowerCase().indexOf("-") - 1);
     }
 
     return "N/A";
   }
 
   /**
-   * @return a string containing the version and build number
+   * @return a string containing the framework version and version metadata
    */
-  public static String getVersionAndBuildNumber() {
+  public static String getVersionAndBuildNumberString() {
     try {
       return getTextFileContents(Util.class, VERSION_FILE);
     }
     catch (final IOException e) {
       return "N/A";
     }
+  }
+
+  /**
+   * @return the framework Version
+   */
+  public static Version getVersion() {
+    return Version.parse(getVersionAndBuildNumberString());
   }
 
   /**

@@ -150,7 +150,7 @@
     <tstamp>
       <format property="DSTAMP" pattern="yyyy.MM.dd HH:mm"/>
     </tstamp>
-    <concat destfile="${build.base}/org/jminor/common/model/version.txt">v${version} build ${DSTAMP}</concat>
+    <concat destfile="${build.base}/org/jminor/common/model/version.txt">${version}-build ${DSTAMP}</concat>
   </target>
 
   <target name="compile_demo_reports" depends="resolve_libraries"

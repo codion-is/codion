@@ -4,6 +4,7 @@
 package org.jminor.common.server;
 
 import org.jminor.common.model.User;
+import org.jminor.common.model.Version;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -59,7 +60,7 @@ public interface RemoteServer<T extends Remote> extends Remote {
    * @return the server version and build number
    * @throws RemoteException in case of a communication error
    */
-  String getServerVersion() throws RemoteException;
+  Version getServerVersion() throws RemoteException;
 
   /**
    * @return the server port

@@ -12,6 +12,7 @@ import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Version;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.RemoteServer;
@@ -93,7 +94,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
 
   /** {@inheritDoc} */
   @Override
-  public String getServerVersion() {
+  public Version getServerVersion() {
     return server.getServerVersion();
   }
 
@@ -501,7 +502,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   }
 
   private static String initializeServerName(final String databaseHost, final String sid) {
-    return Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX) + " " + Util.getVersion()
+    return Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX) + " " + Util.getVersionString()
             + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
   }
 

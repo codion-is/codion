@@ -5,6 +5,7 @@ package org.jminor.common.server;
 
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -208,8 +209,8 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
 
   /** {@inheritDoc} */
   @Override
-  public final String getServerVersion() {
-    return Util.getVersionAndBuildNumber();
+  public final Version getServerVersion() {
+    return Util.getVersion();
   }
 
   /** {@inheritDoc} */

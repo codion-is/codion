@@ -6,6 +6,7 @@ package org.jminor.framework.server;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
+import org.jminor.common.model.Version;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
 
@@ -51,7 +52,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @return the server version and build number
    * @throws RemoteException in case of a communication error
    */
-  String getServerVersion() throws RemoteException;
+  Version getServerVersion() throws RemoteException;
 
   /**
    * @return the server port

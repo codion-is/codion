@@ -637,7 +637,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    */
   protected JPanel getAboutPanel() {
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
-    final String versionString = Util.getVersionAndBuildNumber();
+    final String versionString = Util.getVersionAndBuildNumberString();
     panel.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
     final JTextField txtVersionMemory = new JTextField(versionString + " (" + Util.getMemoryUsageString() + ")");
     txtVersionMemory.setEditable(false);
