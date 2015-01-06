@@ -2,7 +2,6 @@ package org.jminor.common.ui.combobox;
 
 import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
-import javax.swing.UIManager;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.JTextComponent;
@@ -18,7 +17,7 @@ import java.text.Normalizer;
 /**
  * Code originally from: http://www.orbital-computer.de/JComboBox
  *
- * Selects an item in a JComboBox based values typed in on the keyboard.
+ * Selects an item in a JComboBox based on values typed in on the keyboard.
  * @author Thomas Bierhance
  */
 public final class MaximumMatch extends PlainDocument {
@@ -27,8 +26,7 @@ public final class MaximumMatch extends PlainDocument {
   private final ComboBoxModel model;
   private final JTextComponent editor;
   private final boolean normalize;
-  // flag to indicate if setSelectedItem has been called
-  // subsequent calls to remove/insertString should be ignored
+  // flag to indicate if setSelectedItem has been called, subsequent calls to remove/insertString should be ignored
   private boolean selecting = false;
   private boolean hitBackspace = false;
   private boolean hitBackspaceOnSelection;
@@ -62,10 +60,7 @@ public final class MaximumMatch extends PlainDocument {
       }
     });
     // Handle initially selected object
-    final Object selected = comboBox.getSelectedItem();
-    if (selected != null) {
-      setText(selected.toString());
-    }
+    setTextAccordingToSelectedItem();
     highlightCompletedText(0);
   }
 
@@ -103,16 +98,23 @@ public final class MaximumMatch extends PlainDocument {
       return;
     }
     if (hitBackspace) {
+      boolean selectFirst = false;
       // user hit backspace => move the selection backwards
-      // old item keeps being selected
+      // old item keeps being selected unless we've backspaced beyond the first character
       if (offs > 0) {
         if (hitBackspaceOnSelection) {
           offs--;
+          if (offs == 0) {
+            selectFirst = true;
+          }
         }
       }
       else {
-        // User hit backspace with the cursor positioned on the start => beep
-        UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
+        selectFirst = true;
+      }
+      if (selectFirst && model.getSize() > 0) {
+        setSelectedItem(model.getElementAt(0));
+        setTextAccordingToSelectedItem();
       }
       highlightCompletedText(offs);
     }
@@ -142,9 +144,9 @@ public final class MaximumMatch extends PlainDocument {
       // keep old item selected if there is no match, possibly a null item
       item = comboBox.getSelectedItem();
       // imitate no insert (later on offs will be incremented by str.length(): selection won't move forward)
-      offs = offs-str.length();
+      offs = offs - str.length();
       // provide feedback to the user that his input has been received but can not be accepted
-      UIManager.getLookAndFeel().provideErrorFeedback(comboBox);
+      comboBox.getToolkit().beep();
     }
 
     if (match) {
@@ -154,15 +156,14 @@ public final class MaximumMatch extends PlainDocument {
       offs += str.length();
     }
 
-    setText(item == null ? "" : item.toString());
+    setTextAccordingToSelectedItem();
     // select the completed part
     highlightCompletedText(offs);
   }
 
-  /**
-   * @param text Value to set for property 'text'.
-   */
-  private void setText(final String text) {
+  private void setTextAccordingToSelectedItem() {
+    final Object item = comboBox.getSelectedItem();
+    final String text = item == null ? "" : item.toString();
     try {
       // remove all text and insert the completed string
       super.remove(0, getLength());
@@ -274,12 +275,12 @@ public final class MaximumMatch extends PlainDocument {
       hitBackspace = false;
       switch (e.getKeyCode()) {
         // determine if the pressed key is backspace (needed by the remove method)
-        case KeyEvent.VK_BACK_SPACE :
+        case KeyEvent.VK_BACK_SPACE:
           hitBackspace = true;
           hitBackspaceOnSelection = editor.getSelectionStart() != editor.getSelectionEnd();
           break;
         // ignore delete key
-        case KeyEvent.VK_DELETE :
+        case KeyEvent.VK_DELETE:
           e.consume();
           comboBox.getToolkit().beep();
           break;

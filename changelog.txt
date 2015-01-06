@@ -3859,3 +3859,4 @@
   EntityTestUnit.initializeReferencedEntities() now short circuits the initialization of circular references
   World demo application added
   build.xml deploy_demos refactored, renamed to deploy_demo_apps
+  MaximumMatch, now selects first item when the user backspaces beyond the first character
