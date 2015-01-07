@@ -460,7 +460,7 @@ final class DefaultEntityConnection implements EntityConnection {
     synchronized (connection) {
       try {
         statement = connection.getConnection().prepareStatement(selectSQL);
-        resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
+        resultSet = executePreparedSelect(statement, selectSQL, criteria);
         final List<Integer> result = DatabaseUtil.INTEGER_RESULT_PACKER.pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
         if (result.isEmpty()) {
@@ -767,7 +767,7 @@ final class DefaultEntityConnection implements EntityConnection {
     try {
       selectSQL = getSelectSQL(criteria, connection.getDatabase());
       statement = connection.getConnection().prepareStatement(selectSQL);
-      resultSet = executePreparedSelect(statement, selectSQL, criteria.getValues(), criteria.getValueKeys());
+      resultSet = executePreparedSelect(statement, selectSQL, criteria);
       List<Entity> result = null;
       SQLException packingException = null;
       try {
@@ -873,12 +873,14 @@ final class DefaultEntityConnection implements EntityConnection {
   }
 
   private ResultSet executePreparedSelect(final PreparedStatement statement, final String sqlStatement,
-                                          final List<?> values, final List<Property.ColumnProperty> properties) throws SQLException {
+                                          final EntityCriteria criteria) throws SQLException {
     SQLException exception = null;
     DatabaseUtil.QUERY_COUNTER.count(sqlStatement);
+    final List<?> values = criteria.getValues();
     try {
       logAccess("executePreparedSelect", values == null ? new Object[]{sqlStatement} : new Object[]{sqlStatement, values});
-      setParameterValues(statement, values, properties);
+      setParameterValues(statement, values, criteria.getValueKeys());
+
       return statement.executeQuery();
     }
     catch (final SQLException e) {
