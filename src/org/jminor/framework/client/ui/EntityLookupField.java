@@ -12,12 +12,17 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Values;
+import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
+import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.UiValues;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.textfield.SizedDocument;
 import org.jminor.common.ui.textfield.TextFieldHint;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.AbstractAction;
@@ -25,6 +30,7 @@ import javax.swing.Action;
 import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
+import javax.swing.JComboBox;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JLabel;
@@ -43,7 +49,9 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A UI component based on the EntityLookupModel.
@@ -52,7 +60,7 @@ import java.util.List;
  * If the lookup result is empty a message is shown, if a single entity fits the
  * criteria then that entity is selected, otherwise a list containing the entities
  * fitting the criteria is shown in a dialog allowing either a single or multiple
- * selection based on {@link org.jminor.framework.client.model.EntityLookupModel#isMultipleSelectionAllowed()}}.
+ * selection based on the lookup model settings.
  *
  * @see EntityLookupModel
  */
@@ -63,6 +71,7 @@ public final class EntityLookupField extends JTextField {
 
   private final EntityLookupModel model;
   private final TextFieldHint searchHint;
+  private final SettingsPanel settingsPanel;
   private final Action transferFocusAction = new UiUtil.TransferFocusAction(this);
   private final Action transferFocusBackwardAction = new UiUtil.TransferFocusAction(this, true);
   /**
@@ -92,6 +101,8 @@ public final class EntityLookupField extends JTextField {
   public EntityLookupField(final EntityLookupModel lookupModel, final boolean lookupOnKeyRelease) {
     Util.rejectNullValue(lookupModel, "lookupModel");
     this.model = lookupModel;
+    this.settingsPanel = new SettingsPanel(lookupModel);
+    this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     setValidBackgroundColor(getBackground());
     setInvalidBackgroundColor(Color.LIGHT_GRAY);
     setToolTipText(lookupModel.getDescription());
@@ -99,7 +110,6 @@ public final class EntityLookupField extends JTextField {
     addFocusListener(initializeFocusListener());
     addEscapeListener();
     linkToModel();
-    this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     updateColors();
     UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, lookupOnKeyRelease, initializeLookupAction());
     UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
@@ -153,7 +163,7 @@ public final class EntityLookupField extends JTextField {
       }
     };
     final Action cancelAction = new UiUtil.DisposeWindowAction(dialog);
-    list.setSelectionMode(model.isMultipleSelectionAllowed() ?
+    list.setSelectionMode(model.getMultipleSelectionAllowedValue().get() ?
             ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
     UiUtil.prepareScrollPanelDialog(dialog, this, list, okAction, cancelAction);
 
@@ -161,8 +171,8 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void linkToModel() {
-    ValueLinks.textValueLink(this, getModel(), "searchString", getModel().getSearchStringObserver());
-    model.addSearchStringListener(new EventInfoListener<String>() {
+    Values.link(getModel().getSearchStringValue(), UiValues.textValue(this, null, true));
+    model.getSearchStringValue().getChangeObserver().addInfoListener(new EventInfoListener<String>() {
       @Override
       public void eventOccurred(final String info) {
         updateColors();
@@ -263,7 +273,7 @@ public final class EntityLookupField extends JTextField {
 
   private JPopupMenu initializePopupMenu() {
     final JPopupMenu popupMenu = new JPopupMenu();
-    popupMenu.add(new SettingsAction(this));
+    popupMenu.add(new SettingsAction(settingsPanel));
 
     return popupMenu;
   }
@@ -311,55 +321,18 @@ public final class EntityLookupField extends JTextField {
     timer.start();
   }
 
-  private static final class SettingsAction extends AbstractAction {
+  private final class SettingsAction extends AbstractAction {
 
-    private final EntityLookupField lookupPanel;
+    private final SettingsPanel settingsPanel;
 
-    private SettingsAction(final EntityLookupField lookupPanel) {
+    private SettingsAction(final SettingsPanel settingsPanel) {
       super(Messages.get(Messages.SETTINGS));
-      this.lookupPanel = lookupPanel;
+      this.settingsPanel = settingsPanel;
     }
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      final JPanel panel = new JPanel(UiUtil.createGridLayout(5, 1));
-      final JCheckBox boxCaseSensitive =
-              new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE), lookupPanel.getModel().isCaseSensitive());
-      final JCheckBox boxPrefixWildcard =
-              new JCheckBox(FrameworkMessages.get(FrameworkMessages.PREFIX_WILDCARD), lookupPanel.getModel().isWildcardPrefix());
-      final JCheckBox boxPostfixWildcard =
-              new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD), lookupPanel.getModel().isWildcardPostfix());
-      final JCheckBox boxAllowMultipleValues =
-              new JCheckBox(FrameworkMessages.get(FrameworkMessages.ENABLE_MULTIPLE_SEARCH_VALUES), lookupPanel.getModel().isMultipleSelectionAllowed());
-      final SizedDocument document = new SizedDocument();
-      document.setMaxLength(1);
-      final JTextField txtMultipleValueSeparator = new JTextField(document, "", 1);
-      txtMultipleValueSeparator.setText(lookupPanel.getModel().getMultipleValueSeparator());
-
-      panel.add(boxCaseSensitive);
-      panel.add(boxPrefixWildcard);
-      panel.add(boxPostfixWildcard);
-      panel.add(boxAllowMultipleValues);
-
-      final JPanel pnlValueSeparator = new JPanel(UiUtil.createBorderLayout());
-      pnlValueSeparator.add(txtMultipleValueSeparator, BorderLayout.WEST);
-      pnlValueSeparator.add(new JLabel(FrameworkMessages.get(FrameworkMessages.MULTIPLE_SEARCH_VALUE_SEPARATOR)), BorderLayout.CENTER);
-
-      panel.add(pnlValueSeparator);
-      final AbstractAction action = new AbstractAction(Messages.get(Messages.OK)) {
-        @Override
-        public void actionPerformed(final ActionEvent e) {
-          lookupPanel.getModel().setCaseSensitive(boxCaseSensitive.isSelected());
-          lookupPanel.getModel().setWildcardPrefix(boxPrefixWildcard.isSelected());
-          lookupPanel.getModel().setWildcardPostfix(boxPostfixWildcard.isSelected());
-          lookupPanel.getModel().setMultipleSelectionAllowed(boxAllowMultipleValues.isSelected());
-          if (txtMultipleValueSeparator.getText().length() != 0) {
-            lookupPanel.getModel().setMultipleValueSeparator(txtMultipleValueSeparator.getText());
-          }
-        }
-      };
-      action.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-      UiUtil.displayInDialog(lookupPanel, panel, Messages.get(Messages.SETTINGS), action);
+      UiUtil.displayInDialog(EntityLookupField.this, settingsPanel, Messages.get(Messages.SETTINGS));
     }
   }
 
@@ -378,6 +351,72 @@ public final class EntityLookupField extends JTextField {
     public void actionPerformed(final ActionEvent e) {
       okButton.doClick();
       closeEvent.fire();
+    }
+  }
+
+  private static final class SettingsPanel extends JPanel {
+
+    private SettingsPanel(final EntityLookupModel lookupModel) {
+      initializeUI(lookupModel);
+    }
+
+    private void initializeUI(final EntityLookupModel lookupModel) {
+      final Map<Property.ColumnProperty, JPanel> propertyPanels = new HashMap<>();
+      final JPanel propertyBasePanel = new JPanel(UiUtil.createBorderLayout());
+      final FilteredComboBoxModel<Property.ColumnProperty> propertyComboBoxModel = new DefaultFilteredComboBoxModel<>();
+      for (final Map.Entry<Property.ColumnProperty, EntityLookupModel.LookupSettings> entry :
+              lookupModel.getPropertyLookupSettings().entrySet()) {
+        propertyComboBoxModel.addItem(entry.getKey());
+        propertyPanels.put(entry.getKey(), initializePropertyPanel(entry.getValue()));
+      }
+      propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
+      propertyBasePanel.add(propertyPanels.get(propertyComboBoxModel.getSelectedValue()));
+      propertyComboBoxModel.addSelectionListener(new EventListener() {
+        @Override
+        public void eventOccurred() {
+          propertyBasePanel.removeAll();
+          propertyBasePanel.add(propertyPanels.get(propertyComboBoxModel.getSelectedValue()));
+        }
+      });
+
+      final JCheckBox boxAllowMultipleValues = new JCheckBox(FrameworkMessages.get(FrameworkMessages.ENABLE_MULTIPLE_SEARCH_VALUES));
+      ValueLinks.toggleValueLink(boxAllowMultipleValues.getModel(), lookupModel.getMultipleSelectionAllowedValue(), false);
+      final SizedDocument document = new SizedDocument();
+      document.setMaxLength(1);
+      final JTextField txtMultipleValueSeparator = new JTextField(document, "", 1);
+      ValueLinks.textValueLink(txtMultipleValueSeparator, lookupModel.getMultipleItemSeparatorValue(), null, true, false);
+
+      final JPanel generalSettingsPanel = new JPanel(UiUtil.createGridLayout(2, 1));
+      generalSettingsPanel.setBorder(BorderFactory.createTitledBorder(""));
+
+      generalSettingsPanel.add(boxAllowMultipleValues);
+
+      final JPanel pnlValueSeparator = new JPanel(UiUtil.createBorderLayout());
+      pnlValueSeparator.add(txtMultipleValueSeparator, BorderLayout.WEST);
+      pnlValueSeparator.add(new JLabel(FrameworkMessages.get(FrameworkMessages.MULTIPLE_SEARCH_VALUE_SEPARATOR)), BorderLayout.CENTER);
+
+      generalSettingsPanel.add(pnlValueSeparator);
+
+      setLayout(UiUtil.createBorderLayout());
+      add(new JComboBox<>(propertyComboBoxModel), BorderLayout.NORTH);
+      add(propertyBasePanel, BorderLayout.CENTER);
+      add(generalSettingsPanel, BorderLayout.SOUTH);
+    }
+
+    private JPanel initializePropertyPanel(final EntityLookupModel.LookupSettings settings) {
+      final JPanel panel = new JPanel(UiUtil.createGridLayout(3, 1));
+      final JCheckBox boxCaseSensitive = new JCheckBox(FrameworkMessages.get(FrameworkMessages.CASE_SENSITIVE));
+      ValueLinks.toggleValueLink(boxCaseSensitive.getModel(), settings.getCaseSensitiveValue(), false);
+      final JCheckBox boxPrefixWildcard = new JCheckBox(FrameworkMessages.get(FrameworkMessages.PREFIX_WILDCARD));
+      ValueLinks.toggleValueLink(boxPrefixWildcard.getModel(), settings.getWildcardPrefixValue(), false);
+      final JCheckBox boxPostfixWildcard = new JCheckBox(FrameworkMessages.get(FrameworkMessages.POSTFIX_WILDCARD));
+      ValueLinks.toggleValueLink(boxPostfixWildcard.getModel(), settings.getWildcardPostfixValue(), false);
+
+      panel.add(boxCaseSensitive);
+      panel.add(boxPrefixWildcard);
+      panel.add(boxPostfixWildcard);
+
+      return panel;
     }
   }
 }

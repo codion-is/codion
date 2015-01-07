@@ -32,12 +32,14 @@ public class DefaultPropertySearchModelProvider implements PropertySearchModelPr
     if (Entities.isSmallDataset(property.getReferencedEntityID())) {
       final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(property.getReferencedEntityID(), connectionProvider);
       comboBoxModel.setNullValue(EntityUtil.createToStringEntity(property.getReferencedEntityID(), ""));
+
       return new DefaultForeignKeySearchModel(property, comboBoxModel);
     }
     else {
       final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityID(),
               connectionProvider, Entities.getSearchProperties(property.getReferencedEntityID()));
-      lookupModel.setMultipleSelectionAllowed(true);
+      lookupModel.getMultipleSelectionAllowedValue().set(true);
+
       return new DefaultForeignKeySearchModel(property, lookupModel);
     }
   }

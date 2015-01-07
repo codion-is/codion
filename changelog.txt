@@ -3864,3 +3864,4 @@
   Util.getVersion() and getVersionAndBuildNumber() renamed with String suffix
   Util.getVersion() added
   RemoteServer.getServerVersion() now returns a Version object instead of a String
+  DefaultEntityLookupModel now includes configuration settings for each lookup property

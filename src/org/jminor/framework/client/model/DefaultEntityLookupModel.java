@@ -8,15 +8,15 @@ import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
-import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
-import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Value;
+import org.jminor.common.model.Values;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
@@ -31,7 +31,9 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 
 /**
  * A default EntityLookupModel implementation
@@ -39,7 +41,6 @@ import java.util.List;
 public class DefaultEntityLookupModel implements EntityLookupModel {
 
   private final Event selectedEntitiesChangedEvent = Events.event();
-  private final Event<String> searchStringChangedEvent = Events.event();
   private final State searchStringRepresentsSelectedState = States.state(true);
 
   /**
@@ -62,16 +63,19 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    */
   private final EntityConnectionProvider connectionProvider;
 
+  /**
+   * Contains the search settings for lookup properties
+   */
+  private final Map<Property.ColumnProperty, LookupSettings> propertyLookupSettings = new HashMap<>();
+
+  private final Value<String> searchStringValue = Values.value("");
+  private final Value<String> multipleItemSeparatorValue = Values.value(",");
+  private final Value<Boolean> multipleSelectionAllowedValue = Values.value(true);
+
   private Entity.ToString toStringProvider = null;
   private Criteria<Property.ColumnProperty> additionalLookupCriteria;
-  private String searchString = "";
-  private boolean multipleSelectionAllowed = true;
-  private boolean caseSensitive = false;
-  private boolean wildcardPrefix = true;
-  private boolean wildcardPostfix = true;
   private Comparator<Entity> resultSorter = new EntityComparator();
   private String wildcard = (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER);
-  private String multipleValueSeparator = ",";
   private String description;
 
   /**
@@ -90,6 +94,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     this.entityID = entityID;
     this.lookupProperties = lookupProperties;
     this.description = Util.getCollectionContentsAsString(getLookupProperties(), false);
+    initializeDefaultSettings();
+    bindEvents();
   }
 
   /** {@inheritDoc} */
@@ -112,19 +118,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isMultipleSelectionAllowed() {
-    return multipleSelectionAllowed;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void setMultipleSelectionAllowed(final boolean multipleSelectionAllowed) {
-    this.multipleSelectionAllowed = multipleSelectionAllowed;
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public void setResultSorter(final Comparator<Entity> resultSorter) {
+    Util.rejectNullValue(resultSorter, "resultSorter");
     this.resultSorter = resultSorter;
   }
 
@@ -152,7 +147,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     if (Util.nullOrEmpty(entities) && this.selectedEntities.isEmpty()) {
       return;
     }//no change
-    if (entities != null && entities.size() > 1 && !multipleSelectionAllowed) {
+    if (entities != null && entities.size() > 1 && !multipleSelectionAllowedValue.get()) {
       throw new IllegalArgumentException("This EntityLookupModel does not allow the selection of multiple entities");
     }
 //todo handle non-loaded entities, see if combo box behaves normally
@@ -170,43 +165,9 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     return Collections.unmodifiableCollection(selectedEntities);
   }
 
-  /** {@inheritDoc} */
   @Override
-  public final boolean isCaseSensitive() {
-    return caseSensitive;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EntityLookupModel setCaseSensitive(final boolean caseSensitive) {
-    this.caseSensitive = caseSensitive;
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isWildcardPostfix() {
-    return wildcardPostfix;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EntityLookupModel setWildcardPostfix(final boolean wildcardPostfix) {
-    this.wildcardPostfix = wildcardPostfix;
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isWildcardPrefix() {
-    return wildcardPrefix;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EntityLookupModel setWildcardPrefix(final boolean wildcardPrefix) {
-    this.wildcardPrefix = wildcardPrefix;
-    return this;
+  public Map<Property.ColumnProperty, LookupSettings> getPropertyLookupSettings() {
+    return propertyLookupSettings;
   }
 
   /** {@inheritDoc} */
@@ -219,20 +180,6 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   @Override
   public final EntityLookupModel setWildcard(final String wildcard) {
     this.wildcard = wildcard;
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final String getMultipleValueSeparator() {
-    return multipleValueSeparator;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EntityLookupModel setMultipleValueSeparator(final String multipleValueSeparator) {
-    this.multipleValueSeparator = multipleValueSeparator;
-    refreshSearchText();
     return this;
   }
 
@@ -266,23 +213,22 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   @Override
   public final void setSearchString(final String searchString) {
-    this.searchString = searchString == null ? "" : searchString;
+    this.searchStringValue.set(searchString == null ? "" : searchString);
     searchStringRepresentsSelectedState.setActive(searchStringRepresentsSelected());
-    searchStringChangedEvent.fire(this.searchString);
   }
 
   /** {@inheritDoc} */
   @Override
   public final String getSearchString() {
-    return this.searchString;
+    return this.searchStringValue.get();
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean searchStringRepresentsSelected() {
     final String selectedAsString = toString(getSelectedEntities());
-    return (selectedEntities.isEmpty() && searchString.length() == 0)
-            || !selectedEntities.isEmpty() && selectedAsString.equals(searchString);
+    return (selectedEntities.isEmpty() && Util.nullOrEmpty(searchStringValue.get()))
+            || !selectedEntities.isEmpty() && selectedAsString.equals(searchStringValue.get());
   }
 
   /** {@inheritDoc} */
@@ -303,32 +249,26 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<String> getSearchStringObserver() {
-    return searchStringChangedEvent.getObserver();
+  public Value<String> getSearchStringValue() {
+    return searchStringValue;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSearchStringListener(final EventInfoListener<String> listener) {
-    searchStringChangedEvent.addInfoListener(listener);
+  public Value<String> getMultipleItemSeparatorValue() {
+    return multipleItemSeparatorValue;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Value<Boolean> getMultipleSelectionAllowedValue() {
+    return multipleSelectionAllowedValue;
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addSelectedEntitiesListener(final EventListener listener) {
     selectedEntitiesChangedEvent.addListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void removeSearchStringListener(final EventListener listener) {
-    searchStringChangedEvent.removeListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void removeSelectedEntitiesListener(final EventListener listener) {
-    selectedEntitiesChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -343,18 +283,42 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    */
   private EntitySelectCriteria getEntitySelectCriteria() {
     final CriteriaSet<Property.ColumnProperty> baseCriteria = new CriteriaSet<>(Conjunction.OR);
-    final String[] lookupTexts = multipleSelectionAllowed ? searchString.split(multipleValueSeparator) : new String[] {searchString};
+    final String[] lookupTexts = multipleSelectionAllowedValue.get() ? searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (final Property.ColumnProperty lookupProperty : lookupProperties) {
       for (final String rawLookupText : lookupTexts) {
+        final boolean wildcardPrefix = propertyLookupSettings.get(lookupProperty).getWildcardPrefixValue().get();
+        final boolean wildcardPostfix = propertyLookupSettings.get(lookupProperty).getWildcardPostfixValue().get();
+        final boolean caseSensitive = propertyLookupSettings.get(lookupProperty).getCaseSensitiveValue().get();
         final String lookupText = rawLookupText.trim();
-        final String modifiedLookupText = searchString.equals(wildcard) ? wildcard : ((wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : ""));
+        final String modifiedLookupText = searchStringValue.get().equals(wildcard) ? wildcard : ((wildcardPrefix ? wildcard : "") + lookupText + (wildcardPostfix ? wildcard : ""));
         baseCriteria.add(EntityCriteriaUtil.propertyCriteria(lookupProperty, SearchType.LIKE, caseSensitive, modifiedLookupText));
       }
     }
 
     return EntityCriteriaUtil.selectCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
-            new CriteriaSet<>(Conjunction.AND, additionalLookupCriteria, baseCriteria),
+                    new CriteriaSet<>(Conjunction.AND, additionalLookupCriteria, baseCriteria),
             Entities.getOrderByClause(getEntityID()));
+  }
+
+  private void initializeDefaultSettings() {
+    for (final Property.ColumnProperty property : lookupProperties) {
+      propertyLookupSettings.put(property, new DefaultLookupSettings());
+    }
+  }
+
+  private void bindEvents() {
+    searchStringValue.getChangeObserver().addListener(new EventListener() {
+      @Override
+      public void eventOccurred() {
+        searchStringRepresentsSelectedState.setActive(searchStringRepresentsSelected());
+      }
+    });
+    multipleItemSeparatorValue.getChangeObserver().addListener(new EventListener() {
+      @Override
+      public void eventOccurred() {
+        refreshSearchText();
+      }
+    });
   }
 
   private String toString(final Collection<Entity> entities) {
@@ -369,11 +333,33 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
       }
       counter++;
       if (counter < entities.size()) {
-        stringBuilder.append(multipleValueSeparator);
+        stringBuilder.append(multipleItemSeparatorValue.get());
       }
     }
 
     return stringBuilder.toString();
+  }
+
+  private static final class DefaultLookupSettings implements LookupSettings {
+
+    private final Value<Boolean> wildcardPrefixValue = Values.value(true);
+    private final Value<Boolean> wildcardPostfixValue = Values.value(true);
+    private final Value<Boolean> caseSensitiveValue = Values.value(false);
+
+    @Override
+    public Value<Boolean> getWildcardPrefixValue() {
+      return wildcardPrefixValue;
+    }
+
+    @Override
+    public Value<Boolean> getWildcardPostfixValue() {
+      return wildcardPostfixValue;
+    }
+
+    @Override
+    public Value<Boolean> getCaseSensitiveValue() {
+      return caseSensitiveValue;
+    }
   }
 
   private static final class EntityComparator implements Comparator<Entity>, Serializable {

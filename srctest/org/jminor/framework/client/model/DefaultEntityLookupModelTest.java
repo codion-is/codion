@@ -26,7 +26,7 @@ import static org.junit.Assert.*;
 
 public final class DefaultEntityLookupModelTest {
 
-  private DefaultEntityLookupModel lookupModel;
+  private EntityLookupModel lookupModel;
   private Collection<Property.ColumnProperty> lookupProperties;
 
   @Test(expected = IllegalArgumentException.class)
@@ -50,18 +50,12 @@ public final class DefaultEntityLookupModelTest {
     assertEquals("description", lookupModel.getDescription());
     assertNotNull(lookupModel.getConnectionProvider());
     assertTrue(lookupModel.getLookupProperties().containsAll(lookupProperties));
-    assertTrue(lookupModel.isMultipleSelectionAllowed());
-    lookupModel.setMultipleSelectionAllowed(false);
-    assertFalse(lookupModel.isMultipleSelectionAllowed());
-    assertFalse(lookupModel.isCaseSensitive());
-    assertTrue(lookupModel.isWildcardPostfix());
-    assertTrue(lookupModel.isWildcardPrefix());
     assertNotNull(lookupModel.getWildcard());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setSelectedEntitiesMultipleNotAllowed() {
-    lookupModel.setMultipleSelectionAllowed(false);
+    lookupModel.getMultipleSelectionAllowedValue().set(false);
     final Collection<Entity> entities = Arrays.asList(Entities.entity(EmpDept.T_EMPLOYEE), Entities.entity(EmpDept.T_EMPLOYEE));
     lookupModel.setSelectedEntities(entities);
   }
@@ -86,7 +80,7 @@ public final class DefaultEntityLookupModelTest {
 
   @Test
   public void lookupModel() throws Exception {
-    lookupModel.setMultipleSelectionAllowed(true);
+    lookupModel.getMultipleSelectionAllowedValue().set(true);
     lookupModel.setWildcard("%");
     lookupModel.setSearchString("joh");
     assertFalse(lookupModel.searchStringRepresentsSelected());
@@ -99,7 +93,7 @@ public final class DefaultEntityLookupModelTest {
     assertEquals("Search string should not have changed", lookupModel.getSearchString(), "joh");
     lookupModel.setSelectedEntities(result);
     assertEquals("Search string should have been updated",//this test fails due to the toString cache, strange?
-            "John" + lookupModel.getMultipleValueSeparator() + "johnson", lookupModel.getSearchString());
+            "John" + lookupModel.getMultipleItemSeparatorValue().get() + "johnson", lookupModel.getSearchString());
 
     lookupModel.setSearchString("jo");
     result = lookupModel.performQuery();
@@ -108,7 +102,11 @@ public final class DefaultEntityLookupModelTest {
     assertTrue("Result should contain Andy", contains(result, "Andy"));
     assertTrue("Result should contain Andrew", contains(result, "Andrew"));
 
-    lookupModel.setWildcardPrefix(false);
+    final Property.ColumnProperty employeeNameProperty = Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME);
+    final Property.ColumnProperty employeeJobProperty = Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB);
+
+    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(false);
+    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(false);
     result = lookupModel.performQuery();
     assertTrue("Result should contain John", contains(result, "John"));
     assertTrue("Result should contain johnson", contains(result, "johnson"));
@@ -116,18 +114,23 @@ public final class DefaultEntityLookupModelTest {
     assertFalse("Result should not contain andrew", contains(result, "Andrew"));
 
     lookupModel.setSearchString("Joh");
-    lookupModel.setCaseSensitive(true);
+    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getCaseSensitiveValue().set(true);
+    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getCaseSensitiveValue().set(true);
     result = lookupModel.performQuery();
     assertEquals("Result count should be 1", 1, result.size());
     assertTrue("Result should contain John", contains(result, "John"));
-    lookupModel.setCaseSensitive(false);
+    assertFalse("Result should not contain johnson", contains(result, "johnson"));
+    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(false);
+    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(false);
+    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getCaseSensitiveValue().set(false);
+    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getCaseSensitiveValue().set(false);
     result = lookupModel.performQuery();
     assertTrue("Result should contain John", contains(result, "John"));
     assertTrue("Result should contain johnson", contains(result, "johnson"));
     assertFalse("Result should not contain Andy", contains(result, "Andy"));
     assertFalse("Result should not contain Andrew", contains(result, "Andrew"));
 
-    lookupModel.setMultipleValueSeparator(";");
+    lookupModel.getMultipleItemSeparatorValue().set(";");
     lookupModel.setSearchString("andy ; Andrew ");//spaces should be trimmed away
     result = lookupModel.performQuery();
     assertEquals("Result count should be 2", 2, result.size());
@@ -143,16 +146,20 @@ public final class DefaultEntityLookupModelTest {
     assertTrue("Search string should represent the selected items", lookupModel.searchStringRepresentsSelected());
 
     lookupModel.setSearchString("and; rew");
-    lookupModel.setWildcardPrefix(true);
-    lookupModel.setWildcardPostfix(false);
+    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(true);
+    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(true);
+    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPostfixValue().set(false);
+    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPostfixValue().set(false);
     result = lookupModel.performQuery();
     assertEquals("Result count should be 1", 1, result.size());
     assertFalse("Result should not contain Andy", contains(result, "Andy"));
     assertTrue("Result should contain Andrew", contains(result, "Andrew"));
 
     lookupModel.setSearchString("Joh");
-    lookupModel.setCaseSensitive(true);
-    lookupModel.setWildcardPostfix(true);
+    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getCaseSensitiveValue().set(true);
+    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getCaseSensitiveValue().set(true);
+    lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPostfixValue().set(true);
+    lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPostfixValue().set(true);
     lookupModel.setAdditionalLookupCriteria(
             EntityCriteriaUtil.propertyCriteria(Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
                     SearchType.NOT_LIKE, "ajob"));
@@ -163,13 +170,13 @@ public final class DefaultEntityLookupModelTest {
 
   @Test
   public void setAdditionalLookupCriteria() {
-    lookupModel.setMultipleSelectionAllowed(false);
+    lookupModel.getMultipleSelectionAllowedValue().set(false);
     lookupModel.setWildcard("%");
     lookupModel.setSearchString("johnson");
     List<Entity> result = lookupModel.performQuery();
     assertTrue("A single result should be returned", result.size() == 1);
     lookupModel.setSelectedEntities(result);
-    lookupModel.setAdditionalLookupCriteria(new SimpleCriteria("1 = 2"));
+    lookupModel.setAdditionalLookupCriteria(new SimpleCriteria<Property.ColumnProperty>("1 = 2"));
     assertEquals(1, lookupModel.getSelectedEntities().size());
     result = lookupModel.performQuery();
     assertTrue("No result should be returned", result.isEmpty());

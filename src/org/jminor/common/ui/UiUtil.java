@@ -951,7 +951,7 @@ public final class UiUtil {
   }
 
   /**
-   * Displays the given component in a dialog
+   * Displays the given component in a modal dialog
    * @param owner the dialog owner
    * @param component the component to display
    * @param title the dialog title
