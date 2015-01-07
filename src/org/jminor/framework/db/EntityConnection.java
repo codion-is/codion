@@ -91,7 +91,6 @@ public interface EntityConnection {
   /**
    * Inserts the given entities, returning a list containing the primary keys of the inserted entities
    * in the same order as they were received.
-   * If the primary key value of a entity is specified the id generation is disregarded.
    * Performs a commit unless a transaction is open.
    * @param entities the entities to insert
    * @return the primary key values of the inserted entities
@@ -143,7 +142,7 @@ public interface EntityConnection {
    * @param value the value to use in the condition
    * @return an entity of the type <code>entityID</code>, having the
    * value of <code>propertyID</code> as <code>value</code>
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a db exception or if many records were found
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
    */
   Entity selectSingle(final String entityID, final String propertyID, final Object value) throws DatabaseException;
@@ -152,7 +151,7 @@ public interface EntityConnection {
    * Selects a single entity by key
    * @param key the key of the entity to select
    * @return an entity having the key <code>key</code>
-   * @throws DatabaseException in case of a db exception
+   * @throws DatabaseException in case of a db exception or if many records were found
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
    */
   Entity selectSingle(final Entity.Key key) throws DatabaseException;
@@ -162,7 +161,7 @@ public interface EntityConnection {
    * if the criteria results in more than one entity
    * @param criteria the criteria specifying the entity to select
    * @return the entities according to the given criteria
-   * @throws DatabaseException if an exception occurs
+   * @throws DatabaseException in case of a db exception or if many records were found
    * @throws org.jminor.common.db.exception.RecordNotFoundException in case the entity was not found
    */
   Entity selectSingle(final EntitySelectCriteria criteria) throws DatabaseException;
