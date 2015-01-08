@@ -151,40 +151,11 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   @Override
   public final T connect(final User user, final UUID clientID, final String clientTypeID) throws RemoteException,
           ServerException.ServerFullException, ServerException.LoginException {
-    if (clientID == null) {
-      return null;
+    if (!Util.notNull(user, clientID, clientTypeID)) {
+      throw new IllegalArgumentException("User, clientID and clientTypeID must be specified");
     }
 
     return connect(new ClientInfo(clientID, clientTypeID, user));
-  }
-
-  //todo review synchronization
-  /** {@inheritDoc} */
-  @Override
-  public final T connect(final ClientInfo clientInfo) throws RemoteException,
-          ServerException.ServerFullException, ServerException.LoginException {
-    if (shuttingDown) {
-      throw ServerException.loginException("Server is shutting down");
-    }
-    final LoginProxy loginProxy = getLoginProxy(clientInfo);
-    LOG.debug("Connecting client {}, loginProxy {}", clientInfo, loginProxy);
-    synchronized (connections) {
-      ConnectionInfo<T> connectionInfo = connections.get(clientInfo.getClientID());
-      if (connectionInfo != null) {
-        LOG.debug("Active connection exists {}", clientInfo);
-        return connectionInfo.getConnection();
-      }
-
-      if (maximumNumberOfConnectionReached()) {
-        throw ServerException.serverFullException();
-      }
-
-      LOG.debug("No active connection found for client {}, establishing a new connection", clientInfo);
-      connectionInfo = new ConnectionInfo<>(clientInfo, doConnect(loginProxy.doLogin(clientInfo)));
-      connections.put(clientInfo.getClientID(), connectionInfo);
-
-      return connectionInfo.getConnection();
-    }
   }
 
   /** {@inheritDoc} */
@@ -277,6 +248,33 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
    * @throws RemoteException in case of an exception
    */
   protected abstract void doDisconnect(final T connection) throws RemoteException;
+
+  //todo review synchronization
+  private T connect(final ClientInfo clientInfo) throws RemoteException,
+          ServerException.ServerFullException, ServerException.LoginException {
+    if (shuttingDown) {
+      throw ServerException.loginException("Server is shutting down");
+    }
+    final LoginProxy loginProxy = getLoginProxy(clientInfo);
+    LOG.debug("Connecting client {}, loginProxy {}", clientInfo, loginProxy);
+    synchronized (connections) {
+      ConnectionInfo<T> connectionInfo = connections.get(clientInfo.getClientID());
+      if (connectionInfo != null) {
+        LOG.debug("Active connection exists {}", clientInfo);
+        return connectionInfo.getConnection();
+      }
+
+      if (maximumNumberOfConnectionReached()) {
+        throw ServerException.serverFullException();
+      }
+
+      LOG.debug("No active connection found for client {}, establishing a new connection", clientInfo);
+      connectionInfo = new ConnectionInfo<>(clientInfo, doConnect(loginProxy.doLogin(clientInfo)));
+      connections.put(clientInfo.getClientID(), connectionInfo);
+
+      return connectionInfo.getConnection();
+    }
+  }
 
   private boolean maximumNumberOfConnectionReached() {
     return connectionLimit > -1 && getConnectionCount() >= connectionLimit;

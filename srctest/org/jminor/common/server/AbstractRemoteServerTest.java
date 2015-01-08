@@ -24,15 +24,15 @@ public class AbstractRemoteServerTest {
     final ClientInfo clientInfo = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
     final ClientInfo clientInfo2 = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
     final ClientInfo clientInfo3 = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
-    server.connect(clientInfo);
+    server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
     assertEquals(1, server.getConnectionCount());
-    server.connect(clientInfo2);
+    server.connect(clientInfo2.getUser(), clientInfo2.getClientID(), clientInfo2.getClientTypeID());
     assertEquals(2, server.getConnectionCount());
     server.disconnect(clientInfo.getClientID());
     assertEquals(1, server.getConnectionCount());
-    server.connect(clientInfo);
+    server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
     assertEquals(2, server.getConnectionCount());
-    server.connect(clientInfo3);
+    server.connect(clientInfo3.getUser(), clientInfo3.getClientID(), clientInfo3.getClientTypeID());
     assertEquals(3, server.getConnectionCount());
     server.disconnect(clientInfo3.getClientID());
     assertEquals(2, server.getConnectionCount());
@@ -49,8 +49,8 @@ public class AbstractRemoteServerTest {
     final ClientInfo clientInfo = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
     final ClientInfo clientInfo2 = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
     server.setConnectionLimit(1);
-    server.connect(clientInfo);
-    server.connect(clientInfo2);
+    server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
+    server.connect(clientInfo2.getUser(), clientInfo2.getClientID(), clientInfo2.getClientTypeID());
   }
 
   @Test
@@ -58,26 +58,30 @@ public class AbstractRemoteServerTest {
     final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ClientInfo clientInfo = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
-    final RemoteServerTest connection = server.connect(clientInfo);
+    final RemoteServerTest connection = server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
     assertNotNull(connection);
-    final RemoteServerTest connection2 = server.connect(clientInfo);
+    final RemoteServerTest connection2 = server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
     assertTrue(connection == connection2);
     server.disconnect(clientInfo.getClientID());
-    final RemoteServerTest connection3 = server.connect(clientInfo);
+    final RemoteServerTest connection3 = server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
     assertFalse(connection == connection3);
-    assertNull(server.connect(User.UNIT_TEST_USER, null, "clientType"));
     assertNotNull(server.getServerInfo());
+    try {
+      server.connect(null, null, null);
+      fail("Should not be able to connect with null parameters");
+    }
+    catch (final IllegalArgumentException ignored) {}
   }
 
   @Test
   public void testLoginProxy() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
     final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
-    final ClientInfo baseClientInfo = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
+    final ClientInfo clientInfo = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
     final ClientInfo proxyClientInfo = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
-    RemoteServerTest connection = server.connect(baseClientInfo);
+    RemoteServerTest connection = server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
     assertNotNull(connection);
-    assertEquals(baseClientInfo, connection.getClientInfo());
+    assertEquals(clientInfo, connection.getClientInfo());
     final Collection<Object> closeIndicator = new ArrayList<>();
     final LoginProxy loginProxy = new LoginProxy() {
       @Override
@@ -96,18 +100,18 @@ public class AbstractRemoteServerTest {
       }
     };
     server.setLoginProxy(clientTypeID, loginProxy);
-    server.disconnect(baseClientInfo.getClientID());
+    server.disconnect(clientInfo.getClientID());
 
-    connection = server.connect(baseClientInfo);
+    connection = server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
     assertNotNull(connection);
     assertEquals(proxyClientInfo, connection.getClientInfo());
 
-    server.disconnect(baseClientInfo.getClientID());
+    server.disconnect(clientInfo.getClientID());
 
-    server.setLoginProxy(baseClientInfo.getClientTypeID(), null);
-    connection = server.connect(baseClientInfo);
+    server.setLoginProxy(clientInfo.getClientTypeID(), null);
+    connection = server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
     assertNotNull(connection);
-    assertEquals(baseClientInfo, connection.getClientInfo());
+    assertEquals(clientInfo, connection.getClientInfo());
 
     server.setLoginProxy(clientTypeID, loginProxy);
     server.shutdown();

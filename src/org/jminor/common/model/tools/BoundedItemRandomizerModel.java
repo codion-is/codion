@@ -19,6 +19,8 @@ import java.util.Iterator;
  */
 public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> {
 
+  private static final int DEFAULT_BOUNDED_WEIGHT = 100;
+
   private final Object lock = new Object();
   private final int weightBounds;
   private RandomItem<T> lastAffected;
@@ -28,7 +30,7 @@ public final class BoundedItemRandomizerModel<T> extends ItemRandomizerModel<T> 
    * @param items the items
    */
   public BoundedItemRandomizerModel(final Collection<T> items) {
-    this(100, items);
+    this(DEFAULT_BOUNDED_WEIGHT, items);
   }
 
   /**

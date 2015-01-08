@@ -8,6 +8,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.server.RemoteServer;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.slf4j.Logger;
@@ -121,7 +122,7 @@ public final class HostMonitor {
     final List<String> serverNames = new ArrayList<>();
     final String[] boundNames = registry.list();
     for (final String name : boundNames) {
-      if (name.startsWith(RemoteServer.SERVER_ADMIN_PREFIX)) {
+      if (name.startsWith(Configuration.SERVER_ADMIN_PREFIX)) {
         serverNames.add(name);
       }
     }

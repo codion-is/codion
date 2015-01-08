@@ -247,7 +247,7 @@ public final class ServerMonitor {
     final long time = System.currentTimeMillis();
     try {
       final EntityConnectionServerAdmin serverAdmin =
-              (EntityConnectionServerAdmin) LocateRegistry.getRegistry(hostName, registryPort).lookup(RemoteServer.SERVER_ADMIN_PREFIX + serverName);
+              (EntityConnectionServerAdmin) LocateRegistry.getRegistry(hostName, registryPort).lookup(Configuration.SERVER_ADMIN_PREFIX + serverName);
       //just some simple call to validate the remote connection
       serverAdmin.getMemoryUsage();
       LOG.info("ServerMonitor connected to server: {}", serverName);

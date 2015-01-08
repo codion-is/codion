@@ -11,24 +11,11 @@ import java.rmi.RemoteException;
 import java.util.UUID;
 
 /**
- * Defines the methods available to remote clients.
+ * A server for serving remote interfaces
  * @param <T> the type of remote interface this server supplies to clients
  * todo isn't it inconvenient that a class with the same name exists in java.rmi.server.RemoteServer?
  */
 public interface RemoteServer<T extends Remote> extends Remote {
-
-  String SERVER_ADMIN_PREFIX = "Admin - ";
-
-  /**
-   * Establishes a connection to this RemoteServer
-   * @param clientInfo the client info
-   * @return a remote connection instance
-   * @throws RemoteException in case of a RemoteException
-   * @throws ServerException.ServerFullException in case the server isn't accepting more connections
-   * @throws ServerException.LoginException in case the login fails
-   */
-  T connect(final ClientInfo clientInfo) throws RemoteException, ServerException.ServerFullException,
-          ServerException.LoginException;
 
   /**
    * Establishes a connection to this RemoteServer

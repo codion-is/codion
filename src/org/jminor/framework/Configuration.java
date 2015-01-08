@@ -27,6 +27,11 @@ public final class Configuration {
   private Configuration() {}
 
   /**
+   * A prefix used to name server admin instances
+   */
+  public static final String SERVER_ADMIN_PREFIX = "Admin - ";
+
+  /**
    * Indicates a local database connection
    * @see #CLIENT_CONNECTION_TYPE
    */

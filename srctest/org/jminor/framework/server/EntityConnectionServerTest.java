@@ -208,7 +208,7 @@ public class EntityConnectionServerTest {
     final User userTwo = new User("bar", "foo");
     final ClientInfo clientTwo = new ClientInfo(UUID.randomUUID(), clientTypeID, userTwo);
 
-    final RemoteEntityConnection connectionOne = server.connect(clientOne);
+    final RemoteEntityConnection connectionOne = server.connect(clientOne.getUser(), clientOne.getClientID(), clientOne.getClientTypeID());
     assertEquals(userOne, connectionOne.getUser());
 
     Collection<ClientInfo> clients = server.getClients(clientTypeID);
@@ -217,7 +217,7 @@ public class EntityConnectionServerTest {
     assertEquals(userOne, clientOneFromServer.getUser());
     assertEquals(User.UNIT_TEST_USER, clientOneFromServer.getDatabaseUser());
 
-    final RemoteEntityConnection connectionTwo = server.connect(clientTwo);
+    final RemoteEntityConnection connectionTwo = server.connect(clientTwo.getUser(), clientTwo.getClientID(), clientTwo.getClientTypeID());
     assertEquals(userTwo, connectionTwo.getUser());
 
     clients = server.getClients(clientTypeID);

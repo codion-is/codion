@@ -84,7 +84,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   public void bindToRegistry() throws RemoteException {
     final int registryPort = server.getRegistryPort();
     ServerUtil.initializeRegistry(registryPort);
-    ServerUtil.getRegistry(registryPort).rebind(RemoteServer.SERVER_ADMIN_PREFIX + serverName, this);
+    ServerUtil.getRegistry(registryPort).rebind(Configuration.SERVER_ADMIN_PREFIX + serverName, this);
   }
 
   /** {@inheritDoc} */
@@ -171,7 +171,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     }
     catch (final NotBoundException ignored) {}
     try {
-      ServerUtil.getRegistry(server.getRegistryPort()).unbind(RemoteServer.SERVER_ADMIN_PREFIX + serverName);
+      ServerUtil.getRegistry(server.getRegistryPort()).unbind(Configuration.SERVER_ADMIN_PREFIX + serverName);
     }
     catch (final NotBoundException ignored) {}
 
@@ -534,7 +534,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT);
     final String sid = System.getProperty(Database.DATABASE_SID);
     final String host = System.getProperty(Database.DATABASE_HOST);
-    final String serverName = RemoteServer.SERVER_ADMIN_PREFIX + initializeServerName(host, sid);
+    final String serverName = Configuration.SERVER_ADMIN_PREFIX + initializeServerName(host, sid);
     Util.resolveTrustStoreFromClasspath(EntityConnectionServerAdminImpl.class.getSimpleName());
     try {
       final Registry registry = ServerUtil.getRegistry(registryPort);

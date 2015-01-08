@@ -47,6 +47,7 @@ public abstract class EntityTestUnit {
   private static final int MININUM_RANDOM_NUMBER = -10000000;
   private static final int MAXIMUM_RANDOM_NUMBER = 10000000;
   private static final int MAXIMUM_RANDOM_STRING_LENGTH = 10;
+  private static final int SELECT_FETCH_COUNT = 10;
   private static final Random RANDOM = new Random();
   private static final String ENTITY_PARAM = "entity";
 
@@ -308,7 +309,7 @@ public abstract class EntityTestUnit {
               testEntity.equals(tmp));
     }
     else {
-      connection.selectMany(EntityCriteriaUtil.selectCriteria(entityID, 10));
+      connection.selectMany(EntityCriteriaUtil.selectCriteria(entityID, SELECT_FETCH_COUNT));
     }
   }
 
@@ -383,14 +384,10 @@ public abstract class EntityTestUnit {
   private static Object getRandomValue(final Property property, final Map<String, Entity> referenceEntities) {
     Util.rejectNullValue(property, "property");
     if (property instanceof Property.ForeignKeyProperty) {
-      final String referenceEntityID = ((Property.ForeignKeyProperty) property).getReferencedEntityID();
-      return referenceEntities == null ? null : referenceEntities.get(referenceEntityID);
+      return getReferenceEntity((Property.ForeignKeyProperty) property, referenceEntities);
     }
     if (property instanceof Property.ValueListProperty) {
-      final List<Item> items = ((Property.ValueListProperty) property).getValues();
-      final Item item = items.get(RANDOM.nextInt(items.size()));
-
-      return item.getItem();
+      return getRandomListValue((Property.ValueListProperty) property);
     }
     switch (property.getType()) {
       case Types.BOOLEAN:
@@ -445,6 +442,19 @@ public abstract class EntityTestUnit {
     final long diff = end - offset + 1;
 
     return new Timestamp(offset + (long) (Math.random() * diff));
+  }
+
+  private static Object getReferenceEntity(final Property.ForeignKeyProperty property, final Map<String, Entity> referenceEntities) {
+    final String referenceEntityID = property.getReferencedEntityID();
+
+    return referenceEntities == null ? null : referenceEntities.get(referenceEntityID);
+  }
+
+  private static Object getRandomListValue(final Property.ValueListProperty property) {
+    final List<Item> items = property.getValues();
+    final Item item = items.get(RANDOM.nextInt(items.size()));
+
+    return item.getItem();
   }
 
   private static int getRandomInteger(final Property property) {

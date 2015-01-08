@@ -40,6 +40,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
   private static final int RESET_FIELD_COLUMNS = 14;
   private static final int HUNDRED = 100;
   private static final int SPINNER_COLUMNS = 3;
+  private static final int MAIN_LAYOUT_COLUMNS = 3;
 
   private final ConnectionPoolMonitor model;
 
@@ -96,7 +97,7 @@ public final class ConnectionPoolMonitorPanel extends JPanel {
 
   private void initializeUI() {
     initializeCharts(model);
-    setLayout(UiUtil.createFlexibleGridLayout(1, 3, true, false));
+    setLayout(UiUtil.createFlexibleGridLayout(1, MAIN_LAYOUT_COLUMNS, true, false));
 
     add(getChartPanel());
     add(getStatisticsPanel());

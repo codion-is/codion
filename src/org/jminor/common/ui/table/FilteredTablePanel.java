@@ -64,6 +64,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
   public static final char FILTER_INDICATOR = '*';
 
+  private static final int SORT_ICON_SIZE = 5;
   private static final Point NULL_POINT = new Point(-1, -1);
   private static final int SELECT_COLUMNS_GRID_ROWS = 15;
   private static final int SEARCH_FIELD_COLUMNS = 8;
@@ -608,7 +609,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
         final JLabel label = (JLabel) component;
         final TableColumn tableColumn = table.getColumnModel().getColumn(column);
         label.setHorizontalTextPosition(JLabel.LEFT);
-        label.setIcon(getHeaderRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + 5));
+        label.setIcon(getHeaderRendererIcon((C) tableColumn.getIdentifier(), label.getFont().getSize() + SORT_ICON_SIZE));
       }
 
       return component;
@@ -627,6 +628,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
   private static final class Arrow implements Icon {
     private static final double PRIORITY_SIZE_RATIO = 0.8;
     private static final double PRIORITY_SIZE_CONST = 2.0;
+    public static final int ALIGNMENT_CONSTANT = 6;
     private final boolean descending;
     private final int size;
     private final int priority;
@@ -644,7 +646,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
       final int dx = (int)(size/PRIORITY_SIZE_CONST * Math.pow(PRIORITY_SIZE_RATIO, priority));
       final int dy = descending ? dx : -dx;
       // Align icon (roughly) with font baseline.
-      final int theY = y + 5 * size / 6 + (descending ? -dy : 0);
+      final int theY = y + SORT_ICON_SIZE * size / ALIGNMENT_CONSTANT + (descending ? -dy : 0);
       final int shift = descending ? 1 : -1;
       g.translate(x, theY);
 

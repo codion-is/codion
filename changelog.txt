@@ -3875,3 +3875,5 @@
   AbstractRemoteServer implements the above
   ServerMonitor modified according to the above changes
   AbstractEntityConnectionProvider.disconnect() now synchronized
+  RemoteServer.connect(clientInfo) removed
+  Sonar run, some minor refactoring
