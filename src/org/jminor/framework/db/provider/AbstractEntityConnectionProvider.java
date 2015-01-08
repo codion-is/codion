@@ -109,7 +109,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   /** {@inheritDoc} */
   @Override
-  public final void disconnect() {
+  public final synchronized void disconnect() {
     if (isConnectionValid()) {
       doDisconnect();
       entityConnection = null;

@@ -34,7 +34,7 @@
   TextProperty.immediateUpdate can be activated even if the field is a JFormattedTextField
   EntityTablePanel.doubleClickAction property added
   EntityTableSearchPanel now shows correct indicator colors when initialized
-  Prevented a NullPointerException in cases when login failes in EntityApplicationPanel.startApplication
+  Prevented a NullPointerException in cases when login fails in EntityApplicationPanel.startApplication
   EntityPanel.initCommandPanels() added, override to initialize panels that depend on the commands being initialized
   A minor change in EntityTablePanel.configureQuery(), dialog not disposed of between showings
   FrameworkUiUtil.showInDialog() now takes boolean parameter includeButtonPanel and returns the dialog
@@ -3874,3 +3874,4 @@
   RemoteServer.getServerInfo() added, getServerName(), getServerPort(), getServerVersion() and getServerPort() removed
   AbstractRemoteServer implements the above
   ServerMonitor modified according to the above changes
+  AbstractEntityConnectionProvider.disconnect() now synchronized
