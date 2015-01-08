@@ -62,7 +62,6 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
       }
     }
   }, DEFAULT_MAINTENANCE_INTERVAL_MS, DEFAULT_MAINTENANCE_INTERVAL_MS, TimeUnit.MILLISECONDS).start();
-  private final long startDate = System.currentTimeMillis();
   private final int registryPort;
   private final boolean sslEnabled;
   private final boolean clientLoggingEnabled;
@@ -265,13 +264,6 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
   }
 
   /**
-   * @return the start date of the server
-   */
-  long getStartDate() {
-    return startDate;
-  }
-
-  /**
    * @return the port of the registry this server is using
    */
   int getRegistryPort() {
@@ -331,8 +323,8 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
    */
   void bindToRegistry() throws RemoteException {
     ServerUtil.initializeRegistry(registryPort);
-    ServerUtil.getRegistry(registryPort).rebind(getServerName(), this);
-    final String connectInfo = getServerName() + " bound to registry on port: " + registryPort;
+    ServerUtil.getRegistry(registryPort).rebind(getServerInfo().getServerName(), this);
+    final String connectInfo = getServerInfo().getServerName() + " bound to registry on port: " + registryPort;
     LOG.info(connectInfo);
     System.out.println(connectInfo);
   }
@@ -372,12 +364,12 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
       final DefaultRemoteEntityConnection connection;
       final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(clientInfo.getDatabaseUser());
       if (connectionPool == null) {
-        connection = new DefaultRemoteEntityConnection(database, clientInfo, getServerPort(),
+        connection = new DefaultRemoteEntityConnection(database, clientInfo, getServerInfo().getServerPort(),
                 clientLoggingEnabled, sslEnabled);
       }
       else {
         checkConnectionPoolCredentials(connectionPool.getUser(), clientInfo.getDatabaseUser());
-        connection = new DefaultRemoteEntityConnection(connectionPool, database, clientInfo, getServerPort(),
+        connection = new DefaultRemoteEntityConnection(connectionPool, database, clientInfo, getServerInfo().getServerPort(),
                 clientLoggingEnabled, sslEnabled);
       }
       connection.addDisconnectListener(new EventListener() {

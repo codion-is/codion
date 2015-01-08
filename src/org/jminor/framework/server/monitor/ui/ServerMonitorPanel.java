@@ -4,13 +4,11 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.model.TaskScheduler;
-import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.textfield.IntField;
-import org.jminor.framework.server.EntityConnectionServerAdmin;
 import org.jminor.framework.server.monitor.ServerMonitor;
 
 import ch.qos.logback.classic.Level;
@@ -36,7 +34,6 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
-import java.util.Date;
 
 /**
  * A ServerMonitorPanel
@@ -172,21 +169,7 @@ public final class ServerMonitorPanel extends JPanel {
     final JTextArea infoArea = new JTextArea();
     infoArea.setAutoscrolls(false);
     infoArea.setEditable(false);
-
-    final StringBuilder contents = new StringBuilder();
-    final EntityConnectionServerAdmin server = model.getServer();
-    final String startDate = DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(server.getStartDate()));
-    contents.append("Server info:").append("\n");
-    contents.append(server.getServerName()).append(" (").append(startDate).append(")").append(
-            " port: ").append(server.getServerPort()).append("\n").append("\n");
-    contents.append("Server version:").append("\n");
-    contents.append(server.getServerVersion()).append("\n");
-    contents.append("Database URL:").append("\n");
-    contents.append(server.getDatabaseURL()).append("\n").append("\n");
-    contents.append("System properties:").append("\n");
-    contents.append(server.getSystemProperties());
-
-    infoArea.setText(contents.toString());
+    infoArea.setText(model.getEnvironmentInfo());
     infoArea.setCaretPosition(0);
 
     return new JScrollPane(infoArea);

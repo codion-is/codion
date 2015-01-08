@@ -12,7 +12,6 @@ import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.Version;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.RemoteServer;
@@ -61,6 +60,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
    * The server being administrated
    */
   private final EntityConnectionServer server;
+  private final String serverName;
 
   /**
    * Instantiates a new EntityConnectionServerAdminImpl
@@ -73,6 +73,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
             server.isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
+    this.serverName = server.getServerInfo().getServerName();
     Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));
   }
 
@@ -83,37 +84,19 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   public void bindToRegistry() throws RemoteException {
     final int registryPort = server.getRegistryPort();
     ServerUtil.initializeRegistry(registryPort);
-    ServerUtil.getRegistry(registryPort).rebind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName(), this);
+    ServerUtil.getRegistry(registryPort).rebind(RemoteServer.SERVER_ADMIN_PREFIX + serverName, this);
   }
 
   /** {@inheritDoc} */
   @Override
-  public String getServerName() {
-    return server.getServerName();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Version getServerVersion() {
-    return server.getServerVersion();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public int getServerPort() {
-    return server.getServerPort();
+  public RemoteServer.ServerInfo getServerInfo() {
+    return server.getServerInfo();
   }
 
   /** {@inheritDoc} */
   @Override
   public String getSystemProperties() {
     return Util.getSystemProperties();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public long getStartDate() {
-    return server.getStartDate();
   }
 
   /** {@inheritDoc} */
@@ -184,15 +167,15 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
   @Override
   public void shutdown() throws RemoteException {
     try {
-      ServerUtil.getRegistry(server.getRegistryPort()).unbind(server.getServerName());
+      ServerUtil.getRegistry(server.getRegistryPort()).unbind(serverName);
     }
     catch (final NotBoundException ignored) {}
     try {
-      ServerUtil.getRegistry(server.getRegistryPort()).unbind(RemoteServer.SERVER_ADMIN_PREFIX + server.getServerName());
+      ServerUtil.getRegistry(server.getRegistryPort()).unbind(RemoteServer.SERVER_ADMIN_PREFIX + serverName);
     }
     catch (final NotBoundException ignored) {}
 
-    final String shutdownInfo = server.getServerName() + " removed from registry";
+    final String shutdownInfo = serverName + " removed from registry";
     LOG.info(shutdownInfo);
     System.out.println(shutdownInfo);
 

@@ -9,6 +9,7 @@ import org.jminor.common.model.States;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 
 import org.slf4j.Logger;
@@ -23,6 +24,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
   private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 10;
+  protected static final boolean SCHEDULE_VALIDITY_CHECK = Configuration.getBooleanValue(Configuration.CONNECTION_SCHEDULE_VALIDATION);
   protected static final String IS_CONNECTED = "isConnected";
   protected static final String IS_VALID = "isValid";
   private final State connectedState = States.state();
@@ -105,22 +107,34 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
     return entityConnection;
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public final void disconnect() {
+    if (isConnectionValid()) {
+      doDisconnect();
+      entityConnection = null;
+    }
+  }
+
   /**
    * @return true if the connection is valid, false if it is invalid or has not been initialized
    */
-  protected abstract boolean isConnectionValid();
+  protected final boolean isConnectionValid() {
+    return isConnected() && getConnectionInternal().isConnected();
+  }
 
   /**
    * @return an established connection
    */
   protected abstract EntityConnection connect();
 
+  /**
+   * Disconnects the underlying connection
+   */
+  protected abstract void doDisconnect();
+
   protected final synchronized EntityConnection getConnectionInternal() {
     return entityConnection;
-  }
-
-  protected final synchronized void setConnection(final EntityConnection entityConnection) {
-    this.entityConnection = entityConnection;
   }
 
   private void validateConnection() {

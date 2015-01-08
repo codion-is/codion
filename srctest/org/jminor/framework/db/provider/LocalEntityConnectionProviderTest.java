@@ -22,7 +22,7 @@ public class LocalEntityConnectionProviderTest {
     final Database database = Databases.createInstance();
     final LocalEntityConnectionProvider provider = new LocalEntityConnectionProvider(User.UNIT_TEST_USER, database);
 
-    assertEquals(database.getHost(), provider.getHostName());
+    assertEquals(database.getHost(), provider.getServerHostName());
 
     final EntityConnection db = provider.getConnection();
     assertNotNull(db);

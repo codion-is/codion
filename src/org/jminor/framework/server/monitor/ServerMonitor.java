@@ -7,6 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.TaskScheduler;
+import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.server.RemoteServer;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
@@ -22,6 +23,7 @@ import javax.swing.table.TableModel;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.util.Date;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -40,7 +42,7 @@ public final class ServerMonitor {
   private final Event<Integer> connectionLimitChangedEvent = Events.event();
 
   private final String hostName;
-  private final String serverName;
+  private final RemoteServer.ServerInfo serverInfo;
   private final int registryPort;
   private final EntityConnectionServerAdmin server;
 
@@ -77,12 +79,12 @@ public final class ServerMonitor {
   private final XYSeries connectionLimitSeries = new XYSeries("Maximum connection count");
   private final XYSeriesCollection connectionCountCollection = new XYSeriesCollection();
 
-  public ServerMonitor(final String hostName, final String serverName, final int registryPort) throws RemoteException {
+  public ServerMonitor(final String hostName, final RemoteServer.ServerInfo serverInfo, final int registryPort) throws RemoteException {
     this.hostName = hostName;
-    this.serverName = removeAdminPrefix(serverName);
+    this.serverInfo = serverInfo;
     this.registryPort = registryPort;
     Configuration.class.getName();
-    this.server = connectServer(serverName);
+    this.server = connectServer(serverInfo.getServerName());
     connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
     connectionRequestsPerSecondCollection.addSeries(warningTimeExceededSecondSeries);
     memoryUsageCollection.addSeries(maxMemorySeries);
@@ -105,6 +107,10 @@ public final class ServerMonitor {
 
   public EntityConnectionServerAdmin getServer() {
     return server;
+  }
+
+  public RemoteServer.ServerInfo getServerInfo() {
+    return serverInfo;
   }
 
   public String getMemoryUsage() {
@@ -162,6 +168,22 @@ public final class ServerMonitor {
     return connectionCountCollection;
   }
 
+  public String getEnvironmentInfo() throws RemoteException {
+    final StringBuilder contents = new StringBuilder();
+    final String startDate = DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(serverInfo.getStartTime()));
+    contents.append("Server info:").append("\n");
+    contents.append(serverInfo.getServerName()).append(" (").append(startDate).append(")").append(
+            " port: ").append(serverInfo.getServerPort()).append("\n").append("\n");
+    contents.append("Server version:").append("\n");
+    contents.append(serverInfo.getServerVersion()).append("\n");
+    contents.append("Database URL:").append("\n");
+    contents.append(server.getDatabaseURL()).append("\n").append("\n");
+    contents.append("System properties:").append("\n");
+    contents.append(server.getSystemProperties());
+
+    return contents.toString();
+  }
+
   public void performGC() throws RemoteException {
     server.performGC();
   }
@@ -197,10 +219,6 @@ public final class ServerMonitor {
     serverShutDownEvent.fire();
   }
 
-  public String getServerName() {
-    return serverName;
-  }
-
   public TaskScheduler getUpdateScheduler() {
     return updateScheduler;
   }
@@ -229,9 +247,9 @@ public final class ServerMonitor {
     final long time = System.currentTimeMillis();
     try {
       final EntityConnectionServerAdmin serverAdmin =
-              (EntityConnectionServerAdmin) LocateRegistry.getRegistry(hostName, registryPort).lookup(serverName);
-      //call to validate the remote connection
-      serverAdmin.getServerPort();
+              (EntityConnectionServerAdmin) LocateRegistry.getRegistry(hostName, registryPort).lookup(RemoteServer.SERVER_ADMIN_PREFIX + serverName);
+      //just some simple call to validate the remote connection
+      serverAdmin.getMemoryUsage();
       LOG.info("ServerMonitor connected to server: {}", serverName);
       return serverAdmin;
     }
@@ -260,14 +278,6 @@ public final class ServerMonitor {
     connectionCountSeries.add(time, server.getConnectionCount());
     connectionLimitSeries.add(time, server.getConnectionLimit());
     statisticsUpdatedEvent.fire();
-  }
-
-  static String removeAdminPrefix(final String serverName) {
-    if (serverName.startsWith(RemoteServer.SERVER_ADMIN_PREFIX)) {
-      return serverName.substring(RemoteServer.SERVER_ADMIN_PREFIX.length(), serverName.length());
-    }
-
-    return serverName;
   }
 
   private static final class DomainTableModel extends DefaultTableModel {

@@ -3866,3 +3866,11 @@
   RemoteServer.getServerVersion() now returns a Version object instead of a String
   DefaultEntityLookupModel now includes configuration settings for each lookup property
   DefaultEntityConnection.executePreparedSelect(), minor refactoring of parameters
+  RemoteEntityConnectionProvider constructor overloaded with scheduleValidityCheck parameter, for consistency
+  AbstractEntityConnectionProvider implements isConnectionValid() and disconnect(), abstract doDisconnect() added
+  RemoteEntityConnectionProvider and LocalEntityConnectionProvider refactored due to the above
+  EntityConnectionProvider.getHostName() renamed to getServerHostName()
+  RemoteServer.ServerInfo added
+  RemoteServer.getServerInfo() added, getServerName(), getServerPort(), getServerVersion() and getServerPort() removed
+  AbstractRemoteServer implements the above
+  ServerMonitor modified according to the above changes

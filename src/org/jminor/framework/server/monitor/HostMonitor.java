@@ -8,16 +8,19 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.server.RemoteServer;
+import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * A HostMonitor
@@ -48,9 +51,9 @@ public final class HostMonitor {
   }
 
   public void refresh() throws RemoteException {
-    for (final String serverName : getRemoteEntityServers(hostName, registryPort)) {
-      if (!containsServerMonitor(ServerMonitor.removeAdminPrefix(serverName))) {
-        final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverName, registryPort);
+    for (final RemoteServer.ServerInfo serverInfo : getRemoteEntityServers(hostName, registryPort)) {
+      if (!containsServerMonitor(serverInfo.getServerID())) {
+        final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInfo, registryPort);
         serverMonitor.getServerShutDownObserver().addListener(new EventListener() {
           @Override
           public void eventOccurred() {
@@ -80,9 +83,9 @@ public final class HostMonitor {
     serverMonitorRemovedEvent.fire();
   }
 
-  private boolean containsServerMonitor(final String serverName) {
+  private boolean containsServerMonitor(final UUID serverID) {
     for (final ServerMonitor serverMonitor : serverMonitors) {
-      if (serverMonitor.getServerName().equals(serverName)) {
+      if (serverMonitor.getServerInfo().getServerID().equals(serverID)) {
         return true;
       }
     }
@@ -90,8 +93,8 @@ public final class HostMonitor {
     return false;
   }
 
-  private static List<String> getRemoteEntityServers(final String serverHostName, final int registryPort) {
-    final List<String> serverNames = new ArrayList<>();
+  private static List<RemoteServer.ServerInfo> getRemoteEntityServers(final String serverHostName, final int registryPort) {
+    final List<RemoteServer.ServerInfo> servers = new ArrayList<>();
     try {
       LOG.debug("HostMonitor locating registry on host: {}, port: {}: ", serverHostName, registryPort);
       final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
@@ -102,14 +105,16 @@ public final class HostMonitor {
       }
       for (final String name : boundNames) {
         LOG.debug("HostMonitor found server '{}'", name);
-        serverNames.add(name);
+        final EntityConnectionServerAdmin serverAdmin =
+              (EntityConnectionServerAdmin) LocateRegistry.getRegistry(serverHostName, registryPort).lookup(name);
+        servers.add(serverAdmin.getServerInfo());
       }
     }
-    catch (final RemoteException e) {
+    catch (final RemoteException | NotBoundException e) {
       LOG.error(e.getMessage(), e);
     }
 
-    return serverNames;
+    return servers;
   }
 
   private static Collection<String> getEntityServers(final Registry registry) throws RemoteException {

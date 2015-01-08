@@ -51,22 +51,10 @@ public interface RemoteServer<T extends Remote> extends Remote {
   void disconnect(final UUID clientID) throws RemoteException;
 
   /**
-   * @return the server name
-   * @throws RemoteException in case of a communication error
+   * @return static information about this server
+   * @throws RemoteException in case of an exception
    */
-  String getServerName() throws RemoteException;
-
-  /**
-   * @return the server version and build number
-   * @throws RemoteException in case of a communication error
-   */
-  Version getServerVersion() throws RemoteException;
-
-  /**
-   * @return the server port
-   * @throws RemoteException in case of a RemoteException
-   */
-  int getServerPort() throws RemoteException;
+  ServerInfo getServerInfo() throws RemoteException;
 
   /**
    * @return the server load as number of service requests per second
@@ -79,4 +67,34 @@ public interface RemoteServer<T extends Remote> extends Remote {
    * @throws RemoteException in case of an exception
    */
   boolean connectionsAvailable() throws RemoteException;
+
+  /**
+   * Encapsulates static server information
+   */
+  interface ServerInfo {
+    /**
+     * @return the server name
+     */
+    String getServerName();
+
+    /**
+     * @return a unique identifier for this server
+     */
+    UUID getServerID();
+
+    /**
+     * @return the server Version
+     */
+    Version getServerVersion();
+
+    /**
+     * @return the server port
+     */
+    int getServerPort();
+
+    /**
+     * @return the time of server startup
+     */
+    long getStartTime();
+  }
 }

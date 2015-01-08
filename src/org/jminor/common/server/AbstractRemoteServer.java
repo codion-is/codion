@@ -10,6 +10,7 @@ import org.jminor.common.model.Version;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import java.io.Serializable;
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -47,8 +48,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
     public void close() {}
   };
 
-  private final String serverName;
-  private final int serverPort;
+  private final ServerInfo serverInfo;
   private volatile int connectionLimit = -1;
   private volatile boolean shuttingDown = false;
 
@@ -73,8 +73,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   public AbstractRemoteServer(final int serverPort, final String serverName, final RMIClientSocketFactory clientSocketFactory,
                               final RMIServerSocketFactory serverSocketFactory) throws RemoteException {
     super(serverPort, clientSocketFactory, serverSocketFactory);
-    this.serverName = serverName;
-    this.serverPort = serverPort;
+    this.serverInfo = new DefaultServerInfo(UUID.randomUUID(), serverName, serverPort, System.currentTimeMillis());
   }
 
   /**
@@ -134,6 +133,12 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
    */
   public final void setConnectionLimit(final int connectionLimit) {
     this.connectionLimit = connectionLimit;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final ServerInfo getServerInfo() {
+    return serverInfo;
   }
 
   /** {@inheritDoc} */
@@ -199,24 +204,6 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
       getLoginProxy(clientInfo).doLogout(clientInfo);
       LOG.debug("Client disconnected {}", clientInfo);
     }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final String getServerName() {
-    return serverName;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Version getServerVersion() {
-    return Util.getVersion();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final int getServerPort() {
-    return serverPort;
   }
 
   /**
@@ -321,6 +308,47 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
 
     private T getConnection() {
       return connection;
+    }
+  }
+
+  private static final class DefaultServerInfo implements ServerInfo, Serializable {
+    private static final long serialVersionUID = 1;
+
+    private final UUID serverID;
+    private final String serverName;
+    private final int serverPort;
+    private final long serverStartupTime;
+
+    private DefaultServerInfo(final UUID serverID, final String serverName, final int serverPort, final long serverStartupTime) {
+      this.serverID = serverID;
+      this.serverName = serverName;
+      this.serverPort = serverPort;
+      this.serverStartupTime = serverStartupTime;
+    }
+
+    @Override
+    public String getServerName() {
+      return serverName;
+    }
+
+    @Override
+    public UUID getServerID() {
+      return serverID;
+    }
+
+    @Override
+    public int getServerPort() {
+      return serverPort;
+    }
+
+    @Override
+    public Version getServerVersion() {
+      return Util.getVersion();
+    }
+
+    @Override
+    public long getStartTime() {
+      return serverStartupTime;
     }
   }
 }

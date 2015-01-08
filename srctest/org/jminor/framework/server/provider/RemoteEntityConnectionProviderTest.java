@@ -41,7 +41,7 @@ public class RemoteEntityConnectionProviderTest {
   public void test() throws Exception {
     final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider(User.UNIT_TEST_USER, UUID.randomUUID(), "TestClient");
 
-    assertEquals(Configuration.getStringValue(Configuration.SERVER_HOST_NAME), provider.getHostName());
+    assertEquals(Configuration.getStringValue(Configuration.SERVER_HOST_NAME), provider.getServerHostName());
 
     final EntityConnection db = provider.getConnection();
     assertNotNull(db);
@@ -60,7 +60,6 @@ public class RemoteEntityConnectionProviderTest {
     assertTrue(db3.isConnected());
     EntityConnectionServerTest.getServerAdmin().disconnect(provider.getClientID());
     assertFalse(db3.isConnected());
-    assertFalse(provider.isConnectionValid());
 
     db3 = provider.getConnection();
     assertTrue(db3.isConnected());
@@ -69,7 +68,7 @@ public class RemoteEntityConnectionProviderTest {
     provider.disconnect();
     assertEquals("localhost" + " - " + Messages.get(Messages.NOT_CONNECTED), provider.getDescription());
     db3 = provider.getConnection();
-    assertEquals(EntityConnectionServerTest.getServerAdmin().getServerName() + "@localhost", provider.getDescription());
+    assertEquals(EntityConnectionServerTest.getServerAdmin().getServerInfo().getServerName() + "@localhost", provider.getDescription());
     db3.disconnect();
   }
 }

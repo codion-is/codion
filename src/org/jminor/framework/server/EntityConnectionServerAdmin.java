@@ -6,9 +6,9 @@ package org.jminor.framework.server;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
-import org.jminor.common.model.Version;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
+import org.jminor.common.server.RemoteServer;
 
 import ch.qos.logback.classic.Level;
 
@@ -31,34 +31,16 @@ public interface EntityConnectionServerAdmin extends Remote {
   void shutdown() throws RemoteException;
 
   /**
-   * @return the server startup date
-   * @throws RemoteException in case of a communication error
-   */
-  long getStartDate() throws RemoteException;
-
-  /**
    * @return the database URL
    * @throws RemoteException in case of a communication error
    */
   String getDatabaseURL() throws RemoteException;
 
   /**
-   * @return the server name
-   * @throws RemoteException in case of a communication error
+   * @return static information about the server
+   * @throws RemoteException in case of an exception
    */
-  String getServerName() throws RemoteException;
-
-  /**
-   * @return the server version and build number
-   * @throws RemoteException in case of a communication error
-   */
-  Version getServerVersion() throws RemoteException;
-
-  /**
-   * @return the server port
-   * @throws RemoteException in case of a communication error
-   */
-  int getServerPort() throws RemoteException;
+  RemoteServer.ServerInfo getServerInfo() throws RemoteException;
 
   /**
    * @return the number of active connections

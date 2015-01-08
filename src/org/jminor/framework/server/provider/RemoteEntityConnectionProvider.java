@@ -30,13 +30,12 @@ import java.util.UUID;
 public final class RemoteEntityConnectionProvider extends AbstractEntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(RemoteEntityConnectionProvider.class);
-  private static final boolean SCHEDULE_VALIDITY_CHECK = Configuration.getBooleanValue(Configuration.CONNECTION_SCHEDULE_VALIDATION);
 
   private final String serverHostName;
   private final UUID clientID;
   private final String clientTypeID;
   private RemoteServer server;
-  private String serverName;
+  private RemoteServer.ServerInfo serverInfo;
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
@@ -45,7 +44,19 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param clientTypeID a string identifying the client type
    */
   public RemoteEntityConnectionProvider(final User user, final UUID clientID, final String clientTypeID) {
-    super(user, SCHEDULE_VALIDITY_CHECK);
+    this(user, clientID, clientTypeID, SCHEDULE_VALIDITY_CHECK);
+  }
+
+  /**
+   * Instantiates a new RemoteEntityConnectionProvider.
+   * @param user the user to base the db provider on
+   * @param clientID the client ID
+   * @param clientTypeID a string identifying the client type
+   * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
+   */
+  public RemoteEntityConnectionProvider(final User user, final UUID clientID, final String clientTypeID,
+                                        final boolean scheduleValidityCheck) {
+    super(user, scheduleValidityCheck);
     Util.rejectNullValue(clientID, "clientID");
     Util.rejectNullValue(clientTypeID, "clientTypeID");
     this.serverHostName = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
@@ -59,36 +70,17 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    */
   @Override
   public String getDescription() {
-    try {
-      if (!isConnectionValid()) {
-        return serverHostName + " - " + Messages.get(Messages.NOT_CONNECTED);
-      }
+    if (!isConnectionValid()) {
+      return serverHostName + " - " + Messages.get(Messages.NOT_CONNECTED);
+    }
 
-      return server.getServerName() + "@" + serverHostName;
-    }
-    catch (final RemoteException e) {
-      throw new RuntimeException(e);
-    }
+    return serverInfo.getServerName() + "@" + serverHostName;
   }
 
   /** {@inheritDoc} */
   @Override
-  public String getHostName() {
+  public String getServerHostName() {
     return serverHostName;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void disconnect() {
-    try {
-      if (getConnectionInternal() != null && isConnectionValid()) {
-        server.disconnect(clientID);
-      }
-      setConnection(null);
-    }
-    catch (final RemoteException e) {
-      throw new RuntimeException(e);
-    }
   }
 
   /**
@@ -114,16 +106,12 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   /** {@inheritDoc} */
   @Override
-  protected boolean isConnectionValid() {
-    if (getConnectionInternal() == null) {
-      return false;
-    }
+  protected void doDisconnect() {
     try {
-      return getConnectionInternal().isConnected();
+      server.disconnect(clientID);
     }
-    catch (final Exception e) {
-      LOG.debug("Remote connection invalid", e);
-      return false;
+    catch (final RemoteException e) {
+      throw new RuntimeException(e);
     }
   }
 
@@ -136,17 +124,17 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     boolean unreachable = false;
     try {
       if (this.server != null) {
-        this.server.getServerPort();
+        this.server.getServerLoad();
       }//just to check the connection
     }
     catch (final RemoteException e) {
-      LOG.info("{} was unreachable, {} - {} reconnecting...", new Object[] {serverName, getUser(), clientID});
+      LOG.info("{} was unreachable, {} - {} reconnecting...", new Object[] {serverInfo.getServerName(), getUser(), clientID});
       unreachable = true;
     }
     if (server == null || unreachable) {
       //if server is not reachable, try to reconnect once and return
       connectToServer();
-      LOG.info("ClientID: {}, {} connected to server: {}", new Object[] {getUser(), clientID, serverName});
+      LOG.info("ClientID: {}, {} connected to server: {}", new Object[] {getUser(), clientID, serverInfo.getServerName()});
     }
 
     return this.server;
@@ -160,7 +148,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     final int registryPort = Configuration.getIntValue(Configuration.REGISTRY_PORT);
     this.server = ServerUtil.getServer(serverHostName,
             Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX), registryPort, serverPort);
-    this.serverName = this.server.getServerName();
+    this.serverInfo = this.server.getServerInfo();
   }
 
   private static final class RemoteEntityConnectionHandler implements InvocationHandler {

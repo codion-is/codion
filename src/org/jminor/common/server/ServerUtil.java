@@ -109,7 +109,7 @@ public final class ServerUtil {
       LOG.info("No connections available in server \"{}\"", server);
       return null;
     }
-    final int port = server.getServerPort();
+    final int port = server.getServerInfo().getServerPort();
     if (requestedPort == -1 || port == requestedPort) {
       return server;
     }

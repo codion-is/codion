@@ -256,10 +256,7 @@ public class EntityConnectionServerTest {
     admin.getMaxMemory();
     admin.getMemoryUsage();
     admin.getRequestsPerSecond();
-    admin.getServerName();
-    admin.getServerPort();
-    admin.getServerVersion();
-    admin.getStartDate();
+    admin.getServerInfo();
     admin.getSystemProperties();
     admin.getUsedMemory();
     admin.getUsers();

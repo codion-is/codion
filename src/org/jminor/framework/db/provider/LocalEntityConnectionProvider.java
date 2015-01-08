@@ -26,7 +26,6 @@ import java.util.Properties;
 public final class LocalEntityConnectionProvider extends AbstractEntityConnectionProvider {
 
   private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnectionProvider.class);
-  private static final boolean SCHEDULE_VALIDITY_CHECK = Configuration.getBooleanValue(Configuration.CONNECTION_SCHEDULE_VALIDATION);
 
   /**
    * The underlying database implementation
@@ -81,20 +80,8 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  public String getHostName() {
+  public String getServerHostName() {
     return database.getHost();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void disconnect() {
-    if (getConnectionInternal() != null && getConnectionInternal().isValid()) {
-      getConnectionInternal().disconnect();
-      if (database.isEmbedded() && Configuration.getBooleanValue(Configuration.SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT)) {
-        database.shutdownEmbedded(connectionProperties);
-      }
-      setConnection(null);
-    }
   }
 
   /** {@inheritDoc} */
@@ -111,8 +98,11 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   /** {@inheritDoc} */
   @Override
-  protected boolean isConnectionValid() {
-    return isConnected() && getConnectionInternal().isValid();
+  protected void doDisconnect() {
+    getConnectionInternal().disconnect();
+    if (database.isEmbedded() && Configuration.getBooleanValue(Configuration.SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT)) {
+      database.shutdownEmbedded(connectionProperties);
+    }
   }
 
   private static final class LocalConnectionHandler implements InvocationHandler {
