@@ -3882,3 +3882,4 @@
   DefaultEntityEditModel, property debug output refactored
   ColumnSearchPanel and PropertySearchPanel refactored to reduce cyclomatic complexity
   ValueLinks, removed superfluous generics
+  EntityLookupField.initializeUI(), bug fixed, now handles the case when no search properties are defined for the underlying entity

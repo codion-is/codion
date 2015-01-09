@@ -369,15 +369,17 @@ public final class EntityLookupField extends JTextField {
         propertyComboBoxModel.addItem(entry.getKey());
         propertyPanels.put(entry.getKey(), initializePropertyPanel(entry.getValue()));
       }
-      propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
-      propertyBasePanel.add(propertyPanels.get(propertyComboBoxModel.getSelectedValue()));
-      propertyComboBoxModel.addSelectionListener(new EventListener() {
-        @Override
-        public void eventOccurred() {
-          propertyBasePanel.removeAll();
-          propertyBasePanel.add(propertyPanels.get(propertyComboBoxModel.getSelectedValue()));
-        }
-      });
+      if (propertyComboBoxModel.getSize() > 0) {
+        propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
+        propertyBasePanel.add(propertyPanels.get(propertyComboBoxModel.getSelectedValue()));
+        propertyComboBoxModel.addSelectionListener(new EventListener() {
+          @Override
+          public void eventOccurred() {
+            propertyBasePanel.removeAll();
+            propertyBasePanel.add(propertyPanels.get(propertyComboBoxModel.getSelectedValue()));
+          }
+        });
+      }
 
       final JCheckBox boxAllowMultipleValues = new JCheckBox(FrameworkMessages.get(FrameworkMessages.ENABLE_MULTIPLE_SEARCH_VALUES));
       ValueLinks.toggleValueLink(boxAllowMultipleValues.getModel(), lookupModel.getMultipleSelectionAllowedValue(), false);
