@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.DateUtil;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.common.model.combobox.ItemComboBoxModel;
@@ -79,8 +80,10 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       if (model.getType() == Types.BOOLEAN && !isUpperBound) {
         return null;//no lower bound field required for booleans
       }
+      final String property = isUpperBound ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY;
+      final EventObserver changeObserver = isUpperBound ? model.getUpperBoundObserver() : model.getLowerBoundObserver();
       final JComponent field = initField();
-      bindField(field, isUpperBound);
+      bindField(field, property, changeObserver);
       if (field instanceof JTextField) { //enter button toggles the filter on/off
         ((JTextField) field).addActionListener(new EnableAction(getSearchModel()));
       }
@@ -110,39 +113,26 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       }
     }
 
-    private void bindField(final JComponent field, final boolean isUpper) {
-      final Property property = model.getColumnIdentifier();
-      if (property instanceof Property.ValueListProperty) {
-        ValueLinks.selectedItemValueLink((JComboBox) field, model,
-                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                Object.class, isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
+    private void bindField(final JComponent field, final String property, final EventObserver changeObserver) {
+      final Property columnProperty = model.getColumnIdentifier();
+      if (columnProperty instanceof Property.ValueListProperty) {
+        ValueLinks.selectedItemValueLink((JComboBox) field, model, property, Object.class, changeObserver);
       }
-      else if (property.isDateOrTime()) {
-        ValueLinks.dateValueLink((JFormattedTextField) field, model,
-                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(),
-                false, (SimpleDateFormat) model.getFormat(), property.getType(), true);
-
+      else if (columnProperty.isDateOrTime()) {
+        ValueLinks.dateValueLink((JFormattedTextField) field, model, property, changeObserver,
+                false, (SimpleDateFormat) model.getFormat(), columnProperty.getType(), true);
       }
-      else if (property.isDouble()) {
-        ValueLinks.doubleValueLink((DoubleField) field, model,
-                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false, true);
+      else if (columnProperty.isDouble()) {
+        ValueLinks.doubleValueLink((DoubleField) field, model, property, changeObserver, false, true);
       }
-      else if (property.isInteger()) {
-        ValueLinks.intValueLink((IntField) field, model,
-                isUpper ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver(), false, true);
+      else if (columnProperty.isInteger()) {
+        ValueLinks.intValueLink((IntField) field, model, property, changeObserver, false, true);
       }
-      else if (property.isBoolean()) {
-        ValueLinks.selectedItemValueLink((JComboBox) field, model,
-                isUpper ? PropertySearchModel.UPPER_BOUND_PROPERTY : PropertySearchModel.LOWER_BOUND_PROPERTY,
-                Object.class, isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
+      else if (columnProperty.isBoolean()) {
+        ValueLinks.selectedItemValueLink((JComboBox) field, model,property, Object.class, changeObserver);
       }
-      else if (!(property instanceof Property.ForeignKeyProperty)) {//entity based properties are bound in the model
-        ValueLinks.textValueLink((JTextField) field, model,
-                isUpper ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY,
-                isUpper ? model.getUpperBoundObserver() : model.getLowerBoundObserver());
+      else if (!(columnProperty instanceof Property.ForeignKeyProperty)) {//entity based properties are bound in the model
+        ValueLinks.textValueLink((JTextField) field, model, property, changeObserver);
       }
     }
 

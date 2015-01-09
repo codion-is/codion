@@ -47,7 +47,7 @@ public final class ValueLinks {
                                    final String beanPropertyName, final EventObserver<Date> valueChangeEvent,
                                    final boolean readOnly, final DateFormat dateFormat, final int sqlType,
                                    final boolean immediateUpdate) {
-    dateValueLink(textComponent, Values.<Date>beanValue(owner, beanPropertyName, getDateTypeClass(sqlType),
+    dateValueLink(textComponent, Values.beanValue(owner, beanPropertyName, getDateTypeClass(sqlType),
             valueChangeEvent), readOnly, dateFormat, sqlType, immediateUpdate);
   }
 
@@ -78,7 +78,7 @@ public final class ValueLinks {
   public static void intValueLink(final IntField intField, final Object owner, final String beanPropertyName,
                                   final EventObserver<Integer> valueChangeEvent, final boolean usePrimitive,
                                   final boolean immediateUpdate) {
-    intValueLink(intField, Values.<Integer>beanValue(owner, beanPropertyName, usePrimitive ? int.class : Integer.class,
+    intValueLink(intField, Values.beanValue(owner, beanPropertyName, usePrimitive ? int.class : Integer.class,
             valueChangeEvent), Util.getNonGroupingNumberFormat(true), usePrimitive, false, immediateUpdate);
   }
 
@@ -94,7 +94,7 @@ public final class ValueLinks {
   public static void intValueLink(final IntField intField, final Object owner, final String beanPropertyName,
                                   final EventObserver<Integer> valueChangeEvent, final boolean usePrimitive,
                                   final boolean readOnly, final boolean immediateUpdate) {
-    intValueLink(intField, Values.<Integer>beanValue(owner, beanPropertyName, usePrimitive ? int.class : Integer.class,
+    intValueLink(intField, Values.beanValue(owner, beanPropertyName, usePrimitive ? int.class : Integer.class,
             valueChangeEvent), Util.getNonGroupingNumberFormat(true), usePrimitive, readOnly, immediateUpdate);
   }
 
@@ -137,7 +137,7 @@ public final class ValueLinks {
   public static void doubleValueLink(final DoubleField doubleField, final Object owner, final String beanPropertyName,
                                      final EventObserver<Double> valueChangeEvent, final boolean usePrimitive,
                                      final boolean readOnly, final boolean immediateUpdate) {
-    doubleValueLink(doubleField, Values.<Double>beanValue(owner, beanPropertyName, usePrimitive ? double.class : Double.class,
+    doubleValueLink(doubleField, Values.beanValue(owner, beanPropertyName, usePrimitive ? double.class : Double.class,
             valueChangeEvent), Util.getNonGroupingNumberFormat(), usePrimitive, readOnly, immediateUpdate);
   }
 
@@ -203,7 +203,7 @@ public final class ValueLinks {
   public static void textValueLink(final JTextComponent textComponent, final Object owner, final String beanPropertyName,
                                    final EventObserver<String> valueChangeEvent, final Format format,
                                    final boolean immediateUpdate, final boolean readOnly) {
-    textValueLink(textComponent, Values.<String>beanValue(owner, beanPropertyName, String.class, valueChangeEvent), format, immediateUpdate, readOnly);
+    textValueLink(textComponent, Values.beanValue(owner, beanPropertyName, String.class, valueChangeEvent), format, immediateUpdate, readOnly);
   }
 
   /**
@@ -262,7 +262,7 @@ public final class ValueLinks {
    */
   public static void toggleValueLink(final ButtonModel buttonModel, final Object owner, final String beanPropertyName,
                                      final EventObserver<Boolean> valueChangeEvent, final boolean readOnly) {
-    toggleValueLink(buttonModel, Values.<Boolean>beanValue(owner, beanPropertyName, boolean.class, valueChangeEvent), readOnly);
+    toggleValueLink(buttonModel, Values.beanValue(owner, beanPropertyName, boolean.class, valueChangeEvent), readOnly);
   }
 
   /**
@@ -350,7 +350,7 @@ public final class ValueLinks {
    */
   public static void intSpinnerValueLink(final Object owner, final String beanPropertyName, final EventObserver<Integer> valueChangeEvent,
                                          final SpinnerNumberModel spinnerModel, final boolean readOnly) {
-    Values.link(Values.<Integer>beanValue(owner, beanPropertyName, int.class, valueChangeEvent),
+    Values.link(Values.beanValue(owner, beanPropertyName, int.class, valueChangeEvent),
             UiValues.integerValue(spinnerModel), readOnly);
   }
 

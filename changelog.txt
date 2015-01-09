@@ -3880,3 +3880,5 @@
   Refactoring to reduce cyclomatic complexity
   EntityEditModel.isLookupAllowed(property) added
   DefaultEntityEditModel, property debug output refactored
+  ColumnSearchPanel and PropertySearchPanel refactored to reduce cyclomatic complexity
+  ValueLinks, removed superfluous generics
