@@ -1023,15 +1023,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
       }
     });
     if (Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
-      for (final Property property : Entities.getProperties(entityID).values()) {
-        addValueSetListener(property.getPropertyID(), new StatusMessageListener());
-      }
       entity.addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
-        private final StatusMessageListener messageListener = new StatusMessageListener();
-
         @Override
-        public void eventOccurred(final ValueChange info) {
-          messageListener.eventOccurred(info);
+        public void eventOccurred(final ValueChange<String, ?> info) {
+          final String msg = getValueChangeDebugString(getEntityID(), info);
+          System.out.println(msg);
+          LOG.debug(msg);
         }
       });
     }
@@ -1045,27 +1042,15 @@ public class DefaultEntityEditModel implements EntityEditModel {
     return propertyComboBoxModels.containsKey(property);
   }
 
-  private String getValueChangeDebugString(final ValueChange event) {
+  private static String getValueChangeDebugString(final String entityID, final ValueChange<String, ?> event) {
     final StringBuilder stringBuilder = new StringBuilder();
-    if (event.getSource() instanceof Entity) {
-      stringBuilder.append("[entity] ");
-    }
-    final Property property = Entities.getProperty(getEntityID(), (String) event.getKey());
+    final Property property = Entities.getProperty(entityID, event.getKey());
     final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
             && ((Property.ColumnProperty) property).isForeignKeyProperty();
-    stringBuilder.append(getEntityID()).append(" : ").append(property).append(
-            isForeignKeyProperty ? " [fk]" : "").append("; ");
+    stringBuilder.append(entityID).append("#").append(property).append(isForeignKeyProperty ? " [fk]" : "").append(": ");
     if (!event.isInitialization()) {
-      if (!event.isOldValueNull()) {
-        stringBuilder.append(event.getOldValue().getClass().getSimpleName()).append(" ");
-      }
       stringBuilder.append(getValueString(event.getOldValue()));
-    }
-    if (!event.isInitialization()) {
       stringBuilder.append(" -> ");
-    }
-    if (!event.isNewValueNull()) {
-      stringBuilder.append(event.getNewValue().getClass().getSimpleName()).append(" ");
     }
     stringBuilder.append(getValueString(event.getNewValue()));
 
@@ -1077,7 +1062,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
    * @return a string representing the given property value for debug output
    */
   private static String getValueString(final Object value) {
-    final StringBuilder stringBuilder = new StringBuilder("[").append(value == null ? "null value" : value).append("]");
+    final StringBuilder stringBuilder = new StringBuilder();
+    if (value != null) {
+      stringBuilder.append(value.getClass().getSimpleName()).append(" ");
+    }
+    stringBuilder.append("[").append(value == null ? "null" : value).append("]");
     if (value instanceof Entity) {
       stringBuilder.append(" PK{").append(((Entity) value).getPrimaryKey()).append("}");
     }
@@ -1111,16 +1100,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
     }
 
     return null;
-  }
-
-  private final class StatusMessageListener implements EventInfoListener<ValueChange<String, ?>> {
-
-    @Override
-    public void eventOccurred(final ValueChange info) {
-      final String msg = getValueChangeDebugString(info);
-      System.out.println(msg);
-      LOG.debug(msg);
-    }
   }
 
   static final class PropertyValueProvider implements ValueCollectionProvider<Object> {

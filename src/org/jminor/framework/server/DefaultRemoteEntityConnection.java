@@ -619,7 +619,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     }
 
     @Override
-    public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
+    public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       final String methodName = method.getName();
       Exception exception = null;
       final long startTime = System.currentTimeMillis();

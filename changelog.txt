@@ -3879,3 +3879,4 @@
   Sonar run, some minor refactoring
   Refactoring to reduce cyclomatic complexity
   EntityEditModel.isLookupAllowed(property) added
+  DefaultEntityEditModel, property debug output refactored
