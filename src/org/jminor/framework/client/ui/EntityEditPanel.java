@@ -1939,24 +1939,28 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     }
     final Collection<String> keys = Arrays.asList(controlKeys);
     if (!editModel.isReadOnly()) {
-      if (editModel.isInsertAllowed() && editModel.isUpdateAllowed() && keys.contains(SAVE)) {
-        setControl(SAVE, getSaveControl());
-      }
-      if (editModel.isInsertAllowed() && keys.contains(INSERT)) {
-        setControl(INSERT, getInsertControl());
-      }
-      if (editModel.isUpdateAllowed() && keys.contains(UPDATE)) {
-        setControl(UPDATE, getUpdateControl());
-      }
-      if (editModel.isDeleteAllowed() && keys.contains(DELETE)) {
-        setControl(DELETE, getDeleteControl());
-      }
+      setupDefaultEditModelControls(keys);
     }
     if (keys.contains(CLEAR)) {
       setControl(CLEAR, getClearControl());
     }
     if (keys.contains(REFRESH)) {
       setControl(REFRESH, getRefreshControl());
+    }
+  }
+
+  private void setupDefaultEditModelControls(final Collection<String> keys) {
+    if (editModel.isInsertAllowed() && editModel.isUpdateAllowed() && keys.contains(SAVE)) {
+      setControl(SAVE, getSaveControl());
+    }
+    if (editModel.isInsertAllowed() && keys.contains(INSERT)) {
+      setControl(INSERT, getInsertControl());
+    }
+    if (editModel.isUpdateAllowed() && keys.contains(UPDATE)) {
+      setControl(UPDATE, getUpdateControl());
+    }
+    if (editModel.isDeleteAllowed() && keys.contains(DELETE)) {
+      setControl(DELETE, getDeleteControl());
     }
   }
 

@@ -1010,15 +1010,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     popupControls.add(controlMap.get(REFRESH));
     popupControls.add(controlMap.get(CLEAR));
     popupControls.addSeparator();
-    for (final ControlSet controlSet : additionalPopupControlSets) {
-      if (controlSet.hasName()) {
-        popupControls.add(controlSet);
-      }
-      else {
-        popupControls.addAll(controlSet);
-      }
-      popupControls.addSeparator();
-    }
+    addAdditionalControls(popupControls, additionalPopupControlSets);
     boolean separatorRequired = false;
     if (controlMap.containsKey(UPDATE_SELECTED)) {
       popupControls.add(controlMap.get(UPDATE_SELECTED));
@@ -1060,20 +1052,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         popupControls.addSeparator();
         separatorRequired = false;
       }
-      popupControls.add(controlMap.get(CONFIGURE_QUERY));
-      if (searchPanel != null) {
-        final ControlSet searchControls = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
-        if (controlMap.containsKey(SEARCH_PANEL_VISIBLE)) {
-          searchControls.add(getControl(SEARCH_PANEL_VISIBLE));
-        }
-        final ControlSet searchPanelControls = searchPanel.getControls();
-        if (searchPanelControls != null) {
-          searchControls.addAll(searchPanelControls);
-        }
-        if (searchControls.size() > 0) {
-          popupControls.add(searchControls);
-        }
-      }
+      addSearchControls(popupControls);
     }
     if (separatorRequired) {
       popupControls.addSeparator();
@@ -1081,6 +1060,35 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     popupControls.add(controlMap.get(COPY_TABLE_DATA));
 
     return popupControls;
+  }
+
+  private void addAdditionalControls(final ControlSet popupControls, final List<ControlSet> additionalPopupControlSets) {
+    for (final ControlSet controlSet : additionalPopupControlSets) {
+      if (controlSet.hasName()) {
+        popupControls.add(controlSet);
+      }
+      else {
+        popupControls.addAll(controlSet);
+      }
+      popupControls.addSeparator();
+    }
+  }
+
+  private void addSearchControls(final ControlSet popupControls) {
+    popupControls.add(controlMap.get(CONFIGURE_QUERY));
+    if (searchPanel != null) {
+      final ControlSet searchControls = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
+      if (controlMap.containsKey(SEARCH_PANEL_VISIBLE)) {
+        searchControls.add(getControl(SEARCH_PANEL_VISIBLE));
+      }
+      final ControlSet searchPanelControls = searchPanel.getControls();
+      if (searchPanelControls != null) {
+        searchControls.addAll(searchPanelControls);
+      }
+      if (searchControls.size() > 0) {
+        popupControls.add(searchControls);
+      }
+    }
   }
 
   protected ControlSet getPrintControls() {

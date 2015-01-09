@@ -935,10 +935,8 @@ public final class Entities {
       if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
         if ((entity.getPrimaryKey().isNull() || entity.getOriginalPrimaryKey().isNull()) && !(property instanceof Property.ForeignKeyProperty)) {
           //a new entity being inserted, allow null for columns with default values and auto generated primary key values
-          final boolean columnPropertyWithoutDefaultValue = property instanceof Property.ColumnProperty &&
-                  !((Property.ColumnProperty) property).columnHasDefaultValue();
-          final boolean primaryKeyPropertyWithoutAutoGenerate = (property instanceof Property.ColumnProperty
-                  && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) && getKeyGenerator(entityID).isManual();
+          final boolean columnPropertyWithoutDefaultValue = isColumnPropertyWithoutDefaultValue(property);
+          final boolean primaryKeyPropertyWithoutAutoGenerate = isPrimaryKeyPropertyWithoutAutoGenerate(entityID, property);
           if (columnPropertyWithoutDefaultValue || primaryKeyPropertyWithoutAutoGenerate) {
             throw new NullValidationException(property.getPropertyID(),
                     FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_IS_REQUIRED) + ": " + property);
@@ -957,6 +955,15 @@ public final class Entities {
      */
     private static boolean isForeignKeyProperty(final Property property) {
       return property instanceof Property.ColumnProperty && ((Property.ColumnProperty) property).isForeignKeyProperty();
+    }
+
+    private static boolean isPrimaryKeyPropertyWithoutAutoGenerate(final String entityID, final Property property) {
+      return (property instanceof Property.ColumnProperty
+              && ((Property.ColumnProperty) property).isPrimaryKeyProperty()) && getKeyGenerator(entityID).isManual();
+    }
+
+    private static boolean isColumnPropertyWithoutDefaultValue(final Property property) {
+      return property instanceof Property.ColumnProperty && !((Property.ColumnProperty) property).columnHasDefaultValue();
     }
   }
 }

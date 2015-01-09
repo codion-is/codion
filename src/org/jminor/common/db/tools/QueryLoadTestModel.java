@@ -114,7 +114,6 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
     }
 
     /**
-     *
      * @param application the connection pool providing connections
      * @throws ScenarioException in case of an exception during the scenario run
      */
@@ -126,22 +125,9 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
       try {
         connection = application.pool.getConnection();
         statement = connection.prepareCall(query);
-        final List<Object> parameters = getParameters();
-        if (!Util.nullOrEmpty(parameters)) {
-          int index = 1;
-          for (final Object parameter : getParameters()) {
-            statement.setObject(index++, parameter);
-          }
-        }
+        setStatementParameters(statement);
         resultSet = statement.executeQuery();
-        final int columnCount = resultSet.getMetaData().getColumnCount();
-        if (columnCount > 0) {
-          while (resultSet.next()) {
-            for (int i = 1; i <= columnCount; i++) {
-              resultSet.getObject(i);
-            }
-          }
-        }
+        fetchResult(resultSet);
         if (transactional) {
           connection.commit();
         }
@@ -171,6 +157,27 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
      */
     protected List<Object> getParameters() {
       return Collections.emptyList();
+    }
+
+    private void setStatementParameters(final PreparedStatement statement) throws SQLException {
+      final List<Object> parameters = getParameters();
+      if (!Util.nullOrEmpty(parameters)) {
+        int index = 1;
+        for (final Object parameter : parameters) {
+          statement.setObject(index++, parameter);
+        }
+      }
+    }
+
+    private static void fetchResult(final ResultSet resultSet) throws SQLException {
+      final int columnCount = resultSet.getMetaData().getColumnCount();
+      if (columnCount > 0) {
+        while (resultSet.next()) {
+          for (int i = 1; i <= columnCount; i++) {
+            resultSet.getObject(i);
+          }
+        }
+      }
     }
   }
 }

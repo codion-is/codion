@@ -158,25 +158,14 @@ public final class EntityTableCellRenderers {
       final boolean showSearch = indicateSearch && (propertySearchEnabled || propertyFilterEnabled);
       final Color cellColor = tableModel.getPropertyBackgroundColor(row, property);
       if (showSearch) {
-        final boolean doubleShade = propertySearchEnabled && propertyFilterEnabled;
-        if (cellColor != null) {
-          final int shadeAmount = doubleShade ? SHADE_AMOUNT * 2 : SHADE_AMOUNT;
-          setBackground(shade(cellColor, shadeAmount));
-        }
-        else {
-          final Color background = row % 2 == 0 ?
-                  (doubleShade ? DOUBLE_SEARCH_BACKGROUND : SEARCH_BACKGROUND) :
-                  (doubleShade ? DOUBLE_ALTERNATE_SEARCH_BACKGROUND : SEARCH_ALTERNATE_BACKGROUND);
-          setBackground(background);
-        }
+        setBackground(getSearchEnabledColor(row, propertySearchEnabled, propertyFilterEnabled, cellColor));
       }
       else {
         if (cellColor != null) {
           setBackground(cellColor);
         }
         else {
-          final Color background = row % 2 == 0 ? DEFAULT_BACKGROUND : DEFAULT_ALTERNATE_BACKGROUND;
-          setBackground(background);
+          setBackground(row % 2 == 0 ? DEFAULT_BACKGROUND : DEFAULT_ALTERNATE_BACKGROUND);
         }
       }
       return this;
@@ -194,6 +183,19 @@ public final class EntityTableCellRenderers {
         else {
           setText(value == null ? "" : format.format(value));
         }
+      }
+    }
+
+    private static Color getSearchEnabledColor(final int row, final boolean propertySearchEnabled,
+                                               final boolean propertyFilterEnabled, final Color cellColor) {
+      final boolean doubleShade = propertySearchEnabled && propertyFilterEnabled;
+      if (cellColor != null) {
+        return shade(cellColor, doubleShade ? SHADE_AMOUNT * 2 : SHADE_AMOUNT);
+      }
+      else {
+        return row % 2 == 0 ?
+                (doubleShade ? DOUBLE_SEARCH_BACKGROUND : SEARCH_BACKGROUND) :
+                (doubleShade ? DOUBLE_ALTERNATE_SEARCH_BACKGROUND : SEARCH_ALTERNATE_BACKGROUND);
       }
     }
   }

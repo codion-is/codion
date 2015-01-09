@@ -524,9 +524,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
    * Runs the scenario with the given name on the given application
    * @param usageScenarioName the name of the scenario to run
    * @param application the application to use
-   * @throws ScenarioException in case of an exception
    */
-  protected final void runScenario(final String usageScenarioName, final T application) throws ScenarioException {
+  protected final void runScenario(final String usageScenarioName, final T application) {
     getUsageScenario(usageScenarioName).run(application);
   }
 
@@ -562,9 +561,8 @@ public abstract class LoadTestModel<T> implements LoadTest {
    * Selects a random scenario and runs it with the given application
    * @param application the application for running the next scenario
    * @return the name of the scenario that was run
-   * @throws ScenarioException any exception thrown by the work request
    */
-  private String performWork(final T application) throws ScenarioException {
+  private String performWork(final T application) {
     Util.rejectNullValue(application, "application");
     final String scenarioName = scenarioChooser.getRandomItem().getName();
     runScenario(scenarioName, application);
@@ -664,24 +662,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
             }
             think();
             if (!loadTestModel.isPaused()) {
-              final long currentTimeNano = System.nanoTime();
-              String scenarioName = null;
-              try {
-                loadTestModel.counter.incrementWorkRequests();
-                try {
-                  scenarioName = loadTestModel.performWork(application);
-                }
-                catch (final ScenarioException ignored) {}
-              }
-              finally {
-                final long workTimeMillis = (System.nanoTime() - currentTimeNano) / NANO_IN_MILLI;
-                if (scenarioName != null) {
-                  loadTestModel.counter.addScenarioDuration(scenarioName, (int) workTimeMillis);
-                }
-                if (workTimeMillis > loadTestModel.getWarningTime()) {
-                  loadTestModel.counter.incrementDelayedWorkRequests();
-                }
-              }
+              runRandomScenario(application);
             }
           }
           catch (final Exception e) {
@@ -705,6 +686,24 @@ public abstract class LoadTestModel<T> implements LoadTest {
      */
     private void think() throws InterruptedException {
       Thread.sleep(loadTestModel.getThinkTime());
+    }
+
+    private void runRandomScenario(final T application) {
+      final long currentTimeNano = System.nanoTime();
+      String scenarioName = null;
+      try {
+        scenarioName = loadTestModel.performWork(application);
+      }
+      finally {
+        loadTestModel.counter.incrementWorkRequests();
+        final long workTimeMillis = (System.nanoTime() - currentTimeNano) / NANO_IN_MILLI;
+        if (scenarioName != null) {
+          loadTestModel.counter.addScenarioDuration(scenarioName, (int) workTimeMillis);
+        }
+        if (workTimeMillis > loadTestModel.getWarningTime()) {
+          loadTestModel.counter.incrementDelayedWorkRequests();
+        }
+      }
     }
 
     private void delayLogin() {
@@ -801,7 +800,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
 
     /** {@inheritDoc} */
     @Override
-    public final void run(final T application) throws ScenarioException {
+    public final void run(final T application) {
       if (application == null) {
         throw new IllegalArgumentException("Can not run without an application");
       }
@@ -815,7 +814,6 @@ public abstract class LoadTestModel<T> implements LoadTest {
         synchronized (exceptions) {
           exceptions.add(e);
         }
-        throw e;
       }
       finally {
         cleanup(application);

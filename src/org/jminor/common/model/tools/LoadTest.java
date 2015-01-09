@@ -258,9 +258,8 @@ public interface LoadTest {
     /**
      * Runs this scenario with the given application
      * @param application the application to use
-     * @throws ScenarioException in case of an exception
      */
-    void run(final T application) throws ScenarioException;
+    void run(final T application);
 
     /**
      * @return the total number of times this scenario has been run

@@ -1068,37 +1068,7 @@ public final class EntityUiUtil {
   private static JTextField initializeTextField(final Property property, final EntityEditModel editModel,
                                                 final StateObserver enabledState, final String formatMaskString,
                                                 final boolean valueContainsLiteralCharacters) {
-    final JTextField field;
-    if (property.isInteger()) {
-      field = new IntField();
-      if (property.getMin() != null && property.getMax() != null) {
-        ((IntField) field).setRange(property.getMin(), property.getMax());
-      }
-    }
-    else if (property.isDouble()) {
-      field = new DoubleField();
-      if (property.getMaximumFractionDigits() > 0) {
-        ((DoubleField) field).setMaximumFractionDigits(property.getMaximumFractionDigits());
-      }
-      if (property.getMin() != null && property.getMax() != null) {
-        ((DoubleField) field).setRange(Math.min(property.getMin(), 0), property.getMax());
-      }
-    }
-    else if (property.isDateOrTime()) {
-      field = UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) property.getFormat()));
-    }
-    else if (property.isString()) {
-      if (formatMaskString == null) {
-        field = new JTextField(new SizedDocument(), "", 0);
-      }
-      else {
-        field = UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
-      }
-    }
-    else {
-      throw new IllegalArgumentException("Unable to create text field for property type: " + property.getType());
-    }
-
+    final JTextField field = initializeTextField(property, formatMaskString, valueContainsLiteralCharacters);
     UiUtil.linkToEnabledState(enabledState, field);
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
       UiUtil.transferFocusOnEnter(field);
@@ -1109,6 +1079,62 @@ public final class EntityUiUtil {
     }
     if (property instanceof Property.ColumnProperty) {//todo property.allowLookup()?
       UiUtil.addLookupDialog(field, editModel.getValueProvider(property));
+    }
+
+    return field;
+  }
+
+  private static JTextField initializeTextField(final Property property, final String formatMaskString, final boolean valueContainsLiteralCharacters) {
+    final JTextField field;
+    if (property.isInteger()) {
+      field = initializeIntField(property);
+    }
+    else if (property.isDouble()) {
+      field = initializeDoubleField(property);
+    }
+    else if (property.isDateOrTime()) {
+      field = UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) property.getFormat()));
+    }
+    else if (property.isString()) {
+      field = initializeStringField(formatMaskString, valueContainsLiteralCharacters);
+    }
+    else {
+      throw new IllegalArgumentException("Unable to create text field for property type: " + property.getType());
+    }
+
+    return field;
+  }
+
+  private static JTextField initializeStringField(final String formatMaskString, final boolean valueContainsLiteralCharacters) {
+    final JTextField field;
+    if (formatMaskString == null) {
+      field = new JTextField(new SizedDocument(), "", 0);
+    }
+    else {
+      field = UiUtil.createFormattedField(formatMaskString, valueContainsLiteralCharacters);
+    }
+
+    return field;
+  }
+
+  private static JTextField initializeDoubleField(final Property property) {
+    final JTextField field;
+    field = new DoubleField();
+    if (property.getMaximumFractionDigits() > 0) {
+      ((DoubleField) field).setMaximumFractionDigits(property.getMaximumFractionDigits());
+    }
+    if (property.getMin() != null && property.getMax() != null) {
+      ((DoubleField) field).setRange(Math.min(property.getMin(), 0), property.getMax());
+    }
+
+    return field;
+  }
+
+  private static JTextField initializeIntField(final Property property) {
+    final JTextField field;
+    field = new IntField();
+    if (property.getMin() != null && property.getMax() != null) {
+      ((IntField) field).setRange(property.getMin(), property.getMax());
     }
 
     return field;

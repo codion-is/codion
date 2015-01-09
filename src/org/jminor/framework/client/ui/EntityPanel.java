@@ -1012,6 +1012,12 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * </pre>
    */
   protected void initializeUI() {
+    if (editPanel != null) {
+      initializeEditControlPanel();
+    }
+    if (tablePanel != null) {
+      initializeTablePanel();
+    }
     if (!includeDetailPanelTabPane || detailEntityPanels.isEmpty()) {
       horizontalSplitPane = null;
       detailPanelTabbedPane = null;
@@ -1020,51 +1026,9 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       horizontalSplitPane = initializeHorizontalSplitPane();
       detailPanelTabbedPane = initializeDetailTabPane();
     }
-    if (editPanel != null) {
-      editPanel.initializePanel();
-      initializeEditControlPanel();
-    }
-    if (tablePanel != null) {
-      final ControlSet toolbarControls = new ControlSet("");
-      if (showToggleEditPanelControl && editPanel != null) {
-        toolbarControls.add(getToggleEditPanelControl());
-      }
-      if (showDetailPanelControls && !detailEntityPanels.isEmpty()) {
-        toolbarControls.add(getToggleDetailPanelControl());
-      }
-      if (toolbarControls.size() > 0) {
-        tablePanel.addToolbarControls(toolbarControls);
-      }
-      if (showDetailPanelControls) {
-        final ControlSet detailPanelControlSet = getDetailPanelControlSet();
-        if (detailPanelControlSet != null) {
-          tablePanel.addPopupControls(detailPanelControlSet);
-        }
-      }
-      if (tablePanel.getTableDoubleClickAction() == null) {
-        tablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
-      }
-      tablePanel.initializePanel();
-      tablePanel.setMinimumSize(new Dimension(0, 0));
-    }
-
     setLayout(UiUtil.createBorderLayout());
     if (detailPanelTabbedPane != null || tablePanel != null) {
-      if (detailPanelTabbedPane == null) { //no left right split pane
-        add(tablePanel, BorderLayout.CENTER);
-      }
-      else {
-        if (compactDetailLayout) {
-          compactBase = new JPanel(UiUtil.createBorderLayout());
-          compactBase.add(tablePanel, BorderLayout.CENTER);
-          horizontalSplitPane.setLeftComponent(compactBase);
-        }
-        else {
-          horizontalSplitPane.setLeftComponent(tablePanel);
-        }
-        horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
-        add(horizontalSplitPane, BorderLayout.CENTER);
-      }
+      initializeDetailAndTablePanels();
     }
     setDetailPanelState(detailPanelState);
     if (containsEditPanel()) {
@@ -1075,6 +1039,37 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       initializeNavigation();
     }
     initializeResizing();
+  }
+
+  /**
+   * Called during initialization, before controls have been initialized
+   * @see #initializePanel()
+   */
+  protected void initializeAssociatedPanels() {}
+
+  /**
+   * Called during initialization, after controls have been initialized,
+   * use this method to initialize any application panels that rely on controls having been initialized
+   * @see #initializePanel()
+   */
+  protected void initializeControlPanels() {}
+
+  /**
+   * Override to add code that should be called during the initialization routine after the panel has been initialized
+   * @see #initializePanel()
+   */
+  protected void initialize() {}
+
+  /**
+   * @param masterPanel the panel serving as master panel for this entity panel
+   * @throws IllegalStateException in case a master panel has already been set
+   */
+  protected final void setMasterPanel(final EntityPanel masterPanel) {
+    Util.rejectNullValue(masterPanel, "masterPanel");
+    if (this.masterPanel != null) {
+      throw new IllegalStateException("Master panel has already been set for " + this);
+    }
+    this.masterPanel = masterPanel;
   }
 
   /**
@@ -1159,38 +1154,8 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
   }
 
-  /**
-   * Called during initialization, before controls have been initialized
-   * @see #initializePanel()
-   */
-  protected void initializeAssociatedPanels() {}
-
-  /**
-   * Called during initialization, after controls have been initialized,
-   * use this method to initialize any application panels that rely on controls having been initialized
-   * @see #initializePanel()
-   */
-  protected void initializeControlPanels() {}
-
-  /**
-   * Override to add code that should be called during the initialization routine after the panel has been initialized
-   * @see #initializePanel()
-   */
-  protected void initialize() {}
-
-  /**
-   * @param masterPanel the panel serving as master panel for this entity panel
-   * @throws IllegalStateException in case a master panel has already been set
-   */
-  protected final void setMasterPanel(final EntityPanel masterPanel) {
-    Util.rejectNullValue(masterPanel, "masterPanel");
-    if (this.masterPanel != null) {
-      throw new IllegalStateException("Master panel has already been set for " + this);
-    }
-    this.masterPanel = masterPanel;
-  }
-
   private void initializeEditControlPanel() {
+    editPanel.initializePanel();
     editControlPanel.setMinimumSize(new Dimension(0, 0));
     final int alignment = controlPanelConstraints.equals(BorderLayout.SOUTH) || controlPanelConstraints.equals(BorderLayout.NORTH) ? FlowLayout.CENTER : FlowLayout.LEADING;
     final JPanel propertyBase = new JPanel(UiUtil.createFlowLayout(alignment));
@@ -1202,6 +1167,48 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
       if (controlPanel != null) {
         editControlPanel.add(controlPanel, controlPanelConstraints);
       }
+    }
+  }
+
+  private void initializeTablePanel() {
+    final ControlSet toolbarControls = new ControlSet("");
+    if (showToggleEditPanelControl && editPanel != null) {
+      toolbarControls.add(getToggleEditPanelControl());
+    }
+    if (showDetailPanelControls && !detailEntityPanels.isEmpty()) {
+      toolbarControls.add(getToggleDetailPanelControl());
+    }
+    if (toolbarControls.size() > 0) {
+      tablePanel.addToolbarControls(toolbarControls);
+    }
+    if (showDetailPanelControls) {
+      final ControlSet detailPanelControlSet = getDetailPanelControlSet();
+      if (detailPanelControlSet != null) {
+        tablePanel.addPopupControls(detailPanelControlSet);
+      }
+    }
+    if (tablePanel.getTableDoubleClickAction() == null) {
+      tablePanel.setTableDoubleClickAction(initializeTableDoubleClickAction());
+    }
+    tablePanel.initializePanel();
+    tablePanel.setMinimumSize(new Dimension(0, 0));
+  }
+
+  private void initializeDetailAndTablePanels() {
+    if (detailPanelTabbedPane == null) { //no left right split pane
+      add(tablePanel, BorderLayout.CENTER);
+    }
+    else {
+      if (compactDetailLayout) {
+        compactBase = new JPanel(UiUtil.createBorderLayout());
+        compactBase.add(tablePanel, BorderLayout.CENTER);
+        horizontalSplitPane.setLeftComponent(compactBase);
+      }
+      else {
+        horizontalSplitPane.setLeftComponent(tablePanel);
+      }
+      horizontalSplitPane.setRightComponent(detailPanelTabbedPane);
+      add(horizontalSplitPane, BorderLayout.CENTER);
     }
   }
 

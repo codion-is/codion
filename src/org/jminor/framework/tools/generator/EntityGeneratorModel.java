@@ -271,6 +271,28 @@ public final class EntityGeneratorModel {
 
   private static String getColumnPropertyDefinition(final Table table, final Column column, final boolean foreignKeyColumn) {
     final StringBuilder builder = new StringBuilder();
+    addPropertyDefinition(builder, table, column, foreignKeyColumn);
+    if (column.getForeignKeyColumn() == null && column.hasDefaultValue()) {
+      builder.append(Util.LINE_SEPARATOR).append("                .setColumnHasDefaultValue(true)");
+    }
+    if (column.getNullable() == DatabaseMetaData.columnNoNulls && column.getKeySeq() == -1 && column.getForeignKeyColumn() == null) {
+      builder.append(Util.LINE_SEPARATOR).append("                .setNullable(false)");
+    }
+    if (column.getColumnTypeName().equals("Types.VARCHAR")) {
+      builder.append(Util.LINE_SEPARATOR).append("                .setMaxLength(").append(column.getColumnSize()).append(")");
+    }
+    if (column.getColumnTypeName().equals("Types.DOUBLE") && column.getDecimalDigits() >= 1) {
+      builder.append(Util.LINE_SEPARATOR).append("                .setMaximumFractionDigits(").append(column.getDecimalDigits()).append(")");
+    }
+    if (!Util.nullOrEmpty(column.getComment())) {
+      builder.append(Util.LINE_SEPARATOR).append("                .setDescription(").append(column.getComment()).append(")");
+    }
+
+    return builder.toString();
+  }
+
+  private static void addPropertyDefinition(final StringBuilder builder, final Table table, final Column column,
+                                            final boolean foreignKeyColumn) {
     final String propertyID = getPropertyID(table, column, false);
     final String caption = getCaption(column);
     if (column.getKeySeq() != -1) {
@@ -298,24 +320,6 @@ public final class EntityGeneratorModel {
                 .append(column.getColumnTypeName()).append(", \"").append(caption).append("\")");
       }
     }
-
-    if (column.getForeignKeyColumn() == null && column.hasDefaultValue()) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setColumnHasDefaultValue(true)");
-    }
-    if (column.getNullable() == DatabaseMetaData.columnNoNulls && column.getKeySeq() == -1 && column.getForeignKeyColumn() == null) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setNullable(false)");
-    }
-    if (column.getColumnTypeName().equals("Types.VARCHAR")) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setMaxLength(").append(column.getColumnSize()).append(")");
-    }
-    if (column.getColumnTypeName().equals("Types.DOUBLE") && column.getDecimalDigits() >= 1) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setMaximumFractionDigits(").append(column.getDecimalDigits()).append(")");
-    }
-    if (!Util.nullOrEmpty(column.getComment())) {
-      builder.append(Util.LINE_SEPARATOR).append("                .setDescription(").append(column.getComment()).append(")");
-    }
-
-    return builder.toString();
   }
 
   private static String getEntityID(final Table table) {

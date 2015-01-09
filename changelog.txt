@@ -3877,3 +3877,4 @@
   AbstractEntityConnectionProvider.disconnect() now synchronized
   RemoteServer.connect(clientInfo) removed
   Sonar run, some minor refactoring
+  Refactoring to reduce cyclomatic complexity
