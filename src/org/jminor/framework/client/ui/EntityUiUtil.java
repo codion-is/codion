@@ -1077,7 +1077,7 @@ public final class EntityUiUtil {
     if (property.getMaxLength() > 0 && field.getDocument() instanceof SizedDocument) {
       ((SizedDocument) field.getDocument()).setMaxLength(property.getMaxLength());
     }
-    if (property instanceof Property.ColumnProperty) {//todo property.allowLookup()?
+    if (editModel.isLookupAllowed(property)) {
       UiUtil.addLookupDialog(field, editModel.getValueProvider(property));
     }
 

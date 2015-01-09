@@ -198,6 +198,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
+  public boolean isLookupAllowed(final Property property) {
+    return property instanceof Property.ColumnProperty;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public boolean isValuePersistent(final Property property) {
     if (persistentValues.containsKey(property.getPropertyID())) {
       return persistentValues.get(property.getPropertyID());

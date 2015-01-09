@@ -267,6 +267,14 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   boolean isValuePersistent(final Property property);
 
   /**
+   * Returns true if values based on this property should be available for lookup via this EditModel.
+   * This means displaying all the distinct property values to the user, allowing her to select one.
+   * @param property the property
+   * @return true if value lookup should be allowed for this property
+   */
+  boolean isLookupAllowed(Property property);
+
+  /**
    * @param propertyID the property ID
    * @param persistValueOnClear true if this model should persist the value of the given property on clear
    * @return this edit model instance
