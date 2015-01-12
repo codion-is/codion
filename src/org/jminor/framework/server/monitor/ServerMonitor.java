@@ -3,18 +3,17 @@
  */
 package org.jminor.framework.server.monitor;
 
+import ch.qos.logback.classic.Level;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.server.RemoteServer;
+import org.jminor.common.server.Server;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
-
-import ch.qos.logback.classic.Level;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -42,7 +41,7 @@ public final class ServerMonitor {
   private final Event<Integer> connectionLimitChangedEvent = Events.event();
 
   private final String hostName;
-  private final RemoteServer.ServerInfo serverInfo;
+  private final Server.ServerInfo serverInfo;
   private final int registryPort;
   private final EntityConnectionServerAdmin server;
 
@@ -79,7 +78,7 @@ public final class ServerMonitor {
   private final XYSeries connectionLimitSeries = new XYSeries("Maximum connection count");
   private final XYSeriesCollection connectionCountCollection = new XYSeriesCollection();
 
-  public ServerMonitor(final String hostName, final RemoteServer.ServerInfo serverInfo, final int registryPort) throws RemoteException {
+  public ServerMonitor(final String hostName, final Server.ServerInfo serverInfo, final int registryPort) throws RemoteException {
     this.hostName = hostName;
     this.serverInfo = serverInfo;
     this.registryPort = registryPort;
@@ -109,7 +108,7 @@ public final class ServerMonitor {
     return server;
   }
 
-  public RemoteServer.ServerInfo getServerInfo() {
+  public Server.ServerInfo getServerInfo() {
     return serverInfo;
   }
 

@@ -7,13 +7,12 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientUtil;
-import org.jminor.common.server.RemoteServer;
+import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.provider.AbstractEntityConnectionProvider;
 import org.jminor.framework.server.RemoteEntityConnection;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -35,8 +34,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   private final String serverHostName;
   private final UUID clientID;
   private final String clientTypeID;
-  private RemoteServer server;
-  private RemoteServer.ServerInfo serverInfo;
+  private Server server;
+  private Server.ServerInfo serverInfo;
   //todo client version
 
   /**
@@ -97,7 +96,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      final RemoteEntityConnection remote = (RemoteEntityConnection) getRemoteEntityServer().connect(
+      final RemoteEntityConnection remote = (RemoteEntityConnection) getEntityServer().connect(
               ClientUtil.connectionInfo(getUser(), clientID, clientTypeID));
 
       return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(remote));
@@ -123,7 +122,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @throws java.rmi.NotBoundException if no server is reachable or if the servers found are not using the specified port
    * @throws java.rmi.RemoteException in case of remote exceptions
    */
-  private RemoteServer getRemoteEntityServer() throws RemoteException, NotBoundException {
+  private Server getEntityServer() throws RemoteException, NotBoundException {
     boolean unreachable = false;
     try {
       if (this.server != null) {

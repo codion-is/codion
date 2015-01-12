@@ -11,7 +11,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.server.AbstractRemoteServer;
+import org.jminor.common.server.AbstractServer;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.LoginProxy;
@@ -19,7 +19,6 @@ import org.jminor.common.server.ServerException;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -41,7 +40,7 @@ import java.util.concurrent.TimeUnit;
 /**
  * The remote server class, responsible for handling requests for RemoteEntityConnections.
  */
-public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEntityConnection> {
+public final class EntityConnectionServer extends AbstractServer<RemoteEntityConnection> {
 
   private static final long serialVersionUID = 1;
 

@@ -19,12 +19,12 @@ public class ServerUtilTest {
 
   private static final String SERVER_NAME = "ServerUtilTestServer";
 
-  private AbstractRemoteServer server;
+  private AbstractServer server;
 
   @Before
   public void setUp() throws RemoteException {
     ServerUtil.initializeRegistry(Registry.REGISTRY_PORT);
-    server = new AbstractRemoteServer(12345, SERVER_NAME) {
+    server = new AbstractServer(12345, SERVER_NAME) {
       @Override
       protected Remote doConnect(final ClientInfo clientInfo) {return null;}
       @Override
@@ -44,8 +44,8 @@ public class ServerUtilTest {
   @Test
   public void getServer() throws RemoteException {
     try {
-      final RemoteServer remoteServer = ServerUtil.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, -1);
-      assertNotNull(remoteServer);
+      final Server server = ServerUtil.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, -1);
+      assertNotNull(server);
     }
     catch (final NotBoundException e) {
       fail("Remote server not bound");

@@ -5,7 +5,6 @@ package org.jminor.common.server;
 
 import org.jminor.common.model.User;
 import org.jminor.common.model.Version;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -21,7 +20,7 @@ import java.util.List;
 import java.util.UUID;
 
 /**
- * A utility class for working with RemoteServer instances.
+ * A utility class for working with Server instances.
  */
 public final class ServerUtil {
 
@@ -75,7 +74,7 @@ public final class ServerUtil {
   }
 
   /**
-   * Retrieves a RemoteServer from a registry running on the given host, using the
+   * Retrieves a Server from a registry running on the given host, using the
    * given server name prefix as a criteria. Returns the first server satisfying the criteria.
    * @param serverHostName the name of the host
    * @param serverNamePrefix the server name prefix, an empty string results in all servers being returned
@@ -85,9 +84,9 @@ public final class ServerUtil {
    * @throws RemoteException in case of a remote exception
    * @throws NotBoundException in case no such server is found
    */
-  public static RemoteServer getServer(final String serverHostName, final String serverNamePrefix,
-                                       final int registryPort, final int serverPort) throws RemoteException, NotBoundException {
-    final List<RemoteServer> servers = getServers(serverHostName, serverNamePrefix, registryPort, serverPort);
+  public static Server getServer(final String serverHostName, final String serverNamePrefix,
+                                 final int registryPort, final int serverPort) throws RemoteException, NotBoundException {
+    final List<Server> servers = getServers(serverHostName, serverNamePrefix, registryPort, serverPort);
     if (!servers.isEmpty()) {
       return servers.get(0);
     }
@@ -97,9 +96,9 @@ public final class ServerUtil {
     }
   }
 
-  private static List<RemoteServer> getServers(final String hostNames, final String serverNamePrefix,
-                                               final int registryPort, final int serverPort) throws RemoteException {
-    final List<RemoteServer> servers = new ArrayList<>();
+  private static List<Server> getServers(final String hostNames, final String serverNamePrefix,
+                                         final int registryPort, final int serverPort) throws RemoteException {
+    final List<Server> servers = new ArrayList<>();
     for (final String serverHostName : hostNames.split(",")) {
       LOG.info("Searching for servers,  host: \"{}\", server name prefix: \"{}\", server port: {}, registry port {}",
               new Object[] {serverHostName, serverNamePrefix, serverPort, registryPort});
@@ -108,7 +107,7 @@ public final class ServerUtil {
         LOG.info("Found server \"{}\"", name);
         if (name.startsWith(serverNamePrefix)) {
           try {
-            final RemoteServer server = checkServer((RemoteServer) registry.lookup(name), serverPort);
+            final Server server = checkServer((Server) registry.lookup(name), serverPort);
             if (server != null) {
               LOG.info("Adding server \"{}\"", name);
               servers.add(server);
@@ -125,7 +124,7 @@ public final class ServerUtil {
     return servers;
   }
 
-  private static RemoteServer checkServer(final RemoteServer server, final int requestedPort) throws RemoteException {
+  private static Server checkServer(final Server server, final int requestedPort) throws RemoteException {
     if (!server.connectionsAvailable()) {
       LOG.info("No connections available in server \"{}\"", server);
       return null;
@@ -139,10 +138,10 @@ public final class ServerUtil {
     return null;
   }
 
-  private static final class ServerComparator implements Comparator<RemoteServer>, Serializable {
+  private static final class ServerComparator implements Comparator<Server>, Serializable {
     private static final long serialVersionUID = 1;
     @Override
-    public int compare(final RemoteServer o1, final RemoteServer o2) {
+    public int compare(final Server o1, final Server o2) {
       try {
         return Integer.valueOf(o1.getServerLoad()).compareTo(o2.getServerLoad());
       }

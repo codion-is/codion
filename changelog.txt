@@ -3890,3 +3890,4 @@
   Some refactoring due to the above
   Util.getVersionString() bug fixed, cut patch number from version
   EntityConnectionServer constructor error handling improved
+  RemoteServer renamed to Server

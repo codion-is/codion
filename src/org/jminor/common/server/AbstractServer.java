@@ -5,7 +5,6 @@ package org.jminor.common.server;
 
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Version;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -23,12 +22,12 @@ import java.util.Map;
 import java.util.UUID;
 
 /**
- * A default RemoteServer implementation.
+ * A default Server implementation.
  * @param <T> the type of remote interface served by this server
  */
-public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemoteObject implements RemoteServer<T> {
+public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObject implements Server<T> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(AbstractRemoteServer.class);
+  private static final Logger LOG = LoggerFactory.getLogger(AbstractServer.class);
 
   private final Map<UUID, ClientConnectionInfo<T>> connections = Collections.synchronizedMap(new HashMap<UUID, ClientConnectionInfo<T>>());
   private final Map<String, LoginProxy> loginProxies = Collections.synchronizedMap(new HashMap<String, LoginProxy>());
@@ -52,25 +51,25 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   private volatile boolean shuttingDown = false;
 
   /**
-   * Instantiates a new AbstractRemoteServer
+   * Instantiates a new AbstractServer
    * @param serverPort the port on which the server should be exported
    * @param serverName the name used when exporting this server
    * @throws RemoteException in case of an exception
    */
-  public AbstractRemoteServer(final int serverPort, final String serverName) throws RemoteException {
+  public AbstractServer(final int serverPort, final String serverName) throws RemoteException {
     this(serverPort, serverName, RMISocketFactory.getSocketFactory(), RMISocketFactory.getSocketFactory());
   }
 
   /**
-   * Instantiates a new AbstractRemoteServer
+   * Instantiates a new AbstractServer
    * @param serverPort the port on which the server should be exported
    * @param serverName the name used when exporting this server
    * @param clientSocketFactory the client socket factory to use
    * @param serverSocketFactory the server socket factory to use
    * @throws RemoteException in case of an exception
    */
-  public AbstractRemoteServer(final int serverPort, final String serverName, final RMIClientSocketFactory clientSocketFactory,
-                              final RMIServerSocketFactory serverSocketFactory) throws RemoteException {
+  public AbstractServer(final int serverPort, final String serverName, final RMIClientSocketFactory clientSocketFactory,
+                        final RMIServerSocketFactory serverSocketFactory) throws RemoteException {
     super(serverPort, clientSocketFactory, serverSocketFactory);
     this.serverInfo = new DefaultServerInfo(UUID.randomUUID(), serverName, serverPort, System.currentTimeMillis());
   }

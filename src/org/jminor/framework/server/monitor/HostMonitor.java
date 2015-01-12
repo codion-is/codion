@@ -7,10 +7,9 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
-import org.jminor.common.server.RemoteServer;
+import org.jminor.common.server.Server;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -52,7 +51,7 @@ public final class HostMonitor {
   }
 
   public void refresh() throws RemoteException {
-    for (final RemoteServer.ServerInfo serverInfo : getRemoteEntityServers(hostName, registryPort)) {
+    for (final Server.ServerInfo serverInfo : getEntityServers(hostName, registryPort)) {
       if (!containsServerMonitor(serverInfo.getServerID())) {
         final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInfo, registryPort);
         serverMonitor.getServerShutDownObserver().addListener(new EventListener() {
@@ -94,8 +93,8 @@ public final class HostMonitor {
     return false;
   }
 
-  private static List<RemoteServer.ServerInfo> getRemoteEntityServers(final String serverHostName, final int registryPort) {
-    final List<RemoteServer.ServerInfo> servers = new ArrayList<>();
+  private static List<Server.ServerInfo> getEntityServers(final String serverHostName, final int registryPort) {
+    final List<Server.ServerInfo> servers = new ArrayList<>();
     try {
       LOG.debug("HostMonitor locating registry on host: {}, port: {}: ", serverHostName, registryPort);
       final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);

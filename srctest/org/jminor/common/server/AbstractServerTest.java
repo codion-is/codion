@@ -4,7 +4,6 @@
 package org.jminor.common.server;
 
 import org.jminor.common.model.User;
-
 import org.junit.Test;
 
 import java.rmi.Remote;
@@ -15,11 +14,11 @@ import java.util.UUID;
 
 import static org.junit.Assert.*;
 
-public class AbstractRemoteServerTest {
+public class AbstractServerTest {
 
   @Test
   public void testConnectionCount() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
-    final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
+    final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
     final ConnectionInfo connectionInfo2 = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
@@ -44,7 +43,7 @@ public class AbstractRemoteServerTest {
 
   @Test(expected = ServerException.ServerFullException.class)
   public void testConnectionLimitReached() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
-    final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
+    final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ConnectionInfo clientInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
     final ConnectionInfo clientInfo2 = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
@@ -55,15 +54,15 @@ public class AbstractRemoteServerTest {
 
   @Test
   public void testConnect() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
-    final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
+    final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
-    final RemoteServerTest connection = server.connect(connectionInfo);
+    final ServerTest connection = server.connect(connectionInfo);
     assertNotNull(connection);
-    final RemoteServerTest connection2 = server.connect(connectionInfo);
+    final ServerTest connection2 = server.connect(connectionInfo);
     assertTrue(connection == connection2);
     server.disconnect(connectionInfo.getClientID());
-    final RemoteServerTest connection3 = server.connect(connectionInfo);
+    final ServerTest connection3 = server.connect(connectionInfo);
     assertFalse(connection == connection3);
     assertNotNull(server.getServerInfo());
     try {
@@ -75,11 +74,11 @@ public class AbstractRemoteServerTest {
 
   @Test
   public void testLoginProxy() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
-    final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
+    final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
     final ClientInfo proxyClientInfo = ServerUtil.clientInfo(ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID));
-    RemoteServerTest connection = server.connect(connectionInfo);
+    ServerTest connection = server.connect(connectionInfo);
     assertNotNull(connection);
     assertEquals(connectionInfo.getClientID(), connection.getClientInfo().getClientID());
     final Collection<Object> closeIndicator = new ArrayList<>();
@@ -120,7 +119,7 @@ public class AbstractRemoteServerTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void setLoginProxyAgain() throws RemoteException {
-    final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
+    final TestServer server = new TestServer(1234, "remoteServerTestServer");
     try {
       final LoginProxy proxy = new LoginProxy() {
         @Override
@@ -144,11 +143,11 @@ public class AbstractRemoteServerTest {
     }
   }
 
-  private static class RemoteServerTestImpl implements RemoteServerTest {
+  private static class ServerTestImpl implements ServerTest {
 
     private final ClientInfo clientInfo;
 
-    public RemoteServerTestImpl(final ClientInfo clientInfo) {
+    public ServerTestImpl(final ClientInfo clientInfo) {
       this.clientInfo = clientInfo;
     }
 
@@ -158,23 +157,23 @@ public class AbstractRemoteServerTest {
     }
   }
 
-  private interface RemoteServerTest extends Remote {
+  private interface ServerTest extends Remote {
     public ClientInfo getClientInfo() throws RemoteException;
   }
 
-  private static final class RemoteServerTestServer extends AbstractRemoteServer<RemoteServerTest> {
+  private static final class TestServer extends AbstractServer<ServerTest> {
 
-    private RemoteServerTestServer(final int serverPort, final String serverName) throws RemoteException {
+    private TestServer(final int serverPort, final String serverName) throws RemoteException {
       super(serverPort, serverName);
     }
 
     @Override
-    protected RemoteServerTest doConnect(final ClientInfo clientInfo) {
-      return new RemoteServerTestImpl(clientInfo);
+    protected ServerTest doConnect(final ClientInfo clientInfo) {
+      return new ServerTestImpl(clientInfo);
     }
 
     @Override
-    protected void doDisconnect(final RemoteServerTest connection) {}
+    protected void doDisconnect(final ServerTest connection) {}
 
     @Override
     public int getServerLoad() {
