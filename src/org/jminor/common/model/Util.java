@@ -583,7 +583,7 @@ public final class Util {
   public static String getVersionString() {
     final String versionString = getVersionAndBuildNumberString();
     if (versionString.toLowerCase().contains("-")) {
-      return versionString.substring(0, versionString.toLowerCase().indexOf("-") - 1);
+      return versionString.substring(0, versionString.toLowerCase().indexOf("-"));
     }
 
     return "N/A";

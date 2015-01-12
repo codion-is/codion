@@ -79,16 +79,15 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
    * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
    * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeID
    * @throws RemoteException in case of a remote exception
-   * @throws ClassNotFoundException in case the domain model classes are not found on the classpath or
-   * if the jdbc driver class is not found
-   * @throws DatabaseException in case of an exception while constructing the initial pooled connections
+   * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
+   * jdbc driver class is not found or in case of an exception while constructing the initial pooled connections
    */
   public EntityConnectionServer(final String serverName, final int serverPort, final int registryPort, final Database database,
                                 final boolean sslEnabled, final int connectionLimit, final Collection<String> domainModelClassNames,
                                 final Collection<String> loginProxyClassNames, final Collection<User> initialPoolUsers,
                                 final String webDocumentRoot, final int webServerPort, final boolean clientLoggingEnabled,
                                 final int connectionTimeout, final Map<String, Integer> clientSpecificConnectionTimeouts)
-          throws RemoteException, ClassNotFoundException, DatabaseException {
+          throws RemoteException {
     super(serverPort, serverName,
             sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             sslEnabled ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
@@ -107,8 +106,8 @@ public final class EntityConnectionServer extends AbstractRemoteServer<RemoteEnt
       setConnectionLimit(connectionLimit);
       webServer = startWebServer(webDocumentRoot, webServerPort);
     }
-    catch (final Error e) {
-      throw logShutdownAndReturn(e, this);
+    catch (final Exception e) {
+      throw logShutdownAndReturn(new RuntimeException(e), this);
     }
   }
 

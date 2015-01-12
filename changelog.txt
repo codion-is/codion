@@ -3888,3 +3888,5 @@
   ClientInfo is now an interface, implemented in ServerUtil.DefaultClientInfo
   RemoteServer.connect() now takes a ConnectionInfo as parameter
   Some refactoring due to the above
+  Util.getVersionString() bug fixed, cut patch number from version
+  EntityConnectionServer constructor error handling improved
