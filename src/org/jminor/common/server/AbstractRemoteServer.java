@@ -3,7 +3,6 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Version;
 
@@ -31,7 +30,7 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractRemoteServer.class);
 
-  private final Map<UUID, ConnectionInfo<T>> connections = Collections.synchronizedMap(new HashMap<UUID, ConnectionInfo<T>>());
+  private final Map<UUID, ClientConnectionInfo<T>> connections = Collections.synchronizedMap(new HashMap<UUID, ClientConnectionInfo<T>>());
   private final Map<String, LoginProxy> loginProxies = Collections.synchronizedMap(new HashMap<String, LoginProxy>());
   private final LoginProxy defaultLoginProxy = new LoginProxy() {
     @Override
@@ -82,8 +81,8 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   public final Map<ClientInfo, T> getConnections() {
     synchronized (connections) {
       final Map<ClientInfo, T> clients = new HashMap<>(connections.size());
-      for (final ConnectionInfo<T> connectionInfo : connections.values()) {
-        clients.put(connectionInfo.getClientInfo(), connectionInfo.getConnection());
+      for (final ClientConnectionInfo<T> clientConnectionInfo : connections.values()) {
+        clients.put(clientConnectionInfo.getClientInfo(), clientConnectionInfo.getConnection());
       }
 
       return clients;
@@ -91,22 +90,22 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
   }
 
   /**
-   * @param client the client info
+   * @param clientID the client id
    * @return true if such a client is connected
    */
-  public final boolean containsConnection(final ClientInfo client) {
+  public final boolean containsConnection(final UUID clientID) {
     synchronized (connections) {
-      return connections.containsKey(client.getClientID());
+      return connections.containsKey(clientID);
     }
   }
 
   /**
-   * @param client the client info
+   * @param clientID the client id
    * @return the connection associated with the given client, null if none exists
    */
-  public final T getConnection(final ClientInfo client) {
+  public final T getConnection(final UUID clientID) {
     synchronized (connections) {
-      return connections.get(client.getClientID()).getConnection();
+      return connections.get(clientID).getConnection();
     }
   }
 
@@ -149,13 +148,32 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
 
   /** {@inheritDoc} */
   @Override
-  public final T connect(final User user, final UUID clientID, final String clientTypeID) throws RemoteException,
-          ServerException.ServerFullException, ServerException.LoginException {
-    if (!Util.notNull(user, clientID, clientTypeID)) {
-      throw new IllegalArgumentException("User, clientID and clientTypeID must be specified");
-    }
+  public final T connect(final ConnectionInfo connectionInfo) throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
+    Util.rejectNullValue(connectionInfo, "connectionInfo");
 
-    return connect(new ClientInfo(clientID, clientTypeID, user));
+    if (shuttingDown) {
+      throw ServerException.loginException("Server is shutting down");
+    }
+    final LoginProxy loginProxy = getLoginProxy(connectionInfo.getClientTypeID());
+    LOG.debug("Connecting client {}, loginProxy {}", connectionInfo, loginProxy);
+    synchronized (connections) {
+      ClientConnectionInfo<T> clientConnectionInfo = connections.get(connectionInfo.getClientID());
+      if (clientConnectionInfo != null) {
+        LOG.debug("Active connection exists {}", connectionInfo);
+        return clientConnectionInfo.getConnection();
+      }
+
+      if (maximumNumberOfConnectionReached()) {
+        throw ServerException.serverFullException();
+      }
+
+      LOG.debug("No active connection found for client {}, establishing a new connection", connectionInfo);
+      final ClientInfo clientInfo = ServerUtil.clientInfo(connectionInfo);
+      clientConnectionInfo = new ClientConnectionInfo<>(clientInfo, doConnect(loginProxy.doLogin(clientInfo)));
+      connections.put(clientInfo.getClientID(), clientConnectionInfo);
+
+      return clientConnectionInfo.getConnection();
+    }
   }
 
   /** {@inheritDoc} */
@@ -165,14 +183,14 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
       return;
     }
 
-    final ConnectionInfo<T> connectionInfo;
+    final ClientConnectionInfo<T> clientConnectionInfo;
     synchronized (connections) {
-      connectionInfo = connections.remove(clientID);
+      clientConnectionInfo = connections.remove(clientID);
     }
-    if (connectionInfo != null) {
-      doDisconnect(connectionInfo.getConnection());
-      final ClientInfo clientInfo = connectionInfo.getClientInfo();
-      getLoginProxy(clientInfo).doLogout(clientInfo);
+    if (clientConnectionInfo != null) {
+      doDisconnect(clientConnectionInfo.getConnection());
+      final ClientInfo clientInfo = clientConnectionInfo.getClientInfo();
+      getLoginProxy(clientInfo.getClientTypeID()).doLogout(clientInfo);
       LOG.debug("Client disconnected {}", clientInfo);
     }
   }
@@ -235,11 +253,11 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
 
   /**
    * Establishes the actual client connection.
-   * @param clientInfo the client info
+   * @param connectionInfo the client connection info
    * @return a connection servicing the given client
    * @throws RemoteException in case of an exception
    */
-  protected abstract T doConnect(final ClientInfo clientInfo)
+  protected abstract T doConnect(final ClientInfo connectionInfo)
           throws RemoteException, ServerException.LoginException, ServerException.ServerFullException;
 
   /**
@@ -249,40 +267,13 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
    */
   protected abstract void doDisconnect(final T connection) throws RemoteException;
 
-  //todo review synchronization
-  private T connect(final ClientInfo clientInfo) throws RemoteException,
-          ServerException.ServerFullException, ServerException.LoginException {
-    if (shuttingDown) {
-      throw ServerException.loginException("Server is shutting down");
-    }
-    final LoginProxy loginProxy = getLoginProxy(clientInfo);
-    LOG.debug("Connecting client {}, loginProxy {}", clientInfo, loginProxy);
-    synchronized (connections) {
-      ConnectionInfo<T> connectionInfo = connections.get(clientInfo.getClientID());
-      if (connectionInfo != null) {
-        LOG.debug("Active connection exists {}", clientInfo);
-        return connectionInfo.getConnection();
-      }
-
-      if (maximumNumberOfConnectionReached()) {
-        throw ServerException.serverFullException();
-      }
-
-      LOG.debug("No active connection found for client {}, establishing a new connection", clientInfo);
-      connectionInfo = new ConnectionInfo<>(clientInfo, doConnect(loginProxy.doLogin(clientInfo)));
-      connections.put(clientInfo.getClientID(), connectionInfo);
-
-      return connectionInfo.getConnection();
-    }
-  }
-
   private boolean maximumNumberOfConnectionReached() {
     return connectionLimit > -1 && getConnectionCount() >= connectionLimit;
   }
 
-  private LoginProxy getLoginProxy(final ClientInfo clientInfo) {
+  private LoginProxy getLoginProxy(final String clientTypeID) {
     synchronized (loginProxies) {
-      final LoginProxy loginProxy = loginProxies.get(clientInfo.getClientTypeID());
+      final LoginProxy loginProxy = loginProxies.get(clientTypeID);
       if (loginProxy == null) {
         return defaultLoginProxy;
       }
@@ -291,11 +282,11 @@ public abstract class AbstractRemoteServer<T extends Remote> extends UnicastRemo
     }
   }
 
-  private static final class ConnectionInfo<T> {
+  private static final class ClientConnectionInfo<T> {
     private final T connection;
     private final ClientInfo clientInfo;
 
-    private ConnectionInfo(final ClientInfo clientInfo, final T connection) {
+    private ClientConnectionInfo(final ClientInfo clientInfo, final T connection) {
       this.clientInfo = clientInfo;
       this.connection = connection;
     }

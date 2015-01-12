@@ -8,8 +8,11 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
+import org.jminor.common.server.ClientUtil;
+import org.jminor.common.server.ConnectionInfo;
 import org.jminor.common.server.LoginProxy;
 import org.jminor.common.server.ServerException;
+import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -192,7 +195,7 @@ public class EntityConnectionServerTest {
       }
       @Override
       public ClientInfo doLogin(final ClientInfo clientInfo) {
-        return new ClientInfo(clientInfo.getClientID(), clientInfo.getClientTypeID(), clientInfo.getUser(), User.UNIT_TEST_USER);
+        return ServerUtil.clientInfo(clientInfo.getConnectionInfo(), User.UNIT_TEST_USER);
       }
       @Override
       public void doLogout(final ClientInfo clientInfo) {}
@@ -203,12 +206,12 @@ public class EntityConnectionServerTest {
     server.setLoginProxy(clientTypeID, proxy);
 
     final User userOne = new User("foo", "bar");
-    final ClientInfo clientOne = new ClientInfo(UUID.randomUUID(), clientTypeID, userOne);
+    final ConnectionInfo clientOne = ClientUtil.connectInfo(userOne, UUID.randomUUID(), clientTypeID);
 
     final User userTwo = new User("bar", "foo");
-    final ClientInfo clientTwo = new ClientInfo(UUID.randomUUID(), clientTypeID, userTwo);
+    final ConnectionInfo clientTwo = ClientUtil.connectInfo(userTwo, UUID.randomUUID(), clientTypeID);
 
-    final RemoteEntityConnection connectionOne = server.connect(clientOne.getUser(), clientOne.getClientID(), clientOne.getClientTypeID());
+    final RemoteEntityConnection connectionOne = server.connect(clientOne);
     assertEquals(userOne, connectionOne.getUser());
 
     Collection<ClientInfo> clients = server.getClients(clientTypeID);
@@ -217,7 +220,7 @@ public class EntityConnectionServerTest {
     assertEquals(userOne, clientOneFromServer.getUser());
     assertEquals(User.UNIT_TEST_USER, clientOneFromServer.getDatabaseUser());
 
-    final RemoteEntityConnection connectionTwo = server.connect(clientTwo.getUser(), clientTwo.getClientID(), clientTwo.getClientTypeID());
+    final RemoteEntityConnection connectionTwo = server.connect(clientTwo);
     assertEquals(userTwo, connectionTwo.getUser());
 
     clients = server.getClients(clientTypeID);
@@ -225,7 +228,7 @@ public class EntityConnectionServerTest {
 
     boolean found = false;
     for (final ClientInfo clientInfo : server.getClients(clientTypeID)) {
-      if (clientInfo.equals(clientTwo)) {
+      if (clientInfo.getClientID().equals(clientTwo.getClientID())) {
         found = true;
         assertEquals(User.UNIT_TEST_USER, clientInfo.getDatabaseUser());
       }

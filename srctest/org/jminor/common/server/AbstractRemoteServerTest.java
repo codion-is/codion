@@ -21,24 +21,24 @@ public class AbstractRemoteServerTest {
   public void testConnectionCount() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
     final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
-    final ClientInfo clientInfo = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
-    final ClientInfo clientInfo2 = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
-    final ClientInfo clientInfo3 = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
-    server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
+    final ConnectionInfo connectionInfo = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    final ConnectionInfo connectionInfo2 = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    final ConnectionInfo connectionInfo3 = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    server.connect(connectionInfo);
     assertEquals(1, server.getConnectionCount());
-    server.connect(clientInfo2.getUser(), clientInfo2.getClientID(), clientInfo2.getClientTypeID());
+    server.connect(connectionInfo2);
     assertEquals(2, server.getConnectionCount());
-    server.disconnect(clientInfo.getClientID());
+    server.disconnect(connectionInfo.getClientID());
     assertEquals(1, server.getConnectionCount());
-    server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
+    server.connect(connectionInfo);
     assertEquals(2, server.getConnectionCount());
-    server.connect(clientInfo3.getUser(), clientInfo3.getClientID(), clientInfo3.getClientTypeID());
+    server.connect(connectionInfo3);
     assertEquals(3, server.getConnectionCount());
-    server.disconnect(clientInfo3.getClientID());
+    server.disconnect(connectionInfo3.getClientID());
     assertEquals(2, server.getConnectionCount());
-    server.disconnect(clientInfo2.getClientID());
+    server.disconnect(connectionInfo2.getClientID());
     assertEquals(1, server.getConnectionCount());
-    server.disconnect(clientInfo.getClientID());
+    server.disconnect(connectionInfo.getClientID());
     assertEquals(0, server.getConnectionCount());
   }
 
@@ -46,28 +46,28 @@ public class AbstractRemoteServerTest {
   public void testConnectionLimitReached() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
     final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
-    final ClientInfo clientInfo = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
-    final ClientInfo clientInfo2 = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
+    final ConnectionInfo clientInfo = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    final ConnectionInfo clientInfo2 = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
     server.setConnectionLimit(1);
-    server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
-    server.connect(clientInfo2.getUser(), clientInfo2.getClientID(), clientInfo2.getClientTypeID());
+    server.connect(clientInfo);
+    server.connect(clientInfo2);
   }
 
   @Test
   public void testConnect() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
     final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
-    final ClientInfo clientInfo = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
-    final RemoteServerTest connection = server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
+    final ConnectionInfo connectionInfo = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    final RemoteServerTest connection = server.connect(connectionInfo);
     assertNotNull(connection);
-    final RemoteServerTest connection2 = server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
+    final RemoteServerTest connection2 = server.connect(connectionInfo);
     assertTrue(connection == connection2);
-    server.disconnect(clientInfo.getClientID());
-    final RemoteServerTest connection3 = server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
+    server.disconnect(connectionInfo.getClientID());
+    final RemoteServerTest connection3 = server.connect(connectionInfo);
     assertFalse(connection == connection3);
     assertNotNull(server.getServerInfo());
     try {
-      server.connect(null, null, null);
+      server.connect(null);
       fail("Should not be able to connect with null parameters");
     }
     catch (final IllegalArgumentException ignored) {}
@@ -77,11 +77,11 @@ public class AbstractRemoteServerTest {
   public void testLoginProxy() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
     final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
-    final ClientInfo clientInfo = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
-    final ClientInfo proxyClientInfo = new ClientInfo(UUID.randomUUID(), clientTypeID, User.UNIT_TEST_USER);
-    RemoteServerTest connection = server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
+    final ConnectionInfo connectionInfo = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    final ClientInfo proxyClientInfo = ServerUtil.clientInfo(ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID));
+    RemoteServerTest connection = server.connect(connectionInfo);
     assertNotNull(connection);
-    assertEquals(clientInfo, connection.getClientInfo());
+    assertEquals(connectionInfo.getClientID(), connection.getClientInfo().getClientID());
     final Collection<Object> closeIndicator = new ArrayList<>();
     final LoginProxy loginProxy = new LoginProxy() {
       @Override
@@ -100,18 +100,18 @@ public class AbstractRemoteServerTest {
       }
     };
     server.setLoginProxy(clientTypeID, loginProxy);
-    server.disconnect(clientInfo.getClientID());
+    server.disconnect(connectionInfo.getClientID());
 
-    connection = server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
+    connection = server.connect(connectionInfo);
     assertNotNull(connection);
     assertEquals(proxyClientInfo, connection.getClientInfo());
 
-    server.disconnect(clientInfo.getClientID());
+    server.disconnect(connectionInfo.getClientID());
 
-    server.setLoginProxy(clientInfo.getClientTypeID(), null);
-    connection = server.connect(clientInfo.getUser(), clientInfo.getClientID(), clientInfo.getClientTypeID());
+    server.setLoginProxy(connectionInfo.getClientTypeID(), null);
+    connection = server.connect(connectionInfo);
     assertNotNull(connection);
-    assertEquals(clientInfo, connection.getClientInfo());
+    assertEquals(connectionInfo.getClientID(), connection.getClientInfo().getClientID());
 
     server.setLoginProxy(clientTypeID, loginProxy);
     server.shutdown();

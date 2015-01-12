@@ -6,7 +6,6 @@ package org.jminor.framework.server.monitor;
 import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.server.EntityConnectionServerTest;
 import org.jminor.framework.server.provider.RemoteEntityConnectionProvider;
 
@@ -36,7 +35,7 @@ public class EntityServerMonitorTest {
     final UUID clientId = UUID.randomUUID();
     final String clientTypeId = EntityServerMonitorTest.class.getName();
     final RemoteEntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider(user, clientId, clientTypeId);
-    final EntityConnection connection = connectionProvider.getConnection();
+    connectionProvider.getConnection();
     final EntityServerMonitor model = new EntityServerMonitor("localhost", Configuration.getIntValue(Configuration.REGISTRY_PORT));
     model.refresh();
     final HostMonitor hostMonitor = model.getHostMonitors().iterator().next();

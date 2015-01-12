@@ -24,7 +24,10 @@ import javax.swing.table.DefaultTableCellRenderer;
 import javax.swing.table.TableColumn;
 import java.rmi.RemoteException;
 import java.text.Format;
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
+import java.util.Comparator;
 import java.util.Date;
 import java.util.List;
 import java.util.UUID;
@@ -44,6 +47,12 @@ public final class ClientUserMonitor {
   private static final int CLIENT_HOST_COLUMN = 2;
   private static final int LAST_SEEN_COLUMN = 3;
   private static final int CONNECTION_COUNT_COLUMN = 4;
+  private static final Comparator<User> USER_COMPARATOR = new Comparator<User>() {
+    @Override
+    public int compare(final User u1, final User u2) {
+      return u1.getUsername().compareToIgnoreCase(u2.getUsername());
+    }
+  };
 
   private final EntityConnectionServerAdmin server;
   private final Event<Integer> connectionTimeoutChangedEvent = Events.event();
@@ -86,11 +95,11 @@ public final class ClientUserMonitor {
 
   public void refresh() throws RemoteException {
     clientTypeListModel.clear();
-    for (final String clientType : server.getClientTypes()) {
+    for (final String clientType : getSortedClientTypes()) {
       clientTypeListModel.addElement(new ClientMonitor(server, clientType, null));
     }
     userListModel.clear();
-    for (final User user : server.getUsers()) {
+    for (final User user : getSortedUsers()) {
       userListModel.addElement(new ClientMonitor(server, null, user));
     }
   }
@@ -128,6 +137,20 @@ public final class ClientUserMonitor {
 
   public EventObserver<Integer> getConnectionTimeoutObserver() {
     return connectionTimeoutChangedEvent.getObserver();
+  }
+
+  private List<String> getSortedClientTypes() throws RemoteException {
+    final List<String> users = new ArrayList<>(server.getClientTypes());
+    Collections.sort(users);
+
+    return users;
+  }
+
+  private List<User> getSortedUsers() throws RemoteException {
+    final List<User> users = new ArrayList<>(server.getUsers());
+    Collections.sort(users, USER_COMPARATOR);
+
+    return users;
   }
 
   public TaskScheduler getUpdateScheduler() {

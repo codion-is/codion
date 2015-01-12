@@ -10,6 +10,7 @@ import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.ServerException;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
@@ -201,7 +202,7 @@ public final class EntityRESTService extends Application {
     final byte[] decodedBytes = DatatypeConverter.parseBase64Binary(auth);
     final String[] credentials = new String(decodedBytes).split(":", 2);
     try {
-      return server.connect(new User(credentials[0], credentials[1]), clientId, EntityRESTService.class.getName());
+      return server.connect(ClientUtil.connectInfo(new User(credentials[0], credentials[1]), clientId, EntityRESTService.class.getName()));
     }
     catch (final ServerException.LoginException e) {
       if (e.getCause() instanceof DatabaseException) {

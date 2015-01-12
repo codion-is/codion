@@ -6,6 +6,7 @@ package org.jminor.framework.server.provider;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.RemoteServer;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
@@ -36,6 +37,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   private final String clientTypeID;
   private RemoteServer server;
   private RemoteServer.ServerInfo serverInfo;
+  //todo client version
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
@@ -95,7 +97,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      final RemoteEntityConnection remote = (RemoteEntityConnection) getRemoteEntityServer().connect(getUser(), clientID, clientTypeID);
+      final RemoteEntityConnection remote = (RemoteEntityConnection) getRemoteEntityServer().connect(
+              ClientUtil.connectInfo(getUser(), clientID, clientTypeID));
 
       return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(remote));
     }

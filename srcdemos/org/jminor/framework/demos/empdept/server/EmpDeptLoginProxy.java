@@ -7,6 +7,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.LoginProxy;
 import org.jminor.common.server.ServerException;
+import org.jminor.common.server.ServerUtil;
 
 import java.util.HashMap;
 import java.util.Map;
@@ -31,7 +32,7 @@ public final class EmpDeptLoginProxy implements LoginProxy {
   public ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException {
     authenticateUser(clientInfo.getUser());
 
-    return new ClientInfo(clientInfo.getClientID(), clientInfo.getClientTypeID(), clientInfo.getUser(), databaseUser);
+    return ServerUtil.clientInfo(clientInfo.getConnectionInfo(), databaseUser);
   }
 
   @Override

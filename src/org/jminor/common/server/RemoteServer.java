@@ -3,7 +3,6 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.model.User;
 import org.jminor.common.model.Version;
 
 import java.rmi.Remote;
@@ -19,15 +18,13 @@ public interface RemoteServer<T extends Remote> extends Remote {
 
   /**
    * Establishes a connection to this RemoteServer
-   * @param user the user
-   * @param clientID a UUID identifying the client
-   * @param clientTypeID a String identifying the client
+   * @param connectionInfo the information required for establishing a connection
    * @return a remote connection instance
    * @throws RemoteException in case of a RemoteException
    * @throws ServerException.ServerFullException in case the server isn't accepting more connections
    * @throws ServerException.LoginException in case the login fails
    */
-  T connect(final User user, final UUID clientID, final String clientTypeID) throws RemoteException,
+  T connect(final ConnectionInfo connectionInfo) throws RemoteException,
           ServerException.ServerFullException, ServerException.LoginException;
 
   /**

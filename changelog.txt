@@ -3883,3 +3883,8 @@
   ColumnSearchPanel and PropertySearchPanel refactored to reduce cyclomatic complexity
   ValueLinks, removed superfluous generics
   EntityLookupField.initializeUI(), bug fixed, now handles the case when no search properties are defined for the underlying entity
+  ClientUserMonitor, ClientMonitor, user and client type lists sorted
+  ConnectionInfo and ClientUtil added
+  ClientInfo is now an interface, implemented in ServerUtil.DefaultClientInfo
+  RemoteServer.connect() now takes a ConnectionInfo as parameter
+  Some refactoring due to the above

@@ -3,6 +3,9 @@
  */
 package org.jminor.common.server;
 
+import org.jminor.common.model.User;
+import org.jminor.common.model.Version;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -15,6 +18,7 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
+import java.util.UUID;
 
 /**
  * A utility class for working with RemoteServer instances.
@@ -24,6 +28,23 @@ public final class ServerUtil {
   private static final Logger LOG = LoggerFactory.getLogger(ServerUtil.class);
 
   private ServerUtil() {}
+
+  /**
+   * Instantiates a new ClientInfo
+   * @param connectionInfo the connection info
+   */
+  public static ClientInfo clientInfo(final ConnectionInfo connectionInfo) {
+    return clientInfo(connectionInfo, connectionInfo.getUser());
+  }
+
+  /**
+   * Instantiates a new ClientInfo
+   * @param connectionInfo the connection info
+   * @param databaseUser the user to use when connecting to the underlying database
+   */
+  public static ClientInfo clientInfo(final ConnectionInfo connectionInfo, final User databaseUser) {
+    return new DefaultClientInfo(connectionInfo, databaseUser);
+  }
 
   /**
    * Initializes a Registry if one is not running
@@ -128,6 +149,92 @@ public final class ServerUtil {
       catch (final RemoteException e) {
         return 1;
       }
+    }
+  }
+
+  private static final class DefaultClientInfo implements ClientInfo, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    private final ConnectionInfo connectionInfo;
+    private final User databaseUser;
+    private String clientHost = "unknown";
+
+    /**
+     * Instantiates a new ClientInfo
+     * @param connectionInfo the connection info
+     * @param databaseUser the user to use when connecting to the underlying database
+     */
+    private DefaultClientInfo(final ConnectionInfo connectionInfo, final User databaseUser) {
+      this.connectionInfo = connectionInfo;
+      this.databaseUser = databaseUser;
+    }
+
+    @Override
+    public ConnectionInfo getConnectionInfo() {
+      return connectionInfo;
+    }
+
+    @Override
+    public User getUser() {
+      return connectionInfo.getUser();
+    }
+
+    @Override
+    public User getDatabaseUser() {
+      return databaseUser;
+    }
+
+    @Override
+    public UUID getClientID() {
+      return connectionInfo.getClientID();
+    }
+
+    @Override
+    public String getClientTypeID() {
+      return connectionInfo.getClientTypeID();
+    }
+
+    @Override
+    public Version getClientVersion() {
+      return connectionInfo.getClientVersion();
+    }
+
+    @Override
+    public Version getFrameworkVersion() {
+      return connectionInfo.getFrameworkVersion();
+    }
+
+    @Override
+    public String getClientHost() {
+      return clientHost;
+    }
+
+    @Override
+    public void setClientHost(final String clientHost) {
+      this.clientHost = clientHost;
+    }
+
+    @Override
+    public int hashCode() {
+      return connectionInfo.hashCode();
+    }
+
+    @Override
+    public boolean equals(final Object obj) {
+      return this == obj || obj instanceof ClientInfo && connectionInfo.equals(((ClientInfo) obj).getConnectionInfo());
+    }
+
+    @Override
+    public String toString() {
+      final StringBuilder builder = new StringBuilder(connectionInfo.getUser().toString());
+      if (databaseUser != null && !connectionInfo.getUser().equals(databaseUser)) {
+        builder.append(" (databaseUser: ").append(databaseUser.toString()).append(")");
+      }
+      builder.append("@").append(clientHost).append(" [").append(connectionInfo.getClientTypeID())
+              .append("] - ").append(connectionInfo.getClientID().toString());
+
+      return builder.toString();
     }
   }
 }

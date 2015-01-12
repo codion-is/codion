@@ -9,6 +9,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.demos.chinook.domain.Chinook;
@@ -43,13 +44,13 @@ public class DefaultRemoteEntityConnectionTest {
 
   @Test(expected = DatabaseException.class)
   public void wrongUsername() throws Exception {
-    final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", new User("foo", "bar"));
+    final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectInfo(new User("foo", "bar"), UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
     new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
   }
 
   @Test(expected = DatabaseException.class)
   public void wrongPassword() throws Exception {
-    final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", new User(User.UNIT_TEST_USER.getUsername(), "xxxxx"));
+    final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectInfo(new User(User.UNIT_TEST_USER.getUsername(), "xxxxx"), UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
     new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
   }
 
@@ -57,7 +58,7 @@ public class DefaultRemoteEntityConnectionTest {
   public void setMethodLogger() throws DatabaseException, RemoteException {
     DefaultRemoteEntityConnection connection = null;
     try {
-      final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", User.UNIT_TEST_USER);
+      final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
       connection = new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
       connection.setMethodLogger(new MethodLogger(10));
     }
@@ -75,7 +76,7 @@ public class DefaultRemoteEntityConnectionTest {
   public void getDatabaseConnection() throws DatabaseException, RemoteException {
     DefaultRemoteEntityConnection connection = null;
     try {
-      final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", User.UNIT_TEST_USER);
+      final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
       connection = new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
       connection.getDatabaseConnection();
     }
@@ -96,7 +97,7 @@ public class DefaultRemoteEntityConnectionTest {
     final String serviceName = "DefaultRemoteEntityConnectionTest";
     try {
       Chinook.init();
-      final ClientInfo info = new ClientInfo(UUID.randomUUID(), "RemoteEntityConnectionImplTestClient", User.UNIT_TEST_USER);
+      final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
       adapter = new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
 
       ServerUtil.initializeRegistry(Registry.REGISTRY_PORT);
