@@ -44,13 +44,13 @@ public class DefaultRemoteEntityConnectionTest {
 
   @Test(expected = DatabaseException.class)
   public void wrongUsername() throws Exception {
-    final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectInfo(new User("foo", "bar"), UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
+    final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(new User("foo", "bar"), UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
     new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
   }
 
   @Test(expected = DatabaseException.class)
   public void wrongPassword() throws Exception {
-    final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectInfo(new User(User.UNIT_TEST_USER.getUsername(), "xxxxx"), UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
+    final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(new User(User.UNIT_TEST_USER.getUsername(), "xxxxx"), UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
     new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
   }
 
@@ -58,7 +58,7 @@ public class DefaultRemoteEntityConnectionTest {
   public void setMethodLogger() throws DatabaseException, RemoteException {
     DefaultRemoteEntityConnection connection = null;
     try {
-      final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
+      final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
       connection = new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
       connection.setMethodLogger(new MethodLogger(10));
     }
@@ -76,7 +76,7 @@ public class DefaultRemoteEntityConnectionTest {
   public void getDatabaseConnection() throws DatabaseException, RemoteException {
     DefaultRemoteEntityConnection connection = null;
     try {
-      final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
+      final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
       connection = new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
       connection.getDatabaseConnection();
     }
@@ -97,7 +97,7 @@ public class DefaultRemoteEntityConnectionTest {
     final String serviceName = "DefaultRemoteEntityConnectionTest";
     try {
       Chinook.init();
-      final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
+      final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "RemoteEntityConnectionImplTestClient"));
       adapter = new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
 
       ServerUtil.initializeRegistry(Registry.REGISTRY_PORT);

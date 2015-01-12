@@ -206,10 +206,10 @@ public class EntityConnectionServerTest {
     server.setLoginProxy(clientTypeID, proxy);
 
     final User userOne = new User("foo", "bar");
-    final ConnectionInfo clientOne = ClientUtil.connectInfo(userOne, UUID.randomUUID(), clientTypeID);
+    final ConnectionInfo clientOne = ClientUtil.connectionInfo(userOne, UUID.randomUUID(), clientTypeID);
 
     final User userTwo = new User("bar", "foo");
-    final ConnectionInfo clientTwo = ClientUtil.connectInfo(userTwo, UUID.randomUUID(), clientTypeID);
+    final ConnectionInfo clientTwo = ClientUtil.connectionInfo(userTwo, UUID.randomUUID(), clientTypeID);
 
     final RemoteEntityConnection connectionOne = server.connect(clientOne);
     assertEquals(userOne, connectionOne.getUser());

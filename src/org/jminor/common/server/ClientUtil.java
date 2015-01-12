@@ -24,8 +24,8 @@ public final class ClientUtil {
    * @param clientTypeID the client type id
    * @return a ConnectionInfo
    */
-  public static ConnectionInfo connectInfo(final User user, final UUID clientID, final String clientTypeID) {
-    return connectInfo(user, clientID, clientTypeID, null);
+  public static ConnectionInfo connectionInfo(final User user, final UUID clientID, final String clientTypeID) {
+    return connectionInfo(user, clientID, clientTypeID, null);
   }
 
   /**
@@ -36,8 +36,8 @@ public final class ClientUtil {
    * @param clientVersion the client application version
    * @return a ConnectionInfo
    */
-  public static ConnectionInfo connectInfo(final User user, final UUID clientID, final String clientTypeID,
-                                           final Version clientVersion) {
+  public static ConnectionInfo connectionInfo(final User user, final UUID clientID, final String clientTypeID,
+                                              final Version clientVersion) {
     return new DefaultConnectionInfo(user, clientID, clientTypeID, clientVersion, Util.getVersion());
   }
 

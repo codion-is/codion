@@ -21,9 +21,9 @@ public class AbstractRemoteServerTest {
   public void testConnectionCount() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
     final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
-    final ConnectionInfo connectionInfo = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
-    final ConnectionInfo connectionInfo2 = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
-    final ConnectionInfo connectionInfo3 = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    final ConnectionInfo connectionInfo2 = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    final ConnectionInfo connectionInfo3 = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
     server.connect(connectionInfo);
     assertEquals(1, server.getConnectionCount());
     server.connect(connectionInfo2);
@@ -46,8 +46,8 @@ public class AbstractRemoteServerTest {
   public void testConnectionLimitReached() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
     final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
-    final ConnectionInfo clientInfo = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
-    final ConnectionInfo clientInfo2 = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    final ConnectionInfo clientInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    final ConnectionInfo clientInfo2 = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
     server.setConnectionLimit(1);
     server.connect(clientInfo);
     server.connect(clientInfo2);
@@ -57,7 +57,7 @@ public class AbstractRemoteServerTest {
   public void testConnect() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
     final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
-    final ConnectionInfo connectionInfo = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
     final RemoteServerTest connection = server.connect(connectionInfo);
     assertNotNull(connection);
     final RemoteServerTest connection2 = server.connect(connectionInfo);
@@ -77,8 +77,8 @@ public class AbstractRemoteServerTest {
   public void testLoginProxy() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
     final RemoteServerTestServer server = new RemoteServerTestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
-    final ConnectionInfo connectionInfo = ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
-    final ClientInfo proxyClientInfo = ServerUtil.clientInfo(ClientUtil.connectInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID));
+    final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    final ClientInfo proxyClientInfo = ServerUtil.clientInfo(ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID));
     RemoteServerTest connection = server.connect(connectionInfo);
     assertNotNull(connection);
     assertEquals(connectionInfo.getClientID(), connection.getClientInfo().getClientID());

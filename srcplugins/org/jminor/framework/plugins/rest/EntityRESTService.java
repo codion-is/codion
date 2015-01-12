@@ -202,7 +202,7 @@ public final class EntityRESTService extends Application {
     final byte[] decodedBytes = DatatypeConverter.parseBase64Binary(auth);
     final String[] credentials = new String(decodedBytes).split(":", 2);
     try {
-      return server.connect(ClientUtil.connectInfo(new User(credentials[0], credentials[1]), clientId, EntityRESTService.class.getName()));
+      return server.connect(ClientUtil.connectionInfo(new User(credentials[0], credentials[1]), clientId, EntityRESTService.class.getName()));
     }
     catch (final ServerException.LoginException e) {
       if (e.getCause() instanceof DatabaseException) {

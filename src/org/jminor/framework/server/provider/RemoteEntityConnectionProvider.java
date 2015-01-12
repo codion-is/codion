@@ -98,7 +98,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     try {
       LOG.debug("Initializing connection for {}", getUser());
       final RemoteEntityConnection remote = (RemoteEntityConnection) getRemoteEntityServer().connect(
-              ClientUtil.connectInfo(getUser(), clientID, clientTypeID));
+              ClientUtil.connectionInfo(getUser(), clientID, clientTypeID));
 
       return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(remote));
     }
