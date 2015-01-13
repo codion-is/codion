@@ -3891,3 +3891,4 @@
   Util.getVersionString() bug fixed, cut patch number from version
   EntityConnectionServer constructor error handling improved
   RemoteServer renamed to Server
+  EntityTablePanel.initializeUI() bug fixed, NullPointerException when summary panel was not available

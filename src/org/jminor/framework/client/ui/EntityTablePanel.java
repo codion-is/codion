@@ -1348,8 +1348,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         }
       });
       summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
+      getBasePanel().add(summaryBasePanel, BorderLayout.SOUTH);
     }
-    getBasePanel().add(summaryBasePanel, BorderLayout.SOUTH);
 
     JPanel southPanel = null;
     if (includeSouthPanel) {
