@@ -41,6 +41,7 @@ import javax.swing.JTextField;
 import javax.swing.ListSelectionModel;
 import javax.swing.Timer;
 import java.awt.BorderLayout;
+import java.awt.CardLayout;
 import java.awt.Color;
 import java.awt.FlowLayout;
 import java.awt.Window;
@@ -49,7 +50,6 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
-import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 
@@ -361,24 +361,21 @@ public final class EntityLookupField extends JTextField {
     }
 
     private void initializeUI(final EntityLookupModel lookupModel) {
-      final Map<Property.ColumnProperty, JPanel> propertyPanels = new HashMap<>();
-      final JPanel propertyBasePanel = new JPanel(UiUtil.createBorderLayout());
+      final JPanel propertyBasePanel = new JPanel(new CardLayout(5, 5));
       final FilteredComboBoxModel<Property.ColumnProperty> propertyComboBoxModel = new DefaultFilteredComboBoxModel<>();
       for (final Map.Entry<Property.ColumnProperty, EntityLookupModel.LookupSettings> entry :
               lookupModel.getPropertyLookupSettings().entrySet()) {
         propertyComboBoxModel.addItem(entry.getKey());
-        propertyPanels.put(entry.getKey(), initializePropertyPanel(entry.getValue()));
+        propertyBasePanel.add(initializePropertyPanel(entry.getValue()), entry.getKey().getPropertyID());
       }
       if (propertyComboBoxModel.getSize() > 0) {
-        propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
-        propertyBasePanel.add(propertyPanels.get(propertyComboBoxModel.getSelectedValue()));
         propertyComboBoxModel.addSelectionListener(new EventListener() {
           @Override
           public void eventOccurred() {
-            propertyBasePanel.removeAll();
-            propertyBasePanel.add(propertyPanels.get(propertyComboBoxModel.getSelectedValue()));
+            ((CardLayout) propertyBasePanel.getLayout()).show(propertyBasePanel, propertyComboBoxModel.getSelectedValue().getPropertyID());
           }
         });
+        propertyComboBoxModel.setSelectedItem(propertyComboBoxModel.getElementAt(0));
       }
 
       final JCheckBox boxAllowMultipleValues = new JCheckBox(FrameworkMessages.get(FrameworkMessages.ENABLE_MULTIPLE_SEARCH_VALUES));
