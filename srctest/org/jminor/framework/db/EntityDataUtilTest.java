@@ -1,15 +1,12 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.tools;
+package org.jminor.framework.db;
 
 import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.ProgressReporter;
 import org.jminor.common.model.User;
-import org.jminor.framework.db.DefaultEntityConnectionTest;
-import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnections;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entity;
