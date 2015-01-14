@@ -5,7 +5,6 @@
 
   <property file="build.properties"/>
   <property file="user.properties"/>
-  <ivy:settings file="ivysettings.xml" />
 
   <path id="lib.build.core">
     <fileset dir="${lib}/build.core"/>

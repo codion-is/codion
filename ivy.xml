@@ -58,13 +58,13 @@
                 build.core->master;
                 runtime.tests->master"/>
     <!--charting for the server monitor and load test-->
-    <dependency org="jfree" name="jcommon" rev="1.0.23" transitive="false"
+    <dependency org="org.jfree" name="jcommon" rev="1.0.23" transitive="false"
                 conf="
                 build.core->master;
                 runtime.tests->master;
                 runtime.client->master;
                 runtime.server-monitor->master"/>
-    <dependency org="jfree" name="jfreechart" rev="1.0.19" transitive="false"
+    <dependency org="org.jfree" name="jfreechart" rev="1.0.19" transitive="false"
                 conf="
                 build.core->master;
                 runtime.tests->master;
