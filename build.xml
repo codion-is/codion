@@ -5,6 +5,7 @@
 
   <property file="build.properties"/>
   <property file="user.properties"/>
+  <ivy:settings file="ivysettings.xml" />
 
   <path id="lib.build.core">
     <fileset dir="${lib}/build.core"/>
@@ -258,7 +259,7 @@
   <target name="publish"
           description="Publish the dist files into a local repository">
     <ivy:resolve/>
-    <ivy:publish pubrevision="${version}" status="release" resolver="local" overwrite="true" >
+    <ivy:publish pubrevision="${version}" status="release" resolver="publish" overwrite="true" >
       <artifacts pattern="${dist}/[artifact].[ext]"/>
     </ivy:publish>
   </target>
