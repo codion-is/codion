@@ -14,9 +14,9 @@ import java.util.List;
 /**
  * A static helper class for mass data manipulation.
  */
-public final class EntityDataUtil {
+public final class EntityConnectionUtil {
 
-  private EntityDataUtil() {}
+  private EntityConnectionUtil() {}
 
   /**
    * Copies the given entities from source to destination

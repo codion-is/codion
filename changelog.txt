@@ -3894,3 +3894,4 @@
   EntityTablePanel.initializeUI() bug fixed, NullPointerException when summary panel was not available
   EntityLookupField.SettingsPanel.initializeUI() bug fixed, CardLayout used
   EntityDataUtil moved to from tools to db
+  EntityDataUtil renamed to EntityConnectionUtil

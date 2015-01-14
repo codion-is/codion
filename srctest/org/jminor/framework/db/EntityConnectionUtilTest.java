@@ -22,7 +22,7 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
-public class EntityDataUtilTest {
+public class EntityConnectionUtilTest {
 
   private static EntityConnection DESTINATION_CONNECTION;
 
@@ -49,11 +49,11 @@ public class EntityDataUtilTest {
   @Test
   public void copyEntities() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = DefaultEntityConnectionTest.CONNECTION_PROVIDER.getConnection();
-    EntityDataUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_ARTIST);
-    EntityDataUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_ALBUM);
-    EntityDataUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_MEDIATYPE);
-    EntityDataUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_GENRE);
-    EntityDataUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, false, Chinook.T_TRACK);
+    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_ARTIST);
+    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_ALBUM);
+    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_MEDIATYPE);
+    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_GENRE);
+    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, false, Chinook.T_TRACK);
 
     assertEquals(sourceConnection.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_ARTIST)),
             DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_ARTIST)));
@@ -77,15 +77,15 @@ public class EntityDataUtilTest {
       @Override
       public void reportProgress(final int currentProgress) {}
     };
-    EntityDataUtil.batchInsert(DESTINATION_CONNECTION, source, dest, 6, progressReporter);
+    EntityConnectionUtil.batchInsert(DESTINATION_CONNECTION, source, dest, 6, progressReporter);
     assertEquals(sourceConnection.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_PLAYLIST)),
             DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_PLAYLIST)));
 
-    EntityDataUtil.batchInsert(DESTINATION_CONNECTION, Collections.<Entity>emptyList(), null, 10, null);
+    EntityConnectionUtil.batchInsert(DESTINATION_CONNECTION, Collections.<Entity>emptyList(), null, 10, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void batchInsertNegativeBatchSize() throws DatabaseException {
-    EntityDataUtil.batchInsert(null, null, null, -6, null);
+    EntityConnectionUtil.batchInsert(null, null, null, -6, null);
   }
 }
