@@ -526,10 +526,10 @@ public class FilteredTablePanel<T, C> extends JPanel {
         }
       }
     }
-    UiUtil.addKeyEvent(table, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(getJTable(), false));
-    UiUtil.addKeyEvent(table, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(getJTable(), true));
-    UiUtil.addKeyEvent(table, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK, new MoveSelectedColumnAction(getJTable(), true));
-    UiUtil.addKeyEvent(table, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK, new MoveSelectedColumnAction(getJTable(), false));
+    UiUtil.addKeyEvent(table, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(table, false));
+    UiUtil.addKeyEvent(table, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(table, true));
+    UiUtil.addKeyEvent(table, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK, new MoveSelectedColumnAction(table, true));
+    UiUtil.addKeyEvent(table, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK, new MoveSelectedColumnAction(table, false));
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
@@ -734,10 +734,12 @@ public class FilteredTablePanel<T, C> extends JPanel {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      final int selectedColumnIndex = table.getSelectedColumn();
-      if (selectedColumnIndex != -1) {
-        final TableColumn column = table.getColumnModel().getColumn(selectedColumnIndex);
-        column.setPreferredWidth(column.getWidth() + (enlarge ? RESIZE_AMOUNT : -RESIZE_AMOUNT));
+      if (table.getAutoResizeMode() == JTable.AUTO_RESIZE_OFF) {
+        final int selectedColumnIndex = table.getSelectedColumn();
+        if (selectedColumnIndex != -1) {
+          final TableColumn column = table.getColumnModel().getColumn(selectedColumnIndex);
+          column.setPreferredWidth(column.getWidth() + (enlarge ? RESIZE_AMOUNT : -RESIZE_AMOUNT));
+        }
       }
     }
   }
