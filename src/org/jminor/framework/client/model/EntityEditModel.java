@@ -7,6 +7,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Refreshable;
+import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
@@ -67,6 +68,14 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @see org.jminor.framework.domain.Entity#isPrimaryKeyNull()
    */
   boolean isEntityNew();
+
+  /**
+   * Returns true if an entity is selected and a value has been modified or if the entity is new
+   * and one or more non-default values have been entered
+   * @return true if this edit model contains unsaved data
+   * @see org.jminor.framework.Configuration#WARN_ABOUT_UNSAVED_DATA
+   */
+  boolean containsUnsavedData();
 
   /**
    * Returns the value associated with the given propertyID assuming it
@@ -479,6 +488,16 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @param listener a listener to remove
    */
   void removeEntitiesChangedListener(final EventListener listener);
+
+  /**
+   * @param listener a listener notified each time the active entity is about to be set
+   */
+  void addConfirmSetEntityObserver(final EventInfoListener<State> listener);
+
+  /**
+   * @param listener a listener to remove
+   */
+  void removeConfirmSetEntityObserver(final EventInfoListener listener);
 
   /**
    * An event describing a insert action.

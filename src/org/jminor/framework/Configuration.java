@@ -306,6 +306,7 @@ public final class Configuration {
 
   /**
    * Indicates whether the application should ask for confirmation when exiting if some data is unsaved<br>
+   * and whether it should warn when unsaved data is about to be lost due to selection changes f.ex.
    * Value type: Boolean<br>
    * Default value: false
    */

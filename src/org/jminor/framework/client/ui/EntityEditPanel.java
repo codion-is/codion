@@ -6,6 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Conjunction;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
@@ -1993,6 +1994,15 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
       @Override
       public void eventOccurred() {
         UiUtil.setWaitCursor(false, EntityEditPanel.this);
+      }
+    });
+    editModel.addConfirmSetEntityObserver(new EventInfoListener<State>() {
+      @Override
+      public void eventOccurred(final State confirmationState) {
+        final int result = JOptionPane.showConfirmDialog(UiUtil.getParentWindow(EntityEditPanel.this),
+                FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING), FrameworkMessages.get(FrameworkMessages.UNSAVED_DATA_WARNING_TITLE),
+                JOptionPane.YES_NO_OPTION, JOptionPane.WARNING_MESSAGE);
+        confirmationState.setActive(result == JOptionPane.YES_OPTION);
       }
     });
   }

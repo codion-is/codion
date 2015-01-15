@@ -221,7 +221,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   private static boolean containsUnsavedData(final Collection<? extends EntityModel> models) {
     for (final EntityModel model : models) {
       final EntityEditModel editModel = model.getEditModel();
-      if (!editModel.isEntityNew() && editModel.isModified()) {
+      if (editModel.containsUnsavedData()) {
         return true;
       }
       else if (containsUnsavedData(model.getDetailModels())) {

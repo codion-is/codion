@@ -8,6 +8,7 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
+import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueChange;
@@ -452,6 +453,51 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setValuePersistent(EmpDept.EMPLOYEE_JOB, false);
     employeeEditModel.setEntity(null);
     assertNull(employeeEditModel.getValue(EmpDept.EMPLOYEE_JOB));
+  }
+
+  @Test
+  public void containsUnsavedData() throws DatabaseException {
+    Configuration.setValue(Configuration.WARN_ABOUT_UNSAVED_DATA, true);
+    employeeEditModel.setValuePersistent(EmpDept.EMPLOYEE_DEPARTMENT_FK, false);
+
+    final EventInfoListener<State> alwaysConfirmListener = new EventInfoListener<State>() {
+      @Override
+      public void eventOccurred(final State info) {
+        info.setActive(true);
+      }
+    };
+    final EventInfoListener<State> alwaysDenyListener = new EventInfoListener<State>() {
+      @Override
+      public void eventOccurred(final State info) {
+        info.setActive(false);
+      }
+    };
+
+    employeeEditModel.addConfirmSetEntityObserver(alwaysConfirmListener);
+    final Entity king = employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "KING");
+    final Entity adams = employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "ADAMS");
+    employeeEditModel.setEntity(king);
+    employeeEditModel.setValue(EmpDept.EMPLOYEE_NAME, "New name");
+    employeeEditModel.setEntity(adams);
+    assertEquals(adams, employeeEditModel.getEntity());
+
+    employeeEditModel.removeConfirmSetEntityObserver(alwaysConfirmListener);
+    employeeEditModel.setEntity(null);
+    employeeEditModel.addConfirmSetEntityObserver(alwaysDenyListener);
+
+    employeeEditModel.setValue(EmpDept.EMPLOYEE_NAME, "A name");
+    employeeEditModel.setEntity(king);
+    assertEquals("A name", employeeEditModel.getValue(EmpDept.EMPLOYEE_NAME));
+
+    employeeEditModel.removeConfirmSetEntityObserver(alwaysDenyListener);
+    employeeEditModel.setEntity(null);
+    employeeEditModel.addConfirmSetEntityObserver(alwaysDenyListener);
+
+    employeeEditModel.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, king.getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    employeeEditModel.setEntity(adams);
+    assertEquals(king.getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), employeeEditModel.getValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+
+    Configuration.setValue(Configuration.WARN_ABOUT_UNSAVED_DATA, false);
   }
 
   @Test

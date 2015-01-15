@@ -3899,3 +3899,5 @@
   FilteredTablePanel.selectTableColumns(), added select all/none buttons
   FilteredTablePanel, moved column resizing functionality from EntityTablePanel
   FilteredTablePanel, SHIFT-CTR-[left/right arrow] moves the column
+  EntityEditModel.containsUnsavedData(), addConfirmEntitySetAllowedObserver() and removeConfirmEntitySetAllowedObserver()
+  EntityEditPanel now warns if entity is about to be set when it contains unsaved data

@@ -71,6 +71,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   private final Event entitiesChangedEvent = Events.event();
   private final Event refreshStartedEvent = Events.event();
   private final Event refreshDoneEvent = Events.event();
+  private final Event<State> confirmSetEntityEvent = Events.event();
 
   private final State primaryKeyNullState = States.state(true);
   private final State allowInsertState = States.state(true);
@@ -317,8 +318,10 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final void setEntity(final Entity entity) {
-    this.entity.setAs(entity == null ? getDefaultEntity() : entity);
-    entitySetEvent.fire(entity);
+    if (isSetEntityAllowed()) {
+      this.entity.setAs(entity == null ? getDefaultEntity() : entity);
+      entitySetEvent.fire(entity);
+    }
   }
 
   /** {@inheritDoc} */
@@ -744,6 +747,28 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
+  public final boolean containsUnsavedData() {
+    if (isEntityNew()) {
+      for (final Property.ColumnProperty property : Entities.getColumnProperties(getEntityID())) {
+        if (!property.isForeignKeyProperty() && valueModified(property)) {
+          return true;
+        }
+      }
+      for (final Property.ForeignKeyProperty property : Entities.getForeignKeyProperties(getEntityID())) {
+        if (valueModified(property)) {
+          return true;
+        }
+      }
+
+      return false;
+    }
+    else {
+      return !getEntity().getOriginalValueKeys().isEmpty();
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void removeValueSetListener(final String propertyID, final EventInfoListener listener) {
     if (valueSetEventMap.containsKey(propertyID)) {
       valueSetEventMap.get(propertyID).removeInfoListener(listener);
@@ -890,6 +915,18 @@ public class DefaultEntityEditModel implements EntityEditModel {
     refreshDoneEvent.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public void addConfirmSetEntityObserver(final EventInfoListener<State> listener) {
+    confirmSetEntityEvent.addInfoListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void removeConfirmSetEntityObserver(final EventInfoListener listener) {
+    confirmSetEntityEvent.removeInfoListener(listener);
+  }
+
   /**
    * @return the actual {@link Entity} instance being edited
    */
@@ -1004,6 +1041,21 @@ public class DefaultEntityEditModel implements EntityEditModel {
     }
 
     return valueChangeEventMap.get(propertyID);
+  }
+
+  private boolean isSetEntityAllowed() {
+    if (Configuration.getBooleanValue(Configuration.WARN_ABOUT_UNSAVED_DATA) && containsUnsavedData()) {
+      final State confirmation = States.state(true);
+      confirmSetEntityEvent.fire(confirmation);
+
+      return confirmation.isActive();
+    }
+
+    return true;
+  }
+
+  private boolean valueModified(final Property property) {
+    return !Util.equal(getValue(property.getPropertyID()), getDefaultValue(property));
   }
 
   private void bindEventsInternal() {
