@@ -80,6 +80,8 @@ public final class Messages {
   public static final String NO_CONNECTION_AVAILABLE = "no_connection_available";
   public static final String NOT_CONNECTED = "not_connected";
   public static final String SERVER_FULL = "server_full";
+  public static final String SELECT_ALL = "select_all";
+  public static final String SELECT_NONE = "select_none";
 
   public static final String LIKE = "like";
   public static final String NOT_LIKE = "not_like";

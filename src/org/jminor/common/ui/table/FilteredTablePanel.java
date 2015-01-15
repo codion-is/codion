@@ -18,6 +18,7 @@ import org.jminor.common.ui.textfield.TextFieldHint;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.Icon;
+import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
@@ -37,6 +38,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Component;
 import java.awt.Container;
+import java.awt.FlowLayout;
 import java.awt.Graphics;
 import java.awt.GridLayout;
 import java.awt.Point;
@@ -321,25 +323,16 @@ public class FilteredTablePanel<T, C> extends JPanel {
         return Util.collateSansSpaces(collator, o1.getIdentifier().toString(), o2.getIdentifier().toString());
       }
     });
-    final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, allColumns.size()), 0));
-    final List<JCheckBox> buttonList = new ArrayList<>();
-    for (final TableColumn column : allColumns) {
-      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()));
-      buttonList.add(chkColumn);
-      togglePanel.add(chkColumn);
-    }
-    final JScrollPane scroller = new JScrollPane(togglePanel);
-    final int result = JOptionPane.showOptionDialog(this, scroller,
-            Messages.get(Messages.SELECT_COLUMNS), JOptionPane.OK_CANCEL_OPTION, JOptionPane.QUESTION_MESSAGE, null,
+    final List<JCheckBox> checkBoxes = new ArrayList<>();
+    final int result = JOptionPane.showOptionDialog(this, initializeSelectColumnsPanel(allColumns, checkBoxes),
+            Messages.get(Messages.SELECT_COLUMNS), JOptionPane.DEFAULT_OPTION, JOptionPane.QUESTION_MESSAGE, null,
             new String[] {Messages.get(Messages.SHOW_ALL_COLUMNS), Messages.get(Messages.CANCEL), Messages.get(Messages.OK)}, Messages.get(Messages.OK));
     if (result != 1) {
       if (result == 0) {
-        for (final JCheckBox box : buttonList) {
-          box.setSelected(true);
-        }
+        setSelected(checkBoxes, true);
       }
-      for (final JCheckBox chkButton : buttonList) {
-        final TableColumn column = allColumns.get(buttonList.indexOf(chkButton));
+      for (final JCheckBox chkButton : checkBoxes) {
+        final TableColumn column = allColumns.get(checkBoxes.indexOf(chkButton));
         tableModel.getColumnModel().setColumnVisible((C) column.getIdentifier(), chkButton.isSelected());
       }
     }
@@ -439,6 +432,35 @@ public class FilteredTablePanel<T, C> extends JPanel {
     });
 
     return popupMenu;
+  }
+
+  @SuppressWarnings({"unchecked"})
+  private JPanel initializeSelectColumnsPanel(final List<TableColumn> allColumns, final List<JCheckBox> checkBoxes) {
+    final JPanel togglePanel = new JPanel(new GridLayout(Math.min(SELECT_COLUMNS_GRID_ROWS, allColumns.size()), 0));
+    for (final TableColumn column : allColumns) {
+      final JCheckBox chkColumn = new JCheckBox(column.getHeaderValue().toString(), tableModel.getColumnModel().isColumnVisible((C) column.getIdentifier()));
+      checkBoxes.add(chkColumn);
+      togglePanel.add(chkColumn);
+    }
+    final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    southPanel.add(new JButton(new AbstractAction(Messages.get(Messages.SELECT_ALL)) {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        setSelected(checkBoxes, true);
+      }
+    }));
+    southPanel.add(new JButton(new AbstractAction(Messages.get(Messages.SELECT_NONE)) {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        setSelected(checkBoxes, false);
+      }
+    }));
+
+    final JPanel basePanel = new JPanel(UiUtil.createBorderLayout());
+    basePanel.add(new JScrollPane(togglePanel), BorderLayout.CENTER);
+    basePanel.add(southPanel, BorderLayout.SOUTH);
+
+    return basePanel;
   }
 
   private void initializeTableHeader() {
@@ -541,6 +563,12 @@ public class FilteredTablePanel<T, C> extends JPanel {
     }
 
     column.setHeaderValue(val);
+  }
+
+  private static void setSelected(final List<JCheckBox> checkBoxes, final boolean selected) {
+    for (final JCheckBox box : checkBoxes) {
+      box.setSelected(selected);
+    }
   }
 
   /**
