@@ -1116,8 +1116,9 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
       if (startupDialog != null) {
         startupDialog.setVisible(true);
       }
-      final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
+      EntityConnectionProvider connectionProvider = null;
       try {
+        connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
         connectionProvider.getConnection();//throws exception if the server is not reachable
         final long initializationStarted = System.currentTimeMillis();
         initialize(initializeApplicationModel(connectionProvider));

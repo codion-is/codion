@@ -3895,3 +3895,4 @@
   EntityLookupField.SettingsPanel.initializeUI() bug fixed, CardLayout used
   EntityDataUtil moved to from tools to db
   EntityDataUtil renamed to EntityConnectionUtil
+  EntityApplicationPanel.startApplications() bug fixed, did not handle exceptions originating from initializeConnectionProvider()
