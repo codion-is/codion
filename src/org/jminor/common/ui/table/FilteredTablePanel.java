@@ -464,6 +464,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
   }
 
   private void initializeTableHeader() {
+    table.getTableHeader().setReorderingAllowed(true);
     table.getTableHeader().addMouseListener(new MouseSortHandler());
     table.getTableHeader().setDefaultRenderer(new SortableHeaderRenderer(table.getTableHeader().getDefaultRenderer()));
     table.getTableHeader().addMouseListener(new MouseAdapter() {
@@ -525,6 +526,10 @@ public class FilteredTablePanel<T, C> extends JPanel {
         }
       }
     }
+    UiUtil.addKeyEvent(table, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(getJTable(), false));
+    UiUtil.addKeyEvent(table, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(getJTable(), true));
+    UiUtil.addKeyEvent(table, KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK, new MoveSelectedColumnAction(getJTable(), true));
+    UiUtil.addKeyEvent(table, KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK | KeyEvent.SHIFT_DOWN_MASK, new MoveSelectedColumnAction(getJTable(), false));
   }
 
   private void toggleColumnFilterPanel(final MouseEvent event) {
@@ -709,6 +714,74 @@ public class FilteredTablePanel<T, C> extends JPanel {
     @Override
     public int getIconHeight() {
       return size;
+    }
+  }
+
+  /**
+   * Resizes the selected table column by 10 pixels.
+   */
+  private static final class ResizeSelectedColumnAction extends  AbstractAction {
+
+    private static final int RESIZE_AMOUNT = 10;
+    private final JTable table;
+    private final boolean enlarge;
+
+    private ResizeSelectedColumnAction(final JTable table, final boolean enlarge) {
+      super("FilteredTablePanel.column" + (enlarge ? "Larger" : "Smaller"));
+      this.table = table;
+      this.enlarge = enlarge;
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      final int selectedColumnIndex = table.getSelectedColumn();
+      if (selectedColumnIndex != -1) {
+        final TableColumn column = table.getColumnModel().getColumn(selectedColumnIndex);
+        column.setPreferredWidth(column.getWidth() + (enlarge ? RESIZE_AMOUNT : -RESIZE_AMOUNT));
+      }
+    }
+  }
+
+  /**
+   * Moves the selected table column by one either left or right, with wrap around
+   */
+  private static final class MoveSelectedColumnAction extends  AbstractAction {
+
+    private final JTable table;
+    private final boolean left;
+
+    private MoveSelectedColumnAction(final JTable table, final boolean left) {
+      super("FilteredTablePanel.column" + (left ? "Left" : "Right"));
+      this.table = table;
+      this.left = left;
+    }
+
+    @Override
+    public void actionPerformed(final ActionEvent e) {
+      final TableColumnModel columnModel = table.getColumnModel();
+      final int selectedColumnIndex = table.getSelectedColumn();
+      if (selectedColumnIndex != -1) {
+        final int columnCount = columnModel.getColumnCount();
+        final int newIndex;
+        if (left) {
+          if (selectedColumnIndex == 0) {
+            newIndex = columnCount - 1;
+          }
+          else {
+            newIndex = selectedColumnIndex - 1;
+          }
+        }
+        else {
+          if (selectedColumnIndex == columnCount - 1) {
+            newIndex = 0;
+          }
+          else {
+            newIndex = selectedColumnIndex + 1;
+          }
+        }
+        table.moveColumn(selectedColumnIndex, newIndex);
+        table.scrollRectToVisible(table.getCellRect(table.getSelectedRow(), newIndex, true));
+      }
     }
   }
 }

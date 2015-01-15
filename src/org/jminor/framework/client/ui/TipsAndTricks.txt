@@ -17,6 +17,7 @@ To navigate between panels with the keyboard, use the arrow keys while holding d
 Layout
 To resize or hide the active panel with the keyboard, use the arrow keys while holding down the SHIFT and ALT keys.
 To resize the selected column in a table, use the LEFT and RIGHT arrow keys while holding down the ALT key.
+To move the selected column in a table, use the LEFT and RIGHT arrow keys while holding down the SHIFT and ALT key.
 
 Dependencies
 To view the records that depend on the selected record(s), right click to pop up a context menu and select the View Dependencies option.

@@ -1473,8 +1473,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     header.setFocusable(false);
     header.setReorderingAllowed(Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING));
     getJTable().setAutoResizeMode(Configuration.getIntValue(Configuration.TABLE_AUTO_RESIZE_MODE));
-    UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_LEFT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(getJTable(), false));
-    UiUtil.addKeyEvent(getJTable(), KeyEvent.VK_RIGHT, KeyEvent.ALT_DOWN_MASK, new ResizeSelectedColumnAction(getJTable(), true));
     if (includePopupMenu) {
       setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControlSets));
     }
@@ -1545,31 +1543,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     public void actionPerformed(final ActionEvent e) {
       final Point location = getPopupLocation(table);
       popupMenu.show(table, location.x, location.y);
-    }
-  }
-
-  /**
-   * Resizes the selected table column by 10 pixels.
-   */
-  private static final class ResizeSelectedColumnAction extends  AbstractAction {
-
-    private static final int RESIZE_AMOUNT = 10;
-    private final JTable table;
-    private final boolean enlarge;
-
-    private ResizeSelectedColumnAction(final JTable table, final boolean enlarge) {
-      super("EntityTablePanel.column" + (enlarge ? "Larger" : "Smaller"));
-      this.table = table;
-      this.enlarge = enlarge;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      final int selectedColumnIndex = table.getSelectedColumn();
-      if (selectedColumnIndex != -1) {
-        final TableColumn column = table.getColumnModel().getColumn(selectedColumnIndex);
-        column.setPreferredWidth(column.getWidth() + (enlarge ? RESIZE_AMOUNT : -RESIZE_AMOUNT));
-      }
     }
   }
 }

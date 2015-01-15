@@ -3897,3 +3897,5 @@
   EntityDataUtil renamed to EntityConnectionUtil
   EntityApplicationPanel.startApplications() bug fixed, did not handle exceptions originating from initializeConnectionProvider()
   FilteredTablePanel.selectTableColumns(), added select all/none buttons
+  FilteredTablePanel, moved column resizing functionality from EntityTablePanel
+  FilteredTablePanel, SHIFT-CTR-[left/right arrow] moves the column
