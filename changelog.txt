@@ -3901,3 +3901,5 @@
   FilteredTablePanel, SHIFT-CTR-[left/right arrow] moves the column
   EntityEditModel.containsUnsavedData(), addConfirmEntitySetAllowedObserver() and removeConfirmEntitySetAllowedObserver()
   EntityEditPanel now warns if entity is about to be set when it contains unsaved data
+  States.DefaultStateObserver, lazy initialization of Events
+  States.DefaultAggregateState refactored to accommodate correct event firing, see StatesTest.aggregateStateEvents()
