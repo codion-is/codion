@@ -9,8 +9,7 @@ import org.junit.Test;
 
 import javax.swing.JComponent;
 import javax.swing.JTextField;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
@@ -33,17 +32,17 @@ public class InputProviderPanelTest {
     txt.setText("hello");
     assertEquals("hello", panel.getValue());
     assertFalse(panel.isInputAccepted());
-    final Collection<Object> event = new ArrayList<>();
+    final AtomicInteger event = new AtomicInteger();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
-        event.add(new Object());
+        event.incrementAndGet();
       }
     };
     panel.addButtonClickListener(listener);
     panel.getOkButton().doClick();
     assertTrue(panel.isInputAccepted());
-    assertEquals(1, event.size());
+    assertEquals(1, event.get());
     panel.removeButtonClickListener(listener);
   }
 }

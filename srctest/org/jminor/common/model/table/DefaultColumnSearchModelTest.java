@@ -11,54 +11,53 @@ import org.junit.Test;
 
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Date;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
 public class DefaultColumnSearchModelTest {
-  final Collection<Object> upperBoundCounter = new ArrayList<>();
-  final Collection<Object> lowerBoundCounter = new ArrayList<>();
-  final Collection<Object> searchStateCounter = new ArrayList<>();
-  final Collection<Object> searchTypeCounter = new ArrayList<>();
-  final Collection<Object> enabledCounter = new ArrayList<>();
-  final Collection<Object> clearCounter = new ArrayList<>();
+  final AtomicInteger upperBoundCounter = new AtomicInteger();
+  final AtomicInteger lowerBoundCounter = new AtomicInteger();
+  final AtomicInteger searchStateCounter = new AtomicInteger();
+  final AtomicInteger searchTypeCounter = new AtomicInteger();
+  final AtomicInteger enabledCounter = new AtomicInteger();
+  final AtomicInteger clearCounter = new AtomicInteger();
 
   final EventListener upperBoundListener = new EventListener() {
     @Override
     public void eventOccurred() {
-      upperBoundCounter.add(new Object());
+      upperBoundCounter.incrementAndGet();
     }
   };
   final EventListener lowerBoundListener = new EventListener() {
     @Override
     public void eventOccurred() {
-      lowerBoundCounter.add(new Object());
+      lowerBoundCounter.incrementAndGet();
     }
   };
   final EventListener searchStateListener = new EventListener() {
     @Override
     public void eventOccurred() {
-      searchStateCounter.add(new Object());
+      searchStateCounter.incrementAndGet();
     }
   };
   final EventInfoListener<SearchType> searchTypeListener = new EventInfoListener<SearchType>() {
     @Override
     public void eventOccurred(final SearchType info) {
-      searchTypeCounter.add(new Object());
+      searchTypeCounter.incrementAndGet();
     }
   };
   final EventListener enabledListener = new EventListener() {
     @Override
     public void eventOccurred() {
-      enabledCounter.add(new Object());
+      enabledCounter.incrementAndGet();
     }
   };
   final EventListener clearListener = new EventListener() {
     @Override
     public void eventOccurred() {
-      clearCounter.add(new Object());
+      clearCounter.incrementAndGet();
     }
   };
 
@@ -73,13 +72,13 @@ public class DefaultColumnSearchModelTest {
     model.addClearedListener(clearListener);
 
     model.setUpperBound("hello");
-    assertEquals(1, searchStateCounter.size());
+    assertEquals(1, searchStateCounter.get());
     assertFalse(model.isEnabled());
-    assertEquals(1, upperBoundCounter.size());
+    assertEquals(1, upperBoundCounter.get());
     assertEquals("hello", model.getUpperBound());
     model.setLowerBound("hello");
-    assertEquals(2, searchStateCounter.size());
-    assertEquals(1, lowerBoundCounter.size());
+    assertEquals(2, searchStateCounter.get());
+    assertEquals(1, lowerBoundCounter.get());
     assertEquals("hello", model.getLowerBound());
 
     model.setAutomaticWildcard(true);
@@ -88,7 +87,7 @@ public class DefaultColumnSearchModelTest {
     model.setAutomaticWildcard(false);
 
     model.setLikeValue("test");
-    assertEquals(2, upperBoundCounter.size());
+    assertEquals(2, upperBoundCounter.get());
     assertEquals("test", model.getUpperBound());
 
     model.setUpperBound(2.2);
@@ -110,7 +109,7 @@ public class DefaultColumnSearchModelTest {
     model.setLowerBound(Boolean.valueOf(true));
 
     model.clearSearch();
-    assertEquals(1, clearCounter.size());
+    assertEquals(1, clearCounter.get());
 
     model.removeUpperBoundListener(upperBoundListener);
     model.removeLowerBoundListener(lowerBoundListener);
@@ -124,7 +123,7 @@ public class DefaultColumnSearchModelTest {
     model.addSearchTypeListener(searchTypeListener);
     assertEquals(SearchType.LIKE, model.getSearchType());
     model.setSearchType(SearchType.LESS_THAN);
-    assertEquals(1, searchTypeCounter.size());
+    assertEquals(1, searchTypeCounter.get());
     assertEquals(SearchType.LESS_THAN, model.getSearchType());
     try {
       model.setSearchType(null);
@@ -132,7 +131,7 @@ public class DefaultColumnSearchModelTest {
     }
     catch (final IllegalArgumentException ignored) {}
     model.setSearchType(SearchType.OUTSIDE_RANGE);
-    assertEquals(2, searchTypeCounter.size());
+    assertEquals(2, searchTypeCounter.get());
     model.removeSearchTypeListener(searchTypeListener);
   }
 
@@ -156,9 +155,9 @@ public class DefaultColumnSearchModelTest {
 
     model.addEnabledListener(enabledListener);
     model.setEnabled(false);
-    assertEquals(1, enabledCounter.size());
+    assertEquals(1, enabledCounter.get());
     model.setEnabled(true);
-    assertEquals(2, enabledCounter.size());
+    assertEquals(2, enabledCounter.get());
 
     model.removeEnabledListener(enabledListener);
 

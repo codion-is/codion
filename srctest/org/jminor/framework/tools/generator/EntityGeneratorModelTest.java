@@ -12,8 +12,7 @@ import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -133,18 +132,18 @@ public class EntityGeneratorModelTest {
   @Test
   public void address() {
     assertNotNull(model.getDocument());
-    final Collection<Object> counter = new ArrayList<>();
+    final AtomicInteger counter = new AtomicInteger();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
-        counter.add(new Object());
+        counter.incrementAndGet();
       }
     };
     model.addRefreshStartedListener(listener);
     model.addRefreshDoneListener(listener);
 
     model.getTableModel().getSelectionModel().setSelectedIndex(0);
-    assertEquals(2, counter.size());
+    assertEquals(2, counter.get());
     final String addressDef = model.getDocumentText();
     assertEquals(ADDRESS_DEF, addressDef);
 

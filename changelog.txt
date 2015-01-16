@@ -3903,3 +3903,4 @@
   EntityEditPanel now warns if entity is about to be set when it contains unsaved data
   States.DefaultStateObserver, lazy initialization of Events
   States.DefaultAggregateState refactored to accommodate correct event firing, see StatesTest.aggregateStateEvents()
+  Unit test usage of clumsy collection counting method replaced by using AtomicInteger instead

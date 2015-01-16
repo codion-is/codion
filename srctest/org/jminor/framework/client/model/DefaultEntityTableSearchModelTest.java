@@ -15,8 +15,7 @@ import org.jminor.framework.domain.Property;
 import org.junit.Test;
 
 import java.sql.Types;
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
@@ -78,23 +77,23 @@ public class DefaultEntityTableSearchModelTest {
 
   @Test
   public void searchStateListener() {
-    final Collection<Object> counter = new ArrayList<>();
+    final AtomicInteger counter = new AtomicInteger();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
-        counter.add(new Object());
+        counter.incrementAndGet();
       }
     };
     searchModel.addSearchStateListener(listener);
     searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION).setEnabled(true);
-    assertEquals(1, counter.size());
+    assertEquals(1, counter.get());
     searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION).setEnabled(false);
-    assertEquals(2, counter.size());
+    assertEquals(2, counter.get());
     searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION).setUpperBound(1200d);
     //automatically set enabled when upper bound is set
-    assertEquals(4, counter.size());
+    assertEquals(4, counter.get());
     searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION).setSearchType(SearchType.GREATER_THAN);
-    assertEquals(5, counter.size());
+    assertEquals(5, counter.get());
     searchModel.removeSearchStateListener(listener);
   }
 

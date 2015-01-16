@@ -5,8 +5,7 @@ package org.jminor.common.model;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
@@ -32,112 +31,112 @@ public class ValuesTest {
 
   @Test
   public void value() {
-    final Collection<Object> eventCounter = new ArrayList<>();
+    final AtomicInteger eventCounter = new AtomicInteger();
     final Value<Integer> intValue = Values.value(42);
     intValue.getChangeObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
-        eventCounter.add(new Object());
+        eventCounter.incrementAndGet();
       }
     });
     intValue.set(42);
-    assertTrue(eventCounter.isEmpty());
+    assertEquals(0, eventCounter.get());
     intValue.set(20);
-    assertEquals(1, eventCounter.size());
+    assertEquals(1, eventCounter.get());
     intValue.set(null);
-    assertEquals(2, eventCounter.size());
+    assertEquals(2, eventCounter.get());
     intValue.set(null);
-    assertEquals(2, eventCounter.size());
+    assertEquals(2, eventCounter.get());
     intValue.set(42);
-    assertEquals(3, eventCounter.size());
+    assertEquals(3, eventCounter.get());
   }
 
   @Test
   public void linkValues() {
-    final Collection<Object> modelValueEventCounter = new ArrayList<>();
+    final AtomicInteger modelValueEventCounter = new AtomicInteger();
     final Value<Integer> modelValue = Values.beanValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, false);
     modelValue.getChangeObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
-        modelValueEventCounter.add(new Object());
+        modelValueEventCounter.incrementAndGet();
       }
     });
-    final Collection<Object> uiValueEventCounter = new ArrayList<>();
+    final AtomicInteger uiValueEventCounter = new AtomicInteger();
     uiValue.getChangeObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
-        uiValueEventCounter.add(new Object());
+        uiValueEventCounter.incrementAndGet();
       }
     });
     assertEquals(Integer.valueOf(42), uiValue.get());
-    assertTrue(modelValueEventCounter.isEmpty());
-    assertTrue(uiValueEventCounter.isEmpty());
+    assertEquals(0, modelValueEventCounter.get());
+    assertEquals(0, uiValueEventCounter.get());
 
     uiValue.set(20);
     assertEquals(Integer.valueOf(20), modelValue.get());
-    assertEquals(1, modelValueEventCounter.size());
-    assertEquals(1, uiValueEventCounter.size());
+    assertEquals(1, modelValueEventCounter.get());
+    assertEquals(1, uiValueEventCounter.get());
 
     modelValue.set(22);
     assertEquals(Integer.valueOf(22), uiValue.get());
-    assertEquals(2, modelValueEventCounter.size());
-    assertEquals(2, uiValueEventCounter.size());
+    assertEquals(2, modelValueEventCounter.get());
+    assertEquals(2, uiValueEventCounter.get());
 
     uiValue.set(22);
-    assertEquals(2, modelValueEventCounter.size());
-    assertEquals(2, uiValueEventCounter.size());
+    assertEquals(2, modelValueEventCounter.get());
+    assertEquals(2, uiValueEventCounter.get());
 
     uiValue.set(null);
     assertNull(modelValue.get());
     assertNull(uiValue.get());
-    assertEquals(3, modelValueEventCounter.size());
-    assertEquals(3, uiValueEventCounter.size());
+    assertEquals(3, modelValueEventCounter.get());
+    assertEquals(3, uiValueEventCounter.get());
   }
 
   @Test
   public void linkValuesReadOnly() {
-    final Collection<Object> modelValueEventCounter = new ArrayList<>();
+    final AtomicInteger modelValueEventCounter = new AtomicInteger();
     final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, true);
     modelValue.getChangeObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
-        modelValueEventCounter.add(new Object());
+        modelValueEventCounter.incrementAndGet();
       }
     });
-    final Collection<Object> uiValueEventCounter = new ArrayList<>();
+    final AtomicInteger uiValueEventCounter = new AtomicInteger();
     uiValue.getChangeObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
-        uiValueEventCounter.add(new Object());
+        uiValueEventCounter.incrementAndGet();
       }
     });
     assertEquals(Integer.valueOf(42), uiValue.get());
-    assertTrue(modelValueEventCounter.isEmpty());
-    assertTrue(uiValueEventCounter.isEmpty());
+    assertEquals(0, modelValueEventCounter.get());
+    assertEquals(0, uiValueEventCounter.get());
 
     uiValue.set(20);
     assertEquals(Integer.valueOf(42), modelValue.get());//read only, no change
-    assertTrue(modelValueEventCounter.isEmpty());
-    assertEquals(1, uiValueEventCounter.size());
+    assertEquals(0, modelValueEventCounter.get());
+    assertEquals(1, uiValueEventCounter.get());
 
     setIntegerValue(22);
     assertEquals(Integer.valueOf(22), uiValue.get());
-    assertEquals(1, modelValueEventCounter.size());
-    assertEquals(2, uiValueEventCounter.size());
+    assertEquals(1, modelValueEventCounter.get());
+    assertEquals(2, uiValueEventCounter.get());
 
     uiValue.set(22);
-    assertEquals(1, modelValueEventCounter.size());
-    assertEquals(2, uiValueEventCounter.size());
+    assertEquals(1, modelValueEventCounter.get());
+    assertEquals(2, uiValueEventCounter.get());
 
     uiValue.set(null);
     assertNotNull(modelValue.get());
     assertNull(uiValue.get());
-    assertEquals(1, modelValueEventCounter.size());
-    assertEquals(3, uiValueEventCounter.size());
+    assertEquals(1, modelValueEventCounter.get());
+    assertEquals(3, uiValueEventCounter.get());
   }
 
   @Test

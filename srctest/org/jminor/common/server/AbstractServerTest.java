@@ -4,13 +4,13 @@
 package org.jminor.common.server;
 
 import org.jminor.common.model.User;
+
 import org.junit.Test;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.UUID;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
@@ -81,7 +81,7 @@ public class AbstractServerTest {
     ServerTest connection = server.connect(connectionInfo);
     assertNotNull(connection);
     assertEquals(connectionInfo.getClientID(), connection.getClientInfo().getClientID());
-    final Collection<Object> closeIndicator = new ArrayList<>();
+    final AtomicInteger closeIndicator = new AtomicInteger();
     final LoginProxy loginProxy = new LoginProxy() {
       @Override
       public String getClientTypeID() {
@@ -95,7 +95,7 @@ public class AbstractServerTest {
       public void doLogout(final ClientInfo clientInfo) {}
       @Override
       public void close() {
-        closeIndicator.add(new Object());
+        closeIndicator.incrementAndGet();
       }
     };
     server.setLoginProxy(clientTypeID, loginProxy);
@@ -114,7 +114,7 @@ public class AbstractServerTest {
 
     server.setLoginProxy(clientTypeID, loginProxy);
     server.shutdown();
-    assertTrue(!closeIndicator.isEmpty());
+    assertTrue(closeIndicator.get() > 0);
   }
 
   @Test(expected = IllegalArgumentException.class)

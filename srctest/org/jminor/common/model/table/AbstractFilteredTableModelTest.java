@@ -17,6 +17,7 @@ import java.util.Arrays;
 import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
@@ -138,25 +139,25 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void refresh() {
-    final Collection<Object> started = new ArrayList<>();
-    final Collection<Object> done = new ArrayList<>();
-    final Collection<Object> cleared = new ArrayList<>();
+    final AtomicInteger started = new AtomicInteger();
+    final AtomicInteger done = new AtomicInteger();
+    final AtomicInteger cleared = new AtomicInteger();
     final EventListener startListener = new EventListener() {
       @Override
       public void eventOccurred() {
-        started.add(new Object());
+        started.incrementAndGet();
       }
     };
     final EventListener doneListener = new EventListener() {
       @Override
       public void eventOccurred() {
-        done.add(new Object());
+        done.incrementAndGet();
       }
     };
     final EventListener clearedListener = new EventListener() {
       @Override
       public void eventOccurred() {
-        cleared.add(new Object());
+        cleared.incrementAndGet();
       }
     };
     tableModel.addRefreshStartedListener(startListener);
@@ -164,9 +165,9 @@ public final class AbstractFilteredTableModelTest {
     tableModel.addTableModelClearedListener(clearedListener);
     tableModel.refresh();
     assertTrue(tableModel.getRowCount() > 0);
-    assertEquals(1, started.size());
-    assertEquals(1, done.size());
-    assertEquals(1, cleared.size());
+    assertEquals(1, started.get());
+    assertEquals(1, done.get());
+    assertEquals(1, cleared.get());
     tableModel.removeRefreshStartedListener(startListener);
     tableModel.removeRefreshDoneListener(doneListener);
     tableModel.removeTableModelClearedListener(clearedListener);
@@ -174,26 +175,26 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void removeItems() {
-    final Collection<Object> events = new ArrayList<>();
+    final AtomicInteger events = new AtomicInteger();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
-        events.add(new Object());
+        events.incrementAndGet();
       }
     };
     tableModel.addTableDataChangedListener(listener);
     tableModel.refresh();
-    assertEquals(1, events.size());
+    assertEquals(1, events.get());
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("a");
     tableModel.removeItem("b");
-    assertEquals(3, events.size());
+    assertEquals(3, events.get());
     assertFalse(tableModel.contains("b", false));
     assertTrue(tableModel.contains("a", true));
     tableModel.removeItem("a");
-    assertEquals(4, events.size());
+    assertEquals(4, events.get());
     assertFalse(tableModel.contains("a", true));
     tableModel.removeItems(Arrays.asList("d", "e"));
-    assertEquals(4, events.size());//no change when removing filtered items
+    assertEquals(4, events.get());//no change when removing filtered items
     assertFalse(tableModel.contains("d", false));
     assertFalse(tableModel.contains("e", false));
     tableModel.removeTableDataChangedListener(listener);
@@ -201,18 +202,18 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void removeItemsRange() {
-    final Collection<Object> events = new ArrayList<>();
+    final AtomicInteger events = new AtomicInteger();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
-        events.add(new Object());
+        events.incrementAndGet();
       }
     };
     tableModel.addTableDataChangedListener(listener);
     tableModel.refresh();
-    assertEquals(1, events.size());
+    assertEquals(1, events.get());
     tableModel.removeItems(1, 3);
-    assertEquals(2, events.size());
+    assertEquals(2, events.get());
     assertTrue(tableModel.contains("a", true));
     assertFalse(tableModel.contains("b", true));
     assertFalse(tableModel.contains("c", true));
@@ -380,11 +381,11 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void testSorting() {
-    final Collection<Object> actionsPerformed = new ArrayList<>();
+    final AtomicInteger actionsPerformed = new AtomicInteger();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
-        actionsPerformed.add(new Object());
+        actionsPerformed.incrementAndGet();
       }
     };
     tableModel.addSortingListener(listener);
@@ -393,12 +394,12 @@ public final class AbstractFilteredTableModelTest {
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals(SortingDirective.DESCENDING, tableModel.getSortModel().getSortingDirective(0));
     assertEquals("e", tableModel.getItemAt(0));
-    assertEquals(1, actionsPerformed.size());
+    assertEquals(1, actionsPerformed.get());
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.ASCENDING, false);
     assertEquals(SortingDirective.ASCENDING, tableModel.getSortModel().getSortingDirective(0));
     assertEquals("a", tableModel.getItemAt(0));
     assertEquals(0, tableModel.getSortModel().getSortingPriority(0));
-    assertEquals(2, actionsPerformed.size());
+    assertEquals(2, actionsPerformed.get());
 
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     tableModel.refresh();
@@ -489,11 +490,11 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void testSelection() {
-    final Collection<Object> events = new ArrayList<>();
+    final AtomicInteger events = new AtomicInteger();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
-        events.add(new Object());
+        events.incrementAndGet();
       }
     };
     final TableSelectionModel<String> selectionModel = tableModel.getSelectionModel();
@@ -506,13 +507,13 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.refresh();
     selectionModel.setSelectedIndex(2);
-    assertEquals(2, events.size());
+    assertEquals(2, events.get());
     assertTrue(selectionModel.getSingleSelectionObserver().isActive());
     assertFalse(selectionModel.getSelectionEmptyObserver().isActive());
     assertFalse(selectionModel.getMultipleSelectionObserver().isActive());
     assertEquals(2, selectionModel.getSelectedIndex());
     selectionModel.moveSelectionDown();
-    assertEquals(6, events.size());
+    assertEquals(6, events.get());
     assertEquals(3, selectionModel.getSelectedIndex());
     selectionModel.moveSelectionUp();
     selectionModel.moveSelectionUp();
@@ -682,11 +683,11 @@ public final class AbstractFilteredTableModelTest {
 
   @Test
   public void testFiltering() throws Exception {
-    final Collection<Object> done = new ArrayList<>();
+    final AtomicInteger done = new AtomicInteger();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
-        done.add(new Object());
+        done.incrementAndGet();
       }
     };
     tableModel.addFilteringListener(listener);
@@ -697,7 +698,7 @@ public final class AbstractFilteredTableModelTest {
 
     //test filters
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("a");
-    assertEquals(2, done.size());
+    assertEquals(2, done.get());
     assertTrue(tableModel.isVisible("a"));
     assertFalse(tableModel.isVisible("b"));
     assertTrue(tableModel.isFiltered("d"));
@@ -713,7 +714,7 @@ public final class AbstractFilteredTableModelTest {
     assertTrue(tableModel.getAllItems().size() > 0);
 
     tableModel.getColumnModel().getColumnFilterModel(0).setEnabled(false);
-    assertEquals(3, done.size());
+    assertEquals(3, done.get());
     assertFalse("filter should not be enabled", tableModel.getColumnModel().getColumnFilterModel(0).isEnabled());
 
     assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));

@@ -7,8 +7,7 @@ import org.jminor.common.model.EventListener;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
@@ -20,11 +19,11 @@ public class ItemRandomizerModelTest {
     final Object two = "two";
     final Object three = "three";
 
-    final Collection<Object> weightChangeCounter = new ArrayList<>();
+    final AtomicInteger weightChangeCounter = new AtomicInteger();
     final EventListener weightListener = new EventListener() {
       @Override
       public void eventOccurred() {
-        weightChangeCounter.add(new Object());
+        weightChangeCounter.incrementAndGet();
       }
     };
 
@@ -36,32 +35,32 @@ public class ItemRandomizerModelTest {
 
     model.incrementWeight(three);
     assertEquals(three, model.getRandomItem());
-    assertEquals(1, weightChangeCounter.size());
+    assertEquals(1, weightChangeCounter.get());
 
     model.decrementWeight(three);
-    assertEquals(2, weightChangeCounter.size());
+    assertEquals(2, weightChangeCounter.get());
 
     model.incrementWeight(one);
     assertEquals(1, model.getWeight(one));
-    assertEquals(3, weightChangeCounter.size());
+    assertEquals(3, weightChangeCounter.get());
     model.incrementWeight(two);
     assertEquals(1, model.getWeight(two));
-    assertEquals(4, weightChangeCounter.size());
+    assertEquals(4, weightChangeCounter.get());
     model.incrementWeight(three);
     assertEquals(1, model.getWeight(three));
-    assertEquals(5, weightChangeCounter.size());
+    assertEquals(5, weightChangeCounter.get());
 
     assertEquals(Double.valueOf(1/3d), Double.valueOf(model.getWeightRatio(one)));
 
     model.incrementWeight(three);
     assertEquals(2, model.getWeight(three));
-    assertEquals(6, weightChangeCounter.size());
+    assertEquals(6, weightChangeCounter.get());
     model.incrementWeight(three);
     assertEquals(3, model.getWeight(three));
-    assertEquals(7, weightChangeCounter.size());
+    assertEquals(7, weightChangeCounter.get());
     model.incrementWeight(three);
     assertEquals(4, model.getWeight(three));
-    assertEquals(8, weightChangeCounter.size());
+    assertEquals(8, weightChangeCounter.get());
 
     assertEquals(Double.valueOf(4/6d), Double.valueOf(model.getWeightRatio(three)));
 

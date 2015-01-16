@@ -13,9 +13,9 @@ import org.junit.Test;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Comparator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
@@ -101,30 +101,30 @@ public class DefaultFilteredComboBoxModelTest {
 
   @Test
   public void testSelection() {
-    final Collection<Object> selectionChangedCounter = new ArrayList<>();
+    final AtomicInteger selectionChangedCounter = new AtomicInteger();
     final EventListener selectionListener = new EventListener() {
       @Override
       public void eventOccurred() {
-        selectionChangedCounter.add(new Object());
+        selectionChangedCounter.incrementAndGet();
       }
     };
     testModel.addSelectionListener(selectionListener);
     testModel.setSelectedItem(BJORN);
-    assertEquals(1, selectionChangedCounter.size());
+    assertEquals(1, selectionChangedCounter.get());
     assertEquals(BJORN, testModel.getSelectedItem());
     assertEquals(BJORN, testModel.getSelectedValue());
     assertFalse(testModel.isSelectionEmpty());
     assertFalse(testModel.isNullValueSelected());
     testModel.setSelectedItem(null);
     assertTrue(testModel.isSelectionEmpty());
-    assertEquals(2, selectionChangedCounter.size());
+    assertEquals(2, selectionChangedCounter.get());
     assertEquals(NULL, testModel.getSelectedItem());
     assertTrue(testModel.isNullValueSelected());
     assertTrue(testModel.isSelectionEmpty());
     assertNull(testModel.getSelectedValue());
     testModel.setSelectedItem(SIGGI);
     testModel.clear();
-    assertEquals(4, selectionChangedCounter.size());
+    assertEquals(4, selectionChangedCounter.get());
     testModel.removeSelectionListener(selectionListener);
   }
 
@@ -156,11 +156,11 @@ public class DefaultFilteredComboBoxModelTest {
 
   @Test
   public void setFilterCriteria() {
-    final Collection<Object> filteringEndedCounter = new ArrayList<>();
+    final AtomicInteger filteringEndedCounter = new AtomicInteger();
     final EventListener filteringEndedListener = new EventListener() {
       @Override
       public void eventOccurred() {
-        filteringEndedCounter.add(new Object());
+        filteringEndedCounter.incrementAndGet();
       }
     };
     testModel.addListDataListener(listDataListener);
@@ -172,7 +172,7 @@ public class DefaultFilteredComboBoxModelTest {
         return false;
       }
     });
-    assertEquals(1, filteringEndedCounter.size());
+    assertEquals(1, filteringEndedCounter.get());
     assertEquals("The model should only include the null value item", 1, testModel.getSize());
     testModel.setFilterCriteria(new FilterCriteria<String>() {
       @Override
@@ -180,7 +180,7 @@ public class DefaultFilteredComboBoxModelTest {
         return true;
       }
     });
-    assertEquals(2, filteringEndedCounter.size());
+    assertEquals(2, filteringEndedCounter.get());
     assertEquals("The model should be full", 6, testModel.getSize());
     testModel.setFilterCriteria(new FilterCriteria<String>() {
       @Override

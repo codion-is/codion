@@ -5,30 +5,29 @@ package org.jminor.common.model;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertTrue;
 
-public class EventImplTest {
+public class EventsTest {
 
   @Test
   public void test() throws Exception {
     final Event event = Events.event();
-    final List<Object> res = new ArrayList<>();
+    final AtomicInteger counter = new AtomicInteger();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
-        res.add(new Object());
+        counter.incrementAndGet();
       }
     };
     event.addListener(listener);
     event.fire();
-    assertTrue("EventListener should have been notified on .fire()", res.size() == 1);
+    assertTrue("EventListener should have been notified on .fire()", counter.get() == 1);
     event.eventOccurred();
-    assertTrue("EventListener should have been notified on .eventOccurred", res.size() == 2);
+    assertTrue("EventListener should have been notified on .eventOccurred", counter.get() == 2);
     event.removeListener(listener);
     event.fire();
-    assertTrue("Removed EventListener should not have been notified", res.size() == 2);
+    assertTrue("Removed EventListener should not have been notified", counter.get() == 2);
   }
 }

@@ -5,9 +5,8 @@ package org.jminor.common.model;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.concurrent.TimeUnit;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
@@ -50,11 +49,11 @@ public class TaskSchedulerTest {
 
   @Test
   public void startStop() throws InterruptedException {
-    final Collection<Object> counter = new ArrayList<>();
+    final AtomicInteger counter = new AtomicInteger();
     final TaskScheduler scheduler = new TaskScheduler(new Runnable() {
       @Override
       public void run() {
-        counter.add(new Object());
+        counter.incrementAndGet();
       }
     }, 5, TimeUnit.MILLISECONDS);
     assertFalse(scheduler.isRunning());
@@ -62,17 +61,17 @@ public class TaskSchedulerTest {
     assertTrue(scheduler.isRunning());
     Thread.sleep(25);
     assertTrue(scheduler.isRunning());
-    assertFalse(counter.isEmpty());
+    assertFalse(counter.get() == 0);
     scheduler.stop();
-    final int currentSize = counter.size();
+    final int currentCount = counter.get();
     assertFalse(scheduler.isRunning());
     Thread.sleep(25);
-    assertEquals(currentSize, counter.size());
+    assertEquals(currentCount, counter.get());
     scheduler.start();
     assertTrue(scheduler.isRunning());
     Thread.sleep(25);
     assertTrue(scheduler.isRunning());
-    assertTrue(counter.size() > currentSize);
+    assertTrue(counter.get() > currentCount);
     scheduler.stop();
     assertFalse(scheduler.isRunning());
   }

@@ -18,9 +18,9 @@ import org.junit.Test;
 
 import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
@@ -50,7 +50,7 @@ public final class DefaultEntityComboBoxModelTest {
     comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_MGR_FK, Arrays.asList(blake));
     assertEquals(6, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
-      final Entity item = (Entity) comboBoxModel.getElementAt(i);
+      final Entity item = comboBoxModel.getElementAt(i);
       if (item.isValueNull(EmpDept.EMPLOYEE_MGR_FK)) {
         assertEquals("KING", item.getStringValue(EmpDept.EMPLOYEE_NAME));
       }
@@ -63,7 +63,7 @@ public final class DefaultEntityComboBoxModelTest {
     comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_DEPARTMENT_FK, Arrays.asList(sales));
     assertEquals(2, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
-      final Entity item = (Entity) comboBoxModel.getElementAt(i);
+      final Entity item = comboBoxModel.getElementAt(i);
       assertEquals(item.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), sales);
       assertEquals(item.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK), blake);
     }
@@ -73,7 +73,7 @@ public final class DefaultEntityComboBoxModelTest {
     deptComboBoxModel.setSelectedItem(accounting);
     assertEquals(4, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
-      final Entity item = (Entity) comboBoxModel.getElementAt(i);
+      final Entity item = comboBoxModel.getElementAt(i);
       assertEquals(item.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), accounting);
       if (item.isValueNull(EmpDept.EMPLOYEE_MGR_FK)) {
         assertEquals("KING", item.getStringValue(EmpDept.EMPLOYEE_NAME));
@@ -125,11 +125,11 @@ public final class DefaultEntityComboBoxModelTest {
 
   @Test
   public void test() throws DatabaseException {
-    final Collection<Object> refreshed = new ArrayList<>();
+    final AtomicInteger refreshed = new AtomicInteger();
     final EventListener refreshListener = new EventListener() {
       @Override
       public void eventOccurred() {
-        refreshed.add(new Object());
+        refreshed.incrementAndGet();
       }
     };
     comboBoxModel.addRefreshListener(refreshListener);
@@ -155,7 +155,7 @@ public final class DefaultEntityComboBoxModelTest {
 
     comboBoxModel.forceRefresh();
     assertTrue(comboBoxModel.getSize() == 1);
-    assertEquals(2, refreshed.size());
+    assertEquals(2, refreshed.get());
     comboBoxModel.removeRefreshListener(refreshListener);
   }
 
@@ -173,7 +173,7 @@ public final class DefaultEntityComboBoxModelTest {
   }
 
   @Test
-  public void staticData() throws DatabaseException {
+  public void staticData() {
     comboBoxModel.refresh();
     List<Entity> items = new ArrayList<>(comboBoxModel.getVisibleItems());
     comboBoxModel.refresh();

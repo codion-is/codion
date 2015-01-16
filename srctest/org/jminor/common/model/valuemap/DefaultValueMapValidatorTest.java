@@ -9,8 +9,7 @@ import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.assertEquals;
 
@@ -50,19 +49,19 @@ public class DefaultValueMapValidatorTest {
 
   @Test
   public void revalidate() {
-    final Collection<Object> counter = new ArrayList<>();
+    final AtomicInteger counter = new AtomicInteger();
     final DefaultValueMapValidator<String, ValueMap<String, Integer>> validator = new DefaultValueMapValidator<>();
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {
-        counter.add(new Object());
+        counter.incrementAndGet();
       }
     };
     validator.addRevalidationListener(listener);
     validator.revalidate();
-    assertEquals(1, counter.size());
+    assertEquals(1, counter.get());
     validator.removeRevalidationListener(listener);
     validator.revalidate();
-    assertEquals(1, counter.size());
+    assertEquals(1, counter.get());
   }
 }
