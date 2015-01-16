@@ -75,37 +75,43 @@
                 conf="
                 runtime.client->master"/>
     <!--JasperReports plugin-->
-    <dependency org="net.sf.jasperreports" name="jasperreports" rev="4.1.2" transitive="false"
+    <dependency org="net.sf.jasperreports" name="jasperreports" rev="6.0.0" transitive="false"
                 conf="
                 build.plugins->master;
                 runtime.tests->master;
                 runtime.client->master;
                 runtime.server->master"/>
-    <dependency org="commons-beanutils" name="commons-beanutils" rev="1.8.0" transitive="false"
+    <dependency org="commons-beanutils" name="commons-beanutils" rev="1.9.0" transitive="false"
                 conf="
                 runtime.tests->master;
                 runtime.client->master;
                 runtime.server->master"/>
-    <dependency org="commons-collections" name="commons-collections" rev="2.1" transitive="false"
+    <dependency org="commons-collections" name="commons-collections" rev="3.2.1" transitive="false"
                 conf="
                 runtime.tests->master;
                 runtime.client->master;
                 runtime.server->master"/>
-    <dependency org="commons-digester" name="commons-digester" rev="1.7" transitive="false"
+    <dependency org="commons-digester" name="commons-digester" rev="2.1" transitive="false"
                 conf="
                 runtime.tests->master;
                 runtime.client->master;
                 runtime.server->master"/>
-    <dependency org="commons-logging" name="commons-logging" rev="1.0.2" transitive="false"
+    <dependency org="commons-logging" name="commons-logging" rev="1.1.1" transitive="false"
                 conf="
                 runtime.tests->master;
                 runtime.client->master;
                 runtime.server->master"/>
-    <dependency org="eclipse" name="jdtcore" rev="3.1.0" transitive="false"
+    <dependency org="org.eclipse.jdt.core.compiler" name="ecj" rev="4.3.1" transitive="false"
                 conf="
                 runtime.tests->master;
                 runtime.client->master;
                 runtime.server->master"/>
+    <dependency org="com.itextpdf" name="itextpdf" rev="5.5.0" transitive="false"
+                conf="
+                runtime.client->master"/>
+    <dependency org="com.itextpdf" name="itext-pdfa" rev="5.5.0" transitive="false"
+                conf="
+                runtime.client->master"/>
     <!--tomcat jdbc connection pool implementation plugin-->
     <dependency org="org.apache.tomcat" name="tomcat-jdbc" rev="7.0.39" transitive="false"
                 conf="

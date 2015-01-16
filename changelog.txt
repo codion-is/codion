@@ -3904,3 +3904,5 @@
   States.DefaultStateObserver, lazy initialization of Events
   States.DefaultAggregateState refactored to accommodate correct event firing, see StatesTest.aggregateStateEvents()
   Unit test usage of clumsy collection counting method replaced by using AtomicInteger instead
+  JasperReports library updated to 6.0.0
+  iText pdf library added to client runtime classpath for pdf export

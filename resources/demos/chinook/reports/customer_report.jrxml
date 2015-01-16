@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="customer_report" language="java" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20">
+<jasperReport xmlns="http://jasperreports.sourceforge.net/jasperreports" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://jasperreports.sourceforge.net/jasperreports http://jasperreports.sourceforge.net/xsd/jasperreport.xsd" name="customer_report" pageWidth="595" pageHeight="842" columnWidth="535" leftMargin="30" rightMargin="30" topMargin="20" bottomMargin="20" uuid="65647229-b9ea-492c-9579-df6c5298a9a2">
 	<property name="ireport.scriptlethandling" value="2"/>
 	<property name="ireport.encoding" value="UTF-8"/>
 	<property name="ireport.zoom" value="1.0"/>
@@ -30,7 +30,7 @@ group by c.customerid, i.invoicedate]]>
 	<title>
 		<band height="42" splitType="Stretch">
 			<staticText>
-				<reportElement key="staticText-1" x="198" y="4" width="138" height="35"/>
+				<reportElement key="staticText-1" x="198" y="4" width="138" height="35" uuid="bbfd4060-5a27-46e5-a105-49eb87de82be"/>
 				<textElement textAlignment="Center">
 					<font size="24"/>
 				</textElement>
@@ -44,28 +44,28 @@ group by c.customerid, i.invoicedate]]>
 	<columnHeader>
 		<band height="18" splitType="Stretch">
 			<staticText>
-				<reportElement key="staticText-2" x="0" y="0" width="100" height="18"/>
+				<reportElement key="staticText-2" x="0" y="0" width="100" height="18" uuid="8b406ab0-7c83-4f2f-b338-df5c2d2f4817"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Last name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText-3" x="108" y="0" width="101" height="18"/>
+				<reportElement key="staticText-3" x="108" y="0" width="101" height="18" uuid="fedb895d-5b4e-4aac-b30c-62a3cb66e1c4"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[First name]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText-4" x="223" y="0" width="101" height="18"/>
+				<reportElement key="staticText-4" x="223" y="0" width="101" height="18" uuid="69c9e96a-e2c9-4800-99c1-8ae6ee4b7435"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
 				<text><![CDATA[Invoice total]]></text>
 			</staticText>
 			<staticText>
-				<reportElement key="staticText-5" x="342" y="0" width="101" height="18"/>
+				<reportElement key="staticText-5" x="342" y="0" width="101" height="18" uuid="6de45897-9d3d-4da9-b230-9d862bccee9d"/>
 				<textElement>
 					<font size="12" isBold="true"/>
 				</textElement>
@@ -76,23 +76,19 @@ group by c.customerid, i.invoicedate]]>
 	<detail>
 		<band height="18" splitType="Stretch">
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="0" y="0" width="100" height="18"/>
-				<textElement/>
+				<reportElement key="textField" x="0" y="0" width="100" height="18" uuid="18488891-36e7-40a2-95f5-67f7adaae4e3"/>
 				<textFieldExpression><![CDATA[$F{FIRST_NAME}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="109" y="0" width="100" height="18"/>
-				<textElement/>
+				<reportElement key="textField" x="109" y="0" width="100" height="18" uuid="69bdf05e-b37e-4da2-b613-7865898e9416"/>
 				<textFieldExpression><![CDATA[$F{LAST_NAME}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="224" y="0" width="100" height="18"/>
-				<textElement/>
+				<reportElement key="textField" x="224" y="0" width="100" height="18" uuid="64fcb085-72cd-47f7-aa9e-3e0cd54e5703"/>
 				<textFieldExpression><![CDATA[$F{TOTAL}]]></textFieldExpression>
 			</textField>
 			<textField isBlankWhenNull="false">
-				<reportElement key="textField" x="343" y="0" width="100" height="18"/>
-				<textElement/>
+				<reportElement key="textField" x="343" y="0" width="100" height="18" uuid="63622da2-72d0-4a87-ae89-24de8ee942f3"/>
 				<textFieldExpression><![CDATA[$F{INVOICE_DATE}]]></textFieldExpression>
 			</textField>
 		</band>
