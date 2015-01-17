@@ -23,7 +23,7 @@ import java.util.Map;
 /**
  * Represents a row in a database table, providing access to the column values via the {@link org.jminor.common.model.valuemap.ValueMap} interface.
  */
-final class EntityImpl extends DefaultValueMap<String, Object> implements Entity, Serializable, Comparable<Entity> {
+final class DefaultEntity extends DefaultValueMap<String, Object> implements Entity, Serializable, Comparable<Entity> {
 
   private static final long serialVersionUID = 1;
 
@@ -52,19 +52,19 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   private Key primaryKey;
 
   /**
-   * Instantiates a new EntityImpl
+   * Instantiates a new DefaultEntity
    * @param definition the definition of the entity type
    */
-  EntityImpl(final Definition definition) {
+  DefaultEntity(final Definition definition) {
     this.definition = definition;
   }
 
   /**
-   * Instantiates a new EntityImpl
+   * Instantiates a new DefaultEntity
    * @param definition the definition of the entity type
    * @param primaryKey the primary key
    */
-  EntityImpl(final Definition definition, final Key primaryKey) {
+  DefaultEntity(final Definition definition, final Key primaryKey) {
     this(definition);
     Util.rejectNullValue(primaryKey, "primaryKey");
     for (final Property.ColumnProperty property : primaryKey.getProperties()) {
@@ -74,12 +74,12 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   }
 
   /**
-   * Instantiates a new EntityImpl based on the given values.
+   * Instantiates a new DefaultEntity based on the given values.
    * @param definition the definition of the entity type
    * @param values the values
    * @param originalValues the original values, may be null
    */
-  EntityImpl(final Definition definition, final Map<String, Object> values, final Map<String, Object> originalValues) {
+  DefaultEntity(final Definition definition, final Map<String, Object> values, final Map<String, Object> originalValues) {
     this(definition);
     if (values != null) {
       for (final Map.Entry<String, Object> entry : values.entrySet()) {
@@ -411,7 +411,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
    */
   @Override
   public Entity getInstance() {
-    return new EntityImpl(definition);
+    return new DefaultEntity(definition);
   }
 
   /** {@inheritDoc} */
@@ -571,7 +571,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
 
   private Key initializeReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     if (foreignKeyProperty.isCompositeReference()) {
-      final Key key = new KeyImpl(DefaultEntityDefinition.getDefinitionMap().get(foreignKeyProperty.getReferencedEntityID()));
+      final Key key = new DefaultKey(DefaultEntityDefinition.getDefinitionMap().get(foreignKeyProperty.getReferencedEntityID()));
       for (final Property referenceKeyProperty : foreignKeyProperty.getReferenceProperties()) {
         final Object value = super.getValue(referenceKeyProperty.getPropertyID());
         if (value == null) {
@@ -591,7 +591,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
         return null;
       }
 
-      return new KeyImpl(DefaultEntityDefinition.getDefinitionMap().get(foreignKeyProperty.getReferencedEntityID()), value);
+      return new DefaultKey(DefaultEntityDefinition.getDefinitionMap().get(foreignKeyProperty.getReferencedEntityID()), value);
     }
   }
 
@@ -616,7 +616,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
    * @return a Key based on the values in this Entity instance
    */
   private Key initializePrimaryKey(final boolean originalValues) {
-    final Key key = new KeyImpl(definition);
+    final Key key = new DefaultKey(definition);
     for (final Property.ColumnProperty property : definition.getPrimaryKeyProperties()) {
       final String propertyID = property.getPropertyID();
       key.setValue(propertyID, originalValues ? getOriginalValue(propertyID) : super.getValue(propertyID));
@@ -639,7 +639,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     if (value == null) {//possibly not loaded
       final Entity.Key referencedKey = getReferencedPrimaryKey(foreignKeyProperty);
       if (referencedKey != null) {
-        return new EntityImpl(DefaultEntityDefinition.getDefinitionMap().get(referencedKey.getEntityID()), referencedKey);
+        return new DefaultEntity(DefaultEntityDefinition.getDefinitionMap().get(referencedKey.getEntityID()), referencedKey);
       }
     }
 
@@ -747,7 +747,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     return value;
   }
 
-  private static void validateValue(final EntityImpl entity, final Property property, final Object value) {
+  private static void validateValue(final DefaultEntity entity, final Property property, final Object value) {
     if (property instanceof Property.DenormalizedViewProperty) {
       throw new IllegalArgumentException("Can not set the value of a denormalized view property");
     }
@@ -762,7 +762,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     }
   }
 
-  private static boolean primaryKeysEqual(final EntityImpl entity1, final Entity entity2) {
+  private static boolean primaryKeysEqual(final DefaultEntity entity1, final Entity entity2) {
     if (entity1.getEntityID().equals(entity2.getEntityID())) {
       for (final Property.ColumnProperty property : entity1.definition.getPrimaryKeyProperties()) {
         if (!Util.equal(entity1.getValue(property.getPropertyID()), entity2.getValue(property.getPropertyID()))) {
@@ -777,7 +777,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   /**
    * A class representing column key objects for entities.
    */
-  static final class KeyImpl extends DefaultValueMap<String, Object> implements Entity.Key, Serializable {
+  static final class DefaultKey extends DefaultValueMap<String, Object> implements Entity.Key, Serializable {
 
     private static final long serialVersionUID = 1;
 
@@ -810,7 +810,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
      * Instantiates a new Key for the given entity type
      * @param definition the entity definition
      */
-    KeyImpl(final Definition definition) {
+    DefaultKey(final Definition definition) {
       this.definition = definition;
       final List<Property.ColumnProperty> properties = definition.getPrimaryKeyProperties();
       final int propertyCount = properties.size();
@@ -819,12 +819,12 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
     }
 
     /**
-     * Instantiates a new KeyImpl for the given entity type, assuming it is a single value key
+     * Instantiates a new DefaultKey for the given entity type, assuming it is a single value key
      * @param definition the entity definition
      * @param value the value
      * @throws IllegalArgumentException in case this key is a composite key
      */
-    KeyImpl(final Definition definition, final Object value) {
+    DefaultKey(final Definition definition, final Object value) {
       this(definition);
       if (compositeKey) {
         throw new IllegalArgumentException(definition.getEntityID() + " has a composite primary key");

@@ -3906,3 +3906,5 @@
   Unit test usage of clumsy collection counting method replaced by using AtomicInteger instead
   JasperReports library updated to 6.0.0
   iText pdf library added to client runtime classpath for pdf export
+  EntityImpl.KeyImpl renamed to DefaultKey for consistency
+  EntityImpl renamed to DefaultEntity for consistency
