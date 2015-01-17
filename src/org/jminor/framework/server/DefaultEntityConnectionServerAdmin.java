@@ -42,13 +42,13 @@ import java.util.UUID;
 /**
  * Implements the EntityConnectionServerAdmin interface, providing admin access to a EntityConnectionServer instance.
  */
-public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject implements EntityConnectionServerAdmin {
+public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObject implements EntityConnectionServerAdmin {
 
-  private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionServerAdminImpl.class);
+  private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityConnectionServerAdmin.class);
 
   private static final long serialVersionUID = 1;
 
-  private static EntityConnectionServerAdminImpl adminInstance;
+  private static DefaultEntityConnectionServerAdmin adminInstance;
 
   static {
     Configuration.init();
@@ -67,7 +67,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
    * @param serverAdminPort the port on which to make the server admin available
    * @throws RemoteException in case of an exception
    */
-  public EntityConnectionServerAdminImpl(final EntityConnectionServer server, final int serverAdminPort) throws RemoteException {
+  public DefaultEntityConnectionServerAdmin(final EntityConnectionServer server, final int serverAdminPort) throws RemoteException {
     super(serverAdminPort,
             server.isSslEnabled() ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
             server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
@@ -517,7 +517,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
             webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout, clientTimeouts);
     try {
       server.bindToRegistry();
-      adminInstance = new EntityConnectionServerAdminImpl(server, serverAdminPort);
+      adminInstance = new DefaultEntityConnectionServerAdmin(server, serverAdminPort);
       adminInstance.bindToRegistry();
     }
     catch (final Exception e) {
@@ -534,7 +534,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     final String sid = System.getProperty(Database.DATABASE_SID);
     final String host = System.getProperty(Database.DATABASE_HOST);
     final String serverName = Configuration.SERVER_ADMIN_PREFIX + initializeServerName(host, sid);
-    Util.resolveTrustStoreFromClasspath(EntityConnectionServerAdminImpl.class.getSimpleName());
+    Util.resolveTrustStoreFromClasspath(DefaultEntityConnectionServerAdmin.class.getSimpleName());
     try {
       final Registry registry = ServerUtil.getRegistry(registryPort);
       final EntityConnectionServerAdmin serverAdmin = (EntityConnectionServerAdmin) registry.lookup(serverName);
@@ -552,7 +552,7 @@ public final class EntityConnectionServerAdminImpl extends UnicastRemoteObject i
     adminInstance = null;
   }
 
-  static EntityConnectionServerAdminImpl getInstance() {
+  static DefaultEntityConnectionServerAdmin getInstance() {
     return adminInstance;
   }
 

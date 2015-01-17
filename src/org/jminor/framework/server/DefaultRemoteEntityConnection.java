@@ -24,7 +24,6 @@ import org.jminor.framework.db.EntityConnections;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
-
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;
@@ -427,7 +426,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
   /**
    * Checks if the underlying local connection is valid without interrupting the idle time counter.
-   * If a connection pool is being used true will be returned
+   * If a connection pool is being used this will return true
    * @return true if a local connection is being used and is valid
    */
   public boolean isLocalConnectionValid() {

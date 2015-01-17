@@ -3909,3 +3909,5 @@
   EntityImpl.KeyImpl renamed to DefaultKey for consistency
   EntityImpl renamed to DefaultEntity for consistency
   Property.setColumnName() added
+  build.xml run_rmi_registry target removed
+  EntityConnectionServerAdminImpl renamed to DefaultEntityConnectionServerAdmin for consistency

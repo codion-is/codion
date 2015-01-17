@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server;
 
+import ch.qos.logback.classic.Level;
 import org.jminor.common.db.Database;
 import org.jminor.common.model.User;
 import org.jminor.common.model.tools.MethodLogger;
@@ -17,8 +18,6 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.server.provider.RemoteEntityConnectionProvider;
-
-import ch.qos.logback.classic.Level;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
@@ -37,7 +36,7 @@ public class EntityConnectionServerTest {
   private static final int WEB_SERVER_PORT_NUMBER = 8089;
 
   private static EntityConnectionServer server;
-  private static EntityConnectionServerAdminImpl admin;
+  private static DefaultEntityConnectionServerAdmin admin;
 
   public static EntityConnectionServerAdmin getServerAdmin() {
     return admin;
@@ -46,14 +45,14 @@ public class EntityConnectionServerTest {
   @BeforeClass
   public static synchronized void setUp() throws Exception {
     configure();
-    EntityConnectionServerAdminImpl.startServer();
-    EntityConnectionServerTest.admin = EntityConnectionServerAdminImpl.getInstance();
+    DefaultEntityConnectionServerAdmin.startServer();
+    EntityConnectionServerTest.admin = DefaultEntityConnectionServerAdmin.getInstance();
     EntityConnectionServerTest.server = admin.getServer();
   }
 
   @AfterClass
   public static synchronized void tearDown() throws Exception {
-    EntityConnectionServerAdminImpl.shutdownServer();
+    DefaultEntityConnectionServerAdmin.shutdownServer();
     deconfigure();
     admin = null;
     server = null;

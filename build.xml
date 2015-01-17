@@ -166,7 +166,7 @@
     <mkdir dir="${dist}"/>
     <jar jarfile="${dist}/jminor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
-         excludes="org/jminor/framework/demos/**,logback.xml"/>
+         excludes="org/jminor/framework/demos/**"/>
 
     <jar jarfile="${dist}/jminor-common.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
@@ -539,17 +539,6 @@
       <jvmarg value="-Djminor.server.hostname=localhost"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorServerMonitorTruststore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_server_monitor.policy"/>
-    </java>
-  </target>
-
-  <target name="run_rmi_registry" depends="build"
-          description="Runs the RMI registry with the classpath required for bootstrapping the framework RMI server">
-    <java classname="sun.rmi.registry.RegistryImpl" fork="yes">
-      <classpath>
-        <path refid="classes.base"/>
-        <path refid="lib.runtime.server"/>
-      </classpath>
-      <jvmarg value="-Djava.security.policy=${resources.security}/all_permissions.policy"/>
     </java>
   </target>
 

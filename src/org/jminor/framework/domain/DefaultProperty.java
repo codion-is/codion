@@ -901,8 +901,8 @@ class DefaultProperty implements Property {
     }
 
     /**
-     * @param propertyID the property ID, since ForeignKeyProperties are meta properties, the property ID should not
-     * be na underlying table column, it must only be unique for the entity
+     * @param propertyID the property ID, since ForeignKeyProperties are wrapper properties, the property ID should not
+     * be an underlying table column, it must only be unique for the entity
      * @param caption the property caption
      * @param referencedEntityID the ID of the referenced entity type
      * @param referenceProperties the actual column properties involved in the reference
@@ -999,14 +999,14 @@ class DefaultProperty implements Property {
       for (final Property referenceProperty : referenceProperties) {
         Util.rejectNullValue(referenceProperty, "referenceProperty");
         if (referenceProperty.getPropertyID().equals(propertyID)) {
-          throw new IllegalArgumentException(referencedEntityID + ", reference property does not have a unique name: " + propertyID);
+          throw new IllegalArgumentException(referencedEntityID + ", reference propertyID is the same as parent propertyID: " + propertyID);
         }
       }
       if (referenceProperties.length > 1 && referencedPropertyIDs == null) {
         throw new IllegalArgumentException("Referenced properties must be specified when referencing a composite key");
       }
       if (referenceProperties.length > 1 && referencedPropertyIDs.length != referenceProperties.length) {
-        throw new IllegalArgumentException("The number of referenced properties must be equal to the number of reference properties");
+        throw new IllegalArgumentException("The number of referenced properties must be equal to the number of properties referencing them");
       }
     }
   }
@@ -1028,7 +1028,7 @@ class DefaultProperty implements Property {
     private final Property denormalizedProperty;
 
     /**
-     * @param propertyID the property ID, in case of database properties this should be the underlying column name
+     * @param propertyID the property ID
      * @param foreignKeyPropertyID the ID of the foreign key property which references the entity which owns
      * the denormalized property
      * @param denormalizedProperty the property from which this property should get its value

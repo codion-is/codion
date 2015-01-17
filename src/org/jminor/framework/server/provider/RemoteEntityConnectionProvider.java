@@ -96,7 +96,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      final RemoteEntityConnection remote = (RemoteEntityConnection) getEntityServer().connect(
+      final RemoteEntityConnection remote = (RemoteEntityConnection) getServer().connect(
               ClientUtil.connectionInfo(getUser(), clientID, clientTypeID));
 
       return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(remote));
@@ -118,11 +118,11 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   }
 
   /**
-   * @return the RemoteEntityServer instance, with an established connection
+   * @return connects to and returns the Server instance
    * @throws java.rmi.NotBoundException if no server is reachable or if the servers found are not using the specified port
    * @throws java.rmi.RemoteException in case of remote exceptions
    */
-  private Server getEntityServer() throws RemoteException, NotBoundException {
+  private Server getServer() throws RemoteException, NotBoundException {
     boolean unreachable = false;
     try {
       if (this.server != null) {
