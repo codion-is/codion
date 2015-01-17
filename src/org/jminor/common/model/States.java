@@ -167,7 +167,7 @@ public final class States {
       final StringBuilder stringBuilder = new StringBuilder("Aggregate");
       stringBuilder.append(conjunction.toString()).append(super.toString());
       for (final AggregateStateListener listener : stateListeners) {
-        stringBuilder.append(", ").append(listener.state);
+        stringBuilder.append(", ").append(listener.getState());
       }
 
       return stringBuilder.toString();

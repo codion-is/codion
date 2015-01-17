@@ -775,7 +775,7 @@ final class EntityImpl extends DefaultValueMap<String, Object> implements Entity
   }
 
   /**
-   * A class representing column key objects for entities, contains the values for those columns.
+   * A class representing column key objects for entities.
    */
   static final class KeyImpl extends DefaultValueMap<String, Object> implements Entity.Key, Serializable {
 
