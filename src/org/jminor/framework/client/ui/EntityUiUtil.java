@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
+import ch.qos.logback.classic.Level;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
@@ -49,38 +50,12 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-
-import ch.qos.logback.classic.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.AbstractAction;
-import javax.swing.Action;
-import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
-import javax.swing.JButton;
-import javax.swing.JCheckBox;
-import javax.swing.JComboBox;
-import javax.swing.JComponent;
-import javax.swing.JDialog;
-import javax.swing.JFormattedTextField;
-import javax.swing.JLabel;
-import javax.swing.JMenu;
-import javax.swing.JMenuItem;
-import javax.swing.JOptionPane;
-import javax.swing.JPanel;
-import javax.swing.JPopupMenu;
-import javax.swing.JTextArea;
-import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
+import javax.swing.*;
 import javax.swing.text.AbstractDocument;
-import java.awt.BorderLayout;
-import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
-import java.awt.Font;
-import java.awt.Point;
+import java.awt.*;
 import java.awt.event.ActionEvent;
 import java.awt.event.KeyEvent;
 import java.io.IOException;
@@ -1163,13 +1138,13 @@ public final class EntityUiUtil {
     Util.collate(primaryKeyProperties);
     for (final Property.ColumnProperty property : primaryKeyProperties) {
       final boolean modified = entity.isModified(property.getPropertyID());
-      String value = "[PK] " + property.getColumnName() + ": " + entity.getValueAsString(property.getPropertyID());
+      String value = "[PK] " + property.getPropertyID() + ": " + entity.getValueAsString(property.getPropertyID());
       if (modified) {
         value += getOriginalValue(entity, property);
       }
       final JMenuItem menuItem = new JMenuItem(value);
       setInvalidModified(menuItem, true, modified);
-      menuItem.setToolTipText(property.getColumnName());
+      menuItem.setToolTipText(property.getPropertyID());
       rootMenu.add(menuItem);
     }
   }
@@ -1255,7 +1230,7 @@ public final class EntityUiUtil {
         setInvalidModified(menuItem, valid, modified);
         String toolTipText = "";
         if (property instanceof Property.ColumnProperty) {
-          toolTipText = ((Property.ColumnProperty) property).getColumnName();
+          toolTipText = property.getPropertyID();
         }
         if (longValue) {
           toolTipText += (value.length() > MAXIMUM_VALUE_LENGTH ? value.substring(0, MAXIMUM_VALUE_LENGTH) : value);

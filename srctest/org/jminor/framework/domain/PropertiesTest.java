@@ -4,7 +4,6 @@
 package org.jminor.framework.domain;
 
 import org.jminor.common.model.formats.DateFormats;
-
 import org.junit.Test;
 
 import java.sql.Types;
@@ -74,6 +73,11 @@ public final class PropertiesTest {
   @Test(expected = IllegalStateException.class)
   public void setUserNumberFormatGroupingNotNumerical() {
     Properties.columnProperty("propertyID", Types.DATE).setUseNumberFormatGrouping(false);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setColumnNameNull() {
+    Properties.columnProperty("propertyID").setColumnName(null);
   }
 
   @Test

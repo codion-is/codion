@@ -3908,3 +3908,4 @@
   iText pdf library added to client runtime classpath for pdf export
   EntityImpl.KeyImpl renamed to DefaultKey for consistency
   EntityImpl renamed to DefaultEntity for consistency
+  Property.setColumnName() added

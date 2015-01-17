@@ -539,9 +539,9 @@ class DefaultProperty implements Property {
 
   static class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
 
-    private final String columnName;
     private final int columnType;
     private final ValueFetcher valueFetcher;
+    private String columnName;
     private ValueConverter valueConverter;
     private int selectIndex = -1;
     private int primaryKeyIndex = -1;
@@ -562,6 +562,12 @@ class DefaultProperty implements Property {
       this.columnType = columnType;
       this.valueConverter = initializeValueConverter(this);
       this.valueFetcher = initializeValueFetcher(this);
+    }
+
+    @Override
+    public ColumnProperty setColumnName(final String columnName) {
+      Util.rejectNullValue(columnName, "columnName");
+      return this;
     }
 
     @Override

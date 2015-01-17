@@ -290,6 +290,13 @@ public interface Property extends Attribute {
     int getColumnType();
 
     /**
+     * Sets the actual string used as column when querying
+     * @param columnName the column name
+     * @return this Property instance
+     */
+    ColumnProperty setColumnName(final String columnName);
+
+    /**
      * Translates the given value into a sql value, usually this is not required
      * but for certain types this may be necessary, such as boolean values
      * represented by a non-boolean data type in the underlying database
