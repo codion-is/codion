@@ -23,7 +23,7 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
-import org.jminor.framework.db.local.EntityConnections;
+import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Entity;
 
 import org.slf4j.Logger;
@@ -115,7 +115,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   /**
    * The method call log
    */
-  private final transient MethodLogger methodLogger = EntityConnections.createLogger();
+  private final transient MethodLogger methodLogger = LocalEntityConnections.createLogger();
 
   /**
    * Contains the active remote connections, that is, those connections that are in the process of serving a request
@@ -173,11 +173,11 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     catch (final ServerNotActiveException ignored) {}
     try {
       if (connectionPool == null) {
-        localEntityConnection = EntityConnections.createConnection(database, clientInfo.getDatabaseUser());
+        localEntityConnection = LocalEntityConnections.createConnection(database, clientInfo.getDatabaseUser());
         localEntityConnection.setMethodLogger(methodLogger);
       }
       else {
-        poolEntityConnection = EntityConnections.createConnection(database, connectionPool.getConnection());
+        poolEntityConnection = LocalEntityConnections.createConnection(database, connectionPool.getConnection());
         returnConnectionToPool();
       }
     }
@@ -586,7 +586,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     if (poolEntityConnection.isTransactionOpen()) {
       return poolEntityConnection;
     }
-    EntityConnections.setConnection(poolEntityConnection, connectionPool.getConnection());
+    LocalEntityConnections.setConnection(poolEntityConnection, connectionPool.getConnection());
     poolEntityConnection.setMethodLogger(methodLogger);
 
     return poolEntityConnection;
@@ -595,14 +595,14 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   private void returnConnectionToPool() {
     if (poolEntityConnection.isConnected()) {
       connectionPool.returnConnection(poolEntityConnection.getDatabaseConnection().getConnection());
-      EntityConnections.setConnection(poolEntityConnection, null);
+      LocalEntityConnections.setConnection(poolEntityConnection, null);
     }
   }
 
   private EntityConnection getLocalEntityConnection() throws DatabaseException {
     if (!localEntityConnection.isValid()) {
       localEntityConnection.disconnect();
-      localEntityConnection = EntityConnections.createConnection(database, clientInfo.getDatabaseUser());
+      localEntityConnection = LocalEntityConnections.createConnection(database, clientInfo.getDatabaseUser());
       localEntityConnection.setMethodLogger(methodLogger);
     }
 

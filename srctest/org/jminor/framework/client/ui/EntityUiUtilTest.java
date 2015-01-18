@@ -8,7 +8,7 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.checkbox.TristateCheckBox;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.db.local.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.LocalEntityConnectionTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.Property;
@@ -38,28 +38,28 @@ public class EntityUiUtilTest {
   @Test(expected = IllegalArgumentException.class)
   public void createTristateCheckBoxNonNullableBooleanProperty() {
     EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     EntityUiUtil.createTristateCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_BOOLEAN), editModel, null, true);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void createTristateCheckBoxNonBooleanProperty() {
     EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     EntityUiUtil.createTristateCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_TIMESTAMP), editModel, null, true);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void createCheckBoxNonBooleanProperty() {
     EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     EntityUiUtil.createCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_TIMESTAMP), editModel);
   }
 
   @Test
   public void createCheckBox() {
     EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     final JCheckBox box = EntityUiUtil.createCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
             EntityTestDomain.DETAIL_BOOLEAN), editModel);
     assertTrue(box.isSelected());//default value is true
@@ -77,7 +77,7 @@ public class EntityUiUtilTest {
   @Test
   public void createTristateCheckBox() {
     EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
             EntityTestDomain.DETAIL_BOOLEAN_NULLABLE), editModel, null, false);
     assertTrue(box.isSelected());//default value is true
@@ -95,7 +95,7 @@ public class EntityUiUtilTest {
   @Test
   public void createBooleanComboBox() {
     EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     final BooleanComboBoxModel boxModel = (BooleanComboBoxModel) EntityUiUtil.createBooleanComboBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
             EntityTestDomain.DETAIL_BOOLEAN), editModel).getModel();
     assertTrue(boxModel.getSelectedValue().getItem());
@@ -109,7 +109,7 @@ public class EntityUiUtilTest {
   @Test
   public void createValueListComboBox() {
     EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     final JComboBox box = EntityUiUtil.createValueListComboBox((Property.ValueListProperty) Entities.getProperty(EntityTestDomain.T_DETAIL,
             EntityTestDomain.DETAIL_INT_VALUE_LIST), editModel);
 
@@ -128,7 +128,7 @@ public class EntityUiUtilTest {
   public void createComboBox() {
     EntityTestDomain.init();
     final DefaultComboBoxModel boxModel = new DefaultComboBoxModel<>(new Object[] {0, 1, 2, 3});
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, DefaultEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     final JComboBox box = EntityUiUtil.createComboBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
             EntityTestDomain.DETAIL_INT), editModel, boxModel, null);
 

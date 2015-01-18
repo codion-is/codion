@@ -48,7 +48,7 @@ import java.util.Random;
 
 import static org.junit.Assert.*;
 
-public class DefaultEntityConnectionTest {
+public class LocalEntityConnectionTest {
 
   public static final EntityConnectionProvider CONNECTION_PROVIDER =
           EntityConnectionProviders.createConnectionProvider(User.UNIT_TEST_USER, "JMinor Unit Tests");
@@ -59,7 +59,7 @@ public class DefaultEntityConnectionTest {
   private static final String ID = "id";
   private static final String DATA = "data";
 
-  private DefaultEntityConnection connection;
+  private LocalEntityConnection connection;
 
   static {
     EmpDept.init();
@@ -73,7 +73,7 @@ public class DefaultEntityConnectionTest {
             Properties.columnProperty(DATA, Types.BLOB));
   }
 
-  public DefaultEntityConnectionTest() {
+  public LocalEntityConnectionTest() {
     EntityTestDomain.init();
   }
 
@@ -369,7 +369,7 @@ public class DefaultEntityConnectionTest {
 
   @Test
   public void optimisticLockingDeleted() throws Exception {
-    final DefaultEntityConnection connection = initializeConnection();
+    final LocalEntityConnection connection = initializeConnection();
     final EntityConnection connection2 = initializeConnection();
     connection.setOptimisticLocking(true);
     final Entity allen;
@@ -405,8 +405,8 @@ public class DefaultEntityConnectionTest {
 
   @Test
   public void optimisticLockingModified() throws Exception {
-    final DefaultEntityConnection baseConnection = initializeConnection();
-    final DefaultEntityConnection optimisticConnection = initializeConnection();
+    final LocalEntityConnection baseConnection = initializeConnection();
+    final LocalEntityConnection optimisticConnection = initializeConnection();
     optimisticConnection.setOptimisticLocking(true);
     assertTrue(optimisticConnection.isOptimisticLocking());
     String oldLocation = null;
@@ -445,7 +445,7 @@ public class DefaultEntityConnectionTest {
     try {
       final Database db = Databases.createInstance();
       connection = db.createConnection(User.UNIT_TEST_USER);
-      final EntityConnection conn = new DefaultEntityConnection(db, connection);
+      final EntityConnection conn = new LocalEntityConnection(db, connection);
       assertTrue(conn.isConnected());
       assertTrue(conn.isValid());
     }
@@ -466,7 +466,7 @@ public class DefaultEntityConnectionTest {
       final Database db = Databases.createInstance();
       connection = db.createConnection(User.UNIT_TEST_USER);
       connection.close();
-      new DefaultEntityConnection(db, connection);
+      new LocalEntityConnection(db, connection);
     }
     finally {
       if (connection != null) {
@@ -574,7 +574,7 @@ public class DefaultEntityConnectionTest {
     }
   }
 
-  private static DefaultEntityConnection initializeConnection() throws DatabaseException {
-    return new DefaultEntityConnection(Databases.createInstance(), User.UNIT_TEST_USER);
+  private static LocalEntityConnection initializeConnection() throws DatabaseException {
+    return new LocalEntityConnection(Databases.createInstance(), User.UNIT_TEST_USER);
   }
 }

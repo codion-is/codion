@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.local.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.LocalEntityConnectionTest;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 
 import org.junit.Test;
@@ -32,7 +32,7 @@ public class DefaultEntityModelProviderTest {
     assertEquals(CustomerEditModel.class, customerModelProvider.getEditModelClass());
     assertEquals(CustomerTableModel.class, customerModelProvider.getTableModelClass());
 
-    final EntityModel customerModel = customerModelProvider.createModel(DefaultEntityConnectionTest.CONNECTION_PROVIDER, false);
+    final EntityModel customerModel = customerModelProvider.createModel(LocalEntityConnectionTest.CONNECTION_PROVIDER, false);
     assertTrue(customerModel.getEditModel() instanceof CustomerEditModel);
     assertTrue(customerModel.getTableModel() instanceof CustomerTableModel);
     assertTrue(customerModel.containsDetailModel(Chinook.T_INVOICE));

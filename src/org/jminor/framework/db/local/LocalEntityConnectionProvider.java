@@ -89,7 +89,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      return Util.initializeProxy(EntityConnection.class, new LocalConnectionHandler(EntityConnections.createConnection(database, getUser())));
+      return Util.initializeProxy(EntityConnection.class, new LocalConnectionHandler(LocalEntityConnections.createConnection(database, getUser())));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -107,7 +107,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
 
   private static final class LocalConnectionHandler implements InvocationHandler {
     private final EntityConnection connection;
-    private final MethodLogger methodLogger = EntityConnections.createLogger();
+    private final MethodLogger methodLogger = LocalEntityConnections.createLogger();
 
     private LocalConnectionHandler(final EntityConnection connection) {
       this.connection = connection;

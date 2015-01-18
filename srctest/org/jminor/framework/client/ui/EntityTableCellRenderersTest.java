@@ -4,7 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.framework.client.model.DefaultEntityTableModel;
-import org.jminor.framework.db.local.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.LocalEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 
@@ -15,7 +15,7 @@ public class EntityTableCellRenderersTest {
   @Test
   public void test() {
     EmpDept.init();
-    final EntityTablePanel tablePanel = new EntityTablePanel(new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, DefaultEntityConnectionTest.CONNECTION_PROVIDER));
+    final EntityTablePanel tablePanel = new EntityTablePanel(new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER));
     tablePanel.getEntityTableModel().refresh();
     final EntityTableCellRenderer renderer = EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
             Entities.getProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME));
@@ -35,7 +35,7 @@ public class EntityTableCellRenderersTest {
   @Test(expected = IllegalArgumentException.class)
   public void entityMismatch() {
     EmpDept.init();
-    final EntityTablePanel tablePanel = new EntityTablePanel(new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, DefaultEntityConnectionTest.CONNECTION_PROVIDER));
+    final EntityTablePanel tablePanel = new EntityTablePanel(new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER));
     tablePanel.getEntityTableModel().refresh();
     EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
             Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME));

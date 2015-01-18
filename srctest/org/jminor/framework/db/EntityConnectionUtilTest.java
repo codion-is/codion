@@ -8,8 +8,8 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.ProgressReporter;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.local.DefaultEntityConnectionTest;
-import org.jminor.framework.db.local.EntityConnections;
+import org.jminor.framework.db.local.LocalEntityConnectionTest;
+import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entity;
 
@@ -36,7 +36,7 @@ public class EntityConnectionUtilTest {
   public static void setUp() {
     try {
       final H2Database destinationDatabase = new H2Database("TempDB", "resources/demos/chinook/scripts/ddl.sql");
-      DESTINATION_CONNECTION = EntityConnections.createConnection(destinationDatabase, new User("sa", ""));
+      DESTINATION_CONNECTION = LocalEntityConnections.createConnection(destinationDatabase, new User("sa", ""));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -50,7 +50,7 @@ public class EntityConnectionUtilTest {
 
   @Test
   public void copyEntities() throws SQLException, DatabaseException {
-    final EntityConnection sourceConnection = DefaultEntityConnectionTest.CONNECTION_PROVIDER.getConnection();
+    final EntityConnection sourceConnection = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection();
     EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_ARTIST);
     EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_ALBUM);
     EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_MEDIATYPE);
@@ -71,7 +71,7 @@ public class EntityConnectionUtilTest {
 
   @Test
   public void batchInsert() throws SQLException, DatabaseException {
-    final EntityConnection sourceConnection = DefaultEntityConnectionTest.CONNECTION_PROVIDER.getConnection();
+    final EntityConnection sourceConnection = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection();
 
     final List<Entity> source = sourceConnection.selectAll(Chinook.T_PLAYLIST);
     final List<Entity.Key> dest = new ArrayList<>();

@@ -3915,3 +3915,5 @@
   distribution jars restructured, jminor-db-provider.jar split from jminor-client.jar and jminor-db.jar, jminor-server.jar no longer contains db, depends on jminor-db.jar instead, no more jar redundancies
   framework.db.local and framework.db.remote added, substantial refactoring involved
   distribution jars restructured further, jminor-db-provider.jar removed, jminor-db-core.jar, jminor-db-local.jar and jminor-db-remote.jar added
+  DefaultEntityConnection renamed to LocalEntityConnection
+  EntityConnections renamed to LocalEntityConnections

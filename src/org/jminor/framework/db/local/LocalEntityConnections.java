@@ -15,9 +15,9 @@ import java.sql.Connection;
 /**
  * A factory class providing EntityConnection instances.
  */
-public final class EntityConnections {
+public final class LocalEntityConnections {
 
-  private EntityConnections() {}
+  private LocalEntityConnections() {}
 
   /**
    * Constructs a new EntityConnection instance
@@ -27,7 +27,7 @@ public final class EntityConnections {
    * @throws DatabaseException in case there is a problem connecting to the database
    */
   public static EntityConnection createConnection(final Database database, final User user) throws DatabaseException {
-    return new DefaultEntityConnection(database, user);
+    return new LocalEntityConnection(database, user);
   }
 
   /**
@@ -41,14 +41,14 @@ public final class EntityConnections {
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
   public static EntityConnection createConnection(final Database database, final Connection connection) throws DatabaseException {
-    return new DefaultEntityConnection(database, connection);
+    return new LocalEntityConnection(database, connection);
   }
 
   /**
    * @return A {@link MethodLogger} implementation tailored for EntityConnections
    */
   public static MethodLogger createLogger() {
-    return new DefaultEntityConnection.Logger();
+    return new LocalEntityConnection.Logger();
   }
 
   /**

@@ -54,16 +54,16 @@ import java.util.Set;
  * Database database = new H2Database("pathToDb");
  * User user = new User("scott", "tiger");
  *
- * EntityConnection connection = new DefaultEntityConnection(database, user);
+ * EntityConnection connection = new LocalEntityConnection(database, user);
  *
  * List<Entity> entities = connection.selectAll("entityID");
  *
  * connection.disconnect();
  * </pre>
  */
-final class DefaultEntityConnection implements EntityConnection {
+final class LocalEntityConnection implements EntityConnection {
 
-  private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(DefaultEntityConnection.class);
+  private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(LocalEntityConnection.class);
   private static final String CRITERIA_PARAM_NAME = "criteria";
 
   private final DatabaseConnection connection;
@@ -75,25 +75,25 @@ final class DefaultEntityConnection implements EntityConnection {
   private MethodLogger methodLogger;
 
   /**
-   * Constructs a new DefaultEntityConnection instance
+   * Constructs a new LocalEntityConnection instance
    * @param database the Database instance
    * @param user the user used for connecting to the database
    * @throws DatabaseException in case there is a problem connecting to the database,
    * such as a wrong username or password being provided
    */
-  DefaultEntityConnection(final Database database, final User user) throws DatabaseException {
+  LocalEntityConnection(final Database database, final User user) throws DatabaseException {
     this.connection = new DefaultDatabaseConnection(database, user, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
   }
 
   /**
-   * Constructs a new DefaultEntityConnection instance
+   * Constructs a new LocalEntityConnection instance
    * @param database the Database instance
    * @param connection the Connection object to base this EntityConnection on, it is assumed to be in a valid state
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
    * @throws DatabaseException in case a validation statement is required but could not be created
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
-  DefaultEntityConnection(final Database database, final Connection connection) throws DatabaseException {
+  LocalEntityConnection(final Database database, final Connection connection) throws DatabaseException {
     this.connection = new DefaultDatabaseConnection(database, connection, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
   }
 

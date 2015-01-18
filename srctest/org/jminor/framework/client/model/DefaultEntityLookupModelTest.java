@@ -6,7 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.local.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.LocalEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -31,7 +31,7 @@ public final class DefaultEntityLookupModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullEntityID() {
-    new DefaultEntityLookupModel(null, DefaultEntityConnectionTest.CONNECTION_PROVIDER, new ArrayList<Property.ColumnProperty>());
+    new DefaultEntityLookupModel(null, LocalEntityConnectionTest.CONNECTION_PROVIDER, new ArrayList<Property.ColumnProperty>());
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -41,7 +41,7 @@ public final class DefaultEntityLookupModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullLookupProperties() {
-    new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, DefaultEntityConnectionTest.CONNECTION_PROVIDER, null);
+    new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER, null);
   }
 
   @Test
@@ -187,15 +187,15 @@ public final class DefaultEntityLookupModelTest {
     EmpDept.init();
     lookupProperties = Arrays.asList(Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
                     Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB));
-    lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, DefaultEntityConnectionTest.CONNECTION_PROVIDER, lookupProperties);
+    lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER, lookupProperties);
 
-    DefaultEntityConnectionTest.CONNECTION_PROVIDER.getConnection().beginTransaction();
+    LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection().beginTransaction();
     setupData();
   }
 
   @After
   public void tearDown() throws Exception {
-    DefaultEntityConnectionTest.CONNECTION_PROVIDER.getConnection().rollbackTransaction();
+    LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection().rollbackTransaction();
   }
 
   private boolean contains(final List<Entity> result, final String employeeName) {
@@ -246,6 +246,6 @@ public final class DefaultEntityLookupModelTest {
     emp4.setValue(EmpDept.EMPLOYEE_NAME, "Andrew");
     emp4.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
 
-    DefaultEntityConnectionTest.CONNECTION_PROVIDER.getConnection().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
+    LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
   }
 }
