@@ -471,7 +471,7 @@ public final class Configuration {
   /**
    * Specifies the class providing remote db connections<br>
    * Value type: String (the name of a class implementing org.jminor.framework.db.EntityConnectionProvider)<br>
-   * Default value: org.jminor.framework.server.RemoteEntityConnectionProvider
+   * Default value: org.jminor.framework.db.remote.RemoteEntityConnectionProvider
    */
   public static final String REMOTE_CONNECTION_PROVIDER = "jminor.client.remoteConnectionProvider";
 
