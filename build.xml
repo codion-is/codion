@@ -95,7 +95,7 @@
     <rmic base="${build.base}" stubversion="1.2"
           includes="org/jminor/common/server/AbstractRemoteServer.class,
                                          org/jminor/framework/server/DefaultRemoteEntityConnection.class,
-                                         org/jminor/framework/server/EntityConnectionServerAdminImpl.class">
+                                         org/jminor/framework/server/DefaultEntityConnectionServerAdmin.class">
       <classpath refid="lib.build.core"/>
     </rmic>
 
@@ -205,7 +205,7 @@
          includes="org/jminor/framework/Configuration*,
                    org/jminor/framework/server/monitor/**,
                    org/jminor/framework/server/EntityConnectionServerAdmin.class,
-                   org/jminor/framework/server/EntityConnectionServerAdminImpl_Stub.class"/>
+                   org/jminor/framework/server/DefaultEntityConnectionServerAdmin_Stub.class"/>
 
     <jar jarfile="${dist}/jminor-plugins.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
@@ -504,7 +504,7 @@
 
   <target name="run_rmi_server" depends="build"
           description="Runs the RMI server">
-    <java classname="org.jminor.framework.server.EntityConnectionServerAdminImpl" fork="yes">
+    <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes">
       <classpath>
         <path refid="classes.base"/>
         <path refid="classes.demos"/>

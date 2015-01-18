@@ -3911,3 +3911,4 @@
   Property.setColumnName() added
   build.xml run_rmi_registry target removed
   EntityConnectionServerAdminImpl renamed to DefaultEntityConnectionServerAdmin for consistency
+  build.xml updated according to the above
