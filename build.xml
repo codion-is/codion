@@ -175,29 +175,26 @@
     <jar jarfile="${dist}/jminor-db.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
-                   org/jminor/framework/db/**,
+                   org/jminor/framework/db/*.class,
+                   org/jminor/framework/db/criteria/*,
                    org/jminor/framework/domain/*,
                    org/jminor/framework/i18n/**"/>
 
-    <jar jarfile="${dist}/jminor-client.jar" basedir="${build.base}"
+    <jar jarfile="${dist}/jminor-db-provider.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
-         includes="org/jminor/framework/Configuration*,
-                   org/jminor/framework/client/**,
-                   org/jminor/framework/db/**,
-                   org/jminor/framework/i18n/**,
-                   org/jminor/framework/domain/**,
-                   org/jminor/framework/tools/testing/**,
+         includes="org/jminor/framework/db/provider/**,
                    org/jminor/framework/server/provider/RemoteEntityConnectionProvider*,
                    org/jminor/framework/server/RemoteEntityConnection.class,
                    org/jminor/framework/server/DefaultRemoteEntityConnection_Stub.class"/>
 
+    <jar jarfile="${dist}/jminor-client.jar" basedir="${build.base}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/client/**,
+                   org/jminor/framework/tools/testing/**"/>
+
     <jar jarfile="${dist}/jminor-server.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
-         includes="org/jminor/framework/Configuration*,
-                   org/jminor/framework/db/**,
-                   org/jminor/framework/domain/*,
-                   org/jminor/framework/i18n/**,
-                   org/jminor/framework/server/*.class"
+         includes="org/jminor/framework/server/*.class"
          excludes="org/jminor/framework/server/*Stub.class"/>
 
     <jar jarfile="${dist}/jminor-server-monitor.jar" basedir="${build.base}"
@@ -297,6 +294,7 @@
   <target name="deploy_server" depends="recreate_h2_db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <copy file="${dist}/jminor-server.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-db.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-common.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-plugins.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-demos.jar" todir="${deploy.server.path}/lib"/>
@@ -360,7 +358,7 @@
     <mkdir dir="${deploy.demos.dir}/META-INF"/>
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
-      <zipgroupfileset dir="${dist}" includes="jminor-common.jar, jminor-client.jar, jminor-plugins.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
+      <zipgroupfileset dir="${dist}" includes="jminor-common.jar, jminor-client.jar, jminor-db.jar, jminor-db-provider.jar, jminor-plugins.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
       <fileset file="${deploy.demos.truststore}"/>
     </jar>
     <deploy_demo_app app-id="empdept" app-name="EmpDept JMinor Demo" main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>

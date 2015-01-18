@@ -48,24 +48,28 @@ The "dist" directory contains the following distinct jar files for use in applic
 * "jminor.jar" (~1.2 MB)
 - Convenience jar file containing the full framework codebase
 
-* "jminor-common.jar" (~500 KB)
+* "jminor-common.jar" (~515 KB)
 - Common codebase
 
-* "jminor-db.jar" (~175 KB)
-- Database access layer code
+* "jminor-db.jar" (~170 KB)
+- Database layer code
 - Dependencies: jminor-common.jar
 
-* "jminor-client.jar" (~520 KB)
-- Full client codebase, including both local and remote connection facilities
-- Dependencies: jminor-common.jar
+* "jminor-db-provider.jar" (~20 KB)
+- Database access layer code, remote and local
+- Dependencies: jminor-common.jar, jminor-db.jar
+
+* "jminor-client.jar" (~340 KB)
+- Full client codebase
+- Dependencies: jminor-common.jar, jminor-db.jar, jminor-db-remote.jar (if remote connections are required)
 
 * "jminor-plugins.jar" (~25 KB)
 - Framework plugin codebase, JasperReports, Tomcat connection pool, EntityJSONParser and EntityRESTService
 - Dependencies: jminor-common.jar
 
-* "jminor-server.jar" (~210 KB)
+* "jminor-server.jar" (~35 KB)
 - RMI server codebase
-- Dependencies: jminor-common.jar
+- Dependencies: jminor-common.jar, jminor-db.jar
 
 * "jminor_server_monitor.jar" (~85 KB)
 - RMI server monitor codebase
@@ -73,7 +77,7 @@ The "dist" directory contains the following distinct jar files for use in applic
 
 * "jminor-demos.jar" (~130 KB)
 - Three demo applications
-- Dependencies: jminor-client.jar, jminor-common.jar
+- Dependencies: jminor-common.jar, jminor-db.jar, jminor-db-provider.jar, jminor-client.jar
 
 * "jminor-android.jar" (~300 KB)
 - Android tailored library

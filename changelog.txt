@@ -3912,3 +3912,4 @@
   build.xml run_rmi_registry target removed
   EntityConnectionServerAdminImpl renamed to DefaultEntityConnectionServerAdmin for consistency
   build.xml updated according to the above
+  distribution jars restructured, jminor-db-provider.jar split from jminor-client.jar and jminor-db.jar, jminor-server.jar no longer contains db, depends on jminor-db.jar instead, no more jar redundancies
