@@ -126,9 +126,11 @@
     <!--EntityJSONParser plugin and more-->
     <dependency org="org.json" name="json" rev="20090211" transitive="false"
                 conf="
+                build.core->master;
                 build.plugins->master;
                 runtime.tests->master;
-                runtime.client->master"/>
+                runtime.client->master;
+                runtime.server->master"/>
     <!--EntityRESTService plugin-->
     <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" transitive="false"
                 conf="
