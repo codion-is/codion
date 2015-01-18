@@ -6,8 +6,8 @@ package org.jminor.framework.server.monitor;
 import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.server.EntityConnectionServerTest;
-import org.jminor.framework.server.provider.RemoteEntityConnectionProvider;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

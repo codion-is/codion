@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.server;
 
-import ch.qos.logback.classic.Level;
 import org.jminor.common.db.Database;
 import org.jminor.common.model.User;
 import org.jminor.common.model.tools.MethodLogger;
@@ -16,8 +15,11 @@ import org.jminor.common.server.ServerException;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.RemoteEntityConnection;
+import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.server.provider.RemoteEntityConnectionProvider;
+
+import ch.qos.logback.classic.Level;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

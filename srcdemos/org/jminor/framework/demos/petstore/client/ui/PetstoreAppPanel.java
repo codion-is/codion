@@ -12,7 +12,7 @@ import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.petstore.beans.ui.AddressPanel;
 import org.jminor.framework.demos.petstore.beans.ui.CategoryPanel;
 import org.jminor.framework.demos.petstore.beans.ui.ContactInfoPanel;

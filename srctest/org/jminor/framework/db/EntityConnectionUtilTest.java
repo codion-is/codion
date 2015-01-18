@@ -8,6 +8,8 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.ProgressReporter;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.db.local.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.EntityConnections;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entity;
 

@@ -10,7 +10,7 @@ import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.reports.ReportUIWrapper;
 import org.jminor.framework.client.model.reporting.EntityReportUtil;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.JComponent;

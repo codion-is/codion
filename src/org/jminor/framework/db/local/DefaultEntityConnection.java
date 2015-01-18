@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db;
+package org.jminor.framework.db.local;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
@@ -20,6 +20,7 @@ import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;

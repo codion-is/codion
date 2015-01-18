@@ -1,11 +1,10 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.provider;
+package org.jminor.framework.db;
 
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.User;
-import org.jminor.framework.db.EntityConnection;
 
 /**
  * Interface for a class responsible for providing EntityConnection objects.

@@ -11,7 +11,7 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityModelProvider;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 
 import java.util.ArrayList;

@@ -20,10 +20,12 @@ import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnections;
+import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.local.EntityConnections;
 import org.jminor.framework.domain.Entity;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.slf4j.MDC;

@@ -8,7 +8,7 @@ import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.db.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest;
 import org.jminor.framework.server.EntityConnectionServerTest;

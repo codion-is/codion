@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 
 /**
  * The base interface for model objects responsible for reading and writing entities to and from a database.

@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.plugins.jasperreports.model;
 
-import org.jminor.framework.db.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 

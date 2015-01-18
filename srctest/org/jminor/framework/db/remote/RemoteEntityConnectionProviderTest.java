@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server.provider;
+package org.jminor.framework.db.remote;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.User;

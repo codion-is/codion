@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.provider;
+package org.jminor.framework.db.local;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;

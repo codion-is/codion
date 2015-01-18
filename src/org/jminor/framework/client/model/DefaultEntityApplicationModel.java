@@ -5,7 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 

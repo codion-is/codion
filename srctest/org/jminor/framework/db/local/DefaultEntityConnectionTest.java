@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db;
+package org.jminor.framework.db.local;
 
 import org.jminor.common.db.AbstractFunction;
 import org.jminor.common.db.AbstractProcedure;
@@ -16,10 +16,11 @@ import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportResult;
+import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
-import org.jminor.framework.db.provider.EntityConnectionProviders;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;

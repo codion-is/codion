@@ -10,7 +10,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.valuemap.exception.ValidationException;
-import org.jminor.framework.db.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;

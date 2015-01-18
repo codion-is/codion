@@ -11,7 +11,7 @@ import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 
 import javax.swing.JTable;

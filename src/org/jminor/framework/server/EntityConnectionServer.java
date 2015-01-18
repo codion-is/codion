@@ -18,7 +18,9 @@ import org.jminor.common.server.LoginProxy;
 import org.jminor.common.server.ServerException;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.domain.Entities;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

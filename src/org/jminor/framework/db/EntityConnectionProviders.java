@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.provider;
+package org.jminor.framework.db;
 
 import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
@@ -52,8 +52,8 @@ public final class EntityConnectionProviders {
    * @see org.jminor.framework.Configuration#CLIENT_CONNECTION_TYPE
    * @see org.jminor.framework.Configuration#REMOTE_CONNECTION_PROVIDER
    * @see org.jminor.framework.Configuration#LOCAL_CONNECTION_PROVIDER
-   * @see LocalEntityConnectionProvider
-   * @see org.jminor.framework.server.provider.RemoteEntityConnectionProvider
+   * @see org.jminor.framework.db.local.LocalEntityConnectionProvider
+   * @see org.jminor.framework.db.remote.RemoteEntityConnectionProvider
    */
   public static EntityConnectionProvider createConnectionProvider(final User user, final UUID clientID,
                                                                   final String clientTypeID) {

@@ -40,7 +40,7 @@ import org.jminor.framework.client.model.DefaultEntityTableModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertySearchModel;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;

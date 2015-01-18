@@ -20,7 +20,7 @@ import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.client.ui.EntityTablePanel;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentEditPanel;
 import org.jminor.framework.demos.empdept.beans.ui.DepartmentTablePanel;

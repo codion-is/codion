@@ -8,7 +8,7 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.checkbox.TristateCheckBox;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.db.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.DefaultEntityConnectionTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.Property;

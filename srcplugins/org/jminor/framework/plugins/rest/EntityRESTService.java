@@ -12,13 +12,13 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.ServerException;
+import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.plugins.json.EntityJSONParser;
 import org.jminor.framework.server.EntityConnectionServer;
-import org.jminor.framework.server.RemoteEntityConnection;
 
 import org.json.JSONException;
 import org.json.JSONObject;

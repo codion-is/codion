@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Util;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

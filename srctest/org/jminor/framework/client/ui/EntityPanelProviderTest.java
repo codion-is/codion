@@ -6,7 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.framework.client.model.DefaultEntityModelProvider;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityModelProvider;
-import org.jminor.framework.db.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entities;
 

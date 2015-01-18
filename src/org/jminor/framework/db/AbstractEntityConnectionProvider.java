@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.provider;
+package org.jminor.framework.db;
 
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
@@ -10,7 +10,6 @@ import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.EntityConnection;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

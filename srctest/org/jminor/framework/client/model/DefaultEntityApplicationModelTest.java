@@ -4,8 +4,8 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.User;
-import org.jminor.framework.db.DefaultEntityConnectionTest;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.local.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 

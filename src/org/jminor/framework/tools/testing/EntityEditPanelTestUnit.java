@@ -8,8 +8,8 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
-import org.jminor.framework.db.provider.EntityConnectionProviders;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProviders;
 
 /**
  * A base class for testing a {@link org.jminor.framework.client.ui.EntityEditPanel}

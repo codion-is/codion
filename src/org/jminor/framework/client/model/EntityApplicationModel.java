@@ -5,7 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.User;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 
 import java.util.List;
 

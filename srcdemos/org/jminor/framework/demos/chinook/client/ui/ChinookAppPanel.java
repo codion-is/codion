@@ -18,7 +18,7 @@ import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.client.ui.EntityTablePanel;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.beans.ui.AlbumEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.ArtistEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.CustomerEditPanel;

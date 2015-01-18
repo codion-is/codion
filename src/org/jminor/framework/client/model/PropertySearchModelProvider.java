@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Property;
 
 /**

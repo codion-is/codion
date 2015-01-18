@@ -8,7 +8,7 @@ import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 
 /**
  * A static utility class for working with reports.

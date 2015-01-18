@@ -4,6 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.RemoteEntityConnection;
 
 import org.junit.Test;
 

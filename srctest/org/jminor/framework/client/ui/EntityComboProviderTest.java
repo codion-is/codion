@@ -5,7 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.framework.client.model.DefaultEntityComboBoxModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
-import org.jminor.framework.db.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
 

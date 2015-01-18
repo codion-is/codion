@@ -8,7 +8,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Property;
 
 import java.util.ArrayList;

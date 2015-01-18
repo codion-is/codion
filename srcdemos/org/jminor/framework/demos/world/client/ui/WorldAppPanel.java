@@ -10,7 +10,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.world.beans.ui.CityEditPanel;
 import org.jminor.framework.demos.world.beans.ui.CountryEditPanel;
 import org.jminor.framework.demos.world.beans.ui.CountryLanguageEditPanel;

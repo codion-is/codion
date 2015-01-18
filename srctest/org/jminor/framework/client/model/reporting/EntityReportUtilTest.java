@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model.reporting;
 
 import org.jminor.common.model.reports.ReportException;
-import org.jminor.framework.db.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.DefaultEntityConnectionTest;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 
 import net.sf.jasperreports.engine.JasperPrint;

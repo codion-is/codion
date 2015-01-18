@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.db.provider;
+package org.jminor.framework.db.local;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.Databases;
@@ -9,8 +9,8 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnections;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

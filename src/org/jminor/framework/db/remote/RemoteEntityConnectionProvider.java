@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.server.provider;
+package org.jminor.framework.db.remote;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.User;
@@ -10,9 +10,10 @@ import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.db.AbstractEntityConnectionProvider;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.provider.AbstractEntityConnectionProvider;
-import org.jminor.framework.server.RemoteEntityConnection;
+import org.jminor.framework.db.RemoteEntityConnection;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 

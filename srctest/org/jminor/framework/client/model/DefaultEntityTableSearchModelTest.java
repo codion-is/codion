@@ -8,7 +8,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Property;
 

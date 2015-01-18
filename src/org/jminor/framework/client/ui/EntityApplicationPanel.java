@@ -25,8 +25,8 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
-import org.jminor.framework.db.provider.EntityConnectionProvider;
-import org.jminor.framework.db.provider.EntityConnectionProviders;
+import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.i18n.FrameworkMessages;
 

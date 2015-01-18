@@ -470,7 +470,7 @@ public final class Configuration {
 
   /**
    * Specifies the class providing remote db connections<br>
-   * Value type: String (the name of a class implementing org.jminor.framework.db.provider.EntityConnectionProvider)<br>
+   * Value type: String (the name of a class implementing org.jminor.framework.db.EntityConnectionProvider)<br>
    * Default value: org.jminor.framework.server.RemoteEntityConnectionProvider
    */
   public static final String REMOTE_CONNECTION_PROVIDER = "jminor.client.remoteConnectionProvider";
@@ -484,8 +484,8 @@ public final class Configuration {
 
   /**
    * Specifies the class providing local db connections<br>
-   * Value type: String (the name of a class implementing org.jminor.framework.db.provider.EntityConnectionProvider)<br>
-   * Default value: org.jminor.framework.db.provider.LocalEntityConnectionProvider
+   * Value type: String (the name of a class implementing org.jminor.framework.db.EntityConnectionProvider)<br>
+   * Default value: org.jminor.framework.db.local.LocalEntityConnectionProvider
    */
   public static final String LOCAL_CONNECTION_PROVIDER = "jminor.client.localConnectionProvider";
 
@@ -759,8 +759,8 @@ public final class Configuration {
     PROPERTIES.put(SEARCH_PANEL_STATE, false);
     PROPERTIES.put(SERVER_NAME_PREFIX, "JMinor Server");
     PROPERTIES.put(WILDCARD_CHARACTER, "%");
-    PROPERTIES.put(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.server.provider.RemoteEntityConnectionProvider");
-    PROPERTIES.put(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.provider.LocalEntityConnectionProvider");
+    PROPERTIES.put(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.db.remote.RemoteEntityConnectionProvider");
+    PROPERTIES.put(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.local.LocalEntityConnectionProvider");
     PROPERTIES.put(COMBO_BOX_NULL_VALUE_ITEM, "-");
     PROPERTIES.put(PERFORM_NULL_VALIDATION, true);
     PROPERTIES.put(LABEL_TEXT_ALIGNMENT, DEFAULT_LABEL_TEXT_ALIGNMENT);

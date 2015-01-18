@@ -6,7 +6,7 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;
-import org.jminor.framework.db.DefaultEntityConnectionTest;
+import org.jminor.framework.db.local.DefaultEntityConnectionTest;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;

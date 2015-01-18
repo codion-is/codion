@@ -12,7 +12,9 @@ import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.demos.chinook.domain.Chinook;
+
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;

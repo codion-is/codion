@@ -10,8 +10,8 @@ import org.jminor.common.ui.tools.LoadTestPanel;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityModel;
+import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.petstore.domain.Petstore;
-import org.jminor.framework.server.provider.RemoteEntityConnectionProvider;
 import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
