@@ -6,7 +6,7 @@ package org.jminor.common.model;
 import java.io.Serializable;
 
 /**
- * A simple version class for use semantic versioning (http://semver.org)
+ * A simple version class for semantic versioning (http://semver.org)
  */
 public final class Version implements Comparable<Version>, Serializable {
 
@@ -133,7 +133,7 @@ public final class Version implements Comparable<Version>, Serializable {
    * @return a Version based on the given string
    */
   public static Version parse(final String versionString) {
-    if (Util.nullOrEmpty(versionString)) {
+    if (versionString == null || versionString.isEmpty()) {
       throw new IllegalArgumentException("Invalid version string: " + versionString);
     }
     final String[] metadataSplit = versionString.trim().split("-");
