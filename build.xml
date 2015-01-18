@@ -584,8 +584,8 @@
         <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
         <zipfileset dir="${basedir}/resources/demos/@{app-id}" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
       </jar>
-      <!--<signjar jar="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" alias="${jar.sign.alias}"-->
-               <!--storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>-->
+      <signjar jar="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" alias="${jar.sign.alias}"
+               storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
       <copy file="${basedir}/resources/demos/@{app-id}/@{app-id}.jnlp" todir="${deploy.demos.dir}/@{app-id}"/>
       <copy file="${basedir}/resources/demos/@{app-id}/getdown.txt" todir="${deploy.demos.dir}/@{app-id}"/>
       <copy file="${basedir}/docs/jminor.org/jminor_logo_black_medium.png" todir="${deploy.demos.dir}/@{app-id}"/>
