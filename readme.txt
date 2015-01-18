@@ -33,7 +33,7 @@ Release contents (~10 MB):
               and the demo applications. resources/project_template contains an ant build file template
               for projects using the JMinor framework.
 * "src" contains the Java source files for the framework
-* "srcdemos" contains the Java source files for the framework demos: EmpDept, Petstore, Chinook and SchemaBrowser
+* "srcdemos" contains the Java source files for the framework demos: EmpDept, Petstore, Chinook, World and SchemaBrowser
 * "srctest" contains the JUnit test sources for the framework
 * "build.xml" ant build file
 * "build.properties" ant build properties
@@ -48,24 +48,28 @@ The "dist" directory contains the following distinct jar files for use in applic
 * "jminor.jar" (~1.2 MB)
 - Convenience jar file containing the full framework codebase
 
-* "jminor-common.jar" (~515 KB)
-- Common codebase
+* "jminor-common-model.jar" (~270 KB)
+- Common model codebase
+
+* "jminor-common-ui.jar" (~250 KB)
+- Common UI codebase
+- Dependencies: jminor-common-model.jar
 
 * "jminor-db-core.jar" (~145 KB)
 - Core database layer code
-- Dependencies: jminor-common.jar
+- Dependencies: jminor-common-model.jar
 
 * "jminor-db-local.jar" (~32 KB)
 - Local database connection code
-- Dependencies: jminor-common.jar, jminor-db-core.jar
+- Dependencies: jminor-common-model.jar, jminor-db-core.jar
 
 * "jminor-db-remote.jar" (~10 KB)
 - Remote database connection code
-- Dependencies: jminor-common.jar, jminor-db-core.jar
+- Dependencies: jminor-common-model.jar, jminor-db-core.jar
 
 * "jminor-client.jar" (~340 KB)
 - Full client codebase
-- Dependencies: jminor-common.jar, jminor-db-core.jar, jminor-db-local.jar (for local connections), jminor-db-remote.jar (for remote connections)
+- Dependencies: jminor-common-model.jar, jminor-common-ui.jar, jminor-db-core.jar, jminor-db-local.jar (for local connections), jminor-db-remote.jar (for remote connections)
 
 * "jminor-plugins.jar" (~25 KB)
 - Framework plugin codebase, JasperReports, Tomcat connection pool, EntityJSONParser and EntityRESTService
@@ -73,15 +77,15 @@ The "dist" directory contains the following distinct jar files for use in applic
 
 * "jminor-server.jar" (~35 KB)
 - RMI server codebase
-- Dependencies: jminor-common.jar, jminor-db-core.jar, jminor-db-local.jar, jminor-db-remote.jar
+- Dependencies: jminor-common-model.jar, jminor-db-core.jar, jminor-db-local.jar, jminor-db-remote.jar
 
 * "jminor_server_monitor.jar" (~85 KB)
 - RMI server monitor codebase
-- Dependencies: jminor-common.jar
+- Dependencies: jminor-common-model.jar, jminor-common-ui.jar
 
 * "jminor-demos.jar" (~130 KB)
 - Three demo applications
-- Dependencies: jminor-common.jar, jminor-client.jar, jminor-db-core.jar, jminor-db-local.jar (for local connections), jminor-db-remote.jar (for remote connections)
+- Dependencies: jminor-common-model.jar, jminor-common-ui.jar, jminor-client.jar, jminor-db-core.jar, jminor-db-local.jar (for local connections), jminor-db-remote.jar (for remote connections)
 
 * "jminor-android.jar" (~300 KB)
 - Android tailored library

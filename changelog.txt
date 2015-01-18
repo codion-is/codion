@@ -3917,3 +3917,4 @@
   distribution jars restructured further, jminor-db-provider.jar removed, jminor-db-core.jar, jminor-db-local.jar and jminor-db-remote.jar added
   DefaultEntityConnection renamed to LocalEntityConnection
   EntityConnections renamed to LocalEntityConnections
+  distribution jars restructure even more, jminor-common.jar split into jminor-common-model.jar and jminor-common-ui.jar
