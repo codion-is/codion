@@ -586,7 +586,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     if (poolEntityConnection.isTransactionOpen()) {
       return poolEntityConnection;
     }
-    LocalEntityConnections.setConnection(poolEntityConnection, connectionPool.getConnection());
+    poolEntityConnection.getDatabaseConnection().setConnection(connectionPool.getConnection());
     poolEntityConnection.setMethodLogger(methodLogger);
 
     return poolEntityConnection;
@@ -595,7 +595,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   private void returnConnectionToPool() {
     if (poolEntityConnection.isConnected()) {
       connectionPool.returnConnection(poolEntityConnection.getDatabaseConnection().getConnection());
-      LocalEntityConnections.setConnection(poolEntityConnection, null);
+      poolEntityConnection.getDatabaseConnection().setConnection(null);
     }
   }
 

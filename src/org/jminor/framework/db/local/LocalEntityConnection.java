@@ -5,9 +5,9 @@ package org.jminor.framework.db.local;
 
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
+import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
-import org.jminor.common.db.DefaultDatabaseConnection;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
@@ -82,7 +82,7 @@ final class LocalEntityConnection implements EntityConnection {
    * such as a wrong username or password being provided
    */
   LocalEntityConnection(final Database database, final User user) throws DatabaseException {
-    this.connection = new DefaultDatabaseConnection(database, user, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
+    this.connection = DatabaseConnections.createConnection(database, user, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
   }
 
   /**
@@ -94,7 +94,7 @@ final class LocalEntityConnection implements EntityConnection {
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
   LocalEntityConnection(final Database database, final Connection connection) throws DatabaseException {
-    this.connection = new DefaultDatabaseConnection(database, connection, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
+    this.connection = DatabaseConnections.createConnection(database, connection, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
   }
 
   /** {@inheritDoc} */

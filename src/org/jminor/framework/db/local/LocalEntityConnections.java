@@ -4,7 +4,6 @@
 package org.jminor.framework.db.local;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DefaultDatabaseConnection;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.tools.MethodLogger;
@@ -49,15 +48,5 @@ public final class LocalEntityConnections {
    */
   public static MethodLogger createLogger() {
     return new LocalEntityConnection.Logger();
-  }
-
-  /**
-   * Sets the internal connection for the given EntityConnection, note that no checking
-   * of validity or open transactions is performed on the given connection, it is used 'as is'
-   * @param entityConnection the entity connection for which to set the internal connection
-   * @param connection the internal connection to use
-   */
-  public static void setConnection(final EntityConnection entityConnection, final Connection connection) {
-    ((DefaultDatabaseConnection) entityConnection.getDatabaseConnection()).setConnection(connection);
   }
 }

@@ -17,7 +17,7 @@ import java.sql.SQLException;
 /**
  * A default DatabaseConnection implementation, which wraps a standard JDBC Connection object.
  */
-public final class DefaultDatabaseConnection implements DatabaseConnection {
+final class DefaultDatabaseConnection implements DatabaseConnection {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultDatabaseConnection.class);
 
@@ -166,9 +166,13 @@ public final class DefaultDatabaseConnection implements DatabaseConnection {
     return connection != null;
   }
 
-  /**
-   * @return the underlying Connection object
-   */
+  /** {@inheritDoc} */
+  @Override
+  public void setConnection(final Connection connection) {
+    this.connection = connection;
+  }
+
+  /** {@inheritDoc} */
   @Override
   public Connection getConnection() {
     if (!isConnected()) {
@@ -291,15 +295,6 @@ public final class DefaultDatabaseConnection implements DatabaseConnection {
     finally {
       logExit("rollback", exception, null);
     }
-  }
-
-  /**
-   * Sets the internal connection to use, note that no validation or
-   * transaction checking is performed, it is simply used 'as is'
-   * @param connection the connection
-   */
-  public void setConnection(final Connection connection) {
-    this.connection = connection;
   }
 
   private MethodLogger.Entry logExit(final String method, final Throwable exception, final String exitMessage) {

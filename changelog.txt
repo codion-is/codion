@@ -3918,3 +3918,5 @@
   DefaultEntityConnection renamed to LocalEntityConnection
   EntityConnections renamed to LocalEntityConnections
   distribution jars restructure even more, jminor-common.jar split into jminor-common-model.jar and jminor-common-ui.jar
+  DatabaseConnection.setConnection() added
+  LocalEntityConnections.setConnection() removed

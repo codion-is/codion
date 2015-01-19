@@ -27,6 +27,13 @@ public interface DatabaseConnection {
   Connection getConnection();
 
   /**
+   * Sets the internal connection to use, note that no validation or
+   * transaction checking is performed, it is simply used 'as is'
+   * @param connection
+   */
+  void setConnection(final Connection connection);
+
+  /**
    * @return the time at which this connection was pooled
    */
   long getPoolTime();
