@@ -3901,6 +3901,7 @@
   FilteredTablePanel, SHIFT-CTR-[left/right arrow] moves the column
   EntityEditModel.containsUnsavedData(), addConfirmEntitySetAllowedObserver() and removeConfirmEntitySetAllowedObserver()
   EntityEditPanel now warns if entity is about to be set when it contains unsaved data
+0.9.3
   States.DefaultStateObserver, lazy initialization of Events
   States.DefaultAggregateState refactored to accommodate correct event firing, see StatesTest.aggregateStateEvents()
   Unit test usage of clumsy collection counting method replaced by using AtomicInteger instead
@@ -3920,3 +3921,4 @@
   distribution jars restructure even more, jminor-common.jar split into jminor-common-model.jar and jminor-common-ui.jar
   DatabaseConnection.setConnection() added
   LocalEntityConnections.setConnection() removed
+  jminor-client-bundle.jar added to distribution

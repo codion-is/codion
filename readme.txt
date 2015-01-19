@@ -77,7 +77,7 @@ The "dist" directory contains the following distinct jar files for use in applic
 
 * "jminor-server.jar" (~35 KB)
 - RMI server codebase
-- Dependencies: jminor-common-model.jar, jminor-db-core.jar, jminor-db-local.jar, jminor-db-remote.jar
+- Dependencies: jminor-common-model.jar, jminor-db-core.jar, jminor-db-local.jar
 
 * "jminor_server_monitor.jar" (~85 KB)
 - RMI server monitor codebase
@@ -96,10 +96,11 @@ The "dist" directory contains the following distinct jar files for use in applic
 
 4. GETTING STARTED
 
-JMinor comes with four demo applications, a small one based on the SCOTT schema found in most if not all Oracle
+JMinor comes with five demo applications, a small one based on the SCOTT schema found in most if not all Oracle
 setups called EmpDept, a larger one called Petstore based on a schema of the same name, an application based on
-a music web-store schema called Chinook and a SchemaBrowser, which is limited to Oracle, MySQL and H2 databases.
-An H2 database containing the required schemas can be generated via the ant target 'recreate_h2_db'.
+a music web-store schema called Chinook, an application based on the World schema and a SchemaBrowser, which is
+limited to Oracle, MySQL and H2 databases. An H2 database containing the required schemas can be generated via
+the ant target 'recreate_h2_db'.
 
 In order to run the demos you must first run the deploy_all target in the ant build file (info on how to run ant
 builds can be found at ant.apache.org), which deploys the demo applications into the folder dist/deployment along
