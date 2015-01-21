@@ -3922,3 +3922,4 @@
   DatabaseConnection.setConnection() added
   LocalEntityConnections.setConnection() removed
   jminor-client-bundle.jar added to distribution
+  resources/publish added, contains module definitions for publishing artifacts

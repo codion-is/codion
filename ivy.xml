@@ -13,9 +13,13 @@
 
   <publications>
     <artifact name="jminor" type="jar" ext="jar"/>
+    <artifact name="jminor-common-model" type="jar" ext="jar"/>
+    <artifact name="jminor-common-ui" type="jar" ext="jar"/>
+    <artifact name="jminor-db-core" type="jar" ext="jar"/>
+    <artifact name="jminor-db-local" type="jar" ext="jar"/>
+    <artifact name="jminor-db-remote" type="jar" ext="jar"/>
     <artifact name="jminor-client" type="jar" ext="jar"/>
-    <artifact name="jminor-common" type="jar" ext="jar"/>
-    <artifact name="jminor-db" type="jar" ext="jar"/>
+    <artifact name="jminor-client-bundle" type="jar" ext="jar"/>
     <artifact name="jminor-demos" type="jar" ext="jar"/>
     <artifact name="jminor-plugins" type="jar" ext="jar"/>
     <artifact name="jminor-server" type="jar" ext="jar"/>

@@ -1,0 +1,47 @@
+<project name="jminor-publish" xmlns:ivy="antlib:org.apache.ivy.ant">
+
+  <property file="../../../build.properties"/>
+  <property file="../../../user.properties"/>
+
+  <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${ivy.jar}"/>
+
+  <target name="publish-all" description="publish all module artifacts">
+    <copy file="../../dist/jminor-common-model.jar" todir="common-model"/>
+    <copy file="../../dist/jminor-common-ui.jar" todir="common-ui"/>
+    <copy file="../../dist/jminor-db-core.jar" todir="db-core"/>
+    <copy file="../../dist/jminor-db-local.jar" todir="db-local"/>
+    <copy file="../../dist/jminor-db-remote.jar" todir="db-remote"/>
+    <copy file="../../dist/jminor-client.jar" todir="client"/>
+    <copy file="../../dist/jminor-server.jar" todir="server"/>
+    <subant target="publish" buildpath="common-model" />
+    <subant target="publish" buildpath="common-ui" />
+    <subant target="publish" buildpath="db-core" />
+    <subant target="publish" buildpath="db-local" />
+    <subant target="publish" buildpath="db-remote" />
+    <subant target="publish" buildpath="client" />
+    <subant target="publish" buildpath="server" />
+  </target>
+
+  <target name="resolve_all" description="Resolves all module dependencies">
+    <subant target="resolve" buildpath="common-model" />
+    <subant target="resolve" buildpath="common-ui" />
+    <subant target="resolve" buildpath="db-core" />
+    <subant target="resolve" buildpath="db-local" />
+    <subant target="resolve" buildpath="db-remote" />
+    <subant target="resolve" buildpath="client" />
+    <subant target="resolve" buildpath="server" />
+  </target>
+
+  <target name="publish" description="Publish the dist files into a local repository">
+    <fail unless="version">Version information not set</fail>
+    <ivy:resolve/>
+    <ivy:publish pubrevision="${version}" status="release" resolver="publish" overwrite="true" forcedeliver="true">
+      <artifacts pattern="[artifact].[ext]"/>
+    </ivy:publish>
+  </target>
+
+  <target name="resolve" description="Resolves all libraries according to ivy.xml">
+    <delete dir="lib"/>
+    <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" sync="true" type="jar"/>
+  </target>
+</project>
