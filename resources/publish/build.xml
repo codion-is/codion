@@ -12,6 +12,7 @@
     <copy file="../../dist/jminor-db-local.jar" todir="db-local"/>
     <copy file="../../dist/jminor-db-remote.jar" todir="db-remote"/>
     <copy file="../../dist/jminor-client.jar" todir="client"/>
+    <copy file="../../dist/jminor-client-bundle.jar" todir="client-bundle"/>
     <copy file="../../dist/jminor-server.jar" todir="server"/>
     <subant target="publish" buildpath="common-model" />
     <subant target="publish" buildpath="common-ui" />
@@ -19,6 +20,7 @@
     <subant target="publish" buildpath="db-local" />
     <subant target="publish" buildpath="db-remote" />
     <subant target="publish" buildpath="client" />
+    <subant target="publish" buildpath="client-bundle" />
     <subant target="publish" buildpath="server" />
   </target>
 
@@ -29,6 +31,7 @@
     <subant target="resolve" buildpath="db-local" />
     <subant target="resolve" buildpath="db-remote" />
     <subant target="resolve" buildpath="client" />
+    <subant target="resolve" buildpath="client-bundle" />
     <subant target="resolve" buildpath="server" />
   </target>
 
