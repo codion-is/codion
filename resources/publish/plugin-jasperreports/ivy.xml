@@ -1,17 +1,13 @@
 <ivy-module version="2.0">
   <info organisation="org.jminor" module="jminor-plugin-jasperreports"/>
 
-  <configurations>
-    <conf name="runtime"/>
-  </configurations>
-
   <publications>
     <artifact name="jminor-plugin-jasperreports" type="jar" ext="jar"/>
     <artifact name="jminor-plugin-jasperreports-src" type="source" ext="jar"/>
     <artifact name="jminor-plugin-jasperreports-api-doc" type="javadoc" ext="jar"/>
   </publications>
 
-  <dependencies defaultconf="runtime">
+  <dependencies>
     <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration" transitive="false"/>
     <dependency org="org.jminor" name="jminor-common-ui" rev="latest.integration" transitive="false"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration" transitive="false"/>

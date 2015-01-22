@@ -1,17 +1,13 @@
 <ivy-module version="2.0">
   <info organisation="org.jminor" module="jminor-db-core"/>
 
-  <configurations>
-    <conf name="runtime"/>
-  </configurations>
-
   <publications>
     <artifact name="jminor-db-core" type="jar" ext="jar"/>
     <artifact name="jminor-db-core-src" type="source" ext="jar"/>
     <artifact name="jminor-db-core-api-doc" type="javadoc" ext="jar"/>
   </publications>
 
-  <dependencies defaultconf="runtime">
+  <dependencies>
     <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration" transitive="false"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"/>

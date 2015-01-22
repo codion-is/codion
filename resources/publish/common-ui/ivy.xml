@@ -1,17 +1,13 @@
 <ivy-module version="2.0">
   <info organisation="org.jminor" module="jminor-common-ui"/>
 
-  <configurations>
-    <conf name="runtime"/>
-  </configurations>
-
   <publications>
     <artifact name="jminor-common-ui" type="jar" ext="jar"/>
     <artifact name="jminor-common-ui-src" type="source" ext="jar"/>
     <artifact name="jminor-common-ui-api-doc" type="javadoc" ext="jar"/>
   </publications>
 
-  <dependencies defaultconf="runtime">
+  <dependencies>
     <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration" transitive="false"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"/>

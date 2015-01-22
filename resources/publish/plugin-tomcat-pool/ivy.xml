@@ -1,17 +1,13 @@
 <ivy-module version="2.0">
   <info organisation="org.jminor" module="jminor-plugin-tomcat-pool"/>
 
-  <configurations>
-    <conf name="runtime"/>
-  </configurations>
-
   <publications>
     <artifact name="jminor-plugin-tomcat-pool" type="jar" ext="jar"/>
     <artifact name="jminor-plugin-tomcat-pool-src" type="source" ext="jar"/>
     <artifact name="jminor-plugin-tomcat-pool-api-doc" type="javadoc" ext="jar"/>
   </publications>
 
-  <dependencies defaultconf="runtime">
+  <dependencies>
     <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration" transitive="false"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration" transitive="false"/>
 

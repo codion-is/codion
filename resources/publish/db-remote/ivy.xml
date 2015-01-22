@@ -1,17 +1,13 @@
 <ivy-module version="2.0">
   <info organisation="org.jminor" module="jminor-db-remote"/>
 
-  <configurations>
-    <conf name="runtime"/>
-  </configurations>
-
   <publications>
     <artifact name="jminor-db-remote" type="jar" ext="jar"/>
     <artifact name="jminor-db-remote-src" type="source" ext="jar"/>
     <artifact name="jminor-db-remote-api-doc" type="javadoc" ext="jar"/>
   </publications>
 
-  <dependencies defaultconf="runtime">
+  <dependencies>
     <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration" transitive="false"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration" transitive="false"/>
 
