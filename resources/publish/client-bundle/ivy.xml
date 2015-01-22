@@ -6,9 +6,9 @@
   </configurations>
 
   <publications>
-    <artifact name="jminor-client-bundle" type="jar" ext="jar"/>
-    <artifact name="jminor-client-bundle-src" type="source" ext="jar"/>
-    <artifact name="jminor-client-bundle-api-doc" type="javadoc" ext="jar"/>
+    <artifact name="jminor-client-bundle" type="jar" ext="jar" conf="runtime"/>
+    <artifact name="jminor-client-bundle-src" type="source" ext="jar" conf="runtime"/>
+    <artifact name="jminor-client-bundle-api-doc" type="javadoc" ext="jar" conf="runtime"/>
   </publications>
 
   <dependencies>
