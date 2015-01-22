@@ -1,17 +1,21 @@
 <ivy-module version="2.0">
   <info organisation="org.jminor" module="jminor-client-bundle"/>
 
+  <configurations>
+    <conf name="runtime"/>
+  </configurations>
+
   <publications>
-    <artifact name="jminor-client-bundle" type="jar" ext="jar"/>
-    <artifact name="jminor-client-bundle-src" type="source" ext="jar"/>
-    <artifact name="jminor-client-bundle-api-doc" type="javadoc" ext="jar"/>
+    <artifact name="jminor-client-bundle" type="jar" ext="jar" conf="runtime"/>
+    <artifact name="jminor-client-bundle-src" type="source" ext="jar" conf="runtime"/>
+    <artifact name="jminor-client-bundle-api-doc" type="javadoc" ext="jar" conf="runtime"/>
   </publications>
 
   <dependencies>
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false"/>
-    <dependency org="com.toedter" name="jcalendar" rev="1.4" transitive="false"/>
-    <dependency org="org.json" name="json" rev="20090211" transitive="false"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false" conf="runtime->default"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false" conf="runtime->default"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false" conf="runtime->default"/>
+    <dependency org="com.toedter" name="jcalendar" rev="1.4" transitive="false" conf="runtime->default"/>
+    <dependency org="org.json" name="json" rev="20090211" transitive="false" conf="runtime->default"/>
   </dependencies>
 </ivy-module>

@@ -83,7 +83,6 @@
   </target>
 
   <target name="resolve" description="Resolves all libraries according to ivy.xml">
-    <delete dir="lib"/>
     <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" sync="true" type="jar"/>
   </target>
 </project>
