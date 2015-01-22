@@ -19,6 +19,6 @@
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" conf="runtime->master" transitive="false"/>
     <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" conf="runtime->master" transitive="false"/>
 
-    <dependency org="net.sf.jasperreports" name="jasperreports" rev="6.0.0" transitive="false" conf="                 compile->compile;                 runtime->runtime"/>
+    <dependency org="net.sf.jasperreports" name="jasperreports" rev="6.0.0" transitive="false" conf="compile->compile;runtime->runtime"/>
   </dependencies>
 </ivy-module>
