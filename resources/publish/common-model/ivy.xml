@@ -6,9 +6,9 @@
   </configurations>
 
   <publications>
-    <artifact name="jminor-common-model" type="jar" ext="jar" conf="runtime"/>
-    <artifact name="jminor-common-model-src" type="source" ext="jar" conf="runtime"/>
-    <artifact name="jminor-common-model-api-doc" type="javadoc" ext="jar" conf="runtime"/>
+    <artifact name="jminor-common-model" type="jar" ext="jar"/>
+    <artifact name="jminor-common-model-src" type="source" ext="jar"/>
+    <artifact name="jminor-common-model-api-doc" type="javadoc" ext="jar"/>
   </publications>
 
   <dependencies defaultconf="runtime">
