@@ -26,7 +26,7 @@
     <subant target="publish" buildpath="client" />
     <subant target="publish" buildpath="server" />
     <subant target="publish" buildpath="client-bundle" />
-    <subant target="publish" buildpath="plugin-jasper-reports" />
+    <subant target="publish" buildpath="plugin-jasperreports" />
     <subant target="publish" buildpath="plugin-json" />
     <subant target="publish" buildpath="plugin-rest" />
     <subant target="publish" buildpath="plugin-tomcat-pool" />
@@ -41,7 +41,7 @@
     <subant target="resolve" buildpath="client" />
     <subant target="resolve" buildpath="client-bundle" />
     <subant target="resolve" buildpath="server" />
-    <subant target="resolve" buildpath="plugin-jasper-reports" />
+    <subant target="resolve" buildpath="plugin-jasperreports" />
     <subant target="resolve" buildpath="plugin-json" />
     <subant target="resolve" buildpath="plugin-rest" />
     <subant target="resolve" buildpath="plugin-tomcat-pool" />
