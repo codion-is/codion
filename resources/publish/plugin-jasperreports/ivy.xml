@@ -1,5 +1,5 @@
 <ivy-module version="2.0">
-  <info organisation="org.jminor" module="jminor-plugin-jasperreports" revision="0.9.3" status="release" publication="20150122051747"/>
+  <info organisation="org.jminor" module="jminor-plugin-jasperreports"/>
 
   <configurations>
     <conf name="runtime"/>
@@ -11,9 +11,9 @@
   </publications>
 
   <dependencies>
-    <dependency org="org.jminor" name="jminor-common-model" rev="0.9.3" revConstraint="latest.integration" transitive="false"/>
-    <dependency org="org.jminor" name="jminor-common-ui" rev="0.9.3" revConstraint="latest.integration" transitive="false"/>
-    <dependency org="org.jminor" name="jminor-db-core" rev="0.9.3" revConstraint="latest.integration" transitive="false"/>
+    <dependency org="org.jminor" name="jminor-common-model" revConstraint="latest.integration" transitive="false"/>
+    <dependency org="org.jminor" name="jminor-common-ui" revConstraint="latest.integration" transitive="false"/>
+    <dependency org="org.jminor" name="jminor-db-core" revConstraint="latest.integration" transitive="false"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime->master" transitive="false"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" conf="runtime->master" transitive="false"/>

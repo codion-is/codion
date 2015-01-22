@@ -1,5 +1,5 @@
 <ivy-module version="2.0">
-  <info organisation="org.jminor" module="jminor-client-bundle" revision="0.9.3" status="release" publication="20150122051746"/>
+  <info organisation="org.jminor" module="jminor-client-bundle"/>
 
   <configurations>
     <conf name="runtime"/>

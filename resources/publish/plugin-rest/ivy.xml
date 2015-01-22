@@ -1,5 +1,5 @@
 <ivy-module version="2.0">
-  <info organisation="org.jminor" module="jminor-plugin-rest" revision="0.9.3" status="release" publication="20150122051753"/>
+  <info organisation="org.jminor" module="jminor-plugin-rest"/>
 
   <configurations>
     <conf name="runtime"/>
@@ -10,11 +10,11 @@
   </publications>
 
   <dependencies>
-    <dependency org="org.jminor" name="jminor-common-model" rev="0.9.3" revConstraint="latest.integration" transitive="false"/>
-    <dependency org="org.jminor" name="jminor-db-core" rev="0.9.3" revConstraint="latest.integration" transitive="false"/>
-    <dependency org="org.jminor" name="jminor-db-remote" rev="0.9.3" revConstraint="latest.integration" transitive="false"/>
-    <dependency org="org.jminor" name="jminor-server" rev="0.9.3" revConstraint="latest.integration" transitive="false"/>
-    <dependency org="org.jminor" name="jminor-plugin-json" rev="0.9.3" revConstraint="latest.integration" transitive="false"/>
+    <dependency org="org.jminor" name="jminor-common-model" revConstraint="latest.integration" transitive="false"/>
+    <dependency org="org.jminor" name="jminor-db-core" revConstraint="latest.integration" transitive="false"/>
+    <dependency org="org.jminor" name="jminor-db-remote" revConstraint="latest.integration" transitive="false"/>
+    <dependency org="org.jminor" name="jminor-server" revConstraint="latest.integration" transitive="false"/>
+    <dependency org="org.jminor" name="jminor-plugin-json" revConstraint="latest.integration" transitive="false"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime->master" transitive="false"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" conf="runtime->master" transitive="false"/>
