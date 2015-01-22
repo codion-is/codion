@@ -14,11 +14,11 @@
   </publications>
 
   <dependencies>
-    <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration" transitive="false"/>
-    <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration" transitive="false"/>
-    <dependency org="org.jminor" name="jminor-db-remote" rev="latest.integration" transitive="false"/>
-    <dependency org="org.jminor" name="jminor-server" rev="latest.integration" transitive="false"/>
-    <dependency org="org.jminor" name="jminor-plugin-json" rev="latest.integration" transitive="false"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-db-remote" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-server" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-plugin-json" rev="latest.integration"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false" conf="runtime->default"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false" conf="runtime->default"/>
