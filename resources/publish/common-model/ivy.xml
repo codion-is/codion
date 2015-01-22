@@ -1,5 +1,5 @@
 <ivy-module version="2.0">
-  <info organisation="org.jminor" module="jminor-common-model"/>
+  <info organisation="org.jminor" module="jminor-common-model" revision="0.9.3" status="release" publication="20150122051725"/>
 
   <configurations>
     <conf name="runtime"/>

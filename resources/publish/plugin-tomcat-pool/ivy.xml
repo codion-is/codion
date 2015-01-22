@@ -1,19 +1,23 @@
 <ivy-module version="2.0">
-  <info organisation="org.jminor" module="jminor-db-core" revision="0.9.3" status="release" publication="20150122051734"/>
+  <info organisation="org.jminor" module="jminor-plugin-tomcat-pool" revision="0.9.3" status="release" publication="20150122051754"/>
 
   <configurations>
     <conf name="runtime"/>
   </configurations>
 
   <publications>
-    <artifact name="jminor-db-core" type="jar" ext="jar" conf="runtime"/>
+    <artifact name="jminor-plugin-tomcat-pool" type="jar" ext="jar" conf="runtime"/>
   </publications>
 
   <dependencies>
     <dependency org="org.jminor" name="jminor-common-model" rev="0.9.3" revConstraint="latest.integration" transitive="false"/>
+    <dependency org="org.jminor" name="jminor-db-core" rev="0.9.3" revConstraint="latest.integration" transitive="false"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime->master" transitive="false"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" conf="runtime->master" transitive="false"/>
     <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" conf="runtime->master" transitive="false"/>
+
+    <dependency org="org.apache.tomcat" name="tomcat-jdbc" rev="7.0.39" conf="runtime->master" transitive="false"/>
+    <dependency org="org.apache.tomcat" name="tomcat-juli" rev="7.0.39" conf="runtime->master" transitive="false"/>
   </dependencies>
 </ivy-module>

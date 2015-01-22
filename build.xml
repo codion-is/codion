@@ -211,8 +211,21 @@
                    org/jminor/framework/server/EntityConnectionServerAdmin.class,
                    org/jminor/framework/server/DefaultEntityConnectionServerAdmin_Stub.class"/>
 
-    <jar jarfile="${dist}/jminor-plugins.jar" basedir="${build.plugins}"
-         manifest="${build.base}/META-INF/MANIFEST.MF"/>
+    <jar jarfile="${dist}/jminor-plugin-jasperreports.jar" basedir="${build.plugins}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/plugins/jasperreports/**"/>
+
+    <jar jarfile="${dist}/jminor-plugin-json.jar" basedir="${build.plugins}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/plugins/json/**"/>
+
+    <jar jarfile="${dist}/jminor-plugin-rest.jar" basedir="${build.plugins}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/plugins/rest/**"/>
+
+    <jar jarfile="${dist}/jminor-plugin-tomcat-pool.jar" basedir="${build.plugins}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/plugins/tomcat/pool/**"/>
 
     <jar jarfile="${dist}/jminor-demos.jar" basedir="${build.demos}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>

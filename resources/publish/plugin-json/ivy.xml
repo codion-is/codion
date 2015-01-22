@@ -1,18 +1,22 @@
 <ivy-module version="2.0">
-  <info organisation="org.jminor" module="jminor-client-bundle" revision="0.9.3" status="release" publication="20150122051746"/>
+  <info organisation="org.jminor" module="jminor-plugin-json" revision="0.9.3" status="release" publication="20150122051748"/>
 
   <configurations>
     <conf name="runtime"/>
   </configurations>
 
   <publications>
-    <artifact name="jminor-client-bundle" type="jar" ext="jar" conf="runtime"/>
+    <artifact name="jminor-plugin-json" type="jar" ext="jar" conf="runtime"/>
   </publications>
 
   <dependencies>
+    <dependency org="org.jminor" name="jminor-common-model" rev="0.9.3" revConstraint="latest.integration" transitive="false"/>
+    <dependency org="org.jminor" name="jminor-db-core" rev="0.9.3" revConstraint="latest.integration" transitive="false"/>
+
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime->master" transitive="false"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" conf="runtime->master" transitive="false"/>
     <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" conf="runtime->master" transitive="false"/>
+
     <dependency org="org.json" name="json" rev="20090211" conf="runtime->master" transitive="false"/>
   </dependencies>
 </ivy-module>

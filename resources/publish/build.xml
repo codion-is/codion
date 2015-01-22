@@ -14,14 +14,22 @@
     <copy file="../../dist/jminor-client.jar" todir="client"/>
     <copy file="../../dist/jminor-client-bundle.jar" todir="client-bundle"/>
     <copy file="../../dist/jminor-server.jar" todir="server"/>
+    <copy file="../../dist/jminor-plugin-jasperreports.jar" todir="plugin-jasperreports"/>
+    <copy file="../../dist/jminor-plugin-json.jar" todir="plugin-json"/>
+    <copy file="../../dist/jminor-plugin-rest.jar" todir="plugin-rest"/>
+    <copy file="../../dist/jminor-plugin-tomcat-pool.jar" todir="plugin-tomcat-pool"/>
     <subant target="publish" buildpath="common-model" />
     <subant target="publish" buildpath="common-ui" />
     <subant target="publish" buildpath="db-core" />
     <subant target="publish" buildpath="db-local" />
     <subant target="publish" buildpath="db-remote" />
     <subant target="publish" buildpath="client" />
-    <subant target="publish" buildpath="client-bundle" />
     <subant target="publish" buildpath="server" />
+    <subant target="publish" buildpath="client-bundle" />
+    <subant target="publish" buildpath="plugin-jasper-reports" />
+    <subant target="publish" buildpath="plugin-json" />
+    <subant target="publish" buildpath="plugin-rest" />
+    <subant target="publish" buildpath="plugin-tomcat-pool" />
   </target>
 
   <target name="resolve_all" description="Resolves all module dependencies">
@@ -33,6 +41,10 @@
     <subant target="resolve" buildpath="client" />
     <subant target="resolve" buildpath="client-bundle" />
     <subant target="resolve" buildpath="server" />
+    <subant target="resolve" buildpath="plugin-jasper-reports" />
+    <subant target="resolve" buildpath="plugin-json" />
+    <subant target="resolve" buildpath="plugin-rest" />
+    <subant target="resolve" buildpath="plugin-tomcat-pool" />
   </target>
 
   <target name="publish" description="Publish the dist files into a local repository">
