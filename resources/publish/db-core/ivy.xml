@@ -6,9 +6,9 @@
   </configurations>
 
   <publications>
-    <artifact name="jminor-db-core" type="jar" ext="jar" conf="runtime"/>
-    <artifact name="jminor-db-core-src" type="source" ext="jar" conf="runtime"/>
-    <artifact name="jminor-db-core-api-doc" type="javadoc" ext="jar" conf="runtime"/>
+    <artifact name="jminor-db-core" type="jar" ext="jar"/>
+    <artifact name="jminor-db-core-src" type="source" ext="jar"/>
+    <artifact name="jminor-db-core-api-doc" type="javadoc" ext="jar"/>
   </publications>
 
   <dependencies>
