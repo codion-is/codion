@@ -2,18 +2,19 @@
   <info organisation="org.jminor" module="jminor-common-model"/>
 
   <configurations>
+    <conf name="compile"/>
     <conf name="runtime"/>
   </configurations>
 
   <publications>
-    <artifact name="jminor-common-model" type="jar" ext="jar" conf="runtime"/>
-    <artifact name="jminor-common-model-src" type="source" ext="jar" conf="runtime"/>
-    <artifact name="jminor-common-model-api-doc" type="javadoc" ext="jar" conf="runtime"/>
+    <artifact name="jminor-common-model" type="jar" ext="jar"/>
+    <artifact name="jminor-common-model-src" type="source" ext="jar"/>
+    <artifact name="jminor-common-model-api-doc" type="javadoc" ext="jar"/>
   </publications>
 
   <dependencies>
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime->master" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" conf="runtime->master" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" conf="runtime->master" transitive="false"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime->runtime;compile->compile" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" conf="runtime->runtime;compile->compile" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" conf="runtime->runtime;compile->compile" transitive="false"/>
   </dependencies>
 </ivy-module>
