@@ -3,12 +3,14 @@
 
   <configurations>
     <conf name="runtime"/>
+    <conf name="sources"/>
+    <conf name="javadoc"/>
   </configurations>
 
   <publications>
     <artifact name="jminor-common-ui" type="jar" ext="jar" conf="runtime"/>
-    <artifact name="jminor-common-ui-src" type="source" ext="jar" conf="runtime"/>
-    <artifact name="jminor-common-ui-api-doc" type="javadoc" ext="jar" conf="runtime"/>
+    <artifact name="jminor-common-ui-src" type="source" ext="jar" conf="sources"/>
+    <artifact name="jminor-common-ui-api-doc" type="javadoc" ext="jar" conf="javadoc"/>
   </publications>
 
   <dependencies>
