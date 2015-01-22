@@ -11,11 +11,11 @@
     <artifact name="jminor-client-bundle-api-doc" type="javadoc" ext="jar"/>
   </publications>
 
-  <dependencies>
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime->runtime" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" conf="runtime->runtime" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" conf="runtime->runtime" transitive="false"/>
-    <dependency org="com.toedter" name="jcalendar" rev="1.4" conf="runtime->runtime" transitive="false"/>
-    <dependency org="org.json" name="json" rev="20090211" conf="runtime->runtime" transitive="false"/>
+  <dependencies defaultconf="runtime">
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false"/>
+    <dependency org="com.toedter" name="jcalendar" rev="1.4" transitive="false"/>
+    <dependency org="org.json" name="json" rev="20090211" transitive="false"/>
   </dependencies>
 </ivy-module>

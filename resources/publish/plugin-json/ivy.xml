@@ -11,14 +11,14 @@
     <artifact name="jminor-plugin-json-api-doc" type="javadoc" ext="jar"/>
   </publications>
 
-  <dependencies>
+  <dependencies defaultconf="runtime">
     <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration" transitive="false"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration" transitive="false"/>
 
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime->runtime" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" conf="runtime->runtime" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" conf="runtime->runtime" transitive="false"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false"/>
 
-    <dependency org="org.json" name="json" rev="20090211" conf="runtime->runtime" transitive="false"/>
+    <dependency org="org.json" name="json" rev="20090211" transitive="false"/>
   </dependencies>
 </ivy-module>

@@ -11,9 +11,9 @@
     <artifact name="jminor-common-model-api-doc" type="javadoc" ext="jar" conf="runtime"/>
   </publications>
 
-  <dependencies>
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime->runtime" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" conf="runtime->runtime" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" conf="runtime->runtime" transitive="false"/>
+  <dependencies defaultconf="runtime">
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false"/>
   </dependencies>
 </ivy-module>

@@ -11,22 +11,22 @@
     <artifact name="jminor-plugin-rest-api-doc" type="javadoc" ext="jar"/>
   </publications>
 
-  <dependencies>
+  <dependencies defaultconf="runtime">
     <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration" transitive="false"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration" transitive="false"/>
     <dependency org="org.jminor" name="jminor-db-remote" rev="latest.integration" transitive="false"/>
     <dependency org="org.jminor" name="jminor-server" rev="latest.integration" transitive="false"/>
     <dependency org="org.jminor" name="jminor-plugin-json" rev="latest.integration" transitive="false"/>
 
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime->runtime" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" conf="runtime->runtime" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" conf="runtime->runtime" transitive="false"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false"/>
 
-    <dependency org="org.json" name="json" rev="20090211" conf="runtime->runtime" transitive="false"/>
+    <dependency org="org.json" name="json" rev="20090211" transitive="false"/>
 
-    <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" conf="runtime->runtime" transitive="false"/>
-    <dependency org="com.sun.jersey" name="jersey-bundle" rev="1.17.1" conf="runtime->runtime" transitive="false"/>
-    <dependency org="asm" name="asm" rev="3.3.1" conf="runtime->runtime" transitive="false"/>
-    <dependency org="org.mortbay.jetty" name="servlet-api" rev="3.0.20100224" conf="runtime->runtime" transitive="false"/>
+    <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" transitive="false"/>
+    <dependency org="com.sun.jersey" name="jersey-bundle" rev="1.17.1" transitive="false"/>
+    <dependency org="asm" name="asm" rev="3.3.1" transitive="false"/>
+    <dependency org="org.mortbay.jetty" name="servlet-api" rev="3.0.20100224" transitive="false"/>
   </dependencies>
 </ivy-module>
