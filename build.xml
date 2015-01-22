@@ -167,13 +167,31 @@
     <jar jarfile="${dist}/jminor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          excludes="org/jminor/framework/demos/**"/>
+    <jar jarfile="${dist}/jminor-src.jar" basedir="${src}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"/>
+    <jar jarfile="${dist}/jminor-api-doc.jar" basedir="${docsapi}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
     <jar jarfile="${dist}/jminor-common-model.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/common/**"
          excludes="org/jminor/common/ui/**"/>
+    <jar jarfile="${dist}/jminor-common-model-src.jar" basedir="${src}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/common/**"
+         excludes="org/jminor/common/ui/**"/>
+    <jar jarfile="${dist}/jminor-common-model-api-doc.jar" basedir="${docsapi}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/common/**"
+         excludes="org/jminor/common/ui/**"/>
 
     <jar jarfile="${dist}/jminor-common-ui.jar" basedir="${build.base}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/common/ui/**"/>
+    <jar jarfile="${dist}/jminor-common-ui-src.jar" basedir="${src}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/common/ui/**"/>
+    <jar jarfile="${dist}/jminor-common-ui-api-doc.jar" basedir="${docsapi}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/common/ui/**"/>
 
@@ -184,8 +202,28 @@
                    org/jminor/framework/db/criteria/*,
                    org/jminor/framework/domain/*,
                    org/jminor/framework/i18n/**"/>
+    <jar jarfile="${dist}/jminor-db-core-src.jar" basedir="${src}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/Configuration*,
+                   org/jminor/framework/db/*.class,
+                   org/jminor/framework/db/criteria/*,
+                   org/jminor/framework/domain/*,
+                   org/jminor/framework/i18n/**"/>
+    <jar jarfile="${dist}/jminor-db-core-api-doc.jar" basedir="${docsapi}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/Configuration*,
+                   org/jminor/framework/db/*.class,
+                   org/jminor/framework/db/criteria/*,
+                   org/jminor/framework/domain/*,
+                   org/jminor/framework/i18n/**"/>
 
     <jar jarfile="${dist}/jminor-db-local.jar" basedir="${build.base}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/db/local/*"/>
+    <jar jarfile="${dist}/jminor-db-local-src.jar" basedir="${src}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/db/local/*"/>
+    <jar jarfile="${dist}/jminor-db-local-api-doc.jar" basedir="${docsapi}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/db/local/*"/>
 
@@ -193,8 +231,22 @@
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/db/remote/*,
                    org/jminor/framework/server/DefaultRemoteEntityConnection_Stub.class"/>
+    <jar jarfile="${dist}/jminor-db-remote-src.jar" basedir="${build.base}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/db/remote/*"/>
+    <jar jarfile="${dist}/jminor-db-remote-api-doc.jar" basedir="${docsapi}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/db/remote/*"/>
 
     <jar jarfile="${dist}/jminor-client.jar" basedir="${build.base}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/client/**,
+                   org/jminor/framework/tools/testing/**"/>
+    <jar jarfile="${dist}/jminor-client-src.jar" basedir="${src}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/client/**,
+                   org/jminor/framework/tools/testing/**"/>
+    <jar jarfile="${dist}/jminor-client-api-doc.jar" basedir="${docsapi}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/client/**,
                    org/jminor/framework/tools/testing/**"/>
@@ -203,6 +255,14 @@
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/server/*.class"
          excludes="org/jminor/framework/server/*Stub.class"/>
+    <jar jarfile="${dist}/jminor-server-src.jar" basedir="${src}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/server/**"
+         excludes="org/jminor/framework/server/monitor/**"/>
+    <jar jarfile="${dist}/jminor-server-api-doc.jar" basedir="${docsapi}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/server/**"
+         excludes="org/jminor/framework/server/monitor/**"/>
 
     <jar jarfile="${dist}/jminor-server-monitor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
@@ -210,41 +270,70 @@
                    org/jminor/framework/server/monitor/**,
                    org/jminor/framework/server/EntityConnectionServerAdmin.class,
                    org/jminor/framework/server/DefaultEntityConnectionServerAdmin_Stub.class"/>
+    <jar jarfile="${dist}/jminor-server-monitor-src.jar" basedir="${src}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/server/monitor/**"/>
+    <jar jarfile="${dist}/jminor-server-monitor-api-doc.jar" basedir="${docsapi}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/server/monitor/**"/>
 
     <jar jarfile="${dist}/jminor-plugin-jasperreports.jar" basedir="${build.plugins}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/plugins/jasperreports/**"/>
+    <jar jarfile="${dist}/jminor-plugin-jasperreports-src.jar" basedir="${srcplugins}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/plugins/jasperreports/**"/>
+    <jar jarfile="${dist}/jminor-plugin-jasperreports-api-doc.jar" basedir="${pluginsapi}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/jasperreports/**"/>
 
     <jar jarfile="${dist}/jminor-plugin-json.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/json/**"/>
+    <jar jarfile="${dist}/jminor-plugin-json-src.jar" basedir="${srcplugins}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/plugins/json/**"/>
+    <jar jarfile="${dist}/jminor-plugin-json-api-doc.jar" basedir="${pluginsapi}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/plugins/json/**"/>
 
     <jar jarfile="${dist}/jminor-plugin-rest.jar" basedir="${build.plugins}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/plugins/rest/**"/>
+    <jar jarfile="${dist}/jminor-plugin-rest-src.jar" basedir="${srcplugins}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/plugins/rest/**"/>
+    <jar jarfile="${dist}/jminor-plugin-rest-api-doc.jar" basedir="${pluginsapi}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/rest/**"/>
 
     <jar jarfile="${dist}/jminor-plugin-tomcat-pool.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/tomcat/pool/**"/>
+    <jar jarfile="${dist}/jminor-plugin-tomcat-pool-src.jar" basedir="${srcplugins}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/plugins/tomcat/pool/**"/>
+    <jar jarfile="${dist}/jminor-plugin-tomcat-pool-api-doc.jar" basedir="${pluginsapi}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/plugins/tomcat/pool/**"/>
 
     <jar jarfile="${dist}/jminor-demos.jar" basedir="${build.demos}"
+         manifest="${build.base}/META-INF/MANIFEST.MF"/>
+    <jar jarfile="${dist}/jminor-demos-src.jar" basedir="${srcdemos}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
     <jar jarfile="${dist}/jminor-client-bundle.jar">
       <zipgroupfileset dir="${dist}" includes="jminor-common-model.jar, jminor-common-ui.jar, jminor-db-core.jar,
       jminor-db-local.jar, jminor-db-remote.jar, jminor-client.jar"/>
     </jar>
-
-    <jar jarfile="${dist}/jminor-src.jar" basedir="${src}"
-         manifest="${build.base}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="${dist}/jminor-src-plugins.jar" basedir="${srcplugins}"
-         manifest="${build.base}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="${dist}/jminor-src-test.jar" basedir="${srctest}"
-         manifest="${build.base}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="${dist}/jminor-src-demos.jar" basedir="${srcdemos}"
-         manifest="${build.base}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="${dist}/jminor-api-doc.jar" basedir="${docsapi}"
-         manifest="${build.base}/META-INF/MANIFEST.MF"/>
+    <jar jarfile="${dist}/jminor-client-bundle-src.jar">
+      <zipgroupfileset dir="${dist}" includes="jminor-common-model-src.jar, jminor-common-ui-src.jar, jminor-db-core-src.jar,
+      jminor-db-local-src.jar, jminor-db-remote-src.jar, jminor-client-src.jar"/>
+    </jar>
+    <jar jarfile="${dist}/jminor-client-bundle-api-doc.jar">
+      <zipgroupfileset dir="${dist}" includes="jminor-common-model-api-doc.jar, jminor-common-ui-api-doc.jar, jminor-db-core-api-doc.jar,
+      jminor-db-local-api-doc.jar, jminor-db-remote-api-doc.jar, jminor-client-api-doc.jar"/>
+    </jar>
 
     <copy file="${basedir}/changelog.txt" todir="${dist}"/>
   </target>

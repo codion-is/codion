@@ -5,19 +5,46 @@
 
   <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${ivy.jar}"/>
 
-  <target name="publish-all" description="publish all module artifacts">
-    <copy file="../../dist/jminor-common-model.jar" todir="common-model"/>
-    <copy file="../../dist/jminor-common-ui.jar" todir="common-ui"/>
-    <copy file="../../dist/jminor-db-core.jar" todir="db-core"/>
-    <copy file="../../dist/jminor-db-local.jar" todir="db-local"/>
-    <copy file="../../dist/jminor-db-remote.jar" todir="db-remote"/>
+  <target name="copy-artifacts">
+    <copy todir="common-model">
+      <fileset dir="../../dist" includes="jminor-common-model*.jar"/>
+    </copy>
+    <copy todir="common-ui">
+      <fileset dir="../../dist" includes="jminor-common-ui*.jar"/>
+    </copy>
+    <copy todir="db-core">
+      <fileset dir="../../dist" includes="jminor-db-core*.jar"/>
+    </copy>
+    <copy todir="db-local">
+      <fileset dir="../../dist" includes="jminor-db-local*.jar"/>
+    </copy>
+    <copy todir="db-remote">
+      <fileset dir="../../dist" includes="jminor-db-remote*.jar"/>
+    </copy>
     <copy file="../../dist/jminor-client.jar" todir="client"/>
+    <copy file="../../dist/jminor-client-src.jar" todir="client"/>
+    <copy file="../../dist/jminor-client-api-doc.jar" todir="client"/>
     <copy file="../../dist/jminor-client-bundle.jar" todir="client-bundle"/>
+    <copy file="../../dist/jminor-client-bundle-src.jar" todir="client-bundle"/>
+    <copy file="../../dist/jminor-client-bundle-api-doc.jar" todir="client-bundle"/>
     <copy file="../../dist/jminor-server.jar" todir="server"/>
-    <copy file="../../dist/jminor-plugin-jasperreports.jar" todir="plugin-jasperreports"/>
-    <copy file="../../dist/jminor-plugin-json.jar" todir="plugin-json"/>
-    <copy file="../../dist/jminor-plugin-rest.jar" todir="plugin-rest"/>
-    <copy file="../../dist/jminor-plugin-tomcat-pool.jar" todir="plugin-tomcat-pool"/>
+    <copy file="../../dist/jminor-server-src.jar" todir="server"/>
+    <copy file="../../dist/jminor-server-api-doc.jar" todir="server"/>
+    <copy todir="plugin-jasperreports">
+      <fileset dir="../../dist" includes="jminor-plugin-jasperreports*.jar"/>
+    </copy>
+    <copy todir="plugin-json">
+      <fileset dir="../../dist" includes="jminor-plugin-json*.jar"/>
+    </copy>
+    <copy todir="plugin-rest">
+      <fileset dir="../../dist" includes="jminor-plugin-rest*.jar"/>
+    </copy>
+    <copy todir="plugin-tomcat-pool">
+      <fileset dir="../../dist" includes="jminor-plugin-tomcat-pool*.jar"/>
+    </copy>
+  </target>
+
+  <target name="publish-all" depends="copy-artifacts" description="publish all module artifacts">
     <subant target="publish" buildpath="common-model" />
     <subant target="publish" buildpath="common-ui" />
     <subant target="publish" buildpath="db-core" />
