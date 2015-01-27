@@ -3924,3 +3924,4 @@
   jminor-client-bundle.jar added to distribution
   resources/publish added, contains module definitions for publishing artifacts
   jminor-client-bundle added as publishing artifact
+  UiUtil.selectValues() added

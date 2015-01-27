@@ -1244,7 +1244,7 @@ public final class UiUtil {
   }
 
   /**
-   * Displays a dialog for selecting on of a collection of values
+   * Displays a dialog for selecting one of a collection of values
    * @param dialogOwner the dialog owner
    * @param values the values to choose from
    * @return the selected value, null if none was selected
@@ -1255,7 +1255,7 @@ public final class UiUtil {
   }
 
   /**
-   * Displays a dialog for selecting on of a collection of values
+   * Displays a dialog for selecting one of a collection of values
    * @param dialogOwner the dialog owner
    * @param values the values to choose from
    * @param dialogTitle the dialog title
@@ -1263,24 +1263,24 @@ public final class UiUtil {
    * @param <T> the type of values being selected
    */
   public static <T> T selectValue(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
-    final JList<T> list = new JList<>(new Vector<>(values));
-    final Window owner = getParentWindow(dialogOwner);
-    final JDialog dialog = new JDialog(owner, dialogTitle);
-    final Action okAction = new DisposeWindowAction(dialog);
-    final Action cancelAction = new AbstractAction("UiUtil.cancel") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        list.clearSelection();
-        dialog.dispose();
-      }
-    };
-    list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    prepareScrollPanelDialog(dialog, dialogOwner, list, okAction, cancelAction);
-    if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
-      dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
+    final List<T> selected = selectValues(dialogOwner, values, dialogTitle, true);
+    if (selected.isEmpty()) {
+      return null;
     }
 
-    return list.getSelectedValue();
+    return selected.get(0);
+  }
+
+  /**
+   * Displays a dialog for selecting from of a collection of values
+   * @param dialogOwner the dialog owner
+   * @param values the values to choose from
+   * @param dialogTitle the dialog title
+   * @return the selected values, en empty Collection if none was selected
+   * @param <T> the type of values being selected
+   */
+  public static <T> List<T> selectValues(final JComponent dialogOwner, final Collection<T> values, final String dialogTitle) {
+    return selectValues(dialogOwner, values, dialogTitle, false);
   }
 
   /**
@@ -1676,6 +1676,38 @@ public final class UiUtil {
     catch (final Exception e) {
       return null;
     }
+  }
+
+  /**
+   * Displays a dialog for selecting from of a collection of values
+   * @param dialogOwner the dialog owner
+   * @param values the values to choose from
+   * @param dialogTitle the dialog title
+   * @param singleSelection if true then the selection is restricted to a single value
+   * @return the selected values, en empty Collection if none was selected
+   */
+  private static <T> List<T> selectValues(final JComponent dialogOwner, final Collection<T> values,
+                                         final String dialogTitle, final boolean singleSelection) {
+    final JList<T> list = new JList<>(new Vector<>(values));
+    final Window owner = getParentWindow(dialogOwner);
+    final JDialog dialog = new JDialog(owner, dialogTitle);
+    final Action okAction = new DisposeWindowAction(dialog);
+    final Action cancelAction = new AbstractAction("UiUtil.cancel") {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        list.clearSelection();
+        dialog.dispose();
+      }
+    };
+    if (singleSelection) {
+      list.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+    prepareScrollPanelDialog(dialog, dialogOwner, list, okAction, cancelAction);
+    if (dialog.getSize().width > MAX_SELECT_VALUE_DIALOG_WIDTH) {
+      dialog.setSize(new Dimension(MAX_SELECT_VALUE_DIALOG_WIDTH, dialog.getSize().height));
+    }
+
+    return list.getSelectedValuesList();
   }
 
   /**
