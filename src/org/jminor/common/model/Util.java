@@ -605,7 +605,7 @@ public final class Util {
    * @return the framework Version
    */
   public static Version getVersion() {
-    return Version.parse(getVersionAndBuildNumberString());
+    return Versions.version(getVersionAndBuildNumberString());
   }
 
   /**
