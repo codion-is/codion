@@ -13,7 +13,7 @@ public final class Values {
   private Values() {}
 
   /**
-   * Instantiates a new Value
+   * Instantiates a new Value instance wrapping a null value
    * @param <V> type to wrap
    * @return a Value for the given type
    */
@@ -56,23 +56,23 @@ public final class Values {
 
   /**
    * Links the two values together so that changes in one are reflected in the other
-   * @param modelValue the model value
-   * @param uiValue the ui value
+   * @param originalValue the original value
+   * @param linkedValue the linked value
    * @param <V> the value type
    */
-  public static <V> void link(final Value<V> modelValue, final Value<V> uiValue) {
-    link(modelValue, uiValue, false);
+  public static <V> void link(final Value<V> originalValue, final Value<V> linkedValue) {
+    link(originalValue, linkedValue, false);
   }
 
   /**
-   * Links the two values together
-   * @param modelValue the model value
-   * @param uiValue the ui value
+   * Links the two values together so that changes in one are reflected in the other
+   * @param originalValue the original value
+   * @param linkedValue the linked value
    * @param readOnly if true the model value is not updated if the ui value changes
    * @param <V> the value type
    */
-  public static <V> void link(final Value<V> modelValue, final Value<V> uiValue, final boolean readOnly) {
-    new ValueLink<>(modelValue, uiValue, readOnly);
+  public static <V> void link(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
+    new ValueLink<>(originalValue, linkedValue, readOnly);
   }
 
   private static final class DefaultValue<V> implements Value<V> {
@@ -201,87 +201,87 @@ public final class Values {
   }
 
   /**
-   * A class for linking a UI component to a model value.
+   * A class for linking two values.
    * @param <V> the type of the value
    */
   private static final class ValueLink<V> {
 
     /**
-     * The Object wrapping the model value
+     * The Object wrapping the original value
      */
-    private final Value<V> modelValue;
+    private final Value<V> originalValue;
 
     /**
-     * The Object wrapping the ui value
+     * The Object wrapping the linked value
      */
-    private final Value<V> uiValue;
+    private final Value<V> linkedValue;
 
     /**
      * True while the UI value is being updated
      */
-    private boolean isUpdatingUI = false;
+    private boolean isUpdatingLinked = false;
 
     /**
      * True while the model value is being updated
      */
-    private boolean isUpdatingModel = false;
+    private boolean isUpdatingOriginal = false;
 
     /**
      * Instantiates a new ValueLink
-     * @param modelValue the value wrapper for the linked value
+     * @param originalValue the value wrapper for the linked value
      * @param readOnly if true then this link will be uni-directional
      */
-    private ValueLink(final Value<V> modelValue, final Value<V> uiValue, final boolean readOnly) {
-      this.modelValue = Util.rejectNullValue(modelValue, "modelValue");
-      this.uiValue = Util.rejectNullValue(uiValue, "uiValue");
-      updateUI();
-      bindEvents(modelValue, uiValue, readOnly);
+    private ValueLink(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
+      this.originalValue = Util.rejectNullValue(originalValue, "originalValue");
+      this.linkedValue = Util.rejectNullValue(linkedValue, "linkedValue");
+      updateLinked();
+      bindEvents(originalValue, linkedValue, readOnly);
     }
 
     /**
-     * Updates the model according to the UI.
+     * Updates the original value according to the linked one.
      */
-    private void updateModel() {
-      if (!isUpdatingUI) {
+    private void updateOriginal() {
+      if (!isUpdatingLinked) {
         try {
-          isUpdatingModel = true;
-          modelValue.set(uiValue.get());
+          isUpdatingOriginal = true;
+          originalValue.set(linkedValue.get());
         }
         finally {
-          isUpdatingModel = false;
+          isUpdatingOriginal = false;
         }
       }
     }
 
     /**
-     * Updates the UI according to the model.
+     * Updates the linked value according to the original
      */
-    private void updateUI() {
-      if (!isUpdatingModel) {
+    private void updateLinked() {
+      if (!isUpdatingOriginal) {
         try {
-          isUpdatingUI = true;
-          uiValue.set(modelValue.get());
+          isUpdatingLinked = true;
+          linkedValue.set(originalValue.get());
         }
         finally {
-          isUpdatingUI = false;
+          isUpdatingLinked = false;
         }
       }
     }
 
-    private void bindEvents(final Value<V> modelValue, final Value<V> uiValue, final boolean readOnly) {
-      if (modelValue.getChangeObserver() != null) {
-        modelValue.getChangeObserver().addListener(new EventListener() {
+    private void bindEvents(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
+      if (originalValue.getChangeObserver() != null) {
+        originalValue.getChangeObserver().addListener(new EventListener() {
           @Override
           public void eventOccurred() {
-            updateUI();
+            updateLinked();
           }
         });
       }
-      if (!readOnly && uiValue.getChangeObserver() != null) {
-        uiValue.getChangeObserver().addListener(new EventListener() {
+      if (!readOnly && linkedValue.getChangeObserver() != null) {
+        linkedValue.getChangeObserver().addListener(new EventListener() {
           @Override
           public void eventOccurred() {
-            updateModel();
+            updateOriginal();
           }
         });
       }
