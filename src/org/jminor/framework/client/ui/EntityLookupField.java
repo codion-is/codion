@@ -172,7 +172,7 @@ public final class EntityLookupField extends JTextField {
 
   private void linkToModel() {
     Values.link(getModel().getSearchStringValue(), UiValues.textValue(this, null, true));
-    model.getSearchStringValue().getChangeObserver().addInfoListener(new EventInfoListener<String>() {
+    model.getSearchStringValue().getObserver().addInfoListener(new EventInfoListener<String>() {
       @Override
       public void eventOccurred(final String info) {
         updateColors();

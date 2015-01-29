@@ -1320,7 +1320,7 @@ public final class EntityUiUtil {
     }
 
     @Override
-    public EventObserver<Entity> getChangeObserver() {
+    public EventObserver<Entity> getObserver() {
       return changeEvent.getObserver();
     }
   }

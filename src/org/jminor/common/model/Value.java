@@ -21,7 +21,7 @@ public interface Value<V> {
   V get();
 
   /**
-   * @return an observer notified with the new value each time it changes
+   * @return an observer notified each time the value changes
    */
-  EventObserver<V> getChangeObserver();
+  EventObserver<V> getObserver();
 }

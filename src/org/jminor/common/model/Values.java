@@ -98,7 +98,7 @@ public final class Values {
     }
 
     @Override
-    public EventObserver<V> getChangeObserver() {
+    public EventObserver<V> getObserver() {
       return changeEvent.getObserver();
     }
   }
@@ -162,7 +162,7 @@ public final class Values {
     }
 
     @Override
-    public EventObserver<V> getChangeObserver() {
+    public EventObserver<V> getObserver() {
       return changeEvent;
     }
   }
@@ -195,7 +195,7 @@ public final class Values {
     }
 
     @Override
-    public EventObserver<Boolean> getChangeObserver() {
+    public EventObserver<Boolean> getObserver() {
       return changeEvent.getObserver();
     }
   }
@@ -269,16 +269,16 @@ public final class Values {
     }
 
     private void bindEvents(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
-      if (originalValue.getChangeObserver() != null) {
-        originalValue.getChangeObserver().addListener(new EventListener() {
+      if (originalValue.getObserver() != null) {
+        originalValue.getObserver().addListener(new EventListener() {
           @Override
           public void eventOccurred() {
             updateLinked();
           }
         });
       }
-      if (!readOnly && linkedValue.getChangeObserver() != null) {
-        linkedValue.getChangeObserver().addListener(new EventListener() {
+      if (!readOnly && linkedValue.getObserver() != null) {
+        linkedValue.getObserver().addListener(new EventListener() {
           @Override
           public void eventOccurred() {
             updateOriginal();

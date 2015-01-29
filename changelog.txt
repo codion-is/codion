@@ -3926,3 +3926,4 @@
   jminor-client-bundle added as publishing artifact
   UiUtil.selectValues() added
   Values, some minor changes in terminology
+  Value.getChangeObserver() renamed to getObserver()

@@ -307,13 +307,13 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   }
 
   private void bindEvents() {
-    searchStringValue.getChangeObserver().addListener(new EventListener() {
+    searchStringValue.getObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         searchStringRepresentsSelectedState.setActive(searchStringRepresentsSelected());
       }
     });
-    multipleItemSeparatorValue.getChangeObserver().addListener(new EventListener() {
+    multipleItemSeparatorValue.getObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         refreshSearchText();

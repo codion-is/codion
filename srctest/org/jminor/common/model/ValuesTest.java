@@ -33,7 +33,7 @@ public class ValuesTest {
   public void value() {
     final AtomicInteger eventCounter = new AtomicInteger();
     final Value<Integer> intValue = Values.value(42);
-    intValue.getChangeObserver().addListener(new EventListener() {
+    intValue.getObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         eventCounter.incrementAndGet();
@@ -57,14 +57,14 @@ public class ValuesTest {
     final Value<Integer> modelValue = Values.beanValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, false);
-    modelValue.getChangeObserver().addListener(new EventListener() {
+    modelValue.getObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         modelValueEventCounter.incrementAndGet();
       }
     });
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
-    uiValue.getChangeObserver().addListener(new EventListener() {
+    uiValue.getObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         uiValueEventCounter.incrementAndGet();
@@ -101,14 +101,14 @@ public class ValuesTest {
     final Value<Integer> modelValue = Values.beanValue(this, "intValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
     Values.link(modelValue, uiValue, true);
-    modelValue.getChangeObserver().addListener(new EventListener() {
+    modelValue.getObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         modelValueEventCounter.incrementAndGet();
       }
     });
     final AtomicInteger uiValueEventCounter = new AtomicInteger();
-    uiValue.getChangeObserver().addListener(new EventListener() {
+    uiValue.getObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         uiValueEventCounter.incrementAndGet();
@@ -143,7 +143,7 @@ public class ValuesTest {
   public void stateValue() {
     final State state = States.state(true);
     final Value<Boolean> stateValue = Values.stateValue(state);
-    assertNotNull(stateValue.getChangeObserver());
+    assertNotNull(stateValue.getObserver());
     assertTrue(stateValue.get());
     stateValue.set(false);
     assertFalse(state.isActive());

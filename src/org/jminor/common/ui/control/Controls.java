@@ -280,7 +280,7 @@ public final class Controls {
     }
 
     @Override
-    public EventObserver<Boolean> getChangeObserver() {
+    public EventObserver<Boolean> getObserver() {
       return changeEvent.getObserver();
     }
   }

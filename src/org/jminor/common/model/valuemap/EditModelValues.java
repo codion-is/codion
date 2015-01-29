@@ -61,7 +61,7 @@ public final class EditModelValues {
     }
 
     @Override
-    public EventObserver<V> getChangeObserver() {
+    public EventObserver<V> getObserver() {
       return changeEvent.getObserver();
     }
   }

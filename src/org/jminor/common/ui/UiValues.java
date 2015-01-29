@@ -124,7 +124,7 @@ public final class UiValues {
     private final Event<V> changeEvent = Events.event();
 
     @Override
-    public final EventObserver<V> getChangeObserver() {
+    public final EventObserver<V> getObserver() {
       return changeEvent.getObserver();
     }
 
