@@ -56,7 +56,9 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
     @Override
     public void run() {
       try {
-        maintainConnections();
+        if (getConnectionCount() > 0) {
+          maintainConnections();
+        }
       }
       catch (final RemoteException e) {
         throw new RuntimeException(e);

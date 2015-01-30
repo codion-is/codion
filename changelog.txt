@@ -3927,3 +3927,4 @@
   UiUtil.selectValues() added
   Values, some minor changes in terminology
   Value.getChangeObserver() renamed to getObserver()
+  EntityConnectionServer only runs connection maintenance when connections exist
