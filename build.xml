@@ -411,7 +411,7 @@
     <copy file="${dist}/jminor-db-core.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-db-local.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-common-model.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-plugins.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-demos.jar" todir="${deploy.server.path}/lib"/>
     <copy todir="${deploy.server.path}/lib">
       <fileset dir="${lib}/runtime.server"/>
@@ -474,7 +474,7 @@
     <mkdir dir="${deploy.demos.dir}/META-INF"/>
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
-      <zipgroupfileset dir="${dist}" includes="jminor-common-model.jar, jminor-common-ui.jar, jminor-db-core.jar, jminor-db-local.jar, jminor-db-remote.jar, jminor-client.jar, jminor-plugins.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
+      <zipgroupfileset dir="${dist}" includes="jminor-common-model.jar, jminor-common-ui.jar, jminor-db-core.jar, jminor-db-local.jar, jminor-db-remote.jar, jminor-client.jar, jminor-plugin-jasperreports.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
       <fileset file="${deploy.demos.truststore}"/>
     </jar>
     <deploy_demo_app app-id="empdept" app-name="EmpDept JMinor Demo" main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>
