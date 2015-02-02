@@ -2,33 +2,34 @@
   <info organisation="org.jminor" module="jminor-plugin-rest"/>
 
   <configurations>
-    <conf name="runtime"/>
+    <conf name="default"/>
+    <conf name="master" extends="default"/>
     <conf name="sources"/>
     <conf name="javadoc"/>
   </configurations>
 
   <publications>
-    <artifact name="jminor-plugin-rest" type="jar" ext="jar" conf="runtime"/>
+    <artifact name="jminor-plugin-rest" type="jar" ext="jar" conf="default"/>
     <artifact name="jminor-plugin-rest-src" type="source" ext="jar" conf="sources"/>
     <artifact name="jminor-plugin-rest-api-doc" type="javadoc" ext="jar" conf=""/>
   </publications>
 
   <dependencies>
-    <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-db-remote" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-server" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-plugin-json" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration" conf="default"/>
+    <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration" conf="default"/>
+    <dependency org="org.jminor" name="jminor-db-remote" rev="latest.integration" conf="default"/>
+    <dependency org="org.jminor" name="jminor-server" rev="latest.integration" conf="default"/>
+    <dependency org="org.jminor" name="jminor-plugin-json" rev="latest.integration" conf="default"/>
 
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false" conf="runtime->default"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false" conf="runtime->default"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false" conf="runtime->default"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false" conf="default"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false" conf="default"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false" conf="default"/>
 
-    <dependency org="org.json" name="json" rev="20090211" transitive="false" conf="runtime->default"/>
+    <dependency org="org.json" name="json" rev="20090211" transitive="false" conf="default"/>
 
-    <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" transitive="false" conf="runtime->default"/>
-    <dependency org="com.sun.jersey" name="jersey-bundle" rev="1.17.1" transitive="false" conf="runtime->default"/>
-    <dependency org="asm" name="asm" rev="3.3.1" transitive="false" conf="runtime->default"/>
-    <dependency org="org.mortbay.jetty" name="servlet-api" rev="3.0.20100224" transitive="false" conf="runtime->default"/>
+    <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" transitive="false" conf="default"/>
+    <dependency org="com.sun.jersey" name="jersey-bundle" rev="1.17.1" transitive="false" conf="default"/>
+    <dependency org="asm" name="asm" rev="3.3.1" transitive="false" conf="default"/>
+    <dependency org="org.mortbay.jetty" name="servlet-api" rev="3.0.20100224" transitive="false" conf="default"/>
   </dependencies>
 </ivy-module>

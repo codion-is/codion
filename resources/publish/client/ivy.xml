@@ -2,27 +2,28 @@
   <info organisation="org.jminor" module="jminor-client"/>
 
   <configurations>
-    <conf name="runtime"/>
+    <conf name="default"/>
+    <conf name="master" extends="default"/>
     <conf name="sources"/>
     <conf name="javadoc"/>
   </configurations>
 
   <publications>
-    <artifact name="jminor-client" type="jar" ext="jar" conf="runtime"/>
+    <artifact name="jminor-client" type="jar" ext="jar" conf="default"/>
     <artifact name="jminor-client-src" type="source" ext="jar" conf="sources"/>
     <artifact name="jminor-client-api-doc" type="javadoc" ext="jar" conf="javadoc"/>
   </publications>
 
   <dependencies>
-    <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-common-ui" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-db-local" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-db-remote" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration" conf="default"/>
+    <dependency org="org.jminor" name="jminor-common-ui" rev="latest.integration" conf="default"/>
+    <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration" conf="default"/>
+    <dependency org="org.jminor" name="jminor-db-local" rev="latest.integration" conf="default"/>
+    <dependency org="org.jminor" name="jminor-db-remote" rev="latest.integration" conf="default"/>
 
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false" conf="runtime->default"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false" conf="runtime->default"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false" conf="runtime->default"/>
-    <dependency org="org.json" name="json" rev="20090211" transitive="false" conf="runtime->default"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false" conf="default"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false" conf="default"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false" conf="default"/>
+    <dependency org="org.json" name="json" rev="20090211" transitive="false" conf="default"/>
   </dependencies>
 </ivy-module>
