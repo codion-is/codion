@@ -54,15 +54,15 @@
 
   <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpath="${getdown.jar}"/>
 
-  <fileset id="common_resources" dir="${src}" includes=
+  <fileset id="common_resources" dir="${src.main}" includes=
           "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt"/>
-  <fileset id="framework_resources" dir="${src}" includes=
+  <fileset id="framework_resources" dir="${src.main}" includes=
           "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt"/>
-  <fileset id="test_resources" dir="${srctest}" includes=
+  <fileset id="test_resources" dir="${src.test}" includes=
           "org/jminor/**/*.gif, org/jminor/**/*.properties, org/jminor/**/*.txt"/>
-  <fileset id="demos_resources" dir="${srcdemos}" includes=
+  <fileset id="demos_resources" dir="${src.demos}" includes=
           "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt"/>
-  <fileset id="plugins_resources" dir="${srcplugins}" includes=
+  <fileset id="plugins_resources" dir="${src.plugins}" includes=
           "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt"/>
 
   <target name="resolve_libraries"
@@ -88,7 +88,7 @@
     <mkdir dir="${build.test}"/>
 
     <javac destdir="${build.base}" debug="${build.debuginfo}" includeantruntime="false">
-      <src path="${src}"/>
+      <src path="${src.main}"/>
       <classpath refid="lib.build.core"/>
     </javac>
 
@@ -105,7 +105,7 @@
     </copy>
 
     <javac destdir="${build.plugins}" debug="${build.debuginfo}" includeantruntime="false">
-      <src path="${srcplugins}"/>
+      <src path="${src.plugins}"/>
       <classpath>
         <path refid="lib.build.core"/>
         <path refid="lib.build.plugins"/>
@@ -118,7 +118,7 @@
     </copy>
 
     <javac destdir="${build.demos}" debug="${build.debuginfo}" includeantruntime="false">
-      <src path="${srcdemos}"/>
+      <src path="${src.demos}"/>
       <classpath>
         <path refid="lib.build.core"/>
         <path refid="lib.build.plugins"/>
@@ -133,7 +133,7 @@
     </copy>
 
     <javac destdir="${build.test}" debug="${build.debuginfo}" includeantruntime="false">
-      <src path="${srctest}"/>
+      <src path="${src.test}"/>
       <classpath>
         <path refid="lib.build.core"/>
         <path refid="lib.build.plugins"/>
@@ -167,20 +167,20 @@
     <jar jarfile="${dist}/jminor.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          excludes="org/jminor/framework/demos/**"/>
-    <jar jarfile="${dist}/jminor-src.jar" basedir="${src}"
+    <jar jarfile="${dist}/jminor-src.jar" basedir="${src.main}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="${dist}/jminor-api-doc.jar" basedir="${docsapi}"
+    <jar jarfile="${dist}/jminor-api-doc.jar" basedir="${javadoc}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
     <jar jarfile="${dist}/jminor-common-model.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/common/**"
          excludes="org/jminor/common/ui/**"/>
-    <jar jarfile="${dist}/jminor-common-model-src.jar" basedir="${src}"
+    <jar jarfile="${dist}/jminor-common-model-src.jar" basedir="${src.main}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/common/**"
          excludes="org/jminor/common/ui/**"/>
-    <jar jarfile="${dist}/jminor-common-model-api-doc.jar" basedir="${docsapi}"
+    <jar jarfile="${dist}/jminor-common-model-api-doc.jar" basedir="${javadoc}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/common/**"
          excludes="org/jminor/common/ui/**"/>
@@ -188,10 +188,10 @@
     <jar jarfile="${dist}/jminor-common-ui.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/common/ui/**"/>
-    <jar jarfile="${dist}/jminor-common-ui-src.jar" basedir="${src}"
+    <jar jarfile="${dist}/jminor-common-ui-src.jar" basedir="${src.main}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/common/ui/**"/>
-    <jar jarfile="${dist}/jminor-common-ui-api-doc.jar" basedir="${docsapi}"
+    <jar jarfile="${dist}/jminor-common-ui-api-doc.jar" basedir="${javadoc}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/common/ui/**"/>
 
@@ -202,14 +202,14 @@
                    org/jminor/framework/db/criteria/*,
                    org/jminor/framework/domain/*,
                    org/jminor/framework/i18n/**"/>
-    <jar jarfile="${dist}/jminor-db-core-src.jar" basedir="${src}"
+    <jar jarfile="${dist}/jminor-db-core-src.jar" basedir="${src.main}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
                    org/jminor/framework/db/*.class,
                    org/jminor/framework/db/criteria/*,
                    org/jminor/framework/domain/*,
                    org/jminor/framework/i18n/**"/>
-    <jar jarfile="${dist}/jminor-db-core-api-doc.jar" basedir="${docsapi}"
+    <jar jarfile="${dist}/jminor-db-core-api-doc.jar" basedir="${javadoc}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/Configuration*,
                    org/jminor/framework/db/*.class,
@@ -220,10 +220,10 @@
     <jar jarfile="${dist}/jminor-db-local.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/db/local/*"/>
-    <jar jarfile="${dist}/jminor-db-local-src.jar" basedir="${src}"
+    <jar jarfile="${dist}/jminor-db-local-src.jar" basedir="${src.main}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/db/local/*"/>
-    <jar jarfile="${dist}/jminor-db-local-api-doc.jar" basedir="${docsapi}"
+    <jar jarfile="${dist}/jminor-db-local-api-doc.jar" basedir="${javadoc}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/db/local/*"/>
 
@@ -234,7 +234,7 @@
     <jar jarfile="${dist}/jminor-db-remote-src.jar" basedir="${build.base}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/db/remote/*"/>
-    <jar jarfile="${dist}/jminor-db-remote-api-doc.jar" basedir="${docsapi}"
+    <jar jarfile="${dist}/jminor-db-remote-api-doc.jar" basedir="${javadoc}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/db/remote/*"/>
 
@@ -242,11 +242,11 @@
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/client/**,
                    org/jminor/framework/tools/testing/**"/>
-    <jar jarfile="${dist}/jminor-client-src.jar" basedir="${src}"
+    <jar jarfile="${dist}/jminor-client-src.jar" basedir="${src.main}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/client/**,
                    org/jminor/framework/tools/testing/**"/>
-    <jar jarfile="${dist}/jminor-client-api-doc.jar" basedir="${docsapi}"
+    <jar jarfile="${dist}/jminor-client-api-doc.jar" basedir="${javadoc}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/client/**,
                    org/jminor/framework/tools/testing/**"/>
@@ -255,11 +255,11 @@
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/server/*.class"
          excludes="org/jminor/framework/server/*Stub.class"/>
-    <jar jarfile="${dist}/jminor-server-src.jar" basedir="${src}"
+    <jar jarfile="${dist}/jminor-server-src.jar" basedir="${src.main}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/server/**"
          excludes="org/jminor/framework/server/monitor/**"/>
-    <jar jarfile="${dist}/jminor-server-api-doc.jar" basedir="${docsapi}"
+    <jar jarfile="${dist}/jminor-server-api-doc.jar" basedir="${javadoc}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/server/**"
          excludes="org/jminor/framework/server/monitor/**"/>
@@ -270,56 +270,56 @@
                    org/jminor/framework/server/monitor/**,
                    org/jminor/framework/server/EntityConnectionServerAdmin.class,
                    org/jminor/framework/server/DefaultEntityConnectionServerAdmin_Stub.class"/>
-    <jar jarfile="${dist}/jminor-server-monitor-src.jar" basedir="${src}"
+    <jar jarfile="${dist}/jminor-server-monitor-src.jar" basedir="${src.main}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/server/monitor/**"/>
-    <jar jarfile="${dist}/jminor-server-monitor-api-doc.jar" basedir="${docsapi}"
+    <jar jarfile="${dist}/jminor-server-monitor-api-doc.jar" basedir="${javadoc}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/server/monitor/**"/>
 
     <jar jarfile="${dist}/jminor-plugin-jasperreports.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/jasperreports/**"/>
-    <jar jarfile="${dist}/jminor-plugin-jasperreports-src.jar" basedir="${srcplugins}"
+    <jar jarfile="${dist}/jminor-plugin-jasperreports-src.jar" basedir="${src.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/jasperreports/**"/>
-    <jar jarfile="${dist}/jminor-plugin-jasperreports-api-doc.jar" basedir="${pluginsapi}"
+    <jar jarfile="${dist}/jminor-plugin-jasperreports-api-doc.jar" basedir="${javadoc.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/jasperreports/**"/>
 
     <jar jarfile="${dist}/jminor-plugin-json.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/json/**"/>
-    <jar jarfile="${dist}/jminor-plugin-json-src.jar" basedir="${srcplugins}"
+    <jar jarfile="${dist}/jminor-plugin-json-src.jar" basedir="${src.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/json/**"/>
-    <jar jarfile="${dist}/jminor-plugin-json-api-doc.jar" basedir="${pluginsapi}"
+    <jar jarfile="${dist}/jminor-plugin-json-api-doc.jar" basedir="${javadoc.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/json/**"/>
 
     <jar jarfile="${dist}/jminor-plugin-rest.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/rest/**"/>
-    <jar jarfile="${dist}/jminor-plugin-rest-src.jar" basedir="${srcplugins}"
+    <jar jarfile="${dist}/jminor-plugin-rest-src.jar" basedir="${src.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/rest/**"/>
-    <jar jarfile="${dist}/jminor-plugin-rest-api-doc.jar" basedir="${pluginsapi}"
+    <jar jarfile="${dist}/jminor-plugin-rest-api-doc.jar" basedir="${javadoc.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/rest/**"/>
 
     <jar jarfile="${dist}/jminor-plugin-tomcat-pool.jar" basedir="${build.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/tomcat/pool/**"/>
-    <jar jarfile="${dist}/jminor-plugin-tomcat-pool-src.jar" basedir="${srcplugins}"
+    <jar jarfile="${dist}/jminor-plugin-tomcat-pool-src.jar" basedir="${src.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/tomcat/pool/**"/>
-    <jar jarfile="${dist}/jminor-plugin-tomcat-pool-api-doc.jar" basedir="${pluginsapi}"
+    <jar jarfile="${dist}/jminor-plugin-tomcat-pool-api-doc.jar" basedir="${javadoc.plugins}"
          manifest="${build.base}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/plugins/tomcat/pool/**"/>
 
     <jar jarfile="${dist}/jminor-demos.jar" basedir="${build.demos}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="${dist}/jminor-demos-src.jar" basedir="${srcdemos}"
+    <jar jarfile="${dist}/jminor-demos-src.jar" basedir="${src.demos}"
          manifest="${build.base}/META-INF/MANIFEST.MF"/>
 
     <jar jarfile="${dist}/jminor-client-bundle.jar">
@@ -376,11 +376,11 @@
 
   <target name="javadoc" depends="build"
           description="Generates framework javadocs">
-    <delete dir="${docsapi}" includeEmptyDirs="true"/>
-    <delete dir="${pluginsapi}" includeEmptyDirs="true"/>
-    <mkdir dir="${docsapi}"/>
-    <mkdir dir="${pluginsapi}"/>
-    <javadoc destdir="${docsapi}" sourcepath="${src}" packagenames="org.jminor.*" Encoding="UTF-8"
+    <delete dir="${javadoc}" includeEmptyDirs="true"/>
+    <delete dir="${javadoc.plugins}" includeEmptyDirs="true"/>
+    <mkdir dir="${javadoc}"/>
+    <mkdir dir="${javadoc.plugins}"/>
+    <javadoc destdir="${javadoc}" sourcepath="${src.main}" packagenames="org.jminor.*" Encoding="UTF-8"
              docencoding="UTF-8" author="true" version="true" use="true"
              windowtitle="JMinor v${version} API" doctitle="JMinor v${version} API"
              group="Common org.jminor.common*,
@@ -391,7 +391,7 @@
       <classpath refid="lib.build.core"/>
       <link href="http://download.oracle.com/javase/7/docs/api/"/>
     </javadoc>
-    <javadoc destdir="${pluginsapi}" sourcepath="${srcplugins}" packagenames="org.jminor.*" Encoding="UTF-8"
+    <javadoc destdir="${javadoc.plugins}" sourcepath="${src.plugins}" packagenames="org.jminor.*" Encoding="UTF-8"
              docencoding="UTF-8" author="true" version="true" use="true"
              windowtitle="JMinor v${version} Plugin API" doctitle="JMinor v${version} Plugin API"
              group="Plugins org.jminor.framework.plugins">
@@ -401,7 +401,7 @@
         <path location="${build.base}"/>
       </classpath>
       <link href="http://download.oracle.com/javase/7/docs/api/"/>
-      <link offline="true" href="http://jminor.org/data/media/project/docs/api/" packagelistloc="${docsapi}"/>
+      <link offline="true" href="http://jminor.org/data/media/project/docs/api/" packagelistloc="${javadoc}"/>
     </javadoc>
   </target>
 
