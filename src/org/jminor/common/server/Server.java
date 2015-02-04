@@ -80,4 +80,24 @@ public interface Server<T extends Remote> extends Remote {
      */
     long getStartTime();
   }
+
+  /**
+   * Auxiliary servers to be run in conjunction with a Server must implement this interface,
+   * as well as provide a constructor with the following signature: (Server, String, Integer)
+   * for the server, file document root and port respectively
+   */
+  interface AuxiliaryServer {
+
+    /**
+     * Starts the web server
+     * @throws Exception in case of an exception
+     */
+    void start() throws Exception;
+
+    /**
+     * Stops the web server
+     * @throws Exception in case of an exception
+     */
+    void stop() throws Exception;
+  }
 }

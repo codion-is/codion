@@ -87,6 +87,7 @@ public final class Util {
   private static final int INPUT_BUFFER_SIZE = 8192;
   private static final int TEN = 10;
   private static Preferences userPreferences;
+  private static Version version;
 
   private Util() {}
 
@@ -605,7 +606,11 @@ public final class Util {
    * @return the framework Version
    */
   public static Version getVersion() {
-    return Version.parse(getVersionAndBuildNumberString());
+    if (version == null) {
+      version = Version.parse(getVersionAndBuildNumberString());
+    }
+
+    return version;
   }
 
   /**

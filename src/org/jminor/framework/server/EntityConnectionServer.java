@@ -15,6 +15,7 @@ import org.jminor.common.server.AbstractServer;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.LoginProxy;
+import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
@@ -421,7 +422,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
     final String webServerClassName = Configuration.getStringValue(Configuration.WEB_SERVER_IMPLEMENTATION_CLASS);
     try {
       final AuxiliaryServer auxiliaryServer = (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
-              EntityConnectionServer.class, String.class, Integer.class).newInstance(this, webDocumentRoot, webServerPort);
+              Server.class, String.class, Integer.class).newInstance(this, webDocumentRoot, webServerPort);
       Executors.newSingleThreadExecutor().execute(new Runnable() {
         @Override
         public void run() {
@@ -492,25 +493,5 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
     catch (final RemoteException ignored) {}
 
     return exception;
-  }
-
-  /**
-   * Auxiliary servers to be run in conjunction with a EntityConnectionServer must implement this interface,
-   * as well as provide a constructor with the following signature: (EntityConnectionServer, String, Integer)
-   * for the server, file document root and port respectively
-   */
-  public interface AuxiliaryServer {
-
-    /**
-     * Starts the web server
-     * @throws Exception in case of an exception
-     */
-    void start() throws Exception;
-
-    /**
-     * Stops the web server
-     * @throws Exception in case of an exception
-     */
-    void stop() throws Exception;
   }
 }

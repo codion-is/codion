@@ -11,6 +11,7 @@ import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientUtil;
+import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
 import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -18,7 +19,6 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.plugins.json.EntityJSONParser;
-import org.jminor.framework.server.EntityConnectionServer;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -54,7 +54,7 @@ public final class EntityRESTService extends Application {
 
   private static final String CLIENT_ID = "clientId";
 
-  private static EntityConnectionServer server;
+  private static Server server;
 
   @GET
   @Consumes(MediaType.APPLICATION_JSON)
@@ -202,7 +202,7 @@ public final class EntityRESTService extends Application {
     final byte[] decodedBytes = DatatypeConverter.parseBase64Binary(auth);
     final String[] credentials = new String(decodedBytes).split(":", 2);
     try {
-      return server.connect(ClientUtil.connectionInfo(new User(credentials[0], credentials[1]), clientId, EntityRESTService.class.getName()));
+      return (RemoteEntityConnection) server.connect(ClientUtil.connectionInfo(new User(credentials[0], credentials[1]), clientId, EntityRESTService.class.getName()));
     }
     catch (final ServerException.LoginException e) {
       if (e.getCause() instanceof DatabaseException) {
@@ -215,7 +215,7 @@ public final class EntityRESTService extends Application {
     }
   }
 
-  static void setServer(final EntityConnectionServer server) {
+  static void setServer(final Server server) {
     EntityRESTService.server = server;
   }
 

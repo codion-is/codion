@@ -19,7 +19,6 @@
     <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration" conf="default"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration" conf="default"/>
     <dependency org="org.jminor" name="jminor-db-remote" rev="latest.integration" conf="default"/>
-    <dependency org="org.jminor" name="jminor-server" rev="latest.integration" conf="default"/>
     <dependency org="org.jminor" name="jminor-plugin-json" rev="latest.integration" conf="default"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false" conf="default"/>

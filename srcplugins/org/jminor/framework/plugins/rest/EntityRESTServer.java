@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.plugins.rest;
 
-import org.jminor.framework.server.EntityConnectionServer;
-
 import com.sun.jersey.api.core.PackagesResourceConfig;
 import com.sun.jersey.spi.container.servlet.ServletContainer;
 import org.eclipse.jetty.server.Handler;
@@ -17,15 +15,15 @@ import org.eclipse.jetty.servlet.ServletHolder;
 /**
  * A simple Jetty/Jersey based REST and file server
  */
-public final class EntityRESTServer extends Server implements EntityConnectionServer.AuxiliaryServer {
+public final class EntityRESTServer extends Server implements org.jminor.common.server.Server.AuxiliaryServer {
 
   /**
    * Instantiates a new EntityRESTServer on the given port.
-   * @param connectionServer the EntityConnectionServer serving the connection requests
+   * @param connectionServer the Server serving the connection requests
    * @param documentRoot the document root
    * @param port the port on which to serve
    */
-  public EntityRESTServer(final EntityConnectionServer connectionServer, final String documentRoot, final Integer port) throws Exception {
+  public EntityRESTServer(final org.jminor.common.server.Server connectionServer, final String documentRoot, final Integer port) throws Exception {
     super(port);
     EntityRESTService.setServer(connectionServer);
     final ServletContextHandler servletHandler = new ServletContextHandler(ServletContextHandler.SESSIONS);

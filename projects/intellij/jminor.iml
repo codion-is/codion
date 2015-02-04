@@ -4,7 +4,7 @@
     <connections />
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_7" inherit-compiler-output="false">
-    <output url="file://$MODULE_DIR$/../../classes/base" />
+    <output url="file://$MODULE_DIR$/../../classes/main" />
     <output-test url="file://$MODULE_DIR$/../../classes/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$/../..">
@@ -18,7 +18,7 @@
       <excludeFolder url="file://$MODULE_DIR$/../../docs/pluginsapi" />
       <excludeFolder url="file://$MODULE_DIR$/../../h2db" />
     </content>
-    <orderEntry type="jdk" jdkName="1.7" jdkType="JavaSDK" />
+    <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module-library">
       <library name="jminor-lib">

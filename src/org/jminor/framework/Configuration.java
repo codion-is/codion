@@ -431,8 +431,8 @@ public final class Configuration {
   public static final String SERVER_NAME_PREFIX = "jminor.server.namePrefix";
 
   /**
-   * Specifies the web server class, must implement EntityConnectionServer.AuxiliaryServer<br>
-   * and contain a constructor with the following signature: (EntityConnectionServer, String, Integer)<br>
+   * Specifies the web server class, must implement Server.AuxiliaryServer<br>
+   * and contain a constructor with the following signature: (Server, String, Integer)<br>
    * for the server, file document root and port respectively<br>
    * Value type: String<br>
    * Default value: org.jminor.framework.plugins.rest.EntityRESTServer

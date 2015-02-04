@@ -3928,3 +3928,6 @@
   Values, some minor changes in terminology
   Value.getChangeObserver() renamed to getObserver()
   EntityConnectionServer only runs connection maintenance when connections exist
+  EntityConnectionServer.AuxiliaryServer moved to common.server.Server
+  EntityRestServer no longer depends on framework server
+  Util.getVersion() now caches the version object
