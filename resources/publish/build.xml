@@ -8,38 +8,6 @@
 
   <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${ivy.jar}"/>
 
-  <target name="publish-all" description="publish all module artifacts">
-    <subant target="publish" buildpath="common-model" />
-    <subant target="publish" buildpath="common-ui" />
-    <subant target="publish" buildpath="db-core" />
-    <subant target="publish" buildpath="db-local" />
-    <subant target="publish" buildpath="db-remote" />
-    <subant target="publish" buildpath="client" />
-    <subant target="publish" buildpath="client-bundle" />
-    <subant target="publish" buildpath="server" />
-    <subant target="publish" buildpath="server-monitor" />
-    <subant target="publish" buildpath="plugin-jasperreports" />
-    <subant target="publish" buildpath="plugin-json" />
-    <subant target="publish" buildpath="plugin-rest" />
-    <subant target="publish" buildpath="plugin-tomcat-pool" />
-  </target>
-
-  <target name="resolve_all" description="Resolves all module dependencies">
-    <subant target="resolve" buildpath="common-model" />
-    <subant target="resolve" buildpath="common-ui" />
-    <subant target="resolve" buildpath="db-core" />
-    <subant target="resolve" buildpath="db-local" />
-    <subant target="resolve" buildpath="db-remote" />
-    <subant target="resolve" buildpath="client" />
-    <subant target="resolve" buildpath="client-bundle" />
-    <subant target="resolve" buildpath="server" />
-    <subant target="resolve" buildpath="server-monitor" />
-    <subant target="resolve" buildpath="plugin-jasperreports" />
-    <subant target="resolve" buildpath="plugin-json" />
-    <subant target="resolve" buildpath="plugin-rest" />
-    <subant target="resolve" buildpath="plugin-tomcat-pool" />
-  </target>
-
   <target name="create-pom">
     <ivy:resolve/>
     <ivy:deliver deliverpattern="ivy.xml" pubrevision="${version}"/>
@@ -56,15 +24,10 @@
     </copy>
   </target>
 
-  <target name="publish" depends="copy-artifacts, create-pom" description="Publish the dist files into a local repository">
+  <target name="publish" depends="copy-artifacts, create-pom">
     <fail unless="version">Version information not set</fail>
-    <ivy:resolve/>
     <ivy:publish pubrevision="${version}" status="release" resolver="publish" overwrite="true" forcedeliver="true">
       <artifacts pattern="[artifact].[ext]"/>
     </ivy:publish>
-  </target>
-
-  <target name="resolve" description="Resolves all libraries according to ivy.xml">
-    <ivy:retrieve pattern="lib/[artifact]-[revision].[ext]" sync="true" type="jar"/>
   </target>
 </project>

@@ -355,6 +355,23 @@
                    org/jminor/framework/tools/testing/EntityTestUnit*"/>
   </target>
 
+  <target name="publish-all" depends="dist"
+          description="Publish all project artifacts">
+    <subant target="publish" buildpath="${basedir}/resources/publish/common-model" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/common-ui" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/db-core" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/db-local" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/db-remote" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/client" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/client-bundle" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/server" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/server-monitor" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-jasperreports" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-json" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-rest" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-tomcat-pool" />
+  </target>
+
   <target name="manifest"
           description="Generates a MANIFEST.MF file for inclusion in jars">
     <mkdir dir="${build.main}/META-INF"/>
