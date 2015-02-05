@@ -32,6 +32,9 @@
     <copy file="../../dist/jminor-server.jar" todir="server"/>
     <copy file="../../dist/jminor-server-sources.jar" todir="server"/>
     <copy file="../../dist/jminor-server-javadoc.jar" todir="server"/>
+    <copy file="../../dist/jminor-server-monitor.jar" todir="server-monitor"/>
+    <copy file="../../dist/jminor-server-monitor-sources.jar" todir="server-monitor"/>
+    <copy file="../../dist/jminor-server-monitor-javadoc.jar" todir="server-monitor"/>
     <copy todir="plugin-jasperreports">
       <fileset dir="../../dist" includes="jminor-plugin-jasperreports*.jar"/>
     </copy>
