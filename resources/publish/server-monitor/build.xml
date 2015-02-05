@@ -1,4 +1,4 @@
 <project name="jminor-server-monitor">
   <import file="../build.xml"/>
-  <fileset id="artifacts" dir="${dist.dir}" includes="jminor-monitor-server.jar, jminor-server-monitor-sources.jar, jminor-server-monitor-javadoc.jar"/>
+  <fileset id="artifacts" dir="${dist.dir}" includes="jminor-server-monitor.jar, jminor-server-monitor-sources.jar, jminor-server-monitor-javadoc.jar"/>
 </project>
