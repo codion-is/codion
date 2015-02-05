@@ -1,3 +1,4 @@
 <project name="jminor-plugin-rest">
   <import file="../build.xml"/>
+  <fileset id="artifacts" dir="{dist.dir}" includes="jminor-plugin-rest*.jar"/>
 </project>

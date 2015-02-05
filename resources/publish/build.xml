@@ -2,54 +2,13 @@
 
   <property file="../../../build.properties"/>
   <property file="../../../user.properties"/>
+  <property name="dist.dir" value="../../../dist"/>
 
   <property name="ivy.pom.version" value="${version}"/>
 
   <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${ivy.jar}"/>
 
-  <target name="copy-artifacts">
-    <copy todir="common-model">
-      <fileset dir="../../dist" includes="jminor-common-model*.jar"/>
-    </copy>
-    <copy todir="common-ui">
-      <fileset dir="../../dist" includes="jminor-common-ui*.jar"/>
-    </copy>
-    <copy todir="db-core">
-      <fileset dir="../../dist" includes="jminor-db-core*.jar"/>
-    </copy>
-    <copy todir="db-local">
-      <fileset dir="../../dist" includes="jminor-db-local*.jar"/>
-    </copy>
-    <copy todir="db-remote">
-      <fileset dir="../../dist" includes="jminor-db-remote*.jar"/>
-    </copy>
-    <copy file="../../dist/jminor-client.jar" todir="client"/>
-    <copy file="../../dist/jminor-client-sources.jar" todir="client"/>
-    <copy file="../../dist/jminor-client-javadoc.jar" todir="client"/>
-    <copy file="../../dist/jminor-client-bundle.jar" todir="client-bundle"/>
-    <copy file="../../dist/jminor-client-bundle-sources.jar" todir="client-bundle"/>
-    <copy file="../../dist/jminor-client-bundle-javadoc.jar" todir="client-bundle"/>
-    <copy file="../../dist/jminor-server.jar" todir="server"/>
-    <copy file="../../dist/jminor-server-sources.jar" todir="server"/>
-    <copy file="../../dist/jminor-server-javadoc.jar" todir="server"/>
-    <copy file="../../dist/jminor-server-monitor.jar" todir="server-monitor"/>
-    <copy file="../../dist/jminor-server-monitor-sources.jar" todir="server-monitor"/>
-    <copy file="../../dist/jminor-server-monitor-javadoc.jar" todir="server-monitor"/>
-    <copy todir="plugin-jasperreports">
-      <fileset dir="../../dist" includes="jminor-plugin-jasperreports*.jar"/>
-    </copy>
-    <copy todir="plugin-json">
-      <fileset dir="../../dist" includes="jminor-plugin-json*.jar"/>
-    </copy>
-    <copy todir="plugin-rest">
-      <fileset dir="../../dist" includes="jminor-plugin-rest*.jar"/>
-    </copy>
-    <copy todir="plugin-tomcat-pool">
-      <fileset dir="../../dist" includes="jminor-plugin-tomcat-pool*.jar"/>
-    </copy>
-  </target>
-
-  <target name="publish-all" depends="copy-artifacts" description="publish all module artifacts">
+  <target name="publish-all" description="publish all module artifacts">
     <subant target="publish" buildpath="common-model" />
     <subant target="publish" buildpath="common-ui" />
     <subant target="publish" buildpath="db-core" />
@@ -91,7 +50,13 @@
     </ivy:makepom>
   </target>
 
-  <target name="publish" depends="create-pom" description="Publish the dist files into a local repository">
+  <target name="copy-artifacts">
+    <copy todir=".">
+      <fileset refid="artifacts"/>
+    </copy>
+  </target>
+
+  <target name="publish" depends="copy-artifacts, create-pom" description="Publish the dist files into a local repository">
     <fail unless="version">Version information not set</fail>
     <ivy:resolve/>
     <ivy:publish pubrevision="${version}" status="release" resolver="publish" overwrite="true" forcedeliver="true">

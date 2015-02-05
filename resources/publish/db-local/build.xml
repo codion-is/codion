@@ -1,3 +1,4 @@
 <project name="jminor-db-local">
   <import file="../build.xml"/>
+  <fileset id="artifacts" dir="{dist.dir}" includes="jminor-db-local*.jar"/>
 </project>
