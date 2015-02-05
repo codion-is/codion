@@ -1,4 +1,4 @@
 <project name="jminor-db-core">
   <import file="../build.xml"/>
-  <fileset id="artifacts" dir="{dist.dir}" includes="jminor-db-core*.jar"/>
+  <fileset id="artifacts" dir="${dist.dir}" includes="jminor-db-core*.jar"/>
 </project>

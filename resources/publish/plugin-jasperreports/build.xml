@@ -1,4 +1,4 @@
 <project name="jminor-plugin-jasperreports">
   <import file="../build.xml"/>
-  <fileset id="artifacts" dir="{dist.dir}" includes="jminor-plugin-jasperreports*.jar"/>
+  <fileset id="artifacts" dir="${dist.dir}" includes="jminor-plugin-jasperreports*.jar"/>
 </project>

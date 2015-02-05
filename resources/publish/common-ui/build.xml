@@ -1,4 +1,4 @@
 <project name="jminor-common-ui">
   <import file="../build.xml"/>
-  <fileset id="artifacts" dir="{dist.dir}" includes="jminor-common-ui*.jar"/>
+  <fileset id="artifacts" dir="${dist.dir}" includes="jminor-common-ui*.jar"/>
 </project>
