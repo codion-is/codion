@@ -80,6 +80,7 @@ public final class Util {
 
   private static final Logger LOG = LoggerFactory.getLogger(Util.class);
   private static final Random RANDOM = new Random();
+  private static final Version VERSION;
   private static final int K = 1024;
   private static final String SPACE = " ";
   private static final String UNDERSCORE = "_";
@@ -87,7 +88,15 @@ public final class Util {
   private static final int INPUT_BUFFER_SIZE = 8192;
   private static final int TEN = 10;
   private static Preferences userPreferences;
-  private static Version version;
+
+  static {
+    try {
+      VERSION = Version.parse(getTextFileContents(Util.class, VERSION_FILE));
+    }
+    catch (final IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   private Util() {}
 
@@ -587,30 +596,21 @@ public final class Util {
       return versionString.substring(0, versionString.toLowerCase().indexOf("-"));
     }
 
-    return "N/A";
+    return versionString;
   }
 
   /**
    * @return a string containing the framework version and version metadata
    */
   public static String getVersionAndBuildNumberString() {
-    try {
-      return getTextFileContents(Util.class, VERSION_FILE);
-    }
-    catch (final IOException e) {
-      return "N/A";
-    }
+    return VERSION.toString();
   }
 
   /**
    * @return the framework Version
    */
   public static Version getVersion() {
-    if (version == null) {
-      version = Version.parse(getVersionAndBuildNumberString());
-    }
-
-    return version;
+    return VERSION;
   }
 
   /**

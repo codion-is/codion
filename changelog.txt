@@ -3931,3 +3931,4 @@
   EntityConnectionServer.AuxiliaryServer moved to common.server.Server
   EntityRestServer no longer depends on framework server
   Util.getVersion() now caches the version object
+  Util.VERSION is now final
