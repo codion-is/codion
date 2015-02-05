@@ -24,14 +24,14 @@
       <fileset dir="../../dist" includes="jminor-db-remote*.jar"/>
     </copy>
     <copy file="../../dist/jminor-client.jar" todir="client"/>
-    <copy file="../../dist/jminor-client-src.jar" todir="client"/>
-    <copy file="../../dist/jminor-client-api-doc.jar" todir="client"/>
+    <copy file="../../dist/jminor-client-sources.jar" todir="client"/>
+    <copy file="../../dist/jminor-client-javadoc.jar" todir="client"/>
     <copy file="../../dist/jminor-client-bundle.jar" todir="client-bundle"/>
-    <copy file="../../dist/jminor-client-bundle-src.jar" todir="client-bundle"/>
-    <copy file="../../dist/jminor-client-bundle-api-doc.jar" todir="client-bundle"/>
+    <copy file="../../dist/jminor-client-bundle-sources.jar" todir="client-bundle"/>
+    <copy file="../../dist/jminor-client-bundle-javadoc.jar" todir="client-bundle"/>
     <copy file="../../dist/jminor-server.jar" todir="server"/>
-    <copy file="../../dist/jminor-server-src.jar" todir="server"/>
-    <copy file="../../dist/jminor-server-api-doc.jar" todir="server"/>
+    <copy file="../../dist/jminor-server-sources.jar" todir="server"/>
+    <copy file="../../dist/jminor-server-javadoc.jar" todir="server"/>
     <copy todir="plugin-jasperreports">
       <fileset dir="../../dist" includes="jminor-plugin-jasperreports*.jar"/>
     </copy>
