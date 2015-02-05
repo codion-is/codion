@@ -238,18 +238,51 @@
          manifest="${build.main}/META-INF/MANIFEST.MF"
          includes="org/jminor/framework/db/remote/*"/>
 
-    <jar jarfile="${dist}/jminor-client.jar" basedir="${build.main}"
+    <jar jarfile="${dist}/jminor-client-model.jar" basedir="${build.main}"
          manifest="${build.main}/META-INF/MANIFEST.MF"
-         includes="org/jminor/framework/client/**,
-                   org/jminor/framework/tools/testing/**"/>
-    <jar jarfile="${dist}/jminor-client-sources.jar" basedir="${src.main}"
+         includes="org/jminor/framework/client/model/**"/>
+    <jar jarfile="${dist}/jminor-client-model-sources.jar" basedir="${src.main}"
          manifest="${build.main}/META-INF/MANIFEST.MF"
-         includes="org/jminor/framework/client/**,
-                   org/jminor/framework/tools/testing/**"/>
-    <jar jarfile="${dist}/jminor-client-javadoc.jar" basedir="${javadoc}"
+         includes="org/jminor/framework/client/model/**"/>
+    <jar jarfile="${dist}/jminor-client-model-javadoc.jar" basedir="${javadoc}"
          manifest="${build.main}/META-INF/MANIFEST.MF"
-         includes="org/jminor/framework/client/**,
-                   org/jminor/framework/tools/testing/**"/>
+         includes="org/jminor/framework/client/model/**"/>
+
+    <jar jarfile="${dist}/jminor-client-ui.jar" basedir="${build.main}"
+         manifest="${build.main}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/client/ui/**"/>
+    <jar jarfile="${dist}/jminor-client-ui-sources.jar" basedir="${src.main}"
+         manifest="${build.main}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/client/ui/**"/>
+    <jar jarfile="${dist}/jminor-client-ui-javadoc.jar" basedir="${javadoc}"
+         manifest="${build.main}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/client/ui/**"/>
+
+    <jar jarfile="${dist}/jminor-testing-model.jar" basedir="${build.main}"
+         manifest="${build.main}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/tools/testing/EntityTestUnit*,
+                   org/jminor/framework/tools/testing/EntityLoadTestModel*"/>
+    <jar jarfile="${dist}/jminor-testing-model-sources.jar" basedir="${src.main}"
+         manifest="${build.main}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/tools/testing/EntityTestUnit*,
+                   org/jminor/framework/tools/testing/EntityLoadTestModel*"/>
+    <jar jarfile="${dist}/jminor-testing-model-javadoc.jar" basedir="${javadoc}"
+         manifest="${build.main}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/tools/testing/EntityTestUnit*,
+                   org/jminor/framework/tools/testing/EntityLoadTestModel*"/>
+
+    <jar jarfile="${dist}/jminor-testing-ui.jar" basedir="${build.main}"
+         manifest="${build.main}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/tools/EntityApplicationPanelTestUnit*,
+                   org/jminor/framework/tools/EntityEditPanelTestUnit*"/>
+    <jar jarfile="${dist}/jminor-testing-ui-sources.jar" basedir="${src.main}"
+         manifest="${build.main}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/tools/EntityApplicationPanelTestUnit*,
+                   org/jminor/framework/tools/EntityEditPanelTestUnit*"/>
+    <jar jarfile="${dist}/jminor-testing-ui-javadoc.jar" basedir="${javadoc}"
+         manifest="${build.main}/META-INF/MANIFEST.MF"
+         includes="org/jminor/framework/tools/EntityApplicationPanelTestUnit*,
+                   org/jminor/framework/tools/EntityEditPanelTestUnit*"/>
 
     <jar jarfile="${dist}/jminor-server.jar" basedir="${build.main}"
          manifest="${build.main}/META-INF/MANIFEST.MF"
@@ -324,15 +357,15 @@
 
     <jar jarfile="${dist}/jminor-client-bundle.jar">
       <zipgroupfileset dir="${dist}" includes="jminor-common-model.jar, jminor-common-ui.jar, jminor-db-core.jar,
-      jminor-db-local.jar, jminor-db-remote.jar, jminor-client.jar"/>
+      jminor-db-local.jar, jminor-db-remote.jar, jminor-client-model.jar, jminor-client-ui.jar"/>
     </jar>
     <jar jarfile="${dist}/jminor-client-bundle-sources.jar">
       <zipgroupfileset dir="${dist}" includes="jminor-common-model-sources.jar, jminor-common-ui-sources.jar, jminor-db-core-sources.jar,
-      jminor-db-local-sources.jar, jminor-db-remote-sources.jar, jminor-client-sources.jar"/>
+      jminor-db-local-sources.jar, jminor-db-remote-sources.jar, jminor-client-model-sources.jar, jminor-client-ui-sources.jar"/>
     </jar>
     <jar jarfile="${dist}/jminor-client-bundle-javadoc.jar">
       <zipgroupfileset dir="${dist}" includes="jminor-common-model-javadoc.jar, jminor-common-ui-javadoc.jar, jminor-db-core-javadoc.jar,
-      jminor-db-local-javadoc.jar, jminor-db-remote-javadoc.jar, jminor-client-javadoc.jar"/>
+      jminor-db-local-javadoc.jar, jminor-db-remote-javadoc.jar, jminor-client-model-javadoc.jar, jminor-client-ui-javadoc.jar"/>
     </jar>
 
     <copy file="${basedir}/changelog.txt" todir="${dist}"/>
@@ -362,8 +395,11 @@
     <subant target="publish" buildpath="${basedir}/resources/publish/db-core" />
     <subant target="publish" buildpath="${basedir}/resources/publish/db-local" />
     <subant target="publish" buildpath="${basedir}/resources/publish/db-remote" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/client" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/client-model" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/client-ui" />
     <subant target="publish" buildpath="${basedir}/resources/publish/client-bundle" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/testing-model" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/testing-ui" />
     <subant target="publish" buildpath="${basedir}/resources/publish/server" />
     <subant target="publish" buildpath="${basedir}/resources/publish/server-monitor" />
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-jasperreports" />

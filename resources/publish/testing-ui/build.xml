@@ -1,0 +1,4 @@
+<project name="jminor-testing-ui">
+  <import file="../build.xml"/>
+  <fileset id="artifacts" dir="${dist.dir}" includes="jminor-testing-ui.jar, jminor-testing-ui-sources.jar, jminor-testing-ui-javadoc.jar"/>
+</project>
