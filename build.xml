@@ -230,8 +230,8 @@
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
-                 includes="org/jminor/framework/tools/EntityApplicationPanelTestUnit*,
-                   org/jminor/framework/tools/EntityEditPanelTestUnit*"/>
+                 includes="org/jminor/framework/tools/testing/EntityApplicationPanelTestUnit*,
+                   org/jminor/framework/tools/testing/EntityEditPanelTestUnit*"/>
 
     <dist_module module.name="jminor-server"
                  basedir.classes="${build.main}"
