@@ -20,7 +20,7 @@
 
   <target name="copy-artifacts">
     <copy todir=".">
-      <fileset refid="artifacts"/>
+      <fileset dir="${dist.dir}/${ant.project.name}"/>
     </copy>
   </target>
 

@@ -189,10 +189,11 @@
                  basedir.javadoc="${javadoc}"
                  includes="org/jminor/framework/Configuration.class,
                    org/jminor/framework/db/*,
+                   org/jminor/framework/db/criteria/*,
                    org/jminor/framework/domain/*,
                    org/jminor/framework/i18n/**"
-                 excludes="org/jminor/framework/db/remote/*,
-                   org/jminor/framework/db/local/*,"/>
+                 excludes="org/jminor/framework/db/remote*,
+                   org/jminor/framework/db/local*,"/>
 
     <dist_module module.name="jminor-db-local"
                  basedir.classes="${build.main}"
@@ -207,6 +208,12 @@
                  includes="org/jminor/framework/db/remote/*,
                    org/jminor/framework/server/DefaultRemoteEntityConnection_Stub.class"/>
 
+    <dist_module module.name="jminor-db-test"
+                 basedir.classes="${build.main}"
+                 basedir.sources="${src.main}"
+                 basedir.javadoc="${javadoc}"
+                 includes="org/jminor/framework/tools/testing/EntityTestUnit*"/>
+
     <dist_module module.name="jminor-client-model"
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
@@ -219,19 +226,13 @@
                  basedir.javadoc="${javadoc}"
                  includes="org/jminor/framework/client/ui/**"/>
 
-    <dist_module module.name="jminor-testing-model"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
-                 includes="org/jminor/framework/tools/testing/EntityTestUnit*,
-                   org/jminor/framework/tools/testing/EntityLoadTestModel*"/>
-
-    <dist_module module.name="jminor-testing-ui"
+    <dist_module module.name="jminor-client-test"
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
                  includes="org/jminor/framework/tools/testing/EntityApplicationPanelTestUnit*,
-                   org/jminor/framework/tools/testing/EntityEditPanelTestUnit*"/>
+                   org/jminor/framework/tools/testing/EntityEditPanelTestUnit*,
+                   org/jminor/framework/tools/testing/EntityLoadTestModel*"/>
 
     <dist_module module.name="jminor-server"
                  basedir.classes="${build.main}"
@@ -322,11 +323,11 @@
     <subant target="publish" buildpath="${basedir}/resources/publish/db-core" />
     <subant target="publish" buildpath="${basedir}/resources/publish/db-local" />
     <subant target="publish" buildpath="${basedir}/resources/publish/db-remote" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/db-test" />
     <subant target="publish" buildpath="${basedir}/resources/publish/client-model" />
     <subant target="publish" buildpath="${basedir}/resources/publish/client-ui" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/client-test" />
     <subant target="publish" buildpath="${basedir}/resources/publish/client-bundle" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/testing-model" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/testing-ui" />
     <subant target="publish" buildpath="${basedir}/resources/publish/server" />
     <subant target="publish" buildpath="${basedir}/resources/publish/server-monitor" />
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-jasperreports" />
@@ -638,15 +639,18 @@
     <attribute name="includes" default=""/>
     <attribute name="excludes" default=""/>
     <sequential>
-    <jar jarfile="${dist}/@{module.name}/@{module.name}.jar" basedir="@{basedir.classes}"
-         manifest="${build.main}/META-INF/MANIFEST.MF"
-         includes="@{includes}" excludes="@{excludes}"/>
-    <jar jarfile="${dist}/@{module.name}/@{module.name}-sources.jar" basedir="@{basedir.sources}"
-         manifest="${build.main}/META-INF/MANIFEST.MF"
-         includes="@{includes}" excludes="@{excludes}"/>
-    <jar jarfile="${dist}/@{module.name}/@{module.name}-javadoc.jar" basedir="@{basedir.javadoc}"
-         manifest="${build.main}/META-INF/MANIFEST.MF"
-         includes="@{includes}" excludes="@{excludes}"/>
+      <delete file="${dist}/@{module.name}/@{module.name}.jar"/>
+      <jar jarfile="${dist}/@{module.name}/@{module.name}.jar" basedir="@{basedir.classes}"
+           manifest="${build.main}/META-INF/MANIFEST.MF"
+           includes="@{includes}" excludes="@{excludes}"/>
+      <delete file="${dist}/@{module.name}/@{module.name}-sources.jar"/>
+      <jar jarfile="${dist}/@{module.name}/@{module.name}-sources.jar" basedir="@{basedir.sources}"
+           manifest="${build.main}/META-INF/MANIFEST.MF"
+           includes="@{includes}" excludes="@{excludes}"/>
+      <delete file="${dist}/@{module.name}/@{module.name}-javadoc.jar"/>
+      <jar jarfile="${dist}/@{module.name}/@{module.name}-javadoc.jar" basedir="@{basedir.javadoc}"
+           manifest="${build.main}/META-INF/MANIFEST.MF"
+           includes="@{includes}" excludes="@{excludes}"/>
     </sequential>
 
   </macrodef>

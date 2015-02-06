@@ -1,4 +1,3 @@
 <project name="jminor-client-ui">
   <import file="../build.xml"/>
-  <fileset id="artifacts" dir="${dist.dir}" includes="jminor-client-ui.jar, jminor-client-ui-sources.jar, jminor-client-ui-javadoc.jar"/>
 </project>
