@@ -147,10 +147,8 @@ public class MethodLogger implements Serializable {
    */
   public final synchronized void setEnabled(final boolean enabled) {
     this.enabled = enabled;
-    if (!enabled) {
-      entries.clear();
-      callStack.clear();
-    }
+    entries.clear();
+    callStack.clear();
   }
 
   /**

@@ -927,7 +927,7 @@ final class LocalEntityConnection implements EntityConnection {
   }
 
   private MethodLogger.Entry logExit(final String method, final Throwable exception, final String exitMessage) {
-    if (methodLogger != null) {
+    if (methodLogger != null && methodLogger.isEnabled()) {
       return methodLogger.logExit(method, exception, exitMessage);
     }
 
@@ -935,7 +935,7 @@ final class LocalEntityConnection implements EntityConnection {
   }
 
   private void logAccess(final String method, final Object[] arguments) {
-    if (methodLogger != null) {
+    if (methodLogger != null && methodLogger.isEnabled()) {
       methodLogger.logAccess(method, arguments);
     }
   }

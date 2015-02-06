@@ -120,7 +120,7 @@ public final class DatabaseUtil {
     ResultSet resultSet = null;
     final MethodLogger methodLogger = connection.getMethodLogger();
     try {
-      if (methodLogger != null) {
+      if (methodLogger != null && methodLogger.isEnabled()) {
         methodLogger.logAccess("query", new Object[]{sql});
       }
       statement = connection.getConnection().createStatement();
@@ -135,7 +135,7 @@ public final class DatabaseUtil {
     finally {
       closeSilently(statement);
       closeSilently(resultSet);
-      if (methodLogger != null) {
+      if (methodLogger != null && methodLogger.isEnabled()) {
         final MethodLogger.Entry logEntry = methodLogger.logExit("query", exception, null);
         if (LOG != null && LOG.isDebugEnabled()) {
           LOG.debug(createLogMessage(connection.getUser(), sql, null, exception, logEntry));

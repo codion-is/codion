@@ -3934,3 +3934,5 @@
   Util.VERSION is now final
   DefaultColumnProperty.setColumnName() bug fixed, did not set the value
   DefaultColumnProperty primitive value fetchers now only call ResultSet.wasNull() if the actual value warrants it
+  DefaultDatabaseConnection, LocalEntityConnection, DatabaseUtil, DefaultRemoteEntityConnection, logAccess() and logExit() now return right away if the method logger is not enabled
+  MethodLogger always clears log on enabled state change

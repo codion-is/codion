@@ -542,7 +542,9 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   private EntityConnection getConnection() throws DatabaseException {
     Exception exception = null;
     try {
-      methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
+      if (methodLogger != null && methodLogger.isEnabled()) {
+        methodLogger.logAccess(GET_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
+      }
       if (connectionPool != null) {
         return getPooledEntityConnection();
       }
@@ -554,11 +556,13 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
       throw ex;
     }
     finally {
-      String message = null;
-      if (poolEntityConnection != null && poolEntityConnection.getDatabaseConnection().getRetryCount() > 0) {
-        message = "retries: " + poolEntityConnection.getDatabaseConnection().getRetryCount();
+      if (methodLogger != null && methodLogger.isEnabled()) {
+        String message = null;
+        if (poolEntityConnection != null && poolEntityConnection.getDatabaseConnection().getRetryCount() > 0) {
+          message = "retries: " + poolEntityConnection.getDatabaseConnection().getRetryCount();
+        }
+        methodLogger.logExit(GET_CONNECTION, exception, message);
       }
-      methodLogger.logExit(GET_CONNECTION, exception, message);
     }
   }
 
@@ -570,7 +574,9 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
       return;
     }
     try {
-      methodLogger.logAccess(RETURN_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
+      if (methodLogger != null && methodLogger.isEnabled()) {
+        methodLogger.logAccess(RETURN_CONNECTION, new Object[]{clientInfo.getDatabaseUser(), clientInfo.getUser()});
+      }
       poolEntityConnection.setMethodLogger(null);
       returnConnectionToPool();
     }
@@ -578,7 +584,9 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
       LOG.info("Exception while returning connection to pool", e);
     }
     finally {
-      methodLogger.logExit(RETURN_CONNECTION, null, null);
+      if (methodLogger != null && methodLogger.isEnabled()) {
+        methodLogger.logExit(RETURN_CONNECTION, null, null);
+      }
     }
   }
 
