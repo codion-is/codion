@@ -280,17 +280,17 @@
     <jar jarfile="${dist}/jminor-demos/jminor-demos-sources.jar" basedir="${src.demos}"
          manifest="${build.main}/META-INF/MANIFEST.MF"/>
 
-    <jar jarfile="${dist}/jminor-client-bundle/jminor-client-bundle.jar">
+    <jar jarfile="${dist}/jminor-client-bundle/jminor-client-bundle.jar" manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="jminor-common-model/jminor-common-model.jar, jminor-common-ui/jminor-common-ui.jar,
       jminor-db-core/jminor-db-core.jar, jminor-db-local/jminor-db-local.jar, jminor-db-remote/jminor-db-remote.jar,
       jminor-client-model/jminor-client-model.jar, jminor-client-ui/jminor-client-ui.jar"/>
     </jar>
-    <jar jarfile="${dist}/jminor-client-bundle/jminor-client-bundle-sources.jar">
+    <jar jarfile="${dist}/jminor-client-bundle/jminor-client-bundle-sources.jar" manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="jminor-common-model/jminor-common-model-sources.jar, jminor-common-ui/jminor-common-ui-sources.jar,
       jminor-db-core/jminor-db-core-sources.jar, jminor-db-local/jminor-db-local-sources.jar, jminor-db-remote/jminor-db-remote-sources.jar,
       jminor-client-model/jminor-client-model-sources.jar, jminor-client-ui/jminor-client-ui-sources.jar"/>
     </jar>
-    <jar jarfile="${dist}/jminor-client-bundle/jminor-client-bundle-javadoc.jar">
+    <jar jarfile="${dist}/jminor-client-bundle/jminor-client-bundle-javadoc.jar" manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="jminor-common-model/jminor-common-model-javadoc.jar, jminor-common-ui/jminor-common-ui-javadoc.jar,
       jminor-db-core/jminor-db-core-javadoc.jar, jminor-db-local/jminor-db-local-javadoc.jar, jminor-db-remote/jminor-db-remote-javadoc.jar,
       jminor-client-model/jminor-client-model-javadoc.jar, jminor-client-ui/jminor-client-ui-javadoc.jar"/>
@@ -340,10 +340,13 @@
           description="Generates a MANIFEST.MF file for inclusion in jars">
     <mkdir dir="${build.main}/META-INF"/>
     <manifest file="${build.main}/META-INF/MANIFEST.MF">
+      <attribute name="Implementation-Vendor" value="JMinor"/>
+      <attribute name="Implementation-Vendor-Id" value="jminor"/>
       <attribute name="Implementation-Title" value="JMinor Application Framework"/>
       <attribute name="Implementation-Version" value="${version}"/>
       <attribute name="Implementation-URL" value="http://jminor.org"/>
       <attribute name="Build-Jdk" value="${java.specification.version}"/>
+      <attribute name="Built-By" value="${user.name}"/>
     </manifest>
   </target>
 
