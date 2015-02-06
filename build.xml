@@ -316,7 +316,7 @@
                    org/jminor/framework/tools/testing/EntityTestUnit*"/>
   </target>
 
-  <target name="publish-all" depends="dist"
+  <target name="publish_all" depends="dist"
           description="Publish all project artifacts">
     <subant target="publish" buildpath="${basedir}/resources/publish/common-model"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/common-ui"/>
