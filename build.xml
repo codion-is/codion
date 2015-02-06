@@ -274,22 +274,25 @@
                  basedir.javadoc="${javadoc.plugins}"
                  includes="org/jminor/framework/plugins/tomcat/pool/**"/>
 
-    <jar jarfile="${dist}/jminor-demos.jar" basedir="${build.demos}"
+    <jar jarfile="${dist}/jminor-demos/jminor-demos.jar" basedir="${build.demos}"
          manifest="${build.main}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="${dist}/jminor-demos-sources.jar" basedir="${src.demos}"
+    <jar jarfile="${dist}/jminor-demos/jminor-demos-sources.jar" basedir="${src.demos}"
          manifest="${build.main}/META-INF/MANIFEST.MF"/>
 
-    <jar jarfile="${dist}/jminor-client-bundle.jar">
-      <zipgroupfileset dir="${dist}" includes="jminor-common-model.jar, jminor-common-ui.jar, jminor-db-core.jar,
-      jminor-db-local.jar, jminor-db-remote.jar, jminor-client-model.jar, jminor-client-ui.jar"/>
+    <jar jarfile="${dist}/jminor-client-bundle/jminor-client-bundle.jar">
+      <zipgroupfileset dir="${dist}" includes="jminor-common-model/jminor-common-model.jar, jminor-common-ui/jminor-common-ui.jar,
+      jminor-db-core/jminor-db-core.jar, jminor-db-local/jminor-db-local.jar, jminor-db-remote/jminor-db-remote.jar,
+      jminor-client-model/jminor-client-model.jar, jminor-client-ui/jminor-client-ui.jar"/>
     </jar>
-    <jar jarfile="${dist}/jminor-client-bundle-sources.jar">
-      <zipgroupfileset dir="${dist}" includes="jminor-common-model-sources.jar, jminor-common-ui-sources.jar, jminor-db-core-sources.jar,
-      jminor-db-local-sources.jar, jminor-db-remote-sources.jar, jminor-client-model-sources.jar, jminor-client-ui-sources.jar"/>
+    <jar jarfile="${dist}/jminor-client-bundle/jminor-client-bundle-sources.jar">
+      <zipgroupfileset dir="${dist}" includes="jminor-common-model/jminor-common-model-sources.jar, jminor-common-ui/jminor-common-ui-sources.jar,
+      jminor-db-core/jminor-db-core-sources.jar, jminor-db-local/jminor-db-local-sources.jar, jminor-db-remote/jminor-db-remote-sources.jar,
+      jminor-client-model/jminor-client-model-sources.jar, jminor-client-ui/jminor-client-ui-sources.jar"/>
     </jar>
-    <jar jarfile="${dist}/jminor-client-bundle-javadoc.jar">
-      <zipgroupfileset dir="${dist}" includes="jminor-common-model-javadoc.jar, jminor-common-ui-javadoc.jar, jminor-db-core-javadoc.jar,
-      jminor-db-local-javadoc.jar, jminor-db-remote-javadoc.jar, jminor-client-model-javadoc.jar, jminor-client-ui-javadoc.jar"/>
+    <jar jarfile="${dist}/jminor-client-bundle/jminor-client-bundle-javadoc.jar">
+      <zipgroupfileset dir="${dist}" includes="jminor-common-model/jminor-common-model-javadoc.jar, jminor-common-ui/jminor-common-ui-javadoc.jar,
+      jminor-db-core/jminor-db-core-javadoc.jar, jminor-db-local/jminor-db-local-javadoc.jar, jminor-db-remote/jminor-db-remote-javadoc.jar,
+      jminor-client-model/jminor-client-model-javadoc.jar, jminor-client-ui/jminor-client-ui-javadoc.jar"/>
     </jar>
 
     <copy file="${basedir}/changelog.txt" todir="${dist}"/>
@@ -439,7 +442,6 @@
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <tstamp />
     <!--Setup-->
-    <mkdir dir="${dist}/current"/>
     <mkdir dir="${deploy.demos.dir}/META-INF"/>
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
@@ -636,13 +638,13 @@
     <attribute name="includes" default=""/>
     <attribute name="excludes" default=""/>
     <sequential>
-    <jar jarfile="${dist}/@{module.name}.jar" basedir="@{basedir.classes}"
+    <jar jarfile="${dist}/@{module.name}/@{module.name}.jar" basedir="@{basedir.classes}"
          manifest="${build.main}/META-INF/MANIFEST.MF"
          includes="@{includes}" excludes="@{excludes}"/>
-    <jar jarfile="${dist}/@{module.name}-sources.jar" basedir="@{basedir.sources}"
+    <jar jarfile="${dist}/@{module.name}/@{module.name}-sources.jar" basedir="@{basedir.sources}"
          manifest="${build.main}/META-INF/MANIFEST.MF"
          includes="@{includes}" excludes="@{excludes}"/>
-    <jar jarfile="${dist}/@{module.name}-javadoc.jar" basedir="@{basedir.javadoc}"
+    <jar jarfile="${dist}/@{module.name}/@{module.name}-javadoc.jar" basedir="@{basedir.javadoc}"
          manifest="${build.main}/META-INF/MANIFEST.MF"
          includes="@{includes}" excludes="@{excludes}"/>
     </sequential>
