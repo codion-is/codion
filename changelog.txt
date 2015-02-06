@@ -3932,3 +3932,5 @@
   EntityRestServer no longer depends on framework server
   Util.getVersion() now caches the version object
   Util.VERSION is now final
+  DefaultColumnProperty.setColumnName() bug fixed, did not set the value
+  DefaultColumnProperty primitive value fetchers now only call ResultSet.wasNull() if the actual value warrants it

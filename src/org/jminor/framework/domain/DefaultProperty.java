@@ -566,7 +566,7 @@ class DefaultProperty implements Property {
 
     @Override
     public ColumnProperty setColumnName(final String columnName) {
-      Util.rejectNullValue(columnName, "columnName");
+      this.columnName = Util.rejectNullValue(columnName, "columnName");
       return this;
     }
 
@@ -832,25 +832,25 @@ class DefaultProperty implements Property {
     private static Boolean getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {
       final boolean value = resultSet.getBoolean(columnIndex);
 
-      return resultSet.wasNull() ? null : value;
+      return !value && resultSet.wasNull() ? null : value;
     }
 
     private static Integer getInteger(final ResultSet resultSet, final int columnIndex) throws SQLException {
       final int value = resultSet.getInt(columnIndex);
 
-      return resultSet.wasNull() ? null : value;
+      return value == 0 && resultSet.wasNull() ? null : value;
     }
 
     private static Long getLong(final ResultSet resultSet, final int columnIndex) throws SQLException {
       final long value = resultSet.getLong(columnIndex);
 
-      return resultSet.wasNull() ? null : value;
+      return value == 0 && resultSet.wasNull() ? null : value;
     }
 
     private static Double getDouble(final ResultSet resultSet, final int columnIndex) throws SQLException {
       final double value = resultSet.getDouble(columnIndex);
 
-      return resultSet.wasNull() ? null : value;
+      return value == 0 && resultSet.wasNull() ? null : value;
     }
 
     private static String getString(final ResultSet resultSet, final int columnIndex) throws SQLException {
