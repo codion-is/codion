@@ -318,22 +318,22 @@
 
   <target name="publish-all" depends="dist"
           description="Publish all project artifacts">
-    <subant target="publish" buildpath="${basedir}/resources/publish/common-model" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/common-ui" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/db-core" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/db-local" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/db-remote" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/db-test" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/client-model" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/client-ui" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/client-test" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/client-bundle" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/server" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/server-monitor" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-jasperreports" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-json" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-rest" />
-    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-tomcat-pool" />
+    <subant target="publish" buildpath="${basedir}/resources/publish/common-model"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/common-ui"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/db-core"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/db-local"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/db-remote"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/db-test"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/client-model"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/client-ui"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/client-test"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/client-bundle"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/server"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/server-monitor"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-jasperreports"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-json"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-rest"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-tomcat-pool"/>
   </target>
 
   <target name="manifest"
