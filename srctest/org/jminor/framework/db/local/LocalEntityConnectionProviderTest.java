@@ -10,10 +10,7 @@ import org.jminor.framework.db.EntityConnection;
 
 import org.junit.Test;
 
-import static junit.framework.Assert.assertEquals;
-import static junit.framework.Assert.assertFalse;
-import static org.junit.Assert.assertNotNull;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class LocalEntityConnectionProviderTest {
 
