@@ -229,7 +229,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param entityModel the EntityModel
    */
   public EntityPanel(final EntityModel entityModel) {
-    this(entityModel, Entities.getCaption(entityModel.getEntityID()));
+    this(entityModel, Entities.getCaption(Util.rejectNullValue(entityModel, "entityModel").getEntityID()));
   }
 
   /**
