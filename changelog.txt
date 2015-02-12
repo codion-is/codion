@@ -3936,3 +3936,4 @@
   DefaultColumnProperty primitive value fetchers now only call ResultSet.wasNull() if the actual value warrants it
   DefaultDatabaseConnection, LocalEntityConnection, DatabaseUtil, DefaultRemoteEntityConnection, logAccess() and logExit() now return right away if the method logger is not enabled
   MethodLogger always clears log on enabled state change
+  LocalEntityConnection bug fixed, select for update did not use selectTableName

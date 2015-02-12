@@ -990,14 +990,7 @@ final class LocalEntityConnection implements EntityConnection {
     final String entityID = criteria.getEntityID();
     String selectSQL = Entities.getSelectQuery(entityID);
     if (selectSQL == null) {
-      final String tableName;
-      if (criteria.isForUpdate()) {
-        tableName = Entities.getTableName(entityID);
-      }
-      else {
-        tableName = Entities.getSelectTableName(entityID);
-      }
-      selectSQL = createSelectSQL(tableName, Entities.getSelectColumnsString(entityID), null, null);
+      selectSQL = createSelectSQL(Entities.getSelectTableName(entityID), Entities.getSelectColumnsString(entityID), null, null);
     }
 
     final StringBuilder queryBuilder = new StringBuilder(selectSQL);
