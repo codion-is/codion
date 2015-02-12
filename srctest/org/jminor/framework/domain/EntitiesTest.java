@@ -298,4 +298,23 @@ public class EntitiesTest {
             Properties.primaryKeyProperty("p0")).setHavingClause(havingClause);
     assertEquals(havingClause, Entities.getHavingClause("entityID3"));
   }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void validateTypeEntity() {
+    final Entity entity = Entities.entity(EntityTestDomain.T_DETAIL);
+    final Entity entity1 = Entities.entity(EntityTestDomain.T_DETAIL);
+    entity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, entity1);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setValueDerived() {
+    final Entity entity = Entities.entity(EntityTestDomain.T_DETAIL);
+    entity.setValue(EntityTestDomain.DETAIL_INT_DERIVED, 10);
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setValueValueList() {
+    final Entity entity = Entities.entity(EntityTestDomain.T_DETAIL);
+    entity.setValue(EntityTestDomain.DETAIL_INT_VALUE_LIST, -10);
+  }
 }

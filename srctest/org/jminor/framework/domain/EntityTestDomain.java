@@ -9,6 +9,7 @@ import java.sql.Types;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
+import java.util.Map;
 
 public class EntityTestDomain {
 
@@ -34,6 +35,7 @@ public class EntityTestDomain {
   public static final String DETAIL_MASTER_NAME = "master_name";
   public static final String DETAIL_MASTER_CODE = "master_code";
   public static final String DETAIL_INT_VALUE_LIST = "int_value_list";
+  public static final String DETAIL_INT_DERIVED = "int_derived";
 
   private static final List<Item> ITEMS = Arrays.asList(new Item(0, "0"), new Item(1, "1"),
           new Item(2, "2"), new Item(3, "3"));
@@ -75,7 +77,18 @@ public class EntityTestDomain {
                     Entities.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
             Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
                     Entities.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE),
-            Properties.valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST, ITEMS))
+            Properties.valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST, ITEMS),
+            Properties.derivedProperty(DETAIL_INT_DERIVED, Types.INTEGER, DETAIL_INT_DERIVED, new Property.DerivedProperty.Provider() {
+              @Override
+              public Object getValue(final Map<String, Object> linkedValues) {
+                final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
+                if (intValue == null) {
+                  return null;
+                }
+
+                return intValue * 10;
+              }
+            }, DETAIL_INT))
             .setOrderByClause(DETAIL_STRING)
             .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
             .setSmallDataset(true)
