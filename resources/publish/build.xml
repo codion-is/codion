@@ -12,7 +12,7 @@
     <ivy:resolve/>
     <ivy:deliver deliverpattern="ivy.xml" pubrevision="${version}"/>
     <ivy:makepom ivyfile="ivy.xml" pomfile="${ant.project.name}.pom">
-      <mapping conf="default" scope="runtime" />
+      <mapping conf="runtime" scope="runtime" />
       <mapping conf="sources" scope="sources" />
       <mapping conf="javadoc" scope="javadoc" />
     </ivy:makepom>
