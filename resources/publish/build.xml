@@ -12,28 +12,22 @@
   <target name="create-pom">
     <ivy:resolve/>
     <ivy:deliver deliverpattern="ivy.xml" pubrevision="${version}"/>
-    <ivy:makepom ivyfile="ivy.xml" pomfile="${ant.project.name}.pom">
+    <ivy:makepom ivyfile="ivy.xml" pomfile="../../../dist/${ant.project.name}/${ant.project.name}.pom">
       <mapping conf="runtime" scope="runtime" />
       <mapping conf="sources" scope="sources" />
       <mapping conf="javadoc" scope="javadoc" />
     </ivy:makepom>
   </target>
 
-  <target name="copy-artifacts">
-    <copy todir=".">
-      <fileset dir="${dist.dir}/${ant.project.name}"/>
-    </copy>
-  </target>
-
-  <target name="publish" depends="copy-artifacts, create-pom">
+  <target name="publish" depends="create-pom">
     <fail unless="version">Version information not set</fail>
     <ivy:publish pubrevision="${version}" status="release" resolver="publish" overwrite="true" forcedeliver="true">
-      <artifacts pattern="[artifact].[ext]"/>
+      <artifacts pattern="../../../dist/${ant.project.name}/[artifact].[ext]"/>
     </ivy:publish>
   </target>
 
   <target name="report">
     <ivy:resolve/>
-    <ivy:report conf="runtime" graph="false" todir="report"/>
+    <ivy:report conf="runtime" graph="false" todir="../../../ivy_reports/${ant.project.name}"/>
   </target>
 </project>
