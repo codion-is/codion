@@ -14,14 +14,14 @@
     <artifact name="jminor-plugin-tomcat-pool-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
   </publications>
 
-  <dependencies>
-    <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration" conf="runtime"/>
+  <dependencies defaultconf="runtime->default">
+    <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration"/>
 
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false" conf="runtime"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false" conf="runtime"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false" conf="runtime"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false"/>
 
-    <dependency org="org.apache.tomcat" name="tomcat-jdbc" rev="7.0.39" transitive="false" conf="runtime"/>
-    <dependency org="org.apache.tomcat" name="tomcat-juli" rev="7.0.39" transitive="false" conf="runtime"/>
+    <dependency org="org.apache.tomcat" name="tomcat-jdbc" rev="7.0.39" transitive="false"/>
+    <dependency org="org.apache.tomcat" name="tomcat-juli" rev="7.0.39" transitive="false"/>
   </dependencies>
 </ivy-module>

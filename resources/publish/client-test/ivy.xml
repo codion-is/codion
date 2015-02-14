@@ -14,18 +14,18 @@
     <artifact name="jminor-client-test-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
   </publications>
 
-  <dependencies>
-    <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration" conf="runtime"/>
-    <dependency org="org.jminor" name="jminor-common-ui" rev="latest.integration" conf="runtime"/>
-    <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration" conf="runtime"/>
-    <dependency org="org.jminor" name="jminor-db-local" rev="latest.integration" conf="runtime"/>
-    <dependency org="org.jminor" name="jminor-client-model" rev="latest.integration" conf="runtime"/>
-    <dependency org="org.jminor" name="jminor-client-ui" rev="latest.integration" conf="runtime"/>
+  <dependencies defaultconf="runtime->default">
+    <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-common-ui" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-db-local" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-client-model" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-client-ui" rev="latest.integration"/>
 
-    <dependency org="junit" name="junit" rev="4.12" transitive="false" conf="runtime"/>
-    <dependency org="org.hamcrest" name="hamcrest-core" rev="1.3" transitive="false" conf="runtime"/>
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false" conf="runtime"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false" conf="runtime"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false" conf="runtime"/>
+    <dependency org="junit" name="junit" rev="4.12" transitive="false"/>
+    <dependency org="org.hamcrest" name="hamcrest-core" rev="1.3" transitive="false"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false"/>
   </dependencies>
 </ivy-module>
