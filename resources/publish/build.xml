@@ -2,28 +2,27 @@
 
   <property file="../../../build.properties"/>
   <property file="../../../user.properties"/>
-  <property name="dist.dir" value="../../../dist"/>
+  <property name="base.dir" value="../../../dist/${ant.project.name}"/>
 
   <property name="ivy.pom.version" value="${version}"/>
   <property name="ivy.pom.url" value="http://jminor.org"/>
 
   <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${ivy.jar}"/>
 
-  <target name="create-pom">
+  <target name="publish">
+    <fail unless="version">Version information not set</fail>
+    <copy file="ivy.xml" tofile="ivy.xml.bak" overwrite="true"/>
     <ivy:resolve/>
     <ivy:deliver deliverpattern="ivy.xml" pubrevision="${version}"/>
-    <ivy:makepom ivyfile="ivy.xml" pomfile="../../../dist/${ant.project.name}/${ant.project.name}.pom">
+    <ivy:makepom ivyfile="ivy.xml" pomfile="${base.dir}/${ant.project.name}.pom">
       <mapping conf="runtime" scope="runtime" />
       <mapping conf="sources" scope="sources" />
       <mapping conf="javadoc" scope="javadoc" />
     </ivy:makepom>
-  </target>
-
-  <target name="publish" depends="create-pom">
-    <fail unless="version">Version information not set</fail>
     <ivy:publish pubrevision="${version}" status="release" resolver="publish" overwrite="true" forcedeliver="true">
-      <artifacts pattern="../../../dist/${ant.project.name}/[artifact].[ext]"/>
+      <artifacts pattern="${base.dir}/[artifact].[ext]"/>
     </ivy:publish>
+    <copy file="ivy.xml.bak" tofile="ivy.xml" overwrite="true"/>
   </target>
 
   <target name="report">
