@@ -1,7 +1,7 @@
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
   <info organisation="org.jminor" module="jminor-plugin-jasperreports"/>
 
-  <configurations>
+  <configurations defaultconfmapping="default">
     <conf name="runtime"/>
     <conf name="sources"/>
     <conf name="javadoc"/>
@@ -14,7 +14,7 @@
     <artifact name="jminor-plugin-jasperreports-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
   </publications>
 
-  <dependencies defaultconf="runtime->default">
+  <dependencies defaultconf="runtime">
     <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-common-ui" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>

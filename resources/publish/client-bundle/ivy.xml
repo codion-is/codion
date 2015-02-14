@@ -1,7 +1,7 @@
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
   <info organisation="org.jminor" module="jminor-client-bundle"/>
 
-  <configurations>
+  <configurations defaultconfmapping="default">
     <conf name="runtime"/>
     <conf name="sources"/>
     <conf name="javadoc"/>
@@ -14,7 +14,7 @@
     <artifact name="jminor-client-bundle-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
   </publications>
 
-  <dependencies defaultconf="runtime->default">
+  <dependencies defaultconf="runtime">
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false"/>
     <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false"/>
