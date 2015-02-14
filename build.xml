@@ -336,6 +336,26 @@
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-tomcat-pool"/>
   </target>
 
+  <target name="report_all"
+          description="Create an ivy dependency report for all project modules">
+    <subant target="report" buildpath="${basedir}/resources/publish/common-model"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/common-ui"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/db-core"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/db-local"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/db-remote"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/db-test"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/client-model"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/client-ui"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/client-test"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/client-bundle"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/server"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/server-monitor"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/plugin-jasperreports"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/plugin-json"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/plugin-rest"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/plugin-tomcat-pool"/>
+  </target>
+
   <target name="manifest"
           description="Generates a MANIFEST.MF file for inclusion in jars">
     <mkdir dir="${build.main}/META-INF"/>
