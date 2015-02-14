@@ -15,8 +15,8 @@
   </publications>
 
   <dependencies defaultconf="runtime">
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2"/>
   </dependencies>
 </ivy-module>

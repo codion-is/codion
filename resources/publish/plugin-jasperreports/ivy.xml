@@ -19,11 +19,11 @@
     <dependency org="org.jminor" name="jminor-common-ui" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
 
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false"/>
-    <dependency org="net.sf.jasperreports" name="jasperreports" rev="6.0.0" transitive="false"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2"/>
 
+    <dependency org="net.sf.jasperreports" name="jasperreports" rev="6.0.0" transitive="false"/>
     <dependency org="commons-beanutils" name="commons-beanutils" rev="1.9.0" transitive="false"/>
     <dependency org="commons-collections" name="commons-collections" rev="3.2.1" transitive="false"/>
     <dependency org="commons-digester" name="commons-digester" rev="2.1" transitive="false"/>

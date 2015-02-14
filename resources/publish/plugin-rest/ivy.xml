@@ -19,15 +19,15 @@
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-plugin-json" rev="latest.integration"/>
 
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2" transitive="false"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2" transitive="false"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.2"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.2"/>
 
-    <dependency org="org.json" name="json" rev="20090211" transitive="false"/>
+    <dependency org="org.json" name="json" rev="20090211"/>
 
-    <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" transitive="false"/>
-    <dependency org="com.sun.jersey" name="jersey-bundle" rev="1.17.1" transitive="false"/>
-    <dependency org="asm" name="asm" rev="3.3.1" transitive="false"/>
-    <dependency org="org.mortbay.jetty" name="servlet-api" rev="3.0.20100224" transitive="false"/>
+    <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1"/>
+    <dependency org="com.sun.jersey" name="jersey-bundle" rev="1.17.1"/>
+    <dependency org="asm" name="asm" rev="3.3.1"/>
+    <dependency org="org.mortbay.jetty" name="servlet-api" rev="3.0.20100224"/>
   </dependencies>
 </ivy-module>
