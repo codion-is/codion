@@ -147,8 +147,9 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public final Connection createConnection(final User user) throws DatabaseException {
     Util.rejectNullValue(user, "user");
-    Util.rejectNullValue(user.getUsername(), "Username must be provided");
-    Util.rejectNullValue(user.getPassword(), "Password must be provided");
+    if (Util.nullOrEmpty(user.getUsername())) {
+      throw new IllegalArgumentException("Username must be specified");
+    }
     final Properties connectionProperties = new Properties();
     connectionProperties.put(USER_PROPERTY, user.getUsername());
     connectionProperties.put(PASSWORD_PROPERTY, user.getPassword());

@@ -239,7 +239,7 @@ final class LocalEntityConnection implements EntityConnection {
           try {
             lockAndCheckForUpdate(hashedEntities);
           }
-          catch (final RecordModifiedException e) {
+          catch (final DatabaseException e) {
             rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
             throw e;
           }

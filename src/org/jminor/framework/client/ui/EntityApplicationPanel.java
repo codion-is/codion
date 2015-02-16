@@ -667,6 +667,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   protected final void initialize(final Model applicationModel) {
     Util.rejectNullValue(applicationModel, "applicationModel");
     this.applicationModel = applicationModel;
+    clearEntityPanelProviders();
     setupEntityPanelProviders();
     this.entityPanels.addAll(initializeEntityPanels(applicationModel));
     initializeUI();
@@ -788,7 +789,11 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
 
   /**
    * Called during initialization, after the application model has been initialized,
-   * override to keep all entity panel provider definitions in one place
+   * override to keep all entity panel provider definitions in one place.
+   * @see #addEntityPanelProvider(EntityPanelProvider)
+   * @see #addEntityPanelProviders(EntityPanelProvider...)
+   * @see #addSupportPanelProvider(EntityPanelProvider)
+   * @see #addSupportPanelProviders(EntityPanelProvider...)
    */
   protected void setupEntityPanelProviders() {}
 
@@ -1073,6 +1078,11 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     for (final EntityPanel entityPanel : entityPanels) {
       entityPanel.savePreferences();
     }
+  }
+
+  private void clearEntityPanelProviders() {
+    entityPanelProviders.clear();
+    supportPanelProviders.clear();
   }
 
   /**

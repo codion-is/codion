@@ -514,6 +514,8 @@
         <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
         <jvmarg value="-Djminor.db.embeddedInMemory=${junit.db.embeddedInMemory}"/>
         <jvmarg value="-Djminor.db.initScript=${junit.db.initScript}"/>
+        <jvmarg value="-Djminor.unittest.username=${junit.username}"/>
+        <jvmarg value="-Djminor.unittest.password=${junit.password}"/>
         <batchtest todir="${test.reports}">
           <fileset dir="${src.test}" includes="**/*Test.java"/>
           <fileset dir="${src.demos}" includes="**/*Test.java" excludes="**/*LoadTest.java"/>

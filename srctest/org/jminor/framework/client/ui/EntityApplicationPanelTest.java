@@ -28,7 +28,7 @@ public class EntityApplicationPanelTest {
     final ChinookAppPanel panel = new ChinookAppPanel();
     panel.setLoginRequired(false);
     panel.setShowStartupDialog(false);
-    panel.startApplication("Test", null, false, null, User.UNIT_TEST_USER, false);
+    panel.startApplication("Test", null, false, null, null, false, User.UNIT_TEST_USER);
     assertNotNull(panel.getEntityPanel(Chinook.T_CUSTOMER));
     assertNull(panel.getEntityPanel(EmpDept.T_DEPARTMENT));
 

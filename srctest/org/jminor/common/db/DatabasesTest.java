@@ -21,7 +21,9 @@ public class DatabasesTest {
   public void test() {
     final String type = System.getProperty(Database.DATABASE_TYPE);
     final String host = System.getProperty(Database.DATABASE_HOST);
-    final String embedded = System.getProperty(Database.DATABASE_EMBEDDED);
+    final String port = System.getProperty(Database.DATABASE_PORT, "1234");
+    final String sid = System.getProperty(Database.DATABASE_SID, "sid");
+    final String embedded = System.getProperty(Database.DATABASE_EMBEDDED, "false");
     try {
       System.setProperty(Database.DATABASE_TYPE, Database.DERBY);
       System.setProperty(Database.DATABASE_HOST, "host");
@@ -68,6 +70,8 @@ public class DatabasesTest {
     finally {
       System.setProperty(Database.DATABASE_TYPE, type);
       System.setProperty(Database.DATABASE_HOST, host);
+      System.setProperty(Database.DATABASE_PORT, port);
+      System.setProperty(Database.DATABASE_SID, sid);
       System.setProperty(Database.DATABASE_EMBEDDED, embedded);
     }
   }

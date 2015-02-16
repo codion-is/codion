@@ -31,10 +31,9 @@ public class EntityServerMonitorTest {
 
   @Test
   public void test() throws Exception {
-    final User user = new User("scott", "tiger");
     final UUID clientId = UUID.randomUUID();
     final String clientTypeId = EntityServerMonitorTest.class.getName();
-    final RemoteEntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider(user, clientId, clientTypeId);
+    final RemoteEntityConnectionProvider connectionProvider = new RemoteEntityConnectionProvider(User.UNIT_TEST_USER, clientId, clientTypeId);
     connectionProvider.getConnection();
     final EntityServerMonitor model = new EntityServerMonitor("localhost", Configuration.getIntValue(Configuration.REGISTRY_PORT));
     model.refresh();
@@ -54,7 +53,7 @@ public class EntityServerMonitorTest {
     final ClientInstanceMonitor clientInstanceMonitor = clientMonitor.getClientInstanceListModel().firstElement();
     final ClientInfo clientInfo = clientInstanceMonitor.getClientInfo();
     assertEquals(clientId, clientInfo.getClientID());
-    assertEquals(user, clientInfo.getUser());
+    assertEquals(User.UNIT_TEST_USER, clientInfo.getUser());
 
     clientInstanceMonitor.disconnect();//disconnects the client
 
