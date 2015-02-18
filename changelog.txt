@@ -3938,3 +3938,4 @@
   MethodLogger always clears log on enabled state change
   LocalEntityConnection bug fixed, select for update did not use selectTableName
   DefaultEntity.validateType() now validates entity types, added a couple of related tests
+  Values.DefaultValue bug fixed, did not propagate the value when firing a change event

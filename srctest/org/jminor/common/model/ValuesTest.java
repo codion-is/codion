@@ -39,6 +39,14 @@ public class ValuesTest {
         eventCounter.incrementAndGet();
       }
     });
+    intValue.getObserver().addInfoListener(new EventInfoListener<Integer>() {
+      @Override
+      public void eventOccurred(final Integer info) {
+        if (eventCounter.get() != 2) {
+          assertNotNull(info);
+        }
+      }
+    });
     intValue.set(42);
     assertEquals(0, eventCounter.get());
     intValue.set(20);

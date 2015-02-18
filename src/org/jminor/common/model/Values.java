@@ -88,7 +88,7 @@ public final class Values {
     public void set(final V value) {
       if (!Util.equal(this.value, value)) {
         this.value = value;
-        changeEvent.fire();
+        changeEvent.fire(this.value);
       }
     }
 
