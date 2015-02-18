@@ -68,7 +68,7 @@ public final class Values {
    * Links the two values together so that changes in one are reflected in the other
    * @param originalValue the original value
    * @param linkedValue the linked value
-   * @param readOnly if true the model value is not updated if the ui value changes
+   * @param readOnly if true the original value is not updated if the linked value changes
    * @param <V> the value type
    */
   public static <V> void link(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
@@ -217,12 +217,12 @@ public final class Values {
     private final Value<V> linkedValue;
 
     /**
-     * True while the UI value is being updated
+     * True while the linked value is being updated
      */
     private boolean isUpdatingLinked = false;
 
     /**
-     * True while the model value is being updated
+     * True while the original value is being updated
      */
     private boolean isUpdatingOriginal = false;
 
@@ -234,38 +234,8 @@ public final class Values {
     private ValueLink(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
       this.originalValue = Util.rejectNullValue(originalValue, "originalValue");
       this.linkedValue = Util.rejectNullValue(linkedValue, "linkedValue");
-      updateLinked();
+      this.linkedValue.set(this.originalValue.get());
       bindEvents(originalValue, linkedValue, readOnly);
-    }
-
-    /**
-     * Updates the original value according to the linked one.
-     */
-    private void updateOriginal() {
-      if (!isUpdatingLinked) {
-        try {
-          isUpdatingOriginal = true;
-          originalValue.set(linkedValue.get());
-        }
-        finally {
-          isUpdatingOriginal = false;
-        }
-      }
-    }
-
-    /**
-     * Updates the linked value according to the original
-     */
-    private void updateLinked() {
-      if (!isUpdatingOriginal) {
-        try {
-          isUpdatingLinked = true;
-          linkedValue.set(originalValue.get());
-        }
-        finally {
-          isUpdatingLinked = false;
-        }
-      }
     }
 
     private void bindEvents(final Value<V> originalValue, final Value<V> linkedValue, final boolean readOnly) {
@@ -273,7 +243,15 @@ public final class Values {
         originalValue.getObserver().addListener(new EventListener() {
           @Override
           public void eventOccurred() {
-            updateLinked();
+            if (!isUpdatingOriginal) {
+              try {
+                isUpdatingLinked = true;
+                linkedValue.set(originalValue.get());
+              }
+              finally {
+                isUpdatingLinked = false;
+              }
+            }
           }
         });
       }
@@ -281,7 +259,15 @@ public final class Values {
         linkedValue.getObserver().addListener(new EventListener() {
           @Override
           public void eventOccurred() {
-            updateOriginal();
+            if (!isUpdatingLinked) {
+              try {
+                isUpdatingOriginal = true;
+                originalValue.set(linkedValue.get());
+              }
+              finally {
+                isUpdatingOriginal = false;
+              }
+            }
           }
         });
       }
