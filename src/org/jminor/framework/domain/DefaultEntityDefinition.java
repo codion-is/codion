@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.model.Util;
@@ -660,16 +661,18 @@ final class DefaultEntityDefinition implements Entity.Definition {
   }
 
   static Entity.KeyGenerator queriedKeyGenerator(final String query) {
-    final QueriedKeyGenerator keyGenerator = new QueriedKeyGenerator() {
+    return new QueriedKeyGenerator() {
       @Override
       public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                                final DatabaseConnection connection) throws SQLException {
         queryAndSet(entity, primaryKeyProperty, connection);
       }
-    };
-    keyGenerator.setQuery(query);
 
-    return keyGenerator;
+      @Override
+      protected String getQuery(final Database database) {
+        return query;
+      }
+    };
   }
 
   private static Map<String, Collection<Property.DenormalizedProperty>> getDenormalizedProperties(final Collection<Property> properties) {
@@ -840,9 +843,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
                             final DatabaseConnection connection) throws SQLException {}
   }
 
-  static class QueriedKeyGenerator extends DefaultKeyGenerator {
-
-    private String query;
+  static abstract class QueriedKeyGenerator extends DefaultKeyGenerator {
 
     /**
      * @return false, since generating the primary key value is handled by the framework
@@ -854,29 +855,30 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
     protected final void queryAndSet(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                                      final DatabaseConnection connection) throws SQLException {
-      final int primaryKeyValue = DatabaseUtil.queryInteger(connection, query);
+      final int primaryKeyValue = DatabaseUtil.queryInteger(connection, getQuery(connection.getDatabase()));
       entity.setValue(primaryKeyProperty, primaryKeyValue);
     }
 
-    protected final String getQuery() {
-      return query;
-    }
-
-    protected final void setQuery(final String query) {
-      this.query = Util.rejectNullValue(query, "query");
-    }
+    protected abstract String getQuery(final Database database);
   }
 
   static final class IncrementKeyGenerator extends QueriedKeyGenerator {
 
+    private final String query;
+
     IncrementKeyGenerator(final String tableName, final String columnName) {
-      setQuery("select max(" + columnName + ") + 1 from " + tableName);
+      this.query = "select max(" + columnName + ") + 1 from " + tableName;
     }
 
     @Override
     public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {
       queryAndSet(entity, primaryKeyProperty, connection);
+    }
+
+    @Override
+    protected String getQuery(final Database database) {
+      return query;
     }
   }
 
@@ -892,11 +894,13 @@ final class DefaultEntityDefinition implements Entity.Definition {
     public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {
       if (entity.isValueNull(primaryKeyProperty)) {
-        if (getQuery() == null) {
-          setQuery(connection.getDatabase().getSequenceSQL(sequenceName));
-        }
         queryAndSet(entity, primaryKeyProperty, connection);
       }
+    }
+
+    @Override
+    protected String getQuery(final Database database) {
+      return database.getSequenceSQL(sequenceName);
     }
   }
 
@@ -916,10 +920,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
     @Override
     public void afterInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                             final DatabaseConnection connection) throws SQLException {
-      if (getQuery() == null) {
-        setQuery(connection.getDatabase().getAutoIncrementValueSQL(valueSource));
-      }
       queryAndSet(entity, primaryKeyProperty, connection);
+    }
+
+    @Override
+    protected String getQuery(final Database database) {
+      return database.getAutoIncrementValueSQL(valueSource);
     }
   }
 }
