@@ -403,12 +403,12 @@
 
   <target name="deploy_server" depends="recreate_h2_db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
-    <copy file="${dist}/jminor-server.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-db-core.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-db-local.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-common-model.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-demos.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-server/jminor-server.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-db-core/jminor-db-core.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-db-local/jminor-db-local.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-demos/jminor-demos.jar" todir="${deploy.server.path}/lib"/>
     <copy todir="${deploy.server.path}/lib">
       <fileset dir="${lib}/runtime.server"/>
     </copy>
@@ -431,9 +431,9 @@
   <target name="deploy_server_monitor"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}"/>
-    <copy file="${dist}/jminor-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${dist}/jminor-common-model.jar" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${dist}/jminor-common-ui.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${dist}/jminor-server-monitor/jminor-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${dist}/jminor-common-ui/jminor-common-ui.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy todir="${deploy.server.monitor.path}/lib">
       <fileset dir="${lib}/runtime.server-monitor"/>
     </copy>
@@ -448,7 +448,7 @@
   <target name="deploy_generator"
           description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">
     <mkdir dir="${deploy.generator.path}"/>
-    <copy file="${dist}/jminor.jar" todir="${deploy.generator.path}/lib"/>
+    <copy file="${dist}/jminor/jminor.jar" todir="${deploy.generator.path}/lib"/>
     <copy todir="${deploy.generator.path}/lib">
       <fileset dir="${lib}/runtime.client"/>
     </copy>
@@ -469,7 +469,11 @@
     <mkdir dir="${deploy.demos.dir}/META-INF"/>
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
-      <zipgroupfileset dir="${dist}" includes="jminor-common-model.jar, jminor-common-ui.jar, jminor-db-core.jar, jminor-db-local.jar, jminor-db-remote.jar, jminor-client.jar, jminor-plugin-jasperreports.jar" excludes="*javadoc.jar, *sources.jar, META-INF/**/*"/>
+      <zipgroupfileset dir="${dist}"
+                       includes="jminor-common-model/jminor-common-model.jar, jminor-common-ui/jminor-common-ui.jar,
+                       jminor-db-core/jminor-db-core.jar, jminor-db-local/jminor-db-local.jar, jminor-db-remote/jminor-db-remote.jar,
+                       jminor-client/jminor-client.jar, jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar"
+                       excludes="*javadoc.jar, *sources.jar, META-INF/**/*"/>
       <fileset file="${deploy.demos.truststore}"/>
     </jar>
     <deploy_demo_app app-id="empdept" app-name="EmpDept JMinor Demo" main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>
