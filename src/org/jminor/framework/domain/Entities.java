@@ -28,6 +28,7 @@ public final class Entities {
 
   private static final String ENTITY_PARAM = "entity";
   private static final String ENTITY_ID_PARAM = "entityID";
+  private static final String PROPERTY_ID_PARAM = "propertyID";
 
   private Entities() {}
 
@@ -434,7 +435,7 @@ public final class Entities {
    */
   public static Property getProperty(final String entityID, final String propertyID) {
     Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
-    Util.rejectNullValue(propertyID, "propertyID");
+    Util.rejectNullValue(propertyID, PROPERTY_ID_PARAM);
     final Property property = getProperties(entityID).get(propertyID);
     if (property == null) {
       throw new IllegalArgumentException("Property '" + propertyID + "' not found in entity: " + entityID);
@@ -450,7 +451,7 @@ public final class Entities {
    * the entity identified by <code>entityID</code>
    */
   public static List<Property> getProperties(final String entityID, final Collection<String> propertyIDs) {
-    Util.rejectNullValue(propertyIDs, "propertyIDs");
+    Util.rejectNullValue(propertyIDs, PROPERTY_ID_PARAM);
     return getProperties(entityID, propertyIDs.toArray(new String[propertyIDs.size()]));
   }
 
@@ -462,7 +463,7 @@ public final class Entities {
    */
   public static List<Property> getProperties(final String entityID, final String... propertyIDs) {
     Util.rejectNullValue(entityID, ENTITY_ID_PARAM);
-    Util.rejectNullValue(propertyIDs, "propertyIDs");
+    Util.rejectNullValue(propertyIDs, PROPERTY_ID_PARAM);
     final List<Property> properties = new ArrayList<>();
     for (final String propertyID : propertyIDs) {
       properties.add(getProperty(entityID, propertyID));
@@ -717,6 +718,7 @@ public final class Entities {
      * @return this {@link StringProvider} instance
      */
     public StringProvider addValue(final String propertyID) {
+      Util.rejectNullValue(propertyID, PROPERTY_ID_PARAM);
       valueProviders.add(new StringValueProvider(propertyID));
       return this;
     }
@@ -728,6 +730,8 @@ public final class Entities {
      * @return this {@link StringProvider} instance
      */
     public StringProvider addFormattedValue(final String propertyID, final Format format) {
+      Util.rejectNullValue(propertyID, PROPERTY_ID_PARAM);
+      Util.rejectNullValue(format, "format");
       valueProviders.add(new FormattedValueProvider(propertyID, format));
       return this;
     }
@@ -740,6 +744,8 @@ public final class Entities {
      * @return this {@link StringProvider} instance
      */
     public StringProvider addForeignKeyValue(final String foreignKeyPropertyID, final String propertyID) {
+      Util.rejectNullValue(foreignKeyPropertyID, "foreignKeyPropertyID");
+      Util.rejectNullValue(propertyID, PROPERTY_ID_PARAM);
       valueProviders.add(new ForeignKeyValueProvider(foreignKeyPropertyID, propertyID));
       return this;
     }
