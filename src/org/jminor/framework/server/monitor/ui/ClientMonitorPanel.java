@@ -17,7 +17,6 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JScrollPane;
 import javax.swing.JSplitPane;
-import javax.swing.ListSelectionModel;
 import javax.swing.event.ListSelectionEvent;
 import javax.swing.event.ListSelectionListener;
 import java.awt.BorderLayout;
@@ -57,7 +56,6 @@ public final class ClientMonitorPanel extends JPanel {
 
   private void initializeUI() {
     setLayout(UiUtil.createBorderLayout());
-    clientInstanceList.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     clientInstanceList.getSelectionModel().addListSelectionListener(new ListSelectionListener() {
       @Override
       public void valueChanged(final ListSelectionEvent e) {
@@ -94,15 +92,14 @@ public final class ClientMonitorPanel extends JPanel {
     controls.add(new AbstractAction("Disconnect") {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        final ClientInstanceMonitor clientMonitor = clientInstanceList.getSelectedValue();
-        if (clientMonitor != null) {
-          try {
+        try {
+          for (final ClientInstanceMonitor clientMonitor : clientInstanceList.getSelectedValuesList()) {
             clientMonitor.disconnect();
             model.getClientInstanceListModel().removeElement(clientMonitor);
           }
-          catch (final RemoteException ex) {
-            throw new RuntimeException(ex);
-          }
+        }
+        catch (final RemoteException ex) {
+          throw new RuntimeException(ex);
         }
       }
     });
