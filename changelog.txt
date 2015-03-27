@@ -3941,3 +3941,4 @@
   Values.DefaultValue bug fixed, did not propagate the value when firing a change event
   DefaultEntityDefinition.QueriedKeyGenerator bug fixed, caching of key query was problematic when working with different underlying databases
   ClientMonitorPanel, can now disconnect multiple clients at a time
+  EntityLookupField.performLookup() bug fixed, did not handle null value

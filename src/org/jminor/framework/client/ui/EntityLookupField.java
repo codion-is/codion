@@ -239,7 +239,7 @@ public final class EntityLookupField extends JTextField {
   private void performLookup(final boolean promptUser) {
     try {
       performingLookup = true;
-      if (model.getSearchString().length() == 0) {
+      if (Util.nullOrEmpty(model.getSearchString())) {
         model.setSelectedEntities(null);
       }
       else {
