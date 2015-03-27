@@ -102,6 +102,7 @@ public final class EntityLookupField extends JTextField {
     Util.rejectNullValue(lookupModel, "lookupModel");
     this.model = lookupModel;
     this.settingsPanel = new SettingsPanel(lookupModel);
+    linkToModel();
     this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     setValidBackgroundColor(getBackground());
     setInvalidBackgroundColor(Color.LIGHT_GRAY);
@@ -109,7 +110,6 @@ public final class EntityLookupField extends JTextField {
     setComponentPopupMenu(initializePopupMenu());
     addFocusListener(initializeFocusListener());
     addEscapeListener();
-    linkToModel();
     updateColors();
     UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, lookupOnKeyRelease, initializeLookupAction());
     UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
@@ -265,6 +265,7 @@ public final class EntityLookupField extends JTextField {
           }
         }
       }
+      updateColors();
     }
     finally {
       performingLookup = false;
