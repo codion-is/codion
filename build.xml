@@ -360,12 +360,15 @@
           description="Generates a MANIFEST.MF file for inclusion in jars">
     <mkdir dir="${build.main}/META-INF"/>
     <manifest file="${build.main}/META-INF/MANIFEST.MF">
-      <attribute name="Implementation-Vendor" value="JMinor"/>
-      <attribute name="Implementation-Vendor-Id" value="jminor"/>
+      <attribute name="Specification-Title" value="JMinor Application Framework"/>
+      <attribute name="Specification-Version" value="${version}"/>
+      <attribute name="Specification-Vendor" value="JMinor"/>
       <attribute name="Implementation-Title" value="JMinor Application Framework"/>
       <attribute name="Implementation-Version" value="${version}"/>
+      <attribute name="Implementation-Vendor" value="JMinor"/>
+      <attribute name="Implementation-Vendor-Id" value="org.jminor"/>
       <attribute name="Implementation-URL" value="http://jminor.org"/>
-      <attribute name="Build-Jdk" value="${java.specification.version}"/>
+      <attribute name="Build-Jdk" value="${java.version}"/>
       <attribute name="Built-By" value="${user.name}"/>
     </manifest>
   </target>
