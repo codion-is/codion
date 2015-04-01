@@ -316,7 +316,7 @@
                    org/jminor/framework/tools/testing/EntityTestUnit*"/>
   </target>
 
-  <target name="publish_all" depends="dist"
+  <target name="publish_all" depends="javadoc, dist"
           description="Publish all project artifacts">
     <subant target="publish" buildpath="${basedir}/resources/publish/common-model"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/common-ui"/>
@@ -489,14 +489,6 @@
 
   <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demo_apps, deploy_generator"
           description="A convenience target for deploying the server, server monitor and demo applications"/>
-
-  <target name="deploy_project"
-          description="Creates a jminor-project.zip file in the base directory">
-    <delete file="${basedir}/jminor-${version}-project.zip"/>
-    <zip destfile="${basedir}/jminor-${version}-project.zip">
-      <fileset dir="${basedir}" excludes="test/**,dist/deployment/**,classes/**,h2db/**,lib/**"/>
-    </zip>
-  </target>
 
   <target name="run_unit_tests" depends="clean, build, compile_demo_reports"
           description="Runs the framework unit tests with JaCoCo coverage">
