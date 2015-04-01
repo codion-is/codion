@@ -165,12 +165,12 @@ public final class CriteriaSet<T> implements Criteria<T>, Serializable {
   /** {@inheritDoc} */
   @Override
   public List<T> getValueKeys() {
-    final List<T> types = new ArrayList<>();
+    final List<T> keys = new ArrayList<>();
     for (final Criteria<T> criteria : criteriaList) {
-      types.addAll(criteria.getValueKeys());
+      keys.addAll(criteria.getValueKeys());
     }
 
-    return types;
+    return keys;
   }
 
   private void writeObject(final ObjectOutputStream stream) throws IOException {

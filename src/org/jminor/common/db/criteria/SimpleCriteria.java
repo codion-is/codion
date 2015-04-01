@@ -22,16 +22,16 @@ public final class SimpleCriteria<T> implements Criteria<T>, Serializable {
 
   /**
    * Instantiates a new SimpleCriteria
-   * @param criteriaString the criteria string
+   * @param criteriaString the criteria string without the WHERE keyword
    * @throws IllegalArgumentException in case the criteria string is null
    */
   public SimpleCriteria(final String criteriaString) {
-    this(criteriaString, Collections.<Object>emptyList(), Collections.<T>emptyList());
+    this(criteriaString, Collections.emptyList(), Collections.<T>emptyList());
   }
 
   /**
    * Instantiates a new SimpleCriteria
-   * @param criteriaString the criteria string
+   * @param criteriaString the criteria string without the WHERE keyword
    * @param values the values required by this criteria string
    * @param keys the keys required by this criteria string, in the same order as their respective values
    * @throws IllegalArgumentException in case any of the parameters are null
