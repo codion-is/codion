@@ -552,10 +552,10 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /** {@inheritDoc} */
   @Override
   public final void activatePanel() {
-    initializePanel();
     if (getMasterPanel() != null) {
       getMasterPanel().setActiveDetailPanel(this);
     }
+    initializePanel();
     prepareUI(true, false);
   }
 

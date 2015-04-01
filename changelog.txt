@@ -3944,3 +3944,4 @@
   EntityLookupField.performLookup() bug fixed, did not handle null search string value
   EntityLookupField.performLookup() bug fixed, did not update colors after lookup
   EntityLookupField, constructor bug fixed, searchHint was initialized to early, must be done after the call to linkToModel() for the hint to show up right away
+  EntityPanel.activatePanel() bug fixed, initial focus always went to the table instead of the edit panel when using keyboard navigation
