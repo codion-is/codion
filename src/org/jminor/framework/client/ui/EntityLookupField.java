@@ -95,21 +95,20 @@ public final class EntityLookupField extends JTextField {
   /**
    * Initializes a new EntityLookupField
    * @param lookupModel the lookup model on which to base this lookup field
-   * @param lookupOnKeyRelease if true then lookup is performed on key release, otherwise it
-   * is performed on keyPressed.
+   * @param lookupOnKeyRelease if true then lookup is performed on key release, otherwise it is performed on keyPressed.
    */
   public EntityLookupField(final EntityLookupModel lookupModel, final boolean lookupOnKeyRelease) {
     Util.rejectNullValue(lookupModel, "lookupModel");
     this.model = lookupModel;
     this.settingsPanel = new SettingsPanel(lookupModel);
     linkToModel();
-    this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     setValidBackgroundColor(getBackground());
     setInvalidBackgroundColor(Color.LIGHT_GRAY);
     setToolTipText(lookupModel.getDescription());
     setComponentPopupMenu(initializePopupMenu());
     addFocusListener(initializeFocusListener());
     addEscapeListener();
+    this.searchHint = TextFieldHint.enable(this, Messages.get(Messages.SEARCH_FIELD_HINT));
     updateColors();
     UiUtil.addKeyEvent(this, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, lookupOnKeyRelease, initializeLookupAction());
     UiUtil.linkToEnabledState(lookupModel.getSearchStringRepresentsSelectedObserver(), transferFocusAction);
