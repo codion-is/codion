@@ -4,6 +4,7 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.EventInfoListener;
@@ -15,6 +16,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.DefaultExceptionHandler;
+import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.UiUtil;
@@ -29,6 +31,7 @@ import org.jminor.common.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
@@ -470,13 +473,20 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
 
   /**
    * Handles the given exception
-   * @param exception the exception to handle
+   * @param throwable the exception to handle
    * @param dialogParent the component to use as exception dialog parent
    */
   @Override
-  public final void handleException(final Throwable exception, final Window dialogParent) {
-    LOG.error(exception.getMessage(), exception);
-    DefaultExceptionHandler.getInstance().handleException(exception, dialogParent);
+  public final void handleException(final Throwable throwable, final Window dialogParent) {
+    LOG.error(throwable.getMessage(), throwable);
+    if (throwable instanceof RecordModifiedException) {
+      ExceptionDialog.showExceptionDialog(dialogParent, Messages.get(Messages.EXCEPTION),
+              Messages.get(Messages.RECORD_MODIFIED_EXCEPTION) + ", "
+                      + EntityUtil.getModifiedExceptionMessage((RecordModifiedException) throwable), throwable);
+    }
+    else {
+      DefaultExceptionHandler.getInstance().handleException(throwable, dialogParent);
+    }
   }
 
   /**

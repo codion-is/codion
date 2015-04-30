@@ -3947,3 +3947,5 @@
   EntityPanel.activatePanel() bug fixed, initial focus always went to the table instead of the edit panel when using keyboard navigation
   User, cached hashCode removed, unnecessary optimization
   EntityLookupField, constructor bug fixed, searchHint initialization moved further back
+  EntityUtil.getModifiedProperty() and getModifiedExceptionMessage() added
+  LocalEntityConnection.lockAndCheckForUpdate() and EntityEditPanel.handleException() now use the above

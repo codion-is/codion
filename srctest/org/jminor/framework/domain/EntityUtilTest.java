@@ -22,6 +22,10 @@ import static org.junit.Assert.*;
 
 public class EntityUtilTest {
 
+  static {
+    EmpDept.init();
+  }
+
   @Test
   public void toBeans() throws InvocationTargetException, NoSuchMethodException,
           InstantiationException, IllegalAccessException {
@@ -434,6 +438,49 @@ public class EntityUtilTest {
       assertTrue(dept.containsValue(property));
       assertTrue(dept.isValueNull(property));
     }
+  }
+
+  @Test
+  public void getModifiedProperty() {
+    final Entity entity = Entities.entity(EmpDept.T_DEPARTMENT);
+    entity.setValue(EmpDept.DEPARTMENT_ID, 1);
+    entity.setValue(EmpDept.DEPARTMENT_LOCATION, "Location");
+    entity.setValue(EmpDept.DEPARTMENT_NAME, "Name");
+
+    final Entity current = Entities.entity(EmpDept.T_DEPARTMENT);
+    current.setValue(EmpDept.DEPARTMENT_ID, 1);
+    current.setValue(EmpDept.DEPARTMENT_LOCATION, "Location");
+    current.setValue(EmpDept.DEPARTMENT_NAME, "Name");
+
+    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_ID));
+    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_LOCATION));
+    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_NAME));
+
+    current.setValue(EmpDept.DEPARTMENT_ID, 2);
+    current.saveAll();
+    assertTrue(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_ID));
+    assertEquals(EntityUtil.getModifiedProperty(current, entity).getPropertyID(), EmpDept.DEPARTMENT_ID);
+    current.removeValue(EmpDept.DEPARTMENT_ID);
+    current.saveAll();
+    assertTrue(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_ID));
+    assertEquals(EntityUtil.getModifiedProperty(current, entity).getPropertyID(), EmpDept.DEPARTMENT_ID);
+    current.setValue(EmpDept.DEPARTMENT_ID, 1);
+    current.saveAll();
+    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_ID));
+    assertNull(EntityUtil.getModifiedProperty(current, entity));
+
+    current.setValue(EmpDept.DEPARTMENT_LOCATION, "New location");
+    current.saveAll();
+    assertTrue(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_LOCATION));
+    assertEquals(EntityUtil.getModifiedProperty(current, entity).getPropertyID(), EmpDept.DEPARTMENT_LOCATION);
+    current.removeValue(EmpDept.DEPARTMENT_LOCATION);
+    current.saveAll();
+    assertTrue(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_LOCATION));
+    assertEquals(EntityUtil.getModifiedProperty(current, entity).getPropertyID(), EmpDept.DEPARTMENT_LOCATION);
+    current.setValue(EmpDept.DEPARTMENT_LOCATION, "Location");
+    current.saveAll();
+    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_LOCATION));
+    assertNull(EntityUtil.getModifiedProperty(current, entity));
   }
 
   private EntityUtil.EntityBeanMapper createEmpDeptBeanMapper() throws NoSuchMethodException {

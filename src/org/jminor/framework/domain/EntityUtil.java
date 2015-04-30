@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.model.Serializer;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
@@ -10,6 +11,7 @@ import org.jminor.framework.Configuration;
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.sql.Types;
 import java.text.Collator;
 import java.util.ArrayList;
 import java.util.Collection;
@@ -415,6 +417,46 @@ public final class EntityUtil {
     }
 
     return entity;
+  }
+
+  /**
+   * @param entity the entity instance to check
+   * @param comparison the entity instance to compare with
+   * @return the first property which value is missing or the original value differs from the one in the comparison
+   * entity, returns null if all of {@code entity}s original values match the values found in {@code comparison}
+   */
+  public static Property getModifiedProperty(final Entity entity, final Entity comparison) {
+    for (final String propertyID : comparison.getValueKeys()) {
+      final Property property = Entities.getProperty(entity.getEntityID(), propertyID);
+      //BLOB property values are not loaded, so we can't compare those
+      if (!property.isType(Types.BLOB) && EntityUtil.isValueMissingOrModified(entity, comparison, propertyID)) {
+        return property;
+      }
+    }
+
+    return null;
+  }
+
+  /**
+   * @param exception the record modified exception
+   * @return a String describing the modification
+   */
+  public static String getModifiedExceptionMessage(final RecordModifiedException exception) {
+    final Entity entity = (Entity) exception.getRow();
+    final Entity modified = (Entity) exception.getModifiedRow();
+    final Property modifiedProperty = EntityUtil.getModifiedProperty(entity, modified);
+
+    return modifiedProperty + ": " + entity.getValueAsString(modifiedProperty) + " -> " + modified.getValueAsString(modifiedProperty);
+  }
+
+  /**
+   * @param entity the entity instance to check
+   * @param comparison the entity instance to compare with
+   * @param propertyID the property to check
+   * @return true if the value is missing or the original value differs from the one in the comparison entity
+   */
+  static boolean isValueMissingOrModified(final Entity entity, final Entity comparison, final String propertyID) {
+    return !entity.containsValue(propertyID) || !Util.equal(comparison.getValue(propertyID), entity.getOriginalValue(propertyID));
   }
 
   /**

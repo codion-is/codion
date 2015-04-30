@@ -749,12 +749,9 @@ final class LocalEntityConnection implements EntityConnection {
         if (current == null) {
           throw new RecordModifiedException(entity, null);
         }
-        for (final String propertyID : current.getValueKeys()) {
-          final Property property = Entities.getProperty(entry.getKey(), propertyID);
-          //BLOB property values are not loaded, so we can't compare those
-          if (!property.isType(Types.BLOB) && valueMissingOrModified(entity, current, propertyID)) {
-            throw new RecordModifiedException(entity, current);
-          }
+        final Property modified = EntityUtil.getModifiedProperty(entity, current);
+        if (modified != null) {
+          throw new RecordModifiedException(entity, current);
         }
       }
     }
@@ -1160,10 +1157,6 @@ final class LocalEntityConnection implements EntityConnection {
         throw new SQLException("Unable to update entity " + entity.getEntityID() + ", no modified values found");
       }
     }
-  }
-
-  private static boolean valueMissingOrModified(final Entity entity, final Entity current, final String propertyID) {
-    return !entity.containsValue(propertyID) || !Util.equal(current.getValue(propertyID), entity.getOriginalValue(propertyID));
   }
 
   private static void checkReadOnly(final Collection<Entity> entities) throws DatabaseException {
