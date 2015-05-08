@@ -3949,3 +3949,4 @@
   EntityLookupField, constructor bug fixed, searchHint initialization moved further back
   EntityUtil.getModifiedProperty() and getModifiedExceptionMessage() added
   LocalEntityConnection.lockAndCheckForUpdate() and EntityEditPanel.handleException() now use the above
+  DefaultEntityEditModel.getDefaultEntity() bug fixed, did not handle transient properties

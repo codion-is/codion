@@ -730,6 +730,12 @@ public class DefaultEntityEditModel implements EntityEditModel {
         defaultEntity.setValue(property, getDefaultValue(property));
       }
     }
+    final Collection<Property.TransientProperty> transientProperties = Entities.getTransientProperties(entityID);
+    for (final Property.TransientProperty transientProperty : transientProperties) {
+      if (!(transientProperty instanceof Property.DerivedProperty) && !(transientProperty instanceof Property.DenormalizedViewProperty)) {
+        defaultEntity.setValue(transientProperty, getDefaultValue(transientProperty));
+      }
+    }
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entityID);
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       defaultEntity.setValue(foreignKeyProperty, getDefaultValue(foreignKeyProperty));
