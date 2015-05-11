@@ -3950,3 +3950,6 @@
   EntityUtil.getModifiedProperty() and getModifiedExceptionMessage() added
   LocalEntityConnection.lockAndCheckForUpdate() and EntityEditPanel.handleException() now use the above
   DefaultEntityEditModel.getDefaultEntity() bug fixed, did not handle transient properties
+  Configuration.FILTER_ON_MASTER_INSERT added
+  EntityModel.get/setFilterOnMasterInsert() added
+  DefaultEntityModel implements the above, tested

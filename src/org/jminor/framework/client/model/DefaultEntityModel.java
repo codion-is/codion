@@ -8,6 +8,7 @@ import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -93,6 +94,11 @@ public class DefaultEntityModel implements EntityModel {
    * True while the model is being refreshed
    */
   private boolean isRefreshing = false;
+
+  /**
+   * If true then the table model is automatically filtered when insert is performed in a master model
+   */
+  private boolean filterOnMasterInsert = Configuration.getBooleanValue(Configuration.FILTER_ON_MASTER_INSERT);
 
   /**
    * Instantiates a new DefaultEntityModel with default EntityEditModel and EntityTableModel implementations.
@@ -396,6 +402,18 @@ public class DefaultEntityModel implements EntityModel {
 
   /** {@inheritDoc} */
   @Override
+  public boolean isFilterOnMasterInsert() {
+    return filterOnMasterInsert;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setFilterOnMasterInsert(final boolean filterOnMasterInsert) {
+    this.filterOnMasterInsert = filterOnMasterInsert;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final void addLinkedDetailModelsListener(final EventListener listener) {
     linkedDetailModelsChangedEvent.addListener(listener);
   }
@@ -457,9 +475,10 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /**
-   * Adds the inserted entities to the EntityComboBoxModels based on the inserted entity type
-   * and sets the value of the master foreign key property
+   * Adds the inserted entities to the EntityComboBoxModels based on the inserted entity type,
+   * sets the value of the master foreign key property and filters the table model if applicable
    * @param insertEvent the insert event
+   * @see Configuration#FILTER_ON_MASTER_INSERT
    */
   private void handleMasterInsert(final EntityEditModel.InsertEvent insertEvent) {
     for (final Property.ForeignKeyProperty foreignKeyProperty :
@@ -470,6 +489,16 @@ public class DefaultEntityModel implements EntityModel {
         }
       }//todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
       editModel.setValue(foreignKeyProperty.getPropertyID(), insertEvent.getInsertedEntities().get(0));
+    }
+    if (containsTableModel() && filterOnMasterInsert) {
+      final Property.ForeignKeyProperty foreignKeyProperty;
+      if (((DefaultEntityModel) masterModel).detailModelForeignKeys.containsKey(this)) {
+        foreignKeyProperty = ((DefaultEntityModel) masterModel).detailModelForeignKeys.get(this);
+      }
+      else {
+        foreignKeyProperty = Entities.getForeignKeyProperties(entityID, masterModel.getEntityID()).get(0);
+      }
+      tableModel.setForeignKeySearchValues(foreignKeyProperty, insertEvent.getInsertedEntities());
     }
   }
 

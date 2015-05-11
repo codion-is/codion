@@ -161,6 +161,18 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   void clearDetailModels();
 
   /**
+   * If true then the table model is automatically filtered when insert is performed in a master model
+   * @see org.jminor.framework.Configuration#FILTER_ON_MASTER_INSERT
+   */
+  boolean isFilterOnMasterInsert();
+
+  /**
+   * @param filterDetailOnInsert if true then the table model is automatically filtered when insert is performed in a master model
+   * @see org.jminor.framework.Configuration#FILTER_ON_MASTER_INSERT
+   */
+  void setFilterOnMasterInsert(final boolean filterDetailOnInsert);
+
+  /**
    * @param listener a listener to be notified before a refresh is performed
    */
   void addBeforeRefreshListener(final EventListener listener);

@@ -245,6 +245,15 @@ public final class Configuration {
   public static final String DATE_FORMAT = "jminor.client.dateFormat";
 
   /**
+   * Specifies whether or not a table model should be automatically filtered when an insert is performed
+   * in a master model, using the inserted entity.
+   * Value type: Boolean<br>
+   * Default value: false
+   */
+  public static final String FILTER_ON_MASTER_INSERT = "jminor.client.filterOnMasterInsert";
+
+
+  /**
    * Indicates whether all entity panels should be enabled and receiving input by default<br>
    * Value type: Boolean<br>
    * Default value: false
@@ -782,6 +791,7 @@ public final class Configuration {
     PROPERTIES.put(CENTER_APPLICATION_DIALOGS, false);
     PROPERTIES.put(ALLOW_REDEFINE_ENTITY, false);
     PROPERTIES.put(SERVER_MONITOR_UPDATE_RATE, DEFAULT_SERVER_MONITOR_UPDATE_RATE);
+    PROPERTIES.put(FILTER_ON_MASTER_INSERT, false);
     parseSystemSettings();
   }
 
@@ -856,6 +866,7 @@ public final class Configuration {
     parseBooleanSetting(CENTER_APPLICATION_DIALOGS);
     parseBooleanSetting(ALLOW_REDEFINE_ENTITY);
     parseIntegerSetting(SERVER_MONITOR_UPDATE_RATE);
+    parseBooleanSetting(FILTER_ON_MASTER_INSERT);
   }
 
   private static void parseIntegerSetting(final String setting) {

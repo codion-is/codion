@@ -27,6 +27,7 @@ import org.junit.Test;
 import javax.swing.JComboBox;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collection;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -305,6 +306,21 @@ public final class DefaultEntityModelTest {
     departmentModel.addLinkedDetailModel(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE));
     assertFalse(departmentModel.getLinkedDetailModels().isEmpty());
     assertTrue(departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE)));
+  }
+
+  @Test
+  public void filterOnMasterInsert() throws DatabaseException, ValidationException {
+    final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
+    employeeModel.setFilterOnMasterInsert(true);
+    assertTrue(employeeModel.isFilterOnMasterInsert());
+    final EntityEditModel editModel = departmentModel.getEditModel();
+    editModel.setValue(EmpDept.DEPARTMENT_ID, 100);
+    editModel.setValue(EmpDept.DEPARTMENT_NAME, "Name");
+    editModel.setValue(EmpDept.DEPARTMENT_LOCATION, "Loc");
+    final List<Entity> inserted = editModel.insert();
+    final Collection filter = (Collection) employeeModel.getTableModel().getSearchModel().getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK).getUpperBound();
+    assertEquals(inserted.get(0), filter.iterator().next());
+    editModel.delete();
   }
 
   @Before
