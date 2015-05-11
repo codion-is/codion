@@ -266,9 +266,6 @@ public final class MaximumMatch extends PlainDocument {
 
     @Override
     public void keyPressed(final KeyEvent e) {
-      if (e.getModifiers() != 0) {
-        return;
-      }
       if (showPopupOnMatch && comboBox.isDisplayable() && Character.isLetterOrDigit(e.getKeyChar())) {
         comboBox.setPopupVisible(true);
       }
