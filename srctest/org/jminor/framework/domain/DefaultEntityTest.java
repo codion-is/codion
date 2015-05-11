@@ -8,6 +8,7 @@ import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+
 import org.junit.Test;
 
 import java.io.File;
@@ -21,7 +22,7 @@ import static org.junit.Assert.*;
 
 public class DefaultEntityTest {
 
-  private final int detailId = 1;
+  private final long detailId = 1;
   private final int detailInt = 2;
   private final double detailDouble = 1.2;
   private final String detailString = "string";
@@ -133,7 +134,7 @@ public class DefaultEntityTest {
     final Entity testEntity = getDetailEntity(detailId, detailInt, detailDouble,
             detailString, detailDate, detailTimestamp, detailBoolean, referencedEntityValue);
     //assert types
-    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ID).getType(), Types.INTEGER);
+    assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_ID).getType(), Types.BIGINT);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_INT).getType(), Types.INTEGER);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_DOUBLE).getType(), Types.DOUBLE);
     assertEquals(testEntity.getProperty(EntityTestDomain.DETAIL_STRING).getType(), Types.VARCHAR);
@@ -463,7 +464,7 @@ public class DefaultEntityTest {
     assertEquals(1.1234567896, detail.getValue(EntityTestDomain.DETAIL_DOUBLE));//default 10 fraction digits
   }
 
-  private static Entity getDetailEntity(final int id, final Integer intValue, final Double doubleValue,
+  private static Entity getDetailEntity(final long id, final Integer intValue, final Double doubleValue,
                                         final String stringValue, final Date dateValue, final Timestamp timestampValue,
                                         final Boolean booleanValue, final Entity entityValue) {
     final Entity entity = Entities.entity(EntityTestDomain.T_DETAIL);

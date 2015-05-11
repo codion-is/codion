@@ -155,7 +155,7 @@ class DefaultProperty implements Property {
   /** {@inheritDoc} */
   @Override
   public final boolean isNumerical() {
-    return isInteger() || isDouble();
+    return isInteger() || isDouble() || isLong();
   }
 
   /** {@inheritDoc} */

@@ -921,13 +921,12 @@ public final class Entities {
         return;
       }
 
-      final Double value = property.isDouble() ? (Double) entity.getValue(property.getPropertyID())
-              : (Integer) entity.getValue(property.getPropertyID());
-      if (value < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin())) {
+      final Number value = (Number) entity.getValue(property);
+      if (value.doubleValue() < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin())) {
         throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
                 FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin());
       }
-      if (value > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax())) {
+      if (value.doubleValue() > (property.getMax() == null ? Double.POSITIVE_INFINITY : property.getMax())) {
         throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
                 FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_LARGE) + " " + property.getMax());
       }

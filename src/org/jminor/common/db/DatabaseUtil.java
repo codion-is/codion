@@ -46,6 +46,22 @@ public final class DatabaseUtil {
     }
   };
 
+  /**
+   * A result packer for fetching longs from a result set containing a single long column
+   */
+  public static final ResultPacker<Long> LONG_RESULT_PACKER = new ResultPacker<Long>() {
+    @Override
+    public List<Long> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+      final List<Long> longs = new ArrayList<>();
+      int counter = 0;
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        longs.add(resultSet.getLong(1));
+      }
+
+      return longs;
+    }
+  };
+
   private DatabaseUtil() {}
 
   /**
@@ -158,6 +174,22 @@ public final class DatabaseUtil {
     }
 
     throw new SQLException("No records returned when querying for an integer", sql);
+  }
+
+  /**
+   * Performs the given query and returns the result as a long
+   * @param connection the connection
+   * @param sql the query must select at least a single number column, any other subsequent columns are disregarded
+   * @return the first record in the result as a long
+   * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
+   */
+  public static long queryLong(final DatabaseConnection connection,final String sql) throws SQLException {
+    final List<Long> longs = query(connection, sql, LONG_RESULT_PACKER, -1);
+    if (!longs.isEmpty()) {
+      return longs.get(0);
+    }
+
+    throw new SQLException("No records returned when querying for a long", sql);
   }
 
   /**

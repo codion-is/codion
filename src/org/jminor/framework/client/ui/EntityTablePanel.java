@@ -30,6 +30,7 @@ import org.jminor.common.ui.input.DoubleInputProvider;
 import org.jminor.common.ui.input.InputProvider;
 import org.jminor.common.ui.input.InputProviderPanel;
 import org.jminor.common.ui.input.IntInputProvider;
+import org.jminor.common.ui.input.LongInputProvider;
 import org.jminor.common.ui.input.TextInputProvider;
 import org.jminor.common.ui.input.ValueListInputProvider;
 import org.jminor.common.ui.table.ColumnSearchPanel;
@@ -1169,6 +1170,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         return new DoubleInputProvider((Double) currentValue);
       case Types.INTEGER:
         return new IntInputProvider((Integer) currentValue);
+      case Types.BIGINT:
+        return new LongInputProvider((Long) currentValue);
       case Types.CHAR:
         return new TextInputProvider(property.getCaption(), getEntityTableModel().getEditModel().getValueProvider(property),
                 (String) currentValue, 1);

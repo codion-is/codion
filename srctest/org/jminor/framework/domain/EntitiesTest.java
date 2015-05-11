@@ -83,12 +83,12 @@ public class EntitiesTest {
   public void entity() {
     Chinook.init();
     final Entity.Key key = Entities.key(Chinook.T_ALBUM);
-    key.setValue(Chinook.ALBUM_ALBUMID, 10);
+    key.setValue(Chinook.ALBUM_ALBUMID, 10l);
 
     final Entity album = Entities.entity(key);
     assertEquals(Chinook.T_ALBUM, album.getEntityID());
     assertTrue(album.containsValue(Chinook.ALBUM_ALBUMID));
-    assertEquals(10, album.getValue(Chinook.ALBUM_ALBUMID));
+    assertEquals(10l, album.getValue(Chinook.ALBUM_ALBUMID));
   }
 
   @Test
@@ -141,10 +141,10 @@ public class EntitiesTest {
   public void nullValidation() {
     Chinook.init();
     final Entity invoiceLine = Entities.entity(Chinook.T_INVOICELINE);
-    invoiceLine.setValue(Chinook.INVOICELINE_INVOICELINEID, 1);
+    invoiceLine.setValue(Chinook.INVOICELINE_INVOICELINEID, 1l);
     invoiceLine.setValue(Chinook.INVOICELINE_QUANTITY, 1);
     invoiceLine.setValue(Chinook.INVOICELINE_UNITPRICE, 1.0);
-    invoiceLine.setValue(Chinook.INVOICELINE_TRACKID, 1);
+    invoiceLine.setValue(Chinook.INVOICELINE_TRACKID, 1l);
 
     final Entities.Validator validator = new Entities.Validator(Chinook.T_INVOICELINE);
     try {
@@ -155,7 +155,7 @@ public class EntitiesTest {
       assertTrue(e instanceof NullValidationException);
       assertEquals(Chinook.INVOICELINE_INVOICEID_FK, e.getKey());
     }
-    invoiceLine.setValue(Chinook.INVOICELINE_INVOICEID, 1);
+    invoiceLine.setValue(Chinook.INVOICELINE_INVOICEID, 1l);
     try {
       validator.validate(invoiceLine);
     }

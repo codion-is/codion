@@ -9,6 +9,7 @@ import org.jminor.common.model.checkbox.TristateButtonModel;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
+import org.jminor.common.ui.textfield.LongField;
 
 import org.junit.Test;
 
@@ -137,6 +138,36 @@ public class UiValuesTest {
     assertEquals(Integer.valueOf(0), value.get());
 
     value.set(42);
+    assertEquals("42", txt.getText());
+  }
+
+  @Test
+  public void longTextUiValue() {
+    final LongField txt = new LongField();
+    final Value<Long> value = UiValues.longValue(txt, false, null, true);
+
+    assertNull(value.get());
+    txt.setText("122");
+    assertEquals(Long.valueOf(122), value.get());
+    txt.setText("");
+    assertNull(value.get());
+
+    value.set(42l);
+    assertEquals("42", txt.getText());
+  }
+
+  @Test
+  public void longPrimitiveTextUiValue() {
+    final LongField txt = new LongField();
+    final Value<Long> value = UiValues.longValue(txt, true, null, true);
+
+    assertEquals(Long.valueOf(0), value.get());
+    txt.setText("122");
+    assertEquals(Long.valueOf(122), value.get());
+    txt.setText("");
+    assertEquals(Long.valueOf(0), value.get());
+
+    value.set(42l);
     assertEquals("42", txt.getText());
   }
 

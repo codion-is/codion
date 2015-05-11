@@ -404,15 +404,15 @@ public final class DefaultEntityTableModelTest {
   public void getEntitiesByPrimaryKeys() {
     testModel.refresh();
     Entity tmpEnt = Entities.entity(EntityTestDomain.T_DETAIL);
-    tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 3);
+    tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 3l);
     assertEquals("c", testModel.getEntityByPrimaryKey(tmpEnt.getPrimaryKey()).getValue(EntityTestDomain.DETAIL_STRING));
     final List<Entity.Key> keys = new ArrayList<>();
     keys.add(tmpEnt.getPrimaryKey());
     tmpEnt = Entities.entity(EntityTestDomain.T_DETAIL);
-    tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 2);
+    tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 2l);
     keys.add(tmpEnt.getPrimaryKey());
     tmpEnt = Entities.entity(EntityTestDomain.T_DETAIL);
-    tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 1);
+    tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 1l);
     keys.add(tmpEnt.getPrimaryKey());
 
     final Collection<Entity> entities = testModel.getEntitiesByPrimaryKeys(keys);
@@ -476,7 +476,7 @@ public final class DefaultEntityTableModelTest {
     final String[] stringValues = new String[]{"a", "b", "c", "d", "e"};
     for (int i = 0; i < testEntities.length; i++) {
       testEntities[i] = Entities.entity(EntityTestDomain.T_DETAIL);
-      testEntities[i].setValue(EntityTestDomain.DETAIL_ID, i+1);
+      testEntities[i].setValue(EntityTestDomain.DETAIL_ID, (long) i+1);
       testEntities[i].setValue(EntityTestDomain.DETAIL_INT, i+1);
       testEntities[i].setValue(EntityTestDomain.DETAIL_STRING, stringValues[i]);
     }

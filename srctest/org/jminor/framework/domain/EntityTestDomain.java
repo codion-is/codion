@@ -59,7 +59,7 @@ public class EntityTestDomain {
             .setStringProvider(new Entities.StringProvider(MASTER_NAME));
 
     Entities.define(T_DETAIL,
-            Properties.primaryKeyProperty(DETAIL_ID),
+            Properties.primaryKeyProperty(DETAIL_ID, Types.BIGINT),
             Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
             Properties.columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE),
             Properties.columnProperty(DETAIL_STRING, Types.VARCHAR, "Detail string"),

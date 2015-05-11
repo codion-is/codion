@@ -10,6 +10,7 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
 import java.sql.SQLException;
+import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
@@ -855,8 +856,18 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
     protected final void queryAndSet(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                                      final DatabaseConnection connection) throws SQLException {
-      final int primaryKeyValue = DatabaseUtil.queryInteger(connection, getQuery(connection.getDatabase()));
-      entity.setValue(primaryKeyProperty, primaryKeyValue);
+      final Object value;
+      switch (primaryKeyProperty.getColumnType()) {
+        case Types.INTEGER:
+          value = DatabaseUtil.queryInteger(connection, getQuery(connection.getDatabase()));
+          break;
+        case Types.BIGINT:
+          value = DatabaseUtil.queryLong(connection, getQuery(connection.getDatabase()));
+          break;
+        default:
+          throw new SQLException("Queried key generator only implemented for Types.INTEGER and Types.BIGINT datatypes", null, null);
+      }
+      entity.setValue(primaryKeyProperty, value);
     }
 
     protected abstract String getQuery(final Database database);

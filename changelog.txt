@@ -3953,3 +3953,4 @@
   Configuration.FILTER_ON_MASTER_INSERT added
   EntityModel.get/setFilterOnMasterInsert() added
   DefaultEntityModel implements the above, tested
+  Editing of long values implemented, LongField added along with LongInputProvider

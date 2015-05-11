@@ -9,6 +9,7 @@ import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
+import org.jminor.common.ui.textfield.LongField;
 
 import javax.swing.ButtonModel;
 import javax.swing.JComboBox;
@@ -152,6 +153,49 @@ public final class ValueLinks {
                                      final boolean usePrimitive, final boolean readOnly, final boolean immediateUpdate) {
     doubleField.setEditable(!readOnly);
     Values.link(modelValue, UiValues.doubleValue(doubleField, usePrimitive, format, immediateUpdate), readOnly);
+  }
+
+  /**
+   * @param longField the long field to link with the value
+   * @param owner the value owner
+   * @param beanPropertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   */
+  public static void longValueLink(final LongField longField, final Object owner, final String beanPropertyName,
+                                   final EventObserver<Long> valueChangeEvent, final boolean usePrimitive,
+                                   final boolean immediateUpdate) {
+    longValueLink(longField, owner, beanPropertyName, valueChangeEvent, usePrimitive, false, immediateUpdate);
+  }
+
+  /**
+   * @param longField the long field to link with the value
+   * @param owner the value owner
+   * @param beanPropertyName the property name
+   * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
+   * @param readOnly if true the component will be read only
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   */
+  public static void longValueLink(final LongField longField, final Object owner, final String beanPropertyName,
+                                   final EventObserver<Long> valueChangeEvent, final boolean usePrimitive,
+                                   final boolean readOnly, final boolean immediateUpdate) {
+    longValueLink(longField, Values.beanValue(owner, beanPropertyName, usePrimitive ? long.class : Long.class,
+            valueChangeEvent), Util.getNonGroupingNumberFormat(), usePrimitive, readOnly, immediateUpdate);
+  }
+
+  /**
+   * @param longField the long field to link with the value
+   * @param modelValue the model value
+   * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
+   * @param readOnly if true the component will be read only
+   * @param immediateUpdate if true then the underlying model value is updated on each keystroke
+   */
+  public static void longValueLink(final LongField longField, final Value<Long> modelValue, final NumberFormat format,
+                                   final boolean usePrimitive, final boolean readOnly, final boolean immediateUpdate) {
+    longField.setEditable(!readOnly);
+    Values.link(modelValue, UiValues.longValue(longField, usePrimitive, format, immediateUpdate), readOnly);
   }
 
   /**

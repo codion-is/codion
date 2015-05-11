@@ -33,7 +33,7 @@ public class Chinook {
 
   static {
     Entities.define(T_ARTIST,
-            Properties.primaryKeyProperty(ARTIST_ARTISTID),
+            Properties.primaryKeyProperty(ARTIST_ARTISTID, Types.BIGINT),
             Properties.columnProperty(ARTIST_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(120)
@@ -54,9 +54,9 @@ public class Chinook {
 
   static {
     Entities.define(T_ALBUM,
-            Properties.primaryKeyProperty(ALBUM_ALBUMID),
+            Properties.primaryKeyProperty(ALBUM_ALBUMID, Types.BIGINT),
             Properties.foreignKeyProperty(ALBUM_ARTISTID_FK, "Artist", T_ARTIST,
-                    Properties.columnProperty(ALBUM_ARTISTID))
+                    Properties.columnProperty(ALBUM_ARTISTID, Types.BIGINT))
                     .setNullable(false)
                     .setPreferredColumnWidth(160),
             Properties.columnProperty(ALBUM_TITLE, Types.VARCHAR, "Title")
@@ -91,7 +91,7 @@ public class Chinook {
 
   static {
     Entities.define(T_EMPLOYEE,
-            Properties.primaryKeyProperty(EMPLOYEE_EMPLOYEEID),
+            Properties.primaryKeyProperty(EMPLOYEE_EMPLOYEEID, Types.BIGINT),
             Properties.columnProperty(EMPLOYEE_LASTNAME, Types.VARCHAR, "Last name")
                     .setNullable(false)
                     .setMaxLength(20),
@@ -101,7 +101,7 @@ public class Chinook {
             Properties.columnProperty(EMPLOYEE_TITLE, Types.VARCHAR, "Title")
                     .setMaxLength(30),
             Properties.foreignKeyProperty(EMPLOYEE_REPORTSTO_FK, "Reports to", T_EMPLOYEE,
-                    Properties.columnProperty(EMPLOYEE_REPORTSTO)),
+                    Properties.columnProperty(EMPLOYEE_REPORTSTO, Types.BIGINT)),
             Properties.columnProperty(EMPLOYEE_BIRTHDATE, Types.DATE, "Birthdate"),
             Properties.columnProperty(EMPLOYEE_HIREDATE, Types.DATE, "Hiredate"),
             Properties.columnProperty(EMPLOYEE_ADDRESS, Types.VARCHAR, "Address")
@@ -147,7 +147,7 @@ public class Chinook {
 
   static {
     Entities.define(T_CUSTOMER,
-            Properties.primaryKeyProperty(CUSTOMER_CUSTOMERID),
+            Properties.primaryKeyProperty(CUSTOMER_CUSTOMERID, Types.BIGINT),
             Properties.columnProperty(CUSTOMER_LASTNAME, Types.VARCHAR, "Last name")
                     .setNullable(false)
                     .setMaxLength(20),
@@ -174,7 +174,7 @@ public class Chinook {
                     .setNullable(false)
                     .setMaxLength(60),
             Properties.foreignKeyProperty(CUSTOMER_SUPPORTREPID_FK, "Support rep", T_EMPLOYEE,
-                    Properties.columnProperty(CUSTOMER_SUPPORTREPID)))
+                    Properties.columnProperty(CUSTOMER_SUPPORTREPID, Types.BIGINT)))
             .setDomainID(DOMAIN_ID)
             .setKeyGenerator(Entities.automaticKeyGenerator(T_CUSTOMER))
             .setStringProvider(new Entities.StringProvider(CUSTOMER_LASTNAME)
@@ -190,7 +190,7 @@ public class Chinook {
 
   static {
     Entities.define(T_GENRE,
-            Properties.primaryKeyProperty(GENRE_GENREID),
+            Properties.primaryKeyProperty(GENRE_GENREID, Types.BIGINT),
             Properties.columnProperty(GENRE_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(120)
@@ -209,7 +209,7 @@ public class Chinook {
 
   static {
     Entities.define(T_MEDIATYPE,
-            Properties.primaryKeyProperty(MEDIATYPE_MEDIATYPEID),
+            Properties.primaryKeyProperty(MEDIATYPE_MEDIATYPEID, Types.BIGINT),
             Properties.columnProperty(MEDIATYPE_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(120)
@@ -255,12 +255,12 @@ public class Chinook {
 
   static {
     Entities.define(T_TRACK,
-            Properties.primaryKeyProperty(TRACK_TRACKID),
+            Properties.primaryKeyProperty(TRACK_TRACKID, Types.BIGINT),
             Properties.denormalizedViewProperty(TRACK_ARTIST_DENORM, TRACK_ALBUMID_FK,
                     Entities.getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
                     .setPreferredColumnWidth(160),
             Properties.foreignKeyProperty(TRACK_ALBUMID_FK, "Album", T_ALBUM,
-                    Properties.columnProperty(TRACK_ALBUMID))
+                    Properties.columnProperty(TRACK_ALBUMID, Types.BIGINT))
                     .setFetchDepth(2)
                     .setPreferredColumnWidth(160),
             Properties.columnProperty(TRACK_NAME, Types.VARCHAR, "Name")
@@ -268,12 +268,12 @@ public class Chinook {
                     .setMaxLength(200)
                     .setPreferredColumnWidth(160),
             Properties.foreignKeyProperty(TRACK_GENREID_FK, "Genre", T_GENRE,
-                    Properties.columnProperty(TRACK_GENREID)),
+                    Properties.columnProperty(TRACK_GENREID, Types.BIGINT)),
             Properties.columnProperty(TRACK_COMPOSER, Types.VARCHAR, "Composer")
                     .setMaxLength(220)
                     .setPreferredColumnWidth(160),
             Properties.foreignKeyProperty(TRACK_MEDIATYPEID_FK, "Media type", T_MEDIATYPE,
-                    Properties.columnProperty(TRACK_MEDIATYPEID))
+                    Properties.columnProperty(TRACK_MEDIATYPEID, Types.BIGINT))
                     .setNullable(false),
             Properties.columnProperty(TRACK_MILLISECONDS, Types.INTEGER, "Duration (ms)")
                     .setNullable(false),
@@ -307,12 +307,12 @@ public class Chinook {
 
   static {
     Entities.define(T_INVOICE,
-            Properties.primaryKeyProperty(INVOICE_INVOICEID, Types.INTEGER, "Invoice no."),
+            Properties.primaryKeyProperty(INVOICE_INVOICEID, Types.BIGINT, "Invoice no."),
             Properties.columnProperty(INVOICE_INVOICEID_AS_STRING, Types.VARCHAR, "Invoice no.")
                     .setReadOnly(true)
                     .setHidden(true),
             Properties.foreignKeyProperty(INVOICE_CUSTOMERID_FK, "Customer", T_CUSTOMER,
-                    Properties.columnProperty(INVOICE_CUSTOMERID))
+                    Properties.columnProperty(INVOICE_CUSTOMERID, Types.BIGINT))
                     .setNullable(false),
             Properties.columnProperty(INVOICE_INVOICEDATE, Types.DATE, "Date")
                     .setNullable(false),
@@ -365,13 +365,13 @@ public class Chinook {
 
   static {
     Entities.define(T_INVOICELINE,
-            Properties.primaryKeyProperty(INVOICELINE_INVOICELINEID),
+            Properties.primaryKeyProperty(INVOICELINE_INVOICELINEID, Types.BIGINT),
             Properties.foreignKeyProperty(INVOICELINE_INVOICEID_FK, "Invoice", T_INVOICE,
-                    Properties.columnProperty(INVOICELINE_INVOICEID))
+                    Properties.columnProperty(INVOICELINE_INVOICEID, Types.BIGINT))
                     .setFetchDepth(0)
                     .setNullable(false),
             Properties.foreignKeyProperty(INVOICELINE_TRACKID_FK, "Track", T_TRACK,
-                    Properties.columnProperty(INVOICELINE_TRACKID))
+                    Properties.columnProperty(INVOICELINE_TRACKID, Types.BIGINT))
                     .setNullable(false)
                     .setPreferredColumnWidth(100),
             Properties.denormalizedProperty(INVOICELINE_UNITPRICE, INVOICELINE_TRACKID_FK,
@@ -392,7 +392,7 @@ public class Chinook {
 
   static {
     Entities.define(T_PLAYLIST,
-            Properties.primaryKeyProperty(PLAYLIST_PLAYLISTID),
+            Properties.primaryKeyProperty(PLAYLIST_PLAYLISTID, Types.BIGINT),
             Properties.columnProperty(PLAYLIST_NAME, Types.VARCHAR, "Name")
                     .setNullable(false)
                     .setMaxLength(120)
@@ -416,7 +416,7 @@ public class Chinook {
   static {
     Entities.define(T_PLAYLISTTRACK,
             Properties.foreignKeyProperty(PLAYLISTTRACK_PLAYLISTID_FK, "Playlist", T_PLAYLIST,
-                    Properties.primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID)
+                    Properties.primaryKeyProperty(PLAYLISTTRACK_PLAYLISTID, Types.BIGINT)
                             .setUpdatable(true))
                     .setNullable(false)
                     .setPreferredColumnWidth(120),
@@ -424,7 +424,7 @@ public class Chinook {
                     Entities.getProperty(T_ALBUM, ALBUM_ARTISTID_FK), "Artist")
                     .setPreferredColumnWidth(160),
             Properties.foreignKeyProperty(PLAYLISTTRACK_TRACKID_FK, "Track", T_TRACK,
-                    Properties.primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.INTEGER)
+                    Properties.primaryKeyProperty(PLAYLISTTRACK_TRACKID, Types.BIGINT)
                             .setPrimaryKeyIndex(1)
                             .setUpdatable(true))
                     .setFetchDepth(3)

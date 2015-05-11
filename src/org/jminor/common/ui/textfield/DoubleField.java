@@ -12,7 +12,7 @@ import java.text.NumberFormat;
 /**
  * A text field for doubles.
  */
-public final class DoubleField extends IntField {
+public class DoubleField extends IntField {
 
   public static final String POINT = ".";
   public static final String COMMA = ",";

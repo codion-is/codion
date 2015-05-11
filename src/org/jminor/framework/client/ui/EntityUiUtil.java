@@ -33,6 +33,7 @@ import org.jminor.common.ui.input.InputProviderPanel;
 import org.jminor.common.ui.textfield.DocumentSizeFilter;
 import org.jminor.common.ui.textfield.DoubleField;
 import org.jminor.common.ui.textfield.IntField;
+import org.jminor.common.ui.textfield.LongField;
 import org.jminor.common.ui.textfield.SizedDocument;
 import org.jminor.common.ui.valuemap.ValueLinkValidators;
 import org.jminor.framework.Configuration;
@@ -871,6 +872,10 @@ public final class EntityUiUtil {
       ValueLinks.doubleValueLink((DoubleField) textField, EditModelValues.<Double>value(editModel, propertyID),
               (NumberFormat) property.getFormat(), false, readOnly, immediateUpdate);
     }
+    else if (property.isLong()) {
+      ValueLinks.longValueLink((LongField) textField, EditModelValues.<Long>value(editModel, propertyID),
+              (NumberFormat) property.getFormat(), false, readOnly, immediateUpdate);
+    }
     else if (property.isDateOrTime()) {
       ValueLinks.dateValueLink((JFormattedTextField) textField, EditModelValues.<Date>value(editModel, propertyID),
               readOnly, (SimpleDateFormat) property.getFormat(), property.getType(), immediateUpdate);
@@ -1092,6 +1097,9 @@ public final class EntityUiUtil {
     else if (property.isDouble()) {
       field = initializeDoubleField(property);
     }
+    else if (property.isLong()) {
+      field = initializeLongField(property);
+    }
     else if (property.isDateOrTime()) {
       field = UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) property.getFormat()));
     }
@@ -1099,7 +1107,7 @@ public final class EntityUiUtil {
       field = initializeStringField(formatMaskString, valueContainsLiteralCharacters);
     }
     else {
-      throw new IllegalArgumentException("Unable to create text field for property type: " + property.getType());
+      throw new IllegalArgumentException("Creating text fields for property type: " + property.getType() + " is not implemented");
     }
 
     return field;
@@ -1118,23 +1126,30 @@ public final class EntityUiUtil {
   }
 
   private static JTextField initializeDoubleField(final Property property) {
-    final JTextField field;
-    field = new DoubleField();
+    final DoubleField field = new DoubleField();
     if (property.getMaximumFractionDigits() > 0) {
-      ((DoubleField) field).setMaximumFractionDigits(property.getMaximumFractionDigits());
+      field.setMaximumFractionDigits(property.getMaximumFractionDigits());
     }
     if (property.getMin() != null && property.getMax() != null) {
-      ((DoubleField) field).setRange(Math.min(property.getMin(), 0), property.getMax());
+      field.setRange(Math.min(property.getMin(), 0), property.getMax());
     }
 
     return field;
   }
 
   private static JTextField initializeIntField(final Property property) {
-    final JTextField field;
-    field = new IntField();
+    final IntField field = new IntField();
     if (property.getMin() != null && property.getMax() != null) {
-      ((IntField) field).setRange(property.getMin(), property.getMax());
+      field.setRange(property.getMin(), property.getMax());
+    }
+
+    return field;
+  }
+
+  private static JTextField initializeLongField(final Property property) {
+    final LongField field = new LongField();
+    if (property.getMin() != null && property.getMax() != null) {
+      field.setRange(property.getMin(), property.getMax());
     }
 
     return field;
