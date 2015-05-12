@@ -501,6 +501,12 @@ public final class EntityUiUtil {
     return comboBox;
   }
 
+  /**
+   * Creates a read-only, non-focusable JTextField displaying the value of the given property in the given edit model
+   * @param foreignKeyProperty the property which value should be displayed
+   * @param editModel the edit model
+   * @return a read-only, non-focusable JTextField displaying the value of the given property
+   */
   public static JTextField createEntityField(final Property.ForeignKeyProperty foreignKeyProperty,
                                              final EntityEditModel editModel) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
@@ -510,12 +516,29 @@ public final class EntityUiUtil {
     textField.setEditable(false);
     textField.setFocusable(false);
     textField.setToolTipText(foreignKeyProperty.getDescription());
+    final Event<String> valueChangeEvent = Events.event();
     editModel.addValueListener(foreignKeyProperty.getPropertyID(), new EventInfoListener<ValueChange<String, ?>>() {
       @Override
-      public void eventOccurred(final ValueChange info) {
-        textField.setText(info.getNewValue() == null ? "" : info.getNewValue().toString());
+      public void eventOccurred(final ValueChange<String, ?> info) {
+        final Entity value = (Entity) info.getNewValue();
+        valueChangeEvent.fire(value == null ? "" : value.toString());
       }
     });
+    ValueLinks.textValueLink(textField, new Value<String>() {
+      @Override
+      public void set(final String value) {}
+      @Override
+      public String get() {
+        final Entity value = editModel.getForeignKeyValue(foreignKeyProperty.getPropertyID());
+
+        return value == null ? "" : value.toString();
+      }
+      @Override
+      public EventObserver<String> getObserver() {
+        return valueChangeEvent.getObserver();
+      }
+    }, null, false, true);
+
     return textField;
   }
 

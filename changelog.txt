@@ -3955,3 +3955,4 @@
   DefaultEntityModel implements the above, tested
   Editing of long values implemented, LongField added along with LongInputProvider
   MaximumMatch bug fixed, no longer disregards key events if modifiers are present (CTRL-BACKSPACE beyond first character now works correctly)
+  EntityUiUtil.createEntityField() improved

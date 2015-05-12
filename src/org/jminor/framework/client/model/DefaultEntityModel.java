@@ -515,6 +515,7 @@ public class DefaultEntityModel implements EntityModel {
 
   /**
    * Removes the deleted entities from all ComboBox models based on that entity type
+   * todo set foreign key values referencing the deleted entity to null
    * @param deleteEvent the delete event
    */
   private void handleMasterDelete(final EntityEditModel.DeleteEvent deleteEvent) {
