@@ -8,6 +8,7 @@ import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.demos.world.domain.World;
 
+import javax.swing.JTextField;
 import java.awt.GridLayout;
 
 public final class CountryEditPanel extends EntityEditPanel {
@@ -23,7 +24,12 @@ public final class CountryEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusProperty(World.COUNTRY_CODE);
 
-    createTextField(World.COUNTRY_CODE).setColumns(TEXT_FIELD_COLUMNS);
+    final JTextField txtCode = createTextField(World.COUNTRY_CODE);
+    txtCode.setColumns(TEXT_FIELD_COLUMNS);
+    UiUtil.makeUpperCase(txtCode);
+    final JTextField txtCode2 = createTextField(World.COUNTRY_CODE2);
+    txtCode2.setColumns(TEXT_FIELD_COLUMNS);
+    UiUtil.makeUpperCase(txtCode2);
     createTextField(World.COUNTRY_NAME).setColumns(TEXT_FIELD_COLUMNS);
     UiUtil.setPreferredWidth(createPropertyComboBox(World.COUNTRY_CONTINENT), COMBOBOX_WIDTH);
     UiUtil.setPreferredWidth(createPropertyComboBox(World.COUNTRY_REGION), COMBOBOX_WIDTH);
@@ -41,6 +47,7 @@ public final class CountryEditPanel extends EntityEditPanel {
     setLayout(new GridLayout(4, 5, 5, 5));
 
     addPropertyPanel(World.COUNTRY_CODE);
+    addPropertyPanel(World.COUNTRY_CODE2);
     addPropertyPanel(World.COUNTRY_NAME);
     addPropertyPanel(World.COUNTRY_CONTINENT);
     addPropertyPanel(World.COUNTRY_REGION);
