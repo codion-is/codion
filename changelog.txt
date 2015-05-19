@@ -3956,3 +3956,4 @@
   Editing of long values implemented, LongField added along with LongInputProvider
   MaximumMatch bug fixed, no longer disregards key events if modifiers are present (CTRL-BACKSPACE beyond first character now works correctly)
   EntityUiUtil.createEntityField() improved
+  DefaultEntityEditModel bug fixed, setEntity() was used during update() and delete(), which triggered isSetEntityAllowed(), doSetEntity() added for internal use

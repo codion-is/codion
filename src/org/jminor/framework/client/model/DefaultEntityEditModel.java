@@ -319,8 +319,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   @Override
   public final void setEntity(final Entity entity) {
     if (isSetEntityAllowed()) {
-      this.entity.setAs(entity == null ? getDefaultEntity() : entity);
-      entitySetEvent.fire(entity);
+      doSetEntity(entity);
     }
   }
 
@@ -530,7 +529,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
     final int index = updatedEntities.indexOf(getEntity());
     if (index >= 0) {
-      setEntity(updatedEntities.get(index));
+      doSetEntity(updatedEntities.get(index));
     }
 
     afterUpdateEvent.fire(new DefaultUpdateEvent(getOriginalKeyMap(modifiedEntities, new ArrayList<>(updatedEntities))));
@@ -564,7 +563,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
     doDelete(entities);
     if (entities.contains(getEntity())) {
-      setEntity(null);
+      doSetEntity(null);
     }
 
     afterDeleteEvent.fire(new DefaultDeleteEvent(entities));
@@ -1058,6 +1057,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
     }
 
     return true;
+  }
+
+  private void doSetEntity(final Entity entity) {
+    this.entity.setAs(entity == null ? getDefaultEntity() : entity);
+    entitySetEvent.fire(entity);
   }
 
   private boolean valueModified(final Property property) {
