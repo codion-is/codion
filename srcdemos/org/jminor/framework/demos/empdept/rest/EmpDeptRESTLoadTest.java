@@ -40,6 +40,7 @@ import javax.xml.bind.DatatypeConverter;
 import java.io.IOException;
 import java.io.InputStream;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
@@ -137,7 +138,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
         final Entity entity = queryEntities.get(new Random().nextInt(queryEntities.size()));
         entity.setValue(EmpDept.DEPARTMENT_LOCATION, Util.createRandomString(10, 13));
         builder = createURIBuilder();
-        builder.addParameter("entities", EntityJSONParser.serializeEntities(Arrays.asList(entity), false));
+        builder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(entity), false));
         response = client.execute(new HttpPut(builder.build()));
         getContentStream(response.getEntity());
       }
@@ -227,7 +228,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
         propaganda.setValue(EmpDept.DEPARTMENT_LOCATION, "Hell");
 
         final URIBuilder builder = createURIBuilder();
-        builder.addParameter("entities", EntityJSONParser.serializeEntities(Arrays.asList(propaganda), false));
+        builder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(propaganda), false));
         final HttpResponse response = client.execute(new HttpPost(builder.build()));
       }
       catch (final Exception e) {

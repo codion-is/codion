@@ -14,7 +14,7 @@ import org.jminor.common.model.User;
 
 import org.junit.Test;
 
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -30,7 +30,7 @@ public class DefaultConnectionPoolTest {
     final long startTime = System.currentTimeMillis();
     final Database database = Databases.createInstance();
     final QueryLoadTestModel model = new QueryLoadTestModel(database, User.UNIT_TEST_USER,
-            Arrays.asList(new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp")));
+            Collections.singletonList(new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp")));
     model.addApplicationBatch();
     model.setCollectChartData(true);
     Thread.sleep(SLEEP_MILLIS);

@@ -158,7 +158,7 @@ public class AbstractServerTest {
   }
 
   private interface ServerTest extends Remote {
-    public ClientInfo getClientInfo() throws RemoteException;
+    ClientInfo getClientInfo() throws RemoteException;
   }
 
   private static final class TestServer extends AbstractServer<ServerTest> {

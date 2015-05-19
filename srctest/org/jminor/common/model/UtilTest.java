@@ -276,8 +276,8 @@ public class UtilTest {
   @Test
   public void nullOrEmpty() {
     assertTrue(Util.nullOrEmpty((Collection[]) null));
-    assertTrue(Util.nullOrEmpty(Arrays.asList(""), null));
-    assertTrue(Util.nullOrEmpty(Arrays.asList(""), Collections.emptyList()));
+    assertTrue(Util.nullOrEmpty(Collections.singletonList(""), null));
+    assertTrue(Util.nullOrEmpty(Collections.singletonList(""), Collections.emptyList()));
 
     final Map<Integer, String> map = new HashMap<>();
     map.put(1, "1");
@@ -289,7 +289,7 @@ public class UtilTest {
     assertTrue(Util.nullOrEmpty("sadf", null));
     assertTrue(Util.nullOrEmpty("asdf", ""));
 
-    assertFalse(Util.nullOrEmpty(Arrays.asList("1")));
+    assertFalse(Util.nullOrEmpty(Collections.singletonList("1")));
     assertFalse(Util.nullOrEmpty(Arrays.asList("1", "2")));
 
     assertFalse(Util.nullOrEmpty("asdf"));

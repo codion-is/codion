@@ -13,6 +13,7 @@ import org.junit.Test;
 
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 
@@ -22,7 +23,7 @@ public class DefaultForeignKeySearchModelTest {
   public void getSearchEntitiesLookupModel() throws DatabaseException {
     EmpDept.init();
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(EmpDept.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER,
-            Arrays.asList(Entities.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME)));
+            Collections.singletonList(Entities.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME)));
     final ForeignKeySearchModel searchModel = new DefaultForeignKeySearchModel(
             Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK), lookupModel);
     final Entity sales = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");

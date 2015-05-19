@@ -14,7 +14,7 @@ import org.junit.Test;
 import java.io.File;
 import java.sql.Timestamp;
 import java.sql.Types;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -47,7 +47,7 @@ public class DefaultEntityTest {
     final Entity entity = getDetailEntity(10, 34, 23.4, originalStringValue, new Date(), new Timestamp(System.currentTimeMillis()), true, referencedEntityValue);
     entity.setValue(EntityTestDomain.DETAIL_STRING, "a new String value");
     final File tmp = File.createTempFile("DefaultEntityTest", "serialization");
-    Util.serializeToFile(Arrays.asList(entity), tmp);
+    Util.serializeToFile(Collections.singletonList(entity), tmp);
     final List<Object> fromFile = Util.deserializeFromFile(tmp);
     assertEquals(1, fromFile.size());
     final Entity entityFromFile = (Entity) fromFile.get(0);
@@ -58,7 +58,7 @@ public class DefaultEntityTest {
 
     final Entity.Key key = entity.getPrimaryKey();
     final File tmp2 = File.createTempFile("DefaultEntityTest", "serialization");
-    Util.serializeToFile(Arrays.asList(key), tmp2);
+    Util.serializeToFile(Collections.singletonList(key), tmp2);
     final List<Object> keyFromFile = Util.deserializeFromFile(tmp2);
     assertEquals(1, keyFromFile.size());
     assertEquals(key, keyFromFile.get(0));

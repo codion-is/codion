@@ -11,7 +11,6 @@ import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 
@@ -99,7 +98,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
   public Collection<Entity> getSearchEntities() {
     final Object upperBound = getUpperBound();
     if (upperBound instanceof Entity) {
-      return Arrays.asList((Entity) upperBound);
+      return Collections.singletonList((Entity) upperBound);
     }
     //noinspection unchecked
     return upperBound == null ? Collections.<Entity>emptyList() : (Collection<Entity>) upperBound;
@@ -113,7 +112,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
       return EntityCriteriaUtil.foreignKeyCriteria(getColumnIdentifier(), getSearchType(), (Collection) upperBound);
     }
 
-    return EntityCriteriaUtil.foreignKeyCriteria(getColumnIdentifier(), getSearchType(), Arrays.asList(upperBound));
+    return EntityCriteriaUtil.foreignKeyCriteria(getColumnIdentifier(), getSearchType(), Collections.singletonList(upperBound));
   }
 
   private String toString(final Object object) {
@@ -150,7 +149,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
         if (!updatingModel) {//noinspection unchecked
           final Object upperBound = getUpperBound();
           if (upperBound instanceof Entity) {
-            entityLookupModel.setSelectedEntities(Arrays.asList(((Entity) upperBound)));
+            entityLookupModel.setSelectedEntities(Collections.singletonList(((Entity) upperBound)));
           }
           else {//noinspection unchecked
             entityLookupModel.setSelectedEntities((Collection<Entity>) upperBound);

@@ -41,6 +41,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -94,7 +95,7 @@ public class LocalEntityConnectionTest {
       final Entity.Key key = Entities.key(EmpDept.T_DEPARTMENT);
       key.setValue(EmpDept.DEPARTMENT_ID, 40);
       connection.delete(new ArrayList<Entity.Key>());
-      connection.delete(Arrays.asList(key));
+      connection.delete(Collections.singletonList(key));
       try {
         connection.selectSingle(key);
         fail();
@@ -148,12 +149,12 @@ public class LocalEntityConnectionTest {
     assertEquals(7, emps.get(EmpDept.T_EMPLOYEE).size());
 
     Entity emp = connection.selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "KING");
-    Map<String, Collection<Entity>> deps = connection.selectDependentEntities(Arrays.asList(emp));
+    Map<String, Collection<Entity>> deps = connection.selectDependentEntities(Collections.singletonList(emp));
     assertTrue(deps.containsKey(EmpDept.T_EMPLOYEE));
     assertEquals(3, deps.get(EmpDept.T_EMPLOYEE).size());
 
     emp = connection.selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER");
-    deps = connection.selectDependentEntities(Arrays.asList(emp));
+    deps = connection.selectDependentEntities(Collections.singletonList(emp));
     assertFalse(deps.containsKey(EmpDept.T_EMPLOYEE));
   }
 
@@ -286,7 +287,7 @@ public class LocalEntityConnectionTest {
     try {
       connection.beginTransaction();
       final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
-      connection.insert(Arrays.asList(department));
+      connection.insert(Collections.singletonList(department));
     }
     finally {
       connection.rollbackTransaction();
@@ -298,7 +299,7 @@ public class LocalEntityConnectionTest {
     try {
       connection.beginTransaction();
       final Entity department = connection.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID, 10);
-      connection.update(Arrays.asList(department));
+      connection.update(Collections.singletonList(department));
     }
     finally {
       connection.rollbackTransaction();
@@ -345,7 +346,7 @@ public class LocalEntityConnectionTest {
 
       sales.setValue(EmpDept.DEPARTMENT_LOCATION, "Syracuse");
       try {
-        connection2.update(Arrays.asList(sales));
+        connection2.update(Collections.singletonList(sales));
         fail("Should not be able to update record selected for update by another connection");
       }
       catch (final DatabaseException ignored) {}
@@ -353,9 +354,9 @@ public class LocalEntityConnectionTest {
       connection.selectAll(EmpDept.T_DEPARTMENT);//any query will do
 
       try {
-        sales = connection2.update(Arrays.asList(sales)).get(0);
+        sales = connection2.update(Collections.singletonList(sales)).get(0);
         sales.setValue(EmpDept.DEPARTMENT_LOCATION, originalLocation);
-        connection2.update(Arrays.asList(sales));//revert changes to data
+        connection2.update(Collections.singletonList(sales));//revert changes to data
       }
       catch (final DatabaseException ignored) {
         fail("Should be able to update record after other connection released the select for update lock");
@@ -378,11 +379,11 @@ public class LocalEntityConnectionTest {
 
       allen = connection.selectSingle(criteria);
 
-      connection2.delete(Arrays.asList(allen.getPrimaryKey()));
+      connection2.delete(Collections.singletonList(allen.getPrimaryKey()));
 
       allen.setValue(EmpDept.EMPLOYEE_JOB, "A JOB");
       try {
-        connection.update(Arrays.asList(allen));
+        connection.update(Collections.singletonList(allen));
         fail("Should not be able to update record deleted by another connection");
       }
       catch (final RecordModifiedException e) {
@@ -391,7 +392,7 @@ public class LocalEntityConnectionTest {
       }
 
       try {
-        connection2.insert(Arrays.asList(allen));//revert changes to data
+        connection2.insert(Collections.singletonList(allen));//revert changes to data
       }
       catch (final DatabaseException ignored) {
         fail("Should be able to update record after other connection released the select for update lock");
@@ -414,9 +415,9 @@ public class LocalEntityConnectionTest {
     try {
       final Entity department = baseConnection.selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
       oldLocation = (String) department.setValue(EmpDept.DEPARTMENT_LOCATION, "NEWLOC");
-      updatedDepartment = baseConnection.update(Arrays.asList(department)).get(0);
+      updatedDepartment = baseConnection.update(Collections.singletonList(department)).get(0);
       try {
-        optimisticConnection.update(Arrays.asList(department));
+        optimisticConnection.update(Collections.singletonList(department));
         fail("RecordModifiedException should have been thrown");
       }
       catch (final RecordModifiedException e) {
@@ -428,7 +429,7 @@ public class LocalEntityConnectionTest {
       try {
         if (updatedDepartment != null && oldLocation != null) {
           updatedDepartment.setValue(EmpDept.DEPARTMENT_LOCATION, oldLocation);
-          baseConnection.update(Arrays.asList(updatedDepartment));
+          baseConnection.update(Collections.singletonList(updatedDepartment));
         }
       }
       catch (final DatabaseException e) {
@@ -500,7 +501,7 @@ public class LocalEntityConnectionTest {
       final Entity blobRecord = Entities.entity(ENTITY_ID);
       blobRecord.setValue(ID, 1);
 
-      final Entity.Key blobRecordKey = connection.insert(Arrays.asList(blobRecord)).get(0);
+      final Entity.Key blobRecordKey = connection.insert(Collections.singletonList(blobRecord)).get(0);
 
       final byte one = 1;
       final byte[] bytes = new byte[1024];
@@ -543,7 +544,7 @@ public class LocalEntityConnectionTest {
       blobRecord.setValue(ID, 1);
       blobRecord.setValue("data", bytes);
 
-      final Entity.Key blobRecordKey = connection.insert(Arrays.asList(blobRecord)).get(0);
+      final Entity.Key blobRecordKey = connection.insert(Collections.singletonList(blobRecord)).get(0);
 
       byte[] fromDb = connection.readBlob(blobRecordKey, DATA);
       assertTrue(Arrays.equals(bytes, fromDb));
@@ -557,7 +558,7 @@ public class LocalEntityConnectionTest {
 
       blobRecord.setValue("data", newBytes);
 
-      connection.update(Arrays.asList(blobRecord)).get(0);
+      connection.update(Collections.singletonList(blobRecord)).get(0);
 
       fromDb = connection.readBlob(blobRecordKey, DATA);
       assertTrue(Arrays.equals(newBytes, fromDb));

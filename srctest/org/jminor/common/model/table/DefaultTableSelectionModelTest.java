@@ -7,6 +7,7 @@ import org.junit.Test;
 
 import javax.swing.table.TableColumn;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -19,7 +20,7 @@ public class DefaultTableSelectionModelTest {
     final List<String> data = Arrays.asList("A", "B", "C");
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final TableSortModel<String, Integer> sortModel = new AbstractTableSortModel<String, Integer>(Arrays.asList(column)) {
+    final TableSortModel<String, Integer> sortModel = new AbstractTableSortModel<String, Integer>(Collections.singletonList(column)) {
       @Override
       public Class getColumnClass(final Integer columnIdentifier) {
         return String.class;

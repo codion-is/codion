@@ -8,6 +8,7 @@ import org.junit.Test;
 import javax.swing.table.TableColumn;
 import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -76,7 +77,7 @@ public class AbstractTableSortModelTest {
   public void nonComparableColumnClass() {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final AbstractTableSortModel<ArrayList, Integer> model = new AbstractTableSortModel<ArrayList, Integer>(Arrays.asList(column)) {
+    final AbstractTableSortModel<ArrayList, Integer> model = new AbstractTableSortModel<ArrayList, Integer>(Collections.singletonList(column)) {
       @Override
       public Class getColumnClass(final Integer columnIdentifier) {
         return ArrayList.class;

@@ -19,6 +19,7 @@ import org.junit.Test;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -71,10 +72,10 @@ public final class DefaultEntityLookupModelTest {
     final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
     employee.setValue(EmpDept.EMPLOYEE_NAME, "Darri");
     employee.setValue(EmpDept.EMPLOYEE_JOB, "Test");
-    lookupModel.setSelectedEntities(Arrays.asList(employee));
+    lookupModel.setSelectedEntities(Collections.singletonList(employee));
     assertEquals(lookupModel.getSearchString(), "Test");
     lookupModel.setToStringProvider(null);
-    lookupModel.setSelectedEntities(Arrays.asList(employee));
+    lookupModel.setSelectedEntities(Collections.singletonList(employee));
     assertEquals(lookupModel.getSearchString(), "Darri");
   }
 

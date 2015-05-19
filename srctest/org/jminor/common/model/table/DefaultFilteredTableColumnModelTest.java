@@ -12,6 +12,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 
 import static org.junit.Assert.*;
 
@@ -126,6 +127,6 @@ public class DefaultFilteredTableColumnModelTest {
     column.setIdentifier(0);
     final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<>(0, Types.VARCHAR, "%");
 
-    return new DefaultFilteredTableColumnModel<>(Arrays.asList(column), Arrays.asList(filterModel));
+    return new DefaultFilteredTableColumnModel<>(Collections.singletonList(column), Collections.singletonList(filterModel));
   }
 }

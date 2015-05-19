@@ -15,6 +15,7 @@ import org.junit.BeforeClass;
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.Collections;
 
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertNotNull;
@@ -34,7 +35,7 @@ public class EntityCriteriaUtilTest {
     EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getPrimaryKey());
     assertPrimaryKeyCriteria(criteria);
 
-    criteria = EntityCriteriaUtil.criteria(Arrays.asList(entity.getPrimaryKey()));
+    criteria = EntityCriteriaUtil.criteria(Collections.singletonList(entity.getPrimaryKey()));
     assertPrimaryKeyCriteria(criteria);
 
     criteria = EntityCriteriaUtil.criteria(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, SearchType.NOT_LIKE, "DEPT");
@@ -49,7 +50,7 @@ public class EntityCriteriaUtilTest {
     EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(entity.getPrimaryKey());
     assertPrimaryKeyCriteria(criteria);
 
-    criteria = EntityCriteriaUtil.selectCriteria(Arrays.asList(entity.getPrimaryKey()));
+    criteria = EntityCriteriaUtil.selectCriteria(Collections.singletonList(entity.getPrimaryKey()));
     assertPrimaryKeyCriteria(criteria);
 
     criteria = EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, SearchType.NOT_LIKE, "DEPT");

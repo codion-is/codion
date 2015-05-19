@@ -28,6 +28,7 @@ import javax.swing.JComboBox;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.*;
@@ -69,7 +70,7 @@ public final class DefaultEntityModelTest {
     final EntityTableModel deptTableModel = departmentModel.getTableModel();
     final Entity.Key operationsKey = Entities.key(EmpDept.T_DEPARTMENT);
     operationsKey.setValue(EmpDept.DEPARTMENT_ID, 40);//operations
-    deptTableModel.setSelectedByPrimaryKeys(Arrays.asList(operationsKey));
+    deptTableModel.setSelectedByPrimaryKeys(Collections.singletonList(operationsKey));
 
     deptEditModel.setValue(EmpDept.DEPARTMENT_ID, 80);
     deptEditModel.update();

@@ -41,7 +41,6 @@ import java.rmi.server.RMISocketFactory;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -644,7 +643,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
       }
       catch (final Exception e) {
         exception = Util.unwrapAndLog(e, InvocationTargetException.class, LOG,
-                Arrays.<Class<? extends Exception>>asList(ConnectionPoolException.NoConnectionAvailable.class));
+                Collections.<Class<? extends Exception>>singletonList(ConnectionPoolException.NoConnectionAvailable.class));
         throw exception;
       }
       finally {

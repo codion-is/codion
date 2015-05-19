@@ -40,7 +40,7 @@ public class EntityUtilTest {
     department.setValue(EmpDept.DEPARTMENT_NAME, deptName);
     department.setValue(EmpDept.DEPARTMENT_LOCATION, deptLocation);
 
-    final List<Object> deptBeans = beanMapper.toBeans(Arrays.asList(department));
+    final List<Object> deptBeans = beanMapper.toBeans(Collections.singletonList(department));
     final DepartmentBean departmentBean = (DepartmentBean) deptBeans.get(0);
     assertEquals(deptNo, departmentBean.getDeptNo());
     assertEquals(deptName, departmentBean.getName());
@@ -64,7 +64,7 @@ public class EntityUtilTest {
     employee.setValue(EmpDept.EMPLOYEE_NAME, name);
     employee.setValue(EmpDept.EMPLOYEE_SALARY, salary);
 
-    final List<Object> empBeans = beanMapper.toBeans(Arrays.asList(employee));
+    final List<Object> empBeans = beanMapper.toBeans(Collections.singletonList(employee));
     final EmployeeBean employeeBean = (EmployeeBean) empBeans.get(0);
     assertEquals(id, employeeBean.getId());
     assertEquals(commission, employeeBean.getCommission());
@@ -95,7 +95,7 @@ public class EntityUtilTest {
     departmentBean.setLocation(deptLocation);
     departmentBean.setName(deptName);
 
-    final List<Entity> departments = beanMapper.toEntities(Arrays.asList(departmentBean));
+    final List<Entity> departments = beanMapper.toEntities(Collections.singletonList(departmentBean));
     final Entity department = departments.get(0);
     assertEquals(deptNo, department.getValue(EmpDept.DEPARTMENT_ID));
     assertEquals(deptName, department.getValue(EmpDept.DEPARTMENT_NAME));
@@ -119,7 +119,7 @@ public class EntityUtilTest {
     employeeBean.setName(name);
     employeeBean.setSalary(salary);
 
-    final List<Entity> employees = beanMapper.toEntities(Arrays.asList(employeeBean));
+    final List<Entity> employees = beanMapper.toEntities(Collections.singletonList(employeeBean));
     final Entity employee = employees.get(0);
     assertEquals(id, employee.getValue(EmpDept.EMPLOYEE_ID));
     assertEquals(commission, employee.getValue(EmpDept.EMPLOYEE_COMMISSION));
@@ -219,16 +219,16 @@ public class EntityUtilTest {
     department.setValue(EmpDept.DEPARTMENT_ID, 1);
     department.setValue(EmpDept.DEPARTMENT_NAME, "name");
     department.setValue(EmpDept.DEPARTMENT_LOCATION, "loc");
-    assertFalse(EntityUtil.isPrimaryKeyModified(Arrays.asList(department)));
+    assertFalse(EntityUtil.isPrimaryKeyModified(Collections.singletonList(department)));
 
     department.setValue(EmpDept.DEPARTMENT_NAME, "new name");
-    assertFalse(EntityUtil.isPrimaryKeyModified(Arrays.asList(department)));
+    assertFalse(EntityUtil.isPrimaryKeyModified(Collections.singletonList(department)));
 
     department.setValue(EmpDept.DEPARTMENT_ID, 2);
-    assertTrue(EntityUtil.isPrimaryKeyModified(Arrays.asList(department)));
+    assertTrue(EntityUtil.isPrimaryKeyModified(Collections.singletonList(department)));
 
     department.revertValue(EmpDept.DEPARTMENT_ID);
-    assertFalse(EntityUtil.isPrimaryKeyModified(Arrays.asList(department)));
+    assertFalse(EntityUtil.isPrimaryKeyModified(Collections.singletonList(department)));
   }
 
   @Test

@@ -15,7 +15,7 @@ import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
-import java.util.Arrays;
+import java.util.Collections;
 import java.util.UUID;
 
 public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
@@ -32,7 +32,7 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
   };
 
   public SchemaBrowserLoadTest() {
-    super(User.UNIT_TEST_USER, Arrays.asList(SCENARIO));
+    super(User.UNIT_TEST_USER, Collections.singletonList(SCENARIO));
   }
 
   @Override

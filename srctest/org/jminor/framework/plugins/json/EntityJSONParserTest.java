@@ -29,7 +29,7 @@ public class EntityJSONParserTest {
     final Entity.Key key = Entities.key(EmpDept.T_DEPARTMENT);
     key.setValue(EmpDept.DEPARTMENT_ID, 42);
 
-    final String keyJSON = EntityJSONParser.serializeKeys(Arrays.asList(key));
+    final String keyJSON = EntityJSONParser.serializeKeys(Collections.singletonList(key));
     assertEquals("[{\"values\":{\"deptno\":42},\"entityID\":\"scott.dept\"}]", keyJSON);
     final Entity.Key keyParsed = EntityJSONParser.deserializeKeys(keyJSON).get(0);
     assertEquals(key.getEntityID(), keyParsed.getEntityID());
@@ -50,7 +50,7 @@ public class EntityJSONParserTest {
     dept10.setValue(EmpDept.DEPARTMENT_NAME, "DEPTNAME");
     dept10.setValue(EmpDept.DEPARTMENT_LOCATION, "LOCATION");
 
-    String jsonString = parser.serialize(Arrays.asList(dept10));
+    String jsonString = parser.serialize(Collections.singletonList(dept10));
     assertTrue(dept10.propertyValuesEqual(parser.deserialize(jsonString).get(0)));
 
     final Entity dept20 = Entities.entity(EmpDept.T_DEPARTMENT);
@@ -58,7 +58,7 @@ public class EntityJSONParserTest {
     dept20.setValue(EmpDept.DEPARTMENT_NAME, null);
     dept20.setValue(EmpDept.DEPARTMENT_LOCATION, "ALOC");
 
-    jsonString = parser.serialize(Arrays.asList(dept20));
+    jsonString = parser.serialize(Collections.singletonList(dept20));
     assertTrue(dept20.propertyValuesEqual(parser.deserialize(jsonString).get(0)));
 
     final String twoDepts = parser.serialize(Arrays.asList(dept10, dept20));
@@ -92,10 +92,10 @@ public class EntityJSONParserTest {
     emp1.setValue(EmpDept.EMPLOYEE_NAME, "A NAME");
     emp1.setValue(EmpDept.EMPLOYEE_SALARY, 2500.5);
 
-    jsonString = EntityJSONParser.serializeEntities(Arrays.asList(emp1), false);
+    jsonString = EntityJSONParser.serializeEntities(Collections.singletonList(emp1), false);
     assertTrue(emp1.propertyValuesEqual(parser.deserialize(jsonString).get(0)));
 
-    jsonString = EntityJSONParser.serializeEntities(Arrays.asList(emp1), true);
+    jsonString = EntityJSONParser.serializeEntities(Collections.singletonList(emp1), true);
     Entity emp1Deserialized = parser.deserialize(jsonString).get(0);
     assertTrue(emp1.propertyValuesEqual(emp1Deserialized));
     assertTrue(emp1.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK).propertyValuesEqual(emp1Deserialized.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK)));
@@ -110,7 +110,7 @@ public class EntityJSONParserTest {
     emp1.setValue(EmpDept.EMPLOYEE_SALARY, 3500.5);
     emp1.setValue(EmpDept.EMPLOYEE_HIREDATE, newHiredate);
 
-    jsonString = EntityJSONParser.serializeEntities(Arrays.asList(emp1), true);
+    jsonString = EntityJSONParser.serializeEntities(Collections.singletonList(emp1), true);
     emp1Deserialized = parser.deserialize(jsonString).get(0);
     assertTrue(emp1.propertyValuesEqual(emp1Deserialized));
 
@@ -145,7 +145,7 @@ public class EntityJSONParserTest {
       assertTrue(parsed.propertyValuesEqual(entity));
     }
 
-    final List<Entity> entities = parser.deserialize(parser.serialize(Arrays.asList(emp1)));
+    final List<Entity> entities = parser.deserialize(parser.serialize(Collections.singletonList(emp1)));
     assertEquals(1, entities.size());
     final Entity parsedEntity = entities.iterator().next();
     assertTrue(emp1.propertyValuesEqual(parsedEntity));

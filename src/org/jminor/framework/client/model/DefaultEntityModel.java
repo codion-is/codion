@@ -18,7 +18,6 @@ import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -554,7 +553,7 @@ public class DefaultEntityModel implements EntityModel {
         activeEntities = Collections.emptyList();
       }
       else {
-        activeEntities = Arrays.asList(editModel.getEntityCopy());
+        activeEntities = Collections.singletonList(editModel.getEntityCopy());
       }
     }
     return activeEntities;

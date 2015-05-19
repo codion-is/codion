@@ -25,6 +25,7 @@ import java.sql.Timestamp;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.Date;
 import java.util.HashMap;
@@ -64,12 +65,12 @@ public final class DefaultEntityTableModelTest {
     final Entity.Key pk2 = Entities.key(EmpDept.T_EMPLOYEE);
     pk2.setValue(EmpDept.EMPLOYEE_ID, 2);
 
-    tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk1));
+    tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk1));
     final Entity selectedPK1 = tableModel.getSelectionModel().getSelectedItem();
     assertEquals(pk1, selectedPK1.getPrimaryKey());
     assertEquals(1, tableModel.getSelectionModel().getSelectionCount());
 
-    tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk2));
+    tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk2));
     final Entity selectedPK2 = tableModel.getSelectionModel().getSelectedItem();
     assertEquals(pk2, selectedPK2.getPrimaryKey());
     assertEquals(1, tableModel.getSelectionModel().getSelectionCount());
@@ -121,7 +122,7 @@ public final class DefaultEntityTableModelTest {
     dept.setValue(EmpDept.DEPARTMENT_LOCATION, "Nowhere");
     dept.setValue(EmpDept.DEPARTMENT_NAME, "Noname");
     final int count = deptModel.getRowCount();
-    deptModel.getEditModel().insert(Arrays.asList(dept));
+    deptModel.getEditModel().insert(Collections.singletonList(dept));
     assertEquals(count + 1, deptModel.getRowCount());
 
     deptModel.setAddEntitiesOnInsert(false);
@@ -129,7 +130,7 @@ public final class DefaultEntityTableModelTest {
     dept2.setValue(EmpDept.DEPARTMENT_ID, -20);
     dept2.setValue(EmpDept.DEPARTMENT_LOCATION, "Nowhere2");
     dept2.setValue(EmpDept.DEPARTMENT_NAME, "Noname2");
-    deptModel.getEditModel().insert(Arrays.asList(dept2));
+    deptModel.getEditModel().insert(Collections.singletonList(dept2));
     assertEquals(count + 1, deptModel.getRowCount());
 
     deptModel.refresh();
@@ -150,7 +151,7 @@ public final class DefaultEntityTableModelTest {
     pk2.setValue(EmpDept.EMPLOYEE_ID, 2);
     try {
       tableModel.getConnectionProvider().getConnection().beginTransaction();
-      tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk1));
+      tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk1));
       tableModel.getSelectionModel().setSelectedIndex(0);
       Entity selected = tableModel.getSelectionModel().getSelectedItem();
       tableModel.setRemoveEntitiesOnDelete(true);
@@ -158,7 +159,7 @@ public final class DefaultEntityTableModelTest {
       tableModel.deleteSelected();
       assertFalse(tableModel.contains(selected, false));
 
-      tableModel.setSelectedByPrimaryKeys(Arrays.asList(pk2));
+      tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk2));
       selected = tableModel.getSelectionModel().getSelectedItem();
       tableModel.setRemoveEntitiesOnDelete(false);
       assertFalse(tableModel.isRemoveEntitiesOnDelete());
@@ -317,7 +318,7 @@ public final class DefaultEntityTableModelTest {
     testModel.getSelectionModel().setSelectedIndex(0);
     final Entity entity = testModel.getSelectionModel().getSelectedItem();
     entity.setValue(EntityTestDomain.DETAIL_STRING, "hello");
-    testModel.update(Arrays.asList(entity));
+    testModel.update(Collections.singletonList(entity));
   }
 
   @Test(expected = IllegalStateException.class)

@@ -27,7 +27,6 @@ import org.jminor.framework.domain.Property;
 
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -138,7 +137,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
   /** {@inheritDoc} */
   @Override
   public final void setSelectedEntity(final Entity entity) {
-    setSelectedEntities(entity != null ? Arrays.asList(entity) : null);
+    setSelectedEntities(entity != null ? Collections.singletonList(entity) : null);
   }
 
   /** {@inheritDoc} */

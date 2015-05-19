@@ -257,7 +257,7 @@ public final class ClientUserMonitor {
             }
           }
           else {
-            addItems(Arrays.asList(newUserInfo), true);
+            addItems(Collections.singletonList(newUserInfo), true);
           }
         }
         sortContents();

@@ -27,8 +27,8 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -140,7 +140,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.refreshEntity();
       employeeEditModel.setEntity(employee);
       employee.setValue(EmpDept.EMPLOYEE_NAME, "NOONE");
-      connection.update(Arrays.asList(employee));
+      connection.update(Collections.singletonList(employee));
       employeeEditModel.refreshEntity();
       assertEquals("NOONE", employeeEditModel.getValue(EmpDept.EMPLOYEE_NAME));
     }
@@ -321,7 +321,7 @@ public final class DefaultEntityEditModelTest {
       tmpDept.setValue(EmpDept.DEPARTMENT_LOCATION, "Limbo");
       tmpDept.setValue(EmpDept.DEPARTMENT_NAME, "Judgment");
 
-      final Entity department = employeeEditModel.getConnectionProvider().getConnection().selectSingle(employeeEditModel.getConnectionProvider().getConnection().insert(Arrays.asList(tmpDept)).get(0));
+      final Entity department = employeeEditModel.getConnectionProvider().getConnection().selectSingle(employeeEditModel.getConnectionProvider().getConnection().insert(Collections.singletonList(tmpDept)).get(0));
 
       employeeEditModel.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
 
@@ -368,7 +368,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
       employeeEditModel.setValue(EmpDept.EMPLOYEE_NAME, "BJORN");
-      final List<Entity> toUpdate = Arrays.asList(employeeEditModel.getEntityCopy());
+      final List<Entity> toUpdate = Collections.singletonList(employeeEditModel.getEntityCopy());
       final EventInfoListener<EntityEditModel.UpdateEvent> listener = new EventInfoListener<EntityEditModel.UpdateEvent>() {
         @Override
         public void eventOccurred(final EntityEditModel.UpdateEvent info) {
@@ -401,7 +401,7 @@ public final class DefaultEntityEditModelTest {
       assertTrue(employeeEditModel.delete(new ArrayList<Entity>()).isEmpty());
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setEntity(employeeEditModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "MILLER"));
-      final List<Entity> toDelete = Arrays.asList(employeeEditModel.getEntityCopy());
+      final List<Entity> toDelete = Collections.singletonList(employeeEditModel.getEntityCopy());
       employeeEditModel.addAfterDeleteListener(new EventInfoListener<EntityEditModel.DeleteEvent>() {
         @Override
         public void eventOccurred(final EntityEditModel.DeleteEvent info) {

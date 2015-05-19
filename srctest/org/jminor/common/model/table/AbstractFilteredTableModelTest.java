@@ -15,6 +15,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Comparator;
 import java.util.List;
 import java.util.concurrent.atomic.AtomicInteger;
@@ -63,7 +64,7 @@ public final class AbstractFilteredTableModelTest {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
     final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<>(0, Types.VARCHAR, "%");
-    return new TestAbstractFilteredTableModel(new AbstractTableSortModel<String, Integer>(Arrays.asList(column)) {
+    return new TestAbstractFilteredTableModel(new AbstractTableSortModel<String, Integer>(Collections.singletonList(column)) {
       @Override
       public Class getColumnClass(final Integer columnIdentifier) {
         return String.class;
@@ -82,7 +83,7 @@ public final class AbstractFilteredTableModelTest {
 
         return super.initializeColumnComparator(columnIdentifier);
       }
-    }, Arrays.asList(filterModel));
+    }, Collections.singletonList(filterModel));
   }
 
   @Before
@@ -106,7 +107,7 @@ public final class AbstractFilteredTableModelTest {
     });
     assertFalse(tableModel.contains("b", false));
     assertTrue(tableModel.contains("b", true));
-    tableModel.addItemsAt(Arrays.asList("f"), 0);
+    tableModel.addItemsAt(Collections.singletonList("f"), 0);
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertFalse(tableModel.contains("f", false));
     assertTrue(tableModel.contains("f", true));
@@ -563,7 +564,7 @@ public final class AbstractFilteredTableModelTest {
     assertTrue(selectionModel.getMultipleSelectionObserver().isActive());
     assertEquals("selected indexes should fit", Arrays.asList(0, 1, 4), selectionModel.getSelectedIndexes());
     selectionModel.removeIndexInterval(1, 4);
-    assertEquals("selected indexes should fit", Arrays.asList(0), selectionModel.getSelectedIndexes());
+    assertEquals("selected indexes should fit", Collections.singletonList(0), selectionModel.getSelectedIndexes());
     assertEquals("current index should fit", 0, selectionModel.getSelectedIndex());
     selectionModel.clearSelection();
     assertEquals("selected indexes should fit", new ArrayList<Integer>(), selectionModel.getSelectedIndexes());
@@ -625,13 +626,13 @@ public final class AbstractFilteredTableModelTest {
     assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));
 
     //test selection and filtering together
-    tableModel.getSelectionModel().addSelectedIndexes(Arrays.asList(3));
+    tableModel.getSelectionModel().addSelectedIndexes(Collections.singletonList(3));
     assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
 
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("d");
     tableModel.getColumnModel().getColumnFilterModel(0).setEnabled(false);
 
-    tableModel.getSelectionModel().setSelectedIndexes(Arrays.asList(3));
+    tableModel.getSelectionModel().setSelectedIndexes(Collections.singletonList(3));
     assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
     assertEquals("current selected item should fit", ITEMS[2], tableModel.getSelectionModel().getSelectedItem());
 
@@ -640,13 +641,13 @@ public final class AbstractFilteredTableModelTest {
     assertEquals("current index should fit", 2,
             tableModel.getSelectionModel().getMinSelectionIndex());
 
-    tableModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0));
+    tableModel.getSelectionModel().setSelectedIndexes(Collections.singletonList(0));
     assertEquals("current selected item should fit", ITEMS[0], tableModel.getSelectionModel().getSelectedItem());
     tableModel.getSortModel().setSortingDirective(0, SortingDirective.DESCENDING, false);
     assertEquals("current index should fit", 4,
             tableModel.getSelectionModel().getMinSelectionIndex());
 
-    assertEquals("selected indexes should fit", Arrays.asList(4), tableModel.getSelectionModel().getSelectedIndexes());
+    assertEquals("selected indexes should fit", Collections.singletonList(4), tableModel.getSelectionModel().getSelectedIndexes());
     assertEquals("current selected item should fit", ITEMS[0], tableModel.getSelectionModel().getSelectedItem());
     assertEquals("current index should fit", 4,
             tableModel.getSelectionModel().getMinSelectionIndex());
@@ -656,13 +657,13 @@ public final class AbstractFilteredTableModelTest {
   @Test
   public void testSelectionAndFiltering() {
     tableModel.refresh();
-    tableModel.getSelectionModel().addSelectedIndexes(Arrays.asList(3));
+    tableModel.getSelectionModel().addSelectedIndexes(Collections.singletonList(3));
     assertEquals("current index should fit", 3, tableModel.getSelectionModel().getMinSelectionIndex());
 
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("d");
     assertEquals("current index should fit", 0,
             tableModel.getSelectionModel().getMinSelectionIndex());
-    assertEquals("selected indexes should fit", Arrays.asList(0), tableModel.getSelectionModel().getSelectedIndexes());
+    assertEquals("selected indexes should fit", Collections.singletonList(0), tableModel.getSelectionModel().getSelectedIndexes());
     tableModel.getColumnModel().getColumnFilterModel(0).setEnabled(false);
     assertEquals("current index should fit", 0,
             tableModel.getSelectionModel().getMinSelectionIndex());
@@ -732,7 +733,7 @@ public final class AbstractFilteredTableModelTest {
 
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("b");
     final int rowCount = tableModel.getRowCount();
-    tableModel.addItems(Arrays.asList("x"), true);
+    tableModel.addItems(Collections.singletonList("x"), true);
     assertEquals(rowCount, tableModel.getRowCount());
 
     tableModel.removeFilteringListener(listener);

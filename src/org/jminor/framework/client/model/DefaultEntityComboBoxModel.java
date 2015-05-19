@@ -19,8 +19,8 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -239,7 +239,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       public void eventOccurred() {
         final Entity selectedEntity = foreignKeyModel.getSelectedValue();
         setForeignKeyFilterEntities(foreignKeyPropertyID,
-                selectedEntity == null ? new ArrayList<Entity>(0) : Arrays.asList(selectedEntity));
+                selectedEntity == null ? new ArrayList<Entity>(0) : Collections.singletonList(selectedEntity));
       }
     });
     addSelectionListener(new EventListener() {
