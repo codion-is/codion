@@ -450,7 +450,7 @@ public final class EntityUtil {
     }
     final Property modifiedProperty = EntityUtil.getModifiedProperty(entity, modified);
 
-    return modifiedProperty + ": " + entity.getValueAsString(modifiedProperty) + " -> " + modified.getValueAsString(modifiedProperty);
+    return modifiedProperty + ": " + entity.getOriginalValue(modifiedProperty.getPropertyID()) + " -> " + modified.getValue(modifiedProperty);
   }
 
   /**
