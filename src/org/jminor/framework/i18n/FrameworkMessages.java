@@ -145,6 +145,8 @@ public final class FrameworkMessages {
   public static final String PROPERTY_VALUE_TOO_LARGE = "property_value_too_large";
   public static final String PROPERTY_VALUE_TOO_SMALL = "property_value_too_small";
 
+  public static final String HAS_BEEN_DELETED = "has_been_deleted";
+
   static {
     UIManager.put("OptionPane.yesButtonText", Messages.get(Messages.YES));
     UIManager.put("OptionPane.noButtonText", Messages.get(Messages.NO));

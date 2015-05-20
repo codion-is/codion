@@ -7,6 +7,7 @@ import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.model.Serializer;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.i18n.FrameworkMessages;
 
 import java.lang.reflect.InvocationHandler;
 import java.lang.reflect.InvocationTargetException;
@@ -444,6 +445,9 @@ public final class EntityUtil {
   public static String getModifiedExceptionMessage(final RecordModifiedException exception) {
     final Entity entity = (Entity) exception.getRow();
     final Entity modified = (Entity) exception.getModifiedRow();
+    if (modified == null) {//record has been deleted
+      return entity + " " + FrameworkMessages.get(FrameworkMessages.HAS_BEEN_DELETED);
+    }
     final Property modifiedProperty = EntityUtil.getModifiedProperty(entity, modified);
 
     return modifiedProperty + ": " + entity.getValueAsString(modifiedProperty) + " -> " + modified.getValueAsString(modifiedProperty);
