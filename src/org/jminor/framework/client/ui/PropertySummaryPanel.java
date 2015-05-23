@@ -79,7 +79,7 @@ public final class PropertySummaryPanel extends JPanel {
       model.addSummaryListener(new EventInfoListener<PropertySummaryModel.Summary>() {
         @Override
         public void eventOccurred(final PropertySummaryModel.Summary newSummary) {
-          item.setSelected(newSummary == summary);
+          item.setSelected(newSummary.equals(summary));
         }
       });
       item.setSelected(model.getCurrentSummary() == summary);

@@ -844,7 +844,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
                             final DatabaseConnection connection) throws SQLException {}
   }
 
-  static abstract class QueriedKeyGenerator extends DefaultKeyGenerator {
+  abstract static class QueriedKeyGenerator extends DefaultKeyGenerator {
 
     /**
      * @return false, since generating the primary key value is handled by the framework
