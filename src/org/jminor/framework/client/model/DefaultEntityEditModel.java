@@ -474,11 +474,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     if (insertedEntities.isEmpty()) {
       throw new RuntimeException("Insert did not return an entity, usually caused by a misconfigured key generator");
     }
-    final Entity.Key primaryKey = insertedEntities.get(0).getPrimaryKey();
-    for (final Property.ColumnProperty primaryKeyProperty : primaryKey.getProperties()) {
-      entity.setValue(primaryKeyProperty, primaryKey.getValue(primaryKeyProperty.getPropertyID()));
-      entity.saveValue(primaryKeyProperty.getPropertyID());
-    }
+    doSetEntity(insertedEntities.get(0));
 
     afterInsertEvent.fire(new DefaultInsertEvent(insertedEntities));
 
@@ -488,6 +484,10 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException {
+    Util.rejectNullValue(entities, "entities");
+    if (entities.isEmpty()) {
+      return Collections.emptyList();
+    }
     final List<Entity> insertedEntities = insertEntities(entities);
 
     afterInsertEvent.fire(new DefaultInsertEvent(insertedEntities));
@@ -1003,10 +1003,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
   }
 
   private List<Entity> insertEntities(final List<Entity> entities) throws DatabaseException, ValidationException {
-    Util.rejectNullValue(entities, "entities");
-    if (entities.isEmpty()) {
-      return Collections.emptyList();
-    }
     if (readOnly) {
       throw new UnsupportedOperationException("This is a read-only model, inserting is not allowed!");
     }

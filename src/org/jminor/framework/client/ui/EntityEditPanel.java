@@ -79,7 +79,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   public static final String REFRESH = "EntityEditPanel.refresh";
   public static final String CLEAR = "EntityEditPanel.clear";
 
-  protected static enum ConfirmType {
+  protected enum ConfirmType {
     INSERT, UPDATE, DELETE
   }
 
@@ -681,7 +681,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
         return true;
       }
     }
-    catch (ValidationException | DatabaseException v) {
+    catch (final ValidationException | DatabaseException v) {
       handleException(v);
     }
 

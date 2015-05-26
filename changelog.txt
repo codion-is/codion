@@ -3960,3 +3960,5 @@
   IntelliJ analyzis run, Arrays.asList() with single items replaced with Collections.singletonList()
   EntityUtil.getModifiedExceptionMessage() bug fixed, did not handle deleted entities
   EntityUtil.getModifiedExceptionMessage() bug fixed, did not show the original value
+  DefaultEntityEditModel.insert() nows sets the inserted entity instead of just the primary key values
+  DefaultEntityEditModel.insert(List<Entities>) bug fixed, did not return silently on receiving an empty list, fired afterInsertEvent
