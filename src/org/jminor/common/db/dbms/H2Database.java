@@ -4,6 +4,7 @@
 package org.jminor.common.db.dbms;
 
 import org.jminor.common.db.AbstractDatabase;
+import org.jminor.common.db.Database;
 import org.jminor.common.model.Util;
 
 import java.lang.reflect.InvocationTargetException;
@@ -41,7 +42,8 @@ public final class H2Database extends AbstractDatabase {
   private String urlAppend = "";
 
   static {
-    if (EMBEDDED_IN_MEMORY) {
+    //todo is this the right thing to do?
+    if (System.getProperty(Database.DATABASE_TYPE, "").equals(Database.H2) && EMBEDDED_IN_MEMORY) {
       try {
         initializeMemoryDatabase(URL_PREFIX_MEM + System.getProperty(DATABASE_HOST) + ";user=" + SYSADMIN_USERNAME,
                 System.getProperty(DATABASE_INIT_SCRIPT));
