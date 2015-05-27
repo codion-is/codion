@@ -476,7 +476,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     }
     doSetEntity(insertedEntities.get(0));
 
-    afterInsertEvent.fire(new DefaultInsertEvent(insertedEntities));
+    fireAfterInsertEvent(new DefaultInsertEvent(insertedEntities));
 
     return insertedEntities;
   }
@@ -490,7 +490,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     }
     final List<Entity> insertedEntities = insertEntities(entities);
 
-    afterInsertEvent.fire(new DefaultInsertEvent(insertedEntities));
+    fireAfterInsertEvent(new DefaultInsertEvent(insertedEntities));
 
     return insertedEntities;
   }
@@ -522,7 +522,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       return Collections.emptyList();
     }
 
-    beforeUpdateEvent.fire();
+    fireBeforeUpdateEvent();
     validate(modifiedEntities);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
@@ -531,7 +531,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       doSetEntity(updatedEntities.get(index));
     }
 
-    afterUpdateEvent.fire(new DefaultUpdateEvent(getOriginalKeyMap(modifiedEntities, new ArrayList<>(updatedEntities))));
+    fireAfterUpdateEvent(new DefaultUpdateEvent(getOriginalKeyMap(modifiedEntities, new ArrayList<>(updatedEntities))));
 
     return updatedEntities;
   }
@@ -558,14 +558,14 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
     LOG.debug("{} - delete {}", this, Util.getCollectionContentsAsString(entities, false));
 
-    beforeDeleteEvent.fire();
+    fireBeforeDeleteEvent();
 
     doDelete(entities);
     if (entities.contains(getEntity())) {
       doSetEntity(null);
     }
 
-    afterDeleteEvent.fire(new DefaultDeleteEvent(entities));
+    fireAfterDeleteEvent(new DefaultDeleteEvent(entities));
 
     return entities;
   }
@@ -1002,6 +1002,57 @@ public class DefaultEntityEditModel implements EntityEditModel {
     validator.validate(entity);
   }
 
+  /**
+   * Notifies that a insert is about to be performed
+   * @see #addBeforeInsertListener(EventListener)
+   */
+  protected final void fireBeforeInsertEvent() {
+    beforeInsertEvent.fire();
+  }
+
+  /**
+   * Notifies that a insert has been performed
+   * @param insertEvent the event describing the insert
+   * @see #addAfterInsertListener(EventInfoListener)
+   */
+  protected final void fireAfterInsertEvent(final InsertEvent insertEvent) {
+    afterInsertEvent.fire(insertEvent);
+  }
+
+  /**
+   * Notifies that an update is about to be performed
+   * @see #addBeforeUpdateListener(EventListener)
+   */
+  protected final void fireBeforeUpdateEvent() {
+    beforeUpdateEvent.fire();
+  }
+
+  /**
+   * Notifies that an update has been performed
+   * @param updateEvent the event describing the update
+   * @see #addAfterUpdateListener(EventInfoListener)
+   */
+  protected final void fireAfterUpdateEvent(final UpdateEvent updateEvent) {
+    afterUpdateEvent.fire(updateEvent);
+  }
+
+  /**
+   * Notifies that a delete is about to be performed
+   * @see #addBeforeDeleteListener(EventListener)
+   */
+  protected final void fireBeforeDeleteEvent() {
+    beforeDeleteEvent.fire();
+  }
+
+  /**
+   * Notifies that a delete has been performed
+   * @param deleteEvent the event describing the delete
+   * @see #addAfterDeleteListener(EventInfoListener)
+   */
+  protected final void fireAfterDeleteEvent(final DeleteEvent deleteEvent) {
+    afterDeleteEvent.fire(deleteEvent);
+  }
+
   private List<Entity> insertEntities(final List<Entity> entities) throws DatabaseException, ValidationException {
     if (readOnly) {
       throw new UnsupportedOperationException("This is a read-only model, inserting is not allowed!");
@@ -1012,7 +1063,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
     LOG.debug("{} - insert {}", this, Util.getCollectionContentsAsString(entities, false));
 
-    beforeInsertEvent.fire();
+    fireBeforeInsertEvent();
     validate(entities);
 
     return connectionProvider.getConnection().selectMany(doInsert(entities));

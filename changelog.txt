@@ -3962,3 +3962,4 @@
   EntityUtil.getModifiedExceptionMessage() bug fixed, did not show the original value
   DefaultEntityEditModel.insert() nows sets the inserted entity instead of just the primary key values
   DefaultEntityEditModel.insert(List<Entities>) bug fixed, did not return silently on receiving an empty list, fired afterInsertEvent
+  DefaultEntityEditModel, protected methods for firing before and after insert/update/delete events added
