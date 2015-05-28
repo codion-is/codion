@@ -77,11 +77,11 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityPanel.class);
 
-  public static enum PanelState {
+  public enum PanelState {
     DIALOG, EMBEDDED, HIDDEN
   }
 
-  public static enum Direction {
+  public enum Direction {
     UP, DOWN, RIGHT, LEFT
   }
 

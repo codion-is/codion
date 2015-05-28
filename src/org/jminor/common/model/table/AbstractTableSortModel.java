@@ -202,7 +202,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   }
 
   private List<Map.Entry<C, SortingState>> getSortingStatesOrderedByPriority() {
-    final ArrayList<Map.Entry<C, SortingState>> entries = new ArrayList<>();
+    final List<Map.Entry<C, SortingState>> entries = new ArrayList<>();
     for (final Map.Entry<C, SortingState> entry : sortingStates.entrySet()) {
       if (!EMPTY_SORTING_STATE.equals(entry.getValue())) {
         entries.add(entry);

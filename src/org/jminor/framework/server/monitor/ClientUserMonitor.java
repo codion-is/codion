@@ -276,8 +276,8 @@ public final class ClientUserMonitor {
         case CLIENT_HOST_COLUMN: return rowObject.getClientHost();
         case LAST_SEEN_COLUMN: return rowObject.getLastSeen();
         case CONNECTION_COUNT_COLUMN: return rowObject.getConnectionCount();
+        default: throw new IllegalArgumentException(Integer.toString(column));
       }
-      throw new IllegalArgumentException(Integer.toString(column));
     }
   }
 
@@ -290,13 +290,13 @@ public final class ClientUserMonitor {
     @Override
     public Class getColumnClass(final Integer columnIdentifier) {
       switch (columnIdentifier) {
-        case USERNAME_COLUMN: return String.class;
-        case CLIENT_TYPE_COLUMN: return String.class;
+        case USERNAME_COLUMN:
+        case CLIENT_TYPE_COLUMN:
         case CLIENT_HOST_COLUMN: return String.class;
         case LAST_SEEN_COLUMN: return Date.class;
         case CONNECTION_COUNT_COLUMN: return Integer.class;
+        default: throw new IllegalArgumentException(columnIdentifier.toString());
       }
-      throw new IllegalArgumentException(columnIdentifier.toString());
     }
 
     @Override
@@ -307,8 +307,8 @@ public final class ClientUserMonitor {
         case CLIENT_HOST_COLUMN: return rowObject.getClientHost();
         case LAST_SEEN_COLUMN: return rowObject.getLastSeen();
         case CONNECTION_COUNT_COLUMN: return rowObject.getConnectionCount();
+        default: throw new IllegalArgumentException(columnIdentifier.toString());
       }
-      throw new IllegalArgumentException(columnIdentifier.toString());
     }
   }
 

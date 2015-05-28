@@ -12,6 +12,7 @@ import javax.swing.Icon;
 import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JCheckBoxMenuItem;
+import javax.swing.JLabel;
 import javax.swing.JMenu;
 import javax.swing.JMenuBar;
 import javax.swing.JPanel;
@@ -189,7 +190,9 @@ public final class ControlProvider {
     }
 
     @Override
-    public void handleSeparator() {}
+    public void handleSeparator() {
+      btnPanel.add(new JLabel());
+    }
 
     @Override
     public void handleControl(final Control control) {
