@@ -26,6 +26,7 @@ import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.checkbox.TristateCheckBox;
+import org.jminor.common.ui.combobox.AutoCompletion;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
 import org.jminor.common.ui.images.Images;
@@ -88,7 +89,6 @@ import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
@@ -272,7 +272,7 @@ public final class EntityUiUtil {
       public void actionPerformed(final ActionEvent e) {
         lookupModel.refresh();
         if (lookupModel.getRowCount() > 0) {
-          lookupModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0));
+          lookupModel.getSelectionModel().setSelectedIndexes(Collections.singletonList(0));
           entityTablePanel.getJTable().requestFocusInWindow();
         }
         else {
@@ -491,10 +491,10 @@ public final class EntityUiUtil {
     final EntityComboBox comboBox = new EntityComboBox(boxModel);
     ValueLinks.selectedItemValueLink(comboBox, EditModelValues.<Entity>value(editModel, foreignKeyProperty.getPropertyID()));
     UiUtil.linkToEnabledState(enabledState, comboBox);
-    MaximumMatch.enable(comboBox);
+    addComboBoxCompletion(comboBox);
     comboBox.setToolTipText(foreignKeyProperty.getDescription());
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {
-      //getEditor().getEditorComponent() only required because the combo box is editable, due to MaximumMatch.enable() above
+      //getEditor().getEditorComponent() only required because the combo box is editable, due to addComboBoxCompletion() above
       UiUtil.transferFocusOnEnter((JComponent) comboBox.getEditor().getEditorComponent());
     }
 
@@ -668,7 +668,7 @@ public final class EntityUiUtil {
       model = new ItemComboBoxModel(null, property.getValues());
     }
     final SteppedComboBox comboBox = createComboBox(property, editModel, model, enabledState);
-    MaximumMatch.enable(comboBox);
+    addComboBoxCompletion(comboBox);
 
     return comboBox;
   }
@@ -973,7 +973,7 @@ public final class EntityUiUtil {
                                                        final StateObserver enabledState, final boolean editable) {
     final SteppedComboBox comboBox = createComboBox(property, editModel, editModel.getPropertyComboBoxModel(property), enabledState, editable);
     if (!editable) {
-      MaximumMatch.enable(comboBox);
+      addComboBoxCompletion(comboBox);
     }
 
     return comboBox;
@@ -1331,7 +1331,21 @@ public final class EntityUiUtil {
     }
   }
 
-  private  static final class LookupUIValue implements Value<Entity> {
+  private static void addComboBoxCompletion(final JComboBox comboBox) {
+    final String completionMode = Configuration.getStringValue(Configuration.COMBO_BOX_COMPLETION_MODE);
+    switch (completionMode) {
+      case Configuration.COMPLETION_MODE_AUTOCOMPLETE:
+        AutoCompletion.enable(comboBox);
+        break;
+      case Configuration.COMPLETION_MODE_MAXIMUM_MATCH:
+        MaximumMatch.enable(comboBox);
+        break;
+      default:
+        throw new IllegalArgumentException("Unknown completion mode: " + completionMode);
+    }
+  }
+
+  private static final class LookupUIValue implements Value<Entity> {
     private final Event<Entity> changeEvent = Events.event();
     private final EntityLookupModel lookupModel;
 

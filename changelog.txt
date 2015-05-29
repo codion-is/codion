@@ -3964,3 +3964,4 @@
   DefaultEntityEditModel.insert(List<Entities>) bug fixed, did not return silently on receiving an empty list, fired afterInsertEvent
   DefaultEntityEditModel, protected methods for firing before and after insert/update/delete events added
   ControlProvider.ButtonControlIterator now uses JLabel for separator
+  AutoCompletion added, MaximumMatch now extends CompletionDocument

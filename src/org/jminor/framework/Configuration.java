@@ -27,6 +27,18 @@ public final class Configuration {
   private Configuration() {}
 
   /**
+   * Identifies the completion mode MaximumMatch
+   * @see #COMBO_BOX_COMPLETION_MODE
+   */
+  public static final String COMPLETION_MODE_MAXIMUM_MATCH = "max";
+
+  /**
+   * Identifies the completion mode AutoCompletion
+   * @see #COMBO_BOX_COMPLETION_MODE
+   */
+  public static final String COMPLETION_MODE_AUTOCOMPLETE = "auto";
+
+  /**
    * A prefix used to name server admin instances
    */
   public static final String SERVER_ADMIN_PREFIX = "Admin - ";
@@ -507,6 +519,15 @@ public final class Configuration {
   public static final String COMBO_BOX_NULL_VALUE_ITEM = "jminor.client.comboBoxNullValueItem";
 
   /**
+   * Specifies whether maximum match or autocomplete is used for comboboxes,
+   * {@link #COMPLETION_MODE_MAXIMUM_MATCH} for {@link org.jminor.common.ui.combobox.MaximumMatch}
+   * and {@link #COMPLETION_MODE_AUTOCOMPLETE} for {@link org.jminor.common.ui.combobox.AutoCompletion}.<br>
+   * Value type:String<br>
+   * Default value: {@link #COMPLETION_MODE_MAXIMUM_MATCH}
+   */
+  public static final String COMBO_BOX_COMPLETION_MODE = "jminor.client.comboBoxCompletionMode";
+
+  /**
    * Specifies whether the client layer should perform null validation on entities
    * before update/insert actions are performed<br>
    * Value type: Boolean<br>
@@ -792,6 +813,7 @@ public final class Configuration {
     PROPERTIES.put(ALLOW_REDEFINE_ENTITY, false);
     PROPERTIES.put(SERVER_MONITOR_UPDATE_RATE, DEFAULT_SERVER_MONITOR_UPDATE_RATE);
     PROPERTIES.put(FILTER_ON_MASTER_INSERT, false);
+    PROPERTIES.put(COMBO_BOX_COMPLETION_MODE, COMPLETION_MODE_MAXIMUM_MATCH);
     parseSystemSettings();
   }
 
@@ -867,6 +889,7 @@ public final class Configuration {
     parseBooleanSetting(ALLOW_REDEFINE_ENTITY);
     parseIntegerSetting(SERVER_MONITOR_UPDATE_RATE);
     parseBooleanSetting(FILTER_ON_MASTER_INSERT);
+    parseStringSetting(COMBO_BOX_COMPLETION_MODE);
   }
 
   private static void parseIntegerSetting(final String setting) {
