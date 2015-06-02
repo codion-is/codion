@@ -69,7 +69,7 @@ public class AbstractServerTest {
       server.connect(null);
       fail("Should not be able to connect with null parameters");
     }
-    catch (final IllegalArgumentException ignored) {}
+    catch (final IllegalArgumentException ignored) {/*ignored*/}
   }
 
   @Test

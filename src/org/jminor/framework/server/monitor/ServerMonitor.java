@@ -3,9 +3,6 @@
  */
 package org.jminor.framework.server.monitor;
 
-import ch.qos.logback.classic.Level;
-import org.jfree.data.xy.XYSeries;
-import org.jfree.data.xy.XYSeriesCollection;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
@@ -14,6 +11,10 @@ import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.server.Server;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
+
+import ch.qos.logback.classic.Level;
+import org.jfree.data.xy.XYSeries;
+import org.jfree.data.xy.XYSeriesCollection;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -53,7 +54,7 @@ public final class ServerMonitor {
           updateStatistics();
         }
       }
-      catch (final RemoteException ignored) {}
+      catch (final RemoteException ignored) {/*ignored*/}
     }
   }, Configuration.getIntValue(Configuration.SERVER_MONITOR_UPDATE_RATE), 2, TimeUnit.SECONDS).start();
 
@@ -214,7 +215,7 @@ public final class ServerMonitor {
     try {
       server.shutdown();
     }
-    catch (final RemoteException ignored) {}
+    catch (final RemoteException ignored) {/*ignored*/}
     serverShutDownEvent.fire();
   }
 

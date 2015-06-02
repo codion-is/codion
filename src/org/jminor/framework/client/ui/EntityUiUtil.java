@@ -1000,7 +1000,7 @@ public final class EntityUiUtil {
           lookupField.getModel().setSelectedEntities(selectEntities(tableModel, lookupField,
                   true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null));
         }
-        catch (final CancelException ignored) {}
+        catch (final CancelException ignored) {/*ignored*/}
       }
     });
     btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);

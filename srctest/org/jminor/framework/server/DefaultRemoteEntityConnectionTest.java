@@ -69,7 +69,7 @@ public class DefaultRemoteEntityConnectionTest {
           connection.disconnect();
         }
       }
-      catch (final Exception ignored) {}
+      catch (final Exception ignored) {/*ignored*/}
     }
   }
 
@@ -87,7 +87,7 @@ public class DefaultRemoteEntityConnectionTest {
           connection.disconnect();
         }
       }
-      catch (final Exception ignored) {}
+      catch (final Exception ignored) {/*ignored*/}
     }
   }
 
@@ -128,14 +128,14 @@ public class DefaultRemoteEntityConnectionTest {
       if (registry != null) {
         try {
           registry.unbind(serviceName);
-        } catch (final Exception ignored) {}
+        } catch (final Exception ignored) {/*ignored*/}
       }
       try {
         if (adapter != null) {
           adapter.disconnect();
         }
       }
-      catch (final Exception ignored) {}
+      catch (final Exception ignored) {/*ignored*/}
     }
   }
 }

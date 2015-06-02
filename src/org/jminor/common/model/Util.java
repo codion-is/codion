@@ -34,7 +34,6 @@ import java.text.Format;
 import java.text.NumberFormat;
 import java.text.ParsePosition;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Comparator;
@@ -554,7 +553,7 @@ public final class Util {
         objects.add(inputStream.readObject());
       }
     }
-    catch (final EOFException ignored) {}
+    catch (final EOFException ignored) {/*ignored*/}
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
@@ -728,7 +727,7 @@ public final class Util {
    * @throws URISyntaxException in case of an exception
    */
   public static URI getURI(final String urlOrPath) throws URISyntaxException {
-    return getURIs(Arrays.asList(urlOrPath)).iterator().next();
+    return getURIs(Collections.singletonList(urlOrPath)).iterator().next();
   }
 
   /**
@@ -835,7 +834,7 @@ public final class Util {
           closeable.close();
         }
       }
-      catch (final Exception ignored) {}
+      catch (final Exception ignored) {/*ignored*/}
     }
   }
 
@@ -1117,12 +1116,12 @@ public final class Util {
       try {
         return ownerClass.getMethod("is" + propertyName);
       }
-      catch (final NoSuchMethodException ignored) {}
+      catch (final NoSuchMethodException ignored) {/*ignored*/}
       try {
         return ownerClass.getMethod(propertyName.substring(0, 1).toLowerCase()
                 + propertyName.substring(1, propertyName.length()));
       }
-      catch (final NoSuchMethodException ignored) {}
+      catch (final NoSuchMethodException ignored) {/*ignored*/}
     }
 
     return ownerClass.getMethod("get" + propertyName);

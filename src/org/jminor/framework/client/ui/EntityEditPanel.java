@@ -754,9 +754,9 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
       case UPDATE:
         return new String[]{FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE),
                 FrameworkMessages.get(FrameworkMessages.UPDATE)};
+      default:
+        throw new IllegalArgumentException("Unknown confirmation type constant: " + type);
     }
-
-    throw new IllegalArgumentException("Unknown confirmation type constant: " + type);
   }
 
   /**

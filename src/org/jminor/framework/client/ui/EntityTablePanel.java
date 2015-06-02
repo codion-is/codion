@@ -1178,9 +1178,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       case Types.VARCHAR:
         return new TextInputProvider(property.getCaption(), getEntityTableModel().getEditModel().getValueProvider(property),
                 (String) currentValue, property.getMaxLength());
+      default:
+        throw new IllegalArgumentException("Unsupported property type: " + property.getType());
     }
-
-    throw new IllegalArgumentException("Unsupported property type: " + property.getType());
   }
 
   /**

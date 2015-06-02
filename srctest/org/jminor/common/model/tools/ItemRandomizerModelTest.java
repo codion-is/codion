@@ -96,6 +96,6 @@ public class ItemRandomizerModelTest {
       model.decrementWeight(one);
       fail();
     }
-    catch (final IllegalStateException ignored) {}
+    catch (final IllegalStateException ignored) {/*ignored*/}
   }
 }

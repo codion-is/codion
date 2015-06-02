@@ -18,7 +18,6 @@ import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.io.Serializable;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
@@ -40,7 +39,7 @@ public final class EntityCriteriaUtil {
    * @return a select criteria based on the given key
    */
   public static EntitySelectCriteria selectCriteria(final Entity.Key key) {
-    return selectCriteria(Arrays.asList(key));
+    return selectCriteria(Collections.singletonList(key));
   }
 
   /**
@@ -169,7 +168,7 @@ public final class EntityCriteriaUtil {
    * @return a criteria specifying the entity having the given primary key
    */
   public static EntityCriteria criteria(final Entity.Key key) {
-    return criteria(Arrays.asList(key));
+    return criteria(Collections.singletonList(key));
   }
 
   /**
@@ -266,7 +265,7 @@ public final class EntityCriteriaUtil {
    */
   public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final String entityID, final String fkPropertyID,
                                                                      final SearchType searchType, final Entity value) {
-    return foreignKeyCriteria(entityID, fkPropertyID, searchType, Arrays.asList(value));
+    return foreignKeyCriteria(entityID, fkPropertyID, searchType, Collections.singletonList(value));
   }
 
   /**
@@ -278,7 +277,7 @@ public final class EntityCriteriaUtil {
    */
   public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final String entityID, final String fkPropertyID,
                                                                      final SearchType searchType, final Entity.Key value) {
-    return foreignKeyCriteria(entityID, fkPropertyID, searchType, Arrays.asList(value));
+    return foreignKeyCriteria(entityID, fkPropertyID, searchType, Collections.singletonList(value));
   }
 
   /**
@@ -301,7 +300,7 @@ public final class EntityCriteriaUtil {
    */
   public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                      final SearchType searchType, final Entity value) {
-    return foreignKeyCriteria(foreignKeyProperty, searchType, Arrays.asList(value));
+    return foreignKeyCriteria(foreignKeyProperty, searchType, Collections.singletonList(value));
   }
 
   /**
@@ -312,7 +311,7 @@ public final class EntityCriteriaUtil {
    */
   public static Criteria<Property.ColumnProperty> foreignKeyCriteria(final Property.ForeignKeyProperty foreignKeyProperty,
                                                                      final SearchType searchType, final Entity.Key value) {
-    return foreignKeyCriteria(foreignKeyProperty, searchType, Arrays.asList(value));
+    return foreignKeyCriteria(foreignKeyProperty, searchType, Collections.singletonList(value));
   }
 
   /**
@@ -775,7 +774,7 @@ public final class EntityCriteriaUtil {
         this.values = (Collection) value;
       }
       else {
-        this.values = Arrays.asList(value);
+        this.values = Collections.singletonList(value);
       }
       if (values.size() == 0) {
         throw new IllegalArgumentException("No values specified for PropertyCriteria: " + property);
@@ -848,9 +847,9 @@ public final class EntityCriteriaUtil {
           return "(" + columnIdentifier + " >= " + sqlValue + " and " + columnIdentifier +  " <= " + sqlValue2 + ")";
         case OUTSIDE_RANGE:
           return "(" + columnIdentifier + " <= " + sqlValue + " or " + columnIdentifier + " >= " + sqlValue2 + ")";
+        default:
+          throw new IllegalArgumentException("Unknown search type" + searchType);
       }
-
-      throw new IllegalArgumentException("Unknown search type" + searchType);
     }
 
     private String getSqlValue(final String sqlStringValue) {

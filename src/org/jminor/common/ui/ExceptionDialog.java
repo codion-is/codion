@@ -203,7 +203,7 @@ public final class ExceptionDialog extends JDialog {
     try {
       Util.writeFile(detailsArea.getText(), UiUtil.chooseFileToSave(detailsArea, null, null));
     }
-    catch (final CancelException ignored) {}
+    catch (final CancelException ignored) {/*ignored*/}
   }
 
   /**

@@ -518,9 +518,9 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
         return includeWithinRange(toCompare);
       case OUTSIDE_RANGE:
         return includeOutsideRange(toCompare);
+      default:
+        throw new IllegalArgumentException("Undefined search type: " + searchType);
     }
-
-    throw new IllegalArgumentException("Undefined search type: " + searchType);
   }
 
   /**
@@ -537,9 +537,9 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
       case WITHIN_RANGE:
       case OUTSIDE_RANGE:
         return 2;
+      default:
+        throw new IllegalArgumentException("Undefined search type " + searchType);
     }
-
-    throw new IllegalArgumentException("Undefined search type " + searchType);
   }
 
   /**

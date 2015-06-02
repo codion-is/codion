@@ -78,7 +78,7 @@ public final class DatabaseUtil {
           resultSet.close();
         }
       }
-      catch (final SQLException ignored) {}
+      catch (final SQLException ignored) {/*ignored*/}
     }
   }
 
@@ -96,7 +96,7 @@ public final class DatabaseUtil {
           statement.close();
         }
       }
-      catch (final SQLException ignored) {}
+      catch (final SQLException ignored) {/*ignored*/}
     }
   }
 
@@ -114,7 +114,7 @@ public final class DatabaseUtil {
           connection.close();
         }
       }
-      catch (final SQLException ignored) {}
+      catch (final SQLException ignored) {/*ignored*/}
     }
   }
 

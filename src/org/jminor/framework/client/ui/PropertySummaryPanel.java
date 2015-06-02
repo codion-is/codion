@@ -82,7 +82,7 @@ public final class PropertySummaryPanel extends JPanel {
           item.setSelected(newSummary.equals(summary));
         }
       });
-      item.setSelected(model.getCurrentSummary() == summary);
+      item.setSelected(model.getCurrentSummary().equals(summary));
       group.add(item);
       popupMenu.add(item);
     }

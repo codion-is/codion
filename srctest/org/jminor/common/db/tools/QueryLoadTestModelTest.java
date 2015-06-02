@@ -38,12 +38,12 @@ public final class QueryLoadTestModelTest {
     try {
       Thread.sleep(1500);
     }
-    catch (final InterruptedException ignored) {}
+    catch (final InterruptedException ignored) {/*ignored*/}
     loadTest.removeApplicationBatch();
     try {
       Thread.sleep(500);
     }
-    catch (final InterruptedException ignored) {}
+    catch (final InterruptedException ignored) {/*ignored*/}
     assertTrue(SELECT_ALBUMS.getSuccessfulRunCount() > 0);
     assertTrue(SELECT_CUSTOMERS.getSuccessfulRunCount() > 0);
     assertTrue(SELECT_DEPARTMENTS.getSuccessfulRunCount() > 0);

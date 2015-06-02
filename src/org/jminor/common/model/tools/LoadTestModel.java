@@ -422,7 +422,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
       try {
         Thread.sleep(maximumThinkTime);
       }
-      catch (final InterruptedException ignored) {}
+      catch (final InterruptedException ignored) {/*ignored*/}
     }
     exitingDoneEvent.fire();
   }

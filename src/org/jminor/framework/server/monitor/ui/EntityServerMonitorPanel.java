@@ -136,7 +136,7 @@ public final class EntityServerMonitorPanel extends JPanel {
       jdkDir = UiUtil.selectDirectory(dialogParent, jdkDir, "Set JDK home").getAbsolutePath();
       Util.putUserPreference(JDK_PREFERENCE_KEY, jdkDir);
     }
-    catch (final CancelException ignored) {}
+    catch (final CancelException ignored) {/*ignored*/}
   }
 
   private void initializeUI() throws RemoteException {

@@ -345,7 +345,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
     try {
       stopWebServer();
     }
-    catch (final Exception ignored) {}
+    catch (final Exception ignored) {/*ignored*/}
     if (database.isEmbedded()) {
       database.shutdownEmbedded(null);
     }//todo does not work when shutdown requires user authentication, jminor.db.shutdownUser hmmm
@@ -490,7 +490,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
     try {
       server.shutdown();
     }
-    catch (final RemoteException ignored) {}
+    catch (final RemoteException ignored) {/*ignored*/}
 
     return exception;
   }

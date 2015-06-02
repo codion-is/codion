@@ -337,7 +337,7 @@ public final class DefaultEntityEditModelTest {
         employeeEditModel.insert();
         fail("Should not be able to insert");
       }
-      catch (final UnsupportedOperationException ignored) {}
+      catch (final UnsupportedOperationException ignored) {/*ignored*/}
       employeeEditModel.setInsertAllowed(true);
       assertTrue(employeeEditModel.isInsertAllowed());
 
@@ -382,7 +382,7 @@ public final class DefaultEntityEditModelTest {
         employeeEditModel.update();
         fail("Should not be able to update");
       }
-      catch (final UnsupportedOperationException ignored) {}
+      catch (final UnsupportedOperationException ignored) {/*ignored*/}
       employeeEditModel.setUpdateAllowed(true);
       assertTrue(employeeEditModel.isUpdateAllowed());
 
@@ -414,7 +414,7 @@ public final class DefaultEntityEditModelTest {
         employeeEditModel.delete();
         fail("Should not be able to delete");
       }
-      catch (final UnsupportedOperationException ignored) {}
+      catch (final UnsupportedOperationException ignored) {/*ignored*/}
       employeeEditModel.setDeleteAllowed(true);
       assertTrue(employeeEditModel.isDeleteAllowed());
 
@@ -584,7 +584,7 @@ public final class DefaultEntityEditModelTest {
       model.validate();
       fail();
     }
-    catch (final ValidationException ignored) {}
+    catch (final ValidationException ignored) {/*ignored*/}
 
     assertFalse(model.isValid(EmpDept.DEPARTMENT_ID));
     assertFalse(model.isValid());

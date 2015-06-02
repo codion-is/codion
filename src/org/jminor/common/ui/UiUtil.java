@@ -92,6 +92,7 @@ import java.text.SimpleDateFormat;
 import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -323,7 +324,7 @@ public final class UiUtil {
         selectedFiles = Arrays.asList(fileChooser.getSelectedFiles());
       }
       else {
-        selectedFiles = Arrays.asList(fileChooser.getSelectedFile());
+        selectedFiles = Collections.singletonList(fileChooser.getSelectedFile());
       }
       if (!selectedFiles.isEmpty()) {
         return selectedFiles;
@@ -1345,7 +1346,7 @@ public final class UiUtil {
           final File file = selectFile(txtFilename, getParentPath(txtFilename.getText()));
           txtFilename.setText(file.getAbsolutePath());
         }
-        catch (final CancelException ignored) {}
+        catch (final CancelException ignored) {/*ignored*/}
       }
     };
   }

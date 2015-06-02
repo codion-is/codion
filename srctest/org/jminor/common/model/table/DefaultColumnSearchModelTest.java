@@ -129,7 +129,7 @@ public class DefaultColumnSearchModelTest {
       model.setSearchType(null);
       fail();
     }
-    catch (final IllegalArgumentException ignored) {}
+    catch (final IllegalArgumentException ignored) {/*ignored*/}
     model.setSearchType(SearchType.OUTSIDE_RANGE);
     assertEquals(2, searchTypeCounter.get());
     model.removeSearchTypeListener(searchTypeListener);

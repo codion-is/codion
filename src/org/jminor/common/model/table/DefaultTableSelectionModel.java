@@ -14,8 +14,8 @@ import javax.swing.DefaultListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Iterator;
 import java.util.List;
 
@@ -182,7 +182,7 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
   /** {@inheritDoc} */
   @Override
   public void setSelectedItem(final R item) {
-    setSelectedItems(Arrays.asList(item));
+    setSelectedItems(Collections.singletonList(item));
   }
 
   /** {@inheritDoc} */
@@ -197,7 +197,7 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
   /** {@inheritDoc} */
   @Override
   public void addSelectedItem(final R item) {
-    addSelectedItems(Arrays.asList(item));
+    addSelectedItems(Collections.singletonList(item));
   }
 
   /** {@inheritDoc} */

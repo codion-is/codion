@@ -824,9 +824,9 @@ class DefaultProperty implements Property {
               return null;//blob columns are handled specifically
             }
           };
+        default:
+          throw new IllegalArgumentException("Unsupported SQL value type: " + property.columnType);
       }
-
-      throw new IllegalArgumentException("Unsupported SQL value type: " + property.columnType);
     }
 
     private static Boolean getBoolean(final ResultSet resultSet, final int columnIndex) throws SQLException {

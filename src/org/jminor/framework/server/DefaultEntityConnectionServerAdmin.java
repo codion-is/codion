@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.server;
 
-import ch.qos.logback.classic.Level;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
@@ -18,6 +17,8 @@ import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
+
+import ch.qos.logback.classic.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -168,11 +169,11 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
     try {
       ServerUtil.getRegistry(server.getRegistryPort()).unbind(serverName);
     }
-    catch (final NotBoundException ignored) {}
+    catch (final NotBoundException ignored) {/*ignored*/}
     try {
       ServerUtil.getRegistry(server.getRegistryPort()).unbind(Configuration.SERVER_ADMIN_PREFIX + serverName);
     }
-    catch (final NotBoundException ignored) {}
+    catch (final NotBoundException ignored) {/*ignored*/}
 
     final String shutdownInfo = serverName + " removed from registry";
     LOG.info(shutdownInfo);
@@ -183,7 +184,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
     try {
       UnicastRemoteObject.unexportObject(this, true);
     }
-    catch (final NoSuchObjectException ignored) {}
+    catch (final NoSuchObjectException ignored) {/*ignored*/}
   }
 
   /** {@inheritDoc} */

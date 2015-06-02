@@ -96,7 +96,7 @@ public class BoundedItemRandomizerModelTest {
       model.decrementWeight(two);
       fail();
     }
-    catch (final IllegalStateException ignored) {}
+    catch (final IllegalStateException ignored) {/*ignored*/}
 
     model.incrementWeight(three);
 
@@ -150,6 +150,6 @@ public class BoundedItemRandomizerModelTest {
       model.incrementWeight(three);
       fail();
     }
-    catch (final IllegalStateException ignored) {}
+    catch (final IllegalStateException ignored) {/*ignored*/}
   }
 }

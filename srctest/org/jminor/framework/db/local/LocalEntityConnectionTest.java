@@ -100,7 +100,7 @@ public class LocalEntityConnectionTest {
         connection.selectSingle(key);
         fail();
       }
-      catch (final DatabaseException ignored) {}
+      catch (final DatabaseException ignored) {/*ignored*/}
     }
     finally {
       connection.rollbackTransaction();
@@ -114,7 +114,7 @@ public class LocalEntityConnectionTest {
         connection.selectSingle(key);
         fail();
       }
-      catch (final DatabaseException ignored) {}
+      catch (final DatabaseException ignored) {/*ignored*/}
     }
     finally {
       connection.rollbackTransaction();
@@ -349,7 +349,7 @@ public class LocalEntityConnectionTest {
         connection2.update(Collections.singletonList(sales));
         fail("Should not be able to update record selected for update by another connection");
       }
-      catch (final DatabaseException ignored) {}
+      catch (final DatabaseException ignored) {/*ignored*/}
 
       connection.selectAll(EmpDept.T_DEPARTMENT);//any query will do
 
@@ -358,7 +358,7 @@ public class LocalEntityConnectionTest {
         sales.setValue(EmpDept.DEPARTMENT_LOCATION, originalLocation);
         connection2.update(Collections.singletonList(sales));//revert changes to data
       }
-      catch (final DatabaseException ignored) {
+      catch (final DatabaseException ignored) {/*ignored*/
         fail("Should be able to update record after other connection released the select for update lock");
       }
     }
@@ -394,7 +394,7 @@ public class LocalEntityConnectionTest {
       try {
         connection2.insert(Collections.singletonList(allen));//revert changes to data
       }
-      catch (final DatabaseException ignored) {
+      catch (final DatabaseException ignored) {/*ignored*/
         fail("Should be able to update record after other connection released the select for update lock");
       }
     }
@@ -455,7 +455,7 @@ public class LocalEntityConnectionTest {
         try {
           connection.close();
         }
-        catch (final Exception ignored) {}
+        catch (final Exception ignored) {/*ignored*/}
       }
     }
   }
@@ -474,7 +474,7 @@ public class LocalEntityConnectionTest {
         try {
           connection.close();
         }
-        catch (final Exception ignored) {}
+        catch (final Exception ignored) {/*ignored*/}
       }
     }
   }

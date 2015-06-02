@@ -127,7 +127,7 @@ public final class Values {
       try {
         this.setMethod = Util.getSetMethod(valueClass, propertyName, valueOwner);
       }
-      catch (final NoSuchMethodException ignored) {
+      catch (final NoSuchMethodException ignored) {/*ignored*/
         this.setMethod = null;
       }
     }

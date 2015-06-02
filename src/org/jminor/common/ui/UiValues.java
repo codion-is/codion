@@ -360,9 +360,8 @@ public final class UiValues {
         case Types.DATE: return parsedValue;
         case Types.TIMESTAMP : return new Timestamp(parsedValue.getTime());
         case Types.TIME : return new Time(parsedValue.getTime());
+        default: throw new IllegalStateException("Illegal sql type for DateUIValue: " + sqlType);
       }
-
-      throw new IllegalStateException("Illegal sql type for DateUIValue: " + sqlType);
     }
   }
 

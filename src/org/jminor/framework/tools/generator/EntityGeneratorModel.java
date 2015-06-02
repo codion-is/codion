@@ -373,9 +373,9 @@ public final class EntityGeneratorModel {
         return "Types.BLOB";
       case Types.BOOLEAN:
         return "Types.BOOLEAN";
+      default:
+        return null;
     }
-
-    return null;
   }
 
   private static final class TableModel extends AbstractFilteredTableModel<Table, Integer> {

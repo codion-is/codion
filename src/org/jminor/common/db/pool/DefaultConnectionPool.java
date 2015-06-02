@@ -320,7 +320,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
   private DatabaseConnection findConnection(final Connection connection) {
     synchronized (pool) {
       for (final DatabaseConnection databaseConnection : inUse) {
-        if (databaseConnection.getConnection() == connection) {
+        if (databaseConnection.getConnection().equals(connection)) {
           return databaseConnection;
         }
       }
@@ -339,7 +339,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
     try {
       Thread.sleep(random.nextInt(maximumRetryWaitPeriod));
     }
-    catch (final InterruptedException ignored) {}
+    catch (final InterruptedException ignored) {/*ignored*/}
   }
 
   private boolean isNewConnectionWarranted(final long elapsedTime) {

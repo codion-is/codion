@@ -58,7 +58,7 @@ public final class DateUtil {
         format.parse(dateString);
         return true;
       }
-      catch (final ParseException ignored) {}
+      catch (final ParseException ignored) {/*ignored*/}
     }
 
     return false;
@@ -247,9 +247,9 @@ public final class DateUtil {
         calendar.set(Calendar.MONTH, Calendar.OCTOBER);
         return calendar.getTime();
       }
+      default:
+        return null;
     }
-
-    return null;
   }
 
   /**
@@ -282,9 +282,9 @@ public final class DateUtil {
         calendar.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
         return calendar.getTime();
       }
+      default:
+        return null;
     }
-
-    return null;
   }
 
   /**

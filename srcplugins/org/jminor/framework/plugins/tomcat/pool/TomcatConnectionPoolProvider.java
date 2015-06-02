@@ -107,7 +107,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
       try {
         connection.close();
       }
-      catch (final SQLException ignored) {}
+      catch (final SQLException ignored) {/*ignored*/}
     }
 
     @Override

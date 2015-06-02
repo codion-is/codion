@@ -42,6 +42,7 @@ import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.HashSet;
 import java.util.List;
@@ -565,13 +566,13 @@ final class LocalEntityConnection implements EntityConnection {
       catch (final ReportException e) {
         exception = e;
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(DatabaseUtil.createLogMessage(getUser(), null, Arrays.asList(reportWrapper.getReportName()), e, null));
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), null, Collections.singletonList(reportWrapper.getReportName()), e, null));
         throw e;
       }
       finally {
         final MethodLogger.Entry logEntry = logExit("fillReport", exception, null);
         if (LOG.isDebugEnabled()) {
-          LOG.debug(DatabaseUtil.createLogMessage(getUser(), null, Arrays.asList(reportWrapper.getReportName()), exception, logEntry));
+          LOG.debug(DatabaseUtil.createLogMessage(getUser(), null, Collections.singletonList(reportWrapper.getReportName()), exception, logEntry));
         }
       }
     }
@@ -897,7 +898,7 @@ final class LocalEntityConnection implements EntityConnection {
     try {
       connection.commit();
     }
-    catch (final SQLException ignored) {
+    catch (final SQLException ignored) {/*ignored*/
       LOG.error("Exception while performing a quiet commit", ignored);
     }
   }
@@ -906,7 +907,7 @@ final class LocalEntityConnection implements EntityConnection {
     try {
       connection.rollback();
     }
-    catch (final SQLException ignored) {
+    catch (final SQLException ignored) {/*ignored*/
       LOG.error("Exception while performing a quiet rollback", ignored);
     }
   }

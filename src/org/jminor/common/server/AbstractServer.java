@@ -5,6 +5,7 @@ package org.jminor.common.server;
 
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Version;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -233,12 +234,12 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
     try {
       UnicastRemoteObject.unexportObject(this, true);
     }
-    catch (final NoSuchObjectException ignored) {}
+    catch (final NoSuchObjectException ignored) {/*ignored*/}
     for (final LoginProxy proxy : loginProxies.values()) {
       try {
         proxy.close();
       }
-      catch (final Exception ignored) {}
+      catch (final Exception ignored) {/*ignored*/}
     }
 
     handleShutdown();

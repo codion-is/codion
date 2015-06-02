@@ -169,7 +169,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     try {
       clientInfo.setClientHost(getClientHost());
     }
-    catch (final ServerNotActiveException ignored) {}
+    catch (final ServerNotActiveException ignored) {/*ignored*/}
     try {
       if (connectionPool == null) {
         localEntityConnection = LocalEntityConnections.createConnection(database, clientInfo.getDatabaseUser());

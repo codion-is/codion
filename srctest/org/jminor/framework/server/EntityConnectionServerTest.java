@@ -129,7 +129,7 @@ public class EntityConnectionServerTest {
       providerTwo.getConnection();
       fail("Server should be full");
     }
-    catch (final RuntimeException ignored) {}
+    catch (final RuntimeException ignored) {/*ignored*/}
 
     assertEquals(1, admin.getConnectionCount());
     admin.setConnectionLimit(2);
@@ -159,7 +159,7 @@ public class EntityConnectionServerTest {
       empDeptProviderInvalid.getConnection();
       fail("Should not be able to connect with an invalid user");
     }
-    catch (final Exception ignored) {}
+    catch (final Exception ignored) {/*ignored*/}
     final Collection<ClientInfo> empDeptClients = admin.getClients(empDeptClientTypeID);
     assertEquals(2, empDeptClients.size());
     for (final ClientInfo empDeptClient : empDeptClients) {
@@ -174,7 +174,7 @@ public class EntityConnectionServerTest {
       admin.setConnectionTimeout(-1);
       fail();
     }
-    catch (final IllegalArgumentException ignored) {}
+    catch (final IllegalArgumentException ignored) {/*ignored*/}
   }
 
   @Test

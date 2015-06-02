@@ -976,7 +976,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
         try {
           exit();
         }
-        catch(final CancelException ignored) {}
+        catch(final CancelException ignored) {/*ignored*/}
       }
     });
     frame.getContentPane().setLayout(new BorderLayout());

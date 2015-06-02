@@ -145,7 +145,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       try {//try to disconnect just in case
         entityConnection.disconnect();
       }
-      catch (final Exception ignored) {}
+      catch (final Exception ignored) {/*ignored*/}
       doConnect();
     }
   }

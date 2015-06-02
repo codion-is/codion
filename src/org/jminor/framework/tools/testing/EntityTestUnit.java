@@ -25,7 +25,6 @@ import org.junit.Before;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.Collection;
 import java.util.Collections;
@@ -285,7 +284,7 @@ public abstract class EntityTestUnit {
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
   private Entity testInsert(final Entity testEntity) throws DatabaseException {
-    final List<Entity.Key> keys = connection.insert(Arrays.asList(testEntity));
+    final List<Entity.Key> keys = connection.insert(Collections.singletonList(testEntity));
     try {
       return connection.selectSingle(keys.get(0));
     }
@@ -324,7 +323,7 @@ public abstract class EntityTestUnit {
       return;
     }
 
-    connection.update(Arrays.asList(testEntity));
+    connection.update(Collections.singletonList(testEntity));
 
     final Entity tmp = connection.selectSingle(testEntity.getOriginalPrimaryKey());
     assertEquals("Primary keys of entity and its updated counterpart should be equal",
@@ -347,7 +346,7 @@ public abstract class EntityTestUnit {
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
   private void testDelete(final Entity testEntity) throws DatabaseException {
-    connection.delete(EntityUtil.getPrimaryKeys(Arrays.asList(testEntity)));
+    connection.delete(EntityUtil.getPrimaryKeys(Collections.singletonList(testEntity)));
 
     boolean caught = false;
     try {
@@ -367,13 +366,13 @@ public abstract class EntityTestUnit {
    */
   private Entity insertOrSelect(final Entity entity) throws DatabaseException {
     if (!entity.isPrimaryKeyNull()) {
-      final List<Entity> entities = connection.selectMany(Arrays.asList(entity.getPrimaryKey()));
+      final List<Entity> entities = connection.selectMany(Collections.singletonList(entity.getPrimaryKey()));
       if (!entities.isEmpty()) {
         return entities.get(0);
       }
     }
 
-    return connection.selectSingle(connection.insert(Arrays.asList(entity)).get(0));
+    return connection.selectSingle(connection.insert(Collections.singletonList(entity)).get(0));
   }
 
   /**
