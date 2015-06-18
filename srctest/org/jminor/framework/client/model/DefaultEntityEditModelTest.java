@@ -191,13 +191,13 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.addAfterDeleteListener(infoListener);
     employeeEditModel.addAfterInsertListener(infoListener);
     employeeEditModel.addAfterUpdateListener(infoListener);
+    employeeEditModel.addBeforeDeleteListener(infoListener);
+    employeeEditModel.addBeforeInsertListener(infoListener);
+    employeeEditModel.addBeforeUpdateListener(infoListener);
     final EventListener listener = new EventListener() {
       @Override
       public void eventOccurred() {}
     };
-    employeeEditModel.addBeforeDeleteListener(listener);
-    employeeEditModel.addBeforeInsertListener(listener);
-    employeeEditModel.addBeforeUpdateListener(listener);
     employeeEditModel.addEntitiesChangedListener(listener);
     employeeEditModel.addBeforeRefreshListener(listener);
     employeeEditModel.addAfterRefreshListener(listener);
@@ -279,9 +279,9 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.removeAfterDeleteListener(infoListener);
     employeeEditModel.removeAfterInsertListener(infoListener);
     employeeEditModel.removeAfterUpdateListener(infoListener);
-    employeeEditModel.removeBeforeDeleteListener(listener);
-    employeeEditModel.removeBeforeInsertListener(listener);
-    employeeEditModel.removeBeforeUpdateListener(listener);
+    employeeEditModel.removeBeforeDeleteListener(infoListener);
+    employeeEditModel.removeBeforeInsertListener(infoListener);
+    employeeEditModel.removeBeforeUpdateListener(infoListener);
     employeeEditModel.removeEntitiesChangedListener(listener);
     employeeEditModel.removeBeforeRefreshListener(listener);
     employeeEditModel.removeAfterRefreshListener(listener);

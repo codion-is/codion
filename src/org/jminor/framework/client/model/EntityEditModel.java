@@ -401,12 +401,12 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   /**
    * @param listener a listener to be notified before an insert is performed
    */
-  void addBeforeInsertListener(final EventListener listener);
+  void addBeforeInsertListener(final EventInfoListener<InsertEvent> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeInsertListener(final EventListener listener);
+  void removeBeforeInsertListener(final EventInfoListener listener);
 
   /**
    * @param listener a listener to be notified each time a insert has been performed
@@ -421,12 +421,12 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   /**
    * @param listener a listener to be notified before an update is performed
    */
-  void addBeforeUpdateListener(final EventListener listener);
+  void addBeforeUpdateListener(final EventInfoListener<UpdateEvent> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeUpdateListener(final EventListener listener);
+  void removeBeforeUpdateListener(final EventInfoListener listener);
 
   /**
    * @param listener a listener to be notified each time an update has been performed
@@ -441,12 +441,12 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   /**
    * @param listener a listener to be notified before a delete is performed
    */
-  void addBeforeDeleteListener(final EventListener listener);
+  void addBeforeDeleteListener(final EventInfoListener<DeleteEvent> listener);
 
   /**
    * @param listener a listener to remove
    */
-  void removeBeforeDeleteListener(final EventListener listener);
+  void removeBeforeDeleteListener(final EventInfoListener listener);
 
   /**
    * @param listener a listener to be notified each time a delete has been performed

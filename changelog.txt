@@ -3968,3 +3968,4 @@
   Sonar/IntelliJ analysis
   EntityEditPanel now sets the actual DateInputPanel as the property component
   DefaultEntityEditModel, DefaultInsertEvent, DefaultUpdateEvent and DefaultDeleteEvent now protected instead of private
+  EntityEditModel, before insert, update and delete listeners now provide the same info as after listeners

@@ -61,11 +61,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
   private static final String FOREIGN_KEY_PROPERTY = "foreignKeyProperty";
   private static final String PROPERTY = "property";
 
-  private final Event beforeInsertEvent = Events.event();
+  private final Event<InsertEvent> beforeInsertEvent = Events.event();
   private final Event<InsertEvent> afterInsertEvent = Events.event();
-  private final Event beforeUpdateEvent = Events.event();
+  private final Event<UpdateEvent> beforeUpdateEvent = Events.event();
   private final Event<UpdateEvent> afterUpdateEvent = Events.event();
-  private final Event beforeDeleteEvent = Events.event();
+  private final Event<DeleteEvent> beforeDeleteEvent = Events.event();
   private final Event<DeleteEvent> afterDeleteEvent = Events.event();
   private final Event entitiesChangedEvent = Events.event();
   private final Event refreshStartedEvent = Events.event();
@@ -522,7 +522,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
       return Collections.emptyList();
     }
 
-    fireBeforeUpdateEvent();
+    fireBeforeUpdateEvent(new DefaultUpdateEvent(getOriginalKeyMap(modifiedEntities, new ArrayList<>(entities))));
     validate(modifiedEntities);
 
     final List<Entity> updatedEntities = doUpdate(modifiedEntities);
@@ -558,7 +558,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
     LOG.debug("{} - delete {}", this, Util.getCollectionContentsAsString(entities, false));
 
-    fireBeforeDeleteEvent();
+    fireBeforeDeleteEvent(new DefaultDeleteEvent(entities));
 
     doDelete(entities);
     if (entities.contains(getEntity())) {
@@ -813,14 +813,14 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeInsertListener(final EventListener listener) {
-    beforeInsertEvent.removeListener(listener);
+  public final void removeBeforeInsertListener(final EventInfoListener listener) {
+    beforeInsertEvent.removeInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeInsertListener(final EventListener listener) {
-    beforeInsertEvent.addListener(listener);
+  public final void addBeforeInsertListener(final EventInfoListener<InsertEvent> listener) {
+    beforeInsertEvent.addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -837,14 +837,14 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeUpdateListener(final EventListener listener) {
-    beforeUpdateEvent.removeListener(listener);
+  public final void removeBeforeUpdateListener(final EventInfoListener listener) {
+    beforeUpdateEvent.removeInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeUpdateListener(final EventListener listener) {
-    beforeUpdateEvent.addListener(listener);
+  public final void addBeforeUpdateListener(final EventInfoListener<UpdateEvent> listener) {
+    beforeUpdateEvent.addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -861,14 +861,14 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addBeforeDeleteListener(final EventListener listener) {
-    beforeDeleteEvent.addListener(listener);
+  public final void addBeforeDeleteListener(final EventInfoListener<DeleteEvent> listener) {
+    beforeDeleteEvent.addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeBeforeDeleteListener(final EventListener listener) {
-    beforeDeleteEvent.removeListener(listener);
+  public final void removeBeforeDeleteListener(final EventInfoListener listener) {
+    beforeDeleteEvent.removeInfoListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -1006,8 +1006,8 @@ public class DefaultEntityEditModel implements EntityEditModel {
    * Notifies that a insert is about to be performed
    * @see #addBeforeInsertListener(EventListener)
    */
-  protected final void fireBeforeInsertEvent() {
-    beforeInsertEvent.fire();
+  protected final void fireBeforeInsertEvent(final InsertEvent insertEvent) {
+    beforeInsertEvent.fire(insertEvent);
   }
 
   /**
@@ -1021,10 +1021,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /**
    * Notifies that an update is about to be performed
+   * @param updateEvent the event describing the update
    * @see #addBeforeUpdateListener(EventListener)
    */
-  protected final void fireBeforeUpdateEvent() {
-    beforeUpdateEvent.fire();
+  protected final void fireBeforeUpdateEvent(final UpdateEvent updateEvent) {
+    beforeUpdateEvent.fire(updateEvent);
   }
 
   /**
@@ -1038,10 +1039,11 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /**
    * Notifies that a delete is about to be performed
+   * @param deleteEvent the event describing the delete
    * @see #addBeforeDeleteListener(EventListener)
    */
-  protected final void fireBeforeDeleteEvent() {
-    beforeDeleteEvent.fire();
+  protected final void fireBeforeDeleteEvent(final DeleteEvent deleteEvent) {
+    beforeDeleteEvent.fire(deleteEvent);
   }
 
   /**
@@ -1063,7 +1065,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
     LOG.debug("{} - insert {}", this, Util.getCollectionContentsAsString(entities, false));
 
-    fireBeforeInsertEvent();
+    fireBeforeInsertEvent(new DefaultInsertEvent(entities));
     validate(entities);
 
     return connectionProvider.getConnection().selectMany(doInsert(entities));
