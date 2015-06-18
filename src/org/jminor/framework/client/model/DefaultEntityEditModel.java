@@ -1233,7 +1233,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  private static final class DefaultInsertEvent implements InsertEvent {
+  protected static final class DefaultInsertEvent implements InsertEvent {
 
     private final List<Entity> insertedEntities;
 
@@ -1241,7 +1241,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
      * Instantiates a new DefaultInsertEvent.
      * @param insertedEntities the inserted entities
      */
-    private DefaultInsertEvent(final List<Entity> insertedEntities) {
+    protected DefaultInsertEvent(final List<Entity> insertedEntities) {
       this.insertedEntities = insertedEntities;
     }
 
@@ -1251,7 +1251,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  private static final class DefaultDeleteEvent implements DeleteEvent {
+  protected static final class DefaultDeleteEvent implements DeleteEvent {
 
     private final List<Entity> deletedEntities;
 
@@ -1259,7 +1259,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
      * Instantiates a new DefaultDeleteEvent.
      * @param deletedEntities the deleted entities
      */
-    private DefaultDeleteEvent(final List<Entity> deletedEntities) {
+    protected DefaultDeleteEvent(final List<Entity> deletedEntities) {
       this.deletedEntities = deletedEntities;
     }
 
@@ -1269,7 +1269,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     }
   }
 
-  private static final class DefaultUpdateEvent implements UpdateEvent {
+  protected static final class DefaultUpdateEvent implements UpdateEvent {
 
     private final Map<Entity.Key, Entity> updatedEntities;
 
@@ -1278,7 +1278,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
      * @param updatedEntities the updated entities, mapped to their respective original primary key, that is,
      * the primary key prior to the update
      */
-    private DefaultUpdateEvent(final Map<Entity.Key, Entity> updatedEntities) {
+    protected DefaultUpdateEvent(final Map<Entity.Key, Entity> updatedEntities) {
       this.updatedEntities = updatedEntities;
     }
 

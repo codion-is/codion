@@ -3967,3 +3967,4 @@
   AutoCompletion added, MaximumMatch now extends CompletionDocument
   Sonar/IntelliJ analysis
   EntityEditPanel now sets the actual DateInputPanel as the property component
+  DefaultEntityEditModel, DefaultInsertEvent, DefaultUpdateEvent and DefaultDeleteEvent now protected instead of private
