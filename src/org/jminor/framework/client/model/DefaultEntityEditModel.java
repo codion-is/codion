@@ -1241,7 +1241,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
      * Instantiates a new DefaultInsertEvent.
      * @param insertedEntities the inserted entities
      */
-    protected DefaultInsertEvent(final List<Entity> insertedEntities) {
+    public DefaultInsertEvent(final List<Entity> insertedEntities) {
       this.insertedEntities = insertedEntities;
     }
 
@@ -1259,7 +1259,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
      * Instantiates a new DefaultDeleteEvent.
      * @param deletedEntities the deleted entities
      */
-    protected DefaultDeleteEvent(final List<Entity> deletedEntities) {
+    public DefaultDeleteEvent(final List<Entity> deletedEntities) {
       this.deletedEntities = deletedEntities;
     }
 
@@ -1278,7 +1278,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
      * @param updatedEntities the updated entities, mapped to their respective original primary key, that is,
      * the primary key prior to the update
      */
-    protected DefaultUpdateEvent(final Map<Entity.Key, Entity> updatedEntities) {
+    public DefaultUpdateEvent(final Map<Entity.Key, Entity> updatedEntities) {
       this.updatedEntities = updatedEntities;
     }
 
