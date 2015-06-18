@@ -1156,7 +1156,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   protected final DateInputPanel createDateInputPanel(final Property property, final boolean includeButton,
                                                       final StateObserver enabledState, final boolean readOnly) {
     final DateInputPanel panel = EntityUiUtil.createDateInputPanel(property, editModel, readOnly, includeButton, enabledState);
-    setComponent(property.getPropertyID(), panel.getInputField());
+    setComponent(property.getPropertyID(), panel);
 
     return panel;
   }

@@ -3966,3 +3966,4 @@
   ControlProvider.ButtonControlIterator now uses JLabel for separator
   AutoCompletion added, MaximumMatch now extends CompletionDocument
   Sonar/IntelliJ analysis
+  EntityEditPanel now sets the actual DateInputPanel as the property component

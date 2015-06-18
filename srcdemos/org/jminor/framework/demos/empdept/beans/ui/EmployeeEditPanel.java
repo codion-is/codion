@@ -10,7 +10,6 @@ import org.jminor.framework.client.ui.EntityEditPanel;
 
 import javax.swing.JComboBox;
 import javax.swing.JLabel;
-import javax.swing.JPanel;
 import javax.swing.JTextField;
 
 import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
@@ -29,7 +28,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     createEntityComboBox(EMPLOYEE_DEPARTMENT_FK);
     createTextField(EMPLOYEE_SALARY);
     createTextField(EMPLOYEE_COMMISSION);
-    final JPanel hiredatePanel = createDateInputPanel(EMPLOYEE_HIREDATE, true);
+    createDateInputPanel(EMPLOYEE_HIREDATE, true);
 
     setInitialFocusComponent(txtName);
 
@@ -47,7 +46,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     addPropertyPanel(EMPLOYEE_SALARY);
     addPropertyPanel(EMPLOYEE_COMMISSION);
 
-    add(createPropertyPanel(EMPLOYEE_HIREDATE, hiredatePanel));
+    addPropertyPanel(EMPLOYEE_HIREDATE);
     add(new JLabel());
     add(new JLabel());
   }
