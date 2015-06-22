@@ -560,14 +560,14 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
     fireBeforeDeleteEvent(new DefaultDeleteEvent(entities));
 
-    doDelete(entities);
-    if (entities.contains(getEntity())) {
+    final List<Entity> deleted = doDelete(entities);
+    if (deleted.contains(getEntity())) {
       doSetEntity(null);
     }
 
-    fireAfterDeleteEvent(new DefaultDeleteEvent(entities));
+    fireAfterDeleteEvent(new DefaultDeleteEvent(deleted));
 
-    return entities;
+    return deleted;
   }
 
   /** {@inheritDoc} */
@@ -961,10 +961,13 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Deletes the given entities from the database
    * @param entities the entities to delete
+   * @return a list containing the deleted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    */
-  protected void doDelete(final List<Entity> entities) throws DatabaseException {
+  protected List<Entity> doDelete(final List<Entity> entities) throws DatabaseException {
     connectionProvider.getConnection().delete(EntityUtil.getPrimaryKeys(entities));
+
+    return entities;
   }
 
   /**
