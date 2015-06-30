@@ -42,9 +42,9 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
       return clientInfo;
     }
     @Override
-    public void doLogout(final ClientInfo clientInfo) {}
+    public void doLogout(final ClientInfo clientInfo) {/*Not required*/}
     @Override
-    public void close() {}
+    public void close() {/*Not required*/}
   };
 
   private final ServerInfo serverInfo;

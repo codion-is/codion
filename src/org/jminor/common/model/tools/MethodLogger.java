@@ -15,9 +15,9 @@ import java.io.Serializable;
 import java.io.StringWriter;
 import java.text.DateFormat;
 import java.util.Collections;
+import java.util.Deque;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Stack;
 
 /**
  * A cyclical method call logger allowing nested logging of method calls.
@@ -27,7 +27,7 @@ public class MethodLogger implements Serializable {
 
   private static final long serialVersionUID = 1;
 
-  private final transient Stack<Entry> callStack = new Stack<>();
+  private final transient Deque<Entry> callStack = new LinkedList<>();
   private LinkedList<Entry> entries = new LinkedList<>();
   private int maxSize;
   private boolean enabled = false;
@@ -116,7 +116,7 @@ public class MethodLogger implements Serializable {
       entry.setException(exception);
       entry.setExitMessage(exitMessage);
       setLastExitInfo(method, entry.getExitTime());
-      if (callStack.empty()) {
+      if (callStack.isEmpty()) {
         if (entries.size() == maxSize) {
           entries.removeFirst();
         }

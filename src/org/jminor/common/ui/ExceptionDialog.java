@@ -179,7 +179,7 @@ public final class ExceptionDialog extends JDialog {
   /**
    * @param errorReportSubjectPrefix a string to prefix to the subject of the error report when emailed
    */
-  public static void setErrorReportEmailSubjectPrefix(final String errorReportSubjectPrefix) {
+  public static synchronized void setErrorReportEmailSubjectPrefix(final String errorReportSubjectPrefix) {
     errorReportEmailSubjectPrefix = errorReportSubjectPrefix;
   }
 

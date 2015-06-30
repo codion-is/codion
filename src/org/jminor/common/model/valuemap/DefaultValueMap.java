@@ -350,25 +350,25 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   }
 
   /**
-   * Called after a value has been set.
+   * Called after a value has been set. This base implementation does nothing.
    * @param key the key
    * @param value the value
    * @param previousValue the previous value
    * @param initialization true if the value was being initialized
    */
-  protected void handleValueSet(final K key, final V value, final V previousValue, final boolean initialization) {}
+  protected void handleValueSet(final K key, final V value, final V previousValue, final boolean initialization) {/*Provided for subclasses*/}
 
   /**
-   * Called after a value has been removed from this map.
+   * Called after a value has been removed from this map. This base implementation does nothing.
    * @param key the key
    * @param value the value that was removed
    */
-  protected void handleValueRemoved(final K key, final V value) {}
+  protected void handleValueRemoved(final K key, final V value) {/*Provided for subclasses*/}
 
   /**
-   * Called after the value map has been cleared.
+   * Called after the value map has been cleared. This base implementation does nothing.
    */
-  protected void handleClear() {}
+  protected void handleClear() {/*Provided for subclasses*/}
 
   /**
    * Called after the valueChangeEvent has been initialized, via the first call to {@link #getValueChangedEvent()}

@@ -291,9 +291,9 @@ public final class UiUtil {
    * @return a List containing the selected files, contains at least one file
    * @throws CancelException in case the user cancels or no files are selected
    */
-  public static List<File> selectFilesOrDirectories(final JComponent dialogParent, final String startDir,
-                                                    final boolean files, final boolean multiSelection,
-                                                    final String dialogTitle) {
+  public static synchronized List<File> selectFilesOrDirectories(final JComponent dialogParent, final String startDir,
+                                                                 final boolean files, final boolean multiSelection,
+                                                                 final String dialogTitle) {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
@@ -342,7 +342,7 @@ public final class UiUtil {
    * @return the selected file
    * @throws CancelException in case the user cancels
    */
-  public static File chooseFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName) {
+  public static synchronized File chooseFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName) {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
@@ -796,7 +796,7 @@ public final class UiUtil {
   /**
    * @return the preferred width of a JScrollBar
    */
-  public static int getPreferredScrollBarWidth() {
+  public static synchronized int getPreferredScrollBarWidth() {
     if (verticalScrollBar == null) {
       verticalScrollBar = new JScrollBar(JScrollBar.VERTICAL);
     }
@@ -807,7 +807,7 @@ public final class UiUtil {
   /**
    * @return the preferred size of a JTextField
    */
-  public static Dimension getPreferredTextFieldSize() {
+  public static synchronized Dimension getPreferredTextFieldSize() {
     if (textField == null) {
       textField = new JTextField();
     }
@@ -818,7 +818,7 @@ public final class UiUtil {
   /**
    * @return the preferred height of a JTextField
    */
-  public static int getPreferredTextFieldHeight() {
+  public static synchronized int getPreferredTextFieldHeight() {
     if (textField == null) {
       textField = new JTextField();
     }
@@ -1688,7 +1688,7 @@ public final class UiUtil {
    * @return the selected values, en empty Collection if none was selected
    */
   private static <T> List<T> selectValues(final JComponent dialogOwner, final Collection<T> values,
-                                         final String dialogTitle, final boolean singleSelection) {
+                                          final String dialogTitle, final boolean singleSelection) {
     final JList<T> list = new JList<>(new Vector<>(values));
     final Window owner = getParentWindow(dialogOwner);
     final JDialog dialog = new JDialog(owner, dialogTitle);

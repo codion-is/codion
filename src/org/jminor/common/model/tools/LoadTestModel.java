@@ -20,11 +20,12 @@ import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Deque;
 import java.util.HashMap;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Random;
-import java.util.Stack;
 import java.util.concurrent.ExecutorService;
 import java.util.concurrent.Executors;
 import java.util.concurrent.TimeUnit;
@@ -65,7 +66,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
   private volatile boolean paused = false;
   private volatile boolean collectChartData = false;
 
-  private final Stack<ApplicationRunner<T>> applications = new Stack<>();
+  private final Deque<ApplicationRunner<T>> applications = new LinkedList<>();
   private final Collection<? extends UsageScenario<T>> usageScenarios;
   private final ItemRandomizer<UsageScenario> scenarioChooser;
   private final ExecutorService executor = Executors.newCachedThreadPool();

@@ -3970,3 +3970,4 @@
   DefaultEntityEditModel, DefaultInsertEvent, DefaultUpdateEvent and DefaultDeleteEvent now protected instead of private
   EntityEditModel, before insert, update and delete listeners now provide the same info as after listeners
   DefaultEntityEditModel.doDelete() now returns the deleted entities, after delete event now contains the actual entities returned by doDelete()
+  Sonar run
