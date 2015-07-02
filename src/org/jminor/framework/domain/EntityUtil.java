@@ -430,7 +430,7 @@ public final class EntityUtil {
     for (final String propertyID : comparison.getValueKeys()) {
       final Property property = Entities.getProperty(entity.getEntityID(), propertyID);
       //BLOB property values are not loaded, so we can't compare those
-      if (!property.isType(Types.BLOB) && EntityUtil.isValueMissingOrModified(entity, comparison, propertyID)) {
+      if (!property.isType(Types.BLOB) && isValueMissingOrModified(entity, comparison, propertyID)) {
         return property;
       }
     }
@@ -448,9 +448,10 @@ public final class EntityUtil {
     if (modified == null) {//record has been deleted
       return entity + " " + FrameworkMessages.get(FrameworkMessages.HAS_BEEN_DELETED);
     }
-    final Property modifiedProperty = EntityUtil.getModifiedProperty(entity, modified);
+    final Property modifiedProperty = getModifiedProperty(entity, modified);
 
-    return modifiedProperty + ": " + entity.getOriginalValue(modifiedProperty.getPropertyID()) + " -> " + modified.getValue(modifiedProperty);
+    return Entities.getCaption(entity.getEntityID()) + ", " + modifiedProperty + ": " +
+            entity.getOriginalValue(modifiedProperty.getPropertyID()) + " -> " + modified.getValue(modifiedProperty);
   }
 
   /**
