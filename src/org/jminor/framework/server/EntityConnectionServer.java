@@ -431,6 +431,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
             auxiliaryServer.start();
           }
           catch (final Exception e) {
+            LOG.error(e.getMessage(), e);
             LOG.error("Trying to start web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
           }
         }

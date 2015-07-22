@@ -455,7 +455,7 @@ final class LocalEntityConnection implements EntityConnection {
               criteria.getWhereClause(true), null);
     }
     else {
-      final boolean containsWhereClause = entitySelectQuery.toLowerCase().contains("where ");
+      final boolean containsWhereClause = containsWhereClause(entitySelectQuery);
       selectSQL = createSelectSQL("(" + entitySelectQuery + " " + criteria.getWhereClause(!containsWhereClause) + ") alias",
               "count(*)", null, null);
     }
@@ -1046,7 +1046,7 @@ final class LocalEntityConnection implements EntityConnection {
     final String lowerCaseQuery = selectQuery.toLowerCase();
 
     return selectQuery.substring(Math.max(0, lowerCaseQuery.lastIndexOf("from ")),
-            lowerCaseQuery.length()).contains("where ");
+            lowerCaseQuery.length()).contains("where ");//todo newline after where fails, try regex
   }
 
   /**

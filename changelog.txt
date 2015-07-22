@@ -3972,3 +3972,4 @@
   DefaultEntityEditModel.doDelete() now returns the deleted entities, after delete event now contains the actual entities returned by doDelete()
   Sonar run
   EntityUtil.getModifiedExceptionMessage() entity caption added to error message for clarification
+  DefaultEntityComboBoxModel, foreign key filter model is now strict, no longer shows all items if foreign key value is null or no filter values are specified

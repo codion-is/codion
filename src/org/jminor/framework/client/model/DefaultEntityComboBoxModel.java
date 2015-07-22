@@ -71,7 +71,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
         final Entity foreignKeyValue = item.getForeignKeyValue(entry.getKey());
         final Set<Entity> filterValues = entry.getValue();
-        if (foreignKeyValue != null && !filterValues.isEmpty() && !filterValues.contains(foreignKeyValue)) {
+        if (foreignKeyValue == null || !filterValues.contains(foreignKeyValue)) {
           return false;
         }
       }
@@ -189,11 +189,12 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   /** {@inheritDoc} */
   @Override
   public final void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities) {
-    final Set<Entity> filterEntities = new HashSet<>();
-    if (entities != null) {
-      filterEntities.addAll(entities);
+    if (Util.nullOrEmpty(entities)) {
+      foreignKeyFilterEntities.remove(foreignKeyPropertyID);
     }
-    foreignKeyFilterEntities.put(foreignKeyPropertyID, filterEntities);
+    else {
+      foreignKeyFilterEntities.put(foreignKeyPropertyID, new HashSet<>(entities));
+    }
 
     filterContents();
   }
