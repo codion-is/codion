@@ -13,7 +13,7 @@ import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.RemoteEntityConnection;
-import org.jminor.framework.demos.chinook.domain.Chinook;
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -97,7 +97,7 @@ public class DefaultRemoteEntityConnectionTest {
     DefaultRemoteEntityConnection adapter = null;
     final String serviceName = "DefaultRemoteEntityConnectionTest";
     try {
-      Chinook.init();
+      TestDomain.init();
       final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
       adapter = new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
 
@@ -122,7 +122,7 @@ public class DefaultRemoteEntityConnectionTest {
         }
       });
 
-      proxy.selectAll(Chinook.T_INVOICELINE);
+      proxy.selectAll(TestDomain.T_EMPLOYEE);
     }
     finally {
       if (registry != null) {

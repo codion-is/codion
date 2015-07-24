@@ -9,8 +9,8 @@ import org.jminor.common.model.SearchType;
 import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
@@ -21,43 +21,43 @@ import static org.junit.Assert.*;
 
 public class DefaultEntityTableSearchModelTest {
 
-  private final EntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+  private final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER);
   private final EntityTableSearchModel searchModel = tableModel.getSearchModel();
 
   public DefaultEntityTableSearchModelTest() {
-    EmpDept.init();
+    TestDomain.init();
   }
 
   @Test
   public void test() {
-    assertEquals(EmpDept.T_EMPLOYEE, searchModel.getEntityID());
+    assertEquals(TestDomain.T_EMPLOYEE, searchModel.getEntityID());
     searchModel.setSearchConjunction(Conjunction.OR);
     assertEquals(Conjunction.OR, searchModel.getSearchConjunction());
     assertEquals(9, searchModel.getPropertyFilterModels().size());
     assertEquals(8, searchModel.getPropertySearchModels().size());
 
     searchModel.refresh();
-    assertTrue(((ForeignKeySearchModel) searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() > 1);
+    assertTrue(((ForeignKeySearchModel) searchModel.getPropertySearchModel(TestDomain.EMPLOYEE_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() > 1);
     searchModel.clear();
-    assertTrue(((ForeignKeySearchModel) searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() == 0);
+    assertTrue(((ForeignKeySearchModel) searchModel.getPropertySearchModel(TestDomain.EMPLOYEE_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() == 0);
 
-    assertFalse(searchModel.isFilterEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK));
-    assertFalse(searchModel.isSearchEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK));
+    assertFalse(searchModel.isFilterEnabled(TestDomain.EMPLOYEE_DEPARTMENT_FK));
+    assertFalse(searchModel.isSearchEnabled(TestDomain.EMPLOYEE_DEPARTMENT_FK));
 
     assertFalse(searchModel.isSearchEnabled());
-    searchModel.setSearchEnabled(EmpDept.EMPLOYEE_DEPARTMENT_FK, true);
+    searchModel.setSearchEnabled(TestDomain.EMPLOYEE_DEPARTMENT_FK, true);
     assertTrue(searchModel.isSearchEnabled());
   }
 
   @Test
   public void getPropertyFilterModel() {
-    assertNotNull(searchModel.getPropertyFilterModel(EmpDept.EMPLOYEE_COMMISSION));
+    assertNotNull(searchModel.getPropertyFilterModel(TestDomain.EMPLOYEE_COMMISSION));
     assertNull(searchModel.getPropertyFilterModel("bla bla"));
   }
 
   @Test
   public void getPropertySearchModel() {
-    assertNotNull(searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION));
+    assertNotNull(searchModel.getPropertySearchModel(TestDomain.EMPLOYEE_COMMISSION));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -67,9 +67,9 @@ public class DefaultEntityTableSearchModelTest {
 
   @Test
   public void setFilterValue() {
-    searchModel.setFilterValue(EmpDept.EMPLOYEE_COMMISSION, 1400);
+    searchModel.setFilterValue(TestDomain.EMPLOYEE_COMMISSION, 1400);
     searchModel.setFilterValue("bla bla", "bla");
-    final ColumnSearchModel<Property> propertySearchModel = searchModel.getPropertyFilterModel(EmpDept.EMPLOYEE_COMMISSION);
+    final ColumnSearchModel<Property> propertySearchModel = searchModel.getPropertyFilterModel(TestDomain.EMPLOYEE_COMMISSION);
     assertTrue(propertySearchModel.isEnabled());
     assertEquals(SearchType.LIKE, propertySearchModel.getSearchType());
     assertEquals(1400, propertySearchModel.getUpperBound());
@@ -85,14 +85,14 @@ public class DefaultEntityTableSearchModelTest {
       }
     };
     searchModel.addSearchStateListener(listener);
-    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION).setEnabled(true);
+    searchModel.getPropertySearchModel(TestDomain.EMPLOYEE_COMMISSION).setEnabled(true);
     assertEquals(1, counter.get());
-    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION).setEnabled(false);
+    searchModel.getPropertySearchModel(TestDomain.EMPLOYEE_COMMISSION).setEnabled(false);
     assertEquals(2, counter.get());
-    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION).setUpperBound(1200d);
+    searchModel.getPropertySearchModel(TestDomain.EMPLOYEE_COMMISSION).setUpperBound(1200d);
     //automatically set enabled when upper bound is set
     assertEquals(4, counter.get());
-    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_COMMISSION).setSearchType(SearchType.GREATER_THAN);
+    searchModel.getPropertySearchModel(TestDomain.EMPLOYEE_COMMISSION).setSearchType(SearchType.GREATER_THAN);
     assertEquals(5, counter.get());
     searchModel.removeSearchStateListener(listener);
   }
@@ -100,11 +100,11 @@ public class DefaultEntityTableSearchModelTest {
   @Test
   public void testSearchState() {
     assertFalse(searchModel.hasSearchStateChanged());
-    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_JOB).setLikeValue("job");
+    searchModel.getPropertySearchModel(TestDomain.EMPLOYEE_JOB).setLikeValue("job");
     assertTrue(searchModel.hasSearchStateChanged());
-    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_JOB).setEnabled(false);
+    searchModel.getPropertySearchModel(TestDomain.EMPLOYEE_JOB).setEnabled(false);
     assertFalse(searchModel.hasSearchStateChanged());
-    searchModel.getPropertySearchModel(EmpDept.EMPLOYEE_JOB).setEnabled(true);
+    searchModel.getPropertySearchModel(TestDomain.EMPLOYEE_JOB).setEnabled(true);
     assertTrue(searchModel.hasSearchStateChanged());
     searchModel.rememberCurrentSearchState();
     assertFalse(searchModel.hasSearchStateChanged());

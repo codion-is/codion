@@ -9,10 +9,10 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
@@ -29,8 +29,8 @@ public final class DefaultEntityComboBoxModelTest {
   private final DefaultEntityComboBoxModel comboBoxModel;
 
   public DefaultEntityComboBoxModelTest() {
-    EmpDept.init();
-    comboBoxModel = new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    TestDomain.init();
+    comboBoxModel = new DefaultEntityComboBoxModel(TestDomain.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -40,50 +40,50 @@ public final class DefaultEntityComboBoxModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullConnectionProvider() {
-    new DefaultEntityComboBoxModel(EmpDept.T_EMPLOYEE, null);
+    new DefaultEntityComboBoxModel(TestDomain.T_EMPLOYEE, null);
   }
 
   @Test
   public void setForeignKeyFilterEntities() throws Exception {
     comboBoxModel.refresh();
-    final Entity blake = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "BLAKE");
-    comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_MGR_FK, Collections.singletonList(blake));
+    final Entity blake = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_NAME, "BLAKE");
+    comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMPLOYEE_MGR_FK, Collections.singletonList(blake));
     assertEquals(5, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       final Entity item = comboBoxModel.getElementAt(i);
-      if (item.isValueNull(EmpDept.EMPLOYEE_MGR_FK)) {
-        assertEquals("KING", item.getStringValue(EmpDept.EMPLOYEE_NAME));
+      if (item.isValueNull(TestDomain.EMPLOYEE_MGR_FK)) {
+        assertEquals("KING", item.getStringValue(TestDomain.EMPLOYEE_NAME));
       }
       else {
-        assertEquals(item.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK), blake);
+        assertEquals(item.getForeignKeyValue(TestDomain.EMPLOYEE_MGR_FK), blake);
       }
     }
 
-    final Entity sales = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
-    comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_DEPARTMENT_FK, Collections.singletonList(sales));
+    final Entity sales = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMPLOYEE_DEPARTMENT_FK, Collections.singletonList(sales));
     assertEquals(2, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       final Entity item = comboBoxModel.getElementAt(i);
-      assertEquals(item.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), sales);
-      assertEquals(item.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK), blake);
+      assertEquals(item.getForeignKeyValue(TestDomain.EMPLOYEE_DEPARTMENT_FK), sales);
+      assertEquals(item.getForeignKeyValue(TestDomain.EMPLOYEE_MGR_FK), blake);
     }
 
-    final Entity accounting = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "ACCOUNTING");
-    final EntityComboBoxModel deptComboBoxModel = comboBoxModel.createForeignKeyFilterComboBoxModel(EmpDept.EMPLOYEE_DEPARTMENT_FK);
+    final Entity accounting = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
+    final EntityComboBoxModel deptComboBoxModel = comboBoxModel.createForeignKeyFilterComboBoxModel(TestDomain.EMPLOYEE_DEPARTMENT_FK);
     deptComboBoxModel.setSelectedItem(accounting);
     assertEquals(3, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       final Entity item = comboBoxModel.getElementAt(i);
-      assertEquals(item.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK), accounting);
-      if (item.isValueNull(EmpDept.EMPLOYEE_MGR_FK)) {
-        assertEquals("KING", item.getStringValue(EmpDept.EMPLOYEE_NAME));
+      assertEquals(item.getForeignKeyValue(TestDomain.EMPLOYEE_DEPARTMENT_FK), accounting);
+      if (item.isValueNull(TestDomain.EMPLOYEE_MGR_FK)) {
+        assertEquals("KING", item.getStringValue(TestDomain.EMPLOYEE_NAME));
       }
       else {
-        assertEquals(item.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK), blake);
+        assertEquals(item.getForeignKeyValue(TestDomain.EMPLOYEE_MGR_FK), blake);
       }
     }
     for (final Entity employee : comboBoxModel.getAllItems()) {
-      if (employee.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK).equals(accounting)) {
+      if (employee.getForeignKeyValue(TestDomain.EMPLOYEE_DEPARTMENT_FK).equals(accounting)) {
         comboBoxModel.setSelectedItem(employee);
         break;
       }
@@ -93,7 +93,7 @@ public final class DefaultEntityComboBoxModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void setEntitySelectCriteriaEntityIDMismatch() {
-    comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_DEPARTMENT));
+    comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT));
   }
 
   @Test
@@ -104,7 +104,7 @@ public final class DefaultEntityComboBoxModelTest {
   @Test
   public void setSelectedEntityByPrimaryKey() throws DatabaseException {
     comboBoxModel.refresh();
-    final Entity clark = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "CLARK");
+    final Entity clark = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_NAME, "CLARK");
     comboBoxModel.setSelectedEntityByPrimaryKey(clark.getPrimaryKey());
     assertEquals(clark, comboBoxModel.getSelectedValue());
     comboBoxModel.setSelectedItem(null);
@@ -112,8 +112,8 @@ public final class DefaultEntityComboBoxModelTest {
     comboBoxModel.setFilterCriteria(new FilterCriteria.RejectAllCriteria<org.jminor.framework.domain.Entity>());
     comboBoxModel.setSelectedEntityByPrimaryKey(clark.getPrimaryKey());
     assertEquals(clark, comboBoxModel.getSelectedValue());
-    final Entity.Key nobodyPK = Entities.key(EmpDept.T_EMPLOYEE);
-    nobodyPK.setValue(EmpDept.EMPLOYEE_ID, -1);
+    final Entity.Key nobodyPK = Entities.key(TestDomain.T_EMPLOYEE);
+    nobodyPK.setValue(TestDomain.EMPLOYEE_ID, -1);
     comboBoxModel.setSelectedEntityByPrimaryKey(nobodyPK);
     assertEquals(clark, comboBoxModel.getSelectedValue());
   }
@@ -133,7 +133,7 @@ public final class DefaultEntityComboBoxModelTest {
       }
     };
     comboBoxModel.addRefreshListener(refreshListener);
-    assertEquals(EmpDept.T_EMPLOYEE, comboBoxModel.getEntityID());
+    assertEquals(TestDomain.T_EMPLOYEE, comboBoxModel.getEntityID());
     comboBoxModel.setStaticData(false);
     comboBoxModel.toString();
     assertTrue(comboBoxModel.getSize() == 0);
@@ -142,16 +142,16 @@ public final class DefaultEntityComboBoxModelTest {
     assertTrue(comboBoxModel.getSize() > 0);
     assertFalse(comboBoxModel.isCleared());
 
-    final Entity clark = comboBoxModel.getConnectionProvider().getConnection().selectSingle(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME, "CLARK");
+    final Entity clark = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_NAME, "CLARK");
     comboBoxModel.setSelectedItem(clark);
     assertEquals(clark, comboBoxModel.getSelectedValue());
 
     comboBoxModel.clear();
     assertTrue(comboBoxModel.getSize() == 0);
 
-    comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(EmpDept.T_EMPLOYEE,
+    comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(TestDomain.T_EMPLOYEE,
             new SimpleCriteria<Property.ColumnProperty>(" ename = 'CLARK'")));
-    comboBoxModel.setForeignKeyFilterEntities(EmpDept.EMPLOYEE_DEPARTMENT_FK, null);
+    comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMPLOYEE_DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();
     assertEquals(1, comboBoxModel.getSize());
@@ -169,7 +169,7 @@ public final class DefaultEntityComboBoxModelTest {
     comboBoxModel.refresh();
     comboBoxModel.setSelectedItem(comboBoxModel.getElementAt(0));
     comboBoxModel.setSelectedItem("SCOTT");
-    assertEquals(comboBoxModel.getSelectedItem().getStringValue(EmpDept.EMPLOYEE_NAME), "SCOTT");
+    assertEquals(comboBoxModel.getSelectedItem().getStringValue(TestDomain.EMPLOYEE_NAME), "SCOTT");
   }
 
   @Test
@@ -211,11 +211,11 @@ public final class DefaultEntityComboBoxModelTest {
   @Test
   public void getEntity() {
     comboBoxModel.refresh();
-    final Entity.Key allenPK = Entities.key(EmpDept.T_EMPLOYEE);
-    allenPK.setValue(EmpDept.EMPLOYEE_ID, 1);
+    final Entity.Key allenPK = Entities.key(TestDomain.T_EMPLOYEE);
+    allenPK.setValue(TestDomain.EMPLOYEE_ID, 1);
     assertNotNull(comboBoxModel.getEntity(allenPK));
-    final Entity.Key nobodyPK = Entities.key(EmpDept.T_EMPLOYEE);
-    nobodyPK.setValue(EmpDept.EMPLOYEE_ID, -1);
+    final Entity.Key nobodyPK = Entities.key(TestDomain.T_EMPLOYEE);
+    nobodyPK.setValue(TestDomain.EMPLOYEE_ID, -1);
     assertNull(comboBoxModel.getEntity(nobodyPK));
   }
 }

@@ -8,7 +8,6 @@ import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.Test;
 
@@ -81,42 +80,42 @@ public class EntitiesTest {
 
   @Test
   public void entity() {
-    Chinook.init();
-    final Entity.Key key = Entities.key(Chinook.T_ALBUM);
-    key.setValue(Chinook.ALBUM_ALBUMID, 10l);
+    TestDomain.init();
+    final Entity.Key key = Entities.key(TestDomain.T_MASTER);
+    key.setValue(TestDomain.MASTER_ID, 10l);
 
-    final Entity album = Entities.entity(key);
-    assertEquals(Chinook.T_ALBUM, album.getEntityID());
-    assertTrue(album.containsValue(Chinook.ALBUM_ALBUMID));
-    assertEquals(10l, album.getValue(Chinook.ALBUM_ALBUMID));
+    final Entity master = Entities.entity(key);
+    assertEquals(TestDomain.T_MASTER, master.getEntityID());
+    assertTrue(master.containsValue(TestDomain.MASTER_ID));
+    assertEquals(10l, master.getValue(TestDomain.MASTER_ID));
   }
 
   @Test
   public void getProperties() {
-    EmpDept.init();
-    final Property id = Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID);
-    final Property location = Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_LOCATION);
-    final Property name = Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
-    final List<Property> properties = Entities.getProperties(EmpDept.T_DEPARTMENT, Arrays.asList(EmpDept.DEPARTMENT_LOCATION, EmpDept.DEPARTMENT_NAME));
+    TestDomain.init();
+    final Property id = Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID);
+    final Property location = Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_LOCATION);
+    final Property name = Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
+    final List<Property> properties = Entities.getProperties(TestDomain.T_DEPARTMENT, Arrays.asList(TestDomain.DEPARTMENT_LOCATION, TestDomain.DEPARTMENT_NAME));
     assertEquals(2, properties.size());
     assertFalse(properties.contains(id));
     assertTrue(properties.contains(location));
     assertTrue(properties.contains(name));
 
-    final Collection<Property> visibleProperties = Entities.getProperties(EmpDept.T_DEPARTMENT, false);
+    final Collection<Property> visibleProperties = Entities.getProperties(TestDomain.T_DEPARTMENT, false);
     assertEquals(3, visibleProperties.size());
     assertTrue(visibleProperties.contains(id));
     assertTrue(visibleProperties.contains(location));
     assertTrue(visibleProperties.contains(name));
 
-    final Collection<Property> allProperties = Entities.getProperties(EmpDept.T_DEPARTMENT, true);
+    final Collection<Property> allProperties = Entities.getProperties(TestDomain.T_DEPARTMENT, true);
     assertTrue(visibleProperties.containsAll(allProperties));
   }
 
   @Test
   public void getStringProvider() {
-    EmpDept.init();
-    assertNotNull(Entities.getStringProvider(EmpDept.T_DEPARTMENT));
+    TestDomain.init();
+    assertNotNull(Entities.getStringProvider(TestDomain.T_DEPARTMENT));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -186,11 +185,11 @@ public class EntitiesTest {
     assertFalse(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_LASTNAME)));
     assertTrue(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_EMAIL)));
 
-    EmpDept.init();
-    searchProperties = Entities.getSearchProperties(EmpDept.T_DEPARTMENT);
+    TestDomain.init();
+    searchProperties = Entities.getSearchProperties(TestDomain.T_DEPARTMENT);
     //should contain all string based properties
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME)));
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_LOCATION)));
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_LOCATION)));
   }
 
   @Test
@@ -201,45 +200,45 @@ public class EntitiesTest {
     assertTrue(searchPropertyIDs.contains(Chinook.CUSTOMER_LASTNAME));
     assertTrue(searchPropertyIDs.contains(Chinook.CUSTOMER_EMAIL));
 
-    EmpDept.init();
-    searchPropertyIDs = Entities.getSearchPropertyIDs(EmpDept.T_DEPARTMENT);
+    TestDomain.init();
+    searchPropertyIDs = Entities.getSearchPropertyIDs(TestDomain.T_DEPARTMENT);
     assertTrue(searchPropertyIDs.isEmpty());
   }
 
   @Test
   public void stringProvider() {
-    EmpDept.init();
-    final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
-    department.setValue(EmpDept.DEPARTMENT_ID, -10);
-    department.setValue(EmpDept.DEPARTMENT_LOCATION, "Reykjavik");
-    department.setValue(EmpDept.DEPARTMENT_NAME, "Sales");
+    TestDomain.init();
+    final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
+    department.setValue(TestDomain.DEPARTMENT_ID, -10);
+    department.setValue(TestDomain.DEPARTMENT_LOCATION, "Reykjavik");
+    department.setValue(TestDomain.DEPARTMENT_NAME, "Sales");
 
-    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
+    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
     final Date hiredate = new Date();
-    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
-    employee.setValue(EmpDept.EMPLOYEE_NAME, "Darri");
-    employee.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
+    employee.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, department);
+    employee.setValue(TestDomain.EMPLOYEE_NAME, "Darri");
+    employee.setValue(TestDomain.EMPLOYEE_HIREDATE, hiredate);
 
     final DateFormat dateFormat = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
 
-    Entities.StringProvider employeeToString = new Entities.StringProvider(EmpDept.EMPLOYEE_NAME)
-            .addText(" (department: ").addValue(EmpDept.EMPLOYEE_DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, EmpDept.DEPARTMENT_LOCATION).addText(", hiredate: ")
-            .addFormattedValue(EmpDept.EMPLOYEE_HIREDATE, dateFormat).addText(")");
+    Entities.StringProvider employeeToString = new Entities.StringProvider(TestDomain.EMPLOYEE_NAME)
+            .addText(" (department: ").addValue(TestDomain.EMPLOYEE_DEPARTMENT_FK).addText(", location: ")
+            .addForeignKeyValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
+            .addFormattedValue(TestDomain.EMPLOYEE_HIREDATE, dateFormat).addText(")");
 
     assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.toString(employee));
 
-    department.setValue(EmpDept.DEPARTMENT_LOCATION, null);
-    department.setValue(EmpDept.DEPARTMENT_NAME, null);
+    department.setValue(TestDomain.DEPARTMENT_LOCATION, null);
+    department.setValue(TestDomain.DEPARTMENT_NAME, null);
 
-    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, null);
-    employee.setValue(EmpDept.EMPLOYEE_NAME, null);
-    employee.setValue(EmpDept.EMPLOYEE_HIREDATE, null);
+    employee.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, null);
+    employee.setValue(TestDomain.EMPLOYEE_NAME, null);
+    employee.setValue(TestDomain.EMPLOYEE_HIREDATE, null);
 
-    employeeToString = new Entities.StringProvider(EmpDept.EMPLOYEE_NAME)
-            .addText(" (department: ").addValue(EmpDept.EMPLOYEE_DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, EmpDept.DEPARTMENT_LOCATION).addText(", hiredate: ")
-            .addFormattedValue(EmpDept.EMPLOYEE_HIREDATE, dateFormat).addText(")");
+    employeeToString = new Entities.StringProvider(TestDomain.EMPLOYEE_NAME)
+            .addText(" (department: ").addValue(TestDomain.EMPLOYEE_DEPARTMENT_FK).addText(", location: ")
+            .addForeignKeyValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
+            .addFormattedValue(TestDomain.EMPLOYEE_HIREDATE, dateFormat).addText(")");
 
     assertEquals(" (department: , location: , hiredate: )", employeeToString.toString(employee));
   }
@@ -301,20 +300,20 @@ public class EntitiesTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void validateTypeEntity() {
-    final Entity entity = Entities.entity(EntityTestDomain.T_DETAIL);
-    final Entity entity1 = Entities.entity(EntityTestDomain.T_DETAIL);
-    entity.setValue(EntityTestDomain.DETAIL_ENTITY_FK, entity1);
+    final Entity entity = Entities.entity(TestDomain.T_DETAIL);
+    final Entity entity1 = Entities.entity(TestDomain.T_DETAIL);
+    entity.setValue(TestDomain.DETAIL_ENTITY_FK, entity1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setValueDerived() {
-    final Entity entity = Entities.entity(EntityTestDomain.T_DETAIL);
-    entity.setValue(EntityTestDomain.DETAIL_INT_DERIVED, 10);
+    final Entity entity = Entities.entity(TestDomain.T_DETAIL);
+    entity.setValue(TestDomain.DETAIL_INT_DERIVED, 10);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setValueValueList() {
-    final Entity entity = Entities.entity(EntityTestDomain.T_DETAIL);
-    entity.setValue(EntityTestDomain.DETAIL_INT_VALUE_LIST, -10);
+    final Entity entity = Entities.entity(TestDomain.T_DETAIL);
+    entity.setValue(TestDomain.DETAIL_INT_VALUE_LIST, -10);
   }
 }

@@ -6,9 +6,9 @@ package org.jminor.framework.client.ui;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.client.model.DefaultPropertySearchModel;
 import org.jminor.framework.client.model.PropertySearchModel;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -21,13 +21,13 @@ public class PropertySearchPanelTest {
 
   @Before
   public void setUp() {
-    EmpDept.init();
+    TestDomain.init();
   }
 
   @Test
   public void createWithInitializedModel() {
     final PropertySearchModel<Property.ColumnProperty> searchModel =
-            new DefaultPropertySearchModel(Entities.getColumnProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME));
+            new DefaultPropertySearchModel(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME));
     searchModel.setUpperBound("DALLAS");
     searchModel.setSearchType(SearchType.LIKE);
     searchModel.setEnabled(true);

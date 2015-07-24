@@ -1,0 +1,49 @@
+package org.jminor.framework.server;
+
+import org.jminor.common.model.User;
+import org.jminor.common.server.ClientInfo;
+import org.jminor.common.server.LoginProxy;
+import org.jminor.common.server.ServerException;
+import org.jminor.common.server.ServerUtil;
+
+import java.util.HashMap;
+import java.util.Map;
+
+public final class TestLoginProxy implements LoginProxy {
+
+  private final Map<String, String> users = new HashMap<>();
+  private final User databaseUser = new User("scott", "tiger");
+
+  public TestLoginProxy() {
+    users.put("scott", "tiger");
+    users.put("john", "hello");
+    users.put("helen", "juno");
+  }
+
+  @Override
+  public String getClientTypeID() {
+    return "TestLoginProxy";
+  }
+
+  @Override
+  public ClientInfo doLogin(final ClientInfo clientInfo) throws ServerException.LoginException {
+    authenticateUser(clientInfo.getUser());
+
+    return ServerUtil.clientInfo(clientInfo.getConnectionInfo(), databaseUser);
+  }
+
+  @Override
+  public void doLogout(final ClientInfo clientInfo) {}
+
+  @Override
+  public void close() {
+    users.clear();
+  }
+
+  private void authenticateUser(final User user) throws ServerException.LoginException {
+    final String password = users.get(user.getUsername());
+    if (password == null || !password.equals(user.getPassword())) {
+      throw ServerException.loginException("Wrong username or password");
+    }
+  }
+}

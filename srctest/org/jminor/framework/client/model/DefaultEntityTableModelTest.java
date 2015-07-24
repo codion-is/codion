@@ -11,12 +11,11 @@ import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
@@ -40,30 +39,29 @@ public final class DefaultEntityTableModelTest {
   private final DefaultEntityTableModel testModel = new EntityTableModelTmp();
 
   static {
-    EntityTestDomain.init();
-    EmpDept.init();
+    TestDomain.init();
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void nullSearchModel() {
-    new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, null);
+    new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void nonMatchingSearchModelEntityID() {
-    final EntityTableSearchModel searchModel = new DefaultEntityTableSearchModel(EmpDept.T_DEPARTMENT, null);
-    new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, null, null, searchModel);
+    final EntityTableSearchModel searchModel = new DefaultEntityTableSearchModel(TestDomain.T_DEPARTMENT, null);
+    new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, null, null, searchModel);
   }
 
   @Test
   public void setSelectedByPrimaryKeys() {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
     tableModel.refresh();
 
-    final Entity.Key pk1 = Entities.key(EmpDept.T_EMPLOYEE);
-    pk1.setValue(EmpDept.EMPLOYEE_ID, 1);
-    final Entity.Key pk2 = Entities.key(EmpDept.T_EMPLOYEE);
-    pk2.setValue(EmpDept.EMPLOYEE_ID, 2);
+    final Entity.Key pk1 = Entities.key(TestDomain.T_EMPLOYEE);
+    pk1.setValue(TestDomain.EMPLOYEE_ID, 1);
+    final Entity.Key pk2 = Entities.key(TestDomain.T_EMPLOYEE);
+    pk2.setValue(TestDomain.EMPLOYEE_ID, 2);
 
     tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk1));
     final Entity selectedPK1 = tableModel.getSelectionModel().getSelectedItem();
@@ -86,7 +84,7 @@ public final class DefaultEntityTableModelTest {
 
   @Test
   public void getSelectedEntitiesIterator() {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
     tableModel.refresh();
 
     tableModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0, 3, 5));
@@ -98,13 +96,13 @@ public final class DefaultEntityTableModelTest {
 
   @Test(expected = IllegalStateException.class)
   public void updateNoEditModel() throws CancelException, ValidationException, DatabaseException {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
     tableModel.update(new ArrayList<Entity>());
   }
 
   @Test(expected = IllegalStateException.class)
   public void deleteSelectedNoEditModel() throws CancelException, DatabaseException {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
     tableModel.refresh();
     tableModel.getSelectionModel().setSelectedIndex(0);
     tableModel.deleteSelected();
@@ -112,24 +110,24 @@ public final class DefaultEntityTableModelTest {
 
   @Test
   public void addOnInsert() throws CancelException, DatabaseException, ValidationException {
-    final DefaultEntityTableModel deptModel = new DefaultEntityTableModel(EmpDept.T_DEPARTMENT, testModel.getConnectionProvider());
-    deptModel.setEditModel(new DefaultEntityEditModel(EmpDept.T_DEPARTMENT, testModel.getConnectionProvider()));
+    final DefaultEntityTableModel deptModel = new DefaultEntityTableModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
+    deptModel.setEditModel(new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider()));
     deptModel.refresh();
 
     deptModel.setAddEntitiesOnInsert(true);
-    final Entity dept = Entities.entity(EmpDept.T_DEPARTMENT);
-    dept.setValue(EmpDept.DEPARTMENT_ID, -10);
-    dept.setValue(EmpDept.DEPARTMENT_LOCATION, "Nowhere");
-    dept.setValue(EmpDept.DEPARTMENT_NAME, "Noname");
+    final Entity dept = Entities.entity(TestDomain.T_DEPARTMENT);
+    dept.setValue(TestDomain.DEPARTMENT_ID, -10);
+    dept.setValue(TestDomain.DEPARTMENT_LOCATION, "Nowhere");
+    dept.setValue(TestDomain.DEPARTMENT_NAME, "Noname");
     final int count = deptModel.getRowCount();
     deptModel.getEditModel().insert(Collections.singletonList(dept));
     assertEquals(count + 1, deptModel.getRowCount());
 
     deptModel.setAddEntitiesOnInsert(false);
-    final Entity dept2 = Entities.entity(EmpDept.T_DEPARTMENT);
-    dept2.setValue(EmpDept.DEPARTMENT_ID, -20);
-    dept2.setValue(EmpDept.DEPARTMENT_LOCATION, "Nowhere2");
-    dept2.setValue(EmpDept.DEPARTMENT_NAME, "Noname2");
+    final Entity dept2 = Entities.entity(TestDomain.T_DEPARTMENT);
+    dept2.setValue(TestDomain.DEPARTMENT_ID, -20);
+    dept2.setValue(TestDomain.DEPARTMENT_LOCATION, "Nowhere2");
+    dept2.setValue(TestDomain.DEPARTMENT_NAME, "Noname2");
     deptModel.getEditModel().insert(Collections.singletonList(dept2));
     assertEquals(count + 1, deptModel.getRowCount());
 
@@ -141,14 +139,14 @@ public final class DefaultEntityTableModelTest {
 
   @Test
   public void removeOnDelete() throws CancelException, DatabaseException {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
-    tableModel.setEditModel(new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider()));
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
+    tableModel.setEditModel(new DefaultEntityEditModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider()));
     tableModel.refresh();
 
-    final Entity.Key pk1 = Entities.key(EmpDept.T_EMPLOYEE);
-    pk1.setValue(EmpDept.EMPLOYEE_ID, 1);
-    final Entity.Key pk2 = Entities.key(EmpDept.T_EMPLOYEE);
-    pk2.setValue(EmpDept.EMPLOYEE_ID, 2);
+    final Entity.Key pk1 = Entities.key(TestDomain.T_EMPLOYEE);
+    pk1.setValue(TestDomain.EMPLOYEE_ID, 1);
+    final Entity.Key pk2 = Entities.key(TestDomain.T_EMPLOYEE);
+    pk2.setValue(TestDomain.EMPLOYEE_ID, 2);
     try {
       tableModel.getConnectionProvider().getConnection().beginTransaction();
       tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk1));
@@ -173,58 +171,58 @@ public final class DefaultEntityTableModelTest {
 
   @Test
   public void getEntityByPrimaryKey() {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
     tableModel.refresh();
 
-    final Entity.Key pk1 = Entities.key(EmpDept.T_EMPLOYEE);
-    pk1.setValue(EmpDept.EMPLOYEE_ID, 1);
+    final Entity.Key pk1 = Entities.key(TestDomain.T_EMPLOYEE);
+    pk1.setValue(TestDomain.EMPLOYEE_ID, 1);
     assertNotNull(tableModel.getEntityByPrimaryKey(pk1));
 
-    final Entity.Key pk2 = Entities.key(EmpDept.T_EMPLOYEE);
-    pk2.setValue(EmpDept.EMPLOYEE_ID, -66);
+    final Entity.Key pk2 = Entities.key(TestDomain.T_EMPLOYEE);
+    pk2.setValue(TestDomain.EMPLOYEE_ID, -66);
     assertNull(tableModel.getEntityByPrimaryKey(pk2));
   }
 
   @Test
   public void indexOf() {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(EmpDept.T_EMPLOYEE, testModel.getConnectionProvider());
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
     tableModel.refresh();
-    tableModel.setSortingDirective(EmpDept.EMPLOYEE_NAME, SortingDirective.ASCENDING, false);
-    assertEquals(SortingDirective.ASCENDING, tableModel.getSortingDirective(EmpDept.EMPLOYEE_NAME));
+    tableModel.setSortingDirective(TestDomain.EMPLOYEE_NAME, SortingDirective.ASCENDING, false);
+    assertEquals(SortingDirective.ASCENDING, tableModel.getSortingDirective(TestDomain.EMPLOYEE_NAME));
 
-    final Entity.Key pk1 = Entities.key(EmpDept.T_EMPLOYEE);
-    pk1.setValue(EmpDept.EMPLOYEE_ID, 10);//ADAMS
+    final Entity.Key pk1 = Entities.key(TestDomain.T_EMPLOYEE);
+    pk1.setValue(TestDomain.EMPLOYEE_ID, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));
 
-    final Entity.Key pk2 = Entities.key(EmpDept.T_EMPLOYEE);
-    pk2.setValue(EmpDept.EMPLOYEE_ID, -66);
+    final Entity.Key pk2 = Entities.key(TestDomain.T_EMPLOYEE);
+    pk2.setValue(TestDomain.EMPLOYEE_ID, -66);
     assertEquals(-1, tableModel.indexOf(pk2));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setEditModelNullValue() {
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     tableModel.setEditModel(null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setEditModelWrongEntityID() {
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_MASTER, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_MASTER, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     tableModel.setEditModel(editModel);
   }
 
   @Test(expected = IllegalStateException.class)
   public void setEditModelAlreadySet() {
     assertTrue(testModel.hasEditModel());
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     testModel.setEditModel(editModel);
   }
 
   @Test
   public void setAndGetEditModel() {
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     assertFalse(tableModel.hasEditModel());
     tableModel.setEditModel(editModel);
     assertTrue(tableModel.hasEditModel());
@@ -233,14 +231,14 @@ public final class DefaultEntityTableModelTest {
 
   @Test(expected = IllegalStateException.class)
   public void getEditModelNoEditModelSet() {
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     tableModel.getEditModel();
   }
 
   @Test
   public void isUpdateAllowed() {
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     assertFalse(tableModel.isUpdateAllowed());
     tableModel.setEditModel(editModel);
     assertTrue(tableModel.isUpdateAllowed());
@@ -250,8 +248,8 @@ public final class DefaultEntityTableModelTest {
 
   @Test
   public void isDeleteAllowed() {
-    final EntityTableModel tableModel = new DefaultEntityTableModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     assertFalse(tableModel.isDeleteAllowed());
     tableModel.setEditModel(editModel);
     assertTrue(tableModel.isDeleteAllowed());
@@ -261,7 +259,7 @@ public final class DefaultEntityTableModelTest {
 
   @Test
   public void getEntityID() {
-    assertEquals(EntityTestDomain.T_DETAIL, testModel.getEntityID());
+    assertEquals(TestDomain.T_DETAIL, testModel.getEntityID());
   }
 
   @Test
@@ -282,23 +280,23 @@ public final class DefaultEntityTableModelTest {
   @Test
   public void testFiltering() {
     testModel.refresh();
-    final ColumnSearchModel<Property> filterModel = testModel.getSearchModel().getPropertyFilterModel(EntityTestDomain.DETAIL_STRING);
+    final ColumnSearchModel<Property> filterModel = testModel.getSearchModel().getPropertyFilterModel(TestDomain.DETAIL_STRING);
     filterModel.setLikeValue("a");
     testModel.filterContents();
   }
 
   @Test
   public void getPropertyColumnIndex() {
-    assertEquals(0, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_INT));
-    assertEquals(1, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_DOUBLE));
-    assertEquals(2, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_STRING));
-    assertEquals(3, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_DATE));
-    assertEquals(4, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_TIMESTAMP));
-    assertEquals(5, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_BOOLEAN));
-    assertEquals(6, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_BOOLEAN_NULLABLE));
-    assertEquals(7, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_ENTITY_FK));
-    assertEquals(8, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_MASTER_NAME));
-    assertEquals(9, testModel.getPropertyColumnIndex(EntityTestDomain.DETAIL_MASTER_CODE));
+    assertEquals(0, testModel.getPropertyColumnIndex(TestDomain.DETAIL_INT));
+    assertEquals(1, testModel.getPropertyColumnIndex(TestDomain.DETAIL_DOUBLE));
+    assertEquals(2, testModel.getPropertyColumnIndex(TestDomain.DETAIL_STRING));
+    assertEquals(3, testModel.getPropertyColumnIndex(TestDomain.DETAIL_DATE));
+    assertEquals(4, testModel.getPropertyColumnIndex(TestDomain.DETAIL_TIMESTAMP));
+    assertEquals(5, testModel.getPropertyColumnIndex(TestDomain.DETAIL_BOOLEAN));
+    assertEquals(6, testModel.getPropertyColumnIndex(TestDomain.DETAIL_BOOLEAN_NULLABLE));
+    assertEquals(7, testModel.getPropertyColumnIndex(TestDomain.DETAIL_ENTITY_FK));
+    assertEquals(8, testModel.getPropertyColumnIndex(TestDomain.DETAIL_MASTER_NAME));
+    assertEquals(9, testModel.getPropertyColumnIndex(TestDomain.DETAIL_MASTER_CODE));
   }
 
   @Test(expected = IllegalStateException.class)
@@ -317,7 +315,7 @@ public final class DefaultEntityTableModelTest {
     testModel.refresh();
     testModel.getSelectionModel().setSelectedIndex(0);
     final Entity entity = testModel.getSelectionModel().getSelectedItem();
-    entity.setValue(EntityTestDomain.DETAIL_STRING, "hello");
+    entity.setValue(TestDomain.DETAIL_STRING, "hello");
     testModel.update(Collections.singletonList(entity));
   }
 
@@ -328,7 +326,7 @@ public final class DefaultEntityTableModelTest {
     testModel.refresh();
     testModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0, 1));
     final List<Entity> entities = testModel.getSelectionModel().getSelectedItems();
-    EntityUtil.setPropertyValue(EntityTestDomain.DETAIL_STRING, "hello", entities);
+    EntityUtil.setPropertyValue(TestDomain.DETAIL_STRING, "hello", entities);
     testModel.update(entities);
   }
 
@@ -365,7 +363,7 @@ public final class DefaultEntityTableModelTest {
 
   @Test
   public void columnModel() {
-    final Property property = Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING);
+    final Property property = Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING);
     final TableColumn column = testModel.getColumnModel().getTableColumn(property);
     assertEquals(property, column.getIdentifier());
   }
@@ -373,7 +371,7 @@ public final class DefaultEntityTableModelTest {
   @Test
   public void getValues() {
     testModel.refresh();
-    final Property property = Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING);
+    final Property property = Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING);
     final Collection values = testModel.getValues(property, false);
     assertEquals(5, values.size());
     assertTrue(values.contains("a"));
@@ -386,34 +384,34 @@ public final class DefaultEntityTableModelTest {
 
   @Test
   public void testSortComparator() {
-    final Property masterFKProperty = Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_ENTITY_FK);
+    final Property masterFKProperty = Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ENTITY_FK);
     final Comparator comparator = ((DefaultEntityTableModel.DefaultEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(masterFKProperty);
-    assertEquals(comparator, Entities.getComparator(EntityTestDomain.T_MASTER));
+    assertEquals(comparator, Entities.getComparator(TestDomain.T_MASTER));
   }
 
   @Test
   public void getEntitiesByPropertyValues() {
     testModel.refresh();
     final Map<String, Object> propValues = new HashMap<>();
-    propValues.put(EntityTestDomain.DETAIL_STRING, "b");
+    propValues.put(TestDomain.DETAIL_STRING, "b");
     assertEquals(1, testModel.getEntitiesByPropertyValues(propValues).size());
-    propValues.put(EntityTestDomain.DETAIL_STRING, "zz");
+    propValues.put(TestDomain.DETAIL_STRING, "zz");
     assertTrue(testModel.getEntitiesByPropertyValues(propValues).isEmpty());
   }
 
   @Test
   public void getEntitiesByPrimaryKeys() {
     testModel.refresh();
-    Entity tmpEnt = Entities.entity(EntityTestDomain.T_DETAIL);
-    tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 3l);
-    assertEquals("c", testModel.getEntityByPrimaryKey(tmpEnt.getPrimaryKey()).getValue(EntityTestDomain.DETAIL_STRING));
+    Entity tmpEnt = Entities.entity(TestDomain.T_DETAIL);
+    tmpEnt.setValue(TestDomain.DETAIL_ID, 3l);
+    assertEquals("c", testModel.getEntityByPrimaryKey(tmpEnt.getPrimaryKey()).getValue(TestDomain.DETAIL_STRING));
     final List<Entity.Key> keys = new ArrayList<>();
     keys.add(tmpEnt.getPrimaryKey());
-    tmpEnt = Entities.entity(EntityTestDomain.T_DETAIL);
-    tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 2l);
+    tmpEnt = Entities.entity(TestDomain.T_DETAIL);
+    tmpEnt.setValue(TestDomain.DETAIL_ID, 2l);
     keys.add(tmpEnt.getPrimaryKey());
-    tmpEnt = Entities.entity(EntityTestDomain.T_DETAIL);
-    tmpEnt.setValue(EntityTestDomain.DETAIL_ID, 1l);
+    tmpEnt = Entities.entity(TestDomain.T_DETAIL);
+    tmpEnt.setValue(TestDomain.DETAIL_ID, 1l);
     keys.add(tmpEnt.getPrimaryKey());
 
     final Collection<Entity> entities = testModel.getEntitiesByPrimaryKeys(keys);
@@ -427,7 +425,7 @@ public final class DefaultEntityTableModelTest {
 
   @Test(expected = IllegalStateException.class)
   public void noVisibleColumns() {
-    new DefaultEntityTableModel(EntityTestDomain.T_MASTER, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    new DefaultEntityTableModel(TestDomain.T_MASTER, LocalEntityConnectionTest.CONNECTION_PROVIDER);
   }
 
   @Test
@@ -435,9 +433,9 @@ public final class DefaultEntityTableModelTest {
     testModel.clearPreferences();
 
     final EntityTableModelTmp tableModel = new EntityTableModelTmp();
-    assertTrue(tableModel.getColumnModel().isColumnVisible(Entities.getColumnProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING)));
+    assertTrue(tableModel.getColumnModel().isColumnVisible(Entities.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING)));
 
-    tableModel.getColumnModel().setColumnVisible(Entities.getColumnProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING), false);
+    tableModel.getColumnModel().setColumnVisible(Entities.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING), false);
     tableModel.getColumnModel().moveColumn(1, 0);//double to 0, int to 1
     TableColumn column = tableModel.getColumnModel().getColumn(3);
     column.setWidth(150);//timestamp
@@ -447,9 +445,9 @@ public final class DefaultEntityTableModelTest {
     tableModel.savePreferences();
 
     final EntityTableModelTmp model = new EntityTableModelTmp();
-    assertFalse(model.getColumnModel().isColumnVisible(Entities.getColumnProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING)));
-    assertTrue(model.getPropertyColumnIndex(EntityTestDomain.DETAIL_DOUBLE) == 0);
-    assertTrue(model.getPropertyColumnIndex(EntityTestDomain.DETAIL_INT) == 1);
+    assertFalse(model.getColumnModel().isColumnVisible(Entities.getColumnProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING)));
+    assertTrue(model.getPropertyColumnIndex(TestDomain.DETAIL_DOUBLE) == 0);
+    assertTrue(model.getPropertyColumnIndex(TestDomain.DETAIL_INT) == 1);
     column = model.getColumnModel().getColumn(3);
     assertEquals(150, column.getPreferredWidth());
     column = model.getColumnModel().getColumn(5);
@@ -464,8 +462,8 @@ public final class DefaultEntityTableModelTest {
     private final Entity[] entities = initTestEntities(new Entity[5]);
 
     public EntityTableModelTmp() {
-      super(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-      setEditModel(new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER));
+      super(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+      setEditModel(new DefaultEntityEditModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER));
     }
     @Override
     protected List<Entity> performQuery(final Criteria criteria) {
@@ -476,10 +474,10 @@ public final class DefaultEntityTableModelTest {
   private static Entity[] initTestEntities(final Entity[] testEntities) {
     final String[] stringValues = new String[]{"a", "b", "c", "d", "e"};
     for (int i = 0; i < testEntities.length; i++) {
-      testEntities[i] = Entities.entity(EntityTestDomain.T_DETAIL);
-      testEntities[i].setValue(EntityTestDomain.DETAIL_ID, (long) i+1);
-      testEntities[i].setValue(EntityTestDomain.DETAIL_INT, i+1);
-      testEntities[i].setValue(EntityTestDomain.DETAIL_STRING, stringValues[i]);
+      testEntities[i] = Entities.entity(TestDomain.T_DETAIL);
+      testEntities[i].setValue(TestDomain.DETAIL_ID, (long) i+1);
+      testEntities[i].setValue(TestDomain.DETAIL_INT, i+1);
+      testEntities[i].setValue(TestDomain.DETAIL_STRING, stringValues[i]);
     }
 
     return testEntities;

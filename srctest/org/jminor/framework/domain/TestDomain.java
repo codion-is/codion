@@ -5,15 +5,16 @@ package org.jminor.framework.domain;
 
 import org.jminor.common.model.Item;
 
+import java.awt.Color;
 import java.sql.Types;
 import java.util.Arrays;
 import java.util.Comparator;
 import java.util.List;
 import java.util.Map;
 
-public class EntityTestDomain {
+public final class TestDomain {
 
-  private EntityTestDomain() {}
+  private TestDomain() {}
   public static void init() {}
 
   public static final String T_MASTER = "test.master_entity";
@@ -44,7 +45,7 @@ public class EntityTestDomain {
 
   static {
     Entities.define(T_MASTER,
-            Properties.primaryKeyProperty(MASTER_ID),
+            Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
             Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
             Properties.columnProperty(MASTER_CODE, Types.INTEGER))
             .setComparator(new Comparator<Entity>() {
@@ -72,7 +73,7 @@ public class EntityTestDomain {
             Properties.columnProperty(DETAIL_BOOLEAN_NULLABLE, Types.BOOLEAN, DETAIL_BOOLEAN_NULLABLE)
                     .setDefaultValue(true),
             Properties.foreignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
-                    Properties.columnProperty(DETAIL_ENTITY_ID)),
+                    Properties.columnProperty(DETAIL_ENTITY_ID, Types.BIGINT)),
             Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,
                     Entities.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
             Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
@@ -93,5 +94,73 @@ public class EntityTestDomain {
             .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
             .setSmallDataset(true)
             .setStringProvider(new Entities.StringProvider(DETAIL_STRING));
+  }
+
+  public static final String T_DEPARTMENT = "unittest.scott.dept";
+  public static final String DEPARTMENT_ID = "deptno";
+  public static final String DEPARTMENT_NAME = "dname";
+  public static final String DEPARTMENT_LOCATION = "loc";
+
+  public static final String T_EMPLOYEE = "unittest.scott.emp";
+  public static final String EMPLOYEE_ID = "empno";
+  public static final String EMPLOYEE_NAME = "ename";
+  public static final String EMPLOYEE_JOB = "job";
+  public static final String EMPLOYEE_MGR = "mgr";
+  public static final String EMPLOYEE_HIREDATE = "hiredate";
+  public static final String EMPLOYEE_SALARY = "sal";
+  public static final String EMPLOYEE_COMMISSION = "comm";
+  public static final String EMPLOYEE_DEPARTMENT = "deptno";
+  public static final String EMPLOYEE_DEPARTMENT_FK = "dept_fk";
+  public static final String EMPLOYEE_MGR_FK = "mgr_fk";
+  public static final String EMPLOYEE_DEPARTMENT_LOCATION = "location";
+
+  static {
+    Entities.define(T_DEPARTMENT, "scott.dept",
+            Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
+                    .setUpdatable(true).setNullable(false),
+            Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
+                    .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
+            Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
+                    .setPreferredColumnWidth(150).setMaxLength(13))
+            .setSmallDataset(true)
+            .setOrderByClause(DEPARTMENT_NAME)
+            .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
+            .setCaption("Department");
+
+    Entities.define(T_EMPLOYEE, "scott.emp",
+            Properties.primaryKeyProperty(EMPLOYEE_ID, Types.INTEGER, EMPLOYEE_ID),
+            Properties.columnProperty(EMPLOYEE_NAME, Types.VARCHAR, EMPLOYEE_NAME)
+                    .setMaxLength(10).setNullable(false),
+            Properties.foreignKeyProperty(EMPLOYEE_DEPARTMENT_FK, EMPLOYEE_DEPARTMENT_FK, T_DEPARTMENT,
+                    Properties.columnProperty(EMPLOYEE_DEPARTMENT))
+                    .setNullable(false),
+            Properties.columnProperty(EMPLOYEE_JOB, Types.VARCHAR, EMPLOYEE_JOB)
+                    .setMaxLength(9),
+            Properties.columnProperty(EMPLOYEE_SALARY, Types.DOUBLE, EMPLOYEE_SALARY)
+                    .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
+            Properties.columnProperty(EMPLOYEE_COMMISSION, Types.DOUBLE, EMPLOYEE_COMMISSION)
+                    .setMin(100).setMax(2000).setMaximumFractionDigits(2),
+            Properties.foreignKeyProperty(EMPLOYEE_MGR_FK, EMPLOYEE_MGR_FK, T_EMPLOYEE,
+                    Properties.columnProperty(EMPLOYEE_MGR)),
+            Properties.columnProperty(EMPLOYEE_HIREDATE, Types.DATE, EMPLOYEE_HIREDATE)
+                    .setNullable(false),
+            Properties.denormalizedViewProperty(EMPLOYEE_DEPARTMENT_LOCATION, EMPLOYEE_DEPARTMENT_FK,
+                    Entities.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
+                    DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
+            .setKeyGenerator(Entities.incrementKeyGenerator("scott.emp", EMPLOYEE_ID))
+            .setOrderByClause(EMPLOYEE_DEPARTMENT + ", " + EMPLOYEE_NAME)
+            .setStringProvider(new Entities.StringProvider(EMPLOYEE_NAME))
+            .setCaption("Employee")
+            .setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
+              /*provide a custom background color for managers*/
+              @Override
+              public Color getBackgroundColor(final Entity entity, final Property property) {
+                if (property.is(EMPLOYEE_JOB) && "MANAGER".equals(entity.getValue(EMPLOYEE_JOB))) {
+                  return Color.CYAN;
+                }
+
+                return null;
+              }
+            });
   }
 }

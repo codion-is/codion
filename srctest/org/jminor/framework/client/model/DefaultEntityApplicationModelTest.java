@@ -7,7 +7,7 @@ import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
 import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
@@ -72,13 +72,13 @@ public final class DefaultEntityApplicationModelTest {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(LocalEntityConnectionTest.CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
-        EmpDept.init();
+        TestDomain.init();
       }
     };
     model.addEntityModels(new DeptModel(model.getConnectionProvider()));
-    final EntityModel deptModel = model.getEntityModel(EmpDept.T_DEPARTMENT);
+    final EntityModel deptModel = model.getEntityModel(TestDomain.T_DEPARTMENT);
     assertNotNull(deptModel);
-    deptModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().setQueryCriteriaRequired(false);
+    deptModel.getDetailModel(TestDomain.T_EMPLOYEE).getTableModel().setQueryCriteriaRequired(false);
     assertEquals(1, model.getEntityModels().size());
     assertNotNull(deptModel);
     assertEquals(User.UNIT_TEST_USER, model.getUser());
@@ -111,10 +111,10 @@ public final class DefaultEntityApplicationModelTest {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(LocalEntityConnectionTest.CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
-        EmpDept.init();
+        TestDomain.init();
       }
     };
-    model.getEntityModel(EmpDept.T_DEPARTMENT);
+    model.getEntityModel(TestDomain.T_DEPARTMENT);
   }
 
   @Test
@@ -122,12 +122,12 @@ public final class DefaultEntityApplicationModelTest {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(LocalEntityConnectionTest.CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
-        EmpDept.init();
+        TestDomain.init();
       }
     };
     final DeptModel departmentModel = new DeptModel(model.getConnectionProvider());
     model.addEntityModels(departmentModel);
-    assertEquals(departmentModel, model.getEntityModel(EmpDept.T_DEPARTMENT));
+    assertEquals(departmentModel, model.getEntityModel(TestDomain.T_DEPARTMENT));
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -135,7 +135,7 @@ public final class DefaultEntityApplicationModelTest {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(LocalEntityConnectionTest.CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
-        EmpDept.init();
+        TestDomain.init();
       }
     };
     model.getEntityModel(DeptModel.class);
@@ -146,7 +146,7 @@ public final class DefaultEntityApplicationModelTest {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(LocalEntityConnectionTest.CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
-        EmpDept.init();
+        TestDomain.init();
       }
     };
     final DeptModel departmentModel = new DeptModel(model.getConnectionProvider());
@@ -159,18 +159,18 @@ public final class DefaultEntityApplicationModelTest {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(LocalEntityConnectionTest.CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
-        EmpDept.init();
+        TestDomain.init();
       }
     };
     final DeptModel departmentModel = new DeptModel(model.getConnectionProvider());
     model.addEntityModels(departmentModel);
 
-    assertTrue(model.containsEntityModel(EmpDept.T_DEPARTMENT));
+    assertTrue(model.containsEntityModel(TestDomain.T_DEPARTMENT));
     assertTrue(model.containsEntityModel(DeptModel.class));
     assertTrue(model.containsEntityModel(departmentModel));
 
-    assertFalse(model.containsEntityModel(EmpDept.T_EMPLOYEE));
-    assertFalse(model.containsEntityModel(departmentModel.getDetailModel(EmpDept.T_EMPLOYEE)));
+    assertFalse(model.containsEntityModel(TestDomain.T_EMPLOYEE));
+    assertFalse(model.containsEntityModel(departmentModel.getDetailModel(TestDomain.T_EMPLOYEE)));
   }
 
   @Test
@@ -178,11 +178,11 @@ public final class DefaultEntityApplicationModelTest {
     final DefaultEntityApplicationModel model = new DefaultEntityApplicationModel(LocalEntityConnectionTest.CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
-        EmpDept.init();
+        TestDomain.init();
       }
     };
-    final EntityModel deptModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, model.getConnectionProvider());
-    final EntityModel empModel = new DefaultEntityModel(EmpDept.T_EMPLOYEE, model.getConnectionProvider());
+    final EntityModel deptModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, model.getConnectionProvider());
+    final EntityModel empModel = new DefaultEntityModel(TestDomain.T_EMPLOYEE, model.getConnectionProvider());
     deptModel.addDetailModel(empModel);
     deptModel.addLinkedDetailModel(empModel);
 
@@ -195,25 +195,25 @@ public final class DefaultEntityApplicationModelTest {
     deptModel.getTableModel().getSelectionModel().setSelectedIndex(0);
     empModel.getTableModel().getSelectionModel().setSelectedIndex(0);
 
-    String name = (String) empModel.getEditModel().getValue(EmpDept.EMPLOYEE_NAME);
-    empModel.getEditModel().setValue(EmpDept.EMPLOYEE_NAME, "Darri");
+    String name = (String) empModel.getEditModel().getValue(TestDomain.EMPLOYEE_NAME);
+    empModel.getEditModel().setValue(TestDomain.EMPLOYEE_NAME, "Darri");
     assertTrue(model.containsUnsavedData());
 
-    empModel.getEditModel().setValue(EmpDept.EMPLOYEE_NAME, name);
+    empModel.getEditModel().setValue(TestDomain.EMPLOYEE_NAME, name);
     assertFalse(model.containsUnsavedData());
 
-    name = (String) deptModel.getEditModel().getValue(EmpDept.DEPARTMENT_NAME);
-    deptModel.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, "Darri");
+    name = (String) deptModel.getEditModel().getValue(TestDomain.DEPARTMENT_NAME);
+    deptModel.getEditModel().setValue(TestDomain.DEPARTMENT_NAME, "Darri");
     assertTrue(model.containsUnsavedData());
 
-    deptModel.getEditModel().setValue(EmpDept.DEPARTMENT_NAME, name);
+    deptModel.getEditModel().setValue(TestDomain.DEPARTMENT_NAME, name);
     assertFalse(model.containsUnsavedData());
   }
 
   private static class DeptModel extends DefaultEntityModel {
     private DeptModel(final EntityConnectionProvider connectionProvider) {
-      super(EmpDept.T_DEPARTMENT, connectionProvider);
-      addDetailModel(new DefaultEntityModel(EmpDept.T_EMPLOYEE, connectionProvider));
+      super(TestDomain.T_DEPARTMENT, connectionProvider);
+      addDetailModel(new DefaultEntityModel(TestDomain.T_EMPLOYEE, connectionProvider));
     }
   }
 }

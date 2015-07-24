@@ -4,8 +4,8 @@
 package org.jminor.framework.plugins.jasperreports.model;
 
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.TestDomain;
 
 import net.sf.jasperreports.engine.JRField;
 import net.sf.jasperreports.engine.JRPropertiesHolder;
@@ -26,13 +26,13 @@ public class JasperReportsEntityDataSourceTest {
 
   @Test
   public void iterator() throws Exception {
-    final List<Entity> entities = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection().selectAll(EmpDept.T_DEPARTMENT);
+    final List<Entity> entities = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection().selectAll(TestDomain.T_DEPARTMENT);
     final JasperReportsEntityDataSource source = new JasperReportsEntityDataSource(entities.iterator());
     while (source.next()) {
       final Entity dept = source.getCurrentEntity();
       assertTrue(entities.contains(dept));
-      final JRField field = new TestField(EmpDept.DEPARTMENT_NAME);
-      assertEquals(dept.getValue(EmpDept.DEPARTMENT_NAME), source.getFieldValue(field));
+      final JRField field = new TestField(TestDomain.DEPARTMENT_NAME);
+      assertEquals(dept.getValue(TestDomain.DEPARTMENT_NAME), source.getFieldValue(field));
     }
   }
 

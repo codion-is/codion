@@ -17,7 +17,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.TestDomain;
 
 import ch.qos.logback.classic.Level;
 import org.junit.AfterClass;
@@ -101,7 +101,7 @@ public class EntityConnectionServerTest {
     assertEquals(1, users.size());
     assertEquals(User.UNIT_TEST_USER, users.iterator().next());
 
-    providerTwo.getConnection().selectAll(EmpDept.T_EMPLOYEE);
+    providerTwo.getConnection().selectAll(TestDomain.T_EMPLOYEE);
 
     final Database.Statistics stats = admin.getDatabaseStatistics();
     assertNotNull(stats.getTimestamp());
@@ -146,7 +146,7 @@ public class EntityConnectionServerTest {
     //testing with the EmpDeptLoginProxy
     admin.setConnectionLimit(3);
     assertEquals(3, admin.getConnectionLimit());
-    final String empDeptClientTypeID = "org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel";
+    final String empDeptClientTypeID = "TestLoginProxy";
     final RemoteEntityConnectionProvider empDeptProviderJohn = new RemoteEntityConnectionProvider(new User("john", "hello"),
             UUID.randomUUID(), empDeptClientTypeID);
     final RemoteEntityConnectionProvider empDeptProviderHelen = new RemoteEntityConnectionProvider(new User("helen", "juno"),
@@ -274,9 +274,9 @@ public class EntityConnectionServerTest {
     Configuration.setValue(Configuration.SERVER_ADMIN_PORT, 2223);
     Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
     Configuration.setValue(Configuration.SERVER_CONNECTION_POOLING_INITIAL, User.UNIT_TEST_USER.getUsername() + ":" + User.UNIT_TEST_USER.getPassword());
-    Configuration.setValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT, "org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel:10000");
-    Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.demos.empdept.domain.EmpDept");
-    Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.demos.empdept.server.EmpDeptLoginProxy");
+    Configuration.setValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT, "ClientTypeID:10000");
+    Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.domain.TestDomain");
+    Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.server.TestLoginProxy");
     Configuration.setValue(Configuration.WEB_SERVER_DOCUMENT_ROOT, System.getProperty("user.dir") + System.getProperty("file.separator") + "resources");
     Configuration.setValue(Configuration.WEB_SERVER_PORT, WEB_SERVER_PORT_NUMBER);
     Configuration.setValue("java.rmi.server.hostname", "localhost");

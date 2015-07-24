@@ -7,10 +7,10 @@ import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.After;
 import org.junit.Before;
@@ -37,12 +37,12 @@ public final class DefaultEntityLookupModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullConnectionProvider() {
-    new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, null, new ArrayList<Property.ColumnProperty>());
+    new DefaultEntityLookupModel(TestDomain.T_EMPLOYEE, null, new ArrayList<Property.ColumnProperty>());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullLookupProperties() {
-    new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER, null);
+    new DefaultEntityLookupModel(TestDomain.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER, null);
   }
 
   @Test
@@ -57,7 +57,7 @@ public final class DefaultEntityLookupModelTest {
   @Test(expected = IllegalArgumentException.class)
   public void setSelectedEntitiesMultipleNotAllowed() {
     lookupModel.getMultipleSelectionAllowedValue().set(false);
-    final Collection<Entity> entities = Arrays.asList(Entities.entity(EmpDept.T_EMPLOYEE), Entities.entity(EmpDept.T_EMPLOYEE));
+    final Collection<Entity> entities = Arrays.asList(Entities.entity(TestDomain.T_EMPLOYEE), Entities.entity(TestDomain.T_EMPLOYEE));
     lookupModel.setSelectedEntities(entities);
   }
 
@@ -66,12 +66,12 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.setToStringProvider(new Entity.ToString() {
       @Override
       public String toString(final Entity entity) {
-        return entity.getValueAsString(EmpDept.EMPLOYEE_JOB);
+        return entity.getValueAsString(TestDomain.EMPLOYEE_JOB);
       }
     });
-    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
-    employee.setValue(EmpDept.EMPLOYEE_NAME, "Darri");
-    employee.setValue(EmpDept.EMPLOYEE_JOB, "Test");
+    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
+    employee.setValue(TestDomain.EMPLOYEE_NAME, "Darri");
+    employee.setValue(TestDomain.EMPLOYEE_JOB, "Test");
     lookupModel.setSelectedEntities(Collections.singletonList(employee));
     assertEquals(lookupModel.getSearchString(), "Test");
     lookupModel.setToStringProvider(null);
@@ -103,8 +103,8 @@ public final class DefaultEntityLookupModelTest {
     assertTrue("Result should contain Andy", contains(result, "Andy"));
     assertTrue("Result should contain Andrew", contains(result, "Andrew"));
 
-    final Property.ColumnProperty employeeNameProperty = Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME);
-    final Property.ColumnProperty employeeJobProperty = Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB);
+    final Property.ColumnProperty employeeNameProperty = Entities.getColumnProperty(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_NAME);
+    final Property.ColumnProperty employeeJobProperty = Entities.getColumnProperty(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_JOB);
 
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(false);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(false);
@@ -162,7 +162,7 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPostfixValue().set(true);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPostfixValue().set(true);
     lookupModel.setAdditionalLookupCriteria(
-            EntityCriteriaUtil.propertyCriteria(Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB),
+            EntityCriteriaUtil.propertyCriteria(Entities.getColumnProperty(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_JOB),
                     SearchType.NOT_LIKE, "ajob"));
     result = lookupModel.performQuery();
     assertTrue("Result should contain john", contains(result, "John"));
@@ -185,10 +185,10 @@ public final class DefaultEntityLookupModelTest {
 
   @Before
   public void setUp() throws Exception {
-    EmpDept.init();
-    lookupProperties = Arrays.asList(Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_NAME),
-                    Entities.getColumnProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_JOB));
-    lookupModel = new DefaultEntityLookupModel(EmpDept.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER, lookupProperties);
+    TestDomain.init();
+    lookupProperties = Arrays.asList(Entities.getColumnProperty(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_NAME),
+                    Entities.getColumnProperty(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_JOB));
+    lookupModel = new DefaultEntityLookupModel(TestDomain.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER, lookupProperties);
 
     LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection().beginTransaction();
     setupData();
@@ -201,7 +201,7 @@ public final class DefaultEntityLookupModelTest {
 
   private boolean contains(final List<Entity> result, final String employeeName) {
     for (final Entity entity : result) {
-      if (entity.getStringValue(EmpDept.EMPLOYEE_NAME).equals(employeeName)) {
+      if (entity.getStringValue(TestDomain.EMPLOYEE_NAME).equals(employeeName)) {
         return true;
       }
     }
@@ -210,42 +210,42 @@ public final class DefaultEntityLookupModelTest {
   }
 
   private void setupData() throws Exception {
-    final Entity dept = Entities.entity(EmpDept.T_DEPARTMENT);
-    dept.setValue(EmpDept.DEPARTMENT_ID, 88);
-    dept.setValue(EmpDept.DEPARTMENT_LOCATION, "TestLoc");
-    dept.setValue(EmpDept.DEPARTMENT_NAME, "TestDept");
+    final Entity dept = Entities.entity(TestDomain.T_DEPARTMENT);
+    dept.setValue(TestDomain.DEPARTMENT_ID, 88);
+    dept.setValue(TestDomain.DEPARTMENT_LOCATION, "TestLoc");
+    dept.setValue(TestDomain.DEPARTMENT_NAME, "TestDept");
 
-    final Entity emp = Entities.entity(EmpDept.T_EMPLOYEE);
-    emp.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
-    emp.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
-    emp.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
-    emp.setValue(EmpDept.EMPLOYEE_JOB, "nojob");
-    emp.setValue(EmpDept.EMPLOYEE_NAME, "John");
-    emp.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
+    final Entity emp = Entities.entity(TestDomain.T_EMPLOYEE);
+    emp.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, dept);
+    emp.setValue(TestDomain.EMPLOYEE_COMMISSION, 1000d);
+    emp.setValue(TestDomain.EMPLOYEE_HIREDATE, new Date());
+    emp.setValue(TestDomain.EMPLOYEE_JOB, "nojob");
+    emp.setValue(TestDomain.EMPLOYEE_NAME, "John");
+    emp.setValue(TestDomain.EMPLOYEE_SALARY, 1000d);
 
-    final Entity emp2 = Entities.entity(EmpDept.T_EMPLOYEE);
-    emp2.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
-    emp2.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
-    emp2.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
-    emp2.setValue(EmpDept.EMPLOYEE_JOB, "ajob");
-    emp2.setValue(EmpDept.EMPLOYEE_NAME, "johnson");
-    emp2.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
+    final Entity emp2 = Entities.entity(TestDomain.T_EMPLOYEE);
+    emp2.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, dept);
+    emp2.setValue(TestDomain.EMPLOYEE_COMMISSION, 1000d);
+    emp2.setValue(TestDomain.EMPLOYEE_HIREDATE, new Date());
+    emp2.setValue(TestDomain.EMPLOYEE_JOB, "ajob");
+    emp2.setValue(TestDomain.EMPLOYEE_NAME, "johnson");
+    emp2.setValue(TestDomain.EMPLOYEE_SALARY, 1000d);
 
-    final Entity emp3 = Entities.entity(EmpDept.T_EMPLOYEE);
-    emp3.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
-    emp3.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
-    emp3.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
-    emp3.setValue(EmpDept.EMPLOYEE_JOB, "nojob");
-    emp3.setValue(EmpDept.EMPLOYEE_NAME, "Andy");
-    emp3.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
+    final Entity emp3 = Entities.entity(TestDomain.T_EMPLOYEE);
+    emp3.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, dept);
+    emp3.setValue(TestDomain.EMPLOYEE_COMMISSION, 1000d);
+    emp3.setValue(TestDomain.EMPLOYEE_HIREDATE, new Date());
+    emp3.setValue(TestDomain.EMPLOYEE_JOB, "nojob");
+    emp3.setValue(TestDomain.EMPLOYEE_NAME, "Andy");
+    emp3.setValue(TestDomain.EMPLOYEE_SALARY, 1000d);
 
-    final Entity emp4 = Entities.entity(EmpDept.T_EMPLOYEE);
-    emp4.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept);
-    emp4.setValue(EmpDept.EMPLOYEE_COMMISSION, 1000d);
-    emp4.setValue(EmpDept.EMPLOYEE_HIREDATE, new Date());
-    emp4.setValue(EmpDept.EMPLOYEE_JOB, "ajob");
-    emp4.setValue(EmpDept.EMPLOYEE_NAME, "Andrew");
-    emp4.setValue(EmpDept.EMPLOYEE_SALARY, 1000d);
+    final Entity emp4 = Entities.entity(TestDomain.T_EMPLOYEE);
+    emp4.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, dept);
+    emp4.setValue(TestDomain.EMPLOYEE_COMMISSION, 1000d);
+    emp4.setValue(TestDomain.EMPLOYEE_HIREDATE, new Date());
+    emp4.setValue(TestDomain.EMPLOYEE_JOB, "ajob");
+    emp4.setValue(TestDomain.EMPLOYEE_NAME, "Andrew");
+    emp4.setValue(TestDomain.EMPLOYEE_SALARY, 1000d);
 
     LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
   }

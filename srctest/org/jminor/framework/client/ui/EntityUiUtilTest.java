@@ -10,8 +10,8 @@ import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.EntityTestDomain;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
@@ -27,117 +27,117 @@ public class EntityUiUtilTest {
 
   @Test
   public void createLabel() {
-    EntityTestDomain.init();
-    final JLabel lbl = EntityUiUtil.createLabel(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING));
-    assertEquals(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_STRING).getCaption(), lbl.getText());
+    TestDomain.init();
+    final JLabel lbl = EntityUiUtil.createLabel(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING));
+    assertEquals(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_STRING).getCaption(), lbl.getText());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void createTristateCheckBoxNonNullableBooleanProperty() {
-    EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    EntityUiUtil.createTristateCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_BOOLEAN), editModel, null, true);
+    TestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    EntityUiUtil.createTristateCheckBox(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_BOOLEAN), editModel, null, true);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void createTristateCheckBoxNonBooleanProperty() {
-    EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    EntityUiUtil.createTristateCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_TIMESTAMP), editModel, null, true);
+    TestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    EntityUiUtil.createTristateCheckBox(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_TIMESTAMP), editModel, null, true);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void createCheckBoxNonBooleanProperty() {
-    EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    EntityUiUtil.createCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL, EntityTestDomain.DETAIL_TIMESTAMP), editModel);
+    TestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    EntityUiUtil.createCheckBox(Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_TIMESTAMP), editModel);
   }
 
   @Test
   public void createCheckBox() {
-    EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    final JCheckBox box = EntityUiUtil.createCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
-            EntityTestDomain.DETAIL_BOOLEAN), editModel);
+    TestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final JCheckBox box = EntityUiUtil.createCheckBox(Entities.getProperty(TestDomain.T_DETAIL,
+            TestDomain.DETAIL_BOOLEAN), editModel);
     assertTrue(box.isSelected());//default value is true
-    assertTrue((Boolean) editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN));
+    assertTrue((Boolean) editModel.getValue(TestDomain.DETAIL_BOOLEAN));
 
     box.doClick();
 
     assertFalse(box.isSelected());
-    assertFalse((Boolean) editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN));
+    assertFalse((Boolean) editModel.getValue(TestDomain.DETAIL_BOOLEAN));
 
-    editModel.setValue(EntityTestDomain.DETAIL_BOOLEAN, true);
+    editModel.setValue(TestDomain.DETAIL_BOOLEAN, true);
     assertTrue(box.isSelected());
   }
 
   @Test
   public void createTristateCheckBox() {
-    EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
-            EntityTestDomain.DETAIL_BOOLEAN_NULLABLE), editModel, null, false);
+    TestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final TristateCheckBox box = EntityUiUtil.createTristateCheckBox(Entities.getProperty(TestDomain.T_DETAIL,
+            TestDomain.DETAIL_BOOLEAN_NULLABLE), editModel, null, false);
     assertTrue(box.isSelected());//default value is true
-    assertTrue((Boolean) editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN_NULLABLE));
+    assertTrue((Boolean) editModel.getValue(TestDomain.DETAIL_BOOLEAN_NULLABLE));
 
     box.getMouseListeners()[0].mousePressed(null);
 
     assertTrue(box.isIndeterminate());
-    assertNull(editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN_NULLABLE));
+    assertNull(editModel.getValue(TestDomain.DETAIL_BOOLEAN_NULLABLE));
 
-    editModel.setValue(EntityTestDomain.DETAIL_BOOLEAN_NULLABLE, false);
+    editModel.setValue(TestDomain.DETAIL_BOOLEAN_NULLABLE, false);
     assertFalse(box.isSelected());
   }
 
   @Test
   public void createBooleanComboBox() {
-    EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    final BooleanComboBoxModel boxModel = (BooleanComboBoxModel) EntityUiUtil.createBooleanComboBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
-            EntityTestDomain.DETAIL_BOOLEAN), editModel).getModel();
+    TestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final BooleanComboBoxModel boxModel = (BooleanComboBoxModel) EntityUiUtil.createBooleanComboBox(Entities.getProperty(TestDomain.T_DETAIL,
+            TestDomain.DETAIL_BOOLEAN), editModel).getModel();
     assertTrue(boxModel.getSelectedValue().getItem());
     boxModel.setSelectedItem(null);
-    assertNull(editModel.getValue(EntityTestDomain.DETAIL_BOOLEAN));
+    assertNull(editModel.getValue(TestDomain.DETAIL_BOOLEAN));
 
-    editModel.setValue(EntityTestDomain.DETAIL_BOOLEAN, false);
+    editModel.setValue(TestDomain.DETAIL_BOOLEAN, false);
     assertFalse(boxModel.getSelectedValue().getItem());
   }
 
   @Test
   public void createValueListComboBox() {
-    EntityTestDomain.init();
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    final JComboBox box = EntityUiUtil.createValueListComboBox((Property.ValueListProperty) Entities.getProperty(EntityTestDomain.T_DETAIL,
-            EntityTestDomain.DETAIL_INT_VALUE_LIST), editModel);
+    TestDomain.init();
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final JComboBox box = EntityUiUtil.createValueListComboBox((Property.ValueListProperty) Entities.getProperty(TestDomain.T_DETAIL,
+            TestDomain.DETAIL_INT_VALUE_LIST), editModel);
 
-    assertNull(editModel.getValue(EntityTestDomain.DETAIL_INT_VALUE_LIST));
+    assertNull(editModel.getValue(TestDomain.DETAIL_INT_VALUE_LIST));
     box.setSelectedItem(1);
-    assertEquals(1, editModel.getValue(EntityTestDomain.DETAIL_INT_VALUE_LIST));
+    assertEquals(1, editModel.getValue(TestDomain.DETAIL_INT_VALUE_LIST));
     box.setSelectedItem(2);
-    assertEquals(2, editModel.getValue(EntityTestDomain.DETAIL_INT_VALUE_LIST));
+    assertEquals(2, editModel.getValue(TestDomain.DETAIL_INT_VALUE_LIST));
     box.setSelectedItem(3);
-    assertEquals(3, editModel.getValue(EntityTestDomain.DETAIL_INT_VALUE_LIST));
+    assertEquals(3, editModel.getValue(TestDomain.DETAIL_INT_VALUE_LIST));
     box.setSelectedItem(4);//does not exist
-    assertEquals(3, editModel.getValue(EntityTestDomain.DETAIL_INT_VALUE_LIST));
+    assertEquals(3, editModel.getValue(TestDomain.DETAIL_INT_VALUE_LIST));
   }
 
   @Test
   public void createComboBox() {
-    EntityTestDomain.init();
+    TestDomain.init();
     final DefaultComboBoxModel boxModel = new DefaultComboBoxModel<>(new Object[] {0, 1, 2, 3});
-    final EntityEditModel editModel = new DefaultEntityEditModel(EntityTestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    final JComboBox box = EntityUiUtil.createComboBox(Entities.getProperty(EntityTestDomain.T_DETAIL,
-            EntityTestDomain.DETAIL_INT), editModel, boxModel, null);
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DETAIL, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final JComboBox box = EntityUiUtil.createComboBox(Entities.getProperty(TestDomain.T_DETAIL,
+            TestDomain.DETAIL_INT), editModel, boxModel, null);
 
-    assertNull(editModel.getValue(EntityTestDomain.DETAIL_INT));
+    assertNull(editModel.getValue(TestDomain.DETAIL_INT));
     box.setSelectedItem(1);
-    assertEquals(1, editModel.getValue(EntityTestDomain.DETAIL_INT));
+    assertEquals(1, editModel.getValue(TestDomain.DETAIL_INT));
     box.setSelectedItem(2);
-    assertEquals(2, editModel.getValue(EntityTestDomain.DETAIL_INT));
+    assertEquals(2, editModel.getValue(TestDomain.DETAIL_INT));
     box.setSelectedItem(3);
-    assertEquals(3, editModel.getValue(EntityTestDomain.DETAIL_INT));
+    assertEquals(3, editModel.getValue(TestDomain.DETAIL_INT));
     box.setSelectedItem(4);//does not exist
-    assertEquals(3, editModel.getValue(EntityTestDomain.DETAIL_INT));
+    assertEquals(3, editModel.getValue(TestDomain.DETAIL_INT));
   }
 
   @Test

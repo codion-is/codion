@@ -8,9 +8,9 @@ import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
@@ -24,7 +24,7 @@ import static org.junit.Assert.assertEquals;
 public class PropertyCriteriaTest {
 
   public PropertyCriteriaTest() {
-    EmpDept.init();
+    TestDomain.init();
   }
 
   @Test

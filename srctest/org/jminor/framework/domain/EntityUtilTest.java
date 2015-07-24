@@ -4,8 +4,6 @@
 package org.jminor.framework.domain;
 
 import org.jminor.framework.Configuration;
-import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 
 import org.junit.Test;
 
@@ -23,7 +21,7 @@ import static org.junit.Assert.*;
 public class EntityUtilTest {
 
   static {
-    EmpDept.init();
+    TestDomain.init();
   }
 
   @Test
@@ -35,10 +33,10 @@ public class EntityUtilTest {
     final String deptName = "Department";
     final String deptLocation = "Location";
 
-    final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
-    department.setValue(EmpDept.DEPARTMENT_ID, deptNo);
-    department.setValue(EmpDept.DEPARTMENT_NAME, deptName);
-    department.setValue(EmpDept.DEPARTMENT_LOCATION, deptLocation);
+    final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
+    department.setValue(TestDomain.DEPARTMENT_ID, deptNo);
+    department.setValue(TestDomain.DEPARTMENT_NAME, deptName);
+    department.setValue(TestDomain.DEPARTMENT_LOCATION, deptLocation);
 
     final List<Object> deptBeans = beanMapper.toBeans(Collections.singletonList(department));
     final DepartmentBean departmentBean = (DepartmentBean) deptBeans.get(0);
@@ -54,15 +52,15 @@ public class EntityUtilTest {
     final String name = "John Doe";
     final Double salary = 1234.5;
 
-    final Entity employee = Entities.entity(EmpDept.T_EMPLOYEE);
-    employee.setValue(EmpDept.EMPLOYEE_ID, id);
-    employee.setValue(EmpDept.EMPLOYEE_COMMISSION, commission);
-    employee.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
-    employee.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
-    employee.setValue(EmpDept.EMPLOYEE_JOB, job);
-    employee.setValue(EmpDept.EMPLOYEE_MGR, manager);
-    employee.setValue(EmpDept.EMPLOYEE_NAME, name);
-    employee.setValue(EmpDept.EMPLOYEE_SALARY, salary);
+    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
+    employee.setValue(TestDomain.EMPLOYEE_ID, id);
+    employee.setValue(TestDomain.EMPLOYEE_COMMISSION, commission);
+    employee.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, department);
+    employee.setValue(TestDomain.EMPLOYEE_HIREDATE, hiredate);
+    employee.setValue(TestDomain.EMPLOYEE_JOB, job);
+    employee.setValue(TestDomain.EMPLOYEE_MGR, manager);
+    employee.setValue(TestDomain.EMPLOYEE_NAME, name);
+    employee.setValue(TestDomain.EMPLOYEE_SALARY, salary);
 
     final List<Object> empBeans = beanMapper.toBeans(Collections.singletonList(employee));
     final EmployeeBean employeeBean = (EmployeeBean) empBeans.get(0);
@@ -97,9 +95,9 @@ public class EntityUtilTest {
 
     final List<Entity> departments = beanMapper.toEntities(Collections.singletonList(departmentBean));
     final Entity department = departments.get(0);
-    assertEquals(deptNo, department.getValue(EmpDept.DEPARTMENT_ID));
-    assertEquals(deptName, department.getValue(EmpDept.DEPARTMENT_NAME));
-    assertEquals(deptLocation, department.getValue(EmpDept.DEPARTMENT_LOCATION));
+    assertEquals(deptNo, department.getValue(TestDomain.DEPARTMENT_ID));
+    assertEquals(deptName, department.getValue(TestDomain.DEPARTMENT_NAME));
+    assertEquals(deptLocation, department.getValue(TestDomain.DEPARTMENT_LOCATION));
 
     final Integer id = 42;
     final Double commission = 42.2;
@@ -121,14 +119,14 @@ public class EntityUtilTest {
 
     final List<Entity> employees = beanMapper.toEntities(Collections.singletonList(employeeBean));
     final Entity employee = employees.get(0);
-    assertEquals(id, employee.getValue(EmpDept.EMPLOYEE_ID));
-    assertEquals(commission, employee.getValue(EmpDept.EMPLOYEE_COMMISSION));
-    assertEquals(deptNo, employee.getValue(EmpDept.EMPLOYEE_DEPARTMENT));
-    assertEquals(hiredate, employee.getValue(EmpDept.EMPLOYEE_HIREDATE));
-    assertEquals(job, employee.getValue(EmpDept.EMPLOYEE_JOB));
-    assertEquals(manager, employee.getValue(EmpDept.EMPLOYEE_MGR));
-    assertEquals(name, employee.getValue(EmpDept.EMPLOYEE_NAME));
-    assertEquals(salary, employee.getValue(EmpDept.EMPLOYEE_SALARY));
+    assertEquals(id, employee.getValue(TestDomain.EMPLOYEE_ID));
+    assertEquals(commission, employee.getValue(TestDomain.EMPLOYEE_COMMISSION));
+    assertEquals(deptNo, employee.getValue(TestDomain.EMPLOYEE_DEPARTMENT));
+    assertEquals(hiredate, employee.getValue(TestDomain.EMPLOYEE_HIREDATE));
+    assertEquals(job, employee.getValue(TestDomain.EMPLOYEE_JOB));
+    assertEquals(manager, employee.getValue(TestDomain.EMPLOYEE_MGR));
+    assertEquals(name, employee.getValue(TestDomain.EMPLOYEE_NAME));
+    assertEquals(salary, employee.getValue(TestDomain.EMPLOYEE_SALARY));
 
     assertNull(beanMapper.toEntity(null));
 
@@ -192,22 +190,22 @@ public class EntityUtilTest {
 
   @Test
   public void getPropertyValues() {
-    EmpDept.init();
+    TestDomain.init();
     final List<Entity> entities = new ArrayList<>();
     final List<Object> values = new ArrayList<>();
     for (int i = 0; i < 10; i++) {
-      final Entity entity = Entities.entity(EmpDept.T_DEPARTMENT);
-      entity.setValue(EmpDept.DEPARTMENT_ID, i);
+      final Entity entity = Entities.entity(TestDomain.T_DEPARTMENT);
+      entity.setValue(TestDomain.DEPARTMENT_ID, i);
       values.add(i);
       entities.add(entity);
     }
-    final Property property = Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID);
-    Collection<Integer> propertyValues = EntityUtil.getPropertyValues(EmpDept.DEPARTMENT_ID, entities);
+    final Property property = Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID);
+    Collection<Integer> propertyValues = EntityUtil.getPropertyValues(TestDomain.DEPARTMENT_ID, entities);
     assertTrue(propertyValues.containsAll(values));
     propertyValues = EntityUtil.getPropertyValues(property, entities);
     assertTrue(propertyValues.containsAll(values));
-    assertTrue(EntityUtil.getPropertyValues(EmpDept.DEPARTMENT_ID, null).isEmpty());
-    assertTrue(EntityUtil.getPropertyValues(EmpDept.DEPARTMENT_ID, Collections.<Entity>emptyList()).isEmpty());
+    assertTrue(EntityUtil.getPropertyValues(TestDomain.DEPARTMENT_ID, null).isEmpty());
+    assertTrue(EntityUtil.getPropertyValues(TestDomain.DEPARTMENT_ID, Collections.<Entity>emptyList()).isEmpty());
   }
 
   @Test
@@ -215,54 +213,54 @@ public class EntityUtilTest {
     assertFalse(EntityUtil.isPrimaryKeyModified(null));
     assertFalse(EntityUtil.isPrimaryKeyModified(Collections.<Entity>emptyList()));
 
-    final Entity department = Entities.entity(EmpDept.T_DEPARTMENT);
-    department.setValue(EmpDept.DEPARTMENT_ID, 1);
-    department.setValue(EmpDept.DEPARTMENT_NAME, "name");
-    department.setValue(EmpDept.DEPARTMENT_LOCATION, "loc");
+    final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
+    department.setValue(TestDomain.DEPARTMENT_ID, 1);
+    department.setValue(TestDomain.DEPARTMENT_NAME, "name");
+    department.setValue(TestDomain.DEPARTMENT_LOCATION, "loc");
     assertFalse(EntityUtil.isPrimaryKeyModified(Collections.singletonList(department)));
 
-    department.setValue(EmpDept.DEPARTMENT_NAME, "new name");
+    department.setValue(TestDomain.DEPARTMENT_NAME, "new name");
     assertFalse(EntityUtil.isPrimaryKeyModified(Collections.singletonList(department)));
 
-    department.setValue(EmpDept.DEPARTMENT_ID, 2);
+    department.setValue(TestDomain.DEPARTMENT_ID, 2);
     assertTrue(EntityUtil.isPrimaryKeyModified(Collections.singletonList(department)));
 
-    department.revertValue(EmpDept.DEPARTMENT_ID);
+    department.revertValue(TestDomain.DEPARTMENT_ID);
     assertFalse(EntityUtil.isPrimaryKeyModified(Collections.singletonList(department)));
   }
 
   @Test
   public void getDistinctPropertyValues() {
-    EmpDept.init();
+    TestDomain.init();
     final List<Entity> entities = new ArrayList<>();
     final List<Object> values = new ArrayList<>();
 
-    Entity entity = Entities.entity(EmpDept.T_DEPARTMENT);
-    entity.setValue(EmpDept.DEPARTMENT_ID, null);
+    Entity entity = Entities.entity(TestDomain.T_DEPARTMENT);
+    entity.setValue(TestDomain.DEPARTMENT_ID, null);
     entities.add(entity);
 
-    entity = Entities.entity(EmpDept.T_DEPARTMENT);
-    entity.setValue(EmpDept.DEPARTMENT_ID, 1);
+    entity = Entities.entity(TestDomain.T_DEPARTMENT);
+    entity.setValue(TestDomain.DEPARTMENT_ID, 1);
     entities.add(entity);
 
-    entity = Entities.entity(EmpDept.T_DEPARTMENT);
-    entity.setValue(EmpDept.DEPARTMENT_ID, 1);
+    entity = Entities.entity(TestDomain.T_DEPARTMENT);
+    entity.setValue(TestDomain.DEPARTMENT_ID, 1);
     entities.add(entity);
 
-    entity = Entities.entity(EmpDept.T_DEPARTMENT);
-    entity.setValue(EmpDept.DEPARTMENT_ID, 2);
+    entity = Entities.entity(TestDomain.T_DEPARTMENT);
+    entity.setValue(TestDomain.DEPARTMENT_ID, 2);
     entities.add(entity);
 
-    entity = Entities.entity(EmpDept.T_DEPARTMENT);
-    entity.setValue(EmpDept.DEPARTMENT_ID, 3);
+    entity = Entities.entity(TestDomain.T_DEPARTMENT);
+    entity.setValue(TestDomain.DEPARTMENT_ID, 3);
     entities.add(entity);
 
-    entity = Entities.entity(EmpDept.T_DEPARTMENT);
-    entity.setValue(EmpDept.DEPARTMENT_ID, 3);
+    entity = Entities.entity(TestDomain.T_DEPARTMENT);
+    entity.setValue(TestDomain.DEPARTMENT_ID, 3);
     entities.add(entity);
 
-    entity = Entities.entity(EmpDept.T_DEPARTMENT);
-    entity.setValue(EmpDept.DEPARTMENT_ID, 4);
+    entity = Entities.entity(TestDomain.T_DEPARTMENT);
+    entity.setValue(TestDomain.DEPARTMENT_ID, 4);
     entities.add(entity);
 
     values.add(1);
@@ -270,42 +268,42 @@ public class EntityUtilTest {
     values.add(3);
     values.add(4);
 
-    Collection<Integer> propertyValues = EntityUtil.getDistinctPropertyValues(EmpDept.DEPARTMENT_ID, entities);
+    Collection<Integer> propertyValues = EntityUtil.getDistinctPropertyValues(TestDomain.DEPARTMENT_ID, entities);
     assertEquals(4, propertyValues.size());
     assertTrue(propertyValues.containsAll(values));
 
-    propertyValues = EntityUtil.getDistinctPropertyValues(EmpDept.DEPARTMENT_ID, entities, true);
+    propertyValues = EntityUtil.getDistinctPropertyValues(TestDomain.DEPARTMENT_ID, entities, true);
     assertEquals(5, propertyValues.size());
     values.add(null);
     assertTrue(propertyValues.containsAll(values));
 
-    assertEquals(0, EntityUtil.getDistinctPropertyValues(EmpDept.DEPARTMENT_ID, null, true).size());
-    assertEquals(0, EntityUtil.getDistinctPropertyValues(EmpDept.DEPARTMENT_ID, new ArrayList<Entity>(), true).size());
+    assertEquals(0, EntityUtil.getDistinctPropertyValues(TestDomain.DEPARTMENT_ID, null, true).size());
+    assertEquals(0, EntityUtil.getDistinctPropertyValues(TestDomain.DEPARTMENT_ID, new ArrayList<Entity>(), true).size());
   }
 
   @Test
   public void getSortedProperties() {
-    Chinook.init();
-    final List<Property> properties = EntityUtil.getSortedProperties(Chinook.T_CUSTOMER,
-            Arrays.asList(Chinook.CUSTOMER_EMAIL, Chinook.CUSTOMER_ADDRESS,
-                    Chinook.CUSTOMER_LASTNAME, Chinook.CUSTOMER_PHONE));
-    assertEquals(Chinook.CUSTOMER_ADDRESS, properties.get(0).getPropertyID());
-    assertEquals(Chinook.CUSTOMER_EMAIL, properties.get(1).getPropertyID());
-    assertEquals(Chinook.CUSTOMER_LASTNAME, properties.get(2).getPropertyID());
-    assertEquals(Chinook.CUSTOMER_PHONE, properties.get(3).getPropertyID());
+    TestDomain.init();
+    final List<Property> properties = EntityUtil.getSortedProperties(TestDomain.T_EMPLOYEE,
+            Arrays.asList(TestDomain.EMPLOYEE_HIREDATE, TestDomain.EMPLOYEE_COMMISSION,
+                    TestDomain.EMPLOYEE_SALARY, TestDomain.EMPLOYEE_JOB));
+    assertEquals(TestDomain.EMPLOYEE_COMMISSION, properties.get(0).getPropertyID());
+    assertEquals(TestDomain.EMPLOYEE_HIREDATE, properties.get(1).getPropertyID());
+    assertEquals(TestDomain.EMPLOYEE_JOB, properties.get(2).getPropertyID());
+    assertEquals(TestDomain.EMPLOYEE_SALARY, properties.get(3).getPropertyID());
   }
 
   @Test
   public void copyEntities() {
-    EmpDept.init();
-    final Entity dept1 = Entities.entity(EmpDept.T_DEPARTMENT);
-    dept1.setValue(EmpDept.DEPARTMENT_ID, 1);
-    dept1.setValue(EmpDept.DEPARTMENT_LOCATION, "location");
-    dept1.setValue(EmpDept.DEPARTMENT_NAME, "name");
-    final Entity dept2 = Entities.entity(EmpDept.T_DEPARTMENT);
-    dept2.setValue(EmpDept.DEPARTMENT_ID, 2);
-    dept2.setValue(EmpDept.DEPARTMENT_LOCATION, "location2");
-    dept2.setValue(EmpDept.DEPARTMENT_NAME, "name2");
+    TestDomain.init();
+    final Entity dept1 = Entities.entity(TestDomain.T_DEPARTMENT);
+    dept1.setValue(TestDomain.DEPARTMENT_ID, 1);
+    dept1.setValue(TestDomain.DEPARTMENT_LOCATION, "location");
+    dept1.setValue(TestDomain.DEPARTMENT_NAME, "name");
+    final Entity dept2 = Entities.entity(TestDomain.T_DEPARTMENT);
+    dept2.setValue(TestDomain.DEPARTMENT_ID, 2);
+    dept2.setValue(TestDomain.DEPARTMENT_LOCATION, "location2");
+    dept2.setValue(TestDomain.DEPARTMENT_NAME, "name2");
 
     final List<Entity> copies = EntityUtil.copyEntities(Arrays.asList(dept1, dept2));
     assertFalse(copies.get(0) == dept1);
@@ -316,50 +314,50 @@ public class EntityUtilTest {
 
   @Test
   public void testSetPropertyValue() {
-    EmpDept.init();
+    TestDomain.init();
     final Collection<Entity> entities = new ArrayList<>();
-    entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
-    entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
-    entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
-    entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
-    entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
-    entities.add(Entities.entity(EmpDept.T_DEPARTMENT));
-    EntityUtil.setPropertyValue(EmpDept.DEPARTMENT_ID, 1, entities);
+    entities.add(Entities.entity(TestDomain.T_DEPARTMENT));
+    entities.add(Entities.entity(TestDomain.T_DEPARTMENT));
+    entities.add(Entities.entity(TestDomain.T_DEPARTMENT));
+    entities.add(Entities.entity(TestDomain.T_DEPARTMENT));
+    entities.add(Entities.entity(TestDomain.T_DEPARTMENT));
+    entities.add(Entities.entity(TestDomain.T_DEPARTMENT));
+    EntityUtil.setPropertyValue(TestDomain.DEPARTMENT_ID, 1, entities);
     for (final Entity entity : entities) {
-      assertEquals(Integer.valueOf(1), entity.getIntValue(EmpDept.DEPARTMENT_ID));
+      assertEquals(Integer.valueOf(1), entity.getIntValue(TestDomain.DEPARTMENT_ID));
     }
-    EntityUtil.setPropertyValue(EmpDept.DEPARTMENT_ID, null, entities);
+    EntityUtil.setPropertyValue(TestDomain.DEPARTMENT_ID, null, entities);
     for (final Entity entity : entities) {
-      assertTrue(entity.isValueNull(EmpDept.DEPARTMENT_ID));
+      assertTrue(entity.isValueNull(TestDomain.DEPARTMENT_ID));
     }
   }
 
   @Test
   public void hashByPropertyValue() {
-    EmpDept.init();
+    TestDomain.init();
     final List<Entity> entities = new ArrayList<>();
 
-    final Entity entityOne = Entities.entity(EmpDept.T_DEPARTMENT);
-    entityOne.setValue(EmpDept.DEPARTMENT_ID, 1);
+    final Entity entityOne = Entities.entity(TestDomain.T_DEPARTMENT);
+    entityOne.setValue(TestDomain.DEPARTMENT_ID, 1);
     entities.add(entityOne);
 
-    final Entity entityTwo = Entities.entity(EmpDept.T_DEPARTMENT);
-    entityTwo.setValue(EmpDept.DEPARTMENT_ID, 1);
+    final Entity entityTwo = Entities.entity(TestDomain.T_DEPARTMENT);
+    entityTwo.setValue(TestDomain.DEPARTMENT_ID, 1);
     entities.add(entityTwo);
 
-    final Entity entityThree = Entities.entity(EmpDept.T_DEPARTMENT);
-    entityThree.setValue(EmpDept.DEPARTMENT_ID, 2);
+    final Entity entityThree = Entities.entity(TestDomain.T_DEPARTMENT);
+    entityThree.setValue(TestDomain.DEPARTMENT_ID, 2);
     entities.add(entityThree);
 
-    final Entity entityFour = Entities.entity(EmpDept.T_DEPARTMENT);
-    entityFour.setValue(EmpDept.DEPARTMENT_ID, 3);
+    final Entity entityFour = Entities.entity(TestDomain.T_DEPARTMENT);
+    entityFour.setValue(TestDomain.DEPARTMENT_ID, 3);
     entities.add(entityFour);
 
-    final Entity entityFive = Entities.entity(EmpDept.T_DEPARTMENT);
-    entityFive.setValue(EmpDept.DEPARTMENT_ID, 3);
+    final Entity entityFive = Entities.entity(TestDomain.T_DEPARTMENT);
+    entityFive.setValue(TestDomain.DEPARTMENT_ID, 3);
     entities.add(entityFive);
 
-    final Map<Integer, Collection<Entity>> map = EntityUtil.hashByPropertyValue(EmpDept.DEPARTMENT_ID, entities);
+    final Map<Integer, Collection<Entity>> map = EntityUtil.hashByPropertyValue(TestDomain.DEPARTMENT_ID, entities);
     final Collection<Entity> ones = map.get(1);
     assertTrue(ones.contains(entityOne));
     assertTrue(ones.contains(entityTwo));
@@ -374,41 +372,39 @@ public class EntityUtilTest {
 
   @Test
   public void hashByEntitID() {
-    Chinook.init();
-    final Entity one = Entities.entity(Chinook.T_ALBUM);
-    final Entity two = Entities.entity(Chinook.T_ARTIST);
-    final Entity three = Entities.entity(Chinook.T_CUSTOMER);
-    final Entity four = Entities.entity(Chinook.T_ALBUM);
-    final Entity five = Entities.entity(Chinook.T_ARTIST);
+    TestDomain.init();
+    final Entity one = Entities.entity(TestDomain.T_EMPLOYEE);
+    final Entity two = Entities.entity(TestDomain.T_DEPARTMENT);
+    final Entity three = Entities.entity(TestDomain.T_DETAIL);
+    final Entity four = Entities.entity(TestDomain.T_EMPLOYEE);
 
-    final Collection<Entity> entities = Arrays.asList(one, two, three, four, five);
+    final Collection<Entity> entities = Arrays.asList(one, two, three, four);
     final Map<String, Collection<Entity>> map = EntityUtil.hashByEntityID(entities);
 
-    Collection<Entity> hashed = map.get(Chinook.T_ALBUM);
+    Collection<Entity> hashed = map.get(TestDomain.T_EMPLOYEE);
     assertTrue(hashed.contains(one));
     assertTrue(hashed.contains(four));
 
-    hashed = map.get(Chinook.T_ARTIST);
+    hashed = map.get(TestDomain.T_DEPARTMENT);
     assertTrue(hashed.contains(two));
-    assertTrue(hashed.contains(five));
 
-    hashed = map.get(Chinook.T_CUSTOMER);
+    hashed = map.get(TestDomain.T_DETAIL);
     assertTrue(hashed.contains(three));
   }
 
   @Test
   public void getProperties() {
-    EmpDept.init();
+    TestDomain.init();
     final List<String> propertyIDs = new ArrayList<>();
-    propertyIDs.add(EmpDept.DEPARTMENT_ID);
-    propertyIDs.add(EmpDept.DEPARTMENT_NAME);
+    propertyIDs.add(TestDomain.DEPARTMENT_ID);
+    propertyIDs.add(TestDomain.DEPARTMENT_NAME);
 
-    final Collection<Property> properties = EntityUtil.getProperties(EmpDept.T_DEPARTMENT, propertyIDs);
+    final Collection<Property> properties = EntityUtil.getProperties(TestDomain.T_DEPARTMENT, propertyIDs);
     assertEquals(2, properties.size());
-    assertTrue(properties.contains(Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_ID)));
-    assertTrue(properties.contains(Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME)));
+    assertTrue(properties.contains(Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID)));
+    assertTrue(properties.contains(Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
 
-    final Collection<Property> noProperties = EntityUtil.getProperties(EmpDept.T_DEPARTMENT, null);
+    final Collection<Property> noProperties = EntityUtil.getProperties(TestDomain.T_DEPARTMENT, null);
     assertEquals(0, noProperties.size());
   }
 
@@ -427,14 +423,14 @@ public class EntityUtilTest {
 
   @Test
   public void setNull() {
-    final Entity dept = Entities.entity(EmpDept.T_DEPARTMENT);
-    for (final Property property : Entities.getProperties(EmpDept.T_DEPARTMENT, true)) {
+    final Entity dept = Entities.entity(TestDomain.T_DEPARTMENT);
+    for (final Property property : Entities.getProperties(TestDomain.T_DEPARTMENT, true)) {
       assertFalse(dept.containsValue(property));
       assertTrue(dept.isValueNull(property));
     }
     EntityUtil.setNull(dept);
     assertFalse(dept.isModified());
-    for (final Property property : Entities.getProperties(EmpDept.T_DEPARTMENT, true)) {
+    for (final Property property : Entities.getProperties(TestDomain.T_DEPARTMENT, true)) {
       assertTrue(dept.containsValue(property));
       assertTrue(dept.isValueNull(property));
     }
@@ -442,63 +438,63 @@ public class EntityUtilTest {
 
   @Test
   public void getModifiedProperty() {
-    final Entity entity = Entities.entity(EmpDept.T_DEPARTMENT);
-    entity.setValue(EmpDept.DEPARTMENT_ID, 1);
-    entity.setValue(EmpDept.DEPARTMENT_LOCATION, "Location");
-    entity.setValue(EmpDept.DEPARTMENT_NAME, "Name");
+    final Entity entity = Entities.entity(TestDomain.T_DEPARTMENT);
+    entity.setValue(TestDomain.DEPARTMENT_ID, 1);
+    entity.setValue(TestDomain.DEPARTMENT_LOCATION, "Location");
+    entity.setValue(TestDomain.DEPARTMENT_NAME, "Name");
 
-    final Entity current = Entities.entity(EmpDept.T_DEPARTMENT);
-    current.setValue(EmpDept.DEPARTMENT_ID, 1);
-    current.setValue(EmpDept.DEPARTMENT_LOCATION, "Location");
-    current.setValue(EmpDept.DEPARTMENT_NAME, "Name");
+    final Entity current = Entities.entity(TestDomain.T_DEPARTMENT);
+    current.setValue(TestDomain.DEPARTMENT_ID, 1);
+    current.setValue(TestDomain.DEPARTMENT_LOCATION, "Location");
+    current.setValue(TestDomain.DEPARTMENT_NAME, "Name");
 
-    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_ID));
-    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_LOCATION));
-    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_NAME));
+    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_ID));
+    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_LOCATION));
+    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_NAME));
 
-    current.setValue(EmpDept.DEPARTMENT_ID, 2);
+    current.setValue(TestDomain.DEPARTMENT_ID, 2);
     current.saveAll();
-    assertTrue(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_ID));
-    assertEquals(EntityUtil.getModifiedProperty(current, entity).getPropertyID(), EmpDept.DEPARTMENT_ID);
-    current.removeValue(EmpDept.DEPARTMENT_ID);
+    assertTrue(EntityUtil.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_ID));
+    assertEquals(EntityUtil.getModifiedProperty(current, entity).getPropertyID(), TestDomain.DEPARTMENT_ID);
+    current.removeValue(TestDomain.DEPARTMENT_ID);
     current.saveAll();
-    assertTrue(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_ID));
-    assertEquals(EntityUtil.getModifiedProperty(current, entity).getPropertyID(), EmpDept.DEPARTMENT_ID);
-    current.setValue(EmpDept.DEPARTMENT_ID, 1);
+    assertTrue(EntityUtil.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_ID));
+    assertEquals(EntityUtil.getModifiedProperty(current, entity).getPropertyID(), TestDomain.DEPARTMENT_ID);
+    current.setValue(TestDomain.DEPARTMENT_ID, 1);
     current.saveAll();
-    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_ID));
+    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_ID));
     assertNull(EntityUtil.getModifiedProperty(current, entity));
 
-    current.setValue(EmpDept.DEPARTMENT_LOCATION, "New location");
+    current.setValue(TestDomain.DEPARTMENT_LOCATION, "New location");
     current.saveAll();
-    assertTrue(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_LOCATION));
-    assertEquals(EntityUtil.getModifiedProperty(current, entity).getPropertyID(), EmpDept.DEPARTMENT_LOCATION);
-    current.removeValue(EmpDept.DEPARTMENT_LOCATION);
+    assertTrue(EntityUtil.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_LOCATION));
+    assertEquals(EntityUtil.getModifiedProperty(current, entity).getPropertyID(), TestDomain.DEPARTMENT_LOCATION);
+    current.removeValue(TestDomain.DEPARTMENT_LOCATION);
     current.saveAll();
-    assertTrue(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_LOCATION));
-    assertEquals(EntityUtil.getModifiedProperty(current, entity).getPropertyID(), EmpDept.DEPARTMENT_LOCATION);
-    current.setValue(EmpDept.DEPARTMENT_LOCATION, "Location");
+    assertTrue(EntityUtil.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_LOCATION));
+    assertEquals(EntityUtil.getModifiedProperty(current, entity).getPropertyID(), TestDomain.DEPARTMENT_LOCATION);
+    current.setValue(TestDomain.DEPARTMENT_LOCATION, "Location");
     current.saveAll();
-    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, EmpDept.DEPARTMENT_LOCATION));
+    assertFalse(EntityUtil.isValueMissingOrModified(current, entity, TestDomain.DEPARTMENT_LOCATION));
     assertNull(EntityUtil.getModifiedProperty(current, entity));
   }
 
   private EntityUtil.EntityBeanMapper createEmpDeptBeanMapper() throws NoSuchMethodException {
     final EntityUtil.EntityBeanMapper beanMap = new EntityUtil.EntityBeanMapper();
-    beanMap.setEntityID(DepartmentBean.class, EmpDept.T_DEPARTMENT);
-    beanMap.setProperty(DepartmentBean.class, EmpDept.DEPARTMENT_ID, "deptNo");
-    beanMap.setProperty(DepartmentBean.class, EmpDept.DEPARTMENT_NAME, "name");
-    beanMap.setProperty(DepartmentBean.class, EmpDept.DEPARTMENT_LOCATION, "location");
+    beanMap.setEntityID(DepartmentBean.class, TestDomain.T_DEPARTMENT);
+    beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_ID, "deptNo");
+    beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_NAME, "name");
+    beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_LOCATION, "location");
 
-    beanMap.setEntityID(EmployeeBean.class, EmpDept.T_EMPLOYEE);
-    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_ID, "id");
-    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_COMMISSION, "commission");
-    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_DEPARTMENT, "deptno");
-    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_HIREDATE, "hiredate");
-    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_JOB, "job");
-    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_MGR, "mgr");
-    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_NAME, "name");
-    beanMap.setProperty(EmployeeBean.class, EmpDept.EMPLOYEE_SALARY, "salary");
+    beanMap.setEntityID(EmployeeBean.class, TestDomain.T_EMPLOYEE);
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_ID, "id");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_COMMISSION, "commission");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_DEPARTMENT, "deptno");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_HIREDATE, "hiredate");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_JOB, "job");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_MGR, "mgr");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_NAME, "name");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_SALARY, "salary");
 
     return beanMap;
   }

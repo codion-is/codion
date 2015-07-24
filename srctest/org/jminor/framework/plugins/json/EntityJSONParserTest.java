@@ -4,9 +4,9 @@
 package org.jminor.framework.plugins.json;
 
 import org.jminor.common.model.SerializeException;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.TestDomain;
 
 import org.json.JSONException;
 import org.junit.Test;
@@ -25,12 +25,12 @@ public class EntityJSONParserTest {
 
   @Test
   public void key() throws Exception {
-    EmpDept.init();
-    final Entity.Key key = Entities.key(EmpDept.T_DEPARTMENT);
-    key.setValue(EmpDept.DEPARTMENT_ID, 42);
+    TestDomain.init();
+    final Entity.Key key = Entities.key(TestDomain.T_DEPARTMENT);
+    key.setValue(TestDomain.DEPARTMENT_ID, 42);
 
     final String keyJSON = EntityJSONParser.serializeKeys(Collections.singletonList(key));
-    assertEquals("[{\"values\":{\"deptno\":42},\"entityID\":\"scott.dept\"}]", keyJSON);
+    assertEquals("[{\"values\":{\"deptno\":42},\"entityID\":\"unittest.scott.dept\"}]", keyJSON);
     final Entity.Key keyParsed = EntityJSONParser.deserializeKeys(keyJSON).get(0);
     assertEquals(key.getEntityID(), keyParsed.getEntityID());
     assertEquals(key.getFirstKeyProperty(), keyParsed.getFirstKeyProperty());
@@ -41,22 +41,22 @@ public class EntityJSONParserTest {
   public void entity() throws Exception {
     final SimpleDateFormat format = new SimpleDateFormat("yyyy-MM-dd");
     final Date hiredate = format.parse("2001-12-20");
-    EmpDept.init();
+    TestDomain.init();
 
     EntityJSONParser parser = new EntityJSONParser();
 
-    final Entity dept10 = Entities.entity(EmpDept.T_DEPARTMENT);
-    dept10.setValue(EmpDept.DEPARTMENT_ID, -10);
-    dept10.setValue(EmpDept.DEPARTMENT_NAME, "DEPTNAME");
-    dept10.setValue(EmpDept.DEPARTMENT_LOCATION, "LOCATION");
+    final Entity dept10 = Entities.entity(TestDomain.T_DEPARTMENT);
+    dept10.setValue(TestDomain.DEPARTMENT_ID, -10);
+    dept10.setValue(TestDomain.DEPARTMENT_NAME, "DEPTNAME");
+    dept10.setValue(TestDomain.DEPARTMENT_LOCATION, "LOCATION");
 
     String jsonString = parser.serialize(Collections.singletonList(dept10));
     assertTrue(dept10.propertyValuesEqual(parser.deserialize(jsonString).get(0)));
 
-    final Entity dept20 = Entities.entity(EmpDept.T_DEPARTMENT);
-    dept20.setValue(EmpDept.DEPARTMENT_ID, -20);
-    dept20.setValue(EmpDept.DEPARTMENT_NAME, null);
-    dept20.setValue(EmpDept.DEPARTMENT_LOCATION, "ALOC");
+    final Entity dept20 = Entities.entity(TestDomain.T_DEPARTMENT);
+    dept20.setValue(TestDomain.DEPARTMENT_ID, -20);
+    dept20.setValue(TestDomain.DEPARTMENT_NAME, null);
+    dept20.setValue(TestDomain.DEPARTMENT_LOCATION, "ALOC");
 
     jsonString = parser.serialize(Collections.singletonList(dept20));
     assertTrue(dept20.propertyValuesEqual(parser.deserialize(jsonString).get(0)));
@@ -64,33 +64,33 @@ public class EntityJSONParserTest {
     final String twoDepts = parser.serialize(Arrays.asList(dept10, dept20));
     parser.deserialize(twoDepts);
 
-    final Entity mgr30 = Entities.entity(EmpDept.T_EMPLOYEE);
-    mgr30.setValue(EmpDept.EMPLOYEE_COMMISSION, 500.5);
-    mgr30.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept20);
-    mgr30.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
-    mgr30.setValue(EmpDept.EMPLOYEE_ID, -30);
-    mgr30.setValue(EmpDept.EMPLOYEE_JOB, "MGR");
-    mgr30.setValue(EmpDept.EMPLOYEE_NAME, "MGR NAME");
-    mgr30.setValue(EmpDept.EMPLOYEE_SALARY, 2500.5);
+    final Entity mgr30 = Entities.entity(TestDomain.T_EMPLOYEE);
+    mgr30.setValue(TestDomain.EMPLOYEE_COMMISSION, 500.5);
+    mgr30.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, dept20);
+    mgr30.setValue(TestDomain.EMPLOYEE_HIREDATE, hiredate);
+    mgr30.setValue(TestDomain.EMPLOYEE_ID, -30);
+    mgr30.setValue(TestDomain.EMPLOYEE_JOB, "MGR");
+    mgr30.setValue(TestDomain.EMPLOYEE_NAME, "MGR NAME");
+    mgr30.setValue(TestDomain.EMPLOYEE_SALARY, 2500.5);
 
-    final Entity mgr50 = Entities.entity(EmpDept.T_EMPLOYEE);
-    mgr50.setValue(EmpDept.EMPLOYEE_COMMISSION, 500.5);
-    mgr50.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept20);
-    mgr50.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
-    mgr50.setValue(EmpDept.EMPLOYEE_ID, -50);
-    mgr50.setValue(EmpDept.EMPLOYEE_JOB, "MGR2");
-    mgr50.setValue(EmpDept.EMPLOYEE_NAME, "MGR2 NAME");
-    mgr50.setValue(EmpDept.EMPLOYEE_SALARY, 2500.5);
+    final Entity mgr50 = Entities.entity(TestDomain.T_EMPLOYEE);
+    mgr50.setValue(TestDomain.EMPLOYEE_COMMISSION, 500.5);
+    mgr50.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, dept20);
+    mgr50.setValue(TestDomain.EMPLOYEE_HIREDATE, hiredate);
+    mgr50.setValue(TestDomain.EMPLOYEE_ID, -50);
+    mgr50.setValue(TestDomain.EMPLOYEE_JOB, "MGR2");
+    mgr50.setValue(TestDomain.EMPLOYEE_NAME, "MGR2 NAME");
+    mgr50.setValue(TestDomain.EMPLOYEE_SALARY, 2500.5);
 
-    final Entity emp1 = Entities.entity(EmpDept.T_EMPLOYEE);
-    emp1.setValue(EmpDept.EMPLOYEE_COMMISSION, 500.5);
-    emp1.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept10);
-    emp1.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
-    emp1.setValue(EmpDept.EMPLOYEE_ID, -500);
-    emp1.setValue(EmpDept.EMPLOYEE_JOB, "A JOB");
-    emp1.setValue(EmpDept.EMPLOYEE_MGR_FK, mgr30);
-    emp1.setValue(EmpDept.EMPLOYEE_NAME, "A NAME");
-    emp1.setValue(EmpDept.EMPLOYEE_SALARY, 2500.5);
+    final Entity emp1 = Entities.entity(TestDomain.T_EMPLOYEE);
+    emp1.setValue(TestDomain.EMPLOYEE_COMMISSION, 500.5);
+    emp1.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, dept10);
+    emp1.setValue(TestDomain.EMPLOYEE_HIREDATE, hiredate);
+    emp1.setValue(TestDomain.EMPLOYEE_ID, -500);
+    emp1.setValue(TestDomain.EMPLOYEE_JOB, "A JOB");
+    emp1.setValue(TestDomain.EMPLOYEE_MGR_FK, mgr30);
+    emp1.setValue(TestDomain.EMPLOYEE_NAME, "A NAME");
+    emp1.setValue(TestDomain.EMPLOYEE_SALARY, 2500.5);
 
     jsonString = EntityJSONParser.serializeEntities(Collections.singletonList(emp1), false);
     assertTrue(emp1.propertyValuesEqual(parser.deserialize(jsonString).get(0)));
@@ -98,42 +98,42 @@ public class EntityJSONParserTest {
     jsonString = EntityJSONParser.serializeEntities(Collections.singletonList(emp1), true);
     Entity emp1Deserialized = parser.deserialize(jsonString).get(0);
     assertTrue(emp1.propertyValuesEqual(emp1Deserialized));
-    assertTrue(emp1.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK).propertyValuesEqual(emp1Deserialized.getForeignKeyValue(EmpDept.EMPLOYEE_DEPARTMENT_FK)));
-    assertTrue(emp1.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK).propertyValuesEqual(emp1Deserialized.getForeignKeyValue(EmpDept.EMPLOYEE_MGR_FK)));
+    assertTrue(emp1.getForeignKeyValue(TestDomain.EMPLOYEE_DEPARTMENT_FK).propertyValuesEqual(emp1Deserialized.getForeignKeyValue(TestDomain.EMPLOYEE_DEPARTMENT_FK)));
+    assertTrue(emp1.getForeignKeyValue(TestDomain.EMPLOYEE_MGR_FK).propertyValuesEqual(emp1Deserialized.getForeignKeyValue(TestDomain.EMPLOYEE_MGR_FK)));
 
     final Date newHiredate = format.parse("2002-11-21");
-    emp1.setValue(EmpDept.EMPLOYEE_COMMISSION, 550.55);
-    emp1.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept20);
-    emp1.setValue(EmpDept.EMPLOYEE_JOB, "ANOTHER JOB");
-    emp1.setValue(EmpDept.EMPLOYEE_MGR_FK, mgr50);
-    emp1.setValue(EmpDept.EMPLOYEE_NAME, "ANOTHER NAME");
-    emp1.setValue(EmpDept.EMPLOYEE_SALARY, 3500.5);
-    emp1.setValue(EmpDept.EMPLOYEE_HIREDATE, newHiredate);
+    emp1.setValue(TestDomain.EMPLOYEE_COMMISSION, 550.55);
+    emp1.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, dept20);
+    emp1.setValue(TestDomain.EMPLOYEE_JOB, "ANOTHER JOB");
+    emp1.setValue(TestDomain.EMPLOYEE_MGR_FK, mgr50);
+    emp1.setValue(TestDomain.EMPLOYEE_NAME, "ANOTHER NAME");
+    emp1.setValue(TestDomain.EMPLOYEE_SALARY, 3500.5);
+    emp1.setValue(TestDomain.EMPLOYEE_HIREDATE, newHiredate);
 
     jsonString = EntityJSONParser.serializeEntities(Collections.singletonList(emp1), true);
     emp1Deserialized = parser.deserialize(jsonString).get(0);
     assertTrue(emp1.propertyValuesEqual(emp1Deserialized));
 
-    assertEquals(500.5, emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_COMMISSION));
-    assertEquals(dept10, emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_DEPARTMENT_FK));
-    assertEquals("A JOB", emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_JOB));
-    assertEquals(mgr30, emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_MGR_FK));
-    assertEquals(hiredate, emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_HIREDATE));
-    assertEquals("A NAME", emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_NAME));
-    assertEquals(2500.5, emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_SALARY));
+    assertEquals(500.5, emp1Deserialized.getOriginalValue(TestDomain.EMPLOYEE_COMMISSION));
+    assertEquals(dept10, emp1Deserialized.getOriginalValue(TestDomain.EMPLOYEE_DEPARTMENT_FK));
+    assertEquals("A JOB", emp1Deserialized.getOriginalValue(TestDomain.EMPLOYEE_JOB));
+    assertEquals(mgr30, emp1Deserialized.getOriginalValue(TestDomain.EMPLOYEE_MGR_FK));
+    assertEquals(hiredate, emp1Deserialized.getOriginalValue(TestDomain.EMPLOYEE_HIREDATE));
+    assertEquals("A NAME", emp1Deserialized.getOriginalValue(TestDomain.EMPLOYEE_NAME));
+    assertEquals(2500.5, emp1Deserialized.getOriginalValue(TestDomain.EMPLOYEE_SALARY));
 
-    assertTrue(((Entity) emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_DEPARTMENT_FK)).propertyValuesEqual(dept10));
-    assertTrue(((Entity) emp1Deserialized.getOriginalValue(EmpDept.EMPLOYEE_MGR_FK)).propertyValuesEqual(mgr30));
+    assertTrue(((Entity) emp1Deserialized.getOriginalValue(TestDomain.EMPLOYEE_DEPARTMENT_FK)).propertyValuesEqual(dept10));
+    assertTrue(((Entity) emp1Deserialized.getOriginalValue(TestDomain.EMPLOYEE_MGR_FK)).propertyValuesEqual(mgr30));
 
-    final Entity emp2 = Entities.entity(EmpDept.T_EMPLOYEE);
-    emp2.setValue(EmpDept.EMPLOYEE_COMMISSION, 300.5);
-    emp2.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, dept10);
-    emp2.setValue(EmpDept.EMPLOYEE_HIREDATE, hiredate);
-    emp2.setValue(EmpDept.EMPLOYEE_ID, -200);
-    emp2.setValue(EmpDept.EMPLOYEE_JOB, "JOB");
-    emp2.setValue(EmpDept.EMPLOYEE_MGR_FK, mgr50);
-    emp2.setValue(EmpDept.EMPLOYEE_NAME, "NAME");
-    emp2.setValue(EmpDept.EMPLOYEE_SALARY, 3500.5);
+    final Entity emp2 = Entities.entity(TestDomain.T_EMPLOYEE);
+    emp2.setValue(TestDomain.EMPLOYEE_COMMISSION, 300.5);
+    emp2.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, dept10);
+    emp2.setValue(TestDomain.EMPLOYEE_HIREDATE, hiredate);
+    emp2.setValue(TestDomain.EMPLOYEE_ID, -200);
+    emp2.setValue(TestDomain.EMPLOYEE_JOB, "JOB");
+    emp2.setValue(TestDomain.EMPLOYEE_MGR_FK, mgr50);
+    emp2.setValue(TestDomain.EMPLOYEE_NAME, "NAME");
+    emp2.setValue(TestDomain.EMPLOYEE_SALARY, 3500.5);
 
     parser = new EntityJSONParser();
 
@@ -151,13 +151,13 @@ public class EntityJSONParserTest {
     assertTrue(emp1.propertyValuesEqual(parsedEntity));
     assertTrue(parsedEntity.getModifiedObserver().isActive());
     assertTrue(parsedEntity.isModified());
-    assertTrue(parsedEntity.isModified(EmpDept.EMPLOYEE_COMMISSION));
-    assertTrue(parsedEntity.isModified(EmpDept.EMPLOYEE_DEPARTMENT));
-    assertTrue(parsedEntity.isModified(EmpDept.EMPLOYEE_JOB));
-    assertTrue(parsedEntity.isModified(EmpDept.EMPLOYEE_MGR));
-    assertTrue(parsedEntity.isModified(EmpDept.EMPLOYEE_NAME));
-    assertTrue(parsedEntity.isModified(EmpDept.EMPLOYEE_SALARY));
-    assertTrue(parsedEntity.isModified(EmpDept.EMPLOYEE_HIREDATE));
+    assertTrue(parsedEntity.isModified(TestDomain.EMPLOYEE_COMMISSION));
+    assertTrue(parsedEntity.isModified(TestDomain.EMPLOYEE_DEPARTMENT));
+    assertTrue(parsedEntity.isModified(TestDomain.EMPLOYEE_JOB));
+    assertTrue(parsedEntity.isModified(TestDomain.EMPLOYEE_MGR));
+    assertTrue(parsedEntity.isModified(TestDomain.EMPLOYEE_NAME));
+    assertTrue(parsedEntity.isModified(TestDomain.EMPLOYEE_SALARY));
+    assertTrue(parsedEntity.isModified(TestDomain.EMPLOYEE_HIREDATE));
   }
 
   @Test

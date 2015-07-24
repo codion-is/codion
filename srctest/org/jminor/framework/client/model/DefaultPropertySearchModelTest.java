@@ -4,9 +4,9 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.SearchType;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
@@ -18,8 +18,8 @@ public class DefaultPropertySearchModelTest {
 
   @Test
   public void propertySearchModel() throws Exception {
-    EmpDept.init();
-    final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME);
+    TestDomain.init();
+    final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
     final PropertySearchModel model = new DefaultPropertySearchModel(property);
     assertEquals(property, model.getColumnIdentifier());
     model.setSearchType(SearchType.LIKE);

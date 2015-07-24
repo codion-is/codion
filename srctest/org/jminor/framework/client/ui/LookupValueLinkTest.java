@@ -7,10 +7,10 @@ import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
@@ -22,19 +22,19 @@ public class LookupValueLinkTest {
   private final EntityEditModel model;
 
   public LookupValueLinkTest() {
-    model = new DefaultEntityEditModel(EmpDept.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    model = new DefaultEntityEditModel(TestDomain.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER);
   }
 
   @Test
   public void test() throws Exception {
-    final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(EmpDept.T_EMPLOYEE, EmpDept.EMPLOYEE_DEPARTMENT_FK);
-    final EntityLookupModel lookupModel = EntityUiUtil.createEntityLookupField(fkProperty, model, EmpDept.DEPARTMENT_NAME).getModel();
+    final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_DEPARTMENT_FK);
+    final EntityLookupModel lookupModel = EntityUiUtil.createEntityLookupField(fkProperty, model, TestDomain.DEPARTMENT_NAME).getModel();
     assertTrue(lookupModel.getSelectedEntities().size() == 0);
-    Entity department = model.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "SALES");
-    model.setValue(EmpDept.EMPLOYEE_DEPARTMENT_FK, department);
+    Entity department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    model.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, department);
     assertEquals(lookupModel.getSelectedEntities().size(), 1);
     assertEquals(lookupModel.getSelectedEntities().iterator().next(), department);
-    department = model.getConnectionProvider().getConnection().selectSingle(EmpDept.T_DEPARTMENT, EmpDept.DEPARTMENT_NAME, "OPERATIONS");
+    department = model.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "OPERATIONS");
     lookupModel.setSelectedEntity(department);
     assertEquals(model.getValue(fkProperty.getPropertyID()), department);
   }

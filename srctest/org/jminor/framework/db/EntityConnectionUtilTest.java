@@ -10,8 +10,8 @@ import org.jminor.common.model.User;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
 import org.jminor.framework.db.local.LocalEntityConnections;
-import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -29,14 +29,15 @@ public class EntityConnectionUtilTest {
   private static EntityConnection DESTINATION_CONNECTION;
 
   static {
-    Chinook.init();
+    TestDomain.init();
   }
 
   @BeforeClass
   public static void setUp() {
     try {
-      final H2Database destinationDatabase = new H2Database("TempDB", "resources/demos/chinook/scripts/ddl.sql");
+      final H2Database destinationDatabase = new H2Database("TempDB", "resources/demos/empdept/scripts/ddl.sql");
       DESTINATION_CONNECTION = LocalEntityConnections.createConnection(destinationDatabase, new User("sa", ""));
+      DESTINATION_CONNECTION.delete(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -51,39 +52,29 @@ public class EntityConnectionUtilTest {
   @Test
   public void copyEntities() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection();
-    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_ARTIST);
-    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_ALBUM);
-    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_MEDIATYPE);
-    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, true, Chinook.T_GENRE);
-    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 16, false, Chinook.T_TRACK);
+    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, true, TestDomain.T_DEPARTMENT);
 
-    assertEquals(sourceConnection.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_ARTIST)),
-            DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_ARTIST)));
-    assertEquals(sourceConnection.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_ALBUM)),
-            DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_ALBUM)));
-    assertEquals(sourceConnection.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_MEDIATYPE)),
-            DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_MEDIATYPE)));
-    assertEquals(sourceConnection.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_GENRE)),
-            DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_GENRE)));
-    assertEquals(sourceConnection.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_TRACK)),
-            DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_TRACK)));
+    assertEquals(sourceConnection.selectRowCount(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT)),
+            DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT)));
+    DESTINATION_CONNECTION.delete(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT));
   }
 
   @Test
   public void batchInsert() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection();
 
-    final List<Entity> source = sourceConnection.selectAll(Chinook.T_PLAYLIST);
+    final List<Entity> source = sourceConnection.selectAll(TestDomain.T_DEPARTMENT);
     final List<Entity.Key> dest = new ArrayList<>();
     final ProgressReporter progressReporter = new ProgressReporter() {
       @Override
       public void reportProgress(final int currentProgress) {}
     };
-    EntityConnectionUtil.batchInsert(DESTINATION_CONNECTION, source, dest, 6, progressReporter);
-    assertEquals(sourceConnection.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_PLAYLIST)),
-            DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(Chinook.T_PLAYLIST)));
+    EntityConnectionUtil.batchInsert(DESTINATION_CONNECTION, source, dest, 2, progressReporter);
+    assertEquals(sourceConnection.selectRowCount(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT)),
+            DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT)));
 
     EntityConnectionUtil.batchInsert(DESTINATION_CONNECTION, Collections.<Entity>emptyList(), null, 10, null);
+    DESTINATION_CONNECTION.delete(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT));
   }
 
   @Test(expected = IllegalArgumentException.class)

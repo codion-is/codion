@@ -3,19 +3,23 @@
  */
 package org.jminor.framework.tools.testing;
 
+import org.jminor.common.model.User;
+import org.jminor.common.model.tools.ScenarioException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
+import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
-import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest;
+import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.server.EntityConnectionServerTest;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
+
+import java.util.Arrays;
 
 import static org.junit.Assert.*;
 
@@ -35,21 +39,43 @@ public class EntityLoadTestModelTest {
     Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_BEFORE_TEST);
   }
 
+  private static final class TestLoadTestModel extends EntityLoadTestModel {
+
+    public TestLoadTestModel() {
+      super(User.UNIT_TEST_USER, Arrays.asList(new EntityLoadTestModel.AbstractEntityUsageScenario("1") {
+        @Override
+        protected void performScenario(final EntityApplicationModel application) throws ScenarioException {}
+      }, new EntityLoadTestModel.AbstractEntityUsageScenario("2") {
+        @Override
+        protected void performScenario(final EntityApplicationModel application) throws ScenarioException {}
+      }));
+    }
+
+    @Override
+    protected EntityApplicationModel initializeApplication() {
+      return new DefaultEntityApplicationModel(
+              EntityConnectionProviders.createConnectionProvider(getUser(), EntityLoadTestModelTest.class.getSimpleName())) {
+        @Override
+        protected void loadDomainModel() {
+          TestDomain.init();
+        }
+      };
+    }
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void setLoginDelayFactorNegative() {
-    final EmpDeptLoadTest loadTest = new EmpDeptLoadTest();
-    loadTest.setLoginDelayFactor(-1);
+    new TestLoadTestModel().setLoginDelayFactor(-1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setUpdateIntervalNegative() {
-    final EmpDeptLoadTest loadTest = new EmpDeptLoadTest();
-    loadTest.setUpdateInterval(-1);
+    new TestLoadTestModel().setUpdateInterval(-1);
   }
 
   @Test
   public void testLoadTesting() throws Exception {
-    final EmpDeptLoadTest loadTest = new EmpDeptLoadTest();
+    final TestLoadTestModel loadTest = new TestLoadTestModel();
 
     loadTest.setCollectChartData(true);
     loadTest.setUpdateInterval(350);
@@ -59,11 +85,8 @@ public class EntityLoadTestModelTest {
     assertEquals(350, loadTest.getUpdateInterval());
     assertEquals(0, loadTest.getLoginDelayFactor());
 
-    loadTest.setWeight("SelectDepartment", 1);
-    loadTest.setWeight("InsertDepartment", 0);
-    loadTest.setWeight("InsertEmployee", 0);
-    loadTest.setWeight("LoginLogout", 0);
-    loadTest.setWeight("UpdateEmployee", 0);
+    loadTest.setWeight("1", 1);
+    loadTest.setWeight("2", 0);
 
     loadTest.setMaximumThinkTime(100);
     loadTest.setMinimumThinkTime(50);
@@ -74,14 +97,14 @@ public class EntityLoadTestModelTest {
 
     loadTest.addApplicationBatch();
 
-    Thread.sleep(5000);
+    Thread.sleep(1500);
 
     assertEquals("Two clients expected, if this fails try increasing the Thread.sleep() value above",
             2, loadTest.getApplicationCount());
-    assertTrue(loadTest.getUsageScenario("SelectDepartment").getTotalRunCount() > 0);
-    assertTrue(loadTest.getUsageScenario("SelectDepartment").getSuccessfulRunCount() > 0);
-    assertTrue(loadTest.getUsageScenario("SelectDepartment").getUnsuccessfulRunCount() == 0);
-    assertTrue(loadTest.getUsageScenario("InsertDepartment").getTotalRunCount() == 0);
+    assertTrue(loadTest.getUsageScenario("1").getTotalRunCount() > 0);
+    assertTrue(loadTest.getUsageScenario("1").getSuccessfulRunCount() > 0);
+    assertTrue(loadTest.getUsageScenario("1").getUnsuccessfulRunCount() == 0);
+    assertTrue(loadTest.getUsageScenario("2").getTotalRunCount() == 0);
 
     loadTest.setPaused(true);
     assertTrue(loadTest.isPaused());
@@ -104,11 +127,11 @@ public class EntityLoadTestModelTest {
     final EntityApplicationModel model = new DefaultEntityApplicationModel(LocalEntityConnectionTest.CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
-        EmpDept.init();
+        TestDomain.init();
       }
     };
-    model.addEntityModel(new DefaultEntityModel(EmpDept.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER));
-    final EntityTableModel tableModel = model.getEntityModel(EmpDept.T_DEPARTMENT).getTableModel();
+    model.addEntityModel(new DefaultEntityModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER));
+    final EntityTableModel tableModel = model.getEntityModel(TestDomain.T_DEPARTMENT).getTableModel();
     tableModel.setQueryCriteriaRequired(false);
     tableModel.refresh();
 
