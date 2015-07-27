@@ -15,10 +15,10 @@ public class EntityTableCellRenderersTest {
   @Test
   public void test() {
     TestDomain.init();
-    final EntityTablePanel tablePanel = new EntityTablePanel(new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER));
+    final EntityTablePanel tablePanel = new EntityTablePanel(new DefaultEntityTableModel(TestDomain.T_EMP, LocalEntityConnectionTest.CONNECTION_PROVIDER));
     tablePanel.getEntityTableModel().refresh();
     final EntityTableCellRenderer renderer = EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
-            Entities.getProperty(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_NAME));
+            Entities.getProperty(TestDomain.T_EMP, TestDomain.EMP_NAME));
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, false, false, 0, 0);
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, false, 0, 0);
     renderer.getTableCellRendererComponent(tablePanel.getJTable(), null, true, true, 0, 0);
@@ -35,7 +35,7 @@ public class EntityTableCellRenderersTest {
   @Test(expected = IllegalArgumentException.class)
   public void entityMismatch() {
     TestDomain.init();
-    final EntityTablePanel tablePanel = new EntityTablePanel(new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER));
+    final EntityTablePanel tablePanel = new EntityTablePanel(new DefaultEntityTableModel(TestDomain.T_EMP, LocalEntityConnectionTest.CONNECTION_PROVIDER));
     tablePanel.getEntityTableModel().refresh();
     EntityTableCellRenderers.getTableCellRenderer(tablePanel.getEntityTableModel(),
             Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME));

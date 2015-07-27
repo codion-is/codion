@@ -144,32 +144,32 @@ public class LocalEntityConnectionTest {
     final List<Entity> accounting = connection.selectMany(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     final Map<String, Collection<Entity>> emps = connection.selectDependentEntities(accounting);
     assertEquals(1, emps.size());
-    assertTrue(emps.containsKey(TestDomain.T_EMPLOYEE));
-    assertEquals(7, emps.get(TestDomain.T_EMPLOYEE).size());
+    assertTrue(emps.containsKey(TestDomain.T_EMP));
+    assertEquals(7, emps.get(TestDomain.T_EMP).size());
 
-    Entity emp = connection.selectSingle(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_NAME, "KING");
+    Entity emp = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
     Map<String, Collection<Entity>> deps = connection.selectDependentEntities(Collections.singletonList(emp));
-    assertTrue(deps.containsKey(TestDomain.T_EMPLOYEE));
-    assertEquals(3, deps.get(TestDomain.T_EMPLOYEE).size());
+    assertTrue(deps.containsKey(TestDomain.T_EMP));
+    assertEquals(3, deps.get(TestDomain.T_EMP).size());
 
-    emp = connection.selectSingle(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_NAME, "MILLER");
+    emp = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MILLER");
     deps = connection.selectDependentEntities(Collections.singletonList(emp));
-    assertFalse(deps.containsKey(TestDomain.T_EMPLOYEE));
+    assertFalse(deps.containsKey(TestDomain.T_EMP));
   }
 
   @Test
   public void selectManyLimitOffset() throws Exception {
-    final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(TestDomain.T_EMPLOYEE)
-            .setOrderByClause(TestDomain.EMPLOYEE_NAME).setLimit(2);
+    final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP)
+            .setOrderByClause(TestDomain.EMP_NAME).setLimit(2);
     List<Entity> result = connection.selectMany(criteria);
     assertEquals(2, result.size());
     criteria.setLimit(3);
     criteria.setOffset(3);
     result = connection.selectMany(criteria);
     assertEquals(3, result.size());
-    assertEquals("BLAKE", result.get(0).getValue(TestDomain.EMPLOYEE_NAME));
-    assertEquals("CLARK", result.get(1).getValue(TestDomain.EMPLOYEE_NAME));
-    assertEquals("FORD", result.get(2).getValue(TestDomain.EMPLOYEE_NAME));
+    assertEquals("BLAKE", result.get(0).getValue(TestDomain.EMP_NAME));
+    assertEquals("CLARK", result.get(1).getValue(TestDomain.EMP_NAME));
+    assertEquals("FORD", result.get(2).getValue(TestDomain.EMP_NAME));
   }
 
   @Test
@@ -185,33 +185,33 @@ public class LocalEntityConnectionTest {
     result = connection.selectMany(EntityCriteriaUtil.selectCriteria(JOINED_QUERY_ENTITY_ID, new SimpleCriteria<Property.ColumnProperty>("d.deptno = 10")));
     assertEquals(7, result.size());
 
-    final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(TestDomain.T_EMPLOYEE, new SimpleCriteria<Property.ColumnProperty>("ename = 'BLAKE'"));
+    final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP, new SimpleCriteria<Property.ColumnProperty>("ename = 'BLAKE'"));
     result = connection.selectMany(criteria);
     Entity emp = result.get(0);
-    assertTrue(emp.isLoaded(TestDomain.EMPLOYEE_DEPARTMENT_FK));
-    assertTrue(emp.isLoaded(TestDomain.EMPLOYEE_MGR_FK));
-    emp = emp.getForeignKeyValue(TestDomain.EMPLOYEE_MGR_FK);
-    assertFalse(emp.isLoaded(TestDomain.EMPLOYEE_MGR_FK));
+    assertTrue(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
+    assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
+    emp = emp.getForeignKeyValue(TestDomain.EMP_MGR_FK);
+    assertFalse(emp.isLoaded(TestDomain.EMP_MGR_FK));
 
-    result = connection.selectMany(criteria.setForeignKeyFetchDepthLimit(TestDomain.EMPLOYEE_DEPARTMENT_FK, 0));
+    result = connection.selectMany(criteria.setForeignKeyFetchDepthLimit(TestDomain.EMP_DEPARTMENT_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
-    assertFalse(emp.isLoaded(TestDomain.EMPLOYEE_DEPARTMENT_FK));
-    assertTrue(emp.isLoaded(TestDomain.EMPLOYEE_MGR_FK));
+    assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
+    assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
 
-    result = connection.selectMany(criteria.setForeignKeyFetchDepthLimit(TestDomain.EMPLOYEE_MGR_FK, 0));
+    result = connection.selectMany(criteria.setForeignKeyFetchDepthLimit(TestDomain.EMP_MGR_FK, 0));
     assertEquals(1, result.size());
     emp = result.get(0);
-    assertFalse(emp.isLoaded(TestDomain.EMPLOYEE_DEPARTMENT_FK));
-    assertFalse(emp.isLoaded(TestDomain.EMPLOYEE_MGR_FK));
+    assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
+    assertFalse(emp.isLoaded(TestDomain.EMP_MGR_FK));
 
-    result = connection.selectMany(criteria.setForeignKeyFetchDepthLimit(TestDomain.EMPLOYEE_MGR_FK, 2));
+    result = connection.selectMany(criteria.setForeignKeyFetchDepthLimit(TestDomain.EMP_MGR_FK, 2));
     assertEquals(1, result.size());
     emp = result.get(0);
-    assertFalse(emp.isLoaded(TestDomain.EMPLOYEE_DEPARTMENT_FK));
-    assertTrue(emp.isLoaded(TestDomain.EMPLOYEE_MGR_FK));
-    emp = emp.getForeignKeyValue(TestDomain.EMPLOYEE_MGR_FK);
-    assertTrue(emp.isLoaded(TestDomain.EMPLOYEE_MGR_FK));
+    assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
+    assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
+    emp = emp.getForeignKeyValue(TestDomain.EMP_MGR_FK);
+    assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
   }
 
   @Test(expected = DatabaseException.class)
@@ -244,9 +244,9 @@ public class LocalEntityConnectionTest {
     sales = connection.selectSingle(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT, new SimpleCriteria<Property.ColumnProperty>("dname = 'SALES'")));
     assertEquals(sales.getStringValue(TestDomain.DEPARTMENT_NAME), "SALES");
 
-    final Entity king = connection.selectSingle(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_NAME, "KING");
-    assertTrue(king.containsValue(TestDomain.EMPLOYEE_MGR_FK));
-    assertNull(king.getValue(TestDomain.EMPLOYEE_MGR_FK));
+    final Entity king = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
+    assertTrue(king.containsValue(TestDomain.EMP_MGR_FK));
+    assertNull(king.getValue(TestDomain.EMP_MGR_FK));
   }
 
   @Test
@@ -278,7 +278,7 @@ public class LocalEntityConnectionTest {
 
   @Test(expected = DatabaseException.class)
   public void selectSingleManyFound() throws Exception {
-    connection.selectSingle(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_JOB, "MANAGER");
+    connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_JOB, "MANAGER");
   }
 
   @Test(expected = DatabaseException.class)
@@ -319,7 +319,7 @@ public class LocalEntityConnectionTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void selectPropertyValuesNonColumnProperty() throws Exception {
-    connection.selectPropertyValues(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_DEPARTMENT_LOCATION, false);
+    connection.selectPropertyValues(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_LOCATION, false);
   }
 
   @Test
@@ -374,13 +374,13 @@ public class LocalEntityConnectionTest {
     connection.setOptimisticLocking(true);
     final Entity allen;
     try {
-      final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_NAME, SearchType.LIKE, "ALLEN");
+      final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP, TestDomain.EMP_NAME, SearchType.LIKE, "ALLEN");
 
       allen = connection.selectSingle(criteria);
 
       connection2.delete(Collections.singletonList(allen.getPrimaryKey()));
 
-      allen.setValue(TestDomain.EMPLOYEE_JOB, "A JOB");
+      allen.setValue(TestDomain.EMP_JOB, "A JOB");
       try {
         connection.update(Collections.singletonList(allen));
         fail("Should not be able to update record deleted by another connection");

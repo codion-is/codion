@@ -5,7 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
-import org.jminor.framework.demos.chinook.domain.Chinook;
+import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
@@ -15,16 +15,16 @@ import static org.junit.Assert.assertTrue;
 public class DefaultEntityModelProviderTest {
 
   public DefaultEntityModelProviderTest() {
-    Chinook.init();
+    TestDomain.init();
   }
 
   @Test
   public void testDetailModelProvider() {
-    final EntityModelProvider customerModelProvider = new DefaultEntityModelProvider(Chinook.T_CUSTOMER)
+    final EntityModelProvider customerModelProvider = new DefaultEntityModelProvider(TestDomain.T_CUSTOMER)
             .setEditModelClass(CustomerEditModel.class)
             .setTableModelClass(CustomerTableModel.class);
-    final EntityModelProvider invoiceModelProvider = new DefaultEntityModelProvider(Chinook.T_INVOICE);
-    final EntityModelProvider invoiceLineModelProvider = new DefaultEntityModelProvider(Chinook.T_INVOICELINE);
+    final EntityModelProvider invoiceModelProvider = new DefaultEntityModelProvider(TestDomain.T_INVOICE);
+    final EntityModelProvider invoiceLineModelProvider = new DefaultEntityModelProvider(TestDomain.T_INVOICELINE);
 
     customerModelProvider.addDetailModelProvider(invoiceModelProvider);
     invoiceModelProvider.addDetailModelProvider(invoiceLineModelProvider);
@@ -35,22 +35,22 @@ public class DefaultEntityModelProviderTest {
     final EntityModel customerModel = customerModelProvider.createModel(LocalEntityConnectionTest.CONNECTION_PROVIDER, false);
     assertTrue(customerModel.getEditModel() instanceof CustomerEditModel);
     assertTrue(customerModel.getTableModel() instanceof CustomerTableModel);
-    assertTrue(customerModel.containsDetailModel(Chinook.T_INVOICE));
-    final EntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
-    assertTrue(invoiceModel.containsDetailModel(Chinook.T_INVOICELINE));
+    assertTrue(customerModel.containsDetailModel(TestDomain.T_INVOICE));
+    final EntityModel invoiceModel = customerModel.getDetailModel(TestDomain.T_INVOICE);
+    assertTrue(invoiceModel.containsDetailModel(TestDomain.T_INVOICELINE));
   }
 
   static final class CustomerEditModel extends DefaultEntityEditModel {
 
     public CustomerEditModel(final EntityConnectionProvider connectionProvider) {
-      super(Chinook.T_CUSTOMER, connectionProvider);
+      super(TestDomain.T_CUSTOMER, connectionProvider);
     }
   }
 
   static final class CustomerTableModel extends DefaultEntityTableModel {
 
     public CustomerTableModel(final EntityConnectionProvider connectionProvider) {
-      super(Chinook.T_CUSTOMER, connectionProvider);
+      super(TestDomain.T_CUSTOMER, connectionProvider);
     }
   }
 }

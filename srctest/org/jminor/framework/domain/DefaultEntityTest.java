@@ -33,7 +33,6 @@ public class DefaultEntityTest {
 
   public DefaultEntityTest() {
     TestDomain.init();
-    TestDomain.init();
   }
 
   @Test
@@ -275,53 +274,53 @@ public class DefaultEntityTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueInt() {
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
-    employee.setValue(TestDomain.EMPLOYEE_NAME, 1);
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    employee.setValue(TestDomain.EMP_NAME, 1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueDouble() {
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
-    employee.setValue(TestDomain.EMPLOYEE_NAME, 1d);
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    employee.setValue(TestDomain.EMP_NAME, 1d);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueBoolean() {
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
-    employee.setValue(TestDomain.EMPLOYEE_NAME, false);
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    employee.setValue(TestDomain.EMP_NAME, false);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueChar() {
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
-    employee.setValue(TestDomain.EMPLOYEE_NAME, 'c');
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    employee.setValue(TestDomain.EMP_NAME, 'c');
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueEntity() {
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
     department.setValue(TestDomain.DEPARTMENT_ID, -10);
 
-    employee.setValue(TestDomain.EMPLOYEE_NAME, department);
+    employee.setValue(TestDomain.EMP_NAME, department);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueDate() {
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
-    employee.setValue(TestDomain.EMPLOYEE_NAME, new Date());
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    employee.setValue(TestDomain.EMP_NAME, new Date());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setStringValueTimestamp() {
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
-    employee.setValue(TestDomain.EMPLOYEE_NAME, new Timestamp(System.currentTimeMillis()));
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    employee.setValue(TestDomain.EMP_NAME, new Timestamp(System.currentTimeMillis()));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setDoubleValueString() {
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
-    employee.setValue(TestDomain.EMPLOYEE_SALARY, "test");
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    employee.setValue(TestDomain.EMP_SALARY, "test");
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -350,34 +349,34 @@ public class DefaultEntityTest {
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
     department.setValue(TestDomain.DEPARTMENT_ID, -10);
 
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
 
-    employee.setValue(TestDomain.EMPLOYEE_COMMISSION, 1200d);
-    assertEquals(employee.getValue(TestDomain.EMPLOYEE_COMMISSION), 1200d);
+    employee.setValue(TestDomain.EMP_COMMISSION, 1200d);
+    assertEquals(employee.getValue(TestDomain.EMP_COMMISSION), 1200d);
 
-    employee.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, department);
-    assertEquals(employee.getValue(TestDomain.EMPLOYEE_DEPARTMENT_FK), department);
+    employee.setValue(TestDomain.EMP_DEPARTMENT_FK, department);
+    assertEquals(employee.getValue(TestDomain.EMP_DEPARTMENT_FK), department);
 
     final Timestamp date = new Timestamp(DateUtil.floorDate(new Date()).getTime());
-    employee.setValue(TestDomain.EMPLOYEE_HIREDATE, date);
-    assertEquals(employee.getValue(TestDomain.EMPLOYEE_HIREDATE), date);
+    employee.setValue(TestDomain.EMP_HIREDATE, date);
+    assertEquals(employee.getValue(TestDomain.EMP_HIREDATE), date);
 
-    employee.setValue(TestDomain.EMPLOYEE_ID, 123);
-    assertEquals(employee.getValue(TestDomain.EMPLOYEE_ID), 123);
+    employee.setValue(TestDomain.EMP_ID, 123);
+    assertEquals(employee.getValue(TestDomain.EMP_ID), 123);
 
-    employee.setValue(TestDomain.EMPLOYEE_NAME, "noname");
-    assertEquals(employee.getValue(TestDomain.EMPLOYEE_NAME), "noname");
+    employee.setValue(TestDomain.EMP_NAME, "noname");
+    assertEquals(employee.getValue(TestDomain.EMP_NAME), "noname");
 
     employee.addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
       @Override
       public void eventOccurred(final ValueChange info) {
-        if (info.getKey().equals(TestDomain.EMPLOYEE_DEPARTMENT_FK)) {
-          assertTrue(employee.isValueNull(TestDomain.EMPLOYEE_DEPARTMENT_FK));
-          assertTrue(employee.isValueNull(TestDomain.EMPLOYEE_DEPARTMENT));
+        if (info.getKey().equals(TestDomain.EMP_DEPARTMENT_FK)) {
+          assertTrue(employee.isValueNull(TestDomain.EMP_DEPARTMENT_FK));
+          assertTrue(employee.isValueNull(TestDomain.EMP_DEPARTMENT));
         }
       }
     });
-    employee.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, null);
+    employee.setValue(TestDomain.EMP_DEPARTMENT_FK, null);
   }
 
   @Test
@@ -396,67 +395,67 @@ public class DefaultEntityTest {
 
   @Test
   public void getDoubleValue() {
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
-    employee.setValue(TestDomain.EMPLOYEE_ID, -10);
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    employee.setValue(TestDomain.EMP_ID, -10);
 
-    assertNull(employee.getDoubleValue(TestDomain.EMPLOYEE_SALARY));
+    assertNull(employee.getDoubleValue(TestDomain.EMP_SALARY));
 
     final double salary = 1000.1234;
-    employee.setValue(TestDomain.EMPLOYEE_SALARY, salary);
-    assertEquals(Double.valueOf(1000.12), employee.getDoubleValue(TestDomain.EMPLOYEE_SALARY));
+    employee.setValue(TestDomain.EMP_SALARY, salary);
+    assertEquals(Double.valueOf(1000.12), employee.getDoubleValue(TestDomain.EMP_SALARY));
   }
 
   @Test
   public void getForeignKeyValue() {
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
     department.setValue(TestDomain.DEPARTMENT_ID, -10);
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
-    employee.setValue(TestDomain.EMPLOYEE_ID, -10);
-    assertTrue(employee.isForeignKeyNull(Entities.getForeignKeyProperty(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_DEPARTMENT_FK)));
-    assertNull(employee.getValue(TestDomain.EMPLOYEE_DEPARTMENT_FK));
-    assertNull(employee.getValue(TestDomain.EMPLOYEE_DEPARTMENT));
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    employee.setValue(TestDomain.EMP_ID, -10);
+    assertTrue(employee.isForeignKeyNull(Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK)));
+    assertNull(employee.getValue(TestDomain.EMP_DEPARTMENT_FK));
+    assertNull(employee.getValue(TestDomain.EMP_DEPARTMENT));
 
-    employee.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, department);
-    assertFalse(employee.isForeignKeyNull(Entities.getForeignKeyProperty(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_DEPARTMENT_FK)));
-    assertNotNull(employee.getValue(TestDomain.EMPLOYEE_DEPARTMENT_FK));
-    assertNotNull(employee.getValue(TestDomain.EMPLOYEE_DEPARTMENT));
+    employee.setValue(TestDomain.EMP_DEPARTMENT_FK, department);
+    assertFalse(employee.isForeignKeyNull(Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK)));
+    assertNotNull(employee.getValue(TestDomain.EMP_DEPARTMENT_FK));
+    assertNotNull(employee.getValue(TestDomain.EMP_DEPARTMENT));
   }
 
   @Test (expected = IllegalArgumentException.class)
   public void getForeignKeyValueNonFKProperty() {
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
     department.setValue(TestDomain.DEPARTMENT_ID, -10);
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
-    employee.setValue(TestDomain.EMPLOYEE_ID, -10);
-    employee.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, department);
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    employee.setValue(TestDomain.EMP_ID, -10);
+    employee.setValue(TestDomain.EMP_DEPARTMENT_FK, department);
 
-    employee.getForeignKeyValue(TestDomain.EMPLOYEE_COMMISSION);
+    employee.getForeignKeyValue(TestDomain.EMP_COMMISSION);
   }
 
   @Test
   public void removeValue() {
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
     department.setValue(TestDomain.DEPARTMENT_ID, -10);
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
-    employee.setValue(TestDomain.EMPLOYEE_ID, -10);
-    employee.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, department);
-    assertNotNull(employee.getForeignKeyValue(TestDomain.EMPLOYEE_DEPARTMENT_FK));
-    assertEquals(Integer.valueOf(-10), employee.getIntValue(TestDomain.EMPLOYEE_DEPARTMENT));
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    employee.setValue(TestDomain.EMP_ID, -10);
+    employee.setValue(TestDomain.EMP_DEPARTMENT_FK, department);
+    assertNotNull(employee.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK));
+    assertEquals(Integer.valueOf(-10), employee.getIntValue(TestDomain.EMP_DEPARTMENT));
 
-    employee.removeValue(TestDomain.EMPLOYEE_DEPARTMENT_FK);
-    assertNull(employee.getForeignKeyValue(TestDomain.EMPLOYEE_DEPARTMENT_FK));
-    assertNull(employee.getValue(TestDomain.EMPLOYEE_DEPARTMENT));
-    assertFalse(employee.containsValue(TestDomain.EMPLOYEE_DEPARTMENT_FK));
-    assertFalse(employee.containsValue(Entities.getProperty(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_DEPARTMENT)));
+    employee.removeValue(TestDomain.EMP_DEPARTMENT_FK);
+    assertNull(employee.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK));
+    assertNull(employee.getValue(TestDomain.EMP_DEPARTMENT));
+    assertFalse(employee.containsValue(TestDomain.EMP_DEPARTMENT_FK));
+    assertFalse(employee.containsValue(Entities.getProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT)));
   }
 
   @Test
   public void maximumFractionDigits() {
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
-    employee.setValue(TestDomain.EMPLOYEE_COMMISSION, 1.1234);
-    assertEquals(1.12, employee.getValue(TestDomain.EMPLOYEE_COMMISSION));
-    employee.setValue(TestDomain.EMPLOYEE_COMMISSION, 1.1255);
-    assertEquals(1.13, employee.getValue(TestDomain.EMPLOYEE_COMMISSION));
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    employee.setValue(TestDomain.EMP_COMMISSION, 1.1234);
+    assertEquals(1.12, employee.getValue(TestDomain.EMP_COMMISSION));
+    employee.setValue(TestDomain.EMP_COMMISSION, 1.1255);
+    assertEquals(1.13, employee.getValue(TestDomain.EMP_COMMISSION));
 
     final Entity detail = Entities.entity(TestDomain.T_DETAIL);
     detail.setValue(TestDomain.DETAIL_DOUBLE, 1.123456789567);

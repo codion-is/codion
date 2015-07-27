@@ -39,9 +39,9 @@ public final class DefaultEntityModelTest {
 
   public static class EmpModel extends DefaultEntityModel {
     public EmpModel(final EntityConnectionProvider connectionProvider) {
-      super(new DefaultEntityEditModel(TestDomain.T_EMPLOYEE, connectionProvider));
-      getEditModel().getEntityComboBoxModel(TestDomain.EMPLOYEE_DEPARTMENT_FK).refresh();
-      getEditModel().getEntityComboBoxModel(TestDomain.EMPLOYEE_MGR_FK).refresh();
+      super(new DefaultEntityEditModel(TestDomain.T_EMP, connectionProvider));
+      getEditModel().getEntityComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).refresh();
+      getEditModel().getEntityComboBoxModel(TestDomain.EMP_MGR_FK).refresh();
     }
   }
 
@@ -50,11 +50,11 @@ public final class DefaultEntityModelTest {
     //here we're basically testing for the entity in the edit model being modified after
     //being set when selected in the table model, this usually happens when combo box models
     //are being filtered on property value change, see EmployeeEditModel.bindEvents()
-    final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMPLOYEE);
+    final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     final EntityEditModel employeeEditModel = employeeModel.getEditModel();
     final EntityTableModel employeeTableModel = employeeModel.getTableModel();
-    ValueLinks.selectedItemValueLink(new JComboBox<>(employeeEditModel.getEntityComboBoxModel(TestDomain.EMPLOYEE_MGR_FK)),
-            EditModelValues.<Entity>value(employeeEditModel, TestDomain.EMPLOYEE_MGR_FK));
+    ValueLinks.selectedItemValueLink(new JComboBox<>(employeeEditModel.getEntityComboBoxModel(TestDomain.EMP_MGR_FK)),
+            EditModelValues.<Entity>value(employeeEditModel, TestDomain.EMP_MGR_FK));
     employeeTableModel.refresh();
     for (final Entity employee : employeeTableModel.getAllItems()) {
       employeeTableModel.getSelectionModel().setSelectedItem(employee);
@@ -104,7 +104,7 @@ public final class DefaultEntityModelTest {
     assertTrue(departmentModel.getLinkedDetailModels().contains(employeeModel));
     departmentModel.refresh();
     final EntityEditModel employeeEditModel = employeeModel.getEditModel();
-    final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getEntityComboBoxModel(Entities.getForeignKeyProperty(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_DEPARTMENT_FK));
+    final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getEntityComboBoxModel(Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
     departmentsComboBoxModel.refresh();
     final Entity.Key primaryKey = Entities.key(TestDomain.T_DEPARTMENT);
     primaryKey.setValue(TestDomain.DEPARTMENT_ID, 40);//operations, no employees
@@ -131,7 +131,7 @@ public final class DefaultEntityModelTest {
       departmentModel.getEditModel().update();
 
       for (final Entity employee : employeeModel.getTableModel().getAllItems()) {
-        final Entity dept = employee.getForeignKeyValue(TestDomain.EMPLOYEE_DEPARTMENT_FK);
+        final Entity dept = employee.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK);
         assertEquals("NewName", dept.getValue(TestDomain.DEPARTMENT_NAME));
       }
     }
@@ -174,7 +174,7 @@ public final class DefaultEntityModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullConnectionProvider() {
-    new DefaultEntityModel(TestDomain.T_EMPLOYEE, null);
+    new DefaultEntityModel(TestDomain.T_EMP, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -185,7 +185,7 @@ public final class DefaultEntityModelTest {
   @Test(expected = IllegalArgumentException.class)
   public void constructorTableModelEntityIDMismatch() {
     final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     new DefaultEntityModel(editModel, tableModel);
   }
 
@@ -236,13 +236,13 @@ public final class DefaultEntityModelTest {
       final Entity department = departmentModel.getConnectionProvider().getConnection().selectSingle(
               TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "OPERATIONS");
       departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
-      final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMPLOYEE);
-      final EntityComboBoxModel deptComboBoxModel = employeeModel.getEditModel().getEntityComboBoxModel(TestDomain.EMPLOYEE_DEPARTMENT_FK);
+      final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
+      final EntityComboBoxModel deptComboBoxModel = employeeModel.getEditModel().getEntityComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
       deptComboBoxModel.refresh();
       deptComboBoxModel.setSelectedItem(department);
       departmentModel.getTableModel().deleteSelected();
-      assertEquals(3, employeeModel.getEditModel().getEntityComboBoxModel(TestDomain.EMPLOYEE_DEPARTMENT_FK).getSize());
-      assertNotNull(employeeModel.getEditModel().getEntityComboBoxModel(TestDomain.EMPLOYEE_DEPARTMENT_FK).getSelectedValue());
+      assertEquals(3, employeeModel.getEditModel().getEntityComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).getSize());
+      assertNotNull(employeeModel.getEditModel().getEntityComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).getSelectedValue());
     }
     finally {
       departmentModel.getConnectionProvider().getConnection().rollbackTransaction();
@@ -254,25 +254,25 @@ public final class DefaultEntityModelTest {
 
   @Test
   public void detailModel() throws Exception {
-    departmentModel.getDetailModel(TestDomain.T_EMPLOYEE);
-    assertTrue("DepartmentModel should contain Employee detail", departmentModel.containsDetailModel(TestDomain.T_EMPLOYEE));
+    departmentModel.getDetailModel(TestDomain.T_EMP);
+    assertTrue("DepartmentModel should contain Employee detail", departmentModel.containsDetailModel(TestDomain.T_EMP));
     assertEquals("Only one detail model should be in DepartmentModel", 1, departmentModel.getDetailModels().size());
     assertTrue(departmentModel.getLinkedDetailModels().size() == 1);
     assertTrue("Employee model should be the linked detail model in DepartmentModel",
-            departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(TestDomain.T_EMPLOYEE)));
-    assertNotNull(departmentModel.getDetailModel(TestDomain.T_EMPLOYEE));
+            departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(TestDomain.T_EMP)));
+    assertNotNull(departmentModel.getDetailModel(TestDomain.T_EMP));
     departmentModel.refresh();
     departmentModel.refreshDetailModels();
-    assertTrue(departmentModel.getDetailModel(TestDomain.T_EMPLOYEE).getTableModel().getRowCount() > 0);
+    assertTrue(departmentModel.getDetailModel(TestDomain.T_EMP).getTableModel().getRowCount() > 0);
 
     final EntityConnection connection = departmentModel.getConnectionProvider().getConnection();
     final Entity department = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    final List<Entity> salesEmployees = connection.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_EMPLOYEE,
-            TestDomain.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department));
+    final List<Entity> salesEmployees = connection.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_FK, SearchType.LIKE, department));
     assertTrue("Number of employees for department should not be 0", salesEmployees.size() > 0);
     departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
     final List<Entity> employeesFromDetailModel =
-            departmentModel.getDetailModel(TestDomain.T_EMPLOYEE).getTableModel().getAllItems();
+            departmentModel.getDetailModel(TestDomain.T_EMP).getTableModel().getAllItems();
     assertTrue("Filtered list should contain all employees for department", containsAll(salesEmployees, employeesFromDetailModel));
   }
 
@@ -301,16 +301,16 @@ public final class DefaultEntityModelTest {
 
   @Test
   public void addRemoveLinkedDetailModel() {
-    departmentModel.removeLinkedDetailModel(departmentModel.getDetailModel(TestDomain.T_EMPLOYEE));
+    departmentModel.removeLinkedDetailModel(departmentModel.getDetailModel(TestDomain.T_EMP));
     assertTrue(departmentModel.getLinkedDetailModels().isEmpty());
-    departmentModel.addLinkedDetailModel(departmentModel.getDetailModel(TestDomain.T_EMPLOYEE));
+    departmentModel.addLinkedDetailModel(departmentModel.getDetailModel(TestDomain.T_EMP));
     assertFalse(departmentModel.getLinkedDetailModels().isEmpty());
-    assertTrue(departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(TestDomain.T_EMPLOYEE)));
+    assertTrue(departmentModel.getLinkedDetailModels().contains(departmentModel.getDetailModel(TestDomain.T_EMP)));
   }
 
   @Test
   public void filterOnMasterInsert() throws DatabaseException, ValidationException {
-    final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMPLOYEE);
+    final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     employeeModel.setFilterOnMasterInsert(true);
     assertTrue(employeeModel.isFilterOnMasterInsert());
     final EntityEditModel editModel = departmentModel.getEditModel();
@@ -318,7 +318,7 @@ public final class DefaultEntityModelTest {
     editModel.setValue(TestDomain.DEPARTMENT_NAME, "Name");
     editModel.setValue(TestDomain.DEPARTMENT_LOCATION, "Loc");
     final List<Entity> inserted = editModel.insert();
-    final Collection filter = (Collection) employeeModel.getTableModel().getSearchModel().getPropertySearchModel(TestDomain.EMPLOYEE_DEPARTMENT_FK).getUpperBound();
+    final Collection filter = (Collection) employeeModel.getTableModel().getSearchModel().getPropertySearchModel(TestDomain.EMP_DEPARTMENT_FK).getUpperBound();
     assertEquals(inserted.get(0), filter.iterator().next());
     editModel.delete();
   }
@@ -328,7 +328,7 @@ public final class DefaultEntityModelTest {
     departmentModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     departmentModel.addDetailModel(employeeModel);
-    departmentModel.setDetailModelForeignKey(employeeModel, TestDomain.EMPLOYEE_DEPARTMENT_FK);
+    departmentModel.setDetailModelForeignKey(employeeModel, TestDomain.EMP_DEPARTMENT_FK);
     departmentModel.addLinkedDetailModel(employeeModel);
     employeeModel.getTableModel().setQueryCriteriaRequired(false);
   }

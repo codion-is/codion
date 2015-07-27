@@ -7,7 +7,6 @@ import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.demos.chinook.domain.Chinook;
 
 import org.junit.Test;
 
@@ -138,54 +137,53 @@ public class EntitiesTest {
 
   @Test
   public void nullValidation() {
-    Chinook.init();
-    final Entity invoiceLine = Entities.entity(Chinook.T_INVOICELINE);
-    invoiceLine.setValue(Chinook.INVOICELINE_INVOICELINEID, 1l);
-    invoiceLine.setValue(Chinook.INVOICELINE_QUANTITY, 1);
-    invoiceLine.setValue(Chinook.INVOICELINE_UNITPRICE, 1.0);
-    invoiceLine.setValue(Chinook.INVOICELINE_TRACKID, 1l);
+    TestDomain.init();
+    final Entity invoiceLine = Entities.entity(TestDomain.T_INVOICELINE);
+    invoiceLine.setValue(TestDomain.INVOICELINE_INVOICELINEID, 1l);
+    invoiceLine.setValue(TestDomain.INVOICELINE_QUANTITY, 1);
+    invoiceLine.setValue(TestDomain.INVOICELINE_UNITPRICE, 1.0);
+    invoiceLine.setValue(TestDomain.INVOICELINE_TRACKID, 1l);
 
-    final Entities.Validator validator = new Entities.Validator(Chinook.T_INVOICELINE);
+    final Entities.Validator validator = new Entities.Validator(TestDomain.T_INVOICELINE);
     try {
       validator.validate(invoiceLine);
       fail();
     }
     catch (final ValidationException e) {
       assertTrue(e instanceof NullValidationException);
-      assertEquals(Chinook.INVOICELINE_INVOICEID_FK, e.getKey());
+      assertEquals(TestDomain.INVOICELINE_INVOICEID_FK, e.getKey());
     }
-    invoiceLine.setValue(Chinook.INVOICELINE_INVOICEID, 1l);
+    invoiceLine.setValue(TestDomain.INVOICELINE_INVOICEID, 1l);
     try {
       validator.validate(invoiceLine);
     }
     catch (final ValidationException e) {
       fail();
     }
-    invoiceLine.setValue(Chinook.INVOICELINE_UNITPRICE, null);
+    invoiceLine.setValue(TestDomain.INVOICELINE_UNITPRICE, null);
     try {
       validator.validate(invoiceLine);
       fail();
     }
     catch (final ValidationException e) {
       assertTrue(e instanceof NullValidationException);
-      assertEquals(Chinook.INVOICELINE_UNITPRICE, e.getKey());
+      assertEquals(TestDomain.INVOICELINE_UNITPRICE, e.getKey());
     }
   }
 
   @Test
   public void getSearchProperties() {
-    Chinook.init();
-    Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(Chinook.T_CUSTOMER);
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_FIRSTNAME)));
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_LASTNAME)));
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_EMAIL)));
-
-    searchProperties = Entities.getSearchProperties(Chinook.T_CUSTOMER, Chinook.CUSTOMER_FIRSTNAME, Chinook.CUSTOMER_EMAIL);
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_FIRSTNAME)));
-    assertFalse(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_LASTNAME)));
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(Chinook.T_CUSTOMER, Chinook.CUSTOMER_EMAIL)));
-
     TestDomain.init();
+    Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(TestDomain.T_CUSTOMER);
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_FIRSTNAME)));
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_LASTNAME)));
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_EMAIL)));
+
+    searchProperties = Entities.getSearchProperties(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_FIRSTNAME, TestDomain.CUSTOMER_EMAIL);
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_FIRSTNAME)));
+    assertFalse(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_LASTNAME)));
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_EMAIL)));
+
     searchProperties = Entities.getSearchProperties(TestDomain.T_DEPARTMENT);
     //should contain all string based properties
     assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
@@ -194,13 +192,12 @@ public class EntitiesTest {
 
   @Test
   public void getSearchPropertyIDs() {
-    Chinook.init();
-    Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(Chinook.T_CUSTOMER);
-    assertTrue(searchPropertyIDs.contains(Chinook.CUSTOMER_FIRSTNAME));
-    assertTrue(searchPropertyIDs.contains(Chinook.CUSTOMER_LASTNAME));
-    assertTrue(searchPropertyIDs.contains(Chinook.CUSTOMER_EMAIL));
-
     TestDomain.init();
+    Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(TestDomain.T_CUSTOMER);
+    assertTrue(searchPropertyIDs.contains(TestDomain.CUSTOMER_FIRSTNAME));
+    assertTrue(searchPropertyIDs.contains(TestDomain.CUSTOMER_LASTNAME));
+    assertTrue(searchPropertyIDs.contains(TestDomain.CUSTOMER_EMAIL));
+
     searchPropertyIDs = Entities.getSearchPropertyIDs(TestDomain.T_DEPARTMENT);
     assertTrue(searchPropertyIDs.isEmpty());
   }
@@ -213,32 +210,32 @@ public class EntitiesTest {
     department.setValue(TestDomain.DEPARTMENT_LOCATION, "Reykjavik");
     department.setValue(TestDomain.DEPARTMENT_NAME, "Sales");
 
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
     final Date hiredate = new Date();
-    employee.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, department);
-    employee.setValue(TestDomain.EMPLOYEE_NAME, "Darri");
-    employee.setValue(TestDomain.EMPLOYEE_HIREDATE, hiredate);
+    employee.setValue(TestDomain.EMP_DEPARTMENT_FK, department);
+    employee.setValue(TestDomain.EMP_NAME, "Darri");
+    employee.setValue(TestDomain.EMP_HIREDATE, hiredate);
 
     final DateFormat dateFormat = DateFormats.getDateFormat(DateFormats.SHORT_DOT);
 
-    Entities.StringProvider employeeToString = new Entities.StringProvider(TestDomain.EMPLOYEE_NAME)
-            .addText(" (department: ").addValue(TestDomain.EMPLOYEE_DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
-            .addFormattedValue(TestDomain.EMPLOYEE_HIREDATE, dateFormat).addText(")");
+    Entities.StringProvider employeeToString = new Entities.StringProvider(TestDomain.EMP_NAME)
+            .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
+            .addForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
+            .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat).addText(")");
 
     assertEquals("Darri (department: Sales, location: Reykjavik, hiredate: " + dateFormat.format(hiredate) + ")", employeeToString.toString(employee));
 
     department.setValue(TestDomain.DEPARTMENT_LOCATION, null);
     department.setValue(TestDomain.DEPARTMENT_NAME, null);
 
-    employee.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, null);
-    employee.setValue(TestDomain.EMPLOYEE_NAME, null);
-    employee.setValue(TestDomain.EMPLOYEE_HIREDATE, null);
+    employee.setValue(TestDomain.EMP_DEPARTMENT_FK, null);
+    employee.setValue(TestDomain.EMP_NAME, null);
+    employee.setValue(TestDomain.EMP_HIREDATE, null);
 
-    employeeToString = new Entities.StringProvider(TestDomain.EMPLOYEE_NAME)
-            .addText(" (department: ").addValue(TestDomain.EMPLOYEE_DEPARTMENT_FK).addText(", location: ")
-            .addForeignKeyValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
-            .addFormattedValue(TestDomain.EMPLOYEE_HIREDATE, dateFormat).addText(")");
+    employeeToString = new Entities.StringProvider(TestDomain.EMP_NAME)
+            .addText(" (department: ").addValue(TestDomain.EMP_DEPARTMENT_FK).addText(", location: ")
+            .addForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK, TestDomain.DEPARTMENT_LOCATION).addText(", hiredate: ")
+            .addFormattedValue(TestDomain.EMP_HIREDATE, dateFormat).addText(")");
 
     assertEquals(" (department: , location: , hiredate: )", employeeToString.toString(employee));
   }

@@ -52,15 +52,15 @@ public class EntityUtilTest {
     final String name = "John Doe";
     final Double salary = 1234.5;
 
-    final Entity employee = Entities.entity(TestDomain.T_EMPLOYEE);
-    employee.setValue(TestDomain.EMPLOYEE_ID, id);
-    employee.setValue(TestDomain.EMPLOYEE_COMMISSION, commission);
-    employee.setValue(TestDomain.EMPLOYEE_DEPARTMENT_FK, department);
-    employee.setValue(TestDomain.EMPLOYEE_HIREDATE, hiredate);
-    employee.setValue(TestDomain.EMPLOYEE_JOB, job);
-    employee.setValue(TestDomain.EMPLOYEE_MGR, manager);
-    employee.setValue(TestDomain.EMPLOYEE_NAME, name);
-    employee.setValue(TestDomain.EMPLOYEE_SALARY, salary);
+    final Entity employee = Entities.entity(TestDomain.T_EMP);
+    employee.setValue(TestDomain.EMP_ID, id);
+    employee.setValue(TestDomain.EMP_COMMISSION, commission);
+    employee.setValue(TestDomain.EMP_DEPARTMENT_FK, department);
+    employee.setValue(TestDomain.EMP_HIREDATE, hiredate);
+    employee.setValue(TestDomain.EMP_JOB, job);
+    employee.setValue(TestDomain.EMP_MGR, manager);
+    employee.setValue(TestDomain.EMP_NAME, name);
+    employee.setValue(TestDomain.EMP_SALARY, salary);
 
     final List<Object> empBeans = beanMapper.toBeans(Collections.singletonList(employee));
     final EmployeeBean employeeBean = (EmployeeBean) empBeans.get(0);
@@ -119,14 +119,14 @@ public class EntityUtilTest {
 
     final List<Entity> employees = beanMapper.toEntities(Collections.singletonList(employeeBean));
     final Entity employee = employees.get(0);
-    assertEquals(id, employee.getValue(TestDomain.EMPLOYEE_ID));
-    assertEquals(commission, employee.getValue(TestDomain.EMPLOYEE_COMMISSION));
-    assertEquals(deptNo, employee.getValue(TestDomain.EMPLOYEE_DEPARTMENT));
-    assertEquals(hiredate, employee.getValue(TestDomain.EMPLOYEE_HIREDATE));
-    assertEquals(job, employee.getValue(TestDomain.EMPLOYEE_JOB));
-    assertEquals(manager, employee.getValue(TestDomain.EMPLOYEE_MGR));
-    assertEquals(name, employee.getValue(TestDomain.EMPLOYEE_NAME));
-    assertEquals(salary, employee.getValue(TestDomain.EMPLOYEE_SALARY));
+    assertEquals(id, employee.getValue(TestDomain.EMP_ID));
+    assertEquals(commission, employee.getValue(TestDomain.EMP_COMMISSION));
+    assertEquals(deptNo, employee.getValue(TestDomain.EMP_DEPARTMENT));
+    assertEquals(hiredate, employee.getValue(TestDomain.EMP_HIREDATE));
+    assertEquals(job, employee.getValue(TestDomain.EMP_JOB));
+    assertEquals(manager, employee.getValue(TestDomain.EMP_MGR));
+    assertEquals(name, employee.getValue(TestDomain.EMP_NAME));
+    assertEquals(salary, employee.getValue(TestDomain.EMP_SALARY));
 
     assertNull(beanMapper.toEntity(null));
 
@@ -284,13 +284,13 @@ public class EntityUtilTest {
   @Test
   public void getSortedProperties() {
     TestDomain.init();
-    final List<Property> properties = EntityUtil.getSortedProperties(TestDomain.T_EMPLOYEE,
-            Arrays.asList(TestDomain.EMPLOYEE_HIREDATE, TestDomain.EMPLOYEE_COMMISSION,
-                    TestDomain.EMPLOYEE_SALARY, TestDomain.EMPLOYEE_JOB));
-    assertEquals(TestDomain.EMPLOYEE_COMMISSION, properties.get(0).getPropertyID());
-    assertEquals(TestDomain.EMPLOYEE_HIREDATE, properties.get(1).getPropertyID());
-    assertEquals(TestDomain.EMPLOYEE_JOB, properties.get(2).getPropertyID());
-    assertEquals(TestDomain.EMPLOYEE_SALARY, properties.get(3).getPropertyID());
+    final List<Property> properties = EntityUtil.getSortedProperties(TestDomain.T_EMP,
+            Arrays.asList(TestDomain.EMP_HIREDATE, TestDomain.EMP_COMMISSION,
+                    TestDomain.EMP_SALARY, TestDomain.EMP_JOB));
+    assertEquals(TestDomain.EMP_COMMISSION, properties.get(0).getPropertyID());
+    assertEquals(TestDomain.EMP_HIREDATE, properties.get(1).getPropertyID());
+    assertEquals(TestDomain.EMP_JOB, properties.get(2).getPropertyID());
+    assertEquals(TestDomain.EMP_SALARY, properties.get(3).getPropertyID());
   }
 
   @Test
@@ -373,15 +373,15 @@ public class EntityUtilTest {
   @Test
   public void hashByEntitID() {
     TestDomain.init();
-    final Entity one = Entities.entity(TestDomain.T_EMPLOYEE);
+    final Entity one = Entities.entity(TestDomain.T_EMP);
     final Entity two = Entities.entity(TestDomain.T_DEPARTMENT);
     final Entity three = Entities.entity(TestDomain.T_DETAIL);
-    final Entity four = Entities.entity(TestDomain.T_EMPLOYEE);
+    final Entity four = Entities.entity(TestDomain.T_EMP);
 
     final Collection<Entity> entities = Arrays.asList(one, two, three, four);
     final Map<String, Collection<Entity>> map = EntityUtil.hashByEntityID(entities);
 
-    Collection<Entity> hashed = map.get(TestDomain.T_EMPLOYEE);
+    Collection<Entity> hashed = map.get(TestDomain.T_EMP);
     assertTrue(hashed.contains(one));
     assertTrue(hashed.contains(four));
 
@@ -486,15 +486,15 @@ public class EntityUtilTest {
     beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_NAME, "name");
     beanMap.setProperty(DepartmentBean.class, TestDomain.DEPARTMENT_LOCATION, "location");
 
-    beanMap.setEntityID(EmployeeBean.class, TestDomain.T_EMPLOYEE);
-    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_ID, "id");
-    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_COMMISSION, "commission");
-    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_DEPARTMENT, "deptno");
-    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_HIREDATE, "hiredate");
-    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_JOB, "job");
-    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_MGR, "mgr");
-    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_NAME, "name");
-    beanMap.setProperty(EmployeeBean.class, TestDomain.EMPLOYEE_SALARY, "salary");
+    beanMap.setEntityID(EmployeeBean.class, TestDomain.T_EMP);
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMP_ID, "id");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMP_COMMISSION, "commission");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMP_DEPARTMENT, "deptno");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMP_HIREDATE, "hiredate");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMP_JOB, "job");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMP_MGR, "mgr");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMP_NAME, "name");
+    beanMap.setProperty(EmployeeBean.class, TestDomain.EMP_SALARY, "salary");
 
     return beanMap;
   }

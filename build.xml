@@ -34,10 +34,12 @@
     <fileset dir="${lib}/runtime.server-monitor"/>
   </path>
 
-  <path id="classes.all">
+  <path id="classes.main">
     <pathelement path="${build.main}"/>
+  </path>
+
+  <path id="classes.plugins">
     <pathelement path="${build.plugins}"/>
-    <pathelement path="${build.demos}"/>
   </path>
 
   <path id="classes.test">
@@ -83,27 +85,17 @@
   <target name="build" depends="resolve_libraries"
           description="Compiles all source files">
     <mkdir dir="${build.main}"/>
-    <mkdir dir="${build.plugins}"/>
-    <mkdir dir="${build.demos}"/>
-    <mkdir dir="${build.test}"/>
-
     <javac destdir="${build.main}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.main}"/>
       <classpath refid="lib.build.core"/>
     </javac>
-
-    <rmic base="${build.main}" stubversion="1.2"
-          includes="org/jminor/common/server/AbstractRemoteServer.class,
-                                         org/jminor/framework/server/DefaultRemoteEntityConnection.class,
-                                         org/jminor/framework/server/DefaultEntityConnectionServerAdmin.class">
-      <classpath refid="lib.build.core"/>
-    </rmic>
 
     <copy todir="${build.main}">
       <fileset refid="common_resources"/>
       <fileset refid="framework_resources"/>
     </copy>
 
+    <mkdir dir="${build.plugins}"/>
     <javac destdir="${build.plugins}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.plugins}"/>
       <classpath>
@@ -117,6 +109,7 @@
       <fileset refid="plugins_resources"/>
     </copy>
 
+    <mkdir dir="${build.demos}"/>
     <javac destdir="${build.demos}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.demos}"/>
       <classpath>
@@ -132,6 +125,7 @@
       <fileset refid="demos_resources"/>
     </copy>
 
+    <mkdir dir="${build.test}"/>
     <javac destdir="${build.test}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.test}"/>
       <classpath>
@@ -139,7 +133,6 @@
         <path refid="lib.build.plugins"/>
         <path location="${build.main}"/>
         <path location="${build.plugins}"/>
-        <path location="${build.demos}"/>
       </classpath>
     </javac>
 
@@ -497,11 +490,12 @@
     <delete dir="${test.coveragereport.xml}" includeEmptyDirs="true"/>
     <delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>
     <mkdir dir="${test.reports}"/>
-    <jacoco:coverage destfile="${test.reports}/jacoco.exec">
+    <jacoco:coverage destfile="${test.reports}/jacoco-main.exec">
       <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once">
         <formatter type="xml" usefile="true"/>
         <classpath>
-          <path refid="classes.all"/>
+          <path refid="classes.main"/>
+          <path refid="classes.plugins"/>
           <path refid="classes.test"/>
           <path refid="lib.runtime.test"/>
         </classpath>
@@ -517,10 +511,36 @@
         <jvmarg value="-Djminor.unittest.password=${junit.password}"/>
         <batchtest todir="${test.reports}">
           <fileset dir="${src.test}" includes="**/*Test.java"/>
+        </batchtest>
+      </junit>
+    </jacoco:coverage>
+    <jacoco:coverage destfile="${test.reports}/jacoco-demos.exec" append="true">
+      <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once">
+        <formatter type="xml" usefile="true"/>
+        <classpath>
+          <path refid="classes.main"/>
+          <path refid="classes.plugins"/>
+          <path refid="classes.demos"/>
+          <path refid="lib.runtime.test"/>
+        </classpath>
+        <jvmarg value="-Djava.security.policy=resources/security/all_permissions.policy"/>
+        <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
+        <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
+        <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
+        <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
+        <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
+        <jvmarg value="-Djminor.db.embeddedInMemory=${junit.db.embeddedInMemory}"/>
+        <jvmarg value="-Djminor.db.initScript=${junit.db.initScript}"/>
+        <jvmarg value="-Djminor.unittest.username=${junit.username}"/>
+        <jvmarg value="-Djminor.unittest.password=${junit.password}"/>
+        <batchtest todir="${test.reports}">
           <fileset dir="${src.demos}" includes="**/*Test.java" excludes="**/*LoadTest.java"/>
         </batchtest>
       </junit>
     </jacoco:coverage>
+    <jacoco:merge destfile="${test.reports}/jacoco.exec">
+      <fileset dir="${test.reports}" includes="*.exec"/>
+    </jacoco:merge>
     <antcall target="create_unit_test_report"/>
     <antcall target="create_coverage_report"/>
   </target>
@@ -547,10 +567,10 @@
 
       <structure name="JMinor JaCoCo Results">
         <classfiles>
-          <fileset dir="${build.main}" excludes="org/jminor/framework/demos/**"/>
+          <fileset dir="${build.main}"/>
         </classfiles>
         <sourcefiles encoding="UTF-8">
-          <fileset dir="${src.main}" excludes="org/jminor/framework/demos/**"/>
+          <fileset dir="${src.main}"/>
         </sourcefiles>
       </structure>
 
@@ -563,7 +583,9 @@
           description="Runs the Chinook demo application with a local db connection">
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
-        <path refid="classes.all"/>
+        <path refid="classes.main"/>
+        <path refid="classes.plugins"/>
+        <path refid="classes.demos"/>
         <path refid="lib.runtime.client"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
@@ -581,7 +603,9 @@
           description="Runs the Chinook demo application with a remote db connection">
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
-        <path refid="classes.all"/>
+        <path refid="classes.main"/>
+        <path refid="classes.plugins"/>
+        <path refid="classes.demos"/>
         <path refid="lib.runtime.client"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
@@ -596,7 +620,9 @@
           description="Runs the Chinook load testing application with a remote db connection">
     <java classname="org.jminor.framework.demos.chinook.testing.ChinookLoadTest" fork="yes">
       <classpath>
-        <path refid="classes.all"/>
+        <path refid="classes.main"/>
+        <path refid="classes.plugins"/>
+        <path refid="classes.demos"/>
         <path refid="lib.runtime.client"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
@@ -611,7 +637,7 @@
           description="Runs the RMI server">
     <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes">
       <classpath>
-        <path refid="classes.all"/>
+        <path refid="classes.main"/>
         <path refid="classes.demos"/>
         <path refid="lib.runtime.server"/>
       </classpath>
@@ -638,7 +664,7 @@
           description="Runs the RMI server monitor">
     <java classname="org.jminor.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
       <classpath>
-        <path refid="classes.all"/>
+        <path refid="classes.main"/>
         <path refid="lib.runtime.server-monitor"/>
       </classpath>
       <jvmarg value="-Djminor.server.hostname=localhost"/>

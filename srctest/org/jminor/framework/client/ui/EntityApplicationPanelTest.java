@@ -32,7 +32,7 @@ public class EntityApplicationPanelTest {
     final EntityApplicationPanel panel = new EntityApplicationPanel() {
       @Override
       protected List<EntityPanel> initializeEntityPanels(final EntityApplicationModel applicationModel) {
-        return Collections.singletonList(new EntityPanel(applicationModel.getEntityModel(TestDomain.T_EMPLOYEE)));
+        return Collections.singletonList(new EntityPanel(applicationModel.getEntityModel(TestDomain.T_EMP)));
       }
       @Override
       protected EntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
@@ -43,7 +43,7 @@ public class EntityApplicationPanelTest {
           }
         };
 
-        model.addEntityModel(new DefaultEntityModel(TestDomain.T_EMPLOYEE, connectionProvider));
+        model.addEntityModel(new DefaultEntityModel(TestDomain.T_EMP, connectionProvider));
 
         return model;
       }
@@ -51,7 +51,7 @@ public class EntityApplicationPanelTest {
     panel.setLoginRequired(false);
     panel.setShowStartupDialog(false);
     panel.startApplication("Test", null, false, null, null, false, User.UNIT_TEST_USER);
-    assertNotNull(panel.getEntityPanel(TestDomain.T_EMPLOYEE));
+    assertNotNull(panel.getEntityPanel(TestDomain.T_EMP));
 
     panel.logout();
   }

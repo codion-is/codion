@@ -122,7 +122,7 @@ public class DefaultRemoteEntityConnectionTest {
         }
       });
 
-      proxy.selectAll(TestDomain.T_EMPLOYEE);
+      proxy.selectAll(TestDomain.T_EMP);
     }
     finally {
       if (registry != null) {

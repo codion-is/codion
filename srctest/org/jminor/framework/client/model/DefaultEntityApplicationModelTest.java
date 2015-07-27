@@ -6,7 +6,6 @@ package org.jminor.framework.client.model;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.local.LocalEntityConnectionTest;
-import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
@@ -21,50 +20,50 @@ public final class DefaultEntityApplicationModelTest {
 
   @Test
   public void getDependencyTreeModel() {
-    Chinook.init();
-    final TreeModel model = DefaultEntityApplicationModel.getDependencyTreeModel(Chinook.DOMAIN_ID);
+    TestDomain.init();
+    final TreeModel model = DefaultEntityApplicationModel.getDependencyTreeModel(TestDomain.DOMAIN_ID);
     final DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
     final Enumeration tree = root.preorderEnumeration();
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.nextElement();
     assertNull(node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_ARTIST, node.getUserObject());
+    assertEquals(TestDomain.T_ARTIST, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_ALBUM, node.getUserObject());
+    assertEquals(TestDomain.T_ALBUM, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_TRACK, node.getUserObject());
+    assertEquals(TestDomain.T_TRACK, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_INVOICELINE, node.getUserObject());
+    assertEquals(TestDomain.T_INVOICELINE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_PLAYLISTTRACK, node.getUserObject());
+    assertEquals(TestDomain.T_PLAYLISTTRACK, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_EMPLOYEE, node.getUserObject());
+    assertEquals(TestDomain.T_EMPLOYEE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_EMPLOYEE, node.getUserObject());
+    assertEquals(TestDomain.T_EMPLOYEE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_CUSTOMER, node.getUserObject());
+    assertEquals(TestDomain.T_CUSTOMER, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_INVOICE, node.getUserObject());
+    assertEquals(TestDomain.T_INVOICE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_INVOICELINE, node.getUserObject());
+    assertEquals(TestDomain.T_INVOICELINE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_GENRE, node.getUserObject());
+    assertEquals(TestDomain.T_GENRE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_TRACK, node.getUserObject());
+    assertEquals(TestDomain.T_TRACK, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_INVOICELINE, node.getUserObject());
+    assertEquals(TestDomain.T_INVOICELINE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_PLAYLISTTRACK, node.getUserObject());
+    assertEquals(TestDomain.T_PLAYLISTTRACK, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_MEDIATYPE, node.getUserObject());
+    assertEquals(TestDomain.T_MEDIATYPE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_TRACK, node.getUserObject());
+    assertEquals(TestDomain.T_TRACK, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_INVOICELINE, node.getUserObject());
+    assertEquals(TestDomain.T_INVOICELINE, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_PLAYLISTTRACK, node.getUserObject());
+    assertEquals(TestDomain.T_PLAYLISTTRACK, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(Chinook.T_PLAYLIST, node.getUserObject());
+    assertEquals(TestDomain.T_PLAYLIST, node.getUserObject());
   }
 
   @Test
@@ -78,7 +77,7 @@ public final class DefaultEntityApplicationModelTest {
     model.addEntityModels(new DeptModel(model.getConnectionProvider()));
     final EntityModel deptModel = model.getEntityModel(TestDomain.T_DEPARTMENT);
     assertNotNull(deptModel);
-    deptModel.getDetailModel(TestDomain.T_EMPLOYEE).getTableModel().setQueryCriteriaRequired(false);
+    deptModel.getDetailModel(TestDomain.T_EMP).getTableModel().setQueryCriteriaRequired(false);
     assertEquals(1, model.getEntityModels().size());
     assertNotNull(deptModel);
     assertEquals(User.UNIT_TEST_USER, model.getUser());
@@ -169,8 +168,8 @@ public final class DefaultEntityApplicationModelTest {
     assertTrue(model.containsEntityModel(DeptModel.class));
     assertTrue(model.containsEntityModel(departmentModel));
 
-    assertFalse(model.containsEntityModel(TestDomain.T_EMPLOYEE));
-    assertFalse(model.containsEntityModel(departmentModel.getDetailModel(TestDomain.T_EMPLOYEE)));
+    assertFalse(model.containsEntityModel(TestDomain.T_EMP));
+    assertFalse(model.containsEntityModel(departmentModel.getDetailModel(TestDomain.T_EMP)));
   }
 
   @Test
@@ -182,7 +181,7 @@ public final class DefaultEntityApplicationModelTest {
       }
     };
     final EntityModel deptModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, model.getConnectionProvider());
-    final EntityModel empModel = new DefaultEntityModel(TestDomain.T_EMPLOYEE, model.getConnectionProvider());
+    final EntityModel empModel = new DefaultEntityModel(TestDomain.T_EMP, model.getConnectionProvider());
     deptModel.addDetailModel(empModel);
     deptModel.addLinkedDetailModel(empModel);
 
@@ -195,11 +194,11 @@ public final class DefaultEntityApplicationModelTest {
     deptModel.getTableModel().getSelectionModel().setSelectedIndex(0);
     empModel.getTableModel().getSelectionModel().setSelectedIndex(0);
 
-    String name = (String) empModel.getEditModel().getValue(TestDomain.EMPLOYEE_NAME);
-    empModel.getEditModel().setValue(TestDomain.EMPLOYEE_NAME, "Darri");
+    String name = (String) empModel.getEditModel().getValue(TestDomain.EMP_NAME);
+    empModel.getEditModel().setValue(TestDomain.EMP_NAME, "Darri");
     assertTrue(model.containsUnsavedData());
 
-    empModel.getEditModel().setValue(TestDomain.EMPLOYEE_NAME, name);
+    empModel.getEditModel().setValue(TestDomain.EMP_NAME, name);
     assertFalse(model.containsUnsavedData());
 
     name = (String) deptModel.getEditModel().getValue(TestDomain.DEPARTMENT_NAME);
@@ -213,7 +212,7 @@ public final class DefaultEntityApplicationModelTest {
   private static class DeptModel extends DefaultEntityModel {
     private DeptModel(final EntityConnectionProvider connectionProvider) {
       super(TestDomain.T_DEPARTMENT, connectionProvider);
-      addDetailModel(new DefaultEntityModel(TestDomain.T_EMPLOYEE, connectionProvider));
+      addDetailModel(new DefaultEntityModel(TestDomain.T_EMP, connectionProvider));
     }
   }
 }

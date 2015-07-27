@@ -101,7 +101,7 @@ public class EntityConnectionServerTest {
     assertEquals(1, users.size());
     assertEquals(User.UNIT_TEST_USER, users.iterator().next());
 
-    providerTwo.getConnection().selectAll(TestDomain.T_EMPLOYEE);
+    providerTwo.getConnection().selectAll(TestDomain.T_EMP);
 
     final Database.Statistics stats = admin.getDatabaseStatistics();
     assertNotNull(stats.getTimestamp());

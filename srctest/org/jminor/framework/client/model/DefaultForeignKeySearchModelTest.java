@@ -25,7 +25,7 @@ public class DefaultForeignKeySearchModelTest {
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER,
             Collections.singletonList(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
     final ForeignKeySearchModel searchModel = new DefaultForeignKeySearchModel(
-            Entities.getForeignKeyProperty(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_DEPARTMENT_FK), lookupModel);
+            Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK), lookupModel);
     final Entity sales = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     lookupModel.setSelectedEntity(sales);
     Collection<Entity> searchEntities = searchModel.getSearchEntities();
@@ -54,7 +54,7 @@ public class DefaultForeignKeySearchModelTest {
     TestDomain.init();
     final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER);
     final ForeignKeySearchModel searchModel = new DefaultForeignKeySearchModel(
-            Entities.getForeignKeyProperty(TestDomain.T_EMPLOYEE, TestDomain.EMPLOYEE_DEPARTMENT_FK), comboBoxModel);
+            Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK), comboBoxModel);
     final Entity sales = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     comboBoxModel.setSelectedItem(sales);
     Collection<Entity> searchEntities = searchModel.getSearchEntities();

@@ -76,8 +76,8 @@ public class EntityCriteriaUtilTest {
 
   @Test
   public void foreignKeyCriteriaNull() {
-    final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(TestDomain.T_EMPLOYEE,
-            TestDomain.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, (Entity.Key) null);
+    final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_FK, SearchType.LIKE, (Entity.Key) null);
     assertEquals("deptno is null", criteria.getWhereClause());
   }
 
@@ -85,18 +85,18 @@ public class EntityCriteriaUtilTest {
   public void foreignKeyCriteriaEntity() {
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
     department.setValue(TestDomain.DEPARTMENT_ID, 10);
-    Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(TestDomain.T_EMPLOYEE,
-            TestDomain.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department);
+    Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_FK, SearchType.LIKE, department);
     assertEquals("deptno = ?", criteria.getWhereClause());
 
     final Entity department2 = Entities.entity(TestDomain.T_DEPARTMENT);
     department2.setValue(TestDomain.DEPARTMENT_ID, 11);
-    criteria = EntityCriteriaUtil.foreignKeyCriteria(TestDomain.T_EMPLOYEE,
-            TestDomain.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, Arrays.asList(department, department2));
+    criteria = EntityCriteriaUtil.foreignKeyCriteria(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_FK, SearchType.LIKE, Arrays.asList(department, department2));
     assertEquals("(deptno in (?, ?))", criteria.getWhereClause());
 
-    criteria = EntityCriteriaUtil.foreignKeyCriteria(TestDomain.T_EMPLOYEE,
-            TestDomain.EMPLOYEE_DEPARTMENT_FK, SearchType.NOT_LIKE, Arrays.asList(department, department2));
+    criteria = EntityCriteriaUtil.foreignKeyCriteria(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_FK, SearchType.NOT_LIKE, Arrays.asList(department, department2));
     assertEquals("(deptno not in (?, ?))", criteria.getWhereClause());
   }
 
@@ -104,8 +104,8 @@ public class EntityCriteriaUtilTest {
   public void foreignKeyCriteriaEntityKey() {
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
     department.setValue(TestDomain.DEPARTMENT_ID, 10);
-    final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(TestDomain.T_EMPLOYEE,
-            TestDomain.EMPLOYEE_DEPARTMENT_FK, SearchType.LIKE, department.getPrimaryKey());
+    final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(TestDomain.T_EMP,
+            TestDomain.EMP_DEPARTMENT_FK, SearchType.LIKE, department.getPrimaryKey());
     assertEquals("deptno = ?", criteria.getWhereClause());
   }
 

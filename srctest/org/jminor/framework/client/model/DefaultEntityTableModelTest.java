@@ -44,24 +44,24 @@ public final class DefaultEntityTableModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void nullSearchModel() {
-    new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, null);
+    new DefaultEntityTableModel(TestDomain.T_EMP, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void nonMatchingSearchModelEntityID() {
     final EntityTableSearchModel searchModel = new DefaultEntityTableSearchModel(TestDomain.T_DEPARTMENT, null);
-    new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, null, null, searchModel);
+    new DefaultEntityTableModel(TestDomain.T_EMP, null, null, searchModel);
   }
 
   @Test
   public void setSelectedByPrimaryKeys() {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.refresh();
 
-    final Entity.Key pk1 = Entities.key(TestDomain.T_EMPLOYEE);
-    pk1.setValue(TestDomain.EMPLOYEE_ID, 1);
-    final Entity.Key pk2 = Entities.key(TestDomain.T_EMPLOYEE);
-    pk2.setValue(TestDomain.EMPLOYEE_ID, 2);
+    final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
+    pk1.setValue(TestDomain.EMP_ID, 1);
+    final Entity.Key pk2 = Entities.key(TestDomain.T_EMP);
+    pk2.setValue(TestDomain.EMP_ID, 2);
 
     tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk1));
     final Entity selectedPK1 = tableModel.getSelectionModel().getSelectedItem();
@@ -84,7 +84,7 @@ public final class DefaultEntityTableModelTest {
 
   @Test
   public void getSelectedEntitiesIterator() {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.refresh();
 
     tableModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0, 3, 5));
@@ -96,13 +96,13 @@ public final class DefaultEntityTableModelTest {
 
   @Test(expected = IllegalStateException.class)
   public void updateNoEditModel() throws CancelException, ValidationException, DatabaseException {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.update(new ArrayList<Entity>());
   }
 
   @Test(expected = IllegalStateException.class)
   public void deleteSelectedNoEditModel() throws CancelException, DatabaseException {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.refresh();
     tableModel.getSelectionModel().setSelectedIndex(0);
     tableModel.deleteSelected();
@@ -139,14 +139,14 @@ public final class DefaultEntityTableModelTest {
 
   @Test
   public void removeOnDelete() throws CancelException, DatabaseException {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
-    tableModel.setEditModel(new DefaultEntityEditModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider()));
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
+    tableModel.setEditModel(new DefaultEntityEditModel(TestDomain.T_EMP, testModel.getConnectionProvider()));
     tableModel.refresh();
 
-    final Entity.Key pk1 = Entities.key(TestDomain.T_EMPLOYEE);
-    pk1.setValue(TestDomain.EMPLOYEE_ID, 1);
-    final Entity.Key pk2 = Entities.key(TestDomain.T_EMPLOYEE);
-    pk2.setValue(TestDomain.EMPLOYEE_ID, 2);
+    final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
+    pk1.setValue(TestDomain.EMP_ID, 1);
+    final Entity.Key pk2 = Entities.key(TestDomain.T_EMP);
+    pk2.setValue(TestDomain.EMP_ID, 2);
     try {
       tableModel.getConnectionProvider().getConnection().beginTransaction();
       tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk1));
@@ -171,31 +171,31 @@ public final class DefaultEntityTableModelTest {
 
   @Test
   public void getEntityByPrimaryKey() {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.refresh();
 
-    final Entity.Key pk1 = Entities.key(TestDomain.T_EMPLOYEE);
-    pk1.setValue(TestDomain.EMPLOYEE_ID, 1);
+    final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
+    pk1.setValue(TestDomain.EMP_ID, 1);
     assertNotNull(tableModel.getEntityByPrimaryKey(pk1));
 
-    final Entity.Key pk2 = Entities.key(TestDomain.T_EMPLOYEE);
-    pk2.setValue(TestDomain.EMPLOYEE_ID, -66);
+    final Entity.Key pk2 = Entities.key(TestDomain.T_EMP);
+    pk2.setValue(TestDomain.EMP_ID, -66);
     assertNull(tableModel.getEntityByPrimaryKey(pk2));
   }
 
   @Test
   public void indexOf() {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMPLOYEE, testModel.getConnectionProvider());
+    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.refresh();
-    tableModel.setSortingDirective(TestDomain.EMPLOYEE_NAME, SortingDirective.ASCENDING, false);
-    assertEquals(SortingDirective.ASCENDING, tableModel.getSortingDirective(TestDomain.EMPLOYEE_NAME));
+    tableModel.setSortingDirective(TestDomain.EMP_NAME, SortingDirective.ASCENDING, false);
+    assertEquals(SortingDirective.ASCENDING, tableModel.getSortingDirective(TestDomain.EMP_NAME));
 
-    final Entity.Key pk1 = Entities.key(TestDomain.T_EMPLOYEE);
-    pk1.setValue(TestDomain.EMPLOYEE_ID, 10);//ADAMS
+    final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
+    pk1.setValue(TestDomain.EMP_ID, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));
 
-    final Entity.Key pk2 = Entities.key(TestDomain.T_EMPLOYEE);
-    pk2.setValue(TestDomain.EMPLOYEE_ID, -66);
+    final Entity.Key pk2 = Entities.key(TestDomain.T_EMP);
+    pk2.setValue(TestDomain.EMP_ID, -66);
     assertEquals(-1, tableModel.indexOf(pk2));
   }
 
