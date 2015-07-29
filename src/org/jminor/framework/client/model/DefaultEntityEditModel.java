@@ -1007,7 +1007,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /**
    * Notifies that a insert is about to be performed
-   * @see #addBeforeInsertListener(EventListener)
+   * @see #addBeforeInsertListener(EventInfoListener)
    */
   protected final void fireBeforeInsertEvent(final InsertEvent insertEvent) {
     beforeInsertEvent.fire(insertEvent);
@@ -1025,7 +1025,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Notifies that an update is about to be performed
    * @param updateEvent the event describing the update
-   * @see #addBeforeUpdateListener(EventListener)
+   * @see #addBeforeUpdateListener(EventInfoListener)
    */
   protected final void fireBeforeUpdateEvent(final UpdateEvent updateEvent) {
     beforeUpdateEvent.fire(updateEvent);
@@ -1043,7 +1043,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /**
    * Notifies that a delete is about to be performed
    * @param deleteEvent the event describing the delete
-   * @see #addBeforeDeleteListener(EventListener)
+   * @see #addBeforeDeleteListener(EventInfoListener)
    */
   protected final void fireBeforeDeleteEvent(final DeleteEvent deleteEvent) {
     beforeDeleteEvent.fire(deleteEvent);

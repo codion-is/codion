@@ -199,8 +199,7 @@
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
-                 includes="org/jminor/framework/db/remote/*,
-                   org/jminor/framework/server/DefaultRemoteEntityConnection_Stub.class"/>
+                 includes="org/jminor/framework/db/remote/*"/>
 
     <dist_module module.name="jminor-db-test"
                  basedir.classes="${build.main}"
@@ -233,8 +232,7 @@
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
                  includes="org/jminor/framework/server/*"
-                 excludes="org/jminor/framework/server/monitor/**,
-                   org/jminor/framework/server/DefaultEntityConnectionServerAdmin_Stub.class"/>
+                 excludes="org/jminor/framework/server/monitor/**"/>
 
     <dist_module module.name="jminor-server-monitor"
                  basedir.classes="${build.main}"
@@ -242,8 +240,7 @@
                  basedir.javadoc="${javadoc}"
                  includes="org/jminor/framework/Configuration.class,
                    org/jminor/framework/server/monitor/**,
-                   org/jminor/framework/server/EntityConnectionServerAdmin.class,
-                   org/jminor/framework/server/DefaultEntityConnectionServerAdmin_Stub.class"/>
+                   org/jminor/framework/server/EntityConnectionServerAdmin.class"/>
 
     <dist_module module.name="jminor-plugin-jasperreports"
                  basedir.classes="${build.plugins}"
@@ -405,6 +402,7 @@
     <copy file="${dist}/jminor-db-local/jminor-db-local.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-plugin-rest/jminor-plugin-rest.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-demos/jminor-demos.jar" todir="${deploy.server.path}/lib"/>
     <copy todir="${deploy.server.path}/lib">
       <fileset dir="${lib}/runtime.server"/>

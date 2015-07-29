@@ -307,7 +307,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @return a list containing the inserted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws ValidationException in case validation fails
-   * @see #addBeforeInsertListener(EventListener)
+   * @see #addBeforeInsertListener(EventInfoListener)
    * @see #addAfterInsertListener(EventInfoListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
@@ -331,7 +331,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    * @throws org.jminor.common.db.exception.RecordModifiedException in case an entity was modified by another user
    * @throws ValidationException in case validation fails
-   * @see #addBeforeUpdateListener(EventListener)
+   * @see #addBeforeUpdateListener(EventInfoListener)
    * @see #addAfterUpdateListener(EventInfoListener)
    * @see org.jminor.framework.domain.Entity.Validator#validate(java.util.Collection)
    */
@@ -341,7 +341,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * Deletes the active entity
    * @return the deleted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @see #addBeforeDeleteListener(EventListener)
+   * @see #addBeforeDeleteListener(EventInfoListener)
    * @see #addAfterDeleteListener(EventInfoListener)
    */
   List<Entity> delete() throws DatabaseException;
@@ -351,7 +351,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @param entities the entities to delete
    * @return the deleted entities
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
-   * @see #addBeforeDeleteListener(EventListener)
+   * @see #addBeforeDeleteListener(EventInfoListener)
    * @see #addAfterDeleteListener(EventInfoListener)
    */
   List<Entity> delete(final List<Entity> entities) throws DatabaseException;
