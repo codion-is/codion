@@ -179,8 +179,8 @@ public class EntityConnectionServerTest {
 
   @Test
   public void testWebServer() throws Exception {
+    Thread.sleep(3000);
     try (final InputStream input = new URL("http://localhost:" + WEB_SERVER_PORT_NUMBER + "/file_templates/EntityEditPanel.template").openStream()) {
-      Thread.sleep(3000);
       assertTrue(input.read() > 0);
     }
   }

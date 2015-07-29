@@ -3975,3 +3975,4 @@
   DefaultEntityComboBoxModel, foreign key filter model is now strict, no longer shows all items if foreign key value is null or no filter values are specified
   Reduced unit test dependencies on demos
   Unit test dependencies on demos removed, build.xml updated accordingly
+  Ant build bootstrapped correctly, no need for util libraries anymore (ivy, jacoco-ant etc.)

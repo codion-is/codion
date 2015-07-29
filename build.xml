@@ -6,6 +6,10 @@
   <property file="build.properties"/>
   <property file="user.properties"/>
 
+  <path id="lib.ant.util">
+    <fileset dir="${lib}/ant.util"/>
+  </path>
+
   <path id="lib.build.core">
     <fileset dir="${lib}/build.core"/>
   </path>
@@ -50,12 +54,6 @@
     <pathelement path="${build.demos}"/>
   </path>
 
-  <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpath="${jacocoant.jar}"/>
-
-  <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpath="${ivy.jar}"/>
-
-  <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpath="${getdown.jar}"/>
-
   <fileset id="common_resources" dir="${src.main}" includes=
           "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt"/>
   <fileset id="framework_resources" dir="${src.main}" includes=
@@ -69,6 +67,8 @@
 
   <target name="resolve_libraries"
           description="Resolves all libraries according to ivy.xml">
+    <get src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar" dest="${lib}/ant.util/ivy-2.4.0.jar" skipexisting="true"/>
+    <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
     <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
   </target>
 
@@ -460,6 +460,7 @@
 
   <target name="deploy_demo_apps"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
+    <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask"  classpathref="lib.ant.util"/>
     <tstamp />
     <!--Setup-->
     <mkdir dir="${deploy.demos.dir}/META-INF"/>
@@ -490,6 +491,7 @@
     <delete dir="${test.coveragereport.xml}" includeEmptyDirs="true"/>
     <delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>
     <mkdir dir="${test.reports}"/>
+    <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpathref="lib.ant.util"/>
     <jacoco:coverage destfile="${test.reports}/jacoco-main.exec">
       <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once">
         <formatter type="xml" usefile="true"/>

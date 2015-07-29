@@ -467,6 +467,7 @@ public final class Util {
       }
     }
     catch (final SecurityException e) {
+      LOG.error(e.getMessage(), e);
       return "";
     }
     final Properties props = System.getProperties();
@@ -545,8 +546,9 @@ public final class Util {
    * Deserializes a list of Objects from the given file
    * @param file the file
    * @return deserialized objects
+   * @throws SerializeException in case of an exception
    */
-  public static List<Object> deserializeFromFile(final File file) {
+  public static List<Object> deserializeFromFile(final File file) throws SerializeException {
     final List<Object> objects = new ArrayList<>();
     try (final ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
       while (true) {
@@ -555,7 +557,7 @@ public final class Util {
     }
     catch (final EOFException ignored) {/*ignored*/}
     catch (final Exception e) {
-      throw new RuntimeException(e);
+      throw new SerializeException(e.getMessage(), e);
     }
 
     return objects;
@@ -564,15 +566,16 @@ public final class Util {
   /**
    * Srializes a Collection of Objects to a given file
    * @param file the file
+   * @throws SerializeException in case of an exception
    */
-  public static void serializeToFile(final Collection objects, final File file) {
+  public static void serializeToFile(final Collection objects, final File file) throws SerializeException {
     try (final ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
       for (final Object object : objects) {
         outputStream.writeObject(object);
       }
     }
     catch (final IOException e) {
-      throw new RuntimeException(e);
+      throw new SerializeException(e.getMessage(), e);
     }
   }
 
