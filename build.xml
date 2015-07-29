@@ -459,7 +459,7 @@
 
   <target name="deploy_demo_apps"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
-    <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask"  classpathref="lib.ant.util"/>
+    <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
     <tstamp />
     <!--Setup-->
     <mkdir dir="${deploy.demos.dir}/META-INF"/>
