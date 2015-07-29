@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<project name="jminor" default="dist" basedir="." xmlns:jacoco="antlib:org.jacoco.ant" xmlns:ivy="antlib:org.apache.ivy.ant">
+<project name="jminor" default="build" basedir="." xmlns:jacoco="antlib:org.jacoco.ant" xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <description>JMinor is a minimalistic full-stack Java rich client/server CRUD application framework, based solely on Java Standard Edition components, JDBC, RMI and Swing.</description>
 
