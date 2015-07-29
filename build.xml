@@ -161,8 +161,7 @@
     <dist_module module.name="jminor"
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
-                 excludes="org/jminor/framework/demos/**"/>
+                 basedir.javadoc="${javadoc}"/>
 
     <dist_module module.name="jminor-common-model"
                  basedir.classes="${build.main}"
