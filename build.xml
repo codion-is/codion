@@ -67,6 +67,7 @@
 
   <target name="resolve_libraries"
           description="Resolves all libraries according to ivy.xml">
+    <mkdir dir="${lib}/ant.util"/>
     <get src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar" dest="${lib}/ant.util/ivy-2.4.0.jar" skipexisting="true"/>
     <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
     <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
