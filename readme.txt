@@ -103,7 +103,7 @@ limited to Oracle, MySQL and H2 databases. An H2 database containing the require
 the ant target 'recreate_h2_db'.
 
 In order to run the demos you must first run the deploy_all target in the ant build file (info on how to run ant
-builds can be found at ant.apache.org), which deploys the demo applications into the folder dist/deployment along
+builds can be found at ant.apache.org), which deploys the demo applications into the folder deployment along
 with the required database.
 
 dist/deployment
