@@ -526,7 +526,7 @@ public final class EntityUiUtil {
     });
     ValueLinks.textValueLink(textField, new Value<String>() {
       @Override
-      public void set(final String value) {}
+      public void set(final String value) {/*read only*/}
       @Override
       public String get() {
         final Entity value = editModel.getForeignKeyValue(foreignKeyProperty.getPropertyID());

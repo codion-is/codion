@@ -180,7 +180,7 @@ public class EntityConnectionServerTest {
   @Test
   public void testWebServer() throws Exception {
     Thread.sleep(3000);
-    try (final InputStream input = new URL("http://localhost:" + WEB_SERVER_PORT_NUMBER + "/file_templates/EntityEditPanel.template").openStream()) {
+    try (final InputStream input = new URL("http://localhost:" + WEB_SERVER_PORT_NUMBER + "/db/scripts/create_h2_db.sql").openStream()) {
       assertTrue(input.read() > 0);
     }
   }
@@ -283,7 +283,7 @@ public class EntityConnectionServerTest {
     Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
     Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
     Configuration.setValue("javax.net.ssl.keyStore", "resources/security/JMinorServerKeystore");
-    Configuration.setValue("javax.net.ssl.keyStorePassword", "jminor");
+    Configuration.setValue("javax.net.ssl.keyStorePassword", "crappypass");
   }
 
   private static void deconfigure() {
