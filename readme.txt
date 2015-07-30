@@ -7,14 +7,14 @@ http://jminor.org
 
 JMinor is a minimalistic full-stack Java rich client CRUD application framework based solely on J2SE components, it includes:
 
-* Simple domain modelling in plain Java code, no XML files required.
+* Simple domain modelling in plain Java code.
 
 * Integrated JUnit testing of the domain model.
 
 * A minimal but complete JDBC abstraction layer.
 
 * A straight forward and simple way of wiring together a rich Swing client on top of the domain model,
-  all done in plain Java code, no XML configuration involved.
+  all done in plain Java code.
 
 * Clients are run with either a local JDBC connection or served by a featherweight RMI server.
 

@@ -51,12 +51,10 @@
                 runtime.tests->master"/>
     <dependency org="org.hamcrest" name="hamcrest-core" rev="1.3" transitive="false"
                 conf="
-                build.core->master;
                 runtime.tests->master"/>
     <!--charting for the server monitor and load test-->
     <dependency org="org.jfree" name="jcommon" rev="1.0.23" transitive="false"
                 conf="
-                build.core->master;
                 runtime.tests->master;
                 runtime.client->master;
                 runtime.server-monitor->master"/>
