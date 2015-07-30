@@ -467,7 +467,8 @@
       <zipgroupfileset dir="${dist}"
                        includes="jminor-common-model/jminor-common-model.jar, jminor-common-ui/jminor-common-ui.jar,
                        jminor-db-core/jminor-db-core.jar, jminor-db-local/jminor-db-local.jar, jminor-db-remote/jminor-db-remote.jar,
-                       jminor-client/jminor-client.jar, jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar"
+                       jminor-client-model/jminor-client-model.jar, jminor-client-ui/jminor-client-ui.jar,
+                       jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar"
                        excludes="*javadoc.jar, *sources.jar, META-INF/**/*"/>
       <fileset file="${deploy.demos.truststore}"/>
     </jar>
