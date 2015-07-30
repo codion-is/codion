@@ -3977,3 +3977,4 @@
   Unit test dependencies on demos removed, build.xml updated accordingly
   Ant build bootstrapped correctly, no need for util libraries anymore (ivy, jacoco-ant etc.)
   Stubs removed from dist jars
+  Project cleanup, keystore and truststore removed, added to ant build
