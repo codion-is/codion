@@ -163,7 +163,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
   EventObserver<ValueChange<K, ?>> getValueChangeObserver();
 
   /**
-   * Adds a listener, this listener will be notified each time a value changes
+   * Adds a listener notified each time a value changes
    * Adding the same listener multiple times has no effect.
    * @param valueListener the listener
    * @see org.jminor.common.model.valuemap.ValueChange

@@ -695,7 +695,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   private void checkLock() {
     if (lockedState.isActive()) {
-      throw new IllegalStateException("Search model for key " + columnIdentifier + " is locked");
+      throw new IllegalStateException("Search model for column identified by " + columnIdentifier + " is locked");
     }
   }
 }

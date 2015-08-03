@@ -1066,7 +1066,7 @@ public final class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getSetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
-    Util.rejectNullValue(valueOwner, "valueOwner");
+    rejectNullValue(valueOwner, "valueOwner");
     return getSetMethod(valueType, property, valueOwner.getClass());
   }
 
@@ -1078,9 +1078,9 @@ public final class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getSetMethod(final Class valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
-    Util.rejectNullValue(valueType, "valueType");
-    Util.rejectNullValue(property, "property");
-    Util.rejectNullValue(ownerClass, "ownerClass");
+    rejectNullValue(valueType, "valueType");
+    rejectNullValue(property, "property");
+    rejectNullValue(ownerClass, "ownerClass");
     if (property.length() == 0) {
       throw new IllegalArgumentException("Property must be specified");
     }
@@ -1096,7 +1096,7 @@ public final class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getGetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
-    Util.rejectNullValue(valueOwner, "valueOwner");
+    rejectNullValue(valueOwner, "valueOwner");
     return getGetMethod(valueType, property, valueOwner.getClass());
   }
 
@@ -1108,9 +1108,9 @@ public final class Util {
    * @throws NoSuchMethodException if the method does not exist in the owner class
    */
   public static Method getGetMethod(final Class valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
-    Util.rejectNullValue(valueType, "valueType");
-    Util.rejectNullValue(property, "property");
-    Util.rejectNullValue(ownerClass, "ownerClass");
+    rejectNullValue(valueType, "valueType");
+    rejectNullValue(property, "property");
+    rejectNullValue(ownerClass, "ownerClass");
     if (property.length() == 0) {
       throw new IllegalArgumentException("Property must be specified");
     }
