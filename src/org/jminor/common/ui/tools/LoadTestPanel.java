@@ -70,7 +70,7 @@ public final class LoadTestPanel extends JPanel {
 
   private final JPanel scenarioBase = new JPanel(UiUtil.createGridLayout(COMPONENT_GAP, 1));
   private final JPanel pluginPanel;
-  private ItemRandomizerPanel randomizerPanel;
+  private final ItemRandomizerPanel scenarioPanel;
 
   /**
    * Constructs a new LoadTestPanel.
@@ -79,6 +79,7 @@ public final class LoadTestPanel extends JPanel {
   public LoadTestPanel(final LoadTest loadTestModel) {
     this(loadTestModel, null);
   }
+
   /**
    * Constructs a new LoadTestPanel.
    * @param loadTestModel the LoadTestModel to base this panel on
@@ -88,6 +89,7 @@ public final class LoadTestPanel extends JPanel {
     Util.rejectNullValue(loadTestModel, "loadTestModel");
     this.loadTestModel = loadTestModel;
     this.pluginPanel = pluginPanel;
+    this.scenarioPanel = initializeScenarioPanel();
     initializeUI();
     handleScenarioSelected();
   }
@@ -129,13 +131,12 @@ public final class LoadTestPanel extends JPanel {
     final JPanel activityPanel = initializeActivityPanel();
     final JPanel applicationPanel = initializeApplicationPanel();
     final JPanel userBase = initializeUserPanel();
-    randomizerPanel = initializeScenarioPanel();
     final JPanel chartControlPanel = initializeChartControlPanel();
 
     final JPanel controlPanel = new JPanel(UiUtil.createFlexibleGridLayout(5, 1, false, true));
     controlPanel.add(applicationPanel);
     controlPanel.add(activityPanel);
-    controlPanel.add(randomizerPanel);
+    controlPanel.add(scenarioPanel);
     controlPanel.add(userBase);
     controlPanel.add(chartControlPanel);
 
@@ -370,7 +371,7 @@ public final class LoadTestPanel extends JPanel {
   @SuppressWarnings({"unchecked"})
   private void handleScenarioSelected() {
     scenarioBase.removeAll();
-    for (final Object selectedItem : randomizerPanel.getSelectedItems()) {
+    for (final Object selectedItem : scenarioPanel.getSelectedItems()) {
       final ItemRandomizer.RandomItem<LoadTest.UsageScenario> item = (ItemRandomizer.RandomItem<LoadTest.UsageScenario>) selectedItem;
       final JPanel scenarioPanel = createScenarioPanel(item.getItem());
       scenarioBase.add(scenarioPanel);
