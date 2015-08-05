@@ -25,7 +25,7 @@ public class EntityCriteriaTest {
             EntityCriteriaUtil.propertyCriteria(Properties.columnProperty("intProperty", Types.INTEGER), SearchType.LIKE, 666)
     );
     final EntityCriteria criteria = EntityCriteriaUtil.criteria("entityID", set1);
-    assertEquals("where (stringProperty like ? and intProperty = ?)", criteria.getWhereClause());
+    assertEquals("(stringProperty like ? and intProperty = ?)", criteria.getWhereClause());
     assertEquals(set1, criteria.getCriteria());
     final CriteriaSet<Property.ColumnProperty> set2 = new CriteriaSet<>(
             Conjunction.AND,
@@ -33,8 +33,7 @@ public class EntityCriteriaTest {
             EntityCriteriaUtil.propertyCriteria(Properties.columnProperty("stringProperty2", Types.VARCHAR), SearchType.LIKE, false, "value2")
     );
     final CriteriaSet<Property.ColumnProperty> set3 = new CriteriaSet<>(Conjunction.OR, set1, set2);
-    assertEquals("where ((stringProperty like ? and intProperty = ?) " + "or"
-            + " (doubleProperty = ? and upper(stringProperty2) like upper(?)))",
+    assertEquals("((stringProperty like ? and intProperty = ?) or (doubleProperty = ? and upper(stringProperty2) like upper(?)))",
             EntityCriteriaUtil.criteria("entityID", set3).getWhereClause());
   }
 }

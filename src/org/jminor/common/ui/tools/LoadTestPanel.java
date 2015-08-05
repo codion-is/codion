@@ -166,16 +166,16 @@ public final class LoadTestPanel extends JPanel {
   }
 
   private ItemRandomizerPanel initializeScenarioPanel() {
-    final ItemRandomizerPanel<LoadTestModel.UsageScenario> scenarioPanel = new ItemRandomizerPanel<>(loadTestModel.getScenarioChooser());
-    scenarioPanel.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
-    scenarioPanel.addSelectedItemListener(new EventListener() {
+    final ItemRandomizerPanel<LoadTestModel.UsageScenario> panel = new ItemRandomizerPanel<>(loadTestModel.getScenarioChooser());
+    panel.setBorder(BorderFactory.createTitledBorder("Usage scenarios"));
+    panel.addSelectedItemListener(new EventListener() {
       @Override
       public void eventOccurred() {
         handleScenarioSelected();
       }
     });
 
-    return scenarioPanel;
+    return panel;
   }
 
   private JPanel initializeUserPanel() {
@@ -373,8 +373,8 @@ public final class LoadTestPanel extends JPanel {
     scenarioBase.removeAll();
     for (final Object selectedItem : scenarioPanel.getSelectedItems()) {
       final ItemRandomizer.RandomItem<LoadTest.UsageScenario> item = (ItemRandomizer.RandomItem<LoadTest.UsageScenario>) selectedItem;
-      final JPanel scenarioPanel = createScenarioPanel(item.getItem());
-      scenarioBase.add(scenarioPanel);
+      final JPanel panel = createScenarioPanel(item.getItem());
+      scenarioBase.add(panel);
     }
     validate();
     repaint();

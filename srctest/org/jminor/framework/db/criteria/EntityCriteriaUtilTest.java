@@ -120,7 +120,7 @@ public class EntityCriteriaUtilTest {
 
   private void assertPrimaryKeyCriteria(final EntityCriteria criteria) {
     assertEquals(TestDomain.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where deptno = ?", criteria.getWhereClause());
+    assertEquals("deptno = ?", criteria.getWhereClause());
     assertEquals(1, criteria.getValues().size());
     assertEquals(1, criteria.getValueKeys().size());
     assertEquals(10, criteria.getValues().get(0));
@@ -129,7 +129,7 @@ public class EntityCriteriaUtilTest {
 
   private void assertCriteria(final EntityCriteria criteria) {
     assertEquals(TestDomain.T_DEPARTMENT, criteria.getEntityID());
-    assertEquals("where dname not like ?", criteria.getWhereClause());
+    assertEquals("dname not like ?", criteria.getWhereClause());
     assertEquals(1, criteria.getValues().size());
     assertEquals(1, criteria.getValueKeys().size());
     assertEquals("DEPT", criteria.getValues().get(0));

@@ -193,14 +193,6 @@ public interface EntityConnection {
   List<Entity> selectMany(final String entityID, final String propertyID, final Object... values) throws DatabaseException;
 
   /**
-   * Selects all the entities of the given type
-   * @param entityID the entity type
-   * @return all entities of the given type
-   * @throws DatabaseException in case of a db exception
-   */
-  List<Entity> selectAll(final String entityID) throws DatabaseException;
-
-  /**
    * Returns the entities that depend on the given entities via foreign keys, mapped to corresponding entityIDs
    * @param entities the entities for which to retrieve dependencies
    * @return the entities that depend on <code>entities</code>

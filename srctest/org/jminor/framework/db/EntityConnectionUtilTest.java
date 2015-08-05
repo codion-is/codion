@@ -63,7 +63,7 @@ public class EntityConnectionUtilTest {
   public void batchInsert() throws SQLException, DatabaseException {
     final EntityConnection sourceConnection = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection();
 
-    final List<Entity> source = sourceConnection.selectAll(TestDomain.T_DEPARTMENT);
+    final List<Entity> source = sourceConnection.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT));
     final List<Entity.Key> dest = new ArrayList<>();
     final ProgressReporter progressReporter = new ProgressReporter() {
       @Override

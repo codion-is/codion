@@ -66,6 +66,8 @@ final class LocalEntityConnection implements EntityConnection {
 
   private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(LocalEntityConnection.class);
   private static final String CRITERIA_PARAM_NAME = "criteria";
+  private static final String WHERE = "where ";
+  private static final String WHERE_SPACE_PREFIX = " where ";
 
   private final DatabaseConnection connection;
   private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<>();
@@ -331,7 +333,7 @@ final class LocalEntityConnection implements EntityConnection {
         for (final Map.Entry<String, Collection<Entity.Key>> hashedKeysEntry : hashedKeys.entrySet()) {
           criteriaKeys.addAll(hashedKeysEntry.getValue());
           final EntityCriteria criteria = EntityCriteriaUtil.criteria(criteriaKeys);
-          deleteSQL = "delete from " + Entities.getTableName(hashedKeysEntry.getKey()) + " " + criteria.getWhereClause();
+          deleteSQL = "delete from " + Entities.getTableName(hashedKeysEntry.getKey()) + WHERE_SPACE_PREFIX + criteria.getWhereClause();
           statement = connection.getConnection().prepareStatement(deleteSQL);
           executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueKeys());
           statement.close();
@@ -394,12 +396,6 @@ final class LocalEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public List<Entity> selectAll(final String entityID) throws DatabaseException {
-    return selectMany(EntityCriteriaUtil.selectCriteria(entityID, Entities.getOrderByClause(entityID)));
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public List<Entity> selectMany(final EntitySelectCriteria criteria) throws DatabaseException {
     synchronized (connection) {
       try {
@@ -426,7 +422,7 @@ final class LocalEntityConnection implements EntityConnection {
     final Property.ColumnProperty property = Entities.getColumnProperty(entityID, propertyID);
     final String columnName = property.getColumnName();
     final String selectSQL = createSelectSQL(Entities.getSelectTableName(entityID), "distinct " + columnName,
-            "where " + columnName + " is not null", order ? columnName : null);
+            WHERE + columnName + " is not null", order ? columnName : null);
     synchronized (connection) {
       try {
         final List<Object> result = DatabaseUtil.query(connection, selectSQL, getPropertyResultPacker(property), -1);
@@ -451,13 +447,19 @@ final class LocalEntityConnection implements EntityConnection {
     final String selectSQL;
     final String entitySelectQuery = Entities.getSelectQuery(criteria.getEntityID());
     if (entitySelectQuery == null) {
+      final String whereClause = criteria.getWhereClause();
       selectSQL = createSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), "count(*)",
-              criteria.getWhereClause(true), null);
+              whereClause.length() == 0 ? "" : WHERE + whereClause, null);
     }
     else {
       final boolean containsWhereClause = containsWhereClause(entitySelectQuery);
-      selectSQL = createSelectSQL("(" + entitySelectQuery + " " + criteria.getWhereClause(!containsWhereClause) + ") alias",
-              "count(*)", null, null);
+      final String whereClause = criteria.getWhereClause();
+      String tableClause = "(" + entitySelectQuery;
+      if (whereClause.length() > 0) {
+        tableClause += containsWhereClause ? " and " + whereClause : WHERE_SPACE_PREFIX + whereClause;
+      }
+      tableClause += ") alias";
+      selectSQL = createSelectSQL(tableClause, "count(*)", null, null);
     }
     synchronized (connection) {
       try {
@@ -588,7 +590,7 @@ final class LocalEntityConnection implements EntityConnection {
     }
     final EntityCriteria criteria = EntityCriteriaUtil.criteria(primaryKey);
     final String sql = "update " + Entities.getTableName(primaryKey.getEntityID()) + " set " + property.getColumnName() +
-            " = ? " + criteria.getWhereClause();
+            " = ?" + WHERE_SPACE_PREFIX + criteria.getWhereClause();
     final List<Object> values = new ArrayList<>();
     final List<Property.ColumnProperty> properties = new ArrayList<>();
     DatabaseUtil.QUERY_COUNTER.count(sql);
@@ -640,7 +642,7 @@ final class LocalEntityConnection implements EntityConnection {
     ResultSet resultSet = null;
     final EntityCriteria criteria = EntityCriteriaUtil.criteria(primaryKey);
     final String sql = "select " + property.getColumnName() + " from " +
-            Entities.getTableName(primaryKey.getEntityID()) + " " + criteria.getWhereClause();
+            Entities.getTableName(primaryKey.getEntityID()) + WHERE_SPACE_PREFIX + criteria.getWhereClause();
     DatabaseUtil.QUERY_COUNTER.count(sql);
     synchronized (connection) {
       try {
@@ -992,9 +994,10 @@ final class LocalEntityConnection implements EntityConnection {
     }
 
     final StringBuilder queryBuilder = new StringBuilder(selectSQL);
-    final String whereClause = criteria.getWhereClause(!containsWhereClause(selectSQL));
-    if (whereClause.length() != 0) {
-      queryBuilder.append(" ").append(whereClause);
+    final boolean containsWhereClause = containsWhereClause(selectSQL);
+    final String whereClause = criteria.getWhereClause();
+    if (whereClause.length() > 0) {
+      queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX).append(whereClause);
     }
     if (criteria.isForUpdate()) {
       addForUpdate(database, queryBuilder);
@@ -1046,7 +1049,7 @@ final class LocalEntityConnection implements EntityConnection {
     final String lowerCaseQuery = selectQuery.toLowerCase();
 
     return selectQuery.substring(Math.max(0, lowerCaseQuery.lastIndexOf("from ")),
-            lowerCaseQuery.length()).contains("where ");//todo newline after where fails, try regex
+            lowerCaseQuery.length()).contains(WHERE);//todo newline after where fails, try regex
   }
 
   /**
@@ -1067,7 +1070,7 @@ final class LocalEntityConnection implements EntityConnection {
       }
     }
 
-    return sql.append(" ").append(criteria.getWhereClause()).toString();
+    return sql.append(WHERE_SPACE_PREFIX).append(criteria.getWhereClause()).toString();
   }
 
   /**
@@ -1099,7 +1102,9 @@ final class LocalEntityConnection implements EntityConnection {
    */
   private static String createDeleteSQL(final EntityCriteria criteria) {
     Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
-    return "delete from " + Entities.getTableName(criteria.getEntityID()) + " " + criteria.getWhereClause();
+    final String whereClause = criteria.getWhereClause();
+    return "delete from " + Entities.getTableName(criteria.getEntityID()) +
+            (whereClause.length() > 0 ? WHERE_SPACE_PREFIX + whereClause : "");
   }
 
   /**
@@ -1381,9 +1386,9 @@ final class LocalEntityConnection implements EntityConnection {
     private String appendEntityCriteria(final EntityCriteria criteria) {
       final StringBuilder builder = new StringBuilder();
       builder.append(criteria.getEntityID());
-      final String whereClause = criteria.getWhereClause(true);
+      final String whereClause = criteria.getWhereClause();
       if (!Util.nullOrEmpty(whereClause)) {
-        builder.append(", ").append(whereClause);
+        builder.append(",").append(WHERE_SPACE_PREFIX).append(whereClause);
       }
       final List<?> values = criteria.getValues();
       if (values != null) {

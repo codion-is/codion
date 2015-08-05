@@ -400,14 +400,7 @@ public final class EntityCriteriaUtil {
 
     @Override
     public String getWhereClause() {
-      return getWhereClause(true);
-    }
-
-    @Override
-    public String getWhereClause(final boolean includeWhereKeyword) {
-      final String criteriaString = criteria == null ? "" : criteria.getWhereClause();
-
-      return criteriaString.length() != 0 ? (includeWhereKeyword ? "where " : "and ") + criteriaString : "";
+      return criteria == null ? "" : criteria.getWhereClause();
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
@@ -522,11 +515,6 @@ public final class EntityCriteriaUtil {
     @Override
     public String getWhereClause() {
       return criteria.getWhereClause();
-    }
-
-    @Override
-    public String getWhereClause(final boolean includeWhereKeyword) {
-      return criteria.getWhereClause(includeWhereKeyword);
     }
 
     @Override

@@ -3978,3 +3978,6 @@
   Ant build bootstrapped correctly, no need for util libraries anymore (ivy, jacoco-ant etc.)
   Stubs removed from dist jars
   Project cleanup, keystore and truststore removed, added to ant build
+0.9.4
+  EntityConnection.selectAll() removed
+  EntityCriteria.getWhereClause(includeWhereKeyword) removed

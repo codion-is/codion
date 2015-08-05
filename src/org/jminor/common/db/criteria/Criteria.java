@@ -12,8 +12,8 @@ import java.util.List;
 public interface Criteria<T> {
   /**
    * Returns a criteria clause based on this Criteria, note that this
-   * where clause contains the ? substitute character instead of the actual values.
-   * Whether or not the clause contains the WHERE keyword is implementation specific
+   * clause contains the ? substitute character instead of the actual values.
+   * Note that this method can return an empty string.
    * @return a where clause based on this Criteria
    * @see #getValues()
    */

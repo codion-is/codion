@@ -130,14 +130,6 @@ public class LocalEntityConnectionTest {
   }
 
   @Test
-  public void selectAll() throws Exception {
-    final List<Entity> depts = connection.selectAll(TestDomain.T_DEPARTMENT);
-    assertEquals(4, depts.size());
-    final List<Entity> emps = connection.selectAll(JOINED_QUERY_ENTITY_ID);
-    assertEquals(16, emps.size());
-  }
-
-  @Test
   public void selectDependentEntities() throws Exception {
     final Map<String, Collection<Entity>> empty = connection.selectDependentEntities(new ArrayList<Entity>());
     assertTrue(empty.isEmpty());
@@ -348,16 +340,18 @@ public class LocalEntityConnectionTest {
         connection2.update(Collections.singletonList(sales));
         fail("Should not be able to update record selected for update by another connection");
       }
-      catch (final DatabaseException ignored) {/*ignored*/}
+      catch (final DatabaseException ignored) {
+        connection2.getDatabaseConnection().rollback();
+      }
 
-      connection.selectAll(TestDomain.T_DEPARTMENT);//any query will do
+      connection.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT));//any query will do
 
       try {
         sales = connection2.update(Collections.singletonList(sales)).get(0);
         sales.setValue(TestDomain.DEPARTMENT_LOCATION, originalLocation);
         connection2.update(Collections.singletonList(sales));//revert changes to data
       }
-      catch (final DatabaseException ignored) {/*ignored*/
+      catch (final DatabaseException ignored) {
         fail("Should be able to update record after other connection released the select for update lock");
       }
     }
@@ -393,7 +387,7 @@ public class LocalEntityConnectionTest {
       try {
         connection2.insert(Collections.singletonList(allen));//revert changes to data
       }
-      catch (final DatabaseException ignored) {/*ignored*/
+      catch (final DatabaseException ignored) {
         fail("Should be able to update record after other connection released the select for update lock");
       }
     }
