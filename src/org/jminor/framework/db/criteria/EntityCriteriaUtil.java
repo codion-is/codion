@@ -800,7 +800,11 @@ public final class EntityCriteriaUtil {
      * @return the number values contained in this criteria.
      */
     private int getValueCount() {
-      return getValues().size();
+      if (isNullCriteria) {
+        return 0;
+      }
+
+      return values.size();
     }
 
     /**
