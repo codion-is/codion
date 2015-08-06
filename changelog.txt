@@ -3983,3 +3983,4 @@
   EntityCriteria.getWhereClause(includeWhereKeyword) removed
   EntityCriteriaUtil.PropertyCriteria.getValueCount() inefficiency removed
   DefaultKey.equals(), some minor optimizations
+  Logback dependency updated from 1.1.2 to 1.1.3
