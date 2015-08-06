@@ -3982,3 +3982,4 @@
   EntityConnection.selectAll() removed
   EntityCriteria.getWhereClause(includeWhereKeyword) removed
   EntityCriteriaUtil.PropertyCriteria.getValueCount() inefficiency removed
+  DefaultKey.equals(), some minor optimizations

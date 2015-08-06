@@ -821,8 +821,8 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       this.definition = definition;
       final List<Property.ColumnProperty> properties = definition.getPrimaryKeyProperties();
       final int propertyCount = properties.size();
-      this.singleIntegerKey = propertyCount == 1 && properties.get(0).isInteger();
       this.compositeKey = propertyCount > 1;
+      this.singleIntegerKey = !compositeKey && properties.get(0).isInteger();
     }
 
     /**
@@ -853,16 +853,12 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
 
     @Override
     public Property.ColumnProperty getFirstKeyProperty() {
-      if (getPropertyCount() == 0) {
-        throw new IllegalStateException(definition.getEntityID() + " has no primary key properties");
-      }
-
       return getProperties().get(0);
     }
 
     @Override
     public Object getFirstKeyValue() {
-      return getValue(getFirstKeyProperty().getPropertyID());
+      return getValues().iterator().next();
     }
 
     /**
@@ -884,11 +880,11 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
 
     @Override
     public int getPropertyCount() {
-      if (singleIntegerKey || !compositeKey) {
-        return 1;
+      if (compositeKey) {
+        return getProperties().size();
       }
 
-      return getProperties().size();
+      return 1;
     }
 
     @Override
@@ -914,12 +910,14 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       if (obj instanceof Key) {
         final String entityID = definition.getEntityID();
         final Key key = (Key) obj;
+        if (compositeKey) {
+          return key.isCompositeKey() && entityID.equals(key.getEntityID()) && super.equals(key);
+        }
         if (singleIntegerKey) {
           return key.isSingleIntegerKey() && hashCode() == key.hashCode() && entityID.equals(key.getEntityID());
         }
-        else {
-          return !key.isSingleIntegerKey() && entityID.equals(key.getEntityID()) && super.equals(key);
-        }
+        //single non-integer key
+        return !key.isCompositeKey() && entityID.equals(key.getEntityID()) && Util.equal(getFirstKeyValue(), key.getFirstKeyValue());
       }
 
       return false;
