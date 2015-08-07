@@ -60,7 +60,9 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     if (!initialization) {
       updateOriginalValue(key, value, previousValue);
     }
-    notifyValueChange(key, value, previousValue, initialization);
+    if (valueChangedEvent != null) {
+      notifyValueChange(key, value, previousValue, initialization);
+    }
     handleValueSet(key, value, previousValue, initialization);
 
     return previousValue;
@@ -319,9 +321,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   }
 
   protected final void notifyValueChange(final K key, final V value, final V oldValue, final boolean initialization) {
-    if (valueChangedEvent != null) {
-      valueChangedEvent.fire(ValueChanges.valueChange(this, key, value, oldValue, initialization));
-    }
+    valueChangedEvent.fire(ValueChanges.valueChange(this, key, value, oldValue, initialization));
   }
 
   protected final void setOriginalValue(final K key, final V oldValue) {

@@ -487,16 +487,18 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   /** {@inheritDoc} */
   @Override
   protected void handleValueChangedEventInitialized() {
-    addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
-      @Override
-      public void eventOccurred(final ValueChange<String, ?> info) {
-        final Collection<String> linkedPropertyIDs = definition.getLinkedPropertyIDs(info.getKey());
-        for (final String propertyID : linkedPropertyIDs) {
-          final Object linkedValue = getValue(propertyID);
-          notifyValueChange(propertyID, linkedValue, linkedValue, false);
+    if (definition.hasLinkedProperties()) {
+      addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
+        @Override
+        public void eventOccurred(final ValueChange<String, ?> valueChange) {
+          final Collection<String> linkedPropertyIDs = definition.getLinkedPropertyIDs(valueChange.getKey());
+          for (final String propertyID : linkedPropertyIDs) {
+            final Object linkedValue = getValue(propertyID);
+            notifyValueChange(propertyID, linkedValue, linkedValue, false);
+          }
         }
-      }
-    });
+      });
+    }
   }
 
   private void propagateForeignKeyValues(final Property.ForeignKeyProperty foreignKeyProperty, final Entity newValue,
@@ -957,8 +959,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       if (singleIntegerKey) {
         if (!(value == null || value instanceof Integer)) {
           throw new IllegalArgumentException("Expecting a Integer value for Key: "
-                  + definition.getEntityID() + ", "
-                  + key + ", got " + value + "; " + value.getClass());
+                  + definition.getEntityID() + ", " + key + ", got " + value + "; " + value.getClass());
         }
         setHashCode((Integer) value);
       }

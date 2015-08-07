@@ -65,6 +65,11 @@ class DefaultProperty implements Property {
   private final int hashCode;
 
   /**
+   * Very frequently used, so cache it
+   */
+  private final boolean isDouble;
+
+  /**
    * The default value for this property
    */
   private Object defaultValue;
@@ -134,6 +139,7 @@ class DefaultProperty implements Property {
     this.type = type;
     this.caption = caption;
     this.typeClass = getTypeClass(type);
+    this.isDouble = isType(Types.DOUBLE);
     setHidden(caption == null);
     setFormat(initializeDefaultFormat());
   }
@@ -144,6 +150,12 @@ class DefaultProperty implements Property {
   @Override
   public final String toString() {
     return getCaption();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean is(final String propertyID) {
+    return this.propertyID.equals(propertyID);
   }
 
   /** {@inheritDoc} */
@@ -209,7 +221,7 @@ class DefaultProperty implements Property {
   /** {@inheritDoc} */
   @Override
   public final boolean isDouble() {
-    return isType(Types.DOUBLE);
+    return isDouble;
   }
 
   /** {@inheritDoc} */
@@ -220,14 +232,8 @@ class DefaultProperty implements Property {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean is(final String propertyID) {
-    return this.propertyID.equals(propertyID);
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final String getPropertyID() {
-    return this.propertyID;
+    return propertyID;
   }
 
   /** {@inheritDoc} */

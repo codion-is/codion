@@ -609,6 +609,11 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
     Map<String, Property> getProperties();
 
     /**
+     * @return true if this entity contains any properties which values are linked to other properties
+     */
+    boolean hasLinkedProperties();
+
+    /**
      * Returns true if this entity contains properties which values are linked to the value of the given property
      * @param propertyID the ID of the property
      * @return true if any properties are linked to the given property

@@ -412,6 +412,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return properties;
   }
 
+  @Override
+  public boolean hasLinkedProperties() {
+    return !linkedProperties.isEmpty();
+  }
+
   /** {@inheritDoc} */
   @Override
   public boolean hasLinkedProperties(final String propertyID) {

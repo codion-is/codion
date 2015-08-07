@@ -110,8 +110,8 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
       setConnectionLimit(connectionLimit);
       webServer = startWebServer(webDocumentRoot, webServerPort);
     }
-    catch (final Exception e) {
-      throw logShutdownAndReturn(new RuntimeException(e), this);
+    catch (final Throwable t) {
+      throw logShutdownAndReturn(new RuntimeException(t), this);
     }
   }
 
