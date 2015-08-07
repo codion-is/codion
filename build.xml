@@ -733,7 +733,6 @@
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
     </sequential>
-
   </macrodef>
 
   <macrodef name="create_manifest">

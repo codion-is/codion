@@ -37,6 +37,11 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
     return new SchemaBrowserApplicationModel(connectionProvider);
   }
 
+  @Override
+  protected String getApplicationIdentifier() {
+    return "org.jminor.demo.SchemaBrowser";
+  }
+
   public static void main(final String[] args) {
     Configuration.setValue(Configuration.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
     Configuration.setValue(Configuration.SEARCH_PANEL_STATE, true);
