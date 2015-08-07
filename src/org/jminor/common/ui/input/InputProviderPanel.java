@@ -26,6 +26,8 @@ import java.awt.event.ActionEvent;
  */
 public final class InputProviderPanel extends JPanel implements InputProvider {
 
+  private static final int COLUMNS = 2;
+
   private final Event buttonClickedEvent = Events.event();
 
   private final InputProvider inputProvider;
@@ -103,7 +105,7 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
   }
 
   private JPanel createButtonPanel() {
-    final JPanel panel = new JPanel(UiUtil.createGridLayout(1, 2));
+    final JPanel panel = new JPanel(UiUtil.createGridLayout(1, COLUMNS));
     okButton = createButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION);
     panel.add(okButton);
     panel.add(createButton(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION));

@@ -100,6 +100,8 @@ public class DoubleField extends IntField {
 
   private class DoubleFieldDocument extends SizedDocument {
 
+    private static final int DECIMAL_SPLIT_COUNT = 2;
+
     private String decimalSymbol = COMMA;
     private int maximumFractionDigits = -1;
 
@@ -207,7 +209,7 @@ public class DoubleField extends IntField {
 
     private String removeFractionDigits(final String preparedString) {
       final String[] splitResult = preparedString.split(getDecimalSymbol());
-      if (splitResult.length < 2) {//no decimal symbol
+      if (splitResult.length < DECIMAL_SPLIT_COUNT) {//no decimal symbol
         return preparedString;
       }
 

@@ -49,6 +49,8 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   private static final long serialVersionUID = 1;
 
+  private static final int USERNAME_PASSWORD_SPLIT_COUNT = 2;
+
   private static DefaultEntityConnectionServerAdmin adminInstance;
 
   static {
@@ -585,7 +587,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   private static String[] splitString(final String usernamePassword) {
     final String[] splitResult = usernamePassword.split(":");
-    if (splitResult.length < 2) {
+    if (splitResult.length < USERNAME_PASSWORD_SPLIT_COUNT) {
       throw new IllegalArgumentException("Expecting a ':' delimiter");
     }
 
