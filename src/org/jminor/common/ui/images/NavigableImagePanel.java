@@ -129,13 +129,14 @@ public final class NavigableImagePanel extends JPanel {
 
   private static final double SCREEN_NAV_IMAGE_FACTOR = 0.15; // 15% of panel's width
   private static final double NAV_IMAGE_FACTOR = 0.3; // 30% of panel's width
-  private static final double HIGH_QUALITY_RENDERING_SCALE_THRESHOLD = 1.0;
+  private static final double ONE_POINT_O = 1.0;
+  private static final double HIGH_QUALITY_RENDERING_SCALE_THRESHOLD = ONE_POINT_O;
   private static final double DEFAULT_ZOOM_INCREMENT = 0.2;
   private static final Object INTERPOLATION_TYPE = RenderingHints.VALUE_INTERPOLATION_BILINEAR;
 
   private double zoomIncrement = DEFAULT_ZOOM_INCREMENT;
-  private double zoomFactor = 1.0 + zoomIncrement;
-  private double navZoomFactor = 1.0 + zoomIncrement;
+  private double zoomFactor = ONE_POINT_O + zoomIncrement;
+  private double navZoomFactor = ONE_POINT_O + zoomIncrement;
   private BufferedImage image;
   private BufferedImage navigationImage;
   private int navImageWidth;
@@ -210,16 +211,16 @@ public final class NavigableImagePanel extends JPanel {
       final boolean zoomIn = (e.getWheelRotation() < 0);
       if (isInNavigationImage(p)) {
         if (zoomIn) {
-          navZoomFactor = 1.0 + zoomIncrement;
+          navZoomFactor = ONE_POINT_O + zoomIncrement;
         } else {
-          navZoomFactor = 1.0 - zoomIncrement;
+          navZoomFactor = ONE_POINT_O - zoomIncrement;
         }
         zoomNavigationImage();
       } else if (isInImage(p)) {
         if (zoomIn) {
-          zoomFactor = 1.0 + zoomIncrement;
+          zoomFactor = ONE_POINT_O + zoomIncrement;
         } else {
-          zoomFactor = 1.0 - zoomIncrement;
+          zoomFactor = ONE_POINT_O - zoomIncrement;
         }
         zoomImage();
       }
@@ -232,18 +233,18 @@ public final class NavigableImagePanel extends JPanel {
       final Point p = e.getPoint();
       if (SwingUtilities.isRightMouseButton(e)) {
         if (isInNavigationImage(p)) {
-          navZoomFactor = 1.0 - zoomIncrement;
+          navZoomFactor = ONE_POINT_O - zoomIncrement;
           zoomNavigationImage();
         } else if (isInImage(p)) {
-          zoomFactor = 1.0 - zoomIncrement;
+          zoomFactor = ONE_POINT_O - zoomIncrement;
           zoomImage();
         }
       } else {
         if (isInNavigationImage(p)) {
-          navZoomFactor = 1.0 + zoomIncrement;
+          navZoomFactor = ONE_POINT_O + zoomIncrement;
           zoomNavigationImage();
         } else if (isInImage(p)) {
-          zoomFactor = 1.0 + zoomIncrement;
+          zoomFactor = ONE_POINT_O + zoomIncrement;
           zoomImage();
         }
       }
@@ -586,10 +587,10 @@ public final class NavigableImagePanel extends JPanel {
       imageP.y = 0.0;
     }
     if (imageP.x >= image.getWidth()) {
-      imageP.x = image.getWidth() - 1.0;
+      imageP.x = image.getWidth() - ONE_POINT_O;
     }
     if (imageP.y >= image.getHeight()) {
-      imageP.y = image.getHeight() - 1.0;
+      imageP.y = image.getHeight() - ONE_POINT_O;
     }
 
     final Coords correctedP = imageToPanelCoords(imageP);

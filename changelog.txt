@@ -3996,3 +3996,4 @@
   DefaultEntityEditModel no longer provides property debug output
   EntityTablePanel.initialize() and setupControls() removed (setupControlsInternal then renamed to setupControls)
   Fixed a couple of Sonar issues
+  SteppedComboBox unused constructor removed

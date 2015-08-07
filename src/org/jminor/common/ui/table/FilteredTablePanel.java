@@ -616,7 +616,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
           case ASCENDING:
             status = SortingDirective.DESCENDING;
             break;
-          case DESCENDING:
+          default://case DESCENDING:
             status = SortingDirective.ASCENDING;
             break;
         }

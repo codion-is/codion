@@ -15,6 +15,8 @@ import java.awt.Insets;
  */
 public final class FlexibleGridLayout extends GridLayout {
 
+  private static final double ONE_POINT_O = 1.0;
+
   private boolean fixedRowHeights = false;
   private boolean fixedColumnWidths = false;
   private int fixedColumnWidth;
@@ -107,8 +109,8 @@ public final class FlexibleGridLayout extends GridLayout {
       final int verticalGap = getVgap();
       // scaling factors
       final Dimension pd = preferredLayoutSize(parent);
-      final double sw = (1.0 * parent.getWidth()) / pd.getWidth();
-      final double sh = (1.0 * parent.getHeight()) / pd.getHeight();
+      final double sw = (ONE_POINT_O * parent.getWidth()) / pd.getWidth();
+      final double sh = (ONE_POINT_O * parent.getHeight()) / pd.getHeight();
       // scale
       final int[] columnWidths = new int[numberOfColumns];
       final int[] rowHeights = new int[numberOfRows];
@@ -126,9 +128,9 @@ public final class FlexibleGridLayout extends GridLayout {
           rowHeights[row] = (int) currCompPrefSize.getHeight();
         }
       }
-      //
+
       arrangeFixedSizes(columnWidths, rowHeights);
-      //
+
       int x = insets.left;
       for (int c = 0; c < numberOfColumns; c++) {
         int y = insets.top;
@@ -201,9 +203,9 @@ public final class FlexibleGridLayout extends GridLayout {
           rowHeights[row] = (int) d.getHeight();
         }
       }
-      //
+
       arrangeFixedSizes(columnWidths, rowHeights);
-      //
+
       int newWidth = 0;
       for (int j = 0; j < numberOfColumns; j++) {
         newWidth += columnWidths[j];

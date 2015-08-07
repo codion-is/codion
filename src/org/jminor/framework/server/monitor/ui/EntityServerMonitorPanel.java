@@ -107,7 +107,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     new ProcessBuilder(jdkDir + File.separator + "bin"  + File.separator + "jconsole").start();
   }
 
-  public void setJDKDir() {
+  public synchronized void setJDKDir() {
     setJDKDir(this);
   }
 

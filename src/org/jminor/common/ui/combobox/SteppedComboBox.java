@@ -1,7 +1,6 @@
 package org.jminor.common.ui.combobox;
 
 import javax.swing.ComboBoxModel;
-import javax.swing.DefaultComboBoxModel;
 import javax.swing.JComboBox;
 import javax.swing.JScrollBar;
 import javax.swing.plaf.basic.BasicComboPopup;
@@ -9,7 +8,6 @@ import javax.swing.plaf.basic.ComboPopup;
 import javax.swing.plaf.metal.MetalComboBoxUI;
 import java.awt.Dimension;
 import java.awt.Rectangle;
-import java.util.Collection;
 
 /**
  * A JComboBox which automatically sets the popup width according to the largest value in the combo box.
@@ -19,14 +17,6 @@ import java.util.Collection;
 public class SteppedComboBox<V> extends JComboBox<V> {
 
   private int popupWidth = 0;
-
-  /**
-   * Instantiates a new SteppedComboBox.
-   * @param items the items this combo box should contain
-   */
-  public SteppedComboBox(final Collection<V> items) {
-    this(new DefaultComboBoxModel<V>((V[]) items.toArray()));
-  }
 
   /**
    * Instantiates a new SteppedComboBox.
