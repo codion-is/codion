@@ -188,14 +188,17 @@ public final class EntityGeneratorModel {
 
   private void generateDefinitions(final List<Table> tables) {
     try {
+      int counter = 0;
       document.remove(0, document.getLength());
       for (final Table table : tables) {
         final String constantsString = getPropertyConstants(table);
         document.insertString(document.getLength(), constantsString, null);
-      }
-      for (final Table table : tables) {
+        document.insertString(document.getLength(), Util.LINE_SEPARATOR, null);
         final String entityString = getEntityDefinition(table);
         document.insertString(document.getLength(), entityString, null);
+        if (counter++ < tables.size() - 1) {
+          document.insertString(document.getLength(), Util.LINE_SEPARATOR + Util.LINE_SEPARATOR, null);
+        }
       }
     }
     catch (final BadLocationException e) {
@@ -223,7 +226,6 @@ public final class EntityGeneratorModel {
 
   private static void appendPropertyConstants(final StringBuilder builder, final Table table) {
     builder.append(getConstants(table));
-    builder.append(Util.LINE_SEPARATOR);
   }
 
   private static String getConstants(final Table table) {

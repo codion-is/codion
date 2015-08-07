@@ -675,6 +675,19 @@
     </java>
   </target>
 
+  <target name="run_entity_generator" depends="build"
+          description="Runs the entity generator">
+    <java classname="org.jminor.framework.tools.generator.ui.EntityGeneratorPanel" fork="yes">
+      <classpath>
+        <path refid="classes.main"/>
+        <path refid="lib.runtime.client"/>
+      </classpath>
+      <jvmarg value="-Djminor.db.type=h2"/>
+      <jvmarg value="-Djminor.db.host=h2db/h2"/>
+      <jvmarg value="-Djminor.db.embedded=true"/>
+    </java>
+  </target>
+
   <target name="recreate_h2_db"
           description="Recreates the demo h2 database. The demo database includes the EmpDept, Petstore and Chinook schemas, used by unit tests and demo applications">
     <delete dir="${db.h2.dir}"/>
@@ -683,13 +696,14 @@
     </java>
   </target>
 
-  <target name="create_client_server_keystore" unless="keystore.available">
-    <genkey alias="JMinorServer" keyalg="RSA" verbose="true" storepass="crappypass" validity="365" keystore="${resources.security}/JMinorServerKeystore">
+  <target name="create_client_server_keystore" unless="keystore.available"
+          description="Creates a client/server keystore for running the demos">
+    <genkey alias="JMinorServer" keyalg="RSA" storepass="crappypass" validity="365" keystore="${resources.security}/JMinorServerKeystore">
       <dname>
-        <param name="CN" value="JMinor"/>
-        <param name="OU" value="jminor"/>
-        <param name="O" value="jminor.org"/>
-        <param name="C" value="IS"/>
+        <param name="CN" value="Dummy"/>
+        <param name="OU" value="dummy"/>
+        <param name="O" value="dummy.org"/>
+        <param name="C" value="DU"/>
       </dname>
     </genkey>
     <exec executable="${java.bin}/keytool" failonerror="true">

@@ -3997,3 +3997,5 @@
   EntityTablePanel.initialize() and setupControls() removed (setupControlsInternal then renamed to setupControls)
   Fixed a couple of Sonar issues
   SteppedComboBox unused constructor removed
+  run_entity_generator target added to build.xml
+  EntityGeneratorModel, bug fixed, multiple entity definition output was wrong
