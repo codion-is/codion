@@ -238,15 +238,7 @@ final class LocalEntityConnection implements EntityConnection {
     synchronized (connection) {
       try {
         final Map<String, Collection<Entity>> hashedEntities = EntityUtil.hashByEntityID(entities);
-        if (optimisticLocking) {
-          try {
-            lockAndCheckForUpdate(hashedEntities);
-          }
-          catch (final DatabaseException e) {
-            rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
-            throw e;
-          }
-        }
+        performOptimisticLocking(hashedEntities);
 
         final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
         for (final Map.Entry<String, Collection<Entity>> hashedEntitiesMapEntry : hashedEntities.entrySet()) {
@@ -730,6 +722,18 @@ final class LocalEntityConnection implements EntityConnection {
     return packer;
   }
 
+  private void performOptimisticLocking(final Map<String, Collection<Entity>> entitiesToLock) throws DatabaseException {
+    if (optimisticLocking) {
+      try {
+        lockAndCheckForUpdate(entitiesToLock);
+      }
+      catch (final DatabaseException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
+        throw e;
+      }
+    }
+  }
+
   /**
    * Selects the given entities for update and checks if they have been modified by comparing
    * the property values to the current values in the database. Note that this does not
@@ -769,20 +773,7 @@ final class LocalEntityConnection implements EntityConnection {
       selectSQL = getSelectSQL(criteria, connection.getDatabase());
       statement = connection.getConnection().prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria);
-      List<Entity> result = null;
-      SQLException packingException = null;
-      try {
-        logAccess("packResult", new Object[0]);
-        result = getEntityResultPacker(criteria.getEntityID()).pack(resultSet, criteria.getFetchCount());
-      }
-      catch (final SQLException e) {
-        packingException = e;
-        throw e;
-      }
-      finally {
-        final String message = result != null ? "row count: " + result.size() : "";
-        logExit("packResult", packingException, message);
-      }
+      final List<Entity> result = packResult(criteria, resultSet);
       if (!criteria.isForUpdate()) {
         setForeignKeyValues(result, criteria, currentForeignKeyFetchDepth);
       }
@@ -894,6 +885,25 @@ final class LocalEntityConnection implements EntityConnection {
         LOG.debug(DatabaseUtil.createLogMessage(getUser(), sqlStatement, values, exception, entry));
       }
     }
+  }
+
+  private List<Entity> packResult(final EntitySelectCriteria criteria, final ResultSet resultSet) throws SQLException {
+    List<Entity> result = null;
+    SQLException packingException = null;
+    try {
+      logAccess("packResult", new Object[0]);
+      result = getEntityResultPacker(criteria.getEntityID()).pack(resultSet, criteria.getFetchCount());
+    }
+    catch (final SQLException e) {
+      packingException = e;
+      throw e;
+    }
+    finally {
+      final String message = result != null ? "row count: " + result.size() : "";
+      logExit("packResult", packingException, message);
+    }
+
+    return result;
   }
 
   private void commitQuietly() {

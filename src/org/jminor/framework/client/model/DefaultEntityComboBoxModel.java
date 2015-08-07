@@ -269,7 +269,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
 
   /** {@inheritDoc} */
   @Override
-  protected Entity translateSelectionItem(final Object item) {
+  protected final Entity translateSelectionItem(final Object item) {
     if (item == null) {
       return null;
     }

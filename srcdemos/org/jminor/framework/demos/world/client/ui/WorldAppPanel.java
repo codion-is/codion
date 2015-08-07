@@ -44,7 +44,6 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
     Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
     Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
     Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
-    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
     new WorldAppPanel().startApplication("World", null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger"));
   }
 

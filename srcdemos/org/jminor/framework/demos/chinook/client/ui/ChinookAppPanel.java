@@ -145,7 +145,6 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
     Configuration.setValue(Configuration.COMPACT_ENTITY_PANEL_LAYOUT, true);
     Configuration.setValue(Configuration.USE_OPTIMISTIC_LOCKING, true);
-    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
     new ChinookAppPanel().startApplication("Chinook", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }
 

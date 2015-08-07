@@ -59,7 +59,9 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   private static final String FOREIGN_KEY_PROPERTY_ID = "foreignKeyPropertyID";
   private static final String FOREIGN_KEY_PROPERTY = "foreignKeyProperty";
+  private static final String PROPERTY_ID = "propertyID";
   private static final String PROPERTY = "property";
+  private static final String ENTITIES = "entities";
 
   private final Event<InsertEvent> beforeInsertEvent = Events.event();
   private final Event<InsertEvent> afterInsertEvent = Events.event();
@@ -286,7 +288,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final EventObserver<ValueChange<String, ?>> getValueChangeObserver(final String propertyID) {
-    Util.rejectNullValue(propertyID, "propertyID");
+    Util.rejectNullValue(propertyID, PROPERTY_ID);
     return getValueChangeEvent(propertyID).getObserver();
   }
 
@@ -418,10 +420,10 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final void setValue(final String propertyID, final Object value) {
-    Util.rejectNullValue(propertyID, "propertyID");
+    Util.rejectNullValue(propertyID, PROPERTY_ID);
     final boolean initialization = !entity.containsValue(propertyID);
     final Object oldValue = entity.getValue(propertyID);
-    entity.setValue(propertyID, prepareNewValue(propertyID, value));
+    entity.setValue(propertyID, value);
     if (!Util.equal(value, oldValue)) {
       notifyValueChange(propertyID, ValueChanges.valueChange(this, propertyID, value, oldValue, initialization));
     }
@@ -436,7 +438,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final boolean isValid(final String propertyID) {
-    Util.rejectNullValue(propertyID, "propertyID");
+    Util.rejectNullValue(propertyID, PROPERTY_ID);
     try {
       validator.validate(entity, propertyID);
       return true;
@@ -484,7 +486,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final List<Entity> insert(final List<Entity> entities) throws DatabaseException, ValidationException {
-    Util.rejectNullValue(entities, "entities");
+    Util.rejectNullValue(entities, ENTITIES);
     if (entities.isEmpty()) {
       return Collections.emptyList();
     }
@@ -504,7 +506,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final List<Entity> update(final List<Entity> entities) throws DatabaseException, ValidationException {
-    Util.rejectNullValue(entities, "entities");
+    Util.rejectNullValue(entities, ENTITIES);
     if (entities.isEmpty()) {
       return Collections.emptyList();
     }
@@ -545,7 +547,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public final List<Entity> delete(final List<Entity> entities) throws DatabaseException {
-    Util.rejectNullValue(entities, "entities");
+    Util.rejectNullValue(entities, ENTITIES);
     if (entities.isEmpty()) {
       return Collections.emptyList();
     }
@@ -971,16 +973,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
   }
 
   /**
-   * Provides a hook into the value setting mechanism, override to translate or otherwise manipulate the value being set
-   * @param propertyID the propertyID
-   * @param value the value
-   * @return the prepared value
-   */
-  protected Object prepareNewValue(final String propertyID, final Object value) {
-    return value;
-  }
-
-  /**
    * Called during the {@link #update()} function, to determine which entities need to be updated,
    * these entities will then be forwarded to {@link #doUpdate(java.util.List)}.
    * Returns the entities that have been modified and require updating, override to be able to
@@ -1135,16 +1127,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
         }
       }
     });
-    if (Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT)) {
-      entity.addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
-        @Override
-        public void eventOccurred(final ValueChange<String, ?> info) {
-          final String msg = getValueChangeDebugString(getEntityID(), info);
-          System.out.println(msg);
-          LOG.debug(msg);
-        }
-      });
-    }
   }
 
   private boolean containsLookupModel(final Property.ForeignKeyProperty property) {
@@ -1153,38 +1135,6 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   private boolean containsComboBoxModel(final Property property) {
     return propertyComboBoxModels.containsKey(property);
-  }
-
-  private static String getValueChangeDebugString(final String entityID, final ValueChange<String, ?> event) {
-    final StringBuilder stringBuilder = new StringBuilder();
-    final Property property = Entities.getProperty(entityID, event.getKey());
-    final boolean isForeignKeyProperty = property instanceof Property.ColumnProperty
-            && ((Property.ColumnProperty) property).isForeignKeyProperty();
-    stringBuilder.append(entityID).append("#").append(property).append(isForeignKeyProperty ? " [fk]" : "").append(": ");
-    if (!event.isInitialization()) {
-      stringBuilder.append(getValueString(event.getOldValue()));
-      stringBuilder.append(" -> ");
-    }
-    stringBuilder.append(getValueString(event.getNewValue()));
-
-    return stringBuilder.toString();
-  }
-
-  /**
-   * @param value the value
-   * @return a string representing the given property value for debug output
-   */
-  private static String getValueString(final Object value) {
-    final StringBuilder stringBuilder = new StringBuilder();
-    if (value != null) {
-      stringBuilder.append(value.getClass().getSimpleName()).append(" ");
-    }
-    stringBuilder.append("[").append(value == null ? "null" : value).append("]");
-    if (value instanceof Entity) {
-      stringBuilder.append(" PK{").append(((Entity) value).getPrimaryKey()).append("}");
-    }
-
-    return stringBuilder.toString();
   }
 
   /**

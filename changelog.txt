@@ -3990,3 +3990,9 @@
   DefualtEntity.handleValueChangedEventInitialized() skips linking values if no linked properties exist
   DefaultProperty.isDouble() result is cached, very frequently used
   DefaultValueMap, minor refactoring
+  DefaultEntityEditModel.prepareNewValue() removed
+  DefaultEntityComboBoxModel.translateSelectionItem() finalized
+  Configuration.PROPERTY_DEBUG_OUTPUT removed
+  DefaultEntityEditModel no longer provides property debug output
+  EntityTablePanel.initialize() and setupControls() removed (setupControlsInternal then renamed to setupControls)
+  Fixed a couple of Sonar issues

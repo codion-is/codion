@@ -22,7 +22,6 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.i18n.FrameworkMessages;
 
-import org.junit.After;
 import org.junit.Before;
 import org.junit.Test;
 
@@ -39,15 +38,12 @@ public final class DefaultEntityEditModelTest {
   private DefaultEntityEditModel employeeEditModel;
   private Property.ColumnProperty jobProperty;
   private Property.ForeignKeyProperty deptProperty;
-  private boolean debugOutput;
 
   @Before
   public void setUp() {
     TestDomain.init();
     jobProperty = Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
     deptProperty = Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
-    debugOutput = Configuration.getBooleanValue(Configuration.PROPERTY_DEBUG_OUTPUT);
-    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
     employeeEditModel = new DefaultEntityEditModel(TestDomain.T_EMP, LocalEntityConnectionTest.CONNECTION_PROVIDER) {
       @Override
       public Object getDefaultValue(final Property property) {
@@ -58,11 +54,6 @@ public final class DefaultEntityEditModelTest {
         return super.getDefaultValue(property);
       }
     };
-  }
-
-  @After
-  public void tearDown() {
-    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, debugOutput);
   }
 
   @Test

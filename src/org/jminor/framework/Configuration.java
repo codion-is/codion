@@ -334,13 +334,6 @@ public final class Configuration {
   public static final String WARN_ABOUT_UNSAVED_DATA = "jminor.client.warnAboutUnsavedData";
 
   /**
-   * Specifies whether the framework should output verbose debug output regarding property changes in entities<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   */
-  public static final String PROPERTY_DEBUG_OUTPUT = "jminor.client.propertyDebugOutput";
-
-  /**
    * Specifies the tab placement<br>
    * Value type: Integer (JTabbedPane.TOP, JTabbedPane.BOTTOM, JTabbedPane.LEFT, JTabbedPane.RIGHT)<br>
    * Default value: JTabbedPane.TOP
@@ -774,7 +767,6 @@ public final class Configuration {
     PROPERTIES.put(TABLE_AUTO_RESIZE_MODE, DEFAULT_TABLE_AUTO_RESIZE_MODE);
     PROPERTIES.put(CONFIRM_EXIT, false);
     PROPERTIES.put(WARN_ABOUT_UNSAVED_DATA, false);
-    PROPERTIES.put(PROPERTY_DEBUG_OUTPUT, false);
     PROPERTIES.put(TAB_PLACEMENT, DEFAULT_TAB_PLACEMENT);
     PROPERTIES.put(TOOLBAR_BUTTONS, false);
     PROPERTIES.put(PERSIST_FOREIGN_KEY_VALUES, true);
@@ -843,7 +835,6 @@ public final class Configuration {
     parseBooleanSetting(PERFORM_NULL_VALIDATION);
     parseBooleanSetting(PERSIST_ENTITY_PANELS);
     parseBooleanSetting(PERSIST_FOREIGN_KEY_VALUES);
-    parseBooleanSetting(PROPERTY_DEBUG_OUTPUT);
     parseStringSetting(REMOTE_CONNECTION_PROVIDER);
     parseIntegerSetting(SERVER_ADMIN_PORT);
     parseIntegerSetting(SERVER_PORT);

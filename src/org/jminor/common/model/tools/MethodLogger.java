@@ -26,6 +26,7 @@ import java.util.List;
 public class MethodLogger implements Serializable {
 
   private static final long serialVersionUID = 1;
+  private static final int CHAR_PER_ARGUMENT = 40;
 
   private final transient Deque<Entry> callStack = new LinkedList<>();
   private LinkedList<Entry> entries = new LinkedList<>();
@@ -275,7 +276,7 @@ public class MethodLogger implements Serializable {
       return "";
     }
 
-    final StringBuilder stringBuilder = new StringBuilder(arguments.length*40);
+    final StringBuilder stringBuilder = new StringBuilder(arguments.length * CHAR_PER_ARGUMENT);
     for (int i = 0; i < arguments.length; i++) {
       stringBuilder.append(getMethodArgumentAsString(arguments[i]));
       if (i < arguments.length-1) {

@@ -25,10 +25,7 @@ public class SteppedComboBox<V> extends JComboBox<V> {
    * @param items the items this combo box should contain
    */
   public SteppedComboBox(final Collection<V> items) {
-    this(new DefaultComboBoxModel<V>());
-    for (final V item : items) {
-      ((DefaultComboBoxModel<V>) getModel()).addElement(item);
-    }
+    this(new DefaultComboBoxModel<V>((V[]) items.toArray()));
   }
 
   /**

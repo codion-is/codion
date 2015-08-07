@@ -264,12 +264,8 @@ public final class UiValues {
         if (formatter == null) {
           return text;
         }
-        try {
-          return (String) formatter.stringToValue(text);
-        }
-        catch (final ParseException e) {
-          return null;
-        }
+
+        return formatText(text);
       }
       catch (final BadLocationException e) {
         throw new RuntimeException(e);
@@ -278,6 +274,15 @@ public final class UiValues {
 
     protected Format getFormat() {
       return format;
+    }
+
+    private String formatText(final String text) {
+      try {
+        return (String) formatter.stringToValue(text);
+      }
+      catch (final ParseException e) {
+        return null;
+      }
     }
   }
 

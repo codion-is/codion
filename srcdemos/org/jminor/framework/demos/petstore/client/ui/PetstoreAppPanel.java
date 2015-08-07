@@ -60,7 +60,6 @@ public final class PetstoreAppPanel extends EntityApplicationPanel {
   public static void main(final String[] args) {
     Locale.setDefault(new Locale("en"));
     Configuration.setValue(Configuration.TOOLBAR_BUTTONS, true);
-    Configuration.setValue(Configuration.PROPERTY_DEBUG_OUTPUT, true);
     new PetstoreAppPanel().startApplication("The Pet Store", null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger"));
   }
 

@@ -871,13 +871,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (!panelInitialized) {
       try {
         UiUtil.setWaitCursor(true, this);
-        setupControlsInternal();
         setupControls();
         initializeTable();
         initializeUI();
         bindEvents();
         updateStatusMessage();
-        initialize();
       }
       finally {
         panelInitialized = true;
@@ -887,12 +885,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
     return this;
   }
-
-  /**
-   * Override to add code that should be called during the initialization routine after the panel has been initialized
-   * @see #initializePanel()
-   */
-  protected void initialize() {}
 
   /**
    * Initializes the south panel, override and return null for no south panel.
@@ -943,17 +935,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
               }
             });
   }
-
-  /**
-   * Override the default controls by mapping them to their respective control codes
-   * ({@link EntityTablePanel#UPDATE_SELECTED}, {@link EntityTablePanel#DELETE_SELECTED} etc)
-   * via the <code>setControl(String, Control) method,
-   * these can then be retrieved via the <code>getControl(String)</code> method.
-   * @see org.jminor.common.ui.control.Control
-   * @see #setControl(String, org.jminor.common.ui.control.Control)
-   * @see #getControl(String)
-   */
-  protected void setupControls() {}
 
   /**
    * Associates <code>control</code> with <code>controlCode</code>
@@ -1270,7 +1251,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return null;
   }
 
-  private void setupControlsInternal() {
+  private void setupControls() {
     if (!getEntityTableModel().isReadOnly() && getEntityTableModel().isDeleteAllowed()) {
       setControl(DELETE_SELECTED, getDeleteSelectedControl());
     }
