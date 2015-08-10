@@ -4000,3 +4000,4 @@
   run_entity_generator target added to build.xml
   EntityGeneratorModel, bug fixed, multiple entity definition output was wrong
   EntityUiUtil.selectEntities() moved to EntityTablePanel, createLookupFieldPanel() removed, initializeViewImageAction() moved to EntityTablePanel, renamed getViewImageControl(), createNewEntityAction() moved to EntityEditPanel, createEntityComboBoxPanel() and createEntityLookupFieldPanel() removed and createEastButtonPanel() made public
+  EntityEditPanel.createNewEntityAction() renamed to createEditPanelAction()

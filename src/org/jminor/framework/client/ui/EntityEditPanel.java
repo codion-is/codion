@@ -45,7 +45,6 @@ import org.slf4j.LoggerFactory;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ComboBoxModel;
-import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
@@ -702,22 +701,22 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * Creates a new Action which shows the edit panel provided by <code>panelProvider</code> and if an insert is performed
    * selects the new entity in the <code>lookupField</code>.
-   * @param comboBox the combo box in which to select the new entity, if any
+   * @param comboBox the combo box in which to select the new entity, if created
    * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
    * @return the Action
    */
-  public static Action createNewEntityAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
+  public static Action createEditPanelAction(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
     return new CreateEntityAction(comboBox, panelProvider);
   }
 
   /**
    * Creates a new Action which shows the edit panel provided by <code>panelProvider</code> and if an insert is performed
    * selects the new entity in the <code>lookupField</code>.
-   * @param lookupField the lookup field in which to select the new entity, if any
+   * @param lookupField the lookup field in which to select the new entity, if created
    * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
    * @return the Action
    */
-  public static Action createNewEntityAction(final EntityLookupField lookupField, final EntityPanelProvider panelProvider) {
+  public static Action createEditPanelAction(final EntityLookupField lookupField, final EntityPanelProvider panelProvider) {
     return new CreateEntityAction(lookupField, panelProvider);
   }
 
