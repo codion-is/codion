@@ -20,6 +20,13 @@ public final class HSQLDatabase extends AbstractDatabase {
   static final String NETWORKED_URL_PREFIX = "jdbc:hsqldb:hsql//";
 
   /**
+   * Instantiates a new H2Database.
+   */
+  public HSQLDatabase() {
+    super(HSQL, DRIVER_CLASS_NAME);
+  }
+
+  /**
    * Instantiates a new embedded HSQLDatabase.
    * @param databaseName the path to the database files
    */

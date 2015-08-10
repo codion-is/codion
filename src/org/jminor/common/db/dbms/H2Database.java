@@ -55,6 +55,13 @@ public final class H2Database extends AbstractDatabase {
   }
 
   /**
+   * Instantiates a new H2Database.
+   */
+  public H2Database() {
+    this(System.getProperty(DATABASE_HOST));
+  }
+
+  /**
    * Instantiates a new file-based embedded H2Database.
    * @param databaseName the path to the database files
    */
