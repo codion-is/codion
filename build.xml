@@ -383,7 +383,7 @@
                     Domain org.jminor.framework.domain*,
                     Server org.jminor.framework.server*">
       <classpath refid="lib.build.core"/>
-      <link href="http://download.oracle.com/javase/7/docs/api/"/>
+      <link href="http://download.oracle.com/javase/8/docs/api/"/>
     </javadoc>
     <javadoc destdir="${javadoc.plugins}" sourcepath="${src.plugins}" packagenames="org.jminor.*" Encoding="UTF-8"
              docencoding="UTF-8" author="true" version="true" use="true"
@@ -394,7 +394,7 @@
         <path refid="lib.build.plugins"/>
         <path location="${build.main}"/>
       </classpath>
-      <link href="http://download.oracle.com/javase/7/docs/api/"/>
+      <link href="http://download.oracle.com/javase/8/docs/api/"/>
       <link offline="true" href="http://jminor.org/data/media/project/docs/api/" packagelistloc="${javadoc}"/>
     </javadoc>
   </target>
