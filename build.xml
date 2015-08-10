@@ -159,7 +159,7 @@
     <jrc srcdir="${resources.demos}" includes="**/*.jrxml"/>
   </target>
 
-  <target name="dist" depends="clean, build, manifest"
+  <target name="dist" depends="clean, build, manifest, javadoc"
           description="Builds all distribution jar files in the dist directory">
     <mkdir dir="${dist}"/>
     <dist_module module.name="jminor"

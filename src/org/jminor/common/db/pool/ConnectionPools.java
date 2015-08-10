@@ -36,7 +36,6 @@ public final class ConnectionPools {
    * @param validityCheckTimeout the number of seconds specified when checking if a connection is valid
    * @throws DatabaseException in case of a database exception
    * @throws ClassNotFoundException in case the specified connection pool provider class in not on the classpath
-   * @see Configuration#SERVER_CONNECTION_POOL_PROVIDER_CLASS
    */
   public static synchronized void initializeConnectionPools(final Class<? extends ConnectionPoolProvider> connectionPoolProviderClass,
                                                             final Database database, final Collection<User> users,
