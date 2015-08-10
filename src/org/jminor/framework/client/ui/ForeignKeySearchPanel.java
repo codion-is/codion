@@ -47,11 +47,6 @@ public final class ForeignKeySearchPanel extends ColumnSearchPanel<Property.Fore
     }
 
     @Override
-    public ColumnSearchModel<Property.ForeignKeyProperty> getSearchModel() {
-      return model;
-    }
-
-    @Override
     public JComponent initializeInputField(final boolean isUpperBound) {
       if (isUpperBound) {
         return initializeForeignKeyField();

@@ -71,11 +71,6 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
     }
 
     @Override
-    public ColumnSearchModel<Property.ColumnProperty> getSearchModel() {
-      return model;
-    }
-
-    @Override
     public JComponent initializeInputField(final boolean isUpperBound) {
       if (model.getType() == Types.BOOLEAN && !isUpperBound) {
         return null;//no lower bound field required for booleans
@@ -85,7 +80,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       final JComponent field = initField();
       bindField(field, property, changeObserver);
       if (field instanceof JTextField) { //enter button toggles the filter on/off
-        ((JTextField) field).addActionListener(new EnableAction(getSearchModel()));
+        ((JTextField) field).addActionListener(new EnableAction(model));
       }
 
       return field;
