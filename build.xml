@@ -6,6 +6,10 @@
   <property file="build.properties"/>
   <property file="user.properties"/>
 
+  <tstamp>
+    <format property="build.date" pattern="yyyy.MM.dd HH:mm"/>
+  </tstamp>
+
   <path id="lib.ant.util">
     <fileset dir="${lib}/ant.util"/>
   </path>
@@ -144,11 +148,7 @@
     <copy todir="${build.test}">
       <fileset refid="test_resources"/>
     </copy>
-
-    <tstamp>
-      <format property="DSTAMP" pattern="yyyy.MM.dd HH:mm"/>
-    </tstamp>
-    <concat destfile="${build.main}/org/jminor/common/model/version.txt">${version}-build ${DSTAMP}</concat>
+    <concat destfile="${build.main}/org/jminor/common/model/version.txt">${version}-build ${build.date}</concat>
   </target>
 
   <target name="compile_demo_reports" depends="resolve_libraries"
@@ -364,6 +364,7 @@
       <attribute name="Implementation-URL" value="http://jminor.org"/>
       <attribute name="Build-Jdk" value="${java.version}"/>
       <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Build-Time" value="${build.date}"/>
     </manifest>
   </target>
 
@@ -463,7 +464,6 @@
   <target name="deploy_demo_apps" depends="create_client_server_keystore"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
-    <tstamp />
     <!--Setup-->
     <mkdir dir="${deploy.demos.dir}/META-INF"/>
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
