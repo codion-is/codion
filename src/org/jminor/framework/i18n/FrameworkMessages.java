@@ -37,7 +37,6 @@ public final class FrameworkMessages {
   public static final String HELP = "help";
   public static final String HELP_MNEMONIC = "help_mnemonic";
   public static final String ABOUT = "about";
-  public static final String VERSION = "version";
   public static final String SUPPORT_TABLES = "support_tables";
   public static final String SUPPORT_TABLES_MNEMONIC = "support_tables_mnemonic";
   public static final String CLEAR = "clear";
@@ -48,7 +47,6 @@ public final class FrameworkMessages {
   public static final String UPDATE_TIP = "update_tip";
   public static final String DELETE = "delete";
   public static final String DELETE_MNEMONIC = "delete_mnemonic";
-  public static final String DELETE_SELECTED = "delete_selected";
   public static final String DELETE_TIP = "delete_tip";
   public static final String UPDATE_SELECTED = "update_selected";
   public static final String UPDATE_SELECTED_RECORD = "update_selected_record";
@@ -60,17 +58,13 @@ public final class FrameworkMessages {
   public static final String VIEW_DEPENDENCIES = "view_dependencies";
   public static final String VIEW_DEPENDENCIES_TIP = "view_dependencies_tip";
   public static final String LIMIT_QUERY = "limit_query";
-  public static final String SHOW_ALL = "show_all";
   public static final String SET_PROPERTY_VALUE = "set_property_value";
-  public static final String SAVE = "save";
   public static final String INSERT = "insert";
   public static final String INSERT_NEW = "insert_new";
   public static final String INSERT_MNEMONIC = "insert_mnemonic";
   public static final String INSERT_UPDATE_TIP = "insert_update_tip";
   public static final String INSERT_TIP = "insert_tip";
-  public static final String SELECT_PROPERTY_FOR_UPDATE = "select_property_for_update";
   public static final String EMPTY_USERNAME = "empty_username";
-  public static final String EMPTY_PASSWORD = "empty_password";
   public static final String CONFIGURE_QUERY = "configure_query";
   public static final String CONFIRM_EXIT = "confirm_exit";
   public static final String CONFIRM_EXIT_TITLE = "confirm_exit_title";
@@ -92,12 +86,6 @@ public final class FrameworkMessages {
   public static final String NONE_FOUND = "none_found";
   public static final String NO_DEPENDENT_RECORDS = "no_dependent_records";
   public static final String DEPENDENT_RECORDS_FOUND = "dependent_records_found";
-  public static final String SELECTION_FILTER = "selection_filter";
-  public static final String SELECTION_FILTER_DESC = "selection_filter_desc";
-  public static final String CASCADE_REFRESH = "cascade_refresh";
-  public static final String CASCADE_REFRESH_DESC = "cascade_refresh_desc";
-  public static final String CHECK_DEPS_ON_DELETE = "check_deps_on_delete";
-  public static final String CHECK_DEPS_ON_DELETE_DESC = "check_deps_on_delete_desc";
   public static final String RETRY = "retry";
   public static final String RETRY_TITLE = "retry_title";
   public static final String CONDITION = "condition";
@@ -106,14 +94,12 @@ public final class FrameworkMessages {
 
   public static final String RECORD_NOT_FOUND = "record_not_found";
   public static final String MANY_RECORDS_FOUND = "many_records_found";
-  public static final String SELECT_RECORD = "select_record";
   public static final String DETAIL_TABLES = "detail_tables";
   public static final String CLEAR_SELECTION_TIP = "clear_selection_tip";
   public static final String SELECTION_DOWN_TIP = "selection_down_tip";
   public static final String SELECTION_UP_TIP = "selection_up_tip";
   public static final String TOGGLE_DETAIL_TIP = "toggle_detail";
   public static final String TOGGLE_EDIT_TIP = "toggle_edit";
-  public static final String SET_LOOK_AND_FEEL = "set_look_and_feel";
   public static final String FILTER_SETTINGS = "filter_settings";
   public static final String REQUIRE_QUERY_CRITERIA = "require_query_criteria";
   public static final String SELECT_ENTITY = "select_entity";
@@ -126,7 +112,6 @@ public final class FrameworkMessages {
   public static final String MINIMUM_AND_MAXIMUM = "minimum_and_maximum";
   public static final String ADVANCED = "advanced";
   public static final String APPLICATION_TREE = "view_application_tree";
-  public static final String CHANGE_HISTORY = "change_history";
   public static final String COPY_CELL = "copy_cell";
   public static final String COPY_TABLE_WITH_HEADER = "copy_table_with_header";
 

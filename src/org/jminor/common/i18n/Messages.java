@@ -41,16 +41,12 @@ public final class Messages {
   public static final String SEND_MNEMONIC = "send_mnemonic";
   public static final String SEND_EMAIL = "send_email";
   public static final String INPUT_EMAIL_ADDRESS = "input_email_address";
-  public static final String MESSAGE_HAS_BEEN_SENT = "message_has_been_sent";
-  public static final String EXC_DLG_EMAIL_INSTRUCTIONS = "exc_dlg_email_instructions";
   public static final String FILE_EXISTS = "file_exists";
   public static final String FILE_NOT_FOUND = "file_not_found";
   public static final String OVERWRITE_FILE = "overwrite_file";
   public static final String LOGIN = "login";
-  public static final String LOGOUT = "logout";
   public static final String USERNAME = "username";
   public static final String PASSWORD = "password";
-  public static final String CHOOSE_DATE = "choose_date";
   public static final String UNIQUE_KEY_ERROR = "unique_key_error";
   public static final String CHILD_RECORD_ERROR = "child_record_error";
   public static final String NULL_VALUE_ERROR = "null_value_error";

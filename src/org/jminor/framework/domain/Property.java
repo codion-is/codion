@@ -318,6 +318,11 @@ public interface Property extends Attribute {
     ColumnProperty setUpdatable(final boolean updatable);
 
     /**
+     * @return the index of this property in a select query
+     */
+    int getSelectIndex();
+
+    /**
      * Sets the index to use when fetching the value of this column from a result set
      * @param selectIndex the index of this column in a result set
      */

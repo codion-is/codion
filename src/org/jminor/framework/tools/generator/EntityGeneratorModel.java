@@ -613,15 +613,13 @@ public final class EntityGeneratorModel {
     private final String pkTableName;
     private final String fkTableName;
     private final String fkColumnName;
-    private final int keySeq;
 
     public ForeignKeyColumn(final String pkSchemaName, final String pkTableName, final String fkTableName,
-                            final String fkColumnName, final int keySeq) {
+                            final String fkColumnName) {
       this.pkSchemaName = pkSchemaName;
       this.pkTableName = pkTableName;
       this.fkTableName = fkTableName;
       this.fkColumnName = fkColumnName;
-      this.keySeq = keySeq;
     }
 
     public Table getReferencedTable() {
@@ -634,10 +632,6 @@ public final class EntityGeneratorModel {
 
     public String getFkColumnName() {
       return fkColumnName;
-    }
-
-    public int getKeySeq() {
-      return keySeq;
     }
   }
 
@@ -727,7 +721,7 @@ public final class EntityGeneratorModel {
       final List<ForeignKeyColumn> foreignKeys = new ArrayList<>();
       while (resultSet.next()) {
         foreignKeys.add(new ForeignKeyColumn(resultSet.getString("PKTABLE_SCHEM"), resultSet.getString("PKTABLE_NAME"),
-                resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME"), resultSet.getShort("KEY_SEQ")));
+                resultSet.getString("FKTABLE_NAME"), resultSet.getString("FKCOLUMN_NAME")));
       }
 
       resultSet.close();

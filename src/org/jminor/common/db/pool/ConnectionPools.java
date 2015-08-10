@@ -9,7 +9,6 @@ import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.framework.Configuration;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,6 +30,7 @@ public final class ConnectionPools {
 
   /**
    * Initializes connection pools for the given users
+   * @param connectionPoolProviderClass the ConnectionPoolProvider implementation to use, if null then the default internal one is used
    * @param database the underlying database
    * @param users the users to initialize connection pools for
    * @param validityCheckTimeout the number of seconds specified when checking if a connection is valid
@@ -38,12 +38,13 @@ public final class ConnectionPools {
    * @throws ClassNotFoundException in case the specified connection pool provider class in not on the classpath
    * @see Configuration#SERVER_CONNECTION_POOL_PROVIDER_CLASS
    */
-  public static synchronized void initializeConnectionPools(final Database database, final Collection<User> users,
+  public static synchronized void initializeConnectionPools(final Class<? extends ConnectionPoolProvider> connectionPoolProviderClass,
+                                                            final Database database, final Collection<User> users,
                                                             final int validityCheckTimeout) throws DatabaseException, ClassNotFoundException {
     Util.rejectNullValue(database, "database");
     Util.rejectNullValue(users, "users");
     for (final User user : users) {
-      final ConnectionPoolProvider poolProvider = initializeConnectionPoolProvider(database, user, validityCheckTimeout);
+      final ConnectionPoolProvider poolProvider = initializeConnectionPoolProvider(connectionPoolProviderClass, database, user, validityCheckTimeout);
       CONNECTION_POOLS.put(user, poolProvider.createConnectionPool(user, database));
     }
   }
@@ -104,13 +105,12 @@ public final class ConnectionPools {
     return new ArrayList<>(CONNECTION_POOLS.values());
   }
 
-  private static ConnectionPoolProvider initializeConnectionPoolProvider(final Database database, final User user,
+  private static ConnectionPoolProvider initializeConnectionPoolProvider(final Class<? extends ConnectionPoolProvider> providerClass,
+                                                                         final Database database, final User user,
                                                                          final int validityCheckTimeout) throws ClassNotFoundException {
-    final String connectionPoolProviderClassName = Configuration.getStringValue(Configuration.SERVER_CONNECTION_POOL_PROVIDER_CLASS);
-    if (!Util.nullOrEmpty(connectionPoolProviderClassName)) {
-      final Class<?> providerClass = Class.forName(connectionPoolProviderClassName);
+    if (providerClass != null) {
       try {
-        return (ConnectionPoolProvider) providerClass.getConstructor().newInstance();
+        return providerClass.getConstructor().newInstance();
       }
       catch (final Exception e) {
         throw new RuntimeException(e);

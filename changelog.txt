@@ -4001,3 +4001,6 @@
   EntityGeneratorModel, bug fixed, multiple entity definition output was wrong
   EntityUiUtil.selectEntities() moved to EntityTablePanel, createLookupFieldPanel() removed, initializeViewImageAction() moved to EntityTablePanel, renamed getViewImageControl(), createNewEntityAction() moved to EntityEditPanel, createEntityComboBoxPanel() and createEntityLookupFieldPanel() removed and createEastButtonPanel() made public
   EntityEditPanel.createNewEntityAction() renamed to createEditPanelAction()
+  ConnectionPools, removed illegal depenedency on Configuration, functionality moved to EntityConnectionServer
+  FrameworkMessages, Messages cleanup of unused strings
+  Column.getSelectIndex() moved to Property.ColumnProperty

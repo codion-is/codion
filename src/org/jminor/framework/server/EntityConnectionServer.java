@@ -6,6 +6,7 @@ package org.jminor.framework.server;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
+import org.jminor.common.db.pool.ConnectionPoolProvider;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.TaskScheduler;
@@ -103,9 +104,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
       setConnectionTimeout(connectionTimeout);
       setClientSpecificConnectionTimeout(clientSpecificConnectionTimeouts);
       loadDomainModels(domainModelClassNames);
-      if (initialPoolUsers != null) {
-        ConnectionPools.initializeConnectionPools(database, initialPoolUsers, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
-      }
+      initializeConnectionPools(database, initialPoolUsers);
       loadLoginProxies(loginProxyClassNames);
       setConnectionLimit(connectionLimit);
       webServer = startWebServer(webDocumentRoot, webServerPort);
@@ -483,6 +482,21 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
         LOG.info(message);
         Class.forName(className);
       }
+    }
+  }
+
+  private static void initializeConnectionPools(final Database database, final Collection<User> initialPoolUsers) throws ClassNotFoundException, DatabaseException {
+    if (initialPoolUsers != null) {
+      final String connectionPoolProviderClassName = Configuration.getStringValue(Configuration.SERVER_CONNECTION_POOL_PROVIDER_CLASS);
+      final Class<? extends ConnectionPoolProvider> providerClass;
+      if (Util.nullOrEmpty(connectionPoolProviderClassName)) {
+        providerClass = null;
+      }
+      else {
+        providerClass = (Class<? extends ConnectionPoolProvider>) Class.forName(connectionPoolProviderClassName);
+      }
+      ConnectionPools.initializeConnectionPools(providerClass, database, initialPoolUsers,
+              Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
     }
   }
 

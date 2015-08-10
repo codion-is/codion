@@ -20,11 +20,6 @@ public interface Column extends Attribute {
   int getType();
 
   /**
-   * @return the index of this column in a select query
-   */
-  int getSelectIndex();
-
-  /**
    * Indicates whether or not this column is updatable
    * @return true if this column is updatable
    */

@@ -47,12 +47,11 @@ public final class AutoCompletion extends CompletionDocument {
       return;
     }
     super.insertString(offs, str, a);
-    Object item = lookupItem(getText(0, getLength()));
+    final Object item = lookupItem(getText(0, getLength()));
     if (item != null) {
       setSelectedItem(item);
     }
     else {
-      item = getComboBox().getSelectedItem();
       offs = offs - str.length();
       getComboBox().getToolkit().beep();
     }
