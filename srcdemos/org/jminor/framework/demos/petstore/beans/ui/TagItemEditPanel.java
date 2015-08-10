@@ -17,9 +17,9 @@ import java.awt.Dimension;
 import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_ITEM_FK;
 import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_TAG_FK;
 
-public class TagItemPanel extends EntityEditPanel {
+public class TagItemEditPanel extends EntityEditPanel {
 
-  public TagItemPanel(final EntityEditModel model) {
+  public TagItemEditPanel(final EntityEditModel model) {
     super(model);
   }
 
@@ -32,7 +32,7 @@ public class TagItemPanel extends EntityEditPanel {
     box.setPreferredSize(new Dimension(180, UiUtil.getPreferredTextFieldHeight()));
     addPropertyPanel(TAG_ITEM_ITEM_FK);
     box = createEntityComboBox(TAG_ITEM_TAG_FK);
-    add(createPropertyPanel(TAG_ITEM_TAG_FK, EntityUiUtil.createEntityComboBoxPanel(box,
-            new EntityPanelProvider(Petstore.T_TAG).setEditPanelClass(TagPanel.class), false)));
+    add(createPropertyPanel(TAG_ITEM_TAG_FK, EntityUiUtil.createEastButtonPanel(box,
+            createNewEntityAction(box, new EntityPanelProvider(Petstore.T_TAG).setEditPanelClass(TagEditPanel.class)), false)));
   }
 }

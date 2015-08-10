@@ -11,9 +11,9 @@ import javax.swing.JTextField;
 
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
-public class CategoryPanel extends EntityEditPanel {
+public class CategoryEditPanel extends EntityEditPanel {
 
-  public CategoryPanel(final EntityEditModel model) {
+  public CategoryEditPanel(final EntityEditModel model) {
     super(model);
   }
 

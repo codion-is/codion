@@ -37,8 +37,10 @@ import org.jminor.common.ui.table.ColumnSearchPanel;
 import org.jminor.common.ui.table.FilteredTablePanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
+import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.DefaultEntityTableModel;
 import org.jminor.framework.client.model.EntityEditModel;
+import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.PropertySearchModel;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -54,7 +56,9 @@ import javax.swing.Action;
 import javax.swing.ActionMap;
 import javax.swing.BorderFactory;
 import javax.swing.InputMap;
+import javax.swing.JButton;
 import javax.swing.JComponent;
+import javax.swing.JDialog;
 import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
@@ -66,6 +70,7 @@ import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.table.JTableHeader;
@@ -87,6 +92,7 @@ import java.io.IOException;
 import java.sql.Types;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.Enumeration;
 import java.util.HashMap;
@@ -780,6 +786,34 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
+   * Creates a Control for viewing an image based on the entity selected in this EntityTablePanel.
+   * The action shows an image found at the path specified by the value of the given propertyID.
+   * If no entity is selected or the image path value is null no action is performed.
+   * @param imagePathPropertyID the ID of the property specifying the image path
+   * @return a Control for viewing an image based on the selected entity in a EntityTablePanel
+   * @see UiUtil#showImage(String, javax.swing.JComponent)
+   */
+  public final Control getViewImageControl(final String imagePathPropertyID) {
+    Util.rejectNullValue(imagePathPropertyID, "imagePathPropertyID");
+    return new Control() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          if (!getTableModel().getSelectionModel().isSelectionEmpty()) {
+            final Entity selected = getTableModel().getSelectionModel().getSelectedItem();
+            if (!selected.isValueNull(imagePathPropertyID)) {
+              UiUtil.showImage(selected.getStringValue(imagePathPropertyID), EntityTablePanel.this);
+            }
+          }
+        }
+        catch (final IOException ex) {
+          throw new RuntimeException(ex);
+        }
+      }
+    };
+  }
+
+  /**
    * @param listener a listener notified each time the search panel visibility changes
    */
   public final void addSearchPanelVisibleListener(final EventListener listener) {
@@ -860,6 +894,125 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     tableModel.refresh();
 
     return tablePanel;
+  }
+
+  /**
+   * Displays a entity table in a dialog for selecting one or more entities
+   * @param lookupModel the table model on which to base the table panel
+   * @param dialogOwner the dialog owner
+   * @param singleSelection if true then only a single item can be selected
+   * @param dialogTitle the dialog title
+   * @return a Collection containing the selected entities
+   * @throws CancelException in case the user cancels the operation
+   */
+  public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final JComponent dialogOwner,
+                                                  final boolean singleSelection, final String dialogTitle) {
+    return selectEntities(lookupModel, dialogOwner, singleSelection, dialogTitle, null);
+  }
+
+  /**
+   * Displays a entity table in a dialog for selecting one or more entities
+   * @param lookupModel the table model on which to base the table panel
+   * @param dialogOwner the dialog owner
+   * @param singleSelection if true then only a single item can be selected
+   * @param dialogTitle the dialog title
+   * @param preferredSize the preferred size of the dialog
+   * @return a Collection containing the selected entities
+   * @throws CancelException in case the user cancels the operation
+   */
+  public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final JComponent dialogOwner,
+                                                  final boolean singleSelection, final String dialogTitle,
+                                                  final Dimension preferredSize) {
+    Util.rejectNullValue(lookupModel, "lookupModel");
+    final Collection<Entity> selected = new ArrayList<>();
+    final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogOwner), dialogTitle);
+    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
+    final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        final List<Entity> entities = lookupModel.getSelectionModel().getSelectedItems();
+        for (final Entity entity : entities) {
+          selected.add(entity);
+        }
+        dialog.dispose();
+      }
+    };
+    final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        selected.add(null);//hack to indicate cancel
+        dialog.dispose();
+      }
+    };
+
+    final EntityModel model = new DefaultEntityModel(lookupModel);
+    model.getEditModel().setReadOnly(true);
+    final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel, (EntityTableSummaryPanel) null);
+    entityTablePanel.initializePanel();
+    entityTablePanel.addTableDoubleClickListener(new EventListener() {
+      @Override
+      public void eventOccurred() {
+        if (!lookupModel.getSelectionModel().isSelectionEmpty()) {
+          okAction.actionPerformed(null);
+        }
+      }
+    });
+    entityTablePanel.setSearchPanelVisible(true);
+    if (singleSelection) {
+      entityTablePanel.getJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
+    }
+
+    final Action searchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        lookupModel.refresh();
+        if (lookupModel.getRowCount() > 0) {
+          lookupModel.getSelectionModel().setSelectedIndexes(Collections.singletonList(0));
+          entityTablePanel.getJTable().requestFocusInWindow();
+        }
+        else {
+          JOptionPane.showMessageDialog(UiUtil.getParentWindow(entityTablePanel),
+                  FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
+        }
+      }
+    };
+
+    final JButton btnOk  = new JButton(okAction);
+    final JButton btnCancel = new JButton(cancelAction);
+    final JButton btnSearch = new JButton(searchAction);
+    final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
+    final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
+    final String searchMnemonic = FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC);
+    btnOk.setMnemonic(okMnemonic.charAt(0));
+    btnCancel.setMnemonic(cancelMnemonic.charAt(0));
+    btnSearch.setMnemonic(searchMnemonic.charAt(0));
+    UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelAction);
+    entityTablePanel.getJTable().getInputMap(
+            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
+            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
+    dialog.setLayout(new BorderLayout());
+    if (preferredSize != null) {
+      entityTablePanel.setPreferredSize(preferredSize);
+    }
+    dialog.add(entityTablePanel, BorderLayout.CENTER);
+    final JPanel buttonPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.RIGHT));
+    buttonPanel.add(btnSearch);
+    buttonPanel.add(btnOk);
+    buttonPanel.add(btnCancel);
+    dialog.getRootPane().setDefaultButton(btnOk);
+    dialog.add(buttonPanel, BorderLayout.SOUTH);
+    dialog.pack();
+    dialog.setLocationRelativeTo(dialogOwner);
+    dialog.setModal(true);
+    dialog.setResizable(true);
+    dialog.setVisible(true);
+
+    if (selected.isEmpty() || (selected.size() == 1 && selected.contains(null))) {
+      throw new CancelException();
+    }
+    else {
+      return selected;
+    }
   }
 
   /**

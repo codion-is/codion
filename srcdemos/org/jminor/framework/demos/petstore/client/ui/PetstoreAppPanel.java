@@ -13,13 +13,13 @@ import org.jminor.framework.client.ui.EntityApplicationPanel;
 import org.jminor.framework.client.ui.EntityPanel;
 import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.demos.petstore.beans.ui.AddressPanel;
-import org.jminor.framework.demos.petstore.beans.ui.CategoryPanel;
-import org.jminor.framework.demos.petstore.beans.ui.ContactInfoPanel;
-import org.jminor.framework.demos.petstore.beans.ui.ItemPanel;
-import org.jminor.framework.demos.petstore.beans.ui.ProductPanel;
-import org.jminor.framework.demos.petstore.beans.ui.TagItemPanel;
-import org.jminor.framework.demos.petstore.beans.ui.TagPanel;
+import org.jminor.framework.demos.petstore.beans.ui.AddressEditPanel;
+import org.jminor.framework.demos.petstore.beans.ui.CategoryEditPanel;
+import org.jminor.framework.demos.petstore.beans.ui.ContactInfoEditPanel;
+import org.jminor.framework.demos.petstore.beans.ui.ItemEditPanel;
+import org.jminor.framework.demos.petstore.beans.ui.ProductEditPanel;
+import org.jminor.framework.demos.petstore.beans.ui.TagItemEditPanel;
+import org.jminor.framework.demos.petstore.beans.ui.TagEditPanel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 
 import java.util.Locale;
@@ -33,20 +33,20 @@ public final class PetstoreAppPanel extends EntityApplicationPanel {
     *     ITEM
     *       ITEMTAG
     */
-    final EntityPanelProvider tagItemProvider = new EntityPanelProvider(Petstore.T_TAG_ITEM).setEditPanelClass(TagItemPanel.class);
-    final EntityPanelProvider itemProvider = new EntityPanelProvider(Petstore.T_ITEM).setEditPanelClass(ItemPanel.class);
+    final EntityPanelProvider tagItemProvider = new EntityPanelProvider(Petstore.T_TAG_ITEM).setEditPanelClass(TagItemEditPanel.class);
+    final EntityPanelProvider itemProvider = new EntityPanelProvider(Petstore.T_ITEM).setEditPanelClass(ItemEditPanel.class);
     itemProvider.addDetailPanelProvider(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
-    final EntityPanelProvider productProvider = new EntityPanelProvider(Petstore.T_PRODUCT).setEditPanelClass(ProductPanel.class);
+    final EntityPanelProvider productProvider = new EntityPanelProvider(Petstore.T_PRODUCT).setEditPanelClass(ProductEditPanel.class);
     productProvider.addDetailPanelProvider(itemProvider).setDetailSplitPanelResizeWeight(0.3);
-    final EntityPanelProvider categoryProvider = new EntityPanelProvider(Petstore.T_CATEGORY).setEditPanelClass(CategoryPanel.class);
+    final EntityPanelProvider categoryProvider = new EntityPanelProvider(Petstore.T_CATEGORY).setEditPanelClass(CategoryEditPanel.class);
     categoryProvider.addDetailPanelProvider(productProvider).setDetailSplitPanelResizeWeight(0.3);
 
     addEntityPanelProvider(categoryProvider);
 
-    final EntityPanelProvider addressProvider = new EntityPanelProvider(Petstore.T_ADDRESS).setEditPanelClass(AddressPanel.class);
-    final EntityPanelProvider contactInfoProvider = new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO).setEditPanelClass(ContactInfoPanel.class);
+    final EntityPanelProvider addressProvider = new EntityPanelProvider(Petstore.T_ADDRESS).setEditPanelClass(AddressEditPanel.class);
+    final EntityPanelProvider contactInfoProvider = new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO).setEditPanelClass(ContactInfoEditPanel.class);
     contactInfoProvider.addDetailPanelProvider(itemProvider);
-    final EntityPanelProvider tagProvider = new EntityPanelProvider(Petstore.T_TAG).setEditPanelClass(TagPanel.class);
+    final EntityPanelProvider tagProvider = new EntityPanelProvider(Petstore.T_TAG).setEditPanelClass(TagEditPanel.class);
     tagProvider.addDetailPanelProvider(tagItemProvider).setDetailPanelState(EntityPanel.PanelState.HIDDEN);
 
     addSupportPanelProviders(addressProvider, contactInfoProvider, tagProvider);

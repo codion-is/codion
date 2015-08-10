@@ -123,37 +123,6 @@ public final class EntityUiUtil {
   }
 
   /**
-   * Creates an Action for viewing an image based on the entity selected in a EntityTablePanel.
-   * The action shows an image found at the path specified by the value of the given propertyID.
-   * If no entity is selected or the image path value is null no action is performed.
-   * @param tablePanel the EntityTablePanel the table panel
-   * @param imagePathPropertyID the ID of the property specifying the image path
-   * @return an Action for viewing an image based on the selected entity in a EntityTablePanel
-   * @see UiUtil#showImage(String, javax.swing.JComponent)
-   */
-  public static Action initializeViewImageAction(final EntityTablePanel tablePanel, final String imagePathPropertyID) {
-    Util.rejectNullValue(tablePanel, "tablePanel");
-    Util.rejectNullValue(imagePathPropertyID, "imagePathPropertyID");
-    return new AbstractAction() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          final EntityTableModel tableModel = tablePanel.getEntityTableModel();
-          if (!tableModel.getSelectionModel().isSelectionEmpty()) {
-            final Entity selected = tableModel.getSelectionModel().getSelectedItem();
-            if (!selected.isValueNull(imagePathPropertyID)) {
-              UiUtil.showImage(selected.getStringValue(imagePathPropertyID), tablePanel);
-            }
-          }
-        }
-        catch (final IOException ex) {
-          throw new RuntimeException(ex);
-        }
-      }
-    };
-  }
-
-  /**
    * Performs a lookup for the given entity type, using a EntityLookupField displayed
    * in a dialog, using the default search properties for the given entityID.
    * @param entityID the entityID of the entity to perform a lookup for
@@ -199,126 +168,6 @@ public final class EntityUiUtil {
     }
 
     return Collections.emptyList();
-  }
-
-  /**
-   * Displays a entity table in a dialog for selecting one or more entities
-   * @param lookupModel the table model on which to base the table panel
-   * @param dialogOwner the dialog owner
-   * @param singleSelection if true then only a single item can be selected
-   * @param dialogTitle the dialog title
-   * @return a Collection containing the selected entities
-   * @throws CancelException in case the user cancels the operation
-   */
-  public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final JComponent dialogOwner,
-                                                  final boolean singleSelection, final String dialogTitle) {
-    return selectEntities(lookupModel, dialogOwner, singleSelection, dialogTitle, null);
-  }
-
-  /**
-   * Displays a entity table in a dialog for selecting one or more entities
-   * @param lookupModel the table model on which to base the table panel
-   * @param dialogOwner the dialog owner
-   * @param singleSelection if true then only a single item can be selected
-   * @param dialogTitle the dialog title
-   * @param preferredSize the preferred size of the dialog
-   * @return a Collection containing the selected entities
-   * @throws CancelException in case the user cancels the operation
-   */
-  public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final JComponent dialogOwner,
-                                                  final boolean singleSelection, final String dialogTitle,
-                                                  final Dimension preferredSize) {
-    Util.rejectNullValue(lookupModel, "lookupModel");
-    final Collection<Entity> selected = new ArrayList<>();
-    final JDialog dialog = new JDialog(UiUtil.getParentWindow(dialogOwner), dialogTitle);
-    dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-    final Action okAction = new AbstractAction(Messages.get(Messages.OK)) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        final List<Entity> entities = lookupModel.getSelectionModel().getSelectedItems();
-        for (final Entity entity : entities) {
-          selected.add(entity);
-        }
-        dialog.dispose();
-      }
-    };
-    final Action cancelAction = new AbstractAction(Messages.get(Messages.CANCEL)) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        selected.add(null);//hack to indicate cancel
-        dialog.dispose();
-      }
-    };
-
-    final EntityModel model = new DefaultEntityModel(lookupModel);
-    model.getEditModel().setReadOnly(true);
-    final EntityPanel entityPanel = new EntityPanel(model, new EntityTablePanel(lookupModel, (EntityTableSummaryPanel) null));
-    entityPanel.initializePanel();
-    final EntityTablePanel entityTablePanel = entityPanel.getTablePanel();
-    entityTablePanel.addTableDoubleClickListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        if (!lookupModel.getSelectionModel().isSelectionEmpty()) {
-          okAction.actionPerformed(null);
-        }
-      }
-    });
-    entityTablePanel.setSearchPanelVisible(true);
-    if (singleSelection) {
-      entityTablePanel.getJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
-    }
-
-    final Action searchAction = new AbstractAction(FrameworkMessages.get(FrameworkMessages.SEARCH)) {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        lookupModel.refresh();
-        if (lookupModel.getRowCount() > 0) {
-          lookupModel.getSelectionModel().setSelectedIndexes(Collections.singletonList(0));
-          entityTablePanel.getJTable().requestFocusInWindow();
-        }
-        else {
-          JOptionPane.showMessageDialog(UiUtil.getParentWindow(entityTablePanel),
-                  FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA));
-        }
-      }
-    };
-
-    final JButton btnOk  = new JButton(okAction);
-    final JButton btnCancel = new JButton(cancelAction);
-    final JButton btnSearch = new JButton(searchAction);
-    final String cancelMnemonic = Messages.get(Messages.CANCEL_MNEMONIC);
-    final String okMnemonic = Messages.get(Messages.OK_MNEMONIC);
-    final String searchMnemonic = FrameworkMessages.get(FrameworkMessages.SEARCH_MNEMONIC);
-    btnOk.setMnemonic(okMnemonic.charAt(0));
-    btnCancel.setMnemonic(cancelMnemonic.charAt(0));
-    btnSearch.setMnemonic(searchMnemonic.charAt(0));
-    UiUtil.addKeyEvent(dialog.getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, cancelAction);
-    entityTablePanel.getJTable().getInputMap(
-            JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT).put(
-            KeyStroke.getKeyStroke(KeyEvent.VK_ENTER, 0), "none");
-    dialog.setLayout(new BorderLayout());
-    if (preferredSize != null) {
-      entityTablePanel.setPreferredSize(preferredSize);
-    }
-    dialog.add(entityPanel, BorderLayout.CENTER);
-    final JPanel buttonPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.RIGHT));
-    buttonPanel.add(btnSearch);
-    buttonPanel.add(btnOk);
-    buttonPanel.add(btnCancel);
-    dialog.getRootPane().setDefaultButton(btnOk);
-    dialog.add(buttonPanel, BorderLayout.SOUTH);
-    dialog.pack();
-    dialog.setLocationRelativeTo(dialogOwner);
-    dialog.setModal(true);
-    dialog.setResizable(true);
-    dialog.setVisible(true);
-
-    if (selected.isEmpty() || (selected.size() == 1 && selected.contains(null))) {
-      throw new CancelException();
-    }
-    else {
-      return selected;
-    }
   }
 
   /**
@@ -981,85 +830,6 @@ public final class EntityUiUtil {
   }
 
   /**
-   * Creates a panel containing a EntityLookupField and a button for opening a entity table panel for
-   * selecting entities
-   * @param lookupField the lookup field
-   * @param tableModel the table model
-   * @return a lookup field panel
-   */
-  public static JPanel createLookupFieldPanel(final EntityLookupField lookupField, final EntityTableModel tableModel) {
-    Util.rejectNullValue(lookupField, "lookupField");
-    Util.rejectNullValue(tableModel, "tableModel");
-    if (!lookupField.getModel().getEntityID().equals(tableModel.getEntityID())) {
-      throw new IllegalArgumentException("Entity type mismatch: " + lookupField.getModel().getEntityID()
-              + ", should be: " + tableModel.getEntityID());
-    }
-    final JButton btn = new JButton(new AbstractAction("...") {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          lookupField.getModel().setSelectedEntities(selectEntities(tableModel, lookupField,
-                  true, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY), null));
-        }
-        catch (final CancelException ignored) {/*ignored*/}
-      }
-    });
-    btn.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
-
-    final JPanel panel = new JPanel(new BorderLayout(0, 0));
-    panel.add(lookupField, BorderLayout.CENTER);
-    panel.add(btn, BorderLayout.EAST);
-
-    return panel;
-  }
-
-  /**
-   * Creates a new JButton which shows the edit panel provided by <code>panelProvider</code> and if an insert is performed
-   * selects the new entity in the <code>lookupField</code>.
-   * @param comboBox the combo box in which to select the new entity, if any
-   * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
-   * @return the JButton
-   */
-  public static JButton createNewEntityButton(final EntityComboBox comboBox, final EntityPanelProvider panelProvider) {
-    return new JButton(new CreateEntityAction(comboBox, panelProvider));
-  }
-
-  /**
-   * Creates a new JButton which shows the edit panel provided by <code>panelProvider</code> and if an insert is performed
-   * selects the new entity in the <code>lookupField</code>.
-   * @param lookupField the lookup field in which to select the new entity, if any
-   * @param panelProvider the EntityPanelProvider for providing the EntityEditPanel to use for creating the new entity
-   * @return the JButton
-   */
-  public static JButton createNewEntityButton(final EntityLookupField lookupField, final EntityPanelProvider panelProvider) {
-    return new JButton(new CreateEntityAction(lookupField, panelProvider));
-  }
-
-  /**
-   * Creates a panel containing an EntityComboBox and a button for creating a new entity for that combo box
-   * @param entityComboBox the combo box
-   * @param panelProvider the EntityPanelProvider to use when creating a panel for inserting a new record
-   * @param newRecordButtonTakesFocus if true then the new record button is focusable
-   * @return a panel with a combo box and a button
-   */
-  public static JPanel createEntityComboBoxPanel(final EntityComboBox entityComboBox, final EntityPanelProvider panelProvider,
-                                                 final boolean newRecordButtonTakesFocus) {
-    return createEastButtonPanel(entityComboBox, new CreateEntityAction(entityComboBox, panelProvider), newRecordButtonTakesFocus);
-  }
-
-  /**
-   * Creates a panel containing an EntityLookupField and a button for creating a new entity for that field
-   * @param entityLookupField the lookup field
-   * @param panelProvider the EntityPanelProvider to use when creating a panel for inserting a new record
-   * @param newRecordButtonTakesFocus if true then the new record button is focusable
-   * @return a panel with a lookup field and a button
-   */
-  public static JPanel createEntityLookupFieldPanel(final EntityLookupField entityLookupField, final EntityPanelProvider panelProvider,
-                                                    final boolean newRecordButtonTakesFocus) {
-    return createEastButtonPanel(entityLookupField, new CreateEntityAction(entityLookupField, panelProvider), newRecordButtonTakesFocus);
-  }
-
-  /**
    * Creates a panel containing an EntityComboBox and a button for filtering that combo box based on a foreign key
    * @param entityComboBox the combo box
    * @param foreignKeyPropertyID the foreign key to base the filtering on
@@ -1072,17 +842,16 @@ public final class EntityUiUtil {
             filterButtonTakesFocus);
   }
 
-  public static void showEntityMenu(final Entity entity, final JComponent component, final Point location,
-                                    final EntityConnectionProvider connectionProvider) {
-    if (entity != null) {
-      final JPopupMenu popupMenu = new JPopupMenu();
-      populateEntityMenu(popupMenu, (Entity) entity.getCopy(), connectionProvider);
-      popupMenu.show(component, location.x, (int) location.getY());
-    }
-  }
-
-  private static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,
-                                              final boolean buttonFocusable) {
+  /**
+   * Creates a panel with centerComponent in the BorderLayout.CENTER position and a button based on buttonAction
+   * in the BorderLayout.EAST position, with the button having size UiUtil.DIMENSION_TEXT_FIELD_SQUARE.
+   * @param centerComponent the center component
+   * @param buttonAction the button action
+   * @param buttonFocusable if true then the button is focusable, otherwise not
+   * @return a panel
+   */
+  public static JPanel createEastButtonPanel(final JComponent centerComponent, final Action buttonAction,
+                                             final boolean buttonFocusable) {
     final JPanel panel = new JPanel(new BorderLayout());
     final JButton button = new JButton(buttonAction);
     button.setPreferredSize(UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
@@ -1092,6 +861,15 @@ public final class EntityUiUtil {
     panel.add(button, BorderLayout.EAST);
 
     return panel;
+  }
+
+  public static void showEntityMenu(final Entity entity, final JComponent component, final Point location,
+                                    final EntityConnectionProvider connectionProvider) {
+    if (entity != null) {
+      final JPopupMenu popupMenu = new JPopupMenu();
+      populateEntityMenu(popupMenu, (Entity) entity.getCopy(), connectionProvider);
+      popupMenu.show(component, location.x, (int) location.getY());
+    }
   }
 
   private static JTextField initializeTextField(final Property property, final EntityEditModel editModel,
@@ -1375,74 +1153,6 @@ public final class EntityUiUtil {
     @Override
     public EventObserver<Entity> getObserver() {
       return changeEvent.getObserver();
-    }
-  }
-
-  private static final class CreateEntityAction extends AbstractAction {
-
-    private final JComponent component;
-    private final EntityDataProvider dataProvider;
-    private final EntityPanelProvider panelProvider;
-    private final List<Entity> lastInsertedEntities = new ArrayList<>();
-
-    private CreateEntityAction(final JComponent component, final EntityPanelProvider panelProvider) {
-      super("", Images.loadImage(Images.IMG_ADD_16));
-      this.component = component;
-      if (component instanceof EntityComboBox) {
-        this.dataProvider = ((EntityComboBox) component).getModel();
-      }
-      else if (component instanceof EntityLookupField) {
-        this.dataProvider = ((EntityLookupField) component).getModel();
-      }
-      else {
-        throw new IllegalArgumentException("EntityComboBox or EntityLookupField expected, got: " + component);
-      }
-      this.panelProvider = panelProvider;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      final EntityEditPanel editPanel = panelProvider.createEditPanel(dataProvider.getConnectionProvider());
-      editPanel.initializePanel();
-      editPanel.getEditModel().addAfterInsertListener(new EventInfoListener<EntityEditModel.InsertEvent>() {
-        @Override
-        public void eventOccurred(final EntityEditModel.InsertEvent info) {
-          lastInsertedEntities.clear();
-          lastInsertedEntities.addAll(info.getInsertedEntities());
-        }
-      });
-      final JOptionPane pane = new JOptionPane(editPanel, JOptionPane.PLAIN_MESSAGE, JOptionPane.OK_CANCEL_OPTION);
-      final JDialog dialog = pane.createDialog(component, panelProvider.getCaption());
-      dialog.setDefaultCloseOperation(JDialog.DISPOSE_ON_CLOSE);
-      UiUtil.addInitialFocusHack(editPanel, new InitialFocusAction(editPanel));
-      dialog.setVisible(true);
-      if (pane.getValue() != null && pane.getValue().equals(0)) {
-        final boolean insertPerformed = editPanel.insert();//todo exception during insert, f.ex validation failure not handled
-        if (insertPerformed && !lastInsertedEntities.isEmpty()) {
-          if (dataProvider instanceof EntityComboBoxModel) {
-            ((EntityComboBoxModel) dataProvider).refresh();
-            ((EntityComboBoxModel) dataProvider).setSelectedItem(lastInsertedEntities.get(0));
-          }
-          else if (dataProvider instanceof EntityLookupModel) {
-            ((EntityLookupModel) dataProvider).setSelectedEntities(lastInsertedEntities);
-          }
-        }
-      }
-      component.requestFocusInWindow();
-    }
-  }
-
-  private static final class InitialFocusAction extends AbstractAction {
-
-    private final EntityEditPanel editPanel;
-
-    private InitialFocusAction(final EntityEditPanel editPanel) {
-      this.editPanel = editPanel;
-    }
-
-    @Override
-    public void actionPerformed(final ActionEvent e) {
-      editPanel.setInitialFocus();
     }
   }
 }

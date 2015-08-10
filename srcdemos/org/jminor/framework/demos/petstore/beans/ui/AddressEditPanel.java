@@ -12,9 +12,9 @@ import javax.swing.JTextField;
 
 import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
-public class AddressPanel extends EntityEditPanel {
+public class AddressEditPanel extends EntityEditPanel {
 
-  public AddressPanel(final EntityEditModel model) {
+  public AddressEditPanel(final EntityEditModel model) {
     super(model);
   }
 

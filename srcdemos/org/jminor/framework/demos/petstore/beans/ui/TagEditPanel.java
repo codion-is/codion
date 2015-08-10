@@ -11,9 +11,9 @@ import javax.swing.JTextField;
 
 import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_TAG;
 
-public class TagPanel extends EntityEditPanel {
+public class TagEditPanel extends EntityEditPanel {
 
-  public TagPanel(final EntityEditModel model) {
+  public TagEditPanel(final EntityEditModel model) {
     super(model);
   }
 
