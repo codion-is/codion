@@ -328,7 +328,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Override to exclude components from the component selection.
+   * Override to exclude components from the component focus selection.
    * @param propertyID the component propertyID
    * @return true if the component associated with the given propertyID should be included when allowing the user
    * to select a input component in this panel, true by default.

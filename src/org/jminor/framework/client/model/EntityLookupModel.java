@@ -54,7 +54,7 @@ public interface EntityLookupModel extends EntityDataProvider {
   Collection<Property.ColumnProperty> getLookupProperties();
 
   /**
-   * @param resultSorter the comparator to use to sort the lookup result, null if the result should not be sorted
+   * @param resultSorter the comparator used to sort the lookup result, null if the result should not be sorted
    */
   void setResultSorter(final Comparator<Entity> resultSorter);
 

@@ -150,7 +150,7 @@ public final class EntityLookupField extends JTextField {
     return this;
   }
 
-  private boolean selectEntities(final List<Entity> entities) {
+  private void selectEntities(final List<Entity> entities) {
     final JList<Entity> list = new JList<>(entities.toArray(new Entity[entities.size()]));
     final Window owner = UiUtil.getParentWindow(this);
     final JDialog dialog = new JDialog(owner, FrameworkMessages.get(FrameworkMessages.SELECT_ENTITY));
@@ -165,8 +165,6 @@ public final class EntityLookupField extends JTextField {
     list.setSelectionMode(model.getMultipleSelectionAllowedValue().get() ?
             ListSelectionModel.MULTIPLE_INTERVAL_SELECTION : ListSelectionModel.SINGLE_SELECTION);
     UiUtil.prepareScrollPanelDialog(dialog, this, list, okAction, cancelAction);
-
-    return model.searchStringRepresentsSelected();
   }
 
   private void linkToModel() {

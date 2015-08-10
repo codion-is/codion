@@ -19,13 +19,6 @@ public final class MySQLDatabase extends AbstractDatabase {
 
   /**
    * Instantiates a new MySQLDatabase.
-   */
-  public MySQLDatabase() {
-    super(MYSQL, DRIVER_CLASS_NAME);
-  }
-
-  /**
-   * Instantiates a new MySQLDatabase.
    * @param host the host name
    * @param port the port number
    * @param dbname the db name

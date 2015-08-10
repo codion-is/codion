@@ -411,10 +411,10 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   }
 
   /**
-   * @param item the item to be selected
+   * @param itemToSelect the item to be selected
    * @return true if the selection change is ok, false if it should be vetoed
    */
-  protected boolean allowSelectionChange(final T item) {
+  protected boolean allowSelectionChange(final T itemToSelect) {
     return true;
   }
 

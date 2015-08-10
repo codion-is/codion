@@ -4004,3 +4004,4 @@
   ConnectionPools, removed illegal depenedency on Configuration, functionality moved to EntityConnectionServer
   FrameworkMessages, Messages cleanup of unused strings
   Column.getSelectIndex() moved to Property.ColumnProperty
+  Minor cleanup, removed unused methods

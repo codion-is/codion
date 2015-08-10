@@ -19,13 +19,6 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
 
   /**
    * Instantiates a new PostgreSQLDatabase.
-   */
-  public PostgreSQLDatabase() {
-    super(POSTGRESQL, DRIVER_CLASS_NAME);
-  }
-
-  /**
-   * Instantiates a new PostgreSQLDatabase.
    * @param host the host name
    * @param port the port number
    * @param database the database name

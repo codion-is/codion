@@ -736,9 +736,9 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
    * @return the value to validate
    * @throws IllegalArgumentException when the value type does not fit the property type
    */
-  private static Object validateType(final Property property, final Object value) {
+  private static void validateType(final Property property, final Object value) {
     if (value == null) {
-      return null;
+      return;
     }
 
     final Class<?> type = property.getTypeClass();
@@ -752,8 +752,6 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
         throw new IllegalArgumentException("Entity of type " + fkPropertyEntityID + " expected for property " + property + ", got: " + actualEntityID);
       }
     }
-
-    return value;
   }
 
   private static void validateValue(final DefaultEntity entity, final Property property, final Object value) {

@@ -294,15 +294,10 @@ public class ColumnSearchPanel<K> extends JPanel {
   }
 
   /**
-   * Provides a upper/lower bound input fields based on a ColumnSearchModel
+   * Provides a upper/lower bound input fields for a ColumnSearchPanel
    * @param <K> the type of column identifiers
    */
   public interface InputFieldProvider<K> {
-
-    /**
-     * @return the search model to link the input fields to
-     */
-    ColumnSearchModel<K> getSearchModel();
 
     /**
      * @param isUpperBound if true then the returned field should be bound
@@ -319,11 +314,6 @@ public class ColumnSearchPanel<K> extends JPanel {
     private DefaultInputFieldProvider(final ColumnSearchModel<K> searchModel) {
       Util.rejectNullValue(searchModel, "searchModel");
       this.searchModel = searchModel;
-    }
-
-    @Override
-    public ColumnSearchModel<K> getSearchModel() {
-      return searchModel;
     }
 
     /**

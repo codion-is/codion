@@ -19,13 +19,6 @@ public final class SQLServerDatabase extends AbstractDatabase {
 
   /**
    * Instantiates a new SQLServerDatabase.
-   */
-  public SQLServerDatabase() {
-    super(SQLSERVER, DRIVER_CLASS_NAME);
-  }
-
-  /**
-   * Instantiates a new SQLServerDatabase.
    * @param host the host name
    * @param port the port number
    * @param databaseName the database name
