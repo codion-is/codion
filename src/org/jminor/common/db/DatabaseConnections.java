@@ -69,6 +69,7 @@ public final class DatabaseConnections {
    * Instantiates a default DatabaseConnectionProvider instance
    * @param database the underlying database
    * @param user the user
+   * @return a new DatabaseConnectionProvider instance
    */
   public static DatabaseConnectionProvider connectionProvider(final Database database, final User user) {
     return connectionProvider(database, user, 0);
@@ -79,6 +80,7 @@ public final class DatabaseConnections {
    * @param database the underlying database
    * @param user the user
    * @param validityCheckTimeout the number of seconds specified when checking if a connection is valid
+   * @return a new DatabaseConnectionProvider instance
    */
   public static DatabaseConnectionProvider connectionProvider(final Database database, final User user, final int validityCheckTimeout) {
     return new ConnectionProvider(database, user, validityCheckTimeout);

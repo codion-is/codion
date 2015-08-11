@@ -663,10 +663,10 @@ public final class Entities {
    * Provides String representations of {@link Entity} instances.<br>
    * Given a {@link Entity} instance named entity containing the following mappings:
    * <pre>
-   * "key1" -> value1
-   * "key2" -> value2
-   * "key3" -> value3
-   * "key4" -> {Entity instance with a single mapping "refKey" -> refValue}
+   * "key1" -&#62; value1
+   * "key2" -&#62; value2
+   * "key3" -&#62; value3
+   * "key4" -&#62; {Entity instance with a single mapping "refKey" -&#62; refValue}
    * </pre>
    * <code>
    * Entities.StringProvider provider = new Entities.StringProvider();<br>

@@ -1347,6 +1347,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * This method simply adds the given {@code southPanel} to the {@code BorderLayout.SOUTH} location, assuming the
    * {@code basePanel} is at location BorderLayout.CENTER.
    * By overriding this method you can override the default layout.
+   * @param southPanel the panel to add at the BorderLayout.SOUTH position, if any
    * @see #getBasePanel()
    */
   protected void layoutPanel(final JPanel southPanel) {

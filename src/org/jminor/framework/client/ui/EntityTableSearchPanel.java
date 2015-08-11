@@ -48,6 +48,7 @@ public final class EntityTableSearchPanel extends JPanel {
   /**
    * Instantiates a new EntityTableSearchPanel with a default search panel setup, based on
    * an {@link AbstractTableColumnSyncPanel} containing {@link PropertySearchPanel}s
+   * @param tableModel the table model
    */
   public EntityTableSearchPanel(final EntityTableModel tableModel) {
     this(tableModel, initializeAdvancedSearchPanel(tableModel, UiUtil.getPreferredScrollBarWidth()),
@@ -55,7 +56,10 @@ public final class EntityTableSearchPanel extends JPanel {
   }
 
   /**
-   * Instantiates a new EntityTableSearchPanel
+   * Instantiates a new EntityTableSearchPanel, either {@code advancedSearchPanel}, {@code simpleSearchPanel} or both need to be provided
+   * @param tableModel the table model
+   * @param advancedSearchPanel the panel to show in case of advanced search
+   * @param simpleSearchPanel the panel to show in case of simple search
    */
   public EntityTableSearchPanel(final EntityTableModel tableModel, final JPanel advancedSearchPanel,
                                 final JPanel simpleSearchPanel) {
@@ -210,7 +214,7 @@ public final class EntityTableSearchPanel extends JPanel {
   }
 
   private static AbstractTableColumnSyncPanel initializeAdvancedSearchPanel(final EntityTableModel tableModel, final int verticalFillerWidth) {
-    final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(tableModel.getColumnModel(), tableModel.getColumnModel().getAllColumns()) {
+    final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(tableModel.getColumnModel()) {
       @Override
       protected JPanel initializeColumnPanel(final TableColumn column) {
         final Property property = (Property) column.getIdentifier();

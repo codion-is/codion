@@ -722,6 +722,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /**
    * @param showToggleEditPanelControl true if a control for toggling the edit panel should be shown
+   * @return this EntityPane instance
    * @throws IllegalStateException if the panel has been initialized
    */
   public final EntityPanel setShowToggleEditPanelControl(final boolean showToggleEditPanelControl) {
@@ -740,6 +741,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /**
    * @param showDetailPanelControls true if detail panel controls should be shown
+   * @return this EntityPane instance
    * @throws IllegalStateException if the panel has been initialized
    */
   public final EntityPanel setShowDetailPanelControls(final boolean showDetailPanelControls) {
@@ -757,7 +759,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   /**
    * @param includeControlPanel true if the control panel should be included
-   * @return this entity panel
+   * @return this EntityPane instance
    * @throws IllegalStateException if the panel has been initialized
    */
   public final EntityPanel setIncludeControlPanel(final boolean includeControlPanel) {

@@ -700,6 +700,7 @@ public final class UiUtil {
   /**
    * Searches the parent component hierarchy of the given component for
    * an ancestor of the given type
+   * @param <T> the type of parent to find
    * @param component the component
    * @param clazz the class of the parent to find
    * @return the parent of the given component of the given type, null if none is found
@@ -1051,6 +1052,7 @@ public final class UiUtil {
    * @param title the dialog title
    * @param modal if true then the dialog is modal
    * @param defaultButton the the default dialog button
+   * @param disposeOnEscape if true then dispose is called on the dialog on ESC
    * @return the dialog used to display the component
    */
   public static JDialog displayInDialog(final Container owner, final JComponent component, final String title, final boolean modal,

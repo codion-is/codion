@@ -933,6 +933,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param inputComponent a component bound to the property with id <code>propertyID</code>
    * @param labelOnTop if true then the label is positioned above <code>inputComponent</code>,
    * otherwise it uses FlowLayout.LEADING in a FlowLayout.
+   * @param labelAlignment the label alignment
    * @return a panel containing a label and a component
    */
   protected final JPanel createPropertyPanel(final String propertyID, final JComponent inputComponent,
@@ -1005,6 +1006,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param readOnly if true the component will be read only
    * @param rows the number of rows in the text area
    * @param columns the number of columns in the text area
+   * @param enabledState a state indicating when this text area should be enabled
    * @return a JTextArea bound to the property
    */
   protected final JTextArea createTextArea(final String propertyID, final boolean readOnly, final int rows, final int columns,

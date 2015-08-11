@@ -491,7 +491,7 @@ public final class Configuration {
 
   /**
    * Specifies the class used for serializing and deserializing entity instances.<br>
-   * Value type: String, the name of the class implementing org.jminor.common.model.Serializer<Entity><br>
+   * Value type: String, the name of the class implementing org.jminor.common.model.Serializer&#60;Entity&#62;<br>
    * Default value: none
    */
   public static final String ENTITY_SERIALIZER_CLASS = "jminor.serialization.entitySerializerClass";

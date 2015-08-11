@@ -26,7 +26,9 @@ import java.util.Map;
 public interface RemoteEntityConnection extends Remote {
 
   /**
+   * @param methodLogger the method logger
    * @throws UnsupportedOperationException always
+   * @throws RemoteException in case of an exception
    */
   void setMethodLogger(final MethodLogger methodLogger) throws RemoteException;
 

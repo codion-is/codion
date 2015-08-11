@@ -70,6 +70,7 @@ public interface EntitySelectCriteria extends EntityCriteria {
 
   /**
    * Limit the levels of foreign keys to fetch via the given foreign key property, default 1
+   * @param foreignKeyPropertyID the property id
    * @param fetchDepthLimit the foreign key fetch depth limit
    * @return this EntitySelectCriteria instance
    */

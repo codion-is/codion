@@ -162,7 +162,7 @@ public final class Util {
 
   /**
    * Flushes the preferences to disk
-   * @throws BackingStoreException
+   * @throws BackingStoreException in case of a backing store failure
    */
   public static void flushUserPreferences() throws BackingStoreException {
     getUserPreferences().flush();
@@ -565,6 +565,7 @@ public final class Util {
 
   /**
    * Srializes a Collection of Objects to a given file
+   * @param objects the objects to serialize
    * @param file the file
    * @throws SerializeException in case of an exception
    */
@@ -767,6 +768,7 @@ public final class Util {
 
   /**
    * Throws an IllegalArgumentException complaining about <code>valueName</code> being null
+   * @param <T> type value type
    * @param value the value to check
    * @param valueName the name of the value being checked
    * @throws IllegalArgumentException if value is null
@@ -781,6 +783,7 @@ public final class Util {
   }
 
   /**
+   * @param <T> the comparison type
    * @return a Comparator which compares the string representations of the objects
    * using the default Collator, taking spaces into account.
    */
@@ -845,21 +848,19 @@ public final class Util {
    * Maps the given values according to the keys provided by the given key provider,
    * keeping the iteration order of the given collection.
    * <code>
-   * <pre>
    * class Person {
    *   String name;
    *   Integer age;
    *   ...
    * }
    *
-   * List<Person> persons = ...;
-   * HashKeyProvider ageKeyProvider = new HashKeyProvider<Integer, Person>() {
+   * List&#60;Person&#62; persons = ...;
+   * HashKeyProvider ageKeyProvider = new HashKeyProvider&#60;Integer, Person&#62;() {
    *   public Integer getKey(Person person) {
    *     return person.getAge();
    *   }
    * };
-   * Map<Integer, Collection<Person>> personsByAge = Util.map(persons, ageKeyProvider);
-   * </pre>
+   * Map&#60;Integer, Collection&#60;Person&#62;&#62; personsByAge = Util.map(persons, ageKeyProvider);
    * </code>
    * @param values the values to map
    * @param keyProvider the object providing keys to use when hashing the values

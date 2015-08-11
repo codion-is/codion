@@ -19,12 +19,9 @@ import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
 
 /**
- * <p>
  * <code>NavigableImagePanel</code> is a lightweight container displaying
  * an image that can be zoomed in and out and panned with ease and simplicity,
  * using an adaptive rendering for high quality display and satisfactory performance.
- * </p>
- * <p>
  * <h3>Image</h3>
  * <p>An image is loaded either via a constructor:</p>
  * <pre>
@@ -38,9 +35,7 @@ import java.awt.image.BufferedImage;
  * When an image is set, it is initially painted centered in the component,
  * at the largest possible size, fully visible, with its aspect ratio is preserved.
  * This is defined as 100% of the image size and its corresponding zoom level is 1.0.
- * </p>
  * <h3>Zooming</h3>
- * <p>
  * Zooming can be controlled interactively, using either the mouse scroll wheel (default)
  * or the mouse two buttons, or programmatically, allowing the programmer to
  * implement other custom zooming methods. If the mouse does not have a scroll wheel,
@@ -60,8 +55,6 @@ import java.awt.image.BufferedImage;
  * panel.setZoomDevice(ZoomDevice.NONE);
  * </pre>
  * and use <code>setZoom()</code> to change the zoom level.
- * </p>
- * <p>
  * Zooming is always around the point the mouse pointer is currently at, so that
  * this point (called a zooming center) remains stationary ensuring that the area
  * of an image we are zooming into does not disappear off the screen. The zooming center
@@ -77,35 +70,30 @@ import java.awt.image.BufferedImage;
  * <pre>
  * panel.setZoom(newZoomLevel);
  * </pre>
- * </p>
- * <p>
  * There are no lower or upper zoom level limits.
- * </p>
  * <h3>Navigation</h3>
- * <p><code>NavigableImagePanel</code> does not use scroll bars for navigation,
+ * <code>NavigableImagePanel</code> does not use scroll bars for navigation,
  * but relies on a navigation image located in the upper left corner of the panel.
  * The navigation image is a small replica of the image displayed in the panel.
  * When you click on any point of the navigation image that part of the image
  * is displayed in the panel, centered. The navigation image can also be
- * zoomed in the same way as the main image.</p>
+ * zoomed in the same way as the main image.
  * <p>In order to adjust the position of an image in the panel, it can be dragged
  * with the mouse, using the left button.
- * </p>
- * <p>For programmatic image navigation, disable the navigation image:
+ * For programmatic image navigation, disable the navigation image:
  * <pre>
  * panel.setNavigationImageEnabled(false)
  * </pre>
  * and use <code>getImageOrigin()</code> and
  * <code>setImageOrigin()</code> to move the image around the panel.
- * </p>
  * <h3>Rendering</h3>
- * <p><code>NavigableImagePanel</code> uses the Nearest Neighbor interpolation
+ * <code>NavigableImagePanel</code> uses the Nearest Neighbor interpolation
  * for image rendering (default in Java).
  * When the scaled image becomes larger than the original image,
  * the Bilinear interpolation is applied, but only to the part
  * of the image which is displayed in the panel. This interpolation change threshold
  * can be controlled by adjusting the value of
- * <code>HIGH_QUALITY_RENDERING_SCALE_THRESHOLD</code>.</p>
+ * <code>HIGH_QUALITY_RENDERING_SCALE_THRESHOLD</code>.
  *
  * Author: Slav Boleslawski
  * http://today.java.net/pub/a/today/2007/03/27/navigable-image-panel.html
@@ -720,7 +708,7 @@ public final class NavigableImagePanel extends JPanel {
 
   /**
    * Paints the panel and its image at the current zoom level, location, and
-   * interpolation method dependent on the image scale.</p>
+   * interpolation method dependent on the image scale.
    *
    * @param g the <code>Graphics</code> context for painting
    */

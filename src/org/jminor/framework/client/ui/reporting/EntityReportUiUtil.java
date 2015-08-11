@@ -80,7 +80,7 @@ public final class EntityReportUiUtil {
    * @param uiWrapper the UI wrapper
    * @param frameTitle the title to display on the frame
    */
-  public static <T> void viewReport(final ReportResult<T> reportResult, final ReportUIWrapper<T> uiWrapper, final String frameTitle) {
+  public static void viewReport(final ReportResult reportResult, final ReportUIWrapper uiWrapper, final String frameTitle) {
     SwingUtilities.invokeLater(new Runnable() {
       @Override
       public void run() {

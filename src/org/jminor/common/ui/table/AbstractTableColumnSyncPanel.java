@@ -3,6 +3,8 @@
  */
 package org.jminor.common.ui.table;
 
+import org.jminor.common.model.table.FilteredTableColumnModel;
+
 import javax.swing.Box;
 import javax.swing.JPanel;
 import javax.swing.event.ChangeEvent;
@@ -15,7 +17,6 @@ import java.awt.Dimension;
 import java.awt.FlowLayout;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.util.Collections;
 import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
@@ -35,11 +36,11 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
    * Instantiates a new AbstractTableColumnSyncPanel.
    * @param columnModel the column model
    */
-  public AbstractTableColumnSyncPanel(final TableColumnModel columnModel, final List<TableColumn> columns) {
+  public AbstractTableColumnSyncPanel(final FilteredTableColumnModel columnModel) {
     setLayout(new FlowLayout(FlowLayout.LEFT,0,0));
     this.columnModel = columnModel;
-    this.columns = Collections.unmodifiableList(columns);
-    columnModel.addColumnModelListener(new SyncColumnModelListener());
+    this.columns = columnModel.getAllColumns();
+    this.columnModel.addColumnModelListener(new SyncColumnModelListener());
     final Dimension fillerSize = new Dimension();
     this.verticalFiller = new Box.Filler(fillerSize, fillerSize, fillerSize);
   }

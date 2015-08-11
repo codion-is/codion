@@ -17,6 +17,7 @@ public final class ToggleControl extends Control {
   /**
    * @param name the name
    * @param buttonModel the button model
+   * @param enabledObserver an observer indicating when this control should be enabled
    */
   public ToggleControl(final String name, final ButtonModel buttonModel, final StateObserver enabledObserver) {
     super(name, enabledObserver);

@@ -243,8 +243,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
     return scenarioChooser;
   }
 
-  /** {@inheritDoc}
-   * @param name*/
+  /** {@inheritDoc} */
   @Override
   public final YIntervalSeriesCollection getScenarioDurationDataset(final String name) {
     final YIntervalSeriesCollection scenarioDurationCollection = new YIntervalSeriesCollection();

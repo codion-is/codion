@@ -25,7 +25,7 @@ public enum TristateState {
   };
 
   /**
-   * @return the next logical state, INDETERMINATE->DESELECTED->SELECTED->...
+   * @return the next logical state, INDETERMINATE-DESELECTED-SELECTED-...
    */
   public abstract TristateState next();
 }

@@ -14,11 +14,14 @@ public final class ValueChanges {
 
   /**
    * Returns a new {@link ValueChange} instance
+   * @param <K> the type of the value key
+   * @param <V> the type of the value
    * @param source the source of the value change
    * @param key the key associated with the value
    * @param newValue the new value
    * @param oldValue the old value
    * @param initialization true if the value was being initialized
+   * @return a new {@link ValueChange} instance
    */
   public static <K, V> ValueChange<K, V> valueChange(final Object source, final K key, final V newValue, final V oldValue,
                                                      final boolean initialization) {

@@ -4,8 +4,6 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
@@ -29,7 +27,6 @@ import org.jminor.common.ui.checkbox.TristateCheckBox;
 import org.jminor.common.ui.combobox.AutoCompletion;
 import org.jminor.common.ui.combobox.MaximumMatch;
 import org.jminor.common.ui.combobox.SteppedComboBox;
-import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.input.InputProviderPanel;
 import org.jminor.common.ui.textfield.DocumentSizeFilter;
 import org.jminor.common.ui.textfield.DoubleField;
@@ -39,13 +36,9 @@ import org.jminor.common.ui.textfield.SizedDocument;
 import org.jminor.common.ui.valuemap.ValueLinkValidators;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityLookupModel;
-import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
-import org.jminor.framework.client.model.EntityDataProvider;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityLookupModel;
-import org.jminor.framework.client.model.EntityModel;
-import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -56,7 +49,6 @@ import ch.qos.logback.classic.Level;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.ComboBoxModel;
 import javax.swing.DefaultComboBoxModel;
@@ -64,7 +56,6 @@ import javax.swing.JButton;
 import javax.swing.JCheckBox;
 import javax.swing.JComboBox;
 import javax.swing.JComponent;
-import javax.swing.JDialog;
 import javax.swing.JFormattedTextField;
 import javax.swing.JLabel;
 import javax.swing.JMenu;
@@ -74,18 +65,11 @@ import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
-import javax.swing.KeyStroke;
-import javax.swing.ListSelectionModel;
 import javax.swing.text.AbstractDocument;
 import java.awt.BorderLayout;
 import java.awt.Color;
-import java.awt.Dimension;
-import java.awt.FlowLayout;
 import java.awt.Font;
 import java.awt.Point;
-import java.awt.event.ActionEvent;
-import java.awt.event.KeyEvent;
-import java.io.IOException;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -646,6 +630,7 @@ public final class EntityUiUtil {
    * @param readOnly if true then the value is read only
    * @param rows the number of rows
    * @param columns the number of columns
+   * @param enabledState a state indicating when the text area should be enabled
    * @return a text area
    */
   public static JTextArea createTextArea(final Property property, final EntityEditModel editModel,
@@ -689,6 +674,7 @@ public final class EntityUiUtil {
    * Creates a text field based on the given property
    * @param property the property
    * @param editModel the edit model to bind with the value
+   * @param readOnly if true then the field will be read only
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
    * @param immediateUpdate if true then the value is committed on each keystroke, otherwise on focus lost
    * @return a text field for the given property
@@ -703,6 +689,7 @@ public final class EntityUiUtil {
    * Creates a text field based on the given property
    * @param property the property
    * @param editModel the edit model to bind with the value
+   * @param readOnly if true then the field will be read only
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
    * @param immediateUpdate if true then the value is committed on each keystroke, otherwise on focus lost
    * @param enabledState the state controlling the enabled state of the panel
@@ -718,6 +705,7 @@ public final class EntityUiUtil {
    * Creates a text field based on the given property
    * @param property the property
    * @param editModel the edit model to bind with the value
+   * @param readOnly if true then the field will be read only
    * @param formatMaskString if specified the resulting text field is a JFormattedField with this mask
    * @param immediateUpdate if true then the value is committed on each keystroke, otherwise on focus lost
    * @param enabledState the state controlling the enabled state of the panel

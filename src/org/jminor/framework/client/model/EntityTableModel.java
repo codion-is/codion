@@ -105,7 +105,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
 
   /**
    * @return true if this model has no {@link EntityEditModel} or if that edit model is read only
-   * @see #hasEditModel().
+   * @see #hasEditModel()
    * @see #setEditModel(EntityEditModel)
    */
   boolean isReadOnly();
@@ -224,7 +224,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   EntityTableModel setRemoveEntitiesOnDelete(final boolean value);
 
   /**
-   * Specifies whether entities inserted via the associated edit model are added
+   * @return whether entities inserted via the associated edit model are added
    * to this table model automatically
    */
   boolean isAddEntitiesOnInsert();
@@ -232,6 +232,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   /**
    * @param value if true then entities inserted via the associated edit model are added
    * to this table model automatically
+   * @return this EntityTableModel instance
    */
   EntityTableModel setAddEntitiesOnInsert(final boolean value);
 
@@ -249,10 +250,10 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   void setSelectedByPrimaryKeys(final Collection<Entity.Key> keys);
 
   /**
-   * Finds entities according to the values of <code>propertyValues</code>
+   * Finds entities according to the values of propertyValues
    * @param values the property values to use as condition mapped
    * to their respective propertyIDs
-   * @return the entities having the exact same property values as in <code>properties</properties>
+   * @return the entities having the exact same property values as in properties
    */
   Collection<Entity> getEntitiesByPropertyValues(final Map<String, Object> values);
 

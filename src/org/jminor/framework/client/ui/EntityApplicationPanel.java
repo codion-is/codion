@@ -603,7 +603,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   }
 
   /**
-   * @return the panel shown when Help -> Help is selected
+   * @return the panel shown when Help -&#62; Help is selected
    */
   protected JPanel getHelpPanel() {
     try {
@@ -633,7 +633,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   }
 
   /**
-   * @return the panel shown when Help -> About is selected
+   * @return the panel shown when Help -&#62; About is selected
    */
   protected JPanel getAboutPanel() {
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());

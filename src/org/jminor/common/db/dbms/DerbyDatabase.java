@@ -54,6 +54,12 @@ public final class DerbyDatabase extends AbstractDatabase {
 
   /** {@inheritDoc} */
   @Override
+  public boolean supportsNowait() {
+    return false;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public String getAutoIncrementValueSQL(final String idSource) {
     Util.rejectNullValue(idSource, "idSource");
     return AUTO_INCREMENT_QUERY + idSource;

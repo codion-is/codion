@@ -139,6 +139,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    * @param entityID the entity ID
    * @param connectionProvider the db provider
    * @param searchModel the search model
+   * @param sortModel the sort model
    * @throws IllegalArgumentException if <code>searchModel</code> is null or the search model entityID
    * does not match the one supplied as parameter
    */

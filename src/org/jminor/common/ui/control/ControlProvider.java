@@ -137,6 +137,7 @@ public final class ControlProvider {
 
   /**
    * Adds the given controls to the given tool bar
+   * @param toolBar the toolbar to add the controls to
    * @param controlSet the controls
    */
   public static void createToolbar(final JToolBar toolBar, final ControlSet controlSet) {
@@ -170,6 +171,7 @@ public final class ControlProvider {
   }
 
   /**
+   * @param menuBar the menubar to add the controls to
    * @param controlSet the controls
    * @return the menu bar with the added controls
    */

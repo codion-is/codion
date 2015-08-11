@@ -23,7 +23,7 @@ public final class EntityTableSummaryPanel extends AbstractTableColumnSyncPanel 
    * @param tableModel the table model
    */
   public EntityTableSummaryPanel(final EntityTableModel tableModel) {
-    super(tableModel.getColumnModel(), tableModel.getColumnModel().getAllColumns());
+    super(tableModel.getColumnModel());
     this.tableModel = tableModel;
     resetPanel();
   }

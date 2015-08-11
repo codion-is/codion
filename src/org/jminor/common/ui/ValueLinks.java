@@ -55,17 +55,17 @@ public final class ValueLinks {
   /**
    * Links a date value with a given text component
    * @param textComponent the text component to link with the value
-   * @param modelValue the model value
+   * @param value the model value
    * @param readOnly if true the component will be read only
    * @param dateFormat the data format
    * @param sqlType the actual sql type (Types.DATE, Types.TIMESTAMP or Types.TIME)
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void dateValueLink(final JFormattedTextField textComponent, final Value<Date> modelValue,
+  public static void dateValueLink(final JFormattedTextField textComponent, final Value<Date> value,
                                    final boolean readOnly, final DateFormat dateFormat, final int sqlType,
                                    final boolean immediateUpdate) {
     textComponent.setEditable(!readOnly);
-    Values.link(modelValue, UiValues.dateValue(textComponent, dateFormat, sqlType, immediateUpdate), readOnly);
+    Values.link(value, UiValues.dateValue(textComponent, dateFormat, sqlType, immediateUpdate), readOnly);
   }
 
   /**
@@ -101,15 +101,16 @@ public final class ValueLinks {
 
   /**
    * @param intField the int field to link with the value
-   * @param modelValue the model value
+   * @param value the model value
+   * @param format the number format to use when displaying the number
    * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void intValueLink(final IntField intField, final Value<Integer> modelValue, final NumberFormat format,
+  public static void intValueLink(final IntField intField, final Value<Integer> value, final NumberFormat format,
                                   final boolean usePrimitive, final boolean readOnly, final boolean immediateUpdate) {
     intField.setEditable(!readOnly);
-    Values.link(modelValue, UiValues.integerValue(intField, usePrimitive, format, immediateUpdate), readOnly);
+    Values.link(value, UiValues.integerValue(intField, usePrimitive, format, immediateUpdate), readOnly);
   }
 
   /**
@@ -144,15 +145,16 @@ public final class ValueLinks {
 
   /**
    * @param doubleField the double field to link with the value
-   * @param modelValue the model value
+   * @param value the model value
+   * @param format the number format to use when displaying the number
    * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void doubleValueLink(final DoubleField doubleField, final Value<Double> modelValue, final NumberFormat format,
+  public static void doubleValueLink(final DoubleField doubleField, final Value<Double> value, final NumberFormat format,
                                      final boolean usePrimitive, final boolean readOnly, final boolean immediateUpdate) {
     doubleField.setEditable(!readOnly);
-    Values.link(modelValue, UiValues.doubleValue(doubleField, usePrimitive, format, immediateUpdate), readOnly);
+    Values.link(value, UiValues.doubleValue(doubleField, usePrimitive, format, immediateUpdate), readOnly);
   }
 
   /**
@@ -187,15 +189,16 @@ public final class ValueLinks {
 
   /**
    * @param longField the long field to link with the value
-   * @param modelValue the model value
+   * @param value the model value
+   * @param format the number format to use when displaying the number
    * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    */
-  public static void longValueLink(final LongField longField, final Value<Long> modelValue, final NumberFormat format,
+  public static void longValueLink(final LongField longField, final Value<Long> value, final NumberFormat format,
                                    final boolean usePrimitive, final boolean readOnly, final boolean immediateUpdate) {
     longField.setEditable(!readOnly);
-    Values.link(modelValue, UiValues.longValue(longField, usePrimitive, format, immediateUpdate), readOnly);
+    Values.link(value, UiValues.longValue(longField, usePrimitive, format, immediateUpdate), readOnly);
   }
 
   /**
@@ -252,21 +255,22 @@ public final class ValueLinks {
 
   /**
    * @param textComponent the text component to link with the value
-   * @param format the format to use when displaying the linked value,
-   * null if no formatting should be performed
+   * @param value the value to link with the component
+   * @param format the format to use when displaying the linked value, null if no formatting should be performed
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
    * @param readOnly if true the component will be read only
    */
-  public static void textValueLink(final JTextComponent textComponent, final Value<String> modelValue, final Format format,
+  public static void textValueLink(final JTextComponent textComponent, final Value<String> value, final Format format,
                                    final boolean immediateUpdate, final boolean readOnly) {
     textComponent.setEditable(!readOnly);
-    Values.link(modelValue, UiValues.textValue(textComponent, format, immediateUpdate), readOnly);
+    Values.link(value, UiValues.textValue(textComponent, format, immediateUpdate), readOnly);
   }
 
   /**
    * @param owner the value owner
    * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @return a ButtomModel based on the value
    */
   public static ButtonModel toggleValueLink(final Object owner, final String propertyName, final EventObserver<Boolean> valueChangeEvent) {
     return toggleValueLink(owner, propertyName, valueChangeEvent, false);
@@ -277,6 +281,7 @@ public final class ValueLinks {
    * @param propertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
+   * @return a ButtomModel based on the value
    */
   public static ButtonModel toggleValueLink(final Object owner, final String propertyName, final EventObserver<Boolean> valueChangeEvent,
                                             final boolean readOnly) {
@@ -311,14 +316,15 @@ public final class ValueLinks {
 
   /**
    * @param buttonModel the button model to link with the value
-   * @param modelValue the model value
+   * @param value the model value
    * @param readOnly if true the component will be read only
    */
-  public static void toggleValueLink(final ButtonModel buttonModel, final Value<Boolean> modelValue, final boolean readOnly) {
-    Values.link(modelValue, UiValues.booleanValue(buttonModel), readOnly);
+  public static void toggleValueLink(final ButtonModel buttonModel, final Value<Boolean> value, final boolean readOnly) {
+    Values.link(value, UiValues.booleanValue(buttonModel), readOnly);
   }
 
   /**
+   * @param <V> the value type
    * @param box the combo box to link with the value
    * @param owner the value owner
    * @param beanPropertyName the property name
@@ -331,6 +337,7 @@ public final class ValueLinks {
   }
 
   /**
+   * @param <V> the value type
    * @param box the combo box to link with the value
    * @param owner the value owner
    * @param beanPropertyName the property name
@@ -345,26 +352,29 @@ public final class ValueLinks {
   }
 
   /**
+   * @param <V> the value type
    * @param box the combo box to link with the value
-   * @param modelValue the model value
+   * @param value the model value
    */
-  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Value<V> modelValue) {
-    Values.link(modelValue, UiValues.selectedItemValue(box), false);
+  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Value<V> value) {
+    Values.link(value, UiValues.selectedItemValue(box), false);
   }
 
   /**
+   * @param <V> the value type
    * @param box the combo box to link with the value
-   * @param modelValue the model value
+   * @param value the model value
    * @param readOnly if true the component will be read only
    */
-  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Value<V> modelValue, final boolean readOnly) {
-    Values.link(modelValue, UiValues.selectedItemValue(box), readOnly);
+  public static <V> void selectedItemValueLink(final JComboBox<V> box, final Value<V> value, final boolean readOnly) {
+    Values.link(value, UiValues.selectedItemValue(box), readOnly);
   }
 
   /**
    * @param owner the value owner
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
+   * @return a SpinnerNumberModel based on the value
    */
   public static SpinnerNumberModel intSpinnerValueLink(final Object owner, final String beanPropertyName,
                                                        final EventObserver<Integer> valueChangeEvent) {
@@ -376,6 +386,7 @@ public final class ValueLinks {
    * @param beanPropertyName the property name
    * @param valueChangeEvent an EventObserver notified each time the value changes
    * @param readOnly if true the component will be read only
+   * @return a SpinnerNumberModel based on the value
    */
   public static SpinnerNumberModel intSpinnerValueLink(final Object owner, final String beanPropertyName,
                                                        final EventObserver<Integer> valueChangeEvent, final boolean readOnly) {

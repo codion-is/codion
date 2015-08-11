@@ -990,7 +990,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
    * Validates the given entity.
    * By default the internal validator is used.
    * @param entity the entity to validate
-   * @throws ValidationException
+   * @throws ValidationException in case validation fails
    * @see #getValidator()
    */
   protected void validate(final Entity entity) throws ValidationException {
@@ -999,6 +999,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
 
   /**
    * Notifies that a insert is about to be performed
+   * @param insertEvent the event describing the insert
    * @see #addBeforeInsertListener(EventInfoListener)
    */
   protected final void fireBeforeInsertEvent(final InsertEvent insertEvent) {

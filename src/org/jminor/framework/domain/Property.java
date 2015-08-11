@@ -421,6 +421,8 @@ public interface Property extends Attribute {
 
     /**
      * Set a value converter, for converting to and from a sql representation of the value
+     * @param valueConverter the converter
+     * @return this Property instance
      */
     ColumnProperty setValueConverter(final ValueConverter valueConverter);
   }
@@ -522,10 +524,8 @@ public interface Property extends Attribute {
 
   /**
    * A property that does not map to an underlying database column. The value of a transient property
-   * is initialized to null when entities are loaded, which means transient properties always have
-   * a <null> original value.
-   * The value of transient properties can be set and retrieved like normal properties but are ignored during
-   * DML operations.
+   * is initialized to null when entities are loaded, which means transient properties always have null as the original value.
+   * The value of transient properties can be set and retrieved like normal properties but are ignored during DML operations.
    */
   interface TransientProperty extends Property {}
 

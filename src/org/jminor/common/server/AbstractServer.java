@@ -256,6 +256,8 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
    * @param connectionInfo the client connection info
    * @return a connection servicing the given client
    * @throws RemoteException in case of an exception
+   * @throws ServerException.LoginException in case of an error during the login
+   * @throws ServerException.ServerFullException in case the server is not accepting new connections
    */
   protected abstract T doConnect(final ClientInfo connectionInfo)
           throws RemoteException, ServerException.LoginException, ServerException.ServerFullException;

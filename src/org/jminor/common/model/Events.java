@@ -18,6 +18,7 @@ public final class Events {
 
   /**
    * Instantiates a new Event.
+   * @param <T> the type of info propagated to listeners on event firing
    * @return a new Event
    */
   public static <T> Event<T> event() {
@@ -38,6 +39,7 @@ public final class Events {
   }
 
   /**
+   * @param <T> the type of info propagated to listeners on event firing
    * @param listener the listener
    * @return a info listener causing the given listener to be fired on each occurrence
    */

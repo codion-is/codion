@@ -91,6 +91,7 @@ public final class EntityUtil {
 
   /**
    * Retrieves the values of the given keys, assuming they are single column keys.
+   * @param <T> the value type
    * @param keys the keys
    * @return the actual property values of the given keys
    */
@@ -105,6 +106,7 @@ public final class EntityUtil {
   }
 
   /**
+   * @param <T> the value type
    * @param propertyID the ID of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
    * @return a Collection containing the values of the property with the given ID from the given entities,
@@ -115,6 +117,7 @@ public final class EntityUtil {
   }
 
   /**
+   * @param <T> the value type
    * @param propertyID the ID of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
    * @param includeNullValues if true then null values are included
@@ -130,6 +133,7 @@ public final class EntityUtil {
   }
 
   /**
+   * @param <T> the value type
    * @param property the the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
    * @return a Collection containing the values of the property with the given ID from the given entities,
@@ -140,6 +144,7 @@ public final class EntityUtil {
   }
 
   /**
+   * @param <T> the value type
    * @param property the the property for which to retrieve the values
    * @param entities the entities from which to retrieve the property value
    * @param includeNullValues if true then null values are included
@@ -164,6 +169,7 @@ public final class EntityUtil {
   /**
    * Returns a Collection containing the distinct values of <code>propertyID</code> from the given entities, excluding null values.
    * If the <code>entities</code> list is null an empty Collection is returned.
+   * @param <T> the value type
    * @param propertyID the ID of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the values
    * @return a Collection containing the distinct property values, excluding null values
@@ -175,6 +181,7 @@ public final class EntityUtil {
   /**
    * Returns a Collection containing the distinct values of <code>propertyID</code> from the given entities.
    * If the <code>entities</code> list is null an empty Collection is returned.
+   * @param <T> the value type
    * @param propertyID the ID of the property for which to retrieve the values
    * @param entities the entities from which to retrieve the values
    * @param includeNullValue if true then null is considered a value
@@ -218,6 +225,7 @@ public final class EntityUtil {
   /**
    * Returns a LinkedHashMap containing the given entities hashed by the value of the property with ID <code>propertyID</code>,
    * respecting the iteration order of the given collection
+   * @param <K> the key type
    * @param propertyID the ID of the property which value should be used for mapping
    * @param entities the entities to map by property value
    * @return a Map of entities hashed by property value
@@ -518,6 +526,7 @@ public final class EntityUtil {
      * @param beanClass the bean class
      * @param propertyID the propertyID of the entity property
      * @param propertyName the name of the bean property
+     * @throws NoSuchMethodException if the required setter/getter methods are not found
      */
     public final void setProperty(final Class beanClass, final String propertyID, final String propertyName) throws NoSuchMethodException {
       Util.rejectNullValue(beanClass, BEAN_CLASS_PARAM);

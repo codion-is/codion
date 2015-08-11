@@ -12,7 +12,7 @@ import java.util.Collection;
 import java.util.List;
 
 /**
- * A interface defining a class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum & maximum.<br>
+ * A interface defining a class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum &#38; maximum.<br>
  */
 public interface PropertySummaryModel {
 

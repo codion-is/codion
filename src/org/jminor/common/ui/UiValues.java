@@ -126,6 +126,7 @@ public final class UiValues {
   }
 
   /**
+   * @param <V> the value type
    * @param box the combo box
    * @return a Value bound to the given component
    */

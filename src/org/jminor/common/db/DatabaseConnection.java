@@ -29,7 +29,7 @@ public interface DatabaseConnection {
   /**
    * Sets the internal connection to use, note that no validation or
    * transaction checking is performed, it is simply used 'as is'
-   * @param connection
+   * @param connection the JDBC connection
    */
   void setConnection(final Connection connection);
 

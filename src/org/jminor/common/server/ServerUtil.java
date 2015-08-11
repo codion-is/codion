@@ -5,6 +5,7 @@ package org.jminor.common.server;
 
 import org.jminor.common.model.User;
 import org.jminor.common.model.Version;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -31,6 +32,7 @@ public final class ServerUtil {
   /**
    * Instantiates a new ClientInfo
    * @param connectionInfo the connection info
+   * @return a new ClientInfo instance
    */
   public static ClientInfo clientInfo(final ConnectionInfo connectionInfo) {
     return clientInfo(connectionInfo, connectionInfo.getUser());
@@ -40,6 +42,7 @@ public final class ServerUtil {
    * Instantiates a new ClientInfo
    * @param connectionInfo the connection info
    * @param databaseUser the user to use when connecting to the underlying database
+   * @return a new ClientInfo instance
    */
   public static ClientInfo clientInfo(final ConnectionInfo connectionInfo, final User databaseUser) {
     return new DefaultClientInfo(connectionInfo, databaseUser);

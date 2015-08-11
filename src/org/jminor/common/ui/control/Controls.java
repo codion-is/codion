@@ -171,6 +171,7 @@ public final class Controls {
    * @param caption the control caption
    * @param changeEvent an event fired each time the property value changes in the underlying object
    * @param enabledState the state which controls the enabled state of the control
+   * @param tristate if truen then a tristate (false, true, null) model is used
    * @return a toggle control
    */
   public static ToggleControl toggleControl(final Object owner, final String beanPropertyName, final String caption,

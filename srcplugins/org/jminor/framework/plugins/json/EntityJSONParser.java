@@ -195,8 +195,9 @@ public final class EntityJSONParser implements Serializer<Entity> {
   /**
    * Parses an Entity.Key instance from the given JSON object
    * @param keyObject the JSON object representing the entity key
-   * @param jsonDateFormat the format to use when parsing dates
-   * @param jsonTimestampFormat the format to use when parsing timestamps
+   * @param jsonTimeFormat the format to use when parsing time
+   * @param jsonDateFormat the format to use when parsing a date
+   * @param jsonTimestampFormat the format to use when parsing a timestamp
    * @return the Entity.Key represented by the given JSON object
    * @throws IllegalArgumentException in case of an undefined entity
    * @throws ParseException in case of an exception
@@ -223,7 +224,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
    * Serializes the given key
    * @param key the key
    * @return a JSON serialized representation of the key
-   * @throws JSONException
+   * @throws JSONException in case of an exception
    */
   public static String serializeKey(final Entity.Key key) throws JSONException {
     return serializeKey(key, DateFormats.getDateFormat(JSON_TIME_FORMAT), DateFormats.getDateFormat(JSON_DATE_FORMAT),

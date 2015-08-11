@@ -6,12 +6,16 @@ import javax.swing.text.BadLocationException;
 
 /**
  * Code originally from: http://www.orbital-computer.de/JComboBox
- * <p/>
  * Selects an item in a JComboBox based on values typed in on the keyboard.
  * @author Thomas Bierhance
  */
 public final class AutoCompletion extends CompletionDocument {
 
+  /**
+   * @param comboBox the combo box to auto complete
+   * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
+   * @param normalize if true then accented characters are normalized before matching
+   */
   public AutoCompletion(final JComboBox comboBox, final boolean showPopupOnMatch, final boolean normalize) {
     super(comboBox, showPopupOnMatch, normalize);
   }
@@ -25,6 +29,7 @@ public final class AutoCompletion extends CompletionDocument {
 
   /**
    * @param comboBox the combobox on which to enable autocompletion
+   * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
    */
   public static void enable(final JComboBox comboBox, final boolean showPopupOnMatch) {
     enable(comboBox, showPopupOnMatch, true);
@@ -32,6 +37,7 @@ public final class AutoCompletion extends CompletionDocument {
 
   /**
    * @param comboBox the combobox on which to enable autocompletion
+   * @param showPopupOnMatch if false the popup menu is not displayed while selecting items via matching
    * @param normalize if true then accented characters are normalized before matching
    */
   public static void enable(final JComboBox comboBox, final boolean showPopupOnMatch, final boolean normalize) {

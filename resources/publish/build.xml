@@ -26,8 +26,7 @@
     <ivy:publish pubrevision="${version}" status="release" resolver="publish" overwrite="true" forcedeliver="true">
       <artifacts pattern="${base.dir}/[artifact].[ext]"/>
     </ivy:publish>
-    <copy file="ivy.xml.bak" tofile="ivy.xml" overwrite="true"/>
-    <delete file="ivy.xml.bak"/>
+    <move file="ivy.xml.bak" tofile="ivy.xml"/>
   </target>
 
   <target name="report">

@@ -3,30 +3,27 @@
  */
 package org.jminor.common.ui.table;
 
+import org.jminor.common.model.table.DefaultFilteredTableColumnModel;
+import org.jminor.common.model.table.FilteredTableColumnModel;
+
 import org.junit.Test;
 
 import javax.swing.JPanel;
-import javax.swing.table.DefaultTableColumnModel;
 import javax.swing.table.TableColumn;
-import javax.swing.table.TableColumnModel;
-import java.util.ArrayList;
-import java.util.List;
+import java.util.Arrays;
 
 import static org.junit.Assert.assertTrue;
 
 public class AbstractTableColumnSyncPanelTest {
 
   private final TableColumnSyncPanelImpl panel;
-  private final TableColumnModel columnModel;
+  private final FilteredTableColumnModel columnModel;
 
   public AbstractTableColumnSyncPanelTest() {
-    columnModel = new DefaultTableColumnModel();
+    columnModel = new DefaultFilteredTableColumnModel(Arrays.asList(new TableColumn(0, 20), new TableColumn(2, 20)), null);
     columnModel.addColumn(new TableColumn(0, 20));
     columnModel.addColumn(new TableColumn(1, 20));
-    final List<TableColumn> columns = new ArrayList<>();
-    columns.add(columnModel.getColumn(0));
-    columns.add(columnModel.getColumn(1));
-    panel = new TableColumnSyncPanelImpl(columnModel, columns);
+    panel = new TableColumnSyncPanelImpl(columnModel);
   }
 
   @Test
@@ -39,8 +36,8 @@ public class AbstractTableColumnSyncPanelTest {
 
   private static class TableColumnSyncPanelImpl extends AbstractTableColumnSyncPanel {
 
-    private TableColumnSyncPanelImpl(final TableColumnModel columnModel, final List<TableColumn> columns) {
-      super(columnModel, columns);
+    private TableColumnSyncPanelImpl(final FilteredTableColumnModel columnModel) {
+      super(columnModel);
     }
 
     @Override

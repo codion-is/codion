@@ -24,6 +24,7 @@ public final class ClientLog implements Serializable {
    * Instantiates a new ClientLog instance.
    * @param clientID the ID of the client this log represents
    * @param connectionCreationDate the date this client connection was created
+   * @param entries the log entries
    */
   public ClientLog(final UUID clientID, final long connectionCreationDate, final List<MethodLogger.Entry> entries) {
     this.clientID = clientID;

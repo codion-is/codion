@@ -180,6 +180,7 @@ public interface ConnectionPool {
 
     /**
      * Adds a connection check out time
+     * @param milliseconds the check out time in milliseconds
      */
     void addCheckOutTime(final long milliseconds);
   }

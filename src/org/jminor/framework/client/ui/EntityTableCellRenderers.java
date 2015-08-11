@@ -48,6 +48,7 @@ public final class EntityTableCellRenderers {
    * Instantiates a new EntityTableCellRenderer for the given property
    * @param tableModel the table model
    * @param property the property
+   * @return the table cell renderer
    * @see org.jminor.framework.domain.Entity.BackgroundColorProvider
    * @see org.jminor.framework.domain.Entity.Definition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    */
@@ -107,6 +108,7 @@ public final class EntityTableCellRenderers {
      * Instantiates a new DefaultEntityTableCellRenderer based on the data provided by the given EntityTableModel
      * @param tableModel the table model providing the data to render
      * @param property the property
+     * @param format overrides the format defined by the property
      * @param horizontalAlignment the horizontal alignment
      */
     public DefaultEntityTableCellRenderer(final EntityTableModel tableModel, final Property property, final Format format,

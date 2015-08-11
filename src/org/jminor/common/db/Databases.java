@@ -90,6 +90,7 @@ public final class Databases {
   }
 
   /**
+   * @param <C> the type of the database connection this procedure requires
    * @param procedureID the procedure ID
    * @return the procedure
    * @throws IllegalArgumentException in case the procedure is not found
@@ -104,6 +105,7 @@ public final class Databases {
   }
 
   /**
+   * @param <C> the type of the database connection this function requires
    * @param functionID the function ID
    * @return the function
    * @throws IllegalArgumentException in case the function is not found

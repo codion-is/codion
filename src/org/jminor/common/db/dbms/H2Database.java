@@ -72,6 +72,7 @@ public final class H2Database extends AbstractDatabase {
   /**
    * Instantiates a new embedded H2Database.
    * @param databaseName the path to the database files or the database name if in-memory
+   * @param embeddedInMemory if true then this instance is memory based
    */
   public H2Database(final String databaseName, final boolean embeddedInMemory) {
     super(H2, DRIVER_CLASS_NAME, databaseName, null, null, true);

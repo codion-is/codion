@@ -371,6 +371,7 @@ public class EntityPanelProvider implements Comparable {
   /**
    * Creates an EntityTablePanel
    * @param connectionProvider the connection provider
+   * @param detailPanel if true then the table model is configured as a detail model
    * @return an EntityTablePanel based on this provider
    */
   public final EntityTablePanel createTablePanel(final EntityConnectionProvider connectionProvider, final boolean detailPanel) {

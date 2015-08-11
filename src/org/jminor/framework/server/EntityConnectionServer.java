@@ -82,6 +82,13 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
    * @param database the Database implementation
    * @param sslEnabled if true then ssl is enabled
    * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
+   * @param domainModelClassNames the domain model classes to load on startup
+   * @param loginProxyClassNames the login proxy classes to initialize on startup
+   * @param initialPoolUsers the users for which to initialize connection pools on startup
+   * @param webDocumentRoot the web root from which to server files, if any
+   * @param webServerPort the web server port, if any
+   * @param clientLoggingEnabled if true then client logging is enabled on startup
+   * @param connectionTimeout the idle connection timeout
    * @param clientSpecificConnectionTimeouts client specific connection timeouts, mapped to clientTypeID
    * @throws RemoteException in case of a remote exception
    * @throws RuntimeException in case the domain model classes are not found on the classpath or if the
