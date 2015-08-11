@@ -21,8 +21,6 @@ public class AbstractTableColumnSyncPanelTest {
 
   public AbstractTableColumnSyncPanelTest() {
     columnModel = new DefaultFilteredTableColumnModel(Arrays.asList(new TableColumn(0, 20), new TableColumn(2, 20)), null);
-    columnModel.addColumn(new TableColumn(0, 20));
-    columnModel.addColumn(new TableColumn(1, 20));
     panel = new TableColumnSyncPanelImpl(columnModel);
   }
 
