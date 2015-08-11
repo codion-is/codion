@@ -26,7 +26,6 @@ import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
-import java.rmi.RMISecurityManager;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
 import java.rmi.server.RMISocketFactory;
@@ -55,7 +54,6 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   static {
     Configuration.init();
-    System.setSecurityManager(new RMISecurityManager());
   }
 
   /**
@@ -65,7 +63,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   private final String serverName;
 
   /**
-   * Instantiates a new EntityConnectionServerAdminImpl
+   * Instantiates a new DefaultEntityConnectionServerAdmin
    * @param server the server to administer
    * @param serverAdminPort the port on which to make the server admin available
    * @throws RemoteException in case of an exception
