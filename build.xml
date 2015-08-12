@@ -654,7 +654,7 @@
       <jvmarg value="-Djminor.server.domain.classes=org.jminor.framework.demos.empdept.domain.EmpDept, org.jminor.framework.demos.petstore.domain.Petstore, org.jminor.framework.demos.chinook.domain.Chinook, org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser, org.jminor.framework.demos.world.domain.World"/>
       <jvmarg value="-Djavax.net.ssl.keyStore=${resources.security}/JMinorServerKeystore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_server.policy"/>
-      <jvmarg value="-Djavax.net.ssl.keyStorePassword=crappypass"/>
+      <jvmarg value="-Djavax.net.ssl.keyStorePassword=${demo.server.keystorePassword}"/>
       <jvmarg value="-Djava.rmi.server.hostname=localhost"/>
     </java>
   </target>
@@ -695,7 +695,8 @@
 
   <target name="create_client_server_keystore" unless="keystore.available"
           description="Creates a client/server keystore for running the demos">
-    <genkey alias="JMinorServer" keyalg="RSA" storepass="crappypass" validity="365" keystore="${resources.security}/JMinorServerKeystore">
+    <genkey alias="JMinorServer" keyalg="RSA" storepass="${demo.server.keystorePassword}" validity="365"
+            keystore="${resources.security}/JMinorServerKeystore">
       <dname>
         <param name="CN" value="Dummy"/>
         <param name="OU" value="dummy"/>
@@ -707,14 +708,14 @@
       <arg value="-exportcert"/>
       <arg line="-keystore ${resources.security}/JMinorServerKeystore"/>
       <arg line="-alias JMinorServer"/>
-      <arg line="-storepass crappypass"/>
+      <arg line="-storepass ${demo.server.keystorePassword}"/>
       <arg line="-rfc"/>
       <arg line="-file ${resources.security}/JMinorServer.cer"/>
     </exec>
     <exec executable="${java.bin}/keytool" failonerror="true">
       <arg value="-import"/>
       <arg line="-alias JMinorServer"/>
-      <arg line="-storepass crappypass"/>
+      <arg line="-storepass ${demo.server.keystorePassword}"/>
       <arg line="-file ${resources.security}/JMinorServer.cer"/>
       <arg line="-keystore ${resources.security}/JMinorClientTruststore"/>
       <arg line="-noprompt"/>

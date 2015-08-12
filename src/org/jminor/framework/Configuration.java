@@ -127,7 +127,7 @@ public final class Configuration {
   /**
    * The initial connection logging status on the server, either true (on) or false (off)<br>
    * Value type: Boolean<br>
-   * Default value: true
+   * Default value: false
    */
   public static final String SERVER_CLIENT_LOGGING_ENABLED = "jminor.server.clientLoggingEnabled";
 
@@ -749,7 +749,7 @@ public final class Configuration {
     PROPERTIES.put(CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_LOCAL);
     PROPERTIES.put(CONNECTION_SCHEDULE_VALIDATION, true);
     PROPERTIES.put(CONNECTION_VALIDITY_CHECK_TIMEOUT, 0);
-    PROPERTIES.put(SERVER_CLIENT_LOGGING_ENABLED, true);
+    PROPERTIES.put(SERVER_CLIENT_LOGGING_ENABLED, false);
     PROPERTIES.put(SERVER_CONNECTION_LIMIT, DEFAULT_SERVER_CONNECTION_LIMIT);
     PROPERTIES.put(SERVER_CONNECTION_TIMEOUT, DEFAULT_SERVER_CONNECTION_TIMEOUT);
     PROPERTIES.put(SERVER_CONNECTION_LOG_SIZE, DEFAULT_SERVER_CONNECTION_LOG_SIZE);

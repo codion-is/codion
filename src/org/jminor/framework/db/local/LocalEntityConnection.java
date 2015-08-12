@@ -1282,6 +1282,7 @@ final class LocalEntityConnection implements EntityConnection {
     private final String entityID;
     private final Collection<Property.ColumnProperty> properties;
     private final Collection<Property.TransientProperty> transientProperties;
+    private final boolean hasTransientProperties;
 
     /**
      * Instantiates a new EntityResultPacker.
@@ -1292,6 +1293,7 @@ final class LocalEntityConnection implements EntityConnection {
       this.entityID = entityID;
       this.properties = Entities.getColumnProperties(entityID);
       this.transientProperties = Entities.getTransientProperties(entityID);
+      this.hasTransientProperties = !Util.nullOrEmpty(this.transientProperties);
     }
 
     /**
@@ -1317,7 +1319,7 @@ final class LocalEntityConnection implements EntityConnection {
 
     private Entity loadEntity(final ResultSet resultSet) throws SQLException {
       final Entity entity = Entities.entity(entityID);
-      if (!Util.nullOrEmpty(transientProperties)) {
+      if (hasTransientProperties) {
         for (final Property.TransientProperty transientProperty : transientProperties) {
           if (!(transientProperty instanceof Property.DenormalizedViewProperty)
                   && !(transientProperty instanceof Property.DerivedProperty)) {
