@@ -4020,3 +4020,4 @@
   EntityConnectionServer.doConnect() now handles AuthenticationException
   Ivy configuration build.tests added, configurations improved, build configured accordingly
   PostreSQLDatabase.isAuthenticationException() implemented
+  Removed references to chinook entity definitions from unit tests

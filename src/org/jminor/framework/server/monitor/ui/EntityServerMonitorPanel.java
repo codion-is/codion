@@ -107,7 +107,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     new ProcessBuilder(jdkDir + File.separator + "bin"  + File.separator + "jconsole").start();
   }
 
-  public synchronized void setJDKDir() {
+  public void setJDKDir() {
     setJDKDir(this);
   }
 
@@ -131,7 +131,7 @@ public final class EntityServerMonitorPanel extends JPanel {
     monitorFrame.setVisible(true);
   }
 
-  public static void setJDKDir(final JComponent dialogParent) {
+  public synchronized static void setJDKDir(final JComponent dialogParent) {
     try {
       jdkDir = UiUtil.selectDirectory(dialogParent, jdkDir, "Set JDK home").getAbsolutePath();
       Util.putUserPreference(JDK_PREFERENCE_KEY, jdkDir);

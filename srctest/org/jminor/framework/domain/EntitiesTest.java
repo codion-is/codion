@@ -138,51 +138,47 @@ public class EntitiesTest {
   @Test
   public void nullValidation() {
     TestDomain.init();
-    final Entity invoiceLine = Entities.entity(TestDomain.T_INVOICELINE);
-    invoiceLine.setValue(TestDomain.INVOICELINE_INVOICELINEID, 1l);
-    invoiceLine.setValue(TestDomain.INVOICELINE_QUANTITY, 1);
-    invoiceLine.setValue(TestDomain.INVOICELINE_UNITPRICE, 1.0);
-    invoiceLine.setValue(TestDomain.INVOICELINE_TRACKID, 1l);
+    final Entity emp = Entities.entity(TestDomain.T_EMP);
+    emp.setValue(TestDomain.EMP_NAME, "Name");
+    emp.setValue(TestDomain.EMP_HIREDATE, new Date());
+    emp.setValue(TestDomain.EMP_SALARY, 1200.0);
 
-    final Entities.Validator validator = new Entities.Validator(TestDomain.T_INVOICELINE);
+    final Entities.Validator validator = new Entities.Validator(TestDomain.T_EMP);
     try {
-      validator.validate(invoiceLine);
+      validator.validate(emp);
       fail();
     }
     catch (final ValidationException e) {
       assertTrue(e instanceof NullValidationException);
-      assertEquals(TestDomain.INVOICELINE_INVOICEID_FK, e.getKey());
+      assertEquals(TestDomain.EMP_DEPARTMENT_FK, e.getKey());
     }
-    invoiceLine.setValue(TestDomain.INVOICELINE_INVOICEID, 1l);
+    emp.setValue(TestDomain.EMP_DEPARTMENT, 1);
     try {
-      validator.validate(invoiceLine);
+      validator.validate(emp);
     }
     catch (final ValidationException e) {
       fail();
     }
-    invoiceLine.setValue(TestDomain.INVOICELINE_UNITPRICE, null);
+    emp.setValue(TestDomain.EMP_SALARY, null);
     try {
-      validator.validate(invoiceLine);
+      validator.validate(emp);
       fail();
     }
     catch (final ValidationException e) {
       assertTrue(e instanceof NullValidationException);
-      assertEquals(TestDomain.INVOICELINE_UNITPRICE, e.getKey());
+      assertEquals(TestDomain.EMP_SALARY, e.getKey());
     }
   }
 
   @Test
   public void getSearchProperties() {
     TestDomain.init();
-    Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(TestDomain.T_CUSTOMER);
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_FIRSTNAME)));
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_LASTNAME)));
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_EMAIL)));
+    Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(TestDomain.T_EMP);
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB)));
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)));
 
-    searchProperties = Entities.getSearchProperties(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_FIRSTNAME, TestDomain.CUSTOMER_EMAIL);
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_FIRSTNAME)));
-    assertFalse(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_LASTNAME)));
-    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_CUSTOMER, TestDomain.CUSTOMER_EMAIL)));
+    searchProperties = Entities.getSearchProperties(TestDomain.T_EMP, TestDomain.EMP_NAME);
+    assertTrue(searchProperties.contains(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME)));
 
     searchProperties = Entities.getSearchProperties(TestDomain.T_DEPARTMENT);
     //should contain all string based properties
@@ -193,10 +189,9 @@ public class EntitiesTest {
   @Test
   public void getSearchPropertyIDs() {
     TestDomain.init();
-    Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(TestDomain.T_CUSTOMER);
-    assertTrue(searchPropertyIDs.contains(TestDomain.CUSTOMER_FIRSTNAME));
-    assertTrue(searchPropertyIDs.contains(TestDomain.CUSTOMER_LASTNAME));
-    assertTrue(searchPropertyIDs.contains(TestDomain.CUSTOMER_EMAIL));
+    Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(TestDomain.T_EMP);
+    assertTrue(searchPropertyIDs.contains(TestDomain.EMP_JOB));
+    assertTrue(searchPropertyIDs.contains(TestDomain.EMP_NAME));
 
     searchPropertyIDs = Entities.getSearchPropertyIDs(TestDomain.T_DEPARTMENT);
     assertTrue(searchPropertyIDs.isEmpty());

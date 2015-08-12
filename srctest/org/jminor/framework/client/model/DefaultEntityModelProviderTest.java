@@ -20,37 +20,33 @@ public class DefaultEntityModelProviderTest {
 
   @Test
   public void testDetailModelProvider() {
-    final EntityModelProvider customerModelProvider = new DefaultEntityModelProvider(TestDomain.T_CUSTOMER)
-            .setEditModelClass(CustomerEditModel.class)
-            .setTableModelClass(CustomerTableModel.class);
-    final EntityModelProvider invoiceModelProvider = new DefaultEntityModelProvider(TestDomain.T_INVOICE);
-    final EntityModelProvider invoiceLineModelProvider = new DefaultEntityModelProvider(TestDomain.T_INVOICELINE);
+    final EntityModelProvider departmentModelProvider = new DefaultEntityModelProvider(TestDomain.T_DEPARTMENT)
+            .setEditModelClass(DepartmentEditModel.class)
+            .setTableModelClass(DepartmentTableModel.class);
+    final EntityModelProvider employeeModelProvider = new DefaultEntityModelProvider(TestDomain.T_EMP);
 
-    customerModelProvider.addDetailModelProvider(invoiceModelProvider);
-    invoiceModelProvider.addDetailModelProvider(invoiceLineModelProvider);
+    departmentModelProvider.addDetailModelProvider(employeeModelProvider);
 
-    assertEquals(CustomerEditModel.class, customerModelProvider.getEditModelClass());
-    assertEquals(CustomerTableModel.class, customerModelProvider.getTableModelClass());
+    assertEquals(DepartmentEditModel.class, departmentModelProvider.getEditModelClass());
+    assertEquals(DepartmentTableModel.class, departmentModelProvider.getTableModelClass());
 
-    final EntityModel customerModel = customerModelProvider.createModel(LocalEntityConnectionTest.CONNECTION_PROVIDER, false);
-    assertTrue(customerModel.getEditModel() instanceof CustomerEditModel);
-    assertTrue(customerModel.getTableModel() instanceof CustomerTableModel);
-    assertTrue(customerModel.containsDetailModel(TestDomain.T_INVOICE));
-    final EntityModel invoiceModel = customerModel.getDetailModel(TestDomain.T_INVOICE);
-    assertTrue(invoiceModel.containsDetailModel(TestDomain.T_INVOICELINE));
+    final EntityModel departmentModel = departmentModelProvider.createModel(LocalEntityConnectionTest.CONNECTION_PROVIDER, false);
+    assertTrue(departmentModel.getEditModel() instanceof DepartmentEditModel);
+    assertTrue(departmentModel.getTableModel() instanceof DepartmentTableModel);
+    assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
   }
 
-  static final class CustomerEditModel extends DefaultEntityEditModel {
+  static final class DepartmentEditModel extends DefaultEntityEditModel {
 
-    public CustomerEditModel(final EntityConnectionProvider connectionProvider) {
-      super(TestDomain.T_CUSTOMER, connectionProvider);
+    public DepartmentEditModel(final EntityConnectionProvider connectionProvider) {
+      super(TestDomain.T_DEPARTMENT, connectionProvider);
     }
   }
 
-  static final class CustomerTableModel extends DefaultEntityTableModel {
+  static final class DepartmentTableModel extends DefaultEntityTableModel {
 
-    public CustomerTableModel(final EntityConnectionProvider connectionProvider) {
-      super(TestDomain.T_CUSTOMER, connectionProvider);
+    public DepartmentTableModel(final EntityConnectionProvider connectionProvider) {
+      super(TestDomain.T_DEPARTMENT, connectionProvider);
     }
   }
 }

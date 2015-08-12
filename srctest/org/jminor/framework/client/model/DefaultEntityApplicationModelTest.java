@@ -21,49 +21,15 @@ public final class DefaultEntityApplicationModelTest {
   @Test
   public void getDependencyTreeModel() {
     TestDomain.init();
-    final TreeModel model = DefaultEntityApplicationModel.getDependencyTreeModel(TestDomain.DOMAIN_ID);
+    final TreeModel model = DefaultEntityApplicationModel.getDependencyTreeModel(TestDomain.SCOTT_DOMAIN_ID);
     final DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
     final Enumeration tree = root.preorderEnumeration();
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.nextElement();
     assertNull(node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_ARTIST, node.getUserObject());
+    assertEquals(TestDomain.T_DEPARTMENT, node.getUserObject());
     node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_ALBUM, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_TRACK, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_INVOICELINE, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_PLAYLISTTRACK, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_EMPLOYEE, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_EMPLOYEE, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_CUSTOMER, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_INVOICE, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_INVOICELINE, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_GENRE, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_TRACK, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_INVOICELINE, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_PLAYLISTTRACK, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_MEDIATYPE, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_TRACK, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_INVOICELINE, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_PLAYLISTTRACK, node.getUserObject());
-    node = (DefaultMutableTreeNode) tree.nextElement();
-    assertEquals(TestDomain.T_PLAYLIST, node.getUserObject());
+    assertEquals(TestDomain.T_EMP, node.getUserObject());
   }
 
   @Test

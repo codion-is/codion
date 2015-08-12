@@ -20,33 +20,26 @@ public class EntityPanelProviderTest {
   @Test
   public void testDetailPanelProvider() {
     TestDomain.init();
-    final EntityModelProvider customerModelProvider = new DefaultEntityModelProvider(TestDomain.T_CUSTOMER);
-    final EntityModelProvider invoiceModelProvider = new DefaultEntityModelProvider(TestDomain.T_INVOICE);
-    final EntityModelProvider invoiceLineModelProvider = new DefaultEntityModelProvider(TestDomain.T_INVOICELINE);
+    final EntityModelProvider customerModelProvider = new DefaultEntityModelProvider(TestDomain.T_DEPARTMENT);
+    final EntityModelProvider invoiceModelProvider = new DefaultEntityModelProvider(TestDomain.T_EMP);
 
     customerModelProvider.addDetailModelProvider(invoiceModelProvider);
-    invoiceModelProvider.addDetailModelProvider(invoiceLineModelProvider);
 
     final EntityModel customerModel = customerModelProvider.createModel(LocalEntityConnectionTest.CONNECTION_PROVIDER, false);
 
-    final String customerCaption = "A customer caption";
-    final EntityPanelProvider customerPanelProvider = new EntityPanelProvider(TestDomain.T_CUSTOMER, customerCaption);
-    final EntityPanelProvider invoicePanelProvider = new EntityPanelProvider(TestDomain.T_INVOICE);
-    final EntityPanelProvider invoiceLinePanelProvider = new EntityPanelProvider(TestDomain.T_INVOICELINE);
+    final String customerCaption = "A department caption";
+    final EntityPanelProvider customerPanelProvider = new EntityPanelProvider(TestDomain.T_DEPARTMENT, customerCaption);
+    final EntityPanelProvider invoicePanelProvider = new EntityPanelProvider(TestDomain.T_EMP);
 
     customerPanelProvider.addDetailPanelProvider(invoicePanelProvider);
-    invoicePanelProvider.addDetailPanelProvider(invoiceLinePanelProvider);
 
     final EntityPanel customerPanel = customerPanelProvider.createPanel(customerModel);
     assertEquals(customerCaption, customerPanel.getCaption());
-    assertTrue(customerPanel.containsDetailPanel(TestDomain.T_INVOICE));
-    final EntityPanel invoicePanel = customerPanel.getDetailPanel(TestDomain.T_INVOICE);
-    assertEquals(Entities.getCaption(TestDomain.T_INVOICE), invoicePanel.getCaption());
-    assertTrue(invoicePanel.containsDetailPanel(TestDomain.T_INVOICELINE));
-    final EntityPanel invoiceLinePanel = invoicePanel.getDetailPanel(TestDomain.T_INVOICELINE);
+    assertTrue(customerPanel.containsDetailPanel(TestDomain.T_EMP));
+    final EntityPanel invoicePanel = customerPanel.getDetailPanel(TestDomain.T_EMP);
+    assertEquals(Entities.getCaption(TestDomain.T_EMP), invoicePanel.getCaption());
 
     assertEquals(customerModel, customerPanel.getModel());
-    assertEquals(customerModel.getDetailModel(TestDomain.T_INVOICE), invoicePanel.getModel());
-    assertEquals(customerModel.getDetailModel(TestDomain.T_INVOICE).getDetailModel(TestDomain.T_INVOICELINE), invoiceLinePanel.getModel());
+    assertEquals(customerModel.getDetailModel(TestDomain.T_EMP), invoicePanel.getModel());
   }
 }

@@ -41,6 +41,7 @@ import javax.ws.rs.core.HttpHeaders;
 import javax.ws.rs.core.MediaType;
 import javax.ws.rs.core.Response;
 import javax.xml.bind.DatatypeConverter;
+import java.rmi.RemoteException;
 import java.text.ParseException;
 import java.util.ArrayList;
 import java.util.List;
@@ -122,21 +123,7 @@ public final class EntityRESTService extends Application {
           toUpdate.add(entity);
         }
       }
-      final List<Entity> savedEntities = new ArrayList<>(parsedEntities.size());
-      try {
-        connection.beginTransaction();
-        if (!toInsert.isEmpty()) {
-          savedEntities.addAll(connection.selectMany(connection.insert(toInsert)));
-        }
-        if (!toUpdate.isEmpty()) {
-          savedEntities.addAll(connection.update(toUpdate));
-        }
-        connection.commitTransaction();
-      }
-      catch (final DatabaseException dbe) {
-        connection.rollbackTransaction();
-        return Response.serverError().entity(dbe.getMessage()).build();
-      }
+      final List<Entity> savedEntities = saveEntities(connection, toInsert, toUpdate);
 
       return Response.ok(EntityJSONParser.serializeEntities(savedEntities, false)).build();
     }
@@ -203,7 +190,8 @@ public final class EntityRESTService extends Application {
     final byte[] decodedBytes = DatatypeConverter.parseBase64Binary(auth);
     final String[] credentials = new String(decodedBytes).split(":", 2);
     try {
-      return (RemoteEntityConnection) server.connect(ClientUtil.connectionInfo(new User(credentials[0], credentials[1]), clientId, EntityRESTService.class.getName()));
+      return (RemoteEntityConnection) server.connect(ClientUtil.connectionInfo(new User(credentials[0], credentials[1]),
+              clientId, EntityRESTService.class.getName()));
     }
     catch (final ServerException.AuthenticationException ae) {
       throw new WebApplicationException(ae, Response.Status.UNAUTHORIZED);
@@ -215,6 +203,27 @@ public final class EntityRESTService extends Application {
 
   static void setServer(final Server server) {
     EntityRESTService.server = server;
+  }
+
+  private static List<Entity> saveEntities(final RemoteEntityConnection connection, final List<Entity> toInsert,
+                                           final List<Entity> toUpdate) throws DatabaseException, RemoteException {
+    final List<Entity> savedEntities = new ArrayList<>(toInsert.size() + toUpdate.size());
+    try {
+        connection.beginTransaction();
+        if (!toInsert.isEmpty()) {
+          savedEntities.addAll(connection.selectMany(connection.insert(toInsert)));
+        }
+        if (!toUpdate.isEmpty()) {
+          savedEntities.addAll(connection.update(toUpdate));
+        }
+        connection.commitTransaction();
+
+        return savedEntities;
+      }
+      catch (final DatabaseException dbe) {
+        connection.rollbackTransaction();
+        throw dbe;
+      }
   }
 
   private static CriteriaSet<Property.ColumnProperty> createPropertyCriteria(final String entityID, final SearchType searchType,
