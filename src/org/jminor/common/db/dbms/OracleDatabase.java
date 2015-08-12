@@ -126,7 +126,10 @@ public final class OracleDatabase extends AbstractDatabase {
     return exception.getMessage();
   }
 
-  /** {@inheritDoc} */
+  /**
+   * @param exception the exception
+   * @return true if this exception represents a login credentials failure
+   */
   @Override
   public boolean isAuthenticationException(final SQLException exception) {
     return exception.getErrorCode() == LOGIN_CREDS_ERROR;

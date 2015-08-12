@@ -149,7 +149,10 @@ public final class H2Database extends AbstractDatabase {
     }
   }
 
-  /** {@inheritDoc} */
+  /**
+   * @param exception the exception
+   * @return true if this exception represents a login credentials failure
+   */
   @Override
   public boolean isAuthenticationException(final SQLException exception) {
     return exception.getErrorCode() == AUTHENTICATION_ERROR;

@@ -26,6 +26,10 @@
     <fileset dir="${lib}/build.plugins"/>
   </path>
 
+  <path id="lib.build.tests">
+    <fileset dir="${lib}/build.tests"/>
+  </path>
+
   <path id="lib.runtime.test">
     <fileset dir="${lib}/runtime.tests"/>
   </path>
@@ -108,12 +112,10 @@
     <javac destdir="${build.plugins}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.plugins}"/>
       <classpath>
-        <path refid="lib.build.core"/>
         <path refid="lib.build.plugins"/>
         <path location="${build.main}"/>
       </classpath>
     </javac>
-
     <copy todir="${build.plugins}">
       <fileset refid="plugins_resources"/>
     </copy>
@@ -122,14 +124,11 @@
     <javac destdir="${build.demos}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.demos}"/>
       <classpath>
-        <path refid="lib.build.core"/>
-        <path refid="lib.build.plugins"/>
         <path refid="lib.build.demos"/>
         <path location="${build.main}"/>
         <path location="${build.plugins}"/>
       </classpath>
     </javac>
-
     <copy todir="${build.demos}">
       <fileset refid="demos_resources"/>
     </copy>
@@ -138,16 +137,15 @@
     <javac destdir="${build.test}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.test}"/>
       <classpath>
-        <path refid="lib.build.core"/>
-        <path refid="lib.build.plugins"/>
+        <path refid="lib.build.tests"/>
         <path location="${build.main}"/>
         <path location="${build.plugins}"/>
       </classpath>
     </javac>
-
     <copy todir="${build.test}">
       <fileset refid="test_resources"/>
     </copy>
+
     <concat destfile="${build.main}/org/jminor/common/model/version.txt">${version}-build ${build.date}</concat>
   </target>
 

@@ -6,12 +6,15 @@ package org.jminor.common.db.dbms;
 import org.jminor.common.db.AbstractDatabase;
 import org.jminor.common.model.Util;
 
+import java.sql.SQLException;
 import java.util.Properties;
 
 /**
  * A Database implementation based on the PostgreSQL database.
  */
 public final class PostgreSQLDatabase extends AbstractDatabase {
+
+  private static final String INVALID_AUTHORIZATION_SPECIFICATION = "28000";
 
   static final String DRIVER_CLASS_NAME = "org.postgresql.Driver";
   static final String URL_PREFIX = "jdbc:postgresql://";
@@ -55,6 +58,15 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
     Util.require("port", getPort());
     Util.require("sid", getSid());
     return URL_PREFIX + getHost() + ":" + getPort() + "/" + getSid();
+  }
+
+  /**
+   * @param exception the exception
+   * @return true if this exception represents a login credentials failure
+   */
+  @Override
+  public boolean isAuthenticationException(final SQLException exception) {
+    return exception.getSQLState().equals(INVALID_AUTHORIZATION_SPECIFICATION);
   }
 
   /**

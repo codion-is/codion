@@ -4018,3 +4018,5 @@
   EntityUtil.isEntityNew() added
   EntityRESTService now uses the above
   EntityConnectionServer.doConnect() now handles AuthenticationException
+  Ivy configuration build.tests added, configurations improved, build configured accordingly
+  PostreSQLDatabase.isAuthenticationException() implemented
