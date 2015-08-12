@@ -102,7 +102,6 @@
       <src path="${src.main}"/>
       <classpath refid="lib.build.core"/>
     </javac>
-
     <copy todir="${build.main}">
       <fileset refid="common_resources"/>
       <fileset refid="framework_resources"/>
