@@ -4009,3 +4009,4 @@
   AbstractTableColumnSyncPanel constructor now takes FilteredTableColumnModel as parameter
   Javadoc errors and warnings fixed
   DefaultEntityConnectionServerAdmin no longer sets the RMISecurityManager (deprecated)
+  ivy.xml, redundant transitive="false" removed from dependencies
