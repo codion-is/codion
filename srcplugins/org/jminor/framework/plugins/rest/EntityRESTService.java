@@ -209,21 +209,21 @@ public final class EntityRESTService extends Application {
                                            final List<Entity> toUpdate) throws DatabaseException, RemoteException {
     final List<Entity> savedEntities = new ArrayList<>(toInsert.size() + toUpdate.size());
     try {
-        connection.beginTransaction();
-        if (!toInsert.isEmpty()) {
-          savedEntities.addAll(connection.selectMany(connection.insert(toInsert)));
-        }
-        if (!toUpdate.isEmpty()) {
-          savedEntities.addAll(connection.update(toUpdate));
-        }
-        connection.commitTransaction();
+      connection.beginTransaction();
+      if (!toInsert.isEmpty()) {
+        savedEntities.addAll(connection.selectMany(connection.insert(toInsert)));
+      }
+      if (!toUpdate.isEmpty()) {
+        savedEntities.addAll(connection.update(toUpdate));
+      }
+      connection.commitTransaction();
 
-        return savedEntities;
-      }
-      catch (final DatabaseException dbe) {
-        connection.rollbackTransaction();
-        throw dbe;
-      }
+      return savedEntities;
+    }
+    catch (final DatabaseException dbe) {
+      connection.rollbackTransaction();
+      throw dbe;
+    }
   }
 
   private static CriteriaSet<Property.ColumnProperty> createPropertyCriteria(final String entityID, final SearchType searchType,
