@@ -172,14 +172,16 @@
                 conf="
                 runtime.tests->master;
                 runtime.server->master"/>
-    <!--httpclient for EmpDeptRESTLoadTest-->
+    <!--httpclient for EmpDeptRESTLoadTest and EntityConnectionServerTest-->
     <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.2.5"
                 conf="
+                build.core->master;
                 build.demos->master;
                 runtime.tests->master;
                 runtime.client->master"/>
     <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.2.4"
                 conf="
+                build.core->master;
                 build.demos->master;
                 runtime.tests->master;
                 runtime.client->master"/>
