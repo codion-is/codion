@@ -82,7 +82,7 @@ public class SizedDocument extends PlainDocument {
     postInsert();
   }
 
-  protected void postInsert() {}
+  protected void postInsert() {/*Provided for subclasses*/}
 
   /**
    * @param string the string to check

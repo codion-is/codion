@@ -456,11 +456,11 @@ public class FilteredTablePanel<T, C> extends JPanel {
       }
     }));
 
-    final JPanel basePanel = new JPanel(UiUtil.createBorderLayout());
-    basePanel.add(new JScrollPane(togglePanel), BorderLayout.CENTER);
-    basePanel.add(southPanel, BorderLayout.SOUTH);
+    final JPanel base = new JPanel(UiUtil.createBorderLayout());
+    base.add(new JScrollPane(togglePanel), BorderLayout.CENTER);
+    base.add(southPanel, BorderLayout.SOUTH);
 
-    return basePanel;
+    return base;
   }
 
   private void initializeTableHeader() {

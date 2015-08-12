@@ -207,21 +207,21 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
    * Called after each initialization.
    * @param entityModel the entity model to configure
    */
-  protected void configureModel(final EntityModel entityModel) {}
+  protected void configureModel(final EntityModel entityModel) {/*Provided for subclasses*/}
 
   /**
    * Override to configure the provided EntityEditModel instance.
    * Called after each initialization.
    * @param editModel the edit model to configure
    */
-  protected void configureEditModel(final EntityEditModel editModel) {}
+  protected void configureEditModel(final EntityEditModel editModel) {/*Provided for subclasses*/}
 
   /**
    * Override to configure the provided EntityTableModel instance.
    * Called after each initialization.
    * @param tableModel the edit model to configure
    */
-  protected void configureTableModel(final EntityTableModel tableModel) {}
+  protected void configureTableModel(final EntityTableModel tableModel) {/*Provided for subclasses*/}
 
   private EntityModel initializeDefaultModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
     final EntityTableModel tableModel = createTableModel(connectionProvider, detailModel);

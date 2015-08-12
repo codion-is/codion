@@ -97,13 +97,13 @@ public class EntityGeneratorPanel extends JPanel {
         }
 
         final User user = new LoginPanel(new User(schemaName, null)).showLoginPanel(null);
-        final EntityGeneratorModel model = new EntityGeneratorModel(user, schemaName);
-        final EntityGeneratorPanel panel = new EntityGeneratorPanel(model);
+        final EntityGeneratorModel generatorModel = new EntityGeneratorModel(user, schemaName);
+        final EntityGeneratorPanel generatorPanel = new EntityGeneratorPanel(generatorModel);
         final ImageIcon icon = Images.loadImage("jminor_logo32.gif");
         final JFrame frame = new JFrame("JMinor Entity Generator");
         frame.setIconImage(icon.getImage());
         frame.setDefaultCloseOperation(WindowConstants.EXIT_ON_CLOSE);
-        frame.add(panel);
+        frame.add(generatorPanel);
 
         frame.pack();
         UiUtil.centerWindow(frame);

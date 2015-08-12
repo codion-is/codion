@@ -842,11 +842,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
     @Override
     public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
-                             final DatabaseConnection connection) throws SQLException {}
+                             final DatabaseConnection connection) throws SQLException {/*Provided for subclasses*/}
 
     @Override
     public void afterInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
-                            final DatabaseConnection connection) throws SQLException {}
+                            final DatabaseConnection connection) throws SQLException {/*Provided for subclasses*/}
   }
 
   abstract static class QueriedKeyGenerator extends DefaultKeyGenerator {

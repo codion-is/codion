@@ -382,19 +382,19 @@ public class EntityPanelProvider implements Comparable {
    * Called after the EntityPanel has been constructed, but before it is initialized, override to configure
    * @param entityPanel the EntityPanel just constructed
    */
-  protected void configurePanel(final EntityPanel entityPanel) {}
+  protected void configurePanel(final EntityPanel entityPanel) {/*Provided for subclasses*/}
 
   /**
    * Called after the EntityEditPanel has been constructed, but before it is initialized, override to configure
    * @param editPanel the EntityEditPanel just constructed
    */
-  protected void configureEditPanel(final EntityEditPanel editPanel) {}
+  protected void configureEditPanel(final EntityEditPanel editPanel) {/*Provided for subclasses*/}
 
   /**
    * Called after the EntityTablePanel has been constructed, but before it is initialized, override to configure
    * @param tablePanel the EntityTablePanel just constructed
    */
-  protected void configureTablePanel(final EntityTablePanel tablePanel) {}
+  protected void configureTablePanel(final EntityTablePanel tablePanel) {/*Provided for subclasses*/}
 
   private EntityPanel initializePanel(final EntityModel entityModel) {
     try {

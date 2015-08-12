@@ -652,12 +652,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   @SuppressWarnings({"UnusedDeclaration"})
-  protected void handleDelete(final EntityEditModel.DeleteEvent event) {}
+  protected void handleDelete(final EntityEditModel.DeleteEvent event) {/*Provided for subclasses*/}
 
   /**
    * Override to bind events using the edit model, called after the edit model has been set
    */
-  protected void bindEditModelEvents() {}
+  protected void bindEditModelEvents() {/*Provided for subclasses*/}
 
   /**
    * Clears any user preferences saved for this table model

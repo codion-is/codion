@@ -156,9 +156,9 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
     }
 
     @Override
-    public void columnMarginChanged(final ChangeEvent e) {}
+    public void columnMarginChanged(final ChangeEvent e) {/*Not required*/}
 
     @Override
-    public void columnSelectionChanged(final ListSelectionEvent e) {}
+    public void columnSelectionChanged(final ListSelectionEvent e) {/*Not required*/}
   }
 }

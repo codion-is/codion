@@ -1047,20 +1047,20 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Called during initialization, before controls have been initialized
    * @see #initializePanel()
    */
-  protected void initializeAssociatedPanels() {}
+  protected void initializeAssociatedPanels() {/*Provided for subclasses*/}
 
   /**
    * Called during initialization, after controls have been initialized,
    * use this method to initialize any application panels that rely on controls having been initialized
    * @see #initializePanel()
    */
-  protected void initializeControlPanels() {}
+  protected void initializeControlPanels() {/*Provided for subclasses*/}
 
   /**
    * Override to add code that should be called during the initialization routine after the panel has been initialized
    * @see #initializePanel()
    */
-  protected void initialize() {}
+  protected void initialize() {/*Provided for subclasses*/}
 
   /**
    * @param masterPanel the panel serving as master panel for this entity panel
@@ -1579,9 +1579,9 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     private static final long serialVersionUID = 1;
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-      final EntityEditPanel editPanel = UiUtil.getParentOfType((Component) evt.getNewValue(), EntityEditPanel.class);
-      if (editPanel != null) {
-        editPanel.setActive(true);
+      final EntityEditPanel editPanelParent = UiUtil.getParentOfType((Component) evt.getNewValue(), EntityEditPanel.class);
+      if (editPanelParent != null) {
+        editPanelParent.setActive(true);
       }
       else {
         final EntityPanel parent = UiUtil.getParentOfType((Component) evt.getNewValue(), EntityPanel.class);

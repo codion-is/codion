@@ -373,7 +373,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /**
    * Called after the valueChangeEvent has been initialized, via the first call to {@link #getValueChangedEvent()}
    */
-  protected void handleValueChangedEventInitialized() {}
+  protected void handleValueChangedEventInitialized() {/*Provided for subclasses*/}
 
   private void updateOriginalValue(final K key, final V value, final V previousValue) {
     final boolean modified = isModified(key);
