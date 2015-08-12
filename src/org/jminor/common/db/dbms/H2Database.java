@@ -28,6 +28,10 @@ public final class H2Database extends AbstractDatabase {
    * The script to run when initializing an embedded database
    */
   public static final String DATABASE_INIT_SCRIPT = "jminor.db.initScript";
+  /**
+   * The error code representing incorrect login credentials
+   */
+  private static final int AUTHENTICATION_ERROR = 28000;
 
   static final String DRIVER_CLASS_NAME = "org.h2.Driver";
   static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
@@ -143,6 +147,12 @@ public final class H2Database extends AbstractDatabase {
       Util.require("sid", getSid());
       return URL_PREFIX + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + urlAppend;
     }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isAuthenticationException(final SQLException exception) {
+    return exception.getErrorCode() == AUTHENTICATION_ERROR;
   }
 
   /**

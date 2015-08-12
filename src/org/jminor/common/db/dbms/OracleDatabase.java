@@ -125,4 +125,10 @@ public final class OracleDatabase extends AbstractDatabase {
 
     return exception.getMessage();
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isAuthenticationException(final SQLException exception) {
+    return exception.getErrorCode() == LOGIN_CREDS_ERROR;
+  }
 }

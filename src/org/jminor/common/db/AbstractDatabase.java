@@ -3,6 +3,7 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.db.exception.AuthenticationException;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -158,6 +159,9 @@ public abstract class AbstractDatabase implements Database {
       return DriverManager.getConnection(getURL(connectionProperties), addConnectionProperties(connectionProperties));
     }
     catch (final SQLException e) {
+      if (isAuthenticationException(e)) {
+        throw new AuthenticationException(e.getMessage());
+      }
       throw new DatabaseException(e, getErrorMessage(e));
     }
   }
@@ -221,6 +225,16 @@ public abstract class AbstractDatabase implements Database {
   @Override
   public String getErrorMessage(final SQLException exception) {
     return exception.getMessage();
+  }
+
+  /**
+   * This default implementation returns false
+   * @param exception the exception
+   * @return false
+   */
+  @Override
+  public boolean isAuthenticationException(final SQLException exception) {
+    return false;
   }
 
   /** {@inheritDoc} */

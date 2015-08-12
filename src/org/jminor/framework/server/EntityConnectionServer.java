@@ -4,6 +4,7 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
+import org.jminor.common.db.exception.AuthenticationException;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolProvider;
@@ -365,7 +366,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
 
   /** {@inheritDoc} */
   @Override
-  protected DefaultRemoteEntityConnection doConnect(final ClientInfo clientInfo) throws RemoteException, ServerException.LoginException {
+  protected RemoteEntityConnection doConnect(final ClientInfo clientInfo) throws RemoteException, ServerException.LoginException {
     try {
       final DefaultRemoteEntityConnection connection;
       final ConnectionPool connectionPool = ConnectionPools.getConnectionPool(clientInfo.getDatabaseUser());
@@ -395,6 +396,9 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
     }
     catch (final RemoteException e) {
       throw e;
+    }
+    catch (final AuthenticationException ae) {
+      throw ServerException.authenticationException(ae.getMessage());
     }
     catch (final Exception e) {
       LOG.debug(clientInfo + " unable to connect", e);
@@ -429,7 +433,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
     try {
       final AuxiliaryServer auxiliaryServer = (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
               Server.class, String.class, Integer.class).newInstance(this, webDocumentRoot, webServerPort);
-      Executors.newSingleThreadExecutor().execute(new Runnable() {
+      Executors.newSingleThreadExecutor().submit(new Runnable() {
         @Override
         public void run() {
           LOG.info("Starting web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
@@ -441,7 +445,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
             LOG.error("Trying to start web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
           }
         }
-      });
+      }).get();
 
       return auxiliaryServer;
     }
@@ -465,11 +469,11 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
    * found in the connection pool user, assuming the user names match
    * @param connectionPoolUser the connection pool user credentials
    * @param user the user credentials to check
-   * @throws DatabaseException in case the password does not match the one in the connection pool user
+   * @throws AuthenticationException in case the password does not match the one in the connection pool user
    */
-  private static void checkConnectionPoolCredentials(final User connectionPoolUser, final User user) throws DatabaseException {
+  private static void checkConnectionPoolCredentials(final User connectionPoolUser, final User user) throws AuthenticationException {
     if (!connectionPoolUser.getPassword().equals(user.getPassword())) {
-      throw new DatabaseException("Wrong username or password for connection pool");
+      throw new AuthenticationException("Wrong username or password for connection pool");
     }
   }
 

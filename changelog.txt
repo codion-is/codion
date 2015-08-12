@@ -4010,3 +4010,11 @@
   Javadoc errors and warnings fixed
   DefaultEntityConnectionServerAdmin no longer sets the RMISecurityManager (deprecated)
   ivy.xml, redundant transitive="false" removed from dependencies
+  EntityConnectionServer.startWebServer() now waits for Jetty startup to complete before returning
+  EntityConnectionServerTest.testREST() added
+  Database.isAuthenticationException(SQLException) added, implemented for H2 and Oracle
+  AuthenticationException added
+  AbstractDatabase.createConnection() throws AuthenticationException when possible
+  EntityUtil.isEntityNew() added
+  EntityRESTService now uses the above
+  EntityConnectionServer.doConnect() now handles AuthenticationException

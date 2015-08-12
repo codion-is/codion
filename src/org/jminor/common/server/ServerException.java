@@ -30,6 +30,14 @@ public class ServerException extends Exception {
   }
 
   /**
+   * @param message the exception message
+   * @return an exception indicating an authentication failure
+   */
+  public static AuthenticationException authenticationException(final String message) {
+    return new AuthenticationException(message);
+  }
+
+  /**
    * An exception indicating that a login has failed
    */
   public static class LoginException extends ServerException {

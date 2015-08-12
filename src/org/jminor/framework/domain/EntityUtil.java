@@ -473,6 +473,19 @@ public final class EntityUtil {
   }
 
   /**
+   * Returns true if this entity has a null primary key or a null original primary key,
+   * which indicates the best guess about an entity being new.
+   * @param entity the entity
+   * @return true if this entity has not been persisted
+   */
+  public static boolean isEntityNew(final Entity entity) {
+    final Entity.Key key = entity.getPrimaryKey();
+    final Entity.Key originalKey = entity.getOriginalPrimaryKey();
+
+    return key.isNull() || originalKey.isNull();
+  }
+
+  /**
    * A class for mapping between entities and corresponding bean classes
    */
   public static class EntityBeanMapper {

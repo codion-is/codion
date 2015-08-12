@@ -215,6 +215,12 @@ public interface Database {
   String getErrorMessage(final SQLException exception);
 
   /**
+   * @param exception the exception
+   * @return true if this exception represents a login credentials failure
+   */
+  boolean isAuthenticationException(final SQLException exception);
+
+  /**
    * Adds any dbms specific connection properties to the given properties map,
    * called each time a connection is created
    * @param properties the properties map to add to

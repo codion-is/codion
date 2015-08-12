@@ -463,9 +463,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
   /** {@inheritDoc} */
   @Override
   public boolean isEntityNew() {
-    final Entity.Key key = entity.getPrimaryKey();
-    final Entity.Key originalKey = entity.getOriginalPrimaryKey();
-    return key.isNull() || originalKey.isNull();
+    return EntityUtil.isEntityNew(entity);
   }
 
   /** {@inheritDoc} */

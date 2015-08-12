@@ -17,6 +17,7 @@ import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.plugins.json.EntityJSONParser;
 
@@ -114,7 +115,7 @@ public final class EntityRESTService extends Application {
       final List<Entity> toInsert = new ArrayList<>(parsedEntities.size());
       final List<Entity> toUpdate = new ArrayList<>(parsedEntities.size());
       for (final Entity entity : parsedEntities) {
-        if (entity.isPrimaryKeyNull()) {
+        if (EntityUtil.isEntityNew(entity)) {
           toInsert.add(entity);
         }
         else {
@@ -189,7 +190,7 @@ public final class EntityRESTService extends Application {
     }
 
     final List<String> basic = headers.getRequestHeader(AUTHORIZATION);
-    if (basic.isEmpty()) {
+    if (Util.nullOrEmpty(basic)) {
       throw new WebApplicationException(Response.Status.UNAUTHORIZED);
     }
 
@@ -204,11 +205,8 @@ public final class EntityRESTService extends Application {
     try {
       return (RemoteEntityConnection) server.connect(ClientUtil.connectionInfo(new User(credentials[0], credentials[1]), clientId, EntityRESTService.class.getName()));
     }
-    catch (final ServerException.LoginException e) {
-      if (e.getCause() instanceof DatabaseException) {
-        throw new WebApplicationException(e, Response.Status.UNAUTHORIZED);
-      }
-      throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
+    catch (final ServerException.AuthenticationException ae) {
+      throw new WebApplicationException(ae, Response.Status.UNAUTHORIZED);
     }
     catch (final Exception e) {
       throw new WebApplicationException(e, Response.Status.INTERNAL_SERVER_ERROR);
