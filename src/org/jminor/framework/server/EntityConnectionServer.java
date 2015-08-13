@@ -438,7 +438,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
         public void run() {
           LOG.info("Starting web server on port: {}, document root: {}", webServerPort, webDocumentRoot);
           try {
-            auxiliaryServer.start();
+            auxiliaryServer.startServer();
           }
           catch (final Exception e) {
             LOG.error(e.getMessage(), e);
@@ -460,7 +460,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
   private void stopWebServer() throws Exception {
     if (webServer != null) {
       LOG.info("Shutting down web server");
-      webServer.stop();
+      webServer.stopServer();
     }
   }
 

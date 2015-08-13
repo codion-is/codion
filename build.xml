@@ -466,12 +466,13 @@
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
       <zipgroupfileset dir="${dist}"
-                       includes="jminor-client-bundle/jminor-bundle.jar, jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar"
+                       includes="jminor-client-bundle/jminor-client-bundle.jar, jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar"
                        excludes="*javadoc.jar, *sources.jar, META-INF/**/*"/>
       <fileset file="${deploy.demos.truststore}"/>
     </jar>
     <deploy_demo_app app-id="empdept" app-name="EmpDept JMinor Demo" main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>
     <deploy_demo_app app-id="chinook" app-name="Chinook JMinor Demo" main-class="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"/>
+    <deploy_demo_app app-id="petstore" app-name="Petstore JMinor Demo" main-class="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel"/>
     <deploy_demo_app app-id="world" app-name="World JMinor Demo" main-class="org.jminor.framework.demos.world.client.ui.WorldAppPanel"/>
     <!--Cleanup-->
     <delete dir="${deploy.demos.dir}/META-INF"/>

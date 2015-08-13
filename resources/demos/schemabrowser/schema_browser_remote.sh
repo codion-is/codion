@@ -1,1 +1,1 @@
-java -Xmx128m -Djminor.configurationFile=remote.config -Djava.security.policy=config/jminor_demos.policy -cp config:lib/* org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel
+java -Xmx128m -Djminor.configurationFile=remote.config -Djava.security.policy=config/jminor_demos.policy -cp config:lib/* org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel &

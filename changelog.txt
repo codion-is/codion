@@ -4024,3 +4024,6 @@
   Fixed a few Sonar issues
   Minor performance optimization in EntityResultPacker
   Server client logging no longer on by default
+  Server.AuxiliaryServer.start() and stop() renamed to startServer() and stopServer()
+  EntityRESTServer updated according with the above
+  DefaultEntityConnectionServerAdmin.main() restart option added

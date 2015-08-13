@@ -472,6 +472,7 @@ public class EntityConnectionServerTest {
     Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.server.TestLoginProxy");
     Configuration.setValue(Configuration.WEB_SERVER_DOCUMENT_ROOT, System.getProperty("user.dir") + System.getProperty("file.separator") + "resources");
     Configuration.setValue(Configuration.WEB_SERVER_PORT, WEB_SERVER_PORT_NUMBER);
+    Configuration.setValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED, true);
     Configuration.setValue("java.rmi.server.hostname", "localhost");
     Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
     Configuration.setValue("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
@@ -490,6 +491,7 @@ public class EntityConnectionServerTest {
     Configuration.clearValue(Configuration.SERVER_LOGIN_PROXY_CLASSES);
     Configuration.clearValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
     Configuration.clearValue(Configuration.WEB_SERVER_PORT);
+    Configuration.setValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED, false);
     Configuration.clearValue("java.rmi.server.hostname");
     Configuration.clearValue("java.security.policy");
     Configuration.clearValue("javax.net.ssl.trustStore");

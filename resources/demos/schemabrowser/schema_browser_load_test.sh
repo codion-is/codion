@@ -1,1 +1,1 @@
-java -Xmx128m -Djminor.configurationFile=load_test.config -Djava.security.policy=config/jminor_load_test.policy -cp config:lib/* org.jminor.framework.demos.schemabrowser.testing.SchemaBrowserLoadTest
+java -Xmx128m -Djminor.configurationFile=load_test.config -Djava.security.policy=config/jminor_load_test.policy -cp config:lib/* org.jminor.framework.demos.schemabrowser.testing.SchemaBrowserLoadTest &

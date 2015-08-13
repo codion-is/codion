@@ -50,6 +50,11 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   private static final int USERNAME_PASSWORD_SPLIT_COUNT = 2;
 
+  private static final String START = "start";
+  private static final String STOP = "stop";
+  private static final String SHUTDOWN = "shutdown";
+  private static final String RESTART = "restart";
+
   private static DefaultEntityConnectionServerAdmin adminInstance;
 
   static {
@@ -593,20 +598,29 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   }
 
   /**
-   * If no arguments are supplied a new EntityConnectionServer with a server admin interface is started,
-   * If the argument 'shutdown' is supplied the server, if running, is shut down.
-   * @param arguments 'shutdown' causes a running server to be shut down
+   * If no arguments are supplied a new EntityConnectionServer with a server admin interface is started.
+   * @param arguments 'start' (or no argument) starts the server, 'stop' or 'shutdown' causes a running server to be shut down and 'restart' restarts the server
    * @throws RemoteException in case of a remote exception during service export
    * @throws ClassNotFoundException in case the domain model classes required for the server is not found or
    * if the jdbc driver class is not found
    * @throws DatabaseException in case of an exception while constructing the initial pooled connections
    */
   public static void main(final String[] arguments) throws RemoteException, ClassNotFoundException, DatabaseException {
-    if (arguments.length == 0) {
-      startServer();
-    }
-    else if (arguments[0].equalsIgnoreCase("shutdown")) {
-      shutdownServer();
+    final String argument = arguments.length == 0 ? START : arguments[0];
+    switch (argument) {
+      case START:
+        startServer();
+        break;
+      case STOP:
+      case SHUTDOWN:
+        shutdownServer();
+        break;
+      case RESTART:
+        shutdownServer();
+        startServer();
+        break;
+      default:
+        throw new IllegalArgumentException("Unknown argument '" + argument + "'");
     }
   }
 }

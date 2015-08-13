@@ -40,4 +40,17 @@ public final class EntityRESTServer extends Server implements org.jminor.common.
 
     setHandler(handlers);
   }
+
+  /** {@inheritDoc} */
+  @Override
+  public void startServer() throws Exception {
+    start();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void stopServer() throws Exception {
+    stop();
+    join();
+  }
 }
