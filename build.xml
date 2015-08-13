@@ -398,10 +398,10 @@
 
   <target name="deploy_server" depends="create_client_server_keystore"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
-    <copy file="${dist}/jminor-server/jminor-server.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-db-core/jminor-db-core.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-db-local/jminor-db-local.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-server/jminor-server.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-plugin-rest/jminor-plugin-rest.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-demos/jminor-demos.jar" todir="${deploy.server.path}/lib"/>
@@ -427,9 +427,9 @@
   <target name="deploy_server_monitor" depends="create_client_server_keystore"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}"/>
-    <copy file="${dist}/jminor-server-monitor/jminor-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${dist}/jminor-common-ui/jminor-common-ui.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${dist}/jminor-server-monitor/jminor-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy todir="${deploy.server.monitor.path}/lib">
       <fileset dir="${lib}/runtime.server-monitor"/>
     </copy>
