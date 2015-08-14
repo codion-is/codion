@@ -89,7 +89,7 @@ public final class ClientUserMonitor {
     return userListModel;
   }
 
-  public FilteredTableModel<UserInfo, Integer> getUserHistoryTableModel() {
+  public FilteredTableModel getUserHistoryTableModel() {
     return userHistoryTableModel;
   }
 
@@ -157,10 +157,56 @@ public final class ClientUserMonitor {
     return updateScheduler;
   }
 
-  public static final class UserInfo {
+  private final class UserHistoryTableModel extends AbstractFilteredTableModel<UserInfo, Integer> {
+
+    private UserHistoryTableModel() {
+      super(new UserHistoryTableSortModel(), null);
+    }
+
+    @Override
+    protected void doRefresh() {
+      try {
+        for (final ClientInfo clientInfo : server.getClients()) {
+          final UserInfo newUserInfo = new UserInfo(clientInfo.getUser(), clientInfo.getClientTypeID(),
+                  clientInfo.getClientHost(), new Date(), clientInfo.getClientID());
+          if (contains(newUserInfo, true)) {
+            final UserInfo currentUserInfo = getItemAt(indexOf(newUserInfo));
+            currentUserInfo.setLastSeen(newUserInfo.getLastSeen());
+            if (currentUserInfo.isNewConnection(newUserInfo.getClientID())) {
+              currentUserInfo.incrementConnectionCount();
+              currentUserInfo.setClientID(newUserInfo.getClientID());
+            }
+          }
+          else {
+            addItems(Collections.singletonList(newUserInfo), true);
+          }
+        }
+        sortContents();
+      }
+      catch (final RemoteException e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    @Override
+    public Object getValueAt(final int row, final int column) {
+      final UserInfo userInfo = getItemAt(row);
+      switch (column) {
+        case USERNAME_COLUMN: return userInfo.getUser().getUsername();
+        case CLIENT_TYPE_COLUMN: return userInfo.getClientTypeID();
+        case CLIENT_HOST_COLUMN: return userInfo.getClientHost();
+        case LAST_SEEN_COLUMN: return userInfo.getLastSeen();
+        case CONNECTION_COUNT_COLUMN: return userInfo.getConnectionCount();
+        default: throw new IllegalArgumentException(Integer.toString(column));
+      }
+    }
+  }
+
+  private static final class UserInfo {
+
     private final User user;
-    private String clientTypeID;
-    private String clientHost;
+    private final String clientTypeID;
+    private final String clientHost;
     private Date lastSeen;
     private UUID clientID;
     private int connectionCount = 1;
@@ -190,20 +236,12 @@ public final class ClientUserMonitor {
       return lastSeen;
     }
 
-    public void setClientTypeID(final String clientTypeID) {
-      this.clientTypeID = clientTypeID;
-    }
-
     public UUID getClientID() {
       return clientID;
     }
 
     public int getConnectionCount() {
       return connectionCount;
-    }
-
-    public void setClientHost(final String clientHost) {
-      this.clientHost = clientHost;
     }
 
     public void setLastSeen(final Date lastSeen) {
@@ -220,64 +258,29 @@ public final class ClientUserMonitor {
 
     @Override
     public boolean equals(final Object obj) {
-      return obj instanceof UserInfo && ((UserInfo) obj).user.equals(user);
+      if (this == obj) {
+        return true;
+      }
+      if (!(obj instanceof UserInfo)) {
+        return false;
+      }
+
+      final UserInfo that = (UserInfo) obj;
+
+      return this.user.equals(that.user) && this.clientTypeID.equals(that.clientTypeID) && this.clientHost.equals(that.clientHost);
     }
 
     @Override
     public int hashCode() {
-      return user.hashCode();
+      int result = user.hashCode();
+      result = 31 * result + clientTypeID.hashCode();
+      result = 31 * result + clientHost.hashCode();
+
+      return result;
     }
 
     public boolean isNewConnection(final UUID clientID) {
       return !this.clientID.equals(clientID);
-    }
-  }
-
-  private final class UserHistoryTableModel extends AbstractFilteredTableModel<UserInfo, Integer> {
-
-    private UserHistoryTableModel() {
-      super(new UserHistoryTableSortModel(), null);
-    }
-
-    @Override
-    protected void doRefresh() {
-      try {
-        for (final ClientInfo clientInfo : server.getClients()) {
-          final UserInfo newUserInfo = new UserInfo(clientInfo.getUser(), clientInfo.getClientTypeID(),
-                  clientInfo.getClientHost(), new Date(), clientInfo.getClientID());
-          if (contains(newUserInfo, true)) {
-            final int index = indexOf(newUserInfo);
-            final UserInfo currentUserInfo= getItemAt(index);
-            currentUserInfo.setClientHost(newUserInfo.getClientHost());
-            currentUserInfo.setClientTypeID(newUserInfo.getClientTypeID());
-            currentUserInfo.setLastSeen(newUserInfo.getLastSeen());
-            if (currentUserInfo.isNewConnection(newUserInfo.getClientID())) {
-              currentUserInfo.incrementConnectionCount();
-              currentUserInfo.setClientID(newUserInfo.getClientID());
-            }
-          }
-          else {
-            addItems(Collections.singletonList(newUserInfo), true);
-          }
-        }
-        sortContents();
-      }
-      catch (final RemoteException e) {
-        throw new RuntimeException(e);
-      }
-    }
-
-    @Override
-    public Object getValueAt(final int row, final int column) {
-      final UserInfo rowObject = getItemAt(row);
-      switch (column) {
-        case USERNAME_COLUMN: return rowObject.getUser().getUsername();
-        case CLIENT_TYPE_COLUMN: return rowObject.getClientTypeID();
-        case CLIENT_HOST_COLUMN: return rowObject.getClientHost();
-        case LAST_SEEN_COLUMN: return rowObject.getLastSeen();
-        case CONNECTION_COUNT_COLUMN: return rowObject.getConnectionCount();
-        default: throw new IllegalArgumentException(Integer.toString(column));
-      }
     }
   }
 
@@ -310,27 +313,27 @@ public final class ClientUserMonitor {
         default: throw new IllegalArgumentException(columnIdentifier.toString());
       }
     }
-  }
 
-  private static List<TableColumn> createUserHistoryColumns() {
-    final TableColumn username = new TableColumn(USERNAME_COLUMN);
-    username.setIdentifier(USERNAME_COLUMN);
-    username.setHeaderValue("Username");
-    final TableColumn clientType = new TableColumn(CLIENT_TYPE_COLUMN);
-    clientType.setIdentifier(CLIENT_TYPE_COLUMN);
-    clientType.setHeaderValue("Client type");
-    final TableColumn host = new TableColumn(CLIENT_HOST_COLUMN);
-    host.setIdentifier(CLIENT_HOST_COLUMN);
-    host.setHeaderValue("Host");
-    final TableColumn lastSeen = new TableColumn(LAST_SEEN_COLUMN);
-    lastSeen.setIdentifier(LAST_SEEN_COLUMN);
-    lastSeen.setHeaderValue("Last seen");
-    lastSeen.setCellRenderer(new LastSeenRenderer());
-    final TableColumn connectionCount = new TableColumn(CONNECTION_COUNT_COLUMN);
-    connectionCount.setIdentifier(CONNECTION_COUNT_COLUMN);
-    connectionCount.setHeaderValue("Connections");
+    private static List<TableColumn> createUserHistoryColumns() {
+      final TableColumn username = new TableColumn(USERNAME_COLUMN);
+      username.setIdentifier(USERNAME_COLUMN);
+      username.setHeaderValue("Username");
+      final TableColumn clientType = new TableColumn(CLIENT_TYPE_COLUMN);
+      clientType.setIdentifier(CLIENT_TYPE_COLUMN);
+      clientType.setHeaderValue("Client type");
+      final TableColumn host = new TableColumn(CLIENT_HOST_COLUMN);
+      host.setIdentifier(CLIENT_HOST_COLUMN);
+      host.setHeaderValue("Host");
+      final TableColumn lastSeen = new TableColumn(LAST_SEEN_COLUMN);
+      lastSeen.setIdentifier(LAST_SEEN_COLUMN);
+      lastSeen.setHeaderValue("Last seen");
+      lastSeen.setCellRenderer(new LastSeenRenderer());
+      final TableColumn connectionCount = new TableColumn(CONNECTION_COUNT_COLUMN);
+      connectionCount.setIdentifier(CONNECTION_COUNT_COLUMN);
+      connectionCount.setHeaderValue("Connections");
 
-    return Arrays.asList(username, clientType, host, lastSeen, connectionCount);
+      return Arrays.asList(username, clientType, host, lastSeen, connectionCount);
+    }
   }
 
   private static final class LastSeenRenderer extends DefaultTableCellRenderer {

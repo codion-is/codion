@@ -152,7 +152,7 @@ public final class ClientUserMonitorPanel extends JPanel {
     configBase.add(ControlProvider.createButton(
             Controls.methodControl(model, "resetHistory", "Reset")), BorderLayout.EAST);
 
-    final FilteredTablePanel<ClientUserMonitor.UserInfo, Integer> userHistoryTable = new FilteredTablePanel<>(model.getUserHistoryTableModel());
+    final FilteredTablePanel userHistoryTable = new FilteredTablePanel(model.getUserHistoryTableModel());
 
     final JPanel connectionHistoryPanel = new JPanel(UiUtil.createBorderLayout());
     connectionHistoryPanel.add(userHistoryTable, BorderLayout.CENTER);
