@@ -4027,3 +4027,4 @@
   Server.AuxiliaryServer.start() and stop() renamed to startServer() and stopServer()
   EntityRESTServer updated according with the above
   DefaultEntityConnectionServerAdmin.main() restart option added
+  ServerUtil.getServer() error handling and logging improved

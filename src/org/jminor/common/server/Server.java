@@ -89,13 +89,13 @@ public interface Server<T extends Remote> extends Remote {
   interface AuxiliaryServer {
 
     /**
-     * Starts the server, should not return until the server has completed the startup
+     * Starts the server, returns when the server has completed the startup
      * @throws Exception in case of an exception
      */
     void startServer() throws Exception;
 
     /**
-     * Stops the server, should not return until the server has completed shutdown
+     * Stops the server, returns when the server has completed shutdown
      * @throws Exception in case of an exception
      */
     void stopServer() throws Exception;

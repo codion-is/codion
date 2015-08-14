@@ -94,8 +94,8 @@ public final class ServerUtil {
       return servers.get(0);
     }
     else {
-      throw new NotBoundException("No reachable or suitable server found, " + serverNamePrefix
-              + " on host: " + serverHostName + ", port: " + serverPort + ", registryPort: " + registryPort);
+      throw new NotBoundException("'" + serverNamePrefix + "' is not available, see LOG for details. Host: "
+              + serverHostName + (serverPort != -1 ? ", port: " + serverPort : "") + ", registryPort: " + registryPort);
     }
   }
 
@@ -107,8 +107,8 @@ public final class ServerUtil {
               new Object[] {serverHostName, serverNamePrefix, serverPort, registryPort});
       final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);
       for (final String name : registry.list()) {
-        LOG.info("Found server \"{}\"", name);
         if (name.startsWith(serverNamePrefix)) {
+          LOG.info("Found server \"{}\"", name);
           try {
             final Server server = checkServer((Server) registry.lookup(name), serverPort);
             if (server != null) {
@@ -117,7 +117,7 @@ public final class ServerUtil {
             }
           }
           catch (final Exception e) {
-            LOG.info("Server \"" + name + "\" is unreachable", e);
+            LOG.error("Server \"" + name + "\" is unreachable", e);
           }
         }
       }
@@ -128,15 +128,16 @@ public final class ServerUtil {
   }
 
   private static Server checkServer(final Server server, final int requestedPort) throws RemoteException {
-    if (!server.connectionsAvailable()) {
-      LOG.info("No connections available in server \"{}\"", server);
+    final Server.ServerInfo serverInfo = server.getServerInfo();
+    if (requestedPort != -1 && serverInfo.getServerPort() != requestedPort) {
+      LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
+            new Object[] {serverInfo.getServerName(), serverInfo.getServerPort(), requestedPort});
       return null;
     }
-    final int port = server.getServerInfo().getServerPort();
-    if (requestedPort == -1 || port == requestedPort) {
+    if (server.connectionsAvailable()) {
       return server;
     }
-    LOG.info("Server \"{}\" is serving on port {}, requested port was {}", new Object[] {server, port, requestedPort});
+    LOG.error("No connections available in server \"{}\"", serverInfo.getServerName());
 
     return null;
   }
