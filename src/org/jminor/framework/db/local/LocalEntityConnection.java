@@ -57,7 +57,7 @@ import java.util.Set;
  *
  * EntityConnection connection = new LocalEntityConnection(database, user);
  *
- * List<Entity> entities = connection.selectAll("entityID");
+ * List<Entity> entities = connection.selectMany(EntityCriteriaUtil.selectCriteria("entityID"));
  *
  * connection.disconnect();
  * </pre>
