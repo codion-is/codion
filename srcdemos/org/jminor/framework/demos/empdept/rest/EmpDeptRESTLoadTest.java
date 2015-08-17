@@ -20,17 +20,16 @@ import org.jminor.framework.plugins.rest.EntityRESTService;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.protocol.RequestDefaultHeaders;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.PoolingHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 
@@ -45,18 +44,20 @@ import java.util.List;
 import java.util.Random;
 import java.util.Scanner;
 
-public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> {
+public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient> {
 
-  private static final PoolingClientConnectionManager CONNECTION_MANAGER;
-  private static final String HOSTNAME = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
   private static final int PORT = 8080;
-  private static final String BASEURL = HOSTNAME + ":" + PORT + "/entities/";
+  private static final String BASEURL = Configuration.getStringValue(Configuration.SERVER_HOST_NAME) + ":" + PORT + "/entities/";
   private static final String BASIC = "Basic ";
   private static final String HTTP = "http";
+  private static final RequestConfig REQUEST_CONFIG = RequestConfig.custom()
+            .setSocketTimeout(2000)
+            .setConnectTimeout(2000)
+            .build();
 
-  private final RequestDefaultHeaders requestDefaultHeaders = new RequestDefaultHeaders() {
+  private final HttpRequestInterceptor requestInterceptor = new HttpRequestInterceptor() {
     @Override
-    public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
+    public void process(final HttpRequest request, final HttpContext httpContext) throws HttpException, IOException {
       final User user = getUser();
       request.setHeader(EntityRESTService.AUTHORIZATION, BASIC + DatatypeConverter.printBase64Binary((user.getUsername() + ":" + user.getPassword()).getBytes()));
       request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
@@ -65,9 +66,6 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
 
   static {
     EmpDept.init();
-    final SchemeRegistry schemeRegistry = new SchemeRegistry();
-    schemeRegistry.register(new Scheme(HTTP, PORT, PlainSocketFactory.getSocketFactory()));
-    CONNECTION_MANAGER = new PoolingClientConnectionManager(schemeRegistry);
   }
 
   public EmpDeptRESTLoadTest(final User user) {
@@ -81,12 +79,22 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
   }
 
   @Override
-  protected void disconnectApplication(final DefaultHttpClient client) {}
+  protected void disconnectApplication(final CloseableHttpClient client) {
+    try {
+      client.close();
+    }
+    catch (final IOException e) {
+      e.printStackTrace();
+    }
+  }
 
   @Override
-  protected DefaultHttpClient initializeApplication() throws CancelException {
-    final DefaultHttpClient ret = new DefaultHttpClient(CONNECTION_MANAGER);
-    ret.addRequestInterceptor(requestDefaultHeaders);
+  protected CloseableHttpClient initializeApplication() throws CancelException {
+    final CloseableHttpClient ret = HttpClientBuilder.create()
+            .setDefaultRequestConfig(REQUEST_CONFIG)
+            .setConnectionManager(new PoolingHttpClientConnectionManager())
+            .addInterceptorFirst(requestInterceptor)
+            .build();
 
     return ret;
   }
@@ -118,7 +126,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
     new LoadTestPanel(new EmpDeptRESTLoadTest(User.UNIT_TEST_USER)).showFrame();
   }
 
-  private static final class UpdateLocation extends AbstractUsageScenario<DefaultHttpClient> {
+  private static final class UpdateLocation extends AbstractUsageScenario<CloseableHttpClient> {
     public static final String NAME = "UpdateLocation";
 
     private UpdateLocation() {
@@ -126,7 +134,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
     }
 
     @Override
-    protected void performScenario(final DefaultHttpClient client) throws ScenarioException {
+    protected void performScenario(final CloseableHttpClient client) throws ScenarioException {
       try {
         URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
@@ -149,7 +157,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
     }
   }
 
-  private static final class Accounting extends AbstractUsageScenario<DefaultHttpClient> {
+  private static final class Accounting extends AbstractUsageScenario<CloseableHttpClient> {
     public static final String NAME = "Accounting";
 
     private Accounting() {
@@ -157,7 +165,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
     }
 
     @Override
-    protected void performScenario(final DefaultHttpClient client) throws ScenarioException {
+    protected void performScenario(final CloseableHttpClient client) throws ScenarioException {
       try {
         final URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
@@ -175,7 +183,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
     }
   }
 
-  private static final class Employees extends AbstractUsageScenario<DefaultHttpClient> {
+  private static final class Employees extends AbstractUsageScenario<CloseableHttpClient> {
     public static final String NAME = "Employees";
 
     private Employees() {
@@ -183,7 +191,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
     }
 
     @Override
-    protected void performScenario(final DefaultHttpClient client) throws ScenarioException {
+    protected void performScenario(final CloseableHttpClient client) throws ScenarioException {
       try {
         URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
@@ -212,14 +220,14 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
     }
   }
 
-  private static final class AddDepartment extends AbstractUsageScenario<DefaultHttpClient> {
+  private static final class AddDepartment extends AbstractUsageScenario<CloseableHttpClient> {
     public static final String NAME = "AddDepartment";
 
     private AddDepartment() {
       super(NAME);
     }
     @Override
-    protected void performScenario(final DefaultHttpClient client) throws ScenarioException {
+    protected void performScenario(final CloseableHttpClient client) throws ScenarioException {
       try {
         final int deptNo = new Random().nextInt(500);
         final Entity propaganda = Entities.entity(EmpDept.T_DEPARTMENT);
@@ -230,6 +238,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
         final URIBuilder builder = createURIBuilder();
         builder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(propaganda), false));
         final HttpResponse response = client.execute(new HttpPost(builder.build()));
+        EntityUtils.consume(response.getEntity());
       }
       catch (final Exception e) {
         e.printStackTrace();
@@ -238,7 +247,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
     }
   }
 
-  private static final class AddEmployee extends AbstractUsageScenario<DefaultHttpClient> {
+  private static final class AddEmployee extends AbstractUsageScenario<CloseableHttpClient> {
     public static final String NAME = "AddEmployee";
 
     private AddEmployee() {
@@ -246,7 +255,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
     }
 
     @Override
-    protected void performScenario(final DefaultHttpClient client) throws ScenarioException {
+    protected void performScenario(final CloseableHttpClient client) throws ScenarioException {
       try {
         final URIBuilder builder = createURIBuilder();
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
@@ -255,7 +264,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<DefaultHttpClient> 
 
         final String queryResult = getContentStream(response.getEntity());
         final List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
-        final Entity department = queryEntities.get(0);
+        final Entity department = queryEntities.get(0);;
       }
       catch (final Exception e) {
         e.printStackTrace();

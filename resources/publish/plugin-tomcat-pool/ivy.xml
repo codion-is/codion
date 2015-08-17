@@ -21,7 +21,7 @@
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.3"/>
     <dependency org="ch.qos.logback" name="logback-core" rev="1.1.3"/>
 
-    <dependency org="org.apache.tomcat" name="tomcat-jdbc" rev="7.0.39"/>
-    <dependency org="org.apache.tomcat" name="tomcat-juli" rev="7.0.39"/>
+    <dependency org="org.apache.tomcat" name="tomcat-jdbc" rev="8.0.24"/>
+    <dependency org="org.apache.tomcat" name="tomcat-juli" rev="8.0.24"/>
   </dependencies>
 </ivy-module>

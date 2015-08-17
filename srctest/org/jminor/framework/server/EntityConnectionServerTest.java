@@ -29,21 +29,17 @@ import ch.qos.logback.classic.Level;
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
 import org.apache.http.HttpRequest;
+import org.apache.http.HttpRequestInterceptor;
 import org.apache.http.HttpResponse;
+import org.apache.http.client.config.RequestConfig;
 import org.apache.http.client.methods.HttpDelete;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.client.methods.HttpPost;
 import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.protocol.RequestDefaultHeaders;
 import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.conn.scheme.PlainSocketFactory;
-import org.apache.http.conn.scheme.Scheme;
-import org.apache.http.conn.scheme.SchemeRegistry;
-import org.apache.http.impl.client.DefaultHttpClient;
-import org.apache.http.impl.conn.PoolingClientConnectionManager;
-import org.apache.http.params.BasicHttpParams;
-import org.apache.http.params.HttpConnectionParams;
-import org.apache.http.params.HttpParams;
+import org.apache.http.impl.client.CloseableHttpClient;
+import org.apache.http.impl.client.HttpClientBuilder;
+import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
 import org.apache.http.protocol.HttpContext;
 import org.apache.http.util.EntityUtils;
 import org.json.JSONException;
@@ -308,50 +304,61 @@ public class EntityConnectionServerTest {
 
   @Test
   public void testREST() throws URISyntaxException, IOException, JSONException, ParseException, InterruptedException {
-    final SchemeRegistry schemeRegistry = new SchemeRegistry();
-    schemeRegistry.register(new Scheme(HTTP, WEB_SERVER_PORT_NUMBER, PlainSocketFactory.getSocketFactory()));
-    final HttpParams params = new BasicHttpParams();
-    HttpConnectionParams.setConnectionTimeout(params, 2000);
-    HttpConnectionParams.setSoTimeout(params, 2000);
-    DefaultHttpClient client = new DefaultHttpClient(new PoolingClientConnectionManager(schemeRegistry), params);
+    final RequestConfig requestConfig = RequestConfig.custom()
+            .setSocketTimeout(2000)
+            .setConnectTimeout(2000)
+            .build();
+    CloseableHttpClient client = HttpClientBuilder.create()
+            .setDefaultRequestConfig(requestConfig)
+            .setConnectionManager(new BasicHttpClientConnectionManager())
+            .build();
 
     //test with missing authentication info
-    URIBuilder builder = createURIBuilder();
-    builder.setPath(EntityRESTService.BY_VALUE_PATH)
+    URIBuilder uriBuilder = createURIBuilder();
+    uriBuilder.setPath(EntityRESTService.BY_VALUE_PATH)
             .addParameter("entityID", TestDomain.T_DEPARTMENT);
-    HttpResponse response = client.execute(new HttpGet(builder.build()));
+    HttpResponse response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
+    client.close();
 
     //test with unknown user authentication
-    client.addRequestInterceptor(new RequestDefaultHeaders() {
-      @Override
-      public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
-        final User user = new User("who", "areu");
-        request.setHeader(EntityRESTService.AUTHORIZATION, BASIC + DatatypeConverter.printBase64Binary((user.getUsername() + ":" + user.getPassword()).getBytes()));
-        request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
-      }
-    });
-    builder = createURIBuilder();
-    builder.setPath(EntityRESTService.BY_VALUE_PATH)
+    client = HttpClientBuilder.create()
+            .setDefaultRequestConfig(requestConfig)
+            .setConnectionManager(new BasicHttpClientConnectionManager())
+            .addInterceptorFirst(new HttpRequestInterceptor() {
+              @Override
+              public void process(final HttpRequest request, final HttpContext httpContext) throws HttpException, IOException {
+                final User user = new User("who", "areu");
+                request.setHeader(EntityRESTService.AUTHORIZATION, BASIC + DatatypeConverter.printBase64Binary((user.getUsername() + ":" + user.getPassword()).getBytes()));
+                request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
+              }
+            })
+            .build();
+    uriBuilder = createURIBuilder();
+    uriBuilder.setPath(EntityRESTService.BY_VALUE_PATH)
             .addParameter("entityID", TestDomain.T_DEPARTMENT);
-    response = client.execute(new HttpGet(builder.build()));
+    response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(401, response.getStatusLine().getStatusCode());
+    client.close();
 
-    client = new DefaultHttpClient(new PoolingClientConnectionManager(schemeRegistry), params);
-    client.addRequestInterceptor(new RequestDefaultHeaders() {
-      @Override
-      public void process(final HttpRequest request, final HttpContext context) throws HttpException, IOException {
-        final User user = User.UNIT_TEST_USER;
-        request.setHeader(EntityRESTService.AUTHORIZATION, BASIC + DatatypeConverter.printBase64Binary((user.getUsername() + ":" + user.getPassword()).getBytes()));
-        request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
-      }
-    });
+    client = HttpClientBuilder.create()
+            .setDefaultRequestConfig(requestConfig)
+            .setConnectionManager(new BasicHttpClientConnectionManager())
+            .addInterceptorFirst(new HttpRequestInterceptor() {
+              @Override
+              public void process(final HttpRequest request, final HttpContext httpContext) throws HttpException, IOException {
+                final User user = User.UNIT_TEST_USER;
+                request.setHeader(EntityRESTService.AUTHORIZATION, BASIC + DatatypeConverter.printBase64Binary((user.getUsername() + ":" + user.getPassword()).getBytes()));
+                request.setHeader("Content-Type", MediaType.APPLICATION_JSON);
+              }
+            })
+            .build();
 
     //select all/GET
-    builder = createURIBuilder();
-    builder.setPath(EntityRESTService.BY_VALUE_PATH)
+    uriBuilder = createURIBuilder();
+    uriBuilder.setPath(EntityRESTService.BY_VALUE_PATH)
             .addParameter("entityID", TestDomain.T_DEPARTMENT);
-    response = client.execute(new HttpGet(builder.build()));
+    response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     String queryResult = getContentStream(response.getEntity());
     List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
@@ -364,9 +371,9 @@ public class EntityConnectionServerTest {
     department.setValue(TestDomain.DEPARTMENT_LOCATION, "Location");
 
     //insert/POST
-    builder = createURIBuilder();
-    builder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(department), false));
-    response = client.execute(new HttpPost(builder.build()));
+    uriBuilder = createURIBuilder();
+    uriBuilder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(department), false));
+    response = client.execute(new HttpPost(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryResult = getContentStream(response.getEntity());
     final List<Entity.Key> queryKeys = EntityJSONParser.deserializeKeys(queryResult);
@@ -374,15 +381,15 @@ public class EntityConnectionServerTest {
     assertEquals(department.getPrimaryKey(), queryKeys.get(0));
 
     //delete/DELETE by key
-    builder = createURIBuilder();
-    builder.setPath(EntityRESTService.BY_KEY_PATH).addParameter("primaryKeys", EntityJSONParser.serializeKeys(Collections.singletonList(department.getPrimaryKey())));
-    response = client.execute(new HttpDelete(builder.build()));
+    uriBuilder = createURIBuilder();
+    uriBuilder.setPath(EntityRESTService.BY_KEY_PATH).addParameter("primaryKeys", EntityJSONParser.serializeKeys(Collections.singletonList(department.getPrimaryKey())));
+    response = client.execute(new HttpDelete(uriBuilder.build()));
     queryResult = getContentStream(response.getEntity());
 
     //insert/PUT
-    builder = createURIBuilder();
-    builder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(department), false));
-    response = client.execute(new HttpPut(builder.build()));
+    uriBuilder = createURIBuilder();
+    uriBuilder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(department), false));
+    response = client.execute(new HttpPut(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryResult = getContentStream(response.getEntity());
     queryEntities = EntityJSONParser.deserializeEntities(queryResult);
@@ -393,9 +400,9 @@ public class EntityConnectionServerTest {
     //update/PUT
     department.setValue(TestDomain.DEPARTMENT_LOCATION, "New location");
     department.setValue(TestDomain.DEPARTMENT_NAME, "New name");
-    builder = createURIBuilder();
-    builder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(department), false));
-    response = client.execute(new HttpPut(builder.build()));
+    uriBuilder = createURIBuilder();
+    uriBuilder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(department), false));
+    response = client.execute(new HttpPut(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryResult = getContentStream(response.getEntity());
     queryEntities = EntityJSONParser.deserializeEntities(queryResult);
@@ -403,34 +410,35 @@ public class EntityConnectionServerTest {
     assertEquals(department, queryEntities.get(0));
 
     //select/GET by value
-    builder = createURIBuilder();
-    builder.setPath(EntityRESTService.BY_VALUE_PATH)
+    uriBuilder = createURIBuilder();
+    uriBuilder.setPath(EntityRESTService.BY_VALUE_PATH)
             .addParameter("entityID", TestDomain.T_DEPARTMENT)
             .addParameter("searchType", SearchType.LIKE.toString())
             .addParameter("values", "{\"dname\":\"New name\"}");
-    response = client.execute(new HttpGet(builder.build()));
+    response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryResult = getContentStream(response.getEntity());
     queryEntities = EntityJSONParser.deserializeEntities(queryResult);
     assertEquals(1, queryEntities.size());
 
     //select/GET by key
-    builder = createURIBuilder();
-    builder.setPath(EntityRESTService.BY_KEY_PATH).addParameter("primaryKeys", EntityJSONParser.serializeKeys(Collections.singletonList(department.getPrimaryKey())));
-    response = client.execute(new HttpGet(builder.build()));
+    uriBuilder = createURIBuilder();
+    uriBuilder.setPath(EntityRESTService.BY_KEY_PATH).addParameter("primaryKeys", EntityJSONParser.serializeKeys(Collections.singletonList(department.getPrimaryKey())));
+    response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryResult = getContentStream(response.getEntity());
     queryEntities = EntityJSONParser.deserializeEntities(queryResult);
     assertEquals(1, queryEntities.size());
 
     //delete/DELETE by value
-    builder = createURIBuilder();
-    builder.setPath(EntityRESTService.BY_VALUE_PATH)
+    uriBuilder = createURIBuilder();
+    uriBuilder.setPath(EntityRESTService.BY_VALUE_PATH)
             .addParameter("entityID", TestDomain.T_DEPARTMENT)
             .addParameter("searchType", SearchType.LIKE.toString())
             .addParameter("values", "{\"deptno\":\"-42\"}");
-    response = client.execute(new HttpDelete(builder.build()));
+    response = client.execute(new HttpDelete(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
+    client.close();
 
     final EntityConnectionServerAdmin admin = getServerAdmin();
     final Collection<ClientInfo> clients = admin.getClients(EntityRESTService.class.getName());

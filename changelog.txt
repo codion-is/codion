@@ -4029,3 +4029,7 @@
   DefaultEntityConnectionServerAdmin.main() restart option added
   ServerUtil.getServer() error handling and logging improved
   ClientUserMonitor, user history improved a bit
+  Jetty dependency updated to 9.3.2.v20150730 and Jersey to 1.19
+  HttpClient library updated to 4.5
+  EntityConnectionServerTest and EmpDeptRESTLoadTest updated according to HttpClient update (deprecations)
+  Tomcat jdbc dependency updated to 8.0.24

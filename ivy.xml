@@ -113,12 +113,12 @@
                 conf="
                 runtime.client->master"/>
     <!--tomcat jdbc connection pool implementation plugin-->
-    <dependency org="org.apache.tomcat" name="tomcat-jdbc" rev="7.0.39"
+    <dependency org="org.apache.tomcat" name="tomcat-jdbc" rev="8.0.24"
                 conf="
                 build.plugins->master;
                 runtime.tests->master;
                 runtime.server->master"/>
-    <dependency org="org.apache.tomcat" name="tomcat-juli" rev="7.0.39"
+    <dependency org="org.apache.tomcat" name="tomcat-juli" rev="8.0.24"
                 conf="
                 build.plugins->master;
                 runtime.tests->master;
@@ -141,7 +141,7 @@
                 build.demos->master;
                 runtime.tests->master;
                 runtime.server->master"/>
-    <dependency org="com.sun.jersey" name="jersey-bundle" rev="1.17.1"
+    <dependency org="com.sun.jersey" name="jersey-bundle" rev="1.19"
                 conf="
                 build.plugins->master;
                 runtime.tests->master;
@@ -151,47 +151,47 @@
                 build.plugins->master;
                 runtime.tests->master;
                 runtime.server->master"/>
-    <dependency org="org.mortbay.jetty" name="servlet-api" rev="3.0.20100224"
+    <dependency org="org.eclipse.jetty.toolchain" name="jetty-osgi-servlet-api" rev="3.1.0.M3"
                 conf="
                 build.plugins->master;
                 runtime.tests->master;
                 runtime.server->master"/>
     <!--embedded web server-->
-    <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.0.4.v20130625"
+    <dependency org="org.eclipse.jetty" name="jetty-server" rev="9.3.2.v20150730"
                 conf="
                 build.plugins->master;
                 runtime.tests->master;
                 runtime.server->master"/>
-    <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.0.4.v20130625"
+    <dependency org="org.eclipse.jetty" name="jetty-servlet" rev="9.3.2.v20150730"
                 conf="
                 build.plugins->master;
                 runtime.tests->master;
                 runtime.server->master"/>
-    <dependency org="org.eclipse.jetty" name="jetty-util" rev="9.0.4.v20130625"
+    <dependency org="org.eclipse.jetty" name="jetty-util" rev="9.3.2.v20150730"
                 conf="
                 build.plugins->master;
                 runtime.tests->master;
                 runtime.server->master"/>
-    <dependency org="org.eclipse.jetty" name="jetty-http" rev="9.0.4.v20130625"
+    <dependency org="org.eclipse.jetty" name="jetty-http" rev="9.3.2.v20150730"
                 conf="
                 runtime.tests->master;
                 runtime.server->master"/>
-    <dependency org="org.eclipse.jetty" name="jetty-io" rev="9.0.4.v20130625"
+    <dependency org="org.eclipse.jetty" name="jetty-io" rev="9.3.2.v20150730"
                 conf="
                 runtime.tests->master;
                 runtime.server->master"/>
-    <dependency org="org.eclipse.jetty" name="jetty-security" rev="9.0.4.v20130625"
+    <dependency org="org.eclipse.jetty" name="jetty-security" rev="9.3.2.v20150730"
                 conf="
                 runtime.tests->master;
                 runtime.server->master"/>
     <!--httpclient for EmpDeptRESTLoadTest and EntityConnectionServerTest-->
-    <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.2.5"
+    <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5"
                 conf="
                 build.tests->master;
                 build.demos->master;
                 runtime.tests->master;
                 runtime.client->master"/>
-    <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.2.4"
+    <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.4.1"
                 conf="
                 build.tests->master;
                 build.demos->master;
