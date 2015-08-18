@@ -20,7 +20,7 @@ import static org.junit.Assert.*;
  */
 public class DefaultDatabaseConnectionTest {
 
-  private static final Database DATABASE = Databases.createInstance();
+  private static final Database DATABASE = DatabasesTest.createTestDatabaseInstance();
   private DefaultDatabaseConnection dbConnection;
 
   @Before

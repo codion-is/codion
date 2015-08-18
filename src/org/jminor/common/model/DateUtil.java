@@ -247,8 +247,9 @@ public final class DateUtil {
         calendar.set(Calendar.MONTH, Calendar.OCTOBER);
         return calendar.getTime();
       }
-      default:
-        return null;
+      default: {
+        throw new IllegalArgumentException("Not a Quarter: " + quarter);
+      }
     }
   }
 
@@ -282,8 +283,9 @@ public final class DateUtil {
         calendar.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
         return calendar.getTime();
       }
-      default:
-        return null;
+      default: {
+        throw new IllegalArgumentException("Not a Quarter: " + quarter);
+      }
     }
   }
 

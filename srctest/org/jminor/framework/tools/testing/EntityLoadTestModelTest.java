@@ -11,7 +11,7 @@ import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.db.local.LocalEntityConnectionTest;
+import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.server.EntityConnectionServerTest;
 
@@ -124,13 +124,13 @@ public class EntityLoadTestModelTest {
 
   @Test
   public void testMethods() {
-    final EntityApplicationModel model = new DefaultEntityApplicationModel(LocalEntityConnectionTest.CONNECTION_PROVIDER) {
+    final EntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
       @Override
       protected void loadDomainModel() {
         TestDomain.init();
       }
     };
-    model.addEntityModel(new DefaultEntityModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER));
+    model.addEntityModel(new DefaultEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
     final EntityTableModel tableModel = model.getEntityModel(TestDomain.T_DEPARTMENT).getTableModel();
     tableModel.setQueryCriteriaRequired(false);
     tableModel.refresh();

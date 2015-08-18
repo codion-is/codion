@@ -173,7 +173,8 @@ public abstract class EntityTestUnit {
 
   /**
    * Returns the database user to use when running the tests, this default implementation
-   * prompts for the user/password information, usually overridden
+   * returns a user based on the {@link User#UNITTEST_USERNAME_PROPERTY}
+   * and {@link User#UNITTEST_PASSWORD_PROPERTY} properties.
    * @return the db user to use when running the test
    */
   protected User getTestUser() {

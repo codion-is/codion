@@ -76,7 +76,7 @@ public class MethodLoggerTest {
   public void twoLevelLogging() {
     final MethodLogger logger = new MethodLogger(10);
     logger.setEnabled(true);
-    logger.logAccess("method");
+    logger.logAccess("method", new Object[]{"param1", "param2"});
     logger.logAccess("subMethod");
     logger.logExit("subMethod");
     logger.logAccess("subMethod2");
@@ -192,5 +192,22 @@ public class MethodLoggerTest {
     assertEquals(1200, entry.getExitTime());
     assertEquals(200, entry.getDelta());
     assertEquals(200000000, entry.getDeltaNano());
+  }
+
+  @Test
+  public void appendLogEntry() {
+    final MethodLogger logger = new MethodLogger(10);
+    logger.setEnabled(true);
+    logger.logAccess("one");
+    logger.logAccess("two");
+    logger.logAccess("three");
+    logger.logExit("three");
+    logger.logExit("two");
+    logger.logAccess("two2");
+    logger.logAccess("three2");
+    logger.logExit("three2");
+    logger.logExit("two2");
+    logger.logExit("one");
+    MethodLogger.appendLogEntry(new StringBuilder(), logger.getFirstEntry(), 0);
   }
 }

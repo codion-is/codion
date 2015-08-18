@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db.tools;
 
-import org.jminor.common.db.Databases;
+import org.jminor.common.db.DatabasesTest;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 
@@ -27,7 +27,7 @@ public final class QueryLoadTestModelTest {
           new QueryLoadTestModel.QueryScenario("selectProducts", "select * from petstore.product");
   @Test
   public void test() throws DatabaseException {
-    final QueryLoadTestModel loadTest = new QueryLoadTestModel(Databases.createInstance(), User.UNIT_TEST_USER,
+    final QueryLoadTestModel loadTest = new QueryLoadTestModel(DatabasesTest.createTestDatabaseInstance(), User.UNIT_TEST_USER,
             Arrays.asList(SELECT_ALBUMS, SELECT_CUSTOMERS, SELECT_DEPARTMENTS,
                     SELECT_EMPLOYEE, SELECT_PRODUCTS));
     loadTest.setMinimumThinkTime(10);

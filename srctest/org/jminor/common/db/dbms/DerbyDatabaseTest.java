@@ -9,8 +9,7 @@ import org.junit.Test;
 
 import java.util.Properties;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 public class DerbyDatabaseTest {
 
@@ -23,6 +22,12 @@ public class DerbyDatabaseTest {
   public void supportsIsValid() {
     final DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
     assertTrue(db.supportsIsValid());
+  }
+
+  @Test
+  public void supportsNoWait() {
+    final DerbyDatabase db = new DerbyDatabase("host", "1234", "sid");
+    assertFalse(db.supportsNowait());
   }
 
   @Test

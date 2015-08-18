@@ -15,7 +15,7 @@ import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.local.LocalEntityConnectionTest;
+import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -44,7 +44,7 @@ public final class DefaultEntityEditModelTest {
     TestDomain.init();
     jobProperty = Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
     deptProperty = Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
-    employeeEditModel = new DefaultEntityEditModel(TestDomain.T_EMP, LocalEntityConnectionTest.CONNECTION_PROVIDER) {
+    employeeEditModel = new DefaultEntityEditModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
       @Override
       public Object getDefaultValue(final Property property) {
         if (property.is(TestDomain.EMP_HIREDATE)) {
@@ -153,7 +153,7 @@ public final class DefaultEntityEditModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullEntityID() {
-    new DefaultEntityEditModel(null, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    new DefaultEntityEditModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -523,7 +523,7 @@ public final class DefaultEntityEditModelTest {
       }
     };
 
-    final DefaultEntityEditModel model = new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final DefaultEntityEditModel model = new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
 
     model.getValueChangeObserver().addInfoListener(anyValueChangeListener);
     model.addValueListener(TestDomain.DEPARTMENT_ID, valueChangeListener);

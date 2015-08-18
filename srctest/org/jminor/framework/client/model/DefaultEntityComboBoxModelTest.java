@@ -7,8 +7,8 @@ import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilterCriteria;
+import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.local.LocalEntityConnectionTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -30,12 +30,12 @@ public final class DefaultEntityComboBoxModelTest {
 
   public DefaultEntityComboBoxModelTest() {
     TestDomain.init();
-    comboBoxModel = new DefaultEntityComboBoxModel(TestDomain.T_EMP, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    comboBoxModel = new DefaultEntityComboBoxModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullEntityID() {
-    new DefaultEntityComboBoxModel(null, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    new DefaultEntityComboBoxModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)

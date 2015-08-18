@@ -6,7 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.framework.client.model.DefaultEntityModelProvider;
 import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.client.model.EntityModelProvider;
-import org.jminor.framework.db.local.LocalEntityConnectionTest;
+import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.TestDomain;
 
@@ -25,7 +25,7 @@ public class EntityPanelProviderTest {
 
     customerModelProvider.addDetailModelProvider(invoiceModelProvider);
 
-    final EntityModel customerModel = customerModelProvider.createModel(LocalEntityConnectionTest.CONNECTION_PROVIDER, false);
+    final EntityModel customerModel = customerModelProvider.createModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER, false);
 
     final String customerCaption = "A department caption";
     final EntityPanelProvider customerPanelProvider = new EntityPanelProvider(TestDomain.T_DEPARTMENT, customerCaption);

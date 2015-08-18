@@ -4,11 +4,13 @@
 package org.jminor.common.model.tools;
 
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.User;
 
 import org.junit.Test;
 
 import java.util.Arrays;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
@@ -143,14 +145,26 @@ public class LoadTestModelTest {
     assertEquals(0, SCENARIO_II.getTotalRunCount());
     assertTrue(SCENARIO.getSuccessfulRunCount() > 0);
     assertTrue(SCENARIO.getUnsuccessfulRunCount() > 0);
+    assertTrue(SCENARIO.getExceptions().size() > 0);
+    SCENARIO.clearExceptions();
+    assertTrue(SCENARIO.getExceptions().size() == 0);
     assertEquals(SCENARIO.getSuccessfulRunCount() + SCENARIO.getUnsuccessfulRunCount(), SCENARIO.getTotalRunCount());
     SCENARIO.resetRunCount();
     assertTrue(SCENARIO.getSuccessfulRunCount() == 0);
     assertTrue(SCENARIO.getUnsuccessfulRunCount() == 0);
     model.resetChartData();
-    model.exit();
-    Thread.sleep(200);
+    model.removeApplicationBatch();
     assertEquals(0, model.getApplicationCount());
+
+    final AtomicInteger exitCounter = new AtomicInteger(0);
+    model.addExitListener(new EventListener() {
+      @Override
+      public void eventOccurred() {
+        exitCounter.incrementAndGet();
+      }
+    });
+    model.exit();
+    assertEquals(1, exitCounter.get());
   }
 
   public static final class TestLoadTestModel extends LoadTestModel {

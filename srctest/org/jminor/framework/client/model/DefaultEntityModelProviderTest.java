@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.local.LocalEntityConnectionTest;
+import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
@@ -30,7 +30,7 @@ public class DefaultEntityModelProviderTest {
     assertEquals(DepartmentEditModel.class, departmentModelProvider.getEditModelClass());
     assertEquals(DepartmentTableModel.class, departmentModelProvider.getTableModelClass());
 
-    final EntityModel departmentModel = departmentModelProvider.createModel(LocalEntityConnectionTest.CONNECTION_PROVIDER, false);
+    final EntityModel departmentModel = departmentModelProvider.createModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER, false);
     assertTrue(departmentModel.getEditModel() instanceof DepartmentEditModel);
     assertTrue(departmentModel.getTableModel() instanceof DepartmentTableModel);
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));

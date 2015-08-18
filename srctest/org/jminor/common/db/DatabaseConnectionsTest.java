@@ -16,7 +16,26 @@ import static org.junit.Assert.assertTrue;
 
 public class DatabaseConnectionsTest {
 
-  private static final Database DATABASE = Databases.createInstance();
+  private static final Database DATABASE = DatabasesTest.createTestDatabaseInstance();
+
+  public static DatabaseConnectionProvider createTestDatabaseConnectionProvider() {
+    return new DatabaseConnectionProvider() {
+      @Override
+      public DatabaseConnection createConnection() throws DatabaseException {
+        return DatabaseConnections.createConnection(DATABASE, getUser());
+      }
+
+      @Override
+      public void destroyConnection(final DatabaseConnection connection) {
+        connection.disconnect();
+      }
+
+      @Override
+      public User getUser() {
+        return User.UNIT_TEST_USER;
+      }
+    };
+  }
 
   @Test
   public void createConnection() throws Exception {
@@ -30,12 +49,7 @@ public class DatabaseConnectionsTest {
       assertTrue(User.UNIT_TEST_USER.getUsername().equalsIgnoreCase(databaseConnection.getUser().getUsername()));
     }
     finally {
-      if (connection != null) {
-        try {
-          connection.close();
-        }
-        catch (final Exception ignored) {/*ignored*/}
-      }
+      DatabaseUtil.closeSilently(connection);
     }
   }
 
@@ -48,12 +62,7 @@ public class DatabaseConnectionsTest {
       DatabaseConnections.createConnection(DATABASE, connection);
     }
     finally {
-      if (connection != null) {
-        try {
-          connection.close();
-        }
-        catch (final Exception ignored) {/*ignored*/}
-      }
+      DatabaseUtil.closeSilently(connection);
     }
   }
 }

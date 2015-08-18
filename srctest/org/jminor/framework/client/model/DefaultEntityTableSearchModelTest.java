@@ -8,7 +8,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.db.local.LocalEntityConnectionTest;
+import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
 
@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 
 public class DefaultEntityTableSearchModelTest {
 
-  private final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+  private final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   private final EntityTableSearchModel searchModel = tableModel.getSearchModel();
 
   public DefaultEntityTableSearchModelTest() {

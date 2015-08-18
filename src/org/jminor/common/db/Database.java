@@ -51,6 +51,18 @@ public interface Database {
   String DATABASE_EMBEDDED = "jminor.db.embedded";
 
   /**
+   * Specifies whether or not the database should be run in in-memory mode<br>
+   * Values: "true"/"false"<br>
+   * Default: "false"<br>
+   */
+  String DATABASE_EMBEDDED_IN_MEMORY = "jminor.db.embeddedInMemory";
+
+  /**
+   * A script to run when initializing the database, implementation specific
+   */
+  String DATABASE_INIT_SCRIPT = "jminor.db.initScript";
+
+  /**
    * Specifies the Database implementation class to use in case of a dbms that is not directly supported
    * @see Database
    */

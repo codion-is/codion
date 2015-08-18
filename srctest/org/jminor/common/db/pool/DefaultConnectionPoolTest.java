@@ -3,18 +3,13 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
-import org.jminor.common.db.DatabaseConnectionProvider;
-import org.jminor.common.db.DatabaseConnections;
-import org.jminor.common.db.Databases;
+import org.jminor.common.db.DatabaseConnectionsTest;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.db.tools.QueryLoadTestModel;
 import org.jminor.common.model.User;
 
 import org.junit.Test;
 
-import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 
@@ -22,52 +17,33 @@ import static org.junit.Assert.*;
 
 public class DefaultConnectionPoolTest {
 
-  private static final int SLEEP_MILLIS = 2000;
-  private static final int CLOSE_SLEEP_MILLIS = 2500;
-
-  @Test
-  public void loadTest() throws Exception {
-    final long startTime = System.currentTimeMillis();
-    final Database database = Databases.createInstance();
-    final QueryLoadTestModel model = new QueryLoadTestModel(database, User.UNIT_TEST_USER,
-            Collections.singletonList(new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp")));
-    model.addApplicationBatch();
-    model.setCollectChartData(true);
-    Thread.sleep(SLEEP_MILLIS);
-    model.exit();
-    Thread.sleep(CLOSE_SLEEP_MILLIS);
-    final ConnectionPoolStatistics statistics =  model.getConnectionPool().getStatistics(startTime);
-    assertTrue(statistics.getAverageGetTime() == 0);
-    assertEquals(statistics.getCreated(), statistics.getDestroyed());
-  }
-
   @Test(expected = IllegalArgumentException.class)
   public void setMaximumPoolSizeLessThanMinSize() throws ClassNotFoundException, DatabaseException {
-    final ConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(User.UNIT_TEST_USER));
+    final ConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
     pool.setMaximumPoolSize(3);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setMaximumPoolSizeInvalidNumber() throws ClassNotFoundException, DatabaseException {
-    final ConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(User.UNIT_TEST_USER));
+    final ConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
     pool.setMaximumPoolSize(-1);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setMinimumPoolSizeLargerThanMaxSize() throws ClassNotFoundException, DatabaseException {
-    final ConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(User.UNIT_TEST_USER));
+    final ConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
     pool.setMinimumPoolSize(10);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setMinimumPoolSizeInvalidNumber() throws ClassNotFoundException, DatabaseException {
-    final ConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(User.UNIT_TEST_USER));
+    final ConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
     pool.setMinimumPoolSize(-1);
   }
 
   @Test(expected = IllegalStateException.class)
   public void returnConnectionOpenTransaction() throws DatabaseException {
-    final DefaultConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(User.UNIT_TEST_USER));
+    final DefaultConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
     final DatabaseConnection connection = pool.getDatabaseConnection();
     try {
       connection.beginTransaction();
@@ -81,7 +57,7 @@ public class DefaultConnectionPoolTest {
 
   @Test(expected = IllegalStateException.class)
   public void getConnectionClosedPool() throws DatabaseException {
-    final ConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(User.UNIT_TEST_USER));
+    final ConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
     try {
       pool.close();
       pool.getConnection();
@@ -93,8 +69,7 @@ public class DefaultConnectionPoolTest {
 
   @Test(expected = ConnectionPoolException.NoConnectionAvailable.class)
   public void noConnectionAvailable() throws DatabaseException {
-    final User user = User.UNIT_TEST_USER;
-    final DefaultConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(user));
+    final DefaultConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
     pool.setMaximumCheckOutTime(50);
     pool.setNewConnectionThreshold(40);
     pool.getConnection();
@@ -111,13 +86,12 @@ public class DefaultConnectionPoolTest {
   @Test
   public void test() throws Exception {
     final Date startDate = new Date();
-    final User user = User.UNIT_TEST_USER;
-    final DefaultConnectionPool pool = new DefaultConnectionPool(createConnectionProvider(user));
+    final DefaultConnectionPool pool = new DefaultConnectionPool(DatabaseConnectionsTest.createTestDatabaseConnectionProvider());
     pool.setCleanupInterval(2000);
     pool.setConnectionTimeout(6000);
     pool.setMaximumPoolSize(8);
     try {
-      assertEquals(user, pool.getUser());
+      assertEquals(User.UNIT_TEST_USER, pool.getUser());
       assertEquals(2000, pool.getCleanupInterval());
       assertEquals(6000, pool.getConnectionTimeout());
       assertEquals(8, pool.getMaximumPoolSize());
@@ -237,23 +211,5 @@ public class DefaultConnectionPoolTest {
     finally {
       pool.close();
     }
-  }
-
-  private static DatabaseConnectionProvider createConnectionProvider(final User user) {
-    return new DatabaseConnectionProvider() {
-      final Database database = Databases.createInstance();
-      @Override
-      public DatabaseConnection createConnection() throws DatabaseException {
-        return DatabaseConnections.createConnection(database, user);
-      }
-      @Override
-      public void destroyConnection(final DatabaseConnection connection) {
-        connection.disconnect();
-      }
-      @Override
-      public User getUser() {
-        return user;
-      }
-    };
   }
 }

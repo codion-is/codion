@@ -210,7 +210,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
         new LoadTestPanel(new ChinookLoadTest()).showFrame();
       }
       catch (final Exception e) {
-        e.printStackTrace();
+        throw new RuntimeException(e);
       }
     }
   }

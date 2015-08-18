@@ -17,17 +17,6 @@ import java.util.Properties;
  * A Database implementation based on the H2 database.
  */
 public final class H2Database extends AbstractDatabase {
-
-  /**
-   * Specifies whether or not the database should be run in in-memory mode<br>
-   * Values: "true"/"false"<br>
-   * Default: "false"<br>
-   */
-  public static final String DATABASE_IN_MEMORY = "jminor.db.embeddedInMemory";
-  /**
-   * The script to run when initializing an embedded database
-   */
-  public static final String DATABASE_INIT_SCRIPT = "jminor.db.initScript";
   /**
    * The error code representing incorrect login credentials
    */
@@ -38,7 +27,7 @@ public final class H2Database extends AbstractDatabase {
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
   static final String SYSADMIN_USERNAME = "sa";
   static final String RUN_TOOL_CLASS_NAME = "org.h2.tools.RunScript";
-  static final boolean EMBEDDED_IN_MEMORY = Boolean.TRUE.toString().equals(System.getProperty(DATABASE_IN_MEMORY, Boolean.FALSE.toString()));
+  static final boolean EMBEDDED_IN_MEMORY = Boolean.TRUE.toString().equals(System.getProperty(DATABASE_EMBEDDED_IN_MEMORY, Boolean.FALSE.toString()));
   static final String URL_PREFIX = "jdbc:h2:";
   static final String URL_PREFIX_MEM = "jdbc:h2:mem:";
 

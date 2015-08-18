@@ -249,7 +249,7 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
    * Called after shutdown has finished
    * @throws RemoteException in case of an exception
    */
-  protected void handleShutdown() throws RemoteException {}
+  protected void handleShutdown() throws RemoteException {/*Provided for subclasses*/}
 
   /**
    * Establishes the actual client connection.

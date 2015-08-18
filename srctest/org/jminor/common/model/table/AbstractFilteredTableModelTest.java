@@ -92,7 +92,7 @@ public final class AbstractFilteredTableModelTest {
   }
 
   @Test
-  public void test() {
+  public void getColumnCount() {
     assertEquals(1, tableModel.getColumnCount());
   }
 
@@ -139,7 +139,7 @@ public final class AbstractFilteredTableModelTest {
   }
 
   @Test
-  public void refresh() {
+  public void refreshEvents() {
     final AtomicInteger started = new AtomicInteger();
     final AtomicInteger done = new AtomicInteger();
     final AtomicInteger cleared = new AtomicInteger();

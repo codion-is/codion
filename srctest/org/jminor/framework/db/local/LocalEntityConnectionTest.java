@@ -8,6 +8,7 @@ import org.jminor.common.db.AbstractProcedure;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
+import org.jminor.common.db.DatabasesTest;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.exception.DatabaseException;
@@ -17,8 +18,6 @@ import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.framework.db.EntityConnection;
-import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entities;
@@ -49,9 +48,6 @@ import java.util.Random;
 import static org.junit.Assert.*;
 
 public class LocalEntityConnectionTest {
-
-  public static final EntityConnectionProvider CONNECTION_PROVIDER =
-          EntityConnectionProviders.createConnectionProvider(User.UNIT_TEST_USER, "JMinor Unit Tests");
 
   private static final String JOINED_QUERY_ENTITY_ID = "joinedQueryEntityID";
 
@@ -437,7 +433,7 @@ public class LocalEntityConnectionTest {
   public void testConstructor() throws Exception {
     Connection connection = null;
     try {
-      final Database db = Databases.createInstance();
+      final Database db = DatabasesTest.createTestDatabaseInstance();
       connection = db.createConnection(User.UNIT_TEST_USER);
       final EntityConnection conn = new LocalEntityConnection(db, connection);
       assertTrue(conn.isConnected());
@@ -457,7 +453,7 @@ public class LocalEntityConnectionTest {
   public void testConstructorInvalidConnection() throws Exception {
     Connection connection = null;
     try {
-      final Database db = Databases.createInstance();
+      final Database db = DatabasesTest.createTestDatabaseInstance();
       connection = db.createConnection(User.UNIT_TEST_USER);
       connection.close();
       new LocalEntityConnection(db, connection);
@@ -569,6 +565,6 @@ public class LocalEntityConnectionTest {
   }
 
   private static LocalEntityConnection initializeConnection() throws DatabaseException {
-    return new LocalEntityConnection(Databases.createInstance(), User.UNIT_TEST_USER);
+    return new LocalEntityConnection(DatabasesTest.createTestDatabaseInstance(), User.UNIT_TEST_USER);
   }
 }

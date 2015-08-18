@@ -51,4 +51,9 @@ public class ServerUtilTest {
       fail("Remote server not bound");
     }
   }
+
+  @Test(expected = NotBoundException.class)
+  public void getServerWrongPort() throws RemoteException, NotBoundException {
+    ServerUtil.getServer("localhost", SERVER_NAME, Registry.REGISTRY_PORT, 42);
+  }
 }

@@ -377,7 +377,7 @@ public final class States {
     }
   }
 
-  static final class DefaultGroup implements State.Group {
+  private static final class DefaultGroup implements State.Group {
 
     private final List<WeakReference<State>> members = new ArrayList<>();
 

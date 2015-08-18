@@ -17,6 +17,30 @@ import static org.junit.Assert.assertTrue;
 
 public class DatabasesTest {
 
+  public static Database createTestDatabaseInstance() {
+    final String type = System.getProperty(Database.DATABASE_TYPE);
+    final String host = System.getProperty(Database.DATABASE_HOST);
+    final String port = System.getProperty(Database.DATABASE_PORT, "1234");
+    final String sid = System.getProperty(Database.DATABASE_SID, "sid");
+    final String embedded = System.getProperty(Database.DATABASE_EMBEDDED, "false");
+    final String embeddedInMemory = System.getProperty(Database.DATABASE_EMBEDDED_IN_MEMORY, "false");
+    final String initScript = System.getProperty(H2Database.DATABASE_INIT_SCRIPT);
+    try {
+      System.setProperty(Database.DATABASE_TYPE, type == null ? Database.H2 : type);
+      System.setProperty(Database.DATABASE_HOST, host == null ? "h2db/h2" : host);
+      System.setProperty(Database.DATABASE_PORT, port);
+      System.setProperty(Database.DATABASE_SID, sid);
+      System.setProperty(Database.DATABASE_EMBEDDED, embedded == null ? "true" : embedded);
+      System.setProperty(Database.DATABASE_EMBEDDED_IN_MEMORY, embeddedInMemory == null ? "true" : embeddedInMemory);
+      System.setProperty(H2Database.DATABASE_INIT_SCRIPT, initScript == null ? "resources/db/scripts/create_h2_db.sql" : initScript);
+
+      return Databases.createInstance();
+    }
+    finally {
+      setSystemProperties(type, host, port, sid, embedded, embeddedInMemory, initScript);
+    }
+  }
+
   @Test
   public void test() {
     final String type = System.getProperty(Database.DATABASE_TYPE);
@@ -24,6 +48,8 @@ public class DatabasesTest {
     final String port = System.getProperty(Database.DATABASE_PORT, "1234");
     final String sid = System.getProperty(Database.DATABASE_SID, "sid");
     final String embedded = System.getProperty(Database.DATABASE_EMBEDDED, "false");
+    final String embeddedInMemory = System.getProperty(Database.DATABASE_EMBEDDED_IN_MEMORY, "false");
+    final String initScript = System.getProperty(H2Database.DATABASE_INIT_SCRIPT);
     try {
       System.setProperty(Database.DATABASE_TYPE, Database.DERBY);
       System.setProperty(Database.DATABASE_HOST, "host");
@@ -68,11 +94,7 @@ public class DatabasesTest {
       assertTrue(database instanceof SQLServerDatabase);
     }
     finally {
-      System.setProperty(Database.DATABASE_TYPE, type);
-      System.setProperty(Database.DATABASE_HOST, host);
-      System.setProperty(Database.DATABASE_PORT, port);
-      System.setProperty(Database.DATABASE_SID, sid);
-      System.setProperty(Database.DATABASE_EMBEDDED, embedded);
+      setSystemProperties(type, host, port, sid, embedded, embeddedInMemory, initScript);
     }
   }
 
@@ -104,7 +126,9 @@ public class DatabasesTest {
       Databases.createInstance();
     }
     finally {
-      System.setProperty(Database.DATABASE_TYPE, type);
+      if (type != null) {
+        System.setProperty(Database.DATABASE_TYPE, type);
+      }
     }
   }
 
@@ -116,7 +140,34 @@ public class DatabasesTest {
       Databases.createInstance();
     }
     finally {
+      if (type != null) {
+        System.setProperty(Database.DATABASE_TYPE, type);
+      }
+    }
+  }
+
+  private static void setSystemProperties(final String type, final String host, final String port, final String sid,
+                                          final String embedded, final String embeddedInMemory, final String initScript) {
+    if (type != null) {
       System.setProperty(Database.DATABASE_TYPE, type);
+    }
+    if (host != null) {
+      System.setProperty(Database.DATABASE_HOST, host);
+    }
+    if (port != null) {
+      System.setProperty(Database.DATABASE_PORT, port);
+    }
+    if (sid != null) {
+      System.setProperty(Database.DATABASE_SID, sid);
+    }
+    if (embedded != null) {
+      System.setProperty(Database.DATABASE_EMBEDDED, embedded);
+    }
+    if (embeddedInMemory != null) {
+      System.setProperty(Database.DATABASE_EMBEDDED_IN_MEMORY, embeddedInMemory);
+    }
+    if (initScript != null) {
+      System.setProperty(H2Database.DATABASE_INIT_SCRIPT, initScript);
     }
   }
 }

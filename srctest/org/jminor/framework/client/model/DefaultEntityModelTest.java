@@ -14,8 +14,8 @@ import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.local.LocalEntityConnectionTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
@@ -163,13 +163,13 @@ public final class DefaultEntityModelTest {
 
   @Test
   public void constructor() {
-    new DefaultEntityModel(new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER));
-    new DefaultEntityModel(new DefaultEntityTableModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER));
+    new DefaultEntityModel(new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
+    new DefaultEntityModel(new DefaultEntityTableModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullEntityID() {
-    new DefaultEntityModel(null, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    new DefaultEntityModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -184,16 +184,16 @@ public final class DefaultEntityModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorTableModelEntityIDMismatch() {
-    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     new DefaultEntityModel(editModel, tableModel);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorTableModelEditModelMismatch() {
-    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    final EntityEditModel editModel2 = new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER);
-    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel2 = new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     tableModel.setEditModel(editModel);
     new DefaultEntityModel(editModel2, tableModel);
   }
@@ -278,14 +278,14 @@ public final class DefaultEntityModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void addSameDetailModelTwice() {
-    departmentModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    departmentModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     departmentModel.addDetailModels(employeeModel, employeeModel);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void addDetailModelDetailModelAlreadyHasMasterModel() {
-    departmentModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    departmentModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     employeeModel.setMasterModel(departmentModel);
     departmentModel.addDetailModel(employeeModel);
@@ -293,10 +293,10 @@ public final class DefaultEntityModelTest {
 
   @Test(expected = IllegalStateException.class)
   public void setMasterModel() {
-    departmentModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    departmentModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     employeeModel.setMasterModel(departmentModel);
-    employeeModel.setMasterModel(new DefaultEntityModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER));
+    employeeModel.setMasterModel(new DefaultEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
   }
 
   @Test
@@ -325,7 +325,7 @@ public final class DefaultEntityModelTest {
 
   @Before
   public void setUp() throws Exception {
-    departmentModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    departmentModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     departmentModel.addDetailModel(employeeModel);
     departmentModel.setDetailModelForeignKey(employeeModel, TestDomain.EMP_DEPARTMENT_FK);

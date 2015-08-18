@@ -6,7 +6,7 @@ package org.jminor.framework.client.ui;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.model.EntityLookupModel;
-import org.jminor.framework.db.local.LocalEntityConnectionTest;
+import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -22,7 +22,7 @@ public class LookupValueLinkTest {
   private final EntityEditModel model;
 
   public LookupValueLinkTest() {
-    model = new DefaultEntityEditModel(TestDomain.T_EMP, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    model = new DefaultEntityEditModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Test

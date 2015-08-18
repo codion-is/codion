@@ -8,7 +8,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.ProgressReporter;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.local.LocalEntityConnectionTest;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
@@ -51,7 +50,7 @@ public class EntityConnectionUtilTest {
 
   @Test
   public void copyEntities() throws SQLException, DatabaseException {
-    final EntityConnection sourceConnection = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection();
+    final EntityConnection sourceConnection = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection();
     EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, true, TestDomain.T_DEPARTMENT);
 
     assertEquals(sourceConnection.selectRowCount(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT)),
@@ -61,7 +60,7 @@ public class EntityConnectionUtilTest {
 
   @Test
   public void batchInsert() throws SQLException, DatabaseException {
-    final EntityConnection sourceConnection = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection();
+    final EntityConnection sourceConnection = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection();
 
     final List<Entity> source = sourceConnection.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT));
     final List<Entity.Key> dest = new ArrayList<>();

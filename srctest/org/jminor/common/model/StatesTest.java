@@ -136,9 +136,8 @@ public class StatesTest {
     final State stateOne = States.state(true);
     final State stateTwo = States.state(true);
     final State stateThree = States.state(true);
-    final State.Group stateGroup = new States.DefaultGroup();
+    final State.Group stateGroup = States.group(stateOne);
 
-    stateGroup.addState(stateOne);
     stateGroup.addState(stateOne);//has no effect
     stateGroup.addState(stateTwo);
     assertFalse(stateOne.isActive());

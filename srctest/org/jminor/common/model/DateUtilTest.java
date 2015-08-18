@@ -10,6 +10,7 @@ import org.junit.Test;
 import java.sql.Timestamp;
 import java.text.DateFormat;
 import java.text.ParseException;
+import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
 
@@ -116,5 +117,10 @@ public class DateUtilTest {
   @Test(expected = IllegalArgumentException.class)
   public void numberOfDaysInRangeToAfterFrom() {
     assertEquals(1, DateUtil.numberOfDaysInRange(DateUtil.getDate(2011, Calendar.FEBRUARY, 1), DateUtil.getDate(2011, Calendar.JANUARY, 1)));
+  }
+
+  @Test
+  public void getDateMask() {
+    assertEquals("##-##-####", DateUtil.getDateMask(new SimpleDateFormat("dd-MM-yyyy")));
   }
 }

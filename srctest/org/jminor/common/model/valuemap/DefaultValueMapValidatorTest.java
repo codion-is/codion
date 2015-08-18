@@ -11,7 +11,7 @@ import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;
 
-import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.*;
 
 public class DefaultValueMapValidatorTest {
 
@@ -30,6 +30,24 @@ public class DefaultValueMapValidatorTest {
     validator.validate(map);
     map.setValue("2", null);
     validator.validate(map);
+  }
+
+  @Test
+  public void isValid() {
+    final DefaultValueMapValidator<String, ValueMap<String, Integer>> validator = new DefaultValueMapValidator<String, ValueMap<String, Integer>>() {
+      @Override
+      public void validate(final ValueMap<String, Integer> valueMap, final String key) throws ValidationException {
+        final Integer value = valueMap.getValue("1");
+        if (value.equals(1)) {
+          throw new ValidationException("1", 1, "Invalid");
+        }
+      }
+    };
+    final ValueMap<String, Integer> map = new DefaultValueMap<>();
+    map.setValue("1", 0);
+    assertTrue(validator.isValid(map));
+    map.setValue("1", 1);
+    assertFalse(validator.isValid(map));
   }
 
   @Test(expected = ValidationException.class)

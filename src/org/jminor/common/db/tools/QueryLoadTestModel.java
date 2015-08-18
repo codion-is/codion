@@ -62,7 +62,7 @@ public final class QueryLoadTestModel extends LoadTestModel<QueryLoadTestModel.Q
 
   /** {@inheritDoc} */
   @Override
-  protected void disconnectApplication(final QueryApplication application) {/*Provided for subclasses*/}
+  protected void disconnectApplication(final QueryApplication application) {/*Not required*/}
 
   /** {@inheritDoc} */
   @Override

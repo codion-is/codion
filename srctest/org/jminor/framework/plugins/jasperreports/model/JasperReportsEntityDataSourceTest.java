@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.plugins.jasperreports.model;
 
+import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.local.LocalEntityConnectionTest;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
 
@@ -27,7 +27,7 @@ public class JasperReportsEntityDataSourceTest {
 
   @Test
   public void iterator() throws Exception {
-    final List<Entity> entities = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection().selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT));
+    final List<Entity> entities = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT));
     final JasperReportsEntityDataSource source = new JasperReportsEntityDataSource(entities.iterator());
     while (source.next()) {
       final Entity dept = source.getCurrentEntity();

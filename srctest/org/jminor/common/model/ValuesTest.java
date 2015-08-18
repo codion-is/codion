@@ -64,7 +64,7 @@ public class ValuesTest {
     final AtomicInteger modelValueEventCounter = new AtomicInteger();
     final Value<Integer> modelValue = Values.beanValue(this, "integerValue", Integer.class, integerValueChange.getObserver());
     final Value<Integer> uiValue = Values.value();
-    Values.link(modelValue, uiValue, false);
+    Values.link(modelValue, uiValue);
     modelValue.getObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {

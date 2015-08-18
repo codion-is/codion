@@ -50,6 +50,8 @@ public class DefaultValueMapTest {
       @Override
       public void eventOccurred(final ValueChange<String, ?> info) {
         Assert.assertEquals(key, info.getKey());
+        assertEquals(valueMap, info.getSource());
+        info.toString();
         info.getOldValue();
         info.getNewValue();
         info.isInitialization();
@@ -131,6 +133,7 @@ public class DefaultValueMapTest {
   @Test
   public void setAs() {
     final ValueMap<Integer, String> dest = new DefaultValueMap<>();
+    dest.getValueChangeObserver();
 
     final ValueMap<Integer, String> source = new DefaultValueMap<>();
     source.setValue(1, "1");

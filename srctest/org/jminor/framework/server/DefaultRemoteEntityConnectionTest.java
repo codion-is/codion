@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.db.Databases;
+import org.jminor.common.db.DatabasesTest;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -47,13 +47,13 @@ public class DefaultRemoteEntityConnectionTest {
   @Test(expected = DatabaseException.class)
   public void wrongUsername() throws Exception {
     final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(new User("foo", "bar"), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
-    new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
+    new DefaultRemoteEntityConnection(DatabasesTest.createTestDatabaseInstance(), info, 1234, true, false);
   }
 
   @Test(expected = DatabaseException.class)
   public void wrongPassword() throws Exception {
     final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(new User(User.UNIT_TEST_USER.getUsername(), "xxxxx"), UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
-    new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
+    new DefaultRemoteEntityConnection(DatabasesTest.createTestDatabaseInstance(), info, 1234, true, false);
   }
 
   @Test(expected = UnsupportedOperationException.class)
@@ -61,7 +61,7 @@ public class DefaultRemoteEntityConnectionTest {
     DefaultRemoteEntityConnection connection = null;
     try {
       final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
-      connection = new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
+      connection = new DefaultRemoteEntityConnection(DatabasesTest.createTestDatabaseInstance(), info, 1234, true, false);
       connection.setMethodLogger(new MethodLogger(10));
     }
     finally {
@@ -79,7 +79,7 @@ public class DefaultRemoteEntityConnectionTest {
     DefaultRemoteEntityConnection connection = null;
     try {
       final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
-      connection = new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
+      connection = new DefaultRemoteEntityConnection(DatabasesTest.createTestDatabaseInstance(), info, 1234, true, false);
       connection.getDatabaseConnection();
     }
     finally {
@@ -100,7 +100,7 @@ public class DefaultRemoteEntityConnectionTest {
     try {
       TestDomain.init();
       final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
-      adapter = new DefaultRemoteEntityConnection(Databases.createInstance(), info, 1234, true, false);
+      adapter = new DefaultRemoteEntityConnection(DatabasesTest.createTestDatabaseInstance(), info, 1234, true, false);
 
       ServerUtil.initializeRegistry(Registry.REGISTRY_PORT);
 

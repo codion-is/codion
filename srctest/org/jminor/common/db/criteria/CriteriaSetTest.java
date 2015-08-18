@@ -7,37 +7,48 @@ import org.jminor.common.model.Conjunction;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
 public final class CriteriaSetTest {
 
+  private static final CriteriaSet AND_SET = new CriteriaSet(Conjunction.AND, new TestCriteria(), new TestCriteria());
+  private static final CriteriaSet<Object> OR_SET = new CriteriaSet<Object>(Conjunction.OR, new TestCriteria(), new TestCriteria());
+  private static final CriteriaSet<Object> AND_OR_AND_SET = new CriteriaSet<>(Conjunction.AND, AND_SET, OR_SET);
+  private static final CriteriaSet<Object> AND_OR_OR_SET = new CriteriaSet<>(Conjunction.OR, AND_SET, OR_SET);
+
   @Test
-  public void test() throws Exception {
-    final CriteriaSet<Object> andSet = new CriteriaSet<Object>(Conjunction.AND, new TestCriteria(), new TestCriteria());
-    assertEquals("AND criteria set should be working", "(criteria and criteria)", andSet.getWhereClause());
-    assertEquals(2, andSet.getCriteriaCount());
+  public void andSet() {
+    assertEquals("AND criteria set should be working", "(criteria and criteria)", AND_SET.getWhereClause());
+    assertEquals(2, AND_SET.getCriteriaCount());
+  }
 
-    final CriteriaSet<Object> orSet = new CriteriaSet<Object>(Conjunction.OR, new TestCriteria(), new TestCriteria());
-    assertEquals("OR criteria set should be working", "(criteria or criteria)", orSet.getWhereClause());
+  @Test
+  public void orSet() {
+    assertEquals("OR criteria set should be working", "(criteria or criteria)", OR_SET.getWhereClause());
+    assertEquals(2, OR_SET.getValues().size());
+    assertEquals(2, OR_SET.getValueKeys().size());
+  }
 
-    final List<Object> values = orSet.getValues();
-    assertEquals(2, values.size());
-    final List<Object> keys = orSet.getValueKeys();
-    assertEquals(2, keys.size());
+  @Test
+  public void andOrAndSet() {
+    assertEquals("AND OR AND criteria set should be working", "((criteria and criteria) and (criteria or criteria))", AND_OR_AND_SET.getWhereClause());
+  }
 
-    final CriteriaSet<Object> andOrAndSet = new CriteriaSet<>(Conjunction.AND, andSet, orSet);
-    assertEquals("AND OR AND criteria set should be working", "((criteria and criteria) and (criteria or criteria))", andOrAndSet.getWhereClause());
+  @Test
+  public void andOrOrSet() {
+    assertEquals("AND OR OR criteria set should be working", "((criteria and criteria) or (criteria or criteria))", AND_OR_OR_SET.getWhereClause());
+  }
 
-    final CriteriaSet<Object> andOrOrSet = new CriteriaSet<>(Conjunction.OR, andSet, orSet);
-    assertEquals("AND OR OR criteria set should be working", "((criteria and criteria) or (criteria or criteria))", andOrOrSet.getWhereClause());
-
+  @Test
+  public void getCriteriaCount() {
     CriteriaSet<Object> set = new CriteriaSet<>(Conjunction.OR);
     assertEquals(0, set.getCriteriaCount());
+    assertEquals("", set.getWhereClause());
 
-    set = new CriteriaSet<Object>(Conjunction.OR, new TestCriteria(), null, null);
+    set = new CriteriaSet<Object>(Conjunction.OR, new TestCriteria());
     assertEquals(1, set.getCriteriaCount());
 
     set = new CriteriaSet<Object>(Conjunction.OR, new TestCriteria(), new TestCriteria(), null, new TestCriteria());
@@ -51,17 +62,13 @@ public final class CriteriaSetTest {
     }
 
     @Override
-    public List<Object> getValues() {
-      final List<Object> values =  new ArrayList<>();
-      values.add(1);
-      return values;
+    public List<?> getValues() {
+      return Collections.singletonList(1);
     }
 
     @Override
     public List<?> getValueKeys() {
-      final List<Object> keys =  new ArrayList<>();
-      keys.add("key");
-      return keys;
+      return Collections.singletonList("key");
     }
   }
 }

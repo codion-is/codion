@@ -9,6 +9,7 @@ import org.junit.Test;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
+import java.util.Map;
 import java.util.UUID;
 import java.util.concurrent.atomic.AtomicInteger;
 
@@ -48,6 +49,7 @@ public class AbstractServerTest {
     final ConnectionInfo clientInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
     final ConnectionInfo clientInfo2 = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
     server.setConnectionLimit(1);
+    assertEquals(1, server.getConnectionLimit());
     server.connect(clientInfo);
     server.connect(clientInfo2);
   }
@@ -61,7 +63,14 @@ public class AbstractServerTest {
     assertNotNull(connection);
     final ServerTest connection2 = server.connect(connectionInfo);
     assertTrue(connection == connection2);
+    final Map<ClientInfo, ServerTest> connections = server.getConnections();
+    assertEquals(1, connections.size());
+    assertEquals(connection, connections.get(connectionInfo));
+    assertEquals(connection, server.getConnection(connectionInfo.getClientID()));
+    assertTrue(server.containsConnection(connectionInfo.getClientID()));
     server.disconnect(connectionInfo.getClientID());
+    server.disconnect(null);
+    assertFalse(server.containsConnection(connectionInfo.getClientID()));
     final ServerTest connection3 = server.connect(connectionInfo);
     assertFalse(connection == connection3);
     assertNotNull(server.getServerInfo());

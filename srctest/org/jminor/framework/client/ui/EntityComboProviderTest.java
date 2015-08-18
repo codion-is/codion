@@ -5,7 +5,7 @@ package org.jminor.framework.client.ui;
 
 import org.jminor.framework.client.model.DefaultEntityComboBoxModel;
 import org.jminor.framework.client.model.EntityComboBoxModel;
-import org.jminor.framework.db.local.LocalEntityConnectionTest;
+import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
 
@@ -23,12 +23,12 @@ public class EntityComboProviderTest {
 
   @Test
   public void test() throws Exception {
-    final EntityComboBoxModel model = new DefaultEntityComboBoxModel(TestDomain.T_DEPARTMENT, LocalEntityConnectionTest.CONNECTION_PROVIDER);
+    final EntityComboBoxModel model = new DefaultEntityComboBoxModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     final EntityComboProvider provider = new EntityComboProvider(model, null);
 
     assertNull(provider.getValue());
 
-    final Entity dept = LocalEntityConnectionTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
+    final Entity dept = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
 
     model.setSelectedItem(dept);
     assertEquals(dept, provider.getValue());

@@ -91,8 +91,7 @@ public final class TaskScheduler {
   }
 
   /**
-   * Sets the new task interval and re-schedules the task, not that if the scheduler was
-   * stopped it will be restarted.
+   * Sets the new task interval and re-schedules the task, note that if the scheduler was stopped it will be restarted.
    * @param interval the interval
    * @throws IllegalArgumentException in case <code>interval</code> isn't a positive integer
    */
