@@ -16,7 +16,6 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.common.ui.DateInputPanel;
 import org.jminor.common.ui.DefaultExceptionHandler;
-import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.ExceptionHandler;
 import org.jminor.common.ui.TextInputPanel;
 import org.jminor.common.ui.UiUtil;
@@ -486,7 +485,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   public final void handleException(final Throwable throwable, final Window dialogParent) {
     LOG.error(throwable.getMessage(), throwable);
     if (throwable instanceof RecordModifiedException) {
-      ExceptionDialog.showExceptionDialog(dialogParent, Messages.get(Messages.EXCEPTION),
+      UiUtil.showExceptionDialog(dialogParent, Messages.get(Messages.EXCEPTION),
               Messages.get(Messages.RECORD_MODIFIED_EXCEPTION) + ", "
                       + EntityUtil.getModifiedExceptionMessage((RecordModifiedException) throwable), throwable);
     }

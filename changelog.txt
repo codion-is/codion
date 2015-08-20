@@ -4034,3 +4034,4 @@
   EntityConnectionServerTest and EmpDeptRESTLoadTest updated according to HttpClient update (deprecations)
   Tomcat jdbc dependency updated to 8.0.24
   Unit tests refactored and improved a bit
+  ExceptionDialog moved to UiUtil and privatized

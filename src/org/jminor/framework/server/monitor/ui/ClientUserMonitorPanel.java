@@ -5,7 +5,6 @@ package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.TaskScheduler;
-import org.jminor.common.ui.ExceptionDialog;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
 import org.jminor.common.ui.control.ControlProvider;
@@ -180,7 +179,7 @@ public final class ClientUserMonitorPanel extends JPanel {
   }
 
   private void handleException(final Exception exception) {
-    ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(this),
+    UiUtil.showExceptionDialog(UiUtil.getParentWindow(this),
             Messages.get(Messages.EXCEPTION), exception.getMessage(), exception);
   }
 }

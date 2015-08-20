@@ -3,6 +3,7 @@
  */
 package org.jminor.common.ui;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.DateUtil;
@@ -16,6 +17,10 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
+import org.jminor.common.ui.control.Control;
+import org.jminor.common.ui.control.ControlProvider;
+import org.jminor.common.ui.control.Controls;
+import org.jminor.common.ui.control.ToggleControl;
 import org.jminor.common.ui.images.NavigableImagePanel;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.SizedDocument;
@@ -23,25 +28,30 @@ import org.jminor.common.ui.textfield.SizedDocument;
 import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
+import javax.swing.BorderFactory;
 import javax.swing.JButton;
 import javax.swing.JComponent;
 import javax.swing.JDialog;
 import javax.swing.JFileChooser;
 import javax.swing.JFormattedTextField;
 import javax.swing.JFrame;
+import javax.swing.JLabel;
 import javax.swing.JList;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JProgressBar;
 import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
+import javax.swing.JTextArea;
 import javax.swing.JTextField;
 import javax.swing.JTree;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
 import javax.swing.RootPaneContainer;
+import javax.swing.SwingConstants;
 import javax.swing.SwingUtilities;
 import javax.swing.TransferHandler;
+import javax.swing.UIManager;
 import javax.swing.WindowConstants;
 import javax.swing.plaf.TabbedPaneUI;
 import javax.swing.plaf.basic.BasicTabbedPaneUI;
@@ -57,12 +67,15 @@ import java.awt.BorderLayout;
 import java.awt.Component;
 import java.awt.Container;
 import java.awt.Cursor;
+import java.awt.Desktop;
 import java.awt.Dialog;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.awt.Font;
 import java.awt.GraphicsEnvironment;
 import java.awt.GridLayout;
 import java.awt.Insets;
+import java.awt.Point;
 import java.awt.Toolkit;
 import java.awt.Window;
 import java.awt.datatransfer.DataFlavor;
@@ -79,13 +92,17 @@ import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
 import java.awt.image.BufferedImage;
+import java.awt.print.PrinterException;
 import java.io.File;
 import java.io.FileNotFoundException;
 import java.io.IOException;
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URI;
 import java.net.URL;
+import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
 import java.text.SimpleDateFormat;
@@ -1592,7 +1609,7 @@ public final class UiUtil {
           JOptionPane.showMessageDialog(UiUtil.getParentWindow(dialogParent), successMessage, successTitle, JOptionPane.INFORMATION_MESSAGE);
         }
         if (exception != null && !(exception instanceof CancelException)) {
-          ExceptionDialog.showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, exception);
+          showExceptionDialog(UiUtil.getParentWindow(dialogParent), failTitle, exception);
         }
       }
     }
@@ -1610,6 +1627,56 @@ public final class UiUtil {
         SwingUtilities.invokeLater(new Finisher(exception));
       }
     });
+  }
+
+  /**
+   * Shows an exception dialog for the given throwable
+   * @param window the dialog parent window
+   * @param title the dialog title
+   * @param throwable the exception to display
+   */
+  public static void showExceptionDialog(final Window window, final String title, final Throwable throwable) {
+    showExceptionDialog(window, title, throwable.getMessage(), throwable);
+  }
+
+  /**
+   * Shows an exception dialog for the given throwable
+   * @param window the dialog parent window
+   * @param message the message
+   * @param title the dialog title
+   * @param throwable the exception to display
+   */
+  public static void showExceptionDialog(final Window window, final String title, final String message,
+                                         final Throwable throwable) {
+    showExceptionDialog(window, title, message, throwable, true);
+  }
+
+  /**
+   * Shows an exception dialog for the given throwable
+   * @param window the dialog parent window
+   * @param message the message
+   * @param title the dialog title
+   * @param modal if true then the dialog will be modal
+   * @param throwable the exception to display
+   */
+  public static void showExceptionDialog(final Window window, final String title, final String message,
+                                         final Throwable throwable, final boolean modal) {
+    try {
+      if (SwingUtilities.isEventDispatchThread()) {
+        new ExceptionDialog(window).showForThrowable(title, message, throwable, modal);
+      }
+      else {
+        SwingUtilities.invokeAndWait(new Runnable() {
+          @Override
+          public void run() {
+            new ExceptionDialog(window).showForThrowable(title, message, throwable, modal);
+          }
+        });
+      }
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /**
@@ -1871,6 +1938,322 @@ public final class UiUtil {
           field.setCaretPosition(currentCaretPosition);
         }
       }
+    }
+  }
+
+  /**
+   * A JDialog for displaying information on exceptions.
+   * Before you can use the ExceptionDialog email mechanism (Windows only) you need to call at least
+   * ExceptionDialog.setErrorReportEmailFrom() and ExceptionDialog.setErrorReportEmailTo(),
+   * to prefix a string to the subject field call ExceptionDialog.setErrorReportEmailSubjectPrefix()
+   */
+  private static final class ExceptionDialog extends JDialog {
+
+    private static final int DESCRIPTION_LABEL_WIDTH = 250;
+    private static final int MESSAGE_LABEL_WIDTH = 50;
+    private static final int SCROLL_PANE_WIDTH = 500;
+    private static final int SCROLL_PANE_HEIGHT = 200;
+    private static final int MAX_MESSAGE_LENGTH = 100;
+    private static final int BORDER_SIZE = 5;
+    private static final int ICON_TEXT_GAP = 10;
+    private static final int NORTH_PANEL_DIMENSIONS = 2;
+    private static final int COMPONENT_GAP = 0;
+    private static final int TAB_SIZE = 4;
+    private static final int FONT_SIZE = 9;
+
+    //ui components
+    private JTextField exceptionField;
+    private JTextArea messageArea;
+    private JPanel detailPanel;
+    private final Window window;
+    private JPanel centerPanel;
+    private JTextArea detailsArea;
+    private JLabel descriptionLabel;
+    private JButton btnPrint;
+    private JButton btnSave;
+    private JButton btnCopy;
+    private JButton btnEmail;
+    //controls
+    private ToggleControl ctrDetails;
+    private Control ctrClose;
+    private Control ctrPrint;
+    private Control ctrSave;
+    private Control ctrCopy;
+    private Control ctrEmail;
+
+    private final State showDetailsState = States.state();
+
+    /**
+     * Instantiates a new ExceptionDialog with the given window as parent
+     * @param window the dialog parent
+     */
+    private ExceptionDialog(final Window window) {
+      super(window);
+      this.window = window;
+      setupControls();
+      bindEvents();
+      initializeUI();
+    }
+
+    private void setupControls() {
+      ctrDetails = Controls.toggleControl(showDetailsState);
+      ctrDetails.setName(Messages.get(Messages.DETAILS));
+      ctrDetails.setDescription(Messages.get(Messages.SHOW_DETAILS));
+      ctrPrint = new Control(Messages.get(Messages.PRINT)) {
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+          try {
+            detailsArea.print();
+          }
+          catch (final PrinterException ex) {
+            throw new RuntimeException(ex);
+          }
+        }
+      };
+      ctrPrint.setDescription(Messages.get(Messages.PRINT_ERROR_REPORT));
+      ctrPrint.setMnemonic(Messages.get(Messages.PRINT_ERROR_REPORT_MNEMONIC).charAt(0));
+      ctrClose = new Control(Messages.get(Messages.CLOSE)) {
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+          dispose();
+        }
+      };
+      ctrClose.setDescription(Messages.get(Messages.CLOSE_DIALOG));
+      ctrClose.setMnemonic(Messages.get(Messages.CLOSE_MNEMONIC).charAt(0));
+      ctrSave = new Control(Messages.get(Messages.SAVE)) {
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+          try {
+            Util.writeFile(detailsArea.getText(), chooseFileToSave(detailsArea, null, null));
+          }
+          catch (final CancelException ignored) {/*ignored*/}
+          catch (final IOException ex) {
+            throw new RuntimeException(ex);
+          }
+        }
+      };
+      ctrSave.setDescription(Messages.get(Messages.SAVE_ERROR_LOG));
+      ctrSave.setMnemonic(Messages.get(Messages.SAVE_MNEMONIC).charAt(0));
+      ctrCopy = new Control(Messages.get(Messages.COPY)) {
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+          setClipboard(detailsArea.getText());
+        }
+      };
+      ctrCopy.setDescription(Messages.get(Messages.COPY_TO_CLIPBOARD));
+      ctrCopy.setMnemonic(Messages.get(Messages.COPY_MNEMONIC).charAt(0));
+      ctrEmail = new Control(Messages.get(Messages.SEND)) {
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+          emailErrorReport();
+        }
+      };
+      ctrEmail.setDescription(Messages.get(Messages.SEND_EMAIL));
+      ctrEmail.setMnemonic(Messages.get(Messages.SEND_MNEMONIC).charAt(0));
+    }
+
+    private void initializeUI() {
+      final AbstractAction closeAction = new AbstractAction("close") {
+        @Override
+        public void actionPerformed(final ActionEvent e) {
+          dispose();
+        }
+      };
+      addKeyEvent(getRootPane(), KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT, closeAction);
+      final JPanel basePanel = new JPanel(createBorderLayout());
+      basePanel.setBorder(BorderFactory.createEmptyBorder(BORDER_SIZE, BORDER_SIZE, BORDER_SIZE, BORDER_SIZE));
+      basePanel.add(createNorthPanel(), BorderLayout.NORTH);
+      centerPanel = createCenterPanel();
+      basePanel.add(centerPanel, BorderLayout.CENTER);
+      basePanel.add(createButtonPanel(), BorderLayout.SOUTH);
+
+      getContentPane().setLayout(createBorderLayout());
+      getContentPane().add(basePanel, BorderLayout.CENTER);
+    }
+
+    private void bindEvents() {
+      setDefaultCloseOperation(DISPOSE_ON_CLOSE);
+      showDetailsState.addInfoListener(new EventInfoListener<Boolean>() {
+        @Override
+        public void eventOccurred(final Boolean value) {
+          initializeDetailView(value);
+        }
+      });
+    }
+
+    private void initializeDetailView(final boolean show) {
+      btnPrint.setVisible(show);
+      btnSave.setVisible(show);
+      btnCopy.setVisible(show);
+      btnEmail.setVisible(show);
+      detailPanel.setVisible(show);
+      centerPanel.setVisible(show);
+      pack();
+      detailPanel.revalidate();
+      if (window != null && window.isVisible()) {
+        positionOverFrame();
+      }
+      else {
+        centerWindow(this);
+      }
+    }
+
+    private JPanel createNorthPanel() {
+      final FlexibleGridLayout layout = createFlexibleGridLayout(NORTH_PANEL_DIMENSIONS, NORTH_PANEL_DIMENSIONS, true, false);
+      layout.setFixedRowHeight(new JTextField().getPreferredSize().height);
+      detailPanel = new JPanel(layout);
+      descriptionLabel = new JLabel(UIManager.getIcon("OptionPane.errorIcon"), SwingConstants.CENTER);
+      descriptionLabel.setMaximumSize(new Dimension(DESCRIPTION_LABEL_WIDTH, descriptionLabel.getMaximumSize().height));
+      descriptionLabel.setIconTextGap(ICON_TEXT_GAP);
+      final JLabel exceptionLabel = new JLabel(
+              Messages.get(Messages.EXCEPTION) + ": ", SwingConstants.LEFT);
+      exceptionField = new JTextField();
+      exceptionField.setEnabled(false);
+      final JLabel messageLabel = new JLabel(
+              Messages.get(Messages.MESSAGE) + ": ", SwingConstants.LEFT);
+      messageLabel.setPreferredSize(new Dimension(MESSAGE_LABEL_WIDTH, messageLabel.getPreferredSize().height));
+      messageArea = new JTextArea();
+      messageArea.setEnabled(false);
+      messageArea.setLineWrap(true);
+      messageArea.setWrapStyleWord(true);
+      messageArea.setBackground(exceptionField.getBackground());
+      messageArea.setBorder(exceptionField.getBorder());
+      final JScrollPane messageScroller = new JScrollPane(messageArea,
+              JScrollPane.VERTICAL_SCROLLBAR_AS_NEEDED, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+      //detail
+      detailPanel.add(exceptionLabel);
+      detailPanel.add(exceptionField);
+      detailPanel.add(messageLabel);
+      detailPanel.add(messageScroller);
+
+      final JPanel northPanel = new JPanel(createBorderLayout());
+      final JPanel northNorthPanel = new JPanel(new FlowLayout(FlowLayout.LEFT));
+      northNorthPanel.add(descriptionLabel);
+      northPanel.add(northNorthPanel, BorderLayout.NORTH);
+      northPanel.add(detailPanel, BorderLayout.CENTER);
+
+      return northPanel;
+    }
+
+    private JPanel createCenterPanel() {
+      detailsArea = new JTextArea();
+      detailsArea.setFont(new Font("Dialog", Font.PLAIN, FONT_SIZE));
+      detailsArea.setTabSize(TAB_SIZE);
+      detailsArea.setEditable(false);
+      detailsArea.setLineWrap(true);
+      detailsArea.setWrapStyleWord(true);
+
+      final JScrollPane scrollPane = new JScrollPane(detailsArea);
+      scrollPane.setPreferredSize(new Dimension(SCROLL_PANE_WIDTH, SCROLL_PANE_HEIGHT));
+      final JPanel center = new JPanel(new BorderLayout());
+      center.add(scrollPane, BorderLayout.CENTER);
+
+      return center;
+    }
+
+    private JPanel createButtonPanel() {
+      final JPanel baseButtonPanel = new JPanel(new BorderLayout());
+      final JPanel rightButtonPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT, COMPONENT_GAP, COMPONENT_GAP));
+      final JPanel leftButtonPanel = new JPanel(new FlowLayout(FlowLayout.LEFT, COMPONENT_GAP, COMPONENT_GAP));
+
+      final JButton btnClose = ControlProvider.createButton(ctrClose);
+      btnPrint = ControlProvider.createButton(ctrPrint);
+      btnSave = ControlProvider.createButton(ctrSave);
+      btnCopy = ControlProvider.createButton(ctrCopy);
+      btnEmail = ControlProvider.createButton(ctrEmail);
+      rightButtonPanel.add(btnEmail);
+      rightButtonPanel.add(btnCopy);
+      rightButtonPanel.add(btnPrint);
+      rightButtonPanel.add(btnSave);
+      rightButtonPanel.add(btnClose);
+      leftButtonPanel.add(ControlProvider.createCheckBox(ctrDetails));
+
+      baseButtonPanel.add(leftButtonPanel, BorderLayout.WEST);
+      baseButtonPanel.add(rightButtonPanel, BorderLayout.CENTER);
+
+      getRootPane().setDefaultButton(btnClose);
+
+      return baseButtonPanel;
+    }
+
+    private void positionOverFrame() {
+      final Point p = getOwner().getLocation();
+      final Dimension d = getOwner().getSize();
+
+      p.x += (d.width - getWidth()) >> 1;
+      p.y += (d.height - getHeight()) >> 1;
+
+      if (p.x < 0) {
+        p.x = 0;
+      }
+
+      if (p.y < 0) {
+        p.y = 0;
+      }
+
+      setLocation(p);
+    }
+
+    private void showForThrowable(final String title, final String message, final Throwable throwable, final boolean modal) {
+      setModal(modal);
+      setTitle(title);
+
+      final String name = translateExceptionClass(throwable.getClass());
+      descriptionLabel.setText(message == null ? name : truncateMessage(message));
+      descriptionLabel.setToolTipText(message);
+
+      exceptionField.setText(name);
+      messageArea.setText(throwable.getMessage());
+
+      final StringWriter sw = new StringWriter();
+      throwable.printStackTrace(new PrintWriter(sw));
+
+      detailsArea.setText(null);
+      detailsArea.append(sw.toString());
+      detailsArea.append("\n");
+      detailsArea.append("--------------------------------------------Properties--------------------------------------------\n\n");
+
+      final String propsString = Util.getSystemProperties();
+      detailsArea.append(propsString);
+
+      detailsArea.setCaretPosition(0);
+      initializeDetailView(false);
+      setVisible(true);
+    }
+
+    /**
+     * Uses "mailto" to create an email containing the current error report to a specified recipient
+     */
+    private void emailErrorReport() {
+      final String address = JOptionPane.showInputDialog(Messages.get(Messages.INPUT_EMAIL_ADDRESS));
+      if (Util.nullOrEmpty(address)) {
+        return;
+      }
+      try {
+        final String uriStr = String.format("mailto:%s?subject=%s&body=%s", address,
+                URLEncoder.encode(descriptionLabel.getText(), "UTF-8").replace("+", "%20"),
+                URLEncoder.encode(detailsArea.getText(), "UTF-8").replace("+", "%20"));
+        Desktop.getDesktop().browse(new URI(uriStr));
+      }
+      catch (final Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
+
+    private String truncateMessage(final String message) {
+      if (message.length() > MAX_MESSAGE_LENGTH) {
+        return message.substring(0, MAX_MESSAGE_LENGTH) + "...";
+      }
+
+      return message;
+    }
+
+    private String translateExceptionClass(final Class<? extends Throwable> exceptionClass) {
+      if (exceptionClass.equals(DatabaseException.class)) {
+        return Messages.get(Messages.DATABASE_EXCEPTION);
+      }
+
+      return exceptionClass.getSimpleName();
     }
   }
 }

@@ -53,7 +53,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
       handleDatabaseException((DatabaseException) rootCause, dialogParent);
     }
     else {
-      ExceptionDialog.showExceptionDialog(dialogParent, getMessageTitle(rootCause), rootCause.getMessage(), rootCause);
+      UiUtil.showExceptionDialog(dialogParent, getMessageTitle(rootCause), rootCause.getMessage(), rootCause);
     }
   }
 
@@ -72,7 +72,7 @@ public final class DefaultExceptionHandler implements ExceptionHandler {
         errMsg = trimMessage(dbException.getCause());
       }
     }
-    ExceptionDialog.showExceptionDialog(dialogParent, Messages.get(Messages.EXCEPTION), errMsg, dbException);
+    UiUtil.showExceptionDialog(dialogParent, Messages.get(Messages.EXCEPTION), errMsg, dbException);
   }
 
   static Throwable unwrapExceptions(final Throwable exception, final Collection<Class<? extends Throwable>> exceptions) {
