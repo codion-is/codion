@@ -134,11 +134,9 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   }
 
   /**
-   * Returns true if one or more writable properties have been modified,
-   * read only and non-updatable properties are excluded unless they
-   * are transient.
-   * @return true if one or more properties have been modified
-   * since the entity was instantiated
+   * Returns true if one or more writable properties have been modified, read only and non-updatable properties
+   * are excluded unless they are transient.
+   * @return true if one or more properties have been modified since the entity was instantiated
    */
   @Override
   public boolean isModified() {
@@ -196,9 +194,8 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   }
 
   /**
-   * Returns true if the value associated with the given property is null.
-   * In case of foreign key properties the value of the underlying reference
-   * property is checked.
+   * Returns true if the value associated with the given property is null. In case of foreign key properties
+   * the value of the underlying reference property is checked.
    * @param propertyID the property ID
    * @return true if the value associated with the property is null
    */
@@ -208,9 +205,8 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   }
 
   /**
-   * Returns true if the value associated with the given property is null.
-   * In case of foreign key properties the value of the underlying reference
-   * property is checked.
+   * Returns true if the value associated with the given property is null. In case of foreign key properties
+   * the value of the underlying reference property is checked.
    * @param property the property
    * @return true if the value associated with the property is null
    */
@@ -388,7 +384,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
 
   /**
    * @return a string representation of this entity
-   * @see Definition#setStringProvider(org.jminor.framework.domain.Entity.ToString)
+   * @see Definition#setStringProvider(Entity.ToString)
    * @see Definition#toString(Entity)
    */
   @Override
