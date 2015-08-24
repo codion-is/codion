@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.db.ResultPacker;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.DefaultValueMapValidator;
 import org.jminor.common.model.valuemap.exception.NullValidationException;
@@ -615,6 +616,14 @@ public final class Entities {
    */
   public static Entity.Validator getValidator(final String entityID) {
     return DefaultEntityDefinition.getDefinition(entityID).getValidator();
+  }
+
+  /**
+   * @param entityID the entityID
+   * @return the ResultPacker responsible for packing this entity type
+   */
+  public static ResultPacker<Entity> getResultPacker(final String entityID) {
+    return DefaultEntityDefinition.getDefinition(entityID).getResultPacker();
   }
 
   /**

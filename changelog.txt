@@ -4036,3 +4036,4 @@
   Unit tests refactored and improved a bit
   ExceptionDialog moved to UiUtil and privatized
   DateInputPanel bug fixed, focus listener only added when button was present
+  EntityDefinition.getResultPacker() and Property.ColumnProperty.getResultPacker() added

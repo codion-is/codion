@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 import org.jminor.common.model.Attribute;
 import org.jminor.common.model.Column;
@@ -425,6 +426,11 @@ public interface Property extends Attribute {
      * @return this Property instance
      */
     ColumnProperty setValueConverter(final ValueConverter valueConverter);
+
+    /**
+     * @return a ResultPacker responsible for packing this property
+     */
+    ResultPacker getResultPacker();
   }
 
   /**

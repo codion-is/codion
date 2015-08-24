@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 import org.jminor.common.db.ValueFetcher;
 import org.jminor.common.model.Item;
@@ -17,6 +18,7 @@ import java.sql.Types;
 import java.text.DateFormat;
 import java.text.Format;
 import java.text.NumberFormat;
+import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collections;
 import java.util.Date;
@@ -547,6 +549,7 @@ class DefaultProperty implements Property {
 
     private final int columnType;
     private final ValueFetcher valueFetcher;
+    private final ResultPacker resultPacker;
     private String columnName;
     private ValueConverter valueConverter;
     private int selectIndex = -1;
@@ -568,6 +571,7 @@ class DefaultProperty implements Property {
       this.columnType = columnType;
       this.valueConverter = initializeValueConverter(this);
       this.valueFetcher = initializeValueFetcher(this);
+      this.resultPacker = new PropertyResultPacker(this);
     }
 
     @Override
@@ -745,6 +749,11 @@ class DefaultProperty implements Property {
       Util.rejectNullValue(valueConverter, "valueConverter");
       this.valueConverter = valueConverter;
       return this;
+    }
+
+    @Override
+    public final ResultPacker getResultPacker() {
+      return resultPacker;
     }
 
     private static ValueConverter initializeValueConverter(final ColumnProperty property) {
@@ -1295,6 +1304,34 @@ class DefaultProperty implements Property {
     @Override
     public Object fromColumnValue(final Object columnValue) {
       return columnValue;
+    }
+  }
+
+  private static final class PropertyResultPacker implements ResultPacker {
+    private final Property.ColumnProperty property;
+
+    private PropertyResultPacker(final Property.ColumnProperty property) {
+      this.property = property;
+    }
+
+    @Override
+    public List<Object> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+      final List<Object> result = new ArrayList<>(50);
+      int counter = 0;
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        if (property.isInteger()) {
+          final int value = resultSet.getInt(1);
+          result.add(resultSet.wasNull() ? null : value);
+        }
+        else if (property.isDouble()) {
+          final double value = resultSet.getDouble(1);
+          result.add(resultSet.wasNull() ? null : value);
+        }
+        else {
+          result.add(resultSet.getObject(1));
+        }
+      }
+      return result;
     }
   }
 }

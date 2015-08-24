@@ -6,9 +6,11 @@ package org.jminor.framework.domain;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseUtil;
+import org.jminor.common.db.ResultPacker;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.sql.Types;
 import java.util.ArrayList;
@@ -44,6 +46,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * The name of the underlying table
    */
   private final String tableName;
+
+  /**
+   * The ResultPacker responsible for packing entities of this type
+   */
+  private final ResultPacker<Entity> resultPacker;
 
   /**
    * The domainID
@@ -179,6 +186,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.selectTableName = tableName;
     this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
     this.groupByClause = initializeGroupByClause(getColumnProperties());
+    this.resultPacker = new EntityResultPacker(entityID, getColumnProperties(properties.values()), getTransientProperties(properties.values()));
     setSelectIndexes();
     initializePropertyLinks();
   }
@@ -539,6 +547,12 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public Entity.Validator getValidator() {
     return validator;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public ResultPacker<Entity> getResultPacker() {
+    return resultPacker;
   }
 
   /** {@inheritDoc} */
@@ -942,6 +956,74 @@ final class DefaultEntityDefinition implements Entity.Definition {
     @Override
     protected String getQuery(final Database database) {
       return database.getAutoIncrementValueSQL(valueSource);
+    }
+  }
+
+  /**
+   * Handles packing Entity query results.
+   * Loads all database property values except for foreign key properties (Property.ForeignKeyProperty).
+   */
+  private static final class EntityResultPacker implements ResultPacker<Entity> {
+
+    private final String entityID;
+    private final Collection<Property.ColumnProperty> properties;
+    private final Collection<Property.TransientProperty> transientProperties;
+    private final boolean hasTransientProperties;
+
+    /**
+     * Instantiates a new EntityResultPacker.
+     * @param entityID the ID of the entities this packer packs
+     */
+    private EntityResultPacker(final String entityID, final Collection<Property.ColumnProperty> columnProperties,
+                               final Collection<Property.TransientProperty> transientProperties) {
+      Util.rejectNullValue(entityID, "entityID");
+      this.entityID = entityID;
+      this.properties = columnProperties;
+      this.transientProperties = transientProperties;
+      this.hasTransientProperties = !Util.nullOrEmpty(this.transientProperties);
+    }
+
+    /**
+     * Packs the contents of <code>resultSet</code> into a List of Entity objects.
+     * The resulting entities do not contain values for foreign key properties (Property.ForeignKeyProperty).
+     * This method does not close the ResultSet object.
+     * @param resultSet the ResultSet object
+     * @param fetchCount the maximum number of records to retrieve from the result set
+     * @return a List of Entity objects representing the contents of <code>resultSet</code>
+     * @throws java.sql.SQLException in case of an exception
+     */
+    @Override
+    public List<Entity> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+      Util.rejectNullValue(resultSet, "resultSet");
+      final List<Entity> entities = new ArrayList<>();
+      int counter = 0;
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        entities.add(loadEntity(resultSet));
+      }
+
+      return entities;
+    }
+
+    private Entity loadEntity(final ResultSet resultSet) throws SQLException {
+      final Entity entity = Entities.entity(entityID);
+      if (hasTransientProperties) {
+        for (final Property.TransientProperty transientProperty : transientProperties) {
+          if (!(transientProperty instanceof Property.DenormalizedViewProperty)
+                  && !(transientProperty instanceof Property.DerivedProperty)) {
+            entity.setValue(transientProperty, null, false);
+          }
+        }
+      }
+      for (final Property.ColumnProperty property : properties) {
+        try {
+          entity.setValue(property, property.fetchValue(resultSet), false);
+        }
+        catch (final Exception e) {
+          throw new SQLException("Exception fetching: " + property + ", entity: " + entityID + " [" + e.getMessage() + "]", e);
+        }
+      }
+
+      return entity;
     }
   }
 }

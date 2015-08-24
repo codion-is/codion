@@ -70,8 +70,7 @@ final class LocalEntityConnection implements EntityConnection {
   private static final String WHERE_SPACE_PREFIX = " where ";
 
   private final DatabaseConnection connection;
-  private final Map<String, EntityResultPacker> entityResultPackers = new HashMap<>();
-  private final Map<Integer, ResultPacker<Object>> propertyResultPackers = new HashMap<>();
+
   private boolean optimisticLocking = Configuration.getBooleanValue(Configuration.USE_OPTIMISTIC_LOCKING);
   private boolean limitForeignKeyFetchDepth = Configuration.getBooleanValue(Configuration.LIMIT_FOREIGN_KEY_FETCH_DEPTH);
 
@@ -417,7 +416,7 @@ final class LocalEntityConnection implements EntityConnection {
             WHERE + columnName + " is not null", order ? columnName : null);
     synchronized (connection) {
       try {
-        final List<Object> result = DatabaseUtil.query(connection, selectSQL, getPropertyResultPacker(property), -1);
+        final List<Object> result = DatabaseUtil.query(connection, selectSQL, property.getResultPacker(), -1);
         commitIfTransactionIsNotOpen();
 
         return result;
@@ -702,26 +701,6 @@ final class LocalEntityConnection implements EntityConnection {
     this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
-  private EntityResultPacker getEntityResultPacker(final String entityID) {
-    EntityResultPacker packer = entityResultPackers.get(entityID);
-    if (packer == null) {
-      packer = new EntityResultPacker(entityID);
-      entityResultPackers.put(entityID, packer);
-    }
-
-    return packer;
-  }
-
-  private ResultPacker<Object> getPropertyResultPacker(final Property.ColumnProperty property) {
-    ResultPacker<Object> packer = propertyResultPackers.get(property.getType());
-    if (packer == null) {
-      packer = new PropertyResultPacker(property);
-      propertyResultPackers.put(property.getType(), packer);
-    }
-
-    return packer;
-  }
-
   private void performOptimisticLocking(final Map<String, Collection<Entity>> entitiesToLock) throws DatabaseException {
     if (optimisticLocking) {
       try {
@@ -892,7 +871,7 @@ final class LocalEntityConnection implements EntityConnection {
     SQLException packingException = null;
     try {
       logAccess("packResult", new Object[0]);
-      result = getEntityResultPacker(criteria.getEntityID()).pack(resultSet, criteria.getFetchCount());
+      result = Entities.getResultPacker(criteria.getEntityID()).pack(resultSet, criteria.getFetchCount());
     }
     catch (final SQLException e) {
       packingException = e;
@@ -1229,34 +1208,6 @@ final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  private static final class PropertyResultPacker implements ResultPacker<Object> {
-    private final Property.ColumnProperty property;
-
-    private PropertyResultPacker(final Property.ColumnProperty property) {
-      this.property = property;
-    }
-
-    @Override
-    public List<Object> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Object> result = new ArrayList<>(50);
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        if (property.isInteger()) {
-          final int value = resultSet.getInt(1);
-          result.add(resultSet.wasNull() ? null : value);
-        }
-        else if (property.isDouble()) {
-          final double value = resultSet.getDouble(1);
-          result.add(resultSet.wasNull() ? null : value);
-        }
-        else {
-          result.add(resultSet.getObject(1));
-        }
-      }
-      return result;
-    }
-  }
-
   /**
    * A result packer for fetching blobs from a result set containing a single blob column
    */
@@ -1272,73 +1223,6 @@ final class LocalEntityConnection implements EntityConnection {
       return blobs;
     }
   };
-
-  /**
-   * Handles packing Entity query results.
-   * Loads all database property values except for foreign key properties (Property.ForeignKeyProperty).
-   */
-  private static final class EntityResultPacker implements ResultPacker<Entity> {
-
-    private final String entityID;
-    private final Collection<Property.ColumnProperty> properties;
-    private final Collection<Property.TransientProperty> transientProperties;
-    private final boolean hasTransientProperties;
-
-    /**
-     * Instantiates a new EntityResultPacker.
-     * @param entityID the ID of the entities this packer packs
-     */
-    private EntityResultPacker(final String entityID) {
-      Util.rejectNullValue(entityID, "entityID");
-      this.entityID = entityID;
-      this.properties = Entities.getColumnProperties(entityID);
-      this.transientProperties = Entities.getTransientProperties(entityID);
-      this.hasTransientProperties = !Util.nullOrEmpty(this.transientProperties);
-    }
-
-    /**
-     * Packs the contents of <code>resultSet</code> into a List of Entity objects.
-     * The resulting entities do not contain values for foreign key properties (Property.ForeignKeyProperty).
-     * This method does not close the ResultSet object.
-     * @param resultSet the ResultSet object
-     * @param fetchCount the maximum number of records to retrieve from the result set
-     * @return a List of Entity objects representing the contents of <code>resultSet</code>
-     * @throws java.sql.SQLException in case of an exception
-     */
-    @Override
-    public List<Entity> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      Util.rejectNullValue(resultSet, "resultSet");
-      final List<Entity> entities = new ArrayList<>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        entities.add(loadEntity(resultSet));
-      }
-
-      return entities;
-    }
-
-    private Entity loadEntity(final ResultSet resultSet) throws SQLException {
-      final Entity entity = Entities.entity(entityID);
-      if (hasTransientProperties) {
-        for (final Property.TransientProperty transientProperty : transientProperties) {
-          if (!(transientProperty instanceof Property.DenormalizedViewProperty)
-                  && !(transientProperty instanceof Property.DerivedProperty)) {
-            entity.setValue(transientProperty, null, false);
-          }
-        }
-      }
-      for (final Property.ColumnProperty property : properties) {
-        try {
-          entity.setValue(property, property.fetchValue(resultSet), false);
-        }
-        catch (final Exception e) {
-          throw new SQLException("Exception fetching: " + property + ", entity: " + entityID + " [" + e.getMessage() + "]", e);
-        }
-      }
-
-      return entity;
-    }
-  }
 
   /**
    * A MethodLogger implementation tailored for EntityConnections
