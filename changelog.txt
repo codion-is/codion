@@ -4035,3 +4035,4 @@
   Tomcat jdbc dependency updated to 8.0.24
   Unit tests refactored and improved a bit
   ExceptionDialog moved to UiUtil and privatized
+  DateInputPanel bug fixed, focus listener only added when button was present

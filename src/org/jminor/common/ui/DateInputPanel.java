@@ -52,6 +52,7 @@ public final class DateInputPanel extends JPanel {
     this.inputField = inputField;
     this.dateFormat = dateFormat;
     add(inputField, BorderLayout.CENTER);
+    addFocusListener(new InputFocusAdapter(inputField));
     if (includeButton) {
       final AbstractAction buttonAction = new AbstractAction("...") {
         @Override
@@ -73,7 +74,6 @@ public final class DateInputPanel extends JPanel {
         UiUtil.linkToEnabledState(enabledState, this.inputField);
         UiUtil.linkToEnabledState(enabledState, this.button);
       }
-      addFocusListener(new InputFocusAdapter(inputField));
       add(this.button, BorderLayout.EAST);
     }
   }
