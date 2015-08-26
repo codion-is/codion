@@ -22,7 +22,7 @@ public final class H2Database extends AbstractDatabase {
    */
   private static final int AUTHENTICATION_ERROR = 28000;
 
-  private static boolean sharedInMemoryDatabaseInitialized = false;
+  private static boolean sharedDatabaseInitialized = false;
 
   static final String DRIVER_CLASS_NAME = "org.h2.Driver";
   static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
@@ -58,9 +58,7 @@ public final class H2Database extends AbstractDatabase {
    */
   public H2Database(final String databaseName, final boolean embeddedInMemory) {
     super(H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
-    if (embeddedInMemory) {
-      initializeSharedInMemoryDatabase(databaseName, System.getProperty(DATABASE_INIT_SCRIPT));
-    }
+    initializeSharedDatabase(databaseName, System.getProperty(DATABASE_INIT_SCRIPT), embeddedInMemory);
     this.embeddedInMemory = embeddedInMemory;
   }
 
@@ -76,15 +74,27 @@ public final class H2Database extends AbstractDatabase {
   }
 
   /**
-   * Instantiates a new H2Database instance, embedded in memory, initialized with the given script, if any
+   * Instantiates a new embedded H2Database instance, in memory, initialized with the given script, if any
    * @param databaseName the database name
    * @param initScript the script to use for initializing the database
    * @throws RuntimeException in case of an error during initialization
    */
   public H2Database(final String databaseName, final String initScript) {
+    this(databaseName, initScript, true);
+  }
+
+  /**
+   * Instantiates a new embedded H2Database instance, initialized with the given script, if any
+   * @param databaseName the database name
+   * @param initScript the script to use for initializing the database
+   * @param embeddedInMemory if true then the resulting database is in memory
+   * @throws RuntimeException in case of an error during initialization
+   */
+  public H2Database(final String databaseName, final String initScript, final boolean embeddedInMemory) {
     super(H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
-    initializeInMemoryDatabase(databaseName, initScript);
-    this.embeddedInMemory = true;
+    initializeDatabase(databaseName, initScript, embeddedInMemory);
+    this.embeddedInMemory = embeddedInMemory;
+
   }
 
   /**
@@ -177,16 +187,17 @@ public final class H2Database extends AbstractDatabase {
   }
 
   /**
-   * Initializes a shared H2 database in memory instance
+   * Initializes a shared H2 database instance
    */
-  private synchronized static void initializeSharedInMemoryDatabase(final String databaseName, final String scriptPath) {
-    if (!sharedInMemoryDatabaseInitialized) {
-      initializeInMemoryDatabase(databaseName, scriptPath);
-      sharedInMemoryDatabaseInitialized = true;
+  private synchronized static void initializeSharedDatabase(final String databaseName, final String scriptPath,
+                                                            final boolean inMemory) {
+    if (!sharedDatabaseInitialized) {
+      initializeDatabase(databaseName, scriptPath, inMemory);
+      sharedDatabaseInitialized = true;
     }
   }
 
-  private static void initializeInMemoryDatabase(final String databaseName, final String scriptPath) {
+  private static void initializeDatabase(final String databaseName, final String scriptPath, final boolean inMemory) {
     final Properties properties = new Properties();
     properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
     String initializerString = ";DB_CLOSE_DELAY=-1";
@@ -194,7 +205,7 @@ public final class H2Database extends AbstractDatabase {
       initializerString += ";INIT=RUNSCRIPT FROM '" + scriptPath + "'";
     }
     try {
-      DriverManager.getConnection(URL_PREFIX_MEM + databaseName + ";user=" + SYSADMIN_USERNAME + initializerString).close();
+      DriverManager.getConnection((inMemory ? URL_PREFIX_MEM : URL_PREFIX) + databaseName + ";user=" + SYSADMIN_USERNAME + initializerString).close();
     }
     catch (final SQLException e) {
       throw new RuntimeException(e);
