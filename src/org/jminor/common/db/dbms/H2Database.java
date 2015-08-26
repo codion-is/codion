@@ -4,11 +4,11 @@
 package org.jminor.common.db.dbms;
 
 import org.jminor.common.db.AbstractDatabase;
-import org.jminor.common.db.Database;
 import org.jminor.common.model.Util;
 
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
+import java.nio.charset.Charset;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -22,6 +22,8 @@ public final class H2Database extends AbstractDatabase {
    */
   private static final int AUTHENTICATION_ERROR = 28000;
 
+  private static boolean sharedInMemoryDatabaseInitialized = false;
+
   static final String DRIVER_CLASS_NAME = "org.h2.Driver";
   static final String AUTO_INCREMENT_QUERY = "CALL IDENTITY()";
   static final String SEQUENCE_VALUE_QUERY = "select next value for ";
@@ -34,19 +36,6 @@ public final class H2Database extends AbstractDatabase {
   private final boolean embeddedInMemory;
   private String urlAppend = "";
 
-  static {
-    //todo is this the right thing to do?
-    if (System.getProperty(Database.DATABASE_TYPE, "").equals(Database.H2) && EMBEDDED_IN_MEMORY) {
-      try {
-        initializeMemoryDatabase(URL_PREFIX_MEM + System.getProperty(DATABASE_HOST) + ";user=" + SYSADMIN_USERNAME,
-                System.getProperty(DATABASE_INIT_SCRIPT));
-      }
-      catch (final SQLException e) {
-        throw new RuntimeException("Exception while initializing H2 memory database", e);
-      }
-    }
-  }
-
   /**
    * Instantiates a new H2Database.
    */
@@ -55,7 +44,7 @@ public final class H2Database extends AbstractDatabase {
   }
 
   /**
-   * Instantiates a new file-based embedded H2Database.
+   * Instantiates a new embedded H2Database.
    * @param databaseName the path to the database files
    */
   public H2Database(final String databaseName) {
@@ -69,6 +58,9 @@ public final class H2Database extends AbstractDatabase {
    */
   public H2Database(final String databaseName, final boolean embeddedInMemory) {
     super(H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
+    if (embeddedInMemory) {
+      initializeSharedInMemoryDatabase(databaseName, System.getProperty(DATABASE_INIT_SCRIPT));
+    }
     this.embeddedInMemory = embeddedInMemory;
   }
 
@@ -84,15 +76,15 @@ public final class H2Database extends AbstractDatabase {
   }
 
   /**
-   * Instantiates a new H2Database instance, embedded in memory, based on the given script
+   * Instantiates a new H2Database instance, embedded in memory, initialized with the given script, if any
    * @param databaseName the database name
    * @param initScript the script to use for initializing the database
-   * @throws SQLException in case of an error during initialization
+   * @throws RuntimeException in case of an error during initialization
    */
-  public H2Database(final String databaseName, final String initScript) throws SQLException {
+  public H2Database(final String databaseName, final String initScript) {
     super(H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
+    initializeInMemoryDatabase(databaseName, initScript);
     this.embeddedInMemory = true;
-    initializeMemoryDatabase(URL_PREFIX_MEM + databaseName + ";user=" + SYSADMIN_USERNAME, initScript);
   }
 
   /**
@@ -148,15 +140,27 @@ public final class H2Database extends AbstractDatabase {
   }
 
   /**
-   * Runs the given script using the RunScript tool
+   * Runs the given script using the RunScript tool, with the default sysadmin username (sa) and default charset
    * @param scriptPath the path to the script
    * @throws SQLException in case of an exception
    */
   public void runScript(final String scriptPath) throws SQLException {
+    runScript(scriptPath, SYSADMIN_USERNAME, "", Charset.defaultCharset());
+  }
+
+  /**
+   * Runs the given script using the RunScript tool
+   * @param scriptPath the path to the script
+   * @param username the username to run the script under
+   * @param the password
+   * @param scriptCharset the script characterset
+   * @throws SQLException in case of an exception
+   */
+  public void runScript(final String scriptPath, final String username, final String password, final Charset scriptCharset) throws SQLException {
     try {
       final Class<?> runScriptToolClass = Class.forName(RUN_TOOL_CLASS_NAME);
-      final Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, String.class, boolean.class);
-      execute.invoke(runScriptToolClass.newInstance(), getURL(null), SYSADMIN_USERNAME, "", scriptPath, null, false);
+      final Method execute = runScriptToolClass.getMethod("execute", String.class, String.class, String.class, String.class, Charset.class, boolean.class);
+      execute.invoke(runScriptToolClass.newInstance(), getURL(null), username, password, scriptPath, scriptCharset, false);
     }
     catch (final ClassNotFoundException cle) {
       throw new RuntimeException(RUN_TOOL_CLASS_NAME + " must be on classpath for creating an embedded H2 database", cle);
@@ -173,18 +177,27 @@ public final class H2Database extends AbstractDatabase {
   }
 
   /**
-   * Initializes a new H2 database, with the given script
-   * @param url the database url
-   * @param scriptPath the path to the initialization script
-   * @throws java.sql.SQLException in case of an exception
+   * Initializes a shared H2 database in memory instance
    */
-  private static void initializeMemoryDatabase(final String url, final String scriptPath) throws SQLException {
+  private synchronized static void initializeSharedInMemoryDatabase(final String databaseName, final String scriptPath) {
+    if (!sharedInMemoryDatabaseInitialized) {
+      initializeInMemoryDatabase(databaseName, scriptPath);
+      sharedInMemoryDatabaseInitialized = true;
+    }
+  }
+
+  private static void initializeInMemoryDatabase(final String databaseName, final String scriptPath) {
     final Properties properties = new Properties();
     properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
     String initializerString = ";DB_CLOSE_DELAY=-1";
     if (scriptPath != null) {
       initializerString += ";INIT=RUNSCRIPT FROM '" + scriptPath + "'";
     }
-    DriverManager.getConnection(url + initializerString).close();
+    try {
+      DriverManager.getConnection(URL_PREFIX_MEM + databaseName + ";user=" + SYSADMIN_USERNAME + initializerString).close();
+    }
+    catch (final SQLException e) {
+      throw new RuntimeException(e);
+    }
   }
 }
