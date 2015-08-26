@@ -10,7 +10,7 @@
   </security>
 
   <resources>
-    <j2se version="1.7+" />
+    <j2se version="1.8+" />
 
     <jar href="empdept.jar" main="true" />
 
