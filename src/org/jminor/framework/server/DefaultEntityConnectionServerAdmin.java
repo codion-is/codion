@@ -190,7 +190,10 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
       UnicastRemoteObject.unexportObject(this, true);
     }
     catch (final NoSuchObjectException ignored) {/*ignored*/}
-    Runtime.getRuntime().removeShutdownHook(shutdownHook);
+    try {
+      Runtime.getRuntime().removeShutdownHook(shutdownHook);
+    }
+    catch (final IllegalStateException e) {/*Shutdown in progress*/}
   }
 
   /** {@inheritDoc} */
