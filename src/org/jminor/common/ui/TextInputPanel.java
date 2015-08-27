@@ -12,24 +12,24 @@ import javax.swing.JButton;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
 import javax.swing.JTextArea;
+import javax.swing.JTextField;
 import javax.swing.text.AttributeSet;
 import javax.swing.text.BadLocationException;
 import javax.swing.text.Document;
-import javax.swing.text.JTextComponent;
 import javax.swing.text.PlainDocument;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
 import java.awt.event.ActionEvent;
 
 /**
- * A panel that includes a JTextComponent in a BorderLayout.CENTER position and a button in BorderLayout.EAST
+ * A panel that includes a JTextField in a BorderLayout.CENTER position and a button in BorderLayout.EAST
  * which opens a JTextArea for editing long strings.
  */
 public final class TextInputPanel extends JPanel {
 
   private static final double DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO = 0.25;
 
-  private final JTextComponent textComponent;
+  private final JTextField textField;
   private final JButton button;
   private final String dialogTitle;
   private final Dimension txtAreaSize;
@@ -37,39 +37,39 @@ public final class TextInputPanel extends JPanel {
 
   /**
    * Instantiates a new TextInputPanel.
-   * @param textComponent the text component
+   * @param textField the text field
    * @param dialogTitle the input dialog title
    * @throws IllegalArgumentException in case textComponent is null
    */
-  public TextInputPanel(final JTextComponent textComponent, final String dialogTitle) {
-    this(textComponent, dialogTitle, null);
+  public TextInputPanel(final JTextField textField, final String dialogTitle) {
+    this(textField, dialogTitle, null);
   }
 
   /**
    * Instantiates a new TextInputPanel.
-   * @param textComponent the text component
+   * @param textField the text field
    * @param dialogTitle the input dialog title
    * @param txtAreaSize the input text area size
    * @throws IllegalArgumentException in case textComponent is null
    */
-  public TextInputPanel(final JTextComponent textComponent, final String dialogTitle,
+  public TextInputPanel(final JTextField textField, final String dialogTitle,
                         final Dimension txtAreaSize) {
-    this(textComponent, dialogTitle, txtAreaSize, true);
+    this(textField, dialogTitle, txtAreaSize, true);
   }
 
   /**
    * Instantiates a new TextInputPanel.
-   * @param textComponent the text component
+   * @param textField the text field
    * @param dialogTitle the input dialog title
    * @param txtAreaSize the input text area size
    * @param buttonFocusable if true then the input button is focusable
    * @throws IllegalArgumentException in case textComponent is null
    */
-  public TextInputPanel(final JTextComponent textComponent, final String dialogTitle,
+  public TextInputPanel(final JTextField textField, final String dialogTitle,
                         final Dimension txtAreaSize, final boolean buttonFocusable) {
-    Util.rejectNullValue(textComponent, "textComponent");
+    Util.rejectNullValue(textField, "textComponent");
     this.dialogTitle = dialogTitle;
-    this.textComponent = textComponent;
+    this.textField = textField;
     this.txtAreaSize = txtAreaSize == null ? UiUtil.getScreenSizeRatio(DEFAULT_TEXT_AREA_SCREEN_SIZE_RATIO) : txtAreaSize;
     this.button = createButton(buttonFocusable, UiUtil.DIMENSION_TEXT_FIELD_SQUARE);
     initializeUI();
@@ -99,21 +99,21 @@ public final class TextInputPanel extends JPanel {
     if (maxLength > 0 && text.length() > maxLength) {
       throw new IllegalArgumentException("Maximum allowed text length exceeded");
     }
-    textComponent.setText(text);
+    textField.setText(text);
   }
 
   /**
    * @return the current input text value
    */
   public String getText() {
-    return textComponent.getText();
+    return textField.getText();
   }
 
   /**
-   * @return the text component
+   * @return the text field
    */
-  public JTextComponent getTextComponent() {
-    return textComponent;
+  public JTextField getTextField() {
+    return textField;
   }
 
   /**
@@ -125,7 +125,7 @@ public final class TextInputPanel extends JPanel {
 
   private void initializeUI() {
     setLayout(new BorderLayout());
-    add(textComponent, BorderLayout.CENTER);
+    add(textField, BorderLayout.CENTER);
     add(button, BorderLayout.EAST);
   }
 
@@ -147,7 +147,7 @@ public final class TextInputPanel extends JPanel {
 
     @Override
     public void actionPerformed(final ActionEvent e) {
-      final JTextArea txtArea = new JTextArea(textComponent.getText()) {
+      final JTextArea txtArea = new JTextArea(textField.getText()) {
         @Override
         protected Document createDefaultModel() {
           return new PlainDocument() {
@@ -169,11 +169,11 @@ public final class TextInputPanel extends JPanel {
       final AbstractAction okAction = new AbstractAction(Messages.get(Messages.OK)) {
         @Override
         public void actionPerformed(final ActionEvent evt) {
-          textComponent.setText(txtArea.getText());
+          textField.setText(txtArea.getText());
         }
       };
       okAction.putValue(Action.MNEMONIC_KEY, Messages.get(Messages.OK_MNEMONIC).charAt(0));
-      UiUtil.displayInDialog(textComponent, scroller, dialogTitle, okAction);
+      UiUtil.displayInDialog(textField, scroller, dialogTitle, okAction);
     }
   }
 }

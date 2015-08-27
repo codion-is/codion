@@ -9,7 +9,6 @@ import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.textfield.SizedDocument;
 
 import javax.swing.JTextField;
-import javax.swing.text.JTextComponent;
 
 /**
  * A InputProvider implementation for String values.
@@ -32,11 +31,11 @@ public final class TextInputProvider extends AbstractInputProvider<String, TextI
 
   /**
    * Instantiates a new TextInputProvider.
-   * @param inputComponent the input component to use
+   * @param textField the text field to use
    * @param inputDialogTitle the title to use for the lookup input dialog
    */
-  public TextInputProvider(final JTextComponent inputComponent, final String inputDialogTitle) {
-    super(new TextInputPanel(inputComponent, inputDialogTitle));
+  public TextInputProvider(final JTextField textField, final String inputDialogTitle) {
+    super(new TextInputPanel(textField, inputDialogTitle));
   }
 
   /** {@inheritDoc} */

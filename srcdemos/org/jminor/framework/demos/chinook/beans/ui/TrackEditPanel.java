@@ -31,7 +31,7 @@ public class TrackEditPanel extends EntityEditPanel {
     createEntityComboBox(TRACK_MEDIATYPEID_FK);
     createEntityComboBox(TRACK_GENREID_FK);
     final TextInputPanel txtComposer = createTextInputPanel(TRACK_COMPOSER);
-    ((JTextField) txtComposer.getTextComponent()).setColumns(18);
+    txtComposer.getTextField().setColumns(18);
     final JTextField txtMilliseconds = createTextField(TRACK_MILLISECONDS);
     final JTextField txtBytes = createTextField(TRACK_BYTES);
     txtBytes.setColumns(18);

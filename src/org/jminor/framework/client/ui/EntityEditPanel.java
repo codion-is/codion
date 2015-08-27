@@ -1089,7 +1089,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   protected final TextInputPanel createTextInputPanel(final Property property, final boolean readOnly,
                                                       final boolean immediateUpdate, final boolean buttonFocusable) {
     final TextInputPanel ret = EntityUiUtil.createTextInputPanel(property, editModel, readOnly, immediateUpdate, buttonFocusable);
-    setComponent(property.getPropertyID(), ret.getTextComponent());
+    setComponent(property.getPropertyID(), ret.getTextField());
 
     return ret;
   }
