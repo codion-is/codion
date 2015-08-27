@@ -50,6 +50,7 @@ public final class EntityRESTServer extends Server implements org.jminor.common.
   /** {@inheritDoc} */
   @Override
   public void stopServer() throws Exception {
+    EntityRESTService.setServer(null);
     stop();
     join();
   }

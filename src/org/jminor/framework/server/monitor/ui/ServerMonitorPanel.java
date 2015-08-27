@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.ValueLinks;
@@ -76,6 +77,13 @@ public final class ServerMonitorPanel extends JPanel {
     return model;
   }
 
+  public void restartServer() throws DatabaseException, ClassNotFoundException {
+    if (JOptionPane.showConfirmDialog(this, "Are you sure you want to restart this server?", "Confirm restart",
+            JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
+      model.restartServer();
+    }
+  }
+
   public void shutdownServer() {
     if (JOptionPane.showConfirmDialog(this, "Are you sure you want to shut down this server?", "Confirm shutdown",
             JOptionPane.OK_CANCEL_OPTION) == JOptionPane.OK_OPTION) {
@@ -97,6 +105,7 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(new JLabel("Logging", JLabel.RIGHT));
     infoPanel.add(initializeLoggingLevelField());
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "shutdownServer", "Shutdown")));
+    infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "restartServer", "Restart")));
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(model, "performGC", "GC")));
 
     final JPanel controlPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));

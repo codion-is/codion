@@ -89,7 +89,7 @@ public class EntityConnectionServerTest {
 
   @AfterClass
   public static synchronized void tearDown() throws Exception {
-    DefaultEntityConnectionServerAdmin.shutdownServer();
+    EntityConnectionServerTest.admin.shutdown();
     deconfigure();
     admin = null;
     server = null;

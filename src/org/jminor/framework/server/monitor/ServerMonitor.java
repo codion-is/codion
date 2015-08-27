@@ -3,7 +3,9 @@
  */
 package org.jminor.framework.server.monitor;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.TaskScheduler;
@@ -219,12 +221,31 @@ public final class ServerMonitor {
     serverShutDownEvent.fire();
   }
 
+  public void restartServer() throws DatabaseException, ClassNotFoundException {
+    shutdown();
+    try {
+      server.restart();
+    }
+    catch (final RemoteException ignored) {/*ignored*/}
+    serverShutDownEvent.fire();
+  }
+
+  public boolean isServerReachable() {
+    try {
+      server.getUsedMemory();
+      return true;
+    }
+    catch (final Exception e) {
+      return false;
+    }
+  }
+
   public TaskScheduler getUpdateScheduler() {
     return updateScheduler;
   }
 
-  public EventObserver getServerShutDownObserver() {
-    return serverShutDownEvent.getObserver();
+  public void addServerShutDownListener(final EventListener listener) {
+    serverShutDownEvent.addListener(listener);
   }
 
   public EventObserver<Integer> getWarningThresholdObserver() {

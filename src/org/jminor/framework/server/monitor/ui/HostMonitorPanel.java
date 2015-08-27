@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.server.monitor.ui;
 
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.ControlSet;
@@ -45,7 +45,7 @@ public final class HostMonitorPanel extends JPanel {
     serverPane = new JTabbedPane();
     serverPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     add(serverPane, BorderLayout.CENTER);
-    refreshServerTabs();
+    initializeServerTabs();
   }
 
   private ControlSet getControls() {
@@ -56,48 +56,33 @@ public final class HostMonitorPanel extends JPanel {
   }
 
   private void bindEvents() {
-    model.getRefreshObserver().addListener(new EventListener() {
+    model.addServerAddedListener(new EventInfoListener<ServerMonitor>() {
       @Override
-      public void eventOccurred() {
+      public void eventOccurred(final ServerMonitor serverMonitor) {
         try {
-          refreshServerTabs();
+          addServerTab(serverMonitor);
         }
-        catch (final RemoteException ex) {
-          throw new RuntimeException(ex);
+        catch (final RemoteException e) {
+          throw new RuntimeException(e);
         }
       }
     });
-    model.getServerMonitorRemovedObserver().addListener(new EventListener() {
+    model.addServerRemovedListener(new EventInfoListener<ServerMonitor>() {
       @Override
-      public void eventOccurred() {
-        try {
-          refreshServerTabs();
-        }
-        catch (final RemoteException ex) {
-          throw new RuntimeException(ex);
+      public void eventOccurred(final ServerMonitor serverMonitor) {
+        final Collection<ServerMonitorPanel> serverTabs = new ArrayList<>();
+        for (int i = 0; i < serverPane.getTabCount(); i++) {
+          final ServerMonitorPanel panel = (ServerMonitorPanel) serverPane.getComponentAt(i);
+          if (panel.getModel() == serverMonitor) {
+            removeServerTab(panel);
+          }
         }
       }
     });
   }
 
-  private void refreshServerTabs() throws RemoteException {
-    final Collection<ServerMonitorPanel> serverTabs = new ArrayList<>();
-    for (int i = 0; i < serverPane.getTabCount(); i++) {
-      serverTabs.add((ServerMonitorPanel) serverPane.getComponentAt(i));
-    }
-
-    final Collection<ServerMonitor> serverMonitors = model.getServerMonitors();
-    //remove disconnected server tabs and remove server names that already have tabs
-    for (final ServerMonitorPanel panel : serverTabs) {
-      final ServerMonitor serverMonitor = panel.getModel();
-      if (!serverMonitors.contains(serverMonitor)) {
-        removeServerTab(panel);
-      }
-      serverMonitors.remove(serverMonitor);
-    }
-
-    //add the remaining servers
-    for (final ServerMonitor serverMonitor : serverMonitors) {
+  private void initializeServerTabs() throws RemoteException {
+    for (final ServerMonitor serverMonitor : model.getServerMonitors()) {
       addServerTab(serverMonitor);
     }
   }

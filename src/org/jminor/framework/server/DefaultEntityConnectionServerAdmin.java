@@ -66,6 +66,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
    */
   private final EntityConnectionServer server;
   private final String serverName;
+  private final Thread shutdownHook;
 
   /**
    * Instantiates a new DefaultEntityConnectionServerAdmin
@@ -79,7 +80,8 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
             server.isSslEnabled() ? new SslRMIServerSocketFactory() : RMISocketFactory.getSocketFactory());
     this.server = server;
     this.serverName = server.getServerInfo().getServerName();
-    Runtime.getRuntime().addShutdownHook(new Thread(getShutdownHook()));
+    this.shutdownHook = new Thread(getShutdownHook());
+    Runtime.getRuntime().addShutdownHook(this.shutdownHook);
   }
 
   /**
@@ -190,6 +192,15 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
       UnicastRemoteObject.unexportObject(this, true);
     }
     catch (final NoSuchObjectException ignored) {/*ignored*/}
+    adminInstance = null;
+    Runtime.getRuntime().removeShutdownHook(shutdownHook);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void restart() throws RemoteException, DatabaseException, ClassNotFoundException {
+    shutdown();
+    startServer();
   }
 
   /** {@inheritDoc} */
@@ -550,12 +561,11 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
       serverAdmin.shutdown();
     }
     catch (final RemoteException e) {
-      System.out.println("No rmi registry running on port: " + registryPort);
+      LOG.error("Error on shutdown", e);
     }
     catch (final NotBoundException e) {
       System.out.println(serverName + " not bound to registry on port: " + registryPort);
     }
-    adminInstance = null;
   }
 
   static DefaultEntityConnectionServerAdmin getInstance() {

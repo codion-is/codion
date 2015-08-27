@@ -3,13 +3,15 @@
  */
 package org.jminor.framework.server;
 
-import ch.qos.logback.classic.Level;
 import org.jminor.common.db.Database;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
 import org.jminor.common.server.Server;
+
+import ch.qos.logback.classic.Level;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -28,6 +30,12 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @throws RemoteException in case of a communication error
    */
   void shutdown() throws RemoteException;
+
+  /**
+   * Restarts the server
+   * @throws RemoteException in case of a communication error
+   */
+  void restart() throws RemoteException, DatabaseException, ClassNotFoundException;
 
   /**
    * @return the database URL

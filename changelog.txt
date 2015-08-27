@@ -4040,3 +4040,6 @@
   H2Database.runScript() updated according to H2 api changes
   H2Database, in memory database initialization moved from static initializer to constructor
   TextInputPanel now JTextField based
+  HostMonitor and HostMonitorPanel, improved server discovery
+  EntityConnectionServerAdmin.restart() added
+  ServerMonitor, ServerMonitorPanel, restart action added

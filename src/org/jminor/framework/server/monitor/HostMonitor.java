@@ -4,12 +4,13 @@
 package org.jminor.framework.server.monitor;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
-import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.server.Server;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
@@ -29,8 +30,8 @@ public final class HostMonitor {
 
   private static final Logger LOG = LoggerFactory.getLogger(HostMonitor.class);
 
-  private final Event refreshedEvent = Events.event();
-  private final Event serverMonitorRemovedEvent = Events.event();
+  private final Event serverAddedEvent = Events.event();
+  private final Event serverRemovedEvent = Events.event();
 
   private final String hostName;
   private final int registryPort;
@@ -51,36 +52,41 @@ public final class HostMonitor {
   }
 
   public void refresh() throws RemoteException {
+    removeUnreachableServers();
     for (final Server.ServerInfo serverInfo : getEntityServers(hostName, registryPort)) {
       if (!containsServerMonitor(serverInfo.getServerID())) {
         final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInfo, registryPort);
-        serverMonitor.getServerShutDownObserver().addListener(new EventListener() {
+        serverMonitor.addServerShutDownListener(new EventListener() {
           @Override
           public void eventOccurred() {
             removeServer(serverMonitor);
           }
         });
-        serverMonitors.add(serverMonitor);
+        addServer(serverMonitor);
       }
     }
-    refreshedEvent.fire();
   }
 
   public Collection<ServerMonitor> getServerMonitors() {
     return serverMonitors;
   }
 
-  public EventObserver getServerMonitorRemovedObserver() {
-    return serverMonitorRemovedEvent.getObserver();
+  public void addServerAddedListener(final EventInfoListener<ServerMonitor> listener) {
+    serverAddedEvent.addInfoListener(listener);
   }
 
-  public EventObserver getRefreshObserver() {
-    return refreshedEvent.getObserver();
+  public void addServerRemovedListener(final EventInfoListener<ServerMonitor> listener) {
+    serverRemovedEvent.addInfoListener(listener);
+  }
+
+  private void addServer(final ServerMonitor serverMonitor) {
+    serverMonitors.add(serverMonitor);
+    serverAddedEvent.fire(serverMonitor);
   }
 
   private void removeServer(final ServerMonitor serverMonitor) {
     serverMonitors.remove(serverMonitor);
-    serverMonitorRemovedEvent.fire();
+    serverRemovedEvent.fire(serverMonitor);
   }
 
   private boolean containsServerMonitor(final UUID serverID) {
@@ -91,6 +97,15 @@ public final class HostMonitor {
     }
 
     return false;
+  }
+
+  private void removeUnreachableServers() {
+    final Collection<ServerMonitor> monitors = new ArrayList<>(serverMonitors);
+    for (final ServerMonitor monitor : monitors) {
+      if (!monitor.isServerReachable()) {
+        removeServer(monitor);
+      }
+    }
   }
 
   private static List<Server.ServerInfo> getEntityServers(final String serverHostName, final int registryPort) {
