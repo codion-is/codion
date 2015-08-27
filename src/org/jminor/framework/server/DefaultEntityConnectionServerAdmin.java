@@ -55,8 +55,6 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   private static final String SHUTDOWN = "shutdown";
   private static final String RESTART = "restart";
 
-  private static DefaultEntityConnectionServerAdmin adminInstance;
-
   static {
     Configuration.init();
   }
@@ -192,7 +190,6 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
       UnicastRemoteObject.unexportObject(this, true);
     }
     catch (final NoSuchObjectException ignored) {/*ignored*/}
-    adminInstance = null;
     Runtime.getRuntime().removeShutdownHook(shutdownHook);
   }
 
@@ -505,11 +502,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
             + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
   }
 
-  static synchronized void startServer() throws RemoteException, ClassNotFoundException, DatabaseException {
-    if (adminInstance != null) {
-      throw new IllegalStateException("Server admin instance already running");
-    }
-
+  static synchronized DefaultEntityConnectionServerAdmin startServer() throws RemoteException, ClassNotFoundException, DatabaseException {
     final Integer serverPort = (Integer) Configuration.getValue(Configuration.SERVER_PORT);
     if (serverPort == null) {
       throw new IllegalArgumentException("Configuration property '" + Configuration.SERVER_PORT + "' is required");
@@ -532,14 +525,17 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
     final EntityConnectionServer server = new EntityConnectionServer(serverName, serverPort, registryPort, database,
             sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, getPoolUsers(initialPoolUsers),
             webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout, clientTimeouts);
+    final DefaultEntityConnectionServerAdmin admin = new DefaultEntityConnectionServerAdmin(server, serverAdminPort);
     try {
       server.bindToRegistry();
-      adminInstance = new DefaultEntityConnectionServerAdmin(server, serverAdminPort);
-      adminInstance.bindToRegistry();
+      admin.bindToRegistry();
+
+      return admin;
     }
     catch (final Exception e) {
-      LOG.error("Exception on binding servers to registry", e);
-      shutdownServer();
+      LOG.error("Exception on binding server to registry", e);
+      admin.shutdown();
+      throw new RuntimeException(e);
     }
   }
 
@@ -567,10 +563,6 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
     catch (final NotBoundException e) {
       System.out.println(serverName + " not bound to registry on port: " + registryPort);
     }
-  }
-
-  static DefaultEntityConnectionServerAdmin getInstance() {
-    return adminInstance;
   }
 
   private static Collection<User> getPoolUsers(final Collection<String> poolUsers) {

@@ -4043,3 +4043,5 @@
   HostMonitor and HostMonitorPanel, improved server discovery
   EntityConnectionServerAdmin.restart() added
   ServerMonitor, ServerMonitorPanel, restart action added
+  DefaultEntityConnectionServerAdmin.adminInstance removed
+  DefaultEntityConnectionServerAdmin.startServer() refactored

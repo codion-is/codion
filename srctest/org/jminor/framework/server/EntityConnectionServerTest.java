@@ -82,8 +82,7 @@ public class EntityConnectionServerTest {
   @BeforeClass
   public static synchronized void setUp() throws Exception {
     configure();
-    DefaultEntityConnectionServerAdmin.startServer();
-    EntityConnectionServerTest.admin = DefaultEntityConnectionServerAdmin.getInstance();
+    EntityConnectionServerTest.admin = DefaultEntityConnectionServerAdmin.startServer();
     EntityConnectionServerTest.server = admin.getServer();
   }
 
