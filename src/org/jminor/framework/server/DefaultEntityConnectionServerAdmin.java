@@ -561,6 +561,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
       serverAdmin.shutdown();
     }
     catch (final RemoteException e) {
+      System.out.println("Unable to shutdown server: " + e.getMessage());
       LOG.error("Error on shutdown", e);
     }
     catch (final NotBoundException e) {
