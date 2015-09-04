@@ -198,7 +198,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public void restart() throws RemoteException, DatabaseException, ClassNotFoundException {
+  public void restart() throws RemoteException {
     shutdown();
     startServer();
   }
@@ -505,7 +505,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
             + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
   }
 
-  static synchronized DefaultEntityConnectionServerAdmin startServer() throws RemoteException, ClassNotFoundException, DatabaseException {
+  static synchronized DefaultEntityConnectionServerAdmin startServer() throws RemoteException {
     final Integer serverPort = (Integer) Configuration.getValue(Configuration.SERVER_PORT);
     if (serverPort == null) {
       throw new IllegalArgumentException("Configuration property '" + Configuration.SERVER_PORT + "' is required");

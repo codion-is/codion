@@ -1,5 +1,14 @@
-package org.jminor.common.ui.images;
+package org.jminor.framework.plugins.imagepanel;
 
+import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.Util;
+import org.jminor.common.ui.UiUtil;
+import org.jminor.common.ui.control.Control;
+import org.jminor.framework.client.ui.EntityTablePanel;
+import org.jminor.framework.domain.Entity;
+
+import javax.imageio.ImageIO;
+import javax.swing.JComponent;
 import javax.swing.JPanel;
 import javax.swing.SwingUtilities;
 import java.awt.Color;
@@ -9,6 +18,7 @@ import java.awt.Graphics2D;
 import java.awt.Point;
 import java.awt.Rectangle;
 import java.awt.RenderingHints;
+import java.awt.event.ActionEvent;
 import java.awt.event.ComponentAdapter;
 import java.awt.event.ComponentEvent;
 import java.awt.event.MouseAdapter;
@@ -17,6 +27,12 @@ import java.awt.event.MouseMotionListener;
 import java.awt.event.MouseWheelEvent;
 import java.awt.event.MouseWheelListener;
 import java.awt.image.BufferedImage;
+import java.io.File;
+import java.io.FileNotFoundException;
+import java.io.IOException;
+import java.net.URL;
+import java.util.Arrays;
+import java.util.Collection;
 
 /**
  * <code>NavigableImagePanel</code> is a lightweight container displaying
@@ -115,6 +131,9 @@ public final class NavigableImagePanel extends JPanel {
    */
   public static final String IMAGE_CHANGED_PROPERTY = "image";
 
+  private static final Collection<String> IMAGE_FILE_TYPES = Arrays.asList("gif", "tif", "jpg", "jpeg", "png", "bmp");
+
+  private static final double DEFAULT_IMAGE_PANEL_SCREEN_SIZE_RATIO = 0.5;
   private static final double SCREEN_NAV_IMAGE_FACTOR = 0.15; // 15% of panel's width
   private static final double NAV_IMAGE_FACTOR = 0.3; // 30% of panel's width
   private static final double ONE_POINT_O = 1.0;
@@ -300,6 +319,90 @@ public final class NavigableImagePanel extends JPanel {
   public NavigableImagePanel(final BufferedImage image) {
     this();
     setImage(image);
+  }
+
+  /**
+   * @param imagePath the path to the image to show
+   * @param dialogParent the component to use as dialog parent
+   * @throws IOException in case of an IO exception
+   */
+  public static void showImage(final String imagePath, final JComponent dialogParent) throws IOException {
+    showImage(imagePath, dialogParent, IMAGE_FILE_TYPES);
+  }
+
+  /**
+   * @param imagePath the path to the image to show, if the file has a file type suffix it
+   * is checked against the <code>acceptedFileTypes</code> collection.
+   * @param dialogParent the component to use as dialog parent
+   * @param acceptedFileTypes a collection of lower case file type suffixes, "gif", "jpeg"...
+   * @throws IOException in case of an IO exception, f.ex. if the image file is not found
+   * @throws IllegalArgumentException in case the file type is not accepted
+   */
+  public static void showImage(final String imagePath, final JComponent dialogParent,
+                               final Collection<String> acceptedFileTypes) throws IOException {
+    Util.rejectNullValue(imagePath, "imagePath");
+    if (imagePath.length() == 0) {
+      return;
+    }
+
+    final int lastDotIndex = imagePath.lastIndexOf('.');
+    if (lastDotIndex != -1) {//if the type is specified check it
+      final String type = imagePath.substring(lastDotIndex + 1, imagePath.length()).toLowerCase();
+      if (!acceptedFileTypes.contains(type)) {
+        throw new IllegalArgumentException(Messages.get(Messages.UNKNOWN_FILE_TYPE) + ": " + type);
+      }
+    }
+    final NavigableImagePanel imagePanel;
+    try {
+      UiUtil.setWaitCursor(true, dialogParent);
+      imagePanel = new NavigableImagePanel();
+      final BufferedImage image;
+      if (imagePath.toLowerCase().startsWith("http")) {
+        final URL url = new URL(imagePath);
+        image = ImageIO.read(url);
+      }
+      else {
+        final File imageFile = new File(imagePath);
+        if (!imageFile.exists()) {
+          throw new FileNotFoundException(Messages.get(Messages.FILE_NOT_FOUND) + ": " + imagePath);
+        }
+        image = ImageIO.read(imageFile);
+      }
+      imagePanel.setImage(image);
+    }
+    finally {
+      UiUtil.setWaitCursor(false, dialogParent);
+    }
+    imagePanel.setPreferredSize(UiUtil.getScreenSizeRatio(DEFAULT_IMAGE_PANEL_SCREEN_SIZE_RATIO));
+    UiUtil.displayInDialog(dialogParent, imagePanel, imagePath, false);
+  }
+
+  /**
+   * Creates a Control for viewing an image based on the entity selected in this EntityTablePanel.
+   * The action shows an image found at the path specified by the value of the given propertyID.
+   * If no entity is selected or the image path value is null no action is performed.
+   * @param imagePathPropertyID the ID of the property specifying the image path
+   * @return a Control for viewing an image based on the selected entity in a EntityTablePanel
+   * @see NavigableImagePanel#showImage(String, JComponent)
+   */
+  public static Control getViewImageControl(final EntityTablePanel tablePanel, final String imagePathPropertyID) {
+    Util.rejectNullValue(imagePathPropertyID, "imagePathPropertyID");
+    return new Control() {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        try {
+          if (!tablePanel.getTableModel().getSelectionModel().isSelectionEmpty()) {
+            final Entity selected = tablePanel.getTableModel().getSelectionModel().getSelectedItem();
+            if (!selected.isValueNull(imagePathPropertyID)) {
+              showImage(selected.getStringValue(imagePathPropertyID), tablePanel);
+            }
+          }
+        }
+        catch (final IOException ex) {
+          throw new RuntimeException(ex);
+        }
+      }
+    };
   }
 
   private void addWheelZoomDevice() {

@@ -266,6 +266,12 @@
                  basedir.javadoc="${javadoc.plugins}"
                  includes="org/jminor/framework/plugins/tomcat/pool/**"/>
 
+    <dist_module module.name="jminor-plugin-imagepanel"
+                 basedir.classes="${build.plugins}"
+                 basedir.sources="${src.plugins}"
+                 basedir.javadoc="${javadoc.plugins}"
+                 includes="org/jminor/framework/plugins/imagepanel/**"/>
+
     <jar jarfile="${dist}/jminor-demos/jminor-demos.jar" basedir="${build.demos}"
          manifest="${build.main}/META-INF/MANIFEST.MF"/>
     <jar jarfile="${dist}/jminor-demos/jminor-demos-sources.jar" basedir="${src.demos}"
@@ -343,6 +349,7 @@
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-json"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-rest"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-tomcat-pool"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-imagepanel"/>
   </target>
 
   <target name="report_all"
@@ -363,6 +370,7 @@
     <subant target="report" buildpath="${basedir}/resources/publish/plugin-json"/>
     <subant target="report" buildpath="${basedir}/resources/publish/plugin-rest"/>
     <subant target="report" buildpath="${basedir}/resources/publish/plugin-tomcat-pool"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/plugin-imagepanel"/>
   </target>
 
   <target name="manifest"

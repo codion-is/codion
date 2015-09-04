@@ -786,34 +786,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Creates a Control for viewing an image based on the entity selected in this EntityTablePanel.
-   * The action shows an image found at the path specified by the value of the given propertyID.
-   * If no entity is selected or the image path value is null no action is performed.
-   * @param imagePathPropertyID the ID of the property specifying the image path
-   * @return a Control for viewing an image based on the selected entity in a EntityTablePanel
-   * @see UiUtil#showImage(String, javax.swing.JComponent)
-   */
-  public final Control getViewImageControl(final String imagePathPropertyID) {
-    Util.rejectNullValue(imagePathPropertyID, "imagePathPropertyID");
-    return new Control() {
-      @Override
-      public void actionPerformed(final ActionEvent e) {
-        try {
-          if (!getTableModel().getSelectionModel().isSelectionEmpty()) {
-            final Entity selected = getTableModel().getSelectionModel().getSelectedItem();
-            if (!selected.isValueNull(imagePathPropertyID)) {
-              UiUtil.showImage(selected.getStringValue(imagePathPropertyID), EntityTablePanel.this);
-            }
-          }
-        }
-        catch (final IOException ex) {
-          throw new RuntimeException(ex);
-        }
-      }
-    };
-  }
-
-  /**
    * @param listener a listener notified each time the search panel visibility changes
    */
   public final void addSearchPanelVisibleListener(final EventListener listener) {

@@ -4,7 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
@@ -35,7 +34,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * Restarts the server
    * @throws RemoteException in case of a communication error
    */
-  void restart() throws RemoteException, DatabaseException, ClassNotFoundException;
+  void restart() throws RemoteException;
 
   /**
    * @return the database URL

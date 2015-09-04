@@ -21,11 +21,9 @@ import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.ControlProvider;
 import org.jminor.common.ui.control.Controls;
 import org.jminor.common.ui.control.ToggleControl;
-import org.jminor.common.ui.images.NavigableImagePanel;
 import org.jminor.common.ui.layout.FlexibleGridLayout;
 import org.jminor.common.ui.textfield.SizedDocument;
 
-import javax.imageio.ImageIO;
 import javax.swing.AbstractAction;
 import javax.swing.Action;
 import javax.swing.BorderFactory;
@@ -91,17 +89,14 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.awt.event.WindowAdapter;
 import java.awt.event.WindowEvent;
-import java.awt.image.BufferedImage;
 import java.awt.print.PrinterException;
 import java.io.File;
-import java.io.FileNotFoundException;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.io.StringWriter;
 import java.lang.reflect.Constructor;
 import java.lang.reflect.Method;
 import java.net.URI;
-import java.net.URL;
 import java.net.URLEncoder;
 import java.text.DateFormat;
 import java.text.ParseException;
@@ -135,8 +130,6 @@ public final class UiUtil {
    */
   public static final Cursor DEFAULT_CURSOR = new Cursor(Cursor.DEFAULT_CURSOR);
 
-  private static final Collection<String> IMAGE_FILE_TYPES = Arrays.asList("gif", "tif", "jpg", "jpeg", "png", "bmp");
-
   /**
    * A square dimension which sides are the same as the preferred height of a JTextField.
    * This comes in handy when f.ex. adding "..." lookup buttons next to text fields.
@@ -146,7 +139,6 @@ public final class UiUtil {
   private static final int DEFAULT_DATE_FIELD_COLUMNS = 12;
   private static final int MAX_SELECT_VALUE_DIALOG_WIDTH = 500;
   private static final int DEFAULT_PROGRESS_BAR_WIDTH = 400;
-  private static final double DEFAULT_IMAGE_PANEL_SCREEN_SIZE_RATIO = 0.5;
   private static final Map<RootPaneContainer, Integer> WAIT_CURSOR_REQUESTS = new HashMap<>();
   /**
    * Caching the file chooser since the constructor is quite slow, especially on Win. with many mapped network drives
@@ -1368,62 +1360,6 @@ public final class UiUtil {
         catch (final CancelException ignored) {/*ignored*/}
       }
     };
-  }
-
-  /**
-   * @param imagePath the path to the image to show
-   * @param dialogParent the component to use as dialog parent
-   * @throws IOException in case of an IO exception
-   */
-  public static void showImage(final String imagePath, final JComponent dialogParent) throws IOException {
-    showImage(imagePath, dialogParent, IMAGE_FILE_TYPES);
-  }
-
-  /**
-   * @param imagePath the path to the image to show, if the file has a file type suffix it
-   * is checked against the <code>acceptedFileTypes</code> collection.
-   * @param dialogParent the component to use as dialog parent
-   * @param acceptedFileTypes a collection of lower case file type suffixes, "gif", "jpeg"...
-   * @throws IOException in case of an IO exception, f.ex. if the image file is not found
-   * @throws IllegalArgumentException in case the file type is not accepted
-   */
-  public static void showImage(final String imagePath, final JComponent dialogParent,
-                               final Collection<String> acceptedFileTypes) throws IOException {
-    Util.rejectNullValue(imagePath, "imagePath");
-    if (imagePath.length() == 0) {
-      return;
-    }
-
-    final int lastDotIndex = imagePath.lastIndexOf('.');
-    if (lastDotIndex != -1) {//if the type is specified check it
-      final String type = imagePath.substring(lastDotIndex + 1, imagePath.length()).toLowerCase();
-      if (!acceptedFileTypes.contains(type)) {
-        throw new IllegalArgumentException(Messages.get(Messages.UNKNOWN_FILE_TYPE) + ": " + type);
-      }
-    }
-    final NavigableImagePanel imagePanel;
-    try {
-      setWaitCursor(true, dialogParent);
-      imagePanel = new NavigableImagePanel();
-      final BufferedImage image;
-      if (imagePath.toLowerCase().startsWith("http")) {
-        final URL url = new URL(imagePath);
-        image = ImageIO.read(url);
-      }
-      else {
-        final File imageFile = new File(imagePath);
-        if (!imageFile.exists()) {
-          throw new FileNotFoundException(Messages.get(Messages.FILE_NOT_FOUND) + ": " + imagePath);
-        }
-        image = ImageIO.read(imageFile);
-      }
-      imagePanel.setImage(image);
-    }
-    finally {
-      setWaitCursor(false, dialogParent);
-    }
-    imagePanel.setPreferredSize(getScreenSizeRatio(DEFAULT_IMAGE_PANEL_SCREEN_SIZE_RATIO));
-    displayInDialog(dialogParent, imagePanel, imagePath, false);
   }
 
   /**

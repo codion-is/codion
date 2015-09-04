@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.ui.images;
+package org.jminor.framework.plugins.imagepanel;
 
 import org.junit.Test;
 

@@ -4045,3 +4045,4 @@
   ServerMonitor, ServerMonitorPanel, restart action added
   DefaultEntityConnectionServerAdmin.adminInstance removed
   DefaultEntityConnectionServerAdmin.startServer() refactored
+  NavigableImagePanel moved to framework.plugins.imagepanel

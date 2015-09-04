@@ -162,7 +162,7 @@ public final class H2Database extends AbstractDatabase {
    * Runs the given script using the RunScript tool
    * @param scriptPath the path to the script
    * @param username the username to run the script under
-   * @param the password
+   * @param password the password
    * @param scriptCharset the script characterset
    * @throws SQLException in case of an exception
    */
