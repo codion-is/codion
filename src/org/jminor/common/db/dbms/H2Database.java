@@ -9,6 +9,8 @@ import org.jminor.common.model.Util;
 import java.lang.reflect.InvocationTargetException;
 import java.lang.reflect.Method;
 import java.nio.charset.Charset;
+import java.nio.file.Files;
+import java.nio.file.Paths;
 import java.sql.DriverManager;
 import java.sql.SQLException;
 import java.util.Properties;
@@ -201,7 +203,8 @@ public final class H2Database extends AbstractDatabase {
     final Properties properties = new Properties();
     properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
     String initializerString = ";DB_CLOSE_DELAY=-1";
-    if (scriptPath != null) {
+    final boolean fileBasedDatabaseExists = !inMemory && Files.exists(Paths.get(databaseName + ".h2.db"));
+    if (scriptPath != null && !fileBasedDatabaseExists) {
       initializerString += ";INIT=RUNSCRIPT FROM '" + scriptPath + "'";
     }
     try {

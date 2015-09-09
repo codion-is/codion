@@ -4046,3 +4046,4 @@
   DefaultEntityConnectionServerAdmin.adminInstance removed
   DefaultEntityConnectionServerAdmin.startServer() refactored
   NavigableImagePanel moved to framework.plugins.imagepanel
+  H2Database bug fixed, no longer tries to initialize a file based embedded database if the database file exists
