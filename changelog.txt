@@ -4047,3 +4047,5 @@
   DefaultEntityConnectionServerAdmin.startServer() refactored
   NavigableImagePanel moved to framework.plugins.imagepanel
   H2Database bug fixed, no longer tries to initialize a file based embedded database if the database file exists
+  H2Database, database url bug fixed
+  EntityApplicationPanel.getUser() now handles null or empty framCaption

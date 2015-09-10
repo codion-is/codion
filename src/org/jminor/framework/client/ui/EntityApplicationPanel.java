@@ -1045,7 +1045,8 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     final String defaultUserName = Configuration.getValue(Configuration.USERNAME_PREFIX) + System.getProperty("user.name");
     final LoginPanel loginPanel = new LoginPanel(defaultUser == null ? new User(Util.getDefaultUserName(getApplicationIdentifier(),
             defaultUserName), null) : defaultUser);
-    final User user = loginPanel.showLoginPanel(null, frameCaption + " - " + Messages.get(Messages.LOGIN), applicationIcon);
+    final String loginTitle = (!Util.nullOrEmpty(frameCaption) ? (frameCaption + " - ") : "") + Messages.get(Messages.LOGIN);
+    final User user = loginPanel.showLoginPanel(null, loginTitle, applicationIcon);
     if (Util.nullOrEmpty(user.getUsername())) {
       throw new IllegalArgumentException(FrameworkMessages.get(FrameworkMessages.EMPTY_USERNAME));
     }

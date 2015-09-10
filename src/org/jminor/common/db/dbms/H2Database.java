@@ -32,8 +32,9 @@ public final class H2Database extends AbstractDatabase {
   static final String SYSADMIN_USERNAME = "sa";
   static final String RUN_TOOL_CLASS_NAME = "org.h2.tools.RunScript";
   static final boolean EMBEDDED_IN_MEMORY = Boolean.TRUE.toString().equals(System.getProperty(DATABASE_EMBEDDED_IN_MEMORY, Boolean.FALSE.toString()));
-  static final String URL_PREFIX = "jdbc:h2:";
+  static final String URL_PREFIX_SERVER = "jdbc:h2:";
   static final String URL_PREFIX_MEM = "jdbc:h2:mem:";
+  static final String URL_PREFIX_FILE = "jdbc:h2:file:";
 
   private final boolean embeddedInMemory;
   private String urlAppend = "";
@@ -130,7 +131,7 @@ public final class H2Database extends AbstractDatabase {
       if (connectionProperties != null && (Util.nullOrEmpty((String) connectionProperties.get(USER_PROPERTY)))) {
         connectionProperties.put(USER_PROPERTY, SYSADMIN_USERNAME);
       }
-      final String urlPrefix = embeddedInMemory ? URL_PREFIX_MEM : URL_PREFIX;
+      final String urlPrefix = embeddedInMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE;
 
       return urlPrefix + getHost() + (authentication == null ? "" : ";" + authentication) + urlAppend;
     }
@@ -138,7 +139,7 @@ public final class H2Database extends AbstractDatabase {
       Util.require("host", getHost());
       Util.require("port", getPort());
       Util.require("sid", getSid());
-      return URL_PREFIX + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + urlAppend;
+      return URL_PREFIX_SERVER + "//" + getHost() + ":" + getPort() + "/" + getSid() + (authentication == null ? "" : ";" + authentication) + urlAppend;
     }
   }
 
@@ -208,7 +209,7 @@ public final class H2Database extends AbstractDatabase {
       initializerString += ";INIT=RUNSCRIPT FROM '" + scriptPath + "'";
     }
     try {
-      DriverManager.getConnection((inMemory ? URL_PREFIX_MEM : URL_PREFIX) + databaseName + ";user=" + SYSADMIN_USERNAME + initializerString).close();
+      DriverManager.getConnection((inMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE) + databaseName + ";user=" + SYSADMIN_USERNAME + initializerString).close();
     }
     catch (final SQLException e) {
       throw new RuntimeException(e);
