@@ -4051,3 +4051,4 @@
   EntityApplicationPanel.getUser() now handles null or empty framCaption
   EntityConnectionUtil.copyEntities() bug fixed, did not clear primary key values correctly before insert
   IncrementKeyGenerator now behaves like the SequenceGenerator, skips the id generation if a value is present
+  EntityConnection.selectPropertyValues() replaced by selectValues()

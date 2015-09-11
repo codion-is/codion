@@ -144,16 +144,16 @@ public interface RemoteEntityConnection extends Remote {
   void delete(final EntityCriteria criteria) throws RemoteException, DatabaseException;
 
   /**
-   * Selects distinct non-null values of the given property of the given entity
-   * @param entityID the entity type
+   * Selects ordered and distinct non-null values of the given property
    * @param propertyID the ID of the property
-   * @param order if true then the result is ordered
-   * @return the values in the given column (Property) in the given table (Entity)
+   * @param criteria the criteria
+   * @return the values in the given column (Property)
    * @throws DatabaseException in case of a db exception
    * @throws IllegalArgumentException in case the given property is not a column based property
+   * @throws UnsupportedOperationException in case the entity is based on a select query
    * @throws RemoteException in case of a remote exception
    */
-  List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order)
+  List<Object> selectValues(final String propertyID, final EntityCriteria criteria)
           throws RemoteException, DatabaseException;
 
   /**

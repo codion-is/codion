@@ -16,6 +16,7 @@ import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -194,7 +195,7 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.addAfterRefreshListener(listener);
 
     assertEquals(TestDomain.T_EMP, employeeEditModel.getEntityID());
-    assertEquals(employeeEditModel.getConnectionProvider().getConnection().selectPropertyValues(TestDomain.T_EMP, TestDomain.EMP_JOB, true),
+    assertEquals(employeeEditModel.getConnectionProvider().getConnection().selectValues(TestDomain.EMP_JOB, EntityCriteriaUtil.criteria(TestDomain.T_EMP)),
             employeeEditModel.getValueProvider(jobProperty).getValues());
 
     employeeEditModel.refresh();

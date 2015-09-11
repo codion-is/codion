@@ -331,10 +331,9 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
   /** {@inheritDoc} */
   @Override
-  public List<Object> selectPropertyValues(final String entityID, final String propertyID,
-                                           final boolean order) throws DatabaseException {
+  public List<Object> selectValues(final String propertyID, final EntityCriteria criteria) throws RemoteException, DatabaseException {
     synchronized (connectionProxy) {
-      return connectionProxy.selectPropertyValues(entityID, propertyID, order);
+      return connectionProxy.selectValues(propertyID, criteria);
     }
   }
 

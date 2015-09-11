@@ -9,6 +9,7 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Property;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class DefaultPropertyComboBoxModel<T> extends DefaultFilteredComboBoxMode
       @Override
       public Collection<T> getValues() {
         try {
-          return (Collection<T>) connectionProvider.getConnection().selectPropertyValues(entityID, property.getPropertyID(), true);
+          return (Collection<T>) connectionProvider.getConnection().selectValues(property.getPropertyID(), EntityCriteriaUtil.criteria(entityID));
         }
         catch (final DatabaseException e) {
           throw new RuntimeException(e);

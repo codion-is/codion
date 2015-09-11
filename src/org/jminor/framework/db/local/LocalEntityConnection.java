@@ -9,9 +9,12 @@ import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
+import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.db.criteria.SimpleCriteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -406,25 +409,37 @@ final class LocalEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public List<Object> selectPropertyValues(final String entityID, final String propertyID, final boolean order) throws DatabaseException {
-    if (Entities.getSelectQuery(entityID) != null) {
-      throw new UnsupportedOperationException("selectPropertyValues is not implemented for entities with custom select queries");
+  public List<Object> selectValues(final String propertyID, final EntityCriteria criteria) throws DatabaseException {
+    Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
+    if (Entities.getSelectQuery(criteria.getEntityID()) != null) {
+      throw new UnsupportedOperationException("selectValues is not implemented for entities with custom select queries");
     }
-    final Property.ColumnProperty property = Entities.getColumnProperty(entityID, propertyID);
+    final Property.ColumnProperty property = Entities.getColumnProperty(criteria.getEntityID(), propertyID);
     final String columnName = property.getColumnName();
-    final String selectSQL = createSelectSQL(Entities.getSelectTableName(entityID), "distinct " + columnName,
-            WHERE + columnName + " is not null", order ? columnName : null);
+    final EntityCriteria entityCriteria = EntityCriteriaUtil.criteria(criteria.getEntityID(),
+            new CriteriaSet<>(Conjunction.AND, criteria.getCriteria(),
+                    new SimpleCriteria<Property.ColumnProperty>(columnName + " is not null")));
+    final String selectSQL = createSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), "distinct " + columnName,
+            WHERE + entityCriteria.getWhereClause(), columnName);
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
     synchronized (connection) {
       try {
-        final List<Object> result = DatabaseUtil.query(connection, selectSQL, property.getResultPacker(), -1);
+        statement = connection.getConnection().prepareStatement(selectSQL);
+        resultSet = executePreparedSelect(statement, selectSQL, criteria);
+        final List<Object> result = property.getResultPacker().pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
 
         return result;
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
-        LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, Arrays.asList(entityID, propertyID, order), e, null));
+        LOG.error(DatabaseUtil.createLogMessage(getUser(), selectSQL, Arrays.asList(propertyID, criteria), e, null));
         throw new DatabaseException(e, connection.getDatabase().getErrorMessage(e));
+      }
+      finally {
+        DatabaseUtil.closeSilently(resultSet);
+        DatabaseUtil.closeSilently(statement);
       }
     }
   }
@@ -433,8 +448,6 @@ final class LocalEntityConnection implements EntityConnection {
   @Override
   public int selectRowCount(final EntityCriteria criteria) throws DatabaseException {
     Util.rejectNullValue(criteria, CRITERIA_PARAM_NAME);
-    PreparedStatement statement = null;
-    ResultSet resultSet = null;
     final String selectSQL;
     final String entitySelectQuery = Entities.getSelectQuery(criteria.getEntityID());
     if (entitySelectQuery == null) {
@@ -452,6 +465,8 @@ final class LocalEntityConnection implements EntityConnection {
       tableClause += ") alias";
       selectSQL = createSelectSQL(tableClause, "count(*)", null, null);
     }
+    PreparedStatement statement = null;
+    ResultSet resultSet = null;
     synchronized (connection) {
       try {
         statement = connection.getConnection().prepareStatement(selectSQL);

@@ -21,6 +21,7 @@ import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -1179,7 +1180,7 @@ public class DefaultEntityEditModel implements EntityEditModel {
     @Override
     public Collection<Object> getValues() {
       try {
-        return connectionProvider.getConnection().selectPropertyValues(entityID, propertyID, true);
+        return connectionProvider.getConnection().selectValues(propertyID, EntityCriteriaUtil.criteria(entityID));
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);
