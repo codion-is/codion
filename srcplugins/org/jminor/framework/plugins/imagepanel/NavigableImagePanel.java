@@ -381,6 +381,7 @@ public final class NavigableImagePanel extends JPanel {
    * Creates a Control for viewing an image based on the entity selected in this EntityTablePanel.
    * The action shows an image found at the path specified by the value of the given propertyID.
    * If no entity is selected or the image path value is null no action is performed.
+   * @param tablePanel the EntityTablePanel on which to base the control
    * @param imagePathPropertyID the ID of the property specifying the image path
    * @return a Control for viewing an image based on the selected entity in a EntityTablePanel
    * @see NavigableImagePanel#showImage(String, JComponent)

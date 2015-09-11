@@ -5,6 +5,7 @@ package org.jminor.framework.plugins.rest;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SearchType;
@@ -232,7 +233,7 @@ public final class EntityRESTService extends Application {
       return null;
     }
     final JSONObject jsonObject = new JSONObject(values);
-    final CriteriaSet<Property.ColumnProperty> set = new CriteriaSet<>(Conjunction.AND);
+    final CriteriaSet<Property.ColumnProperty> set = CriteriaUtil.criteriaSet(Conjunction.AND);
     for (final String propertyID : JSONObject.getNames(jsonObject)) {
       final Property.ColumnProperty property = Entities.getColumnProperty(entityID, propertyID);
       final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.propertyCriteria(property,

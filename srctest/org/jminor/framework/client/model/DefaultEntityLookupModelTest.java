@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.criteria.SimpleCriteria;
+import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -177,7 +177,7 @@ public final class DefaultEntityLookupModelTest {
     List<Entity> result = lookupModel.performQuery();
     assertTrue("A single result should be returned", result.size() == 1);
     lookupModel.setSelectedEntities(result);
-    lookupModel.setAdditionalLookupCriteria(new SimpleCriteria<Property.ColumnProperty>("1 = 2"));
+    lookupModel.setAdditionalLookupCriteria(CriteriaUtil.<Property.ColumnProperty>stringCriteria("1 = 2"));
     assertEquals(1, lookupModel.getSelectedEntities().size());
     result = lookupModel.performQuery();
     assertTrue("No result should be returned", result.isEmpty());

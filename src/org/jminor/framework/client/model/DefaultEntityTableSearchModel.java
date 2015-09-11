@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventListener;
@@ -224,7 +225,7 @@ public class DefaultEntityTableSearchModel implements EntityTableSearchModel {
   /** {@inheritDoc} */
   @Override
   public final Criteria<Property.ColumnProperty> getSearchCriteria() {
-    final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<>(searchConjunction);
+    final CriteriaSet<Property.ColumnProperty> criteriaSet = CriteriaUtil.criteriaSet(searchConjunction);
     for (final PropertySearchModel<? extends Property.SearchableProperty> searchModel : propertySearchModels.values()) {
       if (searchModel.isEnabled()) {
         criteriaSet.add(searchModel.getCriteria());

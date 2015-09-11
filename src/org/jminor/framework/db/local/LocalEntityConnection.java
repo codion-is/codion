@@ -9,8 +9,7 @@ import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
-import org.jminor.common.db.criteria.CriteriaSet;
-import org.jminor.common.db.criteria.SimpleCriteria;
+import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
@@ -417,12 +416,13 @@ final class LocalEntityConnection implements EntityConnection {
     final Property.ColumnProperty property = Entities.getColumnProperty(criteria.getEntityID(), propertyID);
     final String columnName = property.getColumnName();
     final EntityCriteria entityCriteria = EntityCriteriaUtil.criteria(criteria.getEntityID(),
-            new CriteriaSet<>(Conjunction.AND, criteria.getCriteria(),
-                    new SimpleCriteria<Property.ColumnProperty>(columnName + " is not null")));
+            CriteriaUtil.criteriaSet(Conjunction.AND, criteria.getCriteria(),
+                    CriteriaUtil.<Property.ColumnProperty>stringCriteria(columnName + " is not null")));
     final String selectSQL = createSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), "distinct " + columnName,
             WHERE + entityCriteria.getWhereClause(), columnName);
     PreparedStatement statement = null;
     ResultSet resultSet = null;
+    DatabaseUtil.QUERY_COUNTER.count(selectSQL);
     synchronized (connection) {
       try {
         statement = connection.getConnection().prepareStatement(selectSQL);
@@ -467,6 +467,7 @@ final class LocalEntityConnection implements EntityConnection {
     }
     PreparedStatement statement = null;
     ResultSet resultSet = null;
+    DatabaseUtil.QUERY_COUNTER.count(selectSQL);
     synchronized (connection) {
       try {
         statement = connection.getConnection().prepareStatement(selectSQL);

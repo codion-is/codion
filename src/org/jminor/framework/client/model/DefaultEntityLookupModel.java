@@ -5,6 +5,7 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
@@ -281,7 +282,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
    * @see #setAdditionalLookupCriteria(org.jminor.common.db.criteria.Criteria)
    */
   private EntitySelectCriteria getEntitySelectCriteria() {
-    final CriteriaSet<Property.ColumnProperty> baseCriteria = new CriteriaSet<>(Conjunction.OR);
+    final CriteriaSet<Property.ColumnProperty> baseCriteria = CriteriaUtil.criteriaSet(Conjunction.OR);
     final String[] lookupTexts = multipleSelectionAllowedValue.get() ? searchStringValue.get().split(multipleItemSeparatorValue.get()) : new String[] {searchStringValue.get()};
     for (final Property.ColumnProperty lookupProperty : lookupProperties) {
       for (final String rawLookupText : lookupTexts) {
@@ -295,7 +296,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     }
 
     return EntityCriteriaUtil.selectCriteria(entityID, additionalLookupCriteria == null ? baseCriteria :
-                    new CriteriaSet<>(Conjunction.AND, additionalLookupCriteria, baseCriteria),
+                    CriteriaUtil.criteriaSet(Conjunction.AND, additionalLookupCriteria, baseCriteria),
             Entities.getOrderByClause(getEntityID()));
   }
 

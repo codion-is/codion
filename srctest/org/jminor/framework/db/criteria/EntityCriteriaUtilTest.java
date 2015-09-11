@@ -4,7 +4,7 @@
 package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.criteria.SimpleCriteria;
+import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -112,7 +112,7 @@ public class EntityCriteriaUtilTest {
   @Test
   public void simpleCriteria() {
     final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT,
-            new SimpleCriteria<Property.ColumnProperty>("department name is not null"), TestDomain.DEPARTMENT_NAME, -1);
+            CriteriaUtil.<Property.ColumnProperty>stringCriteria("department name is not null"), TestDomain.DEPARTMENT_NAME, -1);
     assertEquals(0, criteria.getValues().size());
     assertEquals(0, criteria.getValueKeys().size());
     assertEquals(criteria.getOrderByClause(), TestDomain.DEPARTMENT_NAME);

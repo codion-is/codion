@@ -119,55 +119,13 @@ public final class DatabaseUtil {
   }
 
   /**
-   * Performs a query on the given connection and returns the result packed by the {@code resultPacker}
-   * @param connection the connection
-   * @param sql the sql query
-   * @param resultPacker the result packer
-   * @param fetchCount the number of records to fetch
-   * @param <T> the type of object returned by the query
-   * @return a List of records based on the given query
-   * @throws SQLException thrown if anything goes wrong during the execution
-   */
-  public static <T> List<T> query(final DatabaseConnection connection, final String sql,
-                                  final ResultPacker<T> resultPacker, final int fetchCount) throws SQLException {
-    QUERY_COUNTER.count(sql);
-    Statement statement = null;
-    SQLException exception = null;
-    ResultSet resultSet = null;
-    final MethodLogger methodLogger = connection.getMethodLogger();
-    try {
-      if (methodLogger != null && methodLogger.isEnabled()) {
-        methodLogger.logAccess("query", new Object[]{sql});
-      }
-      statement = connection.getConnection().createStatement();
-      resultSet = statement.executeQuery(sql);
-
-      return resultPacker.pack(resultSet, fetchCount);
-    }
-    catch (final SQLException e) {
-      exception = e;
-      throw e;
-    }
-    finally {
-      closeSilently(statement);
-      closeSilently(resultSet);
-      if (methodLogger != null && methodLogger.isEnabled()) {
-        final MethodLogger.Entry logEntry = methodLogger.logExit("query", exception, null);
-        if (LOG != null && LOG.isDebugEnabled()) {
-          LOG.debug(createLogMessage(connection.getUser(), sql, null, exception, logEntry));
-        }
-      }
-    }
-  }
-
-  /**
    * Performs the given query and returns the result as an integer
    * @param connection the connection
    * @param sql the query must select at least a single number column, any other subsequent columns are disregarded
    * @return the first record in the result as a integer
    * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
    */
-  public static int queryInteger(final DatabaseConnection connection,final String sql) throws SQLException {
+  public static int queryInteger(final DatabaseConnection connection, final String sql) throws SQLException {
     final List<Integer> integers = query(connection, sql, INTEGER_RESULT_PACKER, -1);
     if (!integers.isEmpty()) {
       return integers.get(0);
@@ -183,7 +141,7 @@ public final class DatabaseUtil {
    * @return the first record in the result as a long
    * @throws SQLException thrown if anything goes wrong during the execution or if no record is returned
    */
-  public static long queryLong(final DatabaseConnection connection,final String sql) throws SQLException {
+  public static long queryLong(final DatabaseConnection connection, final String sql) throws SQLException {
     final List<Long> longs = query(connection, sql, LONG_RESULT_PACKER, -1);
     if (!longs.isEmpty()) {
       return longs.get(0);
@@ -250,6 +208,48 @@ public final class DatabaseUtil {
     return new Databases.DatabaseStatistics(QUERY_COUNTER.getQueriesPerSecond(),
             QUERY_COUNTER.getSelectsPerSecond(), QUERY_COUNTER.getInsertsPerSecond(),
             QUERY_COUNTER.getDeletesPerSecond(), QUERY_COUNTER.getUpdatesPerSecond());
+  }
+
+  /**
+   * Performs a query on the given connection and returns the result packed by the {@code resultPacker}
+   * @param connection the connection
+   * @param sql the sql query
+   * @param resultPacker the result packer
+   * @param fetchCount the number of records to fetch
+   * @param <T> the type of object returned by the query
+   * @return a List of records based on the given query
+   * @throws SQLException thrown if anything goes wrong during the execution
+   */
+  private static <T> List<T> query(final DatabaseConnection connection, final String sql,
+                                   final ResultPacker<T> resultPacker, final int fetchCount) throws SQLException {
+    QUERY_COUNTER.count(sql);
+    Statement statement = null;
+    SQLException exception = null;
+    ResultSet resultSet = null;
+    final MethodLogger methodLogger = connection.getMethodLogger();
+    try {
+      if (methodLogger != null && methodLogger.isEnabled()) {
+        methodLogger.logAccess("query", new Object[]{sql});
+      }
+      statement = connection.getConnection().createStatement();
+      resultSet = statement.executeQuery(sql);
+
+      return resultPacker.pack(resultSet, fetchCount);
+    }
+    catch (final SQLException e) {
+      exception = e;
+      throw e;
+    }
+    finally {
+      closeSilently(statement);
+      closeSilently(resultSet);
+      if (methodLogger != null && methodLogger.isEnabled()) {
+        final MethodLogger.Entry logEntry = methodLogger.logExit("query", exception, null);
+        if (LOG != null && LOG.isDebugEnabled()) {
+          LOG.debug(createLogMessage(connection.getUser(), sql, null, exception, logEntry));
+        }
+      }
+    }
   }
 
   private static boolean validateWithQuery(final Connection connection, final Database database,

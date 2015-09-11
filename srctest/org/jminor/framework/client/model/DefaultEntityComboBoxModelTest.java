@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.model;
 
-import org.jminor.common.db.criteria.SimpleCriteria;
+import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilterCriteria;
@@ -150,7 +150,7 @@ public final class DefaultEntityComboBoxModelTest {
     assertTrue(comboBoxModel.getSize() == 0);
 
     comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP,
-            new SimpleCriteria<Property.ColumnProperty>(" ename = 'CLARK'")));
+            CriteriaUtil.<Property.ColumnProperty>stringCriteria(" ename = 'CLARK'")));
     comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_DEPARTMENT_FK, null);
 
     comboBoxModel.forceRefresh();

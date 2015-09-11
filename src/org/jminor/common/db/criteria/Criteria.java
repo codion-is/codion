@@ -23,7 +23,7 @@ public interface Criteria<T> {
    * @return a list of the values this criteria is based on, in the order they appear
    * in the condition clause. An empty list is returned in case no values are specified.
    */
-  List<?> getValues();
+  List getValues();
 
   /**
    * @return a list of T describing the values this criteria is based on, in the same

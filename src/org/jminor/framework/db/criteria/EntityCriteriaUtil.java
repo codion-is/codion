@@ -5,6 +5,7 @@ package org.jminor.framework.db.criteria;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
@@ -641,7 +642,7 @@ public final class EntityCriteriaUtil {
      * @param keys the keys
      */
     private EntityKeyCriteria(final List<Property.ColumnProperty> properties, final Collection<Entity.Key> keys) {
-      criteria = new CriteriaSet<>(Conjunction.OR);
+      criteria = CriteriaUtil.criteriaSet(Conjunction.OR);
       Util.rejectNullValue(keys, "keys");
       if (keys.isEmpty()) {
         throw new IllegalArgumentException("EntityKeyCriteria requires at least one key");
@@ -683,7 +684,7 @@ public final class EntityCriteriaUtil {
         final List<? extends Property.ColumnProperty> propertyList = properties == null ? pkProperties : properties;
         //(a = b and c = d) or (a = g and c = d)
         for (final Entity.Key key : keys) {
-          final CriteriaSet<Property.ColumnProperty> andSet = new CriteriaSet<>(Conjunction.AND);
+          final CriteriaSet<Property.ColumnProperty> andSet = CriteriaUtil.criteriaSet(Conjunction.AND);
           int i = 0;
           for (final Property.ColumnProperty property : propertyList) {
             andSet.add(new PropertyCriteria(property, SearchType.LIKE, key.getValue(pkProperties.get(i++).getPropertyID())));
@@ -1010,7 +1011,7 @@ public final class EntityCriteriaUtil {
     }
 
     private Criteria<Property.ColumnProperty> createMultipleCompositeForeignKeyCriteria() {
-      final CriteriaSet<Property.ColumnProperty> criteriaSet = new CriteriaSet<>(Conjunction.OR);
+      final CriteriaSet<Property.ColumnProperty> criteriaSet = CriteriaUtil.criteriaSet(Conjunction.OR);
       for (final Object entityKey : values) {
         criteriaSet.add(createSingleForeignKeyCriteria((Entity.Key) entityKey));
       }
@@ -1021,7 +1022,7 @@ public final class EntityCriteriaUtil {
     private Criteria<Property.ColumnProperty> createSingleForeignKeyCriteria(final Entity.Key entityKey) {
       final Property.ForeignKeyProperty foreignKeyProperty = property;
       if (foreignKeyProperty.isCompositeReference()) {
-        final CriteriaSet<Property.ColumnProperty> pkSet = new CriteriaSet<>(Conjunction.AND);
+        final CriteriaSet<Property.ColumnProperty> pkSet = CriteriaUtil.criteriaSet(Conjunction.AND);
         for (final Property.ColumnProperty referencedProperty : foreignKeyProperty.getReferenceProperties()) {
           final String referencedPropertyID = foreignKeyProperty.getReferencedPropertyID(referencedProperty);
           final Object referencedValue = entityKey == null ? null : entityKey.getValue(referencedPropertyID);

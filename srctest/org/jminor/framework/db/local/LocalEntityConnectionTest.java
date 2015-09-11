@@ -10,7 +10,7 @@ import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.DatabasesTest;
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.criteria.SimpleCriteria;
+import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
@@ -168,12 +168,12 @@ public class LocalEntityConnectionTest {
     assertEquals(2, result.size());
     result = connection.selectMany(EntityUtil.getPrimaryKeys(result));
     assertEquals(2, result.size());
-    result = connection.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT, new SimpleCriteria<Property.ColumnProperty>("deptno in (10, 20)")));
+    result = connection.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT, CriteriaUtil.<Property.ColumnProperty>stringCriteria("deptno in (10, 20)")));
     assertEquals(2, result.size());
-    result = connection.selectMany(EntityCriteriaUtil.selectCriteria(JOINED_QUERY_ENTITY_ID, new SimpleCriteria<Property.ColumnProperty>("d.deptno = 10")));
+    result = connection.selectMany(EntityCriteriaUtil.selectCriteria(JOINED_QUERY_ENTITY_ID, CriteriaUtil.<Property.ColumnProperty>stringCriteria("d.deptno = 10")));
     assertEquals(7, result.size());
 
-    final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP, new SimpleCriteria<Property.ColumnProperty>("ename = 'BLAKE'"));
+    final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP, CriteriaUtil.<Property.ColumnProperty>stringCriteria("ename = 'BLAKE'"));
     result = connection.selectMany(criteria);
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
@@ -204,7 +204,8 @@ public class LocalEntityConnectionTest {
 
   @Test(expected = DatabaseException.class)
   public void selectManyInvalidColumn() throws Exception {
-    connection.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT, new SimpleCriteria<Property.ColumnProperty>("no_column is null")));
+    connection.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT,
+            CriteriaUtil.<Property.ColumnProperty>stringCriteria("no_column is null")));
   }
 
   @Test
@@ -229,7 +230,7 @@ public class LocalEntityConnectionTest {
     assertEquals(sales.getStringValue(TestDomain.DEPARTMENT_NAME), "SALES");
     sales = connection.selectSingle(sales.getPrimaryKey());
     assertEquals(sales.getStringValue(TestDomain.DEPARTMENT_NAME), "SALES");
-    sales = connection.selectSingle(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT, new SimpleCriteria<Property.ColumnProperty>("dname = 'SALES'")));
+    sales = connection.selectSingle(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT, CriteriaUtil.<Property.ColumnProperty>stringCriteria("dname = 'SALES'")));
     assertEquals(sales.getStringValue(TestDomain.DEPARTMENT_NAME), "SALES");
 
     final Entity king = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
