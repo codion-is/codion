@@ -7,6 +7,7 @@ import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.ProgressReporter;
 import org.jminor.common.model.User;
+import org.jminor.common.model.Util;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.local.LocalEntityConnections;
 import org.jminor.framework.domain.Entity;
@@ -22,6 +23,7 @@ import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.fail;
 
 public class EntityConnectionUtilTest {
 
@@ -37,6 +39,8 @@ public class EntityConnectionUtilTest {
       final H2Database destinationDatabase = new H2Database("TempDB", "resources/demos/empdept/scripts/ddl.sql");
       DESTINATION_CONNECTION = LocalEntityConnections.createConnection(destinationDatabase, new User("sa", ""));
       DESTINATION_CONNECTION.delete(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT));
+      DESTINATION_CONNECTION.delete(EntityCriteriaUtil.criteria(TestDomain.T_EMP));
+      DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
@@ -55,7 +59,23 @@ public class EntityConnectionUtilTest {
 
     assertEquals(sourceConnection.selectRowCount(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT)),
             DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT)));
+
+    EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, false, TestDomain.T_EMP);
+    final List<Entity> employees = DESTINATION_CONNECTION.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP)
+            .setOrderByClause(TestDomain.EMP_ID));
+    boolean zeroIdFound = false;
+    for (final Entity emp : employees) {
+      if (Util.equal(emp.getValue(TestDomain.EMP_ID), 0)) {
+        zeroIdFound = true;
+      }
+    }
+
+    DESTINATION_CONNECTION.delete(EntityCriteriaUtil.criteria(TestDomain.T_EMP));
     DESTINATION_CONNECTION.delete(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT));
+
+    if (!zeroIdFound) {
+      fail("Ids were not regenerated on copy");
+    }
   }
 
   @Test

@@ -903,7 +903,9 @@ final class DefaultEntityDefinition implements Entity.Definition {
     @Override
     public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {
-      queryAndSet(entity, primaryKeyProperty, connection);
+      if (entity.isValueNull(primaryKeyProperty)) {
+        queryAndSet(entity, primaryKeyProperty, connection);
+      }
     }
 
     @Override

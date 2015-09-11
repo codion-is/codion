@@ -34,7 +34,7 @@ public final class EntityConnectionUtil {
       final List<Entity> entities = source.selectMany(EntityCriteriaUtil.selectCriteria(entityID).setForeignKeyFetchDepthLimit(0));
       if (!includePrimaryKeys) {
         for (final Entity entity : entities) {
-          entity.getPrimaryKey().clear();
+          entity.clearPrimaryKeyValues();
         }
       }
       batchInsert(destination, entities, null, batchSize, null);
