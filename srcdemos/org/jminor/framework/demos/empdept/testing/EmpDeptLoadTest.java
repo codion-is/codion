@@ -35,7 +35,7 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
     final EntityApplicationModel applicationModel = new DefaultEntityApplicationModel(
-            EntityConnectionProviders.createConnectionProvider(getUser(), EmpDeptLoadTest.class.getSimpleName())) {
+            EntityConnectionProviders.connectionProvider(getUser(), EmpDeptLoadTest.class.getSimpleName())) {
       @Override
       protected void loadDomainModel() {
         EmpDept.init();

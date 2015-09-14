@@ -11,8 +11,7 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
+import static org.junit.Assert.*;
 
 /**
  * User: Björn Darri
@@ -40,7 +39,7 @@ public class EntityConnectionProvidersTest {
       System.setProperty(Database.DATABASE_EMBEDDED_IN_MEMORY, embeddedInMemory == null ? "true" : embeddedInMemory);
       System.setProperty(H2Database.DATABASE_INIT_SCRIPT, initScript == null ? "resources/db/scripts/create_h2_db.sql" : initScript);
 
-      return EntityConnectionProviders.createConnectionProvider(User.UNIT_TEST_USER, "test");
+      return EntityConnectionProviders.connectionProvider(User.UNIT_TEST_USER, "test");
     }
     finally {
       setSystemProperties(type, host, port, sid, embedded, embeddedInMemory, initScript);
@@ -48,7 +47,16 @@ public class EntityConnectionProvidersTest {
   }
 
   @Test
-  public void test() throws Exception {
+  public void testWrapper() {
+    final EntityConnection connection = CONNECTION_PROVIDER.getConnection();
+    final EntityConnectionProvider connectionWrapper = EntityConnectionProviders.connectionProvider(connection);
+    assertTrue(connectionWrapper.isConnected());
+    assertFalse(connectionWrapper.getConnectedObserver().isActive());
+    assertTrue(connection == connectionWrapper.getConnection());
+  }
+
+  @Test
+  public void testRemoteLocal() throws Exception {
     final String connectionType = Configuration.getStringValue(Configuration.CLIENT_CONNECTION_TYPE);
     try {
       Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, Configuration.CONNECTION_TYPE_LOCAL);
@@ -56,7 +64,7 @@ public class EntityConnectionProvidersTest {
       assertTrue(connectionProvider instanceof LocalEntityConnectionProvider);
 
       Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, Configuration.CONNECTION_TYPE_REMOTE);
-      connectionProvider = EntityConnectionProviders.createConnectionProvider(User.UNIT_TEST_USER, "test");
+      connectionProvider = EntityConnectionProviders.connectionProvider(User.UNIT_TEST_USER, "test");
       assertEquals("RemoteEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
     }
     finally {

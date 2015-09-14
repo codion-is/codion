@@ -31,7 +31,7 @@ public abstract class EntityEditPanelTestUnit {
     Util.rejectNullValue(editPanelClass, "editPanelClass");
     Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(user, "user");
-    this.connectionProvider = EntityConnectionProviders.createConnectionProvider(user, getClass().getName());
+    this.connectionProvider = EntityConnectionProviders.connectionProvider(user, getClass().getName());
     this.editPanelClass = editPanelClass;
     this.entityID = entityID;
   }

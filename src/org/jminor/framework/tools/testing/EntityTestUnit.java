@@ -168,7 +168,7 @@ public abstract class EntityTestUnit {
    * @return the EntityConnectionProvider instance this test case should use
    */
   protected EntityConnectionProvider initializeConnectionProvider() {
-    return EntityConnectionProviders.createConnectionProvider(getTestUser(), getClass().getName());
+    return EntityConnectionProviders.connectionProvider(getTestUser(), getClass().getName());
   }
 
   /**

@@ -4052,5 +4052,7 @@
   EntityConnectionUtil.copyEntities() bug fixed, did not clear primary key values correctly before insert
   IncrementKeyGenerator now behaves like the SequenceGenerator, skips the id generation if a value is present
   EntityConnection.selectPropertyValues() replaced by selectValues()
-0.9.5
+0.9.5 [incompatible api: CriteriaSet, SimpleCriteria]
   CriteriaSet changed to an interface, CriteriaUtil.DefaultCriteriaSet added, SimpleCriteria moved to CriteriaUtil.StringCriteria, factory methods added to CriteriaUtil
+  EntityConnectionProviders.createConnectionProvider() renamed to connectionProvider()
+  EntityConnectionProviders.connectionProvider(EntityConnection) added

@@ -158,7 +158,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
 
   @Override
   protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(getUser(), ChinookLoadTest.class.getSimpleName());
+    final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(getUser(), ChinookLoadTest.class.getSimpleName());
     final EntityApplicationModel appModel = new ChinookAppPanel.ChinookApplicationModel(connectionProvider);
     /* ARTIST
     *   ALBUM

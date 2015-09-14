@@ -54,7 +54,7 @@ public class EntityLoadTestModelTest {
     @Override
     protected EntityApplicationModel initializeApplication() {
       return new DefaultEntityApplicationModel(
-              EntityConnectionProviders.createConnectionProvider(getUser(), EntityLoadTestModelTest.class.getSimpleName())) {
+              EntityConnectionProviders.connectionProvider(getUser(), EntityLoadTestModelTest.class.getSimpleName())) {
         @Override
         protected void loadDomainModel() {
           TestDomain.init();

@@ -655,7 +655,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @throws CancelException in case the initialization is cancelled
    */
   protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeID) {
-    return EntityConnectionProviders.createConnectionProvider(user, clientTypeID);
+    return EntityConnectionProviders.connectionProvider(user, clientTypeID);
   }
 
   /**
