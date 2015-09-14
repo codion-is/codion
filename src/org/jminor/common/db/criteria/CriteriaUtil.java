@@ -135,7 +135,7 @@ public final class CriteriaUtil {
    * @return a new Criteria instance
    * @throws IllegalArgumentException in case any of the parameters are null
    */
-  public static <T> Criteria<T> stringCriteria(final String criteriaString, final List<?> values, final List<T> keys) {
+  public static <T> Criteria<T> stringCriteria(final String criteriaString, final List values, final List<T> keys) {
     return new StringCriteria<T>(criteriaString, values, keys);
   }
 
@@ -145,11 +145,6 @@ public final class CriteriaUtil {
 
     private Conjunction conjunction;
     private List<Criteria<T>> criteriaList = new ArrayList<>();
-
-    /**
-     * Used for serialization, not for general use
-     */
-    DefaultCriteriaSet() {}
 
     private DefaultCriteriaSet(final Conjunction conjunction, final Collection<Criteria<T>> criteria) {
       this.conjunction = conjunction;
@@ -230,15 +225,15 @@ public final class CriteriaUtil {
 
     private static final long serialVersionUID = 1;
 
-    private final String criteriaString;
-    private final List<?> values;
-    private final List<T> keys;
+    private String criteriaString;
+    private List values;
+    private List<T> keys;
 
     private StringCriteria(final String criteriaString) {
       this(criteriaString, Collections.emptyList(), Collections.<T>emptyList());
     }
 
-    private StringCriteria(final String criteriaString, final List<?> values, final List<T> keys) {
+    private StringCriteria(final String criteriaString, final List values, final List<T> keys) {
       this.criteriaString = Util.rejectNullValue(criteriaString, "criteriaString");
       this.values = Util.rejectNullValue(values, "values");
       this.keys = Util.rejectNullValue(keys, "keys");
@@ -250,13 +245,39 @@ public final class CriteriaUtil {
     }
 
     @Override
-    public List<?> getValues() {
+    public List getValues() {
       return values;
     }
 
     @Override
     public List<T> getValueKeys() {
       return keys;
+    }
+
+    private void writeObject(final ObjectOutputStream stream) throws IOException {
+      stream.writeObject(criteriaString);
+      stream.writeInt(values.size());
+      for (final Object value : values) {
+        stream.writeObject(value);
+      }
+      stream.writeInt(keys.size());
+      for (final T key : keys) {
+        stream.writeObject(key);
+      }
+    }
+
+    private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
+      criteriaString = (String) stream.readObject();
+      final int valueCount = stream.readInt();
+      values = new ArrayList<>(valueCount);
+      for (int i = 0; i < valueCount; i++) {
+        values.add(stream.readObject());
+      }
+      final int keyCount = stream.readInt();
+      keys = new ArrayList<>(keyCount);
+      for (int i = 0; i < keyCount; i++) {
+        keys.add((T) stream.readObject());
+      }
     }
   }
 }

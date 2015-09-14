@@ -7,6 +7,12 @@ import org.jminor.common.model.Conjunction;
 
 import org.junit.Test;
 
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
+import java.io.IOException;
+import java.io.ObjectInputStream;
+import java.io.ObjectOutputStream;
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 
@@ -86,6 +92,26 @@ public final class CriteriaUtilTest {
   @Test (expected = IllegalArgumentException.class)
   public void stringCriteriaNullKeys() {
     CriteriaUtil.stringCriteria("some is null", Collections.emptyList(), null);
+  }
+
+  @Test
+  public void serialization() throws IOException, ClassNotFoundException {
+    final Criteria<Integer> criteria = CriteriaUtil.criteriaSet(Conjunction.AND,
+            CriteriaUtil.stringCriteria("test", Arrays.asList("val1", "val2"), Arrays.asList(1, 2)),
+            CriteriaUtil.stringCriteria("testing", Arrays.asList("val1", "val2"), Arrays.asList(1, 2)));
+    deserialize(serialize(criteria));
+  }
+
+  private static byte[] serialize(final Object obj) throws IOException {
+    final ByteArrayOutputStream out = new ByteArrayOutputStream();
+    final ObjectOutputStream os = new ObjectOutputStream(out);
+    os.writeObject(obj);
+
+    return out.toByteArray();
+  }
+
+  private static Object deserialize(final byte[] data) throws IOException, ClassNotFoundException {
+    return new ObjectInputStream(new ByteArrayInputStream(data)).readObject();
   }
 
   private static class TestCriteria implements Criteria {
