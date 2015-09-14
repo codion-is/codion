@@ -229,10 +229,6 @@ public final class CriteriaUtil {
     private List values;
     private List<T> keys;
 
-    private StringCriteria(final String criteriaString) {
-      this(criteriaString, Collections.emptyList(), Collections.<T>emptyList());
-    }
-
     private StringCriteria(final String criteriaString, final List values, final List<T> keys) {
       this.criteriaString = Util.rejectNullValue(criteriaString, "criteriaString");
       this.values = Util.rejectNullValue(values, "values");
