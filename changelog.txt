@@ -4056,3 +4056,4 @@
   CriteriaSet changed to an interface, CriteriaUtil.DefaultCriteriaSet added, SimpleCriteria moved to CriteriaUtil.StringCriteria, factory methods added to CriteriaUtil
   EntityConnectionProviders.createConnectionProvider() renamed to connectionProvider()
   EntityConnectionProviders.connectionProvider(EntityConnection) added
+  EntityTablePanel.createStaticEntityTablePanel(), resulting panel is now read-only and without popup menu and south panel

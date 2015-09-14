@@ -36,7 +36,6 @@ import org.jminor.common.ui.input.ValueListInputProvider;
 import org.jminor.common.ui.table.ColumnSearchPanel;
 import org.jminor.common.ui.table.FilteredTablePanel;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.DefaultEntityModel;
 import org.jminor.framework.client.model.DefaultEntityTableModel;
 import org.jminor.framework.client.model.EntityEditModel;
@@ -828,7 +827,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Creates a static entity table panel showing the given entities
+   * Creates a static read-only entity table panel showing the given entities
    * @param entities the entities to show in the panel
    * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
    * @return a static EntityTablePanel showing the given entities
@@ -843,7 +842,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Creates a static entity table panel showing the given entities
+   * Creates a static read-only entity table panel showing the given entities.
    * @param entities the entities to show in the panel
    * @param connectionProvider the EntityConnectionProvider, in case the returned panel should require one
    * @param entityID the entityID
@@ -852,7 +851,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities,
                                                               final EntityConnectionProvider connectionProvider,
                                                               final String entityID) {
-    final EntityEditModel editModel = new DefaultEntityEditModel(entityID, connectionProvider);
     final EntityTableModel tableModel = new DefaultEntityTableModel(entityID, connectionProvider) {
       @Override
       protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
@@ -860,10 +858,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       }
     };
     tableModel.setQueryConfigurationAllowed(false);
-    tableModel.setEditModel(editModel);
-    final EntityTablePanel tablePanel = new EntityTablePanel(tableModel, null, null);
-    tablePanel.initializePanel();
     tableModel.refresh();
+    final EntityTablePanel tablePanel = new EntityTablePanel(tableModel, null, null);
+    tablePanel.setIncludePopupMenu(false);
+    tablePanel.setIncludeSouthPanel(false);
+    tablePanel.initializePanel();
 
     return tablePanel;
   }
