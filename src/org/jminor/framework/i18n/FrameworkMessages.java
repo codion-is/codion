@@ -104,12 +104,6 @@ public final class FrameworkMessages {
   public static final String REQUIRE_QUERY_CRITERIA = "require_query_criteria";
   public static final String SELECT_ENTITY = "select_entity";
   public static final String TOGGLE_SUMMARY_TIP = "toggle_summary_tip";
-  public static final String NONE = "none";
-  public static final String SUM = "sum";
-  public static final String AVERAGE = "average";
-  public static final String MINIMUM = "minimum";
-  public static final String MAXIMUM = "maximum";
-  public static final String MINIMUM_AND_MAXIMUM = "minimum_and_maximum";
   public static final String ADVANCED = "advanced";
   public static final String APPLICATION_TREE = "view_application_tree";
   public static final String COPY_CELL = "copy_cell";

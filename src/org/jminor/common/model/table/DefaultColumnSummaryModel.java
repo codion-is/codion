@@ -1,15 +1,14 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.model;
+package org.jminor.common.model.table;
 
+import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
-import org.jminor.framework.domain.Property;
-import org.jminor.framework.i18n.FrameworkMessages;
 
 import java.text.Format;
 import java.util.Arrays;
@@ -18,37 +17,26 @@ import java.util.Collections;
 import java.util.List;
 
 /**
- * A default PropertySummaryModel implementation.
+ * A default ColumnSummaryModel implementation.
  */
-public class DefaultPropertySummaryModel implements PropertySummaryModel {
+public class DefaultColumnSummaryModel implements ColumnSummaryModel {
 
   private final Event<Summary> summaryChangedEvent = Events.event();
   private final Event summaryValueChangedEvent = Events.event();
 
-  private final Property property;
-  private final PropertyValueProvider valueProvider;
+  private final ColumnValueProvider valueProvider;
 
   private Summary summary = SummaryType.NONE;
   private boolean locked = false;
 
   /**
-   * Instantiates a new DefaultPropertySummaryModel
-   * @param property the property to summarize
+   * Instantiates a new DefaultColumnSummaryModel
    * @param valueProvider the property value provider
    */
-  public DefaultPropertySummaryModel(final Property property, final PropertyValueProvider valueProvider) {
-    this.property = property;
+  public DefaultColumnSummaryModel(final ColumnValueProvider valueProvider) {
     this.valueProvider = valueProvider;
     this.valueProvider.bindValuesChangedEvent(summaryValueChangedEvent);
     this.summaryChangedEvent.addListener(summaryValueChangedEvent);
-  }
-
-  /**
-   * @return the Property this summary model is based on
-   */
-  @Override
-  public final Property getProperty() {
-    return property;
   }
 
   /** {@inheritDoc} */
@@ -65,7 +53,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
 
   /** {@inheritDoc} */
   @Override
-  public PropertyValueProvider getValueProvider() {
+  public ColumnValueProvider getValueProvider() {
     return valueProvider;
   }
 
@@ -91,7 +79,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
   /** {@inheritDoc} */
   @Override
   public final List<? extends Summary> getAvailableSummaries() {
-    if (property.isNumerical()) {
+    if (valueProvider.isNumerical()) {
       return Arrays.asList(SummaryType.NONE, SummaryType.SUM, SummaryType.AVERAGE, SummaryType.MINIMUM, SummaryType.MAXIMUM, SummaryType.MINIMUM_MAXIMUM);
     }
 
@@ -101,7 +89,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
   /** {@inheritDoc} */
   @Override
   public final String getSummaryText() {
-    return summary.getSummary(valueProvider, property);
+    return summary.getSummary(valueProvider);
   }
 
   /** {@inheritDoc} */
@@ -135,33 +123,33 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     NONE {
       @Override
       public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.NONE);
+        return Messages.get(Messages.NONE);
       }
 
       @Override
-      public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
+      public String getSummary(final ColumnValueProvider valueProvider) {
         return "";
       }
     }, SUM {
       @Override
       public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.SUM);
+        return Messages.get(Messages.SUM);
       }
 
       @Override
-      public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
-        final Format format = property.getFormat();
+      public String getSummary(final ColumnValueProvider valueProvider) {
+        final Format format = valueProvider.getFormat();
         String txt = "";
         final Collection values = valueProvider.getValues();
         if (!values.isEmpty()) {
-          if (property.isInteger()) {
+          if (valueProvider.isInteger()) {
             long sum = 0;
             for (final Object obj : values) {
               sum += (Integer) obj;
             }
             txt = format.format(sum);
           }
-          else if (property.isDouble()) {
+          else if (valueProvider.isDouble()) {
             double sum = 0;
             for (final Object obj : values) {
               sum += (Double) obj;
@@ -175,16 +163,16 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     }, AVERAGE {
       @Override
       public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.AVERAGE);
+        return Messages.get(Messages.AVERAGE);
       }
 
       @Override
-      public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
-        final Format format = property.getFormat();
+      public String getSummary(final ColumnValueProvider valueProvider) {
+        final Format format = valueProvider.getFormat();
         String txt = "";
         final Collection values = valueProvider.getValues();
         if (!values.isEmpty()) {
-          if (property.isInteger()) {
+          if (valueProvider.isInteger()) {
             double sum = 0;
             int count = 0;
             for (final Object obj : values) {
@@ -193,7 +181,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
             }
             txt = format.format(sum / count);
           }
-          else if (property.isDouble()) {
+          else if (valueProvider.isDouble()) {
             double sum = 0;
             int count = 0;
             for (final Object obj : values) {
@@ -209,23 +197,23 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     }, MINIMUM {
       @Override
       public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.MINIMUM);
+        return Messages.get(Messages.MINIMUM);
       }
 
       @Override
-      public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
-        final Format format = property.getFormat();
+      public String getSummary(final ColumnValueProvider valueProvider) {
+        final Format format = valueProvider.getFormat();
         String txt = "";
         final Collection values = valueProvider.getValues();
         if (!values.isEmpty()) {
-          if (property.isInteger()) {
+          if (valueProvider.isInteger()) {
             int min = Integer.MAX_VALUE;
             for (final Object obj : values) {
               min = Math.min(min, (Integer) obj);
             }
             txt = format.format(min);
           }
-          else if (property.isDouble()) {
+          else if (valueProvider.isDouble()) {
             double min = Double.MAX_VALUE;
             for (final Object obj : values) {
               min = Math.min(min, (Double) obj);
@@ -238,23 +226,23 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     }, MAXIMUM {
       @Override
       public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.MAXIMUM);
+        return Messages.get(Messages.MAXIMUM);
       }
 
       @Override
-      public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
-        final Format format = property.getFormat();
+      public String getSummary(final ColumnValueProvider valueProvider) {
+        final Format format = valueProvider.getFormat();
         String txt = "";
         final Collection values = valueProvider.getValues();
         if (!values.isEmpty()) {
-          if (property.isInteger()) {
+          if (valueProvider.isInteger()) {
             int max = 0;
             for (final Object obj : values) {
               max = Math.max(max, (Integer) obj);
             }
             txt = format.format(max);
           }
-          else if (property.isDouble()) {
+          else if (valueProvider.isDouble()) {
             double max = 0;
             for (final Object obj : values) {
               max = Math.max(max, (Double) obj);
@@ -268,16 +256,16 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
     }, MINIMUM_MAXIMUM {
       @Override
       public String toString() {
-        return FrameworkMessages.get(FrameworkMessages.MINIMUM_AND_MAXIMUM);
+        return Messages.get(Messages.MINIMUM_AND_MAXIMUM);
       }
 
       @Override
-      public String getSummary(final PropertyValueProvider valueProvider, final Property property) {
-        final Format format = property.getFormat();
+      public String getSummary(final ColumnValueProvider valueProvider) {
+        final Format format = valueProvider.getFormat();
         String txt = "";
         final Collection values = valueProvider.getValues();
         if (!values.isEmpty()) {
-          if (property.isInteger()) {
+          if (valueProvider.isInteger()) {
             int min = Integer.MAX_VALUE;
             int max = Integer.MIN_VALUE;
             for (final Object obj : values) {
@@ -286,7 +274,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
             }
             txt = format.format(min) + "/" + format.format(max);
           }
-          else if (property.isDouble()) {
+          else if (valueProvider.isDouble()) {
             double min = Double.MAX_VALUE;
             double max = Double.MIN_VALUE;
             for (final Object obj : values) {
@@ -301,7 +289,7 @@ public class DefaultPropertySummaryModel implements PropertySummaryModel {
       }
     };
 
-    protected String addSubsetIndicator(final String txt, final PropertyValueProvider valueProvider) {
+    protected String addSubsetIndicator(final String txt, final ColumnValueProvider valueProvider) {
       if (valueProvider.isUseValueSubset()) {
         return txt.length() != 0 ? txt + (valueProvider.isValueSubset() ? "*" : "") : txt;
       }

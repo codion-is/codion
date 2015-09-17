@@ -4058,3 +4058,5 @@
   EntityConnectionProviders.connectionProvider(EntityConnection) added
   EntityTablePanel.createStaticEntityTablePanel(), resulting panel is now read-only and without popup menu and south panel
   CriteriaUtil.DefaultStringCriteria.writeObject() and readObject() implemented, tested
+  UiUtil, component returned from configuration methods
+  PropertySummaryModel moved to common.table package and renamed ColumnSummaryModel, implementation as well

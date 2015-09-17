@@ -86,6 +86,13 @@ public final class Messages {
   public static final String WITHIN_RANGE = "within_range";
   public static final String OUTSIDE_RANGE = "outside_range";
 
+  public static final String NONE = "none";
+  public static final String SUM = "sum";
+  public static final String AVERAGE = "average";
+  public static final String MINIMUM = "minimum";
+  public static final String MAXIMUM = "maximum";
+  public static final String MINIMUM_AND_MAXIMUM = "minimum_and_maximum";
+
   /**
    * Retrieves the locale string associated with the given key
    * @param key the key

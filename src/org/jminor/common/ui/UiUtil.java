@@ -901,27 +901,34 @@ public final class UiUtil {
    * on enter, and backwards if shift is down
    * @param component the component
    * @see #removeTransferFocusOnEnter(javax.swing.JComponent)
+   * @return the component
    */
-  public static void transferFocusOnEnter(final JComponent component) {
+  public static JComponent transferFocusOnEnter(final JComponent component) {
     addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, new TransferFocusAction(component));
     addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, new TransferFocusAction(component, true));
+
+    return component;
   }
 
   /**
    * Removes the transfer focus action added via {@link #transferFocusOnEnter(javax.swing.JComponent)}
    * @param component the component
+   * @return the component
    */
-  public static void removeTransferFocusOnEnter(final JComponent component) {
+  public static JComponent removeTransferFocusOnEnter(final JComponent component) {
     addKeyEvent(component, KeyEvent.VK_ENTER, 0, JComponent.WHEN_FOCUSED, false, null);
     addKeyEvent(component, KeyEvent.VK_ENTER, KeyEvent.SHIFT_DOWN_MASK, JComponent.WHEN_FOCUSED, false, null);
+
+    return component;
   }
 
   /**
    * Selects all text in the given component when it gains focus and clears
    * the selection when focus is lost
    * @param textComponent the text component
+   * @return the component
    */
-  public static void selectAllOnFocusGained(final JTextComponent textComponent) {
+  public static JTextComponent selectAllOnFocusGained(final JTextComponent textComponent) {
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
@@ -933,32 +940,40 @@ public final class UiUtil {
         textComponent.select(0, 0);
       }
     });
+
+    return textComponent;
   }
 
   /**
    * Sets the caret position to 0 in the given text component when it gains focus
    * @param textComponent the text component
+   * @return the component
    */
-  public static void moveCaretToStartOnFocusGained(final JTextComponent textComponent) {
+  public static JTextComponent moveCaretToStartOnFocusGained(final JTextComponent textComponent) {
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
         textComponent.setCaretPosition(0);
       }
     });
+
+    return textComponent;
   }
 
   /**
    * Sets the caret position to the right of the last character in the given text component when it gains focus
    * @param textComponent the text component
+   * @return the component
    */
-  public static void moveCaretToEndOnFocusGained(final JTextComponent textComponent) {
+  public static JTextComponent moveCaretToEndOnFocusGained(final JTextComponent textComponent) {
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
         textComponent.setCaretPosition(textComponent.getText().length());
       }
     });
+
+    return textComponent;
   }
 
   /**

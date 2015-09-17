@@ -4,6 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -129,18 +130,18 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   EntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed);
 
   /**
-   * Returns the {@link PropertySummaryModel} associated with the property identified by <code>propertyID</code>
+   * Returns the {@link ColumnSummaryModel} associated with the property identified by <code>propertyID</code>
    * @param propertyID the ID of the property
-   * @return the {@link PropertySummaryModel} for the given property ID
+   * @return the {@link ColumnSummaryModel} for the given property ID
    */
-  PropertySummaryModel getPropertySummaryModel(final String propertyID);
+  ColumnSummaryModel getPropertySummaryModel(final String propertyID);
 
   /**
-   * Returns the {@link PropertySummaryModel} associated with the given property
+   * Returns the {@link ColumnSummaryModel} associated with the given property
    * @param property the property
-   * @return the {@link PropertySummaryModel} for the given property
+   * @return the {@link ColumnSummaryModel} for the given property
    */
-  PropertySummaryModel getPropertySummaryModel(final Property property);
+  ColumnSummaryModel getPropertySummaryModel(final Property property);
 
   /**
    * @param row the row for which to retrieve the background color

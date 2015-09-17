@@ -1008,7 +1008,7 @@ final class LocalEntityConnection implements EntityConnection {
       addForUpdate(database, queryBuilder);
     }
     else {
-      addGroupAndLimit(criteria, queryBuilder);
+      addGroupHavingOrderByAndLimitClauses(criteria, queryBuilder);
     }
 
     return queryBuilder.toString();
@@ -1021,7 +1021,7 @@ final class LocalEntityConnection implements EntityConnection {
     }
   }
 
-  private static void addGroupAndLimit(final EntitySelectCriteria criteria, final StringBuilder queryBuilder) {
+  private static void addGroupHavingOrderByAndLimitClauses(final EntitySelectCriteria criteria, final StringBuilder queryBuilder) {
     final String entityID = criteria.getEntityID();
     final String groupByClause = Entities.getGroupByClause(entityID);
     if (groupByClause != null) {

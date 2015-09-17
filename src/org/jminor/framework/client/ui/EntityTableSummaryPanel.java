@@ -3,9 +3,10 @@
  */
 package org.jminor.framework.client.ui;
 
+import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.ui.table.AbstractTableColumnSyncPanel;
+import org.jminor.common.ui.table.ColumnSummaryPanel;
 import org.jminor.framework.client.model.EntityTableModel;
-import org.jminor.framework.client.model.PropertySummaryModel;
 import org.jminor.framework.domain.Property;
 
 import javax.swing.JPanel;
@@ -32,17 +33,17 @@ public final class EntityTableSummaryPanel extends AbstractTableColumnSyncPanel 
   @Override
   protected JPanel initializeColumnPanel(final TableColumn column) {
     final Property property = (Property) column.getIdentifier();
-    final PropertySummaryModel summaryModel = tableModel.getPropertySummaryModel(property);
+    final ColumnSummaryModel summaryModel = tableModel.getPropertySummaryModel(property);
 
     return initializePropertySummaryPanel(summaryModel);
   }
 
   /**
    * Initializes a PropertySummaryPanel for the given model
-   * @param propertySummaryModel the PropertySummaryModel for which to create a summary panel
-   * @return a PropertySummaryPanel based on the given model
+   * @param propertySummaryModel the ColumnSummaryModel for which to create a summary panel
+   * @return a ColumnSummaryPanel based on the given model
    */
-  private PropertySummaryPanel initializePropertySummaryPanel(final PropertySummaryModel propertySummaryModel) {
-    return new PropertySummaryPanel(propertySummaryModel);
+  private ColumnSummaryPanel initializePropertySummaryPanel(final ColumnSummaryModel propertySummaryModel) {
+    return new ColumnSummaryPanel(propertySummaryModel);
   }
 }

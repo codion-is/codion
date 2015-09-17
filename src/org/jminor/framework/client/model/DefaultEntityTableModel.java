@@ -11,6 +11,8 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.AbstractFilteredTableModel;
 import org.jminor.common.model.table.AbstractTableSortModel;
+import org.jminor.common.model.table.ColumnSummaryModel;
+import org.jminor.common.model.table.DefaultColumnSummaryModel;
 import org.jminor.common.model.table.FilteredTableColumnModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.table.TableSortModel;
@@ -31,6 +33,7 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import java.awt.Color;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -92,7 +95,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /**
    * Maps PropertySummaryModels to their respective properties
    */
-  private final Map<String, PropertySummaryModel> propertySummaryModels = new HashMap<>();
+  private final Map<String, ColumnSummaryModel> propertySummaryModels = new HashMap<>();
 
   /**
    * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
@@ -496,16 +499,16 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final PropertySummaryModel getPropertySummaryModel(final String propertyID) {
+  public final ColumnSummaryModel getPropertySummaryModel(final String propertyID) {
     return getPropertySummaryModel(Entities.getProperty(entityID, propertyID));
   }
 
   /** {@inheritDoc} */
   @Override
-  public final PropertySummaryModel getPropertySummaryModel(final Property property) {
+  public final ColumnSummaryModel getPropertySummaryModel(final Property property) {
     if (!propertySummaryModels.containsKey(property.getPropertyID())) {
       propertySummaryModels.put(property.getPropertyID(),
-              new DefaultPropertySummaryModel(property, new SummaryValueProvider(editModel, this, property)));
+              new DefaultColumnSummaryModel(new SummaryValueProvider(editModel, this, property)));
     }
 
     return propertySummaryModels.get(property.getPropertyID());
@@ -900,7 +903,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
   }
 
-  private static final class SummaryValueProvider implements PropertySummaryModel.PropertyValueProvider {
+  private static final class SummaryValueProvider implements ColumnSummaryModel.ColumnValueProvider {
 
     private final EntityEditModel editModel;
     private final EntityTableModel tableModel;
@@ -922,6 +925,26 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       tableModel.addFilteringListener(event);//todo summary is updated twice per refresh
       tableModel.addRefreshDoneListener(event);
       tableModel.getSelectionModel().addSelectionChangedListener(event);
+    }
+
+    @Override
+    public Format getFormat() {
+      return property.getFormat();
+    }
+
+    @Override
+    public boolean isNumerical() {
+      return property.isNumerical();
+    }
+
+    @Override
+    public boolean isInteger() {
+      return property.isInteger();
+    }
+
+    @Override
+    public boolean isDouble() {
+      return property.isDouble();
     }
 
     @Override

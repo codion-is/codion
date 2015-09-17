@@ -1,20 +1,21 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.framework.client.model;
+package org.jminor.common.model.table;
 
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
-import org.jminor.framework.domain.Property;
 
+import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 
 /**
  * A interface defining a class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum &#38; maximum.<br>
+ * @param <K> the type of objects used to identify columns
  */
-public interface PropertySummaryModel {
+public interface ColumnSummaryModel {
 
   /**
    * Specifies a summary provider
@@ -22,23 +23,17 @@ public interface PropertySummaryModel {
   interface Summary {
 
     /**
-     * Returns a String containing the summary information for the given property
+     * Returns a String containing the summary information for the given column
      * @param valueProvider the object responsible for providing the values for the summary
-     * @param property the property on which values to base the summary
      * @return a summary text
      */
-    String getSummary(final PropertyValueProvider valueProvider, final Property property);
+    String getSummary(final ColumnValueProvider valueProvider);
   }
-
-  /**
-   * @return the Property this summary model is based on
-   */
-  Property getProperty();
 
   /**
    * @return the value provider
    */
-  PropertyValueProvider getValueProvider();
+  ColumnValueProvider getValueProvider();
 
   /**
    * @param summary the type of summary to show
@@ -93,12 +88,32 @@ public interface PropertySummaryModel {
   /**
    * Provides the values used when creating the summary value.
    */
-  interface PropertyValueProvider {
+  interface ColumnValueProvider {
+
+    /**
+     * @return
+     */
+    Format getFormat();
+
+    /**
+     * @return true if the column is numerical
+     */
+    boolean isNumerical();
 
     /**
      * @return the values to base the summary on
      */
     Collection getValues();
+
+    /**
+     * @return true if the values are of type Integer
+     */
+    boolean isInteger();
+
+    /**
+     * @return true if the values are of type Double
+     */
+    boolean isDouble();
 
     /**
      * @return true if the values provided by <code>getValues()</code> is a subset of the total available values
