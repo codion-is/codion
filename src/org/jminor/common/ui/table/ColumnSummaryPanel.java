@@ -36,7 +36,7 @@ public final class ColumnSummaryPanel extends JPanel {
       public void eventOccurred() {
         final String summaryText = model.getSummaryText();
         txtSummary.setText(summaryText);
-        txtSummary.setToolTipText(summaryText.length() != 0 ? (model.getCurrentSummary() + ": " + summaryText) : summaryText);
+        txtSummary.setToolTipText(summaryText.length() != 0 ? (model.getSummary() + ": " + summaryText) : summaryText);
       }
     });
     initialize();
@@ -73,7 +73,7 @@ public final class ColumnSummaryPanel extends JPanel {
       final JRadioButtonMenuItem item = new JRadioButtonMenuItem(new AbstractAction(summary.toString()) {
         @Override
         public void actionPerformed(final ActionEvent e) {
-          model.setCurrentSummary(summary);
+          model.setSummary(summary);
         }
       });
       model.addSummaryListener(new EventInfoListener<ColumnSummaryModel.Summary>() {
@@ -82,7 +82,7 @@ public final class ColumnSummaryPanel extends JPanel {
           item.setSelected(newSummary.equals(summary));
         }
       });
-      item.setSelected(model.getCurrentSummary().equals(summary));
+      item.setSelected(model.getSummary().equals(summary));
       group.add(item);
       popupMenu.add(item);
     }

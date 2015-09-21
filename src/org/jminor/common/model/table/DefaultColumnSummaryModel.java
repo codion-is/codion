@@ -3,16 +3,13 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 
-import java.text.Format;
 import java.util.Arrays;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
 
@@ -26,7 +23,7 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
 
   private final ColumnValueProvider valueProvider;
 
-  private Summary summary = SummaryType.NONE;
+  private Summary summary = ColumnSummary.NONE;
   private boolean locked = false;
 
   /**
@@ -35,7 +32,7 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
    */
   public DefaultColumnSummaryModel(final ColumnValueProvider valueProvider) {
     this.valueProvider = valueProvider;
-    this.valueProvider.bindValuesChangedEvent(summaryValueChangedEvent);
+    this.valueProvider.addValuesChangedListener(summaryValueChangedEvent);
     this.summaryChangedEvent.addListener(summaryValueChangedEvent);
   }
 
@@ -59,7 +56,7 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void setCurrentSummary(final Summary summary) {
+  public final void setSummary(final Summary summary) {
     if (isLocked()) {
       throw new IllegalStateException("Summary model is locked");
     }
@@ -72,7 +69,7 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
 
   /** {@inheritDoc} */
   @Override
-  public final Summary getCurrentSummary() {
+  public final Summary getSummary() {
     return summary;
   }
 
@@ -80,7 +77,8 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
   @Override
   public final List<? extends Summary> getAvailableSummaries() {
     if (valueProvider.isNumerical()) {
-      return Arrays.asList(SummaryType.NONE, SummaryType.SUM, SummaryType.AVERAGE, SummaryType.MINIMUM, SummaryType.MAXIMUM, SummaryType.MINIMUM_MAXIMUM);
+      return Arrays.asList(ColumnSummary.NONE, ColumnSummary.SUM, ColumnSummary.AVERAGE, ColumnSummary.MINIMUM,
+              ColumnSummary.MAXIMUM, ColumnSummary.MINIMUM_MAXIMUM);
     }
 
     return Collections.emptyList();
@@ -114,187 +112,5 @@ public class DefaultColumnSummaryModel implements ColumnSummaryModel {
   @Override
   public final void removeSummaryListener(final EventInfoListener listener) {
     summaryChangedEvent.removeInfoListener(listener);
-  }
-
-  /**
-   * The summary types available in this default summary model
-   */
-  public enum SummaryType implements Summary {
-    NONE {
-      @Override
-      public String toString() {
-        return Messages.get(Messages.NONE);
-      }
-
-      @Override
-      public String getSummary(final ColumnValueProvider valueProvider) {
-        return "";
-      }
-    }, SUM {
-      @Override
-      public String toString() {
-        return Messages.get(Messages.SUM);
-      }
-
-      @Override
-      public String getSummary(final ColumnValueProvider valueProvider) {
-        final Format format = valueProvider.getFormat();
-        String txt = "";
-        final Collection values = valueProvider.getValues();
-        if (!values.isEmpty()) {
-          if (valueProvider.isInteger()) {
-            long sum = 0;
-            for (final Object obj : values) {
-              sum += (Integer) obj;
-            }
-            txt = format.format(sum);
-          }
-          else if (valueProvider.isDouble()) {
-            double sum = 0;
-            for (final Object obj : values) {
-              sum += (Double) obj;
-            }
-            txt = format.format(sum);
-          }
-        }
-
-        return addSubsetIndicator(txt, valueProvider);
-      }
-    }, AVERAGE {
-      @Override
-      public String toString() {
-        return Messages.get(Messages.AVERAGE);
-      }
-
-      @Override
-      public String getSummary(final ColumnValueProvider valueProvider) {
-        final Format format = valueProvider.getFormat();
-        String txt = "";
-        final Collection values = valueProvider.getValues();
-        if (!values.isEmpty()) {
-          if (valueProvider.isInteger()) {
-            double sum = 0;
-            int count = 0;
-            for (final Object obj : values) {
-              sum += (Integer)obj;
-              count++;
-            }
-            txt = format.format(sum / count);
-          }
-          else if (valueProvider.isDouble()) {
-            double sum = 0;
-            int count = 0;
-            for (final Object obj : values) {
-              sum += (Double)obj;
-              count++;
-            }
-            txt = format.format(sum / count);
-          }
-        }
-
-        return addSubsetIndicator(txt, valueProvider);
-      }
-    }, MINIMUM {
-      @Override
-      public String toString() {
-        return Messages.get(Messages.MINIMUM);
-      }
-
-      @Override
-      public String getSummary(final ColumnValueProvider valueProvider) {
-        final Format format = valueProvider.getFormat();
-        String txt = "";
-        final Collection values = valueProvider.getValues();
-        if (!values.isEmpty()) {
-          if (valueProvider.isInteger()) {
-            int min = Integer.MAX_VALUE;
-            for (final Object obj : values) {
-              min = Math.min(min, (Integer) obj);
-            }
-            txt = format.format(min);
-          }
-          else if (valueProvider.isDouble()) {
-            double min = Double.MAX_VALUE;
-            for (final Object obj : values) {
-              min = Math.min(min, (Double) obj);
-            }
-            txt = format.format(min);
-          }
-        }
-        return addSubsetIndicator(txt, valueProvider);
-      }
-    }, MAXIMUM {
-      @Override
-      public String toString() {
-        return Messages.get(Messages.MAXIMUM);
-      }
-
-      @Override
-      public String getSummary(final ColumnValueProvider valueProvider) {
-        final Format format = valueProvider.getFormat();
-        String txt = "";
-        final Collection values = valueProvider.getValues();
-        if (!values.isEmpty()) {
-          if (valueProvider.isInteger()) {
-            int max = 0;
-            for (final Object obj : values) {
-              max = Math.max(max, (Integer) obj);
-            }
-            txt = format.format(max);
-          }
-          else if (valueProvider.isDouble()) {
-            double max = 0;
-            for (final Object obj : values) {
-              max = Math.max(max, (Double) obj);
-            }
-            txt = format.format(max);
-          }
-        }
-
-        return addSubsetIndicator(txt, valueProvider);
-      }
-    }, MINIMUM_MAXIMUM {
-      @Override
-      public String toString() {
-        return Messages.get(Messages.MINIMUM_AND_MAXIMUM);
-      }
-
-      @Override
-      public String getSummary(final ColumnValueProvider valueProvider) {
-        final Format format = valueProvider.getFormat();
-        String txt = "";
-        final Collection values = valueProvider.getValues();
-        if (!values.isEmpty()) {
-          if (valueProvider.isInteger()) {
-            int min = Integer.MAX_VALUE;
-            int max = Integer.MIN_VALUE;
-            for (final Object obj : values) {
-              max = Math.max(max, (Integer) obj);
-              min = Math.min(min, (Integer) obj);
-            }
-            txt = format.format(min) + "/" + format.format(max);
-          }
-          else if (valueProvider.isDouble()) {
-            double min = Double.MAX_VALUE;
-            double max = Double.MIN_VALUE;
-            for (final Object obj : values) {
-              max = Math.max(max, (Double) obj);
-              min = Math.min(min, (Double) obj);
-            }
-            txt = format.format(min) + "/" + format.format(max);
-          }
-        }
-
-        return addSubsetIndicator(txt, valueProvider);
-      }
-    };
-
-    protected String addSubsetIndicator(final String txt, final ColumnValueProvider valueProvider) {
-      if (valueProvider.isUseValueSubset()) {
-        return txt.length() != 0 ? txt + (valueProvider.isValueSubset() ? "*" : "") : txt;
-      }
-
-      return txt;
-    }
   }
 }

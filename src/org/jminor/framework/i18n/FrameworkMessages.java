@@ -103,7 +103,6 @@ public final class FrameworkMessages {
   public static final String FILTER_SETTINGS = "filter_settings";
   public static final String REQUIRE_QUERY_CRITERIA = "require_query_criteria";
   public static final String SELECT_ENTITY = "select_entity";
-  public static final String TOGGLE_SUMMARY_TIP = "toggle_summary_tip";
   public static final String ADVANCED = "advanced";
   public static final String APPLICATION_TREE = "view_application_tree";
   public static final String COPY_CELL = "copy_cell";

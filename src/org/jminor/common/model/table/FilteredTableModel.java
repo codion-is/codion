@@ -95,6 +95,19 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableSelecti
   FilteredTableColumnModel<C> getColumnModel();
 
   /**
+   * @param columnIdentifier the column identifier
+   * @return the ColumnSummaryModel for the column identified by the given
+   */
+  ColumnSummaryModel getColumnSummaryModel(final C columnIdentifier);
+
+  /**
+   * @param columnIdentifier the identifier of the column for which to retrieve the values
+   * @param selectedOnly if true only values from the selected rows are returned
+   * @return the non-null values of the column identified by <code>columnIdentifier</code> from the rows in the table model
+   */
+  Collection getValues(final C columnIdentifier, final boolean selectedOnly);
+
+  /**
    * Returns a Point denoting the row (point.y) and column index (point.x) of the first value to fulfill
    * the given search criteria.
    * @param fromIndex the row index to start searching at, if this is larger than the size of

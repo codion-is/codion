@@ -3,11 +3,9 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 
-import java.text.Format;
 import java.util.Collection;
 import java.util.List;
 
@@ -38,12 +36,12 @@ public interface ColumnSummaryModel {
   /**
    * @param summary the type of summary to show
    */
-  void setCurrentSummary(final Summary summary);
+  void setSummary(final Summary summary);
 
   /**
    * @return the current summary type
    */
-  Summary getCurrentSummary();
+  Summary getSummary();
 
   /**
    * @return true if changing the summary type is disabled
@@ -91,9 +89,10 @@ public interface ColumnSummaryModel {
   interface ColumnValueProvider {
 
     /**
-     * @return
+     * @param value the value
+     * @return the formatted value
      */
-    Format getFormat();
+    String format(final Object value);
 
     /**
      * @return true if the column is numerical
@@ -131,8 +130,8 @@ public interface ColumnSummaryModel {
     void setUseValueSubset(final boolean value);
 
     /**
-     * @param event the event to use when notifying changes to the underlying data which require a summary refresh
+     * @param listener the listener to notify of changes to the underlying data which require a summary refresh
      */
-    void bindValuesChangedEvent(final Event event);
+    void addValuesChangedListener(final EventListener listener);
   }
 }

@@ -14,12 +14,15 @@ import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
 import javax.swing.table.TableColumn;
 import java.awt.Point;
+import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.Enumeration;
+import java.util.HashMap;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.regex.Pattern;
 
 /**
@@ -69,6 +72,11 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * The sort model
    */
   private final TableSortModel<R, C> sortModel;
+
+  /**
+   * Maps PropertySummaryModels to their respective properties
+   */
+  private final Map<C, ColumnSummaryModel> columnSummaryModels = new HashMap<>();
 
   /**
    * the filter criteria used by this model
@@ -224,6 +232,40 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
     return sortModel;
   }
 
+  @Override
+  public final ColumnSummaryModel getColumnSummaryModel(final C columnIdentifier) {
+    if (!columnSummaryModels.containsKey(columnIdentifier)) {
+      columnSummaryModels.put(columnIdentifier, new DefaultColumnSummaryModel(createColumnValueProvider(columnIdentifier)));
+    }
+
+    return columnSummaryModels.get(columnIdentifier);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final Collection getValues(final C columnIdentifier, final boolean selectedOnly) {
+    final int columnModelIndex = columnModel.getTableColumn(columnIdentifier).getModelIndex();
+    final TableSelectionModel selectionModel = getSelectionModel();
+    final Collection values = new ArrayList();
+    for (int row = 0; row < getVisibleItemCount(); row++) {
+      if (!selectedOnly || selectionModel.isSelectedIndex(row)) {
+        final Object value = getValueAt(row, columnModelIndex);
+        if (value != null) {
+          values.add(value);
+        }
+      }
+    }
+
+    return values;
+  }
+
+  /**
+   * Creates a ColumnValueProvider for the given column
+   */
+  protected ColumnSummaryModel.ColumnValueProvider createColumnValueProvider(final C columnIdentifier) {
+    return new DefaultColumnValueProvider(columnIdentifier, this, null);
+  }
+
   /** {@inheritDoc} */
   @Override
   public final boolean isRegularExpressionSearch() {
@@ -358,7 +400,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /** {@inheritDoc} */
   @Override
   public final Class<?> getColumnClass(final int columnIndex) {
-    return sortModel.getColumnClass(getColumnModel().getColumnIdentifier(columnIndex));
+    return sortModel.getColumnClass((C) getColumnModel().getColumnIdentifier(columnIndex));
   }
 
   /** {@inheritDoc} */
@@ -594,6 +636,76 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
       }
 
       return true;
+    }
+  }
+
+  /**
+   * A default ColumnValueProvider implementation
+   */
+  protected static final class DefaultColumnValueProvider implements ColumnSummaryModel.ColumnValueProvider {
+
+    private final Object columnIdentifier;
+    private final FilteredTableModel tableModel;
+    private final Format format;
+
+    private boolean useValueSubset = true;
+
+    /**
+     * @param columnIdentifier the identifier of the column which values are provided
+     * @param tableModel the table model
+     * @param format the format to use for presenting the summary value
+     */
+    public DefaultColumnValueProvider(final Object columnIdentifier, final FilteredTableModel tableModel,
+                                      final Format format) {
+      this.columnIdentifier = columnIdentifier;
+      this.tableModel = tableModel;
+      this.format = format;
+    }
+
+    @Override
+    public String format(final Object value) {
+      return format == null ? value.toString() : format.format(value);
+    }
+
+    @Override
+    public void addValuesChangedListener(final EventListener listener) {
+      tableModel.addTableDataChangedListener(listener);
+      tableModel.getSelectionModel().addSelectionChangedListener(listener);
+    }
+
+    @Override
+    public boolean isNumerical() {
+      return isInteger() || isDouble();
+    }
+
+    @Override
+    public Collection getValues() {
+      return tableModel.getValues(columnIdentifier, useValueSubset && isValueSubset());
+    }
+
+    @Override
+    public boolean isInteger() {
+      return tableModel.getSortModel().getColumnClass(columnIdentifier).equals(Integer.class);
+    }
+
+    @Override
+    public boolean isDouble() {
+      return tableModel.getSortModel().getColumnClass(columnIdentifier).equals(Double.class);
+    }
+
+    @Override
+    public boolean isValueSubset() {
+      return !tableModel.getSelectionModel().isSelectionEmpty();
+    }
+
+    @Override
+    public boolean isUseValueSubset() {
+      return useValueSubset;
+    }
+
+    @Override
+    public void setUseValueSubset(final boolean useValueSubset) {
+      this.useValueSubset = useValueSubset;
     }
   }
 }

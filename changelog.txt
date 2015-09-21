@@ -4060,3 +4060,5 @@
   CriteriaUtil.DefaultStringCriteria.writeObject() and readObject() implemented, tested
   UiUtil, component returned from configuration methods
   PropertySummaryModel moved to common.table package and renamed ColumnSummaryModel, implementation as well
+  EntityTableModel.SummaryValueProvider moved to AbstractFilteredTableModel.DefaultColumnValueProvider
+  EntityTablePanel.summaryPanel moved to FilteredTablePanel

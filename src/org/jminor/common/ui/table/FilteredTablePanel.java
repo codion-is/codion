@@ -5,7 +5,9 @@ package org.jminor.common.ui.table;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.DocumentAdapter;
+import org.jminor.common.model.Event;
 import org.jminor.common.model.EventListener;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnSearchModel;
 import org.jminor.common.model.table.FilteredTableModel;
@@ -13,6 +15,7 @@ import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.Control;
 import org.jminor.common.ui.control.Controls;
+import org.jminor.common.ui.images.Images;
 import org.jminor.common.ui.textfield.TextFieldHint;
 
 import javax.swing.AbstractAction;
@@ -24,11 +27,14 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
+import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
 import javax.swing.UIManager;
+import javax.swing.event.ChangeEvent;
+import javax.swing.event.ChangeListener;
 import javax.swing.event.DocumentEvent;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
@@ -72,6 +78,11 @@ public class FilteredTablePanel<T, C> extends JPanel {
   private static final int SEARCH_FIELD_COLUMNS = 8;
 
   /**
+   * Notified when the table summary panel is made visible or hidden
+   */
+  private final Event<Boolean> summaryPanelVisibleChangedEvent = Events.event();
+
+  /**
    * The table model
    */
   private final FilteredTableModel<T, C> tableModel;
@@ -87,6 +98,21 @@ public class FilteredTablePanel<T, C> extends JPanel {
   private final Map<TableColumn, ColumnSearchPanel<C>> columnFilterPanels = new HashMap<>();
 
   /**
+   * the column summary panel
+   */
+  private final FilteredTableSummaryPanel summaryPanel;
+
+  /**
+   * the panel used as a base panel for the summary panels, used for showing/hiding the summary panels
+   */
+  private final JPanel summaryBasePanel;
+
+  /**
+   * the scroll pane used for the summary panel
+   */
+  private final JScrollPane summaryScrollPane;
+
+  /**
    * the JTable for showing the underlying entities
    */
   private final JTable table;
@@ -95,6 +121,11 @@ public class FilteredTablePanel<T, C> extends JPanel {
    * the scroll pane used by the JTable instance
    */
   private final JScrollPane tableScrollPane;
+
+  /**
+   * the horizontal table scroll bar
+   */
+  private final JScrollBar horizontalTableScrollBar;
 
   /**
    * The base panel containing the table scrollpane
@@ -147,9 +178,22 @@ public class FilteredTablePanel<T, C> extends JPanel {
     this.searchPanelProvider = searchPanelProvider;
     this.table = initializeJTable();
     this.tableScrollPane = new JScrollPane(table);
+    this.horizontalTableScrollBar = tableScrollPane.getHorizontalScrollBar();
     this.searchField = initializeSearchField();
     this.basePanel = new JPanel(new BorderLayout());
     this.basePanel.add(tableScrollPane, BorderLayout.CENTER);
+    this.summaryPanel = new FilteredTableSummaryPanel(tableModel);
+    this.summaryBasePanel = new JPanel(new BorderLayout());
+    this.summaryScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
+      @Override
+      public void stateChanged(final ChangeEvent e) {
+        horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
+        revalidate();
+      }
+    });
+    this.summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
+    basePanel.add(summaryBasePanel, BorderLayout.SOUTH);
     setLayout(new BorderLayout());
     add(basePanel, BorderLayout.CENTER);
     initializeTableHeader();
@@ -206,6 +250,37 @@ public class FilteredTablePanel<T, C> extends JPanel {
    */
   public JPanel getBasePanel() {
     return basePanel;
+  }
+
+  /**
+   * Hides or shows the column summary panel for this EntityTablePanel
+   * @param visible if true then the summary panel is shown, if false it is hidden
+   */
+  public final void setSummaryPanelVisible(final boolean visible) {
+    if (visible && isSummaryPanelVisible()) {
+      return;
+    }
+
+    if (summaryScrollPane != null) {
+      summaryScrollPane.getViewport().setView(visible ? summaryPanel : null);
+      if (visible) {
+        summaryBasePanel.add(summaryScrollPane, BorderLayout.NORTH);
+        summaryBasePanel.add(horizontalTableScrollBar, BorderLayout.SOUTH);
+      }
+      else {
+        summaryBasePanel.remove(horizontalTableScrollBar);
+        getTableScrollPane().setHorizontalScrollBar(horizontalTableScrollBar);
+      }
+      revalidate();
+      summaryPanelVisibleChangedEvent.fire(visible);
+    }
+  }
+
+  /**
+   * @return true if the column summary panel is visible, false if it is hidden
+   */
+  public final boolean isSummaryPanelVisible() {
+    return summaryScrollPane != null && summaryScrollPane.getViewport().getView() == summaryPanel;
   }
 
   /**
@@ -281,6 +356,19 @@ public class FilteredTablePanel<T, C> extends JPanel {
   }
 
   /**
+   * Initializes the button used to toggle the summary panel state (hidden and visible)
+   * @return a summary panel toggle button
+   */
+  public final Control getToggleSummaryPanelControl() {
+    final Control toggleControl = Controls.toggleControl(this, "summaryPanelVisible", null,
+            summaryPanelVisibleChangedEvent);
+    toggleControl.setIcon(Images.loadImage("Sum16.gif"));
+    toggleControl.setDescription(Messages.get(Messages.TOGGLE_SUMMARY_TIP));
+
+    return toggleControl;
+  }
+
+  /**
    * @return true if sorting via the table header is enabled
    */
   public final boolean isSortingEnabled() {
@@ -336,6 +424,20 @@ public class FilteredTablePanel<T, C> extends JPanel {
         tableModel.getColumnModel().setColumnVisible((C) column.getIdentifier(), chkButton.isSelected());
       }
     }
+  }
+
+  /**
+   * @param listener a listener notified each time the summary panel visibility changes
+   */
+  public final void addSummaryPanelVisibleListener(final EventListener listener) {
+    summaryPanelVisibleChangedEvent.addListener(listener);
+  }
+
+  /**
+   * @param listener the listener to remove
+   */
+  public final void removeSummaryPanelVisibleListener(final EventListener listener) {
+    summaryPanelVisibleChangedEvent.removeListener(listener);
   }
 
   /**

@@ -134,14 +134,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @param propertyID the ID of the property
    * @return the {@link ColumnSummaryModel} for the given property ID
    */
-  ColumnSummaryModel getPropertySummaryModel(final String propertyID);
-
-  /**
-   * Returns the {@link ColumnSummaryModel} associated with the given property
-   * @param property the property
-   * @return the {@link ColumnSummaryModel} for the given property
-   */
-  ColumnSummaryModel getPropertySummaryModel(final Property property);
+  ColumnSummaryModel getColumnSummaryModel(final String propertyID);
 
   /**
    * @param row the row for which to retrieve the background color
@@ -263,13 +256,6 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @return the iterator used when generating reports
    */
   Iterator<Entity> getSelectedEntitiesIterator();
-
-  /**
-   * @param property the property for which to retrieve the values
-   * @param selectedOnly if true only values from the selected entities are returned
-   * @return the values of <code>property</code> from the entities in the table model
-   */
-  Collection getValues(final Property property, final boolean selectedOnly);
 
   /**
    * @param primaryKey the primary key to search by

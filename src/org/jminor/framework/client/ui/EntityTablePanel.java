@@ -62,7 +62,6 @@ import javax.swing.JLabel;
 import javax.swing.JOptionPane;
 import javax.swing.JPanel;
 import javax.swing.JPopupMenu;
-import javax.swing.JScrollBar;
 import javax.swing.JScrollPane;
 import javax.swing.JTabbedPane;
 import javax.swing.JTable;
@@ -70,8 +69,6 @@ import javax.swing.JTextField;
 import javax.swing.JToolBar;
 import javax.swing.KeyStroke;
 import javax.swing.ListSelectionModel;
-import javax.swing.event.ChangeEvent;
-import javax.swing.event.ChangeListener;
 import javax.swing.table.JTableHeader;
 import javax.swing.table.TableCellRenderer;
 import javax.swing.table.TableColumn;
@@ -152,7 +149,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
   private final Event tableDoubleClickedEvent = Events.event();
   private final Event<Boolean> searchPanelVisibilityChangedEvent = Events.event();
-  private final Event<Boolean> summaryPanelVisibilityChangedEvent = Events.event();
 
   private final Map<String, Control> controlMap = new HashMap<>();
 
@@ -165,26 +161,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * the scroll pane used for the search panel
    */
   private final JScrollPane searchScrollPane;
-
-  /**
-   * the horizontal table scroll bar
-   */
-  private final JScrollBar horizontalTableScrollBar;
-
-  /**
-   * the column summary panel
-   */
-  private final EntityTableSummaryPanel summaryPanel;
-
-  /**
-   * the panel used as a base panel for the summary panels, used for showing/hiding the summary panels
-   */
-  private final JPanel summaryBasePanel;
-
-  /**
-   * the scroll pane used for the summary panel
-   */
-  private final JScrollPane summaryScrollPane;
 
   /**
    * the toolbar containing the refresh button
@@ -229,35 +205,16 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param tableModel the EntityTableModel instance
    */
   public EntityTablePanel(final EntityTableModel tableModel) {
-    this(tableModel, new EntityTableSearchPanel(tableModel), new EntityTableSummaryPanel(tableModel));
+    this(tableModel, new EntityTableSearchPanel(tableModel));
   }
 
   /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
    * @param searchPanel the search panel
+   * @param summaryPanel the summary panel
    */
   public EntityTablePanel(final EntityTableModel tableModel, final EntityTableSearchPanel searchPanel) {
-    this(tableModel, searchPanel, new EntityTableSummaryPanel(tableModel));
-  }
-
-  /**
-   * Initializes a new EntityTablePanel instance
-   * @param tableModel the EntityTableModel instance
-   * @param summaryPanel the summary panel
-   */
-  public EntityTablePanel(final EntityTableModel tableModel, final EntityTableSummaryPanel summaryPanel) {
-    this(tableModel, new EntityTableSearchPanel(tableModel), summaryPanel);
-  }
-
-  /**
-   * Initializes a new EntityTablePanel instance
-   * @param tableModel the EntityTableModel instance
-   * @param searchPanel the search panel
-   * @param summaryPanel the summary panel
-   */
-  public EntityTablePanel(final EntityTableModel tableModel, final EntityTableSearchPanel searchPanel,
-                          final EntityTableSummaryPanel summaryPanel) {
     super(tableModel, new ColumnSearchPanelProvider<Property>() {
       @Override
       public ColumnSearchPanel<Property> createColumnSearchPanel(final TableColumn column) {
@@ -272,18 +229,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     else {
       this.searchScrollPane = null;
     }
-    this.summaryPanel = summaryPanel;
-    if (summaryPanel != null) {
-      summaryBasePanel = new JPanel(new BorderLayout());
-      summaryScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
-    }
-    else {
-      summaryBasePanel = null;
-      summaryScrollPane = null;
-    }
     this.statusMessageLabel = initializeStatusMessageLabel();
     this.refreshToolBar = initializeRefreshToolbar();
-    this.horizontalTableScrollBar = getTableScrollPane().getHorizontalScrollBar();
   }
 
   /**
@@ -389,37 +336,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       UiUtil.setWaitCursor(false, this);
     }
     UiUtil.displayInDialog(this, panel, FrameworkMessages.get(FrameworkMessages.CONFIGURE_QUERY), action);
-  }
-
-  /**
-   * Hides or shows the column summary panel for this EntityTablePanel
-   * @param visible if true then the summary panel is shown, if false it is hidden
-   */
-  public final void setSummaryPanelVisible(final boolean visible) {
-    if (visible && isSummaryPanelVisible()) {
-      return;
-    }
-
-    if (summaryScrollPane != null) {
-      summaryScrollPane.getViewport().setView(visible ? summaryPanel : null);
-      if (visible) {
-        summaryBasePanel.add(summaryScrollPane, BorderLayout.NORTH);
-        summaryBasePanel.add(horizontalTableScrollBar, BorderLayout.SOUTH);
-      }
-      else {
-        summaryBasePanel.remove(horizontalTableScrollBar);
-        getTableScrollPane().setHorizontalScrollBar(horizontalTableScrollBar);
-      }
-      revalidate();
-      summaryPanelVisibilityChangedEvent.fire(visible);
-    }
-  }
-
-  /**
-   * @return true if the column summary panel is visible, false if it is hidden
-   */
-  public final boolean isSummaryPanelVisible() {
-    return summaryScrollPane != null && summaryScrollPane.getViewport().getView() == summaryPanel;
   }
 
   /**
@@ -717,19 +633,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Initializes the button used to toggle the summary panel state (hidden and visible)
-   * @return a summary panel toggle button
-   */
-  public final Control getToggleSummaryPanelControl() {
-    final Control toggleControl = Controls.toggleControl(this, "summaryPanelVisible", null,
-            summaryPanelVisibilityChangedEvent);
-    toggleControl.setIcon(Images.loadImage("Sum16.gif"));
-    toggleControl.setDescription(FrameworkMessages.get(FrameworkMessages.TOGGLE_SUMMARY_TIP));
-
-    return toggleControl;
-  }
-
-  /**
    * Initializes the button used to toggle the search panel state (hidden, visible and advanced)
    * @return a search panel toggle button
    */
@@ -799,20 +702,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * @param listener a listener notified each time the summary panel visibility changes
-   */
-  public final void addSummaryPanelVisibleListener(final EventListener listener) {
-    summaryPanelVisibilityChangedEvent.addListener(listener);
-  }
-
-  /**
-   * @param listener the listener to remove
-   */
-  public final void removeSummaryPanelVisibleListener(final EventListener listener) {
-    summaryPanelVisibilityChangedEvent.removeListener(listener);
-  }
-
-  /**
    * @param listener a listener notified each time the table is double clicked
    */
   public final void addTableDoubleClickListener(final EventListener listener) {
@@ -859,7 +748,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     };
     tableModel.setQueryConfigurationAllowed(false);
     tableModel.refresh();
-    final EntityTablePanel tablePanel = new EntityTablePanel(tableModel, null, null);
+    final EntityTablePanel tablePanel = new EntityTablePanel(tableModel);
     tablePanel.setIncludePopupMenu(false);
     tablePanel.setIncludeSouthPanel(false);
     tablePanel.initializePanel();
@@ -918,7 +807,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
 
     final EntityModel model = new DefaultEntityModel(lookupModel);
     model.getEditModel().setReadOnly(true);
-    final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel, (EntityTableSummaryPanel) null);
+    final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
     entityTablePanel.initializePanel();
     entityTablePanel.addTableDoubleClickListener(new EventListener() {
       @Override
@@ -1394,9 +1283,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       setControl(EXPORT_JSON, getExportControl());
     }
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
-    if (summaryPanel != null) {
-      setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
-    }
+    setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
     if (includeSearchPanel && searchPanel != null) {
       setControl(TOGGLE_SEARCH_PANEL, getToggleSearchPanelControl());
     }
@@ -1447,19 +1334,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         });
       }
     }
-    if (summaryScrollPane != null) {
-      final JScrollPane tableScrollPane = getTableScrollPane();
-      tableScrollPane.getViewport().addChangeListener(new ChangeListener() {
-        @Override
-        public void stateChanged(final ChangeEvent e) {
-          horizontalTableScrollBar.setVisible(tableScrollPane.getViewport().getViewSize().width > tableScrollPane.getSize().width);
-          revalidate();
-        }
-      });
-      summaryScrollPane.getHorizontalScrollBar().setModel(horizontalTableScrollBar.getModel());
-      getBasePanel().add(summaryBasePanel, BorderLayout.SOUTH);
-    }
-
     JPanel southPanel = null;
     if (includeSouthPanel) {
       southPanel = new JPanel(UiUtil.createBorderLayout());

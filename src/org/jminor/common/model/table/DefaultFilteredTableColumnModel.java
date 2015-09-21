@@ -18,7 +18,6 @@ import java.util.ArrayList;
 import java.util.Arrays;
 import java.util.Collection;
 import java.util.Collections;
-import java.util.Enumeration;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
@@ -139,9 +138,7 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
   @Override
   public final TableColumn getTableColumn(final C identifier) {
     Util.rejectNullValue(identifier, "identifier");
-    final Enumeration<TableColumn> visibleColumns = getColumns();
-    while (visibleColumns.hasMoreElements()) {
-      final TableColumn column = visibleColumns.nextElement();
+    for (final TableColumn column : columns) {
       if (identifier.equals(column.getIdentifier())) {
         return column;
       }
@@ -154,7 +151,7 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
   @Override
   public boolean containsColumn(final C identifier) {
     Util.rejectNullValue(identifier, "identifier");
-    for (final TableColumn column : getAllColumns()) {
+    for (final TableColumn column : columns) {
       if (identifier.equals(column.getIdentifier())) {
         return true;
       }
@@ -178,8 +175,8 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
   /** {@inheritDoc} */
   @Override
   @SuppressWarnings({"unchecked"})
-  public final C getColumnIdentifier(final int modelColumnIndex) {
-    return (C) getColumn(convertColumnIndexToView(modelColumnIndex)).getIdentifier();
+  public final C getColumnIdentifier(final int columnModelIndex) {
+    return (C) getColumn(convertColumnIndexToView(columnModelIndex)).getIdentifier();
   }
 
   /** {@inheritDoc} */

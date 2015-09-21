@@ -3,7 +3,6 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 
@@ -23,9 +22,7 @@ public class DefaultColumnSummaryModelTest {
 
   final ColumnSummaryModel testIntModel = new DefaultColumnSummaryModel(new ColumnSummaryModel.ColumnValueProvider() {
     @Override
-    public Format getFormat() {
-      return numberFormat;
-    }
+    public String format(final Object value) {return numberFormat.format(value);}
     @Override
     public boolean isNumerical() {
       return true;
@@ -53,14 +50,12 @@ public class DefaultColumnSummaryModelTest {
     @Override
     public void setUseValueSubset(final boolean value) {}
     @Override
-    public void bindValuesChangedEvent(final Event event) {}
+    public void addValuesChangedListener(final EventListener event) {}
   });
 
   final ColumnSummaryModel testDoubleModel = new DefaultColumnSummaryModel(new ColumnSummaryModel.ColumnValueProvider() {
     @Override
-    public Format getFormat() {
-      return numberFormat;
-    }
+    public String format(final Object value) {return numberFormat.format(value);}
     @Override
     public boolean isNumerical() {
       return true;
@@ -88,13 +83,13 @@ public class DefaultColumnSummaryModelTest {
     @Override
     public void setUseValueSubset(final boolean value) {}
     @Override
-    public void bindValuesChangedEvent(final Event event) {}
+    public void addValuesChangedListener(final EventListener event) {}
   });
 
   @Test
   public void test() {
-    testIntModel.setCurrentSummary(DefaultColumnSummaryModel.SummaryType.SUM);
-    assertEquals(DefaultColumnSummaryModel.SummaryType.SUM, testIntModel.getCurrentSummary());
+    testIntModel.setSummary(ColumnSummary.SUM);
+    assertEquals(ColumnSummary.SUM, testIntModel.getSummary());
     assertTrue(testIntModel.getAvailableSummaries().size() > 0);
     final EventListener listener = new EventListener() {
       @Override
@@ -112,67 +107,67 @@ public class DefaultColumnSummaryModelTest {
 
   @Test
   public void intSum() {
-    testIntModel.setCurrentSummary(DefaultColumnSummaryModel.SummaryType.SUM);
+    testIntModel.setSummary(ColumnSummary.SUM);
     assertEquals("15", testIntModel.getSummaryText());
   }
 
   @Test
   public void intAverage() {
-    testIntModel.setCurrentSummary(DefaultColumnSummaryModel.SummaryType.AVERAGE);
+    testIntModel.setSummary(ColumnSummary.AVERAGE);
     assertEquals("3", testIntModel.getSummaryText());
   }
 
   @Test
   public void intMininum() {
-    testIntModel.setCurrentSummary(DefaultColumnSummaryModel.SummaryType.MINIMUM);
+    testIntModel.setSummary(ColumnSummary.MINIMUM);
     assertEquals("1", testIntModel.getSummaryText());
   }
 
   @Test
   public void intMaximum() {
-    testIntModel.setCurrentSummary(DefaultColumnSummaryModel.SummaryType.MAXIMUM);
+    testIntModel.setSummary(ColumnSummary.MAXIMUM);
     assertEquals("5", testIntModel.getSummaryText());
   }
 
   @Test
   public void intMininumMaximum() {
-    testIntModel.setCurrentSummary(DefaultColumnSummaryModel.SummaryType.MINIMUM_MAXIMUM);
+    testIntModel.setSummary(ColumnSummary.MINIMUM_MAXIMUM);
     assertEquals("1/5", testIntModel.getSummaryText());
   }
 
   @Test
   public void doubleSum() {
-    testDoubleModel.setCurrentSummary(DefaultColumnSummaryModel.SummaryType.SUM);
+    testDoubleModel.setSummary(ColumnSummary.SUM);
     assertEquals(numberFormat.format(16.5), testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleAverage() {
-    testDoubleModel.setCurrentSummary(DefaultColumnSummaryModel.SummaryType.AVERAGE);
+    testDoubleModel.setSummary(ColumnSummary.AVERAGE);
     assertEquals(numberFormat.format(3.3), testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleMininum() {
-    testDoubleModel.setCurrentSummary(DefaultColumnSummaryModel.SummaryType.MINIMUM);
+    testDoubleModel.setSummary(ColumnSummary.MINIMUM);
     assertEquals(numberFormat.format(1.1), testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleMaximum() {
-    testDoubleModel.setCurrentSummary(DefaultColumnSummaryModel.SummaryType.MAXIMUM);
+    testDoubleModel.setSummary(ColumnSummary.MAXIMUM);
     assertEquals(numberFormat.format(5.5), testDoubleModel.getSummaryText());
   }
 
   @Test
   public void doubleMininumMaximum() {
-    testDoubleModel.setCurrentSummary(DefaultColumnSummaryModel.SummaryType.MINIMUM_MAXIMUM);
+    testDoubleModel.setSummary(ColumnSummary.MINIMUM_MAXIMUM);
     assertEquals(numberFormat.format(1.1) + "/" + numberFormat.format(5.5), testDoubleModel.getSummaryText());
   }
 
   @Test(expected = IllegalStateException.class)
   public void locked() {
     testDoubleModel.setLocked(true);
-    testDoubleModel.setCurrentSummary(DefaultColumnSummaryModel.SummaryType.MINIMUM_MAXIMUM);
+    testDoubleModel.setSummary(ColumnSummary.MINIMUM_MAXIMUM);
   }
 }

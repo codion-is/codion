@@ -6,7 +6,7 @@ package org.jminor.framework.demos.empdept.client.ui;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.table.DefaultColumnSummaryModel;
+import org.jminor.common.model.table.ColumnSummary;
 import org.jminor.common.ui.UiUtil;
 import org.jminor.common.ui.control.ControlSet;
 import org.jminor.common.ui.control.Controls;
@@ -100,7 +100,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
 
     @Override
     protected void configureTableModel(final EntityTableModel tableModel) {
-      tableModel.getPropertySummaryModel(EMPLOYEE_SALARY).setCurrentSummary(DefaultColumnSummaryModel.SummaryType.AVERAGE);
+      tableModel.getColumnSummaryModel(EMPLOYEE_SALARY).setSummary(ColumnSummary.AVERAGE);
     }
   }
 

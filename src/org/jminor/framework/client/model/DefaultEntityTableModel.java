@@ -5,14 +5,12 @@ package org.jminor.framework.client.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.AbstractFilteredTableModel;
 import org.jminor.common.model.table.AbstractTableSortModel;
 import org.jminor.common.model.table.ColumnSummaryModel;
-import org.jminor.common.model.table.DefaultColumnSummaryModel;
 import org.jminor.common.model.table.FilteredTableColumnModel;
 import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.table.TableSortModel;
@@ -33,7 +31,6 @@ import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.TableColumn;
 import java.awt.Color;
-import java.text.Format;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -91,11 +88,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    * The search model
    */
   private final EntityTableSearchModel searchModel;
-
-  /**
-   * Maps PropertySummaryModels to their respective properties
-   */
-  private final Map<String, ColumnSummaryModel> propertySummaryModels = new HashMap<>();
 
   /**
    * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
@@ -344,13 +336,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final Collection getValues(final Property property, final boolean selectedOnly) {
-    return EntityUtil.getPropertyValues(property.getPropertyID(),
-            selectedOnly ? getSelectionModel().getSelectedItems() : getVisibleItems(), false);
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public final Entity getEntityByPrimaryKey(final Entity.Key primaryKey) {
     for (final Entity entity : getVisibleItems()) {
       if (entity.getPrimaryKey().equals(primaryKey)) {
@@ -499,19 +484,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final ColumnSummaryModel getPropertySummaryModel(final String propertyID) {
-    return getPropertySummaryModel(Entities.getProperty(entityID, propertyID));
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final ColumnSummaryModel getPropertySummaryModel(final Property property) {
-    if (!propertySummaryModels.containsKey(property.getPropertyID())) {
-      propertySummaryModels.put(property.getPropertyID(),
-              new DefaultColumnSummaryModel(new SummaryValueProvider(editModel, this, property)));
-    }
-
-    return propertySummaryModels.get(property.getPropertyID());
+  public final ColumnSummaryModel getColumnSummaryModel(final String propertyID) {
+    return getColumnSummaryModel(Entities.getProperty(entityID, propertyID));
   }
 
   /** {@inheritDoc} */
@@ -581,6 +555,11 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
 
     return Util.getDelimitedString(header, data, String.valueOf(delimiter));
+  }
+
+  @Override
+  protected final ColumnSummaryModel.ColumnValueProvider createColumnValueProvider(final Property property) {
+    return new DefaultColumnValueProvider(property, this, property.getFormat());
   }
 
   /** {@inheritDoc} */
@@ -886,8 +865,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       return property.getTypeClass();
     }
 
-   /** {@inheritDoc} */
-   @Override
+    /** {@inheritDoc} */
+    @Override
     protected Comparator initializeColumnComparator(final Property property) {
       if (property instanceof Property.ForeignKeyProperty) {
         return Entities.getComparator(((Property.ForeignKeyProperty) property).getReferencedEntityID());
@@ -900,71 +879,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     @Override
     protected final Comparable getComparable(final Entity entity, final Property property) {
       return (Comparable) entity.getValue(property);
-    }
-  }
-
-  private static final class SummaryValueProvider implements ColumnSummaryModel.ColumnValueProvider {
-
-    private final EntityEditModel editModel;
-    private final EntityTableModel tableModel;
-    private final Property property;
-
-    private boolean useValueSubset = true;
-
-    private SummaryValueProvider(final EntityEditModel editModel, final EntityTableModel tableModel, final Property property) {
-      this.editModel = editModel;
-      this.tableModel = tableModel;
-      this.property = property;
-    }
-
-    @Override
-    public void bindValuesChangedEvent(final Event event) {
-      if (editModel != null) {
-        editModel.addAfterInsertListener(event);
-      }
-      tableModel.addFilteringListener(event);//todo summary is updated twice per refresh
-      tableModel.addRefreshDoneListener(event);
-      tableModel.getSelectionModel().addSelectionChangedListener(event);
-    }
-
-    @Override
-    public Format getFormat() {
-      return property.getFormat();
-    }
-
-    @Override
-    public boolean isNumerical() {
-      return property.isNumerical();
-    }
-
-    @Override
-    public boolean isInteger() {
-      return property.isInteger();
-    }
-
-    @Override
-    public boolean isDouble() {
-      return property.isDouble();
-    }
-
-    @Override
-    public boolean isUseValueSubset() {
-      return useValueSubset;
-    }
-
-    @Override
-    public void setUseValueSubset(final boolean useValueSubset) {
-      this.useValueSubset = useValueSubset;
-    }
-
-    @Override
-    public Collection getValues() {
-      return tableModel.getValues(property, useValueSubset && isValueSubset());
-    }
-
-    @Override
-    public boolean isValueSubset() {
-      return !tableModel.getSelectionModel().isSelectionEmpty();
     }
   }
 }
