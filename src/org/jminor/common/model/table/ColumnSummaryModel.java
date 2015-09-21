@@ -11,7 +11,6 @@ import java.util.List;
 
 /**
  * A interface defining a class for providing summaries of numerical table columns: sum, average, minimum, maximum and minimum &#38; maximum.<br>
- * @param <K> the type of objects used to identify columns
  */
 public interface ColumnSummaryModel {
 

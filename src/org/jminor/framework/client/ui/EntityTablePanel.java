@@ -212,7 +212,6 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
    * @param searchPanel the search panel
-   * @param summaryPanel the summary panel
    */
   public EntityTablePanel(final EntityTableModel tableModel, final EntityTableSearchPanel searchPanel) {
     super(tableModel, new ColumnSearchPanelProvider<Property>() {

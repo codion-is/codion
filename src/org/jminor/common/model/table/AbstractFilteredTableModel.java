@@ -261,6 +261,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /**
    * Creates a ColumnValueProvider for the given column
+   * @param columnIdentifier the column identifier
+   * @return a ColumnValueProvider for the column identified by {@code columnIdentifier}
    */
   protected ColumnSummaryModel.ColumnValueProvider createColumnValueProvider(final C columnIdentifier) {
     return new DefaultColumnValueProvider(columnIdentifier, this, null);
