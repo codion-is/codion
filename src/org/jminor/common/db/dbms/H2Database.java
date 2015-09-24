@@ -201,18 +201,17 @@ public final class H2Database extends AbstractDatabase {
   }
 
   private static void initializeDatabase(final String databaseName, final String scriptPath, final boolean inMemory) {
-    final Properties properties = new Properties();
-    properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
-    String initializerString = ";DB_CLOSE_DELAY=-1";
-    final boolean fileBasedDatabaseExists = !inMemory && Files.exists(Paths.get(databaseName + ".h2.db"));
-    if (scriptPath != null && !fileBasedDatabaseExists) {
-      initializerString += ";INIT=RUNSCRIPT FROM '" + scriptPath + "'";
-    }
-    try {
-      DriverManager.getConnection((inMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE) + databaseName + ";user=" + SYSADMIN_USERNAME + initializerString).close();
-    }
-    catch (final SQLException e) {
-      throw new RuntimeException(e);
+    if (!Util.nullOrEmpty(scriptPath) && (inMemory || !Files.exists(Paths.get(databaseName + ".h2.db")))) {
+      final Properties properties = new Properties();
+      properties.put(USER_PROPERTY, SYSADMIN_USERNAME);
+      final String url = (inMemory ? URL_PREFIX_MEM : URL_PREFIX_FILE) + databaseName
+              + ";DB_CLOSE_DELAY=-1;INIT=RUNSCRIPT FROM '" + scriptPath + "'";
+      try {
+        DriverManager.getConnection(url, properties).close();
+      }
+      catch (final SQLException e) {
+        throw new RuntimeException(e);
+      }
     }
   }
 }

@@ -713,10 +713,10 @@
   </target>
 
   <target name="recreate_h2_db"
-          description="Recreates the demo h2 database. The demo database includes the EmpDept, Petstore and Chinook schemas, used by unit tests and demo applications">
+          description="Recreates the demo h2 database, which contains the EmpDept, Petstore, Chinook and World schemas, used by unit tests and demo applications">
     <delete dir="${db.h2.dir}"/>
     <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.runtime.test">
-      <arg line="-url jdbc:h2:${db.h2.dir}/${db.h2.name} -showResults -script ${db.init.h2}"/>
+      <arg line="-url jdbc:h2:file:${db.h2.dir}/${db.h2.name} -showResults -script ${db.init.h2}"/>
     </java>
   </target>
 
