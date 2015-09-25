@@ -200,6 +200,7 @@ public class Chinook {
             .setStringProvider(new Entities.StringProvider(GENRE_NAME))
             .setSearchPropertyIDs(GENRE_NAME)
             .setOrderByClause(GENRE_NAME)
+            .setSmallDataset(true)
             .setCaption("Genres");
   }
 
@@ -218,6 +219,7 @@ public class Chinook {
             .setKeyGenerator(Entities.automaticKeyGenerator(T_MEDIATYPE))
             .setStringProvider(new Entities.StringProvider(MEDIATYPE_NAME))
             .setOrderByClause(MEDIATYPE_NAME)
+            .setSmallDataset(true)
             .setCaption("Media types");
   }
 
