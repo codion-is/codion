@@ -5,12 +5,12 @@ package org.jminor.framework.demos.petstore.beans.ui;
 
 import org.jminor.common.swing.ui.UiUtil;
 import org.jminor.common.swing.ui.layout.FlexibleGridLayout;
-import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.ui.EntityComboBox;
-import org.jminor.framework.client.ui.EntityEditPanel;
-import org.jminor.framework.client.ui.EntityPanelProvider;
-import org.jminor.framework.client.ui.EntityUiUtil;
 import org.jminor.framework.demos.petstore.domain.Petstore;
+import org.jminor.framework.swing.model.EntityEditModel;
+import org.jminor.framework.swing.ui.EntityComboBox;
+import org.jminor.framework.swing.ui.EntityEditPanel;
+import org.jminor.framework.swing.ui.EntityPanelProvider;
+import org.jminor.framework.swing.ui.EntityUiUtil;
 
 import javax.swing.JTextField;
 

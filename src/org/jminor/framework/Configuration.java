@@ -5,6 +5,8 @@ package org.jminor.framework;
 
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
+import org.jminor.framework.swing.ui.EntityApplicationPanel;
+import org.jminor.framework.swing.ui.EntityPanelProvider;
 
 import java.rmi.registry.Registry;
 import java.text.SimpleDateFormat;
@@ -426,7 +428,7 @@ public final class Configuration {
    * should be persisted, or kept in memory, when the dialog is closed.<br>
    * Value type: Boolean<br>
    * Default value: false
-   * @see org.jminor.framework.client.ui.EntityApplicationPanel#showEntityPanelDialog(org.jminor.framework.client.ui.EntityPanelProvider)
+   * @see EntityApplicationPanel#showEntityPanelDialog(EntityPanelProvider)
    */
   public static final String PERSIST_ENTITY_PANELS = "jminor.client.persistEntityPanels";
 

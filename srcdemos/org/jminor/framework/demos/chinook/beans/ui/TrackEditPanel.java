@@ -5,8 +5,8 @@ package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.common.swing.ui.TextInputPanel;
 import org.jminor.common.swing.ui.layout.FlexibleGridLayout;
-import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.ui.EntityEditPanel;
+import org.jminor.framework.swing.model.EntityEditModel;
+import org.jminor.framework.swing.ui.EntityEditPanel;
 
 import javax.swing.JLabel;
 import javax.swing.JPanel;

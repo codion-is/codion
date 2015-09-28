@@ -6,14 +6,14 @@ package org.jminor.framework.tools.testing;
 import org.jminor.common.model.User;
 import org.jminor.common.model.tools.ScenarioException;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.client.model.DefaultEntityApplicationModel;
-import org.jminor.framework.client.model.DefaultEntityModel;
-import org.jminor.framework.client.model.EntityApplicationModel;
-import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.server.EntityConnectionServerTest;
+import org.jminor.framework.swing.model.DefaultEntityApplicationModel;
+import org.jminor.framework.swing.model.DefaultEntityModel;
+import org.jminor.framework.swing.model.EntityApplicationModel;
+import org.jminor.framework.swing.model.EntityTableModel;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

@@ -7,14 +7,14 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.swing.ui.UiUtil;
 import org.jminor.framework.Configuration;
-import org.jminor.framework.client.model.DefaultEntityApplicationModel;
-import org.jminor.framework.client.ui.EntityApplicationPanel;
-import org.jminor.framework.client.ui.EntityPanelProvider;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.world.beans.ui.CityEditPanel;
 import org.jminor.framework.demos.world.beans.ui.CountryEditPanel;
 import org.jminor.framework.demos.world.beans.ui.CountryLanguageEditPanel;
 import org.jminor.framework.demos.world.domain.World;
+import org.jminor.framework.swing.model.DefaultEntityApplicationModel;
+import org.jminor.framework.swing.ui.EntityApplicationPanel;
+import org.jminor.framework.swing.ui.EntityPanelProvider;
 
 import java.util.Locale;
 

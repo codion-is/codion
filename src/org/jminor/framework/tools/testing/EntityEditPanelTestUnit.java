@@ -5,14 +5,14 @@ package org.jminor.framework.tools.testing;
 
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.framework.client.model.DefaultEntityEditModel;
-import org.jminor.framework.client.model.EntityEditModel;
-import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
+import org.jminor.framework.swing.model.DefaultEntityEditModel;
+import org.jminor.framework.swing.model.EntityEditModel;
+import org.jminor.framework.swing.ui.EntityEditPanel;
 
 /**
- * A base class for testing a {@link org.jminor.framework.client.ui.EntityEditPanel}
+ * A base class for testing a {@link EntityEditPanel}
  */
 public abstract class EntityEditPanelTestUnit {
 

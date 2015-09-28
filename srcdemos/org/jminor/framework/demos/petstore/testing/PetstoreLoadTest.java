@@ -6,11 +6,11 @@ package org.jminor.framework.demos.petstore.testing;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.swing.ui.tools.LoadTestPanel;
-import org.jminor.framework.client.model.DefaultEntityApplicationModel;
-import org.jminor.framework.client.model.EntityApplicationModel;
-import org.jminor.framework.client.model.EntityModel;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.petstore.domain.Petstore;
+import org.jminor.framework.swing.model.DefaultEntityApplicationModel;
+import org.jminor.framework.swing.model.EntityApplicationModel;
+import org.jminor.framework.swing.model.EntityModel;
 import org.jminor.framework.tools.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;

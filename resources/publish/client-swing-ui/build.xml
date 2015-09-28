@@ -1,0 +1,3 @@
+<project name="jminor-client-swing-ui">
+  <import file="../build.xml"/>
+</project>

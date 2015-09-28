@@ -4,8 +4,8 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Util;
 import org.jminor.common.swing.ui.UiUtil;
 import org.jminor.common.swing.ui.control.Control;
-import org.jminor.framework.client.ui.EntityTablePanel;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.swing.ui.EntityTablePanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;

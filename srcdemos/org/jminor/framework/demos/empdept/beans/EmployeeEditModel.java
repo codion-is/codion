@@ -9,14 +9,14 @@ import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChange;
-import org.jminor.framework.client.model.DefaultEntityComboBoxModel;
-import org.jminor.framework.client.model.DefaultEntityEditModel;
-import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.swing.model.DefaultEntityComboBoxModel;
+import org.jminor.framework.swing.model.DefaultEntityEditModel;
+import org.jminor.framework.swing.model.EntityComboBoxModel;
 
 import java.util.Arrays;
 
