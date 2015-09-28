@@ -1,3 +1,0 @@
-<project name="jminor-common-ui">
-  <import file="../build.xml"/>
-</project>

@@ -5,11 +5,11 @@ package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.TaskScheduler;
-import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.ValueLinks;
-import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.textfield.IntField;
+import org.jminor.common.swing.ui.UiUtil;
+import org.jminor.common.swing.ui.ValueLinks;
+import org.jminor.common.swing.ui.control.ControlProvider;
+import org.jminor.common.swing.ui.control.Controls;
+import org.jminor.common.swing.ui.textfield.IntField;
 import org.jminor.framework.server.monitor.ServerMonitor;
 
 import ch.qos.logback.classic.Level;

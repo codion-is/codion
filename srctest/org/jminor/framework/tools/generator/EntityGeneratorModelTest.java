@@ -6,7 +6,7 @@ package org.jminor.framework.tools.generator;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.table.SortingDirective;
+import org.jminor.common.swing.model.table.SortingDirective;
 
 import org.junit.After;
 import org.junit.Before;

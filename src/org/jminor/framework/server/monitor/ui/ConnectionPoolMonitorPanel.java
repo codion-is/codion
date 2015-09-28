@@ -7,10 +7,10 @@ import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.ValueLinks;
-import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.Controls;
+import org.jminor.common.swing.ui.UiUtil;
+import org.jminor.common.swing.ui.ValueLinks;
+import org.jminor.common.swing.ui.control.ControlProvider;
+import org.jminor.common.swing.ui.control.Controls;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 
 import org.jfree.chart.ChartFactory;

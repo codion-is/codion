@@ -4,7 +4,7 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.model.Util;
-import org.jminor.common.ui.UiUtil;
+import org.jminor.common.swing.ui.UiUtil;
 import org.jminor.framework.server.monitor.ConnectionPoolMonitor;
 import org.jminor.framework.server.monitor.PoolMonitor;
 

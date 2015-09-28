@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
-import org.jminor.common.ui.control.ControlSet;
-import org.jminor.common.ui.control.Controls;
+import org.jminor.common.swing.ui.control.ControlSet;
+import org.jminor.common.swing.ui.control.Controls;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.ui.EntityTablePanel;

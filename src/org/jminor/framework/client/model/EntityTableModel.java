@@ -4,10 +4,10 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.table.ColumnSummaryModel;
-import org.jminor.common.model.table.FilteredTableModel;
-import org.jminor.common.model.table.SortingDirective;
 import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.common.swing.model.table.ColumnSummaryModel;
+import org.jminor.common.swing.model.table.FilteredTableModel;
+import org.jminor.common.swing.model.table.SortingDirective;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 

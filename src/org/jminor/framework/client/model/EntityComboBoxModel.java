@@ -4,7 +4,7 @@
 package org.jminor.framework.client.model;
 
 import org.jminor.common.model.EventListener;
-import org.jminor.common.model.combobox.FilteredComboBoxModel;
+import org.jminor.common.swing.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entity;
 

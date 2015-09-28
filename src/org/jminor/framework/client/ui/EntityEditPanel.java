@@ -14,19 +14,19 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
-import org.jminor.common.ui.DateInputPanel;
-import org.jminor.common.ui.DefaultExceptionHandler;
-import org.jminor.common.ui.ExceptionHandler;
-import org.jminor.common.ui.TextInputPanel;
-import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.checkbox.TristateCheckBox;
-import org.jminor.common.ui.combobox.MaximumMatch;
-import org.jminor.common.ui.combobox.SteppedComboBox;
-import org.jminor.common.ui.control.Control;
-import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.ControlSet;
-import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.images.Images;
+import org.jminor.common.swing.ui.DateInputPanel;
+import org.jminor.common.swing.ui.DefaultExceptionHandler;
+import org.jminor.common.swing.ui.ExceptionHandler;
+import org.jminor.common.swing.ui.TextInputPanel;
+import org.jminor.common.swing.ui.UiUtil;
+import org.jminor.common.swing.ui.checkbox.TristateCheckBox;
+import org.jminor.common.swing.ui.combobox.MaximumMatch;
+import org.jminor.common.swing.ui.combobox.SteppedComboBox;
+import org.jminor.common.swing.ui.control.Control;
+import org.jminor.common.swing.ui.control.ControlProvider;
+import org.jminor.common.swing.ui.control.ControlSet;
+import org.jminor.common.swing.ui.control.Controls;
+import org.jminor.common.swing.ui.images.Images;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.client.model.EntityDataProvider;
@@ -1521,7 +1521,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
    * @return a SteppedComboBox bound the the property
-   * @see org.jminor.common.ui.combobox.MaximumMatch
+   * @see org.jminor.common.swing.ui.combobox.MaximumMatch
    */
   protected final SteppedComboBox createComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch) {
@@ -1535,7 +1535,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param maximumMatch true if maximum match should be used
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound the the property
-   * @see org.jminor.common.ui.combobox.MaximumMatch
+   * @see org.jminor.common.swing.ui.combobox.MaximumMatch
    */
   protected final SteppedComboBox createComboBox(final String propertyID, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final StateObserver enabledState) {
@@ -1549,7 +1549,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param comboBoxModel the ComboBoxModel
    * @param maximumMatch true if maximum match should be used
    * @return a SteppedComboBox bound the the property
-   * @see org.jminor.common.ui.combobox.MaximumMatch
+   * @see org.jminor.common.swing.ui.combobox.MaximumMatch
    */
   protected final SteppedComboBox createComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch) {
@@ -1563,7 +1563,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param maximumMatch true if maximum match should be used
    * @param enabledState a state for controlling the enabled state of the component
    * @return a SteppedComboBox bound the the property
-   * @see org.jminor.common.ui.combobox.MaximumMatch
+   * @see org.jminor.common.swing.ui.combobox.MaximumMatch
    */
   protected final SteppedComboBox createComboBox(final Property property, final ComboBoxModel comboBoxModel,
                                                  final boolean maximumMatch, final StateObserver enabledState) {
@@ -1968,8 +1968,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * control codes (EntityEditPanel.INSERT, UPDATE etc) via the <code>setControl(String, Control) method,
    * these can then be retrieved via the <code>getControl(String)</code> method.
    * @param controlKeys the control keys for which controls should be initialized
-   * @see org.jminor.common.ui.control.Control
-   * @see #setControl(String, org.jminor.common.ui.control.Control)
+   * @see org.jminor.common.swing.ui.control.Control
+   * @see #setControl(String, org.jminor.common.swing.ui.control.Control)
    * @see #getControl(String)
    * todo updateAllowed(false) þá vantar Insert control nema það sé tiltekið í smið
    */

@@ -4,10 +4,10 @@
 package org.jminor.framework.client.ui;
 
 import org.jminor.common.model.EventListener;
-import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.table.ColumnSearchPanel;
+import org.jminor.common.swing.ui.UiUtil;
+import org.jminor.common.swing.ui.control.ControlProvider;
+import org.jminor.common.swing.ui.control.Controls;
+import org.jminor.common.swing.ui.table.ColumnSearchPanel;
 import org.jminor.framework.client.model.EntityTableModel;
 import org.jminor.framework.client.model.EntityTableSearchModel;
 import org.jminor.framework.client.model.ForeignKeySearchModel;

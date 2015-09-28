@@ -9,10 +9,10 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
-import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.common.swing.model.combobox.FilteredComboBoxModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 

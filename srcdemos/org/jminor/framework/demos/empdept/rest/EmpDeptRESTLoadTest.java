@@ -9,7 +9,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.common.model.tools.ScenarioException;
-import org.jminor.common.ui.tools.LoadTestPanel;
+import org.jminor.common.swing.ui.tools.LoadTestPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;

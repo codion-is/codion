@@ -6,9 +6,9 @@ package org.jminor.framework.server.monitor.ui;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.common.server.ClientLog;
-import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.Controls;
+import org.jminor.common.swing.ui.UiUtil;
+import org.jminor.common.swing.ui.control.ControlProvider;
+import org.jminor.common.swing.ui.control.Controls;
 import org.jminor.framework.server.monitor.ClientInstanceMonitor;
 
 import javax.swing.BorderFactory;

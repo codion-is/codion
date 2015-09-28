@@ -7,7 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.Events;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
-import org.jminor.common.ui.ValueLinks;
+import org.jminor.common.swing.ui.ValueLinks;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import javax.swing.ButtonModel;

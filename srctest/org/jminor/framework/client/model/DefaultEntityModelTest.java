@@ -11,7 +11,7 @@ import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.common.model.valuemap.exception.ValidationException;
-import org.jminor.common.ui.ValueLinks;
+import org.jminor.common.swing.ui.ValueLinks;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProvidersTest;

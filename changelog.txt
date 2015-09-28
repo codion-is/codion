@@ -4063,3 +4063,5 @@
   EntityTableModel.SummaryValueProvider moved to AbstractFilteredTableModel.DefaultColumnValueProvider
   EntityTablePanel.summaryPanel moved to FilteredTablePanel
   H2Database.initializeDatabase() bug fixed, only tries to initialize an embedded database if it is required
+0.9.6
+  common.swing.model and common.swing.ui packages added, common.ui and common.model refactored accordingly

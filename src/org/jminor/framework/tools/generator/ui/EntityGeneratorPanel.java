@@ -7,10 +7,10 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.ui.LoginPanel;
-import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.images.Images;
-import org.jminor.common.ui.table.FilteredTablePanel;
+import org.jminor.common.swing.ui.LoginPanel;
+import org.jminor.common.swing.ui.UiUtil;
+import org.jminor.common.swing.ui.images.Images;
+import org.jminor.common.swing.ui.table.FilteredTablePanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.tools.generator.EntityGeneratorModel;
 

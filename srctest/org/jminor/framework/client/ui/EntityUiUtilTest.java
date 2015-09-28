@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.model.combobox.BooleanComboBoxModel;
-import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.checkbox.TristateCheckBox;
+import org.jminor.common.swing.model.combobox.BooleanComboBoxModel;
+import org.jminor.common.swing.ui.UiUtil;
+import org.jminor.common.swing.ui.checkbox.TristateCheckBox;
 import org.jminor.framework.client.model.DefaultEntityEditModel;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.db.EntityConnectionProvidersTest;

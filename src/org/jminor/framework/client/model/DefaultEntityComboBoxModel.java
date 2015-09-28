@@ -9,7 +9,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.combobox.DefaultFilteredComboBoxModel;
+import org.jminor.common.swing.model.combobox.DefaultFilteredComboBoxModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;

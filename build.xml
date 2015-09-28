@@ -169,13 +169,19 @@
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
                  includes="org/jminor/common/**"
-                 excludes="org/jminor/common/ui/**"/>
+                 excludes="org/jminor/common/swing/**"/>
 
-    <dist_module module.name="jminor-common-ui"
+    <dist_module module.name="jminor-common-swing-model"
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
-                 includes="org/jminor/common/ui/**"/>
+                 includes="org/jminor/common/swing/model/**"/>
+
+    <dist_module module.name="jminor-common-swing-ui"
+                 basedir.classes="${build.main}"
+                 basedir.sources="${src.main}"
+                 basedir.javadoc="${javadoc}"
+                 includes="org/jminor/common/swing/ui/**"/>
 
     <dist_module module.name="jminor-db-core"
                  basedir.classes="${build.main}"
@@ -281,7 +287,8 @@
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="
               jminor-common-model/jminor-common-model.jar,
-              jminor-common-ui/jminor-common-ui.jar,
+              jminor-common-swing-model/jminor-common-swing-model.jar,
+              jminor-common-swing-ui/jminor-common-swing-ui.jar,
               jminor-db-core/jminor-db-core.jar,
               jminor-db-local/jminor-db-local.jar,
               jminor-db-remote/jminor-db-remote.jar,
@@ -292,7 +299,8 @@
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="
               jminor-common-model/jminor-common-model-sources.jar,
-              jminor-common-ui/jminor-common-ui-sources.jar,
+              jminor-common-swing-model/jminor-common-swing-model-sources.jar,
+              jminor-common-swing-ui/jminor-common-swing-ui-sources.jar,
               jminor-db-core/jminor-db-core-sources.jar,
               jminor-db-local/jminor-db-local-sources.jar,
               jminor-db-remote/jminor-db-remote-sources.jar,
@@ -303,7 +311,8 @@
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="
               jminor-common-model/jminor-common-model-javadoc.jar,
-              jminor-common-ui/jminor-common-ui-javadoc.jar,
+              jminor-common-swing-model/jminor-common-swing-model-javadoc.jar,
+              jminor-common-swing-ui/jminor-common-swing-ui-javadoc.jar,
               jminor-db-core/jminor-db-core-javadoc.jar,
               jminor-db-local/jminor-db-local-javadoc.jar,
               jminor-db-remote/jminor-db-remote-javadoc.jar,
@@ -334,7 +343,8 @@
   <target name="publish_all" depends="dist"
           description="Publish all project artifacts">
     <subant target="publish" buildpath="${basedir}/resources/publish/common-model"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/common-ui"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/common-swing-model"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/common-swing-ui"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-core"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-local"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-remote"/>
@@ -355,7 +365,8 @@
   <target name="report_all"
           description="Create an ivy dependency report for all project modules">
     <subant target="report" buildpath="${basedir}/resources/publish/common-model"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/common-ui"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/common-swing-model"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/common-swing-ui"/>
     <subant target="report" buildpath="${basedir}/resources/publish/db-core"/>
     <subant target="report" buildpath="${basedir}/resources/publish/db-local"/>
     <subant target="report" buildpath="${basedir}/resources/publish/db-remote"/>

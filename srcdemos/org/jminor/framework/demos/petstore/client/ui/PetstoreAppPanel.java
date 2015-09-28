@@ -5,7 +5,7 @@ package org.jminor.framework.demos.petstore.client.ui;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.ui.UiUtil;
+import org.jminor.common.swing.ui.UiUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.model.EntityApplicationModel;
@@ -18,8 +18,8 @@ import org.jminor.framework.demos.petstore.beans.ui.CategoryEditPanel;
 import org.jminor.framework.demos.petstore.beans.ui.ContactInfoEditPanel;
 import org.jminor.framework.demos.petstore.beans.ui.ItemEditPanel;
 import org.jminor.framework.demos.petstore.beans.ui.ProductEditPanel;
-import org.jminor.framework.demos.petstore.beans.ui.TagItemEditPanel;
 import org.jminor.framework.demos.petstore.beans.ui.TagEditPanel;
+import org.jminor.framework.demos.petstore.beans.ui.TagItemEditPanel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 
 import java.util.Locale;

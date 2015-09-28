@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.ui.combobox.MaximumMatch;
-import org.jminor.common.ui.combobox.SteppedComboBox;
-import org.jminor.common.ui.images.Images;
+import org.jminor.common.swing.ui.combobox.MaximumMatch;
+import org.jminor.common.swing.ui.combobox.SteppedComboBox;
+import org.jminor.common.swing.ui.images.Images;
 import org.jminor.framework.client.model.EntityComboBoxModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;

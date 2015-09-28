@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.world.beans.ui;
 
-import org.jminor.common.ui.UiUtil;
+import org.jminor.common.swing.ui.UiUtil;
 import org.jminor.framework.client.model.EntityEditModel;
 import org.jminor.framework.client.ui.EntityEditPanel;
 import org.jminor.framework.demos.world.domain.World;

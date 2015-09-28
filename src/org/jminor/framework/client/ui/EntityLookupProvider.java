@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.client.ui;
 
-import org.jminor.common.ui.input.AbstractInputProvider;
+import org.jminor.common.swing.ui.input.AbstractInputProvider;
 import org.jminor.framework.client.model.EntityLookupModel;
 import org.jminor.framework.domain.Entity;
 

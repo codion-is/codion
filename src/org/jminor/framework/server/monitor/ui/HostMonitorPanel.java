@@ -4,10 +4,10 @@
 package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.ControlSet;
-import org.jminor.common.ui.control.Controls;
+import org.jminor.common.swing.ui.UiUtil;
+import org.jminor.common.swing.ui.control.ControlProvider;
+import org.jminor.common.swing.ui.control.ControlSet;
+import org.jminor.common.swing.ui.control.Controls;
 import org.jminor.framework.server.monitor.HostMonitor;
 import org.jminor.framework.server.monitor.ServerMonitor;
 

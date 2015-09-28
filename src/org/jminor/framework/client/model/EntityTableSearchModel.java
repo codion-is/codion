@@ -10,7 +10,7 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.StateObserver;
-import org.jminor.common.model.table.ColumnSearchModel;
+import org.jminor.common.swing.model.table.ColumnSearchModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 

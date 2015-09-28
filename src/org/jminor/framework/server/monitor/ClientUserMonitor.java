@@ -9,10 +9,10 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.model.table.AbstractFilteredTableModel;
-import org.jminor.common.model.table.AbstractTableSortModel;
-import org.jminor.common.model.table.FilteredTableModel;
 import org.jminor.common.server.ClientInfo;
+import org.jminor.common.swing.model.table.AbstractFilteredTableModel;
+import org.jminor.common.swing.model.table.AbstractTableSortModel;
+import org.jminor.common.swing.model.table.FilteredTableModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 

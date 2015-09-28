@@ -17,7 +17,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.table.ColumnSearchModel;
+import org.jminor.common.swing.model.table.ColumnSearchModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;

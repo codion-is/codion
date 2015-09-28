@@ -513,8 +513,8 @@ public final class Configuration {
 
   /**
    * Specifies whether maximum match or autocomplete is used for comboboxes,
-   * {@link #COMPLETION_MODE_MAXIMUM_MATCH} for {@link org.jminor.common.ui.combobox.MaximumMatch}
-   * and {@link #COMPLETION_MODE_AUTOCOMPLETE} for {@link org.jminor.common.ui.combobox.AutoCompletion}.<br>
+   * {@link #COMPLETION_MODE_MAXIMUM_MATCH} for {@link org.jminor.common.swing.ui.combobox.MaximumMatch}
+   * and {@link #COMPLETION_MODE_AUTOCOMPLETE} for {@link org.jminor.common.swing.ui.combobox.AutoCompletion}.<br>
    * Value type:String<br>
    * Default value: {@link #COMPLETION_MODE_MAXIMUM_MATCH}
    */

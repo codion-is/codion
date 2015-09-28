@@ -13,9 +13,9 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.table.AbstractFilteredTableModel;
-import org.jminor.common.model.table.AbstractTableSortModel;
-import org.jminor.common.model.table.DefaultColumnSearchModel;
+import org.jminor.common.swing.model.table.AbstractFilteredTableModel;
+import org.jminor.common.swing.model.table.AbstractTableSortModel;
+import org.jminor.common.swing.model.table.DefaultColumnSearchModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

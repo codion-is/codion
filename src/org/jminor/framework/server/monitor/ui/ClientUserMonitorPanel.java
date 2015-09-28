@@ -5,11 +5,11 @@ package org.jminor.framework.server.monitor.ui;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.TaskScheduler;
-import org.jminor.common.ui.UiUtil;
-import org.jminor.common.ui.ValueLinks;
-import org.jminor.common.ui.control.ControlProvider;
-import org.jminor.common.ui.control.Controls;
-import org.jminor.common.ui.table.FilteredTablePanel;
+import org.jminor.common.swing.ui.UiUtil;
+import org.jminor.common.swing.ui.ValueLinks;
+import org.jminor.common.swing.ui.control.ControlProvider;
+import org.jminor.common.swing.ui.control.Controls;
+import org.jminor.common.swing.ui.table.FilteredTablePanel;
 import org.jminor.framework.server.monitor.ClientMonitor;
 import org.jminor.framework.server.monitor.ClientUserMonitor;
 

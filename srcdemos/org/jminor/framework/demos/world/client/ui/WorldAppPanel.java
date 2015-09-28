@@ -5,7 +5,7 @@ package org.jminor.framework.demos.world.client.ui;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.ui.UiUtil;
+import org.jminor.common.swing.ui.UiUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.client.model.DefaultEntityApplicationModel;
 import org.jminor.framework.client.ui.EntityApplicationPanel;
