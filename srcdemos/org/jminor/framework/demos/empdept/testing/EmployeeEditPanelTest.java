@@ -7,8 +7,8 @@ import org.jminor.common.model.User;
 import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
 import org.jminor.framework.demos.empdept.beans.ui.EmployeeEditPanel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.swing.model.EntityEditModel;
-import org.jminor.framework.tools.testing.EntityEditPanelTestUnit;
+import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.testing.EntityEditPanelTestUnit;
 
 import org.junit.Test;
 

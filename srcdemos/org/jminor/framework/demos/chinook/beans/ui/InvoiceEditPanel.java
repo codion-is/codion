@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
-import org.jminor.common.swing.ui.DateInputPanel;
-import org.jminor.framework.swing.model.EntityEditModel;
-import org.jminor.framework.swing.ui.EntityEditPanel;
-import org.jminor.framework.swing.ui.EntityPanel;
+import org.jminor.swing.common.ui.DateInputPanel;
+import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.ui.EntityEditPanel;
+import org.jminor.swing.framework.ui.EntityPanel;
 
 import javax.swing.BorderFactory;
 import javax.swing.JPanel;

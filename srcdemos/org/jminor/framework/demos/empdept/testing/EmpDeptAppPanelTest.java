@@ -5,7 +5,7 @@ package org.jminor.framework.demos.empdept.testing;
 
 import org.jminor.common.model.User;
 import org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel;
-import org.jminor.framework.tools.testing.EntityApplicationPanelTestUnit;
+import org.jminor.swing.framework.testing.EntityApplicationPanelTestUnit;
 
 import org.junit.Test;
 

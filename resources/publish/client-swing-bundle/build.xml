@@ -1,3 +1,0 @@
-<project name="jminor-client-swing-bundle">
-  <import file="../build.xml"/>
-</project>

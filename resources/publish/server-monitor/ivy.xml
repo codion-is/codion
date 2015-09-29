@@ -16,8 +16,8 @@
 
   <dependencies defaultconf="runtime">
     <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-common-swing-model" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-common-swing-ui" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-swing-common-model" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-swing-common-ui" rev="latest.integration"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.3"/>

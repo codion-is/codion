@@ -5,8 +5,6 @@ package org.jminor.framework;
 
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.framework.swing.ui.EntityApplicationPanel;
-import org.jminor.framework.swing.ui.EntityPanelProvider;
 
 import java.rmi.registry.Registry;
 import java.text.SimpleDateFormat;
@@ -428,7 +426,7 @@ public final class Configuration {
    * should be persisted, or kept in memory, when the dialog is closed.<br>
    * Value type: Boolean<br>
    * Default value: false
-   * @see EntityApplicationPanel#showEntityPanelDialog(EntityPanelProvider)
+   * @see org.jminor.swing.framework.ui.EntityApplicationPanel#showEntityPanelDialog(EntityPanelProvider)
    */
   public static final String PERSIST_ENTITY_PANELS = "jminor.client.persistEntityPanels";
 
@@ -515,8 +513,8 @@ public final class Configuration {
 
   /**
    * Specifies whether maximum match or autocomplete is used for comboboxes,
-   * {@link #COMPLETION_MODE_MAXIMUM_MATCH} for {@link org.jminor.common.swing.ui.combobox.MaximumMatch}
-   * and {@link #COMPLETION_MODE_AUTOCOMPLETE} for {@link org.jminor.common.swing.ui.combobox.AutoCompletion}.<br>
+   * {@link #COMPLETION_MODE_MAXIMUM_MATCH} for {@link org.jminor.swing.common.ui.combobox.MaximumMatch}
+   * and {@link #COMPLETION_MODE_AUTOCOMPLETE} for {@link org.jminor.swing.common.ui.combobox.AutoCompletion}.<br>
    * Value type:String<br>
    * Default value: {@link #COMPLETION_MODE_MAXIMUM_MATCH}
    */

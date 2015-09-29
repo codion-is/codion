@@ -4,10 +4,10 @@
 package org.jminor.framework.demos.empdept.beans.ui;
 
 import org.jminor.common.model.EventListener;
-import org.jminor.common.swing.ui.UiUtil;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.framework.swing.model.EntityEditModel;
-import org.jminor.framework.swing.ui.EntityEditPanel;
+import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;

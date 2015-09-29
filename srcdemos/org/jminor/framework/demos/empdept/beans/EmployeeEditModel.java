@@ -14,9 +14,9 @@ import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.swing.model.DefaultEntityComboBoxModel;
-import org.jminor.framework.swing.model.DefaultEntityEditModel;
-import org.jminor.framework.swing.model.EntityComboBoxModel;
+import org.jminor.swing.framework.model.DefaultEntityComboBoxModel;
+import org.jminor.swing.framework.model.DefaultEntityEditModel;
+import org.jminor.swing.framework.model.EntityComboBoxModel;
 
 import java.util.Arrays;
 

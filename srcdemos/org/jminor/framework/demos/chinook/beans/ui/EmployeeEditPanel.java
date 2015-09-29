@@ -3,11 +3,11 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
-import org.jminor.common.swing.ui.DateInputPanel;
-import org.jminor.common.swing.ui.UiUtil;
-import org.jminor.common.swing.ui.layout.FlexibleGridLayout;
-import org.jminor.framework.swing.model.EntityEditModel;
-import org.jminor.framework.swing.ui.EntityEditPanel;
+import org.jminor.swing.common.ui.DateInputPanel;
+import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JTextField;
 

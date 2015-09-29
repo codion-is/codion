@@ -2,10 +2,10 @@ package org.jminor.framework.plugins.imagepanel;
 
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Util;
-import org.jminor.common.swing.ui.UiUtil;
-import org.jminor.common.swing.ui.control.Control;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.swing.ui.EntityTablePanel;
+import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.common.ui.control.Control;
+import org.jminor.swing.framework.ui.EntityTablePanel;
 
 import javax.imageio.ImageIO;
 import javax.swing.JComponent;

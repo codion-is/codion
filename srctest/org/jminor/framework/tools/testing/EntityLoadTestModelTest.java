@@ -10,10 +10,11 @@ import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.server.EntityConnectionServerTest;
-import org.jminor.framework.swing.model.DefaultEntityApplicationModel;
-import org.jminor.framework.swing.model.DefaultEntityModel;
-import org.jminor.framework.swing.model.EntityApplicationModel;
-import org.jminor.framework.swing.model.EntityTableModel;
+import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
+import org.jminor.swing.framework.model.DefaultEntityModel;
+import org.jminor.swing.framework.model.EntityApplicationModel;
+import org.jminor.swing.framework.model.EntityTableModel;
+import org.jminor.swing.framework.testing.EntityLoadTestModel;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;

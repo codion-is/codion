@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.demos.petstore.beans.ui;
 
-import org.jminor.common.swing.ui.layout.FlexibleGridLayout;
-import org.jminor.framework.swing.model.EntityEditModel;
-import org.jminor.framework.swing.ui.EntityComboBox;
-import org.jminor.framework.swing.ui.EntityEditPanel;
+import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.ui.EntityComboBox;
+import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JTextField;
 

@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.demos.world.beans.ui;
 
-import org.jminor.common.swing.ui.UiUtil;
 import org.jminor.framework.demos.world.domain.World;
-import org.jminor.framework.swing.model.EntityEditModel;
-import org.jminor.framework.swing.ui.EntityEditPanel;
+import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JTextField;
 import java.awt.GridLayout;

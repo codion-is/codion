@@ -5,13 +5,13 @@ package org.jminor.framework.demos.schemabrowser.testing;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.swing.ui.tools.LoadTestPanel;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
-import org.jminor.framework.swing.model.DefaultEntityApplicationModel;
-import org.jminor.framework.swing.model.EntityApplicationModel;
-import org.jminor.framework.swing.model.EntityModel;
-import org.jminor.framework.tools.testing.EntityLoadTestModel;
+import org.jminor.swing.common.ui.tools.LoadTestPanel;
+import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
+import org.jminor.swing.framework.model.EntityApplicationModel;
+import org.jminor.swing.framework.model.EntityModel;
+import org.jminor.swing.framework.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;

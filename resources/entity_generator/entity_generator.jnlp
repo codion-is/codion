@@ -27,5 +27,5 @@
     <property name="jminor.db.sid" value="mysql"/>
   </resources>
 
-  <application-desc main-class="org.jminor.framework.server.monitor.ui.EntityServerMonitorPanel"/>
+  <application-desc main-class="org.jminor.swing.framework.generator.ui.EntityGeneratorPanel"/>
 </jnlp>

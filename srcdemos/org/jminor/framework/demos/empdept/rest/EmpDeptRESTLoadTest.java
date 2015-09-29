@@ -9,13 +9,13 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.common.model.tools.ScenarioException;
-import org.jminor.common.swing.ui.tools.LoadTestPanel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.plugins.json.EntityJSONParser;
 import org.jminor.framework.plugins.rest.EntityRESTService;
+import org.jminor.swing.common.ui.tools.LoadTestPanel;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;

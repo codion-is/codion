@@ -168,20 +168,19 @@
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
-                 includes="org/jminor/common/**"
-                 excludes="org/jminor/common/swing/**"/>
+                 includes="org/jminor/common/**"/>
 
-    <dist_module module.name="jminor-common-swing-model"
+    <dist_module module.name="jminor-swing-common-model"
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
-                 includes="org/jminor/common/swing/model/**"/>
+                 includes="org/jminor/swing/common/model/**"/>
 
-    <dist_module module.name="jminor-common-swing-ui"
+    <dist_module module.name="jminor-swing-common-ui"
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
-                 includes="org/jminor/common/swing/ui/**"/>
+                 includes="org/jminor/swing/common/ui/**"/>
 
     <dist_module module.name="jminor-db-core"
                  basedir.classes="${build.main}"
@@ -213,39 +212,36 @@
                  basedir.javadoc="${javadoc}"
                  includes="org/jminor/framework/tools/testing/EntityTestUnit*"/>
 
-    <dist_module module.name="jminor-client-swing-model"
+    <dist_module module.name="jminor-swing-client-model"
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
-                 includes="org/jminor/framework/swing/model/**"/>
+                 includes="org/jminor/swing/framework/model/**"/>
 
-    <dist_module module.name="jminor-client-swing-ui"
+    <dist_module module.name="jminor-swing-client-ui"
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
-                 includes="org/jminor/framework/swing/ui/**"/>
+                 includes="org/jminor/swing/framework/ui/**"/>
 
-    <dist_module module.name="jminor-client-swing-test"
+    <dist_module module.name="jminor-swing-client-test"
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
-                 includes="org/jminor/framework/tools/testing/EntityApplicationPanelTestUnit*,
-                   org/jminor/framework/tools/testing/EntityEditPanelTestUnit*,
-                   org/jminor/framework/tools/testing/EntityLoadTestModel*"/>
+                 includes="org/jminor/swing/framework/testing/**"/>
 
     <dist_module module.name="jminor-server"
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
-                 includes="org/jminor/framework/server/*"
-                 excludes="org/jminor/framework/server/monitor/**"/>
+                 includes="org/jminor/framework/server/*"/>
 
     <dist_module module.name="jminor-server-monitor"
                  basedir.classes="${build.main}"
                  basedir.sources="${src.main}"
                  basedir.javadoc="${javadoc}"
                  includes="org/jminor/framework/Configuration.class,
-                   org/jminor/framework/server/monitor/**,
+                   org/jminor/swing/framework/server/monitor/**,
                    org/jminor/framework/server/EntityConnectionServerAdmin.class"/>
 
     <dist_module module.name="jminor-plugin-jasperreports"
@@ -283,41 +279,41 @@
     <jar jarfile="${dist}/jminor-demos/jminor-demos-sources.jar" basedir="${src.demos}"
          manifest="${build.main}/META-INF/MANIFEST.MF"/>
 
-    <jar jarfile="${dist}/jminor-client-swing-bundle/jminor-client-swing-bundle.jar"
+    <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="
               jminor-common-model/jminor-common-model.jar,
-              jminor-common-swing-model/jminor-common-swing-model.jar,
-              jminor-common-swing-ui/jminor-common-swing-ui.jar,
+              jminor-swing-common-model/jminor-swing-common-model.jar,
+              jminor-swing-common-ui/jminor-swing-common-ui.jar,
               jminor-db-core/jminor-db-core.jar,
               jminor-db-local/jminor-db-local.jar,
               jminor-db-remote/jminor-db-remote.jar,
-              jminor-client-swing-model/jminor-client-swing-model.jar,
-              jminor-client-swing-ui/jminor-client-swing-ui.jar"/>
+              jminor-swing-client-model/jminor-swing-client-model.jar,
+              jminor-swing-client-ui/jminor-swing-client-ui.jar"/>
     </jar>
-    <jar jarfile="${dist}/jminor-client-swing-bundle/jminor-client-swing-bundle-sources.jar"
+    <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle-sources.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="
               jminor-common-model/jminor-common-model-sources.jar,
-              jminor-common-swing-model/jminor-common-swing-model-sources.jar,
-              jminor-common-swing-ui/jminor-common-swing-ui-sources.jar,
+              jminor-swing-common-model/jminor-swing-common-model-sources.jar,
+              jminor-swing-common-ui/jminor-swing-common-ui-sources.jar,
               jminor-db-core/jminor-db-core-sources.jar,
               jminor-db-local/jminor-db-local-sources.jar,
               jminor-db-remote/jminor-db-remote-sources.jar,
-              jminor-client-swing-model/jminor-client-swing-model-sources.jar,
-              jminor-client-swing-ui/jminor-client-swing-ui-sources.jar"/>
+              jminor-swing-client-model/jminor-swing-client-model-sources.jar,
+              jminor-swing-client-ui/jminor-swing-client-ui-sources.jar"/>
     </jar>
-    <jar jarfile="${dist}/jminor-client-swing-bundle/jminor-client-swing-bundle-javadoc.jar"
+    <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle-javadoc.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="
               jminor-common-model/jminor-common-model-javadoc.jar,
-              jminor-common-swing-model/jminor-common-swing-model-javadoc.jar,
-              jminor-common-swing-ui/jminor-common-swing-ui-javadoc.jar,
+              jminor-swing-common-model/jminor-swing-common-model-javadoc.jar,
+              jminor-swing-common-ui/jminor-swing-common-ui-javadoc.jar,
               jminor-db-core/jminor-db-core-javadoc.jar,
               jminor-db-local/jminor-db-local-javadoc.jar,
               jminor-db-remote/jminor-db-remote-javadoc.jar,
-              jminor-client-swing-model/jminor-client-swing-model-javadoc.jar,
-              jminor-client-swing-ui/jminor-client-swing-ui-javadoc.jar"/>
+              jminor-swing-client-model/jminor-swing-client-model-javadoc.jar,
+              jminor-swing-client-ui/jminor-swing-client-ui-javadoc.jar"/>
     </jar>
 
     <copy file="${basedir}/changelog.txt" todir="${dist}"/>
@@ -343,16 +339,16 @@
   <target name="publish_all" depends="dist"
           description="Publish all project artifacts">
     <subant target="publish" buildpath="${basedir}/resources/publish/common-model"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/common-swing-model"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/common-swing-ui"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/swing-common-model"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/swing-common-ui"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-core"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-local"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-remote"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-test"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/client-swing-model"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/client-swing-ui"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/client-swing-test"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/client-swing-bundle"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/swing-client-model"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/swing-client-ui"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/swing-client-test"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/swing-client-bundle"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/server"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/server-monitor"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-jasperreports"/>
@@ -365,16 +361,16 @@
   <target name="report_all"
           description="Create an ivy dependency report for all project modules">
     <subant target="report" buildpath="${basedir}/resources/publish/common-model"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/common-swing-model"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/common-swing-ui"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/swing-common-model"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/swing-common-ui"/>
     <subant target="report" buildpath="${basedir}/resources/publish/db-core"/>
     <subant target="report" buildpath="${basedir}/resources/publish/db-local"/>
     <subant target="report" buildpath="${basedir}/resources/publish/db-remote"/>
     <subant target="report" buildpath="${basedir}/resources/publish/db-test"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/client-model"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/client-ui"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/client-test"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/client-bundle"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/swing-client-model"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/swing-client-ui"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/swing-client-test"/>
+    <subant target="report" buildpath="${basedir}/resources/publish/swing-client-bundle"/>
     <subant target="report" buildpath="${basedir}/resources/publish/server"/>
     <subant target="report" buildpath="${basedir}/resources/publish/server-monitor"/>
     <subant target="report" buildpath="${basedir}/resources/publish/plugin-jasperreports"/>
@@ -699,7 +695,7 @@
 
   <target name="run_rmi_server_monitor" depends="build, create_client_server_keystore"
           description="Runs the RMI server monitor">
-    <java classname="org.jminor.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
+    <java classname="org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
       <classpath>
         <path refid="classes.main"/>
         <path refid="lib.runtime.server-monitor"/>
@@ -712,7 +708,7 @@
 
   <target name="run_entity_generator" depends="build"
           description="Runs the entity generator">
-    <java classname="org.jminor.framework.tools.generator.ui.EntityGeneratorPanel" fork="yes">
+    <java classname="org.jminor.swing.framework.generator.ui.EntityGeneratorPanel" fork="yes">
       <classpath>
         <path refid="classes.main"/>
         <path refid="lib.runtime.client"/>

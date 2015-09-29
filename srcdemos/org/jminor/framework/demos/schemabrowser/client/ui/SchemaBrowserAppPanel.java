@@ -5,14 +5,14 @@ package org.jminor.framework.demos.schemabrowser.client.ui;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.common.swing.ui.UiUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
-import org.jminor.framework.swing.model.DefaultEntityApplicationModel;
-import org.jminor.framework.swing.model.EntityApplicationModel;
-import org.jminor.framework.swing.ui.EntityApplicationPanel;
-import org.jminor.framework.swing.ui.EntityPanelProvider;
+import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
+import org.jminor.swing.framework.model.EntityApplicationModel;
+import org.jminor.swing.framework.ui.EntityApplicationPanel;
+import org.jminor.swing.framework.ui.EntityPanelProvider;
 
 import javax.swing.JTable;
 

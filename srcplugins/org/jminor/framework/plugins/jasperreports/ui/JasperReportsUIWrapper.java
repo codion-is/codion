@@ -5,7 +5,7 @@ package org.jminor.framework.plugins.jasperreports.ui;
 
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportResult;
-import org.jminor.common.swing.ui.reports.ReportUIWrapper;
+import org.jminor.swing.common.ui.reports.ReportUIWrapper;
 
 import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.view.JRViewer;

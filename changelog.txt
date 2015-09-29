@@ -4066,3 +4066,4 @@
 0.9.6
   common.swing.model and common.swing.ui packages added, common.ui and common.model refactored accordingly
   org.jminor.framework.client package remaned to swing
+  org.jminor.framework.swing moved to org.jminor.swing.framework and org.jminor.common.swing moved to org.jminor.swing.common

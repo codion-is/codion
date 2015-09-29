@@ -3,9 +3,6 @@
  */
 package org.jminor.framework.i18n;
 
-import org.jminor.common.i18n.Messages;
-
-import javax.swing.UIManager;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -124,15 +121,6 @@ public final class FrameworkMessages {
   public static final String PROPERTY_VALUE_TOO_SMALL = "property_value_too_small";
 
   public static final String HAS_BEEN_DELETED = "has_been_deleted";
-
-  static {
-    UIManager.put("OptionPane.yesButtonText", Messages.get(Messages.YES));
-    UIManager.put("OptionPane.noButtonText", Messages.get(Messages.NO));
-    UIManager.put("OptionPane.cancelButtonText", Messages.get(Messages.CANCEL));
-    UIManager.put("OptionPane.okButtonText", Messages.get(Messages.OK));
-    UIManager.put("OptionPane.inputDialogTitle", FrameworkMessages.get(FrameworkMessages.OPTION_PANE_INPUT_DIALOG_TITLE));
-    UIManager.put("OptionPane.messageDialogTitle", FrameworkMessages.get(FrameworkMessages.OPTION_PANE_MESSAGE_DIALOG_TITLE));
-  }
 
   /**
    * Retrieves the locale string associated with the given key
