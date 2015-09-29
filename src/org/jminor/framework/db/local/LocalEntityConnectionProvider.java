@@ -48,7 +48,7 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
    * @param database the Database implementation
    */
   public LocalEntityConnectionProvider(final User user, final Database database) {
-    this(user, database, SCHEDULE_VALIDITY_CHECK);
+    this(user, database, Configuration.getBooleanValue(Configuration.CONNECTION_SCHEDULE_VALIDATION));
   }
 
   /**

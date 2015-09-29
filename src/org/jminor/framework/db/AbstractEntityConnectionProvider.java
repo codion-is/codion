@@ -9,7 +9,6 @@ import org.jminor.common.model.States;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.framework.Configuration;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -23,7 +22,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
 
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
   private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 10;
-  protected static final boolean SCHEDULE_VALIDITY_CHECK = Configuration.getBooleanValue(Configuration.CONNECTION_SCHEDULE_VALIDATION);
   protected static final String IS_CONNECTED = "isConnected";
   protected static final String IS_VALID = "isValid";
   private final State connectedState = States.state();

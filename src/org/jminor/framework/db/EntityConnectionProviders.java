@@ -68,12 +68,15 @@ public final class EntityConnectionProviders {
    * @see org.jminor.framework.db.local.LocalEntityConnectionProvider
    * @see org.jminor.framework.db.remote.RemoteEntityConnectionProvider
    */
-  public static EntityConnectionProvider connectionProvider(final User user, final UUID clientID,
-                                                            final String clientTypeID) {
+  public static EntityConnectionProvider connectionProvider(final User user, final UUID clientID, final String clientTypeID) {
     try {
       if (Configuration.getStringValue(Configuration.CLIENT_CONNECTION_TYPE).equals(Configuration.CONNECTION_TYPE_REMOTE)) {
+        final String serverHostName = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
+        final boolean scheduleValidityCheck = Configuration.getBooleanValue(Configuration.CONNECTION_SCHEDULE_VALIDATION);
+
         return (EntityConnectionProvider) Class.forName(REMOTE_CONNECTION_PROVIDER).getConstructor(
-                User.class, UUID.class, String.class).newInstance(user, clientID, clientTypeID);
+                String.class, User.class, UUID.class, String.class, boolean.class)
+                .newInstance(serverHostName, user, clientID, clientTypeID, scheduleValidityCheck);
       }
       else {
         return (EntityConnectionProvider) Class.forName(LOCAL_CONNECTION_PROVIDER).getConstructor(

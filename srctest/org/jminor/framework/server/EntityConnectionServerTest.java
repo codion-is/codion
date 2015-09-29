@@ -96,13 +96,14 @@ public class EntityConnectionServerTest {
 
   @Test(expected = RuntimeException.class)
   public void testWrongPassword() throws Exception {
-    new RemoteEntityConnectionProvider(new User(User.UNIT_TEST_USER.getUsername(), "foobar"), UUID.randomUUID(), getClass().getSimpleName()).getConnection();
+    new RemoteEntityConnectionProvider("localhost", new User(User.UNIT_TEST_USER.getUsername(), "foobar"),
+            UUID.randomUUID(), getClass().getSimpleName()).getConnection();
   }
 
   @Test
   public void test() throws Exception {
-    final RemoteEntityConnectionProvider providerOne = new RemoteEntityConnectionProvider(User.UNIT_TEST_USER,
-            UUID.randomUUID(), getClass().getSimpleName());
+    final RemoteEntityConnectionProvider providerOne = new RemoteEntityConnectionProvider("localhost",
+            User.UNIT_TEST_USER, UUID.randomUUID(), getClass().getSimpleName());
     final EntityConnection remoteConnectionOne = providerOne.getConnection();
     assertTrue(remoteConnectionOne.isValid());
     assertEquals(1, admin.getConnectionCount());
@@ -113,8 +114,8 @@ public class EntityConnectionServerTest {
     admin.setMaximumPoolCheckOutTime(User.UNIT_TEST_USER, 2005);
     assertEquals(2005, admin.getMaximumPoolCheckOutTime(User.UNIT_TEST_USER));
 
-    final RemoteEntityConnectionProvider providerTwo = new RemoteEntityConnectionProvider(User.UNIT_TEST_USER,
-            UUID.randomUUID(), getClass().getSimpleName());
+    final RemoteEntityConnectionProvider providerTwo = new RemoteEntityConnectionProvider("localhost",
+            User.UNIT_TEST_USER, UUID.randomUUID(), getClass().getSimpleName());
     final EntityConnection remoteConnectionTwo = providerTwo.getConnection();
     admin.setLoggingEnabled(providerOne.getClientID(), true);
     assertTrue(admin.isLoggingEnabled(providerOne.getClientID()));
@@ -181,12 +182,12 @@ public class EntityConnectionServerTest {
     admin.setConnectionLimit(3);
     assertEquals(3, admin.getConnectionLimit());
     final String empDeptClientTypeID = "TestLoginProxy";
-    final RemoteEntityConnectionProvider empDeptProviderJohn = new RemoteEntityConnectionProvider(new User("john", "hello"),
-            UUID.randomUUID(), empDeptClientTypeID);
-    final RemoteEntityConnectionProvider empDeptProviderHelen = new RemoteEntityConnectionProvider(new User("helen", "juno"),
-            UUID.randomUUID(), empDeptClientTypeID);
-    final RemoteEntityConnectionProvider empDeptProviderInvalid = new RemoteEntityConnectionProvider(new User("foo", "bar"),
-            UUID.randomUUID(), empDeptClientTypeID);
+    final RemoteEntityConnectionProvider empDeptProviderJohn = new RemoteEntityConnectionProvider("localhost",
+            new User("john", "hello"), UUID.randomUUID(), empDeptClientTypeID);
+    final RemoteEntityConnectionProvider empDeptProviderHelen = new RemoteEntityConnectionProvider("localhost",
+            new User("helen", "juno"), UUID.randomUUID(), empDeptClientTypeID);
+    final RemoteEntityConnectionProvider empDeptProviderInvalid = new RemoteEntityConnectionProvider("localhost",
+            new User("foo", "bar"), UUID.randomUUID(), empDeptClientTypeID);
     empDeptProviderJohn.getConnection();
     empDeptProviderHelen.getConnection();
     try {

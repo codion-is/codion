@@ -21,7 +21,6 @@ import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.common.model.tools.MethodLogger;
-import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteria;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -73,8 +72,8 @@ final class LocalEntityConnection implements EntityConnection {
 
   private final DatabaseConnection connection;
 
-  private boolean optimisticLocking = Configuration.getBooleanValue(Configuration.USE_OPTIMISTIC_LOCKING);
-  private boolean limitForeignKeyFetchDepth = Configuration.getBooleanValue(Configuration.LIMIT_FOREIGN_KEY_FETCH_DEPTH);
+  private boolean optimisticLocking;
+  private boolean limitForeignKeyFetchDepth;
 
   private MethodLogger methodLogger;
 
@@ -82,23 +81,35 @@ final class LocalEntityConnection implements EntityConnection {
    * Constructs a new LocalEntityConnection instance
    * @param database the Database instance
    * @param user the user used for connecting to the database
+   * @param optimisticLocking if true then optimistic locking is used during updates
+   * @param limitForeignKeyFetchDepth if false then there is no limiting of foreign key fetch depth
+   * @param validityCheckTimeout specifies the timeout in seconds when validating this connection
    * @throws DatabaseException in case there is a problem connecting to the database,
    * such as a wrong username or password being provided
    */
-  LocalEntityConnection(final Database database, final User user) throws DatabaseException {
-    this.connection = DatabaseConnections.createConnection(database, user, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
+  LocalEntityConnection(final Database database, final User user, final boolean optimisticLocking,
+                        final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
+    this.connection = DatabaseConnections.createConnection(database, user, validityCheckTimeout);
+    this.optimisticLocking = optimisticLocking;
+    this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
   /**
    * Constructs a new LocalEntityConnection instance
    * @param database the Database instance
    * @param connection the Connection object to base this EntityConnection on, it is assumed to be in a valid state
+   * @param optimisticLocking if true then optimistic locking is used during updates
+   * @param limitForeignKeyFetchDepth if false then there is no limiting of foreign key fetch depth
+   * @param validityCheckTimeout specifies the timeout in seconds when validating this connection
    * @throws IllegalArgumentException in case the given connection is invalid or disconnected
    * @throws DatabaseException in case a validation statement is required but could not be created
    * @see org.jminor.common.db.Database#supportsIsValid()
    */
-  LocalEntityConnection(final Database database, final Connection connection) throws DatabaseException {
-    this.connection = DatabaseConnections.createConnection(database, connection, Configuration.getIntValue(Configuration.CONNECTION_VALIDITY_CHECK_TIMEOUT));
+  LocalEntityConnection(final Database database, final Connection connection, final boolean optimisticLocking,
+                        final boolean limitForeignKeyFetchDepth, final int validityCheckTimeout) throws DatabaseException {
+    this.connection = DatabaseConnections.createConnection(database, connection, validityCheckTimeout);
+    this.optimisticLocking = optimisticLocking;
+    this.limitForeignKeyFetchDepth = limitForeignKeyFetchDepth;
   }
 
   /** {@inheritDoc} */
@@ -1253,8 +1264,8 @@ final class LocalEntityConnection implements EntityConnection {
     /**
      * Instantiates a new Logger
      */
-    Logger() {
-      super(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LOG_SIZE));
+    Logger(final int logSize) {
+      super(logSize);
     }
 
     /**

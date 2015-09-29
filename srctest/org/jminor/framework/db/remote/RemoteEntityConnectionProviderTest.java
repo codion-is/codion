@@ -36,7 +36,8 @@ public class RemoteEntityConnectionProviderTest {
 
   @Test
   public void test() throws Exception {
-    final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider(User.UNIT_TEST_USER, UUID.randomUUID(), "TestClient");
+    final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider("localhost",
+            User.UNIT_TEST_USER, UUID.randomUUID(), "TestClient");
 
     assertEquals(Configuration.getStringValue(Configuration.SERVER_HOST_NAME), provider.getServerHostName());
 

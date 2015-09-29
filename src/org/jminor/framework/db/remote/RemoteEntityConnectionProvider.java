@@ -41,29 +41,30 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
-   * @param user the user to base the db provider on
-   * @param clientID the client ID
+   * @param serverHostName the server host name
+   * @param user the user to use when initializing connections
+   * @param clientID a UUID identifying the client
    * @param clientTypeID a string identifying the client type
    */
-  public RemoteEntityConnectionProvider(final User user, final UUID clientID, final String clientTypeID) {
-    this(user, clientID, clientTypeID, SCHEDULE_VALIDITY_CHECK);
+  public RemoteEntityConnectionProvider(final String serverHostName, final User user, final UUID clientID,
+                                        final String clientTypeID) {
+    this(serverHostName, user, clientID, clientTypeID, true);
   }
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
-   * @param user the user to base the db provider on
-   * @param clientID the client ID
+   * @param serverHostName the server host name
+   * @param user the user to use when initializing connections
+   * @param clientID a UUID identifying the client
    * @param clientTypeID a string identifying the client type
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
-  public RemoteEntityConnectionProvider(final User user, final UUID clientID, final String clientTypeID,
-                                        final boolean scheduleValidityCheck) {
+  public RemoteEntityConnectionProvider(final String serverHostName, final User user, final UUID clientID,
+                                        final String clientTypeID, final boolean scheduleValidityCheck) {
     super(user, scheduleValidityCheck);
-    Util.rejectNullValue(clientID, "clientID");
-    Util.rejectNullValue(clientTypeID, "clientTypeID");
-    this.serverHostName = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
-    this.clientID = clientID;
-    this.clientTypeID = clientTypeID;
+    this.serverHostName = Util.rejectNullValue(serverHostName, "serverHostName");
+    this.clientID = Util.rejectNullValue(clientID, "clientID");
+    this.clientTypeID = Util.rejectNullValue(clientTypeID, "clientTypeID");
     Util.resolveTrustStoreFromClasspath(clientTypeID);
   }
 

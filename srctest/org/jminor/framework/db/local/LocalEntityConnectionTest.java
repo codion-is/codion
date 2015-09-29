@@ -441,7 +441,7 @@ public class LocalEntityConnectionTest {
     try {
       final Database db = DatabasesTest.createTestDatabaseInstance();
       connection = db.createConnection(User.UNIT_TEST_USER);
-      final EntityConnection conn = new LocalEntityConnection(db, connection);
+      final EntityConnection conn = new LocalEntityConnection(db, connection, true, true, 1);
       assertTrue(conn.isConnected());
       assertTrue(conn.isValid());
     }
@@ -462,7 +462,7 @@ public class LocalEntityConnectionTest {
       final Database db = DatabasesTest.createTestDatabaseInstance();
       connection = db.createConnection(User.UNIT_TEST_USER);
       connection.close();
-      new LocalEntityConnection(db, connection);
+      new LocalEntityConnection(db, connection, true, true, 1);
     }
     finally {
       if (connection != null) {
@@ -571,6 +571,6 @@ public class LocalEntityConnectionTest {
   }
 
   private static LocalEntityConnection initializeConnection() throws DatabaseException {
-    return new LocalEntityConnection(DatabasesTest.createTestDatabaseInstance(), User.UNIT_TEST_USER);
+    return new LocalEntityConnection(DatabasesTest.createTestDatabaseInstance(), User.UNIT_TEST_USER, true, true, 1);
   }
 }
