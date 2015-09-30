@@ -4068,3 +4068,4 @@
   org.jminor.framework.client package remaned to swing
   org.jminor.framework.swing moved to org.jminor.swing.framework and org.jminor.common.swing moved to org.jminor.swing.common
   Refactoring in order to move usages of Configuration out of core classes
+  Source directory structure improved, now follows maven/gradle best practices

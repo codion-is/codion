@@ -62,16 +62,11 @@
     <pathelement path="${build.demos}"/>
   </path>
 
-  <fileset id="common_resources" dir="${src.main}" includes=
-          "org/jminor/common/**/*.gif, org/jminor/common/**/*.png, org/jminor/common/**/*.properties, org/jminor/common/**/*.txt"/>
-  <fileset id="framework_resources" dir="${src.main}" includes=
-          "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt"/>
-  <fileset id="test_resources" dir="${src.test}" includes=
-          "org/jminor/**/*.gif, org/jminor/**/*.properties, org/jminor/**/*.txt"/>
-  <fileset id="demos_resources" dir="${src.demos}" includes=
-          "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt"/>
-  <fileset id="plugins_resources" dir="${src.plugins}" includes=
-          "org/jminor/framework/**/*.gif, org/jminor/framework/**/*.png, org/jminor/framework/**/*.properties, org/jminor/framework/**/*.txt"/>
+  <fileset id="common_resources" dir="${src.main}" excludes="**/*.java"/>
+  <fileset id="framework_resources" dir="${src.main}" excludes="**/*.java"/>
+  <fileset id="test_resources" dir="${src.test}" excludes="**/*.java"/>
+  <fileset id="demos_resources" dir="${src.demos}" excludes="**/*.java"/>
+  <fileset id="plugins_resources" dir="${src.plugins}" excludes="**/*.java"/>
 
   <condition property="keystore.available">
     <available file="${resources.security}/JMinorServerKeystore"/>
@@ -119,19 +114,6 @@
       <fileset refid="plugins_resources"/>
     </copy>
 
-    <mkdir dir="${build.demos}"/>
-    <javac destdir="${build.demos}" debug="${build.debuginfo}" includeantruntime="false">
-      <src path="${src.demos}"/>
-      <classpath>
-        <path refid="lib.build.demos"/>
-        <path location="${build.main}"/>
-        <path location="${build.plugins}"/>
-      </classpath>
-    </javac>
-    <copy todir="${build.demos}">
-      <fileset refid="demos_resources"/>
-    </copy>
-
     <mkdir dir="${build.test}"/>
     <javac destdir="${build.test}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.test}"/>
@@ -143,6 +125,19 @@
     </javac>
     <copy todir="${build.test}">
       <fileset refid="test_resources"/>
+    </copy>
+
+    <mkdir dir="${build.demos}"/>
+    <javac destdir="${build.demos}" debug="${build.debuginfo}" includeantruntime="false">
+      <src path="${src.demos}"/>
+      <classpath>
+        <path refid="lib.build.demos"/>
+        <path location="${build.main}"/>
+        <path location="${build.plugins}"/>
+      </classpath>
+    </javac>
+    <copy todir="${build.demos}">
+      <fileset refid="demos_resources"/>
     </copy>
 
     <concat destfile="${build.main}/org/jminor/common/model/version.txt">${version}-build ${build.date}</concat>
