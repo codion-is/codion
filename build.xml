@@ -180,7 +180,7 @@
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
       <classpath refid="lib.runtime.test"/>
     </taskdef>
-    <jrc srcdir="${resources.demos}" includes="**/*.jrxml"/>
+    <jrc srcdir="${basedir}/demos/src/main/reports" includes="**/*.jrxml"/>
 
     <mkdir dir="${build.demos.test}"/>
     <javac destdir="${build.demos.test}" debug="${build.debuginfo}" includeantruntime="false">
@@ -473,7 +473,7 @@
       <fileset dir="${db.h2.dir}"/>
     </copy>
     <copy todir="${deploy.server.path}/reports/demos" flatten="true">
-      <fileset dir="${basedir}/resources/demos/" includes="**/*.jasper"/>
+      <fileset dir="${basedir}/demos/src/main/reports" includes="**/*.jasper"/>
     </copy>
   </target>
 

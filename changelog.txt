@@ -20,7 +20,7 @@
   Removed unused events from EntityApplicationModel
   Refactored EntityApplicationPanel.startApplication()
   Removed unused local variable from ClientWrapper
-  Added a separate port for the rmi db connection, runtime property framework.server.db.port
+  Added a separate port for the rmi db connection, runtime pr framework.server.db.port
   Updated rmi server launch files to reflect changes in property names
   Added typical jnlp file code to the framework walkthrough file
   Added a dialog asking the user whether to retry if login fails
@@ -4070,3 +4070,4 @@
   Refactoring in order to move usages of Configuration out of core classes
   Source directory structure improved, now follows maven/gradle best practices
   Plugin and demo sources moved, unit test dependencies fixed, build file refactored
+  Reorganized demo sql scripts and reports
