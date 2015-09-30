@@ -1285,7 +1285,7 @@ final class LocalEntityConnection implements EntityConnection {
 
       final StringBuilder builder = new StringBuilder();
       if (argument instanceof EntityCriteria) {
-        builder.append(appendEntityCriteria((EntityCriteria) argument));
+        builder.append(getEntityCriteriaString((EntityCriteria) argument));
       }
       else if (argument instanceof Object[] && ((Object[]) argument).length > 0) {
         builder.append("[").append(argumentArrayToString((Object[]) argument)).append("]");
@@ -1306,7 +1306,7 @@ final class LocalEntityConnection implements EntityConnection {
       return builder.toString();
     }
 
-    private String appendEntityCriteria(final EntityCriteria criteria) {
+    private String getEntityCriteriaString(final EntityCriteria criteria) {
       final StringBuilder builder = new StringBuilder();
       builder.append(criteria.getEntityID());
       final String whereClause = criteria.getWhereClause();
