@@ -177,6 +177,11 @@
       <fileset refid="demos_resources"/>
     </copy>
 
+    <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
+      <classpath refid="lib.runtime.test"/>
+    </taskdef>
+    <jrc srcdir="${resources.demos}" includes="**/*.jrxml"/>
+
     <mkdir dir="${build.demos.test}"/>
     <javac destdir="${build.demos.test}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.demos.test}"/>
@@ -189,14 +194,6 @@
     </javac>
 
     <concat destfile="${build.main}/org/jminor/common/model/version.txt">${version}-build ${build.date}</concat>
-  </target>
-
-  <target name="compile_demo_reports" depends="resolve_libraries"
-          description="Compile the demo jasper reports">
-    <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
-      <classpath refid="lib.runtime.test"/>
-    </taskdef>
-    <jrc srcdir="${resources.demos}" includes="**/*.jrxml"/>
   </target>
 
   <target name="dist" depends="clean, build, javadoc"
@@ -452,7 +449,7 @@
     </javadoc>
   </target>
 
-  <target name="deploy_server" depends="create_client_server_keystore"
+  <target name="deploy_server" depends="create_client_server_keystore, create_h2_db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-db-core/jminor-db-core.jar" todir="${deploy.server.path}/lib"/>
@@ -484,8 +481,8 @@
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}"/>
     <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${dist}/jminor-common-ui/jminor-swing-common-model.jar" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${dist}/jminor-common-ui/jminor-swing-common-ui.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${dist}/jminor-swing-common-model/jminor-swing-common-model.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${dist}/jminor-swing-common-ui/jminor-swing-common-ui.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${dist}/jminor-server-monitor/jminor-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy todir="${deploy.server.monitor.path}/lib">
       <fileset dir="${lib}/runtime.server-monitor"/>
@@ -498,7 +495,7 @@
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_generator"
+  <target name="deploy_generator" depends="create_h2_db"
           description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">
     <mkdir dir="${deploy.generator.path}"/>
     <copy file="${dist}/jminor/jminor.jar" todir="${deploy.generator.path}/lib"/>
@@ -515,7 +512,7 @@
     <chmod dir="${deploy.generator.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demo_apps" depends="create_client_server_keystore"
+  <target name="deploy_demo_apps" depends="create_client_server_keystore, create_h2_db"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
     <!--Setup-->
@@ -539,7 +536,7 @@
   <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demo_apps, deploy_generator"
           description="A convenience target for deploying the server, server monitor and demo applications"/>
 
-  <target name="run_unit_tests" depends="clean, build, compile_demo_reports"
+  <target name="run_unit_tests" depends="clean, build"
           description="Runs the framework unit tests with JaCoCo coverage">
     <delete dir="${test.reports}" includeEmptyDirs="true"/>
     <delete dir="${test.reports.html}" includeEmptyDirs="true"/>
@@ -614,7 +611,7 @@
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports"/>
+      <jvmarg value="-Djminor.report.path=reports/demos"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_client.policy"/>
     </java>
@@ -631,7 +628,7 @@
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports"/>
+      <jvmarg value="-Djminor.report.path=reports/demos"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_load_test.policy"/>
     </java>
@@ -780,7 +777,7 @@
                        main-class="@{main-class}"/>
       <jar jarfile="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" duplicate="preserve" filesetmanifest="mergewithoutmain"
            manifest="${deploy.demos.dir}/META-INF/MANIFEST.MF">
-        <zipfileset dir="${build.demos}" includes="org/jminor/framework/demos/@{app-id}/**/*"/>
+        <zipfileset dir="${build.demos.main}" includes="org/jminor/framework/demos/@{app-id}/**/*"/>
         <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
         <zipfileset dir="${basedir}/resources/demos/@{app-id}" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
       </jar>
