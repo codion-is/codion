@@ -516,7 +516,6 @@
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
     <!--Setup-->
-    <mkdir dir="${deploy.demos.dir}/META-INF"/>
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
       <zipgroupfileset dir="${dist}"
@@ -529,7 +528,6 @@
     <deploy_demo_app app-id="petstore" app-name="Petstore JMinor Demo" main-class="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel"/>
     <deploy_demo_app app-id="world" app-name="World JMinor Demo" main-class="org.jminor.framework.demos.world.client.ui.WorldAppPanel"/>
     <!--Cleanup-->
-    <delete dir="${deploy.demos.dir}/META-INF"/>
     <delete file="${deploy.demos.dir}/libraries.jar"/>
   </target>
 
@@ -542,6 +540,7 @@
     <delete dir="${test.reports.html}" includeEmptyDirs="true"/>
     <delete dir="${test.coveragereport.xml}" includeEmptyDirs="true"/>
     <delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>
+
     <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpathref="lib.ant.util"/>
 
     <run_tests coverage-output-file="jacoco-main.exec" test-src-dir="${src.test}" classpath-ref="path.unittests"/>
@@ -749,38 +748,29 @@
     </sequential>
   </macrodef>
 
-  <macrodef name="create_manifest">
-    <attribute name="destination"/>
-    <attribute name="application-name"/>
-    <attribute name="main-class"/>
-    <sequential>
-      <manifest file="@{destination}/META-INF/MANIFEST.MF">
-        <attribute name="Built-By" value="${user.name}"/>
-        <attribute name="Application-Name" value="@{application-name}"/>
-        <attribute name="Specification-Title" value="${ant.project.name}"/>
-        <attribute name="Specification-Name" value="${ant.project.name}"/>
-        <attribute name="Specification-Vendor" value="${deploy.demos.codebase}"/>
-        <attribute name="Permissions" value="all-permissions"/>
-        <attribute name="Codebase" value="${deploy.demos.codebase}"/>
-        <attribute name="Main-Class" value="@{main-class}"/>
-      </manifest>
-    </sequential>
-  </macrodef>
-
   <macrodef name="deploy_demo_app">
     <attribute name="app-id"/>
     <attribute name="app-name"/>
     <attribute name="main-class"/>
     <sequential>
-      <mkdir dir="${deploy.demos.dir}/@{app-id}"/>
-      <create_manifest destination="${deploy.demos.dir}" application-name="@{app-name}"
-                       main-class="@{main-class}"/>
+      <mkdir dir="${deploy.demos.dir}/@{app-id}/META-INF"/>
+      <manifest file="${deploy.demos.dir}/@{app-id}/META-INF/MANIFEST.MF">
+        <attribute name="Built-By" value="${user.name}"/>
+        <attribute name="Application-Name" value="@{app-name}"/>
+        <attribute name="Specification-Title" value="jminor.demos"/>
+        <attribute name="Specification-Name" value="jminor.demos"/>
+        <attribute name="Specification-Vendor" value="${deploy.demos.codebase}"/>
+        <attribute name="Permissions" value="all-permissions"/>
+        <attribute name="Codebase" value="${deploy.demos.codebase}"/>
+        <attribute name="Main-Class" value="@{main-class}"/>
+      </manifest>
       <jar jarfile="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" duplicate="preserve" filesetmanifest="mergewithoutmain"
-           manifest="${deploy.demos.dir}/META-INF/MANIFEST.MF">
+           manifest="${deploy.demos.dir}/@{app-id}/META-INF/MANIFEST.MF">
         <zipfileset dir="${build.demos.main}" includes="org/jminor/framework/demos/@{app-id}/**/*"/>
         <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
         <zipfileset dir="${basedir}/resources/demos/@{app-id}" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
       </jar>
+      <delete dir="${deploy.demos.dir}/@{app-id}/META-INF"/>
       <signjar jar="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" alias="${jar.sign.alias}"
                storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
       <copy file="${basedir}/resources/demos/@{app-id}/@{app-id}.jnlp" todir="${deploy.demos.dir}/@{app-id}"/>
