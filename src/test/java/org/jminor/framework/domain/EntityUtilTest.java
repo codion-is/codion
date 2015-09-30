@@ -415,13 +415,6 @@ public class EntityUtilTest {
   }
 
   @Test
-  public void getEntitySerializer() {
-    Configuration.setValue(Configuration.ENTITY_SERIALIZER_CLASS, "org.jminor.framework.plugins.json.EntityJSONParser");
-    assertNotNull(EntityUtil.getEntitySerializer());
-    Configuration.clearValue(Configuration.ENTITY_SERIALIZER_CLASS);
-  }
-
-  @Test
   public void setNull() {
     final Entity dept = Entities.entity(TestDomain.T_DEPARTMENT);
     for (final Property property : Entities.getProperties(TestDomain.T_DEPARTMENT, true)) {

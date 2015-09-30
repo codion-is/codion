@@ -16,7 +16,10 @@ import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
+import org.jminor.common.model.reports.ReportDataWrapper;
+import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
+import org.jminor.common.model.reports.ReportWrapper;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
@@ -26,7 +29,6 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 
 import org.junit.After;
 import org.junit.Before;
@@ -120,9 +122,28 @@ public class LocalEntityConnectionTest {
   public void fillReport() throws Exception {
     final Map<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
-    final ReportResult print = connection.fillReport(
-            new JasperReportsWrapper("resources/demos/empdept/reports/empdept_employees.jasper", reportParameters));
-    assertNotNull(print.getResult());
+    final ReportResult reportResult = new ReportResult() {
+      @Override
+      public Object getResult() {
+        return "result";
+      }
+    };
+    final ReportResult print = connection.fillReport(new ReportWrapper() {
+      @Override
+      public String getReportName() {
+        return "TestName";
+      }
+
+      @Override
+      public ReportResult fillReport(final Connection connection) throws ReportException {
+        return reportResult;
+      }
+
+      @Override
+      public ReportResult fillReport(final ReportDataWrapper dataWrapper) throws ReportException {
+        return reportResult;
+      }
+    });
   }
 
   @Test

@@ -4,8 +4,8 @@
   <configurations>
     <conf name="ant.util" description="Utilities required by the build process" />
     <conf name="build.core" description="used for building core framework components" />
-    <conf name="build.plugins" description="used for building framework plugins" />
     <conf name="build.tests" description="used for building framework tests" />
+    <conf name="build.plugins" description="used for building framework plugins" />
     <conf name="build.demos" description="used for building framework demos" />
     <conf name="runtime.tests" description="used for running unit tests and compiling demo reports" />
     <conf name="runtime.client" description="used for running a remote or local client" />
@@ -48,6 +48,7 @@
                 conf="
                 build.core->master;
                 build.tests->master;
+                build.plugins->master;
                 build.demos->master;
                 runtime.tests->master"/>
     <dependency org="org.hamcrest" name="hamcrest-core" rev="1.3"
@@ -188,12 +189,14 @@
     <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5"
                 conf="
                 build.tests->master;
+                build.plugins->master;
                 build.demos->master;
                 runtime.tests->master;
                 runtime.client->master"/>
     <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.4.1"
                 conf="
                 build.tests->master;
+                build.plugins->master;
                 build.demos->master;
                 runtime.tests->master;
                 runtime.client->master"/>

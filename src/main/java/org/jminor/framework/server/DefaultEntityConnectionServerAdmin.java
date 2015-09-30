@@ -521,7 +521,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
     final Collection<String> loginProxyClassNames = Configuration.parseCommaSeparatedValues(Configuration.SERVER_LOGIN_PROXY_CLASSES);
     final Collection<String> initialPoolUsers = Configuration.parseCommaSeparatedValues(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
     final String webDocumentRoot = Configuration.getStringValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
-    final int webServerPort = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
+    final Integer webServerPort = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
     final boolean clientLoggingEnabled = Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
     final int connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
     final Map<String, Integer> clientTimeouts = getClientTimeoutValues();

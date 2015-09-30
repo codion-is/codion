@@ -50,23 +50,53 @@
     <pathelement path="${build.main}"/>
   </path>
 
-  <path id="classes.plugins">
-    <pathelement path="${build.plugins}"/>
-  </path>
-
   <path id="classes.test">
     <pathelement path="${build.test}"/>
   </path>
 
-  <path id="classes.demos">
-    <pathelement path="${build.demos}"/>
+  <path id="classes.plugins.main">
+    <pathelement path="${build.plugins.main}"/>
+  </path>
+
+  <path id="classes.plugins.test">
+    <pathelement path="${build.plugins.test}"/>
+  </path>
+
+  <path id="classes.demos.main">
+    <pathelement path="${build.demos.main}"/>
+  </path>
+
+  <path id="classes.demos.test">
+    <pathelement path="${build.demos.test}"/>
+  </path>
+
+  <path id="path.unittests">
+    <path refid="classes.main"/>
+    <path refid="classes.test"/>
+    <path refid="lib.runtime.test"/>
+  </path>
+
+  <path id="path.plugins.unittests">
+    <path refid="classes.main"/>
+    <path refid="classes.test"/>
+    <path refid="classes.plugins.main"/>
+    <path refid="classes.plugins.test"/>
+    <path refid="lib.runtime.test"/>
+  </path>
+
+  <path id="path.demos.unittests">
+    <path refid="classes.main"/>
+    <path refid="classes.plugins.main"/>
+    <path refid="classes.demos.main"/>
+    <path refid="classes.demos.test"/>
+    <path refid="lib.runtime.test"/>
   </path>
 
   <fileset id="common_resources" dir="${src.main}" excludes="**/*.java"/>
   <fileset id="framework_resources" dir="${src.main}" excludes="**/*.java"/>
   <fileset id="test_resources" dir="${src.test}" excludes="**/*.java"/>
-  <fileset id="demos_resources" dir="${src.demos}" excludes="**/*.java"/>
-  <fileset id="plugins_resources" dir="${src.plugins}" excludes="**/*.java"/>
+  <fileset id="demos_resources" dir="${src.demos.main}" excludes="**/*.java"/>
+  <fileset id="plugins_resources" dir="${src.plugins.main}" excludes="**/*.java"/>
 
   <condition property="keystore.available">
     <available file="${resources.security}/JMinorServerKeystore"/>
@@ -82,10 +112,6 @@
 
   <target name="clean"
           description="Clean all output and generated dirs">
-    <delete dir="${build.main}" includeEmptyDirs="true"/>
-    <delete dir="${build.demos}" includeEmptyDirs="true"/>
-    <delete dir="${build.plugins}" includeEmptyDirs="true"/>
-    <delete dir="${build.test}" includeEmptyDirs="true"/>
     <delete dir="${build.root}" includeEmptyDirs="true"/>
     <delete dir="${test}" includeEmptyDirs="true"/>
   </target>
@@ -102,43 +128,65 @@
       <fileset refid="framework_resources"/>
     </copy>
 
-    <mkdir dir="${build.plugins}"/>
-    <javac destdir="${build.plugins}" debug="${build.debuginfo}" includeantruntime="false">
-      <src path="${src.plugins}"/>
-      <classpath>
-        <path refid="lib.build.plugins"/>
-        <path location="${build.main}"/>
-      </classpath>
-    </javac>
-    <copy todir="${build.plugins}">
-      <fileset refid="plugins_resources"/>
-    </copy>
-
     <mkdir dir="${build.test}"/>
     <javac destdir="${build.test}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.test}"/>
       <classpath>
         <path refid="lib.build.tests"/>
         <path location="${build.main}"/>
-        <path location="${build.plugins}"/>
+        <path location="${build.plugins.main}"/>
       </classpath>
     </javac>
     <copy todir="${build.test}">
       <fileset refid="test_resources"/>
     </copy>
 
-    <mkdir dir="${build.demos}"/>
-    <javac destdir="${build.demos}" debug="${build.debuginfo}" includeantruntime="false">
-      <src path="${src.demos}"/>
+    <mkdir dir="${build.plugins.main}"/>
+    <javac destdir="${build.plugins.main}" debug="${build.debuginfo}" includeantruntime="false">
+      <src path="${src.plugins.main}"/>
+      <classpath>
+        <path refid="lib.build.plugins"/>
+        <path location="${build.main}"/>
+      </classpath>
+    </javac>
+    <copy todir="${build.plugins.main}">
+      <fileset refid="plugins_resources"/>
+    </copy>
+
+    <mkdir dir="${build.plugins.test}"/>
+    <javac destdir="${build.plugins.test}" debug="${build.debuginfo}" includeantruntime="false">
+      <src path="${src.plugins.test}"/>
+      <classpath>
+        <path refid="lib.build.plugins"/>
+        <path location="${build.main}"/>
+        <path location="${build.test}"/>
+        <path location="${build.plugins.main}"/>
+      </classpath>
+    </javac>
+
+    <mkdir dir="${build.demos.main}"/>
+    <javac destdir="${build.demos.main}" debug="${build.debuginfo}" includeantruntime="false">
+      <src path="${src.demos.main}"/>
       <classpath>
         <path refid="lib.build.demos"/>
         <path location="${build.main}"/>
-        <path location="${build.plugins}"/>
+        <path location="${build.plugins.main}"/>
       </classpath>
     </javac>
-    <copy todir="${build.demos}">
+    <copy todir="${build.demos.main}">
       <fileset refid="demos_resources"/>
     </copy>
+
+    <mkdir dir="${build.demos.test}"/>
+    <javac destdir="${build.demos.test}" debug="${build.debuginfo}" includeantruntime="false">
+      <src path="${src.demos.test}"/>
+      <classpath>
+        <path refid="lib.build.demos"/>
+        <path location="${build.main}"/>
+        <path location="${build.plugins.main}"/>
+        <path location="${build.demos.main}"/>
+      </classpath>
+    </javac>
 
     <concat destfile="${build.main}/org/jminor/common/model/version.txt">${version}-build ${build.date}</concat>
   </target>
@@ -240,38 +288,38 @@
                    org/jminor/framework/server/EntityConnectionServerAdmin.class"/>
 
     <dist_module module.name="jminor-plugin-jasperreports"
-                 basedir.classes="${build.plugins}"
-                 basedir.sources="${src.plugins}"
+                 basedir.classes="${build.plugins.main}"
+                 basedir.sources="${src.plugins.main}"
                  basedir.javadoc="${javadoc.plugins}"
                  includes="org/jminor/framework/plugins/jasperreports/**"/>
 
     <dist_module module.name="jminor-plugin-json"
-                 basedir.classes="${build.plugins}"
-                 basedir.sources="${src.plugins}"
+                 basedir.classes="${build.plugins.main}"
+                 basedir.sources="${src.plugins.main}"
                  basedir.javadoc="${javadoc.plugins}"
                  includes="org/jminor/framework/plugins/json/**"/>
 
     <dist_module module.name="jminor-plugin-rest"
-                 basedir.classes="${build.plugins}"
-                 basedir.sources="${src.plugins}"
+                 basedir.classes="${build.plugins.main}"
+                 basedir.sources="${src.plugins.main}"
                  basedir.javadoc="${javadoc.plugins}"
                  includes="org/jminor/framework/plugins/rest/**"/>
 
     <dist_module module.name="jminor-plugin-tomcat-pool"
-                 basedir.classes="${build.plugins}"
-                 basedir.sources="${src.plugins}"
+                 basedir.classes="${build.plugins.main}"
+                 basedir.sources="${src.plugins.main}"
                  basedir.javadoc="${javadoc.plugins}"
                  includes="org/jminor/framework/plugins/tomcat/pool/**"/>
 
     <dist_module module.name="jminor-plugin-imagepanel"
-                 basedir.classes="${build.plugins}"
-                 basedir.sources="${src.plugins}"
+                 basedir.classes="${build.plugins.main}"
+                 basedir.sources="${src.plugins.main}"
                  basedir.javadoc="${javadoc.plugins}"
                  includes="org/jminor/framework/plugins/imagepanel/**"/>
 
-    <jar jarfile="${dist}/jminor-demos/jminor-demos.jar" basedir="${build.demos}"
+    <jar jarfile="${dist}/jminor-demos/jminor-demos.jar" basedir="${build.demos.main}"
          manifest="${build.main}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="${dist}/jminor-demos/jminor-demos-sources.jar" basedir="${src.demos}"
+    <jar jarfile="${dist}/jminor-demos/jminor-demos-sources.jar" basedir="${src.demos.main}"
          manifest="${build.main}/META-INF/MANIFEST.MF"/>
 
     <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle.jar"
@@ -410,7 +458,7 @@
       <classpath refid="lib.build.core"/>
       <link href="http://download.oracle.com/javase/8/docs/api/"/>
     </javadoc>
-    <javadoc destdir="${javadoc.plugins}" sourcepath="${src.plugins}" packagenames="org.jminor.*" Encoding="UTF-8"
+    <javadoc destdir="${javadoc.plugins}" sourcepath="${src.plugins.main}" packagenames="org.jminor.*" Encoding="UTF-8"
              docencoding="UTF-8" author="true" version="true" use="true"
              windowtitle="JMinor v${version} Plugin API" doctitle="JMinor v${version} Plugin API"
              group="Plugins org.jminor.framework.plugins">
@@ -518,54 +566,11 @@
     <delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>
     <mkdir dir="${test.reports}"/>
     <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpathref="lib.ant.util"/>
-    <jacoco:coverage destfile="${test.reports}/jacoco-main.exec">
-      <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once">
-        <formatter type="xml" usefile="true"/>
-        <classpath>
-          <path refid="classes.main"/>
-          <path refid="classes.plugins"/>
-          <path refid="classes.test"/>
-          <path refid="lib.runtime.test"/>
-        </classpath>
-        <jvmarg value="-Djava.security.policy=resources/security/all_permissions.policy"/>
-        <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
-        <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
-        <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
-        <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
-        <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
-        <jvmarg value="-Djminor.db.embeddedInMemory=${junit.db.embeddedInMemory}"/>
-        <jvmarg value="-Djminor.db.initScript=${junit.db.initScript}"/>
-        <jvmarg value="-Djminor.unittest.username=${junit.username}"/>
-        <jvmarg value="-Djminor.unittest.password=${junit.password}"/>
-        <batchtest todir="${test.reports}">
-          <fileset dir="${src.test}" includes="**/*Test.java"/>
-        </batchtest>
-      </junit>
-    </jacoco:coverage>
-    <jacoco:coverage destfile="${test.reports}/jacoco-demos.exec" append="true">
-      <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once">
-        <formatter type="xml" usefile="true"/>
-        <classpath>
-          <path refid="classes.main"/>
-          <path refid="classes.plugins"/>
-          <path refid="classes.demos"/>
-          <path refid="lib.runtime.test"/>
-        </classpath>
-        <jvmarg value="-Djava.security.policy=resources/security/all_permissions.policy"/>
-        <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
-        <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
-        <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
-        <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
-        <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
-        <jvmarg value="-Djminor.db.embeddedInMemory=${junit.db.embeddedInMemory}"/>
-        <jvmarg value="-Djminor.db.initScript=${junit.db.initScript}"/>
-        <jvmarg value="-Djminor.unittest.username=${junit.username}"/>
-        <jvmarg value="-Djminor.unittest.password=${junit.password}"/>
-        <batchtest todir="${test.reports}">
-          <fileset dir="${src.demos}" includes="**/*Test.java" excludes="**/*LoadTest.java"/>
-        </batchtest>
-      </junit>
-    </jacoco:coverage>
+
+    <run_tests output-file="jacoco-main.exec" test-src-dir="${src.test}" classpath-ref="path.unittests"/>
+    <run_tests output-file="jacoco-plugins.exec" test-src-dir="${src.plugins.test}" classpath-ref="path.plugins.unittests"/>
+    <run_tests output-file="jacoco-demos.exec" test-src-dir="${src.demos.test}" classpath-ref="path.demos.unittests"/>
+
     <jacoco:merge destfile="${test.reports}/jacoco.exec">
       <fileset dir="${test.reports}" includes="*.exec"/>
     </jacoco:merge>
@@ -612,8 +617,8 @@
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
         <path refid="classes.main"/>
-        <path refid="classes.plugins"/>
-        <path refid="classes.demos"/>
+        <path refid="classes.plugins.main"/>
+        <path refid="classes.demos.main"/>
         <path refid="lib.runtime.client"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
@@ -632,8 +637,8 @@
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
         <path refid="classes.main"/>
-        <path refid="classes.plugins"/>
-        <path refid="classes.demos"/>
+        <path refid="classes.plugins.main"/>
+        <path refid="classes.demos.main"/>
         <path refid="lib.runtime.client"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
@@ -649,8 +654,8 @@
     <java classname="org.jminor.framework.demos.chinook.testing.ChinookLoadTest" fork="yes">
       <classpath>
         <path refid="classes.main"/>
-        <path refid="classes.plugins"/>
-        <path refid="classes.demos"/>
+        <path refid="classes.plugins.main"/>
+        <path refid="classes.demos.main"/>
         <path refid="lib.runtime.client"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
@@ -666,7 +671,7 @@
     <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes">
       <classpath>
         <path refid="classes.main"/>
-        <path refid="classes.demos"/>
+        <path refid="classes.demos.main"/>
         <path refid="lib.runtime.server"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
@@ -820,6 +825,33 @@
         <zipfileset file="${basedir}/resources/demos/config/h2db.config"/>
         <zipfileset file="${basedir}/resources/demos/config/remote.config"/>
       </zip>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="run_tests">
+    <attribute name="output-file"/>
+    <attribute name="classpath-ref"/>
+    <attribute name="test-src-dir"/>
+    <sequential>
+      <jacoco:coverage destfile="${test.reports}/@{output-file}">
+        <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once">
+          <formatter type="xml" usefile="true"/>
+          <classpath refid="@{classpath-ref}"/>
+          <jvmarg value="-Djava.security.policy=resources/security/all_permissions.policy"/>
+          <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
+          <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
+          <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
+          <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
+          <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
+          <jvmarg value="-Djminor.db.embeddedInMemory=${junit.db.embeddedInMemory}"/>
+          <jvmarg value="-Djminor.db.initScript=${junit.db.initScript}"/>
+          <jvmarg value="-Djminor.unittest.username=${junit.username}"/>
+          <jvmarg value="-Djminor.unittest.password=${junit.password}"/>
+          <batchtest todir="${test.reports}">
+            <fileset dir="@{test-src-dir}" includes="**/*Test.java"/>
+          </batchtest>
+        </junit>
+      </jacoco:coverage>
     </sequential>
   </macrodef>
 </project>

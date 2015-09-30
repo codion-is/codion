@@ -98,7 +98,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
   public EntityConnectionServer(final String serverName, final int serverPort, final int registryPort, final Database database,
                                 final boolean sslEnabled, final int connectionLimit, final Collection<String> domainModelClassNames,
                                 final Collection<String> loginProxyClassNames, final Collection<User> initialPoolUsers,
-                                final String webDocumentRoot, final int webServerPort, final boolean clientLoggingEnabled,
+                                final String webDocumentRoot, final Integer webServerPort, final boolean clientLoggingEnabled,
                                 final int connectionTimeout, final Map<String, Integer> clientSpecificConnectionTimeouts)
           throws RemoteException {
     super(serverPort, serverName,
@@ -425,11 +425,11 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
   }
 
   private AuxiliaryServer startWebServer(final String webDocumentRoot, final Integer webServerPort) {
-    if (Util.nullOrEmpty(webDocumentRoot)) {
+    final String webServerClassName = Configuration.getStringValue(Configuration.WEB_SERVER_IMPLEMENTATION_CLASS);
+    if (Util.nullOrEmpty(webDocumentRoot) || Util.nullOrEmpty(webServerClassName)) {
       return null;
     }
 
-    final String webServerClassName = Configuration.getStringValue(Configuration.WEB_SERVER_IMPLEMENTATION_CLASS);
     try {
       final AuxiliaryServer auxiliaryServer = (AuxiliaryServer) Class.forName(webServerClassName).getConstructor(
               Server.class, String.class, Integer.class).newInstance(this, webDocumentRoot, webServerPort);
