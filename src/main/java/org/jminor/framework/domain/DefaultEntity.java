@@ -726,10 +726,9 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
 
   /**
    * Performs a basic data validation of <code>value</code>, checking if the <code>value</code> data type is
-   * consistent with the data type of this property, returns the value.
+   * consistent with the data type of this property.
    * @param value the value to validate
    * @param property the property
-   * @return the value to validate
    * @throws IllegalArgumentException when the value type does not fit the property type
    */
   private static void validateType(final Property property, final Object value) {
