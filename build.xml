@@ -768,20 +768,20 @@
            manifest="${deploy.demos.dir}/@{app-id}/META-INF/MANIFEST.MF">
         <zipfileset dir="${build.demos.main}" includes="org/jminor/framework/demos/@{app-id}/**/*"/>
         <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
-        <zipfileset dir="${basedir}/resources/demos/@{app-id}" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
+        <zipfileset dir="${basedir}/demos/config/@{app-id}" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
       </jar>
       <delete dir="${deploy.demos.dir}/@{app-id}/META-INF"/>
       <signjar jar="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" alias="${jar.sign.alias}"
                storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
-      <copy file="${basedir}/resources/demos/@{app-id}/@{app-id}.jnlp" todir="${deploy.demos.dir}/@{app-id}"/>
-      <copy file="${basedir}/resources/demos/@{app-id}/getdown.txt" todir="${deploy.demos.dir}/@{app-id}"/>
+      <copy file="${basedir}//demos/config/@{app-id}/@{app-id}.jnlp" todir="${deploy.demos.dir}/@{app-id}"/>
+      <copy file="${basedir}//demos/config/@{app-id}/getdown.txt" todir="${deploy.demos.dir}/@{app-id}"/>
       <copy file="${basedir}/docs/jminor.org/jminor_logo_black_medium.png" todir="${deploy.demos.dir}/@{app-id}"/>
       <getdown_digest appdir="${deploy.demos.dir}/@{app-id}"/>
       <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.zip">
         <zipfileset file="${deploy.demos.dir}/@{app-id}/@{app-id}.jar"/>
         <zipfileset dir="${db.h2.dir}" prefix="h2db"/>
-        <zipfileset file="${basedir}/resources/demos/config/h2db.config"/>
-        <zipfileset file="${basedir}/resources/demos/config/remote.config"/>
+        <zipfileset file="${basedir}/demos/config/config/h2db.config"/>
+        <zipfileset file="${basedir}/demos/config/config/remote.config"/>
       </zip>
     </sequential>
   </macrodef>
