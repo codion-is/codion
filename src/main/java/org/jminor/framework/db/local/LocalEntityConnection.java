@@ -56,7 +56,7 @@ import java.util.Set;
  * Database database = new H2Database("pathToDb");
  * User user = new User("scott", "tiger");
  *
- * EntityConnection connection = new LocalEntityConnection(database, user);
+ * EntityConnection connection = new LocalEntityConnection(database, user, true, true, 2);
  *
  * List<Entity> entities = connection.selectMany(EntityCriteriaUtil.selectCriteria("entityID"));
  *
