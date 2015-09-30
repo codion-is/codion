@@ -199,8 +199,23 @@
     <jrc srcdir="${resources.demos}" includes="**/*.jrxml"/>
   </target>
 
-  <target name="dist" depends="clean, build, manifest, javadoc"
+  <target name="dist" depends="clean, build, javadoc"
           description="Builds all distribution jar files in the dist directory">
+    <mkdir dir="${build.main}/META-INF"/>
+    <manifest file="${build.main}/META-INF/MANIFEST.MF">
+      <attribute name="Specification-Title" value="JMinor Application Framework"/>
+      <attribute name="Specification-Version" value="${version}"/>
+      <attribute name="Specification-Vendor" value="JMinor"/>
+      <attribute name="Implementation-Title" value="JMinor Application Framework"/>
+      <attribute name="Implementation-Version" value="${version}"/>
+      <attribute name="Implementation-Vendor" value="JMinor"/>
+      <attribute name="Implementation-Vendor-Id" value="org.jminor"/>
+      <attribute name="Implementation-URL" value="http://jminor.org"/>
+      <attribute name="Build-Jdk" value="${java.version}"/>
+      <attribute name="Built-By" value="${user.name}"/>
+      <attribute name="Build-Time" value="${build.date}"/>
+    </manifest>
+
     <mkdir dir="${dist}"/>
     <dist_module module.name="jminor"
                  basedir.classes="${build.main}"
@@ -362,24 +377,7 @@
     <copy file="${basedir}/changelog.txt" todir="${dist}"/>
   </target>
 
-  <target name="dist_android" depends="clean, build, manifest"
-          description="Builds a android jminor library">
-    <jar jarfile="${dist}/jminor-android.jar" basedir="${build.main}"
-         manifest="${build.main}/META-INF/MANIFEST.MF"
-         includes="org/jminor/common/db/*.class,
-                   org/jminor/common/db/criteria/**,
-                   org/jminor/common/db/dbms/**,
-                   org/jminor/common/db/exception/**,
-                   org/jminor/common/model/*.class,
-                   org/jminor/common/model/valuemap/**,
-                   org/jminor/framework/Configuration*,
-                   org/jminor/framework/db/**,
-                   org/jminor/framework/domain/**,
-                   org/jminor/framework/i18n/**,
-                   org/jminor/framework/tools/testing/EntityTestUnit*"/>
-  </target>
-
-  <target name="publish_all" depends="dist"
+  <target name="publish" depends="dist"
           description="Publish all project artifacts">
     <subant target="publish" buildpath="${basedir}/resources/publish/common-model"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/swing-common-model"/>
@@ -401,7 +399,7 @@
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-imagepanel"/>
   </target>
 
-  <target name="report_all"
+  <target name="create_dependency_report"
           description="Create an ivy dependency report for all project modules">
     <subant target="report" buildpath="${basedir}/resources/publish/common-model"/>
     <subant target="report" buildpath="${basedir}/resources/publish/swing-common-model"/>
@@ -421,24 +419,6 @@
     <subant target="report" buildpath="${basedir}/resources/publish/plugin-rest"/>
     <subant target="report" buildpath="${basedir}/resources/publish/plugin-tomcat-pool"/>
     <subant target="report" buildpath="${basedir}/resources/publish/plugin-imagepanel"/>
-  </target>
-
-  <target name="manifest"
-          description="Generates a MANIFEST.MF file for inclusion in jars">
-    <mkdir dir="${build.main}/META-INF"/>
-    <manifest file="${build.main}/META-INF/MANIFEST.MF">
-      <attribute name="Specification-Title" value="JMinor Application Framework"/>
-      <attribute name="Specification-Version" value="${version}"/>
-      <attribute name="Specification-Vendor" value="JMinor"/>
-      <attribute name="Implementation-Title" value="JMinor Application Framework"/>
-      <attribute name="Implementation-Version" value="${version}"/>
-      <attribute name="Implementation-Vendor" value="JMinor"/>
-      <attribute name="Implementation-Vendor-Id" value="org.jminor"/>
-      <attribute name="Implementation-URL" value="http://jminor.org"/>
-      <attribute name="Build-Jdk" value="${java.version}"/>
-      <attribute name="Built-By" value="${user.name}"/>
-      <attribute name="Build-Time" value="${build.date}"/>
-    </manifest>
   </target>
 
   <target name="javadoc" depends="build"
@@ -504,7 +484,8 @@
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}"/>
     <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${dist}/jminor-common-ui/jminor-common-ui.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${dist}/jminor-common-ui/jminor-swing-common-model.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${dist}/jminor-common-ui/jminor-swing-common-ui.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy file="${dist}/jminor-server-monitor/jminor-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
     <copy todir="${deploy.server.monitor.path}/lib">
       <fileset dir="${lib}/runtime.server-monitor"/>
@@ -564,34 +545,22 @@
     <delete dir="${test.reports.html}" includeEmptyDirs="true"/>
     <delete dir="${test.coveragereport.xml}" includeEmptyDirs="true"/>
     <delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>
-    <mkdir dir="${test.reports}"/>
     <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpathref="lib.ant.util"/>
 
-    <run_tests output-file="jacoco-main.exec" test-src-dir="${src.test}" classpath-ref="path.unittests"/>
-    <run_tests output-file="jacoco-plugins.exec" test-src-dir="${src.plugins.test}" classpath-ref="path.plugins.unittests"/>
-    <run_tests output-file="jacoco-demos.exec" test-src-dir="${src.demos.test}" classpath-ref="path.demos.unittests"/>
+    <run_tests coverage-output-file="jacoco-main.exec" test-src-dir="${src.test}" classpath-ref="path.unittests"/>
+    <run_tests coverage-output-file="jacoco-plugins.exec" test-src-dir="${src.plugins.test}" classpath-ref="path.plugins.unittests"/>
+    <run_tests coverage-output-file="jacoco-demos.exec" test-src-dir="${src.demos.test}" classpath-ref="path.demos.unittests"/>
 
-    <jacoco:merge destfile="${test.reports}/jacoco.exec">
-      <fileset dir="${test.reports}" includes="*.exec"/>
-    </jacoco:merge>
-    <antcall target="create_unit_test_report"/>
-    <antcall target="create_coverage_report"/>
-  </target>
-
-  <target name="create_unit_test_report"
-          description="Creates a unit test html report on previously run tests">
     <mkdir dir="${test.reports.html}"/>
     <junitreport todir="${test.reports}">
       <fileset dir="${test.reports}" includes="TEST-*.xml"/>
       <report format="frames" todir="${test.reports.html}"/>
     </junitreport>
-  </target>
 
-  <target name="create_coverage_report"
-          description="Creates a unit test coverage report on previously run tests">
-    <delete dir="${test.coveragereport.html}" includeEmptyDirs="true"/>
-    <delete dir="${test.coveragereport.xml}" includeEmptyDirs="true"/>
-    <mkdir dir="${test.coveragereport.html}"/>
+    <jacoco:merge destfile="${test.reports}/jacoco.exec">
+      <fileset dir="${test.reports}" includes="*.exec"/>
+    </jacoco:merge>
+
     <mkdir dir="${test.coveragereport.xml}"/>
     <jacoco:report>
       <executiondata>
@@ -601,9 +570,11 @@
       <structure name="JMinor JaCoCo Results">
         <classfiles>
           <fileset dir="${build.main}"/>
+          <fileset dir="${build.plugins.main}"/>
         </classfiles>
         <sourcefiles encoding="UTF-8">
           <fileset dir="${src.main}"/>
+          <fileset dir="${src.plugins.main}"/>
         </sourcefiles>
       </structure>
 
@@ -719,7 +690,7 @@
     </java>
   </target>
 
-  <target name="recreate_h2_db"
+  <target name="create_h2_db"
           description="Recreates the demo h2 database, which contains the EmpDept, Petstore, Chinook and World schemas, used by unit tests and demo applications">
     <delete dir="${db.h2.dir}"/>
     <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.runtime.test">
@@ -829,11 +800,11 @@
   </macrodef>
 
   <macrodef name="run_tests">
-    <attribute name="output-file"/>
+    <attribute name="coverage-output-file"/>
     <attribute name="classpath-ref"/>
     <attribute name="test-src-dir"/>
     <sequential>
-      <jacoco:coverage destfile="${test.reports}/@{output-file}">
+      <jacoco:coverage destfile="${test.reports}/@{coverage-output-file}">
         <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once">
           <formatter type="xml" usefile="true"/>
           <classpath refid="@{classpath-ref}"/>
