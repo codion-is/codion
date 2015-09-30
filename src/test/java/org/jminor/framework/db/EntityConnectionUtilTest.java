@@ -36,7 +36,7 @@ public class EntityConnectionUtilTest {
   @BeforeClass
   public static void setUp() {
     try {
-      final H2Database destinationDatabase = new H2Database("TempDB", "resources/demos/empdept/scripts/ddl.sql");
+      final H2Database destinationDatabase = new H2Database("TempDB", "demos/src/main/sql/empdept/ddl.sql");
       DESTINATION_CONNECTION = LocalEntityConnections.createConnection(destinationDatabase, new User("sa", ""));
       DESTINATION_CONNECTION.delete(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT));
       DESTINATION_CONNECTION.delete(EntityCriteriaUtil.criteria(TestDomain.T_EMP));

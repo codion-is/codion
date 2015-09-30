@@ -37,7 +37,7 @@ public class EntityConnectionProvidersTest {
       System.setProperty(Database.DATABASE_SID, sid);
       System.setProperty(Database.DATABASE_EMBEDDED, embedded == null ? "true" : embedded);
       System.setProperty(Database.DATABASE_EMBEDDED_IN_MEMORY, embeddedInMemory == null ? "true" : embeddedInMemory);
-      System.setProperty(H2Database.DATABASE_INIT_SCRIPT, initScript == null ? "resources/db/scripts/create_h2_db.sql" : initScript);
+      System.setProperty(H2Database.DATABASE_INIT_SCRIPT, initScript == null ? "demos/src/main/sql/create_h2_db.sql" : initScript);
 
       return EntityConnectionProviders.connectionProvider(User.UNIT_TEST_USER, "test");
     }

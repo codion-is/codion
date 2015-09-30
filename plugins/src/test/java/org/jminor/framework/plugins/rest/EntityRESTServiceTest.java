@@ -222,7 +222,7 @@ public class EntityRESTServiceTest {
 
   @Test
   public void testWebServer() throws Exception {
-    try (final InputStream input = new URL("http://localhost:" + WEB_SERVER_PORT_NUMBER + "/db/scripts/create_h2_db.sql").openStream()) {
+    try (final InputStream input = new URL("http://localhost:" + WEB_SERVER_PORT_NUMBER + "/server/jminor_server.sh").openStream()) {
       assertTrue(input.read() > 0);
     }
   }
