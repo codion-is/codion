@@ -780,8 +780,8 @@
       <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.zip">
         <zipfileset file="${deploy.demos.dir}/@{app-id}/@{app-id}.jar"/>
         <zipfileset dir="${db.h2.dir}" prefix="h2db"/>
-        <zipfileset file="${basedir}/demos/config/config/h2db.config"/>
-        <zipfileset file="${basedir}/demos/config/config/remote.config"/>
+        <zipfileset file="${basedir}/demos/config/shared/h2db.config"/>
+        <zipfileset file="${basedir}/demos/config/shared/remote.config"/>
       </zip>
     </sequential>
   </macrodef>
