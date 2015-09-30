@@ -39,7 +39,7 @@ public final class Properties {
    * @param caption the caption
    * @return a new column property
    */
-  public static Property.ColumnProperty columnProperty(final String propertyID,final int type, final String caption) {
+  public static Property.ColumnProperty columnProperty(final String propertyID, final int type, final String caption) {
     return new DefaultProperty.DefaultColumnProperty(propertyID, type, caption);
   }
 
