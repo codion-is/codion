@@ -916,7 +916,7 @@ final class LocalEntityConnection implements EntityConnection {
     try {
       connection.commit();
     }
-    catch (final SQLException ignored) {/*ignored*/
+    catch (final SQLException ignored) {
       LOG.error("Exception while performing a quiet commit", ignored);
     }
   }
@@ -925,7 +925,7 @@ final class LocalEntityConnection implements EntityConnection {
     try {
       connection.rollback();
     }
-    catch (final SQLException ignored) {/*ignored*/
+    catch (final SQLException ignored) {
       LOG.error("Exception while performing a quiet rollback", ignored);
     }
   }
