@@ -4072,3 +4072,4 @@
   Plugin and demo sources moved, unit test dependencies fixed, build file refactored
   Reorganized demo sql scripts and reports
   EntityUtil.hash... renamed to map...
+  LocalEntityConnection.delete(keys) improved

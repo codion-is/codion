@@ -212,7 +212,7 @@ final class LocalEntityConnection implements EntityConnection {
 
           insertSQL = createInsertSQL(entityID, statementProperties);
           statement = connection.getConnection().prepareStatement(insertSQL);
-          executePreparedUpdate(statement, insertSQL, statementValues, statementProperties);
+          executePreparedUpdate(statement, insertSQL, statementProperties, statementValues);
           keyGenerator.afterInsert(entity, firstPrimaryKeyProperty, connection);
 
           insertedKeys.add(entity.getPrimaryKey());
@@ -270,7 +270,7 @@ final class LocalEntityConnection implements EntityConnection {
             statementProperties.addAll(criteria.getValueKeys());
             statementValues.addAll(criteria.getValues());
             statement = connection.getConnection().prepareStatement(updateSQL);
-            executePreparedUpdate(statement, updateSQL, statementValues, statementProperties);
+            executePreparedUpdate(statement, updateSQL, statementProperties, statementValues);
 
             statement.close();
             statementProperties.clear();
@@ -304,7 +304,7 @@ final class LocalEntityConnection implements EntityConnection {
       try {
         deleteSQL = createDeleteSQL(criteria);
         statement = connection.getConnection().prepareStatement(deleteSQL);
-        executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueKeys());
+        executePreparedUpdate(statement, deleteSQL, criteria.getValueKeys(), criteria.getValues());
         commitIfTransactionIsNotOpen();
       }
       catch (final SQLException e) {
@@ -337,9 +337,9 @@ final class LocalEntityConnection implements EntityConnection {
         for (final Map.Entry<String, Collection<Entity.Key>> mappedKeysEntry : mappedKeys.entrySet()) {
           criteriaKeys.addAll(mappedKeysEntry.getValue());
           final EntityCriteria criteria = EntityCriteriaUtil.criteria(criteriaKeys);
-          deleteSQL = "delete from " + Entities.getTableName(mappedKeysEntry.getKey()) + WHERE_SPACE_PREFIX + criteria.getWhereClause();
+          deleteSQL = createDeleteSQL(criteria);
           statement = connection.getConnection().prepareStatement(deleteSQL);
-          executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueKeys());
+          executePreparedUpdate(statement, deleteSQL, criteria.getValueKeys(), criteria.getValues());
           statement.close();
           criteriaKeys.clear();
         }
@@ -850,7 +850,7 @@ final class LocalEntityConnection implements EntityConnection {
   }
 
   private void executePreparedUpdate(final PreparedStatement statement, final String sqlStatement,
-                                     final List<?> values, final List<Property.ColumnProperty> properties) throws SQLException {
+                                     final List<Property.ColumnProperty> properties, final List<?> values) throws SQLException {
     SQLException exception = null;
     DatabaseUtil.QUERY_COUNTER.count(sqlStatement);
     try {
