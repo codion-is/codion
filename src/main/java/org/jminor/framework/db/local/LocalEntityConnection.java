@@ -249,12 +249,12 @@ final class LocalEntityConnection implements EntityConnection {
     String updateSQL = null;
     synchronized (connection) {
       try {
-        final Map<String, Collection<Entity>> hashedEntities = EntityUtil.hashByEntityID(entities);
-        performOptimisticLocking(hashedEntities);
+        final Map<String, Collection<Entity>> mappedEntities = EntityUtil.mapToEntityID(entities);
+        performOptimisticLocking(mappedEntities);
 
         final List<Property.ColumnProperty> statementProperties = new ArrayList<>();
-        for (final Map.Entry<String, Collection<Entity>> hashedEntitiesMapEntry : hashedEntities.entrySet()) {
-          final String entityID = hashedEntitiesMapEntry.getKey();
+        for (final Map.Entry<String, Collection<Entity>> mappedEntitiesMapEntry : mappedEntities.entrySet()) {
+          final String entityID = mappedEntitiesMapEntry.getKey();
           final String tableName = Entities.getTableName(entityID);
           final boolean includePrimaryKeyProperties = true;
           final boolean includeReadOnlyProperties = false;
@@ -262,7 +262,7 @@ final class LocalEntityConnection implements EntityConnection {
           final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
                   includePrimaryKeyProperties, includeReadOnlyProperties, includeNonUpdatableProperties);
 
-          for (final Entity entity : hashedEntitiesMapEntry.getValue()) {
+          for (final Entity entity : mappedEntitiesMapEntry.getValue()) {
             populateStatementPropertiesAndValues(false, entity, columnProperties, statementProperties, statementValues);
 
             final EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getOriginalPrimaryKey());
@@ -329,15 +329,15 @@ final class LocalEntityConnection implements EntityConnection {
     String deleteSQL = null;
     synchronized (connection) {
       try {
-        final Map<String, Collection<Entity.Key>> hashedKeys = EntityUtil.hashKeysByEntityID(entityKeys);
-        for (final String entityID : hashedKeys.keySet()) {
+        final Map<String, Collection<Entity.Key>> mappedKeys = EntityUtil.mapKeysToEntityID(entityKeys);
+        for (final String entityID : mappedKeys.keySet()) {
           checkReadOnly(entityID);
         }
         final List<Entity.Key> criteriaKeys = new ArrayList<>();
-        for (final Map.Entry<String, Collection<Entity.Key>> hashedKeysEntry : hashedKeys.entrySet()) {
-          criteriaKeys.addAll(hashedKeysEntry.getValue());
+        for (final Map.Entry<String, Collection<Entity.Key>> mappedKeysEntry : mappedKeys.entrySet()) {
+          criteriaKeys.addAll(mappedKeysEntry.getValue());
           final EntityCriteria criteria = EntityCriteriaUtil.criteria(criteriaKeys);
-          deleteSQL = "delete from " + Entities.getTableName(hashedKeysEntry.getKey()) + WHERE_SPACE_PREFIX + criteria.getWhereClause();
+          deleteSQL = "delete from " + Entities.getTableName(mappedKeysEntry.getKey()) + WHERE_SPACE_PREFIX + criteria.getWhereClause();
           statement = connection.getConnection().prepareStatement(deleteSQL);
           executePreparedUpdate(statement, deleteSQL, criteria.getValues(), criteria.getValueKeys());
           statement.close();
@@ -745,7 +745,7 @@ final class LocalEntityConnection implements EntityConnection {
    * the property values to the current values in the database. Note that this does not
    * include BLOB properties.
    * The calling method is responsible for releasing the select for update lock.
-   * @param entities the entities to check, hashed by entityID
+   * @param entities the entities to check, mapped to entityID
    * @throws DatabaseException in case of a database exception
    * @throws RecordModifiedException in case an entity has been modified, if an entity has been deleted,
    * the <code>modifiedRow</code> provided by the exception is null
@@ -756,9 +756,9 @@ final class LocalEntityConnection implements EntityConnection {
       final EntitySelectCriteria selectForUpdateCriteria = EntityCriteriaUtil.selectCriteria(originalKeys);
       selectForUpdateCriteria.setForUpdate(true);
       final List<Entity> currentValues = doSelectMany(selectForUpdateCriteria, 0);
-      final Map<Entity.Key, Entity> hashedEntities = EntityUtil.hashByPrimaryKey(currentValues);
+      final Map<Entity.Key, Entity> mappedEntities = EntityUtil.mapToPrimaryKey(currentValues);
       for (final Entity entity : entry.getValue()) {
-        final Entity current = hashedEntities.get(entity.getOriginalPrimaryKey());
+        final Entity current = mappedEntities.get(entity.getOriginalPrimaryKey());
         if (current == null) {
           throw new RecordModifiedException(entity, null);
         }
@@ -825,21 +825,21 @@ final class LocalEntityConnection implements EntityConnection {
           final EntitySelectCriteria referencedEntitiesCriteria = EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys);
           referencedEntitiesCriteria.setForeignKeyFetchDepthLimit(criteriaFetchDepthLimit);
           final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCriteria, currentForeignKeyFetchDepth + 1);
-          final Map<Entity.Key, Entity> hashedReferencedEntities = EntityUtil.hashByPrimaryKey(referencedEntities);
+          final Map<Entity.Key, Entity> mappedReferencedEntities = EntityUtil.mapToPrimaryKey(referencedEntities);
           for (final Entity entity : entities) {
             final Entity.Key referencedPrimaryKey = entity.getReferencedPrimaryKey(foreignKeyProperty);
-            entity.setValue(foreignKeyProperty, getReferencedEntity(referencedPrimaryKey, hashedReferencedEntities), false);
+            entity.setValue(foreignKeyProperty, getReferencedEntity(referencedPrimaryKey, mappedReferencedEntities), false);
           }
         }
       }
     }
   }
 
-  private Entity getReferencedEntity(final Entity.Key referencedPrimaryKey, final Map<Entity.Key, Entity> hashedReferencedEntities) {
+  private Entity getReferencedEntity(final Entity.Key referencedPrimaryKey, final Map<Entity.Key, Entity> mappedReferencedEntities) {
     if (referencedPrimaryKey == null) {
       return null;
     }
-    Entity referencedEntity = hashedReferencedEntities.get(referencedPrimaryKey);
+    Entity referencedEntity = mappedReferencedEntities.get(referencedPrimaryKey);
     if (referencedEntity == null) {
       //if the referenced entity is not found (it's been deleted or has been filtered out of an underlying view for example),
       //we create an empty entity wrapping the primary key since that's the best we can do under the circumstances

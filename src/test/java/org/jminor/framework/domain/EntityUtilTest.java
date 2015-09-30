@@ -333,7 +333,7 @@ public class EntityUtilTest {
   }
 
   @Test
-  public void hashByPropertyValue() {
+  public void mapToPropertyValue() {
     TestDomain.init();
     final List<Entity> entities = new ArrayList<>();
 
@@ -357,7 +357,7 @@ public class EntityUtilTest {
     entityFive.setValue(TestDomain.DEPARTMENT_ID, 3);
     entities.add(entityFive);
 
-    final Map<Integer, Collection<Entity>> map = EntityUtil.hashByPropertyValue(TestDomain.DEPARTMENT_ID, entities);
+    final Map<Integer, Collection<Entity>> map = EntityUtil.mapToPropertyValue(TestDomain.DEPARTMENT_ID, entities);
     final Collection<Entity> ones = map.get(1);
     assertTrue(ones.contains(entityOne));
     assertTrue(ones.contains(entityTwo));
@@ -371,7 +371,7 @@ public class EntityUtilTest {
   }
 
   @Test
-  public void hashByEntitID() {
+  public void mapToEntitID() {
     TestDomain.init();
     final Entity one = Entities.entity(TestDomain.T_EMP);
     final Entity two = Entities.entity(TestDomain.T_DEPARTMENT);
@@ -379,17 +379,17 @@ public class EntityUtilTest {
     final Entity four = Entities.entity(TestDomain.T_EMP);
 
     final Collection<Entity> entities = Arrays.asList(one, two, three, four);
-    final Map<String, Collection<Entity>> map = EntityUtil.hashByEntityID(entities);
+    final Map<String, Collection<Entity>> map = EntityUtil.mapToEntityID(entities);
 
-    Collection<Entity> hashed = map.get(TestDomain.T_EMP);
-    assertTrue(hashed.contains(one));
-    assertTrue(hashed.contains(four));
+    Collection<Entity> mapped = map.get(TestDomain.T_EMP);
+    assertTrue(mapped.contains(one));
+    assertTrue(mapped.contains(four));
 
-    hashed = map.get(TestDomain.T_DEPARTMENT);
-    assertTrue(hashed.contains(two));
+    mapped = map.get(TestDomain.T_DEPARTMENT);
+    assertTrue(mapped.contains(two));
 
-    hashed = map.get(TestDomain.T_DETAIL);
-    assertTrue(hashed.contains(three));
+    mapped = map.get(TestDomain.T_DETAIL);
+    assertTrue(mapped.contains(three));
   }
 
   @Test

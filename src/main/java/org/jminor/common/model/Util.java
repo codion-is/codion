@@ -855,7 +855,7 @@ public final class Util {
    * }
    *
    * List&#60;Person&#62; persons = ...;
-   * HashKeyProvider ageKeyProvider = new HashKeyProvider&#60;Integer, Person&#62;() {
+   * MapKeyProvider ageKeyProvider = new MapKeyProvider&#60;Integer, Person&#62;() {
    *   public Integer getKey(Person person) {
    *     return person.getAge();
    *   }
@@ -863,12 +863,12 @@ public final class Util {
    * Map&#60;Integer, Collection&#60;Person&#62;&#62; personsByAge = Util.map(persons, ageKeyProvider);
    * </code>
    * @param values the values to map
-   * @param keyProvider the object providing keys to use when hashing the values
+   * @param keyProvider the object providing keys for values
    * @param <K> the key type
    * @param <V> the value type
-   * @return a LinkedHashMap with the values hashed by their respective key values, respecting the iteration order of the given collection
+   * @return a LinkedHashMap with the values mapped to their respective key values, respecting the iteration order of the given collection
    */
-  public static <K, V> LinkedHashMap<K, Collection<V>> map(final Collection<V> values, final HashKeyProvider<K, V> keyProvider) {
+  public static <K, V> LinkedHashMap<K, Collection<V>> map(final Collection<V> values, final MapKeyProvider<K, V> keyProvider) {
     rejectNullValue(values, "values");
     rejectNullValue(keyProvider, "keyProvider");
     final LinkedHashMap<K, Collection<V>> map = new LinkedHashMap<>(values.size());
@@ -1177,9 +1177,9 @@ public final class Util {
    * Provides objects of type K, derived from a value of type V, for hashing said value via .hashCode().
    * @param <K> the type of the object to use for key generation via .hashCode()
    * @param <V> the value type
-   * @see Util#map(java.util.Collection, org.jminor.common.model.Util.HashKeyProvider)
+   * @see Util#map(java.util.Collection, MapKeyProvider)
    */
-  public interface HashKeyProvider<K, V> {
+  public interface MapKeyProvider<K, V> {
     K getKey(final V value);
   }
 
