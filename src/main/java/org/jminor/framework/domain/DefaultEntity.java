@@ -815,8 +815,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
     DefaultKey(final Definition definition) {
       this.definition = definition;
       final List<Property.ColumnProperty> properties = definition.getPrimaryKeyProperties();
-      final int propertyCount = properties.size();
-      this.compositeKey = propertyCount > 1;
+      this.compositeKey = properties.size() > 1;
       this.singleIntegerKey = !compositeKey && properties.get(0).isInteger();
     }
 
@@ -1015,9 +1014,8 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
         throw new IllegalArgumentException("Undefined entity: " + entityID);
       }
       final List<Property.ColumnProperty> properties = definition.getPrimaryKeyProperties();
-      final int propertyCount = properties.size();
-      singleIntegerKey = propertyCount == 1 && properties.get(0).isInteger();
-      compositeKey = propertyCount > 1;
+      compositeKey = properties.size() > 1;
+      singleIntegerKey = !compositeKey && properties.get(0).isInteger();
       for (final Property property : properties) {
         setValue(property.getPropertyID(), stream.readObject());
       }
