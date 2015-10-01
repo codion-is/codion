@@ -1,0 +1,11 @@
+RUNSCRIPT FROM 'demos/empdept/src/main/sql/ddl.sql';
+RUNSCRIPT FROM 'demos/empdept/src/main/sql/dml.sql';
+RUNSCRIPT FROM 'demos/petstore/src/main/sql/ddl.sql';
+RUNSCRIPT FROM 'demos/petstore/src/main/sql/dml.sql';
+RUNSCRIPT FROM 'demos/chinook/src/main/sql/ddl.sql';
+RUNSCRIPT FROM 'demos/chinook/src/main/sql/dml.sql';
+RUNSCRIPT FROM 'demos/world/src/main/sql/ddl.sql';
+RUNSCRIPT FROM 'demos/world/src/main/sql/dml.sql';
+RUNSCRIPT FROM 'demos/world/src/main/sql/ddl_fk.sql';
+create user scott password 'tiger';
+alter user scott admin true;

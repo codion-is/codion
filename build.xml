@@ -95,7 +95,6 @@
   <fileset id="common_resources" dir="${src.main}" excludes="**/*.java"/>
   <fileset id="framework_resources" dir="${src.main}" excludes="**/*.java"/>
   <fileset id="test_resources" dir="${src.test}" excludes="**/*.java"/>
-  <fileset id="demos_resources" dir="${src.demos.main}" excludes="**/*.java"/>
   <fileset id="plugins_resources" dir="${src.plugins.main}" excludes="**/*.java"/>
 
   <condition property="keystore.available">
@@ -165,36 +164,22 @@
     </javac>
 
     <mkdir dir="${build.demos.main}"/>
-    <javac destdir="${build.demos.main}" debug="${build.debuginfo}" includeantruntime="false">
-      <src path="${src.demos.main}"/>
-      <classpath>
-        <path refid="lib.build.demos"/>
-        <path location="${build.main}"/>
-        <path location="${build.plugins.main}"/>
-      </classpath>
-    </javac>
-    <copy todir="${build.demos.main}">
-      <fileset refid="demos_resources"/>
-    </copy>
+    <mkdir dir="${build.demos.test}"/>
+    <build_demo app-id="chinook"/>
+    <build_demo app-id="empdept"/>
+    <build_demo app-id="petstore"/>
+    <build_demo app-id="schemabrowser"/>
+    <build_demo app-id="world"/>
 
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
       <classpath refid="lib.runtime.test"/>
     </taskdef>
-    <jrc srcdir="${basedir}/demos/src/main/reports" includes="**/*.jrxml"/>
+    <jrc srcdir="${basedir}/demos/chinook/src/main/reports" includes="**/*.jrxml"/>
+    <jrc srcdir="${basedir}/demos/empdept/src/main/reports" includes="**/*.jrxml"/>
     <move todir="${build.demos.reports}" flatten="true">
-      <fileset dir="${basedir}/demos/src/main/reports" includes="**/*.jasper"/>
+      <fileset dir="${basedir}/demos/chinook/src/main/reports" includes="**/*.jasper"/>
+      <fileset dir="${basedir}/demos/empdept/src/main/reports" includes="**/*.jasper"/>
     </move>
-
-    <mkdir dir="${build.demos.test}"/>
-    <javac destdir="${build.demos.test}" debug="${build.debuginfo}" includeantruntime="false">
-      <src path="${src.demos.test}"/>
-      <classpath>
-        <path refid="lib.build.demos"/>
-        <path location="${build.main}"/>
-        <path location="${build.plugins.main}"/>
-        <path location="${build.demos.main}"/>
-      </classpath>
-    </javac>
 
     <concat destfile="${build.main}/org/jminor/common/model/version.txt">${version}-build ${build.date}</concat>
   </target>
@@ -332,10 +317,11 @@
                  basedir.javadoc="${javadoc.plugins}"
                  includes="org/jminor/framework/plugins/imagepanel/**"/>
 
-    <jar jarfile="${dist}/jminor-demos/jminor-demos.jar" basedir="${build.demos.main}"
-         manifest="${build.main}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="${dist}/jminor-demos/jminor-demos-sources.jar" basedir="${src.demos.main}"
-         manifest="${build.main}/META-INF/MANIFEST.MF"/>
+    <dist_demo app-id="chinook"/>
+    <dist_demo app-id="empdept"/>
+    <dist_demo app-id="petstore"/>
+    <dist_demo app-id="schemabrowser"/>
+    <dist_demo app-id="world"/>
 
     <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
@@ -438,7 +424,11 @@
     <copy file="${dist}/jminor-server/jminor-server.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-plugin-rest/jminor-plugin-rest.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-demos/jminor-demos.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-demos/chinook/jminor-demo-chinook-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-demos/empdept/jminor-demo-empdept-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-demos/petstore/jminor-demo-petstore-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-demos/schemabrowser/jminor-demo-schemabrowser-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-demos/world/jminor-demo-world-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy todir="${deploy.server.path}/lib">
       <fileset dir="${lib}/runtime.server"/>
     </copy>
@@ -734,6 +724,45 @@
     </sequential>
   </macrodef>
 
+  <macrodef name="dist_demo">
+    <attribute name="app-id"/>
+    <sequential>
+      <jar jarfile="${dist}/jminor-demos/@{app-id}/jminor-demo-@{app-id}.jar" basedir="${build.demos.main}"
+           includes="org/jminor/framework/demos/@{app-id}/**/*" manifest="${build.main}/META-INF/MANIFEST.MF"/>
+      <jar jarfile="${dist}/jminor-demos/@{app-id}/jminor-demo-@{app-id}-domain.jar" basedir="${build.demos.main}"
+           includes="org/jminor/framework/demos/@{app-id}/domain/**/*, org/jminor/framework/demos/@{app-id}/server/**/*"
+           manifest="${build.main}/META-INF/MANIFEST.MF"/>
+      <jar jarfile="${dist}/jminor-demos/@{app-id}/jminor-demo-@{app-id}-sources.jar" basedir="${src.demos.main}"
+           includes="org/jminor/framework/demos/@{app-id}/**/*" manifest="${build.main}/META-INF/MANIFEST.MF"/>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="build_demo">
+    <attribute name="app-id"/>
+    <sequential>
+      <javac destdir="${build.demos.main}" debug="${build.debuginfo}" includeantruntime="false">
+        <src path="demos/@{app-id}/src/main/java"/>
+        <classpath>
+          <path refid="lib.build.demos"/>
+          <path location="${build.main}"/>
+          <path location="${build.plugins.main}"/>
+        </classpath>
+      </javac>
+      <copy todir="${build.demos.main}">
+        <fileset dir="demos/@{app-id}/src/main/java" excludes="**/*.java"/>
+      </copy>
+      <javac destdir="${build.demos.test}" debug="${build.debuginfo}" includeantruntime="false">
+        <src path="demos/@{app-id}/src/test/java"/>
+        <classpath>
+          <path refid="lib.build.demos"/>
+          <path location="${build.main}"/>
+          <path location="${build.plugins.main}"/>
+          <path location="${build.demos.main}"/>
+        </classpath>
+      </javac>
+    </sequential>
+  </macrodef>
+
   <macrodef name="deploy_demo_app">
     <attribute name="app-id"/>
     <attribute name="app-name"/>
@@ -751,20 +780,18 @@
         <attribute name="Codebase" value="${deploy.demos.codebase}"/>
         <attribute name="Main-Class" value="@{main-class}"/>
       </manifest>
-      <jar jarfile="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" duplicate="preserve" filesetmanifest="mergewithoutmain"
-           manifest="${deploy.demos.dir}/@{app-id}/META-INF/MANIFEST.MF">
-        <zipfileset dir="${build.demos.main}" includes="org/jminor/framework/demos/@{app-id}/**/*"/>
+      <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.jar">
+        <zipfileset src="${dist}/jminor-demos/@{app-id}/jminor-demo-@{app-id}.jar"/>
         <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
-        <zipfileset dir="${basedir}/demos/config/@{app-id}" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
-      </jar>
-      <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" update="true">
+        <zipfileset dir="${deploy.demos.dir}/@{app-id}" includes="META-INF/MANIFEST.MF"/>
+        <zipfileset dir="${basedir}/demos/@{app-id}/src/main/config/" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
         <zipfileset file="@{report}" prefix="reports"/>
       </zip>
       <delete dir="${deploy.demos.dir}/@{app-id}/META-INF"/>
       <signjar jar="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" alias="${jar.sign.alias}"
                storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
-      <copy file="${basedir}/demos/config/@{app-id}/@{app-id}.jnlp" todir="${deploy.demos.dir}/@{app-id}"/>
-      <copy file="${basedir}/demos/config/@{app-id}/getdown.txt" todir="${deploy.demos.dir}/@{app-id}"/>
+      <copy file="${basedir}/demos/@{app-id}/src/main/config/@{app-id}.jnlp" todir="${deploy.demos.dir}/@{app-id}"/>
+      <copy file="${basedir}/demos/@{app-id}/src/main/config/getdown.txt" todir="${deploy.demos.dir}/@{app-id}"/>
       <copy file="${basedir}/docs/jminor.org/jminor_logo_black_medium.png" todir="${deploy.demos.dir}/@{app-id}"/>
       <getdown_digest appdir="${deploy.demos.dir}/@{app-id}"/>
       <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.zip">

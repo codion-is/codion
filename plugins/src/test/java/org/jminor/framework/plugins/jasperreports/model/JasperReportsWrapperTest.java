@@ -27,7 +27,7 @@ public class JasperReportsWrapperTest {
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
     final JasperPrint print = EntityReportUtil.fillReport(
-            new JasperReportsWrapper("demos/src/main/reports/empdept/empdept_employees.jasper", reportParameters),
+            new JasperReportsWrapper("build/demos/reports/empdept_employees.jasper", reportParameters),
             EntityConnectionProvidersTest.CONNECTION_PROVIDER).getResult();
     assertNotNull(print);
   }

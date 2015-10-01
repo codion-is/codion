@@ -9,11 +9,18 @@
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/demos/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/src/main/java" isTestSource="false" />
-      <sourceFolder url="file://$MODULE_DIR$/demos/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/demos/chinook/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/demos/chinook/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/demos/empdept/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/demos/empdept/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/demos/petstore/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/demos/petstore/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/demos/schemabrowser/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/demos/world/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/demos/world/src/test/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
       <excludeFolder url="file://$MODULE_DIR$/docs/api" />
       <excludeFolder url="file://$MODULE_DIR$/docs/pluginsapi" />

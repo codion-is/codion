@@ -116,7 +116,12 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
         report = (JasperReport) JRLoader.loadObject(reportFile);
       }
       else {
-        report = (JasperReport) JRLoader.loadObject(JasperReportsWrapper.class.getResource("/" + reportPath));
+        try {
+          report = (JasperReport) JRLoader.loadObject(JasperReportsWrapper.class.getResource("/" + reportPath));
+        }
+        catch (final NullPointerException e) {
+          throw new JRException("Report '" + reportPath + "' not found in file system or classpath");
+        }
       }
     }
     if (CACHE_REPORTS) {
