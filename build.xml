@@ -617,6 +617,33 @@
     <delete file="${resources.security}/JMinorServer.cer"/>
   </target>
 
+  <macrodef name="run_tests">
+    <attribute name="coverage-output-file"/>
+    <attribute name="classpath-ref"/>
+    <attribute name="test-src-dir"/>
+    <sequential>
+      <jacoco:coverage destfile="${test.reports}/@{coverage-output-file}">
+        <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once">
+          <formatter type="xml" usefile="true"/>
+          <classpath refid="@{classpath-ref}"/>
+          <jvmarg value="-Djava.security.policy=resources/security/all_permissions.policy"/>
+          <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
+          <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
+          <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
+          <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
+          <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
+          <jvmarg value="-Djminor.db.embeddedInMemory=${junit.db.embeddedInMemory}"/>
+          <jvmarg value="-Djminor.db.initScript=${junit.db.initScript}"/>
+          <jvmarg value="-Djminor.unittest.username=${junit.username}"/>
+          <jvmarg value="-Djminor.unittest.password=${junit.password}"/>
+          <batchtest todir="${test.reports}">
+            <fileset dir="@{test-src-dir}" includes="**/*Test.java"/>
+          </batchtest>
+        </junit>
+      </jacoco:coverage>
+    </sequential>
+  </macrodef>
+
   <macrodef name="dist_module">
     <attribute name="module-name"/>
     <attribute name="includes" default=""/>
@@ -634,46 +661,6 @@
       <jar jarfile="${dist}/@{module-name}/@{module-name}-javadoc.jar" basedir="${javadoc}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
-    </sequential>
-  </macrodef>
-
-  <macrodef name="dist_demo">
-    <attribute name="app-id"/>
-    <sequential>
-      <jar jarfile="${dist}/jminor-demos/@{app-id}/@{app-id}.jar" basedir="${build.demos.main}"
-           includes="org/jminor/framework/demos/@{app-id}/**/*" excludes="org/jminor/framework/demos/@{app-id}/server/*"
-           manifest="${build.main}/META-INF/MANIFEST.MF"/>
-      <jar jarfile="${dist}/jminor-demos/@{app-id}/@{app-id}-domain.jar" basedir="${build.demos.main}"
-           includes="org/jminor/framework/demos/@{app-id}/domain/**/*, org/jminor/framework/demos/@{app-id}/server/**/*"
-           manifest="${build.main}/META-INF/MANIFEST.MF"/>
-      <jar jarfile="${dist}/jminor-demos/@{app-id}/@{app-id}-sources.jar" basedir="demos/@{app-id}/src/main/java"
-           manifest="${build.main}/META-INF/MANIFEST.MF"/>
-    </sequential>
-  </macrodef>
-
-  <macrodef name="build_demo">
-    <attribute name="app-id"/>
-    <sequential>
-      <javac destdir="${build.demos.main}" debug="${build.debuginfo}" includeantruntime="false">
-        <src path="demos/@{app-id}/src/main/java"/>
-        <classpath>
-          <path refid="lib.build.demos"/>
-          <path location="${build.main}"/>
-          <path location="${build.plugins.main}"/>
-        </classpath>
-      </javac>
-      <copy todir="${build.demos.main}">
-        <fileset dir="demos/@{app-id}/src/main/java" excludes="**/*.java"/>
-      </copy>
-      <javac destdir="${build.demos.test}" debug="${build.debuginfo}" includeantruntime="false">
-        <src path="demos/@{app-id}/src/test/java"/>
-        <classpath>
-          <path refid="lib.build.demos"/>
-          <path location="${build.main}"/>
-          <path location="${build.plugins.main}"/>
-          <path location="${build.demos.main}"/>
-        </classpath>
-      </javac>
     </sequential>
   </macrodef>
 
@@ -737,6 +724,46 @@
     </sequential>
   </macrodef>
 
+  <macrodef name="dist_demo">
+    <attribute name="app-id"/>
+    <sequential>
+      <jar jarfile="${dist}/jminor-demos/@{app-id}/@{app-id}.jar" basedir="${build.demos.main}"
+           includes="org/jminor/framework/demos/@{app-id}/**/*" excludes="org/jminor/framework/demos/@{app-id}/server/*"
+           manifest="${build.main}/META-INF/MANIFEST.MF"/>
+      <jar jarfile="${dist}/jminor-demos/@{app-id}/@{app-id}-domain.jar" basedir="${build.demos.main}"
+           includes="org/jminor/framework/demos/@{app-id}/domain/**/*, org/jminor/framework/demos/@{app-id}/server/**/*"
+           manifest="${build.main}/META-INF/MANIFEST.MF"/>
+      <jar jarfile="${dist}/jminor-demos/@{app-id}/@{app-id}-sources.jar" basedir="demos/@{app-id}/src/main/java"
+           manifest="${build.main}/META-INF/MANIFEST.MF"/>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="build_demo">
+    <attribute name="app-id"/>
+    <sequential>
+      <javac destdir="${build.demos.main}" debug="${build.debuginfo}" includeantruntime="false">
+        <src path="demos/@{app-id}/src/main/java"/>
+        <classpath>
+          <path refid="lib.build.demos"/>
+          <path location="${build.main}"/>
+          <path location="${build.plugins.main}"/>
+        </classpath>
+      </javac>
+      <copy todir="${build.demos.main}">
+        <fileset dir="demos/@{app-id}/src/main/java" excludes="**/*.java"/>
+      </copy>
+      <javac destdir="${build.demos.test}" debug="${build.debuginfo}" includeantruntime="false">
+        <src path="demos/@{app-id}/src/test/java"/>
+        <classpath>
+          <path refid="lib.build.demos"/>
+          <path location="${build.main}"/>
+          <path location="${build.plugins.main}"/>
+          <path location="${build.demos.main}"/>
+        </classpath>
+      </javac>
+    </sequential>
+  </macrodef>
+
   <macrodef name="deploy_demo_app">
     <attribute name="app-id"/>
     <attribute name="app-name"/>
@@ -774,33 +801,6 @@
         <zipfileset file="${basedir}/demos/config/shared/h2db.config"/>
         <zipfileset file="${basedir}/demos/config/shared/remote.config"/>
       </zip>
-    </sequential>
-  </macrodef>
-
-  <macrodef name="run_tests">
-    <attribute name="coverage-output-file"/>
-    <attribute name="classpath-ref"/>
-    <attribute name="test-src-dir"/>
-    <sequential>
-      <jacoco:coverage destfile="${test.reports}/@{coverage-output-file}">
-        <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once">
-          <formatter type="xml" usefile="true"/>
-          <classpath refid="@{classpath-ref}"/>
-          <jvmarg value="-Djava.security.policy=resources/security/all_permissions.policy"/>
-          <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
-          <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
-          <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
-          <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
-          <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
-          <jvmarg value="-Djminor.db.embeddedInMemory=${junit.db.embeddedInMemory}"/>
-          <jvmarg value="-Djminor.db.initScript=${junit.db.initScript}"/>
-          <jvmarg value="-Djminor.unittest.username=${junit.username}"/>
-          <jvmarg value="-Djminor.unittest.password=${junit.password}"/>
-          <batchtest todir="${test.reports}">
-            <fileset dir="@{test-src-dir}" includes="**/*Test.java"/>
-          </batchtest>
-        </junit>
-      </jacoco:coverage>
     </sequential>
   </macrodef>
 </project>
