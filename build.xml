@@ -380,12 +380,12 @@
   <target name="publish" depends="dist"
           description="Publish all project artifacts">
     <subant target="publish" buildpath="${basedir}/resources/publish/common-model"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/swing-common-model"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/swing-common-ui"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-core"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-local"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-remote"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-test"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/swing-common-model"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/swing-common-ui"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/swing-client-model"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/swing-client-ui"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/swing-client-test"/>
@@ -397,28 +397,6 @@
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-rest"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-tomcat-pool"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-imagepanel"/>
-  </target>
-
-  <target name="create_dependency_report"
-          description="Create an ivy dependency report for all project modules">
-    <subant target="report" buildpath="${basedir}/resources/publish/common-model"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/swing-common-model"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/swing-common-ui"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/db-core"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/db-local"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/db-remote"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/db-test"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/swing-client-model"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/swing-client-ui"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/swing-client-test"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/swing-client-bundle"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/server"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/server-monitor"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/plugin-jasperreports"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/plugin-json"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/plugin-rest"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/plugin-tomcat-pool"/>
-    <subant target="report" buildpath="${basedir}/resources/publish/plugin-imagepanel"/>
   </target>
 
   <target name="javadoc" depends="build"
@@ -452,7 +430,7 @@
     </javadoc>
   </target>
 
-  <target name="deploy_server" depends="create_client_server_keystore, create_h2_db"
+  <target name="deploy_server" depends="create_keystore, create_h2_db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-db-core/jminor-db-core.jar" todir="${deploy.server.path}/lib"/>
@@ -480,7 +458,7 @@
     </copy>
   </target>
 
-  <target name="deploy_server_monitor" depends="create_client_server_keystore"
+  <target name="deploy_server_monitor" depends="create_keystore"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}"/>
     <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.monitor.path}/lib"/>
@@ -515,7 +493,7 @@
     <chmod dir="${deploy.generator.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demo_apps" depends="create_client_server_keystore, create_h2_db"
+  <target name="deploy_demos" depends="create_keystore, create_h2_db"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
     <!--Setup-->
@@ -538,7 +516,7 @@
     <delete file="${deploy.demos.dir}/libraries.jar"/>
   </target>
 
-  <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demo_apps, deploy_generator"
+  <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos, deploy_generator"
           description="A convenience target for deploying the server, server monitor and demo applications"/>
 
   <target name="run_unit_tests" depends="clean, build"
@@ -606,7 +584,7 @@
     </java>
   </target>
 
-  <target name="run_demo_chinook_remote" depends="build, create_client_server_keystore"
+  <target name="run_demo_chinook_remote" depends="build, create_keystore"
           description="Runs the Chinook demo application with a remote db connection">
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
@@ -623,7 +601,7 @@
     </java>
   </target>
 
-  <target name="run_demo_chinook_load_test" depends="build, create_client_server_keystore"
+  <target name="run_demo_chinook_load_test" depends="build, create_keystore"
           description="Runs the Chinook load testing application with a remote db connection">
     <java classname="org.jminor.framework.demos.chinook.testing.ChinookLoadTest" fork="yes">
       <classpath>
@@ -640,7 +618,7 @@
     </java>
   </target>
 
-  <target name="run_rmi_server" depends="build, create_client_server_keystore"
+  <target name="run_server" depends="build, create_keystore"
           description="Runs the RMI server">
     <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes">
       <classpath>
@@ -668,7 +646,7 @@
     </java>
   </target>
 
-  <target name="run_rmi_server_monitor" depends="build, create_client_server_keystore"
+  <target name="run_server_monitor" depends="build, create_keystore"
           description="Runs the RMI server monitor">
     <java classname="org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
       <classpath>
@@ -681,7 +659,7 @@
     </java>
   </target>
 
-  <target name="run_entity_generator" depends="build"
+  <target name="run_generator" depends="build"
           description="Runs the entity generator">
     <java classname="org.jminor.swing.framework.generator.ui.EntityGeneratorPanel" fork="yes">
       <classpath>
@@ -702,7 +680,7 @@
     </java>
   </target>
 
-  <target name="create_client_server_keystore" unless="keystore.available"
+  <target name="create_keystore" unless="keystore.available"
           description="Creates a client/server keystore for running the demos">
     <genkey alias="JMinorServer" keyalg="RSA" storepass="${demo.server.keystorePassword}" validity="365"
             keystore="${resources.security}/JMinorServerKeystore">
