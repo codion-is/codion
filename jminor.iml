@@ -14,7 +14,6 @@
       <sourceFolder url="file://$MODULE_DIR$/plugins/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/demos/src/test/java" isTestSource="true" />
-      <excludeFolder url="file://$MODULE_DIR$/classes" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
       <excludeFolder url="file://$MODULE_DIR$/docs/api" />
       <excludeFolder url="file://$MODULE_DIR$/docs/pluginsapi" />
