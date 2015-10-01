@@ -4075,3 +4075,4 @@
   LocalEntityConnection.delete(keys) improved
   JasperReportsWrapper now tries to load reports from classpath if the file is not found in the file system
   Demos split up into separate directories
+  Plugins split up into separate directories

@@ -95,7 +95,6 @@
   <fileset id="common_resources" dir="${src.main}" excludes="**/*.java"/>
   <fileset id="framework_resources" dir="${src.main}" excludes="**/*.java"/>
   <fileset id="test_resources" dir="${src.test}" excludes="**/*.java"/>
-  <fileset id="plugins_resources" dir="${src.plugins.main}" excludes="**/*.java"/>
 
   <condition property="keystore.available">
     <available file="${resources.security}/JMinorServerKeystore"/>
@@ -141,27 +140,12 @@
     </copy>
 
     <mkdir dir="${build.plugins.main}"/>
-    <javac destdir="${build.plugins.main}" debug="${build.debuginfo}" includeantruntime="false">
-      <src path="${src.plugins.main}"/>
-      <classpath>
-        <path refid="lib.build.plugins"/>
-        <path location="${build.main}"/>
-      </classpath>
-    </javac>
-    <copy todir="${build.plugins.main}">
-      <fileset refid="plugins_resources"/>
-    </copy>
-
     <mkdir dir="${build.plugins.test}"/>
-    <javac destdir="${build.plugins.test}" debug="${build.debuginfo}" includeantruntime="false">
-      <src path="${src.plugins.test}"/>
-      <classpath>
-        <path refid="lib.build.plugins"/>
-        <path location="${build.main}"/>
-        <path location="${build.test}"/>
-        <path location="${build.plugins.main}"/>
-      </classpath>
-    </javac>
+    <build_plugin plugin-id="imagepanel"/>
+    <build_plugin plugin-id="jasperreports"/>
+    <build_plugin plugin-id="json"/>
+    <build_plugin plugin-id="rest"/>
+    <build_plugin plugin-id="tomcat-pool"/>
 
     <mkdir dir="${build.demos.main}"/>
     <mkdir dir="${build.demos.test}"/>
@@ -202,33 +186,14 @@
     </manifest>
 
     <mkdir dir="${dist}"/>
-    <dist_module module.name="jminor"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"/>
-
-    <dist_module module.name="jminor-common-model"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
+    <dist_module module-name="jminor"/>
+    <dist_module module-name="jminor-common-model"
                  includes="org/jminor/common/**"/>
-
-    <dist_module module.name="jminor-swing-common-model"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
+    <dist_module module-name="jminor-swing-common-model"
                  includes="org/jminor/swing/common/model/**"/>
-
-    <dist_module module.name="jminor-swing-common-ui"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
+    <dist_module module-name="jminor-swing-common-ui"
                  includes="org/jminor/swing/common/ui/**"/>
-
-    <dist_module module.name="jminor-db-core"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
+    <dist_module module-name="jminor-db-core"
                  includes="org/jminor/framework/Configuration.class,
                    org/jminor/framework/db/*,
                    org/jminor/framework/db/criteria/*,
@@ -236,86 +201,30 @@
                    org/jminor/framework/i18n/**"
                  excludes="org/jminor/framework/db/remote*,
                    org/jminor/framework/db/local*,"/>
-
-    <dist_module module.name="jminor-db-local"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
+    <dist_module module-name="jminor-db-local"
                  includes="org/jminor/framework/db/local/*"/>
-
-    <dist_module module.name="jminor-db-remote"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
+    <dist_module module-name="jminor-db-remote"
                  includes="org/jminor/framework/db/remote/*"/>
-
-    <dist_module module.name="jminor-db-test"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
+    <dist_module module-name="jminor-db-test"
                  includes="org/jminor/framework/tools/testing/EntityTestUnit*"/>
-
-    <dist_module module.name="jminor-swing-client-model"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
+    <dist_module module-name="jminor-swing-client-model"
                  includes="org/jminor/swing/framework/model/**"/>
-
-    <dist_module module.name="jminor-swing-client-ui"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
+    <dist_module module-name="jminor-swing-client-ui"
                  includes="org/jminor/swing/framework/ui/**"/>
-
-    <dist_module module.name="jminor-swing-client-test"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
+    <dist_module module-name="jminor-swing-client-test"
                  includes="org/jminor/swing/framework/testing/**"/>
-
-    <dist_module module.name="jminor-server"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
+    <dist_module module-name="jminor-server"
                  includes="org/jminor/framework/server/*"/>
-
-    <dist_module module.name="jminor-server-monitor"
-                 basedir.classes="${build.main}"
-                 basedir.sources="${src.main}"
-                 basedir.javadoc="${javadoc}"
+    <dist_module module-name="jminor-server-monitor"
                  includes="org/jminor/framework/Configuration.class,
                    org/jminor/swing/framework/server/monitor/**,
                    org/jminor/framework/server/EntityConnectionServerAdmin.class"/>
 
-    <dist_module module.name="jminor-plugin-jasperreports"
-                 basedir.classes="${build.plugins.main}"
-                 basedir.sources="${src.plugins.main}"
-                 basedir.javadoc="${javadoc.plugins}"
-                 includes="org/jminor/framework/plugins/jasperreports/**"/>
-
-    <dist_module module.name="jminor-plugin-json"
-                 basedir.classes="${build.plugins.main}"
-                 basedir.sources="${src.plugins.main}"
-                 basedir.javadoc="${javadoc.plugins}"
-                 includes="org/jminor/framework/plugins/json/**"/>
-
-    <dist_module module.name="jminor-plugin-rest"
-                 basedir.classes="${build.plugins.main}"
-                 basedir.sources="${src.plugins.main}"
-                 basedir.javadoc="${javadoc.plugins}"
-                 includes="org/jminor/framework/plugins/rest/**"/>
-
-    <dist_module module.name="jminor-plugin-tomcat-pool"
-                 basedir.classes="${build.plugins.main}"
-                 basedir.sources="${src.plugins.main}"
-                 basedir.javadoc="${javadoc.plugins}"
-                 includes="org/jminor/framework/plugins/tomcat/pool/**"/>
-
-    <dist_module module.name="jminor-plugin-imagepanel"
-                 basedir.classes="${build.plugins.main}"
-                 basedir.sources="${src.plugins.main}"
-                 basedir.javadoc="${javadoc.plugins}"
-                 includes="org/jminor/framework/plugins/imagepanel/**"/>
+    <dist_plugin plugin-id="jasperreports"/>
+    <dist_plugin plugin-id="json"/>
+    <dist_plugin plugin-id="rest"/>
+    <dist_plugin plugin-id="tomcat-pool"/>
+    <dist_plugin plugin-id="imagepanel"/>
 
     <dist_demo app-id="chinook"/>
     <dist_demo app-id="empdept"/>
@@ -402,18 +311,11 @@
       <classpath refid="lib.build.core"/>
       <link href="http://download.oracle.com/javase/8/docs/api/"/>
     </javadoc>
-    <javadoc destdir="${javadoc.plugins}" sourcepath="${src.plugins.main}" packagenames="org.jminor.*" Encoding="UTF-8"
-             docencoding="UTF-8" author="true" version="true" use="true"
-             windowtitle="JMinor v${version} Plugin API" doctitle="JMinor v${version} Plugin API"
-             group="Plugins org.jminor.framework.plugins">
-      <classpath>
-        <path refid="lib.build.core"/>
-        <path refid="lib.build.plugins"/>
-        <path location="${build.main}"/>
-      </classpath>
-      <link href="http://download.oracle.com/javase/8/docs/api/"/>
-      <link offline="true" href="http://jminor.org/data/media/project/docs/api/" packagelistloc="${javadoc}"/>
-    </javadoc>
+    <javadoc_plugin plugin-id="imagepanel"/>
+    <javadoc_plugin plugin-id="jasperreports"/>
+    <javadoc_plugin plugin-id="json"/>
+    <javadoc_plugin plugin-id="rest"/>
+    <javadoc_plugin plugin-id="tomcat-pool"/>
   </target>
 
   <target name="deploy_server" depends="create_keystore, create_h2db"
@@ -424,11 +326,11 @@
     <copy file="${dist}/jminor-server/jminor-server.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-plugin-rest/jminor-plugin-rest.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-demos/chinook/jminor-demo-chinook-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-demos/empdept/jminor-demo-empdept-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-demos/petstore/jminor-demo-petstore-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-demos/schemabrowser/jminor-demo-schemabrowser-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-demos/world/jminor-demo-world-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-demos/chinook/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-demos/empdept/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-demos/petstore/petstore-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-demos/schemabrowser/schemabrowser-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-demos/world/world-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy todir="${deploy.server.path}/lib">
       <fileset dir="${lib}/runtime.server"/>
     </copy>
@@ -519,8 +421,18 @@
     <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpathref="lib.ant.util"/>
 
     <run_tests coverage-output-file="jacoco-main.exec" test-src-dir="${src.test}" classpath-ref="path.unittests"/>
-    <run_tests coverage-output-file="jacoco-plugins.exec" test-src-dir="${src.plugins.test}" classpath-ref="path.plugins.unittests"/>
-    <run_tests coverage-output-file="jacoco-demos.exec" test-src-dir="${src.demos.test}" classpath-ref="path.demos.unittests"/>
+
+    <run_tests coverage-output-file="jacoco-imagepanel.exec" test-src-dir="plugins/imagepanel/src/test/java" classpath-ref="path.plugins.unittests"/>
+    <run_tests coverage-output-file="jacoco-jasperreports.exec" test-src-dir="plugins/jasperreports/src/test/java" classpath-ref="path.plugins.unittests"/>
+    <run_tests coverage-output-file="jacoco-json.exec" test-src-dir="plugins/json/src/test/java" classpath-ref="path.plugins.unittests"/>
+    <run_tests coverage-output-file="jacoco-rest.exec" test-src-dir="plugins/rest/src/test/java" classpath-ref="path.plugins.unittests"/>
+    <run_tests coverage-output-file="jacoco-tomcat-pool.exec" test-src-dir="plugins/tomcat-pool/src/test/java" classpath-ref="path.plugins.unittests"/>
+
+    <run_tests coverage-output-file="jacoco-chinook.exec" test-src-dir="demos/chinook/src/test/java" classpath-ref="path.demos.unittests"/>
+    <run_tests coverage-output-file="jacoco-empdept.exec" test-src-dir="demos/empdept/src/test/java" classpath-ref="path.demos.unittests"/>
+    <run_tests coverage-output-file="jacoco-petstore.exec" test-src-dir="demos/petstore/src/test/java" classpath-ref="path.demos.unittests"/>
+    <run_tests coverage-output-file="jacoco-schemabrowser.exec" test-src-dir="demos/schemabrowser/src/test/java" classpath-ref="path.demos.unittests"/>
+    <run_tests coverage-output-file="jacoco-world.exec" test-src-dir="demos/world/src/test/java" classpath-ref="path.demos.unittests"/>
 
     <mkdir dir="${test.reports.html}"/>
     <junitreport todir="${test.reports}">
@@ -545,7 +457,11 @@
         </classfiles>
         <sourcefiles encoding="UTF-8">
           <fileset dir="${src.main}"/>
-          <fileset dir="${src.plugins.main}"/>
+          <fileset dir="plugins/imagepanel/src/main/java"/>
+          <fileset dir="plugins/jasperreports/src/main/java"/>
+          <fileset dir="plugins/json/src/main/java"/>
+          <fileset dir="plugins/rest/src/main/java"/>
+          <fileset dir="plugins/tomcat-pool/src/main/java"/>
         </sourcefiles>
       </structure>
 
@@ -702,23 +618,20 @@
   </target>
 
   <macrodef name="dist_module">
-    <attribute name="module.name"/>
-    <attribute name="basedir.classes"/>
-    <attribute name="basedir.sources"/>
-    <attribute name="basedir.javadoc"/>
+    <attribute name="module-name"/>
     <attribute name="includes" default=""/>
     <attribute name="excludes" default=""/>
     <sequential>
-      <delete file="${dist}/@{module.name}/@{module.name}.jar"/>
-      <jar jarfile="${dist}/@{module.name}/@{module.name}.jar" basedir="@{basedir.classes}"
+      <delete file="${dist}/@{module-name}/@{module-name}.jar"/>
+      <jar jarfile="${dist}/@{module-name}/@{module-name}.jar" basedir="${build.main}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
-      <delete file="${dist}/@{module.name}/@{module.name}-sources.jar"/>
-      <jar jarfile="${dist}/@{module.name}/@{module.name}-sources.jar" basedir="@{basedir.sources}"
+      <delete file="${dist}/@{module-name}/@{module-name}-sources.jar"/>
+      <jar jarfile="${dist}/@{module-name}/@{module-name}-sources.jar" basedir="${src.main}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
-      <delete file="${dist}/@{module.name}/@{module.name}-javadoc.jar"/>
-      <jar jarfile="${dist}/@{module.name}/@{module.name}-javadoc.jar" basedir="@{basedir.javadoc}"
+      <delete file="${dist}/@{module-name}/@{module-name}-javadoc.jar"/>
+      <jar jarfile="${dist}/@{module-name}/@{module-name}-javadoc.jar" basedir="${javadoc}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
     </sequential>
@@ -761,6 +674,66 @@
           <path location="${build.demos.main}"/>
         </classpath>
       </javac>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="build_plugin">
+    <attribute name="plugin-id"/>
+    <sequential>
+      <javac destdir="${build.plugins.main}" debug="${build.debuginfo}" includeantruntime="false">
+        <src path="plugins/@{plugin-id}/src/main/java"/>
+        <classpath>
+          <path refid="lib.build.plugins"/>
+          <path location="${build.main}"/>
+        </classpath>
+      </javac>
+      <copy todir="${build.plugins.main}">
+        <fileset dir="plugins/@{plugin-id}/src/main/java" excludes="**/*.java"/>
+      </copy>
+      <javac destdir="${build.plugins.test}" debug="${build.debuginfo}" includeantruntime="false">
+        <src path="plugins/@{plugin-id}/src/test/java"/>
+        <classpath>
+          <path refid="lib.build.plugins"/>
+          <path location="${build.main}"/>
+          <path location="${build.test}"/>
+          <path location="${build.plugins.main}"/>
+        </classpath>
+      </javac>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="javadoc_plugin">
+    <attribute name="plugin-id"/>
+    <sequential>
+      <javadoc destdir="${javadoc.plugins}" sourcepath="plugins/@{plugin-id}/src/main/java" packagenames="org.jminor.*" Encoding="UTF-8"
+               docencoding="UTF-8" author="true" version="true" use="true"
+               windowtitle="JMinor v${version} Plugin API" doctitle="JMinor v${version} Plugin API"
+               group="Plugins org.jminor.framework.plugins">
+        <classpath>
+          <path refid="lib.build.core"/>
+          <path refid="lib.build.plugins"/>
+          <path location="${build.main}"/>
+          <path location="${build.plugins.main}"/>
+        </classpath>
+        <link href="http://download.oracle.com/javase/8/docs/api/"/>
+        <link offline="true" href="http://jminor.org/data/media/project/docs/api/" packagelistloc="${javadoc}"/>
+      </javadoc>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="dist_plugin">
+    <attribute name="plugin-id"/>
+    <sequential>
+      <jar jarfile="${dist}/jminor-plugin-@{plugin-id}/jminor-plugin-@{plugin-id}.jar" basedir="${build.plugins.main}"
+           manifest="${build.main}/META-INF/MANIFEST.MF"
+           includes="org/jminor/framework/plugins/@{plugin-id}/**"/>
+      <delete file="${dist}/jminor-plugin-@{plugin-id}/jminor-plugin-@{plugin-id}-sources.jar"/>
+      <jar jarfile="${dist}/jminor-plugin-@{plugin-id}/jminor-plugin-@{plugin-id}-sources.jar" basedir="plugins/@{plugin-id}/src/main/java"
+           manifest="${build.main}/META-INF/MANIFEST.MF"/>
+      <delete file="${dist}/jminor-plugin-@{plugin-id}/jminor-plugin-@{plugin-id}-javadoc.jar"/>
+      <jar jarfile="${dist}/jminor-plugin-@{plugin-id}/jminor-plugin-@{plugin-id}-javadoc.jar" basedir="${javadoc.plugins}"
+           manifest="${build.main}/META-INF/MANIFEST.MF"
+           includes="org/jminor/framework/plugins/@{plugin-id}/**"/>
     </sequential>
   </macrodef>
 
