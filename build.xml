@@ -727,13 +727,14 @@
   <macrodef name="dist_demo">
     <attribute name="app-id"/>
     <sequential>
-      <jar jarfile="${dist}/jminor-demos/@{app-id}/jminor-demo-@{app-id}.jar" basedir="${build.demos.main}"
-           includes="org/jminor/framework/demos/@{app-id}/**/*" manifest="${build.main}/META-INF/MANIFEST.MF"/>
-      <jar jarfile="${dist}/jminor-demos/@{app-id}/jminor-demo-@{app-id}-domain.jar" basedir="${build.demos.main}"
+      <jar jarfile="${dist}/jminor-demos/@{app-id}/@{app-id}.jar" basedir="${build.demos.main}"
+           includes="org/jminor/framework/demos/@{app-id}/**/*" excludes="org/jminor/framework/demos/@{app-id}/server/*"
+           manifest="${build.main}/META-INF/MANIFEST.MF"/>
+      <jar jarfile="${dist}/jminor-demos/@{app-id}/@{app-id}-domain.jar" basedir="${build.demos.main}"
            includes="org/jminor/framework/demos/@{app-id}/domain/**/*, org/jminor/framework/demos/@{app-id}/server/**/*"
            manifest="${build.main}/META-INF/MANIFEST.MF"/>
-      <jar jarfile="${dist}/jminor-demos/@{app-id}/jminor-demo-@{app-id}-sources.jar" basedir="${src.demos.main}"
-           includes="org/jminor/framework/demos/@{app-id}/**/*" manifest="${build.main}/META-INF/MANIFEST.MF"/>
+      <jar jarfile="${dist}/jminor-demos/@{app-id}/@{app-id}-sources.jar" basedir="demos/@{app-id}/src/main/java"
+           manifest="${build.main}/META-INF/MANIFEST.MF"/>
     </sequential>
   </macrodef>
 
@@ -781,7 +782,7 @@
         <attribute name="Main-Class" value="@{main-class}"/>
       </manifest>
       <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.jar">
-        <zipfileset src="${dist}/jminor-demos/@{app-id}/jminor-demo-@{app-id}.jar"/>
+        <zipfileset src="${dist}/jminor-demos/@{app-id}/@{app-id}.jar"/>
         <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
         <zipfileset dir="${deploy.demos.dir}/@{app-id}" includes="META-INF/MANIFEST.MF"/>
         <zipfileset dir="${basedir}/demos/@{app-id}/src/main/config/" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
