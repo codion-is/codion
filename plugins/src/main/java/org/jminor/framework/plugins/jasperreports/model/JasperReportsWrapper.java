@@ -17,6 +17,7 @@ import net.sf.jasperreports.engine.JasperPrint;
 import net.sf.jasperreports.engine.JasperReport;
 import net.sf.jasperreports.engine.util.JRLoader;
 
+import java.io.File;
 import java.io.Serializable;
 import java.net.MalformedURLException;
 import java.net.URL;
@@ -60,7 +61,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
       final JasperReport report = loadJasperReport(reportPath);
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, connection));
     }
-    catch (final JRException e) {
+    catch (final JRException | MalformedURLException e) {
       throw new ReportException(e);
     }
   }
@@ -73,7 +74,7 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
       final JasperReport report = loadJasperReport(reportPath);
       return new JasperReportsResult(JasperFillManager.fillReport(report, reportParameters, dataWrapper.getDataSource()));
     }
-    catch (final JRException e) {
+    catch (final JRException | MalformedURLException e) {
       throw new ReportException(e);
     }
   }
@@ -90,13 +91,14 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
   }
 
   /**
-   * Loads a JasperReport file from the path given, it can be a URL or a file path
+   * Loads a JasperReport file from the path given, it can be a URL a file or classpath resource.
    * @param reportPath the path to the report file to load
    * @return a loaded JasperReport file
    * @throws JRException in case loading the report fails
+   * @throws MalformedURLException in case the report path is a malformed URL
    * @throws IllegalArgumentException in case the report path is not specified
    */
-  public static JasperReport loadJasperReport(final String reportPath) throws JRException {
+  public static JasperReport loadJasperReport(final String reportPath) throws JRException, MalformedURLException {
     Util.rejectNullValue(reportPath, "reportPath");
     if (reportPath.length() == 0) {
       throw new IllegalArgumentException("Empty report path");
@@ -106,15 +108,16 @@ public final class JasperReportsWrapper implements ReportWrapper<JasperPrint, JR
     }
     final JasperReport report;
     if (reportPath.toLowerCase().startsWith("http")) {
-      try {
-        report = (JasperReport) JRLoader.loadObject(new URL(reportPath));
-      }
-      catch (final MalformedURLException e) {
-        throw new JRException("Unable to load report by URL: " + reportPath, e);
-      }
+      report = (JasperReport) JRLoader.loadObject(new URL(reportPath));
     }
     else {
-      report = (JasperReport) JRLoader.loadObjectFromFile(reportPath);
+      final File reportFile = new File(reportPath);
+      if (reportFile.exists()) {
+        report = (JasperReport) JRLoader.loadObject(reportFile);
+      }
+      else {
+        report = (JasperReport) JRLoader.loadObject(JasperReportsWrapper.class.getResource("/" + reportPath));
+      }
     }
     if (CACHE_REPORTS) {
       REPORT_CACHE.put(reportPath, report);

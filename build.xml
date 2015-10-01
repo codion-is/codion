@@ -181,6 +181,9 @@
       <classpath refid="lib.runtime.test"/>
     </taskdef>
     <jrc srcdir="${basedir}/demos/src/main/reports" includes="**/*.jrxml"/>
+    <move todir="${build.demos.reports}" flatten="true">
+      <fileset dir="${basedir}/demos/src/main/reports" includes="**/*.jasper"/>
+    </move>
 
     <mkdir dir="${build.demos.test}"/>
     <javac destdir="${build.demos.test}" debug="${build.debuginfo}" includeantruntime="false">
@@ -473,7 +476,7 @@
       <fileset dir="${db.h2.dir}"/>
     </copy>
     <copy todir="${deploy.server.path}/reports/demos" flatten="true">
-      <fileset dir="${basedir}/demos/src/main/reports" includes="**/*.jasper"/>
+      <fileset dir="${build.demos.reports}" includes="**/*.jasper"/>
     </copy>
   </target>
 
@@ -523,10 +526,14 @@
                        excludes="*javadoc.jar, *sources.jar, META-INF/**/*"/>
       <fileset file="${deploy.demos.truststore}"/>
     </jar>
-    <deploy_demo_app app-id="empdept" app-name="EmpDept JMinor Demo" main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>
-    <deploy_demo_app app-id="chinook" app-name="Chinook JMinor Demo" main-class="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"/>
-    <deploy_demo_app app-id="petstore" app-name="Petstore JMinor Demo" main-class="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel"/>
-    <deploy_demo_app app-id="world" app-name="World JMinor Demo" main-class="org.jminor.framework.demos.world.client.ui.WorldAppPanel"/>
+    <deploy_demo_app app-id="empdept" app-name="EmpDept JMinor Demo" report="${build.demos.reports}/empdept_employees.jasper"
+                     main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>
+    <deploy_demo_app app-id="chinook" app-name="Chinook JMinor Demo" report="${build.demos.reports}/customer_report.jasper"
+                     main-class="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"/>
+    <deploy_demo_app app-id="petstore" app-name="Petstore JMinor Demo"
+                     main-class="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel"/>
+    <deploy_demo_app app-id="world" app-name="World JMinor Demo"
+                     main-class="org.jminor.framework.demos.world.client.ui.WorldAppPanel"/>
     <!--Cleanup-->
     <delete file="${deploy.demos.dir}/libraries.jar"/>
   </target>
@@ -595,7 +602,7 @@
       <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
       <jvmarg value="-Djminor.db.embeddedInMemory=${demo.db.embeddedInMemory}"/>
       <jvmarg value="-Djminor.db.initScript=${demo.db.initScript}"/>
-      <jvmarg value="-Djminor.report.path=resources/demos/chinook/reports"/>
+      <jvmarg value="-Djminor.report.path=build/demos/reports"/>
     </java>
   </target>
 
@@ -610,7 +617,7 @@
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.report.path=reports/demos"/>
+      <jvmarg value="-Djminor.report.path=build/demos/reports"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_client.policy"/>
     </java>
@@ -627,7 +634,7 @@
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.report.path=reports/demos"/>
+      <jvmarg value="-Djminor.report.path=build/demos/reports"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_load_test.policy"/>
     </java>
@@ -638,6 +645,7 @@
     <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes">
       <classpath>
         <path refid="classes.main"/>
+        <path refid="classes.plugins.main"/>
         <path refid="classes.demos.main"/>
         <path refid="lib.runtime.server"/>
       </classpath>
@@ -752,6 +760,7 @@
     <attribute name="app-id"/>
     <attribute name="app-name"/>
     <attribute name="main-class"/>
+    <attribute name="report" default=""/>
     <sequential>
       <mkdir dir="${deploy.demos.dir}/@{app-id}/META-INF"/>
       <manifest file="${deploy.demos.dir}/@{app-id}/META-INF/MANIFEST.MF">
@@ -770,11 +779,14 @@
         <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
         <zipfileset dir="${basedir}/demos/config/@{app-id}" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
       </jar>
+      <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" update="true">
+        <zipfileset file="@{report}" prefix="reports"/>
+      </zip>
       <delete dir="${deploy.demos.dir}/@{app-id}/META-INF"/>
       <signjar jar="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" alias="${jar.sign.alias}"
                storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
-      <copy file="${basedir}//demos/config/@{app-id}/@{app-id}.jnlp" todir="${deploy.demos.dir}/@{app-id}"/>
-      <copy file="${basedir}//demos/config/@{app-id}/getdown.txt" todir="${deploy.demos.dir}/@{app-id}"/>
+      <copy file="${basedir}/demos/config/@{app-id}/@{app-id}.jnlp" todir="${deploy.demos.dir}/@{app-id}"/>
+      <copy file="${basedir}/demos/config/@{app-id}/getdown.txt" todir="${deploy.demos.dir}/@{app-id}"/>
       <copy file="${basedir}/docs/jminor.org/jminor_logo_black_medium.png" todir="${deploy.demos.dir}/@{app-id}"/>
       <getdown_digest appdir="${deploy.demos.dir}/@{app-id}"/>
       <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.zip">

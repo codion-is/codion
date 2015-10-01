@@ -40,8 +40,13 @@ public class DepartmentTablePanel extends EntityTablePanel {
     new SwingWorker() {
       @Override
       protected Object doInBackground() throws Exception {
-        EntityReportUiUtil.viewJdbcReport(DepartmentTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
-                new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
+        try {
+          EntityReportUiUtil.viewJdbcReport(DepartmentTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
+                  new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
+        }
+        catch (final Exception e) {
+          handleException(e);
+        }
         return null;
       }
     }.execute();

@@ -38,8 +38,13 @@ public class CustomerTablePanel extends EntityTablePanel {
     new SwingWorker() {
       @Override
       protected Object doInBackground() throws Exception {
-        EntityReportUiUtil.viewJdbcReport(CustomerTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
-                new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
+        try {
+          EntityReportUiUtil.viewJdbcReport(CustomerTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
+                  new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
+        }
+        catch (final Exception e) {
+          handleException(e);
+        }
         return null;
       }
     }.execute();

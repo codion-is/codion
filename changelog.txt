@@ -4073,3 +4073,4 @@
   Reorganized demo sql scripts and reports
   EntityUtil.hash... renamed to map...
   LocalEntityConnection.delete(keys) improved
+  JasperReportsWrapper now tries to load reports from classpath if the file is not found in the file system
