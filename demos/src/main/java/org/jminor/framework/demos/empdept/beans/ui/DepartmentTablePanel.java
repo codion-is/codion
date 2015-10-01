@@ -37,19 +37,8 @@ public class DepartmentTablePanel extends EntityTablePanel {
             EntityUtil.getDistinctPropertyValues(DEPARTMENT_ID, getEntityTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", departmentNumbers);
-    new SwingWorker() {
-      @Override
-      protected Object doInBackground() throws Exception {
-        try {
-          EntityReportUiUtil.viewJdbcReport(DepartmentTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
-                  new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
-        }
-        catch (final Exception e) {
-          handleException(e);
-        }
-        return null;
-      }
-    }.execute();
+    EntityReportUiUtil.viewJdbcReport(DepartmentTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
+            new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
   }
 
   @Override

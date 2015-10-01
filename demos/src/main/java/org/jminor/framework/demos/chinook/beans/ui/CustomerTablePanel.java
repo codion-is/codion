@@ -35,19 +35,8 @@ public class CustomerTablePanel extends EntityTablePanel {
             EntityUtil.getDistinctPropertyValues(CUSTOMER_CUSTOMERID, getEntityTableModel().getSelectionModel().getSelectedItems());
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("CUSTOMER_IDS", customerIDs);
-    new SwingWorker() {
-      @Override
-      protected Object doInBackground() throws Exception {
-        try {
-          EntityReportUiUtil.viewJdbcReport(CustomerTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
-                  new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
-        }
-        catch (final Exception e) {
-          handleException(e);
-        }
-        return null;
-      }
-    }.execute();
+    EntityReportUiUtil.viewJdbcReport(CustomerTablePanel.this, new JasperReportsWrapper(reportPath, reportParameters),
+            new JasperReportsUIWrapper(), null, getEntityTableModel().getConnectionProvider());
   }
 
   @Override
