@@ -44,33 +44,20 @@ Directory structure:
 JMinor comes with five demo applications, a small one based on the SCOTT schema found in most if not all Oracle
 setups called EmpDept, a larger one called Petstore based on a schema of the same name, an application based on
 a music web-store schema called Chinook, an application based on the World schema and a SchemaBrowser, which is
-limited to Oracle, MySQL and H2 databases. An H2 database containing the required schemas can be generated via
-the ant target 'recreate_h2_db'.
+limited to Oracle, MySQL and H2 databases.
 
-In order to run the demos you must first run the deploy_all target in the ant build file (info on how to run ant
-builds can be found at ant.apache.org), which deploys the demo applications into the folder deployment along
-with the required database.
-
-dist/deployment
-  '-jminor_demos          - application jar files, the H2 database, files to run the demo applications
-  '-jminor_server         - server jar files, the H2 database, files to run the server
-  '-jminor_server_monitor - server monitor jar files, files to run the server monitor
-
-The demo applications can be run with an embedded H2 database or using the JMinor RMI Server.
-
-To run the demo applications with the RMI server you must first start the server by executing one of the run files
-in the 'jminor_server' directory, with the server running you can start the remote demo client by executing one of
-the ...client_remote.bat/sh run files in the 'jminor_demos' directory.
+The build file contains targets for running a server, client and server monitor without any setup or configuration.
+Start by executing 'run_server', then 'run_server_monitor' and finally 'run_demo_chinook_remote'.
 
 
 5. BUILDING THE PROJECT
 
 The Ant build file included in the project contains standard targets for building the project, running unit tests
-and packaging the compiled classes as well a targets for running the server and demo applications and creating the
-required databases.
+and packaging the compiled classes as well as targets for running the server and demo applications and creating the
+required database.
 
-Before you can use the 'sign_*_jars targets' the you must create a file called 'user.properties' in the project
-directory, and in it define the following build properties:
+Before you can use the 'deploy_demos' target you must create a keystore for signing jar files and define the following
+properties in a 'user.properties' file in the project directory:
 
 jar.sign.alias            - the keystore alias
 jar.sign.storepass        - the keystore password
