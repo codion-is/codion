@@ -120,6 +120,11 @@
           description="Clean all output and generated dirs">
     <delete dir="${build.root}" includeEmptyDirs="true"/>
     <delete dir="${test}" includeEmptyDirs="true"/>
+    <delete dir="${basedir}/demos/chinook/build"/>
+    <delete dir="${basedir}/demos/empdept/build"/>
+    <delete dir="${basedir}/demos/petstore/build"/>
+    <delete dir="${basedir}/demos/schemabrowser/build"/>
+    <delete dir="${basedir}/demos/world/build"/>
   </target>
 
   <target name="build" depends="resolve_libraries"
