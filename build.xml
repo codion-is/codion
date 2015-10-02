@@ -668,15 +668,12 @@
     <attribute name="includes" default=""/>
     <attribute name="excludes" default=""/>
     <sequential>
-      <delete file="${dist}/@{module-name}/@{module-name}.jar"/>
       <jar jarfile="${dist}/@{module-name}/@{module-name}.jar" basedir="${build.main}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
-      <delete file="${dist}/@{module-name}/@{module-name}-sources.jar"/>
       <jar jarfile="${dist}/@{module-name}/@{module-name}-sources.jar" basedir="${src.main}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
-      <delete file="${dist}/@{module-name}/@{module-name}-javadoc.jar"/>
       <jar jarfile="${dist}/@{module-name}/@{module-name}-javadoc.jar" basedir="${javadoc}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
@@ -733,10 +730,8 @@
       <jar jarfile="${dist}/jminor-plugin-@{plugin-id}/jminor-plugin-@{plugin-id}.jar" basedir="${build.plugins.main}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="org/jminor/framework/plugins/@{plugin-id}/**"/>
-      <delete file="${dist}/jminor-plugin-@{plugin-id}/jminor-plugin-@{plugin-id}-sources.jar"/>
       <jar jarfile="${dist}/jminor-plugin-@{plugin-id}/jminor-plugin-@{plugin-id}-sources.jar" basedir="plugins/@{plugin-id}/src/main/java"
            manifest="${build.main}/META-INF/MANIFEST.MF"/>
-      <delete file="${dist}/jminor-plugin-@{plugin-id}/jminor-plugin-@{plugin-id}-javadoc.jar"/>
       <jar jarfile="${dist}/jminor-plugin-@{plugin-id}/jminor-plugin-@{plugin-id}-javadoc.jar" basedir="${javadoc.plugins}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="org/jminor/framework/plugins/@{plugin-id}/**"/>
