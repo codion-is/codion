@@ -129,7 +129,8 @@
     <dependency org="com.itextpdf" name="itextpdf" rev="5.5.0"
                 conf="
                 runtime.tests->master;
-                runtime.client->master"/>
+                runtime.client->master;
+                runtime.server->master"/>
     <dependency org="com.itextpdf" name="itext-pdfa" rev="5.5.0"
                 conf="
                 runtime.client->master"/>
