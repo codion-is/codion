@@ -157,6 +157,7 @@
     <mkdir dir="${build.plugins.test}"/>
     <build_plugin plugin-id="imagepanel"/>
     <build_plugin plugin-id="jasperreports"/>
+    <build_plugin plugin-id="nextreports"/>
     <build_plugin plugin-id="json"/>
     <build_plugin plugin-id="rest"/>
     <build_plugin plugin-id="tomcat-pool"/>
@@ -233,6 +234,7 @@
                    org/jminor/framework/server/EntityConnectionServerAdmin.class"/>
 
     <dist_plugin plugin-id="jasperreports"/>
+    <dist_plugin plugin-id="nextreports"/>
     <dist_plugin plugin-id="json"/>
     <dist_plugin plugin-id="rest"/>
     <dist_plugin plugin-id="tomcat-pool"/>
@@ -300,6 +302,7 @@
     <subant target="publish" buildpath="${basedir}/resources/publish/server"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/server-monitor"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-jasperreports"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-nextreports"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-json"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-rest"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/plugin-tomcat-pool"/>
@@ -325,6 +328,7 @@
     </javadoc>
     <javadoc_plugin plugin-id="imagepanel"/>
     <javadoc_plugin plugin-id="jasperreports"/>
+    <javadoc_plugin plugin-id="nextreports"/>
     <javadoc_plugin plugin-id="json"/>
     <javadoc_plugin plugin-id="rest"/>
     <javadoc_plugin plugin-id="tomcat-pool"/>
@@ -337,6 +341,7 @@
     <copy file="${dist}/jminor-db-local/jminor-db-local.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-server/jminor-server.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-plugin-nextreports/jminor-plugin-nextreports.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-plugin-rest/jminor-plugin-rest.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-demos/chinook/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-demos/empdept/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
@@ -405,7 +410,9 @@
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
       <zipgroupfileset dir="${dist}"
-                       includes="jminor-swing-client-bundle/jminor-swing-client-bundle.jar, jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar"
+                       includes="jminor-swing-client-bundle/jminor-swing-client-bundle.jar,
+                       jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar,
+                       jminor-plugin-nextreports/jminor-plugin-nextreports.jar"
                        excludes="*javadoc.jar, *sources.jar, META-INF/**/*"/>
       <fileset file="${deploy.demos.truststore}"/>
     </jar>
@@ -439,6 +446,7 @@
 
     <run_tests coverage-output-file="jacoco-imagepanel.exec" test-src-dir="plugins/imagepanel/src/test/java" classpath-ref="path.plugins.unittests"/>
     <run_tests coverage-output-file="jacoco-jasperreports.exec" test-src-dir="plugins/jasperreports/src/test/java" classpath-ref="path.plugins.unittests"/>
+    <run_tests coverage-output-file="jacoco-nextreports.exec" test-src-dir="plugins/nextreports/src/test/java" classpath-ref="path.plugins.unittests"/>
     <run_tests coverage-output-file="jacoco-json.exec" test-src-dir="plugins/json/src/test/java" classpath-ref="path.plugins.unittests"/>
     <run_tests coverage-output-file="jacoco-rest.exec" test-src-dir="plugins/rest/src/test/java" classpath-ref="path.plugins.unittests"/>
     <run_tests coverage-output-file="jacoco-tomcat-pool.exec" test-src-dir="plugins/tomcat-pool/src/test/java" classpath-ref="path.plugins.unittests"/>
@@ -474,6 +482,7 @@
           <fileset dir="${src.main}"/>
           <fileset dir="plugins/imagepanel/src/main/java"/>
           <fileset dir="plugins/jasperreports/src/main/java"/>
+          <fileset dir="plugins/nextreports/src/main/java"/>
           <fileset dir="plugins/json/src/main/java"/>
           <fileset dir="plugins/rest/src/main/java"/>
           <fileset dir="plugins/tomcat-pool/src/main/java"/>

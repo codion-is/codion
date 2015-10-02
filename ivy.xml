@@ -73,6 +73,25 @@
     <dependency org="com.toedter" name="jcalendar" rev="1.4"
                 conf="
                 runtime.client->master"/>
+    <!--NextReports plugin-->
+    <dependency org="ro.nextreports" name="nextreports-engine" rev="8.2"
+            conf="
+                build.tests->master;
+                build.plugins->master;
+                build.demos->master;
+                runtime.tests->master;
+                runtime.client->master;
+                runtime.server->master"/>
+    <dependency org="org.apache.commons" name="commons-jexl" rev="2.1.1"
+                conf="
+                runtime.tests->master;
+                runtime.client->master;
+                runtime.server->master"/>
+    <dependency org="com.thoughtworks.xstream" name="xstream" rev="1.4.8"
+                conf="
+                runtime.tests->master;
+                runtime.client->master;
+                runtime.server->master"/>
     <!--JasperReports plugin-->
     <dependency org="net.sf.jasperreports" name="jasperreports" rev="6.0.0"
                 conf="
@@ -109,6 +128,7 @@
                 runtime.server->master"/>
     <dependency org="com.itextpdf" name="itextpdf" rev="5.5.0"
                 conf="
+                runtime.tests->master;
                 runtime.client->master"/>
     <dependency org="com.itextpdf" name="itext-pdfa" rev="5.5.0"
                 conf="

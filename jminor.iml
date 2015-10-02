@@ -30,6 +30,8 @@
       <sourceFolder url="file://$MODULE_DIR$/plugins/tomcat-pool/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/plugins/tomcat-pool/src/test/java" isTestSource="true" />
       <sourceFolder url="file://$MODULE_DIR$/demos/schemabrowser/src/test/java" isTestSource="true" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/nextreports/src/main/java" isTestSource="false" />
+      <sourceFolder url="file://$MODULE_DIR$/plugins/nextreports/src/test/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
       <excludeFolder url="file://$MODULE_DIR$/docs/api" />
       <excludeFolder url="file://$MODULE_DIR$/docs/pluginsapi" />
