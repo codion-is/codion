@@ -4077,3 +4077,4 @@
   Demos split up into separate directories
   Plugins split up into separate directories
   Demos now built into their own build directories
+  EntityCriteriaUtil.getWhereClause() now caches the result

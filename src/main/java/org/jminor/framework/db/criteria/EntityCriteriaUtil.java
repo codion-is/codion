@@ -355,6 +355,7 @@ public final class EntityCriteriaUtil {
 
     private String entityID;
     private Criteria<Property.ColumnProperty> criteria;
+    private String cachedWhereClause;
 
     /**
      * Instantiates a new empty EntityCriteria.
@@ -401,7 +402,11 @@ public final class EntityCriteriaUtil {
 
     @Override
     public String getWhereClause() {
-      return criteria == null ? "" : criteria.getWhereClause();
+      if (cachedWhereClause == null) {
+        cachedWhereClause = criteria == null ? "" : criteria.getWhereClause();
+      }
+
+      return cachedWhereClause;
     }
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
