@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.plugins.nextreports.model;
 
+import org.jminor.common.db.Database;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportDataWrapper;
 import org.jminor.common.model.reports.ReportException;
@@ -22,13 +23,14 @@ import java.io.FileNotFoundException;
 import java.io.FileOutputStream;
 import java.io.OutputStream;
 import java.io.Serializable;
+import java.nio.file.Files;
 import java.sql.Connection;
 import java.util.Map;
 
-public class NextReportsWrapper implements ReportWrapper<byte[], Void>, Serializable {
+public final class NextReportsWrapper implements ReportWrapper<NextReportsResult, Void>, Serializable {
 
   static {
-    DialectFactory.addDialect("H2", OracleDialect.class.getName());
+    DialectFactory.addDialect(Database.H2.toUpperCase(), OracleDialect.class.getName());
   }
 
   private final String reportPath;
@@ -42,7 +44,7 @@ public class NextReportsWrapper implements ReportWrapper<byte[], Void>, Serializ
   }
 
   @Override
-  public ReportResult<byte[]> fillReport(final Connection connection) throws ReportException {
+  public ReportResult<NextReportsResult> fillReport(final Connection connection) throws ReportException {
     File file = null;
     OutputStream output = null;
     try {
@@ -56,9 +58,9 @@ public class NextReportsWrapper implements ReportWrapper<byte[], Void>, Serializ
               .run(output);
       output.close();
 
-      final byte[] bytes = Util.getBytesFromFile(file);
+      final byte[] bytes = Files.readAllBytes(file.toPath());
 
-      return new NextReportsResult(bytes);
+      return new NextReportsResultWrapper(new NextReportsResult(bytes, format));
     }
     catch (final Exception e) {
       throw new ReportException(e);
@@ -77,7 +79,7 @@ public class NextReportsWrapper implements ReportWrapper<byte[], Void>, Serializ
   }
 
   @Override
-  public ReportResult<byte[]> fillReport(final ReportDataWrapper<Void> dataWrapper) throws ReportException {
+  public ReportResult<NextReportsResult> fillReport(final ReportDataWrapper<Void> dataWrapper) throws ReportException {
     throw new UnsupportedOperationException();
   }
 

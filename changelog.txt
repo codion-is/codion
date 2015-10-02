@@ -4080,3 +4080,4 @@
   EntityCriteriaUtil.getWhereClause() now caches the result
   DefaultEntity.DefaultKey.setHashCode() removed awkward if condition
   NextReports plugin added
+  NextReports plugin improved

@@ -4,21 +4,39 @@
 package org.jminor.framework.plugins.nextreports.model;
 
 import org.jminor.common.model.reports.ReportException;
+import org.jminor.common.model.reports.ReportResult;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.swing.framework.model.reporting.EntityReportUtil;
 
 import org.junit.Test;
 import ro.nextreports.engine.ReportRunner;
 
+import java.io.File;
+import java.io.IOException;
 import java.util.Collections;
+
+import static org.junit.Assert.assertEquals;
 
 public class NextReportsWrapperTest {
 
   @Test
-  public void fillReport() throws ReportException {
-    final byte[] bytes = EntityReportUtil.fillReport(
-            new NextReportsWrapper("plugins/nextreports/src/test/reports/test-report.report", Collections.emptyMap(), ReportRunner.CSV_FORMAT),
-            EntityConnectionProvidersTest.CONNECTION_PROVIDER).getResult();
-    System.out.println(bytes);
+  public void fillReport() throws ReportException, IOException {
+    final ReportResult<NextReportsResult> result = EntityReportUtil.fillReport(
+            new NextReportsWrapper("plugins/nextreports/src/test/reports/test-report.report",
+                    Collections.emptyMap(), ReportRunner.CSV_FORMAT),
+            EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    File file = null;
+    try {
+      final String tmpDir = System.getProperty("java.io.tmpdir");
+      final String filename = "NextReportsWrapperTest" + System.currentTimeMillis();
+      file = result.getResult().writeResultToFile(tmpDir, filename);
+      file.deleteOnExit();
+      assertEquals(file.length(), result.getResult().getResult().length);
+    }
+    finally {
+      if (file != null) {
+        file.delete();
+      }
+    }
   }
 }
