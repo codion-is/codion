@@ -964,12 +964,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
     }
 
     private void setHashCode(final Integer value) {
-      if (value == null) {
-        cachedHashCode = null;
-      }
-      else {
-        cachedHashCode = value;
-      }
+      cachedHashCode = value;
       hashCodeDirty = false;
     }
 
