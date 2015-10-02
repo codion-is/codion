@@ -18,10 +18,6 @@ import static org.junit.Assert.assertNotNull;
 
 public class JasperReportsWrapperTest {
 
-  static {
-    TestDomain.init();
-  }
-
   @Test
   public void fillJdbcReport() throws Exception {
     final HashMap<String, Object> reportParameters = new HashMap<>();
