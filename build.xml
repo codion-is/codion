@@ -100,7 +100,6 @@
     <path refid="lib.runtime.test"/>
   </path>
 
-  <fileset id="common_resources" dir="${src.main}" excludes="**/*.java"/>
   <fileset id="framework_resources" dir="${src.main}" excludes="**/*.java"/>
   <fileset id="test_resources" dir="${src.test}" excludes="**/*.java"/>
 
@@ -118,8 +117,11 @@
 
   <target name="clean"
           description="Clean all output and generated dirs">
-    <delete dir="${build.root}" includeEmptyDirs="true"/>
-    <delete dir="${test}" includeEmptyDirs="true"/>
+    <delete dir="${build.root}"/>
+    <delete dir="${javadoc}"/>
+    <delete dir="${javadoc.plugins}"/>
+    <delete dir="${test}"/>
+    <delete dir="${dist}"/>
     <delete dir="${basedir}/demos/chinook/build"/>
     <delete dir="${basedir}/demos/empdept/build"/>
     <delete dir="${basedir}/demos/petstore/build"/>
@@ -135,7 +137,6 @@
       <classpath refid="lib.build.core"/>
     </javac>
     <copy todir="${build.main}">
-      <fileset refid="common_resources"/>
       <fileset refid="framework_resources"/>
     </copy>
 
