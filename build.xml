@@ -293,6 +293,9 @@
     <subant target="publish" buildpath="${basedir}/resources/publish/swing-client-bundle"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/server"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/server-monitor"/>
+  </target>
+
+  <target name="publish_plugins">
     <subant target="publish" buildpath="${basedir}/plugins/imagepanel"/>
     <subant target="publish" buildpath="${basedir}/plugins/jasperreports"/>
     <subant target="publish" buildpath="${basedir}/plugins/json"/>

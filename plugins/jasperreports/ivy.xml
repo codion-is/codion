@@ -22,7 +22,7 @@
     <dependency org="org.jminor" name="jminor-swing-common-ui" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
 
-    <dependency org="net.sf.jasperreports" name="jasperreports" rev="6.0.0" conf="compile->master"/>
+    <dependency org="net.sf.jasperreports" name="jasperreports" rev="6.0.0" conf="compile->master" transitive="false"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.3" conf="runtime"/>
