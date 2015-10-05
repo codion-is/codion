@@ -21,6 +21,8 @@
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-plugin-json" rev="latest.integration"/>
 
+    <dependency org="org.json" name="json" rev="20090211"/>
+
     <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" conf="compile->master"/>
     <dependency org="com.sun.jersey" name="jersey-bundle" rev="1.19" conf="compile->master"/>
     <dependency org="asm" name="asm" rev="3.3.1" conf="compile->master"/>
