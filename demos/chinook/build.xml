@@ -1,0 +1,11 @@
+<project name="chinook">
+  <import file="../build.xml"/>
+
+  <target name="build" depends="jminor-demo.build">
+    <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
+      <classpath refid="lib.test"/>
+    </taskdef>
+    <mkdir dir="build/reports"/>
+    <jrc srcdir="src/main/reports" includes="**/*.jrxml" destdir="build/reports"/>
+  </target>
+</project>

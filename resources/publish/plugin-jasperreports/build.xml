@@ -1,3 +1,0 @@
-<project name="jminor-plugin-jasperreports">
-  <import file="../build.xml"/>
-</project>

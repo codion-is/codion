@@ -36,11 +36,11 @@ public class EntityConnectionUtilTest {
   @BeforeClass
   public static void setUp() {
     try {
-      final H2Database destinationDatabase = new H2Database("TempDB", "demos/empdept/src/main/sql/ddl.sql");
+      final H2Database destinationDatabase = new H2Database("TempDB", "demos/empdept/src/main/sql/create_schema.sql");
       DESTINATION_CONNECTION = LocalEntityConnections.createConnection(destinationDatabase, new User("sa", ""));
-      DESTINATION_CONNECTION.delete(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT));
-      DESTINATION_CONNECTION.delete(EntityCriteriaUtil.criteria(TestDomain.T_EMP));
       DESTINATION_CONNECTION.getDatabaseConnection().getConnection().createStatement().execute("alter table scott.emp drop constraint emp_mgr_fk");
+      DESTINATION_CONNECTION.delete(EntityCriteriaUtil.criteria(TestDomain.T_EMP));
+      DESTINATION_CONNECTION.delete(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT));
     }
     catch (final Exception e) {
       throw new RuntimeException(e);

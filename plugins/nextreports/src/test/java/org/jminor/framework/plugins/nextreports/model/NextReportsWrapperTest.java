@@ -8,7 +8,6 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.swing.framework.model.reporting.EntityReportUtil;
 
@@ -29,8 +28,7 @@ public class NextReportsWrapperTest {
             new H2Database("h2db", System.getProperty("jminor.db.initScript")));
     final ReportResult<NextReportsResult> result = EntityReportUtil.fillReport(
             new NextReportsWrapper("src/test/reports/test-report.report",
-                    Collections.emptyMap(), ReportRunner.CSV_FORMAT),
-            EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+                    Collections.emptyMap(), ReportRunner.CSV_FORMAT), connectionProvider);
     File file = null;
     try {
       final String tmpDir = System.getProperty("java.io.tmpdir");

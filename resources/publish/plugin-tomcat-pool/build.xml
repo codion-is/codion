@@ -1,3 +1,0 @@
-<project name="jminor-plugin-tomcat-pool">
-  <import file="../build.xml"/>
-</project>

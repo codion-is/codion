@@ -4082,3 +4082,4 @@
   NextReports plugin added
   NextReports plugin improved
   Plugins are now indipendent modules
+  Demos are now independent modules
