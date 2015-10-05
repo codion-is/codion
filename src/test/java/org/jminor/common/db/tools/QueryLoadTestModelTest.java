@@ -19,17 +19,10 @@ public final class QueryLoadTestModelTest {
           new QueryLoadTestModel.QueryScenario("selectEmployees", "select * from scott.emp");
   private static final QueryLoadTestModel.QueryScenario SELECT_DEPARTMENTS =
           new QueryLoadTestModel.QueryScenario("selectDepartments", "select * from scott.dept");
-  private static final QueryLoadTestModel.QueryScenario SELECT_CUSTOMERS =
-          new QueryLoadTestModel.QueryScenario("selectCustomers", "select * from chinook.customer");
-  private static final QueryLoadTestModel.QueryScenario SELECT_ALBUMS =
-          new QueryLoadTestModel.QueryScenario("selectAlbum", "select * from chinook.album");
-  private static final QueryLoadTestModel.QueryScenario SELECT_PRODUCTS =
-          new QueryLoadTestModel.QueryScenario("selectProducts", "select * from petstore.product");
   @Test
   public void test() throws DatabaseException {
     final QueryLoadTestModel loadTest = new QueryLoadTestModel(DatabasesTest.createTestDatabaseInstance(), User.UNIT_TEST_USER,
-            Arrays.asList(SELECT_ALBUMS, SELECT_CUSTOMERS, SELECT_DEPARTMENTS,
-                    SELECT_EMPLOYEE, SELECT_PRODUCTS));
+            Arrays.asList(SELECT_DEPARTMENTS, SELECT_EMPLOYEE));
     loadTest.setMinimumThinkTime(10);
     loadTest.setMaximumThinkTime(30);
     loadTest.setLoginDelayFactor(0);
@@ -44,11 +37,8 @@ public final class QueryLoadTestModelTest {
       Thread.sleep(500);
     }
     catch (final InterruptedException ignored) {/*ignored*/}
-    assertTrue(SELECT_ALBUMS.getSuccessfulRunCount() > 0);
-    assertTrue(SELECT_CUSTOMERS.getSuccessfulRunCount() > 0);
     assertTrue(SELECT_DEPARTMENTS.getSuccessfulRunCount() > 0);
     assertTrue(SELECT_EMPLOYEE.getSuccessfulRunCount() > 0);
-    assertTrue(SELECT_PRODUCTS.getSuccessfulRunCount() > 0);
     loadTest.exit();
   }
 }

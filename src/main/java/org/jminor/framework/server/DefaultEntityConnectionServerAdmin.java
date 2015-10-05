@@ -505,7 +505,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
             + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
   }
 
-  static synchronized DefaultEntityConnectionServerAdmin startServer() throws RemoteException {
+  public static synchronized DefaultEntityConnectionServerAdmin startServer() throws RemoteException {
     final Integer serverPort = (Integer) Configuration.getValue(Configuration.SERVER_PORT);
     if (serverPort == null) {
       throw new IllegalArgumentException("Configuration property '" + Configuration.SERVER_PORT + "' is required");

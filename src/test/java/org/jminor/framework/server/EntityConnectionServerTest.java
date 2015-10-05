@@ -4,7 +4,6 @@
 package org.jminor.framework.server;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.model.SearchType;
 import org.jminor.common.model.User;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.common.server.ClientInfo;
@@ -19,45 +18,16 @@ import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.db.RemoteEntityConnection;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
 
 import ch.qos.logback.classic.Level;
-import org.apache.http.HttpEntity;
-import org.apache.http.HttpException;
-import org.apache.http.HttpRequest;
-import org.apache.http.HttpRequestInterceptor;
-import org.apache.http.HttpResponse;
-import org.apache.http.client.config.RequestConfig;
-import org.apache.http.client.methods.HttpDelete;
-import org.apache.http.client.methods.HttpGet;
-import org.apache.http.client.methods.HttpPost;
-import org.apache.http.client.methods.HttpPut;
-import org.apache.http.client.utils.URIBuilder;
-import org.apache.http.impl.client.CloseableHttpClient;
-import org.apache.http.impl.client.HttpClientBuilder;
-import org.apache.http.impl.conn.BasicHttpClientConnectionManager;
-import org.apache.http.protocol.HttpContext;
-import org.apache.http.util.EntityUtils;
-import org.json.JSONException;
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
 import org.junit.Test;
 
-import javax.ws.rs.core.MediaType;
-import javax.xml.bind.DatatypeConverter;
-import java.io.IOException;
-import java.io.InputStream;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.rmi.RemoteException;
 import java.rmi.registry.Registry;
-import java.text.ParseException;
 import java.util.Collection;
-import java.util.Collections;
-import java.util.List;
-import java.util.Scanner;
 import java.util.UUID;
 
 import static org.junit.Assert.*;

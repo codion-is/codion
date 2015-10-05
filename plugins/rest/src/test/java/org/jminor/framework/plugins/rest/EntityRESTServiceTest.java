@@ -42,6 +42,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.URISyntaxException;
 import java.net.URL;
+import java.rmi.registry.Registry;
 import java.text.ParseException;
 import java.util.Collection;
 import java.util.Collections;
@@ -59,20 +60,24 @@ public class EntityRESTServiceTest {
   private static String HOSTNAME;
   private static String REST_BASEURL ;
 
+  private static DefaultEntityConnectionServerAdmin admin;
+
+  static {
+    TestDomain.init();
+  }
+
   @BeforeClass
   public static synchronized void setUp() throws Exception {
-    Configuration.setValue(Configuration.WEB_SERVER_DOCUMENT_ROOT, System.getProperty("user.dir") + System.getProperty("file.separator") + "resources");
-    Configuration.setValue(Configuration.WEB_SERVER_PORT, WEB_SERVER_PORT_NUMBER);
-    EntityConnectionServerTest.setUp();
+    configure();
     HOSTNAME = Configuration.getStringValue(Configuration.SERVER_HOST_NAME);
     REST_BASEURL = HOSTNAME + ":" + WEB_SERVER_PORT_NUMBER + "/entities/";
+    admin = DefaultEntityConnectionServerAdmin.startServer();
   }
 
   @AfterClass
   public static synchronized void tearDown() throws Exception {
-    EntityConnectionServerTest.tearDown();
-    Configuration.clearValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
-    Configuration.clearValue(Configuration.WEB_SERVER_PORT);
+    admin.shutdown();
+    deconfigure();
   }
 
   @Test
@@ -213,7 +218,6 @@ public class EntityRESTServiceTest {
     assertEquals(200, response.getStatusLine().getStatusCode());
     client.close();
 
-    final EntityConnectionServerAdmin admin = EntityConnectionServerTest.getServerAdmin();
     final Collection<ClientInfo> clients = admin.getClients(EntityRESTService.class.getName());
     assertEquals(1, clients.size());
 
@@ -222,7 +226,7 @@ public class EntityRESTServiceTest {
 
   @Test
   public void testWebServer() throws Exception {
-    try (final InputStream input = new URL("http://localhost:" + WEB_SERVER_PORT_NUMBER + "/server/jminor_server.sh").openStream()) {
+    try (final InputStream input = new URL("http://localhost:" + WEB_SERVER_PORT_NUMBER + "/ivy.xml").openStream()) {
       assertTrue(input.read() > 0);
     }
   }
@@ -247,5 +251,29 @@ public class EntityRESTServiceTest {
       }
       EntityUtils.consume(entity);
     }
+  }
+
+  private static void configure() {
+    Configuration.setValue(Configuration.REGISTRY_PORT, 2221);
+    Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, false);
+    Configuration.setValue(Configuration.SERVER_PORT, 2223);
+    Configuration.setValue(Configuration.SERVER_ADMIN_PORT, 2223);
+    Configuration.setValue(Configuration.SERVER_HOST_NAME, "localhost");
+    Configuration.setValue("java.rmi.server.hostname", "localhost");
+    Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
+    Configuration.setValue(Configuration.WEB_SERVER_DOCUMENT_ROOT, System.getProperty("user.dir"));
+    Configuration.setValue(Configuration.WEB_SERVER_PORT, WEB_SERVER_PORT_NUMBER);
+  }
+
+  private static void deconfigure() {
+    Configuration.setValue(Configuration.REGISTRY_PORT, Registry.REGISTRY_PORT);
+    Configuration.clearValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
+    Configuration.clearValue(Configuration.SERVER_PORT);
+    Configuration.clearValue(Configuration.SERVER_ADMIN_PORT);
+    Configuration.clearValue(Configuration.SERVER_HOST_NAME);
+    Configuration.clearValue("java.rmi.server.hostname");
+    Configuration.clearValue("java.security.policy");
+    Configuration.clearValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
+    Configuration.clearValue(Configuration.WEB_SERVER_PORT);
   }
 }

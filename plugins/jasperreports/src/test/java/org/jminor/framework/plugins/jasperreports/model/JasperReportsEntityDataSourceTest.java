@@ -5,6 +5,7 @@ package org.jminor.framework.plugins.jasperreports.model;
 
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
 
@@ -13,6 +14,8 @@ import net.sf.jasperreports.engine.JRPropertiesHolder;
 import net.sf.jasperreports.engine.JRPropertiesMap;
 import org.junit.Test;
 
+import java.util.Arrays;
+import java.util.Collections;
 import java.util.List;
 
 import static org.junit.Assert.assertEquals;
@@ -31,7 +34,11 @@ public class JasperReportsEntityDataSourceTest {
 
   @Test
   public void iterator() throws Exception {
-    final List<Entity> entities = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT));
+    final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
+    department.setValue(TestDomain.DEPARTMENT_ID, 10);
+    department.setValue(TestDomain.DEPARTMENT_NAME, "name");
+    department.setValue(TestDomain.DEPARTMENT_LOCATION, "none");
+    final List<Entity> entities = Collections.singletonList(department);
     final JasperReportsEntityDataSource source = new JasperReportsEntityDataSource(entities.iterator());
     while (source.next()) {
       final Entity dept = source.getCurrentEntity();

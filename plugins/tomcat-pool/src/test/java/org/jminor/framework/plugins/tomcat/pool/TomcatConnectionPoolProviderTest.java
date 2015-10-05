@@ -4,6 +4,7 @@
 package org.jminor.framework.plugins.tomcat.pool;
 
 import org.jminor.common.db.DatabasesTest;
+import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.model.User;
 
@@ -18,7 +19,7 @@ public class TomcatConnectionPoolProviderTest {
   public void test() throws Exception {
     final long startTime = System.currentTimeMillis();
     final TomcatConnectionPoolProvider provider = new TomcatConnectionPoolProvider();
-    final ConnectionPool pool = provider.createConnectionPool(User.UNIT_TEST_USER, DatabasesTest.createTestDatabaseInstance());
+    final ConnectionPool pool = provider.createConnectionPool(User.UNIT_TEST_USER, new H2Database("h2db", System.getProperty("jminor.db.initScript")));
     pool.setCollectFineGrainedStatistics(true);
     assertTrue(pool.isCollectFineGrainedStatistics());
     pool.returnConnection(pool.getConnection());

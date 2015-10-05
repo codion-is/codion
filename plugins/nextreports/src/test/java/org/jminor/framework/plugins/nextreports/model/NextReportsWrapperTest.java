@@ -3,9 +3,13 @@
  */
 package org.jminor.framework.plugins.nextreports.model;
 
+import org.jminor.common.db.dbms.H2Database;
+import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
+import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 import org.jminor.swing.framework.model.reporting.EntityReportUtil;
 
 import org.junit.Test;
@@ -21,8 +25,10 @@ public class NextReportsWrapperTest {
 
   @Test
   public void fillReport() throws ReportException, IOException {
+    final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(User.UNIT_TEST_USER,
+            new H2Database("h2db", System.getProperty("jminor.db.initScript")));
     final ReportResult<NextReportsResult> result = EntityReportUtil.fillReport(
-            new NextReportsWrapper("plugins/nextreports/src/test/reports/test-report.report",
+            new NextReportsWrapper("src/test/reports/test-report.report",
                     Collections.emptyMap(), ReportRunner.CSV_FORMAT),
             EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     File file = null;

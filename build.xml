@@ -22,10 +22,6 @@
     <fileset dir="${lib}/build.demos"/>
   </path>
 
-  <path id="lib.build.plugins">
-    <fileset dir="${lib}/build.plugins"/>
-  </path>
-
   <path id="lib.build.tests">
     <fileset dir="${lib}/build.tests"/>
   </path>
@@ -71,24 +67,38 @@
   </path>
 
   <path id="classes.plugins.main">
-    <pathelement path="${build.plugins.main}"/>
+    <path location="plugins/imagepanel/build/main"/>
+    <path location="plugins/jasperreports/build/main"/>
+    <path location="plugins/json/build/main"/>
+    <path location="plugins/nextreports/build/main"/>
+    <path location="plugins/rest/build/main"/>
+    <path location="plugins/tomcat-pool/build/main"/>
   </path>
 
-  <path id="classes.plugins.test">
-    <pathelement path="${build.plugins.test}"/>
+  <path id="plugins.lib">
+    <path>
+      <fileset dir="plugins/imagepanel/lib/test"/>
+    </path>
+    <path>
+      <fileset dir="plugins/jasperreports/lib/test"/>
+    </path>
+    <path>
+      <fileset dir="plugins/json/lib/test"/>
+    </path>
+    <path>
+      <fileset dir="plugins/nextreports/lib/test"/>
+    </path>
+    <path>
+      <fileset dir="plugins/rest/lib/test"/>
+    </path>
+    <path>
+      <fileset dir="plugins/tomcat-pool/lib/test"/>
+    </path>
   </path>
 
   <path id="path.unittests">
     <path refid="classes.main"/>
     <path refid="classes.test"/>
-    <path refid="lib.runtime.test"/>
-  </path>
-
-  <path id="path.plugins.unittests">
-    <path refid="classes.main"/>
-    <path refid="classes.test"/>
-    <path refid="classes.plugins.main"/>
-    <path refid="classes.plugins.test"/>
     <path refid="lib.runtime.test"/>
   </path>
 
@@ -119,7 +129,6 @@
           description="Clean all output and generated dirs">
     <delete dir="${build.root}"/>
     <delete dir="${javadoc}"/>
-    <delete dir="${javadoc.plugins}"/>
     <delete dir="${test}"/>
     <delete dir="${dist}"/>
     <delete dir="${basedir}/demos/chinook/build"/>
@@ -127,6 +136,12 @@
     <delete dir="${basedir}/demos/petstore/build"/>
     <delete dir="${basedir}/demos/schemabrowser/build"/>
     <delete dir="${basedir}/demos/world/build"/>
+    <subant target="clean" buildpath="${basedir}/plugins/imagepanel"/>
+    <subant target="clean" buildpath="${basedir}/plugins/jasperreports"/>
+    <subant target="clean" buildpath="${basedir}/plugins/json"/>
+    <subant target="clean" buildpath="${basedir}/plugins/nextreports"/>
+    <subant target="clean" buildpath="${basedir}/plugins/rest"/>
+    <subant target="clean" buildpath="${basedir}/plugins/tomcat-pool"/>
   </target>
 
   <target name="build" depends="resolve_libraries"
@@ -153,14 +168,12 @@
       <fileset refid="test_resources"/>
     </copy>
 
-    <mkdir dir="${build.plugins.main}"/>
-    <mkdir dir="${build.plugins.test}"/>
-    <build_plugin plugin-id="imagepanel"/>
-    <build_plugin plugin-id="jasperreports"/>
-    <build_plugin plugin-id="nextreports"/>
-    <build_plugin plugin-id="json"/>
-    <build_plugin plugin-id="rest"/>
-    <build_plugin plugin-id="tomcat-pool"/>
+    <subant target="build" buildpath="${basedir}/plugins/imagepanel"/>
+    <subant target="build" buildpath="${basedir}/plugins/jasperreports"/>
+    <subant target="build" buildpath="${basedir}/plugins/json"/>
+    <subant target="build" buildpath="${basedir}/plugins/nextreports"/>
+    <subant target="build" buildpath="${basedir}/plugins/rest"/>
+    <subant target="build" buildpath="${basedir}/plugins/tomcat-pool"/>
 
     <build_demo app-id="chinook"/>
     <build_demo app-id="empdept"/>
@@ -168,15 +181,16 @@
     <build_demo app-id="schemabrowser"/>
     <build_demo app-id="world"/>
 
-    <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
-      <classpath refid="lib.runtime.test"/>
-    </taskdef>
-    <mkdir dir="${basedir}/demos/chinook/build/reports"/>
-    <jrc srcdir="${basedir}/demos/chinook/src/main/reports" includes="**/*.jrxml"
-         destdir="${basedir}/demos/chinook/build/reports"/>
-    <mkdir dir="${basedir}/demos/empdept/build/reports"/>
-    <jrc srcdir="${basedir}/demos/empdept/src/main/reports" includes="**/*.jrxml"
-         destdir="${basedir}/demos/empdept/build/reports"/>
+    <!--todo-->
+    <!--<taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">-->
+      <!--<classpath refid="lib.runtime.test"/>-->
+    <!--</taskdef>-->
+    <!--<mkdir dir="${basedir}/demos/chinook/build/reports"/>-->
+    <!--<jrc srcdir="${basedir}/demos/chinook/src/main/reports" includes="**/*.jrxml"-->
+         <!--destdir="${basedir}/demos/chinook/build/reports"/>-->
+    <!--<mkdir dir="${basedir}/demos/empdept/build/reports"/>-->
+    <!--<jrc srcdir="${basedir}/demos/empdept/src/main/reports" includes="**/*.jrxml"-->
+         <!--destdir="${basedir}/demos/empdept/build/reports"/>-->
 
     <concat destfile="${build.main}/org/jminor/common/model/version.txt">${version}-build ${build.date}</concat>
   </target>
@@ -232,13 +246,6 @@
                  includes="org/jminor/framework/Configuration.class,
                    org/jminor/swing/framework/server/monitor/**,
                    org/jminor/framework/server/EntityConnectionServerAdmin.class"/>
-
-    <dist_plugin plugin-id="jasperreports"/>
-    <dist_plugin plugin-id="nextreports"/>
-    <dist_plugin plugin-id="json"/>
-    <dist_plugin plugin-id="rest"/>
-    <dist_plugin plugin-id="tomcat-pool"/>
-    <dist_plugin plugin-id="imagepanel"/>
 
     <dist_demo app-id="chinook"/>
     <dist_demo app-id="empdept"/>
@@ -301,12 +308,12 @@
     <subant target="publish" buildpath="${basedir}/resources/publish/swing-client-bundle"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/server"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/server-monitor"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-jasperreports"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-nextreports"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-json"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-rest"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-tomcat-pool"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/plugin-imagepanel"/>
+    <subant target="publish" buildpath="${basedir}/plugins/imagepanel"/>
+    <subant target="publish" buildpath="${basedir}/plugins/jasperreports"/>
+    <subant target="publish" buildpath="${basedir}/plugins/json"/>
+    <subant target="publish" buildpath="${basedir}/plugins/nextreports"/>
+    <subant target="publish" buildpath="${basedir}/plugins/rest"/>
+    <subant target="publish" buildpath="${basedir}/plugins/tomcat-pool"/>
   </target>
 
   <target name="javadoc" depends="build" unless="skip.javadoc"
@@ -326,12 +333,6 @@
       <classpath refid="lib.build.core"/>
       <link href="http://download.oracle.com/javase/8/docs/api/"/>
     </javadoc>
-    <javadoc_plugin plugin-id="imagepanel"/>
-    <javadoc_plugin plugin-id="jasperreports"/>
-    <javadoc_plugin plugin-id="nextreports"/>
-    <javadoc_plugin plugin-id="json"/>
-    <javadoc_plugin plugin-id="rest"/>
-    <javadoc_plugin plugin-id="tomcat-pool"/>
   </target>
 
   <target name="deploy_server" depends="create_keystore, create_h2db"
@@ -340,14 +341,21 @@
     <copy file="${dist}/jminor-db-core/jminor-db-core.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-db-local/jminor-db-local.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-server/jminor-server.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-plugin-nextreports/jminor-plugin-nextreports.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-plugin-rest/jminor-plugin-rest.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-demos/chinook/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-demos/empdept/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-demos/petstore/petstore-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-demos/schemabrowser/schemabrowser-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-demos/world/world-domain.jar" todir="${deploy.server.path}/lib"/>
+
+    <copy file="plugins/jasperreports/dist/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
+    <copy todir="${deploy.server.path}/lib">
+      <fileset dir="plugins/jasperreports/lib/runtime"/>
+    </copy>
+    <copy file="plugins/rest/dist/jminor-plugin-rest.jar" todir="${deploy.server.path}/lib"/>
+    <copy todir="${deploy.server.path}/lib">
+      <fileset dir="plugins/rest/lib/runtime"/>
+    </copy>
+
     <copy todir="${deploy.server.path}/lib">
       <fileset dir="${lib}/runtime.server"/>
     </copy>
@@ -409,11 +417,11 @@
     <!--Setup-->
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
-      <zipgroupfileset dir="${dist}"
-                       includes="jminor-swing-client-bundle/jminor-swing-client-bundle.jar,
-                       jminor-plugin-jasperreports/jminor-plugin-jasperreports.jar,
-                       jminor-plugin-nextreports/jminor-plugin-nextreports.jar"
-                       excludes="*javadoc.jar, *sources.jar, META-INF/**/*"/>
+      <zipfileset src="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle.jar"/>
+      <zipfileset src="plugins/jasperreports/dist/jminor-plugin-jasperreports.jar" excludes="META-INF/**/*"/>
+      <zipfileset src="plugins/nextreports/dist/jminor-plugin-nextreports.jar" excludes="META-INF/**/*"/>
+      <zipgroupfileset dir="plugins/jasperreports/lib/test" excludes="META-INF/**/*"/>
+      <zipgroupfileset dir="plugins/nextreports/lib/test" excludes="META-INF/**/*"/>
       <fileset file="${deploy.demos.truststore}"/>
     </jar>
     <deploy_demo_app app-id="empdept" app-name="EmpDept JMinor Demo"
@@ -443,13 +451,6 @@
     <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpathref="lib.ant.util"/>
 
     <run_tests coverage-output-file="jacoco-main.exec" test-src-dir="${src.test}" classpath-ref="path.unittests"/>
-
-    <run_tests coverage-output-file="jacoco-imagepanel.exec" test-src-dir="plugins/imagepanel/src/test/java" classpath-ref="path.plugins.unittests"/>
-    <run_tests coverage-output-file="jacoco-jasperreports.exec" test-src-dir="plugins/jasperreports/src/test/java" classpath-ref="path.plugins.unittests"/>
-    <run_tests coverage-output-file="jacoco-nextreports.exec" test-src-dir="plugins/nextreports/src/test/java" classpath-ref="path.plugins.unittests"/>
-    <run_tests coverage-output-file="jacoco-json.exec" test-src-dir="plugins/json/src/test/java" classpath-ref="path.plugins.unittests"/>
-    <run_tests coverage-output-file="jacoco-rest.exec" test-src-dir="plugins/rest/src/test/java" classpath-ref="path.plugins.unittests"/>
-    <run_tests coverage-output-file="jacoco-tomcat-pool.exec" test-src-dir="plugins/tomcat-pool/src/test/java" classpath-ref="path.plugins.unittests"/>
 
     <run_tests coverage-output-file="jacoco-chinook.exec" test-src-dir="demos/chinook/src/test/java" classpath-ref="path.demos.unittests"/>
     <run_tests coverage-output-file="jacoco-empdept.exec" test-src-dir="demos/empdept/src/test/java" classpath-ref="path.demos.unittests"/>
@@ -499,9 +500,10 @@
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
         <path refid="classes.main"/>
-        <path refid="classes.plugins.main"/>
         <path refid="classes.demos.main"/>
         <path refid="lib.runtime.client"/>
+        <path refid="classes.plugins.main"/>
+        <path refid="plugins.lib"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
       <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
@@ -519,9 +521,10 @@
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
         <path refid="classes.main"/>
-        <path refid="classes.plugins.main"/>
         <path refid="classes.demos.main"/>
         <path refid="lib.runtime.client"/>
+        <path refid="classes.plugins.main"/>
+        <path refid="plugins.lib"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
@@ -536,9 +539,10 @@
     <java classname="org.jminor.framework.demos.chinook.testing.ChinookLoadTest" fork="yes">
       <classpath>
         <path refid="classes.main"/>
-        <path refid="classes.plugins.main"/>
         <path refid="classes.demos.main"/>
         <path refid="lib.runtime.client"/>
+        <path refid="classes.plugins.main"/>
+        <path refid="plugins.lib"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
@@ -557,9 +561,10 @@
     <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes">
       <classpath>
         <path refid="classes.main"/>
-        <path refid="classes.plugins.main"/>
         <path refid="classes.demos.main"/>
         <path refid="lib.runtime.server"/>
+        <path refid="classes.plugins.main"/>
+        <path refid="plugins.lib"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
       <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
@@ -690,64 +695,6 @@
     </sequential>
   </macrodef>
 
-  <macrodef name="build_plugin">
-    <attribute name="plugin-id"/>
-    <sequential>
-      <javac destdir="${build.plugins.main}" debug="${build.debuginfo}" includeantruntime="false">
-        <src path="plugins/@{plugin-id}/src/main/java"/>
-        <classpath>
-          <path refid="lib.build.plugins"/>
-          <path location="${build.main}"/>
-        </classpath>
-      </javac>
-      <copy todir="${build.plugins.main}">
-        <fileset dir="plugins/@{plugin-id}/src/main/java" excludes="**/*.java"/>
-      </copy>
-      <javac destdir="${build.plugins.test}" debug="${build.debuginfo}" includeantruntime="false">
-        <src path="plugins/@{plugin-id}/src/test/java"/>
-        <classpath>
-          <path refid="lib.build.plugins"/>
-          <path location="${build.main}"/>
-          <path location="${build.test}"/>
-          <path location="${build.plugins.main}"/>
-        </classpath>
-      </javac>
-    </sequential>
-  </macrodef>
-
-  <macrodef name="javadoc_plugin">
-    <attribute name="plugin-id"/>
-    <sequential>
-      <javadoc destdir="${javadoc.plugins}" sourcepath="plugins/@{plugin-id}/src/main/java" packagenames="org.jminor.*" Encoding="UTF-8"
-               docencoding="UTF-8" author="true" version="true" use="true"
-               windowtitle="JMinor v${version} Plugin API" doctitle="JMinor v${version} Plugin API"
-               group="Plugins org.jminor.framework.plugins">
-        <classpath>
-          <path refid="lib.build.core"/>
-          <path refid="lib.build.plugins"/>
-          <path location="${build.main}"/>
-          <path location="${build.plugins.main}"/>
-        </classpath>
-        <link href="http://download.oracle.com/javase/8/docs/api/"/>
-        <link offline="true" href="http://jminor.org/data/media/project/docs/api/" packagelistloc="${javadoc}"/>
-      </javadoc>
-    </sequential>
-  </macrodef>
-
-  <macrodef name="dist_plugin">
-    <attribute name="plugin-id"/>
-    <sequential>
-      <jar jarfile="${dist}/jminor-plugin-@{plugin-id}/jminor-plugin-@{plugin-id}.jar" basedir="${build.plugins.main}"
-           manifest="${build.main}/META-INF/MANIFEST.MF"
-           includes="org/jminor/framework/plugins/@{plugin-id}/**"/>
-      <jar jarfile="${dist}/jminor-plugin-@{plugin-id}/jminor-plugin-@{plugin-id}-sources.jar" basedir="plugins/@{plugin-id}/src/main/java"
-           manifest="${build.main}/META-INF/MANIFEST.MF"/>
-      <jar jarfile="${dist}/jminor-plugin-@{plugin-id}/jminor-plugin-@{plugin-id}-javadoc.jar" basedir="${javadoc.plugins}"
-           manifest="${build.main}/META-INF/MANIFEST.MF"
-           includes="org/jminor/framework/plugins/@{plugin-id}/**"/>
-    </sequential>
-  </macrodef>
-
   <macrodef name="dist_demo">
     <attribute name="app-id"/>
     <sequential>
@@ -771,7 +718,7 @@
         <classpath>
           <path refid="lib.build.demos"/>
           <path location="${build.main}"/>
-          <path location="${build.plugins.main}"/>
+          <path refid="classes.plugins.main"/>
         </classpath>
       </javac>
       <copy todir="demos/@{app-id}/build/main">

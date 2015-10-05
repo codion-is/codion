@@ -1,3 +1,10 @@
 <project name="jminor-plugin-jasperreports">
   <import file="../build.xml"/>
+
+  <target name="build" depends="jminor-plugin.build">
+    <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
+      <classpath refid="lib.test"/>
+    </taskdef>
+    <jrc srcdir="src/test/reports" includes="**/*.jrxml" destdir="build/test"/>
+  </target>
 </project>
