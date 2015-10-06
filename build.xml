@@ -14,16 +14,12 @@
     <fileset dir="${lib}/ant.util"/>
   </path>
 
-  <path id="lib.build.core">
-    <fileset dir="${lib}/build.core"/>
+  <path id="lib.compile">
+    <fileset dir="${lib}/compile"/>
   </path>
 
-  <path id="lib.build.tests">
-    <fileset dir="${lib}/build.tests"/>
-  </path>
-
-  <path id="lib.runtime.test">
-    <fileset dir="${lib}/runtime.tests"/>
+  <path id="lib.test">
+    <fileset dir="${lib}/test"/>
   </path>
 
   <path id="lib.runtime.client">
@@ -38,15 +34,15 @@
     <fileset dir="${lib}/runtime.server-monitor"/>
   </path>
 
-  <path id="classes.main">
+  <path id="build.main">
     <pathelement path="${build.main}"/>
   </path>
 
-  <path id="classes.test">
+  <path id="build.test">
     <pathelement path="${build.test}"/>
   </path>
 
-  <path id="classes.demos.main">
+  <path id="build.demos.main">
     <pathelement path="demos/chinook/build/main"/>
     <pathelement path="demos/empdept/build/main"/>
     <pathelement path="demos/petstore/build/main"/>
@@ -54,15 +50,7 @@
     <pathelement path="demos/world/build/main"/>
   </path>
 
-  <path id="classes.demos.test">
-    <pathelement path="demos/chinook/build/test"/>
-    <pathelement path="demos/empdept/build/test"/>
-    <pathelement path="demos/petstore/build/test"/>
-    <pathelement path="demos/schemabrowser/build/test"/>
-    <pathelement path="demos/world/build/test"/>
-  </path>
-
-  <path id="classes.plugins.main">
+  <path id="build.plugins.main">
     <path location="plugins/imagepanel/build/main"/>
     <path location="plugins/jasperreports/build/main"/>
     <path location="plugins/json/build/main"/>
@@ -71,35 +59,22 @@
     <path location="plugins/tomcat-pool/build/main"/>
   </path>
 
-  <path id="plugins.lib">
+  <path id="lib.plugins">
     <path>
       <fileset dir="plugins/imagepanel/lib/test"/>
-    </path>
-    <path>
       <fileset dir="plugins/jasperreports/lib/test"/>
-    </path>
-    <path>
       <fileset dir="plugins/json/lib/test"/>
-    </path>
-    <path>
       <fileset dir="plugins/nextreports/lib/test"/>
-    </path>
-    <path>
       <fileset dir="plugins/rest/lib/test"/>
-    </path>
-    <path>
       <fileset dir="plugins/tomcat-pool/lib/test"/>
     </path>
   </path>
 
   <path id="path.unittests">
-    <path refid="classes.main"/>
-    <path refid="classes.test"/>
-    <path refid="lib.runtime.test"/>
+    <path refid="build.main"/>
+    <path refid="build.test"/>
+    <path refid="lib.test"/>
   </path>
-
-  <fileset id="framework_resources" dir="${src.main}" excludes="**/*.java"/>
-  <fileset id="test_resources" dir="${src.test}" excludes="**/*.java"/>
 
   <condition property="keystore.available">
     <available file="${resources.security}/JMinorServerKeystore"/>
@@ -132,35 +107,34 @@
     <mkdir dir="${build.main}"/>
     <javac destdir="${build.main}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.main}"/>
-      <classpath refid="lib.build.core"/>
+      <classpath refid="lib.compile"/>
     </javac>
     <copy todir="${build.main}">
-      <fileset refid="framework_resources"/>
+      <fileset dir="${src.main}" excludes="**/*.java"/>
     </copy>
 
     <mkdir dir="${build.test}"/>
     <javac destdir="${build.test}" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.test}"/>
       <classpath>
-        <path refid="lib.build.tests"/>
+        <path refid="lib.test"/>
         <path location="${build.main}"/>
         <path location="${build.plugins.main}"/>
       </classpath>
     </javac>
     <copy todir="${build.test}">
-      <fileset refid="test_resources"/>
+      <fileset dir="${src.test}" excludes="**/*.java"/>
     </copy>
 
     <concat destfile="${build.main}/org/jminor/common/model/version.txt">${version}-build ${build.date}</concat>
   </target>
 
-  <target name="plugins_build">
-    <subant target="build" buildpath="${basedir}/plugins/imagepanel"/>
-    <subant target="build" buildpath="${basedir}/plugins/jasperreports"/>
-    <subant target="build" buildpath="${basedir}/plugins/json"/>
-    <subant target="build" buildpath="${basedir}/plugins/nextreports"/>
-    <subant target="build" buildpath="${basedir}/plugins/rest"/>
-    <subant target="build" buildpath="${basedir}/plugins/tomcat-pool"/>
+  <target name="demos_build">
+    <subant target="build" buildpath="${basedir}/demos/chinook"/>
+    <subant target="build" buildpath="${basedir}/demos/empdept"/>
+    <subant target="build" buildpath="${basedir}/demos/petstore"/>
+    <subant target="build" buildpath="${basedir}/demos/schemabrowser"/>
+    <subant target="build" buildpath="${basedir}/demos/world"/>
   </target>
 
   <target name="plugins_clean">
@@ -172,12 +146,13 @@
     <subant target="clean" buildpath="${basedir}/plugins/tomcat-pool"/>
   </target>
 
-  <target name="demos_build">
-    <subant target="build" buildpath="${basedir}/demos/chinook"/>
-    <subant target="build" buildpath="${basedir}/demos/empdept"/>
-    <subant target="build" buildpath="${basedir}/demos/petstore"/>
-    <subant target="build" buildpath="${basedir}/demos/schemabrowser"/>
-    <subant target="build" buildpath="${basedir}/demos/world"/>
+  <target name="plugins_build">
+    <subant target="build" buildpath="${basedir}/plugins/imagepanel"/>
+    <subant target="build" buildpath="${basedir}/plugins/jasperreports"/>
+    <subant target="build" buildpath="${basedir}/plugins/json"/>
+    <subant target="build" buildpath="${basedir}/plugins/nextreports"/>
+    <subant target="build" buildpath="${basedir}/plugins/rest"/>
+    <subant target="build" buildpath="${basedir}/plugins/tomcat-pool"/>
   </target>
 
   <target name="dist" depends="clean, build, javadoc"
@@ -325,12 +300,12 @@
                     Db org.jminor.framework.db*,
                     Domain org.jminor.framework.domain*,
                     Server org.jminor.framework.server*">
-      <classpath refid="lib.build.core"/>
+      <classpath refid="lib.compile"/>
       <link href="http://download.oracle.com/javase/8/docs/api/"/>
     </javadoc>
   </target>
 
-  <target name="deploy_server" depends="create_keystore, create_h2db"
+  <target name="deploy_server" depends="dist, plugins_dist, create_keystore, create_h2db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-db-core/jminor-db-core.jar" todir="${deploy.server.path}/lib"/>
@@ -338,7 +313,7 @@
     <copy file="${dist}/jminor-server/jminor-server.jar" todir="${deploy.server.path}/lib"/>
 
     <copy file="demos/chinook/dist/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/empdept/dist//empdept-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="demos/empdept/dist/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="demos/petstore/dist/petstore-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="demos/schemabrowser/dist/schemabrowser-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="demos/world/dist/world-domain.jar" todir="${deploy.server.path}/lib"/>
@@ -372,7 +347,7 @@
     </copy>
   </target>
 
-  <target name="deploy_server_monitor" depends="create_keystore"
+  <target name="deploy_server_monitor" depends="dist, create_keystore"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}"/>
     <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.monitor.path}/lib"/>
@@ -390,7 +365,7 @@
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_generator" depends="create_h2db"
+  <target name="deploy_generator" depends="dist, create_h2db"
           description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">
     <mkdir dir="${deploy.generator.path}"/>
     <copy file="${dist}/jminor/jminor.jar" todir="${deploy.generator.path}/lib"/>
@@ -407,7 +382,7 @@
     <chmod dir="${deploy.generator.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demos" depends="create_keystore, create_h2db"
+  <target name="deploy_demos" depends="dist, plugins_dist, create_keystore, create_h2db"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
     <!--Setup-->
@@ -434,7 +409,7 @@
     <delete file="${deploy.demos.dir}/libraries.jar"/>
   </target>
 
-  <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos, deploy_generator"
+  <target name="deploy_all" depends="clean, dist, plugins_dist, deploy_server, deploy_server_monitor, deploy_demos, deploy_generator"
           description="A convenience target for deploying the server, server monitor and demo applications"/>
 
   <target name="run_unit_tests" depends="clean, build"
@@ -513,11 +488,11 @@
           description="Runs the Chinook demo application with a local db connection">
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
-        <path refid="classes.main"/>
-        <path refid="classes.demos.main"/>
+        <path refid="build.main"/>
+        <path refid="build.plugins.main"/>
+        <path refid="build.demos.main"/>
         <path refid="lib.runtime.client"/>
-        <path refid="classes.plugins.main"/>
-        <path refid="plugins.lib"/>
+        <path refid="lib.plugins"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
       <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
@@ -534,39 +509,39 @@
           description="Runs the Chinook demo application with a remote db connection">
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
-        <path refid="classes.main"/>
-        <path refid="classes.demos.main"/>
+        <path refid="build.main"/>
+        <path refid="build.plugins.main"/>
+        <path refid="build.demos.main"/>
         <path refid="lib.runtime.client"/>
-        <path refid="classes.plugins.main"/>
-        <path refid="plugins.lib"/>
+        <path refid="lib.plugins"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.report.path=build/demos/reports"/>
+      <jvmarg value="-Djminor.report.path=demos/chinook/build/reports"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_client.policy"/>
     </java>
   </target>
 
-  <target name="run_demo_chinook_load_test" depends="build, create_keystore"
+  <target name="run_demo_chinook_load_test" depends="build, demos_build, create_keystore"
           description="Runs the Chinook load testing application with a remote db connection">
     <java classname="org.jminor.framework.demos.chinook.testing.ChinookLoadTest" fork="yes">
       <classpath>
-        <path refid="classes.main"/>
-        <path refid="classes.demos.main"/>
+        <path refid="build.main"/>
+        <path refid="build.plugins.main"/>
+        <path refid="build.demos.main"/>
         <path refid="lib.runtime.client"/>
-        <path refid="classes.plugins.main"/>
-        <path refid="plugins.lib"/>
+        <path refid="lib.plugins"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.report.path=build/demos/reports"/>
+      <jvmarg value="-Djminor.report.path=demos/chinook/build/reports"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_load_test.policy"/>
     </java>
   </target>
 
-  <target name="run_server" depends="build, create_keystore"
+  <target name="run_server" depends="build, plugins_build, demos_build, create_keystore"
           description="Runs the RMI server">
     <copy todir="build/demos/reports" flatten="true">
       <fileset dir="${basedir}/demos/chinook/build/reports" includes="**/*.jasper"/>
@@ -574,11 +549,11 @@
     </copy>
     <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes">
       <classpath>
-        <path refid="classes.main"/>
-        <path refid="classes.demos.main"/>
+        <path refid="build.main"/>
+        <path refid="build.plugins.main"/>
+        <path refid="build.demos.main"/>
         <path refid="lib.runtime.server"/>
-        <path refid="classes.plugins.main"/>
-        <path refid="plugins.lib"/>
+        <path refid="lib.plugins"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
       <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
@@ -604,7 +579,7 @@
           description="Runs the RMI server monitor">
     <java classname="org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
       <classpath>
-        <path refid="classes.main"/>
+        <path refid="build.main"/>
         <path refid="lib.runtime.server-monitor"/>
       </classpath>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
@@ -617,7 +592,7 @@
           description="Runs the entity generator">
     <java classname="org.jminor.swing.framework.generator.ui.EntityGeneratorPanel" fork="yes">
       <classpath>
-        <path refid="classes.main"/>
+        <path refid="build.main"/>
         <path refid="lib.runtime.client"/>
       </classpath>
       <jvmarg value="-Djminor.db.type=h2"/>
@@ -629,7 +604,7 @@
   <target name="create_h2db"
           description="Recreates the demo h2 database, which contains the EmpDept, Petstore, Chinook and World schemas, used by unit tests and demo applications">
     <delete dir="${db.h2.dir}"/>
-    <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.runtime.test">
+    <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.test">
       <arg line="-url jdbc:h2:file:${db.h2.dir}/${db.h2.name} -showResults -script ${db.init.h2}"/>
     </java>
   </target>
@@ -700,9 +675,9 @@
         <attribute name="Main-Class" value="@{main-class}"/>
       </manifest>
       <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.jar">
-        <zipfileset src="${dist}/jminor-demos/@{app-id}/@{app-id}.jar"/>
-        <zipfileset src="${deploy.demos.dir}/libraries.jar"/>
-        <zipfileset dir="${deploy.demos.dir}/@{app-id}" includes="META-INF/MANIFEST.MF"/>
+        <zipfileset src="${basedir}/demos/@{app-id}/dist/@{app-id}.jar" excludes="META-INF/*"/>
+        <zipfileset src="${deploy.demos.dir}/libraries.jar" excludes="META-INF/*"/>
+        <zipfileset dir="${deploy.demos.dir}/@{app-id}" includes="META-INF/*"/>
         <zipfileset dir="${basedir}/demos/@{app-id}/src/main/config/" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
         <zipfileset file="@{report}" prefix="reports"/>
       </zip>

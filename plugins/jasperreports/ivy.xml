@@ -24,19 +24,19 @@
 
     <dependency org="net.sf.jasperreports" name="jasperreports" rev="6.0.0" conf="compile->master" transitive="false"/>
 
-    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime"/>
-    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.3" conf="runtime"/>
-    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.3" conf="runtime"/>
+    <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7" conf="runtime->master"/>
+    <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.3" conf="runtime->master"/>
+    <dependency org="ch.qos.logback" name="logback-core" rev="1.1.3" conf="runtime->master"/>
+    <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="runtime->master"/>
+    <dependency org="commons-digester" name="commons-digester" rev="2.1" conf="runtime->master"/>
+    <dependency org="commons-collections" name="commons-collections" rev="3.2.1" conf="runtime->master"/>
+    <dependency org="commons-beanutils" name="commons-beanutils" rev="1.9.0" conf="runtime->master"/>
+    <dependency org="org.eclipse.jdt.core.compiler" name="ecj" rev="4.3.1" conf="runtime->master"/>
 
     <dependency org="org.jminor" name="jminor-db-local" rev="latest.integration" conf="test->master"/>
     <dependency org="org.jminor" name="jminor-swing-client-model" rev="latest.integration" conf="test->master"/>
     <dependency org="junit" name="junit" rev="4.12" conf="test->master"/>
     <dependency org="org.hamcrest" name="hamcrest-core" rev="1.3" conf="test->master"/>
     <dependency org="com.h2database" name="h2" rev="1.3.176" conf="test->master"/>
-    <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="test->master"/>
-    <dependency org="commons-digester" name="commons-digester" rev="2.1" conf="test->master"/>
-    <dependency org="commons-collections" name="commons-collections" rev="3.2.1" conf="test->master"/>
-    <dependency org="commons-beanutils" name="commons-beanutils" rev="1.9.0" conf="test->master"/>
-    <dependency org="org.eclipse.jdt.core.compiler" name="ecj" rev="4.3.1" conf="test->master"/>
   </dependencies>
 </ivy-module>

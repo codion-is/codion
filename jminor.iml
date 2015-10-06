@@ -19,11 +19,11 @@
     <orderEntry type="module-library">
       <library name="jminor-lib">
         <CLASSES>
-          <root url="file://$MODULE_DIR$/lib/runtime.tests" />
+          <root url="file://$MODULE_DIR$/lib/test" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/lib/runtime.tests" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/lib/test" recursive="false" />
       </library>
     </orderEntry>
   </component>
