@@ -4085,3 +4085,5 @@
   Demos are now independent modules
   SwingMessages added, initialized in LoginPanel, this feels like a hack
   Build file improvements
+0.9.7
+  REST plugin jersey dependencies updated, jersey bundle 2.22
