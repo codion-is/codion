@@ -125,13 +125,6 @@
     <subant target="clean" buildpath="${basedir}/demos/petstore"/>
     <subant target="clean" buildpath="${basedir}/demos/schemabrowser"/>
     <subant target="clean" buildpath="${basedir}/demos/world"/>
-
-    <subant target="clean" buildpath="${basedir}/plugins/imagepanel"/>
-    <subant target="clean" buildpath="${basedir}/plugins/jasperreports"/>
-    <subant target="clean" buildpath="${basedir}/plugins/json"/>
-    <subant target="clean" buildpath="${basedir}/plugins/nextreports"/>
-    <subant target="clean" buildpath="${basedir}/plugins/rest"/>
-    <subant target="clean" buildpath="${basedir}/plugins/tomcat-pool"/>
   </target>
 
   <target name="build" depends="resolve_libraries"
@@ -144,8 +137,6 @@
     <copy todir="${build.main}">
       <fileset refid="framework_resources"/>
     </copy>
-
-    <antcall target="build_plugins"/>
 
     <mkdir dir="${build.test}"/>
     <javac destdir="${build.test}" debug="${build.debuginfo}" includeantruntime="false">
@@ -163,7 +154,7 @@
     <concat destfile="${build.main}/org/jminor/common/model/version.txt">${version}-build ${build.date}</concat>
   </target>
 
-  <target name="build_plugins">
+  <target name="plugins_build">
     <subant target="build" buildpath="${basedir}/plugins/imagepanel"/>
     <subant target="build" buildpath="${basedir}/plugins/jasperreports"/>
     <subant target="build" buildpath="${basedir}/plugins/json"/>
@@ -172,7 +163,16 @@
     <subant target="build" buildpath="${basedir}/plugins/tomcat-pool"/>
   </target>
 
-  <target name="build_demos">
+  <target name="plugins_clean">
+    <subant target="clean" buildpath="${basedir}/plugins/imagepanel"/>
+    <subant target="clean" buildpath="${basedir}/plugins/jasperreports"/>
+    <subant target="clean" buildpath="${basedir}/plugins/json"/>
+    <subant target="clean" buildpath="${basedir}/plugins/nextreports"/>
+    <subant target="clean" buildpath="${basedir}/plugins/rest"/>
+    <subant target="clean" buildpath="${basedir}/plugins/tomcat-pool"/>
+  </target>
+
+  <target name="demos_build">
     <subant target="build" buildpath="${basedir}/demos/chinook"/>
     <subant target="build" buildpath="${basedir}/demos/empdept"/>
     <subant target="build" buildpath="${basedir}/demos/petstore"/>
@@ -278,6 +278,15 @@
     <copy file="${basedir}/changelog.txt" todir="${dist}"/>
   </target>
 
+  <target name="plugins_dist">
+    <subant target="dist" buildpath="${basedir}/plugins/imagepanel"/>
+    <subant target="dist" buildpath="${basedir}/plugins/jasperreports"/>
+    <subant target="dist" buildpath="${basedir}/plugins/json"/>
+    <subant target="dist" buildpath="${basedir}/plugins/nextreports"/>
+    <subant target="dist" buildpath="${basedir}/plugins/rest"/>
+    <subant target="dist" buildpath="${basedir}/plugins/tomcat-pool"/>
+  </target>
+
   <target name="publish" depends="dist"
           description="Publish all project artifacts">
     <subant target="publish" buildpath="${basedir}/resources/publish/common-model"/>
@@ -295,7 +304,7 @@
     <subant target="publish" buildpath="${basedir}/resources/publish/server-monitor"/>
   </target>
 
-  <target name="publish_plugins">
+  <target name="plugins_publish">
     <subant target="publish" buildpath="${basedir}/plugins/imagepanel"/>
     <subant target="publish" buildpath="${basedir}/plugins/jasperreports"/>
     <subant target="publish" buildpath="${basedir}/plugins/json"/>
@@ -483,7 +492,7 @@
     </jacoco:report>
   </target>
 
-  <target name="run_unit_tests_demos">
+  <target name="demos_run_unit_tests">
     <subant target="run_unit_tests" buildpath="${basedir}/demos/chinook"/>
     <subant target="run_unit_tests" buildpath="${basedir}/demos/empdept"/>
     <subant target="run_unit_tests" buildpath="${basedir}/demos/petstore"/>
@@ -491,7 +500,7 @@
     <subant target="run_unit_tests" buildpath="${basedir}/demos/world"/>
   </target>
 
-  <target name="run_unit_tests_plugins">
+  <target name="plugins_run_unit_tests">
     <subant target="run_unit_tests" buildpath="${basedir}/plugins/imagepanel"/>
     <subant target="run_unit_tests" buildpath="${basedir}/plugins/jasperreports"/>
     <subant target="run_unit_tests" buildpath="${basedir}/plugins/json"/>

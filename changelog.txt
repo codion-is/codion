@@ -4083,3 +4083,4 @@
   NextReports plugin improved
   Plugins are now indipendent modules
   Demos are now independent modules
+  SwingMessages added, initialized in LoginPanel, this feels like a hack

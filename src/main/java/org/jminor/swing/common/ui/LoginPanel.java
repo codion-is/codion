@@ -25,6 +25,11 @@ import java.awt.event.ActionEvent;
  */
 public final class LoginPanel extends JPanel {
 
+  static {
+    //simply to initialize button captions before the application starts
+    SwingMessages.init();
+  }
+
   private static final int DEFAULT_FIELD_COLUMNS = 8;
   private static final int GRID_SIZE = 2;
 

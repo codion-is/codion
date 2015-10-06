@@ -17,6 +17,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.swing.common.ui.SwingMessages;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
 import org.jminor.swing.common.ui.ExceptionHandler;
 import org.jminor.swing.common.ui.LoginPanel;
@@ -79,16 +80,6 @@ import java.util.Map;
  * @param <Model> the application model type
  */
 public abstract class EntityApplicationPanel<Model extends EntityApplicationModel> extends JPanel implements ExceptionHandler, MasterDetailPanel {
-
-  static {
-    //todo move this somewhere else?
-    UIManager.put("OptionPane.yesButtonText", Messages.get(Messages.YES));
-    UIManager.put("OptionPane.noButtonText", Messages.get(Messages.NO));
-    UIManager.put("OptionPane.cancelButtonText", Messages.get(Messages.CANCEL));
-    UIManager.put("OptionPane.okButtonText", Messages.get(Messages.OK));
-    UIManager.put("OptionPane.inputDialogTitle", FrameworkMessages.get(FrameworkMessages.OPTION_PANE_INPUT_DIALOG_TITLE));
-    UIManager.put("OptionPane.messageDialogTitle", FrameworkMessages.get(FrameworkMessages.OPTION_PANE_MESSAGE_DIALOG_TITLE));
-  }
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
