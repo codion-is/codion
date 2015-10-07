@@ -11,7 +11,6 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.plugins.json.EntityJSONParser;
 import org.jminor.framework.server.DefaultEntityConnectionServerAdmin;
-import org.jminor.framework.server.EntityConnectionServerAdmin;
 
 import org.apache.http.HttpEntity;
 import org.apache.http.HttpException;
@@ -265,7 +264,7 @@ public class EntityRESTServiceTest {
 
   private static void deconfigure() {
     Configuration.setValue(Configuration.REGISTRY_PORT, Registry.REGISTRY_PORT);
-    Configuration.clearValue(Configuration.SERVER_CONNECTION_SSL_ENABLED);
+    Configuration.setValue(Configuration.SERVER_CONNECTION_SSL_ENABLED, true);
     Configuration.clearValue(Configuration.SERVER_PORT);
     Configuration.clearValue(Configuration.SERVER_ADMIN_PORT);
     Configuration.clearValue(Configuration.SERVER_HOST_NAME);

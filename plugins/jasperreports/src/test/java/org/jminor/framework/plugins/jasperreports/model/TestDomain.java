@@ -48,56 +48,60 @@ public final class TestDomain {
   public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
   static {
-    Entities.define(T_MASTER,
-            Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
-            Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
-            Properties.columnProperty(MASTER_CODE, Types.INTEGER))
-            .setComparator(new Comparator<Entity>() {
-              @Override
-              public int compare(final Entity o1, final Entity o2) {
-                final Integer code1 = o1.getIntValue(MASTER_CODE);
-                final Integer code2 = o2.getIntValue(MASTER_CODE);
+    if (!Entities.isDefined(T_MASTER)) {
+      Entities.define(T_MASTER,
+              Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
+              Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
+              Properties.columnProperty(MASTER_CODE, Types.INTEGER))
+              .setComparator(new Comparator<Entity>() {
+                @Override
+                public int compare(final Entity o1, final Entity o2) {
+                  final Integer code1 = o1.getIntValue(MASTER_CODE);
+                  final Integer code2 = o2.getIntValue(MASTER_CODE);
 
-                return code1.compareTo(code2);
-              }
-            })
-            .setStringProvider(new Entities.StringProvider(MASTER_NAME));
-
-    Entities.define(T_DETAIL,
-            Properties.primaryKeyProperty(DETAIL_ID, Types.BIGINT),
-            Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
-            Properties.columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE),
-            Properties.columnProperty(DETAIL_STRING, Types.VARCHAR, "Detail string"),
-            Properties.columnProperty(DETAIL_DATE, Types.DATE, DETAIL_DATE),
-            Properties.columnProperty(DETAIL_TIMESTAMP, Types.TIMESTAMP, DETAIL_TIMESTAMP),
-            Properties.columnProperty(DETAIL_BOOLEAN, Types.BOOLEAN, DETAIL_BOOLEAN)
-                    .setNullable(false)
-                    .setDefaultValue(true)
-                    .setDescription("A boolean property"),
-            Properties.columnProperty(DETAIL_BOOLEAN_NULLABLE, Types.BOOLEAN, DETAIL_BOOLEAN_NULLABLE)
-                    .setDefaultValue(true),
-            Properties.foreignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
-                    Properties.columnProperty(DETAIL_ENTITY_ID, Types.BIGINT)),
-            Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,
-                    Entities.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
-            Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
-                    Entities.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE),
-            Properties.valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST, ITEMS),
-            Properties.derivedProperty(DETAIL_INT_DERIVED, Types.INTEGER, DETAIL_INT_DERIVED, new Property.DerivedProperty.Provider() {
-              @Override
-              public Object getValue(final Map<String, Object> linkedValues) {
-                final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
-                if (intValue == null) {
-                  return null;
+                  return code1.compareTo(code2);
                 }
+              })
+              .setStringProvider(new Entities.StringProvider(MASTER_NAME));
+    }
 
-                return intValue * 10;
-              }
-            }, DETAIL_INT))
-            .setOrderByClause(DETAIL_STRING)
-            .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
-            .setSmallDataset(true)
-            .setStringProvider(new Entities.StringProvider(DETAIL_STRING));
+    if (!Entities.isDefined(T_DETAIL)) {
+      Entities.define(T_DETAIL,
+              Properties.primaryKeyProperty(DETAIL_ID, Types.BIGINT),
+              Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),
+              Properties.columnProperty(DETAIL_DOUBLE, Types.DOUBLE, DETAIL_DOUBLE),
+              Properties.columnProperty(DETAIL_STRING, Types.VARCHAR, "Detail string"),
+              Properties.columnProperty(DETAIL_DATE, Types.DATE, DETAIL_DATE),
+              Properties.columnProperty(DETAIL_TIMESTAMP, Types.TIMESTAMP, DETAIL_TIMESTAMP),
+              Properties.columnProperty(DETAIL_BOOLEAN, Types.BOOLEAN, DETAIL_BOOLEAN)
+                      .setNullable(false)
+                      .setDefaultValue(true)
+                      .setDescription("A boolean property"),
+              Properties.columnProperty(DETAIL_BOOLEAN_NULLABLE, Types.BOOLEAN, DETAIL_BOOLEAN_NULLABLE)
+                      .setDefaultValue(true),
+              Properties.foreignKeyProperty(DETAIL_ENTITY_FK, DETAIL_ENTITY_FK, T_MASTER,
+                      Properties.columnProperty(DETAIL_ENTITY_ID, Types.BIGINT)),
+              Properties.denormalizedViewProperty(DETAIL_MASTER_NAME, DETAIL_ENTITY_FK,
+                      Entities.getProperty(T_MASTER, MASTER_NAME), DETAIL_MASTER_NAME),
+              Properties.denormalizedViewProperty(DETAIL_MASTER_CODE, DETAIL_ENTITY_FK,
+                      Entities.getProperty(T_MASTER, MASTER_CODE), DETAIL_MASTER_CODE),
+              Properties.valueListProperty(DETAIL_INT_VALUE_LIST, Types.INTEGER, DETAIL_INT_VALUE_LIST, ITEMS),
+              Properties.derivedProperty(DETAIL_INT_DERIVED, Types.INTEGER, DETAIL_INT_DERIVED, new Property.DerivedProperty.Provider() {
+                @Override
+                public Object getValue(final Map<String, Object> linkedValues) {
+                  final Integer intValue = (Integer) linkedValues.get(DETAIL_INT);
+                  if (intValue == null) {
+                    return null;
+                  }
+
+                  return intValue * 10;
+                }
+              }, DETAIL_INT))
+              .setOrderByClause(DETAIL_STRING)
+              .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
+              .setSmallDataset(true)
+              .setStringProvider(new Entities.StringProvider(DETAIL_STRING));
+    }
   }
 
   public static final String SCOTT_DOMAIN_ID = "scott.domain";
@@ -121,55 +125,59 @@ public final class TestDomain {
   public static final String EMP_DEPARTMENT_LOCATION = "location";
 
   static {
-    Entities.define(T_DEPARTMENT, "scott.dept",
-            Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
-                    .setUpdatable(true).setNullable(false),
-            Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
-                    .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
-            Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
-                    .setPreferredColumnWidth(150).setMaxLength(13))
-            .setDomainID(SCOTT_DOMAIN_ID)
-            .setSmallDataset(true)
-            .setOrderByClause(DEPARTMENT_NAME)
-            .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
-            .setCaption("Department");
+    if (!Entities.isDefined(T_DEPARTMENT)) {
+      Entities.define(T_DEPARTMENT, "scott.dept",
+              Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
+                      .setUpdatable(true).setNullable(false),
+              Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
+                      .setPreferredColumnWidth(120).setMaxLength(14).setNullable(false),
+              Properties.columnProperty(DEPARTMENT_LOCATION, Types.VARCHAR, DEPARTMENT_LOCATION)
+                      .setPreferredColumnWidth(150).setMaxLength(13))
+              .setDomainID(SCOTT_DOMAIN_ID)
+              .setSmallDataset(true)
+              .setOrderByClause(DEPARTMENT_NAME)
+              .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
+              .setCaption("Department");
+    }
 
-    Entities.define(T_EMP, "scott.emp",
-            Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
-            Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
-                    .setMaxLength(10).setNullable(false),
-            Properties.foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
-                    Properties.columnProperty(EMP_DEPARTMENT))
-                    .setNullable(false),
-            Properties.columnProperty(EMP_JOB, Types.VARCHAR, EMP_JOB)
-                    .setMaxLength(9),
-            Properties.columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
-                    .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
-            Properties.columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
-                    .setMin(100).setMax(2000).setMaximumFractionDigits(2),
-            Properties.foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
-                    Properties.columnProperty(EMP_MGR)),
-            Properties.columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
-                    .setNullable(false),
-            Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
-                    Entities.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
-                    DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
-            .setDomainID(SCOTT_DOMAIN_ID)
-            .setKeyGenerator(Entities.incrementKeyGenerator("scott.emp", EMP_ID))
-            .setOrderByClause(EMP_DEPARTMENT + ", " + EMP_NAME)
-            .setStringProvider(new Entities.StringProvider(EMP_NAME))
-            .setSearchPropertyIDs(EMP_NAME, EMP_JOB)
-            .setCaption("Employee")
-            .setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
-              /*provide a custom background color for managers*/
-              @Override
-              public Color getBackgroundColor(final Entity entity, final Property property) {
-                if (property.is(EMP_JOB) && "MANAGER".equals(entity.getValue(EMP_JOB))) {
-                  return Color.CYAN;
+    if (!Entities.isDefined(T_EMP)) {
+      Entities.define(T_EMP, "scott.emp",
+              Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
+              Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
+                      .setMaxLength(10).setNullable(false),
+              Properties.foreignKeyProperty(EMP_DEPARTMENT_FK, EMP_DEPARTMENT_FK, T_DEPARTMENT,
+                      Properties.columnProperty(EMP_DEPARTMENT))
+                      .setNullable(false),
+              Properties.columnProperty(EMP_JOB, Types.VARCHAR, EMP_JOB)
+                      .setMaxLength(9),
+              Properties.columnProperty(EMP_SALARY, Types.DOUBLE, EMP_SALARY)
+                      .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
+              Properties.columnProperty(EMP_COMMISSION, Types.DOUBLE, EMP_COMMISSION)
+                      .setMin(100).setMax(2000).setMaximumFractionDigits(2),
+              Properties.foreignKeyProperty(EMP_MGR_FK, EMP_MGR_FK, T_EMP,
+                      Properties.columnProperty(EMP_MGR)),
+              Properties.columnProperty(EMP_HIREDATE, Types.DATE, EMP_HIREDATE)
+                      .setNullable(false),
+              Properties.denormalizedViewProperty(EMP_DEPARTMENT_LOCATION, EMP_DEPARTMENT_FK,
+                      Entities.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
+                      DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
+              .setDomainID(SCOTT_DOMAIN_ID)
+              .setKeyGenerator(Entities.incrementKeyGenerator("scott.emp", EMP_ID))
+              .setOrderByClause(EMP_DEPARTMENT + ", " + EMP_NAME)
+              .setStringProvider(new Entities.StringProvider(EMP_NAME))
+              .setSearchPropertyIDs(EMP_NAME, EMP_JOB)
+              .setCaption("Employee")
+              .setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
+                /*provide a custom background color for managers*/
+                @Override
+                public Color getBackgroundColor(final Entity entity, final Property property) {
+                  if (property.is(EMP_JOB) && "MANAGER".equals(entity.getValue(EMP_JOB))) {
+                    return Color.CYAN;
+                  }
+
+                  return null;
                 }
-
-                return null;
-              }
-            });
+              });
+    }
   }
 }

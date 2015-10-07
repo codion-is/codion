@@ -23,7 +23,7 @@ public class JasperReportsWrapperTest {
   @Test
   public void fillJdbcReport() throws Exception {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(User.UNIT_TEST_USER,
-            new H2Database("h2db", System.getProperty("jminor.db.initScript")));
+            new H2Database("JasperReportsWrapperTest.fillJdbcReport", System.getProperty("jminor.db.initScript")));
     final HashMap<String, Object> reportParameters = new HashMap<>();
     reportParameters.put("DEPTNO", Arrays.asList(10, 20));
     final JasperPrint print = EntityReportUtil.fillReport(
@@ -35,8 +35,8 @@ public class JasperReportsWrapperTest {
   @Test(expected = ReportException.class)
   public void fillJdbcReportInvalidReport() throws Exception {
     final EntityConnectionProvider connectionProvider = new LocalEntityConnectionProvider(User.UNIT_TEST_USER,
-            new H2Database("h2db", System.getProperty("jminor.db.initScript")));
-    EntityReportUtil.fillReport( new JasperReportsWrapper("build/test/non_existing.jasper",
+            new H2Database("JasperReportsWrapperTest.fillJdbcReportInvalidReport", System.getProperty("jminor.db.initScript")));
+    EntityReportUtil.fillReport(new JasperReportsWrapper("build/test/non_existing.jasper",
             new HashMap<String, Object>()), connectionProvider).getResult();
   }
 }

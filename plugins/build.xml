@@ -1,6 +1,6 @@
 <project name="jminor-plugin" default="build" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:jacoco="antlib:org.jacoco.ant">
 
-  <property name="junit.db.initScript" value="../create_h2_db.sql"/>
+  <property name="junit.db.initScript" value="${basedir}/../create_h2_db.sql"/>
   <property file="../../build.properties"/>
 
   <path id="lib.ant.util">
@@ -56,9 +56,9 @@
     </javac>
   </target>
 
-  <target name="run_tests" depends="build">
+  <target name="run_unit_tests" depends="build">
     <jacoco:coverage destfile="test/reports/jacoc-${ant.project.name}">
-      <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once">
+      <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once" dir="${basedir}">
         <formatter type="xml" usefile="true"/>
         <classpath>
           <path refid="lib.test"/>
