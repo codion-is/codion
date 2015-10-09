@@ -24,6 +24,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
@@ -1454,7 +1455,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     });
     header.setFocusable(false);
     header.setReorderingAllowed(Configuration.getBooleanValue(Configuration.ALLOW_COLUMN_REORDERING));
-    getJTable().setAutoResizeMode(Configuration.getIntValue(Configuration.TABLE_AUTO_RESIZE_MODE));
+    getJTable().setAutoResizeMode(SwingConfiguration.getIntValue(SwingConfiguration.TABLE_AUTO_RESIZE_MODE));
     if (includePopupMenu) {
       setTablePopupMenu(getJTable(), getPopupControls(additionalPopupControlSets));
     }

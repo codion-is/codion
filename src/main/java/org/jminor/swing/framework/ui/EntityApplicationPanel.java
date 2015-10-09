@@ -17,7 +17,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.swing.common.ui.SwingMessages;
+import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
 import org.jminor.swing.common.ui.ExceptionHandler;
 import org.jminor.swing.common.ui.LoginPanel;
@@ -98,7 +98,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   private final Event<Boolean> alwaysOnTopChangedEvent = Events.event();
   private final Event onExitEvent = Events.event();
 
-  private final boolean persistEntityPanels = Configuration.getBooleanValue(Configuration.PERSIST_ENTITY_PANELS);
+  private final boolean persistEntityPanels = SwingConfiguration.getBooleanValue(SwingConfiguration.PERSIST_ENTITY_PANELS);
   private final Map<EntityPanelProvider, EntityPanel> persistentEntityPanels = new HashMap<>();
 
   private boolean loginRequired = Configuration.getBooleanValue(Configuration.AUTHENTICATION_REQUIRED);
@@ -803,7 +803,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    */
   protected void initializeUI() {
     setLayout(new BorderLayout());
-    applicationTabPane = new JTabbedPane(Configuration.getIntValue(Configuration.TAB_PLACEMENT));
+    applicationTabPane = new JTabbedPane(SwingConfiguration.getIntValue(SwingConfiguration.TAB_PLACEMENT));
     applicationTabPane.setFocusable(false);
     applicationTabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
     applicationTabPane.addChangeListener(new ChangeListener() {

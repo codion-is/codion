@@ -177,7 +177,8 @@
     <dist_module module-name="jminor-common-model"
                  includes="org/jminor/common/**"/>
     <dist_module module-name="jminor-swing-common-model"
-                 includes="org/jminor/swing/common/model/**"/>
+                 includes="org/jminor/swing/common/model/**,
+                   org/jminor/swing/SwingConfiguration.class"/>
     <dist_module module-name="jminor-swing-common-ui"
                  includes="org/jminor/swing/common/ui/**"/>
     <dist_module module-name="jminor-db-core"
@@ -193,7 +194,7 @@
     <dist_module module-name="jminor-db-remote"
                  includes="org/jminor/framework/db/remote/*"/>
     <dist_module module-name="jminor-db-test"
-                 includes="org/jminor/framework/tools/testing/EntityTestUnit*"/>
+                 includes="org/jminor/framework/testing/EntityTestUnit*"/>
     <dist_module module-name="jminor-swing-client-model"
                  includes="org/jminor/swing/framework/model/**"/>
     <dist_module module-name="jminor-swing-client-ui"
@@ -206,12 +207,6 @@
                  includes="org/jminor/framework/Configuration.class,
                    org/jminor/swing/framework/server/monitor/**,
                    org/jminor/framework/server/EntityConnectionServerAdmin.class"/>
-
-    <subant target="dist" buildpath="${basedir}/demos/chinook"/>
-    <subant target="dist" buildpath="${basedir}/demos/empdept"/>
-    <subant target="dist" buildpath="${basedir}/demos/petstore"/>
-    <subant target="dist" buildpath="${basedir}/demos/schemabrowser"/>
-    <subant target="dist" buildpath="${basedir}/demos/world"/>
 
     <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
@@ -251,6 +246,14 @@
     </jar>
 
     <copy file="${basedir}/changelog.txt" todir="${dist}"/>
+  </target>
+
+  <target name="demos_dist">
+    <subant target="dist" buildpath="${basedir}/demos/chinook"/>
+    <subant target="dist" buildpath="${basedir}/demos/empdept"/>
+    <subant target="dist" buildpath="${basedir}/demos/petstore"/>
+    <subant target="dist" buildpath="${basedir}/demos/schemabrowser"/>
+    <subant target="dist" buildpath="${basedir}/demos/world"/>
   </target>
 
   <target name="plugins_dist">
@@ -305,7 +308,7 @@
     </javadoc>
   </target>
 
-  <target name="deploy_server" depends="dist, plugins_dist, create_keystore, create_h2db"
+  <target name="deploy_server" depends="dist, plugins_dist, demos_dist, create_keystore, create_h2db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-db-core/jminor-db-core.jar" todir="${deploy.server.path}/lib"/>
@@ -382,7 +385,7 @@
     <chmod dir="${deploy.generator.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demos" depends="dist, plugins_dist, create_keystore, create_h2db"
+  <target name="deploy_demos" depends="dist, plugins_dist, demos_dist, create_keystore, create_h2db"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
     <!--Setup-->
@@ -409,7 +412,7 @@
     <delete file="${deploy.demos.dir}/libraries.jar"/>
   </target>
 
-  <target name="deploy_all" depends="clean, dist, plugins_dist, deploy_server, deploy_server_monitor, deploy_demos, deploy_generator"
+  <target name="deploy_all" depends="clean, dist, plugins_dist, demos_dist, deploy_server, deploy_server_monitor, deploy_demos, deploy_generator"
           description="A convenience target for deploying the server, server monitor and demo applications"/>
 
   <target name="run_unit_tests" depends="clean, build"

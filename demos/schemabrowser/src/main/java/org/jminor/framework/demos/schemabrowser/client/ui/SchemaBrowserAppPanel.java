@@ -8,6 +8,7 @@ import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
+import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
 import org.jminor.swing.framework.model.EntityApplicationModel;
@@ -43,7 +44,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
   }
 
   public static void main(final String[] args) {
-    Configuration.setValue(Configuration.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
+    SwingConfiguration.setValue(SwingConfiguration.TABLE_AUTO_RESIZE_MODE, JTable.AUTO_RESIZE_ALL_COLUMNS);
     Configuration.setValue(Configuration.SEARCH_PANEL_STATE, true);
     new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false, UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger"));
   }

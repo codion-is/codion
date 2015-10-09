@@ -9,7 +9,7 @@ import org.jminor.common.model.tools.ScenarioException;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.tools.testing.EntityTestUnit;
+import org.jminor.framework.testing.EntityTestUnit;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
 import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
 import org.jminor.swing.framework.model.DefaultEntityModel;

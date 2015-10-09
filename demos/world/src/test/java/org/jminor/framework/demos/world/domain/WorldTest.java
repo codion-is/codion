@@ -8,7 +8,7 @@ import org.jminor.common.model.User;
 import org.jminor.framework.demos.world.domain.World;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.tools.testing.EntityTestUnit;
+import org.jminor.framework.testing.EntityTestUnit;
 
 import org.junit.Test;
 

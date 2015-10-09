@@ -11,6 +11,7 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
 import org.jminor.swing.common.ui.MasterDetailPanel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -97,7 +98,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
 
   private static final int RESIZE_AMOUNT = 30;
 
-  private static final int SPLIT_PANE_DIVIDER_SIZE = Configuration.getIntValue(Configuration.SPLIT_PANE_DIVIDER_SIZE);
+  private static final int SPLIT_PANE_DIVIDER_SIZE = SwingConfiguration.getIntValue(SwingConfiguration.SPLIT_PANE_DIVIDER_SIZE);
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
   private static final int DETAIL_DIALOG_OFFSET = 29;
   private static final double DETAIL_DIALOG_SIZE_RATIO = 1.5;

@@ -24,20 +24,6 @@ public final class Configuration {
    */
   public static void init() {}
 
-  private Configuration() {}
-
-  /**
-   * Identifies the completion mode MaximumMatch
-   * @see #COMBO_BOX_COMPLETION_MODE
-   */
-  public static final String COMPLETION_MODE_MAXIMUM_MATCH = "max";
-
-  /**
-   * Identifies the completion mode AutoCompletion
-   * @see #COMBO_BOX_COMPLETION_MODE
-   */
-  public static final String COMPLETION_MODE_AUTOCOMPLETE = "auto";
-
   /**
    * A prefix used to name server admin instances
    */
@@ -264,7 +250,6 @@ public final class Configuration {
    */
   public static final String FILTER_ON_MASTER_INSERT = "jminor.client.filterOnMasterInsert";
 
-
   /**
    * Indicates whether all entity panels should be enabled and receiving input by default<br>
    * Value type: Boolean<br>
@@ -312,13 +297,6 @@ public final class Configuration {
   public static final String USE_FOCUS_ACTIVATION = "jminor.client.useFocusActivation";
 
   /**
-   * Specifies the default table column resize mode for tables in the application<br>
-   * Value type: Integer (JTable.AUTO_RESIZE_*)<br>
-   * Default value: JTable.AUTO_RESIZE_OFF
-   */
-  public static final String TABLE_AUTO_RESIZE_MODE = "jminor.client.tableAutoResizeMode";
-
-  /**
    * Indicates whether the application should ask for confirmation when exiting<br>
    * Value type: Boolean<br>
    * Default value: false
@@ -332,13 +310,6 @@ public final class Configuration {
    * Default value: false
    */
   public static final String WARN_ABOUT_UNSAVED_DATA = "jminor.client.warnAboutUnsavedData";
-
-  /**
-   * Specifies the tab placement<br>
-   * Value type: Integer (JTabbedPane.TOP, JTabbedPane.BOTTOM, JTabbedPane.LEFT, JTabbedPane.RIGHT)<br>
-   * Default value: JTabbedPane.TOP
-   */
-  public static final String TAB_PLACEMENT = "jminor.client.tabPlacement";
 
   /**
    * Specifies whether or not columns can be rearranged in tables<br>
@@ -422,15 +393,6 @@ public final class Configuration {
   public static final String SQL_BOOLEAN_VALUE_TRUE = "jminor.client.sqlBooleanValueTrue";
 
   /**
-   * Specifies if EntityPanels opened via the <code>EntityApplicationPanel.showEntityPanelDialog</code> method
-   * should be persisted, or kept in memory, when the dialog is closed.<br>
-   * Value type: Boolean<br>
-   * Default value: false
-   * @see org.jminor.swing.framework.ui.EntityApplicationPanel#showEntityPanelDialog(EntityPanelProvider)
-   */
-  public static final String PERSIST_ENTITY_PANELS = "jminor.client.persistEntityPanels";
-
-  /**
    * Specifies the default search panel state, whether it should be visible or not<br>
    * Value type: Boolean<br>
    * Default value: false
@@ -512,15 +474,6 @@ public final class Configuration {
   public static final String COMBO_BOX_NULL_VALUE_ITEM = "jminor.client.comboBoxNullValueItem";
 
   /**
-   * Specifies whether maximum match or autocomplete is used for comboboxes,
-   * {@link #COMPLETION_MODE_MAXIMUM_MATCH} for {@link org.jminor.swing.common.ui.combobox.MaximumMatch}
-   * and {@link #COMPLETION_MODE_AUTOCOMPLETE} for {@link org.jminor.swing.common.ui.combobox.AutoCompletion}.<br>
-   * Value type:String<br>
-   * Default value: {@link #COMPLETION_MODE_MAXIMUM_MATCH}
-   */
-  public static final String COMBO_BOX_COMPLETION_MODE = "jminor.client.comboBoxCompletionMode";
-
-  /**
    * Specifies whether the client layer should perform null validation on entities
    * before update/insert actions are performed<br>
    * Value type: Boolean<br>
@@ -546,13 +499,6 @@ public final class Configuration {
   public static final String ALLOW_REDEFINE_ENTITY = "jminor.allowRedefineEntity";
 
   /**
-   * Specifies the default horizontal alignment used in labels<br>
-   * Value type: Integer (JLabel.LEFT, JLabel.RIGHT, JLabel.CENTER)<br>
-   * Default value: JLabel.LEFT
-   */
-  public static final String LABEL_TEXT_ALIGNMENT = "jminor.client.labelTextAlignment";
-
-  /**
    * Specifies the default foreign key fetch depth<br>
    * Value type: Integer<br>
    * Default value: 1
@@ -566,13 +512,6 @@ public final class Configuration {
    * Default value: true<br>
    */
   public static final String LIMIT_FOREIGN_KEY_FETCH_DEPTH = "jminor.db.limitForeignKeyFetchDepth";
-
-  /**
-   * Specifies the default size of the divider for detail panel split panes.<br>
-   * Value type: Integer<br>
-   * Default value: 18<br>
-   */
-  public static final String SPLIT_PANE_DIVIDER_SIZE = "jminor.client.splitPaneDividerSize";
 
   /**
    * Specifies whether or not actions to hide detail panels or show them in a dialog are available to the user<br>
@@ -730,12 +669,8 @@ public final class Configuration {
   private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 120000;
   private static final int DEFAULT_SERVER_CONNECTION_LOG_SIZE = 40;
   private static final int DEFAULT_SERVER_ADMIN_PORT = 3333;
-  private static final int DEFAULT_TABLE_AUTO_RESIZE_MODE = 0;//JTable.AUTO_RESIZE_OFF
-  private static final int DEFAULT_TAB_PLACEMENT = 1;//JTabbedPane.TOP
-  private static final int DEFAULT_LABEL_TEXT_ALIGNMENT = 2;//JLabel.LEFT
   private static final int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;
   private static final int DEFAULT_WEB_SERVER_PORT = 80;
-  private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
   private static final int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
   private static final int DEFAULT_SERVER_MONITOR_UPDATE_RATE = 5;
 
@@ -764,10 +699,8 @@ public final class Configuration {
     PROPERTIES.put(COMPACT_ENTITY_PANEL_LAYOUT, true);
     PROPERTIES.put(USE_KEYBOARD_NAVIGATION, true);
     PROPERTIES.put(USE_FOCUS_ACTIVATION, true);
-    PROPERTIES.put(TABLE_AUTO_RESIZE_MODE, DEFAULT_TABLE_AUTO_RESIZE_MODE);
     PROPERTIES.put(CONFIRM_EXIT, false);
     PROPERTIES.put(WARN_ABOUT_UNSAVED_DATA, false);
-    PROPERTIES.put(TAB_PLACEMENT, DEFAULT_TAB_PLACEMENT);
     PROPERTIES.put(TOOLBAR_BUTTONS, false);
     PROPERTIES.put(PERSIST_FOREIGN_KEY_VALUES, true);
     PROPERTIES.put(USERNAME_PREFIX, "");
@@ -777,7 +710,6 @@ public final class Configuration {
     PROPERTIES.put(USE_OPTIMISTIC_LOCKING, true);
     PROPERTIES.put(SQL_BOOLEAN_VALUE_FALSE, 0);
     PROPERTIES.put(SQL_BOOLEAN_VALUE_TRUE, 1);
-    PROPERTIES.put(PERSIST_ENTITY_PANELS, false);
     PROPERTIES.put(SEARCH_PANEL_STATE, false);
     PROPERTIES.put(SERVER_NAME_PREFIX, "JMinor Server");
     PROPERTIES.put(WILDCARD_CHARACTER, "%");
@@ -785,14 +717,12 @@ public final class Configuration {
     PROPERTIES.put(LOCAL_CONNECTION_PROVIDER, "org.jminor.framework.db.local.LocalEntityConnectionProvider");
     PROPERTIES.put(COMBO_BOX_NULL_VALUE_ITEM, "-");
     PROPERTIES.put(PERFORM_NULL_VALIDATION, true);
-    PROPERTIES.put(LABEL_TEXT_ALIGNMENT, DEFAULT_LABEL_TEXT_ALIGNMENT);
     PROPERTIES.put(ALLOW_COLUMN_REORDERING, true);
     PROPERTIES.put(FOREIGN_KEY_FETCH_DEPTH, DEFAULT_FOREIGN_KEY_FETCH_DEPTH);
     PROPERTIES.put(LIMIT_FOREIGN_KEY_FETCH_DEPTH, true);
     PROPERTIES.put(WEB_SERVER_PORT, DEFAULT_WEB_SERVER_PORT);
     PROPERTIES.put(WEB_SERVER_IMPLEMENTATION_CLASS, "org.jminor.framework.plugins.rest.EntityRESTServer");
     PROPERTIES.put(CACHE_REPORTS, true);
-    PROPERTIES.put(SPLIT_PANE_DIVIDER_SIZE, DEFAULT_SPLIT_PANE_DIVIDER_SIZE);
     PROPERTIES.put(STRICT_FOREIGN_KEYS, true);
     PROPERTIES.put(SHOW_DETAIL_PANEL_CONTROLS, true);
     PROPERTIES.put(SHOW_TOGGLE_EDIT_PANEL_CONTROL, true);
@@ -805,102 +735,112 @@ public final class Configuration {
     PROPERTIES.put(ALLOW_REDEFINE_ENTITY, false);
     PROPERTIES.put(SERVER_MONITOR_UPDATE_RATE, DEFAULT_SERVER_MONITOR_UPDATE_RATE);
     PROPERTIES.put(FILTER_ON_MASTER_INSERT, false);
-    PROPERTIES.put(COMBO_BOX_COMPLETION_MODE, COMPLETION_MODE_MAXIMUM_MATCH);
     parseSystemSettings();
   }
 
   private static void parseSystemSettings() {
-    parseBooleanSetting(ALL_PANELS_ACTIVE);
-    parseBooleanSetting(ALLOW_COLUMN_REORDERING);
-    parseBooleanSetting(AUTHENTICATION_REQUIRED);
-    parseStringSetting(CLIENT_CONNECTION_TYPE);
-    parseBooleanSetting(CONNECTION_SCHEDULE_VALIDATION);
-    parseIntegerSetting(CONNECTION_VALIDITY_CHECK_TIMEOUT);
-    parseBooleanSetting(COMPACT_ENTITY_PANEL_LAYOUT);
-    parseBooleanSetting(CONFIRM_EXIT);
-    parseBooleanSetting(WARN_ABOUT_UNSAVED_DATA);
-    parseStringSetting(COMBO_BOX_NULL_VALUE_ITEM);
-    parseStringSetting(DATE_FORMAT);
-    parseStringSetting(TIMESTAMP_FORMAT);
-    parseStringSetting(TIME_FORMAT);
-    parseIntegerSetting(FOREIGN_KEY_FETCH_DEPTH);
-    parseIntegerSetting(LABEL_TEXT_ALIGNMENT);
-    parseBooleanSetting(SEARCH_PANEL_STATE);
-    parseBooleanSetting(LIMIT_FOREIGN_KEY_FETCH_DEPTH);
-    parseIntegerSetting(LOAD_TEST_THINKTIME);
-    parseIntegerSetting(LOAD_TEST_BATCH_SIZE);
-    parseIntegerSetting(LOAD_TEST_LOGIN_DELAY);
-    parseBooleanSetting(LOAD_TEST_REMOTE_HOSTNAME);
-    parseStringSetting(LOCAL_CONNECTION_PROVIDER);
-    parseBooleanSetting(PERFORM_NULL_VALIDATION);
-    parseBooleanSetting(PERSIST_ENTITY_PANELS);
-    parseBooleanSetting(PERSIST_FOREIGN_KEY_VALUES);
-    parseStringSetting(REMOTE_CONNECTION_PROVIDER);
-    parseIntegerSetting(SERVER_ADMIN_PORT);
-    parseIntegerSetting(SERVER_PORT);
-    parseStringSetting(SERVER_HOST_NAME);
-    parseStringSetting(REPORT_PATH);
-    parseIntegerSetting(REGISTRY_PORT);
-    parseBooleanSetting(SERVER_CLIENT_LOGGING_ENABLED);
-    parseIntegerSetting(SERVER_CONNECTION_LIMIT);
-    parseIntegerSetting(SERVER_CONNECTION_TIMEOUT);
-    parseStringSetting(SERVER_CLIENT_CONNECTION_TIMEOUT);
-    parseIntegerSetting(SERVER_CONNECTION_LOG_SIZE);
-    parseStringSetting(SERVER_CONNECTION_POOLING_INITIAL);
-    parseStringSetting(SERVER_DOMAIN_MODEL_CLASSES);
-    parseStringSetting(SERVER_LOGIN_PROXY_CLASSES);
-    parseStringSetting(SERVER_NAME_PREFIX);
-    parseBooleanSetting(SERVER_CONNECTION_SSL_ENABLED);
-    parseBooleanSetting(SHOW_STARTUP_DIALOG);
-    parseIntegerSetting(TAB_PLACEMENT);
-    parseIntegerSetting(TABLE_AUTO_RESIZE_MODE);
-    parseBooleanSetting(TOOLBAR_BUTTONS);
-    parseBooleanSetting(TRANSFER_FOCUS_ON_ENTER);
-    parseBooleanSetting(USE_FOCUS_ACTIVATION);
-    parseBooleanSetting(USE_KEYBOARD_NAVIGATION);
-    parseBooleanSetting(USE_OPTIMISTIC_LOCKING);
-    parseStringSetting(USERNAME_PREFIX);
-    parseStringSetting(WILDCARD_CHARACTER);
-    parseStringSetting(WEB_SERVER_DOCUMENT_ROOT);
-    parseIntegerSetting(WEB_SERVER_PORT);
-    parseStringSetting(WEB_SERVER_IMPLEMENTATION_CLASS);
-    parseStringSetting(Util.JAVAX_NET_NET_TRUSTSTORE);
-    parseBooleanSetting(CACHE_REPORTS);
-    parseIntegerSetting(SPLIT_PANE_DIVIDER_SIZE);
-    parseBooleanSetting(STRICT_FOREIGN_KEYS);
-    parseBooleanSetting(SHOW_DETAIL_PANEL_CONTROLS);
-    parseBooleanSetting(SHOW_TOGGLE_EDIT_PANEL_CONTROL);
-    parseIntegerSetting(MAXIMUM_FRACTION_DIGITS);
-    parseBooleanSetting(SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT);
-    parseBooleanSetting(USE_CLIENT_PREFERENCES);
-    parseStringSetting(SERVER_CONNECTION_POOL_PROVIDER_CLASS);
-    parseBooleanSetting(SAVE_DEFAULT_USERNAME);
-    parseBooleanSetting(DISPOSE_EDIT_DIALOG_ON_ESCAPE);
-    parseBooleanSetting(CENTER_APPLICATION_DIALOGS);
-    parseBooleanSetting(ALLOW_REDEFINE_ENTITY);
-    parseIntegerSetting(SERVER_MONITOR_UPDATE_RATE);
-    parseBooleanSetting(FILTER_ON_MASTER_INSERT);
-    parseStringSetting(COMBO_BOX_COMPLETION_MODE);
+    parseBooleanProperty(ALL_PANELS_ACTIVE, PROPERTIES);
+    parseBooleanProperty(ALLOW_COLUMN_REORDERING, PROPERTIES);
+    parseBooleanProperty(AUTHENTICATION_REQUIRED, PROPERTIES);
+    parseStringProperty(CLIENT_CONNECTION_TYPE, PROPERTIES);
+    parseBooleanProperty(CONNECTION_SCHEDULE_VALIDATION, PROPERTIES);
+    parseIntegerProperty(CONNECTION_VALIDITY_CHECK_TIMEOUT, PROPERTIES);
+    parseBooleanProperty(COMPACT_ENTITY_PANEL_LAYOUT, PROPERTIES);
+    parseBooleanProperty(CONFIRM_EXIT, PROPERTIES);
+    parseBooleanProperty(WARN_ABOUT_UNSAVED_DATA, PROPERTIES);
+    parseStringProperty(COMBO_BOX_NULL_VALUE_ITEM, PROPERTIES);
+    parseStringProperty(DATE_FORMAT, PROPERTIES);
+    parseStringProperty(TIMESTAMP_FORMAT, PROPERTIES);
+    parseStringProperty(TIME_FORMAT, PROPERTIES);
+    parseIntegerProperty(FOREIGN_KEY_FETCH_DEPTH, PROPERTIES);
+    parseBooleanProperty(SEARCH_PANEL_STATE, PROPERTIES);
+    parseBooleanProperty(LIMIT_FOREIGN_KEY_FETCH_DEPTH, PROPERTIES);
+    parseIntegerProperty(LOAD_TEST_THINKTIME, PROPERTIES);
+    parseIntegerProperty(LOAD_TEST_BATCH_SIZE, PROPERTIES);
+    parseIntegerProperty(LOAD_TEST_LOGIN_DELAY, PROPERTIES);
+    parseBooleanProperty(LOAD_TEST_REMOTE_HOSTNAME, PROPERTIES);
+    parseStringProperty(LOCAL_CONNECTION_PROVIDER, PROPERTIES);
+    parseBooleanProperty(PERFORM_NULL_VALIDATION, PROPERTIES);
+    parseBooleanProperty(PERSIST_FOREIGN_KEY_VALUES, PROPERTIES);
+    parseStringProperty(REMOTE_CONNECTION_PROVIDER, PROPERTIES);
+    parseIntegerProperty(SERVER_ADMIN_PORT, PROPERTIES);
+    parseIntegerProperty(SERVER_PORT, PROPERTIES);
+    parseStringProperty(SERVER_HOST_NAME, PROPERTIES);
+    parseStringProperty(REPORT_PATH, PROPERTIES);
+    parseIntegerProperty(REGISTRY_PORT, PROPERTIES);
+    parseBooleanProperty(SERVER_CLIENT_LOGGING_ENABLED, PROPERTIES);
+    parseIntegerProperty(SERVER_CONNECTION_LIMIT, PROPERTIES);
+    parseIntegerProperty(SERVER_CONNECTION_TIMEOUT, PROPERTIES);
+    parseStringProperty(SERVER_CLIENT_CONNECTION_TIMEOUT, PROPERTIES);
+    parseIntegerProperty(SERVER_CONNECTION_LOG_SIZE, PROPERTIES);
+    parseStringProperty(SERVER_CONNECTION_POOLING_INITIAL, PROPERTIES);
+    parseStringProperty(SERVER_DOMAIN_MODEL_CLASSES, PROPERTIES);
+    parseStringProperty(SERVER_LOGIN_PROXY_CLASSES, PROPERTIES);
+    parseStringProperty(SERVER_NAME_PREFIX, PROPERTIES);
+    parseBooleanProperty(SERVER_CONNECTION_SSL_ENABLED, PROPERTIES);
+    parseBooleanProperty(SHOW_STARTUP_DIALOG, PROPERTIES);
+    parseBooleanProperty(TOOLBAR_BUTTONS, PROPERTIES);
+    parseBooleanProperty(TRANSFER_FOCUS_ON_ENTER, PROPERTIES);
+    parseBooleanProperty(USE_FOCUS_ACTIVATION, PROPERTIES);
+    parseBooleanProperty(USE_KEYBOARD_NAVIGATION, PROPERTIES);
+    parseBooleanProperty(USE_OPTIMISTIC_LOCKING, PROPERTIES);
+    parseStringProperty(USERNAME_PREFIX, PROPERTIES);
+    parseStringProperty(WILDCARD_CHARACTER, PROPERTIES);
+    parseStringProperty(WEB_SERVER_DOCUMENT_ROOT, PROPERTIES);
+    parseIntegerProperty(WEB_SERVER_PORT, PROPERTIES);
+    parseStringProperty(WEB_SERVER_IMPLEMENTATION_CLASS, PROPERTIES);
+    parseStringProperty(Util.JAVAX_NET_NET_TRUSTSTORE, PROPERTIES);
+    parseBooleanProperty(CACHE_REPORTS, PROPERTIES);
+    parseBooleanProperty(STRICT_FOREIGN_KEYS, PROPERTIES);
+    parseBooleanProperty(SHOW_DETAIL_PANEL_CONTROLS, PROPERTIES);
+    parseBooleanProperty(SHOW_TOGGLE_EDIT_PANEL_CONTROL, PROPERTIES);
+    parseIntegerProperty(MAXIMUM_FRACTION_DIGITS, PROPERTIES);
+    parseBooleanProperty(SHUTDOWN_EMBEDDED_DB_ON_DISCONNECT, PROPERTIES);
+    parseBooleanProperty(USE_CLIENT_PREFERENCES, PROPERTIES);
+    parseStringProperty(SERVER_CONNECTION_POOL_PROVIDER_CLASS, PROPERTIES);
+    parseBooleanProperty(SAVE_DEFAULT_USERNAME, PROPERTIES);
+    parseBooleanProperty(DISPOSE_EDIT_DIALOG_ON_ESCAPE, PROPERTIES);
+    parseBooleanProperty(CENTER_APPLICATION_DIALOGS, PROPERTIES);
+    parseBooleanProperty(ALLOW_REDEFINE_ENTITY, PROPERTIES);
+    parseIntegerProperty(SERVER_MONITOR_UPDATE_RATE, PROPERTIES);
+    parseBooleanProperty(FILTER_ON_MASTER_INSERT, PROPERTIES);
   }
 
-  private static void parseIntegerSetting(final String setting) {
-    final String value = System.getProperty(setting);
+  /**
+   * Parses the value associated with the given system property and adds it to {@code Properties}.
+   * The value is assumed to be an Integer.
+   * @param property the name of the property to parse
+   * @param properties the Properties to add the value to
+   */
+  public static void parseIntegerProperty(final String property, final Properties properties) {
+    final String value = System.getProperty(property);
     if (value != null) {
-      PROPERTIES.put(setting, Integer.parseInt(value));
+      properties.put(property, Integer.parseInt(value));
     }
   }
 
-  private static void parseBooleanSetting(final String setting) {
-    final String value = System.getProperty(setting);
+  /**
+   * Parses the value associated with the given system property and adds it to {@code Properties}
+   * The value is assumed to be either 'true' or 'false', case insensitive.
+   * @param property the name of the property to parse
+   * @param properties the Properties to add the value to
+   */
+  public static void parseBooleanProperty(final String property, final Properties properties) {
+    final String value = System.getProperty(property);
     if (value != null) {
-      PROPERTIES.put(setting, value.equalsIgnoreCase(Boolean.TRUE.toString()));
+      properties.put(property, value.equalsIgnoreCase(Boolean.TRUE.toString()));
     }
   }
 
-  private static void parseStringSetting(final String setting) {
-    final String value = System.getProperty(setting);
+  /**
+   * Parses the value associated with the given system property and adds it to {@code Properties}
+   * @param property the name of the property to parse
+   * @param properties the Properties to add the value to
+   */
+  public static void parseStringProperty(final String property, final Properties properties) {
+    final String value = System.getProperty(property);
     if (value != null) {
-      PROPERTIES.put(setting, value);
+      properties.put(property, value);
     }
   }
 }

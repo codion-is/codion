@@ -23,6 +23,7 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.DateInputPanel;
@@ -158,10 +159,10 @@ public final class EntityUiUtil {
    * Creates a JLabel with a caption from the given property, using the default label text alignment
    * @param property the property for which to create the label
    * @return a JLabel for the given property
-   * @see org.jminor.framework.Configuration#LABEL_TEXT_ALIGNMENT
+   * @see org.jminor.swing.SwingConfiguration#LABEL_TEXT_ALIGNMENT
    */
   public static JLabel createLabel(final Property property) {
-    return createLabel(property, Configuration.getIntValue(Configuration.LABEL_TEXT_ALIGNMENT));
+    return createLabel(property, SwingConfiguration.getIntValue(SwingConfiguration.LABEL_TEXT_ALIGNMENT));
   }
 
   /**
@@ -1099,12 +1100,12 @@ public final class EntityUiUtil {
   }
 
   private static void addComboBoxCompletion(final JComboBox comboBox) {
-    final String completionMode = Configuration.getStringValue(Configuration.COMBO_BOX_COMPLETION_MODE);
+    final String completionMode = SwingConfiguration.getStringValue(SwingConfiguration.COMBO_BOX_COMPLETION_MODE);
     switch (completionMode) {
-      case Configuration.COMPLETION_MODE_AUTOCOMPLETE:
+      case SwingConfiguration.COMPLETION_MODE_AUTOCOMPLETE:
         AutoCompletion.enable(comboBox);
         break;
-      case Configuration.COMPLETION_MODE_MAXIMUM_MATCH:
+      case SwingConfiguration.COMPLETION_MODE_MAXIMUM_MATCH:
         MaximumMatch.enable(comboBox);
         break;
       default:

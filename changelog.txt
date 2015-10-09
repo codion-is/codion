@@ -4087,3 +4087,5 @@
   Build file improvements
 0.9.7
   REST plugin jersey dependencies updated, jersey bundle 2.22
+  SwingConfiguration extracted from Configuration
+  EntityTestUnit moved from framework.tools.testing to framework.testing
