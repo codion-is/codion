@@ -36,7 +36,7 @@
 
   <target name="resolve_libraries"
           description="Resolves all libraries according to ivy.xml">
-    <ivy:settings file="../../ivysettings.xml"/>
+    <ivy:settings file="../../core/ivysettings.xml"/>
     <ivy:retrieve pattern="lib/[conf]/[artifact]-[revision].[ext]" sync="true"/>
   </target>
 
