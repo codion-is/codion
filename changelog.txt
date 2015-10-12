@@ -4093,3 +4093,4 @@
   ColumnCriteriaModel, redundant setUpper/LowerBound() methods removed
   Build files restructured
   Project structure improved, core added
+  JavaFX module added
