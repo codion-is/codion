@@ -905,7 +905,7 @@ class DefaultProperty implements Property {
 
     /**
      * @param propertyID the property ID, since ForeignKeyProperties are meta properties, the property ID should not
-     * be na underlying table column, it must only be unique for the entity
+     * be an underlying table column, it must only be unique for the entity
      * @param caption the property caption
      * @param referencedEntityID the ID of the referenced entity type
      * @param referenceProperty the actual column property involved in the reference
