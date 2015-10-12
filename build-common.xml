@@ -1,10 +1,11 @@
 <project name="jminor-common" default="build" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:jacoco="antlib:org.jacoco.ant">
 
+  <property name="project.home" value="../../"/>
   <property name="junit.db.initScript" value="${basedir}/../create_h2_db.sql"/>
-  <property file="../../core/build.properties"/>
+  <property file="${project.home}/core/build.properties"/>
 
   <path id="lib.ant.util">
-    <fileset dir="../../core/lib/ant.util"/>
+    <fileset dir="${project.home}/core/lib/ant.util"/>
   </path>
 
   <path id="lib.compile">
@@ -14,7 +15,6 @@
   <path id="lib.test">
     <path location="build/main"/>
     <path location="build/test"/>
-    <path location="../../build/test"/>
     <fileset dir="lib/test"/>
   </path>
 
@@ -36,7 +36,7 @@
 
   <target name="resolve_libraries"
           description="Resolves all libraries according to ivy.xml">
-    <ivy:settings file="../../core/ivysettings.xml"/>
+    <ivy:settings file="${project.home}/core/ivysettings.xml"/>
     <ivy:retrieve pattern="lib/[conf]/[artifact]-[revision].[ext]" sync="true"/>
   </target>
 

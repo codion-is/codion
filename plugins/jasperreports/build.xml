@@ -1,5 +1,5 @@
 <project name="jminor-plugin-jasperreports">
-  <import file="../build-common.xml"/>
+  <import file="../../build-common.xml"/>
 
   <target name="build" depends="jminor-common.build">
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
