@@ -129,32 +129,6 @@
     <concat destfile="${build.main}/org/jminor/common/model/version.txt">${version}-build ${build.date}</concat>
   </target>
 
-  <target name="demos_build">
-    <subant target="build" buildpath="${basedir}/demos/chinook"/>
-    <subant target="build" buildpath="${basedir}/demos/empdept"/>
-    <subant target="build" buildpath="${basedir}/demos/petstore"/>
-    <subant target="build" buildpath="${basedir}/demos/schemabrowser"/>
-    <subant target="build" buildpath="${basedir}/demos/world"/>
-  </target>
-
-  <target name="plugins_clean">
-    <subant target="clean" buildpath="${basedir}/plugins/imagepanel"/>
-    <subant target="clean" buildpath="${basedir}/plugins/jasperreports"/>
-    <subant target="clean" buildpath="${basedir}/plugins/json"/>
-    <subant target="clean" buildpath="${basedir}/plugins/nextreports"/>
-    <subant target="clean" buildpath="${basedir}/plugins/rest"/>
-    <subant target="clean" buildpath="${basedir}/plugins/tomcat-pool"/>
-  </target>
-
-  <target name="plugins_build">
-    <subant target="build" buildpath="${basedir}/plugins/imagepanel"/>
-    <subant target="build" buildpath="${basedir}/plugins/jasperreports"/>
-    <subant target="build" buildpath="${basedir}/plugins/json"/>
-    <subant target="build" buildpath="${basedir}/plugins/nextreports"/>
-    <subant target="build" buildpath="${basedir}/plugins/rest"/>
-    <subant target="build" buildpath="${basedir}/plugins/tomcat-pool"/>
-  </target>
-
   <target name="dist" depends="clean, build, javadoc"
           description="Builds all distribution jar files in the dist directory">
     <mkdir dir="${build.main}/META-INF"/>
@@ -248,23 +222,6 @@
     <copy file="${basedir}/changelog.txt" todir="${dist}"/>
   </target>
 
-  <target name="demos_dist">
-    <subant target="dist" buildpath="${basedir}/demos/chinook"/>
-    <subant target="dist" buildpath="${basedir}/demos/empdept"/>
-    <subant target="dist" buildpath="${basedir}/demos/petstore"/>
-    <subant target="dist" buildpath="${basedir}/demos/schemabrowser"/>
-    <subant target="dist" buildpath="${basedir}/demos/world"/>
-  </target>
-
-  <target name="plugins_dist">
-    <subant target="dist" buildpath="${basedir}/plugins/imagepanel"/>
-    <subant target="dist" buildpath="${basedir}/plugins/jasperreports"/>
-    <subant target="dist" buildpath="${basedir}/plugins/json"/>
-    <subant target="dist" buildpath="${basedir}/plugins/nextreports"/>
-    <subant target="dist" buildpath="${basedir}/plugins/rest"/>
-    <subant target="dist" buildpath="${basedir}/plugins/tomcat-pool"/>
-  </target>
-
   <target name="publish" depends="dist"
           description="Publish all project artifacts">
     <subant target="publish" buildpath="${basedir}/resources/publish/common-model"/>
@@ -280,15 +237,6 @@
     <subant target="publish" buildpath="${basedir}/resources/publish/swing-client-bundle"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/server"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/server-monitor"/>
-  </target>
-
-  <target name="plugins_publish">
-    <subant target="publish" buildpath="${basedir}/plugins/imagepanel"/>
-    <subant target="publish" buildpath="${basedir}/plugins/jasperreports"/>
-    <subant target="publish" buildpath="${basedir}/plugins/json"/>
-    <subant target="publish" buildpath="${basedir}/plugins/nextreports"/>
-    <subant target="publish" buildpath="${basedir}/plugins/rest"/>
-    <subant target="publish" buildpath="${basedir}/plugins/tomcat-pool"/>
   </target>
 
   <target name="javadoc" depends="build" unless="skip.javadoc"
@@ -308,19 +256,20 @@
     </javadoc>
   </target>
 
-  <target name="deploy_server" depends="dist, plugins_dist, demos_dist, create_keystore, create_h2db"
+  <target name="deploy_server" depends="dist, create_keystore, create_h2db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-db-core/jminor-db-core.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-db-local/jminor-db-local.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-server/jminor-server.jar" todir="${deploy.server.path}/lib"/>
 
+    <subant target="dist" buildpath="${basedir}/demos"/>
     <copy file="demos/chinook/dist/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="demos/empdept/dist/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="demos/petstore/dist/petstore-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/schemabrowser/dist/schemabrowser-domain.jar" todir="${deploy.server.path}/lib"/>
     <copy file="demos/world/dist/world-domain.jar" todir="${deploy.server.path}/lib"/>
 
+    <subant target="dist" buildpath="${basedir}/plugins"/>
     <copy file="plugins/jasperreports/dist/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
     <copy todir="${deploy.server.path}/lib">
       <fileset dir="plugins/jasperreports/lib/runtime"/>
@@ -385,9 +334,12 @@
     <chmod dir="${deploy.generator.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demos" depends="dist, plugins_dist, demos_dist, create_keystore, create_h2db"
+  <target name="deploy_demos" depends="dist, create_keystore, create_h2db"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
+
+    <subant target="dist" buildpath="${basedir}/plugins"/>
+    <subant target="dist" buildpath="${basedir}/demos"/>
     <!--Setup-->
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
@@ -412,7 +364,7 @@
     <delete file="${deploy.demos.dir}/libraries.jar"/>
   </target>
 
-  <target name="deploy_all" depends="clean, dist, plugins_dist, demos_dist, deploy_server, deploy_server_monitor, deploy_demos, deploy_generator"
+  <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos, deploy_generator"
           description="A convenience target for deploying the server, server monitor and demo applications"/>
 
   <target name="run_unit_tests" depends="clean, build"
@@ -470,30 +422,15 @@
     </jacoco:report>
   </target>
 
-  <target name="demos_run_unit_tests" depends="build, plugins_build, demos_build">
-    <subant target="run_unit_tests" buildpath="${basedir}/demos/chinook"/>
-    <subant target="run_unit_tests" buildpath="${basedir}/demos/empdept"/>
-    <subant target="run_unit_tests" buildpath="${basedir}/demos/petstore"/>
-    <subant target="run_unit_tests" buildpath="${basedir}/demos/schemabrowser"/>
-    <subant target="run_unit_tests" buildpath="${basedir}/demos/world"/>
-  </target>
-
-  <target name="plugins_run_unit_tests" depends="build, plugins_build">
-    <subant target="run_unit_tests" buildpath="${basedir}/plugins/imagepanel"/>
-    <subant target="run_unit_tests" buildpath="${basedir}/plugins/jasperreports"/>
-    <subant target="run_unit_tests" buildpath="${basedir}/plugins/json"/>
-    <subant target="run_unit_tests" buildpath="${basedir}/plugins/nextreports"/>
-    <subant target="run_unit_tests" buildpath="${basedir}/plugins/rest"/>
-    <subant target="run_unit_tests" buildpath="${basedir}/plugins/tomcat-pool"/>
-  </target>
-
   <target name="run_demo_chinook_local" depends="build"
           description="Runs the Chinook demo application with a local db connection">
+    <subant target="build" buildpath="${basedir}/plugins/jasperreports"/>
+    <subant target="build" buildpath="${basedir}/demos/chinook"/>
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
+        <pathelement location="${basedir}/plugins/jasperreports/build/main"/>
+        <pathelement location="${basedir}/demos/chinook/build/main"/>
         <path refid="build.main"/>
-        <path refid="build.plugins.main"/>
-        <path refid="build.demos.main"/>
         <path refid="lib.runtime.client"/>
         <path refid="lib.plugins"/>
       </classpath>
@@ -510,11 +447,13 @@
 
   <target name="run_demo_chinook_remote" depends="build, create_keystore"
           description="Runs the Chinook demo application with a remote db connection">
+    <subant target="build" buildpath="${basedir}/plugins/jasperreports"/>
+    <subant target="build" buildpath="${basedir}/demos/chinook"/>
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
+        <pathelement location="${basedir}/plugins/jasperreports/build/main"/>
+        <pathelement location="${basedir}/demos/chinook/build/main"/>
         <path refid="build.main"/>
-        <path refid="build.plugins.main"/>
-        <path refid="build.demos.main"/>
         <path refid="lib.runtime.client"/>
         <path refid="lib.plugins"/>
       </classpath>
@@ -526,13 +465,16 @@
     </java>
   </target>
 
-  <target name="run_demo_chinook_load_test" depends="build, demos_build, create_keystore"
+  <target name="run_demo_chinook_load_test" depends="build, create_keystore"
           description="Runs the Chinook load testing application with a remote db connection">
+    <subant target="build" buildpath="${basedir}/plugins/jasperreports"/>
+    <subant target="build" buildpath="${basedir}/demos/chinook"/>
     <java classname="org.jminor.framework.demos.chinook.testing.ChinookLoadTest" fork="yes">
       <classpath>
+        <pathelement location="${basedir}/plugins/jasperreports/build/main"/>
+        <pathelement location="${basedir}/demos/chinook/build/main"/>
         <path refid="build.main"/>
         <path refid="build.plugins.main"/>
-        <path refid="build.demos.main"/>
         <path refid="lib.runtime.client"/>
         <path refid="lib.plugins"/>
       </classpath>
@@ -544,8 +486,10 @@
     </java>
   </target>
 
-  <target name="run_server" depends="build, plugins_build, demos_build, create_keystore"
+  <target name="run_server" depends="build, create_keystore"
           description="Runs the RMI server">
+    <subant target="build" buildpath="${basedir}/plugins"/>
+    <subant target="build" buildpath="${basedir}/demos"/>
     <copy todir="build/demos/reports" flatten="true">
       <fileset dir="${basedir}/demos/chinook/build/reports" includes="**/*.jasper"/>
       <fileset dir="${basedir}/demos/empdept/build/reports" includes="**/*.jasper"/>

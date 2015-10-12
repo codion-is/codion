@@ -1,7 +1,7 @@
 <project name="empdept">
-  <import file="../build.xml"/>
+  <import file="../build-common.xml"/>
 
-  <target name="build" depends="jminor-demo.build">
+  <target name="build" depends="jminor-common.build">
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
       <classpath refid="lib.test"/>
     </taskdef>

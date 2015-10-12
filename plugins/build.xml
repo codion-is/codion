@@ -1,133 +1,56 @@
-<project name="jminor-plugin" default="build" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:jacoco="antlib:org.jacoco.ant">
-
-  <property name="junit.db.initScript" value="${basedir}/../create_h2_db.sql"/>
-  <property file="../../build.properties"/>
-
-  <path id="lib.ant.util">
-    <fileset dir="../../lib/ant.util"/>
-  </path>
-
-  <path id="lib.compile">
-    <fileset dir="lib/compile"/>
-  </path>
-
-  <path id="lib.test">
-    <path location="build/main"/>
-    <path location="build/test"/>
-    <path location="../../build/test"/>
-    <fileset dir="lib/test"/>
-  </path>
-
-  <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
-  <taskdef uri="antlib:org.jacoco.ant" resource="org/jacoco/ant/antlib.xml" classpathref="lib.ant.util"/>
-
-  <target name="init">
-    <mkdir dir="build/main"/>
-    <mkdir dir="build/test"/>
-  </target>
+<project name="jminor-plugins" default="build" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:jacoco="antlib:org.jacoco.ant">
 
   <target name="clean">
-    <delete dir="build"/>
-    <delete dir="test"/>
-    <delete dir="test"/>
-    <delete dir="javadoc"/>
-    <delete dir="dist"/>
+    <subant target="clean" buildpath="imagepanel"/>
+    <subant target="clean" buildpath="jasperreports"/>
+    <subant target="clean" buildpath="json"/>
+    <subant target="clean" buildpath="nextreports"/>
+    <subant target="clean" buildpath="rest"/>
+    <subant target="clean" buildpath="tomcat-pool"/>
   </target>
 
-  <target name="resolve_libraries"
-          description="Resolves all libraries according to ivy.xml">
-    <ivy:settings file="../../ivysettings.xml"/>
-    <ivy:retrieve pattern="lib/[conf]/[artifact]-[revision].[ext]" sync="true"/>
+  <target name="build">
+    <subant target="build" buildpath="imagepanel"/>
+    <subant target="build" buildpath="jasperreports"/>
+    <subant target="build" buildpath="json"/>
+    <subant target="build" buildpath="nextreports"/>
+    <subant target="build" buildpath="rest"/>
+    <subant target="build" buildpath="tomcat-pool"/>
   </target>
 
-  <target name="build" depends="init, resolve_libraries">
-    <javac destdir="build/main" debug="true" includeantruntime="false">
-      <src path="src/main/java"/>
-      <classpath>
-        <path refid="lib.compile"/>
-      </classpath>
-    </javac>
-    <javac destdir="build/test" debug="true" includeantruntime="false">
-      <src path="src/test/java"/>
-      <classpath>
-        <path location="build/main"/>
-        <path refid="lib.test"/>
-      </classpath>
-    </javac>
+  <target name="javadoc">
+    <subant target="javadoc" buildpath="imagepanel"/>
+    <subant target="javadoc" buildpath="jasperreports"/>
+    <subant target="javadoc" buildpath="json"/>
+    <subant target="javadoc" buildpath="nextreports"/>
+    <subant target="javadoc" buildpath="rest"/>
+    <subant target="javadoc" buildpath="tomcat-pool"/>
   </target>
 
-  <target name="run_unit_tests" depends="build">
-    <jacoco:coverage destfile="test/reports/jacoc-${ant.project.name}">
-      <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once" dir="${basedir}">
-        <formatter type="xml" usefile="true"/>
-        <classpath>
-          <path refid="lib.test"/>
-        </classpath>
-        <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
-        <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
-        <jvmarg value="-Djminor.db.port=${junit.db.port}"/>
-        <jvmarg value="-Djminor.db.sid=${junit.db.sid}"/>
-        <jvmarg value="-Djminor.db.embedded=${junit.db.embedded}"/>
-        <jvmarg value="-Djminor.db.embeddedInMemory=${junit.db.embeddedInMemory}"/>
-        <jvmarg value="-Djminor.db.initScript=${junit.db.initScript}"/>
-        <jvmarg value="-Djminor.unittest.username=${junit.username}"/>
-        <jvmarg value="-Djminor.unittest.password=${junit.password}"/>
-        <batchtest todir="test/reports">
-          <fileset dir="src/test/java" includes="**/*Test.java"/>
-        </batchtest>
-      </junit>
-    </jacoco:coverage>
+  <target name="dist">
+    <subant target="dist" buildpath="imagepanel"/>
+    <subant target="dist" buildpath="jasperreports"/>
+    <subant target="dist" buildpath="json"/>
+    <subant target="dist" buildpath="nextreports"/>
+    <subant target="dist" buildpath="rest"/>
+    <subant target="dist" buildpath="tomcat-pool"/>
   </target>
 
-  <target name="javadoc" depends="build">
-    <javadoc destdir="javadoc" sourcepath="src/main/java" packagenames="org.jminor.*" Encoding="UTF-8"
-             docencoding="UTF-8" author="true" version="true" use="true"
-             windowtitle="JMinor v${version} Plugin API" doctitle="JMinor v${version} Plugin API"
-             group="Plugins org.jminor.framework.plugins">
-      <classpath>
-        <path refid="lib.test"/>
-      </classpath>
-      <link href="http://download.oracle.com/javase/8/docs/api/"/>
-      <link offline="true" href="http://jminor.org/data/media/project/docs/api/" packagelistloc="javadoc"/>
-    </javadoc>
+  <target name="publish">
+    <subant target="publish" buildpath="imagepanel"/>
+    <subant target="publish" buildpath="jasperreports"/>
+    <subant target="publish" buildpath="json"/>
+    <subant target="publish" buildpath="nextreports"/>
+    <subant target="publish" buildpath="rest"/>
+    <subant target="publish" buildpath="tomcat-pool"/>
   </target>
 
-  <target name="dist" depends="build, javadoc">
-    <mkdir dir="build/main/META-INF"/>
-    <manifest file="build/main/META-INF/MANIFEST.MF">
-      <attribute name="Specification-Title" value="JMinor Application Framework"/>
-      <attribute name="Specification-Version" value="${version}"/>
-      <attribute name="Specification-Vendor" value="JMinor"/>
-      <attribute name="Implementation-Title" value="JMinor Application Framework"/>
-      <attribute name="Implementation-Version" value="${version}"/>
-      <attribute name="Implementation-Vendor" value="JMinor"/>
-      <attribute name="Implementation-Vendor-Id" value="org.jminor"/>
-      <attribute name="Implementation-URL" value="http://jminor.org"/>
-      <attribute name="Build-Jdk" value="${java.version}"/>
-      <attribute name="Built-By" value="${user.name}"/>
-      <attribute name="Build-Time" value="${build.date}"/>
-    </manifest>
-    <jar jarfile="dist/${ant.project.name}.jar" basedir="build/main"
-         manifest="${build.main}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="dist/${ant.project.name}-sources.jar" basedir="src/main/java"
-         manifest="${build.main}/META-INF/MANIFEST.MF"/>
-    <jar jarfile="dist/${ant.project.name}-javadoc.jar" basedir="javadoc"
-         manifest="${build.main}/META-INF/MANIFEST.MF"/>
-  </target>
-
-  <target name="publish" depends="dist">
-    <fail unless="version">Version information not set</fail>
-    <copy file="ivy.xml" tofile="ivy.xml.bak" overwrite="true"/>
-    <ivy:resolve/>
-    <ivy:deliver deliverpattern="ivy.xml" pubrevision="${version}"/>
-    <ivy:makepom ivyfile="ivy.xml" pomfile="dist/${ant.project.name}.pom">
-      <mapping conf="runtime" scope="runtime" />
-      <mapping conf="sources" scope="sources" />
-      <mapping conf="javadoc" scope="javadoc" />
-    </ivy:makepom>
-    <ivy:publish pubrevision="${version}" status="release" resolver="publish" overwrite="true" forcedeliver="true">
-      <artifacts pattern="dist/[artifact].[ext]"/>
-    </ivy:publish>
-    <move file="ivy.xml.bak" tofile="ivy.xml"/>
+  <target name="run_unit_tests">
+    <subant target="run_unit_tests" buildpath="imagepanel"/>
+    <subant target="run_unit_tests" buildpath="jasperreports"/>
+    <subant target="run_unit_tests" buildpath="json"/>
+    <subant target="run_unit_tests" buildpath="nextreports"/>
+    <subant target="run_unit_tests" buildpath="rest"/>
+    <subant target="run_unit_tests" buildpath="tomcat-pool"/>
   </target>
 </project>
