@@ -1,10 +1,10 @@
 <project name="jminor-common" default="build" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:jacoco="antlib:org.jacoco.ant">
 
   <property name="junit.db.initScript" value="src/main/sql/create_schema.sql"/>
-  <property file="../../build.properties"/>
+  <property file="../../core/build.properties"/>
 
   <path id="lib.ant.util">
-    <fileset dir="../../lib/ant.util"/>
+    <fileset dir="../../core/lib/ant.util"/>
   </path>
 
   <path id="lib.compile">

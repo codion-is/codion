@@ -9,9 +9,7 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.StateObserver;
 
-import java.sql.Timestamp;
 import java.text.Format;
-import java.util.Date;
 
 /**
  * Specifies a criteria model based on a table column, parameters, operator, upper bound and lower bound,

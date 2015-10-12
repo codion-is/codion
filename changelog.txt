@@ -4092,3 +4092,4 @@
   PropertySearchModel, EntityTableSearchModel and related classes and methods renamed to PropertyCriteriaModel and EntityTableCriteriaModel
   ColumnCriteriaModel, redundant setUpper/LowerBound() methods removed
   Build files restructured
+  Project structure improved, core added

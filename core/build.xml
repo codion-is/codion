@@ -43,30 +43,30 @@
   </path>
 
   <path id="build.demos.main">
-    <pathelement path="demos/chinook/build/main"/>
-    <pathelement path="demos/empdept/build/main"/>
-    <pathelement path="demos/petstore/build/main"/>
-    <pathelement path="demos/schemabrowser/build/main"/>
-    <pathelement path="demos/world/build/main"/>
+    <pathelement path="../demos/chinook/build/main"/>
+    <pathelement path="../demos/empdept/build/main"/>
+    <pathelement path="../demos/petstore/build/main"/>
+    <pathelement path="../demos/schemabrowser/build/main"/>
+    <pathelement path="../demos/world/build/main"/>
   </path>
 
   <path id="build.plugins.main">
-    <path location="plugins/imagepanel/build/main"/>
-    <path location="plugins/jasperreports/build/main"/>
-    <path location="plugins/json/build/main"/>
-    <path location="plugins/nextreports/build/main"/>
-    <path location="plugins/rest/build/main"/>
-    <path location="plugins/tomcat-pool/build/main"/>
+    <path location="../plugins/imagepanel/build/main"/>
+    <path location="../plugins/jasperreports/build/main"/>
+    <path location="../plugins/json/build/main"/>
+    <path location="../plugins/nextreports/build/main"/>
+    <path location="../plugins/rest/build/main"/>
+    <path location="../plugins/tomcat-pool/build/main"/>
   </path>
 
   <path id="lib.plugins">
     <path>
-      <fileset dir="plugins/imagepanel/lib/test"/>
-      <fileset dir="plugins/jasperreports/lib/test"/>
-      <fileset dir="plugins/json/lib/test"/>
-      <fileset dir="plugins/nextreports/lib/test"/>
-      <fileset dir="plugins/rest/lib/test"/>
-      <fileset dir="plugins/tomcat-pool/lib/test"/>
+      <fileset dir="../plugins/imagepanel/lib/test"/>
+      <fileset dir="../plugins/jasperreports/lib/test"/>
+      <fileset dir="../plugins/json/lib/test"/>
+      <fileset dir="../plugins/nextreports/lib/test"/>
+      <fileset dir="../plugins/rest/lib/test"/>
+      <fileset dir="../plugins/tomcat-pool/lib/test"/>
     </path>
   </path>
 
@@ -94,12 +94,6 @@
     <delete dir="${javadoc}"/>
     <delete dir="${test}"/>
     <delete dir="${dist}"/>
-
-    <subant target="clean" buildpath="${basedir}/demos/chinook"/>
-    <subant target="clean" buildpath="${basedir}/demos/empdept"/>
-    <subant target="clean" buildpath="${basedir}/demos/petstore"/>
-    <subant target="clean" buildpath="${basedir}/demos/schemabrowser"/>
-    <subant target="clean" buildpath="${basedir}/demos/world"/>
   </target>
 
   <target name="build" depends="resolve_libraries"
@@ -219,7 +213,7 @@
               jminor-swing-client-ui/jminor-swing-client-ui-javadoc.jar"/>
     </jar>
 
-    <copy file="${basedir}/changelog.txt" todir="${dist}"/>
+    <copy file="${basedir}/../changelog.txt" todir="${dist}"/>
   </target>
 
   <target name="publish" depends="dist"
@@ -263,20 +257,20 @@
     <copy file="${dist}/jminor-db-local/jminor-db-local.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-server/jminor-server.jar" todir="${deploy.server.path}/lib"/>
 
-    <subant target="dist" buildpath="${basedir}/demos"/>
-    <copy file="demos/chinook/dist/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/empdept/dist/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/petstore/dist/petstore-domain.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="demos/world/dist/world-domain.jar" todir="${deploy.server.path}/lib"/>
+    <subant target="dist" buildpath="${basedir}/../demos"/>
+    <copy file="../demos/chinook/dist/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="../demos/empdept/dist/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="../demos/petstore/dist/petstore-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="../demos/world/dist/world-domain.jar" todir="${deploy.server.path}/lib"/>
 
-    <subant target="dist" buildpath="${basedir}/plugins"/>
-    <copy file="plugins/jasperreports/dist/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
+    <subant target="dist" buildpath="${basedir}/../plugins"/>
+    <copy file="../plugins/jasperreports/dist/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
     <copy todir="${deploy.server.path}/lib">
-      <fileset dir="plugins/jasperreports/lib/runtime"/>
+      <fileset dir="../plugins/jasperreports/lib/runtime"/>
     </copy>
-    <copy file="plugins/rest/dist/jminor-plugin-rest.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="../plugins/rest/dist/jminor-plugin-rest.jar" todir="${deploy.server.path}/lib"/>
     <copy todir="${deploy.server.path}/lib">
-      <fileset dir="plugins/rest/lib/runtime"/>
+      <fileset dir="../plugins/rest/lib/runtime"/>
     </copy>
 
     <copy todir="${deploy.server.path}/lib">
@@ -285,17 +279,17 @@
     <copy todir="${deploy.server.path}">
       <fileset dir="${basedir}/resources/server/"/>
     </copy>
-    <copy file="${deploy.server.policy}" todir="${deploy.server.config.path}"/>
-    <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.config.path}"/>
-    <copy file="${deploy.server.keystore}" todir="${deploy.server.config.path}"/>
-    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.config.path}"/>
+    <copy file="${deploy.server.policy}" todir="${deploy.server.path}/config"/>
+    <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.path}/config"/>
+    <copy file="${deploy.server.keystore}" todir="${deploy.server.path}/config"/>
+    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.path}/config"/>
     <chmod dir="${deploy.server.path}" perm="u+x" type="file" includes="*.sh"/>
     <copy todir="${deploy.server.path}/h2db">
       <fileset dir="${db.h2.dir}"/>
     </copy>
     <copy todir="${deploy.server.path}/reports/demos" flatten="true">
-      <fileset dir="${basedir}/demos/chinook/build/reports" includes="**/*.jasper"/>
-      <fileset dir="${basedir}/demos/empdept/build/reports" includes="**/*.jasper"/>
+      <fileset dir="${basedir}/../demos/chinook/build/reports" includes="**/*.jasper"/>
+      <fileset dir="${basedir}/../demos/empdept/build/reports" includes="**/*.jasper"/>
     </copy>
   </target>
 
@@ -312,8 +306,8 @@
     <copy todir="${deploy.server.monitor.path}">
       <fileset dir="${basedir}/resources/server_monitor/"/>
     </copy>
-    <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.config.path}"/>
-    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.config.path}"/>
+    <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.path}/config"/>
+    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.path}/config"/>
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
@@ -338,23 +332,23 @@
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
 
-    <subant target="dist" buildpath="${basedir}/plugins"/>
-    <subant target="dist" buildpath="${basedir}/demos"/>
+    <subant target="dist" buildpath="${basedir}/../plugins"/>
+    <subant target="dist" buildpath="${basedir}/../demos"/>
     <!--Setup-->
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
       <zipfileset src="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle.jar"/>
-      <zipfileset src="plugins/jasperreports/dist/jminor-plugin-jasperreports.jar" excludes="META-INF/**/*"/>
-      <zipfileset src="plugins/nextreports/dist/jminor-plugin-nextreports.jar" excludes="META-INF/**/*"/>
-      <zipgroupfileset dir="plugins/jasperreports/lib/test" excludes="META-INF/**/*"/>
-      <zipgroupfileset dir="plugins/nextreports/lib/test" excludes="META-INF/**/*"/>
+      <zipfileset src="../plugins/jasperreports/dist/jminor-plugin-jasperreports.jar" excludes="META-INF/**/*"/>
+      <zipfileset src="../plugins/nextreports/dist/jminor-plugin-nextreports.jar" excludes="META-INF/**/*"/>
+      <zipgroupfileset dir="../plugins/jasperreports/lib/test" excludes="META-INF/**/*"/>
+      <zipgroupfileset dir="../plugins/nextreports/lib/test" excludes="META-INF/**/*"/>
       <fileset file="${deploy.demos.truststore}"/>
     </jar>
     <deploy_demo_app app-id="empdept" app-name="EmpDept JMinor Demo"
-                     report="${basedir}/demos/empdept/build/reports/empdept_employees.jasper"
+                     report="${basedir}/../demos/empdept/build/reports/empdept_employees.jasper"
                      main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>
     <deploy_demo_app app-id="chinook" app-name="Chinook JMinor Demo"
-                     report="${basedir}/demos/chinook/build/reports/customer_report.jasper"
+                     report="${basedir}/../demos/chinook/build/reports/customer_report.jasper"
                      main-class="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"/>
     <deploy_demo_app app-id="petstore" app-name="Petstore JMinor Demo"
                      main-class="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel"/>
@@ -424,12 +418,12 @@
 
   <target name="run_demo_chinook_local" depends="build"
           description="Runs the Chinook demo application with a local db connection">
-    <subant target="build" buildpath="${basedir}/plugins/jasperreports"/>
-    <subant target="build" buildpath="${basedir}/demos/chinook"/>
-    <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
+    <subant target="build" buildpath="${basedir}/../plugins/jasperreports"/>
+    <subant target="build" buildpath="${basedir}/../demos/chinook"/>
+    <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes" dir="../demos">
       <classpath>
-        <pathelement location="${basedir}/plugins/jasperreports/build/main"/>
-        <pathelement location="${basedir}/demos/chinook/build/main"/>
+        <pathelement location="${basedir}/../plugins/jasperreports/build/main"/>
+        <pathelement location="${basedir}/../demos/chinook/build/main"/>
         <path refid="build.main"/>
         <path refid="lib.runtime.client"/>
         <path refid="lib.plugins"/>
@@ -441,25 +435,25 @@
       <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
       <jvmarg value="-Djminor.db.embeddedInMemory=${demo.db.embeddedInMemory}"/>
       <jvmarg value="-Djminor.db.initScript=${demo.db.initScript}"/>
-      <jvmarg value="-Djminor.report.path=demos/chinook/build/reports"/>
+      <jvmarg value="-Djminor.report.path=chinook/build/reports"/>
     </java>
   </target>
 
   <target name="run_demo_chinook_remote" depends="build, create_keystore"
           description="Runs the Chinook demo application with a remote db connection">
-    <subant target="build" buildpath="${basedir}/plugins/jasperreports"/>
-    <subant target="build" buildpath="${basedir}/demos/chinook"/>
+    <subant target="build" buildpath="${basedir}/../plugins/jasperreports"/>
+    <subant target="build" buildpath="${basedir}/../demos/chinook"/>
     <java classname="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel" fork="yes">
       <classpath>
-        <pathelement location="${basedir}/plugins/jasperreports/build/main"/>
-        <pathelement location="${basedir}/demos/chinook/build/main"/>
+        <pathelement location="${basedir}/../plugins/jasperreports/build/main"/>
+        <pathelement location="${basedir}/../demos/chinook/build/main"/>
         <path refid="build.main"/>
         <path refid="lib.runtime.client"/>
         <path refid="lib.plugins"/>
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.report.path=demos/chinook/build/reports"/>
+      <jvmarg value="-Djminor.report.path=../demos/chinook/build/reports"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_client.policy"/>
     </java>
@@ -467,12 +461,12 @@
 
   <target name="run_demo_chinook_load_test" depends="build, create_keystore"
           description="Runs the Chinook load testing application with a remote db connection">
-    <subant target="build" buildpath="${basedir}/plugins/jasperreports"/>
-    <subant target="build" buildpath="${basedir}/demos/chinook"/>
+    <subant target="build" buildpath="${basedir}/../plugins/jasperreports"/>
+    <subant target="build" buildpath="${basedir}/../demos/chinook"/>
     <java classname="org.jminor.framework.demos.chinook.testing.ChinookLoadTest" fork="yes">
       <classpath>
-        <pathelement location="${basedir}/plugins/jasperreports/build/main"/>
-        <pathelement location="${basedir}/demos/chinook/build/main"/>
+        <pathelement location="${basedir}/../plugins/jasperreports/build/main"/>
+        <pathelement location="${basedir}/../demos/chinook/build/main"/>
         <path refid="build.main"/>
         <path refid="build.plugins.main"/>
         <path refid="lib.runtime.client"/>
@@ -480,7 +474,7 @@
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.report.path=demos/chinook/build/reports"/>
+      <jvmarg value="-Djminor.report.path=../demos/chinook/build/reports"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_load_test.policy"/>
     </java>
@@ -488,11 +482,11 @@
 
   <target name="run_server" depends="build, create_keystore"
           description="Runs the RMI server">
-    <subant target="build" buildpath="${basedir}/plugins"/>
-    <subant target="build" buildpath="${basedir}/demos"/>
+    <subant target="build" buildpath="${basedir}/../plugins"/>
+    <subant target="build" buildpath="${basedir}/../demos"/>
     <copy todir="build/demos/reports" flatten="true">
-      <fileset dir="${basedir}/demos/chinook/build/reports" includes="**/*.jasper"/>
-      <fileset dir="${basedir}/demos/empdept/build/reports" includes="**/*.jasper"/>
+      <fileset dir="${basedir}/../demos/chinook/build/reports" includes="**/*.jasper"/>
+      <fileset dir="${basedir}/../demos/empdept/build/reports" includes="**/*.jasper"/>
     </copy>
     <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes">
       <classpath>
@@ -514,8 +508,8 @@
       <jvmarg value="-Djminor.server.port=2222"/>
       <jvmarg value="-Djminor.server.admin.port=4444"/>
       <jvmarg value="-Djminor.server.domain.classes=org.jminor.framework.demos.empdept.domain.EmpDept, org.jminor.framework.demos.petstore.domain.Petstore, org.jminor.framework.demos.chinook.domain.Chinook, org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser, org.jminor.framework.demos.world.domain.World"/>
-      <jvmarg value="-Djavax.net.ssl.keyStore=${resources.security}/JMinorServerKeystore"/>
-      <jvmarg value="-Djava.security.policy=${resources.security}/jminor_server.policy"/>
+      <jvmarg value="-Djavax.net.ssl.keyStore=../core/resources/security/JMinorServerKeystore"/>
+      <jvmarg value="-Djava.security.policy=../core/resources/security/jminor_server.policy"/>
       <jvmarg value="-Djavax.net.ssl.keyStorePassword=${demo.server.keystorePassword}"/>
       <jvmarg value="-Djava.rmi.server.hostname=localhost"/>
     </java>
@@ -622,24 +616,24 @@
         <attribute name="Main-Class" value="@{main-class}"/>
       </manifest>
       <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.jar">
-        <zipfileset src="${basedir}/demos/@{app-id}/dist/@{app-id}.jar" excludes="META-INF/*"/>
+        <zipfileset src="${basedir}/../demos/@{app-id}/dist/@{app-id}.jar" excludes="META-INF/*"/>
         <zipfileset src="${deploy.demos.dir}/libraries.jar" excludes="META-INF/*"/>
         <zipfileset dir="${deploy.demos.dir}/@{app-id}" includes="META-INF/*"/>
-        <zipfileset dir="${basedir}/demos/@{app-id}/src/main/config/" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
+        <zipfileset dir="${basedir}/../demos/@{app-id}/src/main/config/" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
         <zipfileset file="@{report}" prefix="reports"/>
       </zip>
       <delete dir="${deploy.demos.dir}/@{app-id}/META-INF"/>
       <signjar jar="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" alias="${jar.sign.alias}"
                storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
-      <copy file="${basedir}/demos/@{app-id}/src/main/config/@{app-id}.jnlp" todir="${deploy.demos.dir}/@{app-id}"/>
-      <copy file="${basedir}/demos/@{app-id}/src/main/config/getdown.txt" todir="${deploy.demos.dir}/@{app-id}"/>
+      <copy file="${basedir}/../demos/@{app-id}/src/main/config/@{app-id}.jnlp" todir="${deploy.demos.dir}/@{app-id}"/>
+      <copy file="${basedir}/../demos/@{app-id}/src/main/config/getdown.txt" todir="${deploy.demos.dir}/@{app-id}"/>
       <copy file="${basedir}/docs/jminor.org/jminor_logo_black_medium.png" todir="${deploy.demos.dir}/@{app-id}"/>
       <getdown_digest appdir="${deploy.demos.dir}/@{app-id}"/>
       <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.zip">
         <zipfileset file="${deploy.demos.dir}/@{app-id}/@{app-id}.jar"/>
         <zipfileset dir="${db.h2.dir}" prefix="h2db"/>
-        <zipfileset file="${basedir}/demos/config/shared/h2db.config"/>
-        <zipfileset file="${basedir}/demos/config/shared/remote.config"/>
+        <zipfileset file="${basedir}/../demos/config/shared/h2db.config"/>
+        <zipfileset file="${basedir}/../demos/config/shared/remote.config"/>
       </zip>
     </sequential>
   </macrodef>

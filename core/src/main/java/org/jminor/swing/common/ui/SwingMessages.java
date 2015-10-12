@@ -7,8 +7,6 @@ import org.jminor.common.i18n.Messages;
 import org.jminor.framework.i18n.FrameworkMessages;
 
 import javax.swing.UIManager;
-import java.util.Locale;
-import java.util.ResourceBundle;
 
 public final class SwingMessages {
 

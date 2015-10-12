@@ -18,7 +18,6 @@ import org.jminor.common.model.Util;
 import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.Format;
-import java.util.Date;
 import java.util.Locale;
 import java.util.regex.Pattern;
 
