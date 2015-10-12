@@ -57,7 +57,7 @@
   </target>
 
   <target name="run_unit_tests" depends="build">
-    <jacoco:coverage destfile="test/reports/jacoc-${ant.project.name}">
+    <jacoco:coverage destfile="test/reports/jacoc-${ant.project.name}.exec">
       <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once" dir="${basedir}">
         <formatter type="xml" usefile="true"/>
         <classpath>
