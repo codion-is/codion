@@ -85,9 +85,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private EntityEditModel editModel;
 
   /**
-   * The search model
+   * The criteria model
    */
-  private final EntityTableSearchModel searchModel;
+  private final EntityTableCriteriaModel criteriaModel;
 
   /**
    * the maximum number of records to fetch via the underlying query, -1 meaning all records should be fetched
@@ -121,32 +121,32 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private boolean batchUpdateAllowed = true;
 
   /**
-   * Instantiates a new DefaultEntityTableModel with default column and search models.
+   * Instantiates a new DefaultEntityTableModel with default column and criteria models.
    * @param entityID the entity ID
    * @param connectionProvider the db provider
    */
   public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    this(entityID, connectionProvider, new DefaultEntityTableSortModel(entityID), new DefaultEntityTableSearchModel(entityID, connectionProvider));
+    this(entityID, connectionProvider, new DefaultEntityTableSortModel(entityID), new DefaultEntityTableCriteriaModel(entityID, connectionProvider));
   }
 
   /**
    * Instantiates a new DefaultEntityTableModel.
    * @param entityID the entity ID
    * @param connectionProvider the db provider
-   * @param searchModel the search model
+   * @param criteriaModel the criteria model
    * @param sortModel the sort model
-   * @throws IllegalArgumentException if <code>searchModel</code> is null or the search model entityID
+   * @throws IllegalArgumentException if <code>criteriaModel</code> is null or the criteria model entityID
    * does not match the one supplied as parameter
    */
   public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider,
-                                 final TableSortModel<Entity, Property> sortModel, final EntityTableSearchModel searchModel) {
-    super(sortModel, Util.rejectNullValue(searchModel, "searchModel").getPropertyFilterModels());
-    if (!searchModel.getEntityID().equals(entityID)) {
-      throw new IllegalArgumentException("Entity ID mismatch, searchModel: " + searchModel.getEntityID() + ", tableModel: " + entityID);
+                                 final TableSortModel<Entity, Property> sortModel, final EntityTableCriteriaModel criteriaModel) {
+    super(sortModel, Util.rejectNullValue(criteriaModel, "criteriaModel").getPropertyFilterModels());
+    if (!criteriaModel.getEntityID().equals(entityID)) {
+      throw new IllegalArgumentException("Entity ID mismatch, criteriaModel: " + criteriaModel.getEntityID() + ", tableModel: " + entityID);
     }
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
-    this.searchModel = searchModel;
+    this.criteriaModel = criteriaModel;
     bindEvents();
     applyPreferences();
   }
@@ -251,8 +251,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableSearchModel getSearchModel() {
-    return searchModel;
+  public final EntityTableCriteriaModel getCriteriaModel() {
+    return criteriaModel;
   }
 
   /** {@inheritDoc} */
@@ -376,9 +376,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public void setForeignKeySearchValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
+  public void setForeignKeyCriteriaValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues) {
     Util.rejectNullValue(foreignKeyProperty, "foreignKeyProperty");
-    if (searchModel.setSearchValues(foreignKeyProperty.getPropertyID(), foreignKeyValues)) {
+    if (criteriaModel.setCriteriaValues(foreignKeyProperty.getPropertyID(), foreignKeyValues)) {
       refresh();
     }
   }
@@ -567,10 +567,10 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   protected final void doRefresh() {
     try {
       LOG.debug("{} refreshing", this);
-      final List<Entity> queryResult = performQuery(searchModel.getSearchCriteria());
+      final List<Entity> queryResult = performQuery(criteriaModel.getTableCriteria());
       clear();
       addItems(queryResult, false);
-      searchModel.rememberCurrentSearchState();
+      criteriaModel.rememberCurrentCriteriaState();
     }
     finally {
       LOG.debug("{} refreshing done", this);
@@ -582,7 +582,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    * using the order by clause returned by {@link #getOrderByClause()}
    * @param criteria a criteria
    * @return entities selected from the database according the the query criteria.
-   * @see EntityTableSearchModel#getSearchCriteria()
+   * @see EntityTableCriteriaModel#getTableCriteria()
    */
   protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
     if (criteria == null && queryCriteriaRequired) {
@@ -655,7 +655,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
         handleColumnHidden(info);
       }
     });
-    searchModel.addSimpleSearchListener(new EventListener() {
+    criteriaModel.addSimpleCriteriaListener(new EventListener() {
       @Override
       public void eventOccurred() {
         refresh();
@@ -758,8 +758,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   }
 
   private void handleColumnHidden(final Property property) {
-    //disable the search model for the column to be hidden, to prevent confusion
-    searchModel.setSearchEnabled(property.getPropertyID(), false);
+    //disable the criteria model for the column to be hidden, to prevent confusion
+    criteriaModel.setEnabled(property.getPropertyID(), false);
   }
 
   private String getPreferencesKey() {

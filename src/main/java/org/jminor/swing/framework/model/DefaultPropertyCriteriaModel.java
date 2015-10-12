@@ -7,7 +7,7 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.common.model.table.DefaultColumnSearchModel;
+import org.jminor.swing.common.model.table.DefaultColumnCriteriaModel;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -15,15 +15,15 @@ import java.util.Collection;
 /**
  * A class for searching a set of entities based on a property.
  */
-public class DefaultPropertySearchModel extends DefaultColumnSearchModel<Property.ColumnProperty>
-        implements PropertySearchModel<Property.ColumnProperty> {
+public class DefaultPropertyCriteriaModel extends DefaultColumnCriteriaModel<Property.ColumnProperty>
+        implements PropertyCriteriaModel<Property.ColumnProperty> {
 
   /**
-   * Constructs a DefaultPropertySearchModel instance
+   * Constructs a DefaultPropertyCriteriaModel instance
    * @param property the property
    * @throws IllegalArgumentException if an illegal constant is used
    */
-  public DefaultPropertySearchModel(final Property.ColumnProperty property) {
+  public DefaultPropertyCriteriaModel(final Property.ColumnProperty property) {
     super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER),
             property.getFormat());
   }

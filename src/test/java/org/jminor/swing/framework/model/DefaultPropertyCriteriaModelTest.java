@@ -14,13 +14,13 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public class DefaultPropertySearchModelTest {
+public class DefaultPropertyCriteriaModelTest {
 
   @Test
-  public void propertySearchModel() throws Exception {
+  public void propertyCriteriaModel() throws Exception {
     TestDomain.init();
     final Property.ColumnProperty property = (Property.ColumnProperty) Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
-    final PropertySearchModel model = new DefaultPropertySearchModel(property);
+    final PropertyCriteriaModel model = new DefaultPropertyCriteriaModel(property);
     assertEquals(property, model.getColumnIdentifier());
     model.setSearchType(SearchType.LIKE);
     assertFalse(model.isLowerBoundRequired());

@@ -7,17 +7,17 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Property;
 
 /**
- * Specifies an object responsible for providing property search models
+ * Specifies an object responsible for providing property criteria models
  */
-public interface PropertySearchModelProvider {
+public interface PropertyCriteriaModelProvider {
 
   /**
-   * Initializes a PropertySearchModel for the given property
-   * @param property the Property for which to create a PropertySearchModel
+   * Initializes a PropertyCriteriaModel for the given property
+   * @param property the Property for which to create a PropertyCriteriaModel
    * @param connectionProvider the EntityConnectionProvider instance to use in case the property is a ForeignKeyProperty
-   * @return a PropertySearchModel for the given property, null if this property is not searchable or if searching
+   * @return a PropertyCriteriaModel for the given property, null if this property is not searchable or if searching
    * should not be allowed for this property
    */
-  PropertySearchModel<? extends Property.SearchableProperty> initializePropertySearchModel(
+  PropertyCriteriaModel<? extends Property.SearchableProperty> initializePropertyCriteriaModel(
           final Property.SearchableProperty property, final EntityConnectionProvider connectionProvider);
 }

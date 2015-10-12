@@ -1079,7 +1079,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * Initializes the keyboard navigation actions.
    * By default CTRL-T transfers focus to the table in case one is available,
    * CTR-E transfers focus to the edit panel in case one is available,
-   * CTR-S transfers focus to the search panel, CTR-C opens a select control dialog
+   * CTR-S transfers focus to the criteria panel, CTR-C opens a select control dialog
    * and CTR-F selects the table search field
    */
   private void setupKeyboardActions() {
@@ -1118,13 +1118,13 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
         getTablePanel().getSearchField().requestFocus();
       }
     };
-    final Action toggleSearchPanelAction = new AbstractAction("EntityPanel.toggleSearchPanel") {
+    final Action toggleCriteriaPanelAction = new AbstractAction("EntityPanel.toggleCriteriaPanel") {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        if (!getTablePanel().isSearchPanelVisible()) {
-          getTablePanel().setSearchPanelVisible(true);
+        if (!getTablePanel().isCriteriaPanelVisible()) {
+          getTablePanel().setCriteriaPanelVisible(true);
         }
-        getTablePanel().getSearchPanel().requestFocus();
+        getTablePanel().getCriteriaPanel().requestFocus();
       }
     };
     if (containsTablePanel()) {
@@ -1132,18 +1132,18 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
               selectTablePanelAction);
       UiUtil.addKeyEvent(this, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
               selectSearchFieldAction);
-      if (tablePanel.getSearchPanel() != null) {
+      if (tablePanel.getCriteriaPanel() != null) {
         UiUtil.addKeyEvent(this, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                toggleSearchPanelAction);
+                toggleCriteriaPanelAction);
       }
       if (containsEditPanel()) {
         UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_T, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
                 selectTablePanelAction);
         UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_F, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
                 selectSearchFieldAction);
-        if (tablePanel.getSearchPanel() != null) {
+        if (tablePanel.getCriteriaPanel() != null) {
           UiUtil.addKeyEvent(editControlPanel, KeyEvent.VK_S, KeyEvent.CTRL_DOWN_MASK, JComponent.WHEN_ANCESTOR_OF_FOCUSED_COMPONENT,
-                  toggleSearchPanelAction);
+                  toggleCriteriaPanelAction);
         }
       }
     }

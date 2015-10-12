@@ -23,17 +23,17 @@ import java.util.Locale;
 import java.util.regex.Pattern;
 
 /**
- * A default ColumnSearchModel model implementation.
+ * A default ColumnCriteriaModel model implementation.
  * @param <K> the type of the column identifier
  */
 @SuppressWarnings({"unchecked"})
-public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
+public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
 
   private final Event upperBoundChangedEvent = Events.event();
   private final Event lowerBoundChangedEvent = Events.event();
   private final Event<SearchType> searchTypeChangedEvent = Events.event();
-  private final Event searchStateChangedEvent = Events.event();
-  private final Event searchModelClearedEvent = Events.event();
+  private final Event criteriaStateChangedEvent = Events.event();
+  private final Event criteriaModelClearedEvent = Events.event();
   private final Event<Boolean> enabledChangedEvent = Events.event();
 
   private final State lockedState = States.state();
@@ -53,25 +53,25 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   private String wildcard;
 
   /**
-   * Instantiates a DefaultColumnSearchModel.
+   * Instantiates a DefaultColumnCriteriaModel.
    * @param columnIdentifier the column identifier
    * @param type the column data type
    * @param wildcard the string to use as wildcard
    */
-  public DefaultColumnSearchModel(final K columnIdentifier, final int type, final String wildcard) {
+  public DefaultColumnCriteriaModel(final K columnIdentifier, final int type, final String wildcard) {
     this(columnIdentifier, type, wildcard, null);
   }
 
   /**
-   * Instantiates a DefaultColumnSearchModel.
+   * Instantiates a DefaultColumnCriteriaModel.
    * @param columnIdentifier the column identifier
    * @param type the column data type
    * @param wildcard the string to use as wildcard
    * @param format the format to use when presenting the values, dates for example
    */
-  public DefaultColumnSearchModel(final K columnIdentifier, final int type, final String wildcard,
-                                  final Format format) {
-    Util.rejectNullValue(columnIdentifier, "searchKey");
+  public DefaultColumnCriteriaModel(final K columnIdentifier, final int type, final String wildcard,
+                                    final Format format) {
+    Util.rejectNullValue(columnIdentifier, "columnIdentifier");
     this.columnIdentifier = columnIdentifier;
     this.type = type;
     this.wildcard = wildcard;
@@ -365,12 +365,12 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   /** {@inheritDoc} */
   @Override
-  public final void clearSearch() {
+  public final void clearCriteria() {
     setEnabled(false);
     setUpperBound((Object) null);
     setLowerBound((Object) null);
     setSearchType(SearchType.LIKE);
-    searchModelClearedEvent.fire();
+    criteriaModelClearedEvent.fire();
   }
 
   /** {@inheritDoc} */
@@ -448,25 +448,25 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void addClearedListener(final EventListener listener) {
-    searchModelClearedEvent.addListener(listener);
+    criteriaModelClearedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeClearedListener(final EventListener listener) {
-    searchModelClearedEvent.removeListener(listener);
+    criteriaModelClearedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void addSearchStateListener(final EventListener listener) {
-    searchStateChangedEvent.addListener(listener);
+  public final void addCriteriaStateListener(final EventListener listener) {
+    criteriaStateChangedEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void removeSearchStateListener(final EventListener listener) {
-    searchStateChangedEvent.removeListener(listener);
+  public final void removeCriteriaStateListener(final EventListener listener) {
+    criteriaStateChangedEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -681,10 +681,10 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
     };
     upperBoundChangedEvent.addListener(autoEnableListener);
     lowerBoundChangedEvent.addListener(autoEnableListener);
-    upperBoundChangedEvent.addListener(searchStateChangedEvent);
-    lowerBoundChangedEvent.addListener(searchStateChangedEvent);
-    searchTypeChangedEvent.addListener(searchStateChangedEvent);
-    enabledChangedEvent.addListener(searchStateChangedEvent);
+    upperBoundChangedEvent.addListener(criteriaStateChangedEvent);
+    lowerBoundChangedEvent.addListener(criteriaStateChangedEvent);
+    searchTypeChangedEvent.addListener(criteriaStateChangedEvent);
+    enabledChangedEvent.addListener(criteriaStateChangedEvent);
     searchTypeChangedEvent.addListener(new EventListener() {
       @Override
       public void eventOccurred() {
@@ -695,7 +695,7 @@ public class DefaultColumnSearchModel<K> implements ColumnSearchModel<K> {
 
   private void checkLock() {
     if (lockedState.isActive()) {
-      throw new IllegalStateException("Search model for column identified by " + columnIdentifier + " is locked");
+      throw new IllegalStateException("Criteria model for column identified by " + columnIdentifier + " is locked");
     }
   }
 }

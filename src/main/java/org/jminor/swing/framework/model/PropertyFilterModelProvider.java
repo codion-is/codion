@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.common.model.table.ColumnSearchModel;
+import org.jminor.swing.common.model.table.ColumnCriteriaModel;
 
 /**
  * Specifies an object responsible for providing property filter models
@@ -12,9 +12,9 @@ import org.jminor.swing.common.model.table.ColumnSearchModel;
 public interface PropertyFilterModelProvider {
 
   /**
-   * Initializes a PropertyFilterModel for the given property
-   * @param property the Property for which to initialize a PropertyFilterModel
-   * @return a PropertyFilterModel for the given property
+   * Initializes a ColumnCriteriaModel for the given property
+   * @param property the Property for which to initialize a ColumnCriteriaModel
+   * @return a ColumnCriteriaModel for the given property
    */
-  ColumnSearchModel<Property> initializePropertyFilterModel(final Property property);
+  ColumnCriteriaModel<Property> initializePropertyFilterModel(final Property property);
 }

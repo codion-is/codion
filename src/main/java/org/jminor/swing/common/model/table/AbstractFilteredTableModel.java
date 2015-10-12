@@ -94,7 +94,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
    * @param columnFilterModels the column filter models
    * @throws IllegalArgumentException in case <code>columnModel</code> is null
    */
-  public AbstractFilteredTableModel(final TableSortModel<R, C> sortModel, final Collection<? extends ColumnSearchModel<C>> columnFilterModels) {
+  public AbstractFilteredTableModel(final TableSortModel<R, C> sortModel, final Collection<? extends ColumnCriteriaModel<C>> columnFilterModels) {
     Util.rejectNullValue(sortModel, "sortModel");
     this.sortModel = sortModel;
     this.columnModel = new DefaultFilteredTableColumnModel<>(sortModel.getColumns(), columnFilterModels);
@@ -570,8 +570,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
         tableDataChangedEvent.fire();
       }
     });
-    for (final ColumnSearchModel searchModel : columnModel.getColumnFilterModels()) {
-      searchModel.addSearchStateListener(new EventListener() {
+    for (final ColumnCriteriaModel criteriaModel : columnModel.getColumnFilterModels()) {
+      criteriaModel.addCriteriaStateListener(new EventListener() {
         @Override
         public void eventOccurred() {
           filterContents();
@@ -623,15 +623,15 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   private static final class DefaultFilterCriteria<R, C> implements FilterCriteria<R> {
 
-    private final Collection<? extends ColumnSearchModel<C>> columnFilters;
+    private final Collection<? extends ColumnCriteriaModel<C>> columnFilters;
 
-    private DefaultFilterCriteria(final Collection<? extends ColumnSearchModel<C>> columnFilters) {
+    private DefaultFilterCriteria(final Collection<? extends ColumnCriteriaModel<C>> columnFilters) {
       this.columnFilters = columnFilters;
     }
 
     @Override
     public boolean include(final R item) {
-      for (final ColumnSearchModel columnFilter : columnFilters) {
+      for (final ColumnCriteriaModel columnFilter : columnFilters) {
         if (!columnFilter.include(item)) {
           return false;
         }

@@ -14,11 +14,11 @@ import java.text.Format;
 import java.util.Date;
 
 /**
- * Specifies a search model based on a table column, search parameters, search type, upper bound and lower bound,
+ * Specifies a criteria model based on a table column, parameters, operator, upper bound and lower bound,
  * as well as relevant events and states.
  * @param <K> the type of objects used to identify columns
  */
-public interface ColumnSearchModel<K> {
+public interface ColumnCriteriaModel<K> {
 
   String UPPER_BOUND_PROPERTY = "upperBound";
   String LOWER_BOUND_PROPERTY = "lowerBound";
@@ -34,7 +34,7 @@ public interface ColumnSearchModel<K> {
   boolean isCaseSensitive();
 
   /**
-   * @param caseSensitive true if this search model should be case sensitive when working with strings
+   * @param caseSensitive true if this criteria model should be case sensitive when working with strings
    */
   void setCaseSensitive(final boolean caseSensitive);
 
@@ -76,7 +76,7 @@ public interface ColumnSearchModel<K> {
   boolean isLocked();
 
   /**
-   * @return the data type this search model is based on
+   * @return the data type this criteria model is based on
    * @see java.sql.Types
    */
   int getType();
@@ -136,7 +136,7 @@ public interface ColumnSearchModel<K> {
   void setAutoEnable(final boolean autoEnable);
 
   /**
-   * @return true if this search model is enabled
+   * @return true if this criteria model is enabled
    */
   boolean isEnabled();
 
@@ -146,9 +146,9 @@ public interface ColumnSearchModel<K> {
   void setEnabled(final boolean value);
 
   /**
-   * Clears the criteria values from this search model
+   * Clears this criteria model
    */
-  void clearSearch();
+  void clearCriteria();
 
   /**
    * @param value the upper bound
@@ -316,12 +316,12 @@ public interface ColumnSearchModel<K> {
   void removeClearedListener(final EventListener listener);
 
   /**
-   * @param listener a listener to be notified each time the search state changes
+   * @param listener a listener to be notified each time the criteria state changes
    */
-  void addSearchStateListener(final EventListener listener);
+  void addCriteriaStateListener(final EventListener listener);
 
   /**
    * @param listener the listener to remove
    */
-  void removeSearchStateListener(final EventListener listener);
+  void removeCriteriaStateListener(final EventListener listener);
 }

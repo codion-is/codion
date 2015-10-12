@@ -67,14 +67,14 @@ public interface FilteredTableColumnModel<C> extends TableColumnModel {
 
   /**
    * @param columnIdentifier the column identifier
-   * @return the SearchModel at the given column index
+   * @return the ColumnCriteriaModel at the given column index
    */
-  ColumnSearchModel<C> getColumnFilterModel(final C columnIdentifier);
+  ColumnCriteriaModel<C> getColumnFilterModel(final C columnIdentifier);
 
   /**
    * @return the ColumnFilterModel instances
    */
-  Collection<ColumnSearchModel<C>> getColumnFilterModels();
+  Collection<ColumnCriteriaModel<C>> getColumnFilterModels();
 
   /**
    * @param listener a listener to be notified each time a column is hidden

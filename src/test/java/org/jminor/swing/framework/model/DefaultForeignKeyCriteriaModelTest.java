@@ -17,35 +17,35 @@ import java.util.Collections;
 
 import static org.junit.Assert.*;
 
-public class DefaultForeignKeySearchModelTest {
+public class DefaultForeignKeyCriteriaModelTest {
 
   @Test
   public void getSearchEntitiesLookupModel() throws DatabaseException {
     TestDomain.init();
     final EntityLookupModel lookupModel = new DefaultEntityLookupModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER,
             Collections.singletonList(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
-    final ForeignKeySearchModel searchModel = new DefaultForeignKeySearchModel(
+    final ForeignKeyCriteriaModel criteriaModel = new DefaultForeignKeyCriteriaModel(
             Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK), lookupModel);
     final Entity sales = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     lookupModel.setSelectedEntity(sales);
-    Collection<Entity> searchEntities = searchModel.getSearchEntities();
+    Collection<Entity> searchEntities = criteriaModel.getCriteriaEntities();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
     final Entity accounting = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "ACCOUNTING");
     lookupModel.setSelectedEntities(Arrays.asList(sales, accounting));
-    searchEntities = searchModel.getSearchEntities();
+    searchEntities = criteriaModel.getCriteriaEntities();
     assertEquals(2, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
     assertTrue(searchEntities.contains(accounting));
 
-    searchModel.setUpperBound((Object) null);
+    criteriaModel.setUpperBound((Object) null);
     assertTrue(lookupModel.getSelectedEntities().isEmpty());
-    searchModel.setUpperBound(sales);
+    criteriaModel.setUpperBound(sales);
     assertEquals(lookupModel.getSelectedEntities().iterator().next(), sales);
 
     lookupModel.setSelectedEntity(null);
 
-    searchEntities = searchModel.getSearchEntities();
+    searchEntities = criteriaModel.getCriteriaEntities();
     assertTrue(searchEntities.isEmpty());
   }
 
@@ -53,27 +53,27 @@ public class DefaultForeignKeySearchModelTest {
   public void getSearchEntitiesComboBoxModel() throws DatabaseException {
     TestDomain.init();
     final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-    final ForeignKeySearchModel searchModel = new DefaultForeignKeySearchModel(
+    final ForeignKeyCriteriaModel criteriaModel = new DefaultForeignKeyCriteriaModel(
             Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK), comboBoxModel);
     final Entity sales = EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
     comboBoxModel.setSelectedItem(sales);
-    Collection<Entity> searchEntities = searchModel.getSearchEntities();
+    Collection<Entity> searchEntities = criteriaModel.getCriteriaEntities();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
     comboBoxModel.refresh();
     assertEquals(sales, comboBoxModel.getSelectedValue());
-    searchEntities = searchModel.getSearchEntities();
+    searchEntities = criteriaModel.getCriteriaEntities();
     assertEquals(1, searchEntities.size());
     assertTrue(searchEntities.contains(sales));
 
-    searchModel.setUpperBound((Object) null);
+    criteriaModel.setUpperBound((Object) null);
     assertNull(comboBoxModel.getSelectedItem());
-    searchModel.setUpperBound(sales);
+    criteriaModel.setUpperBound(sales);
     assertEquals(comboBoxModel.getSelectedItem(), sales);
 
     comboBoxModel.setSelectedItem(null);
 
-    searchEntities = searchModel.getSearchEntities();
+    searchEntities = criteriaModel.getCriteriaEntities();
     assertTrue(searchEntities.isEmpty());
   }
 }

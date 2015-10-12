@@ -9,15 +9,15 @@ import org.jminor.common.model.SearchType;
 import org.jminor.framework.domain.Property;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
-import org.jminor.swing.common.model.table.ColumnSearchModel;
+import org.jminor.swing.common.model.table.ColumnCriteriaModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
-import org.jminor.swing.common.ui.table.ColumnSearchPanel;
+import org.jminor.swing.common.ui.table.ColumnCriteriaPanel;
 import org.jminor.swing.common.ui.textfield.DoubleField;
 import org.jminor.swing.common.ui.textfield.IntField;
-import org.jminor.swing.framework.model.PropertySearchModel;
+import org.jminor.swing.framework.model.PropertyCriteriaModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComboBox;
@@ -29,31 +29,31 @@ import java.sql.Types;
 import java.text.SimpleDateFormat;
 
 /**
- * A column search panel based on the the Property class.
+ * A column criteria panel based on the the Property class.
  */
-public final class PropertySearchPanel extends ColumnSearchPanel<Property.ColumnProperty> {
+public final class PropertyCriteriaPanel extends ColumnCriteriaPanel<Property.ColumnProperty> {
 
   /**
-   * Instantiates a new PropertySearchPanel.
+   * Instantiates a new PropertyCriteriaPanel.
    * @param model the model to base this panel on
    */
-  public PropertySearchPanel(final PropertySearchModel<Property.ColumnProperty> model) {
+  public PropertyCriteriaPanel(final PropertyCriteriaModel<Property.ColumnProperty> model) {
     this(model, false, false);
   }
 
   /**
-   * Instantiates a new PropertySearchPanel.
+   * Instantiates a new PropertyCriteriaPanel.
    * @param model the model to base this panel on
-   * @param includeToggleSearchEnabledButton if true an activation button is included
-   * @param includeToggleAdvancedSearchButton if true an advanced toggle button is included
+   * @param includeToggleEnabledButton if true an activation button is included
+   * @param includeToggleAdvancedCriteriaButton if true an advanced toggle button is included
    */
-  public PropertySearchPanel(final PropertySearchModel<Property.ColumnProperty> model,
-                             final boolean includeToggleSearchEnabledButton, final boolean includeToggleAdvancedSearchButton) {
-    super(model, includeToggleSearchEnabledButton, includeToggleAdvancedSearchButton,
+  public PropertyCriteriaPanel(final PropertyCriteriaModel<Property.ColumnProperty> model,
+                               final boolean includeToggleEnabledButton, final boolean includeToggleAdvancedCriteriaButton) {
+    super(model, includeToggleEnabledButton, includeToggleAdvancedCriteriaButton,
             new PropertyInputFieldProvider(model), getSearchTypes(model));
   }
 
-  private static SearchType[] getSearchTypes(final PropertySearchModel<Property.ColumnProperty> model) {
+  private static SearchType[] getSearchTypes(final PropertyCriteriaModel<Property.ColumnProperty> model) {
     if (model.getColumnIdentifier().isBoolean()) {
       return new SearchType[] {SearchType.LIKE};
     }
@@ -64,9 +64,9 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
 
   private static final class PropertyInputFieldProvider implements InputFieldProvider<Property.ColumnProperty> {
 
-    private final ColumnSearchModel<Property.ColumnProperty> model;
+    private final ColumnCriteriaModel<Property.ColumnProperty> model;
 
-    private PropertyInputFieldProvider(final ColumnSearchModel<Property.ColumnProperty> model) {
+    private PropertyInputFieldProvider(final ColumnCriteriaModel<Property.ColumnProperty> model) {
       this.model = model;
     }
 
@@ -75,7 +75,7 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
       if (model.getType() == Types.BOOLEAN && !isUpperBound) {
         return null;//no lower bound field required for booleans
       }
-      final String property = isUpperBound ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY;
+      final String property = isUpperBound ? ColumnCriteriaModel.UPPER_BOUND_PROPERTY : ColumnCriteriaModel.LOWER_BOUND_PROPERTY;
       final EventObserver changeObserver = isUpperBound ? model.getUpperBoundObserver() : model.getLowerBoundObserver();
       final JComponent field = initField();
       bindField(field, property, changeObserver);
@@ -142,10 +142,10 @@ public final class PropertySearchPanel extends ColumnSearchPanel<Property.Column
 
   private static final class EnableAction extends AbstractAction {
 
-    private final ColumnSearchModel model;
+    private final ColumnCriteriaModel model;
 
-    private EnableAction(final ColumnSearchModel model) {
-      super("PropertySearchPanel.EnableAction");
+    private EnableAction(final ColumnCriteriaModel model) {
+      super("PropertyCriteriaPanel.EnableAction");
       this.model = model;
     }
 

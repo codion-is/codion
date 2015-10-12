@@ -54,7 +54,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @param foreignKeyProperty the ID of the foreign key property
    * @param foreignKeyValues the entities to use as criteria values
    */
-  void setForeignKeySearchValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues);
+  void setForeignKeyCriteriaValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> foreignKeyValues);
 
   /**
    * For every entity in this table model, replaces the foreign key instance bearing the primary
@@ -93,9 +93,9 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   EntityTableModel setQueryConfigurationAllowed(final boolean value);
 
   /**
-   * @return the {@link EntityTableSearchModel} instance used by this table model
+   * @return the {@link EntityTableCriteriaModel} instance used by this table model
    */
-  EntityTableSearchModel getSearchModel();
+  EntityTableCriteriaModel getCriteriaModel();
 
   /**
    * @return true if this model has an edit model and that edit model allows deletion of records

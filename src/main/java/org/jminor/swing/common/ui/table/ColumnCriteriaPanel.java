@@ -13,7 +13,7 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
-import org.jminor.swing.common.model.table.ColumnSearchModel;
+import org.jminor.swing.common.model.table.ColumnCriteriaModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.combobox.SteppedComboBox;
@@ -51,18 +51,18 @@ import java.util.Arrays;
 import java.util.Collection;
 
 /**
- * A UI implementation for ColumnSearchModel
+ * A UI implementation for ColumnCriteriaModel
  */
-public class ColumnSearchPanel<K> extends JPanel {
+public class ColumnCriteriaPanel<K> extends JPanel {
 
   public static final int DEFAULT_FIELD_COLUMNS = 4;
 
   private static final int ENABLED_BUTTON_SIZE = 20;
 
   /**
-   * The SearchModel this AbstractSearchPanel represents
+   * The ColumnCriteriaModel this ColumnCriteriaPanel represents
    */
-  private final ColumnSearchModel<K> searchModel;
+  private final ColumnCriteriaModel<K> criteriaModel;
 
   /**
    * The search types allowed in this model
@@ -72,17 +72,17 @@ public class ColumnSearchPanel<K> extends JPanel {
   /**
    * A JToggleButton for enabling/disabling the filter
    */
-  private final JToggleButton toggleSearchEnabled;
+  private final JToggleButton toggleEnabled;
 
   /**
    * A JToggleButton for toggling advanced/simple search
    */
-  private final JToggleButton toggleSearchAdvanced;
+  private final JToggleButton toggleAdvancedCriteria;
   private final JComboBox searchTypeCombo;
   private final JComponent upperBoundField;
   private final JComponent lowerBoundField;
 
-  private final State advancedSearchState = States.state();
+  private final State advancedCriteriaState = States.state();
 
   private JDialog dialog;
   private Point lastDialogPosition;
@@ -90,76 +90,76 @@ public class ColumnSearchPanel<K> extends JPanel {
   private boolean dialogVisible = false;
 
   /**
-   * Instantiates a new ColumnSearchPanel, with a default input field provider.
-   * @param searchModel the search model to base this panel on
-   * @param includeToggleSearchEnabledButton if true an activation button is included
-   * @param includeToggleAdvancedSearchButton if true an advanced toggle button is included
+   * Instantiates a new ColumnCriteriaPanel, with a default input field provider.
+   * @param criteriaModel the criteria model to base this panel on
+   * @param includeToggleEnabledButton if true an activation button is included
+   * @param includeToggleAdvancedCriteriaButton if true an advanced toggle button is included
    */
-  public ColumnSearchPanel(final ColumnSearchModel<K> searchModel, final boolean includeToggleSearchEnabledButton,
-                           final boolean includeToggleAdvancedSearchButton) {
-    this(searchModel, includeToggleSearchEnabledButton, includeToggleAdvancedSearchButton, SearchType.values());
+  public ColumnCriteriaPanel(final ColumnCriteriaModel<K> criteriaModel, final boolean includeToggleEnabledButton,
+                             final boolean includeToggleAdvancedCriteriaButton) {
+    this(criteriaModel, includeToggleEnabledButton, includeToggleAdvancedCriteriaButton, SearchType.values());
   }
 
   /**
-   * Instantiates a new ColumnSearchPanel, with a default input field provider.
-   * @param searchModel the search model to base this panel on
-   * @param includeToggleSearchEnabledButton if true an activation button is include
-   * @param includeToggleAdvancedSearchButton if true an advanced toggle button is include
-   * @param searchTypes the search types available to this search panel
+   * Instantiates a new ColumnCriteriaPanel, with a default input field provider.
+   * @param criteriaModel the criteria model to base this panel on
+   * @param includeToggleEnabledButton if true an activation button is include
+   * @param includeToggleAdvancedCriteriaButton if true an advanced toggle button is include
+   * @param searchTypes the search types available to this criteria panel
    */
-  public ColumnSearchPanel(final ColumnSearchModel<K> searchModel, final boolean includeToggleSearchEnabledButton,
-                           final boolean includeToggleAdvancedSearchButton, final SearchType... searchTypes) {
-    this(searchModel, includeToggleSearchEnabledButton, includeToggleAdvancedSearchButton, new DefaultInputFieldProvider<>(searchModel), searchTypes);
+  public ColumnCriteriaPanel(final ColumnCriteriaModel<K> criteriaModel, final boolean includeToggleEnabledButton,
+                             final boolean includeToggleAdvancedCriteriaButton, final SearchType... searchTypes) {
+    this(criteriaModel, includeToggleEnabledButton, includeToggleAdvancedCriteriaButton, new DefaultInputFieldProvider<>(criteriaModel), searchTypes);
   }
 
   /**
-   * Instantiates a new ColumnSearchPanel.
-   * @param searchModel the search model to base this panel on
-   * @param includeToggleSearchEnabledButton if true an activation button is include
-   * @param includeToggleAdvancedSearchButton if true an advanced toggle button is include
+   * Instantiates a new ColumnCriteriaPanel.
+   * @param criteriaModel the criteria model to base this panel on
+   * @param includeToggleEnabledButton if true an activation button is include
+   * @param includeToggleAdvancedCriteriaButton if true an advanced toggle button is include
    * @param inputFieldProvider the input field provider
-   * @param searchTypes the search types available to this search panel
+   * @param searchTypes the search types available to this criteria panel
    */
-  public ColumnSearchPanel(final ColumnSearchModel<K> searchModel, final boolean includeToggleSearchEnabledButton,
-                           final boolean includeToggleAdvancedSearchButton, final InputFieldProvider inputFieldProvider,
-                           final SearchType... searchTypes) {
-    this(searchModel, includeToggleSearchEnabledButton, includeToggleAdvancedSearchButton, inputFieldProvider.initializeInputField(true),
+  public ColumnCriteriaPanel(final ColumnCriteriaModel<K> criteriaModel, final boolean includeToggleEnabledButton,
+                             final boolean includeToggleAdvancedCriteriaButton, final InputFieldProvider inputFieldProvider,
+                             final SearchType... searchTypes) {
+    this(criteriaModel, includeToggleEnabledButton, includeToggleAdvancedCriteriaButton, inputFieldProvider.initializeInputField(true),
             inputFieldProvider.initializeInputField(false), searchTypes);
   }
 
   /**
-   * Instantiates a new ColumnSearchPanel, with a default input field provider.
-   * @param searchModel the search model to base this panel on
-   * @param includeToggleSearchEnabledButton if true a button for enabling this search panel is included
-   * @param includeToggleAdvancedSearchButton if true an advanced toggle button is included
+   * Instantiates a new ColumnCriteriaPanel, with a default input field provider.
+   * @param criteriaModel the criteria model to base this panel on
+   * @param includeToggleEnabledButton if true a button for enabling this criteria panel is included
+   * @param includeToggleAdvancedCriteriaButton if true an advanced toggle button is included
    * @param upperBoundField the upper bound input field
    * @param lowerBoundField the lower bound input field
-   * @param searchTypes the search types available to this search panel
+   * @param searchTypes the search types available to this criteria panel
    */
-  public ColumnSearchPanel(final ColumnSearchModel<K> searchModel, final boolean includeToggleSearchEnabledButton,
-                           final boolean includeToggleAdvancedSearchButton, final JComponent upperBoundField,
-                           final JComponent lowerBoundField, final SearchType... searchTypes) {
-    Util.rejectNullValue(searchModel, "searchModel");
-    this.searchModel = searchModel;
+  public ColumnCriteriaPanel(final ColumnCriteriaModel<K> criteriaModel, final boolean includeToggleEnabledButton,
+                             final boolean includeToggleAdvancedCriteriaButton, final JComponent upperBoundField,
+                             final JComponent lowerBoundField, final SearchType... searchTypes) {
+    Util.rejectNullValue(criteriaModel, "criteriaModel");
+    this.criteriaModel = criteriaModel;
     this.searchTypes = searchTypes == null ? Arrays.asList(SearchType.values()) : Arrays.asList(searchTypes);
     this.searchTypeCombo = initializeSearchTypeComboBox();
     this.upperBoundField = upperBoundField;
     this.lowerBoundField = lowerBoundField;
-    if (includeToggleSearchEnabledButton) {
-      this.toggleSearchEnabled = ControlProvider.createToggleButton(
-              Controls.toggleControl(searchModel, "enabled", null, searchModel.getEnabledObserver()));
-      toggleSearchEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));
+    if (includeToggleEnabledButton) {
+      this.toggleEnabled = ControlProvider.createToggleButton(
+              Controls.toggleControl(criteriaModel, "enabled", null, criteriaModel.getEnabledObserver()));
+      toggleEnabled.setIcon(Images.loadImage(Images.IMG_FILTER_16));
     }
     else {
-      this.toggleSearchEnabled = null;
+      this.toggleEnabled = null;
     }
-    if (includeToggleAdvancedSearchButton) {
-      this.toggleSearchAdvanced = ControlProvider.createToggleButton(
-              Controls.toggleControl(this, "advancedSearchOn", null, advancedSearchState.getObserver()));
-      toggleSearchAdvanced.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
+    if (includeToggleAdvancedCriteriaButton) {
+      this.toggleAdvancedCriteria = ControlProvider.createToggleButton(
+              Controls.toggleControl(this, "advancedCriteriaEnabled", null, advancedCriteriaState.getObserver()));
+      toggleAdvancedCriteria.setIcon(Images.loadImage(Images.IMG_PREFERENCES_16));
     }
     else {
-      this.toggleSearchAdvanced = null;
+      this.toggleAdvancedCriteria = null;
     }
     linkComponentsToLockedState();
     initializeUI();
@@ -168,10 +168,10 @@ public class ColumnSearchPanel<K> extends JPanel {
   }
 
   /**
-   * @return the search model this panel uses
+   * @return the criteria model this panel uses
    */
-  public final ColumnSearchModel<K> getSearchModel() {
-    return this.searchModel;
+  public final ColumnCriteriaModel<K> getCriteriaModel() {
+    return this.criteriaModel;
   }
 
   /**
@@ -196,13 +196,13 @@ public class ColumnSearchPanel<K> extends JPanel {
   }
 
   /**
-   * Displays this search panel in a dialog
+   * Displays this criteria panel in a dialog
    * @param dialogParent the dialog parent
    * @param position the position
    */
   public final void enableDialog(final Container dialogParent, final Point position) {
     if (!isDialogEnabled()) {
-      initializeSearchDialog(dialogParent);
+      initializeCriteriaDialog(dialogParent);
       Point actualPosition = position;
       if (position == null) {
         actualPosition = lastDialogPosition;
@@ -220,7 +220,7 @@ public class ColumnSearchPanel<K> extends JPanel {
   }
 
   /**
-   * Hides the dialog displaying this search panel
+   * Hides the dialog displaying this criteria panel
    */
   public final void disableDialog() {
     if (isDialogEnabled()) {
@@ -258,17 +258,17 @@ public class ColumnSearchPanel<K> extends JPanel {
   }
 
   /**
-   * @param value true if advanced search should be enabled
+   * @param value true if advanced criteria should be enabled
    */
-  public final void setAdvancedSearchOn(final boolean value) {
-    advancedSearchState.setActive(value);
+  public final void setAdvancedCriteriaEnabled(final boolean value) {
+    advancedCriteriaState.setActive(value);
   }
 
   /**
-   * @return true if the advanced search is enabled
+   * @return true if the advanced criteria is enabled
    */
-  public final boolean isAdvancedSearchOn() {
-    return advancedSearchState.isActive();
+  public final boolean isAdvancedCriteriaEnabled() {
+    return advancedCriteriaState.isActive();
   }
 
   /**
@@ -285,23 +285,23 @@ public class ColumnSearchPanel<K> extends JPanel {
     return lowerBoundField;
   }
 
-  public final void addAdvancedSearchListener(final EventListener listener) {
-    advancedSearchState.addListener(listener);
+  public final void addAdvancedCriteriaListener(final EventListener listener) {
+    advancedCriteriaState.addListener(listener);
   }
 
-  public final void removeAdvancedSearchListener(final EventListener listener) {
-    advancedSearchState.removeListener(listener);
+  public final void removeAdvancedCriteriaListener(final EventListener listener) {
+    advancedCriteriaState.removeListener(listener);
   }
 
   /**
-   * Provides a upper/lower bound input fields for a ColumnSearchPanel
+   * Provides a upper/lower bound input fields for a ColumnCriteriaPanel
    * @param <K> the type of column identifiers
    */
   public interface InputFieldProvider<K> {
 
     /**
      * @param isUpperBound if true then the returned field should be bound
-     * with with upper bound value int he search model, otherwise the lower bound
+     * with with upper bound value int he criteria model, otherwise the lower bound
      * @return a upper/lower bound input field
      */
     JComponent initializeInputField(final boolean isUpperBound);
@@ -309,11 +309,11 @@ public class ColumnSearchPanel<K> extends JPanel {
 
   private static final class DefaultInputFieldProvider<K> implements InputFieldProvider<K> {
 
-    private final ColumnSearchModel<K> searchModel;
+    private final ColumnCriteriaModel<K> columnCriteriaModel;
 
-    private DefaultInputFieldProvider(final ColumnSearchModel<K> searchModel) {
-      Util.rejectNullValue(searchModel, "searchModel");
-      this.searchModel = searchModel;
+    private DefaultInputFieldProvider(final ColumnCriteriaModel<K> columnCriteriaModel) {
+      Util.rejectNullValue(columnCriteriaModel, "columnCriteriaModel");
+      this.columnCriteriaModel = columnCriteriaModel;
     }
 
     /**
@@ -322,13 +322,13 @@ public class ColumnSearchPanel<K> extends JPanel {
      */
     @Override
     public JComponent initializeInputField(final boolean isUpperBound) {
-      if (searchModel.getType() == Types.BOOLEAN && !isUpperBound) {
+      if (columnCriteriaModel.getType() == Types.BOOLEAN && !isUpperBound) {
         return null;//no lower bound field required for boolean values
       }
-      final String property = isUpperBound ? ColumnSearchModel.UPPER_BOUND_PROPERTY : ColumnSearchModel.LOWER_BOUND_PROPERTY;
-      final EventObserver changeObserver = isUpperBound ? searchModel.getUpperBoundObserver() : searchModel.getLowerBoundObserver();
+      final String property = isUpperBound ? ColumnCriteriaModel.UPPER_BOUND_PROPERTY : ColumnCriteriaModel.LOWER_BOUND_PROPERTY;
+      final EventObserver changeObserver = isUpperBound ? columnCriteriaModel.getUpperBoundObserver() : columnCriteriaModel.getLowerBoundObserver();
       final JComponent field = initializeField();
-      if (searchModel.getType() == Types.BOOLEAN) {
+      if (columnCriteriaModel.getType() == Types.BOOLEAN) {
         createToggleProperty((JCheckBox) field, property, changeObserver);
       }
       else {
@@ -339,7 +339,7 @@ public class ColumnSearchPanel<K> extends JPanel {
         ((JTextField) field).addActionListener(new ActionListener() {
           @Override
           public void actionPerformed(final ActionEvent e) {
-            searchModel.setEnabled(!searchModel.isEnabled());
+            columnCriteriaModel.setEnabled(!columnCriteriaModel.isEnabled());
           }
         });
       }
@@ -348,7 +348,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     }
 
     private JComponent initializeField() {
-      switch (searchModel.getType()) {
+      switch (columnCriteriaModel.getType()) {
         case Types.INTEGER:
           return new IntField(DEFAULT_FIELD_COLUMNS);
         case Types.DOUBLE:
@@ -358,33 +358,33 @@ public class ColumnSearchPanel<K> extends JPanel {
         case Types.TIME:
         case Types.TIMESTAMP:
         case Types.DATE:
-          return UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) searchModel.getFormat()));
+          return UiUtil.createFormattedField(DateUtil.getDateMask((SimpleDateFormat) columnCriteriaModel.getFormat()));
         default:
           return new JTextField(DEFAULT_FIELD_COLUMNS);
       }
     }
 
     private void createToggleProperty(final JCheckBox checkBox, final String property, final EventObserver changeObserver) {
-      ValueLinks.toggleValueLink(checkBox.getModel(), searchModel, property, changeObserver);
+      ValueLinks.toggleValueLink(checkBox.getModel(), columnCriteriaModel, property, changeObserver);
     }
 
     @SuppressWarnings("unchecked")
     private void createTextProperty(final JComponent component, final String property, final EventObserver changeObserver) {
-      switch (searchModel.getType()) {
+      switch (columnCriteriaModel.getType()) {
         case Types.INTEGER:
-          ValueLinks.intValueLink((IntField) component, searchModel, property, changeObserver, false, true);
+          ValueLinks.intValueLink((IntField) component, columnCriteriaModel, property, changeObserver, false, true);
           break;
         case Types.DOUBLE:
-          ValueLinks.doubleValueLink((DoubleField) component, searchModel, property, changeObserver, false, true);
+          ValueLinks.doubleValueLink((DoubleField) component, columnCriteriaModel, property, changeObserver, false, true);
           break;
         case Types.TIME:
         case Types.TIMESTAMP:
         case Types.DATE:
-          ValueLinks.dateValueLink((JFormattedTextField) component, searchModel, property, changeObserver,
-                  false, (DateFormat) searchModel.getFormat(), searchModel.getType(), true);
+          ValueLinks.dateValueLink((JFormattedTextField) component, columnCriteriaModel, property, changeObserver,
+                  false, (DateFormat) columnCriteriaModel.getFormat(), columnCriteriaModel.getType(), true);
           break;
         default:
-          ValueLinks.textValueLink((JTextField) component, searchModel,property, changeObserver);
+          ValueLinks.textValueLink((JTextField) component, columnCriteriaModel,property, changeObserver);
       }
     }
   }
@@ -393,19 +393,19 @@ public class ColumnSearchPanel<K> extends JPanel {
    * Binds events to relevant GUI actions
    */
   private void bindEvents() {
-    advancedSearchState.addListener(new EventListener() {
+    advancedCriteriaState.addListener(new EventListener() {
       @Override
       public void eventOccurred() {
         initializePanel();
-        if (toggleSearchAdvanced != null) {
-          toggleSearchAdvanced.requestFocusInWindow();
+        if (toggleAdvancedCriteria != null) {
+          toggleAdvancedCriteria.requestFocusInWindow();
         }
         else {
           upperBoundField.requestFocusInWindow();
         }
       }
     });
-    searchModel.addLowerBoundRequiredListener(new EventListener() {
+    criteriaModel.addLowerBoundRequiredListener(new EventListener() {
       @Override
       public void eventOccurred() {
         initializePanel();
@@ -416,7 +416,7 @@ public class ColumnSearchPanel<K> extends JPanel {
   }
 
   private void initializePanel() {
-    if (advancedSearchState.isActive()) {
+    if (advancedCriteriaState.isActive()) {
       initializeAdvancedPanel();
     }
     else {
@@ -432,7 +432,7 @@ public class ColumnSearchPanel<K> extends JPanel {
       }
     }
     final JComboBox<SearchType> comboBox = new SteppedComboBox(comboBoxModel);
-    ValueLinks.selectedItemValueLink(comboBox, searchModel, "searchType", SearchType.class, (EventObserver) searchModel.getSearchTypeObserver());
+    ValueLinks.selectedItemValueLink(comboBox, criteriaModel, "searchType", SearchType.class, (EventObserver) criteriaModel.getSearchTypeObserver());
     comboBox.setRenderer(new DefaultListCellRenderer() {
       @Override
       public Component getListCellRendererComponent(final JList list, final Object value, final int index,
@@ -450,11 +450,11 @@ public class ColumnSearchPanel<K> extends JPanel {
   private void initializeUI() {
     final FlexibleGridLayout layout = new FlexibleGridLayout(2, 1, 1, 1, true, false);
     setLayout(layout);
-    if (toggleSearchEnabled != null) {
-      this.toggleSearchEnabled.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
+    if (toggleEnabled != null) {
+      this.toggleEnabled.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
     }
-    if (toggleSearchAdvanced != null) {
-      this.toggleSearchAdvanced.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
+    if (toggleAdvancedCriteria != null) {
+      this.toggleAdvancedCriteria.setPreferredSize(new Dimension(ENABLED_BUTTON_SIZE, ENABLED_BUTTON_SIZE));
     }
   }
 
@@ -462,7 +462,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     removeAll();
     ((FlexibleGridLayout) getLayout()).setRows(1);
     final JPanel basePanel = new JPanel(new BorderLayout(1, 1));
-    if (searchModel.isLowerBoundRequired()) {
+    if (criteriaModel.isLowerBoundRequired()) {
       final JPanel fieldBase = new JPanel(new GridLayout(1, 2, 1, 1));
       fieldBase.add(lowerBoundField);
       fieldBase.add(upperBoundField);
@@ -472,11 +472,11 @@ public class ColumnSearchPanel<K> extends JPanel {
       basePanel.add(upperBoundField, BorderLayout.CENTER);
     }
 
-    if (toggleSearchEnabled != null) {
-      basePanel.add(toggleSearchEnabled, BorderLayout.EAST);
+    if (toggleEnabled != null) {
+      basePanel.add(toggleEnabled, BorderLayout.EAST);
     }
-    if (toggleSearchAdvanced != null) {
-      basePanel.add(toggleSearchAdvanced, BorderLayout.WEST);
+    if (toggleAdvancedCriteria != null) {
+      basePanel.add(toggleAdvancedCriteria, BorderLayout.WEST);
     }
 
     add(basePanel);
@@ -490,7 +490,7 @@ public class ColumnSearchPanel<K> extends JPanel {
     removeAll();
     ((FlexibleGridLayout) getLayout()).setRows(2);
     final JPanel inputPanel = new JPanel(new BorderLayout(1, 1));
-    if (searchModel.isLowerBoundRequired()) {
+    if (criteriaModel.isLowerBoundRequired()) {
       final JPanel fieldBase = new JPanel(new GridLayout(1, 2, 1, 1));
       fieldBase.add(lowerBoundField);
       fieldBase.add(upperBoundField);
@@ -502,11 +502,11 @@ public class ColumnSearchPanel<K> extends JPanel {
 
     final JPanel controlPanel = new JPanel(new BorderLayout(1, 1));
     controlPanel.add(searchTypeCombo, BorderLayout.CENTER);
-    if (toggleSearchEnabled != null) {
-      controlPanel.add(toggleSearchEnabled, BorderLayout.EAST);
+    if (toggleEnabled != null) {
+      controlPanel.add(toggleEnabled, BorderLayout.EAST);
     }
-    if (toggleSearchAdvanced != null) {
-      controlPanel.add(toggleSearchAdvanced, BorderLayout.WEST);
+    if (toggleAdvancedCriteria != null) {
+      controlPanel.add(toggleAdvancedCriteria, BorderLayout.WEST);
     }
 
     add(controlPanel);
@@ -518,39 +518,39 @@ public class ColumnSearchPanel<K> extends JPanel {
   }
 
   private void linkComponentsToLockedState() {
-    final StateObserver stUnlocked = searchModel.getLockedObserver().getReversedObserver();
+    final StateObserver stUnlocked = criteriaModel.getLockedObserver().getReversedObserver();
     UiUtil.linkToEnabledState(stUnlocked, searchTypeCombo);
     UiUtil.linkToEnabledState(stUnlocked, upperBoundField);
     if (lowerBoundField != null) {
       UiUtil.linkToEnabledState(stUnlocked, lowerBoundField);
     }
-    if (toggleSearchAdvanced != null) {
-      UiUtil.linkToEnabledState(stUnlocked, toggleSearchAdvanced);
+    if (toggleAdvancedCriteria != null) {
+      UiUtil.linkToEnabledState(stUnlocked, toggleAdvancedCriteria);
     }
-    if (toggleSearchEnabled != null) {
-      UiUtil.linkToEnabledState(stUnlocked, toggleSearchEnabled);
+    if (toggleEnabled != null) {
+      UiUtil.linkToEnabledState(stUnlocked, toggleEnabled);
     }
   }
 
-  private void initializeSearchDialog(final Container parent) {
+  private void initializeCriteriaDialog(final Container parent) {
     if (dialog != null) {
       return;
     }
 
     final JDialog dlgParent = UiUtil.getParentDialog(parent);
     if (dlgParent != null) {
-      dialog = new JDialog(dlgParent, searchModel.getColumnIdentifier().toString(), false);
+      dialog = new JDialog(dlgParent, criteriaModel.getColumnIdentifier().toString(), false);
     }
     else {
-      dialog = new JDialog(UiUtil.getParentFrame(parent), searchModel.getColumnIdentifier().toString(), false);
+      dialog = new JDialog(UiUtil.getParentFrame(parent), criteriaModel.getColumnIdentifier().toString(), false);
     }
 
-    final JPanel searchPanel = new JPanel(new BorderLayout());
-    searchPanel.add(this, BorderLayout.NORTH);
-    dialog.getContentPane().add(searchPanel);
+    final JPanel criteriaPanel = new JPanel(new BorderLayout());
+    criteriaPanel.add(this, BorderLayout.NORTH);
+    dialog.getContentPane().add(criteriaPanel);
     dialog.pack();
 
-    addAdvancedSearchListener(new EventListener() {
+    addAdvancedCriteriaListener(new EventListener() {
       @Override
       public void eventOccurred() {
         dialog.pack();

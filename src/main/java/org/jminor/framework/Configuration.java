@@ -393,11 +393,11 @@ public final class Configuration {
   public static final String SQL_BOOLEAN_VALUE_TRUE = "jminor.client.sqlBooleanValueTrue";
 
   /**
-   * Specifies the default search panel state, whether it should be visible or not<br>
+   * Specifies whether the table criteria panels should be visible or not by default<br>
    * Value type: Boolean<br>
    * Default value: false
    */
-  public static final String SEARCH_PANEL_STATE = "jminor.client.searchPanelState";
+  public static final String TABLE_CRITERIA_PANEL_VISIBLE = "jminor.client.tableCriteriaPanelVisible";
 
   /**
    * Specifies the prefix used when exporting/looking up the JMinor server<br>
@@ -710,7 +710,7 @@ public final class Configuration {
     PROPERTIES.put(USE_OPTIMISTIC_LOCKING, true);
     PROPERTIES.put(SQL_BOOLEAN_VALUE_FALSE, 0);
     PROPERTIES.put(SQL_BOOLEAN_VALUE_TRUE, 1);
-    PROPERTIES.put(SEARCH_PANEL_STATE, false);
+    PROPERTIES.put(TABLE_CRITERIA_PANEL_VISIBLE, false);
     PROPERTIES.put(SERVER_NAME_PREFIX, "JMinor Server");
     PROPERTIES.put(WILDCARD_CHARACTER, "%");
     PROPERTIES.put(REMOTE_CONNECTION_PROVIDER, "org.jminor.framework.db.remote.RemoteEntityConnectionProvider");
@@ -753,7 +753,7 @@ public final class Configuration {
     parseStringProperty(TIMESTAMP_FORMAT, PROPERTIES);
     parseStringProperty(TIME_FORMAT, PROPERTIES);
     parseIntegerProperty(FOREIGN_KEY_FETCH_DEPTH, PROPERTIES);
-    parseBooleanProperty(SEARCH_PANEL_STATE, PROPERTIES);
+    parseBooleanProperty(TABLE_CRITERIA_PANEL_VISIBLE, PROPERTIES);
     parseBooleanProperty(LIMIT_FOREIGN_KEY_FETCH_DEPTH, PROPERTIES);
     parseIntegerProperty(LOAD_TEST_THINKTIME, PROPERTIES);
     parseIntegerProperty(LOAD_TEST_BATCH_SIZE, PROPERTIES);

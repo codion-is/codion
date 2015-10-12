@@ -318,7 +318,7 @@ public final class DefaultEntityModelTest {
     editModel.setValue(TestDomain.DEPARTMENT_NAME, "Name");
     editModel.setValue(TestDomain.DEPARTMENT_LOCATION, "Loc");
     final List<Entity> inserted = editModel.insert();
-    final Collection filter = (Collection) employeeModel.getTableModel().getSearchModel().getPropertySearchModel(TestDomain.EMP_DEPARTMENT_FK).getUpperBound();
+    final Collection filter = (Collection) employeeModel.getTableModel().getCriteriaModel().getPropertyCriteriaModel(TestDomain.EMP_DEPARTMENT_FK).getUpperBound();
     assertEquals(inserted.get(0), filter.iterator().next());
     editModel.delete();
   }

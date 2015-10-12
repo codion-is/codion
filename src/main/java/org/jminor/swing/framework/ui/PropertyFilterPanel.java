@@ -5,19 +5,19 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.common.model.table.ColumnSearchModel;
-import org.jminor.swing.common.ui.table.ColumnSearchPanel;
+import org.jminor.swing.common.model.table.ColumnCriteriaModel;
+import org.jminor.swing.common.ui.table.ColumnCriteriaPanel;
 
 /**
- * A column search panel based on properties.
+ * A column filter panel based on properties.
  */
-public final class PropertyFilterPanel extends ColumnSearchPanel<Property> {
+public final class PropertyFilterPanel extends ColumnCriteriaPanel<Property> {
 
   /**
    * Instantiates a new PropertyFilterPanel.
    * @param model the model to base this panel on
    */
-  public PropertyFilterPanel(final ColumnSearchModel<Property> model) {
+  public PropertyFilterPanel(final ColumnCriteriaModel<Property> model) {
     this(model, false, false);
   }
 
@@ -27,12 +27,12 @@ public final class PropertyFilterPanel extends ColumnSearchPanel<Property> {
    * @param includeToggleFilterEnabledButton if true an activation button is include
    * @param includeToggleAdvancedFilterButton if true an advanced toggle button is include
    */
-  public PropertyFilterPanel(final ColumnSearchModel<Property> model, final boolean includeToggleFilterEnabledButton,
+  public PropertyFilterPanel(final ColumnCriteriaModel<Property> model, final boolean includeToggleFilterEnabledButton,
                              final boolean includeToggleAdvancedFilterButton) {
     super(model, includeToggleFilterEnabledButton, includeToggleAdvancedFilterButton, getSearchTypes(model));
   }
 
-  private static SearchType[] getSearchTypes(final ColumnSearchModel<Property> model) {
+  private static SearchType[] getSearchTypes(final ColumnCriteriaModel<Property> model) {
     if (model.getColumnIdentifier().isBoolean()) {
       return new SearchType[] {SearchType.LIKE};
     }

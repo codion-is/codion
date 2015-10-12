@@ -42,9 +42,9 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
   private final Map<C, TableColumn> hiddenColumns = new HashMap<>();
 
   /**
-   * The ColumnSearchModels used for filtering
+   * The ColumnCriteriaModels used for filtering
    */
-  private final Map<C, ColumnSearchModel<C>> columnFilterModels = new HashMap<>();
+  private final Map<C, ColumnCriteriaModel<C>> columnFilterModels = new HashMap<>();
 
   /**
    * Caches the column indexes in the model
@@ -57,7 +57,7 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
    * @param columns the columns to base this model on
    * @param columnFilterModels the filter models if any
    */
-  public DefaultFilteredTableColumnModel(final List<TableColumn> columns, final Collection<? extends ColumnSearchModel<C>> columnFilterModels) {
+  public DefaultFilteredTableColumnModel(final List<TableColumn> columns, final Collection<? extends ColumnCriteriaModel<C>> columnFilterModels) {
     if (columns == null || columns.isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }
@@ -68,7 +68,7 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
       addColumn(column);
     }
     if (columnFilterModels != null) {
-      for (final ColumnSearchModel<C> columnFilterModel : columnFilterModels) {
+      for (final ColumnCriteriaModel<C> columnFilterModel : columnFilterModels) {
         this.columnFilterModels.put(columnFilterModel.getColumnIdentifier(), columnFilterModel);
       }
     }
@@ -162,13 +162,13 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
 
   /** {@inheritDoc} */
   @Override
-  public final ColumnSearchModel<C> getColumnFilterModel(final C columnIdentifier) {
+  public final ColumnCriteriaModel<C> getColumnFilterModel(final C columnIdentifier) {
     return columnFilterModels.get(columnIdentifier);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Collection<ColumnSearchModel<C>> getColumnFilterModels() {
+  public Collection<ColumnCriteriaModel<C>> getColumnFilterModels() {
     return columnFilterModels.values();
   }
 

@@ -64,12 +64,12 @@ public class DefaultFilteredTableColumnModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullColumns() {
-    new DefaultFilteredTableColumnModel<>(null, new ArrayList<ColumnSearchModel<Integer>>());
+    new DefaultFilteredTableColumnModel<>(null, new ArrayList<ColumnCriteriaModel<Integer>>());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNoColumns() {
-    new DefaultFilteredTableColumnModel<>(new ArrayList<TableColumn>(), new ArrayList<ColumnSearchModel<Integer>>());
+    new DefaultFilteredTableColumnModel<>(new ArrayList<TableColumn>(), new ArrayList<ColumnCriteriaModel<Integer>>());
   }
 
   @Test
@@ -125,7 +125,7 @@ public class DefaultFilteredTableColumnModelTest {
   private FilteredTableColumnModel<Integer> createTestModel() {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<>(0, Types.VARCHAR, "%");
+    final ColumnCriteriaModel<Integer> filterModel = new DefaultColumnCriteriaModel<>(0, Types.VARCHAR, "%");
 
     return new DefaultFilteredTableColumnModel<>(Collections.singletonList(column), Collections.singletonList(filterModel));
   }

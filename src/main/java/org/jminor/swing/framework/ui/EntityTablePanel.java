@@ -41,14 +41,14 @@ import org.jminor.swing.common.ui.input.IntInputProvider;
 import org.jminor.swing.common.ui.input.LongInputProvider;
 import org.jminor.swing.common.ui.input.TextInputProvider;
 import org.jminor.swing.common.ui.input.ValueListInputProvider;
-import org.jminor.swing.common.ui.table.ColumnSearchPanel;
+import org.jminor.swing.common.ui.table.ColumnCriteriaPanel;
 import org.jminor.swing.common.ui.table.FilteredTablePanel;
 import org.jminor.swing.framework.model.DefaultEntityModel;
 import org.jminor.swing.framework.model.DefaultEntityTableModel;
 import org.jminor.swing.framework.model.EntityEditModel;
 import org.jminor.swing.framework.model.EntityModel;
 import org.jminor.swing.framework.model.EntityTableModel;
-import org.jminor.swing.framework.model.PropertySearchModel;
+import org.jminor.swing.framework.model.PropertyCriteriaModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -135,8 +135,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public static final String CLEAR = "clear";
   public static final String REFRESH = "refresh";
   public static final String TOGGLE_SUMMARY_PANEL = "toggleSummaryPanel";
-  public static final String TOGGLE_SEARCH_PANEL = "toggleSearchPanel";
-  public static final String SEARCH_PANEL_VISIBLE = "searchPanelVisible";
+  public static final String TOGGLE_CRITERIA_PANEL = "toggleCriteriaPanel";
+  public static final String CRITERIA_PANEL_VISIBLE = "criteriaPanelVisible";
   public static final String CLEAR_SELECTION = "clearSelection";
   public static final String MOVE_SELECTION_UP = "moveSelectionUp";
   public static final String MOVE_SELECTION_DOWN = "moveSelectionDown";
@@ -149,19 +149,19 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private static final String TRIPLEDOT = "...";
 
   private final Event tableDoubleClickedEvent = Events.event();
-  private final Event<Boolean> searchPanelVisibilityChangedEvent = Events.event();
+  private final Event<Boolean> criteriaPanelVisibilityChangedEvent = Events.event();
 
   private final Map<String, Control> controlMap = new HashMap<>();
 
   /**
-   * the search panel
+   * the criteria panel
    */
-  private final EntityTableSearchPanel searchPanel;
+  private final EntityTableCriteriaPanel criteriaPanel;
 
   /**
-   * the scroll pane used for the search panel
+   * the scroll pane used for the criteria panel
    */
-  private final JScrollPane searchScrollPane;
+  private final JScrollPane criteriaScrollPane;
 
   /**
    * the toolbar containing the refresh button
@@ -187,9 +187,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private boolean includeSouthPanel = true;
 
   /**
-   * specifies whether or not to include the search panel
+   * specifies whether or not to include the criteria panel
    */
-  private boolean includeSearchPanel = true;
+  private boolean includeCriteriaPanel = true;
 
   /**
    * specifies whether or not to include a popup menu
@@ -206,28 +206,28 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param tableModel the EntityTableModel instance
    */
   public EntityTablePanel(final EntityTableModel tableModel) {
-    this(tableModel, new EntityTableSearchPanel(tableModel));
+    this(tableModel, new EntityTableCriteriaPanel(tableModel));
   }
 
   /**
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
-   * @param searchPanel the search panel
+   * @param criteriaPanel the criteria panel
    */
-  public EntityTablePanel(final EntityTableModel tableModel, final EntityTableSearchPanel searchPanel) {
-    super(tableModel, new ColumnSearchPanelProvider<Property>() {
+  public EntityTablePanel(final EntityTableModel tableModel, final EntityTableCriteriaPanel criteriaPanel) {
+    super(tableModel, new ColumnCriteriaPanelProvider<Property>() {
       @Override
-      public ColumnSearchPanel<Property> createColumnSearchPanel(final TableColumn column) {
-        return new PropertyFilterPanel(tableModel.getSearchModel().getPropertyFilterModel(
+      public ColumnCriteriaPanel<Property> createColumnCriteriaPanel(final TableColumn column) {
+        return new PropertyFilterPanel(tableModel.getCriteriaModel().getPropertyFilterModel(
                 ((Property) column.getIdentifier()).getPropertyID()), true, true);
       }
     });
-    this.searchPanel = searchPanel;
-    if (searchPanel != null) {
-      this.searchScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
+    this.criteriaPanel = criteriaPanel;
+    if (criteriaPanel != null) {
+      this.criteriaScrollPane = new JScrollPane(JScrollPane.VERTICAL_SCROLLBAR_NEVER, JScrollPane.HORIZONTAL_SCROLLBAR_NEVER);
     }
     else {
-      this.searchScrollPane = null;
+      this.criteriaScrollPane = null;
     }
     this.statusMessageLabel = initializeStatusMessageLabel();
     this.refreshToolBar = initializeRefreshToolbar();
@@ -282,13 +282,13 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * @param value true if the search panel should be included
+   * @param value true if the criteria panel should be included
    * @see #initializePanel()
    * @throws IllegalStateException in case the panel has already been initialized
    */
-  public final void setIncludeSearchPanel(final boolean value) {
+  public final void setIncludeCriteriaPanel(final boolean value) {
     checkIfInitialized();
-    this.includeSearchPanel = value;
+    this.includeCriteriaPanel = value;
   }
 
   /**
@@ -339,59 +339,58 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Hides or shows the column search panel for this EntityTablePanel
-   * @param visible if true the search panel is shown, if false it is hidden
+   * Hides or shows the column criteria panel for this EntityTablePanel
+   * @param visible if true the criteria panel is shown, if false it is hidden
    */
-  public final void setSearchPanelVisible(final boolean visible) {
-    if (visible && isSearchPanelVisible()) {
+  public final void setCriteriaPanelVisible(final boolean visible) {
+    if (visible && isCriteriaPanelVisible()) {
       return;
     }
 
-    if (searchScrollPane != null) {
-      searchScrollPane.getViewport().setView(visible ? searchPanel : null);
+    if (criteriaScrollPane != null) {
+      criteriaScrollPane.getViewport().setView(visible ? criteriaPanel : null);
       if (refreshToolBar != null) {
         refreshToolBar.setVisible(visible);
       }
       revalidate();
-      searchPanelVisibilityChangedEvent.fire(visible);
+      criteriaPanelVisibilityChangedEvent.fire(visible);
     }
   }
 
   /**
-   * @return true if the search panel is visible, false if it is hidden
+   * @return true if the criteria panel is visible, false if it is hidden
    */
-  public final boolean isSearchPanelVisible() {
-    return searchScrollPane != null && searchScrollPane.getViewport().getView() == searchPanel;
+  public final boolean isCriteriaPanelVisible() {
+    return criteriaScrollPane != null && criteriaScrollPane.getViewport().getView() == criteriaPanel;
   }
 
   /**
-   * @return the search panel being used by this EntityTablePanel
+   * @return the criteria panel being used by this EntityTablePanel
    */
-  public final EntityTableSearchPanel getSearchPanel() {
-    return searchPanel;
+  public final EntityTableCriteriaPanel getCriteriaPanel() {
+    return criteriaPanel;
   }
 
   /**
-   * Toggles the search panel through the states hidden, visible and
-   * in case it is a EntityTableSearchPanel advanced
+   * Toggles the criteria panel through the states hidden, visible and in case it is a EntityTableCriteriaPanel, advanced
    */
-  public final void toggleSearchPanel() {
-    if (searchPanel.canToggleAdvanced()) {
-      if (isSearchPanelVisible()) {
-        if (searchPanel.isAdvanced()) {
-          setSearchPanelVisible(false);
+  public final void toggleCriteriaPanel() {
+    if (criteriaPanel.canToggleAdvanced()) {
+      if (isCriteriaPanelVisible()) {
+        if (criteriaPanel.isAdvanced()) {
+          setCriteriaPanelVisible(false);
         }
         else {
-          searchPanel.setAdvanced(true);
+          criteriaPanel.setAdvanced(true);
         }
       }
       else {
-        searchPanel.setAdvanced(false);
-        setSearchPanelVisible(true);
+        criteriaPanel.setAdvanced(false);
+        setCriteriaPanelVisible(true);
       }
     }
     else {
-      setSearchPanelVisible(!isSearchPanelVisible());
+      setCriteriaPanelVisible(!isCriteriaPanelVisible());
     }
   }
 
@@ -633,10 +632,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * Initializes the button used to toggle the search panel state (hidden, visible and advanced)
-   * @return a search panel toggle button
+   * Initializes the button used to toggle the criteria panel state (hidden, visible and advanced)
+   * @return a criteria panel toggle button
    */
-  public final Control getToggleSearchPanelControl() {
+  public final Control getToggleCriteriaPanelControl() {
     if (!getEntityTableModel().isQueryConfigurationAllowed()) {
       return null;
     }
@@ -644,7 +643,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final Control toggleControl = new Control() {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        toggleSearchPanel();
+        toggleCriteriaPanel();
       }
     };
     toggleControl.setIcon(Images.loadImage(Images.IMG_FILTER_16));
@@ -688,17 +687,17 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   /**
-   * @param listener a listener notified each time the search panel visibility changes
+   * @param listener a listener notified each time the criteria panel visibility changes
    */
-  public final void addSearchPanelVisibleListener(final EventListener listener) {
-    searchPanelVisibilityChangedEvent.addListener(listener);
+  public final void addCriteriaPanelVisibleListener(final EventListener listener) {
+    criteriaPanelVisibilityChangedEvent.addListener(listener);
   }
 
   /**
    * @param listener the listener to remove
    */
-  public final void removeSearchPanelVisibleListener(final EventListener listener) {
-    searchPanelVisibilityChangedEvent.removeListener(listener);
+  public final void removeCriteriaPanelVisibleListener(final EventListener listener) {
+    criteriaPanelVisibilityChangedEvent.removeListener(listener);
   }
 
   /**
@@ -817,7 +816,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         }
       }
     });
-    entityTablePanel.setSearchPanelVisible(true);
+    entityTablePanel.setCriteriaPanelVisible(true);
     if (singleSelection) {
       entityTablePanel.getJTable().setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
     }
@@ -968,8 +967,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     if (controlMap.containsKey(TOGGLE_SUMMARY_PANEL)) {
       toolbarControls.add(controlMap.get(TOGGLE_SUMMARY_PANEL));
     }
-    if (controlMap.containsKey(TOGGLE_SEARCH_PANEL)) {
-      toolbarControls.add(controlMap.get(TOGGLE_SEARCH_PANEL));
+    if (controlMap.containsKey(TOGGLE_CRITERIA_PANEL)) {
+      toolbarControls.add(controlMap.get(TOGGLE_CRITERIA_PANEL));
     }
     if (controlMap.containsKey(CONFIGURE_QUERY)) {
       toolbarControls.add(controlMap.get(CONFIGURE_QUERY));
@@ -1047,7 +1046,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         popupControls.addSeparator();
         separatorRequired = false;
       }
-      addSearchControls(popupControls);
+      addCriteriaControls(popupControls);
     }
     if (separatorRequired) {
       popupControls.addSeparator();
@@ -1069,19 +1068,19 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
   }
 
-  private void addSearchControls(final ControlSet popupControls) {
+  private void addCriteriaControls(final ControlSet popupControls) {
     popupControls.add(controlMap.get(CONFIGURE_QUERY));
-    if (searchPanel != null) {
-      final ControlSet searchControls = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
-      if (controlMap.containsKey(SEARCH_PANEL_VISIBLE)) {
-        searchControls.add(getControl(SEARCH_PANEL_VISIBLE));
+    if (criteriaPanel != null) {
+      final ControlSet controls = new ControlSet(FrameworkMessages.get(FrameworkMessages.SEARCH));
+      if (controlMap.containsKey(CRITERIA_PANEL_VISIBLE)) {
+        controls.add(getControl(CRITERIA_PANEL_VISIBLE));
       }
-      final ControlSet searchPanelControls = searchPanel.getControls();
+      final ControlSet searchPanelControls = criteriaPanel.getControls();
       if (searchPanelControls != null) {
-        searchControls.addAll(searchPanelControls);
+        controls.addAll(searchPanelControls);
       }
-      if (searchControls.size() > 0) {
-        popupControls.add(searchControls);
+      if (controls.size() > 0) {
+        popupControls.add(controls);
       }
     }
   }
@@ -1094,9 +1093,9 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     return printControls;
   }
 
-  protected final Control getSearchPanelControl() {
-    return Controls.toggleControl(this, "searchPanelVisible",
-            FrameworkMessages.get(FrameworkMessages.SHOW), searchPanelVisibilityChangedEvent);
+  protected final Control getCriteriaPanelControl() {
+    return Controls.toggleControl(this, "criteriaPanelVisible",
+            FrameworkMessages.get(FrameworkMessages.SHOW), criteriaPanelVisibilityChangedEvent);
   }
 
   protected final ControlSet getCopyControlSet() {
@@ -1274,7 +1273,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
     if (getEntityTableModel().isQueryConfigurationAllowed()) {
       setControl(CONFIGURE_QUERY, getConfigureQueryControl());
-      setControl(SEARCH_PANEL_VISIBLE, getSearchPanelControl());
+      setControl(CRITERIA_PANEL_VISIBLE, getCriteriaPanelControl());
     }
     setControl(CLEAR, getClearControl());
     setControl(REFRESH, getRefreshControl());
@@ -1284,8 +1283,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     }
     setControl(VIEW_DEPENDENCIES, getViewDependenciesControl());
     setControl(TOGGLE_SUMMARY_PANEL, getToggleSummaryPanelControl());
-    if (includeSearchPanel && searchPanel != null) {
-      setControl(TOGGLE_SEARCH_PANEL, getToggleSearchPanelControl());
+    if (includeCriteriaPanel && criteriaPanel != null) {
+      setControl(TOGGLE_CRITERIA_PANEL, getToggleCriteriaPanelControl());
     }
     setControl(PRINT_TABLE, getPrintTableControl());
     setControl(CLEAR_SELECTION, getClearSelectionControl());
@@ -1320,14 +1319,14 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   }
 
   private void initializeUI() {
-    if (includeSearchPanel && searchScrollPane != null) {
-      getBasePanel().add(searchScrollPane, BorderLayout.NORTH);
-      if (searchPanel.canToggleAdvanced()) {
-        searchScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
-        searchPanel.addAdvancedListener(new EventInfoListener<Boolean>() {
+    if (includeCriteriaPanel && criteriaScrollPane != null) {
+      getBasePanel().add(criteriaScrollPane, BorderLayout.NORTH);
+      if (criteriaPanel.canToggleAdvanced()) {
+        criteriaScrollPane.getHorizontalScrollBar().setModel(getTableScrollPane().getHorizontalScrollBar().getModel());
+        criteriaPanel.addAdvancedListener(new EventInfoListener<Boolean>() {
           @Override
           public void eventOccurred(final Boolean info) {
-            if (isSearchPanelVisible()) {
+            if (isCriteriaPanelVisible()) {
               revalidate();
             }
           }
@@ -1356,7 +1355,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
     final Control refresh = Controls.methodControl(getEntityTableModel(), "refresh", null,
-            getEntityTableModel().getSearchModel().getSearchStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
+            getEntityTableModel().getCriteriaModel().getCriteriaStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
             + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 
     final InputMap inputMap = getInputMap(WHEN_ANCESTOR_OF_FOCUSED_COMPONENT);
@@ -1401,8 +1400,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     getEntityTableModel().addFilteringListener(statusListener);
     getEntityTableModel().addTableDataChangedListener(statusListener);
 
-    for (final PropertySearchModel searchModel : getEntityTableModel().getSearchModel().getPropertySearchModels()) {
-      searchModel.addSearchStateListener(new EventListener() {
+    for (final PropertyCriteriaModel criteriaModel : getEntityTableModel().getCriteriaModel().getPropertyCriteriaModels()) {
+      criteriaModel.addCriteriaStateListener(new EventListener() {
         @Override
         public void eventOccurred() {
           getJTable().getTableHeader().repaint();
@@ -1446,8 +1445,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         final TableCellRenderer renderer = tableColumn.getCellRenderer();
         final Property property = (Property) tableColumn.getIdentifier();
         final boolean indicateSearch = renderer instanceof EntityTableCellRenderer
-                && ((EntityTableCellRenderer) renderer).isIndicateSearch()
-                && tableModel.getSearchModel().isSearchEnabled(property.getPropertyID());
+                && ((EntityTableCellRenderer) renderer).isIndicateCriteria()
+                && tableModel.getCriteriaModel().isEnabled(property.getPropertyID());
         label.setFont(indicateSearch ? searchFont : defaultFont);
 
         return label;

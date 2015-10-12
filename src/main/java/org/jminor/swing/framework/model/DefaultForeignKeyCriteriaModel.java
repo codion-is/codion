@@ -9,16 +9,16 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.common.model.table.DefaultColumnSearchModel;
+import org.jminor.swing.common.model.table.DefaultColumnCriteriaModel;
 
 import java.util.Collection;
 import java.util.Collections;
 
 /**
- * A default ForeignKeySearchModel implementation.
+ * A default ForeignKeyCriteriaModel implementation.
  */
-public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Property.ForeignKeyProperty>
-        implements ForeignKeySearchModel {
+public class DefaultForeignKeyCriteriaModel extends DefaultColumnCriteriaModel<Property.ForeignKeyProperty>
+        implements ForeignKeyCriteriaModel {
 
   private final EntityComboBoxModel entityComboBoxModel;
   private final EntityLookupModel entityLookupModel;
@@ -26,11 +26,11 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
   private boolean updatingModel = false;
 
   /**
-   * Constructs a DefaultPropertySearchModel instance
+   * Constructs a DefaultForeignKeyCriteriaModel instance
    * @param property the property
    * @param entityLookupModel a EntityLookupModel
    */
-  public DefaultForeignKeySearchModel(final Property.ForeignKeyProperty property, final EntityLookupModel entityLookupModel) {
+  public DefaultForeignKeyCriteriaModel(final Property.ForeignKeyProperty property, final EntityLookupModel entityLookupModel) {
     super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
     this.entityLookupModel = entityLookupModel;
     this.entityComboBoxModel = null;
@@ -38,11 +38,11 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
   }
 
   /**
-   * Constructs a DefaultPropertySearchModel instance
+   * Constructs a DefaultForeignKeyCriteriaModel instance
    * @param property the property
    * @param entityComboBoxModel a EntityComboBoxModel
    */
-  public DefaultForeignKeySearchModel(final Property.ForeignKeyProperty property, final EntityComboBoxModel entityComboBoxModel) {
+  public DefaultForeignKeyCriteriaModel(final Property.ForeignKeyProperty property, final EntityComboBoxModel entityComboBoxModel) {
     super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
     this.entityComboBoxModel = entityComboBoxModel;
     if (entityComboBoxModel != null && entityComboBoxModel.isCleared()) {
@@ -95,7 +95,7 @@ public class DefaultForeignKeySearchModel extends DefaultColumnSearchModel<Prope
 
   /** {@inheritDoc} */
   @Override
-  public Collection<Entity> getSearchEntities() {
+  public Collection<Entity> getCriteriaEntities() {
     final Object upperBound = getUpperBound();
     if (upperBound instanceof Entity) {
       return Collections.singletonList((Entity) upperBound);

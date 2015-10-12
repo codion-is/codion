@@ -82,7 +82,7 @@ public final class EntityTableCellRenderers {
     private final Property property;
     private final Format format;
 
-    private boolean indicateSearch = true;
+    private boolean indicateCriteria = true;
     private boolean tooltipData = false;
 
     /**
@@ -121,14 +121,14 @@ public final class EntityTableCellRenderers {
 
     /** {@inheritDoc} */
     @Override
-    public final boolean isIndicateSearch() {
-      return indicateSearch;
+    public final boolean isIndicateCriteria() {
+      return indicateCriteria;
     }
 
     /** {@inheritDoc} */
     @Override
-    public final void setIndicateSearch(final boolean indicateSearch) {
-      this.indicateSearch = indicateSearch;
+    public final void setIndicateCriteria(final boolean indicateCriteria) {
+      this.indicateCriteria = indicateCriteria;
     }
 
     /** {@inheritDoc} */
@@ -155,12 +155,12 @@ public final class EntityTableCellRenderers {
         return this;
       }
 
-      final boolean propertySearchEnabled = tableModel.getSearchModel().isSearchEnabled(property.getPropertyID());
-      final boolean propertyFilterEnabled = tableModel.getSearchModel().isFilterEnabled(property.getPropertyID());
-      final boolean showSearch = indicateSearch && (propertySearchEnabled || propertyFilterEnabled);
+      final boolean propertyCriteriaEnabled = tableModel.getCriteriaModel().isEnabled(property.getPropertyID());
+      final boolean propertyFilterEnabled = tableModel.getCriteriaModel().isFilterEnabled(property.getPropertyID());
+      final boolean showCriteria = indicateCriteria && (propertyCriteriaEnabled || propertyFilterEnabled);
       final Color cellColor = tableModel.getPropertyBackgroundColor(row, property);
-      if (showSearch) {
-        setBackground(getSearchEnabledColor(row, propertySearchEnabled, propertyFilterEnabled, cellColor));
+      if (showCriteria) {
+        setBackground(getCriteriaEnabledColor(row, propertyCriteriaEnabled, propertyFilterEnabled, cellColor));
       }
       else {
         if (cellColor != null) {
@@ -188,9 +188,9 @@ public final class EntityTableCellRenderers {
       }
     }
 
-    private static Color getSearchEnabledColor(final int row, final boolean propertySearchEnabled,
-                                               final boolean propertyFilterEnabled, final Color cellColor) {
-      final boolean doubleShade = propertySearchEnabled && propertyFilterEnabled;
+    private static Color getCriteriaEnabledColor(final int row, final boolean propertyCriteriaEnabled,
+                                                 final boolean propertyFilterEnabled, final Color cellColor) {
+      final boolean doubleShade = propertyCriteriaEnabled && propertyFilterEnabled;
       if (cellColor != null) {
         return shade(cellColor, doubleShade ? SHADE_AMOUNT * 2 : SHADE_AMOUNT);
       }

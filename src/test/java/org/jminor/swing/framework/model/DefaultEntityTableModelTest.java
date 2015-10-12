@@ -14,7 +14,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.swing.common.model.table.ColumnSearchModel;
+import org.jminor.swing.common.model.table.ColumnCriteriaModel;
 import org.jminor.swing.common.model.table.SortingDirective;
 
 import org.junit.Test;
@@ -43,14 +43,14 @@ public final class DefaultEntityTableModelTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void nullSearchModel() {
+  public void nullCriteriaModel() {
     new DefaultEntityTableModel(TestDomain.T_EMP, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void nonMatchingSearchModelEntityID() {
-    final EntityTableSearchModel searchModel = new DefaultEntityTableSearchModel(TestDomain.T_DEPARTMENT, null);
-    new DefaultEntityTableModel(TestDomain.T_EMP, null, null, searchModel);
+  public void nonMatchingCriteriaModelEntityID() {
+    final EntityTableCriteriaModel criteriaModel = new DefaultEntityTableCriteriaModel(TestDomain.T_DEPARTMENT, null);
+    new DefaultEntityTableModel(TestDomain.T_EMP, null, null, criteriaModel);
   }
 
   @Test
@@ -280,7 +280,7 @@ public final class DefaultEntityTableModelTest {
   @Test
   public void testFiltering() {
     testModel.refresh();
-    final ColumnSearchModel<Property> filterModel = testModel.getSearchModel().getPropertyFilterModel(TestDomain.DETAIL_STRING);
+    final ColumnCriteriaModel<Property> filterModel = testModel.getCriteriaModel().getPropertyFilterModel(TestDomain.DETAIL_STRING);
     filterModel.setLikeValue("a");
     testModel.filterContents();
   }

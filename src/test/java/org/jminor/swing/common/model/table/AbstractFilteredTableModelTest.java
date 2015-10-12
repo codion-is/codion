@@ -36,7 +36,7 @@ public final class AbstractFilteredTableModelTest {
   public static class TestAbstractFilteredTableModel extends AbstractFilteredTableModel<String, Integer> {
 
     private TestAbstractFilteredTableModel(final AbstractTableSortModel<String, Integer> sortModel,
-                                           final List<ColumnSearchModel<Integer>> columnFilterModels) {
+                                           final List<ColumnCriteriaModel<Integer>> columnFilterModels) {
       super(sortModel, columnFilterModels);
     }
 
@@ -63,7 +63,7 @@ public final class AbstractFilteredTableModelTest {
   public static TestAbstractFilteredTableModel createTestModel(final Comparator<String> customComparator) {
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);
-    final ColumnSearchModel<Integer> filterModel = new DefaultColumnSearchModel<>(0, Types.VARCHAR, "%");
+    final ColumnCriteriaModel<Integer> filterModel = new DefaultColumnCriteriaModel<>(0, Types.VARCHAR, "%");
     return new TestAbstractFilteredTableModel(new AbstractTableSortModel<String, Integer>(Collections.singletonList(column)) {
       @Override
       public Class getColumnClass(final Integer columnIdentifier) {

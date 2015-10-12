@@ -382,7 +382,7 @@ public class DefaultEntityModel implements EntityModel {
   @Override
   public final void initialize(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
     if (containsTableModel()) {
-      tableModel.setForeignKeySearchValues(foreignKeyProperty, foreignKeyValues);
+      tableModel.setForeignKeyCriteriaValues(foreignKeyProperty, foreignKeyValues);
     }
 
     if (editModel.isEntityNew() && !Util.nullOrEmpty(foreignKeyValues)) {
@@ -497,7 +497,7 @@ public class DefaultEntityModel implements EntityModel {
       else {
         foreignKeyProperty = Entities.getForeignKeyProperties(entityID, masterModel.getEntityID()).get(0);
       }
-      tableModel.setForeignKeySearchValues(foreignKeyProperty, insertEvent.getInsertedEntities());
+      tableModel.setForeignKeyCriteriaValues(foreignKeyProperty, insertEvent.getInsertedEntities());
     }
   }
 

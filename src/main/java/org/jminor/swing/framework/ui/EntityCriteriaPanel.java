@@ -9,11 +9,11 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.common.ui.table.ColumnSearchPanel;
+import org.jminor.swing.common.ui.table.ColumnCriteriaPanel;
 import org.jminor.swing.framework.model.EntityTableModel;
-import org.jminor.swing.framework.model.EntityTableSearchModel;
-import org.jminor.swing.framework.model.ForeignKeySearchModel;
-import org.jminor.swing.framework.model.PropertySearchModel;
+import org.jminor.swing.framework.model.EntityTableCriteriaModel;
+import org.jminor.swing.framework.model.ForeignKeyCriteriaModel;
+import org.jminor.swing.framework.model.PropertyCriteriaModel;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;
@@ -39,14 +39,14 @@ import java.util.List;
 import java.util.Map;
 
 /**
- * A panel for configuring the PropertySearchModels for a given EntityTableModel.
+ * A panel for configuring the PropertyCriteriaModels for a given EntityTableModel.
  */
 public final class EntityCriteriaPanel extends JPanel {
 
   private static final int DEFAULT_WIDTH = 200;
   private static final int DEFAULT_HEIGHT = 40;
 
-  private final Map<PropertySearchModel, ColumnSearchPanel> panels = new HashMap<>();
+  private final Map<PropertyCriteriaModel, ColumnCriteriaPanel> panels = new HashMap<>();
 
   /**
    * Instantiates a new EntityCriteriaPanel for the given table model
@@ -58,7 +58,7 @@ public final class EntityCriteriaPanel extends JPanel {
     final JPanel editPanel = new JPanel(new BorderLayout());
     editPanel.setPreferredSize(new Dimension(DEFAULT_WIDTH, DEFAULT_HEIGHT));
 
-    final JList propertyList = initializePropertyList(tableModel.getSearchModel(), editPanel);
+    final JList propertyList = initializePropertyList(tableModel.getCriteriaModel(), editPanel);
     final JScrollPane scroller = new JScrollPane(propertyList);
 
     final JPanel propertyBase = new JPanel(new BorderLayout());
@@ -68,7 +68,7 @@ public final class EntityCriteriaPanel extends JPanel {
     propertyBase.add(editPanel, BorderLayout.CENTER);
     add(propertyBase, BorderLayout.CENTER);
 
-    tableModel.getSearchModel().refresh();
+    tableModel.getCriteriaModel().refresh();
 
     add(initializeConfigurationPanel(tableModel), BorderLayout.SOUTH);
   }
@@ -82,27 +82,26 @@ public final class EntityCriteriaPanel extends JPanel {
     return panel;
   }
 
-  private JList initializePropertyList(final EntityTableSearchModel searchModel, final JPanel editorPanel) {
-    final List<PropertySearchModel> searchCriteria = getSortedCriteria(searchModel);
-    final JList<PropertySearchModel> propertyList = new JList<>(new DefaultListModel<PropertySearchModel>());
-    for (final PropertySearchModel model : searchCriteria) {
-      ((DefaultListModel<PropertySearchModel>) propertyList.getModel()).addElement(model);
-      model.addSearchStateListener(new RepaintListener(propertyList));
+  private JList initializePropertyList(final EntityTableCriteriaModel criteriaModel, final JPanel editorPanel) {
+    final List<PropertyCriteriaModel> searchCriteria = getSortedCriteria(criteriaModel);
+    final JList<PropertyCriteriaModel> propertyList = new JList<>(new DefaultListModel<PropertyCriteriaModel>());
+    for (final PropertyCriteriaModel model : searchCriteria) {
+      ((DefaultListModel<PropertyCriteriaModel>) propertyList.getModel()).addElement(model);
+      model.addCriteriaStateListener(new RepaintListener(propertyList));
     }
     propertyList.setCellRenderer(new CriteriaListCellRenderer());
     propertyList.setSelectionMode(ListSelectionModel.SINGLE_SELECTION);
 
-    propertyList.addListSelectionListener(new SearchModelSelectionListener(editorPanel, propertyList));
+    propertyList.addListSelectionListener(new CriteriaModelSelectionListener(editorPanel, propertyList));
 
     return propertyList;
   }
 
-  private List<PropertySearchModel> getSortedCriteria(final EntityTableSearchModel searchModel) {
-    final List<PropertySearchModel> searchCriteria =
-            new ArrayList<PropertySearchModel>(searchModel.getPropertySearchModels());
-    Collections.sort(searchCriteria, new SearchModelComparator());
+  private List<PropertyCriteriaModel> getSortedCriteria(final EntityTableCriteriaModel criteriaModel) {
+    final List<PropertyCriteriaModel> criteria = new ArrayList<>(criteriaModel.getPropertyCriteriaModels());
+    Collections.sort(criteria, new CriteriaModelComparator());
 
-    return searchCriteria;
+    return criteria;
   }
 
   private static final class RepaintListener implements EventListener {
@@ -123,7 +122,7 @@ public final class EntityCriteriaPanel extends JPanel {
     public Component getListCellRendererComponent(final JList list, final Object value, final int index,
                                                   final boolean isSelected, final boolean cellHasFocus) {
       final Component cellRenderer = super.getListCellRendererComponent(list, value, index, isSelected, cellHasFocus);
-      final PropertySearchModel selected = (PropertySearchModel) value;
+      final PropertyCriteriaModel selected = (PropertyCriteriaModel) value;
       ((JLabel)cellRenderer).setText(selected.getColumnIdentifier().toString());
       cellRenderer.setForeground(selected.isEnabled() ? Color.red : Color.black);
 
@@ -131,10 +130,10 @@ public final class EntityCriteriaPanel extends JPanel {
     }
   }
 
-  private static final class SearchModelComparator implements Comparator<PropertySearchModel>, Serializable {
+  private static final class CriteriaModelComparator implements Comparator<PropertyCriteriaModel>, Serializable {
     private static final long serialVersionUID = 1;
     @Override
-    public int compare(final PropertySearchModel o1, final PropertySearchModel o2) {
+    public int compare(final PropertyCriteriaModel o1, final PropertyCriteriaModel o2) {
       final Property propertyOne = (Property) o1.getColumnIdentifier();
       final Property propertyTwo = (Property) o2.getColumnIdentifier();
       if (propertyOne.getCaption() != null && propertyTwo.getCaption() != null) {
@@ -146,12 +145,12 @@ public final class EntityCriteriaPanel extends JPanel {
     }
   }
 
-  private final class SearchModelSelectionListener implements ListSelectionListener {
+  private final class CriteriaModelSelectionListener implements ListSelectionListener {
 
     private final JPanel editorPanel;
     private final JList propertyList;
 
-    private SearchModelSelectionListener(final JPanel editorPanel, final JList propertyList) {
+    private CriteriaModelSelectionListener(final JPanel editorPanel, final JList propertyList) {
       this.editorPanel = editorPanel;
       this.propertyList = propertyList;
     }
@@ -160,15 +159,15 @@ public final class EntityCriteriaPanel extends JPanel {
     @SuppressWarnings({"unchecked"})
     public void valueChanged(final ListSelectionEvent e) {
       editorPanel.removeAll();
-      final PropertySearchModel selected = (PropertySearchModel) propertyList.getSelectedValue();
+      final PropertyCriteriaModel selected = (PropertyCriteriaModel) propertyList.getSelectedValue();
       if (selected != null) {
-        ColumnSearchPanel panel = panels.get(selected);
+        ColumnCriteriaPanel panel = panels.get(selected);
         if (panel == null) {
-          if (selected instanceof ForeignKeySearchModel) {
-            panel = new ForeignKeySearchPanel((ForeignKeySearchModel) selected, true, true);
+          if (selected instanceof ForeignKeyCriteriaModel) {
+            panel = new ForeignKeyCriteriaPanel((ForeignKeyCriteriaModel) selected, true, true);
           }
           else {
-            panel = new PropertySearchPanel(selected, true, true);
+            panel = new PropertyCriteriaPanel(selected, true, true);
           }
           panels.put(selected, panel);
         }

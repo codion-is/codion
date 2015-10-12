@@ -15,7 +15,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
-import org.jminor.swing.common.model.table.DefaultColumnSearchModel;
+import org.jminor.swing.common.model.table.DefaultColumnCriteriaModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -403,8 +403,8 @@ public final class EntityGeneratorModel {
             return rowObject.getTableName();
           }
         }
-      }, Arrays.asList(new DefaultColumnSearchModel<>(0, Types.VARCHAR, "%"),
-              new DefaultColumnSearchModel<>(1, Types.VARCHAR, "%")));
+      }, Arrays.asList(new DefaultColumnCriteriaModel<>(0, Types.VARCHAR, "%"),
+              new DefaultColumnCriteriaModel<>(1, Types.VARCHAR, "%")));
       this.metaData = metaData;
       this.schema = schema;
       this.catalog = catalog;

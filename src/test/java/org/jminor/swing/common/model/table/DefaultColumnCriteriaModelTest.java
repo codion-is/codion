@@ -16,7 +16,7 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
-public class DefaultColumnSearchModelTest {
+public class DefaultColumnCriteriaModelTest {
   final AtomicInteger upperBoundCounter = new AtomicInteger();
   final AtomicInteger lowerBoundCounter = new AtomicInteger();
   final AtomicInteger searchStateCounter = new AtomicInteger();
@@ -36,7 +36,7 @@ public class DefaultColumnSearchModelTest {
       lowerBoundCounter.incrementAndGet();
     }
   };
-  final EventListener searchStateListener = new EventListener() {
+  final EventListener criteriaStateListener = new EventListener() {
     @Override
     public void eventOccurred() {
       searchStateCounter.incrementAndGet();
@@ -63,12 +63,12 @@ public class DefaultColumnSearchModelTest {
 
   @Test
   public void testSetBounds() {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnCriteriaModel<String> model = new DefaultColumnCriteriaModel<>("test", Types.VARCHAR, "%");
     model.setAutoEnable(false);
     assertFalse(model.isAutoEnable());
     model.addUpperBoundListener(upperBoundListener);
     model.addLowerBoundListener(lowerBoundListener);
-    model.addSearchStateListener(searchStateListener);
+    model.addCriteriaStateListener(criteriaStateListener);
     model.addClearedListener(clearListener);
 
     model.setUpperBound("hello");
@@ -108,18 +108,18 @@ public class DefaultColumnSearchModelTest {
     model.setLowerBound(new Object());
     model.setLowerBound(Boolean.valueOf(true));
 
-    model.clearSearch();
+    model.clearCriteria();
     assertEquals(1, clearCounter.get());
 
     model.removeUpperBoundListener(upperBoundListener);
     model.removeLowerBoundListener(lowerBoundListener);
-    model.removeSearchStateListener(searchStateListener);
+    model.removeCriteriaStateListener(criteriaStateListener);
     model.removeClearedListener(clearListener);
   }
 
   @Test
   public void testSearchType() {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnCriteriaModel<String> model = new DefaultColumnCriteriaModel<>("test", Types.VARCHAR, "%");
     model.addSearchTypeListener(searchTypeListener);
     assertEquals(SearchType.LIKE, model.getSearchType());
     model.setSearchType(SearchType.LESS_THAN);
@@ -137,7 +137,7 @@ public class DefaultColumnSearchModelTest {
 
   @Test
   public void test() throws Exception {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnCriteriaModel<String> model = new DefaultColumnCriteriaModel<>("test", Types.VARCHAR, "%");
     assertTrue(model.isAutoEnable());
     model.setUpperBound("test");
     assertTrue(model.isEnabled());
@@ -168,76 +168,76 @@ public class DefaultColumnSearchModelTest {
 
   @Test(expected = IllegalStateException.class)
   public void setUpperBoundLocked() {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnCriteriaModel<String> model = new DefaultColumnCriteriaModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
     model.setUpperBound("test");
   }
 
   @Test(expected = IllegalStateException.class)
   public void setLowerBoundLocked() {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnCriteriaModel<String> model = new DefaultColumnCriteriaModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
     model.setLowerBound("test");
   }
 
   @Test(expected = IllegalStateException.class)
   public void setEnabledLocked() {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnCriteriaModel<String> model = new DefaultColumnCriteriaModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
     model.setEnabled(true);
   }
 
   @Test(expected = IllegalStateException.class)
   public void setSearchTypeLocked() {
-    final DefaultColumnSearchModel<String> model = new DefaultColumnSearchModel<>("test", Types.VARCHAR, "%");
+    final DefaultColumnCriteriaModel<String> model = new DefaultColumnCriteriaModel<>("test", Types.VARCHAR, "%");
     model.setLocked(true);
     model.setSearchType(SearchType.NOT_LIKE);
   }
 
   @Test
   public void include() {
-    final DefaultColumnSearchModel<String> searchModel = new DefaultColumnSearchModel<>("test", Types.INTEGER, "%");
-    searchModel.setUpperBound(10);
-    searchModel.setSearchType(SearchType.LIKE);
-    assertFalse(searchModel.include(9));
-    assertTrue(searchModel.include(10));
-    assertFalse(searchModel.include(11));
+    final DefaultColumnCriteriaModel<String> criteriaModel = new DefaultColumnCriteriaModel<>("test", Types.INTEGER, "%");
+    criteriaModel.setUpperBound(10);
+    criteriaModel.setSearchType(SearchType.LIKE);
+    assertFalse(criteriaModel.include(9));
+    assertTrue(criteriaModel.include(10));
+    assertFalse(criteriaModel.include(11));
 
-    searchModel.setSearchType(SearchType.NOT_LIKE);
-    assertTrue(searchModel.include(9));
-    assertFalse(searchModel.include(10));
-    assertTrue(searchModel.include(11));
+    criteriaModel.setSearchType(SearchType.NOT_LIKE);
+    assertTrue(criteriaModel.include(9));
+    assertFalse(criteriaModel.include(10));
+    assertTrue(criteriaModel.include(11));
 
-    searchModel.setSearchType(SearchType.GREATER_THAN);
-    assertFalse(searchModel.include(9));
-    assertTrue(searchModel.include(10));
-    assertTrue(searchModel.include(11));
+    criteriaModel.setSearchType(SearchType.GREATER_THAN);
+    assertFalse(criteriaModel.include(9));
+    assertTrue(criteriaModel.include(10));
+    assertTrue(criteriaModel.include(11));
 
-    searchModel.setSearchType(SearchType.LESS_THAN);
-    assertTrue(searchModel.include(9));
-    assertTrue(searchModel.include(10));
-    assertFalse(searchModel.include(11));
+    criteriaModel.setSearchType(SearchType.LESS_THAN);
+    assertTrue(criteriaModel.include(9));
+    assertTrue(criteriaModel.include(10));
+    assertFalse(criteriaModel.include(11));
 
-    searchModel.setSearchType(SearchType.WITHIN_RANGE);
-    searchModel.setLowerBound(6);
-    assertTrue(searchModel.include(6));
-    assertTrue(searchModel.include(7));
-    assertTrue(searchModel.include(9));
-    assertTrue(searchModel.include(10));
-    assertFalse(searchModel.include(11));
-    assertFalse(searchModel.include(5));
+    criteriaModel.setSearchType(SearchType.WITHIN_RANGE);
+    criteriaModel.setLowerBound(6);
+    assertTrue(criteriaModel.include(6));
+    assertTrue(criteriaModel.include(7));
+    assertTrue(criteriaModel.include(9));
+    assertTrue(criteriaModel.include(10));
+    assertFalse(criteriaModel.include(11));
+    assertFalse(criteriaModel.include(5));
 
-    searchModel.setSearchType(SearchType.OUTSIDE_RANGE);
-    assertTrue(searchModel.include(6));
-    assertFalse(searchModel.include(7));
-    assertFalse(searchModel.include(9));
-    assertTrue(searchModel.include(10));
-    assertTrue(searchModel.include(11));
-    assertTrue(searchModel.include(5));
+    criteriaModel.setSearchType(SearchType.OUTSIDE_RANGE);
+    assertTrue(criteriaModel.include(6));
+    assertFalse(criteriaModel.include(7));
+    assertFalse(criteriaModel.include(9));
+    assertTrue(criteriaModel.include(10));
+    assertTrue(criteriaModel.include(11));
+    assertTrue(criteriaModel.include(5));
 
-    searchModel.setEnabled(false);
-    assertTrue(searchModel.include(5));
-    assertTrue(searchModel.include(6));
-    assertTrue(searchModel.include(7));
+    criteriaModel.setEnabled(false);
+    assertTrue(criteriaModel.include(5));
+    assertTrue(criteriaModel.include(6));
+    assertTrue(criteriaModel.include(7));
   }
 }

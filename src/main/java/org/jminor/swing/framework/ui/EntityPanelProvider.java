@@ -33,7 +33,7 @@ public class EntityPanelProvider implements Comparable {
   private boolean refreshOnInit = true;
   private EntityPanel.PanelState detailPanelState = EntityPanel.PanelState.EMBEDDED;
   private double detailSplitPanelResizeWeight = DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT;
-  private boolean tableSearchPanelVisible = Configuration.getBooleanValue(Configuration.SEARCH_PANEL_STATE);
+  private boolean tableCriteriaPanelVisible = Configuration.getBooleanValue(Configuration.TABLE_CRITERIA_PANEL_VISIBLE);
 
   private Class<? extends EntityPanel> panelClass = EntityPanel.class;
   private Class<? extends EntityTablePanel> tablePanelClass = EntityTablePanel.class;
@@ -169,18 +169,18 @@ public class EntityPanelProvider implements Comparable {
   }
 
   /**
-   * @return whether or not the table search panel is made visible when the panel is initialized
+   * @return whether or not the table criteria panel is made visible when the panel is initialized
    */
-  public final boolean isTableSearchPanelVisible() {
-    return tableSearchPanelVisible;
+  public final boolean isTableCriteriaPanelVisible() {
+    return tableCriteriaPanelVisible;
   }
 
   /**
-   * @param tableSearchPanelVisible if true then the table search panel is made visible when the panel is initialized
+   * @param tableCriteriaPanelVisible if true then the table criteria panel is made visible when the panel is initialized
    * @return this EntityPanelProvider instance
    */
-  public final EntityPanelProvider setTableSearchPanelVisible(final boolean tableSearchPanelVisible) {
-    this.tableSearchPanelVisible = tableSearchPanelVisible;
+  public final EntityPanelProvider setTableCriteriaPanelVisible(final boolean tableCriteriaPanelVisible) {
+    this.tableCriteriaPanelVisible = tableCriteriaPanelVisible;
     return this;
   }
 
@@ -332,8 +332,8 @@ public class EntityPanelProvider implements Comparable {
     }
     try {
       final EntityPanel entityPanel = initializePanel(model);
-      if (entityPanel.getTablePanel() != null && tableSearchPanelVisible) {
-        entityPanel.getTablePanel().setSearchPanelVisible(tableSearchPanelVisible);
+      if (entityPanel.getTablePanel() != null && tableCriteriaPanelVisible) {
+        entityPanel.getTablePanel().setCriteriaPanelVisible(tableCriteriaPanelVisible);
       }
       if (!detailPanelProviders.isEmpty()) {
         entityPanel.setDetailPanelState(detailPanelState);
