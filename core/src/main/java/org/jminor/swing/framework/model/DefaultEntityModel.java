@@ -384,10 +384,6 @@ public class DefaultEntityModel implements EntityModel {
     if (containsTableModel()) {
       tableModel.setForeignKeyCriteriaValues(foreignKeyProperty, foreignKeyValues);
     }
-
-    if (editModel.isEntityNew() && !Util.nullOrEmpty(foreignKeyValues)) {
-      editModel.setValue(foreignKeyProperty.getPropertyID(), foreignKeyValues.get(0));
-    }
     handleInitialization(foreignKeyProperty, foreignKeyValues);
   }
 
@@ -448,11 +444,15 @@ public class DefaultEntityModel implements EntityModel {
   }
 
   /**
+   * By default this method sets the foreign key value in the edit model if the entity is new, using the first item in {@code foreignKeyValues}.
    * @param foreignKeyProperty the foreign key referring to the master model doing the initialization
    * @param foreignKeyValues the foreign key entities selected or otherwise indicated as being active in the master model
    */
-  @SuppressWarnings({"UnusedDeclaration"})
-  protected void handleInitialization(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {}
+  protected void handleInitialization(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
+    if (editModel.isEntityNew() && !Util.nullOrEmpty(foreignKeyValues)) {
+      editModel.setValue(foreignKeyProperty.getPropertyID(), foreignKeyValues.get(0));
+    }
+  }
 
   /**
    * Initializes all linked detail models according to the active entities in this master model

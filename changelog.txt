@@ -4094,3 +4094,4 @@
   Build files restructured
   Project structure improved, core added
   JavaFX module added
+  DefaultEntityModel, setting the foreign key value functionality moved from initialize() to handleInitialization(), which can be overridden
