@@ -98,19 +98,20 @@
   </target>
 
   <target name="dist" depends="build, javadoc">
+    <tstamp />
     <mkdir dir="build/main/META-INF"/>
     <manifest file="build/main/META-INF/MANIFEST.MF">
-      <attribute name="Specification-Title" value="JMinor Application Framework"/>
+      <attribute name="Specification-Title" value="${ant.project.name}"/>
       <attribute name="Specification-Version" value="${version}"/>
       <attribute name="Specification-Vendor" value="JMinor"/>
-      <attribute name="Implementation-Title" value="JMinor Application Framework"/>
+      <attribute name="Implementation-Title" value="${ant.project.name}"/>
       <attribute name="Implementation-Version" value="${version}"/>
       <attribute name="Implementation-Vendor" value="JMinor"/>
       <attribute name="Implementation-Vendor-Id" value="org.jminor"/>
       <attribute name="Implementation-URL" value="http://jminor.org"/>
       <attribute name="Build-Jdk" value="${java.version}"/>
       <attribute name="Built-By" value="${user.name}"/>
-      <attribute name="Build-Time" value="${build.date}"/>
+      <attribute name="Build-Time" value="${DSTAMP}${TSTAMP}"/>
     </manifest>
     <jar jarfile="dist/${ant.project.name}.jar" basedir="build/main"
          manifest="${build.main}/META-INF/MANIFEST.MF"/>

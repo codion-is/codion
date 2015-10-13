@@ -1,4 +1,4 @@
 <project name="jminor-javafx">
-  <property name="project.root" value="../"/>
+  <property file="build.properties"/>
   <import file="../build-common.xml"/>
 </project>
