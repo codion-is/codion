@@ -1,4 +1,4 @@
-<project name="jminor-common" default="build" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:jacoco="antlib:org.jacoco.ant">
+<project name="jminor-demo" default="build" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:jacoco="antlib:org.jacoco.ant">
 
   <property name="project.root" value="../../"/>
   <property name="junit.db.initScript" value="src/main/sql/create_schema.sql"/>
