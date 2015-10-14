@@ -361,7 +361,7 @@
   <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos, deploy_generator"
           description="A convenience target for deploying the server, server monitor and demo applications"/>
 
-  <target name="run_unit_tests" depends="clean, build"
+  <target name="run_unit_tests" depends="clean, build, create_keystore"
           description="Runs the framework unit tests with JaCoCo coverage">
     <delete dir="${test.reports}" includeEmptyDirs="true"/>
     <delete dir="${test.reports.html}" includeEmptyDirs="true"/>

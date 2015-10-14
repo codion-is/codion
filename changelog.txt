@@ -4095,3 +4095,4 @@
   Project structure improved, core added
   JavaFX module added
   DefaultEntityModel, setting the foreign key value functionality moved from initialize() to handleInitialization(), which can be overridden
+  H2Database.initializeDatabase() bug fixed, did not work with Windows paths, since \ is an escape character in the INIT clause
