@@ -309,6 +309,7 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
     private final String serverName;
     private final int serverPort;
     private final long serverStartupTime;
+    private final Version serverVersion = Util.getVersion();
 
     private DefaultServerInfo(final UUID serverID, final String serverName, final int serverPort, final long serverStartupTime) {
       this.serverID = serverID;
@@ -334,7 +335,7 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
 
     @Override
     public Version getServerVersion() {
-      return Util.getVersion();
+      return serverVersion;
     }
 
     @Override
