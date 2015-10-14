@@ -4096,5 +4096,5 @@
   JavaFX module added
   DefaultEntityModel, setting the foreign key value functionality moved from initialize() to handleInitialization(), which can be overridden
   H2Database.initializeDatabase() bug fixed, did not work with Windows paths, since \ is an escape character in the INIT clause
-  ColumnCriteriaPanel and PropertyCriteriaPanel bug fixed, value binding failed due to the above removal of "redundant" methods to ColumnCriteriaModel
+  ColumnCriteriaPanel and PropertyCriteriaPanel bug fixed, value binding failed due to the above removal of "redundant" methods from ColumnCriteriaModel
   ColumnCriteriaModel, DefaultColumnCriteriaModel, upperBound and lowerBound are now based on Value
