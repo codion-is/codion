@@ -8,6 +8,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.Value;
 
 import java.text.Format;
 
@@ -149,6 +150,16 @@ public interface ColumnCriteriaModel<K> {
   void clearCriteria();
 
   /**
+   * @return a Value based on the upper bound value of this criteria model
+   */
+  Value getUpperBoundValue();
+
+  /**
+   * @return a Value based on the lower bound value of this criteria model
+   */
+  Value getLowerBoundValue();
+
+  /**
    * @return an observer for this model's locked state
    */
   StateObserver getLockedObserver();
@@ -157,16 +168,6 @@ public interface ColumnCriteriaModel<K> {
    * @return an observer notified each time the enabled state changes
    */
   EventObserver<Boolean> getEnabledObserver();
-
-  /**
-   * @return an observer notified each time the lower bound changes
-   */
-  EventObserver getLowerBoundObserver();
-
-  /**
-   * @return an observer notified each time the upper bound changes
-   */
-  EventObserver getUpperBoundObserver();
 
   /**
    * @return an observer notified each time the search type changes

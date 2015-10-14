@@ -12,6 +12,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Value;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.model.table.ColumnCriteriaModel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -325,14 +326,12 @@ public class ColumnCriteriaPanel<K> extends JPanel {
       if (columnCriteriaModel.getType() == Types.BOOLEAN && !isUpperBound) {
         return null;//no lower bound field required for boolean values
       }
-      final String property = isUpperBound ? ColumnCriteriaModel.UPPER_BOUND_PROPERTY : ColumnCriteriaModel.LOWER_BOUND_PROPERTY;
-      final EventObserver changeObserver = isUpperBound ? columnCriteriaModel.getUpperBoundObserver() : columnCriteriaModel.getLowerBoundObserver();
       final JComponent field = initializeField();
       if (columnCriteriaModel.getType() == Types.BOOLEAN) {
-        createToggleProperty((JCheckBox) field, property, changeObserver);
+        createToggleProperty((JCheckBox) field, isUpperBound);
       }
       else {
-        createTextProperty(field, property, changeObserver);
+        createTextProperty(field, isUpperBound);
       }
 
       if (field instanceof JTextField) {//enter button toggles the filter on/off
@@ -364,27 +363,29 @@ public class ColumnCriteriaPanel<K> extends JPanel {
       }
     }
 
-    private void createToggleProperty(final JCheckBox checkBox, final String property, final EventObserver changeObserver) {
-      ValueLinks.toggleValueLink(checkBox.getModel(), columnCriteriaModel, property, changeObserver);
+    private void createToggleProperty(final JCheckBox checkBox, final boolean upperBound) {
+      ValueLinks.toggleValueLink(checkBox.getModel(),
+              upperBound ? columnCriteriaModel.getUpperBoundValue() : columnCriteriaModel.getLowerBoundValue(), false);
     }
 
     @SuppressWarnings("unchecked")
-    private void createTextProperty(final JComponent component, final String property, final EventObserver changeObserver) {
+    private void createTextProperty(final JComponent component, final boolean upperBound) {
+      final Value modelValue = upperBound ? columnCriteriaModel.getUpperBoundValue() : columnCriteriaModel.getLowerBoundValue();
       switch (columnCriteriaModel.getType()) {
         case Types.INTEGER:
-          ValueLinks.intValueLink((IntField) component, columnCriteriaModel, property, changeObserver, false, true);
+          ValueLinks.intValueLink((IntField) component, modelValue, null, false, false, true);
           break;
         case Types.DOUBLE:
-          ValueLinks.doubleValueLink((DoubleField) component, columnCriteriaModel, property, changeObserver, false, true);
+          ValueLinks.doubleValueLink((DoubleField) component, modelValue, null, false, false, true);
           break;
         case Types.TIME:
         case Types.TIMESTAMP:
         case Types.DATE:
-          ValueLinks.dateValueLink((JFormattedTextField) component, columnCriteriaModel, property, changeObserver,
-                  false, (DateFormat) columnCriteriaModel.getFormat(), columnCriteriaModel.getType(), true);
+          ValueLinks.dateValueLink((JFormattedTextField) component, modelValue, false,
+                (SimpleDateFormat) columnCriteriaModel.getFormat(), columnCriteriaModel.getType(), true);
           break;
         default:
-          ValueLinks.textValueLink((JTextField) component, columnCriteriaModel,property, changeObserver);
+          ValueLinks.textValueLink((JTextField) component, modelValue, null, true, false);
       }
     }
   }

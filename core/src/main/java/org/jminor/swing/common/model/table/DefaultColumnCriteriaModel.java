@@ -14,6 +14,8 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Value;
+import org.jminor.common.model.Values;
 
 import java.sql.Timestamp;
 import java.sql.Types;
@@ -28,8 +30,8 @@ import java.util.regex.Pattern;
 @SuppressWarnings({"unchecked"})
 public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
 
-  private final Event upperBoundChangedEvent = Events.event();
-  private final Event lowerBoundChangedEvent = Events.event();
+  private final Value upperBoundValue = Values.value();
+  private final Value lowerBoundValue = Values.value();
   private final Event<SearchType> searchTypeChangedEvent = Events.event();
   private final Event criteriaStateChangedEvent = Events.event();
   private final Event criteriaModelClearedEvent = Events.event();
@@ -47,8 +49,6 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   private boolean autoEnable = true;
   private boolean automaticWildcard = false;
   private boolean caseSensitive = true;
-  private Object upperBound = null;
-  private Object lowerBound = null;
   private String wildcard;
 
   /**
@@ -135,15 +135,13 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   @Override
   public final void setUpperBound(final Object upper) {
     checkLock();
-    if (!Util.equal(upperBound, upper)) {
-      upperBound = upper;
-      upperBoundChangedEvent.fire();
-    }
+    upperBoundValue.set(upper);
   }
 
   /** {@inheritDoc} */
   @Override
   public final Object getUpperBound() {
+    final Object upperBound = upperBoundValue.get();
     if (type == Types.VARCHAR) {
       if (upperBound == null || (upperBound instanceof String && ((String) upperBound).length() == 0)) {
         return null;
@@ -164,15 +162,13 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   @Override
   public final void setLowerBound(final Object value) {
     checkLock();
-    if (!Util.equal(lowerBound, value)) {
-      lowerBound = value;
-      lowerBoundChangedEvent.fire();
-    }
+    lowerBoundValue.set(value);
   }
 
   /** {@inheritDoc} */
   @Override
   public final Object getLowerBound() {
+    final Object lowerBound = lowerBoundValue.get();
     if (type == Types.VARCHAR) {
       if (lowerBound == null || (lowerBound instanceof String && ((String) lowerBound).length() == 0)) {
         return null;
@@ -284,20 +280,20 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
 
   /** {@inheritDoc} */
   @Override
+  public Value getLowerBoundValue() {
+    return lowerBoundValue;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Value getUpperBoundValue() {
+    return upperBoundValue;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public final EventObserver<Boolean> getEnabledObserver() {
     return enabledChangedEvent.getObserver();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EventObserver getLowerBoundObserver() {
-    return lowerBoundChangedEvent.getObserver();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final EventObserver getUpperBoundObserver() {
-    return upperBoundChangedEvent.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -315,25 +311,25 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void addUpperBoundListener(final EventListener listener) {
-    upperBoundChangedEvent.addListener(listener);
+    upperBoundValue.getObserver().addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeUpperBoundListener(final EventListener listener) {
-    upperBoundChangedEvent.removeListener(listener);
+    upperBoundValue.getObserver().removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addLowerBoundListener(final EventListener listener) {
-    lowerBoundChangedEvent.addListener(listener);
+    lowerBoundValue.getObserver().addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeLowerBoundListener(final EventListener listener) {
-    lowerBoundChangedEvent.removeListener(listener);
+    lowerBoundValue.getObserver().removeListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -571,8 +567,8 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
       @Override
       public void eventOccurred() {
         if (autoEnable) {
-          final boolean upperBoundNull = upperBound == null;
-          final boolean lowerBoundNull = lowerBound == null;
+          final boolean upperBoundNull = upperBoundValue.get() == null;
+          final boolean lowerBoundNull = lowerBoundValue.get() == null;
           if (getValueCount(searchType) == 2) {
             setEnabled(!lowerBoundNull && !upperBoundNull);
           }
@@ -582,10 +578,10 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
         }
       }
     };
-    upperBoundChangedEvent.addListener(autoEnableListener);
-    lowerBoundChangedEvent.addListener(autoEnableListener);
-    upperBoundChangedEvent.addListener(criteriaStateChangedEvent);
-    lowerBoundChangedEvent.addListener(criteriaStateChangedEvent);
+    upperBoundValue.getObserver().addListener(autoEnableListener);
+    lowerBoundValue.getObserver().addListener(autoEnableListener);
+    upperBoundValue.getObserver().addListener(criteriaStateChangedEvent);
+    lowerBoundValue.getObserver().addListener(criteriaStateChangedEvent);
     searchTypeChangedEvent.addListener(criteriaStateChangedEvent);
     enabledChangedEvent.addListener(criteriaStateChangedEvent);
     searchTypeChangedEvent.addListener(new EventListener() {

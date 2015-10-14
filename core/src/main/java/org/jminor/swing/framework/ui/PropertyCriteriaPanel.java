@@ -6,6 +6,7 @@ package org.jminor.swing.framework.ui;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.Value;
 import org.jminor.framework.domain.Property;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
@@ -75,10 +76,8 @@ public final class PropertyCriteriaPanel extends ColumnCriteriaPanel<Property.Co
       if (model.getType() == Types.BOOLEAN && !isUpperBound) {
         return null;//no lower bound field required for booleans
       }
-      final String property = isUpperBound ? ColumnCriteriaModel.UPPER_BOUND_PROPERTY : ColumnCriteriaModel.LOWER_BOUND_PROPERTY;
-      final EventObserver changeObserver = isUpperBound ? model.getUpperBoundObserver() : model.getLowerBoundObserver();
       final JComponent field = initField();
-      bindField(field, property, changeObserver);
+      bindField(field, isUpperBound);
       if (field instanceof JTextField) { //enter button toggles the filter on/off
         ((JTextField) field).addActionListener(new EnableAction(model));
       }
@@ -108,26 +107,27 @@ public final class PropertyCriteriaPanel extends ColumnCriteriaPanel<Property.Co
       }
     }
 
-    private void bindField(final JComponent field, final String property, final EventObserver changeObserver) {
+    private void bindField(final JComponent field, final boolean upperBound) {
       final Property columnProperty = model.getColumnIdentifier();
+      final Value modelValue = upperBound ? model.getUpperBoundValue() : model.getLowerBoundValue();
       if (columnProperty instanceof Property.ValueListProperty) {
-        ValueLinks.selectedItemValueLink((JComboBox) field, model, property, Object.class, changeObserver);
+        ValueLinks.selectedItemValueLink((JComboBox) field, modelValue);
       }
       else if (columnProperty.isDateOrTime()) {
-        ValueLinks.dateValueLink((JFormattedTextField) field, model, property, changeObserver,
-                false, (SimpleDateFormat) model.getFormat(), columnProperty.getType(), true);
+        ValueLinks.dateValueLink((JFormattedTextField) field, modelValue, false,
+                (SimpleDateFormat) model.getFormat(), columnProperty.getType(), true);
       }
       else if (columnProperty.isDouble()) {
-        ValueLinks.doubleValueLink((DoubleField) field, model, property, changeObserver, false, true);
+        ValueLinks.doubleValueLink((DoubleField) field, modelValue, null, false, false, true);
       }
       else if (columnProperty.isInteger()) {
-        ValueLinks.intValueLink((IntField) field, model, property, changeObserver, false, true);
+        ValueLinks.intValueLink((IntField) field, modelValue, null, false, false, true);
       }
       else if (columnProperty.isBoolean()) {
-        ValueLinks.selectedItemValueLink((JComboBox) field, model,property, Object.class, changeObserver);
+        ValueLinks.selectedItemValueLink((JComboBox) field, modelValue);
       }
       else if (!(columnProperty instanceof Property.ForeignKeyProperty)) {//entity based properties are bound in the model
-        ValueLinks.textValueLink((JTextField) field, model, property, changeObserver);
+        ValueLinks.textValueLink((JTextField) field, modelValue, null, true, false);
       }
     }
 

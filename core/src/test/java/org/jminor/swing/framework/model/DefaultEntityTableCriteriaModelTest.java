@@ -24,7 +24,7 @@ public class DefaultEntityTableCriteriaModelTest {
   private final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   private final EntityTableCriteriaModel criteriaModel = tableModel.getCriteriaModel();
 
-  public DefaultEntityTableCriteriaModelTest() {
+  static {
     TestDomain.init();
   }
 
