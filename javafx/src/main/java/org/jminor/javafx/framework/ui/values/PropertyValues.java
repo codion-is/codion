@@ -8,7 +8,6 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
-import org.jminor.framework.domain.Entity;
 
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
@@ -19,10 +18,6 @@ import javafx.util.StringConverter;
 public final class PropertyValues {
 
   private PropertyValues() {/**/}
-
-  public static <V> Value<V> entityValue(final String propertyID, final Entity entity) {
-    return new EntityValue<>(propertyID, entity);
-  }
 
   public static <V> Value<V> selectedItemValue(final SelectionModel<V> selectionModel) {
     return new SelectedItemValue<V>(selectionModel);
@@ -147,38 +142,6 @@ public final class PropertyValues {
     @Override
     public V get() {
       return selectionModel.getSelectedItem();
-    }
-
-    @Override
-    public EventObserver<V> getObserver() {
-      return changeEvent.getObserver();
-    }
-  }
-
-  private static final class EntityValue<V> implements Value<V> {
-
-    private final String propertyID;
-    private final Entity entity;
-    private final Event<V> changeEvent = Events.event();
-
-    public EntityValue(final String propertyID, final Entity entity) {
-      this.propertyID = propertyID;
-      this.entity = entity;
-      this.entity.getValueChangeObserver().addInfoListener(valueChange -> {
-        if (valueChange.getKey().equals(propertyID)) {
-          changeEvent.fire((V) valueChange.getNewValue());
-        }
-      });
-    }
-
-    @Override
-    public void set(final V value) {
-      entity.setValue(propertyID, value);
-    }
-
-    @Override
-    public V get() {
-      return (V) entity.getValue(propertyID);
     }
 
     @Override

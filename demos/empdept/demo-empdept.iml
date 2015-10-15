@@ -11,6 +11,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="jminor-core" />
+    <orderEntry type="module" module-name="jminor-javafx" />
     <orderEntry type="module" module-name="plugin-jasperreports" />
     <orderEntry type="module" module-name="plugin-json" />
     <orderEntry type="module-library">

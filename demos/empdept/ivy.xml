@@ -15,6 +15,7 @@
     <dependency org="org.jminor" name="jminor-plugin-json" rev="latest.release"/>
     <dependency org="org.jminor" name="jminor-plugin-rest" rev="latest.release"/>
     <dependency org="org.jminor" name="jminor-swing-client-test" rev="latest.release"/>
+    <dependency org="org.jminor" name="jminor-javafx" rev="latest.release"/>
 
     <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" conf="compile->master"/>
     <dependency org="org.jminor" name="jminor-db-test" rev="latest.release" conf="compile->master"/>

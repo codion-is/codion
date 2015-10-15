@@ -4,6 +4,7 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.framework.domain.Entity;
+import org.jminor.javafx.framework.model.EntityModel;
 
 import javafx.collections.ListChangeListener;
 import javafx.scene.layout.BorderPane;
@@ -12,11 +13,13 @@ import java.util.List;
 
 public class EntityView extends BorderPane {
 
+  private final EntityModel model;
   private final EntityEditView editView;
   private final EntityTableView tableView;
   private boolean initialized = false;
 
-  public EntityView(final EntityEditView editView, final EntityTableView tableView) {
+  public EntityView(final EntityModel model, final EntityEditView editView, final EntityTableView tableView) {
+    this.model = model;
     this.editView = editView;
     this.tableView = tableView;
     bindEvents();
@@ -28,10 +31,10 @@ public class EntityView extends BorderPane {
       public void onChanged(final Change<? extends Entity> change) {
         final List<Entity> selected = tableView.getSelectionModel().getSelectedItems();
         if (selected.isEmpty()) {
-          editView.setEntity(null);
+          model.getEditModel().setEntity(null);
         }
         else {
-          editView.setEntity(selected.get(0));
+          model.getEditModel().setEntity(selected.get(0));
         }
       }
     });

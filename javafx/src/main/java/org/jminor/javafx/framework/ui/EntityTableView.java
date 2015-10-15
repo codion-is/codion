@@ -17,13 +17,13 @@ public class EntityTableView extends TableView<Entity> {
   private final ObservableEntityList observableList;
 
   public EntityTableView(final ObservableEntityList observableList) {
+    super(observableList);
     this.observableList = observableList;
     getSelectionModel().setSelectionMode(SelectionMode.MULTIPLE);
     initializeColumns();
-    setItems(observableList);
   }
 
-  public ObservableEntityList getTableData() {
+  public ObservableEntityList getEntityList() {
     return observableList;
   }
 
