@@ -28,6 +28,8 @@ public abstract class EntityEditView extends BorderPane {
   private final EntityEditModel editModel;
   private boolean initialized = false;
 
+  private Node initialFocusNode;
+
   public EntityEditView(final EntityEditModel editModel) {
     this.editModel = editModel;
   }
@@ -55,11 +57,72 @@ public abstract class EntityEditView extends BorderPane {
     return buttonPane;
   }
 
+  protected void setInitialFocusNode(final Node initialFocusNode) {
+    this.initialFocusNode = initialFocusNode;
+  }
+
+  protected abstract Node initializeEditPanel();
+
+  protected final ComboBox<Entity> createComboBox(final String propertyID) {
+    final Property.ForeignKeyProperty property = Entities.getForeignKeyProperty(getModel().getEntityID(), propertyID);
+
+    final ComboBox<Entity> box = new ComboBox<>(editModel.createForeignKeyList(propertyID));
+    Values.link(editModel.createValue(propertyID), PropertyValues.selectedItemValue(box.getSelectionModel()));
+    try {
+      ((ObservableEntityList) box.getItems()).refresh();
+    }
+    catch (final DatabaseException e) {
+      throw new RuntimeException(e);
+    }
+
+    return box;
+  }
+
+  protected final TextField createTextField(final String propertyID) {
+    final TextField textField = createTextField(Entities.getProperty(getModel().getEntityID(), propertyID));
+    final StringValue<String> propertyValue = PropertyValues.stringPropertyValue(textField.textProperty());
+
+    Values.link(editModel.createValue(propertyID), propertyValue);
+
+    return textField;
+  }
+
+  protected final TextField createIntegerField(final String propertyID) {
+    final TextField textField = createTextField(Entities.getProperty(getModel().getEntityID(), propertyID));
+    final StringValue<Integer> propertyValue = PropertyValues.integerPropertyValue(textField.textProperty());
+    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+
+    Values.link(editModel.createValue(propertyID), propertyValue);
+
+    return textField;
+  }
+
+  protected final TextField createDoubleField(final String propertyID) {
+    final TextField textField = createTextField(Entities.getProperty(getModel().getEntityID(), propertyID));
+    final StringValue<Double> propertyValue = PropertyValues.doublePropertyValue(textField.textProperty());
+    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+
+    Values.link(editModel.createValue(propertyID), propertyValue);
+
+    return textField;
+  }
+
+  private TextField createTextField(final Property property) {
+    final TextField textField = new TextField();
+
+    return textField;
+  }
+
+  private void initializeUI() {
+    setCenter(initializeEditPanel());
+  }
+
   private Button createInsertButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.INSERT));
     button.setOnAction(event -> {
       try {
         editModel.insert();
+        clearAfterInsert();
       }
       catch (final Exception e) {
         throw new RuntimeException(e);
@@ -117,59 +180,14 @@ public abstract class EntityEditView extends BorderPane {
     return button;
   }
 
-  protected abstract Node initializeEditPanel();
+  private void clearAfterInsert() {
+    editModel.clear();
+    requestInitialFocus();
+  }
 
-  protected final ComboBox<Entity> createComboBox(final String propertyID) {
-    final Property.ForeignKeyProperty property = Entities.getForeignKeyProperty(getModel().getEntityID(), propertyID);
-
-    final ComboBox<Entity> box = new ComboBox<>(editModel.createForeignKeyList(propertyID));
-    Values.link(editModel.createValue(propertyID), PropertyValues.selectedItemValue(box.getSelectionModel()));
-    try {
-      ((ObservableEntityList) box.getItems()).refresh();
+  private void requestInitialFocus() {
+    if (initialFocusNode != null) {
+      initialFocusNode.requestFocus();
     }
-    catch (final DatabaseException e) {
-      throw new RuntimeException(e);
-    }
-
-    return box;
-  }
-
-  protected final TextField createTextField(final String propertyID) {
-    final TextField textField = createTextField(Entities.getProperty(getModel().getEntityID(), propertyID));
-    final StringValue<String> propertyValue = PropertyValues.stringPropertyValue(textField.textProperty());
-
-    Values.link(editModel.createValue(propertyID), propertyValue);
-
-    return textField;
-  }
-
-  protected final TextField createIntegerField(final String propertyID) {
-    final TextField textField = createTextField(Entities.getProperty(getModel().getEntityID(), propertyID));
-    final StringValue<Integer> propertyValue = PropertyValues.integerPropertyValue(textField.textProperty());
-    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
-
-    Values.link(editModel.createValue(propertyID), propertyValue);
-
-    return textField;
-  }
-
-  protected final TextField createDoubleField(final String propertyID) {
-    final TextField textField = createTextField(Entities.getProperty(getModel().getEntityID(), propertyID));
-    final StringValue<Double> propertyValue = PropertyValues.doublePropertyValue(textField.textProperty());
-    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
-
-    Values.link(editModel.createValue(propertyID), propertyValue);
-
-    return textField;
-  }
-
-  private TextField createTextField(final Property property) {
-    final TextField textField = new TextField();
-
-    return textField;
-  }
-
-  private void initializeUI() {
-    setCenter(initializeEditPanel());
   }
 }

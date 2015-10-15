@@ -21,6 +21,7 @@ public final class DepartmentEditView extends EntityEditView {
   @Override
   protected Node initializeEditPanel() {
     TextField id = createIntegerField(EmpDept.DEPARTMENT_ID);
+    setInitialFocusNode(id);
     TextField name = createTextField(EmpDept.DEPARTMENT_NAME);
     TextField location = createTextField(EmpDept.DEPARTMENT_LOCATION);
 
