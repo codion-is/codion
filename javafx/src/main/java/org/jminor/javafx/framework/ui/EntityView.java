@@ -106,14 +106,19 @@ public class EntityView extends BorderPane {
     final BorderPane editPane = new BorderPane();
     editPane.setCenter(editView);
     editPane.setRight(editView.getButtonPanel());
+    final BorderPane tableBottomPane = new BorderPane();
+    tableBottomPane.setLeft(tableView.getFilterTextField());
+    final BorderPane tablePane = new BorderPane();
+    tablePane.setCenter(tableView);
+    tablePane.setBottom(tableBottomPane);
     if (detailViewTabPane.getTabs().isEmpty()) {
       setTop(editPane);
-      setCenter(tableView);
+      setCenter(tablePane);
     }
     else {
       final BorderPane leftPane = new BorderPane();
       leftPane.setTop(editPane);
-      leftPane.setCenter(tableView);
+      leftPane.setCenter(tablePane);
 
       final SplitPane splitPane = new SplitPane(leftPane, detailViewTabPane);
       setCenter(splitPane);
