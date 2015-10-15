@@ -3,10 +3,18 @@
  */
 package org.jminor.javafx.framework.ui;
 
+import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 import org.jminor.javafx.framework.model.EntityModel;
 
+import javafx.beans.value.ChangeListener;
+import javafx.beans.value.ObservableValue;
 import javafx.collections.ListChangeListener;
+import javafx.scene.control.SplitPane;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.layout.BorderPane;
 
 import java.util.List;
@@ -16,6 +24,9 @@ public class EntityView extends BorderPane {
   private final EntityModel model;
   private final EntityEditView editView;
   private final EntityTableView tableView;
+
+  private final TabPane detailViewTabPane = new TabPane();
+
   private boolean initialized = false;
 
   public EntityView(final EntityModel model, final EntityEditView editView, final EntityTableView tableView) {
@@ -23,6 +34,29 @@ public class EntityView extends BorderPane {
     this.editView = editView;
     this.tableView = tableView;
     bindEvents();
+  }
+
+  public EntityModel getModel() {
+    return model;
+  }
+
+  public final EntityView initializePanel() {
+    if (!initialized) {
+      initializeUI();
+      initialized = true;
+    }
+
+    return this;
+  }
+
+  public void addDetailView(final EntityView detailView) {
+    detailViewTabPane.getTabs().add(new Tab(Entities.getCaption(detailView.getModel().getEntityID()), detailView));
+  }
+
+  private void checkIfInitalized() {
+    if (initialized) {
+      throw new IllegalStateException("View has already been initialized");
+    }
   }
 
   private void bindEvents() {
@@ -36,22 +70,53 @@ public class EntityView extends BorderPane {
         else {
           model.getEditModel().setEntity(selected.get(0));
         }
+        try {
+          initializeDetailViews();
+        }
+        catch (final DatabaseException e) {
+          throw new RuntimeException(e);
+        }
+      }
+    });
+    detailViewTabPane.getSelectionModel().selectedItemProperty().addListener(new ChangeListener<Tab>() {
+      @Override
+      public void changed(final ObservableValue<? extends Tab> observable, final Tab oldValue, final Tab newValue) {
+        ((EntityView) newValue.getContent()).initializePanel();
       }
     });
   }
 
-  public final EntityView initializePanel() {
-    if (!initialized) {
-      initializeUI();
-      initialized = true;
+  private void initializeDetailViews() throws DatabaseException {
+    if (!detailViewTabPane.getTabs().isEmpty()) {
+      final EntityView selectedDetailView =
+              (EntityView) detailViewTabPane.getSelectionModel().getSelectedItem().getContent();
+      selectedDetailView.initialize(getModel().getEntityID(), tableView.getSelectionModel().getSelectedItems());
     }
+  }
 
-    return this;
+  private void initialize(final String masterEntityID, final List<Entity> foreignKeyEntities) throws DatabaseException {
+    final List<Property.ForeignKeyProperty> foreignKeyProperties =
+            Entities.getForeignKeyProperties(getModel().getEntityID(), masterEntityID);
+    editView.getModel().setValue(foreignKeyProperties.get(0).getPropertyID(), foreignKeyEntities.get(0));
+    tableView.getEntityList().filterBy(foreignKeyProperties.get(0), foreignKeyEntities);
   }
 
   private void initializeUI() {
     editView.initializePanel();
-    setTop(editView);
-    setCenter(tableView);
+    final BorderPane editPane = new BorderPane();
+    editPane.setCenter(editView);
+    editPane.setRight(editView.getButtonPanel());
+    if (detailViewTabPane.getTabs().isEmpty()) {
+      setTop(editPane);
+      setCenter(tableView);
+    }
+    else {
+      final BorderPane leftPane = new BorderPane();
+      leftPane.setTop(editPane);
+      leftPane.setCenter(tableView);
+
+      final SplitPane splitPane = new SplitPane(leftPane, detailViewTabPane);
+      setCenter(splitPane);
+    }
   }
 }

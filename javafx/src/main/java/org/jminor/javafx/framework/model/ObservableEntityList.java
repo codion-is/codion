@@ -3,7 +3,12 @@
  */
 package org.jminor.javafx.framework.model;
 
+import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.db.criteria.CriteriaSet;
+import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.Conjunction;
+import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
@@ -19,16 +24,21 @@ import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Objects;
 
 public class ObservableEntityList implements ObservableList<Entity> {
 
   private final EntityConnectionProvider connectionProvider;
   private final ObservableList<Entity> list = FXCollections.observableArrayList();
   private final String entityID;
+  private final List<Criteria<Property.ColumnProperty>> propertyCriteria = new ArrayList<>();
+
+  private EntitySelectCriteria selectCriteria;
 
   public ObservableEntityList(final String entityID, final EntityConnectionProvider connectionProvider) {
     this.entityID = entityID;
@@ -37,8 +47,18 @@ public class ObservableEntityList implements ObservableList<Entity> {
 
   public final void refresh() throws DatabaseException {
     final List<Entity> entities = connectionProvider.getConnection().selectMany(getSelectCriteria());
-    clear();
-    addAll(entities);
+    setAll(entities);
+  }
+
+  public void filterBy(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> entities) throws DatabaseException {
+    Objects.requireNonNull(foreignKeyProperty);
+    Objects.requireNonNull(entities);
+    propertyCriteria.clear();
+    if (!entities.isEmpty()) {
+      propertyCriteria.add(EntityCriteriaUtil.foreignKeyCriteria(
+              foreignKeyProperty, SearchType.LIKE, entities));
+    }
+    refresh();
   }
 
   public final Callback<TableColumn.CellDataFeatures<Entity, Object>, ObservableValue<Object>> getCellValueFactory(final Property property) {
@@ -60,7 +80,14 @@ public class ObservableEntityList implements ObservableList<Entity> {
   }
 
   protected EntitySelectCriteria getSelectCriteria() {
-    return EntityCriteriaUtil.selectCriteria(entityID);
+    if (propertyCriteria.isEmpty()) {
+      return EntityCriteriaUtil.selectCriteria(entityID);
+    }
+
+    final CriteriaSet<Property.ColumnProperty> criteriaSet = CriteriaUtil.criteriaSet(
+            Conjunction.AND, propertyCriteria);
+
+    return EntityCriteriaUtil.selectCriteria(entityID, criteriaSet);
   }
 
   @Override
@@ -160,12 +187,12 @@ public class ObservableEntityList implements ObservableList<Entity> {
 
   @Override
   public final boolean removeAll(final Collection<?> c) {
-    return removeAll(c);
+    return list.removeAll(c);
   }
 
   @Override
   public final boolean retainAll(final Collection<?> c) {
-    return retainAll(c);
+    return list.retainAll(c);
   }
 
   @Override

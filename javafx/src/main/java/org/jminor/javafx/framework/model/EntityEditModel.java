@@ -5,8 +5,12 @@ package org.jminor.javafx.framework.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
+import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -33,6 +37,9 @@ public class EntityEditModel {
   private final Event<List<Entity>> updateEvent = Events.event();
   private final Event<List<Entity>> deleteEvent = Events.event();
 
+  private final State modifiedState = States.state();
+  private final State entityNewState = States.state(true);
+
   public EntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this.entity = Entities.entity(entityID);
     this.connectionProvider = connectionProvider;
@@ -45,6 +52,14 @@ public class EntityEditModel {
 
   public final EntityConnectionProvider getConnectionProvider() {
     return connectionProvider;
+  }
+
+  public StateObserver getModifiedObserver() {
+    return modifiedState.getObserver();
+  }
+
+  public StateObserver getEntityNewObserver() {
+    return entityNewState.getObserver();
   }
 
   public final Object setValue(final String propertyID, final Object value) {
@@ -66,6 +81,10 @@ public class EntityEditModel {
     }
 
     return copy;
+  }
+
+  public void clear() {
+    setEntity(null);
   }
 
   public final List<Entity> insert() throws DatabaseException, ValidationException {
@@ -137,6 +156,22 @@ public class EntityEditModel {
     return getValueChangeEvent(propertyID).getObserver();
   }
 
+  public boolean isEntityNew() {
+    return EntityUtil.isEntityNew(entity);
+  }
+
+  public void addInsertListener(final EventInfoListener<List<Entity>> listener) {
+    insertEvent.addInfoListener(listener);
+  }
+
+  public void addUpdateListener(final EventInfoListener<List<Entity>> listener) {
+    updateEvent.addInfoListener(listener);
+  }
+
+  public void addDeleteListener(final EventInfoListener<List<Entity>> listener) {
+    deleteEvent.addInfoListener(listener);
+  }
+
   protected List<Entity.Key> doInsert(final List<Entity> entities) throws DatabaseException {
     return connectionProvider.getConnection().insert(entities);
   }
@@ -155,6 +190,8 @@ public class EntityEditModel {
       if (valueChangeEvent != null) {
         valueChangeEvent.fire(valueChange);
       }
+      modifiedState.setActive(entity.isModified());
+      entityNewState.setActive(isEntityNew());
     });
   }
 

@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.javafx;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
@@ -10,17 +11,21 @@ import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.javafx.framework.model.EntityEditModel;
 import org.jminor.javafx.framework.model.EntityModel;
 import org.jminor.javafx.framework.model.ObservableEntityList;
+import org.jminor.javafx.framework.ui.EntityApplication;
 import org.jminor.javafx.framework.ui.EntityTableView;
 import org.jminor.javafx.framework.ui.EntityView;
 
-import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public final class EmpDeptFX extends Application {
+public final class EmpDeptFX extends EntityApplication {
 
   static {
     EmpDept.init();
+  }
+
+  public EmpDeptFX() {
+    super("EmpDeptFX");
   }
 
   public static void main(final String[] args) {
@@ -28,7 +33,7 @@ public final class EmpDeptFX extends Application {
   }
 
   @Override
-  public void start(final Stage stage) throws Exception {
+  protected Scene initializeApplicationScene(final Stage primaryStage) throws DatabaseException {
     final EntityConnectionProvider connectionProvider =
             EntityConnectionProviders.connectionProvider(new User("scott", "tiger"), "EmpDeptFX");
 
@@ -38,7 +43,6 @@ public final class EmpDeptFX extends Application {
     final EntityView departmentView = new EntityView(departmentModel,
             new DepartmentEditView(departmentModel.getEditModel()),
             new EntityTableView(departmentModel.getEntityList()));
-    departmentView.initializePanel();
     departmentModel.getEntityList().refresh();
 
     final EntityModel employeeModel = new EntityModel(
@@ -47,13 +51,12 @@ public final class EmpDeptFX extends Application {
     final EntityView employeeView = new EntityView(employeeModel,
             new EmployeeEditView(employeeModel.getEditModel()),
             new EntityTableView(employeeModel.getEntityList()));
-    employeeView.initializePanel();
     employeeModel.getEntityList().refresh();
 
-    final Scene scene = new Scene(departmentView);
-    stage.setTitle("Departments");
+    departmentView.addDetailView(employeeView);
 
-    stage.setScene(scene);
-    stage.show();
+    departmentView.initializePanel();
+
+    return new Scene(departmentView);
   }
 }
