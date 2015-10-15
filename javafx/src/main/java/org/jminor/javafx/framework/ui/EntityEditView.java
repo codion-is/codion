@@ -63,13 +63,15 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   public void update() throws DatabaseException {
-    update(entity);
+    setEntity(update(entity));
   }
 
-  protected void update(final Entity entity) throws DatabaseException {
+  protected Entity update(final Entity entity) throws DatabaseException {
     if (entity.isModified()) {
-      connectionProvider.getConnection().update(Collections.singletonList(entity));
+      return connectionProvider.getConnection().update(Collections.singletonList(entity)).get(0);
     }
+
+    return entity;
   }
 
   protected abstract Node initializeEditPanel();

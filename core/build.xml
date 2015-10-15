@@ -70,7 +70,7 @@
     </path>
   </path>
 
-  <path id="path.unittests">
+  <path id="classpath.unittests">
     <path refid="build.main"/>
     <path refid="build.test"/>
     <path refid="lib.test"/>
@@ -113,7 +113,6 @@
       <classpath>
         <path refid="lib.test"/>
         <path location="${build.main}"/>
-        <path location="${build.plugins.main}"/>
       </classpath>
     </javac>
     <copy todir="${build.test}">
@@ -373,7 +372,7 @@
     <jacoco:coverage destfile="${test.reports}/jacoco.exec">
       <junit printsummary="yes" haltonfailure="true" haltonerror="true" fork="yes" forkmode="once">
         <formatter type="xml" usefile="true"/>
-        <classpath refid="path.unittests"/>
+        <classpath refid="classpath.unittests"/>
         <jvmarg value="-Djava.security.policy=resources/security/all_permissions.policy"/>
         <jvmarg value="-Djminor.db.type=${junit.db.type}"/>
         <jvmarg value="-Djminor.db.host=${junit.db.host}"/>
