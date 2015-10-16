@@ -19,6 +19,7 @@ import org.jminor.javafx.framework.ui.values.PropertyValues;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
@@ -88,6 +89,10 @@ public abstract class EntityEditView extends BorderPane {
 
   protected final TextField createDoubleField(final String propertyID) {
     return EntityFXUtil.createDoubleField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+  }
+
+  protected final DatePicker createDatePicker(final String propertyID) {
+    return EntityFXUtil.createDatePicker(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
   }
 
   private void initializeUI() {

@@ -9,6 +9,7 @@ import org.jminor.javafx.framework.ui.EntityEditView;
 
 import javafx.scene.Node;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.DatePicker;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.GridPane;
@@ -26,6 +27,8 @@ public final class EmployeeEditView extends EntityEditView {
     TextField name = createTextField(EmpDept.EMPLOYEE_NAME);
     TextField location = createDoubleField(EmpDept.EMPLOYEE_SALARY);
     ComboBox department = createComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK);
+    DatePicker picker = createDatePicker(EmpDept.EMPLOYEE_HIREDATE);
+    ComboBox manager = createComboBox(EmpDept.EMPLOYEE_MGR_FK);
 
     GridPane gridPane = new GridPane();
 
@@ -37,6 +40,10 @@ public final class EmployeeEditView extends EntityEditView {
     gridPane.add(location, 0, 5);
     gridPane.add(new Label("Department"), 0, 6);
     gridPane.add(department, 0, 7);
+    gridPane.add(new Label("Hiredate"), 0, 8);
+    gridPane.add(picker, 0, 9);
+    gridPane.add(new Label("Manager"), 0, 10);
+    gridPane.add(manager, 0, 11);
 
     return gridPane;
   }

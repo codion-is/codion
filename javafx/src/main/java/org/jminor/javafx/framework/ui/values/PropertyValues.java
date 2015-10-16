@@ -15,6 +15,15 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.control.SelectionModel;
 import javafx.util.StringConverter;
 
+import java.text.Format;
+import java.text.NumberFormat;
+import java.text.ParseException;
+import java.text.ParsePosition;
+import java.text.SimpleDateFormat;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
+import java.time.format.DateTimeParseException;
+
 public final class PropertyValues {
 
   private PropertyValues() {/**/}
@@ -24,56 +33,142 @@ public final class PropertyValues {
   }
 
   public static StringValue<String> stringPropertyValue(final StringProperty property) {
-    return new DefaultStringValue<String>(property, new StringConverter<String>() {
-      @Override
-      public String toString(final String value) {
-        return value;
-      }
-
-      @Override
-      public String fromString(final String value) {
-        return value;
-      }
-    });
+    return new DefaultStringValue<String>(property, new DefaultStringConverter());
   }
 
-  public static StringValue<Integer> integerPropertyValue(final StringProperty property) {
-    return new IntegerValue(property);
+  public static StringValue<Integer> integerPropertyValue(final StringProperty property, final NumberFormat numberFormat) {
+    return new DefaultStringValue<Integer>(property, new IntegerConverter(numberFormat));
   }
 
-  public static StringValue<Double> doublePropertyValue(final StringProperty property) {
-    return new DoubleValue(property);
+  public static StringValue<Double> doublePropertyValue(final StringProperty property, final NumberFormat numberFormat) {
+    return new DefaultStringValue<Double>(property, new DoubleConverter(numberFormat));
   }
 
-  private static final class IntegerValue extends DefaultStringValue<Integer> {
-    public IntegerValue(final StringProperty property) {
-      super(property, new StringConverter<Integer>() {
-        @Override
-        public String toString(final Integer value) {
-          return value == null ? "" : value.toString();
-        }
+  public static StringValue<LocalDate> datePropertyValue(final StringProperty property,
+                                                         final SimpleDateFormat dateFormat) {
+    return new DefaultStringValue<LocalDate>(property, new DateConverter(dateFormat));
+  }
 
-        @Override
-        public Integer fromString(final String value) {
-          return Util.nullOrEmpty(value) ? null : Integer.parseInt(value);
-        }
-      });
+  public static Object parseStrict(final Format format, final String value) throws ParseException {
+    final ParsePosition pos = new ParsePosition(0);
+    final Object result = format.parseObject(value, pos);
+    if(pos.getIndex() < value.length()) {
+      throw new ParseException("Failed to parse '" + value + "'", pos.getIndex());
+    }
+
+    return result;
+  }
+
+  private static final class DefaultStringConverter extends StringConverter<String> {
+
+    @Override
+    public String toString(final String object) {
+      return object;
+    }
+
+    @Override
+    public String fromString(final String string) {
+      return string;
     }
   }
 
-  private static final class DoubleValue extends DefaultStringValue<Double> {
-    public DoubleValue(final StringProperty property) {
-      super(property, new StringConverter<Double>() {
-        @Override
-        public String toString(final Double value) {
-          return value == null ? "" : value.toString();
+  private static final class IntegerConverter extends StringConverter<Integer> {
+
+    private final NumberFormat numberFormat;
+
+    private IntegerConverter(final NumberFormat numberFormat) {
+      this.numberFormat = numberFormat;
+    }
+
+    @Override
+    public String toString(final Integer value) {
+      if (value == null) {
+        return "";
+      }
+
+      return numberFormat.format(value);
+    }
+
+    @Override
+    public Integer fromString(final String value) {
+      if (Util.nullOrEmpty(value)) {
+        return null;
+      }
+      try {
+        final Object number = parseStrict(numberFormat, value);
+
+        return ((Long) number).intValue();
+      }
+      catch (final ParseException e) {
+        return null;
+      }
+    }
+  }
+
+  private static final class DoubleConverter extends StringConverter<Double> {
+
+    private final NumberFormat numberFormat;
+
+    private DoubleConverter(final NumberFormat numberFormat) {
+      this.numberFormat = numberFormat;
+    }
+
+    @Override
+    public String toString(final Double value) {
+      if (value == null) {
+        return "";
+      }
+
+      return numberFormat.format(value);
+    }
+
+    @Override
+    public Double fromString(final String value) {
+      if (Util.nullOrEmpty(value)) {
+        return null;
+      }
+      try {
+        final Object number = parseStrict(numberFormat, value);
+        if (number instanceof Double) {
+          return (Double) number;
         }
 
-        @Override
-        public Double fromString(final String value) {
-          return Util.nullOrEmpty(value) ? null : Double.parseDouble(value);
-        }
-      });
+        return ((Long) number).doubleValue();
+      }
+      catch (final ParseException e) {
+        return null;
+      }
+    }
+  }
+
+  private static class DateConverter extends StringConverter<LocalDate> {
+
+    private final DateTimeFormatter dateFormatter;
+
+    private DateConverter(final SimpleDateFormat dateFormat) {
+      this.dateFormatter = DateTimeFormatter.ofPattern(dateFormat.toPattern());
+    }
+
+    @Override
+    public String toString(final LocalDate date) {
+      if (date != null) {
+        return dateFormatter.format(date);
+      }
+      else {
+        return "";
+      }
+    }
+    @Override
+    public LocalDate fromString(final String string) {
+      if (Util.nullOrEmpty(string)) {
+        return null;
+      }
+      try {
+        return LocalDate.parse(string, dateFormatter);
+      }
+      catch (final DateTimeParseException e) {
+        return null;
+      }
     }
   }
 
