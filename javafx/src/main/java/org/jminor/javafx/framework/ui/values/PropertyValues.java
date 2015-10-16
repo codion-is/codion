@@ -79,14 +79,14 @@ public final class PropertyValues {
 
   private static class DefaultStringValue<V> implements StringValue<V> {
 
-    private final StringProperty property;
+    private final StringProperty stringProperty;
     private final StringConverter<V> converter;
     private final Event changeEvent = Events.event();
 
-    public DefaultStringValue(final StringProperty property, final StringConverter<V> converter) {
-      this.property = property;
+    public DefaultStringValue(final StringProperty stringProperty, final StringConverter<V> converter) {
+      this.stringProperty = stringProperty;
       this.converter = converter;
-      this.property.addListener(new ChangeListener<Object>() {
+      this.stringProperty.addListener(new ChangeListener<Object>() {
         @Override
         public void changed(final ObservableValue<? extends Object> observable, final Object oldValue, final Object newValue) {
           changeEvent.fire(newValue);
@@ -96,12 +96,12 @@ public final class PropertyValues {
 
     @Override
     public final void set(final V v) {
-      property.set(converter.toString(v));
+      stringProperty.set(converter.toString(v));
     }
 
     @Override
     public final V get() {
-      return converter.fromString(property.get());
+      return converter.fromString(stringProperty.get());
     }
 
     @Override
@@ -114,8 +114,8 @@ public final class PropertyValues {
       return converter;
     }
 
-    protected final StringProperty getProperty() {
-      return property;
+    protected final StringProperty getStringProperty() {
+      return stringProperty;
     }
   }
 

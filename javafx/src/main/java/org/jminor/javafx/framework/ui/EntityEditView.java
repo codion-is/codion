@@ -4,7 +4,9 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.Conjunction;
+import org.jminor.common.model.State;
+import org.jminor.common.model.States;
 import org.jminor.common.model.Values;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -13,13 +15,11 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.EntityEditModel;
 import org.jminor.javafx.framework.model.ObservableEntityList;
 import org.jminor.javafx.framework.ui.values.PropertyValues;
-import org.jminor.javafx.framework.ui.values.StringValue;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.TextField;
-import javafx.scene.control.TextFormatter;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
@@ -79,38 +79,15 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   protected final TextField createTextField(final String propertyID) {
-    final TextField textField = createTextField(Entities.getProperty(getModel().getEntityID(), propertyID));
-    final StringValue<String> propertyValue = PropertyValues.stringPropertyValue(textField.textProperty());
-
-    Values.link(editModel.createValue(propertyID), propertyValue);
-
-    return textField;
+    return EntityFXUtil.createTextField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
   }
 
   protected final TextField createIntegerField(final String propertyID) {
-    final TextField textField = createTextField(Entities.getProperty(getModel().getEntityID(), propertyID));
-    final StringValue<Integer> propertyValue = PropertyValues.integerPropertyValue(textField.textProperty());
-    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
-
-    Values.link(editModel.createValue(propertyID), propertyValue);
-
-    return textField;
+    return EntityFXUtil.createIntegerField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
   }
 
   protected final TextField createDoubleField(final String propertyID) {
-    final TextField textField = createTextField(Entities.getProperty(getModel().getEntityID(), propertyID));
-    final StringValue<Double> propertyValue = PropertyValues.doublePropertyValue(textField.textProperty());
-    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
-
-    Values.link(editModel.createValue(propertyID), propertyValue);
-
-    return textField;
-  }
-
-  private TextField createTextField(final Property property) {
-    final TextField textField = new TextField();
-
-    return textField;
+    return EntityFXUtil.createDoubleField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
   }
 
   private void initializeUI() {
@@ -142,9 +119,10 @@ public abstract class EntityEditView extends BorderPane {
         throw new RuntimeException(e);
       }
     });
-    final StateObserver modifiedObserver = getModel().getModifiedObserver();
-    button.setDisable(!modifiedObserver.isActive());
-    modifiedObserver.addInfoListener(modified -> button.setDisable(!modified));
+    final State notNewAndModifiedState = States.aggregateState(Conjunction.AND,
+            getModel().getEntityNewObserver().getReversedObserver(),
+            getModel().getModifiedObserver());
+    EntityFXUtil.linkToEnabledState(button, notNewAndModifiedState.getObserver());
 
     return button;
   }
@@ -159,9 +137,7 @@ public abstract class EntityEditView extends BorderPane {
         throw new RuntimeException(e);
       }
     });
-    final StateObserver newObserver = getModel().getEntityNewObserver();
-    button.setDisable(newObserver.isActive());
-    newObserver.addInfoListener(isNew -> button.setDisable(isNew));
+    EntityFXUtil.linkToEnabledState(button, getModel().getEntityNewObserver());
 
     return button;
   }

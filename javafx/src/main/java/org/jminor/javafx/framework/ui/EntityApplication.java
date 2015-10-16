@@ -31,6 +31,7 @@ public abstract class EntityApplication extends Application {
   protected abstract Scene initializeApplicationScene(final Stage primaryStage) throws DatabaseException;
 
   private void handleException(final Throwable throwable) {
+    throwable.printStackTrace();
     final Alert alert = new Alert(Alert.AlertType.ERROR, throwable.getMessage());
     alert.showAndWait();
   }
