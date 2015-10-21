@@ -18,14 +18,6 @@ import java.util.Collection;
 public interface ValueMapEditModel<K, V> {
 
   /**
-   * Returns a StateObserver responsible for indicating when and if any values in the underlying value map are modified.
-   * @return a StateObserver indicating the modified state of this edit model
-   * @see #isModified()
-   * @see ValueMap#getModifiedObserver()
-   */
-  StateObserver getModifiedObserver();
-
-  /**
    * @return a StateObserver indicating the valid status of the underlying value map
    * @see #getValidator()
    * @see #isValid()
@@ -73,7 +65,7 @@ public interface ValueMapEditModel<K, V> {
   /**
    * @return the validator
    */
-  ValueMap.Validator<K, ? extends ValueMap<K, V>> getValidator();
+  ValueMap.Validator getValidator();
 
   /**
    * @param key the key
@@ -115,6 +107,12 @@ public interface ValueMapEditModel<K, V> {
   void validate() throws ValidationException;
 
   /**
+   * Validates the current state of the given ValueMap
+   * @throws ValidationException in case the ValueMap is invalid
+   */
+  void validate(final ValueMap<K, V> valueMap) throws ValidationException;
+
+  /**
    * Validates the given ValueMaps
    * @param valueMaps the value maps to validate
    * @throws ValidationException on finding the first invalid ValueMap
@@ -135,10 +133,4 @@ public interface ValueMapEditModel<K, V> {
    * @see #getValidObserver()
    */
   boolean isValid();
-
-  /**
-   * @return true if the underlying value map is modified
-   * @see #getModifiedObserver()
-   */
-  boolean isModified();
 }

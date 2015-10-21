@@ -10,6 +10,7 @@ import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
+import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.ValueMapEditModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entity;
@@ -355,6 +356,20 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @see #addAfterDeleteListener(EventInfoListener)
    */
   List<Entity> delete(final List<Entity> entities) throws DatabaseException;
+
+  /**
+   * @return true if the underlying Entity is modified
+   * @see #getModifiedObserver()
+   */
+  boolean isModified();
+
+  /**
+   * Returns a StateObserver responsible for indicating when and if any values in the underlying Entity are modified.
+   * @return a StateObserver indicating the modified state of this edit model
+   * @see #isModified()
+   * @see ValueMap#getModifiedObserver()
+   */
+  StateObserver getModifiedObserver();
 
   /**
    * @return an observer indicating whether or not the active entity is new

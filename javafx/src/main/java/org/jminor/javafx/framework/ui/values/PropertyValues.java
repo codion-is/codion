@@ -40,12 +40,15 @@ public final class PropertyValues {
     return new DefaultStringValue<Integer>(property, new IntegerConverter(numberFormat));
   }
 
+  public static StringValue<Long> longPropertyValue(final StringProperty property, final NumberFormat numberFormat) {
+    return new DefaultStringValue<Long>(property, new LongConverter(numberFormat));
+  }
+
   public static StringValue<Double> doublePropertyValue(final StringProperty property, final NumberFormat numberFormat) {
     return new DefaultStringValue<Double>(property, new DoubleConverter(numberFormat));
   }
 
-  public static StringValue<LocalDate> datePropertyValue(final StringProperty property,
-                                                         final SimpleDateFormat dateFormat) {
+  public static StringValue<LocalDate> datePropertyValue(final StringProperty property, final SimpleDateFormat dateFormat) {
     return new DefaultStringValue<LocalDate>(property, new DateConverter(dateFormat));
   }
 
@@ -98,6 +101,37 @@ public final class PropertyValues {
         final Object number = parseStrict(numberFormat, value);
 
         return ((Long) number).intValue();
+      }
+      catch (final ParseException e) {
+        return null;
+      }
+    }
+  }
+
+  private static final class LongConverter extends StringConverter<Long> {
+
+    private final NumberFormat numberFormat;
+
+    private LongConverter(final NumberFormat numberFormat) {
+      this.numberFormat = numberFormat;
+    }
+
+    @Override
+    public String toString(final Long value) {
+      if (value == null) {
+        return "";
+      }
+
+      return numberFormat.format(value);
+    }
+
+    @Override
+    public Long fromString(final String value) {
+      if (Util.nullOrEmpty(value)) {
+        return null;
+      }
+      try {
+        return (Long) parseStrict(numberFormat, value);
       }
       catch (final ParseException e) {
         return null;

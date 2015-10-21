@@ -10,6 +10,7 @@ import org.jminor.common.model.States;
 import org.jminor.common.model.Values;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.EntityEditModel;
@@ -19,17 +20,23 @@ import org.jminor.javafx.framework.ui.values.PropertyValues;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
+import java.sql.Types;
+import java.util.HashMap;
+import java.util.Map;
+
 public abstract class EntityEditView extends BorderPane {
 
   private final EntityEditModel editModel;
+  private final Map<String, Control> controls = new HashMap<>();
   private boolean initialized = false;
 
-  private Node initialFocusNode;
+  private Control initialFocusControl;
 
   public EntityEditView(final EntityEditModel editModel) {
     this.editModel = editModel;
@@ -58,15 +65,15 @@ public abstract class EntityEditView extends BorderPane {
     return buttonPane;
   }
 
-  protected void setInitialFocusNode(final Node initialFocusNode) {
-    this.initialFocusNode = initialFocusNode;
+  protected final void setInitialFocusControl(final Control initialFocusControl) {
+    this.initialFocusControl = initialFocusControl;
   }
 
   protected abstract Node initializeEditPanel();
 
   protected final ComboBox<Entity> createComboBox(final String propertyID) {
+    checkControl(propertyID);
     final Property.ForeignKeyProperty property = Entities.getForeignKeyProperty(getModel().getEntityID(), propertyID);
-
     final ComboBox<Entity> box = new ComboBox<>(editModel.createForeignKeyList(propertyID));
     Values.link(editModel.createValue(propertyID), PropertyValues.selectedItemValue(box.getSelectionModel()));
     try {
@@ -76,19 +83,35 @@ public abstract class EntityEditView extends BorderPane {
       throw new RuntimeException(e);
     }
 
+    controls.put(propertyID, box);
+
     return box;
   }
 
   protected final TextField createTextField(final String propertyID) {
-    return EntityFXUtil.createTextField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
-  }
+    checkControl(propertyID);
+    final Property property = Entities.getProperty(editModel.getEntityID(), propertyID);
+    final TextField textField;
+    switch (property.getType()) {
+      case Types.INTEGER:
+        textField = EntityFXUtil.createIntegerField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+        break;
+      case Types.BIGINT:
+        textField = EntityFXUtil.createLongField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+        break;
+      case Types.DOUBLE:
+        textField = EntityFXUtil.createDoubleField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+        break;
+      case Types.VARCHAR:
+        textField = EntityFXUtil.createTextField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+        break;
+      default:
+        throw new IllegalArgumentException("Text field type for property: " + propertyID + " is not defined");
+    }
 
-  protected final TextField createIntegerField(final String propertyID) {
-    return EntityFXUtil.createIntegerField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
-  }
+    controls.put(propertyID, textField);
 
-  protected final TextField createDoubleField(final String propertyID) {
-    return EntityFXUtil.createDoubleField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+    return textField;
   }
 
   protected final DatePicker createDatePicker(final String propertyID) {
@@ -124,10 +147,10 @@ public abstract class EntityEditView extends BorderPane {
         throw new RuntimeException(e);
       }
     });
-    final State notNewAndModifiedState = States.aggregateState(Conjunction.AND,
+    final State existingAndModifiedState = States.aggregateState(Conjunction.AND,
             getModel().getEntityNewObserver().getReversedObserver(),
             getModel().getModifiedObserver());
-    EntityFXUtil.linkToEnabledState(button, notNewAndModifiedState.getObserver());
+    EntityFXUtil.linkToEnabledState(button, existingAndModifiedState.getObserver());
 
     return button;
   }
@@ -167,8 +190,14 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private void requestInitialFocus() {
-    if (initialFocusNode != null) {
-      initialFocusNode.requestFocus();
+    if (initialFocusControl != null) {
+      initialFocusControl.requestFocus();
+    }
+  }
+
+  private void checkControl(final String propertyID) {
+    if (controls.containsKey(propertyID)) {
+      throw new IllegalStateException("Control has already been created for property: " + propertyID);
     }
   }
 }

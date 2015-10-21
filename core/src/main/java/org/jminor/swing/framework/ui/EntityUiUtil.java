@@ -857,7 +857,7 @@ public final class EntityUiUtil {
     if (entity != null) {
       final JPopupMenu popupMenu = new JPopupMenu();
       populateEntityMenu(popupMenu, (Entity) entity.getCopy(), connectionProvider);
-      popupMenu.show(component, location.x, (int) location.getY());
+      popupMenu.show(component, location.x, location.y);
     }
   }
 

@@ -12,7 +12,9 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Value;
+import org.jminor.common.model.valuemap.DefaultValueMapEditModel;
 import org.jminor.common.model.valuemap.ValueChange;
+import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
@@ -21,33 +23,37 @@ import org.jminor.framework.domain.EntityUtil;
 
 import javafx.collections.ObservableList;
 
+import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.Objects;
 
-public class EntityEditModel {
+public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
 
-  private final Entity entity;
-  private final Map<String, Event<ValueChange<String, ?>>> valueChangeEventMap = new HashMap<>();
   private final EntityConnectionProvider connectionProvider;
 
   private final Event<List<Entity>> insertEvent = Events.event();
   private final Event<List<Entity>> updateEvent = Events.event();
   private final Event<List<Entity>> deleteEvent = Events.event();
 
-  private final State modifiedState = States.state();
+  private final Event entitySetEvent = Events.event();
   private final State entityNewState = States.state(true);
 
   public EntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    this.entity = Entities.entity(entityID);
+    this(entityID, connectionProvider, Entities.getValidator(entityID));
+  }
+
+  public EntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider,
+                         final Entity.Validator validator) {
+    super(Entities.entity(entityID), validator);
     this.connectionProvider = connectionProvider;
     bindEvents();
   }
 
   public final String getEntityID() {
-    return entity.getEntityID();
+    return getEntity().getEntityID();
   }
 
   public final EntityConnectionProvider getConnectionProvider() {
@@ -55,27 +61,20 @@ public class EntityEditModel {
   }
 
   public StateObserver getModifiedObserver() {
-    return modifiedState.getObserver();
+    return getEntity().getModifiedObserver();
   }
 
   public StateObserver getEntityNewObserver() {
     return entityNewState.getObserver();
   }
 
-  public final Object setValue(final String propertyID, final Object value) {
-    return entity.setValue(propertyID, value);
-  }
-
-  public final Object getValue(final String propertyID) {
-    return entity.getValue(propertyID);
-  }
-
   public final void setEntity(final Entity entity) {
-    this.entity.setAs(entity);
+    this.getEntity().setAs(entity == null ? getDefaultEntity() : entity);
+    entitySetEvent.fire(entity);
   }
 
   public final Entity getEntityCopy(final boolean includePrimaryKeyValues) {
-    final Entity copy = (Entity) entity.getCopy();
+    final Entity copy = (Entity) getEntity().getCopy();
     if (!includePrimaryKeyValues) {
       copy.clearPrimaryKeyValues();
     }
@@ -112,7 +111,7 @@ public class EntityEditModel {
   }
 
   public final Entity update() throws DatabaseException {
-    final List<Entity> updated = update(Collections.singletonList(entity));
+    final List<Entity> updated = update(Collections.singletonList(getEntity()));
     setEntity(updated.get(0));
 
     return updated.get(0);
@@ -132,7 +131,7 @@ public class EntityEditModel {
   }
 
   public final void delete() throws DatabaseException {
-    delete(Collections.singletonList(entity));
+    delete(Collections.singletonList(getEntity()));
   }
 
   public final void delete(final List<Entity> entities) throws DatabaseException {
@@ -144,7 +143,7 @@ public class EntityEditModel {
   }
 
   public ObservableList<Entity> createForeignKeyList(final String propertyID) {
-    return new ObservableEntityList(Entities.getForeignKeyProperty(entity.getEntityID(),
+    return new ObservableEntityList(Entities.getForeignKeyProperty(getEntity().getEntityID(),
             propertyID).getReferencedEntityID(), connectionProvider);
   }
 
@@ -152,24 +151,32 @@ public class EntityEditModel {
     return new EntityValue<>(propertyID, this);
   }
 
-  public final EventObserver getValueObserver(final String propertyID) {
-    return getValueChangeEvent(propertyID).getObserver();
-  }
-
   public boolean isEntityNew() {
-    return EntityUtil.isEntityNew(entity);
+    return EntityUtil.isEntityNew(getEntity());
   }
 
-  public void addInsertListener(final EventInfoListener<List<Entity>> listener) {
+  public final void addEntitySetListener(final EventInfoListener<Entity> listener) {
+    entitySetEvent.addInfoListener(listener);
+  }
+
+  public final void addInsertListener(final EventInfoListener<List<Entity>> listener) {
     insertEvent.addInfoListener(listener);
   }
 
-  public void addUpdateListener(final EventInfoListener<List<Entity>> listener) {
+  public final void addUpdateListener(final EventInfoListener<List<Entity>> listener) {
     updateEvent.addInfoListener(listener);
   }
 
-  public void addDeleteListener(final EventInfoListener<List<Entity>> listener) {
+  public final void addDeleteListener(final EventInfoListener<List<Entity>> listener) {
     deleteEvent.addInfoListener(listener);
+  }
+
+  protected Entity getDefaultEntity() {
+    //todo
+    final Entity entity = Entities.entity(getEntityID());
+    entity.saveAll();
+
+    return entity;
   }
 
   protected List<Entity.Key> doInsert(final List<Entity> entities) throws DatabaseException {
@@ -184,33 +191,27 @@ public class EntityEditModel {
     connectionProvider.getConnection().delete(EntityUtil.getPrimaryKeys(entities));
   }
 
-  private void bindEvents() {
-    entity.addValueListener(valueChange -> {
-      final Event<ValueChange<String, ?>> valueChangeEvent = valueChangeEventMap.get(valueChange.getKey());
-      if (valueChangeEvent != null) {
-        valueChangeEvent.fire(valueChange);
-      }
-      modifiedState.setActive(entity.isModified());
-      entityNewState.setActive(isEntityNew());
-    });
+  private Entity getEntity() {
+    return (Entity) getValueMap();
   }
 
-  private Event<ValueChange<String, ?>> getValueChangeEvent(final String propertyID) {
-    if (!valueChangeEventMap.containsKey(propertyID)) {
-      valueChangeEventMap.put(propertyID, Events.<ValueChange<String, ?>>event());
-    }
-
-    return valueChangeEventMap.get(propertyID);
+  private void bindEvents() {
+    getValueChangeObserver().addInfoListener(valueChange -> entityNewState.setActive(isEntityNew()));
+    entitySetEvent.addInfoListener(activeEntity -> entityNewState.setActive(isEntityNew()));
+    entityNewState.addInfoListener(active -> System.out.println("Entity new: " + active));
+    getValueChangeObserver().addInfoListener(valueChange -> System.out.println(valueChange + " | modified: " + getEntity().isModified()));
   }
 
   private static final class EntityValue<V> implements Value<V> {
 
     private final String propertyID;
     private final EntityEditModel editModel;
+    private final Event<V> valueChangeEvent = Events.event();
 
     private EntityValue(final String propertyID, final EntityEditModel editModel) {
       this.propertyID = propertyID;
       this.editModel = editModel;
+      this.editModel.addValueListener(propertyID, valueChange -> valueChangeEvent.fire((V) valueChange.getNewValue()));
     }
 
     @Override
@@ -225,7 +226,7 @@ public class EntityEditModel {
 
     @Override
     public EventObserver<V> getObserver() {
-      return editModel.getValueObserver(propertyID);
+      return valueChangeEvent.getObserver();
     }
   }
 }

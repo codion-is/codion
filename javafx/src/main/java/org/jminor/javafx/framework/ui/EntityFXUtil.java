@@ -49,6 +49,22 @@ public final class EntityFXUtil {
     return textField;
   }
 
+  public static TextField createLongField(final Property property, final EntityEditModel editModel) {
+    return createLongField(property, editModel, null);
+  }
+
+  public static TextField createLongField(final Property property, final EntityEditModel editModel,
+                                             final StateObserver enabledState) {
+    final TextField textField = createTextField(property, enabledState);
+    final StringValue<Long> propertyValue = PropertyValues.longPropertyValue(textField.textProperty(),
+            (NumberFormat) property.getFormat());
+
+    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+    Values.link(editModel.createValue(property.getPropertyID()), propertyValue);
+
+    return textField;
+  }
+
   public static TextField createIntegerField(final Property property, final EntityEditModel editModel) {
     return createIntegerField(property, editModel, null);
   }

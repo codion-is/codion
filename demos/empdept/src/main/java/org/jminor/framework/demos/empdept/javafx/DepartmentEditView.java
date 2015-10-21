@@ -20,12 +20,12 @@ public final class DepartmentEditView extends EntityEditView {
 
   @Override
   protected Node initializeEditPanel() {
-    TextField id = createIntegerField(EmpDept.DEPARTMENT_ID);
-    setInitialFocusNode(id);
-    TextField name = createTextField(EmpDept.DEPARTMENT_NAME);
-    TextField location = createTextField(EmpDept.DEPARTMENT_LOCATION);
+    final TextField id = createTextField(EmpDept.DEPARTMENT_ID);
+    setInitialFocusControl(id);
+    final TextField name = createTextField(EmpDept.DEPARTMENT_NAME);
+    final TextField location = createTextField(EmpDept.DEPARTMENT_LOCATION);
 
-    GridPane gridPane = new GridPane();
+    final GridPane gridPane = new GridPane();
 
     gridPane.add(new Label("Id"), 0, 0);
     gridPane.add(id, 0, 1);

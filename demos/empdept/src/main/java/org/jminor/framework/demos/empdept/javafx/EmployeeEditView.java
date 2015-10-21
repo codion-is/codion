@@ -22,15 +22,15 @@ public final class EmployeeEditView extends EntityEditView {
 
   @Override
   protected Node initializeEditPanel() {
-    TextField id = createIntegerField(EmpDept.EMPLOYEE_ID);
-    setInitialFocusNode(id);
-    TextField name = createTextField(EmpDept.EMPLOYEE_NAME);
-    TextField location = createDoubleField(EmpDept.EMPLOYEE_SALARY);
-    ComboBox department = createComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK);
-    DatePicker picker = createDatePicker(EmpDept.EMPLOYEE_HIREDATE);
-    ComboBox manager = createComboBox(EmpDept.EMPLOYEE_MGR_FK);
+    final TextField id = createTextField(EmpDept.EMPLOYEE_ID);
+    setInitialFocusControl(id);
+    final TextField name = createTextField(EmpDept.EMPLOYEE_NAME);
+    final TextField location = createTextField(EmpDept.EMPLOYEE_SALARY);
+    final ComboBox department = createComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK);
+    final DatePicker picker = createDatePicker(EmpDept.EMPLOYEE_HIREDATE);
+    final ComboBox manager = createComboBox(EmpDept.EMPLOYEE_MGR_FK);
 
-    GridPane gridPane = new GridPane();
+    final GridPane gridPane = new GridPane();
 
     gridPane.add(new Label("Id"), 0, 0);
     gridPane.add(id, 0, 1);
