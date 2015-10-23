@@ -4,8 +4,8 @@
 package org.jminor.swing.common.ui.table;
 
 import org.jminor.common.model.SearchType;
-import org.jminor.swing.common.model.table.ColumnCriteriaModel;
-import org.jminor.swing.common.model.table.DefaultColumnCriteriaModel;
+import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.common.model.table.DefaultColumnCriteriaModel;
 
 import org.junit.Test;
 

@@ -4,10 +4,10 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.model.table.DefaultColumnCriteriaModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.common.model.table.DefaultColumnCriteriaModel;
 
 import java.util.Arrays;
 import java.util.Collection;

@@ -7,6 +7,7 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.table.ColumnCriteriaModel;
 
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ListSelectionEvent;

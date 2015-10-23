@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.framework.model;
 
+import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.common.model.table.ColumnCriteriaModel;
 
 /**
  * A default PropertyFilterModelProvider implementation.

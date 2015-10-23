@@ -5,6 +5,8 @@ package org.jminor.swing.common.model.table;
 
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilterCriteria;
+import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.common.model.table.DefaultColumnCriteriaModel;
 
 import org.junit.Before;
 import org.junit.Test;

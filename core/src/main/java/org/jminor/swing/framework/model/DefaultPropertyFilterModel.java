@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.framework.model;
 
+import org.jminor.common.model.table.DefaultColumnCriteriaModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.common.model.table.DefaultColumnCriteriaModel;
 
 /**
  * A class for filtering a set of entities based on a property.

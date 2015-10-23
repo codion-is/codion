@@ -4101,3 +4101,4 @@
   AbstractServer.DefaultServerInfo bug fixed, getServerVersion() returned client framework version, not the version of the remote server, this change seems to be serialization safe
   JavaFX functionality added along with a small demo
   DefaultValueMapEditModel refactored from DefaultEntityEditModel
+  ColumnCriteriaModel and DefaultColumnCriteriaModel moved from org.jminor.swing.common.model.table to org.jminor.common.table, due to no swing dependencies

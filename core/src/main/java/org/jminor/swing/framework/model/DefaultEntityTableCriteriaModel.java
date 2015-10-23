@@ -17,12 +17,12 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.common.model.table.ColumnCriteriaModel;
 
 import java.util.Collection;
 import java.util.Collections;

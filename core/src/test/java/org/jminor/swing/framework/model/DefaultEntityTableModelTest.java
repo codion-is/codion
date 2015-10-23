@@ -7,6 +7,7 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entities;
@@ -14,7 +15,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.swing.common.model.table.ColumnCriteriaModel;
 import org.jminor.swing.common.model.table.SortingDirective;
 
 import org.junit.Test;

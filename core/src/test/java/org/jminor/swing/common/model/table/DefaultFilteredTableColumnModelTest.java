@@ -4,6 +4,8 @@
 package org.jminor.swing.common.model.table;
 
 import org.jminor.common.model.EventInfoListener;
+import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.common.model.table.DefaultColumnCriteriaModel;
 
 import org.junit.Test;
 

@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2015, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model.table;
+package org.jminor.common.model.table;
 
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;

@@ -6,11 +6,11 @@ package org.jminor.swing.framework.model;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.swing.common.model.table.ColumnCriteriaModel;
 
 import org.junit.Test;
 

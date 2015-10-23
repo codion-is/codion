@@ -10,9 +10,9 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.common.model.table.ColumnCriteriaModel;
 
 import java.util.Collection;
 

@@ -4,13 +4,12 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Value;
+import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
-import org.jminor.swing.common.model.table.ColumnCriteriaModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;

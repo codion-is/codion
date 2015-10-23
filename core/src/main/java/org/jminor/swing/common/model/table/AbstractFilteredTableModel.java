@@ -8,6 +8,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.table.ColumnCriteriaModel;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
