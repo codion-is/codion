@@ -108,6 +108,7 @@ public interface ValueMapEditModel<K, V> {
 
   /**
    * Validates the current state of the given ValueMap
+   * @param valueMap the ValueMap to validate
    * @throws ValidationException in case the ValueMap is invalid
    */
   void validate(final ValueMap<K, V> valueMap) throws ValidationException;

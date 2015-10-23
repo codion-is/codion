@@ -22,7 +22,7 @@ import java.util.Map;
 /**
  * A default ValueMapEditModel implementation, handling value change events and validation
  * @param <K> the type of the value map keys
- * @param <V>
+ * @param <V> the type of values in this map
  */
 public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
 
