@@ -21,7 +21,7 @@ CREATE TABLE petstore.product (
  foreign key (categoryid) references petstore.category(categoryid)
 );
 
-CREATE TABLE petstore.Address (
+CREATE TABLE petstore.address (
  addressid INTEGER NOT NULL,
  street1 VARCHAR(55) NOT NULL,
  street2 VARCHAR(55),
@@ -33,7 +33,7 @@ CREATE TABLE petstore.Address (
  primary key (addressid)
 );
 
-CREATE TABLE petstore.SellerContactInfo (
+CREATE TABLE petstore.sellercontactinfo (
  contactinfoid INTEGER NOT NULL,
  lastname VARCHAR(24) NOT NULL,
  firstname VARCHAR(24) NOT NULL,
@@ -55,9 +55,9 @@ CREATE TABLE petstore.item (
  numberofvotes INTEGER,
  disabled INTEGER,
  primary key (itemid),
- foreign key (address_addressid) references petstore.Address(addressid),
+ foreign key (address_addressid) references petstore.address(addressid),
  foreign key (productid) references petstore.product(productid),
- foreign key (contactinfo_contactinfoid) references petstore.SellerContactInfo(contactinfoid)
+ foreign key (contactinfo_contactinfoid) references petstore.sellercontactinfo(contactinfoid)
 );
 
 create table petstore.tag(

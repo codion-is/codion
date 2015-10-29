@@ -249,7 +249,7 @@
     </javadoc>
   </target>
 
-  <target name="deploy_server" depends="dist, create_keystore, create_h2db"
+  <target name="deploy_server" depends="dist, create_keystore, create_demo_h2db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
     <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.path}/lib"/>
     <copy file="${dist}/jminor-db-core/jminor-db-core.jar" todir="${deploy.server.path}/lib"/>
@@ -310,7 +310,7 @@
     <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_generator" depends="dist, create_h2db"
+  <target name="deploy_generator" depends="dist, create_demo_h2db"
           description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">
     <mkdir dir="${deploy.generator.path}"/>
     <copy file="${dist}/jminor/jminor.jar" todir="${deploy.generator.path}/lib"/>
@@ -327,7 +327,7 @@
     <chmod dir="${deploy.generator.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demos" depends="dist, create_keystore, create_h2db"
+  <target name="deploy_demos" depends="dist, create_keystore, create_demo_h2db"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
 
@@ -541,11 +541,11 @@
     </java>
   </target>
 
-  <target name="create_h2db"
+  <target name="create_demo_h2db"
           description="Recreates the demo h2 database, which contains the EmpDept, Petstore, Chinook and World schemas, used by unit tests and demo applications">
     <delete dir="${db.h2.dir}"/>
     <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.test">
-      <arg line="-url jdbc:h2:file:${db.h2.dir}/${db.h2.name} -showResults -script ${db.init.h2}"/>
+      <arg line="-url jdbc:h2:file:${db.h2.dir}/${db.h2.name} -showResults -script ${demo.db.initScript}"/>
     </java>
   </target>
 
