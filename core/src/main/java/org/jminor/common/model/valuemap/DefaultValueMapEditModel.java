@@ -77,7 +77,7 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
     final Object oldValue = valueMap.getValue(key);
     valueMap.setValue(key, value);
     if (!Util.equal(value, oldValue)) {
-      notifyValueChange(key, ValueChanges.valueChange(this, key, value, oldValue, initialization));
+      notifyValueChange(key, ValueChanges.valueChange(key, value, oldValue, initialization));
     }
   }
 

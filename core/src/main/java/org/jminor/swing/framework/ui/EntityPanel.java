@@ -381,7 +381,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * @param compactDetailLayout true if this panel and it's detail panels should be laid out in a compact state
+   * @param compactDetailLayout true if this panel and its detail panels should be laid out in a compact state
    * @return this EntityPanel instance
    */
   public final EntityPanel setCompactDetailLayout(final boolean compactDetailLayout) {
@@ -422,7 +422,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   }
 
   /**
-   * Initializes this EntityPanel's UI, in case of some specific initialization code you can override the
+   * Initializes this EntityPanels UI, in case of some specific initialization code you can override the
    * <code>initialize()</code> method and add your code there.
    * This method marks this panel as initialized which prevents it from running again, whether or not an exception occurs.
    * @return this EntityPanel instance
@@ -989,7 +989,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   //#############################################################################################
 
   /**
-   * Initializes this EntityPanel's UI.
+   * Initializes this EntityPanels UI.
    *<pre>
    * The default layout is as follows:
    * __________________________________

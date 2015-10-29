@@ -136,7 +136,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
   void saveAll();
 
   /**
-   * @return a deep copy of this value map in it's original state
+   * @return a deep copy of this value map in its original state
    */
   ValueMap<K, V> getOriginalCopy();
 

@@ -132,7 +132,7 @@ public interface ConnectionPool {
 
   /**
    * @param value the maximum number of milliseconds to retry connection checkout before throwing an exception,
-   * note that this also modifies the new connection threshold, keeping it's value to 1/4 of this one
+   * note that this also modifies the new connection threshold, keeping its value to 1/4 of this one
    * @throws IllegalArgumentException if value is less than 0
    */
   void setMaximumCheckOutTime(final int value);

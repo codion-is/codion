@@ -715,7 +715,7 @@ public final class Util {
   }
 
   /**
-   * Sorts the string representations of this list's contents, using
+   * Sorts the string representations of this lists contents, using
    * the space aware collator
    * @see #getSpaceAwareCollator()
    * @param values the list to sort (collate)

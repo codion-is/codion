@@ -959,7 +959,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @param title the title string for the JFrame
    * @param maximize if true then the JFrame is maximized, overrides the prefSeizeAsRatioOfScreen parameter
    * @param showMenuBar true if a menubar should be created
-   * @param size if the JFrame is not maximized then it's preferredSize is set to this value
+   * @param size if the JFrame is not maximized then its preferredSize is set to this value
    * @param applicationIcon the application icon
    * @param setVisible if true then the JFrame is set visible
    * @return an initialized, but non-visible JFrame

@@ -127,7 +127,7 @@ public interface DatabaseConnection {
   interface Operation {
 
     /**
-     * @return this operation's ID, unique for the Database instance being used
+     * @return this operations ID, unique for the Database instance being used
      */
     String getID();
 

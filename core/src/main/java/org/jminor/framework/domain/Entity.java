@@ -35,7 +35,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
   Key getPrimaryKey();
 
   /**
-   * @return the primary key of this entity in it's original state
+   * @return the primary key of this entity in its original state
    */
   Key getOriginalPrimaryKey();
 
@@ -291,7 +291,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
 
     /**
      * Prepares the given entity for insert, that is, generates and fetches any required primary key values
-     * and populates the entity's primary key
+     * and populates the entitys primary key
      * @param entity the entity to prepare
      * @param primaryKeyProperty the primary key property for which the value is being generated
      * @param connection the connection to use
@@ -302,7 +302,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
 
     /**
      * Prepares the given entity after insert, that is, fetches automatically generated primary
-     * key values and populates the entity's primary key
+     * key values and populates the entitys primary key
      * @param entity the entity to prepare
      * @param primaryKeyProperty the primary key property for which the value is being generated
      * @param connection the connection to use

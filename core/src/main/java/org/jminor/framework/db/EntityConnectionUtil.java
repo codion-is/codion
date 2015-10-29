@@ -24,7 +24,7 @@ public final class EntityConnectionUtil {
    * @param destination the destination db
    * @param batchSize the number of records to copy between commits
    * @param includePrimaryKeys if true primary key values are included, if false then they are assumed to be auto-generated
-   * @param entityIDs the ID's of the entity types to copy
+   * @param entityIDs the IDs of the entity types to copy
    * @throws DatabaseException in case of a db exception
    * @throws IllegalArgumentException if <code>batchSize</code> is not a positive integer
    */

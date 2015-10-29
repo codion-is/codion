@@ -342,7 +342,7 @@ public interface Property extends Attribute {
     ColumnProperty setSearchable(final boolean searchable);
 
     /**
-     * @return this property's zero based index in the primary key, -1 if this property is not part of a primary key
+     * @return this propertys zero based index in the primary key, -1 if this property is not part of a primary key
      */
     int getPrimaryKeyIndex();
 

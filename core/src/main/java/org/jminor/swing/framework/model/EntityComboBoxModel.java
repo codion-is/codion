@@ -64,7 +64,7 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
   void forceRefresh();
 
   /**
-   * Specifies whether or not this model's data should be considered static,
+   * Specifies whether or not this models data should be considered static,
    * that is, only fetched once.
    * @param staticData the value
    * @return this EntityComboBoxModel instance

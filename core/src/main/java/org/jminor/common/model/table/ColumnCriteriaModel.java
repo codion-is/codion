@@ -160,7 +160,7 @@ public interface ColumnCriteriaModel<K> {
   Value getLowerBoundValue();
 
   /**
-   * @return an observer for this model's locked state
+   * @return an observer for this models locked state
    */
   StateObserver getLockedObserver();
 

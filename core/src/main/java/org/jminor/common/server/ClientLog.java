@@ -40,7 +40,7 @@ public final class ClientLog implements Serializable {
   }
 
   /**
-   * @return the UUID identifying this log's client
+   * @return the UUID identifying this logs client
    */
   public UUID getClientID() {
     return clientID;

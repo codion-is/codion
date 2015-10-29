@@ -296,7 +296,7 @@ public final class DatabaseUtil {
     private int undefinedPerSecondCounter = 0;
 
     /**
-     * Counts the given query, based on it's first character
+     * Counts the given query, based on its first character
      * @param sql the sql query
      */
     public synchronized void count(final String sql) {

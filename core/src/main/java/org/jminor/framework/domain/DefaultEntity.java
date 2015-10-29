@@ -508,7 +508,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   /**
    * Sets the values of the properties used in the reference to the corresponding values found in <code>referencedEntity</code>.
    * Example: EntityOne references EntityTwo via entityTwoID, after a call to this method the EntityOne.entityTwoID
-   * property has the value of EntityTwo's primary key property. If <code>referencedEntity</code> is null then
+   * property has the value of EntityTwos primary key property. If <code>referencedEntity</code> is null then
    * the corresponding reference values are set to null.
    * @param foreignKeyProperty the entity reference property
    * @param referencedEntity the referenced entity

@@ -12,7 +12,7 @@ import javax.swing.JComboBox;
 import java.util.List;
 
 /**
- * A InputProvider implementation based on a list of Item's
+ * A InputProvider implementation based on a list of Items
  * @param <T> the type represented by the items available via this input provider
  * @see Item
  */

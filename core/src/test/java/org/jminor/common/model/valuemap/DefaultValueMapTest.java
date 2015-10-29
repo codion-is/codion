@@ -50,15 +50,10 @@ public class DefaultValueMapTest {
       @Override
       public void eventOccurred(final ValueChange<String, ?> info) {
         Assert.assertEquals(key, info.getKey());
-        assertEquals(valueMap, info.getSource());
         info.toString();
         info.getOldValue();
         info.getNewValue();
         info.isInitialization();
-        info.isNewValueEqual(null);
-        info.isNewValueNull();
-        info.isOldValueEqual(null);
-        info.isOldValueNull();
       }
     };
     valueMap.addValueListener(valueListener);
