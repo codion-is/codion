@@ -240,9 +240,9 @@
              docencoding="UTF-8" author="true" version="true" use="true"
              windowtitle="JMinor v${version} API" doctitle="JMinor v${version} API"
              group="Common org.jminor.common*,
-                    Client org.jminor.framework.client*,
                     Db org.jminor.framework.db*,
                     Domain org.jminor.framework.domain*,
+                    Swing-client org.jminor.swing*,
                     Server org.jminor.framework.server*">
       <classpath refid="lib.compile"/>
       <link href="http://download.oracle.com/javase/8/docs/api/"/>
