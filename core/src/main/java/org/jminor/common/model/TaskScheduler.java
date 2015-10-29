@@ -30,6 +30,7 @@ public final class TaskScheduler {
 
   public static final String INTERVAL_PROPERTY = "interval";
 
+  private final Object lock = new Object();
   private final Runnable task;
   private final int initialDelay;
   private final TimeUnit timeUnit;
@@ -99,7 +100,7 @@ public final class TaskScheduler {
     if (interval <= 0) {
       throw new IllegalArgumentException("Interval must be a positive integer");
     }
-    synchronized (this) {
+    synchronized (lock) {
       if (this.interval != interval) {
         this.interval = interval;
         start();
@@ -119,28 +120,34 @@ public final class TaskScheduler {
    * Starts this TaskScheduler, if it is running it is restarted, using the initial delay specified during construction.
    * @return this TaskScheduler instance
    */
-  public synchronized TaskScheduler start() {
-    stop();
-    executorService = Executors.newSingleThreadScheduledExecutor(threadFactory);
-    executorService.scheduleAtFixedRate(task, initialDelay, interval, timeUnit);
+  public TaskScheduler start() {
+    synchronized (lock) {
+      stop();
+      executorService = Executors.newSingleThreadScheduledExecutor(threadFactory);
+      executorService.scheduleAtFixedRate(task, initialDelay, interval, timeUnit);
 
-    return this;
+      return this;
+    }
   }
 
   /**
    * Stops this TaskScheduler, if it is not running calling this method has no effect.
    */
-  public synchronized void stop() {
-    if (isRunning()) {
-      executorService.shutdownNow();
-      executorService = null;
+  public void stop() {
+    synchronized (lock) {
+      if (isRunning()) {
+        executorService.shutdownNow();
+        executorService = null;
+      }
     }
   }
 
   /**
    * @return true if this TaskScheduler is running
    */
-  public synchronized boolean isRunning() {
-    return executorService != null && !executorService.isShutdown();
+  public boolean isRunning() {
+    synchronized (lock) {
+      return executorService != null && !executorService.isShutdown();
+    }
   }
 }

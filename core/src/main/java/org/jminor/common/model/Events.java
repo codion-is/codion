@@ -54,6 +54,7 @@ public final class Events {
 
   private static final class DefaultEvent<T> implements Event<T> {
 
+    private final Object lock = new Object();
     private volatile DefaultObserver<T> observer;
 
     @Override
@@ -85,13 +86,13 @@ public final class Events {
 
     @Override
     public EventObserver<T> getObserver() {
-      synchronized (this) {
+      synchronized (lock) {
         if (observer == null) {
           observer = new DefaultObserver<>();
         }
-      }
 
-      return observer;
+        return observer;
+      }
     }
 
     @Override
@@ -117,49 +118,64 @@ public final class Events {
 
   private static final class DefaultObserver<T> implements EventObserver<T> {
 
+    private final Object lock = new Object();
     private Collection<EventListener> listeners;
     private Collection<EventInfoListener<T>> infoListeners;
 
     @Override
-    public synchronized void addInfoListener(final EventInfoListener<T> listener) {
+    public void addInfoListener(final EventInfoListener<T> listener) {
       Util.rejectNullValue(listener, "listener");
-      getInfoListeners().add(listener);
+      synchronized (lock) {
+        getInfoListeners().add(listener);
+      }
     }
 
     @Override
-    public synchronized void removeInfoListener(final EventInfoListener listener) {
-      getInfoListeners().remove(listener);
+    public void removeInfoListener(final EventInfoListener listener) {
+      synchronized (lock) {
+        getInfoListeners().remove(listener);
+      }
     }
 
     @Override
-    public synchronized void addListener(final EventListener listener) {
+    public void addListener(final EventListener listener) {
       Util.rejectNullValue(listener, "listener");
-      getListeners().add(listener);
+      synchronized (lock) {
+        getListeners().add(listener);
+      }
     }
 
     @Override
-    public synchronized void removeListener(final EventListener listener) {
-      getListeners().remove(listener);
-    }
-
-    private synchronized Collection<EventListener> getEventListeners() {
-      if (listeners == null) {
-        return Collections.emptyList();
+    public void removeListener(final EventListener listener) {
+      synchronized (lock) {
+        getListeners().remove(listener);
       }
-
-      return new ArrayList<>(listeners);
     }
 
-    private synchronized Collection<EventInfoListener<T>> getEventInfoListeners() {
-      if (infoListeners == null) {
-        return Collections.emptyList();
+    private Collection<EventListener> getEventListeners() {
+      synchronized (lock) {
+        if (listeners == null) {
+          return Collections.emptyList();
+        }
+
+        return new ArrayList<>(listeners);
       }
-
-      return new ArrayList<>(infoListeners);
     }
 
-    private synchronized boolean hasListeners() {
-      return (listeners != null && !listeners.isEmpty()) || (infoListeners != null && !infoListeners.isEmpty());
+    private Collection<EventInfoListener<T>> getEventInfoListeners() {
+      synchronized (lock) {
+        if (infoListeners == null) {
+          return Collections.emptyList();
+        }
+
+        return new ArrayList<>(infoListeners);
+      }
+    }
+
+    private boolean hasListeners() {
+      synchronized (lock) {
+        return (listeners != null && !listeners.isEmpty()) || (infoListeners != null && !infoListeners.isEmpty());
+      }
     }
 
     private Collection<EventListener> getListeners() {

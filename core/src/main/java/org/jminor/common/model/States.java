@@ -56,6 +56,7 @@ public final class States {
 
   private static class DefaultState implements State {
 
+    private final Object lock = new Object();
     private StateObserver observer;
     private boolean active = false;
 
@@ -73,24 +74,30 @@ public final class States {
     }
 
     @Override
-    public synchronized void setActive(final boolean active) {
-      final boolean previousValue = this.active;
-      this.active = active;
-      ((DefaultStateObserver) getObserver()).notifyObservers(previousValue, active);
-    }
-
-    @Override
-    public synchronized boolean isActive() {
-      return active;
-    }
-
-    @Override
-    public final synchronized StateObserver getObserver() {
-      if (observer == null) {
-        observer = new DefaultStateObserver(this, false);
+    public void setActive(final boolean active) {
+      synchronized (lock) {
+        final boolean previousValue = this.active;
+        this.active = active;
+        ((DefaultStateObserver) getObserver()).notifyObservers(previousValue, active);
       }
+    }
 
-      return observer;
+    @Override
+    public boolean isActive() {
+      synchronized (lock) {
+        return active;
+      }
+    }
+
+    @Override
+    public final StateObserver getObserver() {
+      synchronized (lock) {
+        if (observer == null) {
+          observer = new DefaultStateObserver(this, false);
+        }
+
+        return observer;
+      }
     }
 
     @Override
@@ -146,6 +153,7 @@ public final class States {
 
   private static final class DefaultAggregateState extends DefaultState implements State.AggregateState {
 
+    private final Object lock = new Object();
     private final List<AggregateStateListener> stateListeners = new ArrayList<>();
     private final Conjunction conjunction;
 
@@ -163,14 +171,16 @@ public final class States {
     }
 
     @Override
-    public synchronized String toString() {
-      final StringBuilder stringBuilder = new StringBuilder("Aggregate");
-      stringBuilder.append(conjunction.toString()).append(super.toString());
-      for (final AggregateStateListener listener : stateListeners) {
-        stringBuilder.append(", ").append(listener.getState());
-      }
+    public String toString() {
+      synchronized (lock) {
+        final StringBuilder stringBuilder = new StringBuilder("Aggregate");
+        stringBuilder.append(conjunction.toString()).append(super.toString());
+        for (final AggregateStateListener listener : stateListeners) {
+          stringBuilder.append(", ").append(listener.getState());
+        }
 
-      return stringBuilder.toString();
+        return stringBuilder.toString();
+      }
     }
 
     @Override
@@ -179,39 +189,47 @@ public final class States {
     }
 
     @Override
-    public synchronized void addState(final StateObserver state) {
+    public void addState(final StateObserver state) {
       Util.rejectNullValue(state, "state");
-      if (findListener(state) == null) {
+      synchronized (lock) {
+        if (findListener(state) == null) {
+          final boolean wasActive = isActive();
+          stateListeners.add(new AggregateStateListener(state));
+          ((DefaultStateObserver) getObserver()).notifyObservers(wasActive, isActive());
+        }
+      }
+    }
+
+    @Override
+    public void removeState(final StateObserver state) {
+      Util.rejectNullValue(state, "state");
+      synchronized (lock) {
         final boolean wasActive = isActive();
-        stateListeners.add(new AggregateStateListener(state));
-        ((DefaultStateObserver) getObserver()).notifyObservers(wasActive, isActive());
+        final AggregateStateListener listener = findListener(state);
+        if (listener != null) {
+          state.removeInfoListener(listener);
+          stateListeners.remove(listener);
+          ((DefaultStateObserver) getObserver()).notifyObservers(wasActive, isActive());
+        }
       }
     }
 
     @Override
-    public synchronized void removeState(final StateObserver state) {
-      Util.rejectNullValue(state, "state");
-      final boolean wasActive = isActive();
-      final AggregateStateListener listener = findListener(state);
-      if (listener != null) {
-        state.removeInfoListener(listener);
-        stateListeners.remove(listener);
-        ((DefaultStateObserver) getObserver()).notifyObservers(wasActive, isActive());
+    public boolean isActive() {
+      synchronized (lock) {
+        return isActive(conjunction, null, false);
       }
     }
 
     @Override
-    public synchronized boolean isActive() {
-      return isActive(conjunction, null, false);
-    }
-
-    @Override
-    public synchronized void setActive(final boolean active) {
+    public void setActive(final boolean active) {
       throw new UnsupportedOperationException("The state of aggregate states can't be set");
     }
 
-    private synchronized boolean getPreviousState(final StateObserver excludeState, final boolean previousValue) {
-      return isActive(conjunction, excludeState, previousValue);
+    private boolean getPreviousState(final StateObserver excludeState, final boolean previousValue) {
+      synchronized (lock) {
+        return isActive(conjunction, excludeState, previousValue);
+      }
     }
 
     private boolean isActive(final Conjunction conjunction, final StateObserver exclude, final boolean excludeReplacement) {
@@ -262,6 +280,7 @@ public final class States {
 
   private static final class DefaultStateObserver implements StateObserver {
 
+    private final Object lock = new Object();
     private final StateObserver stateObserver;
     private final boolean reversed;
 
@@ -278,25 +297,31 @@ public final class States {
 
     @Override
     public boolean isActive() {
-      return reversed ? !stateObserver.isActive() : stateObserver.isActive();
+      synchronized (lock) {
+        return reversed ? !stateObserver.isActive() : stateObserver.isActive();
+      }
     }
 
     @Override
-    public synchronized EventObserver<Boolean> getChangeObserver() {
-      if (stateChangedEvent == null) {
-        stateChangedEvent = Events.event();
-      }
+    public EventObserver<Boolean> getChangeObserver() {
+      synchronized (lock) {
+        if (stateChangedEvent == null) {
+          stateChangedEvent = Events.event();
+        }
 
-      return stateChangedEvent.getObserver();
+        return stateChangedEvent.getObserver();
+      }
     }
 
     @Override
-    public synchronized StateObserver getReversedObserver() {
-      if (reversedStateObserver == null) {
-        reversedStateObserver = new DefaultStateObserver(this, true);
-      }
+    public StateObserver getReversedObserver() {
+      synchronized (lock) {
+        if (reversedStateObserver == null) {
+          reversedStateObserver = new DefaultStateObserver(this, true);
+        }
 
-      return reversedStateObserver;
+        return reversedStateObserver;
+      }
     }
 
     @Override
@@ -339,38 +364,44 @@ public final class States {
       getStateDeactivatedEvent().removeListener(listener);
     }
 
-    private synchronized Event getStateActivatedEvent() {
-      if (stateActivatedEvent == null) {
-        stateActivatedEvent = Events.event();
-      }
+    private Event getStateActivatedEvent() {
+      synchronized (lock) {
+        if (stateActivatedEvent == null) {
+          stateActivatedEvent = Events.event();
+        }
 
-      return stateActivatedEvent;
+        return stateActivatedEvent;
+      }
     }
 
-    private synchronized Event getStateDeactivatedEvent() {
-      if (stateDeactivatedEvent == null) {
-        stateDeactivatedEvent = Events.event();
-      }
+    private Event getStateDeactivatedEvent() {
+      synchronized (lock) {
+        if (stateDeactivatedEvent == null) {
+          stateDeactivatedEvent = Events.event();
+        }
 
-      return stateDeactivatedEvent;
+        return stateDeactivatedEvent;
+      }
     }
 
-    private synchronized void notifyObservers(final boolean previousValue, final boolean newValue) {
-      if (previousValue != newValue) {
-        if (stateChangedEvent != null) {
-          stateChangedEvent.fire(newValue);
-        }
-        if (reversedStateObserver != null) {
-          reversedStateObserver.notifyObservers(newValue, previousValue);
-        }
-        if (newValue) {
-          if (stateActivatedEvent != null) {
-            stateActivatedEvent.fire();
+    private void notifyObservers(final boolean previousValue, final boolean newValue) {
+      synchronized (lock) {
+        if (previousValue != newValue) {
+          if (stateChangedEvent != null) {
+            stateChangedEvent.fire(newValue);
           }
-        }
-        else {
-          if (stateDeactivatedEvent != null) {
-            stateDeactivatedEvent.fire();
+          if (reversedStateObserver != null) {
+            reversedStateObserver.notifyObservers(newValue, previousValue);
+          }
+          if (newValue) {
+            if (stateActivatedEvent != null) {
+              stateActivatedEvent.fire();
+            }
+          }
+          else {
+            if (stateDeactivatedEvent != null) {
+              stateDeactivatedEvent.fire();
+            }
           }
         }
       }

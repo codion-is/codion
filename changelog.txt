@@ -4102,3 +4102,6 @@
   JavaFX functionality added along with a small demo
   DefaultValueMapEditModel refactored from DefaultEntityEditModel
   ColumnCriteriaModel and DefaultColumnCriteriaModel moved from org.jminor.swing.common.model.table to org.jminor.common.table, due to no swing dependencies
+  TaskScheduler now synchronizes on a lock object instead of this
+  Events, DefaultEvent and DefaultObserver now synchronize on a lock object instead of this
+  States, DefaultState, DefaultAggregateState, DefaultStateObserver and DefaultGroup now synchronize on a lock object instead of this
