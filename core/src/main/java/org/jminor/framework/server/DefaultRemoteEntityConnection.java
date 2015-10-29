@@ -609,7 +609,6 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
       final String methodName = method.getName();
       Exception exception = null;
-      final long startTime = System.currentTimeMillis();
       try {
         MDC.put(LOG_IDENTIFIER_PROPERTY, remoteEntityConnection.logIdentifier);
         remoteEntityConnection.setActive();
