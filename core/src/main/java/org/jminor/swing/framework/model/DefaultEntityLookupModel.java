@@ -95,7 +95,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     this.lookupProperties = lookupProperties;
     this.description = Util.getCollectionContentsAsString(getLookupProperties(), false);
     initializeDefaultSettings();
-    bindEvents();
+    bindEventsInternal();
   }
 
   /** {@inheritDoc} */
@@ -306,7 +306,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     }
   }
 
-  private void bindEvents() {
+  private void bindEventsInternal() {
     searchStringValue.getObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {

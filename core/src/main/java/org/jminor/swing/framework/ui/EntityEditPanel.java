@@ -162,7 +162,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
       ACTIVE_STATE_GROUP.addState(activeState);
     }
     setupDefaultControls(controlKeys);
-    bindEvents();
+    bindEventsInternal();
   }
 
   /** {@inheritDoc} */
@@ -2004,7 +2004,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     }
   }
 
-  private void bindEvents() {
+  private void bindEventsInternal() {
     addMouseListener(new MouseAdapter() {
       @Override
       public void mouseClicked(final MouseEvent e) {

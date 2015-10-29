@@ -138,7 +138,7 @@ public class DefaultEntityModel implements EntityModel {
     this.editModel = editModel;
     this.tableModel = tableModel;
     setTableEditModel(editModel, tableModel);
-    bindEvents();
+    bindEventsInternal();
   }
 
   /**
@@ -575,7 +575,7 @@ public class DefaultEntityModel implements EntityModel {
     }
   }
 
-  private void bindEvents() {
+  private void bindEventsInternal() {
     final EventListener initializer = new EventListener() {
       @Override
       public void eventOccurred() {

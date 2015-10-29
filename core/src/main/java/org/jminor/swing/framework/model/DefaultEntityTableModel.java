@@ -147,7 +147,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
     this.criteriaModel = criteriaModel;
-    bindEvents();
+    bindEventsInternal();
     applyPreferences();
   }
 
@@ -648,7 +648,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     Util.removeUserPreference(getPreferencesKey());
   }
 
-  private void bindEvents() {
+  private void bindEventsInternal() {
     getColumnModel().addColumnHiddenListener(new EventInfoListener<Property>() {
       @Override
       public void eventOccurred(final Property info) {
