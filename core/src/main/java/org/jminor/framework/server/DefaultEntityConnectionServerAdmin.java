@@ -257,25 +257,6 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public int getWarningTimeThreshold() {
-    return DefaultRemoteEntityConnection.getWarningThreshold();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public void setWarningTimeThreshold(final int threshold) {
-    LOG.info("setWarningThreshold({})", threshold);
-    DefaultRemoteEntityConnection.setWarningThreshold(threshold);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public int getWarningTimeExceededPerSecond() {
-    return DefaultRemoteEntityConnection.getWarningTimeExceededPerSecond();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public ConnectionPoolStatistics getConnectionPoolStatistics(final User user, final long since) {
     return ConnectionPools.getConnectionPool(user).getStatistics(since);
   }

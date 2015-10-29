@@ -119,13 +119,6 @@ public final class ServerMonitorPanel extends JPanel {
     controlPanel.add(new JLabel("Update interval (s)"));
     controlPanel.add(spnUpdateInterval);
 
-    controlPanel.add(new JLabel("Warning threshold (ms)"));
-    final JSpinner spnWarningThreshold = new JSpinner(
-            ValueLinks.intSpinnerValueLink(model, "warningThreshold", model.getWarningThresholdObserver()));
-    ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setEditable(false);
-    ((JSpinner.DefaultEditor) spnWarningThreshold.getEditor()).getTextField().setColumns(SPINNER_COLUMNS);
-    controlPanel.add(spnWarningThreshold);
-
     final JPanel controlPanelBase = new JPanel(UiUtil.createBorderLayout());
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
     controlPanelBase.add(ControlProvider.createButton(Controls.methodControl(model, "resetStatistics", "Reset")), BorderLayout.EAST);

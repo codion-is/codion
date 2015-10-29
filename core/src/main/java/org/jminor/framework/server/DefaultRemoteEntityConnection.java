@@ -486,18 +486,6 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
     return REQUEST_COUNTER.getRequestsPerSecond();
   }
 
-  static int getWarningTimeExceededPerSecond() {
-    return REQUEST_COUNTER.getWarningTimeExceededPerSecond();
-  }
-
-  static int getWarningThreshold() {
-    return REQUEST_COUNTER.getWarningThreshold();
-  }
-
-  static void setWarningThreshold(final int threshold) {
-    REQUEST_COUNTER.setWarningThreshold(threshold);
-  }
-
   private void setActive() {
     ACTIVE_CONNECTIONS.add(this);
   }
@@ -639,10 +627,6 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
       }
       finally {
         remoteEntityConnection.setInactive();
-        final long currentTime = System.currentTimeMillis();
-        if (currentTime - startTime > REQUEST_COUNTER.warningThreshold) {
-          REQUEST_COUNTER.incrementWarningTimeExceededCounter();
-        }
         remoteEntityConnection.returnConnection();
         final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
         if (methodLogger.isEnabled()) {
@@ -657,16 +641,12 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
   private static final class RequestCounter {
 
-    private static final int DEFAULT_WARNING_THRESHOLD = 60;
     private static final double THOUSAND = 1000d;
 
     private final ScheduledExecutorService executorService = Executors.newSingleThreadScheduledExecutor(new Util.DaemonThreadFactory());
     private long requestsPerSecondTime = System.currentTimeMillis();
     private int requestsPerSecond = 0;
     private int requestsPerSecondCounter = 0;
-    private int warningThreshold = DEFAULT_WARNING_THRESHOLD;
-    private int warningTimeExceededPerSecond = 0;
-    private int warningTimeExceededCounter = 0;
 
     private RequestCounter() {
       executorService.scheduleWithFixedDelay(new Runnable() {
@@ -682,8 +662,6 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
       final double seconds = (current - requestsPerSecondTime) / THOUSAND;
       if (seconds > 0) {
         requestsPerSecond = (int) ((double) requestsPerSecondCounter / seconds);
-        warningTimeExceededPerSecond = (int) ((double) warningTimeExceededCounter / seconds);
-        warningTimeExceededCounter = 0;
         requestsPerSecondCounter = 0;
         requestsPerSecondTime = current;
       }
@@ -693,24 +671,8 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
       requestsPerSecondCounter++;
     }
 
-    private void incrementWarningTimeExceededCounter() {
-      warningTimeExceededCounter++;
-    }
-
     private int getRequestsPerSecond() {
       return requestsPerSecond;
-    }
-
-    private int getWarningTimeExceededPerSecond() {
-      return warningTimeExceededPerSecond;
-    }
-
-    private int getWarningThreshold() {
-      return warningThreshold;
-    }
-
-    private void setWarningThreshold(final int warningThreshold) {
-      this.warningThreshold = warningThreshold;
     }
   }
 }

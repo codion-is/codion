@@ -39,7 +39,6 @@ public final class ServerMonitor {
 
   private final Event serverShutDownEvent = Events.event();
   private final Event<String> statisticsUpdatedEvent = Events.event();
-  private final Event<Integer> warningThresholdChangedEvent = Events.event();
   private final Event<Level> loggingLevelChangedEvent = Events.event();
   private final Event<Integer> connectionLimitChangedEvent = Events.event();
 
@@ -69,7 +68,6 @@ public final class ServerMonitor {
   private String memoryUsage;
   private final DefaultTableModel domainListModel = new DomainTableModel();
   private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
-  private final XYSeries warningTimeExceededSecondSeries = new XYSeries("Service calls exceeding warning time per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
 
   private final XYSeries allocatedMemorySeries = new XYSeries("Allocated memory");
@@ -85,10 +83,8 @@ public final class ServerMonitor {
     this.hostName = hostName;
     this.serverInfo = serverInfo;
     this.registryPort = registryPort;
-    Configuration.class.getName();
     this.server = connectServer(serverInfo.getServerName());
     connectionRequestsPerSecondCollection.addSeries(connectionRequestsPerSecondSeries);
-    connectionRequestsPerSecondCollection.addSeries(warningTimeExceededSecondSeries);
     memoryUsageCollection.addSeries(maxMemorySeries);
     memoryUsageCollection.addSeries(allocatedMemorySeries);
     memoryUsageCollection.addSeries(usedMemorySeries);
@@ -129,15 +125,6 @@ public final class ServerMonitor {
 
   public DatabaseMonitor getDatabaseMonitor() {
     return databaseMonitor;
-  }
-
-  public int getWarningThreshold() throws RemoteException {
-    return server.getWarningTimeThreshold();
-  }
-
-  public void setWarningThreshold(final int threshold) throws RemoteException {
-    server.setWarningTimeThreshold(threshold);
-    warningThresholdChangedEvent.fire(threshold);
   }
 
   public int getConnectionLimit() throws RemoteException {
@@ -192,7 +179,6 @@ public final class ServerMonitor {
 
   public void resetStatistics() {
     connectionRequestsPerSecondSeries.clear();
-    warningTimeExceededSecondSeries.clear();
     allocatedMemorySeries.clear();
     usedMemorySeries.clear();
     maxMemorySeries.clear();
@@ -248,10 +234,6 @@ public final class ServerMonitor {
     serverShutDownEvent.addListener(listener);
   }
 
-  public EventObserver<Integer> getWarningThresholdObserver() {
-    return warningThresholdChangedEvent.getObserver();
-  }
-
   public EventObserver<Integer> getConnectionLimitObserver() {
     return connectionLimitChangedEvent.getObserver();
   }
@@ -292,7 +274,6 @@ public final class ServerMonitor {
     connectionCount = server.getConnectionCount();
     memoryUsage = server.getMemoryUsage();
     connectionRequestsPerSecondSeries.add(time, server.getRequestsPerSecond());
-    warningTimeExceededSecondSeries.add(time, server.getWarningTimeExceededPerSecond());
     maxMemorySeries.add(time, server.getMaxMemory() / THOUSAND);
     allocatedMemorySeries.add(time, server.getAllocatedMemory() / THOUSAND);
     usedMemorySeries.add(time, server.getUsedMemory() / THOUSAND);

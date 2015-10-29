@@ -233,26 +233,6 @@ public interface EntityConnectionServerAdmin extends Remote {
   int getRequestsPerSecond() throws RemoteException;
 
   /**
-   *
-   * @return the request warning time threshold in ms
-   * @throws RemoteException in case of an exception
-   */
-  int getWarningTimeThreshold() throws RemoteException;
-
-  /**
-   * @param threshold the request warning time threshold in ms
-   * @throws RemoteException in case of an exception
-   */
-  void setWarningTimeThreshold(final int threshold) throws RemoteException;
-
-  /**
-   * @return the number of service requests exceeding the warning time
-   * @throws RemoteException in case of an exception
-   * @see #setWarningTimeThreshold(int)
-   */
-  int getWarningTimeExceededPerSecond() throws RemoteException;
-
-  /**
    * Removes connections.
    * @param timedOutOnly if true only connections that have timed out are culled
    * @throws RemoteException in case of an exception

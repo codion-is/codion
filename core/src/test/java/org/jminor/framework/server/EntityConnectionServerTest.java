@@ -234,8 +234,6 @@ public class EntityConnectionServerTest {
   @Test
   public void coverAdmin() throws RemoteException {
     final EntityConnectionServerAdmin admin = getServerAdmin();
-    admin.setWarningTimeThreshold(300);
-    assertEquals(300, admin.getWarningTimeThreshold());
     admin.getActiveConnectionCount();
     admin.getAllocatedMemory();
     admin.setConnectionTimeout(30);
@@ -255,8 +253,6 @@ public class EntityConnectionServerTest {
     admin.getSystemProperties();
     admin.getUsedMemory();
     admin.getUsers();
-    admin.getWarningTimeExceededPerSecond();
-    admin.getWarningTimeThreshold();
   }
 
   private static void configure() {
