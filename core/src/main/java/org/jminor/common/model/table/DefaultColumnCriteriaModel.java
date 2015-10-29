@@ -27,7 +27,6 @@ import java.util.regex.Pattern;
  * A default ColumnCriteriaModel model implementation.
  * @param <K> the type of the column identifier
  */
-@SuppressWarnings({"unchecked"})
 public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
 
   private final Value upperBoundValue = Values.value();
@@ -266,8 +265,8 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   @Override
   public final void clearCriteria() {
     setEnabled(false);
-    setUpperBound((Object) null);
-    setLowerBound((Object) null);
+    setUpperBound(null);
+    setLowerBound(null);
     setSearchType(SearchType.LIKE);
     criteriaModelClearedEvent.fire();
   }
