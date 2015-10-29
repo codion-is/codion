@@ -68,8 +68,8 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
   private final Event<DeleteEvent> beforeDeleteEvent = Events.event();
   private final Event<DeleteEvent> afterDeleteEvent = Events.event();
   private final Event entitiesChangedEvent = Events.event();
-  private final Event refreshStartedEvent = Events.event();
-  private final Event refreshDoneEvent = Events.event();
+  private final Event beforeRefreshEvent = Events.event();
+  private final Event afterRefreshEvent = Events.event();
   private final Event<State> confirmSetEntityEvent = Events.event();
 
   private final State primaryKeyNullState = States.state(true);
@@ -452,11 +452,11 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
   @Override
   public final void refresh() {
     try {
-      refreshStartedEvent.fire();
+      beforeRefreshEvent.fire();
       refreshComboBoxModels();
     }
     finally {
-      refreshDoneEvent.fire();
+      afterRefreshEvent.fire();
     }
   }
 
@@ -748,25 +748,25 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
   /** {@inheritDoc} */
   @Override
   public final void addBeforeRefreshListener(final EventListener listener) {
-    refreshStartedEvent.addListener(listener);
+    beforeRefreshEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeBeforeRefreshListener(final EventListener listener) {
-    refreshStartedEvent.removeListener(listener);
+    beforeRefreshEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addAfterRefreshListener(final EventListener listener) {
-    refreshDoneEvent.addListener(listener);
+    afterRefreshEvent.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeAfterRefreshListener(final EventListener listener) {
-    refreshDoneEvent.removeListener(listener);
+    afterRefreshEvent.removeListener(listener);
   }
 
   /** {@inheritDoc} */
