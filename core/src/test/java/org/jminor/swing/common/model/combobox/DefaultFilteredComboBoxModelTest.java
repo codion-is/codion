@@ -62,6 +62,7 @@ public class DefaultFilteredComboBoxModelTest {
     assertEquals(SIGGI + " should be at index 4, got " + testModel.getElementAt(4), SIGGI, testModel.getElementAt(4));
     assertEquals(TOMAS + " should be at index 5, got " + testModel.getElementAt(5), TOMAS, testModel.getElementAt(5));
 
+    final Comparator<? super String> comparator = testModel.getSortComparator();
     testModel.setSortComparator(null);
     assertNull(testModel.getSortComparator());
     final List<String> names = new ArrayList<>();
@@ -77,6 +78,17 @@ public class DefaultFilteredComboBoxModelTest {
     assertEquals(SIGGI + " should be at index 3, got " + testModel.getElementAt(3), SIGGI, testModel.getElementAt(3));
     assertEquals(TOMAS + " should be at index 4, got " + testModel.getElementAt(4), TOMAS, testModel.getElementAt(4));
     assertEquals(BJORN + " should be at index 5, got " + testModel.getElementAt(5), BJORN, testModel.getElementAt(5));
+
+    testModel.setSortComparator(comparator);
+    names.remove(SIGGI);
+    testModel.setContents(names);
+    testModel.addItem(SIGGI);
+
+    assertEquals(ANNA + " should be at index 1, got " + testModel.getElementAt(1), ANNA, testModel.getElementAt(1));
+    assertEquals(BJORN + " should be at index 2, got " + testModel.getElementAt(2), BJORN, testModel.getElementAt(2));
+    assertEquals(KALLI + " should be at index 3, got " + testModel.getElementAt(3), KALLI, testModel.getElementAt(3));
+    assertEquals(SIGGI + " should be at index 4, got " + testModel.getElementAt(4), SIGGI, testModel.getElementAt(4));
+    assertEquals(TOMAS + " should be at index 5, got " + testModel.getElementAt(5), TOMAS, testModel.getElementAt(5));
 
     testModel.setSortComparator(new Comparator<String>() {
       @Override

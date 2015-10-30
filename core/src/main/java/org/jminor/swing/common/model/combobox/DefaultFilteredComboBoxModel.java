@@ -216,6 +216,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   public final void addItem(final T item) {
     if (filterCriteria.include(item)) {
       visibleItems.add(item);
+      sortVisibleItems();
     }
     else {
       filteredItems.add(item);

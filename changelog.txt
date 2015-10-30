@@ -4107,3 +4107,4 @@
   States, DefaultState, DefaultAggregateState, DefaultStateObserver and DefaultGroup now synchronize on a lock object instead of this
   ValueChange, removed some unused methods
   EntityConnectionServerAdmin, DefaultRemoteEntityConnection, warningThreshold removed
+  DefaultFilteredComboBoxModel.addItem() now respects the sorting order

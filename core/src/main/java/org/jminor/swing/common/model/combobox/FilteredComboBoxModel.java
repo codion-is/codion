@@ -37,6 +37,7 @@ public interface FilteredComboBoxModel<T> extends FilteredModel<T>, ComboBoxMode
   void setContents(final Collection<? extends T> contents);
 
   /**
+   * Adds the given item to this model, respecting the sorting order if specified
    * @param item the item to add
    */
   void addItem(final T item);
