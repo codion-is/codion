@@ -31,7 +31,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
   private static final int DEFAULT_MAXIMUM_POOL_SIZE = 8;
   private static final int DEFAULT_MAXIMUM_RETRY_WAIT_PERIOD_MS = 50;
   private static final int DEFAULT_MAXIMUM_CHECK_OUT_TIME = 2000;
-  private static final int DEFAULT_NEW_CONNECTION_THRESHOLD = 500;
+  private static final int DEFAULT_NEW_CONNECTION_THRESHOLD = 100;
   private static final int NEW_CONNECTION_THRESHOLD_RATIO = 4;
   private static final long NANO_IN_MILLI = 1000000;
 
@@ -361,7 +361,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
           return;
         }
         if (currentTime - connection.getPoolTime() > pooledConnectionTimeout) {
-          connectionProvider.destroyConnection(connection);//todo could be spun of into a thread, if the operation is expensive
+          connectionProvider.destroyConnection(connection);//todo could be spun off in a thread, if the operation is expensive
           getCounter().incrementConnectionsDestroyedCounter();
           pool.remove(connection);
         }

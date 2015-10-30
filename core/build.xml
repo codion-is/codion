@@ -452,7 +452,8 @@
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.report.path=../demos/chinook/build/reports"/>
+      <!--this report path setting is based on the fact that the server is run in the demos directory-->
+      <jvmarg value="-Djminor.report.path=chinook/build/reports"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_client.policy"/>
     </java>
@@ -473,7 +474,8 @@
       </classpath>
       <jvmarg value="-Djminor.client.connectionType=remote"/>
       <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djminor.report.path=../demos/chinook/build/reports"/>
+      <!--this report path setting is based on the fact that the server is run in the demos directory-->
+      <jvmarg value="-Djminor.report.path=chinook/build/reports"/>
       <jvmarg value="-Djavax.net.ssl.trustStore=${resources.security}/JMinorClientTruststore"/>
       <jvmarg value="-Djava.security.policy=${resources.security}/jminor_load_test.policy"/>
     </java>
@@ -487,7 +489,7 @@
       <fileset dir="${basedir}/../demos/chinook/build/reports" includes="**/*.jasper"/>
       <fileset dir="${basedir}/../demos/empdept/build/reports" includes="**/*.jasper"/>
     </copy>
-    <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes">
+    <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes" dir="../demos">
       <classpath>
         <path refid="build.main"/>
         <path refid="build.plugins.main"/>
@@ -544,7 +546,7 @@
   <target name="create_demo_h2db"
           description="Recreates the demo h2 database, which contains the EmpDept, Petstore, Chinook and World schemas, used by unit tests and demo applications">
     <delete dir="${db.h2.dir}"/>
-    <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.test">
+    <java fork="true" classname="org.h2.tools.RunScript" classpathref="lib.test" dir="../demos">
       <arg line="-url jdbc:h2:file:${db.h2.dir}/${db.h2.name} -showResults -script ${demo.db.initScript}"/>
     </java>
   </target>
