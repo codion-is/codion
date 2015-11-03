@@ -6,7 +6,7 @@ package org.jminor.swing.framework.model;
 import org.jminor.framework.db.EntityConnectionProvider;
 
 /**
- * The base interface for model objects responsible for reading and writing entities to and from a database.
+ * The base interface for objects responsible for reading and/or writing entities to and from a database.
  */
 public interface EntityDataProvider {
 
