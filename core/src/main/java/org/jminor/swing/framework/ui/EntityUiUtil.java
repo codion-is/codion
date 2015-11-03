@@ -304,9 +304,9 @@ public final class EntityUiUtil {
    * @param editModel the edit model to bind with the value
    * @return a EntityComboBox based on the given foreign key property
    */
-  public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                    final EntityEditModel editModel) {
-    return createEntityComboBox(foreignKeyProperty, editModel, null);
+  public static EntityComboBox createForeignKeyComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                        final EntityEditModel editModel) {
+    return createForeignKeyComboBox(foreignKeyProperty, editModel, null);
   }
 
   /**
@@ -316,8 +316,8 @@ public final class EntityUiUtil {
    * @param enabledState the state controlling the enabled state of the combobox
    * @return a EntityComboBox based on the given foreign key property
    */
-  public static EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                    final EntityEditModel editModel, final StateObserver enabledState) {
+  public static EntityComboBox createForeignKeyComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                        final EntityEditModel editModel, final StateObserver enabledState) {
     Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(foreignKeyProperty, editModel);
@@ -342,8 +342,8 @@ public final class EntityUiUtil {
    * @param editModel the edit model
    * @return a read-only, non-focusable JTextField displaying the value of the given property
    */
-  public static JTextField createEntityField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                             final EntityEditModel editModel) {
+  public static JTextField createForeignKeyField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                 final EntityEditModel editModel) {
     Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(foreignKeyProperty, editModel);
@@ -383,9 +383,9 @@ public final class EntityUiUtil {
    * @param editModel the edit model to bind with the value
    * @return a lookup model based on the given foreign key property
    */
-  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                          final EntityEditModel editModel) {
-    return createEntityLookupField(foreignKeyProperty, editModel, (StateObserver) null);
+  public static EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                              final EntityEditModel editModel) {
+    return createForeignKeyLookupField(foreignKeyProperty, editModel, (StateObserver) null);
   }
 
   /**
@@ -395,9 +395,9 @@ public final class EntityUiUtil {
    * @param searchPropertyIDs the propertyIDs to use when searching via this lookup field
    * @return a lookup model based on the given foreign key property
    */
-  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                          final EntityEditModel editModel, final String... searchPropertyIDs) {
-    return createEntityLookupField(foreignKeyProperty, editModel, null, searchPropertyIDs);
+  public static EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                              final EntityEditModel editModel, final String... searchPropertyIDs) {
+    return createForeignKeyLookupField(foreignKeyProperty, editModel, null, searchPropertyIDs);
   }
 
   /**
@@ -407,15 +407,15 @@ public final class EntityUiUtil {
    * @param enabledState the state controlling the enabled state of the lookup field
    * @return a lookup model based on the given foreign key property
    */
-  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                          final EntityEditModel editModel, final StateObserver enabledState) {
+  public static EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                              final EntityEditModel editModel, final StateObserver enabledState) {
     final Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(foreignKeyProperty.getReferencedEntityID());
     if (searchPropertyIDs.isEmpty()) {
       throw new IllegalArgumentException("No default search properties specified for entity: " + foreignKeyProperty.getReferencedEntityID()
               + ", unable to create EntityLookupField, you must specify the searchPropertyIDs");
     }
 
-    return createEntityLookupField(foreignKeyProperty, editModel, enabledState, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
+    return createForeignKeyLookupField(foreignKeyProperty, editModel, enabledState, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
   }
 
   /**
@@ -423,20 +423,20 @@ public final class EntityUiUtil {
    * @param foreignKeyProperty the foreign key property on which entity to base the lookup model
    * @param editModel the edit model to bind with the value
    * @param enabledState the state controlling the enabled state of the lookup field
-   * @param searchPropertyIDs the propertyIDs to use when searching via this lookup field
+   * @param lookupPropertyIDs the propertyIDs to use when searching via this lookup field
    * @return a lookup model based on the given foreign key property
    */
-  public static EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                          final EntityEditModel editModel, final StateObserver enabledState,
-                                                          final String... searchPropertyIDs) {
+  public static EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                              final EntityEditModel editModel, final StateObserver enabledState,
+                                                              final String... lookupPropertyIDs) {
     Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(foreignKeyProperty, editModel);
-    if (searchPropertyIDs == null || searchPropertyIDs.length == 0) {
+    if (lookupPropertyIDs == null || lookupPropertyIDs.length == 0) {
       throw new IllegalArgumentException("No search properties specified for entity lookup field: " + foreignKeyProperty.getReferencedEntityID());
     }
 
-    final EntityLookupModel lookupModel = editModel.getEntityLookupModel(foreignKeyProperty);
+    final EntityLookupModel lookupModel = editModel.getForeignKeyLookupModel(foreignKeyProperty);
     final EntityLookupField lookupField = new EntityLookupField(lookupModel);
 
     if (Configuration.getBooleanValue(Configuration.TRANSFER_FOCUS_ON_ENTER)) {

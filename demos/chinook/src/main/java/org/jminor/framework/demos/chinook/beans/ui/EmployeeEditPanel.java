@@ -44,7 +44,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
     txtFax.setColumns(16);
     final JTextField txtEmail = createTextField(EMPLOYEE_EMAIL);
     txtEmail.setColumns(16);
-    createEntityComboBox(EMPLOYEE_REPORTSTO_FK);
+    createForeignKeyComboBox(EMPLOYEE_REPORTSTO_FK);
     final DateInputPanel hiredateInputPanel = createDateInputPanel(EMPLOYEE_HIREDATE);
     hiredateInputPanel.getInputField().setColumns(16);
     final JTextField txtTitle = createTextField(EMPLOYEE_TITLE);

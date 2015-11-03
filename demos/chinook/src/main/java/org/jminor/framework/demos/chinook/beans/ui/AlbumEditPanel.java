@@ -21,7 +21,7 @@ public class AlbumEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setInitialFocusProperty(ALBUM_ARTISTID_FK);
-    final JTextField txtArtist = createEntityLookupField(ALBUM_ARTISTID_FK);
+    final JTextField txtArtist = createForeignKeyLookupField(ALBUM_ARTISTID_FK);
     txtArtist.setColumns(18);
     final JTextField txtTitle = createTextField(ALBUM_TITLE);
     txtTitle.setColumns(18);

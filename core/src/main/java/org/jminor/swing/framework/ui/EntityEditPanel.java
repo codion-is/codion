@@ -1791,25 +1791,25 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * Creates a EntityComboBox bound to the property identified by <code>propertyID</code>
+   * Creates a EntityComboBox bound to the foreign key property identified by <code>foreignKeyPropertyID</code>
    * @param foreignKeyPropertyID the ID of the property to bind
    * @param enabledState a state for controlling the enabled state of the component
    * @return a EntityComboBox bound to the property
    */
-  protected final EntityComboBox createEntityComboBox(final String foreignKeyPropertyID, final StateObserver enabledState) {
-    return createEntityComboBox((Property.ForeignKeyProperty)
+  protected final EntityComboBox createForeignKeyComboBox(final String foreignKeyPropertyID, final StateObserver enabledState) {
+    return createForeignKeyComboBox((Property.ForeignKeyProperty)
             Entities.getProperty(editModel.getEntityID(), foreignKeyPropertyID), enabledState);
   }
 
   /**
-   * Creates an EntityComboBox bound to the property identified by <code>propertyID</code>
+   * Creates an EntityComboBox bound to the foreign key property identified by <code>foreignKeyPropertyID</code>
    * @param foreignKeyPropertyID the ID of the foreign key property to bind
    * combination used to create new instances of the entity this EntityComboBox is based on
    * EntityComboBox is focusable
    * @return an EntityComboBox bound to the property
    */
-  protected final EntityComboBox createEntityComboBox(final String foreignKeyPropertyID) {
-    return createEntityComboBox(Entities.getForeignKeyProperty(editModel.getEntityID(),
+  protected final EntityComboBox createForeignKeyComboBox(final String foreignKeyPropertyID) {
+    return createForeignKeyComboBox(Entities.getForeignKeyProperty(editModel.getEntityID(),
             foreignKeyPropertyID), null);
   }
 
@@ -1818,8 +1818,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param foreignKeyProperty the foreign key property to bind
    * @return an EntityComboBox bound to the property
    */
-  protected final EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty) {
-    return createEntityComboBox(foreignKeyProperty, null);
+  protected final EntityComboBox createForeignKeyComboBox(final Property.ForeignKeyProperty foreignKeyProperty) {
+    return createForeignKeyComboBox(foreignKeyProperty, null);
   }
 
   /**
@@ -1830,9 +1830,9 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param enabledState a state for controlling the enabled state of the component
    * @return an EntityComboBox bound to the property
    */
-  protected final EntityComboBox createEntityComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                      final StateObserver enabledState) {
-    final EntityComboBox ret = EntityUiUtil.createEntityComboBox(foreignKeyProperty, editModel, enabledState);
+  protected final EntityComboBox createForeignKeyComboBox(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                          final StateObserver enabledState) {
+    final EntityComboBox ret = EntityUiUtil.createForeignKeyComboBox(foreignKeyProperty, editModel, enabledState);
     setComponent(foreignKeyProperty.getPropertyID(), ret);
 
     return ret;
@@ -1844,8 +1844,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param foreignKeyPropertyID the ID of the foreign key property to bind
    * @return an EntityLookupField bound the property
    */
-  protected final EntityLookupField createEntityLookupField(final String foreignKeyPropertyID) {
-    return createEntityLookupField(foreignKeyPropertyID, (StateObserver) null);
+  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyID) {
+    return createForeignKeyLookupField(foreignKeyPropertyID, (StateObserver) null);
   }
 
   /**
@@ -1855,24 +1855,24 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param enabledState a state for controlling the enabled state of the component
    * @return an EntityLookupField bound the property
    */
-  protected final EntityLookupField createEntityLookupField(final String foreignKeyPropertyID,
-                                                            final StateObserver enabledState) {
+  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyID,
+                                                                final StateObserver enabledState) {
     final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(editModel.getEntityID(),
             foreignKeyPropertyID);
     final Collection<String> searchPropertyIDs = Entities.getSearchPropertyIDs(fkProperty.getReferencedEntityID());
-    return createEntityLookupField(fkProperty, enabledState, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
+    return createForeignKeyLookupField(fkProperty, enabledState, searchPropertyIDs.toArray(new String[searchPropertyIDs.size()]));
   }
 
   /**
    * Creates an EntityLookupField bound to the property identified by <code>propertyID</code>, the property
    * must be an Property.ForeignKeyProperty
    * @param foreignKeyPropertyID the ID of the foreign key property to bind
-   * @param searchPropertyIDs the IDs of the properties to use in the lookup
+   * @param lookupPropertyIDs the IDs of the properties to use in the lookup
    * @return an EntityLookupField bound the property
    */
-  protected final EntityLookupField createEntityLookupField(final String foreignKeyPropertyID,
-                                                            final String... searchPropertyIDs) {
-    return createEntityLookupField(foreignKeyPropertyID, null, searchPropertyIDs);
+  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyID,
+                                                                final String... lookupPropertyIDs) {
+    return createForeignKeyLookupField(foreignKeyPropertyID, null, lookupPropertyIDs);
   }
 
   /**
@@ -1880,44 +1880,44 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * must be an Property.ForeignKeyProperty
    * @param foreignKeyPropertyID the ID of the foreign key property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @param searchPropertyIDs the IDs of the properties to use in the lookup
+   * @param lookupPropertyIDs the IDs of the properties to use in the lookup
    * @return an EntityLookupField bound the property
    */
-  protected final EntityLookupField createEntityLookupField(final String foreignKeyPropertyID,
-                                                            final StateObserver enabledState,
-                                                            final String... searchPropertyIDs) {
+  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyID,
+                                                                final StateObserver enabledState,
+                                                                final String... lookupPropertyIDs) {
     final Property.ForeignKeyProperty fkProperty = Entities.getForeignKeyProperty(editModel.getEntityID(),
             foreignKeyPropertyID);
-    if (searchPropertyIDs == null || searchPropertyIDs.length == 0) {
+    if (lookupPropertyIDs == null || lookupPropertyIDs.length == 0) {
       final Collection<String> propertyIDs = Entities.getSearchPropertyIDs(fkProperty.getReferencedEntityID());
-      return createEntityLookupField(fkProperty, enabledState, propertyIDs.toArray(new String[propertyIDs.size()]));
+      return createForeignKeyLookupField(fkProperty, enabledState, propertyIDs.toArray(new String[propertyIDs.size()]));
     }
 
-    return createEntityLookupField(fkProperty, enabledState, searchPropertyIDs);
+    return createForeignKeyLookupField(fkProperty, enabledState, lookupPropertyIDs);
   }
 
   /**
    * Creates an EntityLookupField bound to the given foreign key property
    * @param foreignKeyProperty the foreign key property to bind
-   * @param searchPropertyIDs the IDs of the properties to use in the lookup
+   * @param lookupPropertyIDs the IDs of the properties to use in the lookup
    * @return an EntityLookupField bound the property
    */
-  protected final EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                            final String... searchPropertyIDs) {
-    return createEntityLookupField(foreignKeyProperty, null, searchPropertyIDs);
+  protected final EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                                final String... lookupPropertyIDs) {
+    return createForeignKeyLookupField(foreignKeyProperty, null, lookupPropertyIDs);
   }
 
   /**
    * Creates an EntityLookupField bound to the given foreign key property
    * @param foreignKeyProperty the foreign key property to bind
    * @param enabledState a state for controlling the enabled state of the component
-   * @param searchPropertyIDs the IDs of the properties to use in the lookup
+   * @param lookupPropertyIDs the IDs of the properties to use in the lookup
    * @return an EntityLookupField bound the property
    */
-  protected final EntityLookupField createEntityLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                            final StateObserver enabledState,
-                                                            final String... searchPropertyIDs) {
-    final EntityLookupField ret = EntityUiUtil.createEntityLookupField(foreignKeyProperty, editModel, enabledState, searchPropertyIDs);
+  protected final EntityLookupField createForeignKeyLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                                final StateObserver enabledState,
+                                                                final String... lookupPropertyIDs) {
+    final EntityLookupField ret = EntityUiUtil.createForeignKeyLookupField(foreignKeyProperty, editModel, enabledState, lookupPropertyIDs);
     setComponent(foreignKeyProperty.getPropertyID(), ret);
 
     return ret;
@@ -1928,8 +1928,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param propertyID the ID of the property to bind
    * @return an uneditable JTextField bound to the property
    */
-  protected final JTextField createEntityField(final String propertyID) {
-    return createEntityField(Entities.getForeignKeyProperty(editModel.getEntityID(), propertyID));
+  protected final JTextField createForeignKeyField(final String propertyID) {
+    return createForeignKeyField(Entities.getForeignKeyProperty(editModel.getEntityID(), propertyID));
   }
 
   /**
@@ -1937,8 +1937,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param foreignKeyProperty the foreign key property to bind
    * @return an uneditable JTextField bound to the property
    */
-  protected final JTextField createEntityField(final Property.ForeignKeyProperty foreignKeyProperty) {
-    final JTextField ret = EntityUiUtil.createEntityField(foreignKeyProperty, editModel);
+  protected final JTextField createForeignKeyField(final Property.ForeignKeyProperty foreignKeyProperty) {
+    final JTextField ret = EntityUiUtil.createForeignKeyField(foreignKeyProperty, editModel);
     setComponent(foreignKeyProperty.getPropertyID(), ret);
 
     return ret;

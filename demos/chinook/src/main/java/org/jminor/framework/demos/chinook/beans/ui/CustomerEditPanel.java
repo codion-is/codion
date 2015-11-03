@@ -43,7 +43,7 @@ public class CustomerEditPanel extends EntityEditPanel {
     txtFax.setColumns(16);
     final JTextField txtEmail = createTextField(CUSTOMER_EMAIL);
     txtEmail.setColumns(16);
-    createEntityComboBox(CUSTOMER_SUPPORTREPID_FK);
+    createForeignKeyComboBox(CUSTOMER_SUPPORTREPID_FK);
 
     setLayout(new FlexibleGridLayout(3, 4, 5, 5));
     addPropertyPanel(CUSTOMER_FIRSTNAME);

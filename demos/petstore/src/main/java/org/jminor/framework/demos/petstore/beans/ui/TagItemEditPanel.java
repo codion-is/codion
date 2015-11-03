@@ -26,12 +26,12 @@ public class TagItemEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setLayout(new FlexibleGridLayout(2,1,5,5));
-    EntityComboBox box = createEntityComboBox(TAG_ITEM_ITEM_FK);
+    EntityComboBox box = createForeignKeyComboBox(TAG_ITEM_ITEM_FK);
     setInitialFocusComponent(box);
     box.setPopupWidth(240);
     box.setPreferredSize(new Dimension(180, UiUtil.getPreferredTextFieldHeight()));
     addPropertyPanel(TAG_ITEM_ITEM_FK);
-    box = createEntityComboBox(TAG_ITEM_TAG_FK);
+    box = createForeignKeyComboBox(TAG_ITEM_TAG_FK);
     add(createPropertyPanel(TAG_ITEM_TAG_FK, EntityUiUtil.createEastButtonPanel(box,
             createEditPanelAction(box, new EntityPanelProvider(Petstore.T_TAG).setEditPanelClass(TagEditPanel.class)), false)));
   }

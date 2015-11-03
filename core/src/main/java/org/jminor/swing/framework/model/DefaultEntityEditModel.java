@@ -503,7 +503,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
 
   /** {@inheritDoc} */
   @Override
-  public EntityLookupModel createEntityLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+  public EntityLookupModel createForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     final Collection<Property.ColumnProperty> searchProperties = Entities.getSearchProperties(foreignKeyProperty.getReferencedEntityID());
     if (searchProperties.isEmpty()) {
       throw new IllegalStateException("No search properties defined for entity: " + foreignKeyProperty.getReferencedEntityID());
@@ -514,18 +514,18 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
 
   /** {@inheritDoc} */
   @Override
-  public final EntityLookupModel getEntityLookupModel(final String foreignKeyPropertyID) {
+  public final EntityLookupModel getForeignKeyLookupModel(final String foreignKeyPropertyID) {
     Util.rejectNullValue(foreignKeyPropertyID, FOREIGN_KEY_PROPERTY_ID);
-    return getEntityLookupModel(Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID));
+    return getForeignKeyLookupModel(Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID));
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityLookupModel getEntityLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+  public final EntityLookupModel getForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
     EntityLookupModel entityLookupModel = entityLookupModels.get(foreignKeyProperty);
     if (entityLookupModel == null) {
-      entityLookupModel = createEntityLookupModel(foreignKeyProperty);
+      entityLookupModel = createForeignKeyLookupModel(foreignKeyProperty);
       entityLookupModels.put(foreignKeyProperty, entityLookupModel);
     }
 

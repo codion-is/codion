@@ -152,9 +152,9 @@ public class EmpDeptMinimalApp {
       setInitialFocusProperty("ename");
 
       createTextField("ename");
-      createEntityComboBox("dept_fk");
+      createForeignKeyComboBox("dept_fk");
       createTextField("job");
-      createEntityComboBox("mgr_fk");
+      createForeignKeyComboBox("mgr_fk");
       createDateInputPanel("hiredate");
       createTextField("sal");
       createTextField("comm");

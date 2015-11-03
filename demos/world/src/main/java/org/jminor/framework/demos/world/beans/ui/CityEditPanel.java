@@ -23,7 +23,7 @@ public final class CityEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     setInitialFocusProperty(World.CITY_COUNTRYCODE_FK);
 
-    UiUtil.setPreferredWidth(createEntityComboBox(World.CITY_COUNTRYCODE_FK), COMBOBOX_WIDTH);
+    UiUtil.setPreferredWidth(createForeignKeyComboBox(World.CITY_COUNTRYCODE_FK), COMBOBOX_WIDTH);
     createTextField(World.CITY_NAME).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(World.CITY_DISTRICT).setColumns(TEXT_FIELD_COLUMNS);
     createTextField(World.CITY_POPULATION);

@@ -182,7 +182,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @throws IllegalStateException in case no searchable properties can be found for the entity type referenced by the
    * given foreign key property
    */
-  EntityLookupModel createEntityLookupModel(final Property.ForeignKeyProperty foreignKeyProperty);
+  EntityLookupModel createForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty);
 
   /**
    * Returns true if this edit model contains a {@link EntityLookupModel} for the given foreign key property
@@ -197,7 +197,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * has been initialized for the given property, a new one is created and associated with
    * the property, to be returned the next time this method is called
    */
-  EntityLookupModel getEntityLookupModel(final String foreignKeyPropertyID);
+  EntityLookupModel getForeignKeyLookupModel(final String foreignKeyPropertyID);
 
   /**
    * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityLookupModel}
@@ -205,7 +205,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * has been initialized for the given property, a new one is created and associated with
    * the property, to be returned the next time this method is called
    */
-  EntityLookupModel getEntityLookupModel(final Property.ForeignKeyProperty foreignKeyProperty);
+  EntityLookupModel getForeignKeyLookupModel(final Property.ForeignKeyProperty foreignKeyProperty);
 
   /**
    * @param property the property for which to get the ComboBoxModel

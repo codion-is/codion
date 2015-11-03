@@ -42,7 +42,7 @@ public final class CountryEditPanel extends EntityEditPanel {
     createTextField(World.COUNTRY_LOCALNAME).setColumns(TEXT_FIELD_COLUMNS);
     UiUtil.setPreferredWidth(createPropertyComboBox(World.COUNTRY_GOVERNMENTFORM), COMBOBOX_WIDTH);
     createTextField(World.COUNTRY_HEADOFSTATE).setColumns(TEXT_FIELD_COLUMNS);
-    UiUtil.setPreferredWidth(createEntityComboBox(World.COUNTRY_CAPITAL_FK), COMBOBOX_WIDTH);
+    UiUtil.setPreferredWidth(createForeignKeyComboBox(World.COUNTRY_CAPITAL_FK), COMBOBOX_WIDTH);
 
     setLayout(new GridLayout(4, 5, 5, 5));
 

@@ -25,7 +25,7 @@ public class ItemEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setLayout(new FlexibleGridLayout(3,3,5,5));
-    EntityComboBox box = createEntityComboBox(ITEM_PRODUCT_FK);
+    EntityComboBox box = createForeignKeyComboBox(ITEM_PRODUCT_FK);
     setInitialFocusComponent(box);
     addPropertyPanel(ITEM_PRODUCT_FK);
     JTextField txt = createTextField(ITEM_NAME);
@@ -36,12 +36,12 @@ public class ItemEditPanel extends EntityEditPanel {
     addPropertyPanel(ITEM_DESCRIPTION);
     createTextField(ITEM_PRICE);
     addPropertyPanel(ITEM_PRICE);
-    box = createEntityComboBox(ITEM_C0NTACT_INFO_FK);
+    box = createForeignKeyComboBox(ITEM_C0NTACT_INFO_FK);
     box.setPopupWidth(200);
     box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
     add(createPropertyPanel(ITEM_C0NTACT_INFO_FK, EntityUiUtil.createEastButtonPanel(box,
             createEditPanelAction(box, new EntityPanelProvider(Petstore.T_SELLER_CONTACT_INFO).setEditPanelClass(ContactInfoEditPanel.class)), false)));
-    box = createEntityComboBox(ITEM_ADDRESS_FK);
+    box = createForeignKeyComboBox(ITEM_ADDRESS_FK);
     box.setPopupWidth(200);
     box.setPreferredSize(UiUtil.getPreferredTextFieldSize());
     add(createPropertyPanel(ITEM_ADDRESS_FK, EntityUiUtil.createEastButtonPanel(box,

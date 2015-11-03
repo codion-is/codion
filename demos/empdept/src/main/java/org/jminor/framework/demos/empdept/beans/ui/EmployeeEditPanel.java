@@ -24,8 +24,8 @@ public class EmployeeEditPanel extends EntityEditPanel {
   protected void initializeUI() {
     final JTextField txtName = (JTextField) UiUtil.makeUpperCase(createTextField(EMPLOYEE_NAME));
     final JTextField txtJob = (JTextField) UiUtil.makeUpperCase(createTextField(EMPLOYEE_JOB));
-    final JComboBox boxManager = createEntityComboBox(EMPLOYEE_MGR_FK);
-    createEntityComboBox(EMPLOYEE_DEPARTMENT_FK);
+    final JComboBox boxManager = createForeignKeyComboBox(EMPLOYEE_MGR_FK);
+    createForeignKeyComboBox(EMPLOYEE_DEPARTMENT_FK);
     createTextField(EMPLOYEE_SALARY);
     createTextField(EMPLOYEE_COMMISSION);
     createDateInputPanel(EMPLOYEE_HIREDATE, true);

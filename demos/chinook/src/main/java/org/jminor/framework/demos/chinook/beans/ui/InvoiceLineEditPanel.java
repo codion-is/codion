@@ -11,8 +11,7 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 
-import static org.jminor.framework.demos.chinook.domain.Chinook.INVOICELINE_QUANTITY;
-import static org.jminor.framework.demos.chinook.domain.Chinook.INVOICELINE_TRACKID_FK;
+import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public class InvoiceLineEditPanel extends EntityEditPanel {
 
@@ -30,7 +29,7 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setInitialFocusProperty(INVOICELINE_TRACKID_FK);
-    final JTextField txtTrack = createEntityLookupField(INVOICELINE_TRACKID_FK);
+    final JTextField txtTrack = createForeignKeyLookupField(INVOICELINE_TRACKID_FK);
     txtTrack.setColumns(25);
     final JTextField txtQuantity = createTextField(INVOICELINE_QUANTITY);
     UiUtil.removeTransferFocusOnEnter(txtQuantity);//otherwise the action added below wont work

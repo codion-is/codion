@@ -24,12 +24,12 @@ public class TrackEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     setInitialFocusProperty(TRACK_ALBUMID_FK);
-    final JTextField txtAlbum = createEntityLookupField(TRACK_ALBUMID_FK);
+    final JTextField txtAlbum = createForeignKeyLookupField(TRACK_ALBUMID_FK);
     txtAlbum.setColumns(18);
     final JTextField txtName = createTextField(TRACK_NAME);
     txtName.setColumns(18);
-    createEntityComboBox(TRACK_MEDIATYPEID_FK);
-    createEntityComboBox(TRACK_GENREID_FK);
+    createForeignKeyComboBox(TRACK_MEDIATYPEID_FK);
+    createForeignKeyComboBox(TRACK_GENREID_FK);
     final TextInputPanel txtComposer = createTextInputPanel(TRACK_COMPOSER);
     txtComposer.getTextField().setColumns(18);
     final JTextField txtMilliseconds = createTextField(TRACK_MILLISECONDS);

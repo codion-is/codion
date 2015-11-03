@@ -101,22 +101,22 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void getEntityLookupModelNonFKProperty() {
-    employeeEditModel.getEntityLookupModel(jobProperty.getPropertyID());
+  public void getForeignKeyLookupModelNonFKProperty() {
+    employeeEditModel.getForeignKeyLookupModel(jobProperty.getPropertyID());
   }
 
   @Test
-  public void getEntityLookupModel() {
+  public void getForeignKeyLookupModel() {
     assertFalse(employeeEditModel.containsLookupModel(deptProperty.getPropertyID()));
-    final EntityLookupModel model = employeeEditModel.getEntityLookupModel(deptProperty.getPropertyID());
+    final EntityLookupModel model = employeeEditModel.getForeignKeyLookupModel(deptProperty.getPropertyID());
     assertTrue(employeeEditModel.containsLookupModel(deptProperty.getPropertyID()));
     assertNotNull(model);
-    assertEquals(model, employeeEditModel.getEntityLookupModel(deptProperty.getPropertyID()));
+    assertEquals(model, employeeEditModel.getForeignKeyLookupModel(deptProperty.getPropertyID()));
   }
 
   @Test
-  public void createEntityLookupModel() {
-    final EntityLookupModel model = employeeEditModel.createEntityLookupModel(Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
+  public void createForeignKeyLookupModel() {
+    final EntityLookupModel model = employeeEditModel.createForeignKeyLookupModel(Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
     assertNotNull(model);
     assertEquals(TestDomain.T_DEPARTMENT, model.getEntityID());
   }

@@ -1189,7 +1189,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       return new EntityComboProvider(editModel.createForeignKeyComboBoxModel(foreignKeyProperty), currentValue);
     }
     else {
-      return new EntityLookupProvider(editModel.createEntityLookupModel(foreignKeyProperty), currentValue);
+      return new EntityLookupProvider(editModel.createForeignKeyLookupModel(foreignKeyProperty), currentValue);
     }
   }
 
