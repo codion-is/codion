@@ -17,7 +17,15 @@ public final class BooleanComboBoxModel extends ItemComboBoxModel<Boolean> {
    * Constructs a new BooleanComboBoxModel.
    */
   public BooleanComboBoxModel() {
-    this("-", Messages.get(Messages.YES), Messages.get(Messages.NO));
+    this("-");
+  }
+
+  /**
+   * Constructs a new BooleanComboBoxModel.
+   * @param nullString the string representing a null value
+   */
+  public BooleanComboBoxModel(final String nullString) {
+    this(nullString, Messages.get(Messages.YES), Messages.get(Messages.NO));
   }
 
   /**
