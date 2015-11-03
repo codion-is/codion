@@ -40,8 +40,8 @@ public final class DefaultEntityModelTest {
   public static class EmpModel extends DefaultEntityModel {
     public EmpModel(final EntityConnectionProvider connectionProvider) {
       super(new DefaultEntityEditModel(TestDomain.T_EMP, connectionProvider));
-      getEditModel().getEntityComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).refresh();
-      getEditModel().getEntityComboBoxModel(TestDomain.EMP_MGR_FK).refresh();
+      getEditModel().getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).refresh();
+      getEditModel().getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK).refresh();
     }
   }
 
@@ -53,7 +53,7 @@ public final class DefaultEntityModelTest {
     final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     final EntityEditModel employeeEditModel = employeeModel.getEditModel();
     final EntityTableModel employeeTableModel = employeeModel.getTableModel();
-    ValueLinks.selectedItemValueLink(new JComboBox<>(employeeEditModel.getEntityComboBoxModel(TestDomain.EMP_MGR_FK)),
+    ValueLinks.selectedItemValueLink(new JComboBox<>(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)),
             EditModelValues.<Entity>value(employeeEditModel, TestDomain.EMP_MGR_FK));
     employeeTableModel.refresh();
     for (final Entity employee : employeeTableModel.getAllItems()) {
@@ -104,7 +104,7 @@ public final class DefaultEntityModelTest {
     assertTrue(departmentModel.getLinkedDetailModels().contains(employeeModel));
     departmentModel.refresh();
     final EntityEditModel employeeEditModel = employeeModel.getEditModel();
-    final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getEntityComboBoxModel(Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
+    final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
     departmentsComboBoxModel.refresh();
     final Entity.Key primaryKey = Entities.key(TestDomain.T_DEPARTMENT);
     primaryKey.setValue(TestDomain.DEPARTMENT_ID, 40);//operations, no employees
@@ -237,12 +237,12 @@ public final class DefaultEntityModelTest {
               TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "OPERATIONS");
       departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
       final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
-      final EntityComboBoxModel deptComboBoxModel = employeeModel.getEditModel().getEntityComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
+      final EntityComboBoxModel deptComboBoxModel = employeeModel.getEditModel().getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
       deptComboBoxModel.refresh();
       deptComboBoxModel.setSelectedItem(department);
       departmentModel.getTableModel().deleteSelected();
-      assertEquals(3, employeeModel.getEditModel().getEntityComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).getSize());
-      assertNotNull(employeeModel.getEditModel().getEntityComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).getSelectedValue());
+      assertEquals(3, employeeModel.getEditModel().getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).getSize());
+      assertNotNull(employeeModel.getEditModel().getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).getSelectedValue());
     }
     finally {
       departmentModel.getConnectionProvider().getConnection().rollbackTransaction();

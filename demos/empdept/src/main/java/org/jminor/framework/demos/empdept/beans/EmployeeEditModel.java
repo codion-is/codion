@@ -31,7 +31,7 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
 
   /** Providing a custom ComboBoxModel for the manager property, which only shows managers and the president */
   @Override
-  public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+  public EntityComboBoxModel createForeignKeyComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     if (foreignKeyProperty.is(EMPLOYEE_MGR_FK)) {
       final EntityComboBoxModel managerModel = new DefaultEntityComboBoxModel(T_EMPLOYEE, getConnectionProvider());
       managerModel.setNullValue(EntityUtil.createToStringEntity(T_EMPLOYEE, getString(NONE)));
@@ -43,7 +43,7 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
       return managerModel;
     }
 
-    return super.createEntityComboBoxModel(foreignKeyProperty);
+    return super.createForeignKeyComboBoxModel(foreignKeyProperty);
   }
 
   //keep event bindings in one place
@@ -53,7 +53,7 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
       @Override
       public void eventOccurred() {
         if (containsComboBoxModel(EMPLOYEE_MGR_FK)) {
-          getEntityComboBoxModel(EMPLOYEE_MGR_FK).refresh();
+          getForeignKeyComboBoxModel(EMPLOYEE_MGR_FK).refresh();
         }
       }
     });
@@ -64,7 +64,7 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
       public void eventOccurred(final ValueChange info) {
         //only show managers in the same department as the active entity
         if (containsComboBoxModel(EMPLOYEE_MGR_FK)) {
-          getEntityComboBoxModel(EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Entity>() {
+          getForeignKeyComboBoxModel(EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Entity>() {
             @Override
             public boolean include(final Entity item) {
               return (Util.equal(item.getForeignKeyValue(EMPLOYEE_DEPARTMENT_FK), info.getNewValue())

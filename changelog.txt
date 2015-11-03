@@ -4108,3 +4108,4 @@
   ValueChange, removed some unused methods
   EntityConnectionServerAdmin, DefaultRemoteEntityConnection, warningThreshold removed
   DefaultFilteredComboBoxModel.addItem() now respects the sorting order
+  EntityEditModel.createEntityComboBoxModel() renamed to createForeignKeyComboBoxModel(), createPropertyComboBoxModel() renamed to createComboBoxModel(), getPropertyComboBoxModel() renamed to getComboBoxModel() and getEntityComboBoxModel() renamed to getForeignKeyComboBoxModel()

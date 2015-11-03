@@ -99,9 +99,9 @@ public class EmpDeptMinimalApp {
      * so that is only shows managers.
      */
     @Override
-    public EntityComboBoxModel createEntityComboBoxModel(
+    public EntityComboBoxModel createForeignKeyComboBoxModel(
             final Property.ForeignKeyProperty foreignKeyProperty) {
-      final EntityComboBoxModel comboBoxModel = super.createEntityComboBoxModel(foreignKeyProperty);
+      final EntityComboBoxModel comboBoxModel = super.createForeignKeyComboBoxModel(foreignKeyProperty);
       if (foreignKeyProperty.is("mgr_fk")) {
         comboBoxModel.setEntitySelectCriteria(EntityCriteriaUtil.selectCriteria(
                 "scott.emp", "job", SearchType.LIKE, Arrays.asList("MANAGER", "PRESIDENT")));

@@ -162,7 +162,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @see org.jminor.framework.Configuration#COMBO_BOX_NULL_VALUE_ITEM
    * @see org.jminor.framework.domain.Property#isNullable()
    */
-  EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty);
+  EntityComboBoxModel createForeignKeyComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty);
 
   /**
    * Creates a combo box model containing the current values of the given property.
@@ -171,7 +171,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * @param property the property
    * @return a combo box model based on the given property
    */
-  FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property);
+  FilteredComboBoxModel createComboBoxModel(final Property.ColumnProperty property);
 
   /**
    * Creates a {@link EntityLookupModel} for looking up entities referenced by the given foreign key property,
@@ -213,7 +213,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * if no combo box model is associated with the property a new one is created, and associated
    * with the given property
    */
-  FilteredComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property);
+  FilteredComboBoxModel getComboBoxModel(final Property.ColumnProperty property);
 
   /**
    * Returns true if this edit model contains a ComboBoxModel for the given property
@@ -228,7 +228,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * if no combo box model is associated with the property a new one is created, and associated
    * with the given property
    */
-  EntityComboBoxModel getEntityComboBoxModel(final String foreignKeyPropertyID);
+  EntityComboBoxModel getForeignKeyComboBoxModel(final String foreignKeyPropertyID);
 
   /**
    * @param foreignKeyProperty the foreign key property for which to retrieve the {@link EntityComboBoxModel}
@@ -236,7 +236,7 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
    * if no combo box model is associated with the property a new one is created, and associated
    * with the given property
    */
-  EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty);
+  EntityComboBoxModel getForeignKeyComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty);
 
   /**
    * Refreshes the Refreshable ComboBoxModels associated with this {@link EntityEditModel}

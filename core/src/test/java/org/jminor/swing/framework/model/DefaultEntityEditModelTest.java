@@ -10,7 +10,6 @@ import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
-import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
@@ -27,7 +26,6 @@ import org.junit.Before;
 import org.junit.Test;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Collections;
 import java.util.Date;
 import java.util.List;
@@ -58,24 +56,24 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void getPropertyComboBoxModel() {
-    final FilteredComboBoxModel<String> model = employeeEditModel.getPropertyComboBoxModel(jobProperty);
+  public void getComboBoxModel() {
+    final FilteredComboBoxModel<String> model = employeeEditModel.getComboBoxModel(jobProperty);
     model.setNullValue("null");
     assertNotNull(model);
     assertTrue(employeeEditModel.containsComboBoxModel(jobProperty.getPropertyID()));
-    assertEquals(model, employeeEditModel.getPropertyComboBoxModel(jobProperty));
+    assertEquals(model, employeeEditModel.getComboBoxModel(jobProperty));
     employeeEditModel.refreshComboBoxModels();
     employeeEditModel.clearComboBoxModels();
-    assertTrue(employeeEditModel.getPropertyComboBoxModel(jobProperty).isCleared());
+    assertTrue(employeeEditModel.getComboBoxModel(jobProperty).isCleared());
     employeeEditModel.refreshComboBoxModels();
     employeeEditModel.clear();
-    assertTrue(employeeEditModel.getPropertyComboBoxModel(jobProperty).isCleared());
+    assertTrue(employeeEditModel.getComboBoxModel(jobProperty).isCleared());
   }
 
   @Test
-  public void getEntityComboBoxModel() {
+  public void getForeignKeyComboBoxModel() {
     assertFalse(employeeEditModel.containsComboBoxModel(deptProperty.getPropertyID()));
-    final EntityComboBoxModel model = employeeEditModel.getEntityComboBoxModel(deptProperty);
+    final EntityComboBoxModel model = employeeEditModel.getForeignKeyComboBoxModel(deptProperty);
     assertTrue(employeeEditModel.containsComboBoxModel(deptProperty.getPropertyID()));
     assertNotNull(model);
     assertTrue(model.isCleared());
@@ -89,8 +87,8 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test
-  public void createEntityComboBoxModel() {
-    final EntityComboBoxModel model = employeeEditModel.createEntityComboBoxModel(deptProperty);
+  public void createForeignKeyComboBoxModel() {
+    final EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(deptProperty);
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.getAllItems().isEmpty());
@@ -98,8 +96,8 @@ public final class DefaultEntityEditModelTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
-  public void getEntityComboBoxModelNonFKProperty() {
-    employeeEditModel.getEntityComboBoxModel(jobProperty.getPropertyID());
+  public void getForeignKeyComboBoxModelNonFKProperty() {
+    employeeEditModel.getForeignKeyComboBoxModel(jobProperty.getPropertyID());
   }
 
   @Test(expected = IllegalArgumentException.class)

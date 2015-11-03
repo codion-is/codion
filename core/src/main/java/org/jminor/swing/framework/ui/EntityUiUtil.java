@@ -321,7 +321,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(foreignKeyProperty, editModel);
-    final EntityComboBoxModel boxModel = editModel.getEntityComboBoxModel(foreignKeyProperty);
+    final EntityComboBoxModel boxModel = editModel.getForeignKeyComboBoxModel(foreignKeyProperty);
     boxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(boxModel);
     ValueLinks.selectedItemValueLink(comboBox, EditModelValues.<Entity>value(editModel, foreignKeyProperty.getPropertyID()));
@@ -810,7 +810,7 @@ public final class EntityUiUtil {
    */
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
                                                        final StateObserver enabledState, final boolean editable) {
-    final SteppedComboBox comboBox = createComboBox(property, editModel, editModel.getPropertyComboBoxModel(property), enabledState, editable);
+    final SteppedComboBox comboBox = createComboBox(property, editModel, editModel.getComboBoxModel(property), enabledState, editable);
     if (!editable) {
       addComboBoxCompletion(comboBox);
     }

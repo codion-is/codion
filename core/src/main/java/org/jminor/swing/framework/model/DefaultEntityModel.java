@@ -484,7 +484,7 @@ public class DefaultEntityModel implements EntityModel {
             Entities.getForeignKeyProperties(getEntityID(), masterModel.getEntityID())) {
       if (editModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
         for (final Entity entity : insertEvent.getInsertedEntities()) {
-          editModel.getEntityComboBoxModel(foreignKeyProperty).addItem(entity);
+          editModel.getForeignKeyComboBoxModel(foreignKeyProperty).addItem(entity);
         }
       }//todo problematic with multiple foreign keys to the same entity, masterModelForeignKeys?
       editModel.setValue(foreignKeyProperty.getPropertyID(), insertEvent.getInsertedEntities().get(0));
@@ -525,7 +525,7 @@ public class DefaultEntityModel implements EntityModel {
     for (final Property.ForeignKeyProperty foreignKeyProperty :
             Entities.getForeignKeyProperties(getEntityID(), masterModel.getEntityID())) {
       if (editModel.containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
-        final EntityComboBoxModel comboModel = editModel.getEntityComboBoxModel(foreignKeyProperty);
+        final EntityComboBoxModel comboModel = editModel.getForeignKeyComboBoxModel(foreignKeyProperty);
         final Entity selectedEntity = comboModel.getSelectedValue();
         for (final Entity deletedEntity : deleteEvent.getDeletedEntities()) {
           comboModel.removeItem(deletedEntity);

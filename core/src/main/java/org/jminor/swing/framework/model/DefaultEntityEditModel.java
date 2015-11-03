@@ -289,7 +289,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
     final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(this.entityID, foreignKeyEntityID);
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       if (containsComboBoxModel(foreignKeyProperty.getPropertyID())) {
-        getEntityComboBoxModel(foreignKeyProperty.getPropertyID()).refresh();
+        getForeignKeyComboBoxModel(foreignKeyProperty.getPropertyID()).refresh();
       }
       final Entity currentForeignKeyValue = getForeignKeyValue(foreignKeyProperty.getPropertyID());
       if (currentForeignKeyValue != null) {
@@ -540,7 +540,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
 
   /** {@inheritDoc} */
   @Override
-  public FilteredComboBoxModel createPropertyComboBoxModel(final Property.ColumnProperty property) {
+  public FilteredComboBoxModel createComboBoxModel(final Property.ColumnProperty property) {
     Util.rejectNullValue(property, PROPERTY);
     final FilteredComboBoxModel<Object> model = new DefaultPropertyComboBoxModel<>(entityID, connectionProvider, property, null, entitiesChangedEvent);
     model.setNullValue(getValidator().isNullable(getEntity(), property.getPropertyID()) ?
@@ -552,7 +552,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
 
   /** {@inheritDoc} */
   @Override
-  public EntityComboBoxModel createEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+  public EntityComboBoxModel createForeignKeyComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
     final EntityComboBoxModel model = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
     if (getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyID())) {
@@ -564,11 +564,11 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
 
   /** {@inheritDoc} */
   @Override
-  public final FilteredComboBoxModel getPropertyComboBoxModel(final Property.ColumnProperty property) {
+  public final FilteredComboBoxModel getComboBoxModel(final Property.ColumnProperty property) {
     Util.rejectNullValue(property, PROPERTY);
     FilteredComboBoxModel comboBoxModel = propertyComboBoxModels.get(property);
     if (comboBoxModel == null) {
-      comboBoxModel = createPropertyComboBoxModel(property);
+      comboBoxModel = createComboBoxModel(property);
       propertyComboBoxModels.put(property, comboBoxModel);
       comboBoxModel.refresh();
     }
@@ -578,18 +578,18 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
 
   /** {@inheritDoc} */
   @Override
-  public final EntityComboBoxModel getEntityComboBoxModel(final String foreignKeyPropertyID) {
+  public final EntityComboBoxModel getForeignKeyComboBoxModel(final String foreignKeyPropertyID) {
     Util.rejectNullValue(foreignKeyPropertyID, FOREIGN_KEY_PROPERTY_ID);
-    return getEntityComboBoxModel(Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID));
+    return getForeignKeyComboBoxModel(Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID));
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityComboBoxModel getEntityComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+  public final EntityComboBoxModel getForeignKeyComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
     EntityComboBoxModel comboBoxModel = (EntityComboBoxModel) propertyComboBoxModels.get(foreignKeyProperty);
     if (comboBoxModel == null) {
-      comboBoxModel = createEntityComboBoxModel(foreignKeyProperty);
+      comboBoxModel = createForeignKeyComboBoxModel(foreignKeyProperty);
       propertyComboBoxModels.put(foreignKeyProperty, comboBoxModel);
     }
 

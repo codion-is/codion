@@ -1186,7 +1186,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   protected final InputProvider createEntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty, final Entity currentValue,
                                                           final EntityEditModel editModel) {
     if (Entities.isSmallDataset(foreignKeyProperty.getReferencedEntityID())) {
-      return new EntityComboProvider(editModel.createEntityComboBoxModel(foreignKeyProperty), currentValue);
+      return new EntityComboProvider(editModel.createForeignKeyComboBoxModel(foreignKeyProperty), currentValue);
     }
     else {
       return new EntityLookupProvider(editModel.createEntityLookupModel(foreignKeyProperty), currentValue);
