@@ -124,7 +124,7 @@ public class DefaultDatabaseConnectionTest {
   }
 
   @Test(expected = IllegalStateException.class)
-  public void rollbaclTransactionAlreadyRollbacked() {
+  public void rollbackTransactionAlreadyRollbacked() {
     dbConnection.beginTransaction();
     dbConnection.rollbackTransaction();
     dbConnection.rollbackTransaction();
