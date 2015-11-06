@@ -427,8 +427,7 @@ final class LocalEntityConnection implements EntityConnection {
     final Property.ColumnProperty property = Entities.getColumnProperty(criteria.getEntityID(), propertyID);
     final String columnName = property.getColumnName();
     final EntityCriteria entityCriteria = EntityCriteriaUtil.criteria(criteria.getEntityID(),
-            CriteriaUtil.criteriaSet(Conjunction.AND, criteria.getCriteria(),
-                    CriteriaUtil.<Property.ColumnProperty>stringCriteria(columnName + " is not null")));
+            CriteriaUtil.criteriaSet(Conjunction.AND, criteria.getCriteria(), CriteriaUtil.stringCriteria(columnName + " is not null")));
     final String selectSQL = createSelectSQL(Entities.getSelectTableName(criteria.getEntityID()), "distinct " + columnName,
             WHERE + entityCriteria.getWhereClause(), columnName);
     PreparedStatement statement = null;
