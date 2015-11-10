@@ -5,18 +5,18 @@
     <content url="file://$MODULE_DIR$" />
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="demo-chinook" />
-    <orderEntry type="module" module-name="demo-empdept" />
-    <orderEntry type="module" module-name="demo-petstore" />
-    <orderEntry type="module" module-name="demo-schemabrowser" />
-    <orderEntry type="module" module-name="demo-world" />
-    <orderEntry type="module" module-name="jminor-core" />
-    <orderEntry type="module" module-name="jminor-javafx" />
-    <orderEntry type="module" module-name="plugin-imagepanel" />
-    <orderEntry type="module" module-name="plugin-jasperreports" />
-    <orderEntry type="module" module-name="plugin-json" />
-    <orderEntry type="module" module-name="plugin-nextreports" />
-    <orderEntry type="module" module-name="plugin-rest" />
-    <orderEntry type="module" module-name="plugin-tomcat-pool" />
+    <orderEntry type="module" module-name="demo-chinook" scope="RUNTIME" />
+    <orderEntry type="module" module-name="demo-empdept" scope="RUNTIME" />
+    <orderEntry type="module" module-name="demo-petstore" scope="RUNTIME" />
+    <orderEntry type="module" module-name="demo-schemabrowser" scope="RUNTIME" />
+    <orderEntry type="module" module-name="demo-world" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-core" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-javafx" scope="RUNTIME" />
+    <orderEntry type="module" module-name="plugin-imagepanel" scope="RUNTIME" />
+    <orderEntry type="module" module-name="plugin-jasperreports" scope="RUNTIME" />
+    <orderEntry type="module" module-name="plugin-json" scope="RUNTIME" />
+    <orderEntry type="module" module-name="plugin-nextreports" scope="RUNTIME" />
+    <orderEntry type="module" module-name="plugin-rest" scope="RUNTIME" />
+    <orderEntry type="module" module-name="plugin-tomcat-pool" scope="RUNTIME" />
   </component>
 </module>
