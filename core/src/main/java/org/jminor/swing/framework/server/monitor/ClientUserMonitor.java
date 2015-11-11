@@ -267,12 +267,13 @@ public final class ClientUserMonitor {
 
       final UserInfo that = (UserInfo) obj;
 
-      return this.user.equals(that.user) && this.clientTypeID.equals(that.clientTypeID) && this.clientHost.equals(that.clientHost);
+      return this.user.getUsername().equalsIgnoreCase(that.user.getUsername()) &&
+              this.clientTypeID.equals(that.clientTypeID) && this.clientHost.equals(that.clientHost);
     }
 
     @Override
     public int hashCode() {
-      int result = user.hashCode();
+      int result = user.getUsername().toLowerCase().hashCode();
       result = 31 * result + clientTypeID.hashCode();
       result = 31 * result + clientHost.hashCode();
 
