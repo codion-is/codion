@@ -4112,3 +4112,4 @@
   EntityEditModel.createEntityLookupField() renamed to createForeignKeyLookupField()
   EntityEditPanel.createEntityLookupField() renamed to createForeignKeyLookupField(), createEntityComboBox() renamed to createForeignKeyComboBox(), createEntityField() renamed to createForeignKeyField()
   ClientUserMonitor, user history no longer displays a single user as multiple based on case difference in usernames
+  EntityEditPanel.afterInsertFocusPropertyID and afterInsertFocusComponent added

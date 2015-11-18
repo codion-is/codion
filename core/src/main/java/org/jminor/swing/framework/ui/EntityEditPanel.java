@@ -127,6 +127,16 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   private String initialFocusPropertyID;
 
   /**
+   * The component that should receive focus when the UI is prepared after insert
+   */
+  private JComponent afterInsertFocusComponent;
+
+  /**
+   * The propertyID for which component should receive the focus when the UI is prepared after insert
+   */
+  private String afterInsertFocusPropertyID;
+
+  /**
    * Indicates whether or not the UI should be cleared after insert has been performed
    */
   private boolean clearAfterInsert = true;
@@ -212,14 +222,14 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     if (clearUI) {
       clearModelValues();
     }
-    if (setInitialFocus && isVisible()) {
+    if (setInitialFocus) {
       setInitialFocus();
     }
   }
 
   /**
    * Sets the component that should receive the focus when the UI is cleared or activated.
-   * Overrides the value set via <code>setInitialFocusComponentKey()</code>
+   * Overrides the value set via {@link #setInitialFocusProperty(String)}
    * @param initialFocusComponent the component
    * @return the component
    * @see #prepareUI(boolean, boolean)
@@ -230,14 +240,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
-   * @return the propertyID of the component to receive the initial focus
-   */
-  public final String getInitialFocusProperty() {
-    return initialFocusPropertyID;
-  }
-
-  /**
-   * Defines the component associated with the given propertyID as the component
+   * Sets the component associated with the given propertyID as the component
    * that should receive the initial focus in this edit panel.
    * This is overridden by setInitialFocusComponent().
    * @param propertyID the component propertyID
@@ -248,6 +251,28 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   }
 
   /**
+   * Sets the component that should receive the focus after an insert has been performed..
+   * Overrides the value set via {@link #setAfterInsertFocusProperty(String)}
+   * @param afterInsertFocusComponent the component
+   * @return the component
+   */
+  public final JComponent setAfterInsertFocusComponent(final JComponent afterInsertFocusComponent) {
+    this.afterInsertFocusComponent = afterInsertFocusComponent;
+    return afterInsertFocusComponent;
+  }
+
+  /**
+   * Sets the component associated with the given propertyID as the component
+   * that should receive the focus after an insert is performed in this edit panel.
+   * This is overridden by setAfterInsertFocusComponent().
+   * @param propertyID the component propertyID
+   * @see #setAfterInsertFocusComponent(JComponent)
+   */
+  public final void setAfterInsertFocusProperty(final String propertyID) {
+    this.afterInsertFocusPropertyID = propertyID;
+  }
+
+  /**
    * Sets the initial focus, if a initial focus component or component propertyID
    * has been set that component receives the focus, if not, or if that component
    * is not focusable, this panel receives the focus
@@ -255,12 +280,8 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @see #setInitialFocusComponent(javax.swing.JComponent)
    */
   public final void setInitialFocus() {
-    final JComponent focusComponent = getInitialFocusComponent();
-    if (focusComponent != null && focusComponent.isFocusable()) {
-      focusComponent.requestFocus();//InWindow();
-    }
-    else {
-      requestFocus();//InWindow();
+    if (isVisible()) {
+      setInitialFocus(false);
     }
   }
 
@@ -612,7 +633,12 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
         finally {
           UiUtil.setWaitCursor(false, this);
         }
-        prepareUI(requestFocusAfterInsert, clearAfterInsert);
+        if (clearAfterInsert) {
+          clearModelValues();
+        }
+        if (requestFocusAfterInsert) {
+          setInitialFocus(true);
+        }
         return true;
       }
     }
@@ -681,7 +707,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
         finally {
           UiUtil.setWaitCursor(false, this);
         }
-        prepareUI(true, false);
+        setInitialFocus(false);
 
         return true;
       }
@@ -857,6 +883,21 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
     }
 
     return null;
+  }
+
+  /**
+   * @return the component that should get the focus when the UI is prepared after insert
+   */
+  protected JComponent getAfterInsertFocusComponent() {
+    if (afterInsertFocusComponent != null) {
+      return afterInsertFocusComponent;
+    }
+
+    if (afterInsertFocusPropertyID != null) {
+      return components.get(afterInsertFocusPropertyID);
+    }
+
+    return getInitialFocusComponent();
   }
 
   /**
@@ -2044,6 +2085,16 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
         confirmationState.setActive(result == JOptionPane.YES_OPTION);
       }
     });
+  }
+
+  private void setInitialFocus(final boolean afterInsert) {
+    final JComponent focusComponent = afterInsert ? getAfterInsertFocusComponent() : getInitialFocusComponent();
+    if (focusComponent != null && focusComponent.isFocusable()) {
+      focusComponent.requestFocus();//InWindow();
+    }
+    else {
+      requestFocus();//InWindow();
+    }
   }
 
   private boolean readOnly(final String propertyID) {
