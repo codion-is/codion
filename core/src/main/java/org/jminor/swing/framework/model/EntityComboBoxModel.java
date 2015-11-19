@@ -36,6 +36,21 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
   void setForeignKeyFilterEntities(final String foreignKeyPropertyID, final Collection<Entity> entities);
 
   /**
+   * Specifies whether foreign key filtering should be strict or not.
+   * When the filtering is strict only entities with the correct reference are included, that is,
+   * entities with null values for the given foreign key are filtered.
+   * Non-strict simply means that entities with null references are not filtered.
+   * @param strictForeignKeyFiltering the value
+   * @see #setForeignKeyFilterEntities(String, Collection)
+   */
+  void setStrictForeignKeyFiltering(final boolean strictForeignKeyFiltering);
+
+  /**
+   * @return true if strict foreign key filtering is enabled
+   */
+  boolean isStrictForeignKeyFiltering();
+
+  /**
    * Returns a combo box model for selecting a foreign key value for filtering this model
    * @param foreignKeyPropertyID the ID of the property with which values to create the combo box model
    * @return a combo box model for selecting a filtering value for this combo box model

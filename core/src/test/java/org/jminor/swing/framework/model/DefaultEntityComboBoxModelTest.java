@@ -7,6 +7,7 @@ import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilterCriteria;
+import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
@@ -51,12 +52,7 @@ public final class DefaultEntityComboBoxModelTest {
     assertEquals(5, comboBoxModel.getSize());
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       final Entity item = comboBoxModel.getElementAt(i);
-      if (item.isValueNull(TestDomain.EMP_MGR_FK)) {
-        assertEquals("KING", item.getStringValue(TestDomain.EMP_NAME));
-      }
-      else {
-        assertEquals(item.getForeignKeyValue(TestDomain.EMP_MGR_FK), blake);
-      }
+      assertEquals(item.getForeignKeyValue(TestDomain.EMP_MGR_FK), blake);
     }
 
     final Entity sales = comboBoxModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
@@ -75,12 +71,7 @@ public final class DefaultEntityComboBoxModelTest {
     for (int i = 0; i < comboBoxModel.getSize(); i++) {
       final Entity item = comboBoxModel.getElementAt(i);
       assertEquals(item.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK), accounting);
-      if (item.isValueNull(TestDomain.EMP_MGR_FK)) {
-        assertEquals("KING", item.getStringValue(TestDomain.EMP_NAME));
-      }
-      else {
-        assertEquals(item.getForeignKeyValue(TestDomain.EMP_MGR_FK), blake);
-      }
+      assertEquals(item.getForeignKeyValue(TestDomain.EMP_MGR_FK), blake);
     }
     for (final Entity employee : comboBoxModel.getAllItems()) {
       if (employee.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK).equals(accounting)) {
@@ -89,6 +80,22 @@ public final class DefaultEntityComboBoxModelTest {
       }
     }
     assertEquals(accounting, deptComboBoxModel.getSelectedValue());
+
+    //non strict filtering
+    comboBoxModel.setStrictForeignKeyFiltering(false);
+    comboBoxModel.setForeignKeyFilterEntities(TestDomain.EMP_DEPARTMENT_FK, null);
+    assertEquals(6, comboBoxModel.getSize());
+    boolean kingFound = false;
+    for (int i = 0; i < comboBoxModel.getSize(); i++) {
+      final Entity item = comboBoxModel.getElementAt(i);
+      if (Util.equal(item.getValue(TestDomain.EMP_NAME), "KING")) {
+        kingFound = true;
+      }
+      else {
+        assertEquals(item.getForeignKeyValue(TestDomain.EMP_MGR_FK), blake);
+      }
+    }
+    assertTrue(kingFound);
   }
 
   @Test(expected = IllegalArgumentException.class)

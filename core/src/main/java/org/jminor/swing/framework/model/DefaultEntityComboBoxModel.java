@@ -65,13 +65,17 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
    */
   private final Map<String, Set<Entity>> foreignKeyFilterEntities = new HashMap<>();
 
+  private boolean strictForeignKeyFiltering = true;
+
   private final FilterCriteria<Entity> foreignKeyFilterCriteria = new FilterCriteria<Entity>() {
     @Override
     public boolean include(final Entity item) {
       for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
         final Entity foreignKeyValue = item.getForeignKeyValue(entry.getKey());
-        final Set<Entity> filterValues = entry.getValue();
-        if (foreignKeyValue == null || !filterValues.contains(foreignKeyValue)) {
+        if (foreignKeyValue == null) {
+          return !strictForeignKeyFiltering;
+        }
+        if (!entry.getValue().contains(foreignKeyValue)) {
           return false;
         }
       }
@@ -208,6 +212,18 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     }
 
     return filterEntities;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void setStrictForeignKeyFiltering(final boolean strictForeignKeyFiltering) {
+    this.strictForeignKeyFiltering = strictForeignKeyFiltering;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public boolean isStrictForeignKeyFiltering() {
+    return strictForeignKeyFiltering;
   }
 
   /** {@inheritDoc} */

@@ -125,7 +125,8 @@ public interface EntityConnection {
   void delete(final EntityCriteria criteria) throws DatabaseException;
 
   /**
-   * Selects ordered and distinct non-null values of the given property
+   * Selects ordered and distinct non-null values of the given property, note that the given property
+   * must be of type {@link org.jminor.framework.domain.Property.ColumnProperty}.
    * @param propertyID the ID of the property
    * @param criteria the criteria
    * @return the values in the given column (Property)
