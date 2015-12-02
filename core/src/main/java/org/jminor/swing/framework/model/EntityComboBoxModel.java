@@ -11,7 +11,7 @@ import org.jminor.swing.common.model.combobox.FilteredComboBoxModel;
 import java.util.Collection;
 
 /**
- * Specifies a ComboBoxModel containing entities.
+ * A ComboBoxModel based on {@link Entity} instances.
  */
 public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, EntityDataProvider {
 
@@ -75,12 +75,13 @@ public interface EntityComboBoxModel extends FilteredComboBoxModel<Entity>, Enti
 
   /**
    * Forces a refresh of this model, disregarding the staticData directive
+   * @see #setStaticData(boolean)
    */
   void forceRefresh();
 
   /**
-   * Specifies whether or not this models data should be considered static,
-   * that is, only fetched once.
+   * Specifies whether or not this models data should be considered static, that is, only fetched once.
+   * Note that {@link #forceRefresh()} disregards this directive.
    * @param staticData the value
    * @return this EntityComboBoxModel instance
    */
