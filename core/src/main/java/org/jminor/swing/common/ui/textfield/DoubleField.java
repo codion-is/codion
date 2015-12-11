@@ -17,7 +17,7 @@ public class DoubleField extends IntField {
   public static final String POINT = ".";
   public static final String COMMA = ",";
 
-  private final transient ThreadLocal<NumberFormat> format = new LocalFormat();
+  private final NumberFormat format = Util.getNonGroupingNumberFormat();
 
   /**
    * Instantiates a new DoubleField.
@@ -82,7 +82,7 @@ public class DoubleField extends IntField {
    * @param value the value to set
    */
   public void setDouble(final Double value) {
-    setText(value == null ? "" : format.get().format(value));
+    setText(value == null ? "" : format.format(value));
   }
 
   /**
@@ -220,13 +220,6 @@ public class DoubleField extends IntField {
       }
 
       return preparedString;
-    }
-  }
-
-  private static final class LocalFormat extends ThreadLocal<NumberFormat> {
-    @Override
-    protected NumberFormat initialValue() {
-      return Util.getNonGroupingNumberFormat();
     }
   }
 }

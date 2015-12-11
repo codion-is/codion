@@ -14,7 +14,7 @@ import java.text.NumberFormat;
  */
 public class IntField extends JTextField {
 
-  private final transient ThreadLocal<NumberFormat> format = new LocalFormat();
+  private final NumberFormat format = Util.getNonGroupingNumberFormat(true);
 
   private double minimumValue = Double.NEGATIVE_INFINITY;
   private double maximumValue = Double.POSITIVE_INFINITY;
@@ -86,7 +86,7 @@ public class IntField extends JTextField {
    * @param value the value to set
    */
   public final void setInt(final Integer value) {
-    setText(value == null ? "" : format.get().format(value));
+    setText(value == null ? "" : format.format(value));
   }
 
   /** {@inheritDoc} */
@@ -119,13 +119,6 @@ public class IntField extends JTextField {
       }
 
       return valueOk;
-    }
-  }
-
-  private static final class LocalFormat extends ThreadLocal<NumberFormat> {
-    @Override
-    protected NumberFormat initialValue() {
-      return Util.getNonGroupingNumberFormat(true);
     }
   }
 }

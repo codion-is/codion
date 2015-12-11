@@ -13,7 +13,7 @@ import java.text.NumberFormat;
  */
 public class LongField extends DoubleField {
 
-  private final transient ThreadLocal<NumberFormat> format = new LocalFormat();
+  private final NumberFormat format = Util.getNonGroupingNumberFormat();
 
     /**
    * Instantiates a new LongField.
@@ -50,7 +50,7 @@ public class LongField extends DoubleField {
    * @param value the value to set
    */
   public void setLong(final Long value) {
-    setText(value == null ? "" : format.get().format(value));
+    setText(value == null ? "" : format.format(value));
   }
 
   @Override
@@ -82,13 +82,6 @@ public class LongField extends DoubleField {
       }
 
       return valueOk;
-    }
-  }
-
-  private static final class LocalFormat extends ThreadLocal<NumberFormat> {
-    @Override
-    protected NumberFormat initialValue() {
-      return Util.getNonGroupingNumberFormat();
     }
   }
 }

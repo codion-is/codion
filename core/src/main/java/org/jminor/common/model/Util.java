@@ -227,7 +227,7 @@ public final class Util {
       return null;
     }
 
-    final String noGrouping = text.replace(".", "");
+    final String noGrouping = text.replace(".", "").replace(",", "");
     if (noGrouping.length() == 0) {
       return null;
     }
@@ -267,12 +267,12 @@ public final class Util {
       return null;
     }
 
-    final String noGrouping = text.replace(".", "");
+    final String noGrouping = text.replace(".", "").replace(",", "");
     if (noGrouping.length() == 0) {
       return null;
     }
     if (noGrouping.equals("-")) {
-      return  -1l;
+      return  -1L;
     }
 
     return Long.parseLong(noGrouping);

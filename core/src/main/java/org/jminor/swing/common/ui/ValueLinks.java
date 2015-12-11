@@ -102,7 +102,7 @@ public final class ValueLinks {
   /**
    * @param intField the int field to link with the value
    * @param value the model value
-   * @param format the number format to use when displaying the number
+   * @param format the number format to use when displaying the number, disregarded if field is editable
    * @param usePrimitive if true then the property is assumed to be a primitive, int instead of Integer
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
@@ -110,7 +110,7 @@ public final class ValueLinks {
   public static void intValueLink(final IntField intField, final Value<Integer> value, final NumberFormat format,
                                   final boolean usePrimitive, final boolean readOnly, final boolean immediateUpdate) {
     intField.setEditable(!readOnly);
-    Values.link(value, UiValues.integerValue(intField, usePrimitive, format, immediateUpdate), readOnly);
+    Values.link(value, UiValues.integerValue(intField, usePrimitive, readOnly ? format : null, immediateUpdate), readOnly);
   }
 
   /**
@@ -146,7 +146,7 @@ public final class ValueLinks {
   /**
    * @param doubleField the double field to link with the value
    * @param value the model value
-   * @param format the number format to use when displaying the number
+   * @param format the number format to use when displaying the number, disregarded if field is editable
    * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
@@ -154,7 +154,7 @@ public final class ValueLinks {
   public static void doubleValueLink(final DoubleField doubleField, final Value<Double> value, final NumberFormat format,
                                      final boolean usePrimitive, final boolean readOnly, final boolean immediateUpdate) {
     doubleField.setEditable(!readOnly);
-    Values.link(value, UiValues.doubleValue(doubleField, usePrimitive, format, immediateUpdate), readOnly);
+    Values.link(value, UiValues.doubleValue(doubleField, usePrimitive, readOnly ? format : null, immediateUpdate), readOnly);
   }
 
   /**
@@ -190,7 +190,7 @@ public final class ValueLinks {
   /**
    * @param longField the long field to link with the value
    * @param value the model value
-   * @param format the number format to use when displaying the number
+   * @param format the number format to use when displaying the number, disregarded if field is editable
    * @param usePrimitive if true then the property is assumed to be a primitive, double instead of Double
    * @param readOnly if true the component will be read only
    * @param immediateUpdate if true then the underlying model value is updated on each keystroke
@@ -198,7 +198,7 @@ public final class ValueLinks {
   public static void longValueLink(final LongField longField, final Value<Long> value, final NumberFormat format,
                                    final boolean usePrimitive, final boolean readOnly, final boolean immediateUpdate) {
     longField.setEditable(!readOnly);
-    Values.link(value, UiValues.longValue(longField, usePrimitive, format, immediateUpdate), readOnly);
+    Values.link(value, UiValues.longValue(longField, usePrimitive, readOnly ? format : null, immediateUpdate), readOnly);
   }
 
   /**

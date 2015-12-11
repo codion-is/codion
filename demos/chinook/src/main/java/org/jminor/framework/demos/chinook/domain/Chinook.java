@@ -17,6 +17,7 @@ import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 
 import java.sql.Types;
+import java.text.NumberFormat;
 import java.util.List;
 import java.util.Map;
 
@@ -278,10 +279,12 @@ public class Chinook {
                     Properties.columnProperty(TRACK_MEDIATYPEID, Types.BIGINT))
                     .setNullable(false),
             Properties.columnProperty(TRACK_MILLISECONDS, Types.INTEGER, "Duration (ms)")
-                    .setNullable(false),
+                    .setNullable(false)
+                    .setFormat(NumberFormat.getIntegerInstance()),
             Properties.derivedProperty(TRACK_MINUTES_SECONDS_DERIVED, Types.VARCHAR, "Duration (min/sec)",
                     TRACK_MIN_SEC_PROVIDER, TRACK_MILLISECONDS),
-            Properties.columnProperty(TRACK_BYTES, Types.INTEGER, "Bytes"),
+            Properties.columnProperty(TRACK_BYTES, Types.INTEGER, "Bytes")
+                    .setFormat(NumberFormat.getIntegerInstance()),
             Properties.columnProperty(TRACK_UNITPRICE, Types.DOUBLE, "Price")
                     .setNullable(false))
             .setDomainID(DOMAIN_ID)
