@@ -35,15 +35,6 @@ public class IntField extends JTextField {
   }
 
   /**
-   * Constructs a new IntField.
-   * @param min the minimum value
-   * @param max the maximum value
-   */
-  public IntField(final int min, final int max) {
-    setRange(min, max);
-  }
-
-  /**
    * Sets the range of values this field should allow
    * @param min the minimum value
    * @param max the maximum value

@@ -35,15 +35,6 @@ public class DoubleField extends IntField {
   }
 
   /**
-   * Instantiates a new DoubleField
-   * @param min the minimum value the field can contain
-   * @param max the maximum value the field can contain
-   */
-  public DoubleField(final double min, final double max) {
-    setRange(min, max);
-  }
-
-  /**
    * @return the decimal symbol being used by this field
    */
   public String getDecimalSymbol() {

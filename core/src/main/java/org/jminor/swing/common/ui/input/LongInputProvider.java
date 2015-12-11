@@ -25,7 +25,8 @@ public final class LongInputProvider extends AbstractInputProvider<Long, LongFie
    * @param maxValue the maximum value
    */
   public LongInputProvider(final Long initialValue, final long minValue, final long maxValue) {
-    super(new LongField(minValue, maxValue));
+    super(new LongField());
+    getInputComponent().setRange(minValue, maxValue);
     if (initialValue != null) {
       getInputComponent().setLong(initialValue);
     }

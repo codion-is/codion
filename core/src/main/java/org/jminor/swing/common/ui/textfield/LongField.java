@@ -15,7 +15,7 @@ public class LongField extends DoubleField {
 
   private final NumberFormat format = Util.getNonGroupingNumberFormat();
 
-    /**
+  /**
    * Instantiates a new LongField.
    */
   public LongField() {
@@ -28,15 +28,6 @@ public class LongField extends DoubleField {
    */
   public LongField(final int columns) {
     super(columns);
-  }
-
-  /**
-   * Instantiates a new LongField
-   * @param min the minimum value the field can contain
-   * @param max the maximum value the field can contain
-   */
-  public LongField(final long min, final long max) {
-    setRange(min, max);
   }
 
   /**

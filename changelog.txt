@@ -4117,3 +4117,4 @@
   Util.getInt() and getLong() now remove both dots and commas before parsing
   IntField, LongField and DoubleField no longer use a ThreadLocal for the NumberFormat
   ValueLinks, numerical value links ignore the NumberFormat if the field is editable (very problematic otherwise)
+  IntField, LongField and Double field, removed constructor overloaded with min and max

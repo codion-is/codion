@@ -25,7 +25,8 @@ public final class IntInputProvider extends AbstractInputProvider<Integer, IntFi
    * @param maxValue the maximum value
    */
   public IntInputProvider(final Integer initialValue, final int minValue, final int maxValue) {
-    super(new IntField(minValue, maxValue));
+    super(new IntField());
+    getInputComponent().setRange(minValue, maxValue);
     if (initialValue != null) {
       getInputComponent().setInt(initialValue);
     }
