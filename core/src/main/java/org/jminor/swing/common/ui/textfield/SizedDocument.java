@@ -9,8 +9,8 @@ import javax.swing.text.PlainDocument;
 import java.util.Locale;
 
 /**
- * A Document implementation which allows for setting the max text length, a numerical range
- * for allowed values, and automatic conversion to upper case and lower case.
+ * A Document implementation which allows for setting the max text length
+ * and automatic conversion to upper case or lower case.
  */
 public class SizedDocument extends PlainDocument {
 
