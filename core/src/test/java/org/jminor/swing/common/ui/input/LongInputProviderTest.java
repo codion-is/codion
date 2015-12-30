@@ -12,7 +12,7 @@ public class LongInputProviderTest {
 
   @Test
   public void test() {
-    final Long value = 10l;
+    final Long value = 10L;
     LongInputProvider provider = new LongInputProvider(value);
     assertEquals(value, provider.getValue());
 
@@ -24,6 +24,7 @@ public class LongInputProviderTest {
 
     provider = new LongInputProvider(value, 0, 100);
     assertEquals(value, provider.getValue());
+    provider.getInputComponent().setText("");
     provider.getInputComponent().setText("-10");
     assertNull(provider.getValue());
     provider.getInputComponent().setText("150");

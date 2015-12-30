@@ -732,6 +732,11 @@ final class LocalEntityConnection implements EntityConnection {
       try {
         lockAndCheckForUpdate(entitiesToLock);
       }
+      catch (final RecordModifiedException e) {
+        rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
+        LOG.debug(EntityUtil.getModifiedExceptionMessage(e), e);
+        throw e;
+      }
       catch (final DatabaseException e) {
         rollbackQuietlyIfTransactionIsNotOpen();//releasing the select for update lock
         throw e;

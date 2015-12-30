@@ -16,6 +16,7 @@ import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.textfield.DoubleField;
 import org.jminor.swing.common.ui.textfield.IntField;
 import org.jminor.swing.common.ui.textfield.LongField;
+import org.jminor.swing.common.ui.textfield.NumberField;
 
 import javax.swing.ButtonModel;
 import javax.swing.ComboBoxModel;
@@ -38,7 +39,6 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.DateFormat;
 import java.text.Format;
-import java.text.NumberFormat;
 import java.text.ParseException;
 import java.util.Date;
 
@@ -66,13 +66,11 @@ public final class UiValues {
   /**
    * @param intField the component
    * @param usePrimitive if true then the int primitive is used, Integer otherwise
-   * @param format the number format
    * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static Value<Integer> integerValue(final IntField intField, final boolean usePrimitive,
-                                            final NumberFormat format, final boolean immediateUpdate) {
-    return new IntUIValue(intField, format, usePrimitive, immediateUpdate);
+  public static Value<Integer> integerValue(final IntField intField, final boolean usePrimitive, final boolean immediateUpdate) {
+    return new IntUIValue(intField, usePrimitive, immediateUpdate);
   }
 
   /**
@@ -86,25 +84,21 @@ public final class UiValues {
   /**
    * @param doubleField the component
    * @param usePrimitive if true then the double primitive is used, Double otherwise
-   * @param format the number format
    * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static Value<Double> doubleValue(final DoubleField doubleField, final boolean usePrimitive,
-                                          final NumberFormat format, final boolean immediateUpdate) {
-    return new DoubleUIValue(doubleField, format, usePrimitive, immediateUpdate);
+  public static Value<Double> doubleValue(final DoubleField doubleField, final boolean usePrimitive, final boolean immediateUpdate) {
+    return new DoubleUIValue(doubleField, usePrimitive, immediateUpdate);
   }
 
   /**
    * @param longField the component
    * @param usePrimitive if true then the double primitive is used, Long otherwise
-   * @param format the number format
    * @param immediateUpdate if true then the value is updated on each keystroke, otherwise on focus lost
    * @return a Value bound to the given component
    */
-  public static Value<Long> longValue(final LongField longField, final boolean usePrimitive,
-                                      final NumberFormat format, final boolean immediateUpdate) {
-    return new LongUIValue(longField, format, usePrimitive, immediateUpdate);
+  public static Value<Long> longValue(final LongField longField, final boolean usePrimitive, final boolean immediateUpdate) {
+    return new LongUIValue(longField, usePrimitive, immediateUpdate);
   }
 
   /**
@@ -287,60 +281,110 @@ public final class UiValues {
     }
   }
 
-  private static final class IntUIValue extends TextUIValue<Integer> {
+  private abstract static class NumberUIValue<T> extends UIValue<T> {
+
+    private final NumberField textField;
     private final boolean usePrimitive;
 
-    private IntUIValue(final JTextComponent textComponent, final NumberFormat format, final boolean usePrimitive,
-                       final boolean immediateUpdate) {
-      super(textComponent, format, immediateUpdate);
+    private NumberUIValue(final NumberField textField, final boolean usePrimitive, final boolean immediateUpdate) {
+      this.textField = textField;
       this.usePrimitive = usePrimitive;
+      if (immediateUpdate) {
+        textField.getDocument().addDocumentListener(new DocumentAdapter() {
+          @Override
+          public final void contentsChanged(final DocumentEvent e) {
+            fireChangeEvent();
+          }
+        });
+      }
+      else {
+        textField.addFocusListener(new FocusAdapter() {
+          @Override
+          public void focusLost(final FocusEvent e) {
+            if (!e.isTemporary()) {
+              fireChangeEvent();
+            }
+          }
+        });
+      }
     }
 
-    @Override
-    protected Integer valueFromText(final String text) {
-      if (text.length() == 0 && usePrimitive) {
-        return 0;
-      }
+    protected final boolean isUsePrimitive() {
+      return usePrimitive;
+    }
 
-      return Util.getInt(text);
+    protected final NumberField getTextField() {
+      return textField;
+    }
+
+    protected Number getNumber() {
+      return textField.getNumber();
     }
   }
 
-  private static final class DoubleUIValue extends TextUIValue<Double> {
-    private final boolean usePrimitive;
+  private static final class IntUIValue extends NumberUIValue<Integer> {
 
-    private DoubleUIValue(final JTextComponent textComponent, final NumberFormat format, final boolean usePrimitive,
-                          final boolean immediateUpdate) {
-      super(textComponent, format, immediateUpdate);
-      this.usePrimitive = usePrimitive;
+    private IntUIValue(final IntField intField, final boolean usePrimitive, final boolean immediateUpdate) {
+      super(intField, usePrimitive, immediateUpdate);
     }
 
     @Override
-    protected Double valueFromText(final String text) {
-      if (text.length() == 0 && usePrimitive) {
-        return 0d;
+    protected void setInternal(final Integer value) {
+      getTextField().setNumber(value);
+    }
+
+    @Override
+    public Integer get() {
+      final Number number = getNumber();
+      if (number == null) {
+        return isUsePrimitive() ? 0 : null;
       }
 
-      return Util.getDouble(text);
+      return number.intValue();
     }
   }
 
-  private static final class LongUIValue extends TextUIValue<Long> {
-    private final boolean usePrimitive;
+  private static final class DoubleUIValue extends NumberUIValue<Double> {
 
-    private LongUIValue(final JTextComponent textComponent, final NumberFormat format, final boolean usePrimitive,
-                        final boolean immediateUpdate) {
-      super(textComponent, format, immediateUpdate);
-      this.usePrimitive = usePrimitive;
+    private DoubleUIValue(final DoubleField doubleField, final boolean usePrimitive, final boolean immediateUpdate) {
+      super(doubleField, usePrimitive, immediateUpdate);
     }
 
     @Override
-    protected Long valueFromText(final String text) {
-      if (text.length() == 0 && usePrimitive) {
-        return 0l;
+    protected void setInternal(final Double value) {
+      getTextField().setNumber(value);
+    }
+
+    @Override
+    public Double get() {
+      final Number number = getNumber();
+      if (number == null) {
+        return isUsePrimitive() ? 0d : null;
       }
 
-      return Util.getLong(text);
+      return number.doubleValue();
+    }
+  }
+
+  private static final class LongUIValue extends NumberUIValue<Long> {
+
+    private LongUIValue(final LongField longField, final boolean usePrimitive, final boolean immediateUpdate) {
+      super(longField, usePrimitive, immediateUpdate);
+    }
+
+    @Override
+    protected void setInternal(final Long value) {
+      getTextField().setNumber(value);
+    }
+
+    @Override
+    public Long get() {
+      final Number number = getNumber();
+      if (number == null) {
+        return isUsePrimitive() ? 0L : null;
+      }
+
+      return number.longValue();
     }
   }
 

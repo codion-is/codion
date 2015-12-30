@@ -24,6 +24,7 @@ import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
 import org.jminor.swing.common.ui.textfield.DoubleField;
 import org.jminor.swing.common.ui.textfield.IntField;
+import org.jminor.swing.common.ui.textfield.LongField;
 
 import javax.swing.DefaultListCellRenderer;
 import javax.swing.JCheckBox;
@@ -351,6 +352,8 @@ public class ColumnCriteriaPanel<K> extends JPanel {
           return new IntField(DEFAULT_FIELD_COLUMNS);
         case Types.DOUBLE:
           return new DoubleField(DEFAULT_FIELD_COLUMNS);
+        case Types.BIGINT:
+          return new LongField(DEFAULT_FIELD_COLUMNS);
         case Types.BOOLEAN:
           return new JCheckBox();
         case Types.TIME:
@@ -372,10 +375,13 @@ public class ColumnCriteriaPanel<K> extends JPanel {
       final Value modelValue = upperBound ? columnCriteriaModel.getUpperBoundValue() : columnCriteriaModel.getLowerBoundValue();
       switch (columnCriteriaModel.getType()) {
         case Types.INTEGER:
-          ValueLinks.intValueLink((IntField) component, modelValue, null, false, false, true);
+          ValueLinks.intValueLink((IntField) component, modelValue, false, false, true);
           break;
         case Types.DOUBLE:
-          ValueLinks.doubleValueLink((DoubleField) component, modelValue, null, false, false, true);
+          ValueLinks.doubleValueLink((DoubleField) component, modelValue, false, false, true);
+          break;
+        case Types.BIGINT:
+          ValueLinks.longValueLink((LongField) component, modelValue, false, false, true);
           break;
         case Types.TIME:
         case Types.TIMESTAMP:

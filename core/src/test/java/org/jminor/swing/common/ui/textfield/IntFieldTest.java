@@ -32,5 +32,7 @@ public class IntFieldTest {
     assertEquals("9", txt.getText());
     txt.setInt(-1);
     assertEquals("", txt.getText());
+    txt.setInt(-10);
+    assertEquals("", txt.getText());
   }
 }

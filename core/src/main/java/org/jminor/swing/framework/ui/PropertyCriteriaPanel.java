@@ -17,6 +17,7 @@ import org.jminor.swing.common.ui.combobox.SteppedComboBox;
 import org.jminor.swing.common.ui.table.ColumnCriteriaPanel;
 import org.jminor.swing.common.ui.textfield.DoubleField;
 import org.jminor.swing.common.ui.textfield.IntField;
+import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.framework.model.PropertyCriteriaModel;
 
 import javax.swing.AbstractAction;
@@ -98,6 +99,9 @@ public final class PropertyCriteriaPanel extends ColumnCriteriaPanel<Property.Co
       else if (property.isInteger()) {
         return new IntField(DEFAULT_FIELD_COLUMNS);
       }
+      else if (property.isLong()) {
+        return new LongField(DEFAULT_FIELD_COLUMNS);
+      }
       else if (property.isBoolean()) {
         return new JComboBox(new BooleanComboBoxModel());
       }
@@ -117,10 +121,13 @@ public final class PropertyCriteriaPanel extends ColumnCriteriaPanel<Property.Co
                 (SimpleDateFormat) model.getFormat(), columnProperty.getType(), true);
       }
       else if (columnProperty.isDouble()) {
-        ValueLinks.doubleValueLink((DoubleField) field, modelValue, null, false, false, true);
+        ValueLinks.doubleValueLink((DoubleField) field, modelValue, false, false, true);
       }
       else if (columnProperty.isInteger()) {
-        ValueLinks.intValueLink((IntField) field, modelValue, null, false, false, true);
+        ValueLinks.intValueLink((IntField) field, modelValue, false, false, true);
+      }
+      else if (columnProperty.isLong()) {
+        ValueLinks.longValueLink((LongField) field, modelValue, false, false, true);
       }
       else if (columnProperty.isBoolean()) {
         ValueLinks.selectedItemValueLink((JComboBox) field, modelValue);

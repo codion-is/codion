@@ -24,8 +24,8 @@ public class LongValueLinkTest {
   public void testInteger() throws Exception {
     final LongField txtLong = new LongField();
     ValueLinks.longValueLink(txtLong, this, "longValue", evtLongValueChanged, false, true);
-    assertNull("Long value should be null on initialization", txtLong.getInt());
-    setLongValue(2l);
+    assertNull("Long value should be null on initialization", txtLong.getLong());
+    setLongValue(2L);
     assertEquals("Long value should be 2", 2, txtLong.getLong().longValue());
     txtLong.setText("42");
     assertEquals("Long value should be 42", 42, longValue.longValue());

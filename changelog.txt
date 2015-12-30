@@ -4118,3 +4118,8 @@
   IntField, LongField and DoubleField no longer use a ThreadLocal for the NumberFormat
   ValueLinks, numerical value links ignore the NumberFormat if the field is editable (very problematic otherwise)
   IntField, LongField and Double field, removed constructor overloaded with min and max
+0.9.8
+  IntField, DoubleField, LongField and relevant classes refactored and improved, NumberField disables grouping, must be turned on explicitly
+  UiValues, numerical value methods no longer take a format parameter, the text field does all the formatting
+  EntityUiUtil now supplies cloned format instances to NumberField descendants
+  LocalEntityConnection now logs RecordModifiedExceptions correctly

@@ -71,6 +71,7 @@ import java.awt.BorderLayout;
 import java.awt.Color;
 import java.awt.Font;
 import java.awt.Point;
+import java.text.DecimalFormat;
 import java.text.NumberFormat;
 import java.text.SimpleDateFormat;
 import java.util.ArrayList;
@@ -727,16 +728,13 @@ public final class EntityUiUtil {
       ValueLinks.textValueLink(textField, EditModelValues.<String>value(editModel, propertyID), null, immediateUpdate, readOnly);
     }
     else if (property.isInteger()) {
-      ValueLinks.intValueLink((IntField) textField, EditModelValues.<Integer>value(editModel, propertyID),
-              (NumberFormat) property.getFormat(), false, readOnly, immediateUpdate);
+      ValueLinks.intValueLink((IntField) textField, EditModelValues.<Integer>value(editModel, propertyID), false, readOnly, immediateUpdate);
     }
     else if (property.isDouble()) {
-      ValueLinks.doubleValueLink((DoubleField) textField, EditModelValues.<Double>value(editModel, propertyID),
-              (NumberFormat) property.getFormat(), false, readOnly, immediateUpdate);
+      ValueLinks.doubleValueLink((DoubleField) textField, EditModelValues.<Double>value(editModel, propertyID), false, readOnly, immediateUpdate);
     }
     else if (property.isLong()) {
-      ValueLinks.longValueLink((LongField) textField, EditModelValues.<Long>value(editModel, propertyID),
-              (NumberFormat) property.getFormat(), false, readOnly, immediateUpdate);
+      ValueLinks.longValueLink((LongField) textField, EditModelValues.<Long>value(editModel, propertyID), false, readOnly, immediateUpdate);
     }
     else if (property.isDateOrTime()) {
       ValueLinks.dateValueLink((JFormattedTextField) textField, EditModelValues.<Date>value(editModel, propertyID),
@@ -917,10 +915,7 @@ public final class EntityUiUtil {
   }
 
   private static JTextField initializeDoubleField(final Property property) {
-    final DoubleField field = new DoubleField();
-    if (property.getMaximumFractionDigits() > 0) {
-      field.setMaximumFractionDigits(property.getMaximumFractionDigits());
-    }
+    final DoubleField field = new DoubleField((DecimalFormat) cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMin() != null && property.getMax() != null) {
       field.setRange(Math.min(property.getMin(), 0), property.getMax());
     }
@@ -929,7 +924,7 @@ public final class EntityUiUtil {
   }
 
   private static JTextField initializeIntField(final Property property) {
-    final IntField field = new IntField();
+    final IntField field = new IntField(cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMin() != null && property.getMax() != null) {
       field.setRange(property.getMin(), property.getMax());
     }
@@ -938,12 +933,25 @@ public final class EntityUiUtil {
   }
 
   private static JTextField initializeLongField(final Property property) {
-    final LongField field = new LongField();
+    final LongField field = new LongField(cloneFormat((NumberFormat) property.getFormat()));
     if (property.getMin() != null && property.getMax() != null) {
       field.setRange(property.getMin(), property.getMax());
     }
 
     return field;
+  }
+
+  private static NumberFormat cloneFormat(final NumberFormat format) {
+    final NumberFormat cloned = (NumberFormat) format.clone();
+    cloned.setGroupingUsed(format.isGroupingUsed());
+    cloned.setMaximumIntegerDigits(format.getMaximumIntegerDigits());
+    cloned.setMaximumFractionDigits(format.getMaximumFractionDigits());
+    cloned.setMinimumFractionDigits(format.getMinimumFractionDigits());
+    cloned.setRoundingMode(format.getRoundingMode());
+    cloned.setCurrency(format.getCurrency());
+    cloned.setParseIntegerOnly(format.isParseIntegerOnly());
+
+    return cloned;
   }
 
   private static void checkProperty(final Property property, final EntityEditModel editModel) {

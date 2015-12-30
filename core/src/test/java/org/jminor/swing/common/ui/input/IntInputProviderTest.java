@@ -24,6 +24,7 @@ public class IntInputProviderTest {
 
     provider = new IntInputProvider(value, 0, 100);
     assertEquals(value, provider.getValue());
+    provider.getInputComponent().setText("");
     provider.getInputComponent().setText("-10");
     assertNull(provider.getValue());
     provider.getInputComponent().setText("150");

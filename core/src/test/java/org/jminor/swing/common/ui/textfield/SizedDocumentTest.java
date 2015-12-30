@@ -27,7 +27,7 @@ public class SizedDocumentTest {
     assertEquals("hellohello", txt.getText());
 
     txt.setText("hellohellohello");//invalid
-    assertEquals("", txt.getText());
+    assertEquals("hellohello", txt.getText());
 
     document.setUpperCase(true);
     assertTrue(document.isUpperCase());

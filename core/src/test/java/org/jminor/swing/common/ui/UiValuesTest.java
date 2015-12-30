@@ -114,7 +114,7 @@ public class UiValuesTest {
   @Test
   public void integerTextUiValue() {
     final IntField txt = new IntField();
-    final Value<Integer> value = UiValues.integerValue(txt, false, null, true);
+    final Value<Integer> value = UiValues.integerValue(txt, false, true);
 
     assertNull(value.get());
     txt.setText("122");
@@ -129,7 +129,7 @@ public class UiValuesTest {
   @Test
   public void integerPrimitiveTextUiValue() {
     final IntField txt = new IntField();
-    final Value<Integer> value = UiValues.integerValue(txt, true, null, true);
+    final Value<Integer> value = UiValues.integerValue(txt, true, true);
 
     assertEquals(Integer.valueOf(0), value.get());
     txt.setText("122");
@@ -144,7 +144,7 @@ public class UiValuesTest {
   @Test
   public void longTextUiValue() {
     final LongField txt = new LongField();
-    final Value<Long> value = UiValues.longValue(txt, false, null, true);
+    final Value<Long> value = UiValues.longValue(txt, false, true);
 
     assertNull(value.get());
     txt.setText("122");
@@ -152,14 +152,14 @@ public class UiValuesTest {
     txt.setText("");
     assertNull(value.get());
 
-    value.set(42l);
+    value.set(42L);
     assertEquals("42", txt.getText());
   }
 
   @Test
   public void longPrimitiveTextUiValue() {
     final LongField txt = new LongField();
-    final Value<Long> value = UiValues.longValue(txt, true, null, true);
+    final Value<Long> value = UiValues.longValue(txt, true, true);
 
     assertEquals(Long.valueOf(0), value.get());
     txt.setText("122");
@@ -167,15 +167,15 @@ public class UiValuesTest {
     txt.setText("");
     assertEquals(Long.valueOf(0), value.get());
 
-    value.set(42l);
+    value.set(42L);
     assertEquals("42", txt.getText());
   }
 
   @Test
   public void doubleTextUiValue() {
     final DoubleField txt = new DoubleField();
-    txt.setDecimalSymbol(".");
-    final Value<Double> value = UiValues.doubleValue(txt, false, null, true);
+    txt.setSeparators('.', ',');
+    final Value<Double> value = UiValues.doubleValue(txt, false, true);
 
     assertNull(value.get());
     txt.setText("122.2");
@@ -190,8 +190,8 @@ public class UiValuesTest {
   @Test
   public void doublePrimitiveTextUiValue() {
     final DoubleField txt = new DoubleField();
-    txt.setDecimalSymbol(".");
-    final Value<Double> value = UiValues.doubleValue(txt, true, null, true);
+    txt.setSeparators('.', ',');
+    final Value<Double> value = UiValues.doubleValue(txt, true, true);
 
     assertEquals(Double.valueOf(0), value.get());
     txt.setText("122.2");
