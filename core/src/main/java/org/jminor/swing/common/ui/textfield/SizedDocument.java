@@ -26,8 +26,8 @@ public class SizedDocument extends PlainDocument {
   /**
    * @param upperCase true if this text field should automatically convert text to uppercase
    */
-  public final void setUpperCase(final boolean value) {
-    ((SizedDocumentFilter) getDocumentFilter()).setUpperCase(value);
+  public final void setUpperCase(final boolean upperCase) {
+    ((SizedDocumentFilter) getDocumentFilter()).setUpperCase(upperCase);
   }
 
   /**
@@ -40,8 +40,8 @@ public class SizedDocument extends PlainDocument {
   /**
    * @param lowerCase true if this text field should automatically convert text to lowercase
    */
-  public final void setLowerCase(final boolean value) {
-    ((SizedDocumentFilter) getDocumentFilter()).setLowerCase(value);
+  public final void setLowerCase(final boolean lowerCase) {
+    ((SizedDocumentFilter) getDocumentFilter()).setLowerCase(lowerCase);
   }
 
   /**
@@ -61,8 +61,8 @@ public class SizedDocument extends PlainDocument {
   /**
    * @param maxLength the maximum length of the text to allow, -1 if unlimited
    */
-  public final void setMaxLength(final int value) {
-    ((SizedDocumentFilter) getDocumentFilter()).setMaxLength(value);
+  public final void setMaxLength(final int maxLength) {
+    ((SizedDocumentFilter) getDocumentFilter()).setMaxLength(maxLength);
   }
 
   /**
