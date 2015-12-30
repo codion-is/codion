@@ -24,7 +24,7 @@ public final class IntField extends NumberField {
    * @param columns the number of columns
    */
   public IntField(final int columns) {
-    this(Util.getNonGroupingNumberFormat(true), 0);
+    this(Util.getNonGroupingNumberFormat(true), columns);
   }
 
   /**
