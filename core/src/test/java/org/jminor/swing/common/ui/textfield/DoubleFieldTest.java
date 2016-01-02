@@ -7,9 +7,6 @@ import org.junit.Test;
 
 import javax.swing.text.BadLocationException;
 
-import java.text.NumberFormat;
-import java.text.ParseException;
-
 import static org.junit.Assert.assertEquals;
 
 public class DoubleFieldTest {

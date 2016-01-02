@@ -5,7 +5,6 @@ package org.jminor.framework.demos.chinook.domain;
 
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
-import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.testing.EntityTestUnit;
 
 import org.junit.Test;

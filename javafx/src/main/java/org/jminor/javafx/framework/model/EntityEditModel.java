@@ -13,8 +13,6 @@ import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.valuemap.DefaultValueMapEditModel;
-import org.jminor.common.model.valuemap.ValueChange;
-import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
@@ -23,11 +21,8 @@ import org.jminor.framework.domain.EntityUtil;
 
 import javafx.collections.ObservableList;
 
-import java.util.Collection;
 import java.util.Collections;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.Objects;
 
 public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {

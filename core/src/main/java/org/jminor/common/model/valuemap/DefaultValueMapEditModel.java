@@ -11,7 +11,6 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.Value;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import java.util.Collection;

@@ -68,7 +68,7 @@ public class NumberField extends JTextField {
   /**
    * A Document implementation for numerical values
    */
-  public static class NumberDocument extends SizedDocument {
+  protected static class NumberDocument extends SizedDocument {
 
     protected NumberDocument(final NumberDocumentFilter documentFilter) {
       setDocumentFilter(documentFilter);
@@ -202,10 +202,10 @@ public class NumberField extends JTextField {
 
     /**
      * @param value the value to check
-     * @return true if this value is within the allowed range for this field
+     * @return true if this value falls within the allowed range for this document
      */
     protected final boolean isWithinRange(final double value) {
-      return ((value <= maximumValue) && (value >= minimumValue));
+      return value >= minimumValue && value <= maximumValue;
     }
 
     @Override

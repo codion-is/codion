@@ -5,20 +5,12 @@ package org.jminor.common.model.valuemap;
 
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.valuemap.exception.ValidationException;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
-import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.TestDomain;
 
 import org.junit.Test;
 
-import java.util.ArrayList;
-import java.util.Collection;
 import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
-import static org.junit.Assert.assertFalse;
-import static org.junit.Assert.assertTrue;
 
 public class DefaultValueMapEditModelTest {
 

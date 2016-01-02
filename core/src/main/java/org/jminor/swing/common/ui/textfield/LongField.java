@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.common.ui.textfield;
 
-import org.jminor.common.model.Column;
 import org.jminor.common.model.Util;
 
 import java.text.NumberFormat;

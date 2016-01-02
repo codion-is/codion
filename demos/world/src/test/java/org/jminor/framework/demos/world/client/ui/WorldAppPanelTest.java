@@ -4,7 +4,6 @@
 package org.jminor.framework.demos.world.client.ui;
 
 import org.jminor.common.model.User;
-import org.jminor.framework.demos.world.client.ui.WorldAppPanel;
 import org.jminor.swing.framework.testing.EntityApplicationPanelTestUnit;
 
 import org.junit.Test;

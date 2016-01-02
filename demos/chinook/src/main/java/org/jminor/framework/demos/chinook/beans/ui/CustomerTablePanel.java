@@ -13,7 +13,6 @@ import org.jminor.swing.framework.model.EntityTableModel;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 import org.jminor.swing.framework.ui.reporting.EntityReportUiUtil;
 
-import javax.swing.SwingWorker;
 import java.util.Collection;
 import java.util.HashMap;
 

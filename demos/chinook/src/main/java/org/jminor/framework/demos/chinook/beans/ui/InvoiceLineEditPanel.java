@@ -11,7 +11,8 @@ import javax.swing.JLabel;
 import javax.swing.JTextField;
 import java.awt.BorderLayout;
 
-import static org.jminor.framework.demos.chinook.domain.Chinook.*;
+import static org.jminor.framework.demos.chinook.domain.Chinook.INVOICELINE_QUANTITY;
+import static org.jminor.framework.demos.chinook.domain.Chinook.INVOICELINE_TRACKID_FK;
 
 public class InvoiceLineEditPanel extends EntityEditPanel {
 

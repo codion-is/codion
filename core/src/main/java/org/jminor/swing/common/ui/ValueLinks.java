@@ -4,7 +4,6 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
 import org.jminor.swing.common.ui.textfield.DoubleField;
@@ -22,7 +21,6 @@ import java.sql.Timestamp;
 import java.sql.Types;
 import java.text.DateFormat;
 import java.text.Format;
-import java.text.NumberFormat;
 import java.util.Date;
 
 /**
