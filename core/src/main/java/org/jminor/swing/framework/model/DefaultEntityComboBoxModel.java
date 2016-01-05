@@ -305,7 +305,8 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       }
     }
 
-    throw new IllegalArgumentException("Unable to select item: " + item + ", " + item.getClass());
+    //item not found, select null value
+    return null;
   }
 
   /** {@inheritDoc} */

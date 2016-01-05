@@ -166,9 +166,9 @@ public final class DefaultEntityComboBoxModelTest {
     comboBoxModel.removeRefreshListener(refreshListener);
   }
 
-  @Test (expected = IllegalArgumentException.class)
-  public void setSelectedItemNonExistingString() throws Exception {
+  public void setSelectedItemNonExistingString() {
     comboBoxModel.setSelectedItem("test");
+    assertNull(comboBoxModel.getSelectedValue());
   }
 
   @Test

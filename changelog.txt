@@ -4124,3 +4124,4 @@
   EntityUiUtil now supplies cloned format instances to NumberField descendants
   LocalEntityConnection now logs RecordModifiedExceptions correctly
   IntField, columns paramater was not used
+  DefaultEntityComboBoxModel.translateSelectionItem() no longer throws exception if item is not found, now returns null instead
