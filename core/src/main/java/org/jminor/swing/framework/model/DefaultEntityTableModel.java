@@ -519,7 +519,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   public final void savePreferences() {
     if (Configuration.getBooleanValue(Configuration.USE_CLIENT_PREFERENCES)) {
       try {
-        Util.putUserPreference(getPreferencesKey(), createPreferences().toString());
+        Util.putUserPreference(getUserPreferencesKey(), createPreferences().toString());
       }
       catch (final Exception e) {
         LOG.error("Error while saving preferences", e);
@@ -642,10 +642,25 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   protected void bindEditModelEvents() {/*Provided for subclasses*/}
 
   /**
+   * Returns the key used to identify user preferences for this table model, that is column positions, widths and such.
+   * The default implementation is:
+   * <pre>
+   * {@code
+   * return getClass().getSimpleName() + "-" + getEntityID();
+   * }
+   * </pre>
+   * Override in case this key is not unique.
+   * @return the key used to identify user preferences for this table model
+   */
+  protected String getUserPreferencesKey() {
+    return getClass().getSimpleName() + "-" + getEntityID();
+  }
+
+  /**
    * Clears any user preferences saved for this table model
    */
   final void clearPreferences() {
-    Util.removeUserPreference(getPreferencesKey());
+    Util.removeUserPreference(getUserPreferencesKey());
   }
 
   private void bindEventsInternal() {
@@ -762,10 +777,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     criteriaModel.setEnabled(property.getPropertyID(), false);
   }
 
-  private String getPreferencesKey() {
-    return getClass().getSimpleName() + "-" + getEntityID();
-  }
-
   private org.json.JSONObject createPreferences() throws Exception {
     final org.json.JSONObject preferencesRoot = new org.json.JSONObject();
     preferencesRoot.put(PREFERENCES_COLUMNS, createColumnPreferences());
@@ -790,7 +801,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   private void applyPreferences() {
     if (Configuration.getBooleanValue(Configuration.USE_CLIENT_PREFERENCES)) {
-      final String preferencesString = Util.getUserPreference(getPreferencesKey(), "");
+      final String preferencesString = Util.getUserPreference(getUserPreferencesKey(), "");
       try {
         if (preferencesString.length() > 0) {
           applyColumnPreferences(new org.json.JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS));

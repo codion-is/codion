@@ -4125,3 +4125,4 @@
   LocalEntityConnection now logs RecordModifiedExceptions correctly
   IntField, columns paramater was not used
   DefaultEntityComboBoxModel.translateSelectionItem() no longer throws exception if item is not found, now returns null instead
+  DefaultEntityTableModel.getPreferencesKey() renamed to getUserPreferencesKey() and made protected
