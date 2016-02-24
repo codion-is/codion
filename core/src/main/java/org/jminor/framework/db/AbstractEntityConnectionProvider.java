@@ -117,7 +117,16 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    * @return true if the connection is valid, false if it is invalid or has not been initialized
    */
   protected final boolean isConnectionValid() {
-    return isConnected() && getConnectionInternal().isConnected();
+    if (!isConnected()) {
+      return false;
+    }
+    try {
+      return entityConnection.isValid();
+    }
+    catch (final RuntimeException e) {
+      LOG.debug("Connection deemed invalid", e);
+      return false;
+    }
   }
 
   /**
@@ -144,6 +153,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
         entityConnection.disconnect();
       }
       catch (final Exception ignored) {/*ignored*/}
+      entityConnection = null;
       doConnect();
     }
   }
