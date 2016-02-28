@@ -39,7 +39,7 @@ public interface RemoteEntityConnection extends Remote {
   User getUser() throws RemoteException;
 
   /**
-   * @return true if a connection has been made
+   * @return true if this connection has been established and is valid
    * @throws RemoteException in case of an exception
    */
   boolean isConnected() throws RemoteException;
@@ -49,12 +49,6 @@ public interface RemoteEntityConnection extends Remote {
    * @throws RemoteException in case of an exception
    */
   void disconnect() throws RemoteException;
-
-  /**
-   * @return true if this connection is valid
-   * @throws RemoteException in case of exception
-   */
-  boolean isValid() throws RemoteException;
 
   /**
    * @throws RemoteException in case of exception

@@ -34,7 +34,7 @@ public interface EntityConnection {
   User getUser();
 
   /**
-   * @return true if a connection has been made
+   * @return true if the connection has been established and is valid
    */
   boolean isConnected();
 
@@ -42,11 +42,6 @@ public interface EntityConnection {
    * Performs a rollback and disconnects this connection
    */
   void disconnect();
-
-  /**
-   * @return true if this connection is valid
-   */
-  boolean isValid();
 
   /**
    * @return true if a transaction is open, false otherwise

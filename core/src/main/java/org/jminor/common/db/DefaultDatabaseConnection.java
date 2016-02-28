@@ -141,12 +141,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
 
   /** {@inheritDoc} */
   @Override
-  public boolean isValid() {
-    return connection != null && DatabaseUtil.isValid(connection, database, validityCheckTimeout);
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public void disconnect() {
     try {
       if (connection != null && !connection.isClosed()) {
@@ -163,7 +157,7 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public boolean isConnected() {
-    return connection != null;
+    return connection != null && DatabaseUtil.isValid(connection, database, validityCheckTimeout);
   }
 
   /** {@inheritDoc} */

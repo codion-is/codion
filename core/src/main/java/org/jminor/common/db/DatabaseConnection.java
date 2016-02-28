@@ -17,7 +17,7 @@ import java.util.List;
 public interface DatabaseConnection {
 
   /**
-   * @return true if the connection is connected
+   * @return true if the connection has been established and is valid
    */
   boolean isConnected();
 
@@ -53,11 +53,6 @@ public interface DatabaseConnection {
    * @return the number of retries required to retrieve this connection from the pool
    */
   int getRetryCount();
-
-  /**
-   * @return true if a connection is established and valid
-   */
-  boolean isValid();
 
   /**
    * Begins a transaction on this connection

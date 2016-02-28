@@ -4127,3 +4127,7 @@
   DefaultEntityComboBoxModel.translateSelectionItem() no longer throws exception if item is not found, now returns null instead
   DefaultEntityTableModel.getPreferencesKey() renamed to getUserPreferencesKey() and made protected
   AbstractEntityConnectionProvider.isConnectionValid() now returns false in case internal connection validity checking throws an exception and validateConnection() sets the internal connection to null in case it is invalid
+  DatabaseConnection, EntityConnection and RemoteEntityConnection.isValid() removed and merged with isConnected()
+  DefaultRemoteEntityConnection.isLocalConnectionValid() removed, EntityConnectionServer uses isConnected() instead
+  MethodLogger.Entry.toString() now displays microseconds instead of milliseconds for method time
+  LocalEntityConnection.prepareStatement() added

@@ -202,7 +202,11 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   @Override
   public boolean isConnected() {
     synchronized (connectionProxy) {
-      return connected;
+      if (connectionPool != null) {
+        return connected;
+      }
+
+      return connected && localEntityConnection != null && localEntityConnection.isConnected();
     }
   }
 
@@ -254,14 +258,6 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   public List executeFunction(final String functionID, final Object... arguments) throws DatabaseException {
     synchronized (connectionProxy) {
       return connectionProxy.executeFunction(functionID, arguments);
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public boolean isValid() {
-    synchronized (connectionProxy) {
-      return connectionProxy.isValid();
     }
   }
 
@@ -414,17 +410,6 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   @Override
   public DatabaseConnection getDatabaseConnection() {
     throw new UnsupportedOperationException("getDatabaseConnection is not supported on remote connections");
-  }
-
-  /**
-   * Checks if the underlying local connection is valid without interrupting the idle time counter.
-   * If a connection pool is being used this will return true
-   * @return true if a local connection is being used and is valid
-   */
-  public boolean isLocalConnectionValid() {
-    synchronized (connectionProxy) {
-      return localEntityConnection == null || localEntityConnection.isValid();
-    }
   }
 
   /**
@@ -586,8 +571,8 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   }
 
   private EntityConnection getLocalEntityConnection() throws DatabaseException {
-    if (!localEntityConnection.isValid()) {
-      localEntityConnection.disconnect();
+    if (!localEntityConnection.isConnected()) {
+      localEntityConnection.disconnect();//just in case
       localEntityConnection = LocalEntityConnections.createConnection(database, clientInfo.getDatabaseUser());
       localEntityConnection.setMethodLogger(methodLogger);
     }

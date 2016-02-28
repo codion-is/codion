@@ -44,7 +44,6 @@ public class DatabaseConnectionsTest {
       connection = DATABASE.createConnection(User.UNIT_TEST_USER);
       final DatabaseConnection databaseConnection = DatabaseConnections.createConnection(DATABASE, connection);
       assertTrue(databaseConnection.isConnected());
-      assertTrue(databaseConnection.isValid());
       assertNotNull(databaseConnection.getUser());
       assertTrue(User.UNIT_TEST_USER.getUsername().equalsIgnoreCase(databaseConnection.getUser().getUsername()));
     }

@@ -145,14 +145,6 @@ final class LocalEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
-  public boolean isValid() {
-    synchronized (connection) {
-      return connection.isValid();
-    }
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public void beginTransaction() {
     synchronized (connection) {
       connection.beginTransaction();
@@ -211,7 +203,7 @@ final class LocalEntityConnection implements EntityConnection {
           populateStatementPropertiesAndValues(true, entity, columnProperties, statementProperties, statementValues);
 
           insertSQL = createInsertSQL(entityID, statementProperties);
-          statement = connection.getConnection().prepareStatement(insertSQL);
+          statement = prepareStatement(insertSQL);
           executePreparedUpdate(statement, insertSQL, statementProperties, statementValues);
           keyGenerator.afterInsert(entity, firstPrimaryKeyProperty, connection);
 
@@ -269,7 +261,7 @@ final class LocalEntityConnection implements EntityConnection {
             updateSQL = createUpdateSQL(tableName, statementProperties, criteria);
             statementProperties.addAll(criteria.getValueKeys());
             statementValues.addAll(criteria.getValues());
-            statement = connection.getConnection().prepareStatement(updateSQL);
+            statement = prepareStatement(updateSQL);
             executePreparedUpdate(statement, updateSQL, statementProperties, statementValues);
 
             statement.close();
@@ -303,7 +295,7 @@ final class LocalEntityConnection implements EntityConnection {
     synchronized (connection) {
       try {
         deleteSQL = createDeleteSQL(criteria);
-        statement = connection.getConnection().prepareStatement(deleteSQL);
+        statement = prepareStatement(deleteSQL);
         executePreparedUpdate(statement, deleteSQL, criteria.getValueKeys(), criteria.getValues());
         commitIfTransactionIsNotOpen();
       }
@@ -338,7 +330,7 @@ final class LocalEntityConnection implements EntityConnection {
           criteriaKeys.addAll(mappedKeysEntry.getValue());
           final EntityCriteria criteria = EntityCriteriaUtil.criteria(criteriaKeys);
           deleteSQL = createDeleteSQL(criteria);
-          statement = connection.getConnection().prepareStatement(deleteSQL);
+          statement = prepareStatement(deleteSQL);
           executePreparedUpdate(statement, deleteSQL, criteria.getValueKeys(), criteria.getValues());
           statement.close();
           criteriaKeys.clear();
@@ -435,7 +427,7 @@ final class LocalEntityConnection implements EntityConnection {
     DatabaseUtil.QUERY_COUNTER.count(selectSQL);
     synchronized (connection) {
       try {
-        statement = connection.getConnection().prepareStatement(selectSQL);
+        statement = prepareStatement(selectSQL);
         resultSet = executePreparedSelect(statement, selectSQL, criteria);
         final List<Object> result = property.getResultPacker().pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
@@ -480,7 +472,7 @@ final class LocalEntityConnection implements EntityConnection {
     DatabaseUtil.QUERY_COUNTER.count(selectSQL);
     synchronized (connection) {
       try {
-        statement = connection.getConnection().prepareStatement(selectSQL);
+        statement = prepareStatement(selectSQL);
         resultSet = executePreparedSelect(statement, selectSQL, criteria);
         final List<Integer> result = DatabaseUtil.INTEGER_RESULT_PACKER.pack(resultSet, -1);
         commitIfTransactionIsNotOpen();
@@ -622,7 +614,7 @@ final class LocalEntityConnection implements EntityConnection {
         properties.add(property);
         properties.addAll(criteria.getValueKeys());
 
-        statement = connection.getConnection().prepareStatement(sql);
+        statement = prepareStatement(sql);
         setParameterValues(statement, values, properties);
         inputStream = new ByteArrayInputStream(blobData);
         statement.setBinaryStream(1, inputStream);
@@ -664,7 +656,7 @@ final class LocalEntityConnection implements EntityConnection {
     synchronized (connection) {
       try {
         logAccess("readBlob", new Object[]{sql});
-        statement = connection.getConnection().prepareStatement(sql);
+        statement = prepareStatement(sql);
         setParameterValues(statement, criteria.getValues(), criteria.getValueKeys());
 
         resultSet = statement.executeQuery();
@@ -781,7 +773,7 @@ final class LocalEntityConnection implements EntityConnection {
     String selectSQL = null;
     try {
       selectSQL = getSelectSQL(criteria, connection.getDatabase());
-      statement = connection.getConnection().prepareStatement(selectSQL);
+      statement = prepareStatement(selectSQL);
       resultSet = executePreparedSelect(statement, selectSQL, criteria);
       final List<Entity> result = packResult(criteria, resultSet);
       if (!criteria.isForUpdate()) {
@@ -894,6 +886,16 @@ final class LocalEntityConnection implements EntityConnection {
       if (LOG.isDebugEnabled()) {
         LOG.debug(DatabaseUtil.createLogMessage(getUser(), sqlStatement, values, exception, entry));
       }
+    }
+  }
+
+  private PreparedStatement prepareStatement(final String sqlStatement) throws SQLException {
+    try {
+      logAccess("prepareStatement", new Object[] {sqlStatement});
+      return connection.getConnection().prepareStatement(sqlStatement);
+    }
+    finally {
+      logExit("prepareStatement", null, null);
     }
   }
 

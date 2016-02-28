@@ -24,14 +24,12 @@ public class LocalEntityConnectionProviderTest {
     final EntityConnection db = provider.getConnection();
     assertNotNull(db);
     assertTrue(db.isConnected());
-    assertTrue(db.isValid());
     provider.disconnect();
 
     final EntityConnection db2 = provider.getConnection();
     assertNotNull(db2);
     assertFalse(db == db2);
     assertTrue(db2.isConnected());
-    assertTrue(db2.isValid());
     provider.disconnect();
   }
 }

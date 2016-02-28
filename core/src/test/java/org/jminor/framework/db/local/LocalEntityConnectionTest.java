@@ -464,7 +464,6 @@ public class LocalEntityConnectionTest {
       connection = db.createConnection(User.UNIT_TEST_USER);
       final EntityConnection conn = new LocalEntityConnection(db, connection, true, true, 1);
       assertTrue(conn.isConnected());
-      assertTrue(conn.isValid());
     }
     finally {
       if (connection != null) {

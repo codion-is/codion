@@ -255,19 +255,19 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
     if (databaseConnection.isTransactionOpen()) {
       throw new IllegalStateException("Open transaction");
     }
-    if (closed || !databaseConnection.isValid()) {
+    if (closed || !databaseConnection.isConnected()) {
       synchronized (pool) {
         inUse.remove(databaseConnection);
       }
       connectionProvider.destroyConnection(databaseConnection);
       getCounter().incrementConnectionsDestroyedCounter();
-
-      return;
     }
-    synchronized (pool) {
-      inUse.remove(databaseConnection);
-      pool.push(databaseConnection);
-      databaseConnection.setPoolTime(System.currentTimeMillis());
+    else {
+      synchronized (pool) {
+        inUse.remove(databaseConnection);
+        pool.push(databaseConnection);
+        databaseConnection.setPoolTime(System.currentTimeMillis());
+      }
     }
   }
 
@@ -277,7 +277,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
     synchronized (pool) {
       if (pool.size() > 0) {
         connection = pool.pop();
-        if (!connection.isValid()) {
+        if (!connection.isConnected()) {
           destroyConnection = true;
         }
         else {

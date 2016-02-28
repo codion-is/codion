@@ -121,7 +121,7 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
       return false;
     }
     try {
-      return entityConnection.isValid();
+      return entityConnection.isConnected();
     }
     catch (final RuntimeException e) {
       LOG.debug("Connection deemed invalid", e);

@@ -293,7 +293,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
     for (final ClientInfo client : clients) {
       final DefaultRemoteEntityConnection connection = (DefaultRemoteEntityConnection) getConnection(client.getClientID());
       if (!connection.isActive()) {
-        final boolean valid = connection.isLocalConnectionValid();
+        final boolean valid = connection.isConnected();
         final boolean timedOut = hasConnectionTimedOut(client.getClientTypeID(), connection);
         if (!valid || timedOut) {
           LOG.debug("Removing connection {}, valid: {}, timeout: {}", new Object[] {client, valid, timedOut});

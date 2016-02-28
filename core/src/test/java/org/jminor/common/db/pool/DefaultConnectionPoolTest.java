@@ -115,7 +115,7 @@ public class DefaultConnectionPoolTest {
       assertEquals(0, statistics.getInUse());
 
       final DatabaseConnection dbConnectionOne = pool.getDatabaseConnection();
-      assertTrue(dbConnectionOne.isValid());
+      assertTrue(dbConnectionOne.isConnected());
       statistics = pool.getStatistics(startDate.getTime());
       assertEquals(1, statistics.getRequests());
       assertEquals(4, statistics.getCreated());
@@ -124,7 +124,7 @@ public class DefaultConnectionPoolTest {
       assertEquals(4, statistics.getSize());
 
       final DatabaseConnection dbConnectionTwo = pool.getDatabaseConnection();
-      assertTrue(dbConnectionTwo.isValid());
+      assertTrue(dbConnectionTwo.isConnected());
       statistics = pool.getStatistics(startDate.getTime());
       assertEquals(2, statistics.getRequests());
       assertEquals(4, statistics.getCreated());
@@ -141,7 +141,7 @@ public class DefaultConnectionPoolTest {
       assertEquals(4, statistics.getSize());
 
       final DatabaseConnection dbConnectionThree = pool.getDatabaseConnection();
-      assertTrue(dbConnectionThree.isValid());
+      assertTrue(dbConnectionThree.isConnected());
       statistics = pool.getStatistics(startDate.getTime());
       assertEquals(3, statistics.getRequests());
       assertEquals(4, statistics.getCreated());

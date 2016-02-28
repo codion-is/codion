@@ -69,7 +69,7 @@ public class EntityConnectionServerTest {
     final RemoteEntityConnectionProvider providerOne = new RemoteEntityConnectionProvider("localhost",
             User.UNIT_TEST_USER, UUID.randomUUID(), getClass().getSimpleName());
     final EntityConnection remoteConnectionOne = providerOne.getConnection();
-    assertTrue(remoteConnectionOne.isValid());
+    assertTrue(remoteConnectionOne.isConnected());
     assertEquals(1, admin.getConnectionCount());
     admin.setPoolConnectionThreshold(User.UNIT_TEST_USER, 505);
     assertEquals(505, admin.getPoolConnectionThreshold(User.UNIT_TEST_USER));
@@ -85,7 +85,7 @@ public class EntityConnectionServerTest {
     assertTrue(admin.isLoggingEnabled(providerOne.getClientID()));
     assertFalse(admin.isLoggingEnabled(UUID.randomUUID()));
     admin.setLoggingEnabled(UUID.randomUUID(), true);
-    assertTrue(remoteConnectionTwo.isValid());
+    assertTrue(remoteConnectionTwo.isConnected());
     assertEquals(2, admin.getConnectionCount());
 
     Collection<ClientInfo> clients = admin.getClients(new User(User.UNIT_TEST_USER.getUsername(), null));
@@ -111,7 +111,7 @@ public class EntityConnectionServerTest {
     assertNull(admin.getClientLog(UUID.randomUUID()));
 
     final MethodLogger.Entry entry = log.getEntries().get(0);
-    assertEquals("getConnection", entry.getMethod());
+    assertEquals("selectMany", entry.getMethod());
     assertTrue(entry.getDelta() >= 0);
 
     admin.removeConnections(true);

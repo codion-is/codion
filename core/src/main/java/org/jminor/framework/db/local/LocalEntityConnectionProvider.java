@@ -121,9 +121,6 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
       if (methodName.equals(IS_CONNECTED)) {
         return connection.isConnected();
       }
-      if (methodName.equals(IS_VALID)) {
-        return connection.isValid();
-      }
 
       Exception exception = null;
       try {
