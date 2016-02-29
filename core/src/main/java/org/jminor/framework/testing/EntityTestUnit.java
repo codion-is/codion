@@ -210,11 +210,11 @@ public abstract class EntityTestUnit {
    * @see #getReferenceEntity(String)
    */
   protected final void setReferenceEntity(final String entityID, final Entity entity) throws DatabaseException {
-    if (!entity.is(entityID)) {
+    if (entity != null && !entity.is(entityID)) {
       throw new IllegalArgumentException("Reference entity type mismatch: " + entityID + " - " + entity.getEntityID());
     }
 
-    referencedEntities.put(entityID, insertOrSelect(entity));
+    referencedEntities.put(entityID, entity == null ? null : insertOrSelect(entity));
   }
 
   /**

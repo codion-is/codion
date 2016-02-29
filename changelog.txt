@@ -4131,3 +4131,4 @@
   DefaultRemoteEntityConnection.isLocalConnectionValid() removed, EntityConnectionServer uses isConnected() instead
   MethodLogger.Entry.toString() now displays microseconds instead of milliseconds for method time
   LocalEntityConnection.prepareStatement() added
+  EntityTestUnit.initializeReferenceEntity() may now return null, handled in setReferenceEntity()
