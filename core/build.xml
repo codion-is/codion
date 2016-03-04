@@ -337,6 +337,7 @@
     <jar jarfile="${deploy.demos.dir}/libraries.jar">
       <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
       <zipfileset src="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle.jar"/>
+      <zipfileset src="${dist}/jminor-swing-client-test/jminor-swing-client-test.jar"/>
       <zipfileset src="../plugins/jasperreports/dist/jminor-plugin-jasperreports.jar" excludes="META-INF/**/*"/>
       <zipfileset src="../plugins/nextreports/dist/jminor-plugin-nextreports.jar" excludes="META-INF/**/*"/>
       <zipgroupfileset dir="../plugins/jasperreports/lib/test" excludes="META-INF/**/*"/>
