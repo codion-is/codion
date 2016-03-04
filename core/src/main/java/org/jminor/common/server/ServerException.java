@@ -64,4 +64,13 @@ public class ServerException extends Exception {
       super(Messages.get(Messages.SERVER_FULL));
     }
   }
+
+  /**
+   * An exception indicating that a client validation has failed
+   */
+  public static class ClientValidationException extends ServerException {
+    public ClientValidationException(final String message) {
+      super(message);
+    }
+  }
 }

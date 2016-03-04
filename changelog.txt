@@ -4133,3 +4133,4 @@
   LocalEntityConnection.prepareStatement() added
   EntityTestUnit.initializeReferenceEntity() may now return null, handled in setReferenceEntity()
   Copyright bumped to 2016
+  ClientValidator added, AbstractServer and EntityConnectionServer modified to use it

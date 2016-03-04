@@ -16,6 +16,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.server.AbstractServer;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
+import org.jminor.common.server.ClientValidator;
 import org.jminor.common.server.LoginProxy;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerException;
@@ -85,6 +86,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
    * @param connectionLimit the maximum number of concurrent connections, -1 for no limit
    * @param domainModelClassNames the domain model classes to load on startup
    * @param loginProxyClassNames the login proxy classes to initialize on startup
+   * @param clientValidationClassNames the client validation classes to initialize on startup
    * @param initialPoolUsers the users for which to initialize connection pools on startup
    * @param webDocumentRoot the web root from which to server files, if any
    * @param webServerPort the web server port, if any
@@ -97,9 +99,10 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
    */
   public EntityConnectionServer(final String serverName, final int serverPort, final int registryPort, final Database database,
                                 final boolean sslEnabled, final int connectionLimit, final Collection<String> domainModelClassNames,
-                                final Collection<String> loginProxyClassNames, final Collection<User> initialPoolUsers,
-                                final String webDocumentRoot, final Integer webServerPort, final boolean clientLoggingEnabled,
-                                final int connectionTimeout, final Map<String, Integer> clientSpecificConnectionTimeouts)
+                                final Collection<String> loginProxyClassNames, final Collection<String> clientValidationClassNames,
+                                final Collection<User> initialPoolUsers, final String webDocumentRoot, final Integer webServerPort,
+                                final boolean clientLoggingEnabled, final int connectionTimeout,
+                                final Map<String, Integer> clientSpecificConnectionTimeouts)
           throws RemoteException {
     super(serverPort, serverName,
             sslEnabled ? new SslRMIClientSocketFactory() : RMISocketFactory.getSocketFactory(),
@@ -114,6 +117,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
       loadDomainModels(domainModelClassNames);
       initializeConnectionPools(database, initialPoolUsers);
       loadLoginProxies(loginProxyClassNames);
+      loadClientValidators(clientValidationClassNames);
       setConnectionLimit(connectionLimit);
       webServer = startWebServer(webDocumentRoot, webServerPort);
     }
@@ -418,6 +422,24 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
         }
         catch (final Exception ex) {
           LOG.error("Exception while instantiating LoginProxy: " + loginProxyClassName, ex);
+          throw new RuntimeException(ex);
+        }
+      }
+    }
+  }
+
+  private void loadClientValidators(final Collection<String> clientValidatorClassNames) throws ClassNotFoundException {
+    if (clientValidatorClassNames != null) {
+      for (final String clientValidatorClassName : clientValidatorClassNames) {
+        final String message = "Server loading client validation class '" + clientValidatorClassName + "' from classpath";
+        LOG.info(message);
+        final Class<?> clientValidatorClass = Class.forName(clientValidatorClassName);
+        try {
+          final ClientValidator validator = (ClientValidator) clientValidatorClass.getConstructor().newInstance();
+          setClientValidator(validator.getClientTypeID(), validator);
+        }
+        catch (final Exception ex) {
+          LOG.error("Exception while instantiating ClientValidator: " + clientValidatorClassName, ex);
           throw new RuntimeException(ex);
         }
       }

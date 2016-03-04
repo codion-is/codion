@@ -18,7 +18,8 @@ import static org.junit.Assert.*;
 public class AbstractServerTest {
 
   @Test
-  public void testConnectionCount() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
+  public void testConnectionCount() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException,
+          ServerException.ClientValidationException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
@@ -43,7 +44,8 @@ public class AbstractServerTest {
   }
 
   @Test(expected = ServerException.ServerFullException.class)
-  public void testConnectionLimitReached() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
+  public void testConnectionLimitReached() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException,
+          ServerException.ClientValidationException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ConnectionInfo clientInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
@@ -55,7 +57,8 @@ public class AbstractServerTest {
   }
 
   @Test
-  public void testConnect() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
+  public void testConnect() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException,
+          ServerException.ClientValidationException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
@@ -82,7 +85,8 @@ public class AbstractServerTest {
   }
 
   @Test
-  public void testLoginProxy() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException {
+  public void testLoginProxy() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException,
+          ServerException.ClientValidationException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
@@ -126,6 +130,48 @@ public class AbstractServerTest {
     assertTrue(closeIndicator.get() > 0);
   }
 
+  @Test
+  public void testClientValidator() throws RemoteException, ServerException.ClientValidationException, ServerException.LoginException,
+          ServerException.ServerFullException {
+    final TestServer server = new TestServer(1234, "remoteServerTestServer");
+    final String clientTypeID = "clientTypeID";
+    final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
+    ServerTest connection = server.connect(connectionInfo);
+    assertNotNull(connection);
+    assertEquals(connectionInfo.getClientID(), connection.getClientInfo().getClientID());
+    final AtomicInteger counter = new AtomicInteger();
+    final ClientValidator clientValidator = new ClientValidator() {
+      @Override
+      public String getClientTypeID() {
+        return clientTypeID;
+      }
+      @Override
+      public void validate(final ConnectionInfo connectionInfo) throws ServerException.ClientValidationException {
+        if (counter.getAndIncrement() > 0) {
+          throw new ServerException.ClientValidationException("Testing");
+        }
+      }
+    };
+    server.setClientValidator(clientTypeID, clientValidator);
+    server.disconnect(connectionInfo.getClientID());
+
+    connection = server.connect(connectionInfo);
+    assertNotNull(connection);
+
+    server.disconnect(connectionInfo.getClientID());
+
+    try {
+      server.connect(connectionInfo);
+      fail("Client validator should have prevented a second connection");
+    }
+    catch (final ServerException.ClientValidationException e) {}
+
+    server.setClientValidator(connectionInfo.getClientTypeID(), null);
+    connection = server.connect(connectionInfo);
+    assertNotNull(connection);
+    assertEquals(connectionInfo.getClientID(), connection.getClientInfo().getClientID());
+  }
+
   @Test(expected = IllegalArgumentException.class)
   public void setLoginProxyAgain() throws RemoteException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
@@ -146,6 +192,24 @@ public class AbstractServerTest {
       };
       server.setLoginProxy("testClientType", proxy);
       server.setLoginProxy("testClientType", proxy);
+    }
+    finally {
+      server.shutdown();
+    }
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void setClientValidatorAgain() throws RemoteException {
+    final TestServer server = new TestServer(1234, "remoteServerTestServer");
+    try {
+      final ClientValidator validator = new ClientValidator() {
+        @Override
+        public String getClientTypeID() {return null;}
+        @Override
+        public void validate(final ConnectionInfo connectionInfo) throws ServerException.ClientValidationException {}
+      };
+      server.setClientValidator("testClientType", validator);
+      server.setClientValidator("testClientType", validator);
     }
     finally {
       server.shutdown();

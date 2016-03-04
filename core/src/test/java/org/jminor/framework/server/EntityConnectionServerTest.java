@@ -177,7 +177,8 @@ public class EntityConnectionServerTest {
   }
 
   @Test
-  public void testLoginProxy() throws ServerException.ServerFullException, ServerException.LoginException, RemoteException {
+  public void testLoginProxy() throws ServerException.ServerFullException, ServerException.LoginException, RemoteException,
+          ServerException.ClientValidationException {
     final String clientTypeID = "loginProxyTestClient";
     //create login proxy which returns a ClientInfo with databaseUser scott:tiger for authenticated users
     final LoginProxy proxy = new LoginProxy() {
@@ -264,6 +265,7 @@ public class EntityConnectionServerTest {
     Configuration.setValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT, "ClientTypeID:10000");
     Configuration.setValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES, "org.jminor.framework.domain.TestDomain");
     Configuration.setValue(Configuration.SERVER_LOGIN_PROXY_CLASSES, "org.jminor.framework.server.TestLoginProxy");
+    Configuration.setValue(Configuration.SERVER_CLIENT_VALIDATOR_CLASSES, "org.jminor.framework.server.TestClientValidator");
     Configuration.setValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED, true);
     Configuration.setValue("java.rmi.server.hostname", "localhost");
     Configuration.setValue("java.security.policy", "resources/security/all_permissions.policy");
@@ -281,6 +283,7 @@ public class EntityConnectionServerTest {
     Configuration.clearValue(Configuration.SERVER_CLIENT_CONNECTION_TIMEOUT);
     Configuration.clearValue(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
     Configuration.clearValue(Configuration.SERVER_LOGIN_PROXY_CLASSES);
+    Configuration.clearValue(Configuration.SERVER_CLIENT_VALIDATOR_CLASSES);
     Configuration.setValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED, false);
     Configuration.clearValue("java.rmi.server.hostname");
     Configuration.clearValue("java.security.policy");
