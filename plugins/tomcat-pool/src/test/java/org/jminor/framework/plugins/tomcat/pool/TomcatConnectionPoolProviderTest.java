@@ -9,7 +9,6 @@ import org.jminor.common.model.User;
 
 import org.junit.Test;
 
-import static org.junit.Assert.assertFalse;
 import static org.junit.Assert.assertTrue;
 
 public class TomcatConnectionPoolProviderTest {
@@ -25,7 +24,6 @@ public class TomcatConnectionPoolProviderTest {
     pool.returnConnection(pool.getConnection());
     pool.returnConnection(pool.getConnection());
     pool.returnConnection(pool.getConnection());
-    assertFalse(pool.getStatistics(startTime).getFineGrainedStatistics().isEmpty());
     pool.close();
   }
 }

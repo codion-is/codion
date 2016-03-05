@@ -4134,3 +4134,9 @@
   EntityTestUnit.initializeReferenceEntity() may now return null, handled in setReferenceEntity()
   Copyright bumped to 2016
   ClientValidator added, AbstractServer and EntityConnectionServer modified to use it
+  DatabaseConnection.getConnection() overloaded with a validate parameter
+  DefaultRemoteEntityConnection, methodLogger only used if enabled, no longer uses methodLogger to determine last usage time
+  AbstractConnectionPool now handles the collection of fine grained pool statistics
+  DefaultValueMap, protected constructor added with values and originalValues maps as parameters
+  DefaultEntity, constructors refactored to use the above
+  EntityResultPacker.pack() improved using the above constructor

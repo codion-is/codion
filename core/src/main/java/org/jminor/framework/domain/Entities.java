@@ -48,7 +48,7 @@ public final class Entities {
    * @return a new {@link Entity} instance
    */
   public static Entity entity(final Entity.Key key) {
-    return new DefaultEntity(DefaultEntityDefinition.getDefinition(key.getEntityID()), key);
+    return new DefaultEntity(DefaultEntityDefinition.getDefinition(key.getEntityID()), Util.rejectNullValue(key, "key"));
   }
 
   /**

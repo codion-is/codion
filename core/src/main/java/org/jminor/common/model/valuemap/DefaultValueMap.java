@@ -29,7 +29,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /**
    * Holds the values contained in this value map.
    */
-  private final Map<K, V> values = new HashMap<>();
+  private final Map<K, V> values;
 
   /**
    * Holds the original value for keys which values have changed since they were first set.
@@ -42,6 +42,23 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   private Event<ValueChange<K, ?>> valueChangedEvent;
 
   private static final int MAGIC_NUMBER = 23;
+
+  /**
+   * Instantiates a new empty instance
+   */
+  public DefaultValueMap() {
+    this(new HashMap<K, V>(), null);
+  }
+
+  /**
+   * Instantiates a new instance with the given values
+   * @param values the values
+   * @param originalValues the originalValues
+   */
+  protected DefaultValueMap(final Map<K, V> values, final Map<K, V> originalValues) {
+    this.values = values == null ? new HashMap<>() : values;
+    this.originalValues = originalValues;
+  }
 
   /** {@inheritDoc} */
   @Override

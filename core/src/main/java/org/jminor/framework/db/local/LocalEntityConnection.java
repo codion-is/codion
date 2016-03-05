@@ -567,7 +567,7 @@ final class LocalEntityConnection implements EntityConnection {
     synchronized (connection) {
       try {
         logAccess("fillReport", new Object[]{reportWrapper.getReportName()});
-        final ReportResult result = reportWrapper.fillReport(connection.getConnection());
+        final ReportResult result = reportWrapper.fillReport(connection.getConnection(false));
         if (!isTransactionOpen()) {
           commitQuietly();
         }
@@ -892,7 +892,7 @@ final class LocalEntityConnection implements EntityConnection {
   private PreparedStatement prepareStatement(final String sqlStatement) throws SQLException {
     try {
       logAccess("prepareStatement", new Object[] {sqlStatement});
-      return connection.getConnection().prepareStatement(sqlStatement);
+      return connection.getConnection(false).prepareStatement(sqlStatement);
     }
     finally {
       logExit("prepareStatement", null, null);

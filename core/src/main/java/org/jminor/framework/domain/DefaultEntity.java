@@ -56,7 +56,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
    * @param definition the definition of the entity type
    */
   DefaultEntity(final Definition definition) {
-    this.definition = definition;
+    this(definition, null, null);
   }
 
   /**
@@ -66,7 +66,6 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
    */
   DefaultEntity(final Definition definition, final Key primaryKey) {
     this(definition);
-    Util.rejectNullValue(primaryKey, "primaryKey");
     for (final Property.ColumnProperty property : primaryKey.getProperties()) {
       setValue(property, primaryKey.getValue(property.getPropertyID()));
     }
@@ -74,23 +73,23 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   }
 
   /**
+   * Instantiates a new DefaultEntity
+   * @param definition the definition of the entity type
+   * @param values the initial values
+   */
+  DefaultEntity(final Definition definition, final Map<String, Object> values) {
+    this(definition, values, null);
+  }
+
+  /**
    * Instantiates a new DefaultEntity based on the given values.
    * @param definition the definition of the entity type
-   * @param values the values
+   * @param values the initial values
    * @param originalValues the original values, may be null
    */
   DefaultEntity(final Definition definition, final Map<String, Object> values, final Map<String, Object> originalValues) {
-    this(definition);
-    if (values != null) {
-      for (final Map.Entry<String, Object> entry : values.entrySet()) {
-        setValue(entry.getKey(), entry.getValue());
-      }
-    }
-    if (originalValues != null) {
-      for (final Map.Entry<String, Object> entry : originalValues.entrySet()) {
-        setOriginalValue(entry.getKey(), originalValues.get(entry.getKey()));
-      }
-    }
+    super(values, originalValues);
+    this.definition = definition;
   }
 
   /** {@inheritDoc} */
@@ -855,9 +854,6 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       return getValues().iterator().next();
     }
 
-    /**
-     * @return a string representation of this key
-     */
     @Override
     public String toString() {
       final StringBuilder stringBuilder = new StringBuilder();
@@ -918,8 +914,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
     }
 
     /**
-     * @return a hash code based on the values of this key, for single integer keys
-     * the hash code is simply the key value.
+     * @return a hash code based on the values of this key, for single integer keys the hash code is simply the key value.
      */
     @Override
     public int hashCode() {

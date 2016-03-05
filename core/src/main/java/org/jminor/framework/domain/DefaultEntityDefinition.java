@@ -106,7 +106,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private boolean staticData = false;
 
   /**
-   * The default Entity.ToString instance used when toString() is called for this entity type
+   * The Entity.ToString instance used when toString() is called for this entity type
    */
   private Entity.ToString stringProvider = new Entity.ToString() {
     @Override
@@ -186,7 +186,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.selectTableName = tableName;
     this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
     this.groupByClause = initializeGroupByClause(getColumnProperties());
-    this.resultPacker = new EntityResultPacker(entityID, getColumnProperties(properties.values()), getTransientProperties(properties.values()));
+    this.resultPacker = new EntityResultPacker(entityID, getColumnProperties(properties.values()),
+            getTransientProperties(properties.values()), this.properties.size());
     setSelectIndexes();
     initializePropertyLinks();
   }
@@ -971,18 +972,21 @@ final class DefaultEntityDefinition implements Entity.Definition {
     private final Collection<Property.ColumnProperty> properties;
     private final Collection<Property.TransientProperty> transientProperties;
     private final boolean hasTransientProperties;
+    private final int propertyCount;
 
     /**
      * Instantiates a new EntityResultPacker.
      * @param entityID the ID of the entities this packer packs
      */
     private EntityResultPacker(final String entityID, final Collection<Property.ColumnProperty> columnProperties,
-                               final Collection<Property.TransientProperty> transientProperties) {
+                               final Collection<Property.TransientProperty> transientProperties,
+                               final int propertyCount) {
       Util.rejectNullValue(entityID, "entityID");
       this.entityID = entityID;
       this.properties = columnProperties;
       this.transientProperties = transientProperties;
       this.hasTransientProperties = !Util.nullOrEmpty(this.transientProperties);
+      this.propertyCount = propertyCount;
     }
 
     /**
@@ -1007,25 +1011,25 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     private Entity loadEntity(final ResultSet resultSet) throws SQLException {
-      final Entity entity = Entities.entity(entityID);
+      final Map<String, Object> values = new HashMap<>(propertyCount);
       if (hasTransientProperties) {
         for (final Property.TransientProperty transientProperty : transientProperties) {
           if (!(transientProperty instanceof Property.DenormalizedViewProperty)
                   && !(transientProperty instanceof Property.DerivedProperty)) {
-            entity.setValue(transientProperty, null, false);
+            values.put(transientProperty.getPropertyID(), null);
           }
         }
       }
       for (final Property.ColumnProperty property : properties) {
         try {
-          entity.setValue(property, property.fetchValue(resultSet), false);
+          values.put(property.getPropertyID(), property.fetchValue(resultSet));
         }
         catch (final Exception e) {
           throw new SQLException("Exception fetching: " + property + ", entity: " + entityID + " [" + e.getMessage() + "]", e);
         }
       }
 
-      return entity;
+      return new DefaultEntity(getDefinition(entityID), values);
     }
   }
 }

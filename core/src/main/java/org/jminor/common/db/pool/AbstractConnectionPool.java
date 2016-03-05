@@ -3,12 +3,13 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.db.Database;
+import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
 
 import java.util.LinkedList;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.concurrent.TimeUnit;
 
 /**
  * A default base implementation of ConnectionPool, handling the collection of statistics
@@ -24,8 +25,14 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   protected final T pool;
   private final User user;
 
-  private final LinkedList<DefaultConnectionPoolState> connectionPoolStatistics = new LinkedList<>();
-  private boolean collectFineGrainedStatistics = System.getProperty(Database.DATABASE_POOL_STATISTICS, "false").equalsIgnoreCase("true");
+  private final LinkedList<DefaultConnectionPoolState> fineGrainedCStatistics = new LinkedList<>();
+  private boolean collectFineGrainedStatistics = false;
+  private final TaskScheduler fineGrainedStatisticsCollector = new TaskScheduler(new Runnable() {
+    @Override
+    public void run() {
+      addPoolStatistics();
+    }
+  }, 10, TimeUnit.MILLISECONDS);
 
   private final DefaultConnectionPoolCounter counter = new DefaultConnectionPoolCounter();
 
@@ -36,9 +43,6 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   public AbstractConnectionPool(final T pool, final User user) {
     this.pool = pool;
     this.user = user;
-    if (collectFineGrainedStatistics) {
-      initializePoolStatistics();
-    }
   }
 
   /** {@inheritDoc} */
@@ -64,9 +68,11 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   public final void setCollectFineGrainedStatistics(final boolean collectFineGrainedStatistics) {
     if (collectFineGrainedStatistics) {
       initializePoolStatistics();
+      fineGrainedStatisticsCollector.start();
     }
     else {
-      connectionPoolStatistics.clear();
+      fineGrainedStatisticsCollector.stop();
+      fineGrainedCStatistics.clear();
     }
     this.collectFineGrainedStatistics = collectFineGrainedStatistics;
   }
@@ -120,27 +126,26 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   protected abstract int getWaiting();
 
   /**
-   * Adds the current state of the pool to the fine grained connection pool log,
-   * this method should only be called if {@link #isCollectFineGrainedStatistics()} returns true
-   */
-  protected final void addPoolStatistics() {
-    synchronized (pool) {
-      final DefaultConnectionPoolState state = connectionPoolStatistics.removeFirst();
-      state.set(System.currentTimeMillis(), getSize(), getInUse(), getWaiting());
-      connectionPoolStatistics.addLast(state);
-    }
-  }
-
-  /**
    * @return the counter
    */
   protected final ConnectionPool.Counter getCounter() {
     return counter;
   }
 
+  /**
+   * Adds the current state of the pool to the fine grained connection pool log
+   */
+  private void addPoolStatistics() {
+    synchronized (pool) {
+      final DefaultConnectionPoolState state = fineGrainedCStatistics.removeFirst();
+      state.set(System.currentTimeMillis(), getSize(), getInUse(), getWaiting());
+      fineGrainedCStatistics.addLast(state);
+    }
+  }
+
   private void initializePoolStatistics() {
     for (int i = 0; i < FINE_GRAINED_STATS_SIZE; i++) {
-      connectionPoolStatistics.add(new DefaultConnectionPoolState());
+      fineGrainedCStatistics.add(new DefaultConnectionPoolState());
     }
   }
 
@@ -151,7 +156,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
   private List<ConnectionPoolState> getFineGrainedStatistics(final long since) {
     final List<ConnectionPoolState> poolStates;
     synchronized (pool) {
-      poolStates = new LinkedList<ConnectionPoolState>(connectionPoolStatistics);
+      poolStates = new LinkedList<ConnectionPoolState>(fineGrainedCStatistics);
     }
     final ListIterator<ConnectionPoolState> iterator = poolStates.listIterator();
     while (iterator.hasNext() && iterator.next().getTimestamp() < since) {

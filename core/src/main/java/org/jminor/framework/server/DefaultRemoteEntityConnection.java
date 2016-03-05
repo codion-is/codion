@@ -40,6 +40,7 @@ import java.rmi.RemoteException;
 import java.rmi.server.RMISocketFactory;
 import java.rmi.server.ServerNotActiveException;
 import java.rmi.server.UnicastRemoteObject;
+import java.sql.Connection;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -92,7 +93,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   private transient EntityConnection localEntityConnection;
 
   /**
-   * A local connection used by the connection pool, managed by getConnection()/returnConnection()
+   * A local connection used in case of a connection pool, managed by getConnection()/returnConnection()
    */
   private transient EntityConnection poolEntityConnection;
 
@@ -125,6 +126,8 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   private static final String RETURN_CONNECTION = "returnConnection";
 
   private static final int DEFAULT_REQUEST_COUNTER_UPDATE_INTERVAL = 2500;
+
+  private long lastAccessTime = creationDate;
 
   /**
    * Instantiates a new DefaultRemoteEntityConnection and exports it on the given port number
@@ -434,7 +437,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
    * @return true if this connection has been inactive for <code>timeout</code> milliseconds or longer
    */
   boolean hasBeenInactive(final int timeout) {
-    return System.currentTimeMillis() - methodLogger.getLastAccessTime() > timeout;
+    return System.currentTimeMillis() - lastAccessTime > timeout;
   }
 
   void setLoggingEnabled(final boolean status) {
@@ -564,8 +567,9 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   }
 
   private void returnConnectionToPool() {
-    if (poolEntityConnection.isConnected()) {
-      connectionPool.returnConnection(poolEntityConnection.getDatabaseConnection().getConnection());
+    final Connection connection = poolEntityConnection.getDatabaseConnection().getConnection(false);
+    if (connection != null) {
+      connectionPool.returnConnection(connection);
       poolEntityConnection.getDatabaseConnection().setConnection(null);
     }
   }
@@ -592,13 +596,16 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
     @Override
     public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
+      remoteEntityConnection.lastAccessTime = System.currentTimeMillis();
       final String methodName = method.getName();
       Exception exception = null;
       try {
         MDC.put(LOG_IDENTIFIER_PROPERTY, remoteEntityConnection.logIdentifier);
         remoteEntityConnection.setActive();
         REQUEST_COUNTER.incrementRequestsPerSecondCounter();
-        methodLogger.logAccess(methodName, args);
+        if (methodLogger.isEnabled()) {
+          methodLogger.logAccess(methodName, args);
+        }
 
         final EntityConnection connection = remoteEntityConnection.getConnection();
 
@@ -612,8 +619,8 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
       finally {
         remoteEntityConnection.setInactive();
         remoteEntityConnection.returnConnection();
-        final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
         if (methodLogger.isEnabled()) {
+          final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
           final StringBuilder messageBuilder = new StringBuilder(remoteEntityConnection.getClientInfo().toString()).append("\n");
           MethodLogger.appendLogEntry(messageBuilder, entry, 0);
           LOG.info(messageBuilder.toString());

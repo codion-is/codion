@@ -70,7 +70,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
   /** {@inheritDoc} */
   @Override
   public Connection getConnection() throws DatabaseException {
-    return getDatabaseConnection().getConnection();
+    return getDatabaseConnection().getConnection(false);
   }
 
   /** {@inheritDoc} */
@@ -216,10 +216,6 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
     getCounter().incrementRequestCounter();
 
     final long nanoStartTime = System.nanoTime();
-    if (isCollectFineGrainedStatistics()) {
-      addPoolStatistics();
-    }
-
     DatabaseConnection connection = fetchFromPool();
     if (connection == null) {
       getCounter().incrementDelayedRequestCounter();
@@ -288,9 +284,8 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
 
     if (destroyConnection) {
       connectionProvider.destroyConnection(connection);
-      synchronized (pool) {
-        getCounter().incrementConnectionsDestroyedCounter();
-      }
+      getCounter().incrementConnectionsDestroyedCounter();
+
       connection = null;
     }
 
@@ -299,28 +294,28 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
 
   private DatabaseConnection createConnection() throws DatabaseException {
     synchronized (pool) {
-      creatingConnection = true;
-    }
-    try {
-      final DatabaseConnection connection = connectionProvider.createConnection();
-      getCounter().incrementConnectionsCreatedCounter();
-      inUse.add(connection);
+      try {
+        creatingConnection = true;
+        final DatabaseConnection connection = connectionProvider.createConnection();
+        getCounter().incrementConnectionsCreatedCounter();
+        inUse.add(connection);
 
-      return connection;
-    }
-    catch (final DatabaseException dbe) {
-      LOG.error("Database error while creating a new connection", dbe);
-      throw dbe;
-    }
-    finally {
-      creatingConnection = false;
+        return connection;
+      }
+      catch (final DatabaseException dbe) {
+        LOG.error("Database error while creating a new connection", dbe);
+        throw dbe;
+      }
+      finally {
+        creatingConnection = false;
+      }
     }
   }
 
   private DatabaseConnection findConnection(final Connection connection) {
     synchronized (pool) {
       for (final DatabaseConnection databaseConnection : inUse) {
-        if (databaseConnection.getConnection().equals(connection)) {
+        if (databaseConnection.getConnection(false).equals(connection)) {
           return databaseConnection;
         }
       }

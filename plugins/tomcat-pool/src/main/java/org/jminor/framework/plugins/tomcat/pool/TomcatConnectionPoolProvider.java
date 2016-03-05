@@ -87,9 +87,6 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
       final long nanoTime = System.nanoTime();
       try {
         getCounter().incrementRequestCounter();
-        if (isCollectFineGrainedStatistics()) {
-          addPoolStatistics();
-        }
 
         return pool.getConnection();
       }
