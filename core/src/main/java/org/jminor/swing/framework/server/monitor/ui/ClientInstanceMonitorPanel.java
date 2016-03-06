@@ -16,8 +16,11 @@ import javax.swing.JCheckBox;
 import javax.swing.JLabel;
 import javax.swing.JPanel;
 import javax.swing.JScrollPane;
+import javax.swing.JTabbedPane;
 import javax.swing.JTextArea;
 import javax.swing.JTextField;
+import javax.swing.JTree;
+import javax.swing.SwingConstants;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.rmi.RemoteException;
@@ -30,6 +33,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
 
   private final JTextField txtCreationDate = new JTextField();
   private final JTextArea txtLog = new JTextArea();
+  private final JTree treeLog = new JTree();
 
   private ClientInstanceMonitor model;
   private JCheckBox chkLoggingEnabled;
@@ -47,6 +51,10 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     this.model = model;
     if (model != null) {
       chkLoggingEnabled.setModel(model.getLoggingEnabledButtonModel());
+      treeLog.setModel(model.getLogTreeModel());
+    }
+    else {
+      treeLog.setModel(null);
     }
     updateView();
   }
@@ -67,6 +75,7 @@ public final class ClientInstanceMonitorPanel extends JPanel {
       }
       chkLoggingEnabled.setSelected(model.isLoggingEnabled());
       txtCreationDate.setText(DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(model.getCreationDate())));
+      model.refreshLogTreeModel();
     }
     else {
       txtCreationDate.setText("");
@@ -104,8 +113,14 @@ public final class ClientInstanceMonitorPanel extends JPanel {
     txtLog.setLineWrap(false);
     txtLog.setEditable(false);
     final JScrollPane scrollPane = new JScrollPane(txtLog);
-    scrollPane.setBorder(BorderFactory.createTitledBorder("Connection log"));
 
-    add(scrollPane, BorderLayout.CENTER);
+    treeLog.setRootVisible(false);
+    final JScrollPane treeScrollPane = new JScrollPane(treeLog);
+
+    final JTabbedPane logPane = new JTabbedPane(SwingConstants.TOP);
+    logPane.add(scrollPane, "Text");
+    logPane.add(treeScrollPane, "Tree");
+
+    add(logPane, BorderLayout.CENTER);
   }
 }

@@ -4145,3 +4145,4 @@
   ChinookLoadTest, insertDeleteAlbum scenario added
   EntityLoadTestModel.selectRandomItem(EntityComboBoxModel) added
   LocalEntityConnection, now logs setForeignKeyValues() with methodLogger
+  ClientInstanceMonitor, ClientInstanceMonitorPanel, crappy tree view of client log added
