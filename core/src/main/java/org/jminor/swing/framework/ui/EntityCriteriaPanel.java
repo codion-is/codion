@@ -30,6 +30,7 @@ import java.awt.Color;
 import java.awt.Component;
 import java.awt.Dimension;
 import java.awt.FlowLayout;
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -129,7 +130,8 @@ public final class EntityCriteriaPanel extends JPanel {
     }
   }
 
-  private static final class CriteriaModelComparator implements Comparator<PropertyCriteriaModel> {
+  private static final class CriteriaModelComparator implements Comparator<PropertyCriteriaModel>, Serializable {
+    private static final long serialVersionUID = 1;
     @Override
     public int compare(final PropertyCriteriaModel o1, final PropertyCriteriaModel o2) {
       final Property propertyOne = (Property) o1.getColumnIdentifier();

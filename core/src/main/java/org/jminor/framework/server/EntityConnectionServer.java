@@ -53,6 +53,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
   private static final Logger LOG = LoggerFactory.getLogger(EntityConnectionServer.class);
 
   private static final int DEFAULT_MAINTENANCE_INTERVAL_MS = 30000;
+  private static final String FROM_CLASSPATH = "' from classpath";
 
   private final transient AuxiliaryServer webServer;
   private final transient Database database;
@@ -413,7 +414,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
   private void loadLoginProxies(final Collection<String> loginProxyClassNames) throws ClassNotFoundException {
     if (loginProxyClassNames != null) {
       for (final String loginProxyClassName : loginProxyClassNames) {
-        final String message = "Server loading login proxy class '" + loginProxyClassName + "' from classpath";
+        final String message = "Server loading login proxy class '" + loginProxyClassName + FROM_CLASSPATH;
         LOG.info(message);
         final Class<?> loginProxyClass = Class.forName(loginProxyClassName);
         try {
@@ -431,7 +432,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
   private void loadConnectionValidators(final Collection<String> connectionValidatorClassNames) throws ClassNotFoundException {
     if (connectionValidatorClassNames != null) {
       for (final String connectionValidatorClassName : connectionValidatorClassNames) {
-        final String message = "Server loading connection validation class '" + connectionValidatorClassName + "' from classpath";
+        final String message = "Server loading connection validation class '" + connectionValidatorClassName + FROM_CLASSPATH;
         LOG.info(message);
         final Class<?> clientValidatorClass = Class.forName(connectionValidatorClassName);
         try {
@@ -511,7 +512,7 @@ public final class EntityConnectionServer extends AbstractServer<RemoteEntityCon
   private static void loadDomainModels(final Collection<String> domainModelClassNames) throws ClassNotFoundException {
     if (domainModelClassNames != null) {
       for (final String className : domainModelClassNames) {
-        final String message = "Server loading domain model class '" + className + "' from classpath";
+        final String message = "Server loading domain model class '" + className + FROM_CLASSPATH;
         LOG.info(message);
         Class.forName(className);
       }

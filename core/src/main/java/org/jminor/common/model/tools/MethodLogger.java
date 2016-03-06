@@ -3,6 +3,7 @@
  */
 package org.jminor.common.model.tools;
 
+import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
 
@@ -334,12 +335,8 @@ public class MethodLogger implements Serializable {
   public static final class Entry implements Serializable {
 
     private static final long serialVersionUID = 1;
-    private static final DateFormat TIMESTAMP_FORMAT = DateFormats.getDateFormat(DateFormats.EXACT_TIMESTAMP);
+    private static final ThreadLocal<DateFormat> TIMESTAMP_FORMAT = DateUtil.getThreadLocalDateFormat(DateFormats.EXACT_TIMESTAMP);
     private static final NumberFormat MICROSECONDS_FORMAT = NumberFormat.getIntegerInstance();
-
-    static {
-      MICROSECONDS_FORMAT.setGroupingUsed(true);
-    }
 
     private LinkedList<Entry> subEntries = new LinkedList<>();
     private String method;
@@ -495,10 +492,11 @@ public class MethodLogger implements Serializable {
     public String toString(final int indentation) {
       final String indentString = indentation > 0 ? Util.padString("", indentation, '\t', false) : "";
       final StringBuilder stringBuilder = new StringBuilder();
+      final DateFormat timestampFormat = TIMESTAMP_FORMAT.get();
       if (isComplete()) {
-        stringBuilder.append(indentString).append(TIMESTAMP_FORMAT.format(accessTime)).append(" @ ").append(method).append(
+        stringBuilder.append(indentString).append(timestampFormat.format(accessTime)).append(" @ ").append(method).append(
                 !Util.nullOrEmpty(accessMessage) ? (": " + accessMessage) : "").append("\n");
-        stringBuilder.append(indentString).append(TIMESTAMP_FORMAT.format(exitTime)).append(" > ")
+        stringBuilder.append(indentString).append(timestampFormat.format(exitTime)).append(" > ")
                 .append(MICROSECONDS_FORMAT.format(TimeUnit.NANOSECONDS.toMicros(getDeltaNano()))).append(" μs")
                 .append(exitMessage == null ? "" : " (" + exitMessage + ")");
         if (stackTrace != null) {
@@ -506,7 +504,7 @@ public class MethodLogger implements Serializable {
         }
       }
       else {
-        stringBuilder.append(indentString).append(TIMESTAMP_FORMAT.format(accessTime)).append(" @ ").append(method).append(
+        stringBuilder.append(indentString).append(timestampFormat.format(accessTime)).append(" @ ").append(method).append(
                 !Util.nullOrEmpty(accessMessage) ? (": " + accessMessage) : "");
       }
 

@@ -19,6 +19,7 @@ import org.jfree.data.xy.XYSeriesCollection;
 import org.jfree.data.xy.YIntervalSeries;
 import org.jfree.data.xy.YIntervalSeriesCollection;
 
+import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collections;
 import java.util.Comparator;
@@ -257,7 +258,8 @@ public final class ConnectionPoolMonitor {
     return poolStates;
   }
 
-  private static final class StateComparator implements Comparator<ConnectionPoolState> {
+  private static final class StateComparator implements Comparator<ConnectionPoolState>, Serializable {
+    private static final long serialVersionUID = 1;
     @Override
     public int compare(final ConnectionPoolState o1, final ConnectionPoolState o2) {
       return ((Long) o1.getTimestamp()).compareTo(o2.getTimestamp());
