@@ -18,6 +18,7 @@ import java.util.concurrent.TimeUnit;
 public abstract class AbstractConnectionPool<T> implements ConnectionPool {
 
   private static final int FINE_GRAINED_STATS_SIZE = 1000;
+  private static final int FINE_GRAINED_COLLECTION_INTERVAL = 10;
 
   /**
    * The actual connection pool object
@@ -32,7 +33,7 @@ public abstract class AbstractConnectionPool<T> implements ConnectionPool {
     public void run() {
       addPoolStatistics();
     }
-  }, 10, TimeUnit.MILLISECONDS);
+  }, FINE_GRAINED_COLLECTION_INTERVAL, TimeUnit.MILLISECONDS);
 
   private final DefaultConnectionPoolCounter counter = new DefaultConnectionPoolCounter();
 

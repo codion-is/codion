@@ -25,6 +25,7 @@ java.rmi.server.RemoteObject
 java.rmi.server.RemoteObjectInvocationHandler
 java.rmi.server.UID
 java.util.ArrayList
+java.util.Collections$SingletonList
 java.util.HashMap
 java.util.HashSet
 java.util.UUID

@@ -6,7 +6,9 @@ package org.jminor.swing.framework.testing;
 import org.jminor.common.model.User;
 import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.framework.Configuration;
+import org.jminor.framework.domain.Entity;
 import org.jminor.swing.framework.model.EntityApplicationModel;
+import org.jminor.swing.framework.model.EntityComboBoxModel;
 import org.jminor.swing.framework.model.EntityTableModel;
 
 import java.util.ArrayList;
@@ -83,6 +85,22 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
     }
 
     tableModel.getSelectionModel().setSelectedIndexes(indexes);
+  }
+
+  /**
+   * Selects a random non-null visible item in the given combobox model, if one is available
+   * @param comboBoxModel the combobox model
+   */
+  public static void selectRandomItem(final EntityComboBoxModel comboBoxModel) {
+    if (comboBoxModel.isCleared()) {
+      comboBoxModel.refresh();
+    }
+    final List<Entity> visibleItems = comboBoxModel.getVisibleItems();
+    if (visibleItems.isEmpty() || visibleItems.size() == 1 && visibleItems.get(0) == null) {
+      return;
+    }
+    final int fromIndex = visibleItems.get(0) == null ? 1 : 0;
+    comboBoxModel.setSelectedItem(visibleItems.get(RANDOM.nextInt(visibleItems.size() - fromIndex) + fromIndex));
   }
 
   /** {@inheritDoc} */

@@ -811,21 +811,27 @@ final class LocalEntityConnection implements EntityConnection {
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       final int criteriaFetchDepthLimit = criteria.getForeignKeyFetchDepthLimit(foreignKeyProperty.getPropertyID());
       if (!limitForeignKeyFetchDepth || currentForeignKeyFetchDepth < criteriaFetchDepthLimit) {
-        final Collection<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
-        if (referencedPrimaryKeys.isEmpty()) {
-          for (final Entity entity : entities) {
-            entity.setValue(foreignKeyProperty, null, false);
+        try {
+          logAccess("setForeignKeyValues", new Object[] {foreignKeyProperty});
+          final Collection<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
+          if (referencedPrimaryKeys.isEmpty()) {
+            for (final Entity entity : entities) {
+              entity.setValue(foreignKeyProperty, null, false);
+            }
+          }
+          else {
+            final EntitySelectCriteria referencedEntitiesCriteria = EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys);
+            referencedEntitiesCriteria.setForeignKeyFetchDepthLimit(criteriaFetchDepthLimit);
+            final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCriteria, currentForeignKeyFetchDepth + 1);
+            final Map<Entity.Key, Entity> mappedReferencedEntities = EntityUtil.mapToPrimaryKey(referencedEntities);
+            for (final Entity entity : entities) {
+              final Entity.Key referencedPrimaryKey = entity.getReferencedPrimaryKey(foreignKeyProperty);
+              entity.setValue(foreignKeyProperty, getReferencedEntity(referencedPrimaryKey, mappedReferencedEntities), false);
+            }
           }
         }
-        else {
-          final EntitySelectCriteria referencedEntitiesCriteria = EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys);
-          referencedEntitiesCriteria.setForeignKeyFetchDepthLimit(criteriaFetchDepthLimit);
-          final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCriteria, currentForeignKeyFetchDepth + 1);
-          final Map<Entity.Key, Entity> mappedReferencedEntities = EntityUtil.mapToPrimaryKey(referencedEntities);
-          for (final Entity entity : entities) {
-            final Entity.Key referencedPrimaryKey = entity.getReferencedPrimaryKey(foreignKeyProperty);
-            entity.setValue(foreignKeyProperty, getReferencedEntity(referencedPrimaryKey, mappedReferencedEntities), false);
-          }
+        finally {
+          logExit("setForeignKeyValues", null, null);
         }
       }
     }
