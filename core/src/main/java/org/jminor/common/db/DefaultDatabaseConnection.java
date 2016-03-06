@@ -169,16 +169,6 @@ final class DefaultDatabaseConnection implements DatabaseConnection {
   /** {@inheritDoc} */
   @Override
   public Connection getConnection() {
-    return getConnection(true);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public Connection getConnection(final boolean validate) {
-    if (validate && !isConnected()) {
-      throw new IllegalStateException("Not connected");
-    }
-
     return connection;
   }
 

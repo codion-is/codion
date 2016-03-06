@@ -510,7 +510,7 @@ public class LocalEntityConnectionTest {
     Statement statement = null;
     try {
       databaseConnection = connection.getDatabaseConnection();
-      statement = databaseConnection.getConnection(false).createStatement();
+      statement = databaseConnection.getConnection().createStatement();
       statement.execute("create table blob_test(id integer, data blob)");
 
       final Entity blobRecord = Entities.entity(ENTITY_ID);
@@ -536,7 +536,7 @@ public class LocalEntityConnectionTest {
         statement.close();
       }
       if (databaseConnection != null) {
-        statement = databaseConnection.getConnection(false).createStatement();
+        statement = databaseConnection.getConnection().createStatement();
         statement.execute("drop table blob_test");
         statement.close();
       }
@@ -549,7 +549,7 @@ public class LocalEntityConnectionTest {
     Statement statement = null;
     try {
       databaseConnection = connection.getDatabaseConnection();
-      statement = databaseConnection.getConnection(false).createStatement();
+      statement = databaseConnection.getConnection().createStatement();
       statement.execute("create table blob_test(id integer, data blob)");
 
       final byte[] bytes = new byte[1024];
@@ -583,7 +583,7 @@ public class LocalEntityConnectionTest {
         statement.close();
       }
       if (databaseConnection != null) {
-        statement = databaseConnection.getConnection(false).createStatement();
+        statement = databaseConnection.getConnection().createStatement();
         statement.execute("drop table blob_test");
         statement.close();
       }

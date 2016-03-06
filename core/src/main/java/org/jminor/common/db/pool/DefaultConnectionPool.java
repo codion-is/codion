@@ -70,7 +70,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
   /** {@inheritDoc} */
   @Override
   public Connection getConnection() throws DatabaseException {
-    return getDatabaseConnection().getConnection(false);
+    return getDatabaseConnection().getConnection();
   }
 
   /** {@inheritDoc} */
@@ -315,7 +315,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
   private DatabaseConnection findConnection(final Connection connection) {
     synchronized (pool) {
       for (final DatabaseConnection databaseConnection : inUse) {
-        if (databaseConnection.getConnection(false).equals(connection)) {
+        if (databaseConnection.getConnection().equals(connection)) {
           return databaseConnection;
         }
       }

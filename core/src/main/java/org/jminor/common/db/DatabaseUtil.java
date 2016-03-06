@@ -231,7 +231,7 @@ public final class DatabaseUtil {
       if (methodLogger != null && methodLogger.isEnabled()) {
         methodLogger.logAccess("query", new Object[]{sql});
       }
-      statement = connection.getConnection(false).createStatement();
+      statement = connection.getConnection().createStatement();
       resultSet = statement.executeQuery(sql);
 
       return resultPacker.pack(resultSet, fetchCount);

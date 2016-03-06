@@ -85,17 +85,12 @@ public class DefaultDatabaseConnectionTest {
   public void disconnect() throws Exception {
     dbConnection.disconnect();
     assertFalse(dbConnection.isConnected());
+    assertNull(dbConnection.getConnection());
   }
 
   @Test
   public void getConnection() throws Exception {
-    assertNotNull(dbConnection.getConnection(false));
-  }
-
-  @Test(expected = IllegalStateException.class)
-  public void getConnectionDisconnected() throws Exception {
-    dbConnection.disconnect();
-    dbConnection.getConnection();
+    assertNotNull(dbConnection.getConnection());
   }
 
   @Test(expected = IllegalStateException.class)

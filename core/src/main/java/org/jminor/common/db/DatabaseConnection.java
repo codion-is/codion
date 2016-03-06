@@ -22,17 +22,11 @@ public interface DatabaseConnection {
   boolean isConnected();
 
   /**
+   * Returns the underlying connection object, use {@link #isConnected()} to verify
+   * that the connection is not null and valid.
    * @return the underlying connection object
-   * @throws IllegalStateException in case the underlying connection is invalid
    */
   Connection getConnection();
-
-  /**
-   * @param validate if true then the connection is validated
-   * @return the underlying connection object
-   * @throws IllegalStateException in case validation is performed and it fails
-   */
-  Connection getConnection(final boolean validate);
 
   /**
    * Sets the internal connection to use, note that no validation or

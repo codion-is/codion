@@ -567,7 +567,7 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
   }
 
   private void returnConnectionToPool() {
-    final Connection connection = poolEntityConnection.getDatabaseConnection().getConnection(false);
+    final Connection connection = poolEntityConnection.getDatabaseConnection().getConnection();
     if (connection != null) {
       connectionPool.returnConnection(connection);
       poolEntityConnection.getDatabaseConnection().setConnection(null);
