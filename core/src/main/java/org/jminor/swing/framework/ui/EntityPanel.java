@@ -54,7 +54,6 @@ import java.awt.event.MouseAdapter;
 import java.awt.event.MouseEvent;
 import java.beans.PropertyChangeEvent;
 import java.beans.PropertyChangeListener;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -1576,8 +1575,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
     }
   }
 
-  private static class FocusActivationListener implements PropertyChangeListener, Serializable {
-    private static final long serialVersionUID = 1;
+  private static class FocusActivationListener implements PropertyChangeListener {
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
       final EntityEditPanel editPanelParent = UiUtil.getParentOfType((Component) evt.getNewValue(), EntityEditPanel.class);

@@ -687,9 +687,7 @@ public final class Entities {
    * outputs the following String:<br><br>
    * <code>key1=value1, key3='value3' foreign key value=refValue</code>
    */
-  public static final class StringProvider implements Entity.ToString, Serializable {
-
-    private static final long serialVersionUID = 1;
+  public static final class StringProvider implements Entity.ToString {
 
     /**
      * Holds the ValueProviders used when constructing the String representation

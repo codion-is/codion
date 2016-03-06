@@ -5,7 +5,6 @@ package org.jminor.common.model.tools;
 
 import org.jminor.common.model.EventObserver;
 
-import java.io.Serializable;
 import java.util.Collection;
 
 /**
@@ -119,7 +118,7 @@ public interface ItemRandomizer<T> {
    * Wraps an item for usage in the ItemRandomizer
    * @param <T> the type being wrapped
    */
-  interface RandomItem<T> extends Serializable {
+  interface RandomItem<T> {
 
     /**
      * Increments the weight value assigned to this random item

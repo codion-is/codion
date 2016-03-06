@@ -26,7 +26,6 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -362,8 +361,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     }
   }
 
-  private static final class EntityComparator implements Comparator<Entity>, Serializable {
-    private static final long serialVersionUID = 1;
+  private static final class EntityComparator implements Comparator<Entity> {
     @Override
     public int compare(final Entity o1, final Entity o2) {
       return o1.compareTo(o2);

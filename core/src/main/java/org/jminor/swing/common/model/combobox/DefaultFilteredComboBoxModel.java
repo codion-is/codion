@@ -11,7 +11,6 @@ import org.jminor.common.model.Util;
 
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
-import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
@@ -447,8 +446,7 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
     }
   }
 
-  private static final class SortComparator<T> implements Comparator<T>, Serializable {
-    private static final long serialVersionUID = 1;
+  private static final class SortComparator<T> implements Comparator<T> {
 
     private final T nullValue;
     private final Comparator comparator = Util.getSpaceAwareCollator();

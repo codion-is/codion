@@ -209,8 +209,6 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
    */
   private static final class DefaultRandomItem<T> implements ItemRandomizer.RandomItem<T> {
 
-    private static final long serialVersionUID = 1;
-
     private final T item;
     private int weight = 0;
     private boolean enabled = true;

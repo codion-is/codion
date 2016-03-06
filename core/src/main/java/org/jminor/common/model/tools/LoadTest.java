@@ -9,7 +9,6 @@ import org.jminor.common.model.User;
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.YIntervalSeriesCollection;
 
-import java.io.Serializable;
 import java.util.Collection;
 import java.util.List;
 
@@ -243,7 +242,7 @@ public interface LoadTest {
   /**
    * Specifies a load test usage scenario.
    */
-  interface UsageScenario<T> extends Serializable {
+  interface UsageScenario<T> {
 
     /**
      * @return the name of this scenario
