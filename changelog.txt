@@ -4141,3 +4141,4 @@
   DefaultEntity, constructors refactored to use the above
   EntityResultPacker.pack() improved using the above constructor
   DatabaseConnection.getConnection(validate) removed, getConnection() no longer performes any validation
+  ClientValidator renamed to ConnectionValidator

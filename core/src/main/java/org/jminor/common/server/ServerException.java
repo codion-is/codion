@@ -66,10 +66,10 @@ public class ServerException extends Exception {
   }
 
   /**
-   * An exception indicating that a client validation has failed
+   * An exception indicating that a connection validation has failed
    */
-  public static class ClientValidationException extends ServerException {
-    public ClientValidationException(final String message) {
+  public static class ConnectionValidationException extends ServerException {
+    public ConnectionValidationException(final String message) {
       super(message);
     }
   }

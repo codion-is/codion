@@ -500,7 +500,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
     final Collection<String> domainModelClassNames = Configuration.parseCommaSeparatedValues(Configuration.SERVER_DOMAIN_MODEL_CLASSES);
     final Collection<String> loginProxyClassNames = Configuration.parseCommaSeparatedValues(Configuration.SERVER_LOGIN_PROXY_CLASSES);
-    final Collection<String> clientValidationClassNames = Configuration.parseCommaSeparatedValues(Configuration.SERVER_CLIENT_VALIDATOR_CLASSES);
+    final Collection<String> connectionValidationClassNames = Configuration.parseCommaSeparatedValues(Configuration.SERVER_CONNECTION_VALIDATOR_CLASSES);
     final Collection<String> initialPoolUsers = Configuration.parseCommaSeparatedValues(Configuration.SERVER_CONNECTION_POOLING_INITIAL);
     final String webDocumentRoot = Configuration.getStringValue(Configuration.WEB_SERVER_DOCUMENT_ROOT);
     final Integer webServerPort = Configuration.getIntValue(Configuration.WEB_SERVER_PORT);
@@ -508,7 +508,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
     final int connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
     final Map<String, Integer> clientTimeouts = getClientTimeoutValues();
     final EntityConnectionServer server = new EntityConnectionServer(serverName, serverPort, registryPort, database,
-            sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, clientValidationClassNames,
+            sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, connectionValidationClassNames,
             getPoolUsers(initialPoolUsers), webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout,
             clientTimeouts);
     final DefaultEntityConnectionServerAdmin admin = new DefaultEntityConnectionServerAdmin(server, serverAdminPort);

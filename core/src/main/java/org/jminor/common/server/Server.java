@@ -22,10 +22,10 @@ public interface Server<T extends Remote> extends Remote {
    * @throws RemoteException in case of a RemoteException
    * @throws ServerException.ServerFullException in case the server isn't accepting more connections
    * @throws ServerException.LoginException in case the login fails
-   * @throws ServerException.ClientValidationException in case client validation fails
+   * @throws ServerException.ConnectionValidationException in case connection validation fails
    */
   T connect(final ConnectionInfo connectionInfo) throws RemoteException,
-          ServerException.ServerFullException, ServerException.LoginException, ServerException.ClientValidationException;
+          ServerException.ServerFullException, ServerException.LoginException, ServerException.ConnectionValidationException;
 
   /**
    * Disconnects the connection identified by the given key.

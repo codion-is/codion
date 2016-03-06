@@ -46,12 +46,12 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
     @Override
     public void close() {/*Not required*/}
   };
-  private final Map<String, ClientValidator> clientValidators = Collections.synchronizedMap(new HashMap<String, ClientValidator>());
-  private final ClientValidator defaultClientValidator = new ClientValidator() {
+  private final Map<String, ConnectionValidator> connectionValidators = Collections.synchronizedMap(new HashMap<String, ConnectionValidator>());
+  private final ConnectionValidator defaultConnectionValidator = new ConnectionValidator() {
     @Override
     public String getClientTypeID() {return "defaultClient";}
     @Override
-    public void validate(final ConnectionInfo connectionInfo) throws ServerException.ClientValidationException {/*Not required*/}
+    public void validate(final ConnectionInfo connectionInfo) throws ServerException.ConnectionValidationException {/*Not required*/}
   };
 
   private final ServerInfo serverInfo;
@@ -156,13 +156,13 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
   /** {@inheritDoc} */
   @Override
   public final T connect(final ConnectionInfo connectionInfo) throws RemoteException, ServerException.ServerFullException,
-          ServerException.LoginException, ServerException.ClientValidationException {
+          ServerException.LoginException, ServerException.ConnectionValidationException {
     Util.rejectNullValue(connectionInfo, "connectionInfo");
 
     if (shuttingDown) {
       throw ServerException.loginException("Server is shutting down");
     }
-    getClientValidator(connectionInfo.getClientTypeID()).validate(connectionInfo);
+    getConnectionValidator(connectionInfo.getClientTypeID()).validate(connectionInfo);
     final LoginProxy loginProxy = getLoginProxy(connectionInfo.getClientTypeID());
     LOG.debug("Connecting client {}, loginProxy {}", connectionInfo, loginProxy);
     synchronized (connections) {
@@ -209,6 +209,7 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
    * the login proxy is removed.
    * @param clientTypeID the client type ID with which to associate the given login proxy
    * @param loginProxy the login proxy
+   * @throws IllegalArgumentException in case the login proxy has already been set for the given client type
    */
   public final void setLoginProxy(final String clientTypeID, final LoginProxy loginProxy) {
     synchronized (loginProxies) {
@@ -225,21 +226,22 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
   }
 
   /**
-   * Sets the ClientValidator for the given client type id, if <code>clientValidator</code> is null
-   * the client validator is removed.
-   * @param clientTypeID the client type ID with which to associate the given client validator
-   * @param clientValidator the client validator
+   * Sets the ConnectionValidator for the given client type id, if <code>connectionValidator</code> is null
+   * the connection validator is removed.
+   * @param clientTypeID the client type ID with which to associate the given connection validator
+   * @param connectionValidator the connection validator
+   * @throws IllegalArgumentException in case the connection validator has already been set for the given client type
    */
-  public final void setClientValidator(final String clientTypeID, final ClientValidator clientValidator) {
-    synchronized (clientValidators) {
-      if (clientValidator == null) {
-        clientValidators.remove(clientTypeID);
+  public final void setConnectionValidator(final String clientTypeID, final ConnectionValidator connectionValidator) {
+    synchronized (connectionValidators) {
+      if (connectionValidator == null) {
+        connectionValidators.remove(clientTypeID);
       }
       else {
-        if (clientValidators.containsKey(clientTypeID)) {
-          throw new IllegalArgumentException("Client validator has already been set for: " + clientTypeID);
+        if (connectionValidators.containsKey(clientTypeID)) {
+          throw new IllegalArgumentException("Connection validator has already been set for: " + clientTypeID);
         }
-        clientValidators.put(clientTypeID, clientValidator);
+        connectionValidators.put(clientTypeID, connectionValidator);
       }
     }
   }
@@ -313,14 +315,14 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
     }
   }
 
-  private ClientValidator getClientValidator(final String clientTypeID) {
-    synchronized (clientValidators) {
-      final ClientValidator clientValidator = clientValidators.get(clientTypeID);
-      if (clientValidator == null) {
-        return defaultClientValidator;
+  private ConnectionValidator getConnectionValidator(final String clientTypeID) {
+    synchronized (connectionValidators) {
+      final ConnectionValidator connectionValidator = connectionValidators.get(clientTypeID);
+      if (connectionValidator == null) {
+        return defaultConnectionValidator;
       }
 
-      return clientValidator;
+      return connectionValidator;
     }
   }
 

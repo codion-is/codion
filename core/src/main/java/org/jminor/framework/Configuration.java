@@ -183,11 +183,11 @@ public final class Configuration {
   public static final String SERVER_LOGIN_PROXY_CLASSES = "jminor.server.loginProxyClasses";
 
   /**
-   * Specifies a comma separated list of ClientValidator class names, which should be initialized on server startup,
+   * Specifies a comma separated list of ConnectionValidator class names, which should be initialized on server startup,
    * these classes must be available on the server classpath and contain a parameterless constructor
-   * @see org.jminor.common.server.ClientValidator
+   * @see org.jminor.server.ConnectionValidator
    */
-  public static final String SERVER_CLIENT_VALIDATOR_CLASSES = "jminor.server.clientValidatorClasses";
+  public static final String SERVER_CONNECTION_VALIDATOR_CLASSES = "jminor.server.connectionValidatorClasses";
 
   /**
    * Specifies the statistics polling rate for the server monitor, in seconds.
