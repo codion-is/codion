@@ -68,7 +68,7 @@ public final class Entities {
    * @return a new {@link Entity.Key} instance
    */
   public static Entity.Key key(final String entityID) {
-    return new DefaultEntity.DefaultKey(DefaultEntityDefinition.getDefinition(entityID));
+    return new DefaultEntity.DefaultKey(DefaultEntityDefinition.getDefinition(entityID), null);
   }
 
   /**

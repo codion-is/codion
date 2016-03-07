@@ -568,18 +568,19 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
 
   private Key initializeReferencedKey(final Property.ForeignKeyProperty foreignKeyProperty) {
     if (foreignKeyProperty.isCompositeReference()) {
-      final Key key = new DefaultKey(DefaultEntityDefinition.getDefinitionMap().get(foreignKeyProperty.getReferencedEntityID()));
-      for (final Property referenceKeyProperty : foreignKeyProperty.getReferenceProperties()) {
+      final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
+      final Map<String, Object> values = new HashMap<>(referenceProperties.size());
+      for (final Property referenceKeyProperty : referenceProperties) {
         final Object value = super.getValue(referenceKeyProperty.getPropertyID());
         if (value == null) {
           return null;
         }
         else {
-          key.setValue(foreignKeyProperty.getReferencedPropertyID(referenceKeyProperty), value);
+          values.put(foreignKeyProperty.getReferencedPropertyID(referenceKeyProperty), value);
         }
       }
 
-      return key;
+      return new DefaultKey(DefaultEntityDefinition.getDefinitionMap().get(foreignKeyProperty.getReferencedEntityID()), values);
     }
     else {
       final Property referenceKeyProperty = foreignKeyProperty.getReferenceProperties().get(0);
@@ -613,13 +614,14 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
    * @return a Key based on the values in this Entity instance
    */
   private Key initializePrimaryKey(final boolean originalValues) {
-    final Key key = new DefaultKey(definition);
-    for (final Property.ColumnProperty property : definition.getPrimaryKeyProperties()) {
+    final List<Property.ColumnProperty> primaryKeyProperties = definition.getPrimaryKeyProperties();
+    final Map<String, Object> values = new HashMap<>(primaryKeyProperties.size());
+    for (final Property.ColumnProperty property : primaryKeyProperties) {
       final String propertyID = property.getPropertyID();
-      key.setValue(propertyID, originalValues ? getOriginalValue(propertyID) : super.getValue(propertyID));
+      values.put(propertyID, originalValues ? getOriginalValue(propertyID) : super.getValue(propertyID));
     }
 
-    return key;
+    return new DefaultKey(definition, values);
   }
 
   private Object getDerivedValue(final Property.DerivedProperty derivedProperty) {
@@ -811,7 +813,8 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
      * Instantiates a new Key for the given entity type
      * @param definition the entity definition
      */
-    DefaultKey(final Definition definition) {
+    DefaultKey(final Definition definition, final Map<String, Object> values) {
+      super(values, null);
       this.definition = definition;
       final List<Property.ColumnProperty> properties = definition.getPrimaryKeyProperties();
       this.compositeKey = properties.size() > 1;
@@ -825,13 +828,10 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
      * @throws IllegalArgumentException in case this key is a composite key
      */
     DefaultKey(final Definition definition, final Object value) {
-      this(definition);
+      this(definition, createSingleValueMap(definition, value));
       if (compositeKey) {
         throw new IllegalArgumentException(definition.getEntityID() + " has a composite primary key");
       }
-
-      final Property property = definition.getPrimaryKeyProperties().get(0);
-      setValue(property.getPropertyID(), value);
     }
 
     @Override
@@ -1009,6 +1009,13 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       for (final Property property : properties) {
         setValue(property.getPropertyID(), stream.readObject());
       }
+    }
+
+    private static Map<String, Object> createSingleValueMap(final Definition definition, final Object value) {
+      final Map<String, Object> values = new HashMap<>(1);
+      values.put(definition.getPrimaryKeyProperties().get(0).getPropertyID(), value);
+
+      return values;
     }
   }
 }
