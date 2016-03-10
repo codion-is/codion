@@ -114,7 +114,7 @@ public final class DefaultEntityTableModelTest {
     deptModel.setEditModel(new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider()));
     deptModel.refresh();
 
-    deptModel.setAddEntitiesOnInsert(true);
+    deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_BOTTOM);
     final Entity dept = Entities.entity(TestDomain.T_DEPARTMENT);
     dept.setValue(TestDomain.DEPARTMENT_ID, -10);
     dept.setValue(TestDomain.DEPARTMENT_LOCATION, "Nowhere");
@@ -122,8 +122,9 @@ public final class DefaultEntityTableModelTest {
     final int count = deptModel.getRowCount();
     deptModel.getEditModel().insert(Collections.singletonList(dept));
     assertEquals(count + 1, deptModel.getRowCount());
+    assertEquals(dept, deptModel.getItemAt(deptModel.getRowCount() - 1));
 
-    deptModel.setAddEntitiesOnInsert(false);
+    deptModel.setInsertAction(EntityTableModel.InsertAction.DO_NOTHING);
     final Entity dept2 = Entities.entity(TestDomain.T_DEPARTMENT);
     dept2.setValue(TestDomain.DEPARTMENT_ID, -20);
     dept2.setValue(TestDomain.DEPARTMENT_LOCATION, "Nowhere2");

@@ -4147,3 +4147,6 @@
   LocalEntityConnection, now logs setForeignKeyValues() with methodLogger
   ClientInstanceMonitor, ClientInstanceMonitorPanel, crappy tree view of client log added
   DefaultEntity, minor optimization in the way DefaultEntity.DefaultKey objects are instantiated
+  EntityTableModel.InsertAction enum added
+  EntityTableModel.setAddEntitiesOnInsert() replaced with setInsertAction()
+  DateUtil.getFirst/LastDayOfYear() renamed to getFirst/LastDayOfCurrentYear(), getFirst/LastDayOfYear(year) added

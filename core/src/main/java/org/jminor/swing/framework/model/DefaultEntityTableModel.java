@@ -110,10 +110,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   private boolean removeEntitiesOnDelete = true;
 
   /**
-   * If true then entities inserted via the associated edit model are added
-   * to this table model automatically
+   * The action to perform when entities are inserted via the associated edit model
    */
-  private boolean addEntitiesOnInsert = true;
+  private InsertAction insertAction = InsertAction.ADD_TOP;
 
   /**
    * Indicates if multiple entities can be updated at a time
@@ -219,14 +218,15 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final boolean isAddEntitiesOnInsert() {
-    return addEntitiesOnInsert;
+  public InsertAction getInsertAction() {
+    return insertAction;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableModel setAddEntitiesOnInsert(final boolean value) {
-    this.addEntitiesOnInsert = value;
+  public EntityTableModel setInsertAction(final InsertAction insertAction) {
+    Util.rejectNullValue(insertAction, "insertAction");
+    this.insertAction = insertAction;
     return this;
   }
 
@@ -364,8 +364,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final void addEntities(final List<Entity> entities, final boolean atFront) {
-    addItems(entities, atFront);
+  public final void addEntities(final List<Entity> entities, final boolean atTop) {
+    addItems(entities, atTop);
   }
 
   /** {@inheritDoc} */
@@ -732,8 +732,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
     getSelectionModel().clearSelection();
-    if (addEntitiesOnInsert) {
-      addEntities(insertEvent.getInsertedEntities(), true);
+    if (!insertAction.equals(InsertAction.DO_NOTHING)) {
+      addEntities(insertEvent.getInsertedEntities(), insertAction.equals(InsertAction.ADD_TOP));
     }
   }
 

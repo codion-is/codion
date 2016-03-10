@@ -23,6 +23,24 @@ import java.util.Map;
 public interface EntityTableModel extends FilteredTableModel<Entity, Property>, EntityDataProvider {
 
   /**
+   * Defines the actions a table model can perform when entities are inserted via the associated edit model
+   */
+  enum InsertAction {
+    /**
+     * This table model does nothing when entities are inserted via the associated edit model
+     */
+    DO_NOTHING,
+    /**
+     * The entities inserted via the associated edit model are added as the topmost rows in the model
+     */
+    ADD_TOP,
+    /**
+     * The entities inserted via the associated edit model are added as the bottommost rows in the model
+     */
+    ADD_BOTTOM
+  }
+
+  /**
    * Returns the {@link EntityEditModel} associated with this table model
    * @return the edit model associated with this table model
    * @see #setEditModel(EntityEditModel)
@@ -70,9 +88,9 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * directly to this table model after they have been inserted into the underlying table
    * since otherwise they will disappear during the next table model refresh.
    * @param entities the entities to add
-   * @param atFront if true the entities are added to the front
+   * @param atTop if true the entities are added to the top of this table model, otherwise at the bottom
    */
-  void addEntities(final List<Entity> entities, final boolean atFront);
+  void addEntities(final List<Entity> entities, final boolean atTop);
 
   /**
    * Replaces the given entities in this table model
@@ -218,17 +236,15 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
   EntityTableModel setRemoveEntitiesOnDelete(final boolean value);
 
   /**
-   * @return whether entities inserted via the associated edit model are added
-   * to this table model automatically
+   * @return the action performed when entities are inserted via the associated edit model
    */
-  boolean isAddEntitiesOnInsert();
+  InsertAction getInsertAction();
 
   /**
-   * @param value if true then entities inserted via the associated edit model are added
-   * to this table model automatically
+   * @param insertAction the action to perform when entities are inserted via the associated edit model
    * @return this EntityTableModel instance
    */
-  EntityTableModel setAddEntitiesOnInsert(final boolean value);
+  EntityTableModel setInsertAction(final InsertAction insertAction);
 
   /**
    * Finds entities according to the values in <code>keys</code>

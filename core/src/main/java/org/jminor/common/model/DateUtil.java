@@ -199,9 +199,18 @@ public final class DateUtil {
   /**
    * @return the first day of the current year
    */
-  public static Date getFirstDayOfYear() {
+  public static Date getFirstDayOfCurrentYear() {
+    return getFirstDayOfYear(Calendar.getInstance().get(Calendar.YEAR));
+  }
+
+  /**
+   * @param year the year
+   * @return the first day of the given year
+   */
+  public static Date getFirstDayOfYear(final int year) {
     final Calendar calendar = Calendar.getInstance();
     floorTimeFields(calendar);
+    calendar.set(Calendar.YEAR, year);
     calendar.set(Calendar.MONTH, Calendar.JANUARY);
     calendar.set(Calendar.DAY_OF_MONTH, 1);
 
@@ -211,9 +220,18 @@ public final class DateUtil {
   /**
    * @return the last day of the current year
    */
-  public static Date getLastDayOfYear() {
+  public static Date getLastDayOfCurrentYear() {
+    return getLastDayOfYear(Calendar.getInstance().get(Calendar.YEAR));
+  }
+
+  /**
+   * @param year the year
+   * @return the last day of the given year
+   */
+  public static Date getLastDayOfYear(final int year) {
     final Calendar calendar = Calendar.getInstance();
     floorTimeFields(calendar);
+    calendar.set(Calendar.YEAR, year);
     calendar.set(Calendar.MONTH, Calendar.DECEMBER);
     calendar.set(Calendar.DAY_OF_MONTH, THIRTY_FIRST);
 
