@@ -4156,3 +4156,4 @@
   Major renaming of methods, ValueMap, Entity now conform to Map method names, get() and put() instead of getValue() and setValue() etc
   ValueMap.getValueChangeObserver() renamed to getValueObserver()
   ValueMapEditModel.getValueChangeObserver() renamed to getValueObserver()
+  Entity.set() renamed to put()

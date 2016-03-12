@@ -417,13 +417,13 @@ public abstract class EntityTestUnit {
                                      final ValueProvider<Property, Object> valueProvider) {
     for (final Property.ColumnProperty property : properties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()) {
-        entity.set(property, valueProvider.get(property));
+        entity.put(property, valueProvider.get(property));
       }
     }
     for (final Property.ForeignKeyProperty property : Entities.getForeignKeyProperties(entity.getEntityID())) {
       final Object value = valueProvider.get(property);
       if (value != null) {
-        entity.set(property, value);
+        entity.put(property, value);
       }
     }
   }

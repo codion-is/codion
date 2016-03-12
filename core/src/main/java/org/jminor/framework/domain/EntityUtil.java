@@ -422,7 +422,7 @@ public final class EntityUtil {
   public static Entity setNull(final Entity entity) {
     Util.rejectNullValue(entity, "entity");
     for (final Property property : Entities.getProperties(entity.getEntityID(), true)) {
-      entity.set(property, null);
+      entity.put(property, null);
     }
 
     return entity;
@@ -583,7 +583,7 @@ public final class EntityUtil {
       final Map<String, GetterSetter> beanPropertyMap = getPropertyMap(bean.getClass());
       for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = Entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
-        entity.set(property, propertyEntry.getValue().getter.invoke(bean));
+        entity.put(property, propertyEntry.getValue().getter.invoke(bean));
       }
 
       return entity;

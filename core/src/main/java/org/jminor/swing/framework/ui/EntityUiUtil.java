@@ -1008,7 +1008,7 @@ public final class EntityUiUtil {
           else {
             referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedKey(property));
             entity.remove(property.getPropertyID());
-            entity.set(property, referencedEntity);
+            entity.put(property, referencedEntity);
           }
           String text = "[FK" + (isLoaded ? "] " : "+] ") + property.getCaption() + ": " + referencedEntity.toString();
           if (modified) {

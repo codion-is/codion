@@ -603,18 +603,18 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
     final Collection<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID);
     for (final Property.ColumnProperty property : columnProperties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()) {//these are set via their respective parent properties
-        defaultEntity.set(property, getDefaultValue(property));
+        defaultEntity.put(property, getDefaultValue(property));
       }
     }
     final Collection<Property.TransientProperty> transientProperties = Entities.getTransientProperties(entityID);
     for (final Property.TransientProperty transientProperty : transientProperties) {
       if (!(transientProperty instanceof Property.DerivedProperty) && !(transientProperty instanceof Property.DenormalizedViewProperty)) {
-        defaultEntity.set(transientProperty, getDefaultValue(transientProperty));
+        defaultEntity.put(transientProperty, getDefaultValue(transientProperty));
       }
     }
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entityID);
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      defaultEntity.set(foreignKeyProperty, getDefaultValue(foreignKeyProperty));
+      defaultEntity.put(foreignKeyProperty, getDefaultValue(foreignKeyProperty));
     }
     defaultEntity.saveAll();
 

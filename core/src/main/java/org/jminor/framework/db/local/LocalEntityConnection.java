@@ -817,7 +817,7 @@ final class LocalEntityConnection implements EntityConnection {
           final Collection<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
           if (referencedPrimaryKeys.isEmpty()) {
             for (final Entity entity : entities) {
-              entity.set(foreignKeyProperty, null, false);
+              entity.put(foreignKeyProperty, null, false);
             }
           }
           else {
@@ -827,7 +827,7 @@ final class LocalEntityConnection implements EntityConnection {
             final Map<Entity.Key, Entity> mappedReferencedEntities = EntityUtil.mapToPrimaryKey(referencedEntities);
             for (final Entity entity : entities) {
               final Entity.Key referencedKey = entity.getReferencedKey(foreignKeyProperty);
-              entity.set(foreignKeyProperty, getReferencedEntity(referencedKey, mappedReferencedEntities), false);
+              entity.put(foreignKeyProperty, getReferencedEntity(referencedKey, mappedReferencedEntities), false);
             }
           }
         }

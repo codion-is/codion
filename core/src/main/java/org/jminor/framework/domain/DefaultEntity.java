@@ -67,7 +67,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   DefaultEntity(final Definition definition, final Key key) {
     this(definition);
     for (final Property.ColumnProperty property : key.getProperties()) {
-      set(property, key.get(property.getPropertyID()));
+      put(property, key.get(property.getPropertyID()));
     }
     this.key = key;
   }
@@ -145,19 +145,19 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   /** {@inheritDoc} */
   @Override
   public Object put(final String key, final Object value) {
-    return set(getProperty(key), value);
+    return put(getProperty(key), value);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Object set(final Property property, final Object value) {
-    return set(property, value, true);
+  public Object put(final Property property, final Object value) {
+    return put(property, value, true);
   }
 
   /** {@inheritDoc} */
   @Override
-  public Object set(final Property property, final Object value, final boolean validateType) {
-    return set((DefaultProperty) property, value, validateType, DefaultEntityDefinition.getDefinitionMap());
+  public Object put(final Property property, final Object value, final boolean validateType) {
+    return put((DefaultProperty) property, value, validateType, DefaultEntityDefinition.getDefinitionMap());
   }
 
   /**
@@ -528,7 +528,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
         else {
           value = referencedEntity.get(primaryKeyProperty);
         }
-        set(referenceProperty, value, false, entityDefinitions);
+        put(referenceProperty, value, false, entityDefinitions);
       }
     }
   }
@@ -552,7 +552,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
         else {
           value = referencedEntity.get(denormalizedProperty.getDenormalizedProperty());
         }
-        set((DefaultProperty) denormalizedProperty, value, false, entityDefinitions);
+        put((DefaultProperty) denormalizedProperty, value, false, entityDefinitions);
       }
     }
   }
@@ -670,7 +670,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
    * @param entityDefinitions a global entity definition map
    * @return the old value
    */
-  private Object set(final DefaultProperty property, final Object value, final boolean validateType,
+  private Object put(final DefaultProperty property, final Object value, final boolean validateType,
                      final Map<String, Definition> entityDefinitions) {
     Util.rejectNullValue(property, PROPERTY_PARAM);
     validateValue(this, property, value);

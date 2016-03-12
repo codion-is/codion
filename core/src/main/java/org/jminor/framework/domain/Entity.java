@@ -171,7 +171,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
    * @return the previous value
    * @throws IllegalArgumentException in case the value type does not fit the property
    */
-  Object set(final Property property, final Object value);
+  Object put(final Property property, final Object value);
 
   /**
    * Sets the value of the given property
@@ -181,7 +181,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
    * @return the previous value
    * @throws IllegalArgumentException in case type validation is enabled, and the value type does not fit the property
    */
-  Object set(final Property property, final Object value, final boolean validateType);
+  Object put(final Property property, final Object value, final boolean validateType);
 
   /**
    * @return true if the this entity instance has a null primary key

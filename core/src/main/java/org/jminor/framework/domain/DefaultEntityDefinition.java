@@ -887,7 +887,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
         default:
           throw new SQLException("Queried key generator only implemented for Types.INTEGER and Types.BIGINT datatypes", null, null);
       }
-      entity.set(keyProperty, value);
+      entity.put(keyProperty, value);
     }
 
     protected abstract String getQuery(final Database database);
