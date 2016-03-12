@@ -17,9 +17,9 @@
   </publications>
 
   <dependencies defaultconf="compile->default">
-    <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-plugin-json" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-db-core" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-plugin-json" rev="${version}"/>
 
     <dependency org="org.json" name="json" rev="20090211"/>
 
@@ -37,8 +37,8 @@
     <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.4.1" conf="test->master"/>
     <dependency org="commons-logging" name="commons-logging" rev="1.1.1" conf="test->master"/>
 
-    <dependency org="org.jminor" name="jminor-db-local" rev="latest.integration" conf="test->master"/>
-    <dependency org="org.jminor" name="jminor-server" rev="latest.integration" conf="test->master"/>
+    <dependency org="org.jminor" name="jminor-db-local" rev="${version}" conf="test->master"/>
+    <dependency org="org.jminor" name="jminor-server" rev="${version}" conf="test->master"/>
     <dependency org="com.h2database" name="h2" rev="1.3.176" conf="test->master"/>
     <dependency org="junit" name="junit" rev="4.12" conf="test->master"/>
     <dependency org="org.hamcrest" name="hamcrest-core" rev="1.3" conf="test->master"/>

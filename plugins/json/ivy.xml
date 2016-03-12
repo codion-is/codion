@@ -17,8 +17,8 @@
   </publications>
 
   <dependencies defaultconf="compile->default">
-    <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-db-core" rev="${version}"/>
 
     <dependency org="org.json" name="json" rev="20090211"/>
 

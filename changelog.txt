@@ -4158,3 +4158,4 @@
   ValueMapEditModel.getValueChangeObserver() renamed to getValueObserver()
   Entity.set() renamed to put()
   EntityTableModel, renamed getEntitiesByPrimaryKeys() to getEntitiesByKey(), setSelectedByPrimaryKeys() to setSelectedByKey() and getEntityByPrimaryKey() to getEntityByKey(), getEntitiesByPropertyValues() to getEntitiesByPropertyValue()
+  Plugin and demo JMinor dependencies now based on the current version in build.properties, ivysettings.xml added, artifactory settings in build.properties
