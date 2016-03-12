@@ -336,7 +336,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final Entity getEntityByPrimaryKey(final Entity.Key primaryKey) {
+  public final Entity getEntityByKey(final Entity.Key primaryKey) {
     for (final Entity entity : getVisibleItems()) {
       if (entity.getKey().equals(primaryKey)) {
         return entity;
@@ -349,7 +349,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final int indexOf(final Entity.Key primaryKey) {
-    return indexOf(getEntityByPrimaryKey(primaryKey));
+    return indexOf(getEntityByKey(primaryKey));
   }
 
   /** {@inheritDoc} */
@@ -406,7 +406,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final void setSelectedByPrimaryKeys(final Collection<Entity.Key> keys) {
+  public final void setSelectedByKey(final Collection<Entity.Key> keys) {
     final List<Entity.Key> keyList = new ArrayList<>(keys);
     final List<Integer> indexes = new ArrayList<>();
     for (final Entity visibleEntity : getVisibleItems()) {
@@ -425,7 +425,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<Entity> getEntitiesByPrimaryKeys(final Collection<Entity.Key> keys) {
+  public final Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
     final List<Entity> entities = new ArrayList<>();
     for (final Entity entity : getAllItems()) {
       for (final Entity.Key key : keys) {
@@ -441,7 +441,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<Entity> getEntitiesByPropertyValues(final Map<String, Object> values) {
+  public final Collection<Entity> getEntitiesByPropertyValue(final Map<String, Object> values) {
     final List<Entity> entities = new ArrayList<>();
     for (final Entity entity : getAllItems()) {
       boolean equal = true;

@@ -4157,3 +4157,4 @@
   ValueMap.getValueChangeObserver() renamed to getValueObserver()
   ValueMapEditModel.getValueChangeObserver() renamed to getValueObserver()
   Entity.set() renamed to put()
+  EntityTableModel, renamed getEntitiesByPrimaryKeys() to getEntitiesByKey(), setSelectedByPrimaryKeys() to setSelectedByKey() and getEntityByPrimaryKey() to getEntityByKey(), getEntitiesByPropertyValues() to getEntitiesByPropertyValue()

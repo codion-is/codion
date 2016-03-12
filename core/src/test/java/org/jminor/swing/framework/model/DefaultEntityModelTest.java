@@ -69,7 +69,7 @@ public final class DefaultEntityModelTest {
     final EntityTableModel deptTableModel = departmentModel.getTableModel();
     final Entity.Key operationsKey = Entities.key(TestDomain.T_DEPARTMENT);
     operationsKey.put(TestDomain.DEPARTMENT_ID, 40);//operations
-    deptTableModel.setSelectedByPrimaryKeys(Collections.singletonList(operationsKey));
+    deptTableModel.setSelectedByKey(Collections.singletonList(operationsKey));
 
     deptEditModel.setValue(TestDomain.DEPARTMENT_ID, 80);
     deptEditModel.update();
@@ -110,7 +110,7 @@ public final class DefaultEntityModelTest {
     primaryKey.put(TestDomain.DEPARTMENT_ID, 40);//operations, no employees
     final List<Entity.Key> keys = new ArrayList<>();
     keys.add(primaryKey);
-    departmentModel.getTableModel().setSelectedByPrimaryKeys(keys);
+    departmentModel.getTableModel().setSelectedByKey(keys);
     final Entity operations = departmentModel.getTableModel().getSelectionModel().getSelectedItem();
     try {
       departmentModel.getConnectionProvider().getConnection().beginTransaction();
@@ -126,7 +126,7 @@ public final class DefaultEntityModelTest {
       assertEquals("nameitagain", departmentsComboBoxModel.getEntity(inserted.getKey()).get(TestDomain.DEPARTMENT_NAME));
 
       primaryKey.put(TestDomain.DEPARTMENT_ID, 20);//research
-      departmentModel.getTableModel().setSelectedByPrimaryKeys(keys);
+      departmentModel.getTableModel().setSelectedByKey(keys);
       departmentModel.getEditModel().setValue(TestDomain.DEPARTMENT_NAME, "NewName");
       departmentModel.getEditModel().update();
 

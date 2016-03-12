@@ -54,7 +54,7 @@ public final class DefaultEntityTableModelTest {
   }
 
   @Test
-  public void setSelectedByPrimaryKeys() {
+  public void setSelectedByKey() {
     final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.refresh();
 
@@ -63,18 +63,18 @@ public final class DefaultEntityTableModelTest {
     final Entity.Key pk2 = Entities.key(TestDomain.T_EMP);
     pk2.put(TestDomain.EMP_ID, 2);
 
-    tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk1));
+    tableModel.setSelectedByKey(Collections.singletonList(pk1));
     final Entity selectedPK1 = tableModel.getSelectionModel().getSelectedItem();
     assertEquals(pk1, selectedPK1.getKey());
     assertEquals(1, tableModel.getSelectionModel().getSelectionCount());
 
-    tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk2));
+    tableModel.setSelectedByKey(Collections.singletonList(pk2));
     final Entity selectedPK2 = tableModel.getSelectionModel().getSelectedItem();
     assertEquals(pk2, selectedPK2.getKey());
     assertEquals(1, tableModel.getSelectionModel().getSelectionCount());
 
     final List<Entity.Key> keys = Arrays.asList(pk1, pk2);
-    tableModel.setSelectedByPrimaryKeys(keys);
+    tableModel.setSelectedByKey(keys);
     final List<Entity> selectedItems = tableModel.getSelectionModel().getSelectedItems();
     for (final Entity selected : selectedItems) {
       assertTrue(keys.contains(selected.getKey()));
@@ -150,7 +150,7 @@ public final class DefaultEntityTableModelTest {
     pk2.put(TestDomain.EMP_ID, 2);
     try {
       tableModel.getConnectionProvider().getConnection().beginTransaction();
-      tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk1));
+      tableModel.setSelectedByKey(Collections.singletonList(pk1));
       tableModel.getSelectionModel().setSelectedIndex(0);
       Entity selected = tableModel.getSelectionModel().getSelectedItem();
       tableModel.setRemoveEntitiesOnDelete(true);
@@ -158,7 +158,7 @@ public final class DefaultEntityTableModelTest {
       tableModel.deleteSelected();
       assertFalse(tableModel.contains(selected, false));
 
-      tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk2));
+      tableModel.setSelectedByKey(Collections.singletonList(pk2));
       selected = tableModel.getSelectionModel().getSelectedItem();
       tableModel.setRemoveEntitiesOnDelete(false);
       assertFalse(tableModel.isRemoveEntitiesOnDelete());
@@ -171,17 +171,17 @@ public final class DefaultEntityTableModelTest {
   }
 
   @Test
-  public void getEntityByPrimaryKey() {
+  public void getEntityByKey() {
     final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.refresh();
 
     final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
     pk1.put(TestDomain.EMP_ID, 1);
-    assertNotNull(tableModel.getEntityByPrimaryKey(pk1));
+    assertNotNull(tableModel.getEntityByKey(pk1));
 
     final Entity.Key pk2 = Entities.key(TestDomain.T_EMP);
     pk2.put(TestDomain.EMP_ID, -66);
-    assertNull(tableModel.getEntityByPrimaryKey(pk2));
+    assertNull(tableModel.getEntityByKey(pk2));
   }
 
   @Test
@@ -391,21 +391,21 @@ public final class DefaultEntityTableModelTest {
   }
 
   @Test
-  public void getEntitiesByPropertyValues() {
+  public void getEntitiesByPropertyValue() {
     testModel.refresh();
     final Map<String, Object> propValues = new HashMap<>();
     propValues.put(TestDomain.DETAIL_STRING, "b");
-    assertEquals(1, testModel.getEntitiesByPropertyValues(propValues).size());
+    assertEquals(1, testModel.getEntitiesByPropertyValue(propValues).size());
     propValues.put(TestDomain.DETAIL_STRING, "zz");
-    assertTrue(testModel.getEntitiesByPropertyValues(propValues).isEmpty());
+    assertTrue(testModel.getEntitiesByPropertyValue(propValues).isEmpty());
   }
 
   @Test
-  public void getEntitiesByPrimaryKeys() {
+  public void getEntitiesByKey() {
     testModel.refresh();
     Entity tmpEnt = Entities.entity(TestDomain.T_DETAIL);
     tmpEnt.put(TestDomain.DETAIL_ID, 3l);
-    assertEquals("c", testModel.getEntityByPrimaryKey(tmpEnt.getKey()).get(TestDomain.DETAIL_STRING));
+    assertEquals("c", testModel.getEntityByKey(tmpEnt.getKey()).get(TestDomain.DETAIL_STRING));
     final List<Entity.Key> keys = new ArrayList<>();
     keys.add(tmpEnt.getKey());
     tmpEnt = Entities.entity(TestDomain.T_DETAIL);
@@ -415,7 +415,7 @@ public final class DefaultEntityTableModelTest {
     tmpEnt.put(TestDomain.DETAIL_ID, 1l);
     keys.add(tmpEnt.getKey());
 
-    final Collection<Entity> entities = testModel.getEntitiesByPrimaryKeys(keys);
+    final Collection<Entity> entities = testModel.getEntitiesByKey(keys);
     assertEquals(3, entities.size());
   }
 

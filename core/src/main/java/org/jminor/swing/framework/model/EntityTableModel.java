@@ -251,13 +251,13 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @param keys the primary key values to use as condition
    * @return the entities having the primary key values as in <code>keys</code>
    */
-  Collection<Entity> getEntitiesByPrimaryKeys(final Collection<Entity.Key> keys);
+  Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys);
 
   /**
    * Sets the selected entities according to the primary keys in <code>primaryKeys</code>
    * @param keys the primary keys of the entities to select
    */
-  void setSelectedByPrimaryKeys(final Collection<Entity.Key> keys);
+  void setSelectedByKey(final Collection<Entity.Key> keys);
 
   /**
    * Finds entities according to the values of propertyValues
@@ -265,7 +265,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * to their respective propertyIDs
    * @return the entities having the exact same property values as in properties
    */
-  Collection<Entity> getEntitiesByPropertyValues(final Map<String, Object> values);
+  Collection<Entity> getEntitiesByPropertyValue(final Map<String, Object> values);
 
   /**
    * Returns an Iterator which iterates through the selected entities
@@ -277,7 +277,7 @@ public interface EntityTableModel extends FilteredTableModel<Entity, Property>, 
    * @param primaryKey the primary key to search by
    * @return the entity with the given primary key from the table model, null if it's not found
    */
-  Entity getEntityByPrimaryKey(final Entity.Key primaryKey);
+  Entity getEntityByKey(final Entity.Key primaryKey);
 
   /**
    * @param primaryKey the primary key
