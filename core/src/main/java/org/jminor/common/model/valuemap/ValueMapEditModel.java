@@ -54,13 +54,13 @@ public interface ValueMapEditModel<K, V> {
   /**
    * @return an EventObserver notified each time a value changes
    */
-  EventObserver<ValueChange<K, ?>> getValueChangeObserver();
+  EventObserver<ValueChange<K, ?>> getValueObserver();
 
   /**
    * @param key the key for which to retrieve the event
    * @return an EventObserver notified when the value of <code>key</code> changes
    */
-  EventObserver<ValueChange<K, ?>> getValueChangeObserver(K key);
+  EventObserver<ValueChange<K, ?>> getValueObserver(K key);
 
   /**
    * @return the validator

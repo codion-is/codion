@@ -151,13 +151,13 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<ValueChange<K, ?>> getValueChangeObserver() {
-    return valueMap.getValueChangeObserver();
+  public final EventObserver<ValueChange<K, ?>> getValueObserver() {
+    return valueMap.getValueObserver();
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<ValueChange<K, ?>> getValueChangeObserver(final K key) {
+  public final EventObserver<ValueChange<K, ?>> getValueObserver(final K key) {
     Util.rejectNullValue(key, KEY);
     return getValueChangeEvent(key).getObserver();
   }
@@ -179,7 +179,7 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   /** {@inheritDoc} */
   @Override
   public final void addValueListener(final K key, final EventInfoListener<ValueChange<K, ?>> listener) {
-    getValueChangeObserver(key).addInfoListener(listener);
+    getValueObserver(key).addInfoListener(listener);
   }
 
   /** {@inheritDoc} */

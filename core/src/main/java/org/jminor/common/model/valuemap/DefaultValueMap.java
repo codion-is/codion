@@ -306,7 +306,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public final void addValueListener(final EventInfoListener<ValueChange<K, ?>> valueListener) {
-    getValueChangeObserver().addInfoListener(valueListener);
+    getValueObserver().addInfoListener(valueListener);
   }
 
   /** {@inheritDoc} */
@@ -321,7 +321,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   @Override
   public final StateObserver getModifiedObserver() {
     final State state = States.state(isModified());
-    getValueChangeObserver().addInfoListener(new EventInfoListener<ValueChange<K, ?>>() {
+    getValueObserver().addInfoListener(new EventInfoListener<ValueChange<K, ?>>() {
       @Override
       public void eventOccurred(final ValueChange info) {
         state.setActive(isModified());
@@ -333,7 +333,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final EventObserver<ValueChange<K, ?>> getValueChangeObserver() {
+  public final EventObserver<ValueChange<K, ?>> getValueObserver() {
     return getValueChangedEvent().getObserver();
   }
 

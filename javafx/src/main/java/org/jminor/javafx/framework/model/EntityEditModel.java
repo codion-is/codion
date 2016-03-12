@@ -191,10 +191,10 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
   }
 
   private void bindEvents() {
-    getValueChangeObserver().addInfoListener(valueChange -> entityNewState.setActive(isEntityNew()));
+    getValueObserver().addInfoListener(valueChange -> entityNewState.setActive(isEntityNew()));
     entitySetEvent.addInfoListener(activeEntity -> entityNewState.setActive(isEntityNew()));
     entityNewState.addInfoListener(active -> System.out.println("Entity new: " + active));
-    getValueChangeObserver().addInfoListener(valueChange -> System.out.println(valueChange + " | modified: " + getEntity().isModified()));
+    getValueObserver().addInfoListener(valueChange -> System.out.println(valueChange + " | modified: " + getEntity().isModified()));
   }
 
   private static final class EntityValue<V> implements Value<V> {

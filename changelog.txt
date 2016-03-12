@@ -4154,3 +4154,5 @@
   EntityConnectionServerAdmin.performGC() removed
 0.9.9
   Major renaming of methods, ValueMap, Entity now conform to Map method names, get() and put() instead of getValue() and setValue() etc
+  ValueMap.getValueChangeObserver() renamed to getValueObserver()
+  ValueMapEditModel.getValueChangeObserver() renamed to getValueObserver()

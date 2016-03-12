@@ -48,7 +48,7 @@ public class DefaultValueMapEditModelTest {
 
     assertNotNull(model.getValidator());
 
-    model.getValueChangeObserver().addInfoListener(anyValueChangeListener);
+    model.getValueObserver().addInfoListener(anyValueChangeListener);
     model.addValueListener("id", valueChangeListener);
     model.addValueSetListener("id", valueSetListener);
 

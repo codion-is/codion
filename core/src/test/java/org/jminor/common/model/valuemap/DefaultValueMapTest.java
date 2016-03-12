@@ -59,7 +59,7 @@ public class DefaultValueMapTest {
     valueMap.addValueListener(valueListener);
 
     valueMap.getModifiedObserver();
-    valueMap.getValueChangeObserver();
+    valueMap.getValueObserver();
 
     assertFalse(valueMap.containsKey(key));
     assertTrue(valueMap.originalKeySet().isEmpty());
@@ -128,7 +128,7 @@ public class DefaultValueMapTest {
   @Test
   public void setAs() {
     final ValueMap<Integer, String> dest = new DefaultValueMap<>();
-    dest.getValueChangeObserver();
+    dest.getValueObserver();
 
     final ValueMap<Integer, String> source = new DefaultValueMap<>();
     source.put(1, "1");
@@ -159,8 +159,8 @@ public class DefaultValueMapTest {
   public void equals() {
     final ValueMap<String, Integer> mapOne = new DefaultValueMap<>();
     final ValueMap<String, Integer> mapTwo = mapOne.newInstance();
-    mapOne.getValueChangeObserver();
-    mapTwo.getValueChangeObserver();
+    mapOne.getValueObserver();
+    mapTwo.getValueObserver();
 
     mapOne.put("keyOne", 1);
     mapOne.put("keyTwo", 2);
