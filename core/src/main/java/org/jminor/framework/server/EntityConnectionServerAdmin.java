@@ -134,12 +134,6 @@ public interface EntityConnectionServerAdmin extends Remote {
   long getMaxMemory() throws RemoteException;
 
   /**
-   * Performs garbage collection
-   * @throws RemoteException in case of a communication error
-   */
-  void performGC() throws RemoteException;
-
-  /**
    * Unregisters the connection from the server, if connection pooling is enabled
    * for the user the connection is pooled.
    * @param clientID the ID of the client

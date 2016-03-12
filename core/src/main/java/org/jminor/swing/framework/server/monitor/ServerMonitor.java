@@ -173,10 +173,6 @@ public final class ServerMonitor {
     return contents.toString();
   }
 
-  public void performGC() throws RemoteException {
-    server.performGC();
-  }
-
   public void resetStatistics() {
     connectionRequestsPerSecondSeries.clear();
     allocatedMemorySeries.clear();

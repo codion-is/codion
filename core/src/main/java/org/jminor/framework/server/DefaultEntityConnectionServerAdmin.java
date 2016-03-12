@@ -395,13 +395,6 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public void performGC() {
-    LOG.info("performGG()");
-    Runtime.getRuntime().gc();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public int getConnectionCount() {
     return server.getConnectionCount();
   }

@@ -106,7 +106,6 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(initializeLoggingLevelField());
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "shutdownServer", "Shutdown")));
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "restartServer", "Restart")));
-    infoPanel.add(ControlProvider.createButton(Controls.methodControl(model, "performGC", "GC")));
 
     final JPanel controlPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
 
