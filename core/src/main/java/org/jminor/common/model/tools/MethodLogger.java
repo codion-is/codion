@@ -55,6 +55,7 @@ public final class MethodLogger {
   /**
    * Instantiates a new MethodLogger.
    * @param maxSize the maximum log size
+   * @param enabled true if this logger should be enabled
    */
   public MethodLogger(final int maxSize, final boolean enabled) {
     this(maxSize, enabled, new DefaultArgumentStringProvider());
