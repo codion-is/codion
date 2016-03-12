@@ -54,6 +54,7 @@ public final class LocalEntityConnections {
    * @return A {@link MethodLogger} implementation tailored for EntityConnections
    */
   public static MethodLogger createLogger() {
-    return new LocalEntityConnection.Logger(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LOG_SIZE));
+    return new MethodLogger(Configuration.getIntValue(Configuration.SERVER_CONNECTION_LOG_SIZE),
+            false, new LocalEntityConnection.EntityArgumentStringProvider());
   }
 }

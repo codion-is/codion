@@ -31,6 +31,7 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 
+import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
 import java.io.ByteArrayInputStream;
@@ -65,7 +66,7 @@ import java.util.Set;
  */
 final class LocalEntityConnection implements EntityConnection {
 
-  private static final org.slf4j.Logger LOG = LoggerFactory.getLogger(LocalEntityConnection.class);
+  private static final Logger LOG = LoggerFactory.getLogger(LocalEntityConnection.class);
   private static final String CRITERIA_PARAM_NAME = "criteria";
   private static final String WHERE = "where ";
   private static final String WHERE_SPACE_PREFIX = " where ";
@@ -1264,33 +1265,12 @@ final class LocalEntityConnection implements EntityConnection {
   };
 
   /**
-   * A MethodLogger implementation tailored for EntityConnections
+   * A {@link MethodLogger.ArgumentStringProvider} implementation tailored for EntityConnections
    */
-  static final class Logger extends MethodLogger {
-
-    private static final long serialVersionUID = 1;
-
-    private static final String IS_CONNECTED = "isConnected";
-    private static final String IS_VALID = "isValid";
-
-    /**
-     * Instantiates a new Logger
-     */
-    Logger(final int logSize) {
-      super(logSize);
-    }
-
-    /**
-     * @param methodName the method name
-     * @return true if this method logger should log the given method
-     */
-    @Override
-    protected boolean shouldMethodBeLogged(final String methodName) {
-      return !(methodName.equals(IS_CONNECTED) || methodName.equals(IS_VALID));
-    }
+  static final class EntityArgumentStringProvider extends MethodLogger.DefaultArgumentStringProvider {
 
     @Override
-    protected String getMethodArgumentAsString(final Object argument) {
+    public String toString(final Object argument) {
       if (argument == null) {
         return "";
       }
@@ -1300,10 +1280,10 @@ final class LocalEntityConnection implements EntityConnection {
         builder.append(getEntityCriteriaString((EntityCriteria) argument));
       }
       else if (argument instanceof Object[] && ((Object[]) argument).length > 0) {
-        builder.append("[").append(argumentArrayToString((Object[]) argument)).append("]");
+        builder.append("[").append(toString((Object[]) argument)).append("]");
       }
       else if (argument instanceof Collection && !((Collection) argument).isEmpty()) {
-        builder.append("[").append(argumentArrayToString(((Collection) argument).toArray())).append("]");
+        builder.append("[").append(toString(((Collection) argument).toArray())).append("]");
       }
       else if (argument instanceof Entity) {
         builder.append(getEntityParameterString((Entity) argument));
@@ -1327,7 +1307,7 @@ final class LocalEntityConnection implements EntityConnection {
       }
       final List<?> values = criteria.getValues();
       if (values != null) {
-        builder.append(", ").append(getMethodArgumentAsString(values));
+        builder.append(", ").append(toString(values));
       }
 
       return builder.toString();

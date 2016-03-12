@@ -62,7 +62,7 @@ public class DefaultRemoteEntityConnectionTest {
     try {
       final ClientInfo info = ServerUtil.clientInfo(ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), "DefaultRemoteEntityConnectionTestClient"));
       connection = new DefaultRemoteEntityConnection(DatabasesTest.createTestDatabaseInstance(), info, 1236, true, false);
-      connection.setMethodLogger(new MethodLogger(10));
+      connection.setMethodLogger(new MethodLogger(10, false));
     }
     finally {
       try {

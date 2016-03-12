@@ -22,46 +22,60 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 /**
- * A cyclical method call logger allowing nested logging of method calls.
+ * A method call logger allowing logging of nested method calls.
  * TODO this class should be able to handle/recover from incorrect usage, not crash the application
  */
-public class MethodLogger implements Serializable {
+public final class MethodLogger {
 
-  private static final long serialVersionUID = 1;
-  private static final int CHAR_PER_ARGUMENT = 40;
+  /**
+   * Provides String representations of method arguments
+   */
+  public interface ArgumentStringProvider {
 
-  private final transient Deque<Entry> callStack = new LinkedList<>();
-  private LinkedList<Entry> entries = new LinkedList<>();
-  private int maxSize;
+    /**
+     * @param argument the argument
+     * @return a String representation of the given argument
+     */
+    String toString(final Object argument);
+
+    /**
+     * @param arguments the arguments
+     * @return a String representation of the given arguments array
+     */
+    String toString(final Object[] arguments);
+  }
+
+  private final Deque<Entry> callStack = new LinkedList<>();
+  private final LinkedList<Entry> entries = new LinkedList<>();
+  private final ArgumentStringProvider argumentStringProvider;
+  private final int maxSize;
+
   private boolean enabled = false;
-  private long lastAccessTime = System.currentTimeMillis();
-  private long lastExitTime = System.currentTimeMillis();
-  private String lastAccessedMethod;
-  private String lastAccessMessage;
-  private String lastExitedMethod;
 
   /**
    * Instantiates a new MethodLogger.
    * @param maxSize the maximum log size
    */
-  public MethodLogger(final int maxSize) {
-    this(maxSize, false);
+  public MethodLogger(final int maxSize, final boolean enabled) {
+    this(maxSize, enabled, new DefaultArgumentStringProvider());
   }
 
   /**
    * Instantiates a new MethodLogger.
    * @param maxSize the maximum log size
    * @param enabled true if this logger should be enabled
+   * @param argumentStringProvider the ArgumentStringProvider
    */
-  public MethodLogger(final int maxSize, final boolean enabled) {
+  public MethodLogger(final int maxSize, final boolean enabled, final ArgumentStringProvider argumentStringProvider) {
     this.maxSize = maxSize;
     this.enabled = enabled;
+    this.argumentStringProvider = argumentStringProvider;
   }
 
   /**
    * @param method the method being accessed
    */
-  public final void logAccess(final String method) {
+  public void logAccess(final String method) {
     logAccess(method, null);
   }
 
@@ -69,17 +83,11 @@ public class MethodLogger implements Serializable {
    * @param method the method being accessed
    * @param arguments the method arguments
    */
-  public final synchronized void logAccess(final String method, final Object[] arguments) {
-    if (shouldMethodBeLogged(method)) {
-      final String accessMessage = argumentArrayToString(arguments);
-      if (enabled) {
-        final Entry entry = new Entry(method, accessMessage);
-        setLastAccessInfo(method, entry.getAccessTime(), entry.getAccessMessage());
-        callStack.push(entry);
-      }
-      else {
-        setLastAccessInfo(method, System.currentTimeMillis(), accessMessage);
-      }
+  public synchronized void logAccess(final String method, final Object[] arguments) {
+    if (enabled) {
+      final String accessMessage = argumentStringProvider.toString(arguments);
+      final Entry entry = new Entry(method, accessMessage);
+      callStack.push(entry);
     }
   }
 
@@ -87,7 +95,7 @@ public class MethodLogger implements Serializable {
    * @param method the method being exited
    * @return the Entry
    */
-  public final Entry logExit(final String method) {
+  public Entry logExit(final String method) {
     return logExit(method, null);
   }
 
@@ -96,7 +104,7 @@ public class MethodLogger implements Serializable {
    * @param exception the exception, if any
    * @return the Entry
    */
-  public final Entry logExit(final String method, final Throwable exception) {
+  public Entry logExit(final String method, final Throwable exception) {
     return logExit(method, exception, null);
   }
 
@@ -106,8 +114,8 @@ public class MethodLogger implements Serializable {
    * @param exitMessage the message to associate with exiting the method
    * @return the Entry
    */
-  public final synchronized Entry logExit(final String method, final Throwable exception, final String exitMessage) {
-    if (enabled && shouldMethodBeLogged(method)) {
+  public synchronized Entry logExit(final String method, final Throwable exception, final String exitMessage) {
+    if (enabled) {
       if (callStack.isEmpty()) {
         throw new IllegalStateException("Call stack is empty when trying to log method exit");
       }
@@ -118,7 +126,6 @@ public class MethodLogger implements Serializable {
       entry.setExitTime();
       entry.setException(exception);
       entry.setExitMessage(exitMessage);
-      setLastExitInfo(method, entry.getExitTime());
       if (callStack.isEmpty()) {
         if (entries.size() == maxSize) {
           entries.removeFirst();
@@ -131,9 +138,6 @@ public class MethodLogger implements Serializable {
 
       return entry;
     }
-    else {
-      setLastExitInfo(method, System.currentTimeMillis());
-    }
 
     return null;
   }
@@ -141,14 +145,14 @@ public class MethodLogger implements Serializable {
   /**
    * @return true if this logger is enabled
    */
-  public final synchronized boolean isEnabled() {
+  public synchronized boolean isEnabled() {
     return enabled;
   }
 
   /**
    * @param enabled true to enable this logger
    */
-  public final synchronized void setEnabled(final boolean enabled) {
+  public synchronized void setEnabled(final boolean enabled) {
     this.enabled = enabled;
     entries.clear();
     callStack.clear();
@@ -157,7 +161,7 @@ public class MethodLogger implements Serializable {
   /**
    * @return the number of log entries
    */
-  public final synchronized int size() {
+  public synchronized int size() {
     return entries.size();
   }
 
@@ -165,63 +169,28 @@ public class MethodLogger implements Serializable {
    * @param index the index
    * @return the entry at the given index
    */
-  public final synchronized Entry getEntryAt(final int index) {
+  public synchronized Entry getEntryAt(final int index) {
     return entries.get(index);
   }
 
   /**
    * @return the last log entry
    */
-  public final synchronized Entry getLastEntry() {
+  public synchronized Entry getLastEntry() {
     return entries.getLast();
   }
 
   /**
    * @return the first log entry
    */
-  public final synchronized Entry getFirstEntry() {
+  public synchronized Entry getFirstEntry() {
     return entries.getFirst();
-  }
-
-  /**
-   * @return the time of last access
-   */
-  public final long getLastAccessTime() {
-    return lastAccessTime;
-  }
-
-  /**
-   * @return the last accessed method
-   */
-  public final String getLastAccessedMethod() {
-    return lastAccessedMethod;
-  }
-
-  /**
-   * @return the last access message
-   */
-  public final String getLastAccessMessage() {
-    return lastAccessMessage;
-  }
-
-  /**
-   * @return the last exit message
-   */
-  public final long getLastExitTime() {
-    return lastExitTime;
-  }
-
-  /**
-   * @return the last exited method
-   */
-  public final String getLastExitedMethod() {
-    return lastExitedMethod;
   }
 
   /**
    * @return an unmodifiable view of the log entries
    */
-  public final synchronized List<Entry> getEntries() {
+  public synchronized List<Entry> getEntries() {
     return Collections.unmodifiableList(entries);
   }
 
@@ -256,76 +225,34 @@ public class MethodLogger implements Serializable {
   }
 
   /**
-   * Override to exclude certain methods from being logged
-   * @param method the method
-   * @return true if the given method should be logged
+   * A default {@link ArgumentStringProvider} implementation based on {@link String#valueOf(Object)}
    */
-  protected boolean shouldMethodBeLogged(final String method) {
-    return true;
-  }
+  public static class DefaultArgumentStringProvider implements ArgumentStringProvider {
 
-  /**
-   * Override to provide specific string representations of method arguments
-   * @param argument the argument
-   * @return a String representation of the given argument
-   */
-  protected String getMethodArgumentAsString(final Object argument) {
-    return String.valueOf(argument);
-  }
+    private static final int CHAR_PER_ARGUMENT = 40;
 
-  protected final String argumentArrayToString(final Object[] arguments) {
-    if (arguments == null || arguments.length == 0) {
-      return "";
+    /** {@inheritDoc} */
+    @Override
+    public String toString(final Object argument) {
+      return String.valueOf(argument);
     }
 
-    final StringBuilder stringBuilder = new StringBuilder(arguments.length * CHAR_PER_ARGUMENT);
-    for (int i = 0; i < arguments.length; i++) {
-      stringBuilder.append(getMethodArgumentAsString(arguments[i]));
-      if (i < arguments.length-1) {
-        stringBuilder.append(", ");
+    /** {@inheritDoc} */
+    @Override
+    public final String toString(final Object[] arguments) {
+      if (arguments == null || arguments.length == 0) {
+        return "";
       }
-    }
 
-    return stringBuilder.toString();
-  }
+      final StringBuilder stringBuilder = new StringBuilder(arguments.length * CHAR_PER_ARGUMENT);
+      for (int i = 0; i < arguments.length; i++) {
+        stringBuilder.append(toString(arguments[i]));
+        if (i < arguments.length-1) {
+          stringBuilder.append(", ");
+        }
+      }
 
-  private void setLastAccessInfo(final String method, final long accessTime, final String accessMessage) {
-    lastAccessTime = accessTime;
-    lastAccessedMethod = method;
-    lastAccessMessage = accessMessage;
-  }
-
-  private void setLastExitInfo(final String method, final long exitTime) {
-    lastExitedMethod = method;
-    lastExitTime = exitTime;
-  }
-
-  private void writeObject(final ObjectOutputStream stream) throws IOException {
-    stream.writeInt(maxSize);
-    stream.writeBoolean(enabled);
-    stream.writeLong(lastAccessTime);
-    stream.writeLong(lastExitTime);
-    stream.writeObject(lastAccessedMethod);
-    stream.writeObject(lastAccessMessage);
-    stream.writeObject(lastExitedMethod);
-    stream.writeInt(entries.size());
-    for (final Entry entry : entries) {
-      stream.writeObject(entry);
-    }
-  }
-
-  private void readObject(final ObjectInputStream stream) throws IOException, ClassNotFoundException {
-    this.maxSize = stream.readInt();
-    this.enabled = stream.readBoolean();
-    this.lastAccessTime = stream.readLong();
-    this.lastExitTime = stream.readLong();
-    this.lastAccessedMethod = (String) stream.readObject();
-    this.lastAccessMessage = (String) stream.readObject();
-    this.lastExitedMethod = (String) stream.readObject();
-    final int entryCount = stream.readInt();
-    this.entries = new LinkedList<>();
-    for (int i = 0; i < entryCount; i++) {
-      entries.add((Entry) stream.readObject());
+      return stringBuilder.toString();
     }
   }
 

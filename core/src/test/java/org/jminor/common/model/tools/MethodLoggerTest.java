@@ -13,18 +13,13 @@ public class MethodLoggerTest {
 
   @Test
   public void test() throws Exception {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = new MethodLogger(10, false);
     assertFalse(logger.isEnabled());
     logger.setEnabled(true);
 
     final String methodName = "test";
     logger.logAccess(methodName, new Object[0]);
     logger.logExit(methodName, null, null);
-    assertEquals(methodName, logger.getLastAccessedMethod());
-    assertEquals(methodName, logger.getLastExitedMethod());
-    assertTrue(logger.getLastAccessTime() > 0);
-    assertNotNull(logger.getLastAccessMessage());
-    assertTrue(logger.getLastExitTime() > 0);
 
     assertEquals(1, logger.size());
     logger.setEnabled(false);
@@ -33,29 +28,25 @@ public class MethodLoggerTest {
 
   @Test
   public void enableDisable() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = new MethodLogger(10, false);
     assertFalse(logger.isEnabled());
     logger.logAccess("method");
 
-    assertEquals("method", logger.getLastAccessedMethod());
     assertEquals(0, logger.size());
 
     logger.setEnabled(true);
     logger.logAccess("method2");
     logger.logExit("method2");
 
-    assertEquals("method2", logger.getLastAccessedMethod());
-    assertEquals("method2", logger.getLastExitedMethod());
     assertEquals(1, logger.size());
 
     logger.setEnabled(false);
-    assertEquals("method2", logger.getLastAccessedMethod());
     assertEquals(0, logger.size());
   }
 
   @Test
   public void singleLevelLogging() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = new MethodLogger(10, false);
     logger.setEnabled(true);
     logger.logAccess("method");
     logger.logExit("method");
@@ -74,7 +65,7 @@ public class MethodLoggerTest {
 
   @Test
   public void twoLevelLogging() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = new MethodLogger(10, false);
     logger.setEnabled(true);
     logger.logAccess("method", new Object[]{"param1", "param2"});
     logger.logAccess("subMethod");
@@ -97,7 +88,7 @@ public class MethodLoggerTest {
 
   @Test
   public void twoLevelLoggingSameMethodName() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = new MethodLogger(10, false);
     logger.setEnabled(true);
     logger.logAccess("method");
     logger.logAccess("method");
@@ -120,7 +111,7 @@ public class MethodLoggerTest {
 
   @Test
   public void threeLevelLogging() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = new MethodLogger(10, false);
     logger.setEnabled(true);
     logger.logAccess("one");
     logger.logAccess("two");
@@ -159,7 +150,7 @@ public class MethodLoggerTest {
 
   @Test(expected = IllegalStateException.class)
   public void exitBeforeAccess() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = new MethodLogger(10, false);
     logger.setEnabled(true);
     logger.logAccess("method");
     logger.logExit("method");
@@ -168,7 +159,7 @@ public class MethodLoggerTest {
 
   @Test(expected = IllegalStateException.class)
   public void wrongMethodName() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = new MethodLogger(10, false);
     logger.setEnabled(true);
     logger.logAccess("method");
     logger.logExit("anotherMethod");
@@ -196,7 +187,7 @@ public class MethodLoggerTest {
 
   @Test
   public void appendLogEntry() {
-    final MethodLogger logger = new MethodLogger(10);
+    final MethodLogger logger = new MethodLogger(10, false);
     logger.setEnabled(true);
     logger.logAccess("one");
     logger.logAccess("two");

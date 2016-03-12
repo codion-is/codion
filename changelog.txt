@@ -4150,3 +4150,4 @@
   EntityTableModel.InsertAction enum added
   EntityTableModel.setAddEntitiesOnInsert() replaced with setInsertAction()
   DateUtil.getFirst/LastDayOfYear() renamed to getFirst/LastDayOfCurrentYear(), getFirst/LastDayOfYear(year) added
+  MethodLogger, removed redundant and unused fields, is now final and no longer serializable, ArgumentStringProvider added and implemented
