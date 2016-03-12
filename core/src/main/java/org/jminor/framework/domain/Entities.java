@@ -791,7 +791,7 @@ public final class Entities {
           return "";
         }
 
-        return format.format(entity.getValue(propertyID));
+        return format.format(entity.get(propertyID));
       }
     }
 
@@ -811,7 +811,7 @@ public final class Entities {
           return "";
         }
 
-        return entity.getForeignKeyValue(foreignKeyPropertyID).getValueAsString(propertyID);
+        return entity.getForeignKey(foreignKeyPropertyID).getAsString(propertyID);
       }
     }
 
@@ -825,7 +825,7 @@ public final class Entities {
 
       @Override
       public String toString(final Entity entity) {
-        return entity.getValueAsString(propertyID);
+        return entity.getAsString(propertyID);
       }
     }
 
@@ -928,7 +928,7 @@ public final class Entities {
         return;
       }
 
-      final Number value = (Number) entity.getValue(property);
+      final Number value = (Number) entity.get(property);
       if (value.doubleValue() < (property.getMin() == null ? Double.NEGATIVE_INFINITY : property.getMin())) {
         throw new RangeValidationException(property.getPropertyID(), value, "'" + property + "' " +
                 FrameworkMessages.get(FrameworkMessages.PROPERTY_VALUE_TOO_SMALL) + " " + property.getMin());
@@ -945,7 +945,7 @@ public final class Entities {
       Util.rejectNullValue(entity, ENTITY_PARAM);
       Util.rejectNullValue(property, "property");
       if (!isNullable(entity, property.getPropertyID()) && entity.isValueNull(property.getPropertyID())) {
-        if ((entity.getPrimaryKey().isNull() || entity.getOriginalPrimaryKey().isNull()) && !(property instanceof Property.ForeignKeyProperty)) {
+        if ((entity.getKey().isNull() || entity.getOriginalKey().isNull()) && !(property instanceof Property.ForeignKeyProperty)) {
           //a new entity being inserted, allow null for columns with default values and auto generated primary key values
           final boolean columnPropertyWithoutDefaultValue = isColumnPropertyWithoutDefaultValue(property);
           final boolean primaryKeyPropertyWithoutAutoGenerate = isPrimaryKeyPropertyWithoutAutoGenerate(entityID, property);

@@ -65,7 +65,7 @@ public class ObservableEntityList implements ObservableList<Entity> {
     return new Callback<TableColumn.CellDataFeatures<Entity, Object>, ObservableValue<Object>>() {
       @Override
       public ObservableValue<Object> call(final TableColumn.CellDataFeatures<Entity, Object> row) {
-        return new ReadOnlyObjectWrapper<Object>(row.getValue().getValue(property.getPropertyID()));
+        return new ReadOnlyObjectWrapper<Object>(row.getValue().get(property.getPropertyID()));
       }
     };
   }

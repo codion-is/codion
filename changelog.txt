@@ -4152,3 +4152,5 @@
   DateUtil.getFirst/LastDayOfYear() renamed to getFirst/LastDayOfCurrentYear(), getFirst/LastDayOfYear(year) added
   MethodLogger, removed redundant and unused fields, is now final and no longer serializable, ArgumentStringProvider added and implemented
   EntityConnectionServerAdmin.performGC() removed
+0.9.9
+  Major renaming of methods, ValueMap, Entity now conform to Map method names, get() and put() instead of getValue() and setValue() etc

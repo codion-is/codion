@@ -51,8 +51,8 @@ public final class TestDomain {
             .setComparator(new Comparator<Entity>() {
               @Override
               public int compare(final Entity o1, final Entity o2) {
-                final Integer code1 = o1.getIntValue(MASTER_CODE);
-                final Integer code2 = o2.getIntValue(MASTER_CODE);
+                final Integer code1 = o1.getInt(MASTER_CODE);
+                final Integer code2 = o2.getInt(MASTER_CODE);
 
                 return code1.compareTo(code2);
               }
@@ -160,7 +160,7 @@ public final class TestDomain {
               /*provide a custom background color for managers*/
               @Override
               public Color getBackgroundColor(final Entity entity, final Property property) {
-                if (property.is(EMP_JOB) && "MANAGER".equals(entity.getValue(EMP_JOB))) {
+                if (property.is(EMP_JOB) && "MANAGER".equals(entity.get(EMP_JOB))) {
                   return Color.CYAN;
                 }
 

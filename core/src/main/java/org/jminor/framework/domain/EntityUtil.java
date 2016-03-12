@@ -60,7 +60,7 @@ public final class EntityUtil {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
     final Map<Entity.Key, Entity> entityMap = new HashMap<>();
     for (final Entity entity : entities) {
-      entityMap.put(entity.getPrimaryKey(), entity);
+      entityMap.put(entity.getKey(), entity);
     }
 
     return entityMap;
@@ -83,7 +83,7 @@ public final class EntityUtil {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
     final List<Entity.Key> keys = new ArrayList<>(entities.size());
     for (final Entity entity : entities) {
-      keys.add(originalValue ? entity.getOriginalPrimaryKey() : entity.getPrimaryKey());
+      keys.add(originalValue ? entity.getOriginalKey() : entity.getKey());
     }
 
     return keys;
@@ -99,7 +99,7 @@ public final class EntityUtil {
     Util.rejectNullValue(keys, "keys");
     final List<T> list = new ArrayList<>(keys.size());
     for (final Entity.Key key : keys) {
-      list.add((T) key.getValue(key.getFirstKeyProperty().getPropertyID()));
+      list.add((T) key.get(key.getFirstProperty().getPropertyID()));
     }
 
     return list;
@@ -156,10 +156,10 @@ public final class EntityUtil {
     final List<T> values = new ArrayList<>(entities.size());
     for (final Entity entity : entities) {
       if (includeNullValues) {
-        values.add((T) entity.getValue(property));
+        values.add((T) entity.get(property));
       }
       else if (!entity.isValueNull(property)) {
-        values.add((T) entity.getValue(property));
+        values.add((T) entity.get(property));
       }
     }
 
@@ -194,7 +194,7 @@ public final class EntityUtil {
       return values;
     }
     for (final Entity entity : entities) {
-      final Object value = entity.getValue(propertyID);
+      final Object value = entity.get(propertyID);
       if (value != null || includeNullValue) {
         values.add((T) value);
       }
@@ -216,7 +216,7 @@ public final class EntityUtil {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
     final Map<Entity.Key, Object> oldValues = new HashMap<>(entities.size());
     for (final Entity entity : entities) {
-      oldValues.put(entity.getPrimaryKey(), entity.setValue(propertyID, value));
+      oldValues.put(entity.getKey(), entity.put(propertyID, value));
     }
 
     return oldValues;
@@ -234,7 +234,7 @@ public final class EntityUtil {
     return Util.map(entities, new Util.MapKeyProvider<K, Entity>() {
       @Override
       public K getKey(final Entity value) {
-        return (K) value.getValue(propertyID);
+        return (K) value.get(propertyID);
       }
     });
   }
@@ -422,7 +422,7 @@ public final class EntityUtil {
   public static Entity setNull(final Entity entity) {
     Util.rejectNullValue(entity, "entity");
     for (final Property property : Entities.getProperties(entity.getEntityID(), true)) {
-      entity.setValue(property, null);
+      entity.set(property, null);
     }
 
     return entity;
@@ -435,7 +435,7 @@ public final class EntityUtil {
    * entity, returns null if all of {@code entity}s original values match the values found in {@code comparison}
    */
   public static Property getModifiedProperty(final Entity entity, final Entity comparison) {
-    for (final String propertyID : comparison.getValueKeys()) {
+    for (final String propertyID : comparison.keySet()) {
       final Property property = Entities.getProperty(entity.getEntityID(), propertyID);
       //BLOB property values are not loaded, so we can't compare those
       if (!property.isType(Types.BLOB) && isValueMissingOrModified(entity, comparison, propertyID)) {
@@ -459,7 +459,7 @@ public final class EntityUtil {
     final Property modifiedProperty = getModifiedProperty(entity, modified);
 
     return Entities.getCaption(entity.getEntityID()) + ", " + modifiedProperty + ": " +
-            entity.getOriginalValue(modifiedProperty.getPropertyID()) + " -> " + modified.getValue(modifiedProperty);
+            entity.getOriginal(modifiedProperty.getPropertyID()) + " -> " + modified.get(modifiedProperty);
   }
 
   /**
@@ -469,7 +469,7 @@ public final class EntityUtil {
    * @return true if the value is missing or the original value differs from the one in the comparison entity
    */
   static boolean isValueMissingOrModified(final Entity entity, final Entity comparison, final String propertyID) {
-    return !entity.containsValue(propertyID) || !Util.equal(comparison.getValue(propertyID), entity.getOriginalValue(propertyID));
+    return !entity.containsKey(propertyID) || !Util.equal(comparison.get(propertyID), entity.getOriginal(propertyID));
   }
 
   /**
@@ -479,8 +479,8 @@ public final class EntityUtil {
    * @return true if this entity has not been persisted
    */
   public static boolean isEntityNew(final Entity entity) {
-    final Entity.Key key = entity.getPrimaryKey();
-    final Entity.Key originalKey = entity.getOriginalPrimaryKey();
+    final Entity.Key key = entity.getKey();
+    final Entity.Key originalKey = entity.getOriginalKey();
 
     return key.isNull() || originalKey.isNull();
   }
@@ -583,7 +583,7 @@ public final class EntityUtil {
       final Map<String, GetterSetter> beanPropertyMap = getPropertyMap(bean.getClass());
       for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = Entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
-        entity.setValue(property, propertyEntry.getValue().getter.invoke(bean));
+        entity.set(property, propertyEntry.getValue().getter.invoke(bean));
       }
 
       return entity;
@@ -630,7 +630,7 @@ public final class EntityUtil {
       final Map<String, GetterSetter> beanPropertyMap = getPropertyMap(beanClass);
       for (final Map.Entry<String, GetterSetter> propertyEntry : beanPropertyMap.entrySet()) {
         final Property property = Entities.getProperty(entity.getEntityID(), propertyEntry.getKey());
-        propertyEntry.getValue().setter.invoke(bean, entity.getValue(property));
+        propertyEntry.getValue().setter.invoke(bean, entity.get(property));
       }
 
       return bean;

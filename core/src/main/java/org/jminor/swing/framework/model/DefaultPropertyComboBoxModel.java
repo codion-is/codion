@@ -35,7 +35,7 @@ public class DefaultPropertyComboBoxModel<T> extends DefaultFilteredComboBoxMode
                                       final EventObserver refreshObserver) {
     this(new ValueCollectionProvider<T>() {
       @Override
-      public Collection<T> getValues() {
+      public Collection<T> values() {
         try {
           return (Collection<T>) connectionProvider.getConnection().selectValues(property.getPropertyID(), EntityCriteriaUtil.criteria(entityID));
         }
@@ -68,6 +68,6 @@ public class DefaultPropertyComboBoxModel<T> extends DefaultFilteredComboBoxMode
   /** {@inheritDoc} */
   @Override
   protected final List<T> initializeContents() {
-    return new ArrayList<>(valueProvider.getValues());
+    return new ArrayList<>(valueProvider.values());
   }
 }

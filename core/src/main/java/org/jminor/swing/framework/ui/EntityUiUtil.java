@@ -977,7 +977,7 @@ public final class EntityUiUtil {
     Util.collate(primaryKeyProperties);
     for (final Property.ColumnProperty property : primaryKeyProperties) {
       final boolean modified = entity.isModified(property.getPropertyID());
-      String value = "[PK] " + property.getPropertyID() + ": " + entity.getValueAsString(property.getPropertyID());
+      String value = "[PK] " + property.getPropertyID() + ": " + entity.getAsString(property.getPropertyID());
       if (modified) {
         value += getOriginalValue(entity, property);
       }
@@ -1003,12 +1003,12 @@ public final class EntityUiUtil {
         if (!fkValueNull) {
           final Entity referencedEntity;
           if (isLoaded) {
-            referencedEntity = entity.getForeignKeyValue(property.getPropertyID());
+            referencedEntity = entity.getForeignKey(property.getPropertyID());
           }
           else {
-            referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedPrimaryKey(property));
-            entity.removeValue(property.getPropertyID());
-            entity.setValue(property, referencedEntity);
+            referencedEntity = connectionProvider.getConnection().selectSingle(entity.getReferencedKey(property));
+            entity.remove(property.getPropertyID());
+            entity.set(property, referencedEntity);
           }
           String text = "[FK" + (isLoaded ? "] " : "+] ") + property.getCaption() + ": " + referencedEntity.toString();
           if (modified) {
@@ -1017,7 +1017,7 @@ public final class EntityUiUtil {
           final JMenu foreignKeyMenu = new JMenu(text);
           setInvalidModified(foreignKeyMenu, valid, modified);
           foreignKeyMenu.setToolTipText(toolTipText);
-          populateEntityMenu(foreignKeyMenu, entity.getForeignKeyValue(property.getPropertyID()), connectionProvider);
+          populateEntityMenu(foreignKeyMenu, entity.getForeignKey(property.getPropertyID()), connectionProvider);
           rootMenu.add(foreignKeyMenu);
         }
         else {
@@ -1059,7 +1059,7 @@ public final class EntityUiUtil {
         final String prefix = "[" + property.getTypeClass().getSimpleName().substring(0, 1)
                 + (property instanceof Property.DenormalizedViewProperty ? "*" : "")
                 + (property instanceof Property.DenormalizedProperty ? "+" : "") + "] ";
-        final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getValueAsString(property.getPropertyID());
+        final String value = entity.isValueNull(property.getPropertyID()) ? "<null>" : entity.getAsString(property.getPropertyID());
         final boolean longValue = value != null && value.length() > maxValueLength;
         String caption = prefix + property + ": " + (longValue ? value.substring(0, maxValueLength) + "..." : value);
         if (modified) {
@@ -1092,7 +1092,7 @@ public final class EntityUiUtil {
   }
 
   private static String getOriginalValue(final Entity entity, final Property property) {
-    final Object originalValue = entity.getOriginalValue(property.getPropertyID());
+    final Object originalValue = entity.getOriginal(property.getPropertyID());
 
     return " | " + (originalValue == null ? "<null>" : originalValue.toString());
   }

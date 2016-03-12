@@ -123,7 +123,7 @@ public class DefaultForeignKeyCriteriaModel extends DefaultColumnCriteriaModel<P
       }
     }
     else {
-      stringBuilder.append(((Entity) object).getPrimaryKey().toString());
+      stringBuilder.append(((Entity) object).getKey().toString());
     }
 
     return stringBuilder.toString();

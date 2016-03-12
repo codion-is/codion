@@ -24,11 +24,11 @@ public class DefaultValueMapValidatorTest {
       }
     };
     final ValueMap<String, Integer> map = new DefaultValueMap<>();
-    map.setValue("1", null);
+    map.put("1", null);
     validator.validate(map);
-    map.setValue("1", 1);
+    map.put("1", 1);
     validator.validate(map);
-    map.setValue("2", null);
+    map.put("2", null);
     validator.validate(map);
   }
 
@@ -37,16 +37,16 @@ public class DefaultValueMapValidatorTest {
     final DefaultValueMapValidator<String, ValueMap<String, Integer>> validator = new DefaultValueMapValidator<String, ValueMap<String, Integer>>() {
       @Override
       public void validate(final ValueMap<String, Integer> valueMap, final String key) throws ValidationException {
-        final Integer value = valueMap.getValue("1");
+        final Integer value = valueMap.get("1");
         if (value.equals(1)) {
           throw new ValidationException("1", 1, "Invalid");
         }
       }
     };
     final ValueMap<String, Integer> map = new DefaultValueMap<>();
-    map.setValue("1", 0);
+    map.put("1", 0);
     assertTrue(validator.isValid(map));
-    map.setValue("1", 1);
+    map.put("1", 1);
     assertFalse(validator.isValid(map));
   }
 
@@ -56,11 +56,11 @@ public class DefaultValueMapValidatorTest {
       @Override
       public void validate(final ValueMap<String, Integer> valueMap, final String key) throws ValidationException {
         super.validate(valueMap, key);
-        throw new ValidationException("1", valueMap.getValue("1"), "Invalid");
+        throw new ValidationException("1", valueMap.get("1"), "Invalid");
       }
     };
     final ValueMap<String, Integer> map = new DefaultValueMap<>();
-    map.setValue("1", 1);
+    map.put("1", 1);
 
     validator.validate(map);
   }

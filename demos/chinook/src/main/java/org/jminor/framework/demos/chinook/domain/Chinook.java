@@ -456,7 +456,7 @@ public class Chinook {
         selectCriteria.setForeignKeyFetchDepthLimit(0);
         final List<Entity> invoices = entityConnection.selectMany(selectCriteria);
         for (final Entity invoice : invoices) {
-          invoice.setValue(INVOICE_TOTAL, invoice.getValue(INVOICE_TOTAL_SUB));
+          invoice.put(INVOICE_TOTAL, invoice.get(INVOICE_TOTAL_SUB));
         }
         final List<Entity> modifiedInvoices = EntityUtil.getModifiedEntities(invoices);
         if (!modifiedInvoices.isEmpty()) {

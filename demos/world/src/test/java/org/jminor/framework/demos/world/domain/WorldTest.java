@@ -32,8 +32,8 @@ public final class WorldTest extends EntityTestUnit {
   protected Entity initializeTestEntity(final String entityID) {
     final Entity entity = super.initializeTestEntity(entityID);
     if (entityID.equals(World.T_COUNTRY)) {
-      entity.setValue(World.COUNTRY_CODE, "XXX");
-      entity.setValue(World.COUNTRY_CONTINENT, "Asia");
+      entity.put(World.COUNTRY_CODE, "XXX");
+      entity.put(World.COUNTRY_CONTINENT, "Asia");
     }
 
     return entity;
@@ -43,7 +43,7 @@ public final class WorldTest extends EntityTestUnit {
   protected void modifyEntity(final Entity testEntity) {
     super.modifyEntity(testEntity);
     if (testEntity.is(World.T_COUNTRY)) {
-      testEntity.setValue(World.COUNTRY_CONTINENT, "Europe");
+      testEntity.put(World.COUNTRY_CONTINENT, "Europe");
     }
   }
 
@@ -52,12 +52,12 @@ public final class WorldTest extends EntityTestUnit {
     switch (entityID) {
       case World.T_COUNTRY:
         final Entity iceland = Entities.entity(World.T_COUNTRY);
-        iceland.setValue(World.COUNTRY_CODE, "ISL");
+        iceland.put(World.COUNTRY_CODE, "ISL");
 
         return iceland;
       case World.T_CITY:
         final Entity reykjavik = Entities.entity(World.T_CITY);
-        reykjavik.setValue(World.CITY_ID, 1449);
+        reykjavik.put(World.CITY_ID, 1449);
 
         return reykjavik;
     }

@@ -214,7 +214,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
     final JSONObject propertyValues = keyObject.getJSONObject(VALUES);
     for (int j = 0; j < propertyValues.names().length(); j++) {
       final String propertyID = propertyValues.names().get(j).toString();
-      key.setValue(propertyID, parseValue(Entities.getProperty(entityID, propertyID), propertyValues, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
+      key.put(propertyID, parseValue(Entities.getProperty(entityID, propertyID), propertyValues, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
     }
 
     return key;
@@ -353,12 +353,12 @@ public final class EntityJSONParser implements Serializer<Entity> {
                                             final DateFormat jsonTimeFormat, final DateFormat jsonDateFormat,
                                             final DateFormat jsonTimestampFormat) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
-    for (final String propertyID : entity.getValueKeys()) {
+    for (final String propertyID : entity.keySet()) {
       final Property property = Entities.getProperty(entity.getEntityID(), propertyID);
       if (!(property instanceof Property.DenormalizedViewProperty) &&
               (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues)) {
         propertyValues.put(property.getPropertyID(),
-                serializeValue(entity.getValue(property), property, includeForeignKeyValues,
+                serializeValue(entity.get(property), property, includeForeignKeyValues,
                         jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
       }
     }
@@ -370,7 +370,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
                                             final DateFormat jsonDateFormat, final DateFormat jsonTimestampFormat) throws JSONException {
     final JSONObject propertyValues = new JSONObject();
     for (final Property.ColumnProperty property : Entities.getPrimaryKeyProperties(key.getEntityID())) {
-      propertyValues.put(property.getPropertyID(), serializeValue(key.getValue(property.getPropertyID()), property,
+      propertyValues.put(property.getPropertyID(), serializeValue(key.get(property.getPropertyID()), property,
               false, jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
     }
 
@@ -385,7 +385,7 @@ public final class EntityJSONParser implements Serializer<Entity> {
       if (entity.isModified(property.getPropertyID())) {
         if (!(property instanceof Property.ForeignKeyProperty) || includeForeignKeyValues) {
           originalValues.put(property.getPropertyID(),
-                  serializeValue(entity.getOriginalValue(property.getPropertyID()), property, false,
+                  serializeValue(entity.getOriginal(property.getPropertyID()), property, false,
                           jsonTimeFormat, jsonDateFormat, jsonTimestampFormat));
         }
       }

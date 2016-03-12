@@ -68,10 +68,10 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
     entitySetEvent.fire(entity);
   }
 
-  public final Entity getEntityCopy(final boolean includePrimaryKeyValues) {
+  public final Entity getEntityCopy(final boolean includeKeyValues) {
     final Entity copy = (Entity) getEntity().getCopy();
-    if (!includePrimaryKeyValues) {
-      copy.clearPrimaryKeyValues();
+    if (!includeKeyValues) {
+      copy.clearKeyValues();
     }
 
     return copy;

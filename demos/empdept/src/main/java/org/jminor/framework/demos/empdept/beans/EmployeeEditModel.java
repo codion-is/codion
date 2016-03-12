@@ -67,7 +67,7 @@ public final class EmployeeEditModel extends DefaultEntityEditModel {
           getForeignKeyComboBoxModel(EMPLOYEE_MGR_FK).setFilterCriteria(new FilterCriteria<Entity>() {
             @Override
             public boolean include(final Entity item) {
-              return (Util.equal(item.getForeignKeyValue(EMPLOYEE_DEPARTMENT_FK), info.getNewValue())
+              return (Util.equal(item.getForeignKey(EMPLOYEE_DEPARTMENT_FK), info.getNewValue())
                       && !Util.equal(item, getEntityCopy()));
             }
           });

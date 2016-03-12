@@ -140,10 +140,10 @@ public class EntityRESTServiceTest {
     assertEquals(4, queryEntities.size());
 
     Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
-    department.setValue(TestDomain.DEPARTMENT_ID, null);
-    department.setValue(TestDomain.DEPARTMENT_ID, -42);
-    department.setValue(TestDomain.DEPARTMENT_NAME, "Test");
-    department.setValue(TestDomain.DEPARTMENT_LOCATION, "Location");
+    department.put(TestDomain.DEPARTMENT_ID, null);
+    department.put(TestDomain.DEPARTMENT_ID, -42);
+    department.put(TestDomain.DEPARTMENT_NAME, "Test");
+    department.put(TestDomain.DEPARTMENT_LOCATION, "Location");
 
     //insert/POST
     uriBuilder = createURIBuilder();
@@ -153,11 +153,11 @@ public class EntityRESTServiceTest {
     queryResult = getContentStream(response.getEntity());
     final List<Entity.Key> queryKeys = EntityJSONParser.deserializeKeys(queryResult);
     assertEquals(1, queryKeys.size());
-    assertEquals(department.getPrimaryKey(), queryKeys.get(0));
+    assertEquals(department.getKey(), queryKeys.get(0));
 
     //delete/DELETE by key
     uriBuilder = createURIBuilder();
-    uriBuilder.setPath(EntityRESTService.BY_KEY_PATH).addParameter("primaryKeys", EntityJSONParser.serializeKeys(Collections.singletonList(department.getPrimaryKey())));
+    uriBuilder.setPath(EntityRESTService.BY_KEY_PATH).addParameter("keys", EntityJSONParser.serializeKeys(Collections.singletonList(department.getKey())));
     response = client.execute(new HttpDelete(uriBuilder.build()));
     queryResult = getContentStream(response.getEntity());
 
@@ -173,8 +173,8 @@ public class EntityRESTServiceTest {
     department = queryEntities.get(0);
 
     //update/PUT
-    department.setValue(TestDomain.DEPARTMENT_LOCATION, "New location");
-    department.setValue(TestDomain.DEPARTMENT_NAME, "New name");
+    department.put(TestDomain.DEPARTMENT_LOCATION, "New location");
+    department.put(TestDomain.DEPARTMENT_NAME, "New name");
     uriBuilder = createURIBuilder();
     uriBuilder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(department), false));
     response = client.execute(new HttpPut(uriBuilder.build()));
@@ -198,7 +198,7 @@ public class EntityRESTServiceTest {
 
     //select/GET by key
     uriBuilder = createURIBuilder();
-    uriBuilder.setPath(EntityRESTService.BY_KEY_PATH).addParameter("primaryKeys", EntityJSONParser.serializeKeys(Collections.singletonList(department.getPrimaryKey())));
+    uriBuilder.setPath(EntityRESTService.BY_KEY_PATH).addParameter("primaryKeys", EntityJSONParser.serializeKeys(Collections.singletonList(department.getKey())));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryResult = getContentStream(response.getEntity());

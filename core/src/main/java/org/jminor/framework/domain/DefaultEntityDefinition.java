@@ -112,7 +112,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     @Override
     public String toString(final Entity entity) {
       Util.rejectNullValue(entity, "entity");
-      return entityID + ": " + entity.getPrimaryKey();
+      return entityID + ": " + entity.getKey();
     }
   };
 
@@ -874,10 +874,10 @@ final class DefaultEntityDefinition implements Entity.Definition {
       return false;
     }
 
-    protected final void queryAndSet(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
+    protected final void queryAndSet(final Entity entity, final Property.ColumnProperty keyProperty,
                                      final DatabaseConnection connection) throws SQLException {
       final Object value;
-      switch (primaryKeyProperty.getColumnType()) {
+      switch (keyProperty.getColumnType()) {
         case Types.INTEGER:
           value = DatabaseUtil.queryInteger(connection, getQuery(connection.getDatabase()));
           break;
@@ -887,7 +887,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
         default:
           throw new SQLException("Queried key generator only implemented for Types.INTEGER and Types.BIGINT datatypes", null, null);
       }
-      entity.setValue(primaryKeyProperty, value);
+      entity.set(keyProperty, value);
     }
 
     protected abstract String getQuery(final Database database);

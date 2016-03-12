@@ -30,13 +30,13 @@ public class EntityCriteriaUtilTest {
   @Test
   public void criteria() {
     final Entity entity = Entities.entity(TestDomain.T_DEPARTMENT);
-    entity.setValue(TestDomain.DEPARTMENT_ID, 10);
+    entity.put(TestDomain.DEPARTMENT_ID, 10);
 
-    EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getPrimaryKey());
-    assertPrimaryKeyCriteria(criteria);
+    EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getKey());
+    assertKeyCriteria(criteria);
 
-    criteria = EntityCriteriaUtil.criteria(Collections.singletonList(entity.getPrimaryKey()));
-    assertPrimaryKeyCriteria(criteria);
+    criteria = EntityCriteriaUtil.criteria(Collections.singletonList(entity.getKey()));
+    assertKeyCriteria(criteria);
 
     criteria = EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, SearchType.NOT_LIKE, "DEPT");
     assertCriteria(criteria);
@@ -45,13 +45,13 @@ public class EntityCriteriaUtilTest {
   @Test
   public void selectCriteria() {
     final Entity entity = Entities.entity(TestDomain.T_DEPARTMENT);
-    entity.setValue(TestDomain.DEPARTMENT_ID, 10);
+    entity.put(TestDomain.DEPARTMENT_ID, 10);
 
-    EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(entity.getPrimaryKey());
-    assertPrimaryKeyCriteria(criteria);
+    EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(entity.getKey());
+    assertKeyCriteria(criteria);
 
-    criteria = EntityCriteriaUtil.selectCriteria(Collections.singletonList(entity.getPrimaryKey()));
-    assertPrimaryKeyCriteria(criteria);
+    criteria = EntityCriteriaUtil.selectCriteria(Collections.singletonList(entity.getKey()));
+    assertKeyCriteria(criteria);
 
     criteria = EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, SearchType.NOT_LIKE, "DEPT");
     assertCriteria(criteria);
@@ -84,13 +84,13 @@ public class EntityCriteriaUtilTest {
   @Test
   public void foreignKeyCriteriaEntity() {
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
-    department.setValue(TestDomain.DEPARTMENT_ID, 10);
+    department.put(TestDomain.DEPARTMENT_ID, 10);
     Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, SearchType.LIKE, department);
     assertEquals("deptno = ?", criteria.getWhereClause());
 
     final Entity department2 = Entities.entity(TestDomain.T_DEPARTMENT);
-    department2.setValue(TestDomain.DEPARTMENT_ID, 11);
+    department2.put(TestDomain.DEPARTMENT_ID, 11);
     criteria = EntityCriteriaUtil.foreignKeyCriteria(TestDomain.T_EMP,
             TestDomain.EMP_DEPARTMENT_FK, SearchType.LIKE, Arrays.asList(department, department2));
     assertEquals("(deptno in (?, ?))", criteria.getWhereClause());
@@ -103,9 +103,9 @@ public class EntityCriteriaUtilTest {
   @Test
   public void foreignKeyCriteriaEntityKey() {
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
-    department.setValue(TestDomain.DEPARTMENT_ID, 10);
+    department.put(TestDomain.DEPARTMENT_ID, 10);
     final Criteria<Property.ColumnProperty> criteria = EntityCriteriaUtil.foreignKeyCriteria(TestDomain.T_EMP,
-            TestDomain.EMP_DEPARTMENT_FK, SearchType.LIKE, department.getPrimaryKey());
+            TestDomain.EMP_DEPARTMENT_FK, SearchType.LIKE, department.getKey());
     assertEquals("deptno = ?", criteria.getWhereClause());
   }
 
@@ -118,7 +118,7 @@ public class EntityCriteriaUtilTest {
     assertEquals(criteria.getOrderByClause(), TestDomain.DEPARTMENT_NAME);
   }
 
-  private void assertPrimaryKeyCriteria(final EntityCriteria criteria) {
+  private void assertKeyCriteria(final EntityCriteria criteria) {
     assertEquals(TestDomain.T_DEPARTMENT, criteria.getEntityID());
     assertEquals("deptno = ?", criteria.getWhereClause());
     assertEquals(1, criteria.getValues().size());

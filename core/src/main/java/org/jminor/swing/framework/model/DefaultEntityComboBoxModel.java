@@ -71,7 +71,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     @Override
     public boolean include(final Entity item) {
       for (final Map.Entry<String, Set<Entity>> entry : foreignKeyFilterEntities.entrySet()) {
-        final Entity foreignKeyValue = item.getForeignKeyValue(entry.getKey());
+        final Entity foreignKeyValue = item.getForeignKey(entry.getKey());
         if (foreignKeyValue == null) {
           return !strictForeignKeyFiltering;
         }
@@ -151,7 +151,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   @Override
   public final Entity getEntity(final Entity.Key primaryKey) {
     for (final Entity entity : getAllItems()) {
-      if (entity != null && entity.getPrimaryKey().equals(primaryKey)) {
+      if (entity != null && entity.getKey().equals(primaryKey)) {
         return entity;
       }
     }
@@ -161,14 +161,14 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
 
   /** {@inheritDoc} */
   @Override
-  public final void setSelectedEntityByPrimaryKey(final Entity.Key primaryKey) {
-    Util.rejectNullValue(primaryKey, "primaryKey");
-    final int indexOfKey = getIndexOfKey(primaryKey);
+  public final void setSelectedEntityByKey(final Entity.Key key) {
+    Util.rejectNullValue(key, "key");
+    final int indexOfKey = getIndexOfKey(key);
     if (indexOfKey >= 0) {
       setSelectedItem(getElementAt(indexOfKey));
     }
     else {
-      final int filteredIndexOfKey = getFilteredIndexOfKey(primaryKey);
+      final int filteredIndexOfKey = getFilteredIndexOfKey(key);
       if (filteredIndexOfKey >= 0) {
         setSelectedItem(getFilteredItems().get(filteredIndexOfKey));
       }
@@ -264,7 +264,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
       public void eventOccurred() {
         final Entity selected = getSelectedValue();
         if (selected != null) {
-          foreignKeyModel.setSelectedEntityByPrimaryKey(selected.getReferencedPrimaryKey(foreignKeyProperty));
+          foreignKeyModel.setSelectedEntityByKey(selected.getReferencedKey(foreignKeyProperty));
         }
       }
     });
@@ -291,7 +291,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     }
 
     if (item instanceof Entity) {
-      final int indexOfKey = getIndexOfKey(((Entity) item).getPrimaryKey());
+      final int indexOfKey = getIndexOfKey(((Entity) item).getKey());
       if (indexOfKey >= 0) {
         return getElementAt(indexOfKey);
       }
@@ -347,7 +347,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     final int size = getSize();
     for (int index = 0; index < size; index++) {
       final Object item = getElementAt(index);
-      if (item != null && ((Entity) item).getPrimaryKey().equals(primaryKey)) {
+      if (item != null && ((Entity) item).getKey().equals(primaryKey)) {
         return index;
       }
     }
@@ -358,7 +358,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
     final List<Entity> filteredItems = getFilteredItems();
     for (int index = 0; index < filteredItems.size(); index++) {
       final Object item = filteredItems.get(index);
-      if (((Entity) item).getPrimaryKey().equals(primaryKey)) {
+      if (((Entity) item).getKey().equals(primaryKey)) {
         return index;
       }
     }

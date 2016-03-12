@@ -63,12 +63,12 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   /** {@inheritDoc} */
   @Override
   public boolean isValueNull(final K key) {
-    return getValue(key) == null;
+    return get(key) == null;
   }
 
   /** {@inheritDoc} */
   @Override
-  public V setValue(final K key, final V value) {
+  public V put(final K key, final V value) {
     final boolean initialization = !values.containsKey(key);
     final V previousValue = values.put(key, value);
     if (!initialization && Util.equal(previousValue, value)) {
@@ -80,20 +80,20 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     if (valueChangedEvent != null) {
       notifyValueChange(key, value, previousValue, initialization);
     }
-    handleValueSet(key, value, previousValue, initialization);
+    handleSet(key, value, previousValue, initialization);
 
     return previousValue;
   }
 
   /** {@inheritDoc} */
   @Override
-  public V getValue(final K key) {
+  public V get(final K key) {
     return values.get(key);
   }
 
   /** {@inheritDoc} */
   @Override
-  public String getValueAsString(final K key) {
+  public String getAsString(final K key) {
     final V value = values.get(key);
     if (value == null) {
       return "";
@@ -118,8 +118,8 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
       return false;
     }
 
-    for (final K key : otherMap.getValueKeys()) {
-      if (!containsValue(key) || !Util.equal(otherMap.getValue(key), getValue(key))) {
+    for (final K key : otherMap.keySet()) {
+      if (!containsKey(key) || !Util.equal(otherMap.get(key), get(key))) {
         return false;
       }
     }
@@ -131,7 +131,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   @Override
   public int hashCode() {
     int hash = MAGIC_NUMBER;
-    for (final Object value : getValues()) {
+    for (final Object value : values()) {
       if (value != null) {
         hash = hash + value.hashCode();
       }
@@ -142,20 +142,20 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean containsValue(final K key) {
+  public final boolean containsKey(final K key) {
     return values.containsKey(key);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final V removeValue(final K key) {
+  public final V remove(final K key) {
     if (values.containsKey(key)) {
       final V value = values.remove(key);
       removeOriginalValue(key);
       if (valueChangedEvent != null) {
         notifyValueChange(key, null, value, false);
       }
-      handleValueRemoved(key, value);
+      handleRemove(key, value);
 
       return value;
     }
@@ -181,34 +181,34 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<K> getValueKeys() {
-    return Collections.unmodifiableCollection(values.keySet());
+  public final Set<K> keySet() {
+    return Collections.unmodifiableSet(values.keySet());
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<K> getOriginalValueKeys() {
+  public final Set<K> originalKeySet() {
     if (originalValues == null) {
-      return Collections.emptyList();
+      return Collections.emptySet();
     }
 
-    return Collections.unmodifiableCollection(originalValues.keySet());
+    return Collections.unmodifiableSet(originalValues.keySet());
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Collection<V> getValues() {
+  public final Collection<V> values() {
     return Collections.unmodifiableCollection(values.values());
   }
 
   /** {@inheritDoc} */
   @Override
-  public final V getOriginalValue(final K key) {
+  public final V getOriginal(final K key) {
     if (isModified(key)) {
       return originalValues.get(key);
     }
 
-    return getValue(key);
+    return get(key);
   }
 
   /** {@inheritDoc} */
@@ -219,14 +219,14 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public ValueMap<K, V> getInstance() {
+  public ValueMap<K, V> newInstance() {
     return new DefaultValueMap<>();
   }
 
   /** {@inheritDoc} */
   @Override
   public final ValueMap<K, V> getCopy() {
-    final ValueMap<K, V> copy = getInstance();
+    final ValueMap<K, V> copy = newInstance();
     copy.setAs(this);
 
     return copy;
@@ -238,20 +238,20 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
     if (sourceMap == this) {
       return;
     }
-    final Set<K> affectedKeys = new HashSet<>(getValueKeys());
+    final Set<K> affectedKeys = new HashSet<>(keySet());
     clear();
     if (sourceMap != null) {
-      final Collection<K> sourceValueKeys = sourceMap.getValueKeys();
+      final Collection<K> sourceValueKeys = sourceMap.keySet();
       affectedKeys.addAll(sourceValueKeys);
       for (final K key : sourceValueKeys) {
-        final V value = copyValue(sourceMap.getValue(key));
+        final V value = copy(sourceMap.get(key));
         values.put(key, value);
-        handleValueSet(key, value, null, true);
+        handleSet(key, value, null, true);
       }
       if (sourceMap.isModified()) {
         originalValues = new HashMap<>();
-        for (final K key : sourceMap.getOriginalValueKeys()) {
-          originalValues.put(key, copyValue(sourceMap.getOriginalValue(key)));
+        for (final K key : sourceMap.originalKeySet()) {
+          originalValues.put(key, copy(sourceMap.getOriginal(key)));
         }
       }
     }
@@ -266,31 +266,31 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   /** {@inheritDoc} */
   @Override
-  public final void revertValue(final K key) {
+  public final void revert(final K key) {
     if (isModified(key)) {
-      setValue(key, getOriginalValue(key));
+      put(key, getOriginal(key));
     }
   }
 
   /** {@inheritDoc} */
   @Override
   public final void revertAll() {
-    for (final K key : getValueKeys()) {
-      revertValue(key);
+    for (final K key : keySet()) {
+      revert(key);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public final void saveValue(final K key) {
+  public final void save(final K key) {
     removeOriginalValue(key);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void saveAll() {
-    for (final K key : getValueKeys()) {
-      saveValue(key);
+    for (final K key : keySet()) {
+      save(key);
     }
   }
 
@@ -362,7 +362,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
    * @param value the value to copy
    * @return a deep copy of the given value, or the same instance in case the value is immutable
    */
-  protected V copyValue(final V value) {
+  protected V copy(final V value) {
     return value;
   }
 
@@ -373,14 +373,14 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
    * @param previousValue the previous value
    * @param initialization true if the value was being initialized
    */
-  protected void handleValueSet(final K key, final V value, final V previousValue, final boolean initialization) {/*Provided for subclasses*/}
+  protected void handleSet(final K key, final V value, final V previousValue, final boolean initialization) {/*Provided for subclasses*/}
 
   /**
    * Called after a value has been removed from this map. This base implementation does nothing.
    * @param key the key
    * @param value the value that was removed
    */
-  protected void handleValueRemoved(final K key, final V value) {/*Provided for subclasses*/}
+  protected void handleRemove(final K key, final V value) {/*Provided for subclasses*/}
 
   /**
    * Called after the value map has been cleared. This base implementation does nothing.
@@ -394,7 +394,7 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
 
   private void updateOriginalValue(final K key, final V value, final V previousValue) {
     final boolean modified = isModified(key);
-    if (modified && Util.equal(getOriginalValue(key), value)) {
+    if (modified && Util.equal(getOriginal(key), value)) {
       removeOriginalValue(key);//we're back to the original value
     }
     else if (!modified) {//only the first original value is kept

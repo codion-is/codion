@@ -9,15 +9,15 @@ import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
-import java.util.Collection;
+import java.util.Set;
 
 /**
  * An interface describing an object mapping values to keys, null values are allowed.
  * A ValueMap keeps track of the first value associated with a given key, so that if a value
- * is modified, {@link #getOriginalValue(Object)} returns that original value and
+ * is modified, {@link #getOriginal(Object)} returns that original value and
  * {@link #isModified(Object)} returns true until the value is either saved via
- * {@link #saveValue(Object)} or reverted to its original value via {@link #revertValue(Object)},
- * note that setting the original value manually has the same effect as calling {@link #revertValue(Object)}
+ * {@link #save(Object)} or reverted to its original value via {@link #revert(Object)},
+ * note that setting the original value manually has the same effect as calling {@link #revert(Object)}
  * @param <K> the type of the map keys
  * @param <V> the type of the map values
  */
@@ -29,7 +29,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @param value the value
    * @return the previous value mapped to the given key
    */
-  V setValue(final K key, final V value);
+  V put(final K key, final V value);
 
   /**
    * Removes the given key and value from this value map along with the original value if any.
@@ -37,14 +37,14 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @param key the key to remove
    * @return the value that was removed
    */
-  V removeValue(final K key);
+  V remove(final K key);
 
   /**
    * Retrieves a string representation of the value mapped to the given key
    * @param key the key
    * @return the value mapped to the given key as a string, an empty string if no such mapping exists
    */
-  String getValueAsString(final K key);
+  String getAsString(final K key);
 
   /**
    * Silently removes all values from this map, as in, removes the values
@@ -72,17 +72,17 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @param key the key
    * @return true if a value is mapped to this key
    */
-  boolean containsValue(final K key);
+  boolean containsKey(final K key);
 
   /**
    * @return an unmodifiable view of the keys mapping the values in this ValueMap
    */
-  Collection<K> getValueKeys();
+  Set<K> keySet();
 
   /**
    * @return an unmodifiable view of the keys mapping the original values in this ValueMap
    */
-  Collection<K> getOriginalValueKeys();
+  Set<K> originalKeySet();
 
   /**
    * @return the number of values in this map
@@ -94,7 +94,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * @param key the key for which to retrieve the original value
    * @return the original value
    */
-  V getOriginalValue(final K key);
+  V getOriginal(final K key);
 
   /**
    * @return true if one or more values have been modified.
@@ -113,7 +113,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * If the value has not been modified then calling this method has no effect.
    * @param key the key for which to revert the value
    */
-  void revertValue(final K key);
+  void revert(final K key);
 
   /**
    * Reverts all value modifications that have been made.
@@ -127,7 +127,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
    * If no original value exists calling this method has no effect.
    * @param key the key for which to save the value
    */
-  void saveValue(final K key);
+  void save(final K key);
 
   /**
    * Saves all the value modifications that have been made.
@@ -143,7 +143,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
   /**
    * @return a new ValueMap instance compatible with this instance
    */
-  ValueMap<K, V> getInstance();
+  ValueMap<K, V> newInstance();
 
   /**
    * @return a deep copy of this value map

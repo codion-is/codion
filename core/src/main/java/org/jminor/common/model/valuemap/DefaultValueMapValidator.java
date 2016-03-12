@@ -40,7 +40,7 @@ public class DefaultValueMapValidator<K, V extends ValueMap<K, ?>> implements Va
   @Override
   public void validate(final V valueMap) throws ValidationException {
     Util.rejectNullValue(valueMap, "valueMap");
-    for (final K key : valueMap.getValueKeys()) {
+    for (final K key : valueMap.keySet()) {
       validate(valueMap, key);
     }
   }

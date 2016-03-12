@@ -65,7 +65,7 @@ public class EntityConnectionUtilTest {
             .setOrderByClause(TestDomain.EMP_ID));
     boolean zeroIdFound = false;
     for (final Entity emp : employees) {
-      if (Util.equal(emp.getValue(TestDomain.EMP_ID), 0)) {
+      if (Util.equal(emp.get(TestDomain.EMP_ID), 0)) {
         zeroIdFound = true;
       }
     }

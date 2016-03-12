@@ -179,14 +179,14 @@ public class DefaultEntityDefinitionTest {
     final Entity.Definition def = Entities.define("entity", "tableName",
             Properties.primaryKeyProperty("propertyID"));
     final Entity entity = Entities.entity("entity");
-    assertNull(def.getBackgroundColor(entity, entity.getPrimaryKey().getFirstKeyProperty()));
+    assertNull(def.getBackgroundColor(entity, entity.getKey().getFirstProperty()));
     def.setBackgroundColorProvider(new Entity.BackgroundColorProvider() {
       @Override
       public Color getBackgroundColor(final Entity entity, final Property property) {
         return Color.BLUE;
       }
     });
-    assertEquals(Color.BLUE, def.getBackgroundColor(entity, entity.getPrimaryKey().getFirstKeyProperty()));
+    assertEquals(Color.BLUE, def.getBackgroundColor(entity, entity.getKey().getFirstProperty()));
   }
 
   @Test
@@ -194,7 +194,7 @@ public class DefaultEntityDefinitionTest {
     final Entity.Definition def = Entities.define("entityToString", "tableName",
             Properties.primaryKeyProperty("propertyID"));
     final Entity entity = Entities.entity("entityToString");
-    entity.setValue("propertyID", 1);
+    entity.put("propertyID", 1);
     assertEquals("entityToString: propertyID:1", entity.toString());
     def.setStringProvider(new Entity.ToString() {
       @Override
@@ -203,7 +203,7 @@ public class DefaultEntityDefinitionTest {
       }
     });
     //the toString value is cached, so we need to clear it by setting a value
-    entity.setValue("propertyID", 2);
+    entity.put("propertyID", 2);
     assertEquals("test", entity.toString());
   }
 }

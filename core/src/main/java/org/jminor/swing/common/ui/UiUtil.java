@@ -1262,7 +1262,7 @@ public final class UiUtil {
     addKeyEvent(txtField, KeyEvent.VK_SPACE, InputEvent.CTRL_DOWN_MASK, new AbstractAction("UiUtil.lookupValue") {
       @Override
       public void actionPerformed(final ActionEvent e) {
-        final Object value = selectValue(txtField, valueCollectionProvider.getValues());
+        final Object value = selectValue(txtField, valueCollectionProvider.values());
         if (value != null) {
           txtField.setText(value.toString());
         }

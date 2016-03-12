@@ -66,12 +66,12 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.setToStringProvider(new Entity.ToString() {
       @Override
       public String toString(final Entity entity) {
-        return entity.getValueAsString(TestDomain.EMP_JOB);
+        return entity.getAsString(TestDomain.EMP_JOB);
       }
     });
     final Entity employee = Entities.entity(TestDomain.T_EMP);
-    employee.setValue(TestDomain.EMP_NAME, "Darri");
-    employee.setValue(TestDomain.EMP_JOB, "Test");
+    employee.put(TestDomain.EMP_NAME, "Darri");
+    employee.put(TestDomain.EMP_JOB, "Test");
     lookupModel.setSelectedEntities(Collections.singletonList(employee));
     assertEquals(lookupModel.getSearchString(), "Test");
     lookupModel.setToStringProvider(null);
@@ -201,7 +201,7 @@ public final class DefaultEntityLookupModelTest {
 
   private boolean contains(final List<Entity> result, final String employeeName) {
     for (final Entity entity : result) {
-      if (entity.getStringValue(TestDomain.EMP_NAME).equals(employeeName)) {
+      if (entity.getString(TestDomain.EMP_NAME).equals(employeeName)) {
         return true;
       }
     }
@@ -211,41 +211,41 @@ public final class DefaultEntityLookupModelTest {
 
   private void setupData() throws Exception {
     final Entity dept = Entities.entity(TestDomain.T_DEPARTMENT);
-    dept.setValue(TestDomain.DEPARTMENT_ID, 88);
-    dept.setValue(TestDomain.DEPARTMENT_LOCATION, "TestLoc");
-    dept.setValue(TestDomain.DEPARTMENT_NAME, "TestDept");
+    dept.put(TestDomain.DEPARTMENT_ID, 88);
+    dept.put(TestDomain.DEPARTMENT_LOCATION, "TestLoc");
+    dept.put(TestDomain.DEPARTMENT_NAME, "TestDept");
 
     final Entity emp = Entities.entity(TestDomain.T_EMP);
-    emp.setValue(TestDomain.EMP_DEPARTMENT_FK, dept);
-    emp.setValue(TestDomain.EMP_COMMISSION, 1000d);
-    emp.setValue(TestDomain.EMP_HIREDATE, new Date());
-    emp.setValue(TestDomain.EMP_JOB, "nojob");
-    emp.setValue(TestDomain.EMP_NAME, "John");
-    emp.setValue(TestDomain.EMP_SALARY, 1000d);
+    emp.put(TestDomain.EMP_DEPARTMENT_FK, dept);
+    emp.put(TestDomain.EMP_COMMISSION, 1000d);
+    emp.put(TestDomain.EMP_HIREDATE, new Date());
+    emp.put(TestDomain.EMP_JOB, "nojob");
+    emp.put(TestDomain.EMP_NAME, "John");
+    emp.put(TestDomain.EMP_SALARY, 1000d);
 
     final Entity emp2 = Entities.entity(TestDomain.T_EMP);
-    emp2.setValue(TestDomain.EMP_DEPARTMENT_FK, dept);
-    emp2.setValue(TestDomain.EMP_COMMISSION, 1000d);
-    emp2.setValue(TestDomain.EMP_HIREDATE, new Date());
-    emp2.setValue(TestDomain.EMP_JOB, "ajob");
-    emp2.setValue(TestDomain.EMP_NAME, "johnson");
-    emp2.setValue(TestDomain.EMP_SALARY, 1000d);
+    emp2.put(TestDomain.EMP_DEPARTMENT_FK, dept);
+    emp2.put(TestDomain.EMP_COMMISSION, 1000d);
+    emp2.put(TestDomain.EMP_HIREDATE, new Date());
+    emp2.put(TestDomain.EMP_JOB, "ajob");
+    emp2.put(TestDomain.EMP_NAME, "johnson");
+    emp2.put(TestDomain.EMP_SALARY, 1000d);
 
     final Entity emp3 = Entities.entity(TestDomain.T_EMP);
-    emp3.setValue(TestDomain.EMP_DEPARTMENT_FK, dept);
-    emp3.setValue(TestDomain.EMP_COMMISSION, 1000d);
-    emp3.setValue(TestDomain.EMP_HIREDATE, new Date());
-    emp3.setValue(TestDomain.EMP_JOB, "nojob");
-    emp3.setValue(TestDomain.EMP_NAME, "Andy");
-    emp3.setValue(TestDomain.EMP_SALARY, 1000d);
+    emp3.put(TestDomain.EMP_DEPARTMENT_FK, dept);
+    emp3.put(TestDomain.EMP_COMMISSION, 1000d);
+    emp3.put(TestDomain.EMP_HIREDATE, new Date());
+    emp3.put(TestDomain.EMP_JOB, "nojob");
+    emp3.put(TestDomain.EMP_NAME, "Andy");
+    emp3.put(TestDomain.EMP_SALARY, 1000d);
 
     final Entity emp4 = Entities.entity(TestDomain.T_EMP);
-    emp4.setValue(TestDomain.EMP_DEPARTMENT_FK, dept);
-    emp4.setValue(TestDomain.EMP_COMMISSION, 1000d);
-    emp4.setValue(TestDomain.EMP_HIREDATE, new Date());
-    emp4.setValue(TestDomain.EMP_JOB, "ajob");
-    emp4.setValue(TestDomain.EMP_NAME, "Andrew");
-    emp4.setValue(TestDomain.EMP_SALARY, 1000d);
+    emp4.put(TestDomain.EMP_DEPARTMENT_FK, dept);
+    emp4.put(TestDomain.EMP_COMMISSION, 1000d);
+    emp4.put(TestDomain.EMP_HIREDATE, new Date());
+    emp4.put(TestDomain.EMP_JOB, "ajob");
+    emp4.put(TestDomain.EMP_NAME, "Andrew");
+    emp4.put(TestDomain.EMP_SALARY, 1000d);
 
     EntityConnectionProvidersTest.CONNECTION_PROVIDER.getConnection().insert(Arrays.asList(dept, emp, emp2, emp3, emp4));
   }

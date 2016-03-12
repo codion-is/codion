@@ -338,7 +338,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   @Override
   public final Entity getEntityByPrimaryKey(final Entity.Key primaryKey) {
     for (final Entity entity : getVisibleItems()) {
-      if (entity.getPrimaryKey().equals(primaryKey)) {
+      if (entity.getKey().equals(primaryKey)) {
         return entity;
       }
     }
@@ -391,7 +391,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     for (final Entity entity : getAllItems()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
-          final Entity currentForeignKeyValue = entity.getForeignKeyValue(foreignKeyProperty.getPropertyID());
+          final Entity currentForeignKeyValue = entity.getForeignKey(foreignKeyProperty.getPropertyID());
           if (currentForeignKeyValue != null && currentForeignKeyValue.equals(foreignKeyValue)) {
             currentForeignKeyValue.setAs(foreignKeyValue);
             changed = true;
@@ -410,7 +410,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     final List<Entity.Key> keyList = new ArrayList<>(keys);
     final List<Integer> indexes = new ArrayList<>();
     for (final Entity visibleEntity : getVisibleItems()) {
-      final int index = keyList.indexOf(visibleEntity.getPrimaryKey());
+      final int index = keyList.indexOf(visibleEntity.getKey());
       if (index >= 0) {
         indexes.add(indexOf(visibleEntity));
         keyList.remove(index);
@@ -429,7 +429,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     final List<Entity> entities = new ArrayList<>();
     for (final Entity entity : getAllItems()) {
       for (final Entity.Key key : keys) {
-        if (entity.getPrimaryKey().equals(key)) {
+        if (entity.getKey().equals(key)) {
           entities.add(entity);
           break;
         }
@@ -447,7 +447,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       boolean equal = true;
       for (final Map.Entry<String, Object> entries : values.entrySet()) {
         final String propertyID = entries.getKey();
-        if (!entity.getValue(propertyID).equals(entries.getValue())) {
+        if (!entity.get(propertyID).equals(entries.getValue())) {
           equal = false;
           break;
         }
@@ -548,7 +548,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     for (int i = 0; i < data.length; i++) {
       final List<String> line = new ArrayList<>();
       for (final Property property : properties) {
-        line.add(entities.get(i).getValueAsString(property));
+        line.add(entities.get(i).getAsString(property));
       }
 
       data[i] = line.toArray(new String[line.size()]);
@@ -611,16 +611,16 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     Util.rejectNullValue(entity, "entity");
     Util.rejectNullValue(property, "property");
     if (property instanceof Property.ValueListProperty || property instanceof Property.ForeignKeyProperty) {
-      return entity.getValueAsString(property);
+      return entity.getAsString(property);
     }
 
-    return entity.getValue(property);
+    return entity.get(property);
   }
 
   /** {@inheritDoc} */
   @Override
   protected final String getSearchValueAt(final int rowIndex, final TableColumn column) {
-    return getItemAt(rowIndex).getValueAsString((Property) column.getIdentifier());
+    return getItemAt(rowIndex).getAsString((Property) column.getIdentifier());
   }
 
   /**
@@ -750,7 +750,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
       final Iterator<Map.Entry<Entity.Key, Entity>> mapIterator = entityMap.entrySet().iterator();
       while (mapIterator.hasNext()) {
         final Map.Entry<Entity.Key, Entity> entry = mapIterator.next();
-        if (entity.getPrimaryKey().equals(entry.getKey())) {
+        if (entity.getKey().equals(entry.getKey())) {
           mapIterator.remove();
           entity.setAs(entry.getValue());
           final int index = indexOf(entity);
@@ -889,7 +889,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     /** {@inheritDoc} */
     @Override
     protected final Comparable getComparable(final Entity entity, final Property property) {
-      return (Comparable) entity.getValue(property);
+      return (Comparable) entity.get(property);
     }
   }
 }

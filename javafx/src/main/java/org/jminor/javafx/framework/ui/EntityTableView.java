@@ -51,7 +51,7 @@ public class EntityTableView extends TableView<Entity> {
           return true;
         }
         for (final TableColumn column : getColumns()) {
-          if (entity.getValueAsString(((EntityTableColumn) column).getProperty())
+          if (entity.getAsString(((EntityTableColumn) column).getProperty())
                   .toLowerCase().contains(newValue.toLowerCase())) {
             return true;
           }

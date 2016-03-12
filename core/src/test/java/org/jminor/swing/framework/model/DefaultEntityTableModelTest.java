@@ -59,25 +59,25 @@ public final class DefaultEntityTableModelTest {
     tableModel.refresh();
 
     final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
-    pk1.setValue(TestDomain.EMP_ID, 1);
+    pk1.put(TestDomain.EMP_ID, 1);
     final Entity.Key pk2 = Entities.key(TestDomain.T_EMP);
-    pk2.setValue(TestDomain.EMP_ID, 2);
+    pk2.put(TestDomain.EMP_ID, 2);
 
     tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk1));
     final Entity selectedPK1 = tableModel.getSelectionModel().getSelectedItem();
-    assertEquals(pk1, selectedPK1.getPrimaryKey());
+    assertEquals(pk1, selectedPK1.getKey());
     assertEquals(1, tableModel.getSelectionModel().getSelectionCount());
 
     tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk2));
     final Entity selectedPK2 = tableModel.getSelectionModel().getSelectedItem();
-    assertEquals(pk2, selectedPK2.getPrimaryKey());
+    assertEquals(pk2, selectedPK2.getKey());
     assertEquals(1, tableModel.getSelectionModel().getSelectionCount());
 
     final List<Entity.Key> keys = Arrays.asList(pk1, pk2);
     tableModel.setSelectedByPrimaryKeys(keys);
     final List<Entity> selectedItems = tableModel.getSelectionModel().getSelectedItems();
     for (final Entity selected : selectedItems) {
-      assertTrue(keys.contains(selected.getPrimaryKey()));
+      assertTrue(keys.contains(selected.getKey()));
     }
     assertEquals(2, tableModel.getSelectionModel().getSelectionCount());
   }
@@ -116,9 +116,9 @@ public final class DefaultEntityTableModelTest {
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_BOTTOM);
     final Entity dept = Entities.entity(TestDomain.T_DEPARTMENT);
-    dept.setValue(TestDomain.DEPARTMENT_ID, -10);
-    dept.setValue(TestDomain.DEPARTMENT_LOCATION, "Nowhere");
-    dept.setValue(TestDomain.DEPARTMENT_NAME, "Noname");
+    dept.put(TestDomain.DEPARTMENT_ID, -10);
+    dept.put(TestDomain.DEPARTMENT_LOCATION, "Nowhere");
+    dept.put(TestDomain.DEPARTMENT_NAME, "Noname");
     final int count = deptModel.getRowCount();
     deptModel.getEditModel().insert(Collections.singletonList(dept));
     assertEquals(count + 1, deptModel.getRowCount());
@@ -126,9 +126,9 @@ public final class DefaultEntityTableModelTest {
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.DO_NOTHING);
     final Entity dept2 = Entities.entity(TestDomain.T_DEPARTMENT);
-    dept2.setValue(TestDomain.DEPARTMENT_ID, -20);
-    dept2.setValue(TestDomain.DEPARTMENT_LOCATION, "Nowhere2");
-    dept2.setValue(TestDomain.DEPARTMENT_NAME, "Noname2");
+    dept2.put(TestDomain.DEPARTMENT_ID, -20);
+    dept2.put(TestDomain.DEPARTMENT_LOCATION, "Nowhere2");
+    dept2.put(TestDomain.DEPARTMENT_NAME, "Noname2");
     deptModel.getEditModel().insert(Collections.singletonList(dept2));
     assertEquals(count + 1, deptModel.getRowCount());
 
@@ -145,9 +145,9 @@ public final class DefaultEntityTableModelTest {
     tableModel.refresh();
 
     final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
-    pk1.setValue(TestDomain.EMP_ID, 1);
+    pk1.put(TestDomain.EMP_ID, 1);
     final Entity.Key pk2 = Entities.key(TestDomain.T_EMP);
-    pk2.setValue(TestDomain.EMP_ID, 2);
+    pk2.put(TestDomain.EMP_ID, 2);
     try {
       tableModel.getConnectionProvider().getConnection().beginTransaction();
       tableModel.setSelectedByPrimaryKeys(Collections.singletonList(pk1));
@@ -176,11 +176,11 @@ public final class DefaultEntityTableModelTest {
     tableModel.refresh();
 
     final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
-    pk1.setValue(TestDomain.EMP_ID, 1);
+    pk1.put(TestDomain.EMP_ID, 1);
     assertNotNull(tableModel.getEntityByPrimaryKey(pk1));
 
     final Entity.Key pk2 = Entities.key(TestDomain.T_EMP);
-    pk2.setValue(TestDomain.EMP_ID, -66);
+    pk2.put(TestDomain.EMP_ID, -66);
     assertNull(tableModel.getEntityByPrimaryKey(pk2));
   }
 
@@ -192,11 +192,11 @@ public final class DefaultEntityTableModelTest {
     assertEquals(SortingDirective.ASCENDING, tableModel.getSortingDirective(TestDomain.EMP_NAME));
 
     final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
-    pk1.setValue(TestDomain.EMP_ID, 10);//ADAMS
+    pk1.put(TestDomain.EMP_ID, 10);//ADAMS
     assertEquals(0, tableModel.indexOf(pk1));
 
     final Entity.Key pk2 = Entities.key(TestDomain.T_EMP);
-    pk2.setValue(TestDomain.EMP_ID, -66);
+    pk2.put(TestDomain.EMP_ID, -66);
     assertEquals(-1, tableModel.indexOf(pk2));
   }
 
@@ -316,7 +316,7 @@ public final class DefaultEntityTableModelTest {
     testModel.refresh();
     testModel.getSelectionModel().setSelectedIndex(0);
     final Entity entity = testModel.getSelectionModel().getSelectedItem();
-    entity.setValue(TestDomain.DETAIL_STRING, "hello");
+    entity.put(TestDomain.DETAIL_STRING, "hello");
     testModel.update(Collections.singletonList(entity));
   }
 
@@ -404,16 +404,16 @@ public final class DefaultEntityTableModelTest {
   public void getEntitiesByPrimaryKeys() {
     testModel.refresh();
     Entity tmpEnt = Entities.entity(TestDomain.T_DETAIL);
-    tmpEnt.setValue(TestDomain.DETAIL_ID, 3l);
-    assertEquals("c", testModel.getEntityByPrimaryKey(tmpEnt.getPrimaryKey()).getValue(TestDomain.DETAIL_STRING));
+    tmpEnt.put(TestDomain.DETAIL_ID, 3l);
+    assertEquals("c", testModel.getEntityByPrimaryKey(tmpEnt.getKey()).get(TestDomain.DETAIL_STRING));
     final List<Entity.Key> keys = new ArrayList<>();
-    keys.add(tmpEnt.getPrimaryKey());
+    keys.add(tmpEnt.getKey());
     tmpEnt = Entities.entity(TestDomain.T_DETAIL);
-    tmpEnt.setValue(TestDomain.DETAIL_ID, 2l);
-    keys.add(tmpEnt.getPrimaryKey());
+    tmpEnt.put(TestDomain.DETAIL_ID, 2l);
+    keys.add(tmpEnt.getKey());
     tmpEnt = Entities.entity(TestDomain.T_DETAIL);
-    tmpEnt.setValue(TestDomain.DETAIL_ID, 1l);
-    keys.add(tmpEnt.getPrimaryKey());
+    tmpEnt.put(TestDomain.DETAIL_ID, 1l);
+    keys.add(tmpEnt.getKey());
 
     final Collection<Entity> entities = testModel.getEntitiesByPrimaryKeys(keys);
     assertEquals(3, entities.size());
@@ -476,9 +476,9 @@ public final class DefaultEntityTableModelTest {
     final String[] stringValues = new String[]{"a", "b", "c", "d", "e"};
     for (int i = 0; i < testEntities.length; i++) {
       testEntities[i] = Entities.entity(TestDomain.T_DETAIL);
-      testEntities[i].setValue(TestDomain.DETAIL_ID, (long) i+1);
-      testEntities[i].setValue(TestDomain.DETAIL_INT, i+1);
-      testEntities[i].setValue(TestDomain.DETAIL_STRING, stringValues[i]);
+      testEntities[i].put(TestDomain.DETAIL_ID, (long) i+1);
+      testEntities[i].put(TestDomain.DETAIL_INT, i+1);
+      testEntities[i].put(TestDomain.DETAIL_STRING, stringValues[i]);
     }
 
     return testEntities;

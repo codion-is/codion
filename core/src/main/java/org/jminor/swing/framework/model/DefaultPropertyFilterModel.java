@@ -32,7 +32,7 @@ public class DefaultPropertyFilterModel extends DefaultColumnCriteriaModel<Prope
     }
 
     final Property property = getColumnIdentifier();
-    final Object value = entity.getValue(property.getPropertyID());
+    final Object value = entity.get(property.getPropertyID());
     if (property instanceof Property.ForeignKeyProperty) {
       return value.toString();
     }

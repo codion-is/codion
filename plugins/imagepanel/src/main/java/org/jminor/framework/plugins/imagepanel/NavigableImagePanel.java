@@ -395,7 +395,7 @@ public final class NavigableImagePanel extends JPanel {
           if (!tablePanel.getTableModel().getSelectionModel().isSelectionEmpty()) {
             final Entity selected = tablePanel.getTableModel().getSelectionModel().getSelectedItem();
             if (!selected.isValueNull(imagePathPropertyID)) {
-              showImage(selected.getStringValue(imagePathPropertyID), tablePanel);
+              showImage(selected.getString(imagePathPropertyID), tablePanel);
             }
           }
         }

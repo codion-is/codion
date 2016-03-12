@@ -314,7 +314,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
   public final Entity getEntityCopy(final boolean includePrimaryKeyValues) {
     final Entity copy = (Entity) getEntity().getCopy();
     if (!includePrimaryKeyValues) {
-      copy.clearPrimaryKeyValues();
+      copy.clearKeyValues();
     }
 
     return copy;
@@ -465,7 +465,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
   public final void refreshEntity() {
     try {
       if (!isEntityNew()) {
-        setEntity(getConnectionProvider().getConnection().selectSingle(getEntity().getPrimaryKey()));
+        setEntity(getConnectionProvider().getConnection().selectSingle(getEntity().getKey()));
       }
     }
     catch (final DatabaseException e) {
@@ -603,18 +603,18 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
     final Collection<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID);
     for (final Property.ColumnProperty property : columnProperties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()) {//these are set via their respective parent properties
-        defaultEntity.setValue(property, getDefaultValue(property));
+        defaultEntity.set(property, getDefaultValue(property));
       }
     }
     final Collection<Property.TransientProperty> transientProperties = Entities.getTransientProperties(entityID);
     for (final Property.TransientProperty transientProperty : transientProperties) {
       if (!(transientProperty instanceof Property.DerivedProperty) && !(transientProperty instanceof Property.DenormalizedViewProperty)) {
-        defaultEntity.setValue(transientProperty, getDefaultValue(transientProperty));
+        defaultEntity.set(transientProperty, getDefaultValue(transientProperty));
       }
     }
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entityID);
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      defaultEntity.setValue(foreignKeyProperty, getDefaultValue(foreignKeyProperty));
+      defaultEntity.set(foreignKeyProperty, getDefaultValue(foreignKeyProperty));
     }
     defaultEntity.saveAll();
 
@@ -645,7 +645,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
       return false;
     }
     else {
-      return !getEntity().getOriginalValueKeys().isEmpty();
+      return !getEntity().originalKeySet().isEmpty();
     }
   }
 
@@ -931,7 +931,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
     getEntity().addValueListener(new EventInfoListener<ValueChange<String, ?>>() {
       @Override
       public void eventOccurred(final ValueChange<String, ?> info) {
-        primaryKeyNullState.setActive(getEntity().isPrimaryKeyNull());
+        primaryKeyNullState.setActive(getEntity().isKeyNull());
         entityNewState.setActive(isEntityNew());
       }
     });
@@ -954,7 +954,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
                                                            final List<Entity> entitiesAfterUpdate) {
     final Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
     for (final Entity entity : entitiesBeforeUpdate) {
-      keyMap.put(entity.getOriginalPrimaryKey(), findAndRemove(entity.getPrimaryKey(), entitiesAfterUpdate.listIterator()));
+      keyMap.put(entity.getOriginalKey(), findAndRemove(entity.getKey(), entitiesAfterUpdate.listIterator()));
     }
 
     return keyMap;
@@ -963,7 +963,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
   private static Entity findAndRemove(final Entity.Key primaryKey, final ListIterator<Entity> iterator) {
     while (iterator.hasNext()) {
       final Entity current = iterator.next();
-      if (current.getPrimaryKey().equals(primaryKey)) {
+      if (current.getKey().equals(primaryKey)) {
         iterator.remove();
 
         return current;
@@ -986,7 +986,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
     }
 
     @Override
-    public Collection<Object> getValues() {
+    public Collection<Object> values() {
       try {
         return connectionProvider.getConnection().selectValues(propertyID, EntityCriteriaUtil.criteria(entityID));
       }

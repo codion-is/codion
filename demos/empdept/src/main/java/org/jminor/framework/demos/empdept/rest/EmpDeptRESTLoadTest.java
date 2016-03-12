@@ -144,7 +144,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
         final List<Entity> queryEntities = EntityJSONParser.deserializeEntities(queryResult);
 
         final Entity entity = queryEntities.get(new Random().nextInt(queryEntities.size()));
-        entity.setValue(EmpDept.DEPARTMENT_LOCATION, Util.createRandomString(10, 13));
+        entity.put(EmpDept.DEPARTMENT_LOCATION, Util.createRandomString(10, 13));
         builder = createURIBuilder();
         builder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(entity), false));
         response = client.execute(new HttpPut(builder.build()));
@@ -207,7 +207,7 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
         builder.setPath(EntityRESTService.BY_VALUE_PATH)
                 .addParameter("entityID", EmpDept.T_EMPLOYEE)
                 .addParameter("searchType", SearchType.LIKE.toString())
-                .addParameter("values", "{\"deptno\":\"" + queryEntities.get(new Random().nextInt(queryEntities.size())).getValueAsString(EmpDept.DEPARTMENT_ID) + "\"}");
+                .addParameter("values", "{\"deptno\":\"" + queryEntities.get(new Random().nextInt(queryEntities.size())).getAsString(EmpDept.DEPARTMENT_ID) + "\"}");
 
         response = client.execute(new HttpGet(builder.build()));
         queryResult = getContentStream(response.getEntity());
@@ -231,9 +231,9 @@ public final class EmpDeptRESTLoadTest extends LoadTestModel<CloseableHttpClient
       try {
         final int deptNo = new Random().nextInt(500);
         final Entity propaganda = Entities.entity(EmpDept.T_DEPARTMENT);
-        propaganda.setValue(EmpDept.DEPARTMENT_ID, deptNo);
-        propaganda.setValue(EmpDept.DEPARTMENT_NAME, "PROPAGANDA");
-        propaganda.setValue(EmpDept.DEPARTMENT_LOCATION, "Hell");
+        propaganda.put(EmpDept.DEPARTMENT_ID, deptNo);
+        propaganda.put(EmpDept.DEPARTMENT_NAME, "PROPAGANDA");
+        propaganda.put(EmpDept.DEPARTMENT_LOCATION, "Hell");
 
         final URIBuilder builder = createURIBuilder();
         builder.addParameter("entities", EntityJSONParser.serializeEntities(Collections.singletonList(propaganda), false));

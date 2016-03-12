@@ -31,16 +31,16 @@ public class JasperReportsEntityDataSourceTest {
   @Test
   public void iterator() throws Exception {
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
-    department.setValue(TestDomain.DEPARTMENT_ID, 10);
-    department.setValue(TestDomain.DEPARTMENT_NAME, "name");
-    department.setValue(TestDomain.DEPARTMENT_LOCATION, "none");
+    department.put(TestDomain.DEPARTMENT_ID, 10);
+    department.put(TestDomain.DEPARTMENT_NAME, "name");
+    department.put(TestDomain.DEPARTMENT_LOCATION, "none");
     final List<Entity> entities = Collections.singletonList(department);
     final JasperReportsEntityDataSource source = new JasperReportsEntityDataSource(entities.iterator());
     while (source.next()) {
       final Entity dept = source.getCurrentEntity();
       assertTrue(entities.contains(dept));
       final JRField field = new TestField(TestDomain.DEPARTMENT_NAME);
-      assertEquals(dept.getValue(TestDomain.DEPARTMENT_NAME), source.getFieldValue(field));
+      assertEquals(dept.get(TestDomain.DEPARTMENT_NAME), source.getFieldValue(field));
     }
   }
 

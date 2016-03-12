@@ -26,14 +26,14 @@ public class EntityJSONParserTest {
   public void key() throws Exception {
     TestDomain.init();
     final Entity.Key key = Entities.key(TestDomain.T_DEPARTMENT);
-    key.setValue(TestDomain.DEPARTMENT_ID, 42);
+    key.put(TestDomain.DEPARTMENT_ID, 42);
 
     final String keyJSON = EntityJSONParser.serializeKeys(Collections.singletonList(key));
     assertEquals("[{\"values\":{\"deptno\":42},\"entityID\":\"unittest.scott.dept\"}]", keyJSON);
     final Entity.Key keyParsed = EntityJSONParser.deserializeKeys(keyJSON).get(0);
     assertEquals(key.getEntityID(), keyParsed.getEntityID());
-    assertEquals(key.getFirstKeyProperty(), keyParsed.getFirstKeyProperty());
-    assertEquals(key.getFirstKeyValue(), keyParsed.getFirstKeyValue());
+    assertEquals(key.getFirstProperty(), keyParsed.getFirstProperty());
+    assertEquals(key.getFirstValue(), keyParsed.getFirstValue());
   }
 
   @Test
@@ -45,94 +45,94 @@ public class EntityJSONParserTest {
     EntityJSONParser parser = new EntityJSONParser();
 
     final Entity dept10 = Entities.entity(TestDomain.T_DEPARTMENT);
-    dept10.setValue(TestDomain.DEPARTMENT_ID, -10);
-    dept10.setValue(TestDomain.DEPARTMENT_NAME, "DEPTNAME");
-    dept10.setValue(TestDomain.DEPARTMENT_LOCATION, "LOCATION");
+    dept10.put(TestDomain.DEPARTMENT_ID, -10);
+    dept10.put(TestDomain.DEPARTMENT_NAME, "DEPTNAME");
+    dept10.put(TestDomain.DEPARTMENT_LOCATION, "LOCATION");
 
     String jsonString = parser.serialize(Collections.singletonList(dept10));
-    assertTrue(dept10.propertyValuesEqual(parser.deserialize(jsonString).get(0)));
+    assertTrue(dept10.valuesEqual(parser.deserialize(jsonString).get(0)));
 
     final Entity dept20 = Entities.entity(TestDomain.T_DEPARTMENT);
-    dept20.setValue(TestDomain.DEPARTMENT_ID, -20);
-    dept20.setValue(TestDomain.DEPARTMENT_NAME, null);
-    dept20.setValue(TestDomain.DEPARTMENT_LOCATION, "ALOC");
+    dept20.put(TestDomain.DEPARTMENT_ID, -20);
+    dept20.put(TestDomain.DEPARTMENT_NAME, null);
+    dept20.put(TestDomain.DEPARTMENT_LOCATION, "ALOC");
 
     jsonString = parser.serialize(Collections.singletonList(dept20));
-    assertTrue(dept20.propertyValuesEqual(parser.deserialize(jsonString).get(0)));
+    assertTrue(dept20.valuesEqual(parser.deserialize(jsonString).get(0)));
 
     final String twoDepts = parser.serialize(Arrays.asList(dept10, dept20));
     parser.deserialize(twoDepts);
 
     final Entity mgr30 = Entities.entity(TestDomain.T_EMP);
-    mgr30.setValue(TestDomain.EMP_COMMISSION, 500.5);
-    mgr30.setValue(TestDomain.EMP_DEPARTMENT_FK, dept20);
-    mgr30.setValue(TestDomain.EMP_HIREDATE, hiredate);
-    mgr30.setValue(TestDomain.EMP_ID, -30);
-    mgr30.setValue(TestDomain.EMP_JOB, "MGR");
-    mgr30.setValue(TestDomain.EMP_NAME, "MGR NAME");
-    mgr30.setValue(TestDomain.EMP_SALARY, 2500.5);
+    mgr30.put(TestDomain.EMP_COMMISSION, 500.5);
+    mgr30.put(TestDomain.EMP_DEPARTMENT_FK, dept20);
+    mgr30.put(TestDomain.EMP_HIREDATE, hiredate);
+    mgr30.put(TestDomain.EMP_ID, -30);
+    mgr30.put(TestDomain.EMP_JOB, "MGR");
+    mgr30.put(TestDomain.EMP_NAME, "MGR NAME");
+    mgr30.put(TestDomain.EMP_SALARY, 2500.5);
 
     final Entity mgr50 = Entities.entity(TestDomain.T_EMP);
-    mgr50.setValue(TestDomain.EMP_COMMISSION, 500.5);
-    mgr50.setValue(TestDomain.EMP_DEPARTMENT_FK, dept20);
-    mgr50.setValue(TestDomain.EMP_HIREDATE, hiredate);
-    mgr50.setValue(TestDomain.EMP_ID, -50);
-    mgr50.setValue(TestDomain.EMP_JOB, "MGR2");
-    mgr50.setValue(TestDomain.EMP_NAME, "MGR2 NAME");
-    mgr50.setValue(TestDomain.EMP_SALARY, 2500.5);
+    mgr50.put(TestDomain.EMP_COMMISSION, 500.5);
+    mgr50.put(TestDomain.EMP_DEPARTMENT_FK, dept20);
+    mgr50.put(TestDomain.EMP_HIREDATE, hiredate);
+    mgr50.put(TestDomain.EMP_ID, -50);
+    mgr50.put(TestDomain.EMP_JOB, "MGR2");
+    mgr50.put(TestDomain.EMP_NAME, "MGR2 NAME");
+    mgr50.put(TestDomain.EMP_SALARY, 2500.5);
 
     final Entity emp1 = Entities.entity(TestDomain.T_EMP);
-    emp1.setValue(TestDomain.EMP_COMMISSION, 500.5);
-    emp1.setValue(TestDomain.EMP_DEPARTMENT_FK, dept10);
-    emp1.setValue(TestDomain.EMP_HIREDATE, hiredate);
-    emp1.setValue(TestDomain.EMP_ID, -500);
-    emp1.setValue(TestDomain.EMP_JOB, "A JOB");
-    emp1.setValue(TestDomain.EMP_MGR_FK, mgr30);
-    emp1.setValue(TestDomain.EMP_NAME, "A NAME");
-    emp1.setValue(TestDomain.EMP_SALARY, 2500.5);
+    emp1.put(TestDomain.EMP_COMMISSION, 500.5);
+    emp1.put(TestDomain.EMP_DEPARTMENT_FK, dept10);
+    emp1.put(TestDomain.EMP_HIREDATE, hiredate);
+    emp1.put(TestDomain.EMP_ID, -500);
+    emp1.put(TestDomain.EMP_JOB, "A JOB");
+    emp1.put(TestDomain.EMP_MGR_FK, mgr30);
+    emp1.put(TestDomain.EMP_NAME, "A NAME");
+    emp1.put(TestDomain.EMP_SALARY, 2500.5);
 
     jsonString = EntityJSONParser.serializeEntities(Collections.singletonList(emp1), false);
-    assertTrue(emp1.propertyValuesEqual(parser.deserialize(jsonString).get(0)));
+    assertTrue(emp1.valuesEqual(parser.deserialize(jsonString).get(0)));
 
     jsonString = EntityJSONParser.serializeEntities(Collections.singletonList(emp1), true);
     Entity emp1Deserialized = parser.deserialize(jsonString).get(0);
-    assertTrue(emp1.propertyValuesEqual(emp1Deserialized));
-    assertTrue(emp1.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK).propertyValuesEqual(emp1Deserialized.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK)));
-    assertTrue(emp1.getForeignKeyValue(TestDomain.EMP_MGR_FK).propertyValuesEqual(emp1Deserialized.getForeignKeyValue(TestDomain.EMP_MGR_FK)));
+    assertTrue(emp1.valuesEqual(emp1Deserialized));
+    assertTrue(emp1.getForeignKey(TestDomain.EMP_DEPARTMENT_FK).valuesEqual(emp1Deserialized.getForeignKey(TestDomain.EMP_DEPARTMENT_FK)));
+    assertTrue(emp1.getForeignKey(TestDomain.EMP_MGR_FK).valuesEqual(emp1Deserialized.getForeignKey(TestDomain.EMP_MGR_FK)));
 
     final Date newHiredate = format.parse("2002-11-21");
-    emp1.setValue(TestDomain.EMP_COMMISSION, 550.55);
-    emp1.setValue(TestDomain.EMP_DEPARTMENT_FK, dept20);
-    emp1.setValue(TestDomain.EMP_JOB, "ANOTHER JOB");
-    emp1.setValue(TestDomain.EMP_MGR_FK, mgr50);
-    emp1.setValue(TestDomain.EMP_NAME, "ANOTHER NAME");
-    emp1.setValue(TestDomain.EMP_SALARY, 3500.5);
-    emp1.setValue(TestDomain.EMP_HIREDATE, newHiredate);
+    emp1.put(TestDomain.EMP_COMMISSION, 550.55);
+    emp1.put(TestDomain.EMP_DEPARTMENT_FK, dept20);
+    emp1.put(TestDomain.EMP_JOB, "ANOTHER JOB");
+    emp1.put(TestDomain.EMP_MGR_FK, mgr50);
+    emp1.put(TestDomain.EMP_NAME, "ANOTHER NAME");
+    emp1.put(TestDomain.EMP_SALARY, 3500.5);
+    emp1.put(TestDomain.EMP_HIREDATE, newHiredate);
 
     jsonString = EntityJSONParser.serializeEntities(Collections.singletonList(emp1), true);
     emp1Deserialized = parser.deserialize(jsonString).get(0);
-    assertTrue(emp1.propertyValuesEqual(emp1Deserialized));
+    assertTrue(emp1.valuesEqual(emp1Deserialized));
 
-    assertEquals(500.5, emp1Deserialized.getOriginalValue(TestDomain.EMP_COMMISSION));
-    assertEquals(dept10, emp1Deserialized.getOriginalValue(TestDomain.EMP_DEPARTMENT_FK));
-    assertEquals("A JOB", emp1Deserialized.getOriginalValue(TestDomain.EMP_JOB));
-    assertEquals(mgr30, emp1Deserialized.getOriginalValue(TestDomain.EMP_MGR_FK));
-    assertEquals(hiredate, emp1Deserialized.getOriginalValue(TestDomain.EMP_HIREDATE));
-    assertEquals("A NAME", emp1Deserialized.getOriginalValue(TestDomain.EMP_NAME));
-    assertEquals(2500.5, emp1Deserialized.getOriginalValue(TestDomain.EMP_SALARY));
+    assertEquals(500.5, emp1Deserialized.getOriginal(TestDomain.EMP_COMMISSION));
+    assertEquals(dept10, emp1Deserialized.getOriginal(TestDomain.EMP_DEPARTMENT_FK));
+    assertEquals("A JOB", emp1Deserialized.getOriginal(TestDomain.EMP_JOB));
+    assertEquals(mgr30, emp1Deserialized.getOriginal(TestDomain.EMP_MGR_FK));
+    assertEquals(hiredate, emp1Deserialized.getOriginal(TestDomain.EMP_HIREDATE));
+    assertEquals("A NAME", emp1Deserialized.getOriginal(TestDomain.EMP_NAME));
+    assertEquals(2500.5, emp1Deserialized.getOriginal(TestDomain.EMP_SALARY));
 
-    assertTrue(((Entity) emp1Deserialized.getOriginalValue(TestDomain.EMP_DEPARTMENT_FK)).propertyValuesEqual(dept10));
-    assertTrue(((Entity) emp1Deserialized.getOriginalValue(TestDomain.EMP_MGR_FK)).propertyValuesEqual(mgr30));
+    assertTrue(((Entity) emp1Deserialized.getOriginal(TestDomain.EMP_DEPARTMENT_FK)).valuesEqual(dept10));
+    assertTrue(((Entity) emp1Deserialized.getOriginal(TestDomain.EMP_MGR_FK)).valuesEqual(mgr30));
 
     final Entity emp2 = Entities.entity(TestDomain.T_EMP);
-    emp2.setValue(TestDomain.EMP_COMMISSION, 300.5);
-    emp2.setValue(TestDomain.EMP_DEPARTMENT_FK, dept10);
-    emp2.setValue(TestDomain.EMP_HIREDATE, hiredate);
-    emp2.setValue(TestDomain.EMP_ID, -200);
-    emp2.setValue(TestDomain.EMP_JOB, "JOB");
-    emp2.setValue(TestDomain.EMP_MGR_FK, mgr50);
-    emp2.setValue(TestDomain.EMP_NAME, "NAME");
-    emp2.setValue(TestDomain.EMP_SALARY, 3500.5);
+    emp2.put(TestDomain.EMP_COMMISSION, 300.5);
+    emp2.put(TestDomain.EMP_DEPARTMENT_FK, dept10);
+    emp2.put(TestDomain.EMP_HIREDATE, hiredate);
+    emp2.put(TestDomain.EMP_ID, -200);
+    emp2.put(TestDomain.EMP_JOB, "JOB");
+    emp2.put(TestDomain.EMP_MGR_FK, mgr50);
+    emp2.put(TestDomain.EMP_NAME, "NAME");
+    emp2.put(TestDomain.EMP_SALARY, 3500.5);
 
     parser = new EntityJSONParser();
 
@@ -141,13 +141,13 @@ public class EntityJSONParserTest {
     final List<Entity> parsedEntities = parser.deserialize(jsonString);
     for (final Entity entity : entityList) {
       final Entity parsed = parsedEntities.get(parsedEntities.indexOf(entity));
-      assertTrue(parsed.propertyValuesEqual(entity));
+      assertTrue(parsed.valuesEqual(entity));
     }
 
     final List<Entity> entities = parser.deserialize(parser.serialize(Collections.singletonList(emp1)));
     assertEquals(1, entities.size());
     final Entity parsedEntity = entities.iterator().next();
-    assertTrue(emp1.propertyValuesEqual(parsedEntity));
+    assertTrue(emp1.valuesEqual(parsedEntity));
     assertTrue(parsedEntity.getModifiedObserver().isActive());
     assertTrue(parsedEntity.isModified());
     assertTrue(parsedEntity.isModified(TestDomain.EMP_COMMISSION));

@@ -68,7 +68,7 @@ public final class DefaultEntityModelTest {
     final EntityEditModel deptEditModel = departmentModel.getEditModel();
     final EntityTableModel deptTableModel = departmentModel.getTableModel();
     final Entity.Key operationsKey = Entities.key(TestDomain.T_DEPARTMENT);
-    operationsKey.setValue(TestDomain.DEPARTMENT_ID, 40);//operations
+    operationsKey.put(TestDomain.DEPARTMENT_ID, 40);//operations
     deptTableModel.setSelectedByPrimaryKeys(Collections.singletonList(operationsKey));
 
     deptEditModel.setValue(TestDomain.DEPARTMENT_ID, 80);
@@ -76,12 +76,12 @@ public final class DefaultEntityModelTest {
 
     assertFalse(deptTableModel.getSelectionModel().isSelectionEmpty());
     Entity operations = deptTableModel.getSelectionModel().getSelectedItem();
-    assertEquals(80, operations.getValue(TestDomain.DEPARTMENT_ID));
+    assertEquals(80, operations.get(TestDomain.DEPARTMENT_ID));
 
     deptTableModel.setFilterCriteria(new FilterCriteria<Entity>() {
       @Override
       public boolean include(final Entity item) {
-        return !Util.equal(80, item.getValue(TestDomain.DEPARTMENT_ID));
+        return !Util.equal(80, item.get(TestDomain.DEPARTMENT_ID));
       }
     });
 
@@ -90,7 +90,7 @@ public final class DefaultEntityModelTest {
     deptEditModel.update();
 
     operations = deptTableModel.getFilteredItems().get(0);
-    assertEquals(40, operations.getValue(TestDomain.DEPARTMENT_ID));
+    assertEquals(40, operations.get(TestDomain.DEPARTMENT_ID));
   }
 
   @Test
@@ -107,7 +107,7 @@ public final class DefaultEntityModelTest {
     final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
     departmentsComboBoxModel.refresh();
     final Entity.Key primaryKey = Entities.key(TestDomain.T_DEPARTMENT);
-    primaryKey.setValue(TestDomain.DEPARTMENT_ID, 40);//operations, no employees
+    primaryKey.put(TestDomain.DEPARTMENT_ID, 40);//operations, no employees
     final List<Entity.Key> keys = new ArrayList<>();
     keys.add(primaryKey);
     departmentModel.getTableModel().setSelectedByPrimaryKeys(keys);
@@ -123,16 +123,16 @@ public final class DefaultEntityModelTest {
       departmentModel.getTableModel().getSelectionModel().setSelectedItem(inserted);
       departmentModel.getEditModel().setValue(TestDomain.DEPARTMENT_NAME, "nameitagain");
       departmentModel.getEditModel().update();
-      assertEquals("nameitagain", departmentsComboBoxModel.getEntity(inserted.getPrimaryKey()).getValue(TestDomain.DEPARTMENT_NAME));
+      assertEquals("nameitagain", departmentsComboBoxModel.getEntity(inserted.getKey()).get(TestDomain.DEPARTMENT_NAME));
 
-      primaryKey.setValue(TestDomain.DEPARTMENT_ID, 20);//research
+      primaryKey.put(TestDomain.DEPARTMENT_ID, 20);//research
       departmentModel.getTableModel().setSelectedByPrimaryKeys(keys);
       departmentModel.getEditModel().setValue(TestDomain.DEPARTMENT_NAME, "NewName");
       departmentModel.getEditModel().update();
 
       for (final Entity employee : employeeModel.getTableModel().getAllItems()) {
-        final Entity dept = employee.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK);
-        assertEquals("NewName", dept.getValue(TestDomain.DEPARTMENT_NAME));
+        final Entity dept = employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK);
+        assertEquals("NewName", dept.get(TestDomain.DEPARTMENT_NAME));
       }
     }
     finally {

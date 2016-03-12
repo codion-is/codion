@@ -692,18 +692,18 @@ public final class EntityCriteriaUtil {
           final CriteriaSet<Property.ColumnProperty> andSet = CriteriaUtil.criteriaSet(Conjunction.AND);
           int i = 0;
           for (final Property.ColumnProperty property : propertyList) {
-            andSet.add(new PropertyCriteria(property, SearchType.LIKE, key.getValue(pkProperties.get(i++).getPropertyID())));
+            andSet.add(new PropertyCriteria(property, SearchType.LIKE, key.get(pkProperties.get(i++).getPropertyID())));
           }
 
           criteria.add(andSet);
         }
       }
       else {
-        final Property.ColumnProperty property = properties == null ? firstKey.getFirstKeyProperty() : properties.get(0);
-        final Property primaryKeyProperty = properties == null ? property : firstKey.getFirstKeyProperty();
+        final Property.ColumnProperty property = properties == null ? firstKey.getFirstProperty() : properties.get(0);
+        final Property primaryKeyProperty = properties == null ? property : firstKey.getFirstProperty();
         //a = b
         if (keys.size() == 1) {
-          criteria.add(new PropertyCriteria(property, SearchType.LIKE, firstKey.getValue(primaryKeyProperty.getPropertyID())));
+          criteria.add(new PropertyCriteria(property, SearchType.LIKE, firstKey.get(primaryKeyProperty.getPropertyID())));
         }
         else { //a in (c, v, d, s)
           criteria.add(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getPropertyValues(keys)));
@@ -1030,7 +1030,7 @@ public final class EntityCriteriaUtil {
         final CriteriaSet<Property.ColumnProperty> pkSet = CriteriaUtil.criteriaSet(Conjunction.AND);
         for (final Property.ColumnProperty referencedProperty : foreignKeyProperty.getReferenceProperties()) {
           final String referencedPropertyID = foreignKeyProperty.getReferencedPropertyID(referencedProperty);
-          final Object referencedValue = entityKey == null ? null : entityKey.getValue(referencedPropertyID);
+          final Object referencedValue = entityKey == null ? null : entityKey.get(referencedPropertyID);
           pkSet.add(new PropertyCriteria(referencedProperty, searchType, referencedValue));
         }
 
@@ -1038,7 +1038,7 @@ public final class EntityCriteriaUtil {
       }
       else {
         return new PropertyCriteria(foreignKeyProperty.getReferenceProperties().get(0), searchType,
-                entityKey == null ? null : entityKey.getFirstKeyValue());
+                entityKey == null ? null : entityKey.getFirstValue());
       }
     }
 
@@ -1092,7 +1092,7 @@ public final class EntityCriteriaUtil {
         return (Entity.Key) value;
       }
       else if (value instanceof Entity) {
-        return ((Entity) value).getPrimaryKey();
+        return ((Entity) value).getKey();
       }
 
       throw new IllegalArgumentException("Foreign key criteria uses only Entity or Entity.Key instances for values");

@@ -208,7 +208,7 @@ final class LocalEntityConnection implements EntityConnection {
           executePreparedUpdate(statement, insertSQL, statementProperties, statementValues);
           keyGenerator.afterInsert(entity, firstPrimaryKeyProperty, connection);
 
-          insertedKeys.add(entity.getPrimaryKey());
+          insertedKeys.add(entity.getKey());
 
           statement.close();
           statementProperties.clear();
@@ -258,7 +258,7 @@ final class LocalEntityConnection implements EntityConnection {
           for (final Entity entity : mappedEntitiesMapEntry.getValue()) {
             populateStatementPropertiesAndValues(false, entity, columnProperties, statementProperties, statementValues);
 
-            final EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getOriginalPrimaryKey());
+            final EntityCriteria criteria = EntityCriteriaUtil.criteria(entity.getOriginalKey());
             updateSQL = createUpdateSQL(tableName, statementProperties, criteria);
             statementProperties.addAll(criteria.getValueKeys());
             statementValues.addAll(criteria.getValues());
@@ -755,7 +755,7 @@ final class LocalEntityConnection implements EntityConnection {
       final List<Entity> currentValues = doSelectMany(selectForUpdateCriteria, 0);
       final Map<Entity.Key, Entity> mappedEntities = EntityUtil.mapToPrimaryKey(currentValues);
       for (final Entity entity : entry.getValue()) {
-        final Entity current = mappedEntities.get(entity.getOriginalPrimaryKey());
+        final Entity current = mappedEntities.get(entity.getOriginalKey());
         if (current == null) {
           throw new RecordModifiedException(entity, null);
         }
@@ -817,7 +817,7 @@ final class LocalEntityConnection implements EntityConnection {
           final Collection<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
           if (referencedPrimaryKeys.isEmpty()) {
             for (final Entity entity : entities) {
-              entity.setValue(foreignKeyProperty, null, false);
+              entity.set(foreignKeyProperty, null, false);
             }
           }
           else {
@@ -826,8 +826,8 @@ final class LocalEntityConnection implements EntityConnection {
             final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCriteria, currentForeignKeyFetchDepth + 1);
             final Map<Entity.Key, Entity> mappedReferencedEntities = EntityUtil.mapToPrimaryKey(referencedEntities);
             for (final Entity entity : entities) {
-              final Entity.Key referencedPrimaryKey = entity.getReferencedPrimaryKey(foreignKeyProperty);
-              entity.setValue(foreignKeyProperty, getReferencedEntity(referencedPrimaryKey, mappedReferencedEntities), false);
+              final Entity.Key referencedKey = entity.getReferencedKey(foreignKeyProperty);
+              entity.set(foreignKeyProperty, getReferencedEntity(referencedKey, mappedReferencedEntities), false);
             }
           }
         }
@@ -1006,7 +1006,7 @@ final class LocalEntityConnection implements EntityConnection {
                                                                  final Property.ForeignKeyProperty foreignKeyProperty) {
     final Set<Entity.Key> keySet = new HashSet<>(entities.size());
     for (final Entity entity : entities) {
-      final Entity.Key key = entity.getReferencedPrimaryKey(foreignKeyProperty);
+      final Entity.Key key = entity.getReferencedKey(foreignKeyProperty);
       if (key != null) {
         keySet.add(key);
       }
@@ -1176,7 +1176,7 @@ final class LocalEntityConnection implements EntityConnection {
                                                            final Collection<Property.ColumnProperty> properties,
                                                            final Collection<Object> values) throws SQLException {
     for (final Property.ColumnProperty property : columnProperties) {
-      final Object value = entity.getValue(property);
+      final Object value = entity.get(property);
       final boolean insertingAndNonNull = inserting && value != null;
       final boolean updatingAndModified = !inserting && entity.isModified(property.getPropertyID());
       if (insertingAndNonNull || updatingAndModified) {
@@ -1321,9 +1321,9 @@ final class LocalEntityConnection implements EntityConnection {
         if (property.isPrimaryKeyProperty() || modified) {
           final StringBuilder valueString = new StringBuilder();
           if (modified) {
-            valueString.append(entity.getOriginalValue(property.getPropertyID())).append("->");
+            valueString.append(entity.getOriginal(property.getPropertyID())).append("->");
           }
-          valueString.append(entity.getValue(property.getPropertyID()));
+          valueString.append(entity.get(property.getPropertyID()));
           builder.append(property.getPropertyID()).append(":").append(valueString).append(",");
         }
       }

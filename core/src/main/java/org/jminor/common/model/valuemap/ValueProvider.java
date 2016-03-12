@@ -15,5 +15,5 @@ public interface ValueProvider<K, V> {
    * @param key the key
    * @return the value mapped to the given key, null if no such mapping exists
    */
-  V getValue(final K key);
+  V get(final K key);
 }

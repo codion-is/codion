@@ -114,7 +114,7 @@ public abstract class EntityTestUnit {
   public static Entity createRandomEntity(final String entityID, final Map<String, Entity> referenceEntities) {
     return createEntity(entityID, new ValueProvider<Property, Object>() {
       @Override
-      public Object getValue(final Property property) {
+      public Object get(final Property property) {
         return getRandomValue(property, referenceEntities);
       }
     });
@@ -146,7 +146,7 @@ public abstract class EntityTestUnit {
     populateEntity(entity, Entities.getColumnProperties(entity.getEntityID(), includePrimaryKey, false, true),
             new ValueProvider<Property, Object>() {
               @Override
-              public Object getValue(final Property property) {
+              public Object get(final Property property) {
                 return getRandomValue(property, referenceEntities);
               }
             });
@@ -304,7 +304,7 @@ public abstract class EntityTestUnit {
    */
   private void testSelect(final String entityID, final Entity testEntity) throws DatabaseException {
     if (testEntity != null) {
-      final Entity tmp = connection.selectSingle(testEntity.getPrimaryKey());
+      final Entity tmp = connection.selectSingle(testEntity.getKey());
       assertTrue("Entity of type " + testEntity.getEntityID() + " failed equals comparison",
               testEntity.equals(tmp));
     }
@@ -326,13 +326,13 @@ public abstract class EntityTestUnit {
 
     connection.update(Collections.singletonList(testEntity));
 
-    final Entity tmp = connection.selectSingle(testEntity.getOriginalPrimaryKey());
-    assertEquals("Primary keys of entity and its updated counterpart should be equal",
-            testEntity.getPrimaryKey(), tmp.getPrimaryKey());
+    final Entity tmp = connection.selectSingle(testEntity.getOriginalKey());
+    assertEquals("Keys of entity and its updated counterpart should be equal",
+            testEntity.getKey(), tmp.getKey());
     for (final Property.ColumnProperty property : Entities.getColumnProperties(testEntity.getEntityID())) {
       if (!property.isReadOnly() && property.isUpdatable()) {
-        final Object beforeUpdate = testEntity.getValue(property.getPropertyID());
-        final Object afterUpdate = tmp.getValue(property.getPropertyID());
+        final Object beforeUpdate = testEntity.get(property.getPropertyID());
+        final Object afterUpdate = tmp.get(property.getPropertyID());
         assertTrue("Values of property " + property + " should be equal after update ["
                 + beforeUpdate + (beforeUpdate != null ? (" (" + beforeUpdate.getClass() + ")") : "") + ", "
                 + afterUpdate + (afterUpdate != null ? (" (" + afterUpdate.getClass() + ")") : "") + "]",
@@ -351,7 +351,7 @@ public abstract class EntityTestUnit {
 
     boolean caught = false;
     try {
-      connection.selectSingle(testEntity.getPrimaryKey());
+      connection.selectSingle(testEntity.getKey());
     }
     catch (final DatabaseException e) {
       caught = true;
@@ -366,8 +366,8 @@ public abstract class EntityTestUnit {
    * @throws DatabaseException in case of an exception
    */
   private Entity insertOrSelect(final Entity entity) throws DatabaseException {
-    if (!entity.isPrimaryKeyNull()) {
-      final List<Entity> entities = connection.selectMany(Collections.singletonList(entity.getPrimaryKey()));
+    if (!entity.isKeyNull()) {
+      final List<Entity> entities = connection.selectMany(Collections.singletonList(entity.getKey()));
       if (!entities.isEmpty()) {
         return entities.get(0);
       }
@@ -417,13 +417,13 @@ public abstract class EntityTestUnit {
                                      final ValueProvider<Property, Object> valueProvider) {
     for (final Property.ColumnProperty property : properties) {
       if (!property.isForeignKeyProperty() && !property.isDenormalized()) {
-        entity.setValue(property, valueProvider.getValue(property));
+        entity.set(property, valueProvider.get(property));
       }
     }
     for (final Property.ForeignKeyProperty property : Entities.getForeignKeyProperties(entity.getEntityID())) {
-      final Object value = valueProvider.getValue(property);
+      final Object value = valueProvider.get(property);
       if (value != null) {
-        entity.setValue(property, value);
+        entity.set(property, value);
       }
     }
   }

@@ -90,7 +90,7 @@ public class LocalEntityConnectionTest {
     try {
       connection.beginTransaction();
       final Entity.Key key = Entities.key(TestDomain.T_DEPARTMENT);
-      key.setValue(TestDomain.DEPARTMENT_ID, 40);
+      key.put(TestDomain.DEPARTMENT_ID, 40);
       connection.delete(new ArrayList<Entity.Key>());
       connection.delete(Collections.singletonList(key));
       try {
@@ -105,7 +105,7 @@ public class LocalEntityConnectionTest {
     try {
       connection.beginTransaction();
       final Entity.Key key = Entities.key(TestDomain.T_DEPARTMENT);
-      key.setValue(TestDomain.DEPARTMENT_ID, 40);
+      key.put(TestDomain.DEPARTMENT_ID, 40);
       connection.delete(EntityCriteriaUtil.criteria(key));
       try {
         connection.selectSingle(key);
@@ -176,9 +176,9 @@ public class LocalEntityConnectionTest {
     criteria.setOffset(3);
     result = connection.selectMany(criteria);
     assertEquals(3, result.size());
-    assertEquals("BLAKE", result.get(0).getValue(TestDomain.EMP_NAME));
-    assertEquals("CLARK", result.get(1).getValue(TestDomain.EMP_NAME));
-    assertEquals("FORD", result.get(2).getValue(TestDomain.EMP_NAME));
+    assertEquals("BLAKE", result.get(0).get(TestDomain.EMP_NAME));
+    assertEquals("CLARK", result.get(1).get(TestDomain.EMP_NAME));
+    assertEquals("FORD", result.get(2).get(TestDomain.EMP_NAME));
   }
 
   @Test
@@ -199,7 +199,7 @@ public class LocalEntityConnectionTest {
     Entity emp = result.get(0);
     assertTrue(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
     assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
-    emp = emp.getForeignKeyValue(TestDomain.EMP_MGR_FK);
+    emp = emp.getForeignKey(TestDomain.EMP_MGR_FK);
     assertFalse(emp.isLoaded(TestDomain.EMP_MGR_FK));
 
     result = connection.selectMany(criteria.setForeignKeyFetchDepthLimit(TestDomain.EMP_DEPARTMENT_FK, 0));
@@ -219,7 +219,7 @@ public class LocalEntityConnectionTest {
     emp = result.get(0);
     assertFalse(emp.isLoaded(TestDomain.EMP_DEPARTMENT_FK));
     assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
-    emp = emp.getForeignKeyValue(TestDomain.EMP_MGR_FK);
+    emp = emp.getForeignKey(TestDomain.EMP_MGR_FK);
     assertTrue(emp.isLoaded(TestDomain.EMP_MGR_FK));
   }
 
@@ -248,15 +248,15 @@ public class LocalEntityConnectionTest {
   @Test
   public void selectSingle() throws Exception {
     Entity sales = connection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-    assertEquals(sales.getStringValue(TestDomain.DEPARTMENT_NAME), "SALES");
-    sales = connection.selectSingle(sales.getPrimaryKey());
-    assertEquals(sales.getStringValue(TestDomain.DEPARTMENT_NAME), "SALES");
+    assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
+    sales = connection.selectSingle(sales.getKey());
+    assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
     sales = connection.selectSingle(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT, CriteriaUtil.<Property.ColumnProperty>stringCriteria("dname = 'SALES'")));
-    assertEquals(sales.getStringValue(TestDomain.DEPARTMENT_NAME), "SALES");
+    assertEquals(sales.getString(TestDomain.DEPARTMENT_NAME), "SALES");
 
     final Entity king = connection.selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "KING");
-    assertTrue(king.containsValue(TestDomain.EMP_MGR_FK));
-    assertNull(king.getValue(TestDomain.EMP_MGR_FK));
+    assertTrue(king.containsKey(TestDomain.EMP_MGR_FK));
+    assertNull(king.get(TestDomain.EMP_MGR_FK));
   }
 
   @Test
@@ -356,9 +356,9 @@ public class LocalEntityConnectionTest {
       criteria.setForUpdate(true);
 
       Entity sales = connection.selectSingle(criteria);
-      originalLocation = sales.getStringValue(TestDomain.DEPARTMENT_LOCATION);
+      originalLocation = sales.getString(TestDomain.DEPARTMENT_LOCATION);
 
-      sales.setValue(TestDomain.DEPARTMENT_LOCATION, "Syracuse");
+      sales.put(TestDomain.DEPARTMENT_LOCATION, "Syracuse");
       try {
         connection2.update(Collections.singletonList(sales));
         fail("Should not be able to update record selected for update by another connection");
@@ -371,7 +371,7 @@ public class LocalEntityConnectionTest {
 
       try {
         sales = connection2.update(Collections.singletonList(sales)).get(0);
-        sales.setValue(TestDomain.DEPARTMENT_LOCATION, originalLocation);
+        sales.put(TestDomain.DEPARTMENT_LOCATION, originalLocation);
         connection2.update(Collections.singletonList(sales));//revert changes to data
       }
       catch (final DatabaseException ignored) {
@@ -395,9 +395,9 @@ public class LocalEntityConnectionTest {
 
       allen = connection.selectSingle(criteria);
 
-      connection2.delete(Collections.singletonList(allen.getPrimaryKey()));
+      connection2.delete(Collections.singletonList(allen.getKey()));
 
-      allen.setValue(TestDomain.EMP_JOB, "A JOB");
+      allen.put(TestDomain.EMP_JOB, "A JOB");
       try {
         connection.update(Collections.singletonList(allen));
         fail("Should not be able to update record deleted by another connection");
@@ -430,21 +430,21 @@ public class LocalEntityConnectionTest {
     Entity updatedDepartment = null;
     try {
       final Entity department = baseConnection.selectSingle(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "SALES");
-      oldLocation = (String) department.setValue(TestDomain.DEPARTMENT_LOCATION, "NEWLOC");
+      oldLocation = (String) department.put(TestDomain.DEPARTMENT_LOCATION, "NEWLOC");
       updatedDepartment = baseConnection.update(Collections.singletonList(department)).get(0);
       try {
         optimisticConnection.update(Collections.singletonList(department));
         fail("RecordModifiedException should have been thrown");
       }
       catch (final RecordModifiedException e) {
-        assertTrue(((Entity) e.getModifiedRow()).propertyValuesEqual(updatedDepartment));
-        assertTrue(((Entity) e.getRow()).propertyValuesEqual(department));
+        assertTrue(((Entity) e.getModifiedRow()).valuesEqual(updatedDepartment));
+        assertTrue(((Entity) e.getRow()).valuesEqual(department));
       }
     }
     finally {
       try {
         if (updatedDepartment != null && oldLocation != null) {
-          updatedDepartment.setValue(TestDomain.DEPARTMENT_LOCATION, oldLocation);
+          updatedDepartment.put(TestDomain.DEPARTMENT_LOCATION, oldLocation);
           baseConnection.update(Collections.singletonList(updatedDepartment));
         }
       }
@@ -514,7 +514,7 @@ public class LocalEntityConnectionTest {
       statement.execute("create table blob_test(id integer, data blob)");
 
       final Entity blobRecord = Entities.entity(ENTITY_ID);
-      blobRecord.setValue(ID, 1);
+      blobRecord.put(ID, 1);
 
       final Entity.Key blobRecordKey = connection.insert(Collections.singletonList(blobRecord)).get(0);
 
@@ -529,7 +529,7 @@ public class LocalEntityConnectionTest {
 
       final Entity blobRecordFromDb = connection.selectSingle(blobRecordKey);
       assertNotNull(blobRecordFromDb);
-      assertNull(blobRecordFromDb.getValue(DATA));
+      assertNull(blobRecordFromDb.get(DATA));
     }
     finally {
       if (statement != null) {
@@ -556,8 +556,8 @@ public class LocalEntityConnectionTest {
       new Random().nextBytes(bytes);
 
       final Entity blobRecord = Entities.entity(ENTITY_ID);
-      blobRecord.setValue(ID, 1);
-      blobRecord.setValue("data", bytes);
+      blobRecord.put(ID, 1);
+      blobRecord.put("data", bytes);
 
       final Entity.Key blobRecordKey = connection.insert(Collections.singletonList(blobRecord)).get(0);
 
@@ -566,12 +566,12 @@ public class LocalEntityConnectionTest {
 
       final Entity blobRecordFromDb = connection.selectSingle(blobRecordKey);
       assertNotNull(blobRecordFromDb);
-      assertNull(blobRecordFromDb.getValue(DATA));
+      assertNull(blobRecordFromDb.get(DATA));
 
       final byte[] newBytes = new byte[2048];
       new Random().nextBytes(newBytes);
 
-      blobRecord.setValue("data", newBytes);
+      blobRecord.put("data", newBytes);
 
       connection.update(Collections.singletonList(blobRecord)).get(0);
 

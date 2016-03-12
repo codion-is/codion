@@ -65,16 +65,16 @@ public class DefaultValueMapEditModel<K, V> implements ValueMapEditModel<K, V> {
   /** {@inheritDoc} */
   @Override
   public final V getValue(final K key) {
-    return valueMap.getValue(key);
+    return valueMap.get(key);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setValue(final K key, final V value) {
     Util.rejectNullValue(key, KEY);
-    final boolean initialization = !valueMap.containsValue(key);
-    final Object oldValue = valueMap.getValue(key);
-    valueMap.setValue(key, value);
+    final boolean initialization = !valueMap.containsKey(key);
+    final Object oldValue = valueMap.get(key);
+    valueMap.put(key, value);
     if (!Util.equal(value, oldValue)) {
       notifyValueChange(key, ValueChanges.valueChange(key, value, oldValue, initialization));
     }

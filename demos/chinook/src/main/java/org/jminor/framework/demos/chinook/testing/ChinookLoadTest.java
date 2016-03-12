@@ -165,8 +165,8 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
       final EntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
       final EntityEditModel albumEditModel = albumModel.getEditModel();
       final Entity album = Entities.entity(T_ALBUM);
-      album.setValue(ALBUM_ARTISTID_FK, artist);
-      album.setValue(ALBUM_TITLE, "Title");
+      album.put(ALBUM_ARTISTID_FK, artist);
+      album.put(ALBUM_TITLE, "Title");
 
       albumEditModel.setEntity(album);
       try {
