@@ -198,7 +198,7 @@ public class EntityRESTServiceTest {
 
     //select/GET by key
     uriBuilder = createURIBuilder();
-    uriBuilder.setPath(EntityRESTService.BY_KEY_PATH).addParameter("primaryKeys", EntityJSONParser.serializeKeys(Collections.singletonList(department.getKey())));
+    uriBuilder.setPath(EntityRESTService.BY_KEY_PATH).addParameter("keys", EntityJSONParser.serializeKeys(Collections.singletonList(department.getKey())));
     response = client.execute(new HttpGet(uriBuilder.build()));
     assertEquals(200, response.getStatusLine().getStatusCode());
     queryResult = getContentStream(response.getEntity());

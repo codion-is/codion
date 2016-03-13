@@ -251,10 +251,14 @@
 
   <target name="deploy_server" depends="dist, create_keystore, create_demo_h2db"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
-    <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-db-core/jminor-db-core.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-db-local/jminor-db-local.jar" todir="${deploy.server.path}/lib"/>
-    <copy file="${dist}/jminor-server/jminor-server.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="${dist}/jminor-common-model/jminor-common-model.jar"
+          tofile="${deploy.server.path}/lib/jminor-common-model-${version}.jar"/>
+    <copy file="${dist}/jminor-db-core/jminor-db-core.jar"
+          tofile="${deploy.server.path}/lib/jminor-db-core-${version}.jar"/>
+    <copy file="${dist}/jminor-db-local/jminor-db-local.jar"
+          tofile="${deploy.server.path}/lib/jminor-db-local-${version}.jar"/>
+    <copy file="${dist}/jminor-server/jminor-server.jar"
+          tofile="${deploy.server.path}/lib/jminor-server-${version}.jar"/>
 
     <subant target="dist" buildpath="${basedir}/../demos"/>
     <copy file="../demos/chinook/dist/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
@@ -263,13 +267,17 @@
     <copy file="../demos/world/dist/world-domain.jar" todir="${deploy.server.path}/lib"/>
 
     <subant target="dist" buildpath="${basedir}/../plugins"/>
-    <copy file="../plugins/jasperreports/dist/jminor-plugin-jasperreports.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="../plugins/jasperreports/dist/jminor-plugin-jasperreports.jar"
+          tofile="${deploy.server.path}/lib/jminor-plugin-jasperreports-${version}.jar"/>
     <copy todir="${deploy.server.path}/lib">
-      <fileset dir="../plugins/jasperreports/lib/runtime"/>
+      <fileset dir="../plugins/jasperreports/lib/runtime" excludes="*jminor*"/>
     </copy>
-    <copy file="../plugins/rest/dist/jminor-plugin-rest.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="../plugins/rest/dist/jminor-plugin-rest.jar"
+          tofile="${deploy.server.path}/lib/jminor-plugin-rest-${version}.jar"/>
+    <copy file="../plugins/json/dist/jminor-plugin-json.jar"
+          tofile="${deploy.server.path}/lib/jminor-plugin-json-${version}.jar"/>
     <copy todir="${deploy.server.path}/lib">
-      <fileset dir="../plugins/rest/lib/runtime"/>
+      <fileset dir="../plugins/rest/lib/runtime" excludes="*jminor*"/>
     </copy>
 
     <copy todir="${deploy.server.path}/lib">
@@ -280,6 +288,7 @@
     </copy>
     <copy file="${deploy.server.policy}" todir="${deploy.server.path}/config"/>
     <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.path}/config"/>
+    <copy file="${deploy.server.notsoserial.whitelist}" todir="${deploy.server.path}/config"/>
     <copy file="${deploy.server.keystore}" todir="${deploy.server.path}/config"/>
     <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.path}/config"/>
     <chmod dir="${deploy.server.path}" perm="u+x" type="file" includes="*.sh"/>
@@ -295,10 +304,14 @@
   <target name="deploy_server_monitor" depends="dist, create_keystore"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <mkdir dir="${deploy.server.monitor.path}"/>
-    <copy file="${dist}/jminor-common-model/jminor-common-model.jar" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${dist}/jminor-swing-common-model/jminor-swing-common-model.jar" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${dist}/jminor-swing-common-ui/jminor-swing-common-ui.jar" todir="${deploy.server.monitor.path}/lib"/>
-    <copy file="${dist}/jminor-server-monitor/jminor-server-monitor.jar" todir="${deploy.server.monitor.path}/lib"/>
+    <copy file="${dist}/jminor-common-model/jminor-common-model.jar"
+          tofile="${deploy.server.monitor.path}/lib/jminor-common-model-${version}.jar"/>
+    <copy file="${dist}/jminor-swing-common-model/jminor-swing-common-model.jar"
+          tofile="${deploy.server.monitor.path}/lib/jminor-swing-common-model-${version}.jar"/>
+    <copy file="${dist}/jminor-swing-common-ui/jminor-swing-common-ui.jar"
+          tofile="${deploy.server.monitor.path}/lib/jminor-swing-common-ui-${version}.jar"/>
+    <copy file="${dist}/jminor-server-monitor/jminor-server-monitor.jar"
+          tofile="${deploy.server.monitor.path}/lib/jminor-server-monitor-${version}.jar"/>
     <copy todir="${deploy.server.monitor.path}/lib">
       <fileset dir="${lib}/runtime.server-monitor"/>
     </copy>
@@ -313,7 +326,8 @@
   <target name="deploy_generator" depends="dist, create_demo_h2db"
           description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">
     <mkdir dir="${deploy.generator.path}"/>
-    <copy file="${dist}/jminor/jminor.jar" todir="${deploy.generator.path}/lib"/>
+    <copy file="${dist}/jminor/jminor.jar"
+          tofile="${deploy.generator.path}/lib/jminor-${version}.jar"/>
     <copy todir="${deploy.generator.path}/lib">
       <fileset dir="${lib}/runtime.client"/>
     </copy>

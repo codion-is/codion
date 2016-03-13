@@ -778,7 +778,7 @@ final class LocalEntityConnection implements EntityConnection {
       resultSet = executePreparedSelect(statement, selectSQL, criteria);
       final List<Entity> result = packResult(criteria, resultSet);
       if (!criteria.isForUpdate()) {
-        setForeignKeyValues(result, criteria, currentForeignKeyFetchDepth);
+        setForeignKeys(result, criteria, currentForeignKeyFetchDepth);
       }
 
       return result;
@@ -804,7 +804,7 @@ final class LocalEntityConnection implements EntityConnection {
    * @see #setLimitForeignKeyFetchDepth(boolean)
    * @see org.jminor.framework.db.criteria.EntitySelectCriteria#setForeignKeyFetchDepthLimit(int)
    */
-  private void setForeignKeyValues(final List<Entity> entities, final EntitySelectCriteria criteria, final int currentForeignKeyFetchDepth) throws DatabaseException {
+  private void setForeignKeys(final List<Entity> entities, final EntitySelectCriteria criteria, final int currentForeignKeyFetchDepth) throws DatabaseException {
     if (Util.nullOrEmpty(entities)) {
       return;
     }
@@ -813,7 +813,7 @@ final class LocalEntityConnection implements EntityConnection {
       final int criteriaFetchDepthLimit = criteria.getForeignKeyFetchDepthLimit(foreignKeyProperty.getPropertyID());
       if (!limitForeignKeyFetchDepth || currentForeignKeyFetchDepth < criteriaFetchDepthLimit) {
         try {
-          logAccess("setForeignKeyValues", new Object[] {foreignKeyProperty});
+          logAccess("setForeignKeys", new Object[] {foreignKeyProperty});
           final Collection<Entity.Key> referencedPrimaryKeys = getReferencedPrimaryKeys(entities, foreignKeyProperty);
           if (referencedPrimaryKeys.isEmpty()) {
             for (final Entity entity : entities) {
@@ -832,7 +832,7 @@ final class LocalEntityConnection implements EntityConnection {
           }
         }
         finally {
-          logExit("setForeignKeyValues", null, null);
+          logExit("setForeignKeys", null, null);
         }
       }
     }

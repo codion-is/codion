@@ -64,10 +64,10 @@ public final class EntityRESTService extends Application {
   @Produces(MediaType.APPLICATION_JSON)
   @Path(BY_KEY_PATH)
   public Response select(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                         @QueryParam("primaryKeys") final String primaryKeys) {
+                         @QueryParam("keys") final String keys) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      return Response.ok(EntityJSONParser.serializeEntities(connection.selectMany(EntityJSONParser.deserializeKeys(primaryKeys)), false)).build();
+      return Response.ok(EntityJSONParser.serializeEntities(connection.selectMany(EntityJSONParser.deserializeKeys(keys)), false)).build();
     }
     catch (final Exception e) {
       return Response.serverError().entity(e.getMessage()).build();
@@ -137,10 +137,10 @@ public final class EntityRESTService extends Application {
   @Consumes(MediaType.APPLICATION_JSON)
   @Path(BY_KEY_PATH)
   public Response delete(@Context final HttpServletRequest request, @Context final HttpHeaders headers,
-                         @QueryParam("primaryKeys") final String primaryKeys) {
+                         @QueryParam("keys") final String keys) {
     final RemoteEntityConnection connection = authenticate(request, headers);
     try {
-      connection.delete(EntityJSONParser.deserializeKeys(primaryKeys));
+      connection.delete(EntityJSONParser.deserializeKeys(keys));
 
       return Response.ok().build();
     }
