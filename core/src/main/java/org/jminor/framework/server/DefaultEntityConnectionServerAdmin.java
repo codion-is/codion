@@ -19,11 +19,21 @@ import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 
 import ch.qos.logback.classic.Level;
+import com.sun.management.GarbageCollectionNotificationInfo;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
+import javax.management.Notification;
+import javax.management.NotificationEmitter;
+import javax.management.NotificationFilter;
+import javax.management.NotificationListener;
+import javax.management.openmbean.CompositeData;
 import javax.rmi.ssl.SslRMIClientSocketFactory;
 import javax.rmi.ssl.SslRMIServerSocketFactory;
+import java.io.Serializable;
+import java.lang.management.GarbageCollectorMXBean;
+import java.lang.management.ManagementFactory;
+import java.lang.management.ThreadMXBean;
 import java.rmi.NoSuchObjectException;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
@@ -34,6 +44,7 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.HashSet;
+import java.util.LinkedList;
 import java.util.List;
 import java.util.Map;
 import java.util.Set;
@@ -49,6 +60,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   private static final long serialVersionUID = 1;
 
   private static final int USERNAME_PASSWORD_SPLIT_COUNT = 2;
+  private static final int GC_INFO_MAX_LENGTH = 100;
 
   private static final String START = "start";
   private static final String STOP = "stop";
@@ -65,6 +77,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   private final EntityConnectionServer server;
   private final String serverName;
   private final Thread shutdownHook;
+  private final LinkedList<GcEvent> gcEventList = new LinkedList();
 
   /**
    * Instantiates a new DefaultEntityConnectionServerAdmin
@@ -80,6 +93,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
     this.serverName = server.getServerInfo().getServerName();
     this.shutdownHook = new Thread(getShutdownHook());
     Runtime.getRuntime().addShutdownHook(this.shutdownHook);
+    initializeGarbageCollectionListener();
   }
 
   /**
@@ -102,6 +116,22 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   @Override
   public String getSystemProperties() {
     return Util.getSystemProperties();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public List<GcEvent> getGcEvents() {
+    synchronized (gcEventList) {
+      return gcEventList;
+    }
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public ThreadStatistics getThreadStatistics() throws RemoteException {
+    final ThreadMXBean bean = ManagementFactory.getThreadMXBean();
+
+    return new DefaultThreadStatistics(bean.getThreadCount(), bean.getDaemonThreadCount());
   }
 
   /** {@inheritDoc} */
@@ -371,12 +401,6 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public String getMemoryUsage() {
-    return Util.getMemoryUsageString();
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public long getAllocatedMemory() {
     return Util.getAllocatedMemory();
   }
@@ -472,6 +496,17 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
         }
       }
     };
+  }
+
+  private void initializeGarbageCollectionListener() {
+    for (final GarbageCollectorMXBean collectorMXBean : ManagementFactory.getGarbageCollectorMXBeans()) {
+      ((NotificationEmitter) collectorMXBean).addNotificationListener(new GCNotifactionListener(), new NotificationFilter() {
+        @Override
+        public boolean isNotificationEnabled(final Notification notification) {
+          return notification.getType().equals(GarbageCollectionNotificationInfo.GARBAGE_COLLECTION_NOTIFICATION);
+        }
+      }, null);
+    }
   }
 
   private static String initializeServerName(final String databaseHost, final String sid) {
@@ -603,6 +638,73 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
         break;
       default:
         throw new IllegalArgumentException("Unknown argument '" + argument + "'");
+    }
+  }
+
+  private final class GCNotifactionListener implements NotificationListener {
+    @Override
+    public void handleNotification(final Notification notification, final Object handback) {
+      synchronized (gcEventList) {
+        final GarbageCollectionNotificationInfo notificationInfo =
+                GarbageCollectionNotificationInfo.from((CompositeData) notification.getUserData());
+        gcEventList.addLast(new DefaultGcEvent(notification.getTimeStamp(), notificationInfo.getGcName(),
+                notificationInfo.getGcInfo().getDuration()));
+        if (gcEventList.size() > GC_INFO_MAX_LENGTH) {
+          gcEventList.removeFirst();
+        }
+      }
+    }
+  }
+
+  private static final class DefaultThreadStatistics implements ThreadStatistics, Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    private final int threadCount;
+    private final int daemonThreadCount;
+
+    private DefaultThreadStatistics(final int threadCount, final int daemonThreadCount) {
+      this.threadCount = threadCount;
+      this.daemonThreadCount = daemonThreadCount;
+    }
+
+    @Override
+    public int getThreadCount() {
+      return threadCount;
+    }
+
+    @Override
+    public int getDaemonThreadCount() {
+      return daemonThreadCount;
+    }
+  }
+
+  private static class DefaultGcEvent implements GcEvent, Serializable {
+
+    private static final long serialVersionUID = 1;
+    private final long timeStamp;
+    private final String gcName;
+    private final long duration;
+
+    public DefaultGcEvent(final long timeStamp, final String gcName, final long duration) {
+      this.timeStamp = timeStamp;
+      this.gcName = gcName;
+      this.duration = duration;
+    }
+
+    @Override
+    public long getTimeStamp() {
+      return timeStamp;
+    }
+
+    @Override
+    public String getGcName() {
+      return gcName;
+    }
+
+    @Override
+    public long getDuration() {
+      return duration;
     }
   }
 }

@@ -110,12 +110,6 @@ public interface EntityConnectionServerAdmin extends Remote {
   void setLoggingEnabled(final UUID clientID, final boolean status) throws RemoteException;
 
   /**
-   * @return a string containing memory usage information
-   * @throws RemoteException in case of a communication error
-   */
-  String getMemoryUsage() throws RemoteException;
-
-  /**
    * @return the total amount of memory allocated by the server process
    * @throws RemoteException in case of a communication error
    */
@@ -261,6 +255,18 @@ public interface EntityConnectionServerAdmin extends Remote {
   String getSystemProperties() throws RemoteException;
 
   /**
+   * @return a list containing recent garbage collection notifications
+   * @throws RemoteException in case of an exception
+   */
+  List<GcEvent> getGcEvents() throws RemoteException;
+
+  /**
+   * @return current thread statistics
+   * @throws RemoteException in case of an exception
+   */
+  ThreadStatistics getThreadStatistics() throws RemoteException;
+
+  /**
    * @return a map containing all entityIDs, with their respective table names as an associated value
    * @throws RemoteException in case of an exception
    */
@@ -363,4 +369,41 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @throws RemoteException in case of an exception
    */
   void setPoolConnectionThreshold(final User user, final int value) throws RemoteException;
+
+  /**
+   * Thread statistics
+   */
+  interface ThreadStatistics {
+
+    /**
+     * @return the number of threads
+     */
+    int getThreadCount();
+
+    /**
+     * @return the number daemon threads
+     */
+    int getDaemonThreadCount();
+  }
+
+  /**
+   * Garbage collection event
+   */
+  interface GcEvent {
+
+    /**
+     * @return event time stamp
+     */
+    long getTimeStamp();
+
+    /**
+     * @return event gc name
+     */
+    String getGcName();
+
+    /**
+     * @return event duration
+     */
+    long getDuration();
+  }
 }

@@ -4163,3 +4163,4 @@
   EntityRESTService, minor parameter name change
   LocalEntityConnection.setForeignKeyValues() renamed to setForeignKeys()
   RemoteEntityConnectionProvider.RemoteEntityConnectionHandler.invoke() synchronized
+  EntityConnectionServerAdmin, ServerMonitor, added monitoring of GC events and thread count

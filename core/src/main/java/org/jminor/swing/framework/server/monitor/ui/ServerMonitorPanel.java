@@ -57,6 +57,14 @@ public final class ServerMonitorPanel extends JPanel {
           null, null, null, PlotOrientation.VERTICAL, true, true, false);
   private final ChartPanel connectionCountChartPanel = new ChartPanel(connectionCountChart);
 
+  private final JFreeChart threadCountChart = ChartFactory.createXYStepChart(null,
+          null, null, null, PlotOrientation.VERTICAL, true, true, false);
+  private final ChartPanel threadCountChartPanel = new ChartPanel(threadCountChart);
+
+  private final JFreeChart gcEventsChart = ChartFactory.createXYBarChart(null,
+          null, true, "Duration (ms)", null);
+  private final ChartPanel gcEventsChartPanel = new ChartPanel(gcEventsChart);
+
   /**
    * Instantiates a new ServerMonitorPanel
    * @param model the ServerMonitor to base this panel on
@@ -67,9 +75,13 @@ public final class ServerMonitorPanel extends JPanel {
     requestsPerSecondChart.getXYPlot().setDataset(model.getConnectionRequestsDataset());
     memoryUsageChart.getXYPlot().setDataset(model.getMemoryUsageDataset());
     connectionCountChart.getXYPlot().setDataset(model.getConnectionCountDataset());
+    gcEventsChart.getXYPlot().setDataset(model.getGcEventsDataset());
+    threadCountChart.getXYPlot().setDataset(model.getThreadCountDataset());
     setColors(requestsPerSecondChart);
     setColors(memoryUsageChart);
     setColors(connectionCountChart);
+    setColors(gcEventsChart);
+    setColors(threadCountChart);
     initializeUI();
   }
 
@@ -107,6 +119,19 @@ public final class ServerMonitorPanel extends JPanel {
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "shutdownServer", "Shutdown")));
     infoPanel.add(ControlProvider.createButton(Controls.methodControl(this, "restartServer", "Restart")));
 
+    setLayout(new BorderLayout());
+    add(infoPanel, BorderLayout.NORTH);
+    final JTabbedPane pane = new JTabbedPane();
+    pane.setUI(UiUtil.getBorderlessTabbedPaneUI());
+    pane.addTab("Performance", initializePerformancePanel());
+    pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
+    pane.addTab("Clients/Users", new ClientUserMonitorPanel(model.getClientMonitor()));
+    pane.addTab("Environment", initializeEnvironmentPanel());
+
+    add(pane, BorderLayout.CENTER);
+  }
+
+  private JPanel initializePerformancePanel() {
     final JPanel controlPanel = new JPanel(UiUtil.createFlowLayout(FlowLayout.LEFT));
 
     final JSpinner spnUpdateInterval = new JSpinner(ValueLinks.intSpinnerValueLink(model.getUpdateScheduler(),
@@ -122,26 +147,41 @@ public final class ServerMonitorPanel extends JPanel {
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
     controlPanelBase.add(ControlProvider.createButton(Controls.methodControl(model, "resetStatistics", "Reset")), BorderLayout.EAST);
 
-    final JPanel chartPanel = new JPanel(UiUtil.createGridLayout(3, 1));
+    final JPanel chartPanel = new JPanel(UiUtil.createGridLayout(2, 2));
     chartPanel.add(requestsPerSecondChartPanel);
+    chartPanel.add(threadCountChartPanel);
     chartPanel.add(connectionCountChartPanel);
     chartPanel.add(memoryUsageChartPanel);
     chartPanel.setBorder(BorderFactory.createEtchedBorder());
 
-    final JPanel performancePanel = new JPanel(new BorderLayout());
-    performancePanel.add(controlPanelBase, BorderLayout.SOUTH);
-    performancePanel.add(chartPanel, BorderLayout.CENTER);
+    final JPanel overviewPanel = new JPanel(UiUtil.createBorderLayout());
+    overviewPanel.add(controlPanelBase, BorderLayout.SOUTH);
+    overviewPanel.add(chartPanel, BorderLayout.CENTER);
 
-    setLayout(new BorderLayout());
-    add(infoPanel, BorderLayout.NORTH);
-    final JTabbedPane pane = new JTabbedPane();
-    pane.setUI(UiUtil.getBorderlessTabbedPaneUI());
-    pane.addTab("Performance", performancePanel);
-    pane.addTab("Database", new DatabaseMonitorPanel(model.getDatabaseMonitor()));
-    pane.addTab("Clients/Users", new ClientUserMonitorPanel(model.getClientMonitor()));
-    pane.addTab("Environment", initializeEnvironmentPanel());
+    final JTabbedPane tabPane = new JTabbedPane();
+    tabPane.setUI(UiUtil.getBorderlessTabbedPaneUI());
+    tabPane.addTab("Overview", overviewPanel);
+    tabPane.addTab("GC", initializeGCPanel());
 
-    add(pane, BorderLayout.CENTER);
+    final JPanel ret = new JPanel(UiUtil.createBorderLayout());
+    ret.add(tabPane, BorderLayout.CENTER);
+
+    return ret;
+  }
+
+  private JPanel initializeGCPanel() {
+    final JPanel chartPanel = new JPanel(UiUtil.createBorderLayout());
+    chartPanel.add(gcEventsChartPanel);
+
+    final JPanel southPanel = new JPanel(new FlowLayout(FlowLayout.RIGHT));
+    southPanel.add(ControlProvider.createButton(Controls.methodControl(model, "refreshGCInfo", "Refresh")));
+
+    final JPanel panel = new JPanel(UiUtil.createBorderLayout());
+
+    panel.add(chartPanel, BorderLayout.CENTER);
+    panel.add(southPanel, BorderLayout.SOUTH);
+
+    return panel;
   }
 
   private JTabbedPane initializeEnvironmentPanel() throws RemoteException {

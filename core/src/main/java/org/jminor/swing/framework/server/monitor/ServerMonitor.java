@@ -25,7 +25,10 @@ import javax.swing.table.TableModel;
 import java.rmi.NotBoundException;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
+import java.text.Format;
+import java.text.NumberFormat;
 import java.util.Date;
+import java.util.List;
 import java.util.Map;
 import java.util.concurrent.TimeUnit;
 
@@ -35,7 +38,8 @@ import java.util.concurrent.TimeUnit;
 public final class ServerMonitor {
 
   private static final Logger LOG = LoggerFactory.getLogger(ServerMonitor.class);
-  private static final double THOUSAND = 1000d;
+  private static final Format MEMORY_USAGE_FORMAT = NumberFormat.getIntegerInstance();
+  private static final long THOUSAND = 1000;
 
   private final Event serverShutDownEvent = Events.event();
   private final Event<String> statisticsUpdatedEvent = Events.event();
@@ -63,9 +67,9 @@ public final class ServerMonitor {
   private final ClientUserMonitor clientMonitor;
 
   private int connectionCount = 0;
-  private volatile boolean shutdown = false;
+  private boolean shutdown = false;
 
-  private String memoryUsage;
+  private long memoryUsage;
   private final DefaultTableModel domainListModel = new DomainTableModel();
   private final XYSeries connectionRequestsPerSecondSeries = new XYSeries("Service requests per second");
   private final XYSeriesCollection connectionRequestsPerSecondCollection = new XYSeriesCollection();
@@ -79,6 +83,14 @@ public final class ServerMonitor {
   private final XYSeries connectionLimitSeries = new XYSeries("Maximum connection count");
   private final XYSeriesCollection connectionCountCollection = new XYSeriesCollection();
 
+  private final XYSeries gcScavengeSeries = new XYSeries("Scavenge");
+  private final XYSeries gcMarkSweepSeries = new XYSeries("Mark & Sweep");
+  private final XYSeriesCollection gcEventsCollection = new XYSeriesCollection();
+
+  private final XYSeries threadCountSeries = new XYSeries("Threads");
+  private final XYSeries daemonThreadCountSeries = new XYSeries("Daemon Threads");
+  private final XYSeriesCollection threadCountCollection = new XYSeriesCollection();
+
   public ServerMonitor(final String hostName, final Server.ServerInfo serverInfo, final int registryPort) throws RemoteException {
     this.hostName = hostName;
     this.serverInfo = serverInfo;
@@ -90,6 +102,10 @@ public final class ServerMonitor {
     memoryUsageCollection.addSeries(usedMemorySeries);
     connectionCountCollection.addSeries(connectionCountSeries);
     connectionCountCollection.addSeries(connectionLimitSeries);
+    gcEventsCollection.addSeries(gcScavengeSeries);
+    gcEventsCollection.addSeries(gcMarkSweepSeries);
+    threadCountCollection.addSeries(threadCountSeries);
+    threadCountCollection.addSeries(daemonThreadCountSeries);
     databaseMonitor = new DatabaseMonitor(server);
     clientMonitor = new ClientUserMonitor(server);
     refreshDomainList();
@@ -112,7 +128,7 @@ public final class ServerMonitor {
   }
 
   public String getMemoryUsage() {
-    return memoryUsage;
+    return MEMORY_USAGE_FORMAT.format(memoryUsage) + " KB";
   }
 
   public int getConnectionCount() {
@@ -157,6 +173,14 @@ public final class ServerMonitor {
     return connectionCountCollection;
   }
 
+  public XYSeriesCollection getGcEventsDataset() {
+    return gcEventsCollection;
+  }
+
+  public XYSeriesCollection getThreadCountDataset() {
+    return threadCountCollection;
+  }
+
   public String getEnvironmentInfo() throws RemoteException {
     final StringBuilder contents = new StringBuilder();
     final String startDate = DateFormats.getDateFormat(DateFormats.FULL_TIMESTAMP).format(new Date(serverInfo.getStartTime()));
@@ -188,6 +212,10 @@ public final class ServerMonitor {
     for (final Map.Entry<String, String> definition : definitions.entrySet()) {
       domainListModel.addRow(new Object[] {definition.getKey(), definition.getValue()});
     }
+  }
+
+  public void refreshGCInfo() throws RemoteException {
+    refreshGCInfo(server.getGcEvents());
   }
 
   public TableModel getDomainTableModel() {
@@ -248,7 +276,7 @@ public final class ServerMonitor {
       final EntityConnectionServerAdmin serverAdmin =
               (EntityConnectionServerAdmin) LocateRegistry.getRegistry(hostName, registryPort).lookup(Configuration.SERVER_ADMIN_PREFIX + serverName);
       //just some simple call to validate the remote connection
-      serverAdmin.getMemoryUsage();
+      serverAdmin.getUsedMemory();
       LOG.info("ServerMonitor connected to server: {}", serverName);
       return serverAdmin;
     }
@@ -268,14 +296,36 @@ public final class ServerMonitor {
   private void updateStatistics() throws RemoteException {
     final long time = System.currentTimeMillis();
     connectionCount = server.getConnectionCount();
-    memoryUsage = server.getMemoryUsage();
+    memoryUsage = server.getUsedMemory();
     connectionRequestsPerSecondSeries.add(time, server.getRequestsPerSecond());
     maxMemorySeries.add(time, server.getMaxMemory() / THOUSAND);
     allocatedMemorySeries.add(time, server.getAllocatedMemory() / THOUSAND);
     usedMemorySeries.add(time, server.getUsedMemory() / THOUSAND);
     connectionCountSeries.add(time, server.getConnectionCount());
     connectionLimitSeries.add(time, server.getConnectionLimit());
+    final EntityConnectionServerAdmin.ThreadStatistics threadStatistics = server.getThreadStatistics();
+    threadCountSeries.add(time, threadStatistics.getThreadCount());
+    daemonThreadCountSeries.add(time, threadStatistics.getDaemonThreadCount());
     statisticsUpdatedEvent.fire();
+  }
+
+  private void refreshGCInfo(final List<EntityConnectionServerAdmin.GcEvent> gcEvents) {
+    gcScavengeSeries.clear();
+    gcMarkSweepSeries.clear();
+    for (final EntityConnectionServerAdmin.GcEvent event : gcEvents) {
+      switch (event.getGcName()) {
+        case "PS Scavenge":
+        case "Copy":
+          gcScavengeSeries.add(event.getTimeStamp(), event.getDuration());
+          break;
+        case "PS MarkSweep":
+        case "MarkSweepCompact":
+          gcMarkSweepSeries.add(event.getTimeStamp(), event.getDuration());
+          break;
+        default:
+          System.out.println(event.getGcName());
+      }
+    }
   }
 
   private static final class DomainTableModel extends DefaultTableModel {

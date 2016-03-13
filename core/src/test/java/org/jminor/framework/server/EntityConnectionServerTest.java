@@ -248,8 +248,9 @@ public class EntityConnectionServerTest {
     admin.setMaintenanceInterval(500);
     assertEquals(500, admin.getMaintenanceInterval());
     admin.getMaxMemory();
-    admin.getMemoryUsage();
     admin.getRequestsPerSecond();
+    admin.getThreadStatistics();
+    admin.getGcEvents();
     admin.getServerInfo();
     admin.getSystemProperties();
     admin.getUsedMemory();

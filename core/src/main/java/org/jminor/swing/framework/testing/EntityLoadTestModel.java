@@ -54,7 +54,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
     if (tableModel.getRowCount() == 0) {
       return;
     }
-    if (tableModel.getRowCount() < count) {
+    if (tableModel.getRowCount() <= count) {
       tableModel.getSelectionModel().selectAll();
     }
     else {
