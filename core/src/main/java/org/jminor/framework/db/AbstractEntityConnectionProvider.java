@@ -23,7 +23,6 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
   private static final Logger LOG = LoggerFactory.getLogger(AbstractEntityConnectionProvider.class);
   private static final int VALIDITY_CHECK_INTERVAL_SECONDS = 10;
   protected static final String IS_CONNECTED = "isConnected";
-  protected static final String IS_VALID = "isValid";
   private final State connectedState = States.state();
   private final boolean scheduleValidityCheck;
   private final TaskScheduler validityCheckScheduler = new TaskScheduler(new Runnable() {
@@ -139,6 +138,9 @@ public abstract class AbstractEntityConnectionProvider implements EntityConnecti
    */
   protected abstract void doDisconnect();
 
+  /**
+   * @return the underlying EntityConnection object
+   */
   protected final synchronized EntityConnection getConnectionInternal() {
     return entityConnection;
   }

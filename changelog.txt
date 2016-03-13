@@ -4162,3 +4162,4 @@
   build.xml, deploy_server and deploy_server_monitor targets improved, no longer create duplicate jminor library jars
   EntityRESTService, minor parameter name change
   LocalEntityConnection.setForeignKeyValues() renamed to setForeignKeys()
+  RemoteEntityConnectionProvider.RemoteEntityConnectionHandler.invoke() synchronized

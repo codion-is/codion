@@ -163,11 +163,13 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     }
 
     @Override
-    public Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
-      if (method.getName().equals(IS_CONNECTED)) {
+    public synchronized Object invoke(final Object proxy, final Method method, final Object[] args) throws Exception {
+      final String methodName = method.getName();
+      if (methodName.equals(IS_CONNECTED)) {
         return isConnected();
       }
-      final Method remoteMethod = RemoteEntityConnection.class.getMethod(method.getName(), method.getParameterTypes());
+
+      final Method remoteMethod = RemoteEntityConnection.class.getMethod(methodName, method.getParameterTypes());
       try {
         return remoteMethod.invoke(remote, args);
       }

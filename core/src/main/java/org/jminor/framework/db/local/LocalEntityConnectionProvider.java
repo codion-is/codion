@@ -133,8 +133,8 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
         throw exception;
       }
       finally {
-        final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
         if (methodLogger.isEnabled()) {
+          final MethodLogger.Entry entry = methodLogger.logExit(methodName, exception);
           final StringBuilder messageBuilder = new StringBuilder(connection.getUser().toString()).append("\n");
           MethodLogger.appendLogEntry(messageBuilder, entry, 0);
           LOG.info(messageBuilder.toString());
