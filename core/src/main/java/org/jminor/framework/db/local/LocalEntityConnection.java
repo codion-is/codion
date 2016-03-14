@@ -272,7 +272,7 @@ final class LocalEntityConnection implements EntityConnection {
         }
         commitIfTransactionIsNotOpen();
 
-        return selectMany(EntityUtil.getPrimaryKeys(entities));
+        return selectMany(EntityUtil.getKeys(entities));
       }
       catch (final SQLException e) {
         rollbackQuietlyIfTransactionIsNotOpen();
@@ -506,7 +506,7 @@ final class LocalEntityConnection implements EntityConnection {
     final Set<Dependency> dependencies = resolveEntityDependencies(entities.iterator().next().getEntityID());
     for (final Dependency dependency : dependencies) {
       final List<Entity> dependentEntities = selectMany(EntityCriteriaUtil.selectCriteria(dependency.getEntityID(),
-              dependency.getForeignKeyProperties(), EntityUtil.getPrimaryKeys(entities)));
+              dependency.getForeignKeyProperties(), EntityUtil.getKeys(entities)));
       if (!dependentEntities.isEmpty()) {
         dependencyMap.put(dependency.entityID, dependentEntities);
       }
@@ -749,11 +749,11 @@ final class LocalEntityConnection implements EntityConnection {
    */
   private void lockAndCheckForUpdate(final Map<String, Collection<Entity>> entities) throws DatabaseException {
     for (final Map.Entry<String, Collection<Entity>> entry : entities.entrySet()) {
-      final List<Entity.Key> originalKeys = EntityUtil.getPrimaryKeys(entry.getValue(), true);
+      final List<Entity.Key> originalKeys = EntityUtil.getKeys(entry.getValue(), true);
       final EntitySelectCriteria selectForUpdateCriteria = EntityCriteriaUtil.selectCriteria(originalKeys);
       selectForUpdateCriteria.setForUpdate(true);
       final List<Entity> currentValues = doSelectMany(selectForUpdateCriteria, 0);
-      final Map<Entity.Key, Entity> mappedEntities = EntityUtil.mapToPrimaryKey(currentValues);
+      final Map<Entity.Key, Entity> mappedEntities = EntityUtil.mapToKey(currentValues);
       for (final Entity entity : entry.getValue()) {
         final Entity current = mappedEntities.get(entity.getOriginalKey());
         if (current == null) {
@@ -824,7 +824,7 @@ final class LocalEntityConnection implements EntityConnection {
             final EntitySelectCriteria referencedEntitiesCriteria = EntityCriteriaUtil.selectCriteria(referencedPrimaryKeys);
             referencedEntitiesCriteria.setForeignKeyFetchDepthLimit(criteriaFetchDepthLimit);
             final List<Entity> referencedEntities = doSelectMany(referencedEntitiesCriteria, currentForeignKeyFetchDepth + 1);
-            final Map<Entity.Key, Entity> mappedReferencedEntities = EntityUtil.mapToPrimaryKey(referencedEntities);
+            final Map<Entity.Key, Entity> mappedReferencedEntities = EntityUtil.mapToKey(referencedEntities);
             for (final Entity entity : entities) {
               final Entity.Key referencedKey = entity.getReferencedKey(foreignKeyProperty);
               entity.put(foreignKeyProperty, getReferencedEntity(referencedKey, mappedReferencedEntities), false);

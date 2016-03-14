@@ -200,33 +200,33 @@ public class EntityUtilTest {
       entities.add(entity);
     }
     final Property property = Entities.getProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID);
-    Collection<Integer> propertyValues = EntityUtil.getPropertyValues(TestDomain.DEPARTMENT_ID, entities);
+    Collection<Integer> propertyValues = EntityUtil.getValues(TestDomain.DEPARTMENT_ID, entities);
     assertTrue(propertyValues.containsAll(values));
-    propertyValues = EntityUtil.getPropertyValues(property, entities);
+    propertyValues = EntityUtil.getValues(property, entities);
     assertTrue(propertyValues.containsAll(values));
-    assertTrue(EntityUtil.getPropertyValues(TestDomain.DEPARTMENT_ID, null).isEmpty());
-    assertTrue(EntityUtil.getPropertyValues(TestDomain.DEPARTMENT_ID, Collections.<Entity>emptyList()).isEmpty());
+    assertTrue(EntityUtil.getValues(TestDomain.DEPARTMENT_ID, null).isEmpty());
+    assertTrue(EntityUtil.getValues(TestDomain.DEPARTMENT_ID, Collections.<Entity>emptyList()).isEmpty());
   }
 
   @Test
   public void isPrimaryKeyModified() {
-    assertFalse(EntityUtil.isPrimaryKeyModified(null));
-    assertFalse(EntityUtil.isPrimaryKeyModified(Collections.<Entity>emptyList()));
+    assertFalse(EntityUtil.isKeyModified(null));
+    assertFalse(EntityUtil.isKeyModified(Collections.<Entity>emptyList()));
 
     final Entity department = Entities.entity(TestDomain.T_DEPARTMENT);
     department.put(TestDomain.DEPARTMENT_ID, 1);
     department.put(TestDomain.DEPARTMENT_NAME, "name");
     department.put(TestDomain.DEPARTMENT_LOCATION, "loc");
-    assertFalse(EntityUtil.isPrimaryKeyModified(Collections.singletonList(department)));
+    assertFalse(EntityUtil.isKeyModified(Collections.singletonList(department)));
 
     department.put(TestDomain.DEPARTMENT_NAME, "new name");
-    assertFalse(EntityUtil.isPrimaryKeyModified(Collections.singletonList(department)));
+    assertFalse(EntityUtil.isKeyModified(Collections.singletonList(department)));
 
     department.put(TestDomain.DEPARTMENT_ID, 2);
-    assertTrue(EntityUtil.isPrimaryKeyModified(Collections.singletonList(department)));
+    assertTrue(EntityUtil.isKeyModified(Collections.singletonList(department)));
 
     department.revert(TestDomain.DEPARTMENT_ID);
-    assertFalse(EntityUtil.isPrimaryKeyModified(Collections.singletonList(department)));
+    assertFalse(EntityUtil.isKeyModified(Collections.singletonList(department)));
   }
 
   @Test
@@ -268,17 +268,17 @@ public class EntityUtilTest {
     values.add(3);
     values.add(4);
 
-    Collection<Integer> propertyValues = EntityUtil.getDistinctPropertyValues(TestDomain.DEPARTMENT_ID, entities);
+    Collection<Integer> propertyValues = EntityUtil.getDistinctValues(TestDomain.DEPARTMENT_ID, entities);
     assertEquals(4, propertyValues.size());
     assertTrue(propertyValues.containsAll(values));
 
-    propertyValues = EntityUtil.getDistinctPropertyValues(TestDomain.DEPARTMENT_ID, entities, true);
+    propertyValues = EntityUtil.getDistinctValues(TestDomain.DEPARTMENT_ID, entities, true);
     assertEquals(5, propertyValues.size());
     values.add(null);
     assertTrue(propertyValues.containsAll(values));
 
-    assertEquals(0, EntityUtil.getDistinctPropertyValues(TestDomain.DEPARTMENT_ID, null, true).size());
-    assertEquals(0, EntityUtil.getDistinctPropertyValues(TestDomain.DEPARTMENT_ID, new ArrayList<Entity>(), true).size());
+    assertEquals(0, EntityUtil.getDistinctValues(TestDomain.DEPARTMENT_ID, null, true).size());
+    assertEquals(0, EntityUtil.getDistinctValues(TestDomain.DEPARTMENT_ID, new ArrayList<Entity>(), true).size());
   }
 
   @Test
@@ -322,11 +322,11 @@ public class EntityUtilTest {
     entities.add(Entities.entity(TestDomain.T_DEPARTMENT));
     entities.add(Entities.entity(TestDomain.T_DEPARTMENT));
     entities.add(Entities.entity(TestDomain.T_DEPARTMENT));
-    EntityUtil.setPropertyValue(TestDomain.DEPARTMENT_ID, 1, entities);
+    EntityUtil.put(TestDomain.DEPARTMENT_ID, 1, entities);
     for (final Entity entity : entities) {
       assertEquals(Integer.valueOf(1), entity.getInteger(TestDomain.DEPARTMENT_ID));
     }
-    EntityUtil.setPropertyValue(TestDomain.DEPARTMENT_ID, null, entities);
+    EntityUtil.put(TestDomain.DEPARTMENT_ID, null, entities);
     for (final Entity entity : entities) {
       assertTrue(entity.isValueNull(TestDomain.DEPARTMENT_ID));
     }
@@ -357,7 +357,7 @@ public class EntityUtilTest {
     entityFive.put(TestDomain.DEPARTMENT_ID, 3);
     entities.add(entityFive);
 
-    final Map<Integer, Collection<Entity>> map = EntityUtil.mapToPropertyValue(TestDomain.DEPARTMENT_ID, entities);
+    final Map<Integer, Collection<Entity>> map = EntityUtil.mapToValue(TestDomain.DEPARTMENT_ID, entities);
     final Collection<Entity> ones = map.get(1);
     assertTrue(ones.contains(entityOne));
     assertTrue(ones.contains(entityTwo));
@@ -421,7 +421,7 @@ public class EntityUtilTest {
       assertFalse(dept.containsKey(property));
       assertTrue(dept.isValueNull(property));
     }
-    EntityUtil.setNull(dept);
+    EntityUtil.putNull(dept);
     assertFalse(dept.isModified());
     for (final Property property : Entities.getProperties(TestDomain.T_DEPARTMENT, true)) {
       assertTrue(dept.containsKey(property));

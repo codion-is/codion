@@ -187,7 +187,7 @@ public class LocalEntityConnectionTest {
     assertTrue(result.isEmpty());
     result = connection.selectMany(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_ID, 10, 20);
     assertEquals(2, result.size());
-    result = connection.selectMany(EntityUtil.getPrimaryKeys(result));
+    result = connection.selectMany(EntityUtil.getKeys(result));
     assertEquals(2, result.size());
     result = connection.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT, CriteriaUtil.<Property.ColumnProperty>stringCriteria("deptno in (10, 20)")));
     assertEquals(2, result.size());

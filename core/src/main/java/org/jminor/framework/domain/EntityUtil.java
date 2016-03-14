@@ -56,7 +56,7 @@ public final class EntityUtil {
    * @param entities the entities to map
    * @return the mapped entities
    */
-  public static Map<Entity.Key, Entity> mapToPrimaryKey(final Collection<Entity> entities) {
+  public static Map<Entity.Key, Entity> mapToKey(final Collection<Entity> entities) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
     final Map<Entity.Key, Entity> entityMap = new HashMap<>();
     for (final Entity entity : entities) {
@@ -70,8 +70,8 @@ public final class EntityUtil {
    * @param entities the entities
    * @return a List containing the primary keys of the given entities
    */
-  public static List<Entity.Key> getPrimaryKeys(final Collection<Entity> entities) {
-    return getPrimaryKeys(entities, false);
+  public static List<Entity.Key> getKeys(final Collection<Entity> entities) {
+    return getKeys(entities, false);
   }
 
   /**
@@ -79,7 +79,7 @@ public final class EntityUtil {
    * @param originalValue if true then the original value of the primary key is used
    * @return a List containing the primary keys of the given entities
    */
-  public static List<Entity.Key> getPrimaryKeys(final Collection<Entity> entities, final boolean originalValue) {
+  public static List<Entity.Key> getKeys(final Collection<Entity> entities, final boolean originalValue) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
     final List<Entity.Key> keys = new ArrayList<>(entities.size());
     for (final Entity entity : entities) {
@@ -95,7 +95,7 @@ public final class EntityUtil {
    * @param keys the keys
    * @return the actual property values of the given keys
    */
-  public static <T> Collection<T> getPropertyValues(final Collection<Entity.Key> keys) {
+  public static <T> Collection<T> getValues(final Collection<Entity.Key> keys) {
     Util.rejectNullValue(keys, "keys");
     final List<T> list = new ArrayList<>(keys.size());
     for (final Entity.Key key : keys) {
@@ -112,8 +112,8 @@ public final class EntityUtil {
    * @return a Collection containing the values of the property with the given ID from the given entities,
    * null values are included
    */
-  public static <T> Collection<T> getPropertyValues(final String propertyID, final Collection<Entity> entities) {
-    return getPropertyValues(propertyID, entities, true);
+  public static <T> Collection<T> getValues(final String propertyID, final Collection<Entity> entities) {
+    return getValues(propertyID, entities, true);
   }
 
   /**
@@ -123,13 +123,13 @@ public final class EntityUtil {
    * @param includeNullValues if true then null values are included
    * @return a Collection containing the values of the property with the given ID from the given entities
    */
-  public static <T> Collection<T> getPropertyValues(final String propertyID, final Collection<Entity> entities,
-                                                    final boolean includeNullValues) {
+  public static <T> Collection<T> getValues(final String propertyID, final Collection<Entity> entities,
+                                            final boolean includeNullValues) {
     if (Util.nullOrEmpty(entities)) {
       return new ArrayList<>(0);
     }
 
-    return getPropertyValues(entities.iterator().next().getProperty(propertyID), entities, includeNullValues);
+    return getValues(entities.iterator().next().getProperty(propertyID), entities, includeNullValues);
   }
 
   /**
@@ -139,8 +139,8 @@ public final class EntityUtil {
    * @return a Collection containing the values of the property with the given ID from the given entities,
    * null values are included
    */
-  public static <T> Collection<T> getPropertyValues(final Property property, final Collection<Entity> entities) {
-    return getPropertyValues(property, entities, true);
+  public static <T> Collection<T> getValues(final Property property, final Collection<Entity> entities) {
+    return getValues(property, entities, true);
   }
 
   /**
@@ -150,8 +150,8 @@ public final class EntityUtil {
    * @param includeNullValues if true then null values are included
    * @return a Collection containing the values of the property with the given ID from the given entities
    */
-  public static <T> Collection<T> getPropertyValues(final Property property, final Collection<Entity> entities,
-                                                    final boolean includeNullValues) {
+  public static <T> Collection<T> getValues(final Property property, final Collection<Entity> entities,
+                                            final boolean includeNullValues) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
     final List<T> values = new ArrayList<>(entities.size());
     for (final Entity entity : entities) {
@@ -174,8 +174,8 @@ public final class EntityUtil {
    * @param entities the entities from which to retrieve the values
    * @return a Collection containing the distinct property values, excluding null values
    */
-  public static <T> Collection<T> getDistinctPropertyValues(final String propertyID, final Collection<Entity> entities) {
-    return getDistinctPropertyValues(propertyID, entities, false);
+  public static <T> Collection<T> getDistinctValues(final String propertyID, final Collection<Entity> entities) {
+    return getDistinctValues(propertyID, entities, false);
   }
 
   /**
@@ -187,8 +187,8 @@ public final class EntityUtil {
    * @param includeNullValue if true then null is considered a value
    * @return a Collection containing the distinct property values
    */
-  public static <T> Collection<T> getDistinctPropertyValues(final String propertyID, final Collection<Entity> entities,
-                                                            final boolean includeNullValue) {
+  public static <T> Collection<T> getDistinctValues(final String propertyID, final Collection<Entity> entities,
+                                                    final boolean includeNullValue) {
     final Set<T> values = new HashSet<>();
     if (entities == null) {
       return values;
@@ -211,8 +211,8 @@ public final class EntityUtil {
    * @param entities the entities for which to set the value
    * @return the old property values mapped to their respective primary key
    */
-  public static Map<Entity.Key, Object> setPropertyValue(final String propertyID, final Object value,
-                                                         final Collection<Entity> entities) {
+  public static Map<Entity.Key, Object> put(final String propertyID, final Object value,
+                                            final Collection<Entity> entities) {
     Util.rejectNullValue(entities, ENTITIES_PARAM);
     final Map<Entity.Key, Object> oldValues = new HashMap<>(entities.size());
     for (final Entity entity : entities) {
@@ -230,7 +230,7 @@ public final class EntityUtil {
    * @param entities the entities to map by property value
    * @return a Map of entities mapped to property value
    */
-  public static <K> LinkedHashMap<K, Collection<Entity>> mapToPropertyValue(final String propertyID, final Collection<Entity> entities) {
+  public static <K> LinkedHashMap<K, Collection<Entity>> mapToValue(final String propertyID, final Collection<Entity> entities) {
     return Util.map(entities, new Util.MapKeyProvider<K, Entity>() {
       @Override
       public K getKey(final Entity value) {
@@ -377,7 +377,7 @@ public final class EntityUtil {
    * @param entities the entities to check
    * @return true if any of the given entities has a modified primary key
    */
-  public static boolean isPrimaryKeyModified(final Collection<Entity> entities) {
+  public static boolean isKeyModified(final Collection<Entity> entities) {
     if (Util.nullOrEmpty(entities)) {
       return false;
     }
@@ -419,7 +419,7 @@ public final class EntityUtil {
    * @param entity the entity
    * @return the same entity instance
    */
-  public static Entity setNull(final Entity entity) {
+  public static Entity putNull(final Entity entity) {
     Util.rejectNullValue(entity, "entity");
     for (final Property property : Entities.getProperties(entity.getEntityID(), true)) {
       entity.put(property, null);

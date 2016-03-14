@@ -183,7 +183,7 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
   }
 
   protected void doDelete(final List<Entity> entities) throws DatabaseException {
-    connectionProvider.getConnection().delete(EntityUtil.getPrimaryKeys(entities));
+    connectionProvider.getConnection().delete(EntityUtil.getKeys(entities));
   }
 
   private Entity getEntity() {

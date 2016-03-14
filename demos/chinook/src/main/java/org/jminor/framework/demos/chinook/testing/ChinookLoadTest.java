@@ -47,7 +47,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
         selectRandomRows(invoiceModel.getTableModel(), RANDOM.nextInt(6) + 2);
         final EntityTableModel invoiceLineTableModel = invoiceModel.getDetailModel(T_INVOICELINE).getTableModel();
         final List<Entity> invoiceLines = invoiceLineTableModel.getAllItems();
-        EntityUtil.setPropertyValue(Chinook.INVOICELINE_QUANTITY, RANDOM.nextInt(4) + 1, invoiceLines);
+        EntityUtil.put(Chinook.INVOICELINE_QUANTITY, RANDOM.nextInt(4) + 1, invoiceLines);
 
         invoiceLineTableModel.update(invoiceLines);
 
@@ -96,7 +96,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
 
         final String reportPath = Configuration.getReportPath() + "/customer_report.jasper";
         final Collection customerIDs =
-                EntityUtil.getDistinctPropertyValues(CUSTOMER_CUSTOMERID, customerModel.getSelectionModel().getSelectedItems());
+                EntityUtil.getDistinctValues(CUSTOMER_CUSTOMERID, customerModel.getSelectionModel().getSelectedItems());
         final HashMap<String, Object> reportParameters = new HashMap<>();
         reportParameters.put("CUSTOMER_IDS", customerIDs);
         EntityReportUtil.fillReport(new JasperReportsWrapper(reportPath, reportParameters),

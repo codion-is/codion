@@ -371,7 +371,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /** {@inheritDoc} */
   @Override
   public final void replaceEntities(final Collection<Entity> entities) {
-    replaceEntitiesByKey(EntityUtil.mapToPrimaryKey(entities));
+    replaceEntitiesByKey(EntityUtil.mapToKey(entities));
   }
 
   /** {@inheritDoc} */

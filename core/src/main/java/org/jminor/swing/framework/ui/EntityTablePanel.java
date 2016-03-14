@@ -535,7 +535,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     UiUtil.displayInDialog(this, inputPanel, FrameworkMessages.get(FrameworkMessages.SET_PROPERTY_VALUE), true,
             inputPanel.getOkButton(), inputPanel.getButtonClickObserver());
     if (inputPanel.isInputAccepted()) {
-      EntityUtil.setPropertyValue(propertyToUpdate.getPropertyID(), inputPanel.getValue(), selectedEntities);
+      EntityUtil.put(propertyToUpdate.getPropertyID(), inputPanel.getValue(), selectedEntities);
       try {
         UiUtil.setWaitCursor(true, this);
         getEntityTableModel().update(selectedEntities);
@@ -1142,7 +1142,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @see #updateSelectedEntities(org.jminor.framework.domain.Property)
    */
   protected InputProvider getInputProvider(final Property property, final List<Entity> toUpdate) {
-    final Collection values = EntityUtil.getDistinctPropertyValues(property.getPropertyID(), toUpdate);
+    final Collection values = EntityUtil.getDistinctValues(property.getPropertyID(), toUpdate);
     final Object currentValue = values.size() == 1 ? values.iterator().next() : null;
     if (property instanceof Property.ValueListProperty) {
       return new ValueListInputProvider(currentValue, ((Property.ValueListProperty) property).getValues());

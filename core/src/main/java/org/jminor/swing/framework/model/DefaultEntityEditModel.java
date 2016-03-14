@@ -815,7 +815,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
    * @throws org.jminor.common.db.exception.DatabaseException in case of a database exception
    */
   protected List<Entity> doDelete(final List<Entity> entities) throws DatabaseException {
-    connectionProvider.getConnection().delete(EntityUtil.getPrimaryKeys(entities));
+    connectionProvider.getConnection().delete(EntityUtil.getKeys(entities));
 
     return entities;
   }

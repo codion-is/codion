@@ -327,7 +327,7 @@ public final class DefaultEntityTableModelTest {
     testModel.refresh();
     testModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0, 1));
     final List<Entity> entities = testModel.getSelectionModel().getSelectedItems();
-    EntityUtil.setPropertyValue(TestDomain.DETAIL_STRING, "hello", entities);
+    EntityUtil.put(TestDomain.DETAIL_STRING, "hello", entities);
     testModel.update(entities);
   }
 

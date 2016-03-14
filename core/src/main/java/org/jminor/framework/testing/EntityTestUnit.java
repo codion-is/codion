@@ -347,7 +347,7 @@ public abstract class EntityTestUnit {
    * @throws org.jminor.common.db.exception.DatabaseException in case of an exception
    */
   private void testDelete(final Entity testEntity) throws DatabaseException {
-    connection.delete(EntityUtil.getPrimaryKeys(Collections.singletonList(testEntity)));
+    connection.delete(EntityUtil.getKeys(Collections.singletonList(testEntity)));
 
     boolean caught = false;
     try {

@@ -706,7 +706,7 @@ public final class EntityCriteriaUtil {
           criteria.add(new PropertyCriteria(property, SearchType.LIKE, firstKey.get(primaryKeyProperty.getPropertyID())));
         }
         else { //a in (c, v, d, s)
-          criteria.add(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getPropertyValues(keys)));
+          criteria.add(new PropertyCriteria(property, SearchType.LIKE, EntityUtil.getValues(keys)));
         }
       }
     }
