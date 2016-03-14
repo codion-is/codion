@@ -324,7 +324,7 @@ public class EntityUtilTest {
     entities.add(Entities.entity(TestDomain.T_DEPARTMENT));
     EntityUtil.setPropertyValue(TestDomain.DEPARTMENT_ID, 1, entities);
     for (final Entity entity : entities) {
-      assertEquals(Integer.valueOf(1), entity.getInt(TestDomain.DEPARTMENT_ID));
+      assertEquals(Integer.valueOf(1), entity.getInteger(TestDomain.DEPARTMENT_ID));
     }
     EntityUtil.setPropertyValue(TestDomain.DEPARTMENT_ID, null, entities);
     for (final Entity entity : entities) {

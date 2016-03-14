@@ -440,7 +440,7 @@ public class DefaultEntityTest {
     employee.put(TestDomain.EMP_ID, -10);
     employee.put(TestDomain.EMP_DEPARTMENT_FK, department);
     assertNotNull(employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK));
-    assertEquals(Integer.valueOf(-10), employee.getInt(TestDomain.EMP_DEPARTMENT));
+    assertEquals(Integer.valueOf(-10), employee.getInteger(TestDomain.EMP_DEPARTMENT));
 
     employee.remove(TestDomain.EMP_DEPARTMENT_FK);
     assertNull(employee.getForeignKey(TestDomain.EMP_DEPARTMENT_FK));

@@ -256,7 +256,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
 
   /** {@inheritDoc} */
   @Override
-  public Integer getInt(final String propertyID) {
+  public Integer getInteger(final String propertyID) {
     return (Integer) get(propertyID);
   }
 
@@ -268,7 +268,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
 
   /** {@inheritDoc} */
   @Override
-  public Character getChar(final String propertyID) {
+  public Character getCharacter(final String propertyID) {
     return (Character) get(propertyID);
   }
 

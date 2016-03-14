@@ -67,7 +67,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
    * assuming it is an Integer
    * @throws ClassCastException if the value is not a Integer instance
    */
-  Integer getInt(final String propertyID);
+  Integer getInteger(final String propertyID);
 
   /**
    * @param propertyID the ID of the property for which to retrieve the value
@@ -75,7 +75,7 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
    * assuming it is a Character
    * @throws ClassCastException if the value is not a Character instance
    */
-  Character getChar(final String propertyID);
+  Character getCharacter(final String propertyID);
 
   /**
    * @param propertyID the ID of the property for which to retrieve the value

@@ -51,8 +51,8 @@ public final class TestDomain {
             .setComparator(new Comparator<Entity>() {
               @Override
               public int compare(final Entity o1, final Entity o2) {
-                final Integer code1 = o1.getInt(MASTER_CODE);
-                final Integer code2 = o2.getInt(MASTER_CODE);
+                final Integer code1 = o1.getInteger(MASTER_CODE);
+                final Integer code2 = o2.getInteger(MASTER_CODE);
 
                 return code1.compareTo(code2);
               }
