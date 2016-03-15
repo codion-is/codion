@@ -4168,3 +4168,4 @@
   EntityUtil, renamed a few methods in accordance with recent changes
   Properties.booleaProperty(propertyID, columnType) added
   InputProviderPanel, ESC key now works like clicking the cancel button
+  InpurProviderPanel generified and improved a bit
