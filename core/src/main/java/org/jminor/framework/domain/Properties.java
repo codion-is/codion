@@ -215,6 +215,15 @@ public final class Properties {
   /**
    * @param propertyID the property ID
    * @param columnType the data type of the underlying column
+   * @return a new boolean property
+   */
+  public static Property.ColumnProperty booleanProperty(final String propertyID, final int columnType) {
+    return booleanProperty(propertyID, columnType, null);
+  }
+
+  /**
+   * @param propertyID the property ID
+   * @param columnType the data type of the underlying column
    * @param caption the caption of this property
    * @return a new boolean property
    */

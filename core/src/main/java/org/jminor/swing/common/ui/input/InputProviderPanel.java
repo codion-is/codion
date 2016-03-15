@@ -20,6 +20,7 @@ import javax.swing.JPanel;
 import java.awt.BorderLayout;
 import java.awt.FlowLayout;
 import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
 
 /**
  * A panel for presenting a InputProvider.
@@ -108,7 +109,14 @@ public final class InputProviderPanel extends JPanel implements InputProvider {
     final JPanel panel = new JPanel(UiUtil.createGridLayout(1, COLUMNS));
     okButton = createButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION);
     panel.add(okButton);
-    panel.add(createButton(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION));
+    final JButton cancelButton = createButton(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION);
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, true, new AbstractAction("cancelInput") {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        cancelButton.doClick();
+      }
+    });
+    panel.add(cancelButton);
 
     return panel;
   }

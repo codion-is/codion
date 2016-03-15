@@ -4166,3 +4166,5 @@
   EntityConnectionServerAdmin, ServerMonitor, added monitoring of GC events and thread count
   Entity.getInt() renamed to getInteger(), getChar() renamed to getCharacter(), for consistency
   EntityUtil, renamed a few methods in accordance with recent changes
+  Properties.booleaProperty(propertyID, columnType) added
+  InputProviderPanel, ESC key now works like clicking the cancel button
