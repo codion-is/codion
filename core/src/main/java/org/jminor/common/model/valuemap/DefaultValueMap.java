@@ -21,6 +21,7 @@ import java.util.Set;
 
 /**
  * A default ValueMap implementation.
+ * Note that this class is not thread safe.
  * @param <K> the key type
  * @param <V> the value type
  */
@@ -51,7 +52,9 @@ public class DefaultValueMap<K, V> implements ValueMap<K, V> {
   }
 
   /**
-   * Instantiates a new instance with the given values
+   * Instantiates a new instance using the given maps for the values and original values respectively.
+   * Note that the given map instances are used internally, modifying the contents of those maps outside this
+   * DefaultValueMap instance will result in undefined behaviour, to put things politely.
    * @param values the values
    * @param originalValues the originalValues
    */

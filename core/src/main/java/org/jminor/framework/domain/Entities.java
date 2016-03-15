@@ -52,7 +52,9 @@ public final class Entities {
   }
 
   /**
-   * Creates a new {@link Entity} instance with the given entityID and the given values/originalValues
+   * Instantiates a new {@link Entity} instance using the given maps for the values and original values respectively.
+   * Note that the given map instances are used internally, modifying the contents of those maps outside this
+   * {@link Entity} instance will definitely result in some unexpected and unpleasant behaviour.
    * @param entityID the entity ID
    * @param values the values
    * @param originalValues the original values
