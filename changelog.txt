@@ -4169,3 +4169,4 @@
   Properties.booleaProperty(propertyID, columnType) added
   InputProviderPanel, ESC key now works like clicking the cancel button
   InpurProviderPanel generified and improved a bit
+  NumberField bug fixed, field did not accept the minus sign

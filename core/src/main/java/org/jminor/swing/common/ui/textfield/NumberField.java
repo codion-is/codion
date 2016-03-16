@@ -94,7 +94,7 @@ public class NumberField extends JTextField {
       }
 
       try {
-        return getFormat().parse(text);
+        return getFormat().parse(handleMinusSign(text));
       }
       catch (final ParseException e) {
         throw new RuntimeException(e);
@@ -209,12 +209,12 @@ public class NumberField extends JTextField {
     }
 
     @Override
-    protected final boolean validValue(final String value) {
-      if (value.isEmpty()) {
+    protected final boolean validValue(final String text) {
+      if (text.isEmpty()) {
         return true;
       }
       try {
-        final Number number = format.parse(value);
+        final Number number = format.parse(handleMinusSign(text));
 
         return isWithinRange(number.doubleValue());
       }
@@ -222,5 +222,16 @@ public class NumberField extends JTextField {
         return false;
       }
     }
+  }
+
+  /**
+   * We need to interpret - as -1
+   */
+  private static String handleMinusSign(final String text) {
+    if ("-".equals(text)) {
+      return text + "1";
+    }
+
+    return text;
   }
 }
