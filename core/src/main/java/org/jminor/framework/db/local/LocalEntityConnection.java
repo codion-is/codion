@@ -1023,13 +1023,16 @@ final class LocalEntityConnection implements EntityConnection {
 
   private static String getSelectSQL(final EntitySelectCriteria criteria, final Database database) {
     final String entityID = criteria.getEntityID();
+    boolean containsWhereClause = false;
     String selectSQL = Entities.getSelectQuery(entityID);
     if (selectSQL == null) {
       selectSQL = createSelectSQL(Entities.getSelectTableName(entityID), Entities.getSelectColumnsString(entityID), null, null);
     }
+    else {
+      containsWhereClause = containsWhereClause(selectSQL);
+    }
 
     final StringBuilder queryBuilder = new StringBuilder(selectSQL);
-    final boolean containsWhereClause = containsWhereClause(selectSQL);
     final String whereClause = criteria.getWhereClause();
     if (whereClause.length() > 0) {
       queryBuilder.append(containsWhereClause ? " and " : WHERE_SPACE_PREFIX).append(whereClause);

@@ -535,12 +535,14 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
     final boolean clientLoggingEnabled = Configuration.getBooleanValue(Configuration.SERVER_CLIENT_LOGGING_ENABLED);
     final int connectionTimeout = Configuration.getIntValue(Configuration.SERVER_CONNECTION_TIMEOUT);
     final Map<String, Integer> clientTimeouts = getClientTimeoutValues();
-    final EntityConnectionServer server = new EntityConnectionServer(serverName, serverPort, registryPort, database,
-            sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, connectionValidationClassNames,
-            getPoolUsers(initialPoolUsers), webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout,
-            clientTimeouts);
-    final DefaultEntityConnectionServerAdmin admin = new DefaultEntityConnectionServerAdmin(server, serverAdminPort);
+    EntityConnectionServer server = null;
+    DefaultEntityConnectionServerAdmin admin = null;
     try {
+      server = new EntityConnectionServer(serverName, serverPort, registryPort, database,
+              sslEnabled, connectionLimit, domainModelClassNames, loginProxyClassNames, connectionValidationClassNames,
+              getPoolUsers(initialPoolUsers), webDocumentRoot, webServerPort, clientLoggingEnabled, connectionTimeout,
+              clientTimeouts);
+      admin = new DefaultEntityConnectionServerAdmin(server, serverAdminPort);
       server.bindToRegistry();
       admin.bindToRegistry();
 
@@ -548,7 +550,12 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
     }
     catch (final Exception e) {
       LOG.error("Exception on binding server to registry", e);
-      admin.shutdown();
+      if (admin != null) {
+        admin.shutdown();
+      }
+      if (server != null) {
+        server.shutdown();
+      }
       throw new RuntimeException(e);
     }
   }
