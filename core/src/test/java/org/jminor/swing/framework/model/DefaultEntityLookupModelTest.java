@@ -45,6 +45,23 @@ public final class DefaultEntityLookupModelTest {
     new DefaultEntityLookupModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER, null);
   }
 
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNoLookupProperties() {
+    new DefaultEntityLookupModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER, Collections.emptyList());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorNonStringLookupProperty() {
+    new DefaultEntityLookupModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER,
+            Collections.singletonList(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_COMMISSION)));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void constructorIncorrectEntityLookupProperty() {
+    new DefaultEntityLookupModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER,
+            Collections.singletonList(Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME)));
+  }
+
   @Test
   public void theRest() {
     lookupModel.setDescription("description");

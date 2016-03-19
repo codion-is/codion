@@ -4181,3 +4181,4 @@
   Entity.Definition.setSelectQuery(), added containsWhereClause parameter
   Entities.selectQueryContainsWhereClause() added
   LocalEntityConnection.containsWhereClause() removed, now uses the above
+  DefaultEntityLookupModel, added parameter validation
