@@ -65,6 +65,12 @@ public final class LocalEntityConnectionProvider extends AbstractEntityConnectio
     this.connectionProperties.put(Database.PASSWORD_PROPERTY, user.getPassword());
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public EntityConnection.Type getConnectionType() {
+    return EntityConnection.Type.LOCAL;
+  }
+
   /**
    * @return the service identifier (sid) of the underlying database or the hostname if sid is not specified
    */

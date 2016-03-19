@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.model.StateObserver;
-import org.jminor.common.model.States;
 import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 
@@ -22,17 +20,6 @@ public final class EntityConnectionProviders {
           Configuration.getStringValue(Configuration.REMOTE_CONNECTION_PROVIDER);
   private static final String LOCAL_CONNECTION_PROVIDER =
           Configuration.getStringValue(Configuration.LOCAL_CONNECTION_PROVIDER);
-
-  /**
-   * Creates a {@code EntityConnectionProvider} wrapping the given connection.
-   * Note that the {@code StateObserver} returned by {@link EntityConnectionProvider#getConnectedObserver} is not enabled.
-   * Note also that disconnecting this {@code EntityConnectionProvider} renders it unusable, since it does not perform reconnections.
-   * @param connection the connection to wrap
-   * @return a {@code EntityConnectionProvider} wrapping the connection
-   */
-  public static EntityConnectionProvider connectionProvider(final EntityConnection connection) {
-    return new ConnectionWrapper(connection);
-  }
 
   /**
    * Returns a EntityConnectionProvider according to system properties, using a randomly generated clientID
@@ -95,56 +82,6 @@ public final class EntityConnectionProviders {
     }
     catch (final Exception e) {
       throw new RuntimeException("Exception while initializing connection provider", e);
-    }
-  }
-
-  private static final class ConnectionWrapper implements EntityConnectionProvider {
-
-    private final EntityConnection connection;
-    private final StateObserver connectedState = States.state().getObserver();
-
-    private ConnectionWrapper(final EntityConnection connection) {
-      this.connection = connection;
-    }
-
-    @Override
-    public EntityConnection getConnection() {
-      return connection;
-    }
-
-    @Override
-    public String getDescription() {
-      return connection.getUser().toString();
-    }
-
-    @Override
-    public String getServerHostName() {
-      return ConnectionWrapper.class.getName();
-    }
-
-    @Override
-    public boolean isConnected() {
-      return connection.isConnected();
-    }
-
-    @Override
-    public StateObserver getConnectedObserver() {
-      return connectedState;
-    }
-
-    @Override
-    public void disconnect() {
-      connection.disconnect();
-    }
-
-    @Override
-    public void setUser(final User user) {
-      throw new UnsupportedOperationException();
-    }
-
-    @Override
-    public User getUser() {
-      return connection.getUser();
     }
   }
 }

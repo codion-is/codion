@@ -68,6 +68,12 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     Util.resolveTrustStoreFromClasspath(clientTypeID);
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public EntityConnection.Type getConnectionType() {
+    return EntityConnection.Type.REMOTE;
+  }
+
   /**
    * @return a string describing the server connection
    */

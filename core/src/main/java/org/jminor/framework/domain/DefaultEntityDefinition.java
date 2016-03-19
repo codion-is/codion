@@ -43,14 +43,20 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private final Map<String, Property> properties;
 
   /**
-   * The name of the underlying table
-   */
-  private final String tableName;
-
-  /**
    * The ResultPacker responsible for packing entities of this type
    */
   private final ResultPacker<Entity> resultPacker;
+
+  /**
+   * The name of the underlying table
+   */
+  private String tableName;
+
+  /**
+   * The table (view, query) from which to select the entity
+   * Used if it differs from the one used for inserts/updates
+   */
+  private String selectTableName;
 
   /**
    * The domainID
@@ -61,12 +67,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * The caption to use for the entity type
    */
   private String caption;
-
-  /**
-   * The table (view, query) from which to select the entity
-   * Used if it differs from the one used for inserts/updates
-   */
-  private String selectTableName;
 
   /**
    * Holds the order by clause
@@ -183,7 +183,6 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.entityID = entityID;
     this.caption = entityID;
     this.tableName = tableName;
-    this.selectTableName = tableName;
     this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
     this.groupByClause = initializeGroupByClause(getColumnProperties());
     this.resultPacker = new EntityResultPacker(entityID, getColumnProperties(properties.values()),
@@ -196,6 +195,14 @@ final class DefaultEntityDefinition implements Entity.Definition {
   @Override
   public String getEntityID() {
     return entityID;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity.Definition setTableName(final String tableName) {
+    Util.rejectNullValue(tableName, "tableName");
+    this.tableName = tableName;
+    return this;
   }
 
   /** {@inheritDoc} */
@@ -335,7 +342,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public String getSelectTableName() {
-    return selectTableName;
+    return selectTableName == null ? tableName : selectTableName;
   }
 
   /** {@inheritDoc} */

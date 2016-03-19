@@ -39,6 +39,9 @@ public class RemoteEntityConnectionProviderTest {
     final RemoteEntityConnectionProvider provider = new RemoteEntityConnectionProvider("localhost",
             User.UNIT_TEST_USER, UUID.randomUUID(), "TestClient");
 
+    assertEquals(EntityConnection.Type.REMOTE, provider.getConnectionType());
+    assertEquals(EntityConnection.Type.REMOTE, provider.getConnection().getType());
+
     assertEquals(Configuration.getStringValue(Configuration.SERVER_HOST_NAME), provider.getServerHostName());
 
     final EntityConnection db = provider.getConnection();

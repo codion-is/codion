@@ -24,6 +24,10 @@ public class NumberField extends JTextField {
     document.getFormat().setGroupingUsed(false);
   }
 
+  /**
+   * Set whether or not grouping will be used in this field.
+   * @param groupingUsed true if grouping should be used false otherwise
+   */
   public void setGroupingUsed(final boolean groupingUsed) {
     ((NumberDocument) getDocument()).getFormat().setGroupingUsed(groupingUsed);
   }
@@ -71,7 +75,7 @@ public class NumberField extends JTextField {
   protected static class NumberDocument extends SizedDocument {
 
     protected NumberDocument(final NumberDocumentFilter documentFilter) {
-      setDocumentFilter(documentFilter);
+      setDocumentFilterInternal(documentFilter);
     }
 
     protected final NumberFormat getFormat() {
@@ -182,7 +186,7 @@ public class NumberField extends JTextField {
     }
 
     @Override
-    protected String prepareString(final String string) {
+    protected String transformString(final String string) {
       final StringBuilder builder = new StringBuilder();
       int index = 0;
       for (final char c : string.toCharArray()) {

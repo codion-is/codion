@@ -19,6 +19,12 @@ public interface EntityConnectionProvider {
   EntityConnection getConnection();
 
   /**
+   * Returns the Type this connection provider represents
+   * @return the Type
+   */
+  EntityConnection.Type getConnectionType();
+
+  /**
    * @return a short description of the database provider
    */
   String getDescription();

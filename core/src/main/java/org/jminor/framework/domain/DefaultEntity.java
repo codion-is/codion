@@ -899,15 +899,15 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
       }
       if (obj instanceof Key) {
         final String entityID = definition.getEntityID();
-        final Key key = (Key) obj;
+        final Key otherKey = (Key) obj;
         if (compositeKey) {
-          return key.isCompositeKey() && entityID.equals(key.getEntityID()) && super.equals(key);
+          return otherKey.isCompositeKey() && entityID.equals(otherKey.getEntityID()) && super.equals(otherKey);
         }
         if (singleIntegerKey) {
-          return key.isSingleIntegerKey() && hashCode() == key.hashCode() && entityID.equals(key.getEntityID());
+          return otherKey.isSingleIntegerKey() && hashCode() == otherKey.hashCode() && entityID.equals(otherKey.getEntityID());
         }
         //single non-integer key
-        return !key.isCompositeKey() && entityID.equals(key.getEntityID()) && Util.equal(getFirstValue(), key.getFirstValue());
+        return !otherKey.isCompositeKey() && entityID.equals(otherKey.getEntityID()) && Util.equal(getFirstValue(), otherKey.getFirstValue());
       }
 
       return false;

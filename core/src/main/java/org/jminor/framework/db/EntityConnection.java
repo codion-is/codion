@@ -24,9 +24,21 @@ import java.util.Map;
 public interface EntityConnection {
 
   /**
+   * The possible EntityConnection types
+   */
+  enum Type {
+    LOCAL, REMOTE
+  }
+
+  /**
    * @param methodLogger the MethodLogger to use
    */
   void setMethodLogger(final MethodLogger methodLogger);
+
+  /**
+   * @return the connection type
+   */
+  Type getType();
 
   /**
    * @return the user being used by this connection

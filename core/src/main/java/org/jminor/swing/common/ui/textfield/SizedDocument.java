@@ -12,43 +12,46 @@ import java.util.Locale;
 
 /**
  * A Document implementation which allows for setting the max text length
- * and automatic conversion to upper case or lower case.
+ * and automatic conversion to upper or lower case.
  */
 public class SizedDocument extends PlainDocument {
+
+  /**
+   * Specifies possible case conversions for document text.
+   */
+  public enum DocumentCase {
+    NONE, UPPERCASE, LOWERCASE
+  }
 
   /**
    * Instantiates a new SizedDocument
    */
   public SizedDocument() {
-    setDocumentFilter(new SizedDocumentFilter());
+    setDocumentFilterInternal(new SizedDocumentFilter());
   }
 
   /**
-   * @param upperCase true if this text field should automatically convert text to uppercase
+   * @param filter the filter
+   * @throws UnsupportedOperationException always
    */
-  public final void setUpperCase(final boolean upperCase) {
-    ((SizedDocumentFilter) getDocumentFilter()).setUpperCase(upperCase);
+  @Override
+  public final void setDocumentFilter(final DocumentFilter filter) {
+    throw new UnsupportedOperationException("Changing the DocumentFilter of SizedDocument and its descendants is not allowed");
   }
 
   /**
-   * @return true if this document converts all input to upper case
+   * Sets the case setting for this document
+   * @param documentCase the case setting
    */
-  public final boolean isUpperCase() {
-    return ((SizedDocumentFilter) getDocumentFilter()).isUpperCase();
+  public final void setDocumentCase(final DocumentCase documentCase) {
+    ((SizedDocumentFilter) getDocumentFilter()).setDocumentCase(documentCase);
   }
 
   /**
-   * @param lowerCase true if this text field should automatically convert text to lowercase
+   * @return the document case setting
    */
-  public final void setLowerCase(final boolean lowerCase) {
-    ((SizedDocumentFilter) getDocumentFilter()).setLowerCase(lowerCase);
-  }
-
-  /**
-   * @return true if this document converts all input to lower case
-   */
-  public final boolean isLowerCase() {
-    return ((SizedDocumentFilter) getDocumentFilter()).isLowerCase();
+  public final DocumentCase getDocumentCase() {
+    return ((SizedDocumentFilter) getDocumentFilter()).getDocumentCase();
   }
 
   /**
@@ -66,42 +69,33 @@ public class SizedDocument extends PlainDocument {
   }
 
   /**
+   * Sets the DocumentFilter
+   * @param documentFilter the document filter
+   */
+  protected final void setDocumentFilterInternal(final DocumentFilter documentFilter) {
+    super.setDocumentFilter(documentFilter);
+  }
+
+  /**
    * A DocumentFilter controlling both case and maximum length of the document content
    */
   protected static class SizedDocumentFilter extends DocumentFilter {
 
-    private boolean upperCase = false;
-    private boolean lowerCase = false;
+    private DocumentCase documentCase = DocumentCase.NONE;
     private int maxLength = -1;
 
     /**
-     * @param upperCase true if this text field should automatically convert text to uppercase
+     * @param documentCase the document case setting
      */
-    public final void setUpperCase(final boolean upperCase) {
-      this.upperCase = upperCase;
-      this.lowerCase = false;
+    public final void setDocumentCase(final DocumentCase documentCase) {
+      this.documentCase = documentCase == null ? DocumentCase.NONE : documentCase;
     }
 
     /**
-     * @return true if this document converts all input to upper case
+     * @return the document case setting
      */
-    public final boolean isUpperCase() {
-      return upperCase;
-    }
-
-    /**
-     * @param lowerCase true if this text field should automatically convert text to lowercase
-     */
-    public void setLowerCase(final boolean lowerCase) {
-      this.lowerCase = lowerCase;
-      this.upperCase = false;
-    }
-
-    /**
-     * @return true if this document converts all input to lower case
-     */
-    public boolean isLowerCase() {
-      return lowerCase;
+    public final DocumentCase getDocumentCase() {
+      return documentCase;
     }
 
     /**
@@ -115,58 +109,62 @@ public class SizedDocument extends PlainDocument {
      * @param maxLength the maximum length of the text to allow, -1 if unlimited
      */
     public final void setMaxLength(final int maxLength) {
-      this.maxLength = maxLength;
+      this.maxLength = maxLength < 0 ? -1 : maxLength;
     }
 
     @Override
-    public void insertString(final FilterBypass fb, final int offset, final String string, final AttributeSet attributeSet) throws BadLocationException {
+    public final void insertString(final FilterBypass fb, final int offset, final String string,
+                                   final AttributeSet attributeSet) throws BadLocationException {
       final StringBuilder builder = new StringBuilder(fb.getDocument().getText(0, fb.getDocument().getLength()));
       builder.insert(offset, string);
       if (getMaxLength() > 0 && builder.length() > getMaxLength()) {
         return;
       }
-      final String valueAfterInsert = prepareString(builder.toString());
+      final String valueAfterInsert = transformString(builder.toString());
       if (validValue(valueAfterInsert)) {
         setText(fb, valueAfterInsert, attributeSet);
       }
     }
 
     @Override
-    public void replace(final FilterBypass fb, final int offset, final int length, final String string, final AttributeSet attributeSet) throws BadLocationException {
+    public final void replace(final FilterBypass fb, final int offset, final int length, final String string,
+                              final AttributeSet attributeSet) throws BadLocationException {
       final Document document = fb.getDocument();
       final StringBuilder builder = new StringBuilder(document.getText(0, document.getLength()));
       builder.replace(offset, offset + length, string);
       if (getMaxLength() > 0 && builder.length() > getMaxLength()) {
         return;
       }
-      final String valueAfterReplace = prepareString(builder.toString());
-      if (validValue(valueAfterReplace)) {
-        setText(fb, valueAfterReplace, attributeSet);
+      final String transformedString = transformString(builder.toString());
+      if (validValue(transformedString)) {
+        setText(fb, transformedString, attributeSet);
       }
     }
 
-    private void setText(final FilterBypass fb, final String text, final AttributeSet attributeSet) throws BadLocationException {
-      super.replace(fb, 0, fb.getDocument().getLength(), text, attributeSet);
-    }
-
+    /**
+     * Validates the given value before it is added to the document
+     * @param value the value to validate
+     * @return true if the value is valid, false otherwise
+     */
     protected boolean validValue(final String value) {
       return true;
     }
 
     /**
-     * Prepares the string before it is added to the document, removing invalid characters and such.
-     * @param string the string to prepare
-     * @return the prepared string
+     * Performs any required transformations on the string before it is added to the document.
+     * @param string the string to transform
+     * @return the transformed string
      */
-    protected String prepareString(final String string) {
-      if (upperCase) {
-        return string.toUpperCase(Locale.getDefault());
+    protected String transformString(final String string) {
+      switch (documentCase) {
+        case UPPERCASE: return string.toUpperCase(Locale.getDefault());
+        case LOWERCASE: return string.toLowerCase(Locale.getDefault());
+        default: return string;
       }
-      if (lowerCase) {
-        return string.toLowerCase(Locale.getDefault());
-      }
+    }
 
-      return string;
+    private void setText(final FilterBypass fb, final String text, final AttributeSet attributeSet) throws BadLocationException {
+      super.replace(fb, 0, fb.getDocument().getLength(), text, attributeSet);
     }
   }
 }

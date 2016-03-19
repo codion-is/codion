@@ -4170,3 +4170,9 @@
   InputProviderPanel, ESC key now works like clicking the cancel button
   InpurProviderPanel generified and improved a bit
   NumberField bug fixed, field did not accept the minus sign
+  SizedDocument no longer allows use of setDocumentFilter(), setDocumentFilterInternal() added for subclasses
+  SizedDocument now uses DocumentCase enum for controlling case conversion
+  EntityConnectionProvider.ConnectionWrapper removed along with EntityConnectionProviders.connectionProvider(EntityConnection)
+  Entity.Definition.setTableName() added
+  DefaultEntityApplicationModel.loadDomainModel() now throws ClassNotFoundException
+  EntityConnection.Type enum added along with EntityConnection.getType() and EntityConnectionProvider.getConnectionType()

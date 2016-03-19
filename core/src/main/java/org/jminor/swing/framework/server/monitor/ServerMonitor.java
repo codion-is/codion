@@ -323,7 +323,7 @@ public final class ServerMonitor {
           gcMarkSweepSeries.add(event.getTimeStamp(), event.getDuration());
           break;
         default:
-          System.out.println(event.getGcName());
+          LOG.info("Unknown GC name: " + event.getGcName());
       }
     }
   }

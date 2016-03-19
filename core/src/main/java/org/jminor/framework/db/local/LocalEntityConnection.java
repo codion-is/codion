@@ -124,6 +124,12 @@ final class LocalEntityConnection implements EntityConnection {
 
   /** {@inheritDoc} */
   @Override
+  public Type getType() {
+    return Type.LOCAL;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public User getUser() {
     return connection.getUser();
   }

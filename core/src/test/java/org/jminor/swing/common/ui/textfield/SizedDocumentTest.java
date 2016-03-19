@@ -8,7 +8,6 @@ import org.junit.Test;
 import javax.swing.JTextField;
 
 import static org.junit.Assert.assertEquals;
-import static org.junit.Assert.assertTrue;
 
 public class SizedDocumentTest {
 
@@ -29,14 +28,15 @@ public class SizedDocumentTest {
     txt.setText("hellohellohello");//invalid
     assertEquals("hellohello", txt.getText());
 
-    document.setUpperCase(true);
-    assertTrue(document.isUpperCase());
+    document.setDocumentCase(SizedDocument.DocumentCase.UPPERCASE);
+    assertEquals(SizedDocument.DocumentCase.UPPERCASE, document.getDocumentCase());
 
     txt.setText("hello");
     assertEquals("HELLO", txt.getText());
 
-    document.setLowerCase(true);
-    assertTrue(document.isLowerCase());
+    document.setDocumentCase(SizedDocument.DocumentCase.LOWERCASE);
+    assertEquals(SizedDocument.DocumentCase.LOWERCASE, document.getDocumentCase());
+
     txt.setText("HELLO");
     assertEquals("hello", txt.getText());
   }

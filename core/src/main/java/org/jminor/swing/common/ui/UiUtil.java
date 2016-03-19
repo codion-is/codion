@@ -871,10 +871,10 @@ public final class UiUtil {
    */
   public static JTextComponent makeUpperCase(final JTextComponent textField) {
     if (textField.getDocument() instanceof SizedDocument) {
-      ((SizedDocument) textField.getDocument()).setUpperCase(true);
+      ((SizedDocument) textField.getDocument()).setDocumentCase(SizedDocument.DocumentCase.UPPERCASE);
     }
     else {
-      ((PlainDocument) textField.getDocument()).setDocumentFilter(new CaseDocumentFilter(true));
+      ((PlainDocument) textField.getDocument()).setDocumentFilter(new CaseDocumentFilter(SizedDocument.DocumentCase.UPPERCASE));
     }
 
     return textField;
@@ -887,10 +887,10 @@ public final class UiUtil {
    */
   public static JTextComponent makeLowerCase(final JTextComponent textField) {
     if (textField.getDocument() instanceof SizedDocument) {
-      ((SizedDocument) textField.getDocument()).setLowerCase(true);
+      ((SizedDocument) textField.getDocument()).setDocumentCase(SizedDocument.DocumentCase.LOWERCASE);
     }
     else {
-      ((PlainDocument) textField.getDocument()).setDocumentFilter(new CaseDocumentFilter(false));
+      ((PlainDocument) textField.getDocument()).setDocumentFilter(new CaseDocumentFilter(SizedDocument.DocumentCase.LOWERCASE));
     }
 
     return textField;
@@ -1825,24 +1825,33 @@ public final class UiUtil {
 
   private static final class CaseDocumentFilter extends DocumentFilter {
 
-    private final boolean upperCase;
+    private final SizedDocument.DocumentCase documentCase;
 
-    private CaseDocumentFilter(final boolean upperCase) {
-      this.upperCase = upperCase;
+    private CaseDocumentFilter(final SizedDocument.DocumentCase documentCase) {
+      this.documentCase = documentCase;
     }
 
     @Override
     public void insertString(final FilterBypass bypass, final int offset, final String string,
                              final AttributeSet attributeSet) throws BadLocationException {
-      super.insertString(bypass, offset, string == null ? null :
-              (upperCase ? string.toUpperCase(Locale.getDefault()) : string.toLowerCase(Locale.getDefault())), attributeSet);
+      super.insertString(bypass, offset, fixCase(string), attributeSet);
     }
 
     @Override
     public void replace(final FilterBypass bypass, final int offset, final int length, final String string,
                         final AttributeSet attributeSet) throws BadLocationException {
-      super.replace(bypass, offset, length, string == null ? null :
-              (upperCase ? string.toUpperCase(Locale.getDefault()) : string.toLowerCase(Locale.getDefault())), attributeSet);
+      super.replace(bypass, offset, length, fixCase(string), attributeSet);
+    }
+
+    private String fixCase(final String string) {
+      if (string == null) {
+        return string;
+      }
+      switch (documentCase) {
+        case UPPERCASE: return string.toUpperCase(Locale.getDefault());
+        case LOWERCASE: return string.toLowerCase(Locale.getDefault());
+        default: return string;
+      }
     }
   }
 

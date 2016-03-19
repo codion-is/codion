@@ -21,15 +21,17 @@ public class LocalEntityConnectionProviderTest {
 
     assertEquals(database.getHost(), provider.getServerHostName());
 
-    final EntityConnection db = provider.getConnection();
-    assertNotNull(db);
-    assertTrue(db.isConnected());
+    final EntityConnection firstConnection = provider.getConnection();
+    assertEquals(EntityConnection.Type.LOCAL, firstConnection.getType());
+    assertNotNull(firstConnection);
+    assertTrue(firstConnection.isConnected());
     provider.disconnect();
 
-    final EntityConnection db2 = provider.getConnection();
-    assertNotNull(db2);
-    assertFalse(db == db2);
-    assertTrue(db2.isConnected());
+    final EntityConnection secondConnection = provider.getConnection();
+    assertEquals(EntityConnection.Type.LOCAL, secondConnection.getType());
+    assertNotNull(secondConnection);
+    assertFalse(firstConnection == secondConnection);
+    assertTrue(secondConnection.isConnected());
     provider.disconnect();
   }
 }

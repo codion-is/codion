@@ -11,7 +11,8 @@ import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 
 import org.junit.Test;
 
-import static org.junit.Assert.*;
+import static org.junit.Assert.assertEquals;
+import static org.junit.Assert.assertTrue;
 
 /**
  * User: Björn Darri
@@ -47,25 +48,18 @@ public class EntityConnectionProvidersTest {
   }
 
   @Test
-  public void testWrapper() {
-    final EntityConnection connection = CONNECTION_PROVIDER.getConnection();
-    final EntityConnectionProvider connectionWrapper = EntityConnectionProviders.connectionProvider(connection);
-    assertTrue(connectionWrapper.isConnected());
-    assertFalse(connectionWrapper.getConnectedObserver().isActive());
-    assertTrue(connection == connectionWrapper.getConnection());
-  }
-
-  @Test
   public void testRemoteLocal() throws Exception {
     final String connectionType = Configuration.getStringValue(Configuration.CLIENT_CONNECTION_TYPE);
     try {
       Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, Configuration.CONNECTION_TYPE_LOCAL);
       EntityConnectionProvider connectionProvider = createTestConnectionProvider();
       assertTrue(connectionProvider instanceof LocalEntityConnectionProvider);
+      assertEquals(EntityConnection.Type.LOCAL, connectionProvider.getConnectionType());
 
       Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, Configuration.CONNECTION_TYPE_REMOTE);
       connectionProvider = EntityConnectionProviders.connectionProvider(User.UNIT_TEST_USER, "test");
       assertEquals("RemoteEntityConnectionProvider", connectionProvider.getClass().getSimpleName());
+      assertEquals(EntityConnection.Type.REMOTE, connectionProvider.getConnectionType());
     }
     finally {
       if (connectionType != null) {

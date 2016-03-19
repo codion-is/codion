@@ -42,6 +42,7 @@ import java.rmi.RemoteException;
 public final class ServerMonitorPanel extends JPanel {
 
   private static final int SPINNER_COLUMNS = 3;
+  private static final int CHART_PANEL_DIM = 2;
 
   private final ServerMonitor model;
 
@@ -147,7 +148,7 @@ public final class ServerMonitorPanel extends JPanel {
     controlPanelBase.add(controlPanel, BorderLayout.WEST);
     controlPanelBase.add(ControlProvider.createButton(Controls.methodControl(model, "resetStatistics", "Reset")), BorderLayout.EAST);
 
-    final JPanel chartPanel = new JPanel(UiUtil.createGridLayout(2, 2));
+    final JPanel chartPanel = new JPanel(UiUtil.createGridLayout(CHART_PANEL_DIM, CHART_PANEL_DIM));
     chartPanel.add(requestsPerSecondChartPanel);
     chartPanel.add(threadCountChartPanel);
     chartPanel.add(connectionCountChartPanel);

@@ -147,13 +147,13 @@ public final class DoubleField extends NumberField {
     }
 
     @Override
-    protected String prepareString(final String string) {
+    protected String transformString(final String string) {
       final char decimalSeparator = ((DecimalFormat) getFormat()).getDecimalFormatSymbols().getDecimalSeparator();
       if (string.equals(Character.toString(decimalSeparator))) {
         return "0" + decimalSeparator;
       }
 
-      return removeExcessiveFractionDigits(super.prepareString(string));
+      return removeExcessiveFractionDigits(super.transformString(string));
     }
 
     @Override

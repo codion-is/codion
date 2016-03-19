@@ -33,6 +33,12 @@ public interface RemoteEntityConnection extends Remote {
   void setMethodLogger(final MethodLogger methodLogger) throws RemoteException;
 
   /**
+   * @return the connection type
+   * @throws RemoteException in case of an exception
+   */
+  EntityConnection.Type getType() throws RemoteException;
+
+  /**
    * @return the user being used by this connection
    * @throws RemoteException in case of an exception
    */

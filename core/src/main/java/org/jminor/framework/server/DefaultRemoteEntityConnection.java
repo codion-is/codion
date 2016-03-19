@@ -191,6 +191,12 @@ final class DefaultRemoteEntityConnection extends UnicastRemoteObject implements
 
   /** {@inheritDoc} */
   @Override
+  public EntityConnection.Type getType() {
+    return EntityConnection.Type.REMOTE;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public User getUser() {
     return clientInfo.getUser();
   }

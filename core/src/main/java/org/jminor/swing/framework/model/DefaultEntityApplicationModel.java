@@ -35,7 +35,12 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   public DefaultEntityApplicationModel(final EntityConnectionProvider connectionProvider) {
     Util.rejectNullValue(connectionProvider, "connectionProvider");
     this.connectionProvider = connectionProvider;
-    loadDomainModel();
+    try {
+      loadDomainModel();
+    }
+    catch (final ClassNotFoundException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   /** {@inheritDoc} */
@@ -193,8 +198,9 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   /**
    * This method should load the domain model, for example by instantiating the domain model
    * class or simply loading it by name
+   * @throws ClassNotFoundException in case the domain model class is not found on the classpath
    */
-  protected abstract void loadDomainModel();
+  protected abstract void loadDomainModel() throws ClassNotFoundException;
 
   /**
    * Called after a logout has been performed.
