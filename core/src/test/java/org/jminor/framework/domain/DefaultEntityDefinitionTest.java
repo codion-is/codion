@@ -29,7 +29,7 @@ public class DefaultEntityDefinitionTest {
     final Entity.Definition definition = new DefaultEntityDefinition("entityID", "tableName",
             Properties.primaryKeyProperty("id"),
             Properties.columnProperty("name", Types.VARCHAR))
-            .setSelectQuery("select * from dual").setOrderByClause("order by name")
+            .setSelectQuery("select * from dual", false).setOrderByClause("order by name")
             .setReadOnly(true).setSelectTableName("selectTableName").setGroupByClause("name")
             .setStringProvider(stringProvider).setComparator(comparator);
     assertEquals("entityID", definition.toString());

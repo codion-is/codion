@@ -64,7 +64,7 @@ public class LocalEntityConnectionTest {
     Entities.define(JOINED_QUERY_ENTITY_ID,
             Properties.primaryKeyProperty("e.empno"),
             Properties.columnProperty("d.deptno", Types.INTEGER))
-            .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno");
+            .setSelectQuery("select e.empno, d.deptno from scott.emp e, scott.dept d where e.deptno = d.deptno", true);
 
     Entities.define(ENTITY_ID,
             Properties.primaryKeyProperty(ID),

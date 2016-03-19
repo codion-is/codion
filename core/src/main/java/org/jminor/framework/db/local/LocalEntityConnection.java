@@ -465,7 +465,7 @@ final class LocalEntityConnection implements EntityConnection {
               whereClause.length() == 0 ? "" : WHERE + whereClause, null);
     }
     else {
-      final boolean containsWhereClause = containsWhereClause(entitySelectQuery);
+      final boolean containsWhereClause = Entities.selectQueryContainsWhereClause(criteria.getEntityID());
       final String whereClause = criteria.getWhereClause();
       String tableClause = "(" + entitySelectQuery;
       if (whereClause.length() > 0) {
@@ -1029,7 +1029,7 @@ final class LocalEntityConnection implements EntityConnection {
       selectSQL = createSelectSQL(Entities.getSelectTableName(entityID), Entities.getSelectColumnsString(entityID), null, null);
     }
     else {
-      containsWhereClause = containsWhereClause(selectSQL);
+      containsWhereClause = Entities.selectQueryContainsWhereClause(entityID);
     }
 
     final StringBuilder queryBuilder = new StringBuilder(selectSQL);
@@ -1076,18 +1076,6 @@ final class LocalEntityConnection implements EntityConnection {
         queryBuilder.append(criteria.getOffset());
       }
     }
-  }
-
-  /**
-   * @param selectQuery the query to check
-   * @return true if the query contains the WHERE clause after the last FROM keyword instance
-   * todo too simplistic, wont this fail at some point?
-   */
-  private static boolean containsWhereClause(final String selectQuery) {
-    final String lowerCaseQuery = selectQuery.toLowerCase();
-
-    return selectQuery.substring(Math.max(0, lowerCaseQuery.lastIndexOf("from ")),
-            lowerCaseQuery.length()).contains(WHERE);//todo newline after where fails, try regex
   }
 
   /**

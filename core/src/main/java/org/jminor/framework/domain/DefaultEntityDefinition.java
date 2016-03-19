@@ -137,6 +137,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private String selectQuery;
 
   /**
+   * Specifies whether or not the select query, if any, contains a where clause
+   */
+  private boolean selectQueryContainsWhereClause = false;
+
+  /**
    * The IDs of the properties to use when performing a string based lookup on this entity
    */
   private Collection<String> searchPropertyIDs;
@@ -361,9 +366,16 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
-  public Entity.Definition setSelectQuery(final String selectQuery) {
+  public boolean selectQueryContainsWhereClause() {
+    return selectQueryContainsWhereClause;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity.Definition setSelectQuery(final String selectQuery, final boolean containsWhereClause) {
     Util.rejectNullValue(selectQuery, "selectQuery");
     this.selectQuery = selectQuery;
+    this.selectQueryContainsWhereClause = containsWhereClause;
     return this;
   }
 

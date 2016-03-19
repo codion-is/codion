@@ -4178,3 +4178,6 @@
   EntityConnection.Type enum added along with EntityConnection.getType() and EntityConnectionProvider.getConnectionType()
   DefaultEntityConnectionServerAdmin, error handling on startup improved
   LocalEntityConnection.getSelectSQL() improved, no need to check if queries created by the framework contain the where keyword
+  Entity.Definition.setSelectQuery(), added containsWhereClause parameter
+  Entities.selectQueryContainsWhereClause() added
+  LocalEntityConnection.containsWhereClause() removed, now uses the above

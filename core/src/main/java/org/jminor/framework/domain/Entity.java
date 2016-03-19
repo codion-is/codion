@@ -575,9 +575,15 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
      * use with care. The order of the properties when defining the entity
      * must match the column order in the given query.
      * @param selectQuery the select query to use for this entity type
+     * @param containsWhereClause true if the given query contains a where clause
      * @return this {@link Entity.Definition} instance
      */
-    Definition setSelectQuery(final String selectQuery);
+    Definition setSelectQuery(final String selectQuery, final boolean containsWhereClause);
+
+    /**
+     * @return true if the select query, if any, contains a where clause
+     */
+    boolean selectQueryContainsWhereClause();
 
     /**
      * @return the object responsible for providing toString values for this entity type

@@ -305,6 +305,14 @@ public final class Entities {
 
   /**
    * @param entityID the entity ID
+   * @return true if the select query for the given entity, if any, contains a where clause
+   */
+  public static boolean selectQueryContainsWhereClause(final String entityID) {
+    return DefaultEntityDefinition.getDefinition(entityID).selectQueryContainsWhereClause();
+  }
+
+  /**
+   * @param entityID the entity ID
    * @return the query string used to select entities identified by <code>entityID</code>
    * @throws IllegalArgumentException if the entity is undefined
    */
