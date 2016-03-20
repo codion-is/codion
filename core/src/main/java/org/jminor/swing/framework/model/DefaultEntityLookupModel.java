@@ -150,7 +150,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
     if (entities != null && entities.size() > 1 && !multipleSelectionAllowedValue.get()) {
       throw new IllegalArgumentException("This EntityLookupModel does not allow the selection of multiple entities");
     }
-//todo handle non-loaded entities, see if combo box behaves normally
+    //todo handle non-loaded entities, select from db?
     this.selectedEntities.clear();
     if (entities != null) {
       this.selectedEntities.addAll(entities);
