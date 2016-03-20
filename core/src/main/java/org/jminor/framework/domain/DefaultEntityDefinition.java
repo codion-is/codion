@@ -837,24 +837,19 @@ final class DefaultEntityDefinition implements Entity.Definition {
     return stringBuilder.toString();
   }
 
-  private static String initializeSelectColumnsString(final Collection<Property.ColumnProperty> databaseProperties) {
-    final List<Property> selectProperties = new ArrayList<>(databaseProperties.size());
-    for (final Property.ColumnProperty property : databaseProperties) {
-      selectProperties.add(property);
-    }
-
+  private static String initializeSelectColumnsString(final List<Property.ColumnProperty> columnProperties) {
     final StringBuilder stringBuilder = new StringBuilder();
     int i = 0;
-    for (final Property property : selectProperties) {
+    for (final Property.ColumnProperty property : columnProperties) {
       if (property instanceof Property.SubqueryProperty) {
         stringBuilder.append("(").append(((Property.SubqueryProperty) property).getSubQuery()).append(
-                ") as ").append(property.getPropertyID());
+                ") as ").append(property.getColumnName());
       }
       else {
-        stringBuilder.append(property.getPropertyID());
+        stringBuilder.append(property.getColumnName());
       }
 
-      if (i++ < selectProperties.size() - 1) {
+      if (i++ < columnProperties.size() - 1) {
         stringBuilder.append(", ");
       }
     }

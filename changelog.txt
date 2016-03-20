@@ -4182,3 +4182,4 @@
   Entities.selectQueryContainsWhereClause() added
   LocalEntityConnection.containsWhereClause() removed, now uses the above
   DefaultEntityLookupModel, added parameter validation
+  DefaultEntityDefinition.initializeSelectColumnsString() bug fixed, did not use getColumnName() when constructing query
