@@ -89,6 +89,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private Entity.KeyGenerator keyGenerator = DEFAULT_KEY_GENERATOR;
 
   /**
+   * The key generator type
+   */
+  private Entity.KeyGenerator.Type keyGeneratorType = DEFAULT_KEY_GENERATOR.getType();
+
+  /**
    * If true then it should not be possible to insert, update or delete entities of this type
    */
   private boolean readOnly;
@@ -293,6 +298,21 @@ final class DefaultEntityDefinition implements Entity.Definition {
   public Entity.Definition setKeyGenerator(final Entity.KeyGenerator keyGenerator) {
     Util.rejectNullValue(keyGenerator, "keyGenerator");
     this.keyGenerator = keyGenerator;
+    this.keyGeneratorType = keyGenerator.getType();
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity.KeyGenerator.Type getKeyGeneratorType() {
+    return keyGeneratorType;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity.Definition setKeyGeneratorType(final Entity.KeyGenerator.Type keyGeneratorType) {
+    Util.rejectNullValue(keyGeneratorType, "keyGeneratorType");
+    this.keyGeneratorType = keyGeneratorType;
     return this;
   }
 
@@ -860,13 +880,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
   private static class DefaultKeyGenerator implements Entity.KeyGenerator {
 
     @Override
-    public boolean isAutoIncrement() {
-      return false;
-    }
-
-    @Override
-    public boolean isManual() {
-      return true;
+    public Type getType() {
+      return Type.NONE;
     }
 
     @Override
@@ -880,12 +895,9 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   abstract static class QueriedKeyGenerator extends DefaultKeyGenerator {
 
-    /**
-     * @return false, since generating the primary key value is handled by the framework
-     */
     @Override
-    public final boolean isManual() {
-      return false;
+    public Type getType() {
+      return Type.QUERY;
     }
 
     protected final void queryAndSet(final Entity entity, final Property.ColumnProperty keyProperty,
@@ -916,6 +928,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     @Override
+    public Type getType() {
+      return Type.INCREMENT;
+    }
+
+    @Override
     public void beforeInsert(final Entity entity, final Property.ColumnProperty primaryKeyProperty,
                              final DatabaseConnection connection) throws SQLException {
       if (entity.isValueNull(primaryKeyProperty)) {
@@ -935,6 +952,11 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
     SequenceKeyGenerator(final String sequenceName) {
       this.sequenceName = sequenceName;
+    }
+
+    @Override
+    public Type getType() {
+      return Type.SEQUENCE;
     }
 
     @Override
@@ -960,8 +982,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     @Override
-    public boolean isAutoIncrement() {
-      return true;
+    public Type getType() {
+      return Type.AUTOMATIC;
     }
 
     @Override

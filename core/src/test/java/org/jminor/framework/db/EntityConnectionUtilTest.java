@@ -61,8 +61,7 @@ public class EntityConnectionUtilTest {
             DESTINATION_CONNECTION.selectRowCount(EntityCriteriaUtil.criteria(TestDomain.T_DEPARTMENT)));
 
     EntityConnectionUtil.copyEntities(sourceConnection, DESTINATION_CONNECTION, 2, false, TestDomain.T_EMP);
-    final List<Entity> employees = DESTINATION_CONNECTION.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP)
-            .setOrderByClause(TestDomain.EMP_ID));
+    final List<Entity> employees = DESTINATION_CONNECTION.selectMany(EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP));
     boolean zeroIdFound = false;
     for (final Entity emp : employees) {
       if (Util.equal(emp.get(TestDomain.EMP_ID), 0)) {

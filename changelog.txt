@@ -4183,3 +4183,6 @@
   LocalEntityConnection.containsWhereClause() removed, now uses the above
   DefaultEntityLookupModel, added parameter validation
   DefaultEntityDefinition.initializeSelectColumnsString() bug fixed, did not use getColumnName() when constructing query
+0.9.10
+  Entity.Data and Property.Data annotations added for database specific entity information, such as table and column names
+  Refactoring due the above

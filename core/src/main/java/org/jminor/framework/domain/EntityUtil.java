@@ -320,7 +320,7 @@ public final class EntityUtil {
    */
   public static List<Property> getUpdatableProperties(final String entityID) {
     final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
-            Entities.getKeyGenerator(entityID).isManual(), false, false);
+            Entities.getKeyGeneratorType(entityID).isManual(), false, false);
     final ListIterator<Property.ColumnProperty> iterator = columnProperties.listIterator();
     while(iterator.hasNext()) {
       final Property.ColumnProperty property = iterator.next();
@@ -328,7 +328,7 @@ public final class EntityUtil {
         iterator.remove();
       }
     }
-    final List<Property> updatable = new ArrayList<Property>(columnProperties);
+    final List<Property> updatable = new ArrayList<>(columnProperties);
     final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entityID);
     for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
       if (!foreignKeyProperty.isReadOnly() && foreignKeyProperty.isUpdatable()) {

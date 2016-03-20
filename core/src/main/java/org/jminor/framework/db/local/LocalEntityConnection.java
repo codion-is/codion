@@ -204,7 +204,7 @@ final class LocalEntityConnection implements EntityConnection {
           final boolean includeReadOnly = false;
           final boolean includeNonUpdatable = true;
           final List<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID,
-                  !keyGenerator.isAutoIncrement(), includeReadOnly, includeNonUpdatable);
+                  !keyGenerator.getType().isAutoIncrement(), includeReadOnly, includeNonUpdatable);
           keyGenerator.beforeInsert(entity, firstPrimaryKeyProperty, connection);
 
           populateStatementPropertiesAndValues(true, entity, columnProperties, statementProperties, statementValues);

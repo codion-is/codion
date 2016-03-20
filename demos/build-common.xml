@@ -9,5 +9,21 @@
     <jar jarfile="dist/${ant.project.name}-domain.jar" basedir="build/main"
          includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*, org/jminor/framework/demos/${ant.project.name}/server/**/*"
          manifest="${build.main}/META-INF/MANIFEST.MF"/>
+
+    <!--create anothor domain jar file without annotations using the purgeannotationrefs library-->
+    <!--<taskdef resource="org/dyndns/fichtner/purgeannotationrefs/tasks/antlib.xml"-->
+             <!--classpathref="lib.ant.util"/>-->
+    <!--<purgeannotationrefs>-->
+      <!--<src>-->
+        <!--<fileset dir="build/main">-->
+          <!--<filename name="org/jminor/framework/demos/${ant.project.name}/domain/**/*.class" />-->
+        <!--</fileset>-->
+      <!--</src>-->
+      <!--<remove regexp="org.jminor.framework.domain.Entity.Data" />-->
+      <!--<remove regexp="org.jminor.framework.domain.Property.Data" />-->
+    <!--</purgeannotationrefs>-->
+    <!--<jar jarfile="dist/${ant.project.name}-domain-remote.jar" basedir="build/main"-->
+         <!--includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*"-->
+         <!--manifest="${build.main}/META-INF/MANIFEST.MF"/>-->
   </target>
 </project>

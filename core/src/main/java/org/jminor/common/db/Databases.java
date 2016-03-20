@@ -6,6 +6,10 @@ package org.jminor.common.db;
 import org.jminor.common.model.Util;
 
 import java.io.Serializable;
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.Map;
@@ -203,5 +207,11 @@ public final class Databases {
     public long getTimestamp() {
       return timestamp;
     }
+  }
+
+  @Target(ElementType.FIELD)
+  @Retention(RetentionPolicy.RUNTIME)
+  public @interface Operation {
+    String className();
   }
 }

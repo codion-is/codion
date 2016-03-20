@@ -3,7 +3,11 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.db.AbstractProcedure;
+import org.jminor.common.db.Databases;
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Item;
+import org.jminor.framework.db.EntityConnection;
 
 import java.awt.Color;
 import java.sql.Types;
@@ -22,7 +26,6 @@ public final class TestDomain {
   public static final String MASTER_NAME = "name";
   public static final String MASTER_CODE = "code";
 
-  public static final String T_DETAIL = "test.detail_entity";
   public static final String DETAIL_ID = "id";
   public static final String DETAIL_INT = "int";
   public static final String DETAIL_DOUBLE = "double";
@@ -38,10 +41,13 @@ public final class TestDomain {
   public static final String DETAIL_INT_VALUE_LIST = "int_value_list";
   public static final String DETAIL_INT_DERIVED = "int_derived";
 
+  public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
+
+  @Entity.Table(orderByClause = DETAIL_STRING, selectTableName = DETAIL_SELECT_TABLE_NAME)
+  public static final String T_DETAIL = "test.detail_entity";
+
   private static final List<Item> ITEMS = Arrays.asList(new Item(0, "0"), new Item(1, "1"),
           new Item(2, "2"), new Item(3, "3"));
-
-  public static final String DETAIL_SELECT_TABLE_NAME = "test.entity_test_select";
 
   static {
     Entities.define(T_MASTER,
@@ -90,34 +96,21 @@ public final class TestDomain {
                 return intValue * 10;
               }
             }, DETAIL_INT))
-            .setOrderByClause(DETAIL_STRING)
-            .setSelectTableName(DETAIL_SELECT_TABLE_NAME)
             .setSmallDataset(true)
             .setStringProvider(new Entities.StringProvider(DETAIL_STRING));
   }
 
   public static final String SCOTT_DOMAIN_ID = "scott.domain";
 
-  public static final String T_DEPARTMENT = "unittest.scott.dept";
   public static final String DEPARTMENT_ID = "deptno";
   public static final String DEPARTMENT_NAME = "dname";
   public static final String DEPARTMENT_LOCATION = "loc";
 
-  public static final String T_EMP = "unittest.scott.emp";
-  public static final String EMP_ID = "empno";
-  public static final String EMP_NAME = "ename";
-  public static final String EMP_JOB = "job";
-  public static final String EMP_MGR = "mgr";
-  public static final String EMP_HIREDATE = "hiredate";
-  public static final String EMP_SALARY = "sal";
-  public static final String EMP_COMMISSION = "comm";
-  public static final String EMP_DEPARTMENT = "deptno";
-  public static final String EMP_DEPARTMENT_FK = "dept_fk";
-  public static final String EMP_MGR_FK = "mgr_fk";
-  public static final String EMP_DEPARTMENT_LOCATION = "location";
+  @Entity.Table(tableName = "scott.dept")
+  public static final String T_DEPARTMENT = "unittest.scott.dept";
 
   static {
-    Entities.define(T_DEPARTMENT, "scott.dept",
+    Entities.define(T_DEPARTMENT,
             Properties.primaryKeyProperty(DEPARTMENT_ID, Types.INTEGER, DEPARTMENT_ID)
                     .setUpdatable(true).setNullable(false),
             Properties.columnProperty(DEPARTMENT_NAME, Types.VARCHAR, DEPARTMENT_NAME)
@@ -129,7 +122,28 @@ public final class TestDomain {
             .setOrderByClause(DEPARTMENT_NAME)
             .setStringProvider(new Entities.StringProvider(DEPARTMENT_NAME))
             .setCaption("Department");
+  }
 
+  @Property.Column(entityID = "unittest.scott.emp", columnName = "empno")
+  public static final String EMP_ID = "emp_id";
+  @Property.Column(entityID = "unittest.scott.emp", columnName = "ename")
+  public static final String EMP_NAME = "emp_name";
+  public static final String EMP_JOB = "job";
+  public static final String EMP_MGR = "mgr";
+  public static final String EMP_HIREDATE = "hiredate";
+  public static final String EMP_SALARY = "sal";
+  public static final String EMP_COMMISSION = "comm";
+  public static final String EMP_DEPARTMENT = "deptno";
+  public static final String EMP_DEPARTMENT_FK = "dept_fk";
+  public static final String EMP_MGR_FK = "mgr_fk";
+  public static final String EMP_DEPARTMENT_LOCATION = "location";
+  @Entity.Table(orderByClause = EMP_DEPARTMENT + ", ename",
+          keyGenerator = Entity.KeyGenerator.Type.INCREMENT,
+          keyGeneratorSource = "scott.emp",
+          keyGeneratorIncrementColumnName = "empno")
+  public static final String T_EMP = "unittest.scott.emp";
+
+  static {
     Entities.define(T_EMP, "scott.emp",
             Properties.primaryKeyProperty(EMP_ID, Types.INTEGER, EMP_ID),
             Properties.columnProperty(EMP_NAME, Types.VARCHAR, EMP_NAME)
@@ -151,8 +165,6 @@ public final class TestDomain {
                     Entities.getProperty(T_DEPARTMENT, DEPARTMENT_LOCATION),
                     DEPARTMENT_LOCATION).setPreferredColumnWidth(100))
             .setDomainID(SCOTT_DOMAIN_ID)
-            .setKeyGenerator(Entities.incrementKeyGenerator("scott.emp", EMP_ID))
-            .setOrderByClause(EMP_DEPARTMENT + ", " + EMP_NAME)
             .setStringProvider(new Entities.StringProvider(EMP_NAME))
             .setSearchPropertyIDs(EMP_NAME, EMP_JOB)
             .setCaption("Employee")
@@ -167,5 +179,24 @@ public final class TestDomain {
                 return null;
               }
             });
+  }
+
+  public static final class TestProcedure extends AbstractProcedure<EntityConnection> {
+
+    public TestProcedure(final String id) {
+      super(id, "TestProcedure");
+    }
+
+    @Override
+    public void execute(final EntityConnection connection, final Object... arguments) throws DatabaseException {
+      //do absolutely nothing
+    }
+  }
+
+  @Databases.Operation(className = "org.jminor.framework.domain.TestDomain$TestProcedure")
+  public static final String PROCEDURE_ID = "org.jminor.framework.domain.TestProcedureID";
+
+  static {
+    Entities.processAnnotations(TestDomain.class);
   }
 }

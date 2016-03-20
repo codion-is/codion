@@ -6,9 +6,12 @@ package org.jminor.framework.domain;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.ValueConverter;
 import org.jminor.common.model.Attribute;
-import org.jminor.common.model.Column;
 import org.jminor.common.model.Item;
 
+import java.lang.annotation.ElementType;
+import java.lang.annotation.Retention;
+import java.lang.annotation.RetentionPolicy;
+import java.lang.annotation.Target;
 import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.text.Format;
@@ -281,7 +284,7 @@ public interface Property extends Attribute {
   /**
    * Specifies a property based on a table column
    */
-  interface ColumnProperty extends SearchableProperty, Column {
+  interface ColumnProperty extends SearchableProperty, org.jminor.common.model.Column {
 
     /**
      * @return the data type of the underlying column, usually the same as {@link #getType()}
@@ -618,4 +621,11 @@ public interface Property extends Attribute {
    * Specifies a audit property with a username value
    */
   interface AuditUserProperty extends AuditProperty {}
+
+  @Target(ElementType.FIELD)
+  @Retention(RetentionPolicy.RUNTIME)
+  @interface Column {
+    String entityID();
+    String columnName();
+  }
 }
