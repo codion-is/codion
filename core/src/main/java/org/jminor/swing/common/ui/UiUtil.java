@@ -351,7 +351,7 @@ public final class UiUtil {
    * @return the selected file
    * @throws CancelException in case the user cancels
    */
-  public static synchronized File chooseFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName) {
+  public static synchronized File selectFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName) {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
@@ -1984,7 +1984,7 @@ public final class UiUtil {
         @Override
         public void actionPerformed(final ActionEvent e) {
           try {
-            Util.writeFile(detailsArea.getText(), chooseFileToSave(detailsArea, null, null));
+            Util.writeFile(detailsArea.getText(), selectFileToSave(detailsArea, null, null));
           }
           catch (final CancelException ignored) {/*ignored*/}
           catch (final IOException ex) {

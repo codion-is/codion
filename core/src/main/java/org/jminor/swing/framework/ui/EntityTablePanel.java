@@ -605,7 +605,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public final void exportSelected() {
     try {
       final List<Entity> selected = getEntityTableModel().getSelectionModel().getSelectedItems();
-      Util.writeFile(EntityUtil.getEntitySerializer().serialize(selected), UiUtil.chooseFileToSave(this, null, null));
+      Util.writeFile(EntityUtil.getEntitySerializer().serialize(selected), UiUtil.selectFileToSave(this, null, null));
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
     }
     catch (IOException | CancelException | SerializeException e) {

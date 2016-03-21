@@ -4188,3 +4188,4 @@
   Refactoring due the above
   Entity.Definition.setSelectQuery(selectQuery) added as deprecated for backwards compatibility
   Demo deployment process improved
+  UiUtil.chooseFileToSave() renamed to selectFileToSave() for consistency
