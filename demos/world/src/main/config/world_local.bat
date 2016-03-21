@@ -1,0 +1,1 @@
+java -Xmx128m -Djminor.configurationFile=h2db.config -cp world.jar org.jminor.framework.demos.world.client.ui.WorldAppPanel

@@ -341,35 +341,13 @@
     <chmod dir="${deploy.generator.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demos" depends="dist, create_keystore, create_demo_h2db"
+  <target name="deploy_demos" depends="create_keystore"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
-    <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
-
-    <subant target="dist" buildpath="${basedir}/../plugins"/>
-    <subant target="dist" buildpath="${basedir}/../demos"/>
-    <!--Setup-->
-    <jar jarfile="${deploy.demos.dir}/libraries.jar">
-      <zipgroupfileset dir="${lib}/runtime.client" includes="*.jar" excludes="*api-doc.jar, *src.jar, META-INF/**/*"/>
-      <zipfileset src="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle.jar"/>
-      <zipfileset src="${dist}/jminor-swing-client-test/jminor-swing-client-test.jar"/>
-      <zipfileset src="../plugins/jasperreports/dist/jminor-plugin-jasperreports.jar" excludes="META-INF/**/*"/>
-      <zipfileset src="../plugins/nextreports/dist/jminor-plugin-nextreports.jar" excludes="META-INF/**/*"/>
-      <zipgroupfileset dir="../plugins/jasperreports/lib/test" excludes="META-INF/**/*"/>
-      <zipgroupfileset dir="../plugins/nextreports/lib/test" excludes="META-INF/**/*"/>
-      <fileset file="${deploy.demos.truststore}"/>
-    </jar>
-    <deploy_demo_app app-id="empdept" app-name="EmpDept JMinor Demo"
-                     report="${basedir}/../demos/empdept/build/reports/empdept_employees.jasper"
-                     main-class="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>
-    <deploy_demo_app app-id="chinook" app-name="Chinook JMinor Demo"
-                     report="${basedir}/../demos/chinook/build/reports/customer_report.jasper"
-                     main-class="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"/>
-    <deploy_demo_app app-id="petstore" app-name="Petstore JMinor Demo"
-                     main-class="org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel"/>
-    <deploy_demo_app app-id="world" app-name="World JMinor Demo"
-                     main-class="org.jminor.framework.demos.world.client.ui.WorldAppPanel"/>
-    <!--Cleanup-->
-    <delete file="${deploy.demos.dir}/libraries.jar"/>
+    <subant target="deploy" buildpath="${basedir}/../demos/chinook"/>
+    <subant target="deploy" buildpath="${basedir}/../demos/empdept"/>
+    <subant target="deploy" buildpath="${basedir}/../demos/petstore"/>
+    <subant target="deploy" buildpath="${basedir}/../demos/schemabrowser"/>
+    <subant target="deploy" buildpath="${basedir}/../demos/world"/>
   </target>
 
   <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos, deploy_generator"
@@ -611,46 +589,6 @@
       <jar jarfile="${dist}/@{module-name}/@{module-name}-javadoc.jar" basedir="${javadoc}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
-    </sequential>
-  </macrodef>
-
-  <macrodef name="deploy_demo_app">
-    <attribute name="app-id"/>
-    <attribute name="app-name"/>
-    <attribute name="main-class"/>
-    <attribute name="report" default=""/>
-    <sequential>
-      <mkdir dir="${deploy.demos.dir}/@{app-id}/META-INF"/>
-      <manifest file="${deploy.demos.dir}/@{app-id}/META-INF/MANIFEST.MF">
-        <attribute name="Built-By" value="${user.name}"/>
-        <attribute name="Application-Name" value="@{app-name}"/>
-        <attribute name="Specification-Title" value="jminor.demos"/>
-        <attribute name="Specification-Name" value="jminor.demos"/>
-        <attribute name="Specification-Vendor" value="${deploy.demos.codebase}"/>
-        <attribute name="Permissions" value="all-permissions"/>
-        <attribute name="Codebase" value="${deploy.demos.codebase}"/>
-        <attribute name="Main-Class" value="@{main-class}"/>
-      </manifest>
-      <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.jar">
-        <zipfileset src="${basedir}/../demos/@{app-id}/dist/@{app-id}.jar" excludes="META-INF/*"/>
-        <zipfileset src="${deploy.demos.dir}/libraries.jar" excludes="META-INF/*"/>
-        <zipfileset dir="${deploy.demos.dir}/@{app-id}" includes="META-INF/*"/>
-        <zipfileset dir="${basedir}/../demos/@{app-id}/src/main/config/" includes="@{app-id}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
-        <zipfileset file="@{report}" prefix="reports"/>
-      </zip>
-      <delete dir="${deploy.demos.dir}/@{app-id}/META-INF"/>
-      <signjar jar="${deploy.demos.dir}/@{app-id}/@{app-id}.jar" alias="${jar.sign.alias}"
-               storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
-      <copy file="${basedir}/../demos/@{app-id}/src/main/config/@{app-id}.jnlp" todir="${deploy.demos.dir}/@{app-id}"/>
-      <copy file="${basedir}/../demos/@{app-id}/src/main/config/getdown.txt" todir="${deploy.demos.dir}/@{app-id}"/>
-      <copy file="${basedir}/docs/jminor.org/jminor_logo_black_medium.png" todir="${deploy.demos.dir}/@{app-id}"/>
-      <getdown_digest appdir="${deploy.demos.dir}/@{app-id}"/>
-      <zip destfile="${deploy.demos.dir}/@{app-id}/@{app-id}.zip">
-        <zipfileset file="${deploy.demos.dir}/@{app-id}/@{app-id}.jar"/>
-        <zipfileset dir="${db.h2.dir}" prefix="h2db"/>
-        <zipfileset file="${basedir}/../demos/config/shared/h2db.config"/>
-        <zipfileset file="${basedir}/../demos/config/shared/remote.config"/>
-      </zip>
     </sequential>
   </macrodef>
 </project>

@@ -1,0 +1,20 @@
+# The URL from which the client is downloaded
+appbase = http://jminor.no-ip.org/demos/schemabrowser/
+
+resource = jminor_logo_black_medium.png
+
+# UI Configuration
+ui.name = SchemaBrowser JMinor Demo
+ui.background_image = jminor_logo_black_medium.png
+
+# Application jar files
+code = schemabrowser.jar
+
+# The main entry point for the application
+class = org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel
+
+allow_offline = true
+
+jvmarg = -Djminor.client.connectionType=remote
+jvmarg = -Djminor.server.hostname=jminor.no-ip.org
+jvmarg = -Djavax.net.ssl.trustStore=JMinorClientTruststore

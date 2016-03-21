@@ -3,6 +3,7 @@
   <property name="project.root" value="../../"/>
   <property name="junit.db.initScript" value="src/main/sql/create_schema.sql"/>
   <property file="${project.root}/core/build.properties"/>
+  <property file="${project.root}/core/user.properties"/>
   <import file="../build-common.xml"/>
 
   <target name="dist" depends="jminor-common.dist">
@@ -12,18 +13,51 @@
 
     <!--create anothor domain jar file without annotations using the purgeannotationrefs library-->
     <!--<taskdef resource="org/dyndns/fichtner/purgeannotationrefs/tasks/antlib.xml"-->
-             <!--classpathref="lib.ant.util"/>-->
+    <!--classpathref="lib.ant.util"/>-->
     <!--<purgeannotationrefs>-->
-      <!--<src>-->
-        <!--<fileset dir="build/main">-->
-          <!--<filename name="org/jminor/framework/demos/${ant.project.name}/domain/**/*.class" />-->
-        <!--</fileset>-->
-      <!--</src>-->
-      <!--<remove regexp="org.jminor.framework.domain.Entity.Data" />-->
-      <!--<remove regexp="org.jminor.framework.domain.Property.Data" />-->
+    <!--<src>-->
+    <!--<fileset dir="build/main">-->
+    <!--<filename name="org/jminor/framework/demos/${ant.project.name}/domain/**/*.class" />-->
+    <!--</fileset>-->
+    <!--</src>-->
+    <!--<remove regexp="org.jminor.framework.domain.Entity.Data" />-->
+    <!--<remove regexp="org.jminor.framework.domain.Property.Data" />-->
     <!--</purgeannotationrefs>-->
     <!--<jar jarfile="dist/${ant.project.name}-domain-remote.jar" basedir="build/main"-->
-         <!--includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*"-->
-         <!--manifest="${build.main}/META-INF/MANIFEST.MF"/>-->
+    <!--includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*"-->
+    <!--manifest="${build.main}/META-INF/MANIFEST.MF"/>-->
+  </target>
+
+  <target name="deploy" depends="dist">
+    <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
+    <mkdir dir="dist/deployment/libtmp"/>
+    <unzip dest="dist/deployment/libtmp">
+      <fileset dir="lib/runtime">
+        <include name="**/*.jar"/>
+      </fileset>
+    </unzip>
+    <zip destfile="dist/deployment/${ant.project.name}.jar">
+      <zipfileset src="dist/${ant.project.name}.jar" excludes="**/META-INF/**/*"/>
+      <zipfileset dir="dist/deployment/libtmp" excludes="**/META-INF/**/*"/>
+      <zipfileset file="src/main/sql/create_schema.sql" erroronmissingdir="false"/>
+      <zipfileset dir="src/main/config/" includes="${ant.project.name}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
+      <zipfileset file="src/main/config/logback.xml"/>
+      <zipfileset dir="src/main/config" includes="**/*.config"/>
+      <fileset file="../../core/resources/security/JMinorClientTruststore"/>
+    </zip>
+    <zip destfile="dist/deployment/${ant.project.name}.jar" update="true">
+      <zipfileset dir="build/reports" includes="**/*.jasper" prefix="reports" erroronmissingdir="false"/>
+    </zip>
+    <delete dir="dist/deployment/libtmp"/>
+    <signjar jar="dist/deployment/${ant.project.name}.jar" alias="${jar.sign.alias}"
+             storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
+    <copy file="src/main/config/${ant.project.name}.jnlp" todir="dist/deployment" failonerror="false"/>
+    <copy file="src/main/config/getdown.txt" todir="dist/deployment"/>
+    <copy file="../../core/docs/jminor.org/jminor_logo_black_medium.png" todir="dist/deployment"/>
+    <getdown_digest appdir="dist/deployment"/>
+    <zip destfile="dist/deployment/${ant.project.name}.zip">
+      <zipfileset file="dist/deployment/${ant.project.name}.jar"/>
+      <zipfileset dir="src/main/config" includes="**/*.sh, **/*.bat"/>
+    </zip>
   </target>
 </project>

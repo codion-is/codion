@@ -1,1 +1,1 @@
-java -Xmx128m -Djminor.configurationFile=mysql.config -Djava.security.policy=config/jminor_demos.policy -cp config:lib/* org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel &
+java -Xmx128m -Djminor.configurationFile=mysql.config -cp schemabrowser.jar org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel &
