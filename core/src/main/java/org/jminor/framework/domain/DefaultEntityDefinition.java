@@ -392,6 +392,15 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   /** {@inheritDoc} */
   @Override
+  public Entity.Definition setSelectQuery(final String selectQuery) {
+    Util.rejectNullValue(selectQuery, "selectQuery");
+    this.selectQuery = selectQuery;
+    this.selectQueryContainsWhereClause = containsWhereClause(selectQuery);
+    return this;
+  }
+
+  /** {@inheritDoc} */
+  @Override
   public Entity.Definition setSelectQuery(final String selectQuery, final boolean containsWhereClause) {
     Util.rejectNullValue(selectQuery, "selectQuery");
     this.selectQuery = selectQuery;
@@ -875,6 +884,18 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
 
     return stringBuilder.toString();
+  }
+
+  /**
+   * @param selectQuery the query to check
+   * @return true if the query contains the WHERE clause after the last FROM keyword instance
+   * todo remove
+   */
+  private static boolean containsWhereClause(final String selectQuery) {
+    final String lowerCaseQuery = selectQuery.toLowerCase();
+
+    return selectQuery.substring(Math.max(0, lowerCaseQuery.lastIndexOf("from ")),
+            lowerCaseQuery.length()).contains("where ");
   }
 
   private static class DefaultKeyGenerator implements Entity.KeyGenerator {

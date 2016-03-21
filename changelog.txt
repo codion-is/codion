@@ -4186,3 +4186,4 @@
 0.9.10
   Entity.Data and Property.Data annotations added for database specific entity information, such as table and column names
   Refactoring due the above
+  Entity.Definition.setSelectQuery(selectQuery) added as deprecated for backwards compatability
