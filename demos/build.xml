@@ -24,6 +24,14 @@
     <subant target="dist" buildpath="world"/>
   </target>
 
+  <target name="deploy">
+    <subant target="deploy" buildpath="chinook"/>
+    <subant target="deploy" buildpath="empdept"/>
+    <subant target="deploy" buildpath="petstore"/>
+    <subant target="deploy" buildpath="schemabrowser"/>
+    <subant target="deploy" buildpath="world"/>
+  </target>
+
   <target name="run_unit_tests">
     <subant target="run_unit_tests" buildpath="chinook"/>
     <subant target="run_unit_tests" buildpath="empdept"/>
