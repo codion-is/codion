@@ -67,6 +67,9 @@
       <zipfileset file="src/main/config/logback.xml"/>
       <zipfileset dir="src/main/config" includes="**/*.config"/>
     </zip>
+    <zip destfile="dist/deployment/web/${ant.project.name}.zip">
+      <zipfileset dir="dist/deployment/local"/>
+    </zip>
     <chmod dir="dist/deployment/local" perm="u+x" type="file" includes="**/*.sh"/>
     <delete file="dist/deployment/${ant.project.name}.jar"/>
   </target>
