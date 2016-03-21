@@ -343,7 +343,12 @@
 
   <target name="deploy_demos" depends="create_keystore"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
-    <subant target="dist" buildpath="${basedir}/../demos"/>
+    <subant target="deploy" buildpath="${basedir}/../demos"/>
+    <deploy_demo_app demo-name="chinook"/>
+    <deploy_demo_app demo-name="empdept"/>
+    <deploy_demo_app demo-name="petstore"/>
+    <deploy_demo_app demo-name="schemabrowser"/>
+    <deploy_demo_app demo-name="world"/>
   </target>
 
   <target name="deploy_all" depends="clean, dist, deploy_server, deploy_server_monitor, deploy_demos, deploy_generator"
@@ -585,6 +590,18 @@
       <jar jarfile="${dist}/@{module-name}/@{module-name}-javadoc.jar" basedir="${javadoc}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
+    </sequential>
+  </macrodef>
+
+  <macrodef name="deploy_demo_app">
+    <attribute name="demo-name"/>
+    <sequential>
+      <copy todir="${deploy.demos.dir}/web/@{demo-name}">
+        <fileset dir="../demos/@{demo-name}/dist/deployment/web"/>
+      </copy>
+      <copy todir="${deploy.demos.dir}/local/@{demo-name}">
+        <fileset dir="../demos/@{demo-name}/dist/deployment/local"/>
+      </copy>
     </sequential>
   </macrodef>
 </project>
