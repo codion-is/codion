@@ -4,6 +4,7 @@
   <information>
     <title>Chinook JMinor Demo</title>
     <vendor>JMinor.org</vendor>
+    <icon href="jminor.png"/>
   </information>
   <security>
     <all-permissions/>

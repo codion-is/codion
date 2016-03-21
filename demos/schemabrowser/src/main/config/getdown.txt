@@ -1,11 +1,11 @@
 # The URL from which the client is downloaded
 appbase = http://jminor.no-ip.org/demos/schemabrowser/
 
-resource = jminor_logo_black_medium.png
+resource = jminor.png
 
 # UI Configuration
 ui.name = SchemaBrowser JMinor Demo
-ui.background_image = jminor_logo_black_medium.png
+ui.background_image = jminor.png
 
 # Application jar files
 code = schemabrowser.jar
