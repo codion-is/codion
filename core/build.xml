@@ -341,7 +341,7 @@
     <chmod dir="${deploy.generator.path}" perm="u+x" type="file" includes="*.sh"/>
   </target>
 
-  <target name="deploy_demos" depends="create_keystore"
+  <target name="deploy_demos" depends="resolve_libraries, create_keystore"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <subant target="deploy" buildpath="${basedir}/../demos"/>
     <delete dir="${deploy.demos.dir}"/>
