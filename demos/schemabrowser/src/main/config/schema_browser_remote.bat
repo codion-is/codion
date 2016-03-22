@@ -1,1 +1,1 @@
-java -Xmx128m -Djminor.configurationFile=remote.config -cp schemabrowser.jar org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel
+java -Xmx128m -Djminor.configurationFile=remote.config -cp schemabrowser.jar;config org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel

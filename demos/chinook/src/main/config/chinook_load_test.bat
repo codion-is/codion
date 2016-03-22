@@ -1,1 +1,1 @@
-java -Xmx512m -Djminor.configurationFile=load_test.config -cp chinook.jar org.jminor.framework.demos.chinook.testing.ChinookLoadTest
+java -Xmx512m -Djminor.configurationFile=load_test.config -cp chinook.jar;config org.jminor.framework.demos.chinook.testing.ChinookLoadTest

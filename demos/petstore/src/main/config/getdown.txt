@@ -1,11 +1,11 @@
 # The URL from which the client is downloaded
 appbase = http://jminor.no-ip.org/demos/petstore/
 
-resource = jminor.png
+resource = jminor-getdown.png
 
 # UI Configuration
 ui.name = Petstore JMinor Demo
-ui.background_image = jminor.png
+ui.background_image = jminor-getdown.png
 
 # Application jar files
 code = petstore.jar

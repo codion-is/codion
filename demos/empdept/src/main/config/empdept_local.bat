@@ -1,1 +1,1 @@
-java -Xmx128m -Djminor.configurationFile=h2db.config -cp empdept.jar org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel
+java -Xmx128m -Djminor.configurationFile=h2db.config -cp empdept.jar;config org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel

@@ -344,6 +344,7 @@
   <target name="deploy_demos" depends="create_keystore"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
     <subant target="deploy" buildpath="${basedir}/../demos"/>
+    <delete dir="${deploy.demos.dir}"/>
     <deploy_demo_app demo-name="chinook"/>
     <deploy_demo_app demo-name="empdept"/>
     <deploy_demo_app demo-name="petstore"/>
