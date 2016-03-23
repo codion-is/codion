@@ -268,8 +268,8 @@ public final class States {
       }
 
       @Override
-      public void eventOccurred(final Boolean isActive) {
-        ((DefaultStateObserver) getObserver()).notifyObservers(getPreviousState(state, !isActive), isActive);
+      public void eventOccurred(final Boolean newValue) {
+        ((DefaultStateObserver) getObserver()).notifyObservers(getPreviousState(state, !newValue), isActive());
       }
 
       private StateObserver getState() {

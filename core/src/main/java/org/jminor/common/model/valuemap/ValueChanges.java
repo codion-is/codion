@@ -87,10 +87,10 @@ public final class ValueChanges {
     @Override
     public String toString() {
       if (initialization) {
-        return ValueChange.class.getName() + ", " + key + ": " + newValue;
+        return key + ": " + newValue;
       }
       else {
-        return ValueChange.class.getName() + ", " + key + ": " + oldValue + " -> " + newValue;
+        return key + ": " + oldValue + " -> " + newValue;
       }
     }
   }

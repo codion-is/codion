@@ -243,6 +243,41 @@ public class StatesTest {
   }
 
   @Test
+  public void aggregateStateInfoListener() {
+    final State one = States.state();
+    final State two = States.state();
+    final State three = States.state();
+
+    final State aggregateAnd = States.aggregateState(Conjunction.AND, one, two, three);
+    aggregateAnd.addInfoListener(new EventInfoListener<Boolean>() {
+      @Override
+      public void eventOccurred(final Boolean newValue) {
+        assertEquals(aggregateAnd.isActive(), newValue);
+      }
+    });
+    one.setActive(true);
+    two.setActive(true);
+    three.setActive(true);
+    one.setActive(false);
+    two.setActive(false);
+    three.setActive(false);
+
+    final State aggregateOr = States.aggregateState(Conjunction.OR, one, two, three);
+    aggregateOr.addInfoListener(new EventInfoListener<Boolean>() {
+      @Override
+      public void eventOccurred(final Boolean newValue) {
+        assertEquals(aggregateOr.isActive(), newValue);
+      }
+    });
+    one.setActive(true);
+    one.setActive(false);
+    two.setActive(true);
+    two.setActive(false);
+    three.setActive(true);
+    three.setActive(false);
+  }
+
+  @Test
   public void aggregateStateEvents() {
     final State stateOne = States.state(false);
     final State stateTwo = States.state(true);
