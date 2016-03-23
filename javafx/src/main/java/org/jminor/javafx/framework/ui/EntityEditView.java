@@ -50,11 +50,11 @@ public abstract class EntityEditView extends BorderPane {
     return this;
   }
 
-  public EntityEditModel getModel() {
+  public final EntityEditModel getModel() {
     return editModel;
   }
 
-  public Node getButtonPanel() {
+  public final Node getButtonPanel() {
     final GridPane buttonPane = new GridPane();
     buttonPane.addRow(0, createInsertButton());
     buttonPane.addRow(1, createUpdateButton());
@@ -122,29 +122,14 @@ public abstract class EntityEditView extends BorderPane {
 
   private Button createInsertButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.INSERT));
-    button.setOnAction(event -> {
-      try {
-        editModel.insert();
-        clearAfterInsert();
-      }
-      catch (final Exception e) {
-        throw new RuntimeException(e);
-      }
-    });
+    button.setOnAction(event -> insert());
 
     return button;
   }
 
   private Button createUpdateButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.UPDATE));
-    button.setOnAction(event -> {
-      try {
-        editModel.update();
-      }
-      catch (final Exception e) {
-        throw new RuntimeException(e);
-      }
-    });
+    button.setOnAction(event -> update());
     final State existingAndModifiedState = States.aggregateState(Conjunction.AND,
             getModel().getEntityNewObserver().getReversedObserver(),
             getModel().getModifiedObserver());
@@ -155,14 +140,7 @@ public abstract class EntityEditView extends BorderPane {
 
   private Button createDeleteButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.DELETE));
-    button.setOnAction(event -> {
-      try {
-        editModel.delete();
-      }
-      catch (final Exception e) {
-        throw new RuntimeException(e);
-      }
-    });
+    button.setOnAction(event -> delete());
     EntityFXUtil.linkToEnabledState(button, getModel().getEntityNewObserver().getReversedObserver());
 
     return button;
@@ -170,16 +148,41 @@ public abstract class EntityEditView extends BorderPane {
 
   private Button createClearButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.CLEAR));
-    button.setOnAction(event -> {
+    button.setOnAction(event -> editModel.clear());
+
+    return button;
+  }
+
+  private void insert() {
+    try {
+      editModel.insert();
+      clearAfterInsert();
+    }
+    catch (final Exception e) {
+      throw new RuntimeException(e);
+    }
+  }
+
+  private void update() {
+    if (EntityFXUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE))) {
       try {
-        editModel.clear();
+        editModel.update();
       }
       catch (final Exception e) {
         throw new RuntimeException(e);
       }
-    });
+    }
+  }
 
-    return button;
+  private void delete() {
+    if (EntityFXUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_ENTITY))) {
+      try {
+        editModel.delete();
+      }
+      catch (final Exception e) {
+        throw new RuntimeException(e);
+      }
+    }
   }
 
   private void clearAfterInsert() {

@@ -20,6 +20,8 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
@@ -35,6 +37,11 @@ import java.util.Date;
 import java.util.Objects;
 
 public final class EntityFXUtil {
+
+  public static boolean confirm(final String message) {
+    final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.OK, ButtonType.CANCEL);
+    return alert.showAndWait().get() == ButtonType.OK;
+  }
 
   public static TextField createTextField(final Property property, final EntityEditModel editModel) {
     return createTextField(property, editModel, null);
@@ -195,16 +202,13 @@ public final class EntityFXUtil {
         return;
       }
       if (!isValid(property, newValue)) {
-        Platform.runLater(new Runnable() {
-          @Override
-          public void run() {
-            try {
-              ignoreChange.setActive(true);
-              stringProperty.setValue(oldValue);
-            }
-            finally {
-              ignoreChange.setActive(false);
-            }
+        Platform.runLater(() -> {
+          try {
+            ignoreChange.setActive(true);
+            stringProperty.setValue(oldValue);
+          }
+          finally {
+            ignoreChange.setActive(false);
           }
         });
       }

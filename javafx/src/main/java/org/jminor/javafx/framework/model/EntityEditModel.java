@@ -33,7 +33,7 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
   private final Event<List<Entity>> updateEvent = Events.event();
   private final Event<List<Entity>> deleteEvent = Events.event();
 
-  private final Event entitySetEvent = Events.event();
+  private final Event<Entity> entitySetEvent = Events.event();
   private final State entityNewState = States.state(true);
 
   public EntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider) {
@@ -55,11 +55,11 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
     return connectionProvider;
   }
 
-  public StateObserver getModifiedObserver() {
+  public final StateObserver getModifiedObserver() {
     return getEntity().getModifiedObserver();
   }
 
-  public StateObserver getEntityNewObserver() {
+  public final StateObserver getEntityNewObserver() {
     return entityNewState.getObserver();
   }
 

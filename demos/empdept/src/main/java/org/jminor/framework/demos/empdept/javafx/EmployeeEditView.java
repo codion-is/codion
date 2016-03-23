@@ -4,6 +4,7 @@
 package org.jminor.framework.demos.empdept.javafx;
 
 import org.jminor.framework.demos.empdept.domain.EmpDept;
+import org.jminor.framework.domain.Entity;
 import org.jminor.javafx.framework.model.EntityEditModel;
 import org.jminor.javafx.framework.ui.EntityEditView;
 
@@ -26,9 +27,9 @@ public final class EmployeeEditView extends EntityEditView {
     setInitialFocusControl(id);
     final TextField name = createTextField(EmpDept.EMPLOYEE_NAME);
     final TextField location = createTextField(EmpDept.EMPLOYEE_SALARY);
-    final ComboBox department = createComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK);
+    final ComboBox<Entity> department = createComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK);
     final DatePicker picker = createDatePicker(EmpDept.EMPLOYEE_HIREDATE);
-    final ComboBox manager = createComboBox(EmpDept.EMPLOYEE_MGR_FK);
+    final ComboBox<Entity> manager = createComboBox(EmpDept.EMPLOYEE_MGR_FK);
 
     final GridPane gridPane = new GridPane();
 

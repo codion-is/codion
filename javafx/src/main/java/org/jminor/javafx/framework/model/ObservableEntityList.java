@@ -8,6 +8,9 @@ import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Conjunction;
+import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
+import org.jminor.common.model.Events;
 import org.jminor.common.model.SearchType;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -21,7 +24,9 @@ import javafx.beans.value.ObservableValue;
 import javafx.collections.FXCollections;
 import javafx.collections.ListChangeListener;
 import javafx.collections.ObservableList;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TableColumn;
+import javafx.scene.control.TableSelectionModel;
 import javafx.util.Callback;
 
 import java.util.ArrayList;
@@ -33,16 +38,58 @@ import java.util.Objects;
 
 public class ObservableEntityList implements ObservableList<Entity> {
 
+  private final String entityID;
   private final EntityConnectionProvider connectionProvider;
   private final ObservableList<Entity> list = FXCollections.observableArrayList();
-  private final String entityID;
   private final List<Criteria<Property.ColumnProperty>> propertyCriteria = new ArrayList<>();
+
+  private final Event<TableSelectionModel<Entity>> selectionModelSetEvent = Events.event();
+  private TableSelectionModel<Entity> selectionModel;
+
+  private EntityEditModel editModel;
 
   private EntitySelectCriteria selectCriteria;
 
   public ObservableEntityList(final String entityID, final EntityConnectionProvider connectionProvider) {
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
+  }
+
+  public final void setEditModel(final EntityEditModel editModel) {
+    if (this.editModel != null) {
+      throw new IllegalStateException("Edit model has already been set");
+    }
+    Objects.requireNonNull(editModel);
+    this.editModel = editModel;
+    bindEditModelEvents();
+  }
+
+  public final void setSelectionModel(final TableSelectionModel<Entity> selectionModel) {
+    if (this.selectionModel != null) {
+      throw new IllegalStateException("Selection model has already been set");
+    }
+    this.selectionModel = selectionModel;
+    this.selectionModel.setSelectionMode(SelectionMode.MULTIPLE);
+    selectionModelSetEvent.fire(selectionModel);
+    bindSelectionModelEvents();
+  }
+
+  public TableSelectionModel<Entity> getSelectionModel() {
+    if (selectionModel == null) {
+      throw new IllegalStateException("Selection model has not been set");
+    }
+    return selectionModel;
+  }
+
+  public void addSelectionModelSetListener(final EventInfoListener<TableSelectionModel<Entity>> listener) {
+    selectionModelSetEvent.addInfoListener(listener);
+  }
+
+  public final EntityEditModel getEditModel() {
+    if (editModel == null) {
+      throw new IllegalStateException("No edit model has been set for list: " + this);
+    }
+    return editModel;
   }
 
   public final void refresh() throws DatabaseException {
@@ -62,12 +109,7 @@ public class ObservableEntityList implements ObservableList<Entity> {
   }
 
   public final Callback<TableColumn.CellDataFeatures<Entity, Object>, ObservableValue<Object>> getCellValueFactory(final Property property) {
-    return new Callback<TableColumn.CellDataFeatures<Entity, Object>, ObservableValue<Object>>() {
-      @Override
-      public ObservableValue<Object> call(final TableColumn.CellDataFeatures<Entity, Object> row) {
-        return new ReadOnlyObjectWrapper<Object>(row.getValue().get(property.getPropertyID()));
-      }
-    };
+    return row -> new ReadOnlyObjectWrapper<>(row.getValue().get(property.getPropertyID()));
   }
 
   public final String getEntityID() {
@@ -79,15 +121,8 @@ public class ObservableEntityList implements ObservableList<Entity> {
     return list.get(index);
   }
 
-  protected EntitySelectCriteria getSelectCriteria() {
-    if (propertyCriteria.isEmpty()) {
-      return EntityCriteriaUtil.selectCriteria(entityID);
-    }
-
-    final CriteriaSet<Property.ColumnProperty> criteriaSet = CriteriaUtil.criteriaSet(
-            Conjunction.AND, propertyCriteria);
-
-    return EntityCriteriaUtil.selectCriteria(entityID, criteriaSet);
+  public final void deleteSelected() throws DatabaseException {
+    getEditModel().delete(getSelectionModel().getSelectedItems());
   }
 
   @Override
@@ -248,5 +283,41 @@ public class ObservableEntityList implements ObservableList<Entity> {
   @Override
   public final void removeListener(final InvalidationListener listener) {
     list.removeListener(listener);
+  }
+
+  protected EntitySelectCriteria getSelectCriteria() {
+    if (propertyCriteria.isEmpty()) {
+      return EntityCriteriaUtil.selectCriteria(entityID);
+    }
+
+    final CriteriaSet<Property.ColumnProperty> criteriaSet = CriteriaUtil.criteriaSet(
+            Conjunction.AND, propertyCriteria);
+
+    return EntityCriteriaUtil.selectCriteria(entityID, criteriaSet);
+  }
+
+  private void bindEditModelEvents() {
+    editModel.addInsertListener(this::addAll);
+    editModel.addUpdateListener(updated -> replaceAll(entity -> {
+      final int index = updated.indexOf(entity);
+      if (index >= 0) {
+        return updated.get(index);
+      }
+
+      return entity;
+    }));
+    editModel.addDeleteListener(this::removeAll);
+  }
+
+  private void bindSelectionModelEvents() {
+    selectionModel.getSelectedItems().addListener((ListChangeListener<Entity>) change -> {
+      final List<Entity> selected = selectionModel.getSelectedItems();
+      if (selected.isEmpty()) {
+        editModel.setEntity(null);
+      }
+      else {
+        editModel.setEntity(selected.get(0));
+      }
+    });
   }
 }

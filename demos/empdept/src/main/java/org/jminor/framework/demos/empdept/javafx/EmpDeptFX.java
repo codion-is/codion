@@ -53,6 +53,7 @@ public final class EmpDeptFX extends EntityApplication {
             new EntityTableView(employeeModel.getEntityList()));
     employeeModel.getEntityList().refresh();
 
+    departmentModel.addDetailModel(employeeModel);
     departmentView.addDetailView(employeeView);
 
     departmentView.initializePanel();

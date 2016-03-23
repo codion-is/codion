@@ -16,9 +16,7 @@ public abstract class EntityApplication extends Application {
 
   public EntityApplication(final String applicationTitle) {
     this.applicationTitle = applicationTitle;
-    Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> {
-      handleException(throwable);
-    });
+    Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> handleException(throwable));
   }
 
   @Override

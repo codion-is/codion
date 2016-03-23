@@ -29,27 +29,27 @@ public final class PropertyValues {
   private PropertyValues() {/**/}
 
   public static <V> Value<V> selectedItemValue(final SelectionModel<V> selectionModel) {
-    return new SelectedItemValue<V>(selectionModel);
+    return new SelectedItemValue<>(selectionModel);
   }
 
   public static StringValue<String> stringPropertyValue(final StringProperty property) {
-    return new DefaultStringValue<String>(property, new DefaultStringConverter());
+    return new DefaultStringValue<>(property, new DefaultStringConverter());
   }
 
   public static StringValue<Integer> integerPropertyValue(final StringProperty property, final NumberFormat numberFormat) {
-    return new DefaultStringValue<Integer>(property, new IntegerConverter(numberFormat));
+    return new DefaultStringValue<>(property, new IntegerConverter(numberFormat));
   }
 
   public static StringValue<Long> longPropertyValue(final StringProperty property, final NumberFormat numberFormat) {
-    return new DefaultStringValue<Long>(property, new LongConverter(numberFormat));
+    return new DefaultStringValue<>(property, new LongConverter(numberFormat));
   }
 
   public static StringValue<Double> doublePropertyValue(final StringProperty property, final NumberFormat numberFormat) {
-    return new DefaultStringValue<Double>(property, new DoubleConverter(numberFormat));
+    return new DefaultStringValue<>(property, new DoubleConverter(numberFormat));
   }
 
   public static StringValue<LocalDate> datePropertyValue(final StringProperty property, final SimpleDateFormat dateFormat) {
-    return new DefaultStringValue<LocalDate>(property, new DateConverter(dateFormat));
+    return new DefaultStringValue<>(property, new DateConverter(dateFormat));
   }
 
   public static Object parseStrict(final Format format, final String value) throws ParseException {
@@ -210,7 +210,7 @@ public final class PropertyValues {
 
     private final StringProperty stringProperty;
     private final StringConverter<V> converter;
-    private final Event changeEvent = Events.event();
+    private final Event<V> changeEvent = Events.event();
 
     public DefaultStringValue(final StringProperty stringProperty, final StringConverter<V> converter) {
       this.stringProperty = stringProperty;
@@ -218,7 +218,7 @@ public final class PropertyValues {
       this.stringProperty.addListener(new ChangeListener<Object>() {
         @Override
         public void changed(final ObservableValue<? extends Object> observable, final Object oldValue, final Object newValue) {
-          changeEvent.fire(newValue);
+          changeEvent.fire((V) newValue);
         }
       });
     }
