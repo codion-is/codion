@@ -23,8 +23,9 @@ public final class EmployeeEditView extends EntityEditView {
 
   @Override
   protected Node initializeEditPanel() {
+    setInitialFocusProperty(EmpDept.EMPLOYEE_ID);
+
     final TextField id = createTextField(EmpDept.EMPLOYEE_ID);
-    setInitialFocusControl(id);
     final TextField name = createTextField(EmpDept.EMPLOYEE_NAME);
     final TextField location = createTextField(EmpDept.EMPLOYEE_SALARY);
     final ComboBox<Entity> department = createComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK);

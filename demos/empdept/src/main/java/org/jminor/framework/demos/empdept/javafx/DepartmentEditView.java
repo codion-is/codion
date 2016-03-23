@@ -20,8 +20,9 @@ public final class DepartmentEditView extends EntityEditView {
 
   @Override
   protected Node initializeEditPanel() {
+    setInitialFocusProperty(EmpDept.DEPARTMENT_ID);
+
     final TextField id = createTextField(EmpDept.DEPARTMENT_ID);
-    setInitialFocusControl(id);
     final TextField name = createTextField(EmpDept.DEPARTMENT_NAME);
     final TextField location = createTextField(EmpDept.DEPARTMENT_LOCATION);
 

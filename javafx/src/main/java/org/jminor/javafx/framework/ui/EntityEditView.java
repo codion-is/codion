@@ -35,7 +35,7 @@ public abstract class EntityEditView extends BorderPane {
   private final Map<String, Control> controls = new HashMap<>();
   private boolean initialized = false;
 
-  private Control initialFocusControl;
+  private String initialFocusPropertyID;
 
   public EntityEditView(final EntityEditModel editModel) {
     this.editModel = editModel;
@@ -64,8 +64,8 @@ public abstract class EntityEditView extends BorderPane {
     return buttonPane;
   }
 
-  protected final void setInitialFocusControl(final Control initialFocusControl) {
-    this.initialFocusControl = initialFocusControl;
+  protected final void setInitialFocusProperty(final String initialFocusPropertyID) {
+    this.initialFocusPropertyID = initialFocusPropertyID;
   }
 
   protected abstract Node initializeEditPanel();
@@ -191,8 +191,8 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private void requestInitialFocus() {
-    if (initialFocusControl != null) {
-      initialFocusControl.requestFocus();
+    if (initialFocusPropertyID != null && controls.containsKey(initialFocusPropertyID)) {
+      controls.get(initialFocusPropertyID).requestFocus();
     }
   }
 
