@@ -10,7 +10,6 @@ import org.jminor.common.model.States;
 import org.jminor.common.model.Values;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.EntityEditModel;
@@ -73,7 +72,6 @@ public abstract class EntityEditView extends BorderPane {
 
   protected final ComboBox<Entity> createComboBox(final String propertyID) {
     checkControl(propertyID);
-    final Property.ForeignKeyProperty property = Entities.getForeignKeyProperty(getModel().getEntityID(), propertyID);
     final ComboBox<Entity> box = new ComboBox<>(editModel.createForeignKeyList(propertyID));
     Values.link(editModel.createValue(propertyID), PropertyValues.selectedItemValue(box.getSelectionModel()));
     try {
@@ -165,7 +163,7 @@ public abstract class EntityEditView extends BorderPane {
         throw new RuntimeException(e);
       }
     });
-    EntityFXUtil.linkToEnabledState(button, getModel().getEntityNewObserver());
+    EntityFXUtil.linkToEnabledState(button, getModel().getEntityNewObserver().getReversedObserver());
 
     return button;
   }

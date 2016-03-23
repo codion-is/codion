@@ -77,7 +77,7 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
     return copy;
   }
 
-  public void clear() {
+  public final void clear() {
     setEntity(null);
   }
 
