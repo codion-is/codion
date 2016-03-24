@@ -6,6 +6,7 @@ package org.jminor.framework.domain;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.model.Serializer;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.i18n.FrameworkMessages;
 
@@ -34,6 +35,36 @@ public final class EntityUtil {
   private static final String ENTITIES_PARAM = "entities";
 
   private EntityUtil() {}
+
+  /**
+   * Populates an entity of the given type using the values provided by the given valueProvider,
+   * only non-derived and non-denormalized values are fetched from the value provider
+   * @param entityID the entity ID
+   * @param valueProvider the value provider
+   * @return the populated entity
+   */
+  public static Entity getEntity(final String entityID, final ValueProvider<Property, Object> valueProvider) {
+    final Entity entity = Entities.entity(entityID);
+    final Collection<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID);
+    for (final Property.ColumnProperty property : columnProperties) {
+      if (!property.isForeignKeyProperty() && !property.isDenormalized()) {//these are set via their respective parent properties
+        entity.put(property, valueProvider.get(property));
+      }
+    }
+    final Collection<Property.TransientProperty> transientProperties = Entities.getTransientProperties(entityID);
+    for (final Property.TransientProperty transientProperty : transientProperties) {
+      if (!(transientProperty instanceof Property.DerivedProperty) && !(transientProperty instanceof Property.DenormalizedViewProperty)) {
+        entity.put(transientProperty, valueProvider.get(transientProperty));
+      }
+    }
+    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entityID);
+    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+      entity.put(foreignKeyProperty, valueProvider.get(foreignKeyProperty));
+    }
+    entity.saveAll();
+
+    return entity;
+  }
 
   /**
    * @param entities the entities

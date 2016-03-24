@@ -15,6 +15,7 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.DefaultValueMapEditModel;
 import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
+import org.jminor.common.model.valuemap.ValueProvider;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
@@ -114,6 +115,16 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
    * @see #isEntityNew()
    */
   private final State entityNewState = States.state(true);
+
+  /**
+   * Provides the values when a default entity is created
+   */
+  private final ValueProvider<Property, Object> defaultValueProvider = new ValueProvider<Property, Object>() {
+    @Override
+    public Object get(final Property property) {
+      return getDefaultValue(property);
+    }
+  };
 
   /**
    * Holds the read only status of this edit model
@@ -599,26 +610,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
   /** {@inheritDoc} */
   @Override
   public final Entity getDefaultEntity() {
-    final Entity defaultEntity = Entities.entity(entityID);
-    final Collection<Property.ColumnProperty> columnProperties = Entities.getColumnProperties(entityID);
-    for (final Property.ColumnProperty property : columnProperties) {
-      if (!property.isForeignKeyProperty() && !property.isDenormalized()) {//these are set via their respective parent properties
-        defaultEntity.put(property, getDefaultValue(property));
-      }
-    }
-    final Collection<Property.TransientProperty> transientProperties = Entities.getTransientProperties(entityID);
-    for (final Property.TransientProperty transientProperty : transientProperties) {
-      if (!(transientProperty instanceof Property.DerivedProperty) && !(transientProperty instanceof Property.DenormalizedViewProperty)) {
-        defaultEntity.put(transientProperty, getDefaultValue(transientProperty));
-      }
-    }
-    final Collection<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(entityID);
-    for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
-      defaultEntity.put(foreignKeyProperty, getDefaultValue(foreignKeyProperty));
-    }
-    defaultEntity.saveAll();
-
-    return defaultEntity;
+    return EntityUtil.getEntity(entityID, defaultValueProvider);
   }
 
   /** {@inheritDoc} */
