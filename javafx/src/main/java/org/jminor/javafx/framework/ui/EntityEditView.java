@@ -3,18 +3,14 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
-import org.jminor.common.model.Values;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.EntityEditModel;
-import org.jminor.javafx.framework.model.EntityTableModel;
-import org.jminor.javafx.framework.ui.values.PropertyValues;
 
 import javafx.scene.Node;
 import javafx.scene.control.Button;
@@ -72,14 +68,8 @@ public abstract class EntityEditView extends BorderPane {
 
   protected final ComboBox<Entity> createComboBox(final String propertyID) {
     checkControl(propertyID);
-    final ComboBox<Entity> box = new ComboBox<>(editModel.createForeignKeyList(propertyID));
-    Values.link(editModel.createValue(propertyID), PropertyValues.selectedItemValue(box.getSelectionModel()));
-    try {
-      ((EntityTableModel) box.getItems()).refresh();
-    }
-    catch (final DatabaseException e) {
-      throw new RuntimeException(e);
-    }
+    final ComboBox<Entity> box = FXUiUtil.createComboBox(Entities.getForeignKeyProperty(getModel().getEntityID(),
+            propertyID), getModel());
 
     controls.put(propertyID, box);
 

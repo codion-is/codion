@@ -21,8 +21,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 
-import javafx.collections.ObservableList;
-
 import java.util.Collections;
 import java.util.HashMap;
 import java.util.List;
@@ -33,9 +31,9 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
 
   private final EntityConnectionProvider connectionProvider;
 
-  private final Event<List<Entity>> insertEvent = Events.event();
-  private final Event<List<Entity>> updateEvent = Events.event();
-  private final Event<List<Entity>> deleteEvent = Events.event();
+  private final Event<InsertEvent> insertEvent = Events.event();
+  private final Event<UpdateEvent> updateEvent = Events.event();
+  private final Event<DeleteEvent> deleteEvent = Events.event();
 
   private final Event<Entity> entitySetEvent = Events.event();
   private final State entityNewState = States.state(true);
@@ -98,7 +96,7 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
       throw new RuntimeException("Insert did not return an entity, usually caused by a misconfigured key generator");
     }
     setEntity(insertedEntities.get(0));
-    insertEvent.fire(insertedEntities);
+    insertEvent.fire(new InsertEvent(insertedEntities));
 
     return insertedEntities;
   }
@@ -109,7 +107,7 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
       return Collections.emptyList();
     }
     final List<Entity> insertedEntities = connectionProvider.getConnection().selectMany(doInsert(entities));
-    insertEvent.fire(insertedEntities);
+    insertEvent.fire(new InsertEvent(insertedEntities));
 
     return insertedEntities;
   }
@@ -126,7 +124,7 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
     final List<Entity> modified = EntityUtil.getModifiedEntities(entities);
     if (!modified.isEmpty()) {
       final List<Entity> updated = doUpdate(modified);
-      updateEvent.fire(updated);
+      updateEvent.fire(new UpdateEvent(EntityUtil.mapToOriginalPrimaryKey(modified, updated)));
 
       return updated;
     }
@@ -142,13 +140,8 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
     Objects.requireNonNull(entities);
     if (!entities.isEmpty()) {
       doDelete(entities);
-      deleteEvent.fire(entities);
+      deleteEvent.fire(new DeleteEvent(entities));
     }
-  }
-
-  public ObservableList<Entity> createForeignKeyList(final String propertyID) {
-    return new EntityTableModel(Entities.getForeignKeyProperty(getEntity().getEntityID(),
-            propertyID).getReferencedEntityID(), connectionProvider);
   }
 
   public final Value createValue(final String propertyID) {
@@ -163,15 +156,15 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
     entitySetEvent.addInfoListener(listener);
   }
 
-  public final void addInsertListener(final EventInfoListener<List<Entity>> listener) {
+  public final void addInsertListener(final EventInfoListener<InsertEvent> listener) {
     insertEvent.addInfoListener(listener);
   }
 
-  public final void addUpdateListener(final EventInfoListener<List<Entity>> listener) {
+  public final void addUpdateListener(final EventInfoListener<UpdateEvent> listener) {
     updateEvent.addInfoListener(listener);
   }
 
-  public final void addDeleteListener(final EventInfoListener<List<Entity>> listener) {
+  public final void addDeleteListener(final EventInfoListener<DeleteEvent> listener) {
     deleteEvent.addInfoListener(listener);
   }
 
@@ -216,6 +209,58 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
   private void bindEvents() {
     getValueObserver().addInfoListener(valueChange -> entityNewState.setActive(isEntityNew()));
     entitySetEvent.addInfoListener(activeEntity -> entityNewState.setActive(isEntityNew()));
+  }
+
+  public static final class InsertEvent {
+
+    private final List<Entity> insertedEntities;
+
+    /**
+     * Instantiates a new InsertEvent.
+     * @param insertedEntities the inserted entities
+     */
+    public InsertEvent(final List<Entity> insertedEntities) {
+      this.insertedEntities = insertedEntities;
+    }
+
+    public List<Entity> getInsertedEntities() {
+      return insertedEntities;
+    }
+  }
+
+  public static final class DeleteEvent {
+
+    private final List<Entity> deletedEntities;
+
+    /**
+     * Instantiates a new DeleteEvent.
+     * @param deletedEntities the deleted entities
+     */
+    public DeleteEvent(final List<Entity> deletedEntities) {
+      this.deletedEntities = deletedEntities;
+    }
+
+    public List<Entity> getDeletedEntities() {
+      return deletedEntities;
+    }
+  }
+
+  public static final class UpdateEvent {
+
+    private final Map<Entity.Key, Entity> updatedEntities;
+
+    /**
+     * Instantiates a new UpdateEvent.
+     * @param updatedEntities the updated entities, mapped to their respective original primary key, that is,
+     * the primary key prior to the update
+     */
+    public UpdateEvent(final Map<Entity.Key, Entity> updatedEntities) {
+      this.updatedEntities = updatedEntities;
+    }
+
+    public Map<Entity.Key, Entity> getUpdatedEntities() {
+      return updatedEntities;
+    }
   }
 
   private static final class EntityValue<V> implements Value<V> {

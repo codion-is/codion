@@ -18,11 +18,11 @@ import java.util.Objects;
 public class EntityModel {
 
   private final EntityEditModel editModel;
-  private final EntityTableModel tableModell;
+  private final EntityListModel tableModell;
 
   private final List<EntityModel> detailModels = new ArrayList<>();
 
-  public EntityModel(final EntityEditModel editModel, final EntityTableModel tableModel) {
+  public EntityModel(final EntityEditModel editModel, final EntityListModel tableModel) {
     Objects.requireNonNull(editModel);
     this.editModel = editModel;
     this.tableModell = tableModel;
@@ -40,7 +40,7 @@ public class EntityModel {
     return editModel;
   }
 
-  public final EntityTableModel getTableModell() {
+  public final EntityListModel getTableModell() {
     return tableModell;
   }
 
@@ -69,9 +69,6 @@ public class EntityModel {
   }
 
   private void bindEvents() {
-    editModel.addInsertListener(this::handleInsert);
-    editModel.addUpdateListener(this::handleUpdate);
-    editModel.addDeleteListener(this::handleDelete);
     if (tableModell != null) {
       editModel.addEntitySetListener(entity -> {
         try {
@@ -104,22 +101,5 @@ public class EntityModel {
             Entities.getForeignKeyProperties(getEntityID(), masterEntityID);
     editModel.setValue(foreignKeyProperties.get(0).getPropertyID(), foreignKeyEntities.get(0));
     tableModell.filterBy(foreignKeyProperties.get(0), foreignKeyEntities);
-  }
-
-  private void handleInsert(final List<Entity> inserted) {
-    tableModell.addAll(0, inserted);
-  }
-
-  private void handleUpdate(final List<Entity> updated) {
-    for (final Entity entity : updated) {
-      final int index = tableModell.indexOf(entity);
-      if (index != -1) {
-        tableModell.set(index, entity);
-      }
-    }
-  }
-
-  private void handleDelete(final List<Entity> deleted) {
-    tableModell.removeAll(deleted);
   }
 }

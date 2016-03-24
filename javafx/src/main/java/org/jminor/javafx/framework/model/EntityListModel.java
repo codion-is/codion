@@ -12,9 +12,13 @@ import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.States;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
@@ -31,12 +35,15 @@ import javafx.util.Callback;
 
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
+import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.ListIterator;
+import java.util.Map;
 import java.util.Objects;
 
-public class EntityTableModel implements ObservableList<Entity> {
+public class EntityListModel implements ObservableList<Entity> {
 
   private final String entityID;
   private final EntityConnectionProvider connectionProvider;
@@ -44,15 +51,25 @@ public class EntityTableModel implements ObservableList<Entity> {
   private final List<Criteria<Property.ColumnProperty>> propertyCriteria = new ArrayList<>();
 
   private final Event<TableSelectionModel<Entity>> selectionModelSetEvent = Events.event();
+  private final State selectionEmptyState = States.state(true);
+  private final State singleSelectionState = States.state();
+  private final State multipleSelectionState = States.state();
+
   private TableSelectionModel<Entity> selectionModel;
 
   private EntityEditModel editModel;
 
   private EntitySelectCriteria selectCriteria;
 
-  public EntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider) {
+  private boolean sortAfterRefresh = false;
+
+  public EntityListModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
+  }
+
+  public EntityConnectionProvider getConnectionProvider() {
+    return connectionProvider;
   }
 
   public final void setEditModel(final EntityEditModel editModel) {
@@ -70,6 +87,9 @@ public class EntityTableModel implements ObservableList<Entity> {
     }
     this.selectionModel = selectionModel;
     this.selectionModel.setSelectionMode(SelectionMode.MULTIPLE);
+    this.selectionEmptyState.setActive(this.selectionModel.isEmpty());
+    this.singleSelectionState.setActive(this.selectionModel.getSelectedIndices().size() == 1);
+    this.multipleSelectionState.setActive(!selectionEmptyState.isActive() && !singleSelectionState.isActive());
     selectionModelSetEvent.fire(selectionModel);
     bindSelectionModelEvents();
   }
@@ -94,7 +114,39 @@ public class EntityTableModel implements ObservableList<Entity> {
 
   public final void refresh() throws DatabaseException {
     final List<Entity> entities = connectionProvider.getConnection().selectMany(getSelectCriteria());
+    if (sortAfterRefresh) {
+      Collections.sort(entities, Entities.getComparator(getEntityID()));
+    }
     setAll(entities);
+  }
+
+  public boolean isSortAfterRefresh() {
+    return sortAfterRefresh;
+  }
+
+  public void setSortAfterRefresh(final boolean sortAfterRefresh) {
+    this.sortAfterRefresh = sortAfterRefresh;
+  }
+
+  public StateObserver getSelectionEmptyObserver() {
+    if (selectionModel == null) {
+      throw new IllegalStateException("No selection model has been set");
+    }
+    return selectionEmptyState.getObserver();
+  }
+
+  public StateObserver getSingleSelectionObserver() {
+    if (selectionModel == null) {
+      throw new IllegalStateException("No selection model has been set");
+    }
+    return singleSelectionState.getObserver();
+  }
+
+  public StateObserver getMultipleSelectionObserver() {
+    if (selectionModel == null) {
+      throw new IllegalStateException("No selection model has been set");
+    }
+    return multipleSelectionState.getObserver();
   }
 
   public void filterBy(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> entities) throws DatabaseException {
@@ -102,8 +154,7 @@ public class EntityTableModel implements ObservableList<Entity> {
     Objects.requireNonNull(entities);
     propertyCriteria.clear();
     if (!entities.isEmpty()) {
-      propertyCriteria.add(EntityCriteriaUtil.foreignKeyCriteria(
-              foreignKeyProperty, SearchType.LIKE, entities));
+      propertyCriteria.add(EntityCriteriaUtil.foreignKeyCriteria(foreignKeyProperty, SearchType.LIKE, entities));
     }
     refresh();
   }
@@ -287,30 +338,37 @@ public class EntityTableModel implements ObservableList<Entity> {
 
   protected EntitySelectCriteria getSelectCriteria() {
     if (propertyCriteria.isEmpty()) {
-      return EntityCriteriaUtil.selectCriteria(entityID);
+      return EntityCriteriaUtil.selectCriteria(entityID).setOrderByClause(Entities.getOrderByClause(entityID));
     }
 
     final CriteriaSet<Property.ColumnProperty> criteriaSet = CriteriaUtil.criteriaSet(
             Conjunction.AND, propertyCriteria);
 
-    return EntityCriteriaUtil.selectCriteria(entityID, criteriaSet);
+    return EntityCriteriaUtil.selectCriteria(entityID, criteriaSet).setOrderByClause(Entities.getOrderByClause(entityID));
   }
 
   private void bindEditModelEvents() {
-    editModel.addInsertListener(this::addAll);
-    editModel.addUpdateListener(updated -> replaceAll(entity -> {
-      final int index = updated.indexOf(entity);
-      if (index >= 0) {
-        return updated.get(index);
-      }
+    editModel.addInsertListener(insertEvent -> addAll(insertEvent.getInsertedEntities()));
+    editModel.addUpdateListener(updateEvent -> replaceEntitiesByKey(new HashMap<>(updateEvent.getUpdatedEntities())));
+    editModel.addDeleteListener(deleteEvent -> removeAll(deleteEvent.getDeletedEntities()));
+  }
 
-      return entity;
-    }));
-    editModel.addDeleteListener(this::removeAll);
+    /**
+   * Replace the entities identified by the Entity.Key map keys with their respective value
+   * @param entityMap the entities to replace mapped to the corresponding primary key found in this table model
+   */
+  private void replaceEntitiesByKey(final Map<Entity.Key, Entity> entityMap) {
+    list.replaceAll(entity -> {
+      final Entity toReplaceWith = entityMap.get(entity.getKey());
+      return toReplaceWith == null ? entity : toReplaceWith;
+    });
   }
 
   private void bindSelectionModelEvents() {
     selectionModel.getSelectedItems().addListener((ListChangeListener<Entity>) change -> {
+      selectionEmptyState.setActive(selectionModel.isEmpty());
+      singleSelectionState.setActive(this.selectionModel.getSelectedIndices().size() == 1);
+      multipleSelectionState.setActive(!selectionEmptyState.isActive() && !singleSelectionState.isActive());
       final List<Entity> selected = selectionModel.getSelectedItems();
       if (selected.isEmpty()) {
         editModel.setEntity(null);

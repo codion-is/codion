@@ -5,7 +5,7 @@ package org.jminor.javafx.framework.model;
 
 import org.junit.Test;
 
-public final class EntityTableModelTest {
+public final class EntityListModelTest {
 
   @Test
   public void dummyTest() {}

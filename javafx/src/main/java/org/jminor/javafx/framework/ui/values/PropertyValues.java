@@ -9,6 +9,7 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -27,6 +28,10 @@ import java.time.format.DateTimeParseException;
 public final class PropertyValues {
 
   private PropertyValues() {/**/}
+
+  public static Value<Boolean> booleanPropertyValue(final BooleanProperty booleanProperty) {
+    return new SelectedValue(booleanProperty);
+  }
 
   public static <V> Value<V> selectedItemValue(final SelectionModel<V> selectionModel) {
     return new SelectedItemValue<>(selectionModel);
@@ -245,6 +250,37 @@ public final class PropertyValues {
 
     protected final StringProperty getStringProperty() {
       return stringProperty;
+    }
+  }
+
+  private static class SelectedValue implements Value<Boolean> {
+
+    private final BooleanProperty booleanProperty;
+    private final Event<Boolean> changeEvent = Events.event();
+
+    public SelectedValue(final BooleanProperty booleanProperty) {
+      this.booleanProperty = booleanProperty;
+      this.booleanProperty.addListener(new ChangeListener<Boolean>() {
+        @Override
+        public void changed(final ObservableValue<? extends Boolean> observable, final Boolean oldValue, final Boolean newValue) {
+          changeEvent.fire(newValue);
+        }
+      });
+    }
+
+    @Override
+    public void set(final Boolean value) {
+      booleanProperty.set(value);
+    }
+
+    @Override
+    public Boolean get() {
+      return booleanProperty.get();
+    }
+
+    @Override
+    public EventObserver<Boolean> getObserver() {
+      return changeEvent.getObserver();
     }
   }
 

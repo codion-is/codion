@@ -3,6 +3,7 @@
  */
 package org.jminor.javafx.framework.ui;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventObserver;
@@ -13,12 +14,15 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.javafx.framework.model.EntityEditModel;
+import org.jminor.javafx.framework.model.EntityListModel;
 import org.jminor.javafx.framework.ui.values.PropertyValues;
 import org.jminor.javafx.framework.ui.values.StringValue;
 
 import javafx.application.Platform;
+import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
@@ -27,6 +31,8 @@ import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
+import javafx.scene.control.CheckBox;
+import javafx.scene.control.ComboBox;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
@@ -108,6 +114,31 @@ public final class FXUiUtil {
     alert.showAndWait();
   }
 
+  public static Value<Entity> createEntityValue(final Property.ForeignKeyProperty property, final ComboBox comboBox) {
+    return PropertyValues.selectedItemValue(comboBox.getSelectionModel());
+  }
+
+  public static CheckBox createCheckBox(final Property property) {
+    return createCheckBox(property, (StateObserver) null);
+  }
+
+  public static CheckBox createCheckBox(final Property property, final EntityEditModel editModel) {
+    return createCheckBox(property, editModel, null);
+  }
+
+  public static CheckBox createCheckBox(final Property property, final EntityEditModel editModel,
+                                        final StateObserver enabledState) {
+    final CheckBox checkBox = createCheckBox(property, enabledState);
+    final Value<Boolean> propertyValue = createBooleanValue(checkBox);
+    Values.link(editModel.createValue(property.getPropertyID()), propertyValue);
+
+    return checkBox;
+  }
+
+  public static Value<Boolean> createBooleanValue(final CheckBox checkBox) {
+    return PropertyValues.booleanPropertyValue(checkBox.selectedProperty());
+  }
+
   public static TextField createTextField(final Property property, final EntityEditModel editModel) {
     return createTextField(property, editModel, null);
   }
@@ -115,10 +146,14 @@ public final class FXUiUtil {
   public static TextField createTextField(final Property property, final EntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    final StringValue<String> propertyValue = PropertyValues.stringPropertyValue(textField.textProperty());
+    final StringValue<String> propertyValue = createStringValue(textField);
     Values.link(editModel.createValue(property.getPropertyID()), propertyValue);
 
     return textField;
+  }
+
+  public static StringValue<String> createStringValue(final TextField textField) {
+    return PropertyValues.stringPropertyValue(textField.textProperty());
   }
 
   public static TextField createLongField(final Property property, final EntityEditModel editModel) {
@@ -128,13 +163,18 @@ public final class FXUiUtil {
   public static TextField createLongField(final Property property, final EntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    final StringValue<Long> propertyValue = PropertyValues.longPropertyValue(textField.textProperty(),
-            (NumberFormat) property.getFormat());
-
-    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+    final StringValue<Long> propertyValue = createLongValue(property, textField);
     Values.link(editModel.createValue(property.getPropertyID()), propertyValue);
 
     return textField;
+  }
+
+  public static StringValue<Long> createLongValue(final Property property, final TextField textField) {
+    final StringValue<Long> propertyValue = PropertyValues.longPropertyValue(textField.textProperty(),
+            (NumberFormat) property.getFormat());
+    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+
+    return propertyValue;
   }
 
   public static TextField createIntegerField(final Property property, final EntityEditModel editModel) {
@@ -144,13 +184,18 @@ public final class FXUiUtil {
   public static TextField createIntegerField(final Property property, final EntityEditModel editModel,
                                              final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    final StringValue<Integer> propertyValue = PropertyValues.integerPropertyValue(textField.textProperty(),
-            (NumberFormat) property.getFormat());
-
-    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+    final StringValue<Integer> propertyValue = createIntegerValue(property, textField);
     Values.link(editModel.createValue(property.getPropertyID()), propertyValue);
 
     return textField;
+  }
+
+  public static StringValue<Integer> createIntegerValue(final Property property, final TextField textField) {
+    final StringValue<Integer> propertyValue = PropertyValues.integerPropertyValue(textField.textProperty(),
+            (NumberFormat) property.getFormat());
+    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+
+    return propertyValue;
   }
 
   public static TextField createDoubleField(final Property property, final EntityEditModel editModel) {
@@ -160,13 +205,18 @@ public final class FXUiUtil {
   public static TextField createDoubleField(final Property property, final EntityEditModel editModel,
                                             final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
-    final StringValue<Double> propertyValue = PropertyValues.doublePropertyValue(textField.textProperty(),
-            (NumberFormat) property.getFormat());
-
-    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+    final StringValue<Double> propertyValue = createDoubleValue(property, textField);
     Values.link(editModel.createValue(property.getPropertyID()), propertyValue);
 
     return textField;
+  }
+
+  public static StringValue<Double> createDoubleValue(final Property property, final TextField textField) {
+    final StringValue<Double> propertyValue = PropertyValues.doublePropertyValue(textField.textProperty(),
+            (NumberFormat) property.getFormat());
+    textField.textFormatterProperty().setValue(new TextFormatter(propertyValue.getConverter()));
+
+    return propertyValue;
   }
 
   public static DatePicker createDatePicker(final Property property, final EntityEditModel editModel) {
@@ -176,15 +226,28 @@ public final class FXUiUtil {
   public static DatePicker createDatePicker(final Property property, final EntityEditModel editModel,
                                             final StateObserver enabledState) {
     final DatePicker picker = createDatePicker(property, enabledState);
+    final StringValue<LocalDate> value = createDateValue(property, picker);
+
+    Values.link(new LocalDateValue(editModel.createValue(property.getPropertyID())), value);
+
+    return picker;
+  }
+
+  public static StringValue<LocalDate> createDateValue(final Property property, final DatePicker picker) {
     final SimpleDateFormat dateFormat = (SimpleDateFormat) property.getFormat();
     final StringValue<LocalDate> dateValue = PropertyValues.datePropertyValue(picker.getEditor().textProperty(), dateFormat);
 
     picker.setConverter(dateValue.getConverter());
     picker.setPromptText(dateFormat.toPattern().toLowerCase());
 
-    Values.link(new LocalDateValue(editModel.createValue(property.getPropertyID())), dateValue);
+    return dateValue;
+  }
 
-    return picker;
+  public static void link(final BooleanProperty property, final StateObserver enabledState) {
+    Objects.requireNonNull(property);
+    Objects.requireNonNull(enabledState);
+    property.setValue(enabledState.isActive());
+    enabledState.addInfoListener(property::setValue);
   }
 
   public static void linkToEnabledState(final Node node, final StateObserver enabledState) {
@@ -194,7 +257,35 @@ public final class FXUiUtil {
     enabledState.addInfoListener(active -> node.setDisable(!active));
   }
 
-  private static TextField createTextField(final Property property, final StateObserver enabledState) {
+  public static ComboBox<Entity> createComboBox(final Property.ForeignKeyProperty property,
+                                                final EntityEditModel editModel) {
+    final EntityListModel tableModel = new EntityListModel(property.getReferencedEntityID(), editModel.getConnectionProvider());
+    tableModel.setSortAfterRefresh(true);
+    final ComboBox<Entity> box = new ComboBox<>(tableModel);
+    Values.link(editModel.createValue(property.getPropertyID()), PropertyValues.selectedItemValue(box.getSelectionModel()));
+    try {
+      ((EntityListModel) box.getItems()).refresh();
+    }
+    catch (final DatabaseException e) {
+      throw new RuntimeException(e);
+    }
+    return box;
+  }
+
+  public static CheckBox createCheckBox(final Property property, final StateObserver enabledState) {
+    final CheckBox checkBox = new CheckBox();
+    if (enabledState != null) {
+      linkToEnabledState(checkBox, enabledState);
+    }
+
+    return checkBox;
+  }
+
+  public static TextField createTextField(final Property property) {
+    return createTextField(property, (StateObserver) null);
+  }
+
+  public static TextField createTextField(final Property property, final StateObserver enabledState) {
     final TextField textField = new TextField();
     textField.textProperty().addListener(new ValidationChangeListener(property, textField.textProperty()));
     if (enabledState != null) {
@@ -204,7 +295,11 @@ public final class FXUiUtil {
     return textField;
   }
 
-  private static DatePicker createDatePicker(final Property property, final StateObserver enabledState) {
+  public static DatePicker createDatePicker(final Property property) {
+    return createDatePicker(property, (StateObserver) null);
+  }
+
+  public static DatePicker createDatePicker(final Property property, final StateObserver enabledState) {
     final DatePicker picker = new DatePicker();
     if (enabledState != null) {
       linkToEnabledState(picker, enabledState);
