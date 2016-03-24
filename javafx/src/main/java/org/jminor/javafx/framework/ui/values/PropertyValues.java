@@ -6,6 +6,7 @@ package org.jminor.javafx.framework.ui.values;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
+import org.jminor.common.model.Item;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 
@@ -14,6 +15,7 @@ import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.SelectionModel;
+import javafx.scene.control.SingleSelectionModel;
 import javafx.util.StringConverter;
 
 import java.text.Format;
@@ -29,12 +31,16 @@ public final class PropertyValues {
 
   private PropertyValues() {/**/}
 
-  public static Value<Boolean> booleanPropertyValue(final BooleanProperty booleanProperty) {
-    return new SelectedValue(booleanProperty);
+  public static Value selectedItemValue(final SingleSelectionModel<Item> selectionModel) {
+    return new SelectedItemValue(selectionModel);
   }
 
-  public static <V> Value<V> selectedItemValue(final SelectionModel<V> selectionModel) {
-    return new SelectedItemValue<>(selectionModel);
+  public static Value<Boolean> booleanPropertyValue(final BooleanProperty booleanProperty) {
+    return new BooleanPropertyValue(booleanProperty);
+  }
+
+  public static <V> Value<V> selectedValue(final SingleSelectionModel<V> selectionModel) {
+    return new SelectedValue<>(selectionModel);
   }
 
   public static StringValue<String> stringPropertyValue(final StringProperty property) {
@@ -253,12 +259,12 @@ public final class PropertyValues {
     }
   }
 
-  private static class SelectedValue implements Value<Boolean> {
+  private static class BooleanPropertyValue implements Value<Boolean> {
 
     private final BooleanProperty booleanProperty;
     private final Event<Boolean> changeEvent = Events.event();
 
-    public SelectedValue(final BooleanProperty booleanProperty) {
+    public BooleanPropertyValue(final BooleanProperty booleanProperty) {
       this.booleanProperty = booleanProperty;
       this.booleanProperty.addListener(new ChangeListener<Boolean>() {
         @Override
@@ -284,12 +290,12 @@ public final class PropertyValues {
     }
   }
 
-  private static class SelectedItemValue<V> implements Value<V> {
+  private static class SelectedValue<V> implements Value<V> {
 
-    private final SelectionModel<V> selectionModel;
+    private final SingleSelectionModel<V> selectionModel;
     private final Event<V> changeEvent = Events.event();
 
-    public SelectedItemValue(final SelectionModel<V> selectionModel) {
+    public SelectedValue(final SingleSelectionModel<V> selectionModel) {
       this.selectionModel = selectionModel;
       this.selectionModel.selectedItemProperty().addListener(new ChangeListener<V>() {
         @Override
@@ -311,6 +317,37 @@ public final class PropertyValues {
 
     @Override
     public EventObserver<V> getObserver() {
+      return changeEvent.getObserver();
+    }
+  }
+
+  private static final class SelectedItemValue implements Value {
+
+    private final Event changeEvent = Events.event();
+    private final SelectionModel<Item> selectionModel;
+
+    public SelectedItemValue(final SelectionModel<Item> selectionModel) {
+      this.selectionModel = selectionModel;
+      selectionModel.selectedItemProperty().addListener(new ChangeListener<Item>() {
+        @Override
+        public void changed(final ObservableValue<? extends Item> observable, final Item oldValue, final Item newValue) {
+          changeEvent.fire(newValue.getItem());
+        }
+      });
+    }
+
+    @Override
+    public void set(final Object value) {
+      selectionModel.select(new Item(value));
+    }
+
+    @Override
+    public Object get() {
+      return selectionModel.getSelectedItem().getItem();
+    }
+
+    @Override
+    public EventObserver getObserver() {
       return changeEvent.getObserver();
     }
   }

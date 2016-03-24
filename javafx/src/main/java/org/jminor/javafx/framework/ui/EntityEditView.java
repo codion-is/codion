@@ -123,7 +123,7 @@ public abstract class EntityEditView extends BorderPane {
     final State existingAndModifiedState = States.aggregateState(Conjunction.AND,
             getModel().getEntityNewObserver().getReversedObserver(),
             getModel().getModifiedObserver());
-    FXUiUtil.linkToEnabledState(button, existingAndModifiedState.getObserver());
+    FXUiUtil.link(button.disableProperty(), existingAndModifiedState.getReversedObserver());
 
     return button;
   }
@@ -131,7 +131,7 @@ public abstract class EntityEditView extends BorderPane {
   private Button createDeleteButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.DELETE));
     button.setOnAction(event -> delete());
-    FXUiUtil.linkToEnabledState(button, getModel().getEntityNewObserver().getReversedObserver());
+    FXUiUtil.link(button.disableProperty(), getModel().getEntityNewObserver());
 
     return button;
   }

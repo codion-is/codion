@@ -13,8 +13,6 @@ import org.jminor.javafx.framework.model.EntityListModel;
 import org.jminor.javafx.framework.ui.values.PropertyValues;
 import org.jminor.javafx.framework.ui.values.StringValue;
 
-import com.sun.javafx.collections.ImmutableObservableList;
-import javafx.collections.ObservableList;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -56,10 +54,10 @@ public final class PropertyInputDialog extends Dialog<Object> {
 
   private Control createControl(final Property property, final EntityConnectionProvider connectionProvider) {
     if (property instanceof Property.ForeignKeyProperty) {
-      return new ComboBox<>(createComboBoxModel((Property.ForeignKeyProperty) property, connectionProvider));
+      return new ComboBox<>(createEntityComboBoxModel((Property.ForeignKeyProperty) property, connectionProvider));
     }
     if (property instanceof Property.ValueListProperty) {
-      return new ComboBox<>(createComboBoxModel((Property.ValueListProperty) property));
+      return new ComboBox<>(FXUiUtil.createValueListComboBoxModel((Property.ValueListProperty) property));
     }
 
     switch (property.getType()) {
@@ -82,11 +80,15 @@ public final class PropertyInputDialog extends Dialog<Object> {
 
   private Value createValue(final Property property, final Control control, final Object defaultValue) {
     if (property instanceof Property.ForeignKeyProperty) {
-      final Value<Entity> entityValue = PropertyValues.selectedItemValue(((ComboBox<Entity>) control).getSelectionModel());
+      final Value<Entity> entityValue = PropertyValues.selectedValue(((ComboBox<Entity>) control).getSelectionModel());
       entityValue.set((Entity) defaultValue);
       return entityValue;
     }
-    if (property instanceof Property.ValueListProperty) {}
+    if (property instanceof Property.ValueListProperty) {
+      final Value listValue = PropertyValues.selectedItemValue(((ComboBox<Item>) control).getSelectionModel());
+      listValue.set(defaultValue);
+      return listValue;
+    }
 
     switch (property.getType()) {
       case Types.BOOLEAN:
@@ -121,7 +123,7 @@ public final class PropertyInputDialog extends Dialog<Object> {
     }
   }
 
-  private EntityListModel createComboBoxModel(final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
+  private EntityListModel createEntityComboBoxModel(final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
     final EntityListModel tableModel = new EntityListModel(property.getReferencedEntityID(), connectionProvider);
     tableModel.setSortAfterRefresh(true);
     try {
@@ -134,10 +136,4 @@ public final class PropertyInputDialog extends Dialog<Object> {
     return tableModel;
   }
 
-  private ObservableList<Item> createComboBoxModel(final Property.ValueListProperty property) {
-    final ObservableList<Item> model = new ImmutableObservableList<>(property.getValues().toArray(new Item[property.getValues().size()]));
-    model.sort((o1, o2) -> o1.toString().compareTo(o2.toString()));
-
-    return model;
-  }
 }

@@ -7,6 +7,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Item;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
@@ -26,6 +27,9 @@ import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
+import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
@@ -115,7 +119,7 @@ public final class FXUiUtil {
   }
 
   public static Value<Entity> createEntityValue(final Property.ForeignKeyProperty property, final ComboBox comboBox) {
-    return PropertyValues.selectedItemValue(comboBox.getSelectionModel());
+    return PropertyValues.selectedValue(comboBox.getSelectionModel());
   }
 
   public static CheckBox createCheckBox(final Property property) {
@@ -243,18 +247,11 @@ public final class FXUiUtil {
     return dateValue;
   }
 
-  public static void link(final BooleanProperty property, final StateObserver enabledState) {
+  public static void link(final BooleanProperty property, final StateObserver stateObserver) {
     Objects.requireNonNull(property);
-    Objects.requireNonNull(enabledState);
-    property.setValue(enabledState.isActive());
-    enabledState.addInfoListener(property::setValue);
-  }
-
-  public static void linkToEnabledState(final Node node, final StateObserver enabledState) {
-    Objects.requireNonNull(node);
-    Objects.requireNonNull(enabledState);
-    node.setDisable(!enabledState.isActive());
-    enabledState.addInfoListener(active -> node.setDisable(!active));
+    Objects.requireNonNull(stateObserver);
+    property.setValue(stateObserver.isActive());
+    stateObserver.addInfoListener(property::setValue);
   }
 
   public static ComboBox<Entity> createComboBox(final Property.ForeignKeyProperty property,
@@ -262,7 +259,7 @@ public final class FXUiUtil {
     final EntityListModel tableModel = new EntityListModel(property.getReferencedEntityID(), editModel.getConnectionProvider());
     tableModel.setSortAfterRefresh(true);
     final ComboBox<Entity> box = new ComboBox<>(tableModel);
-    Values.link(editModel.createValue(property.getPropertyID()), PropertyValues.selectedItemValue(box.getSelectionModel()));
+    Values.link(editModel.createValue(property.getPropertyID()), PropertyValues.selectedValue(box.getSelectionModel()));
     try {
       ((EntityListModel) box.getItems()).refresh();
     }
@@ -272,13 +269,27 @@ public final class FXUiUtil {
     return box;
   }
 
+  public static ComboBox<Item> createItemComboBox(final Property.ValueListProperty property,
+                                                         final EntityEditModel editModel) {
+    final ComboBox<Item> comboBox = new ComboBox<>(createValueListComboBoxModel(property));
+    Values.link(editModel.createValue(property.getPropertyID()), PropertyValues.selectedItemValue(comboBox.getSelectionModel()));
+    return comboBox;
+  }
+
   public static CheckBox createCheckBox(final Property property, final StateObserver enabledState) {
     final CheckBox checkBox = new CheckBox();
     if (enabledState != null) {
-      linkToEnabledState(checkBox, enabledState);
+      link(checkBox.disableProperty(), enabledState.getReversedObserver());
     }
 
     return checkBox;
+  }
+
+  public static ObservableList<Item> createValueListComboBoxModel(final Property.ValueListProperty property) {
+    final SortedList<Item> model =  new SortedList<>(FXCollections.observableArrayList(property.getValues()),
+            (o1, o2) -> o1.toString().compareTo(o2.toString()));
+
+    return model;
   }
 
   public static TextField createTextField(final Property property) {
@@ -289,7 +300,7 @@ public final class FXUiUtil {
     final TextField textField = new TextField();
     textField.textProperty().addListener(new ValidationChangeListener(property, textField.textProperty()));
     if (enabledState != null) {
-      linkToEnabledState(textField, enabledState);
+      link(textField.disableProperty(), enabledState.getReversedObserver());
     }
 
     return textField;
@@ -302,7 +313,7 @@ public final class FXUiUtil {
   public static DatePicker createDatePicker(final Property property, final StateObserver enabledState) {
     final DatePicker picker = new DatePicker();
     if (enabledState != null) {
-      linkToEnabledState(picker, enabledState);
+      link(picker.disableProperty(), enabledState.getReversedObserver());
     }
 
     return picker;
