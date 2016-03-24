@@ -14,15 +14,19 @@ import org.jminor.common.model.States;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.valuemap.DefaultValueMapEditModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.domain.Property;
 
 import javafx.collections.ObservableList;
 
 import java.util.Collections;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.Objects;
 
 public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
@@ -35,6 +39,11 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
 
   private final Event<Entity> entitySetEvent = Events.event();
   private final State entityNewState = States.state(true);
+
+  /**
+   * Contains true if values should persist for the given property when the model is cleared
+   */
+  private final Map<String, Boolean> persistentValues = new HashMap<>();
 
   public EntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this(entityID, connectionProvider, Entities.getValidator(entityID));
@@ -166,12 +175,26 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
     deleteEvent.addInfoListener(listener);
   }
 
-  protected Entity getDefaultEntity() {
-    //todo
-    final Entity entity = Entities.entity(getEntityID());
-    entity.saveAll();
+  public final Entity getDefaultEntity() {
+    return EntityUtil.getEntity(getEntityID(), this::getDefaultValue);
+  }
 
-    return entity;
+  public Object getDefaultValue(final Property property) {
+    return isValuePersistent(property) ? getValue(property.getPropertyID()) : property.getDefaultValue();
+  }
+
+  public boolean isValuePersistent(final Property property) {
+    if (persistentValues.containsKey(property.getPropertyID())) {
+      return persistentValues.get(property.getPropertyID());
+    }
+
+    return property instanceof Property.ForeignKeyProperty &&
+            Configuration.getBooleanValue(Configuration.PERSIST_FOREIGN_KEY_VALUES);
+  }
+
+  public final EntityEditModel setValuePersistent(final String propertyID, final boolean persistValue) {
+    persistentValues.put(propertyID, persistValue);
+    return this;
   }
 
   protected List<Entity.Key> doInsert(final List<Entity> entities) throws DatabaseException {
@@ -193,8 +216,6 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
   private void bindEvents() {
     getValueObserver().addInfoListener(valueChange -> entityNewState.setActive(isEntityNew()));
     entitySetEvent.addInfoListener(activeEntity -> entityNewState.setActive(isEntityNew()));
-    entityNewState.addInfoListener(active -> System.out.println("Entity new: " + active));
-    getValueObserver().addInfoListener(valueChange -> System.out.println(valueChange + " | modified: " + getEntity().isModified()));
   }
 
   private static final class EntityValue<V> implements Value<V> {
