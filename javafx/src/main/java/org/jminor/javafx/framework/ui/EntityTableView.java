@@ -9,7 +9,7 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.javafx.framework.model.ObservableEntityList;
+import org.jminor.javafx.framework.model.EntityTableModel;
 
 import javafx.collections.transformation.FilteredList;
 import javafx.scene.control.ContextMenu;
@@ -21,13 +21,13 @@ import javafx.scene.input.KeyCode;
 
 public class EntityTableView extends TableView<Entity> {
 
-  private final ObservableEntityList entityList;
+  private final EntityTableModel tableModel;
   private final TextField filterText = new TextField();
 
-  public EntityTableView(final ObservableEntityList entityList) {
-    super(new FilteredList<>(entityList));
-    this.entityList = entityList;
-    this.entityList.setSelectionModel(getSelectionModel());
+  public EntityTableView(final EntityTableModel tableModel) {
+    super(new FilteredList<>(tableModel));
+    this.tableModel = tableModel;
+    this.tableModel.setSelectionModel(getSelectionModel());
     filterText.setPromptText(FrameworkMessages.get(FrameworkMessages.SEARCH));
     initializeColumns();
     addPopupMenu();
@@ -36,9 +36,9 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   public final void deleteSelected() {
-    if (EntityFXUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED))) {
+    if (EntityUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED))) {
       try {
-        entityList.deleteSelected();
+        tableModel.deleteSelected();
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);
@@ -46,8 +46,8 @@ public class EntityTableView extends TableView<Entity> {
     }
   }
 
-  public final ObservableEntityList getEntityList() {
-    return entityList;
+  public final EntityTableModel getTableModel() {
+    return tableModel;
   }
 
   public final TextField getFilterTextField() {
@@ -55,8 +55,8 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void initializeColumns() {
-    for (final Property property : Entities.getVisibleProperties(entityList.getEntityID())) {
-      getColumns().add(new EntityTableColumn(property, entityList.getCellValueFactory(property)));
+    for (final Property property : Entities.getVisibleProperties(tableModel.getEntityID())) {
+      getColumns().add(new EntityTableColumn(property, tableModel.getCellValueFactory(property)));
     }
   }
 

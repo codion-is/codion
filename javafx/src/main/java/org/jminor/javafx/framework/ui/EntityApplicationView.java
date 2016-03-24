@@ -20,9 +20,9 @@ import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class EntityApplication<Model extends EntityApplicationModel> extends Application {
+public abstract class EntityApplicationView<Model extends EntityApplicationModel> extends Application {
 
-  private static final Logger LOG = LoggerFactory.getLogger(EntityApplication.class);
+  private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationView.class);
 
   private static final String DEFAULT_ICON_FILE_NAME = "jminor_logo32.gif";
 
@@ -31,11 +31,11 @@ public abstract class EntityApplication<Model extends EntityApplicationModel> ex
 
   private Model model;
 
-  public EntityApplication(final String applicationTitle) {
+  public EntityApplicationView(final String applicationTitle) {
     this(applicationTitle, DEFAULT_ICON_FILE_NAME);
   }
 
-  public EntityApplication(final String applicationTitle, final String iconFileName) {
+  public EntityApplicationView(final String applicationTitle, final String iconFileName) {
     this.applicationTitle = applicationTitle;
     this.iconFileName = iconFileName;
     Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> handleException(throwable));
@@ -53,7 +53,7 @@ public abstract class EntityApplication<Model extends EntityApplicationModel> ex
       connectionProvider.getConnection();//throws exception if the server is not reachable or credentials are incorrect
       this.model = initializeApplicationModel(connectionProvider);
       stage.setTitle(applicationTitle);
-      stage.getIcons().add(new Image(EntityApplication.class.getResourceAsStream(iconFileName)));
+      stage.getIcons().add(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName)));
       stage.setScene(initializeApplicationScene(stage));
 
       stage.show();
@@ -79,8 +79,8 @@ public abstract class EntityApplication<Model extends EntityApplicationModel> ex
   protected final User showLoginPanel() {
     final String defaultUserName = Configuration.getValue(Configuration.USERNAME_PREFIX) + System.getProperty("user.name");
 
-    return EntityFXUtil.showLoginDialog(applicationTitle, defaultUserName,
-            new ImageView(new Image(EntityApplication.class.getResourceAsStream(iconFileName))));
+    return EntityUiUtil.showLoginDialog(applicationTitle, defaultUserName,
+            new ImageView(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName))));
   }
 
   protected abstract Scene initializeApplicationScene(final Stage primaryStage) throws DatabaseException;
@@ -91,6 +91,6 @@ public abstract class EntityApplication<Model extends EntityApplicationModel> ex
     if (throwable instanceof CancelException) {
       return;
     }
-    EntityFXUtil.showExceptionDialog(throwable);
+    EntityUiUtil.showExceptionDialog(throwable);
   }
 }

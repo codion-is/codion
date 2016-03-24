@@ -13,7 +13,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.EntityEditModel;
-import org.jminor.javafx.framework.model.ObservableEntityList;
+import org.jminor.javafx.framework.model.EntityTableModel;
 import org.jminor.javafx.framework.ui.values.PropertyValues;
 
 import javafx.scene.Node;
@@ -75,7 +75,7 @@ public abstract class EntityEditView extends BorderPane {
     final ComboBox<Entity> box = new ComboBox<>(editModel.createForeignKeyList(propertyID));
     Values.link(editModel.createValue(propertyID), PropertyValues.selectedItemValue(box.getSelectionModel()));
     try {
-      ((ObservableEntityList) box.getItems()).refresh();
+      ((EntityTableModel) box.getItems()).refresh();
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -92,16 +92,16 @@ public abstract class EntityEditView extends BorderPane {
     final TextField textField;
     switch (property.getType()) {
       case Types.INTEGER:
-        textField = EntityFXUtil.createIntegerField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+        textField = EntityUiUtil.createIntegerField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
         break;
       case Types.BIGINT:
-        textField = EntityFXUtil.createLongField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+        textField = EntityUiUtil.createLongField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
         break;
       case Types.DOUBLE:
-        textField = EntityFXUtil.createDoubleField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+        textField = EntityUiUtil.createDoubleField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
         break;
       case Types.VARCHAR:
-        textField = EntityFXUtil.createTextField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+        textField = EntityUiUtil.createTextField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
         break;
       default:
         throw new IllegalArgumentException("Text field type for property: " + propertyID + " is not defined");
@@ -113,7 +113,7 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   protected final DatePicker createDatePicker(final String propertyID) {
-    return EntityFXUtil.createDatePicker(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+    return EntityUiUtil.createDatePicker(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
   }
 
   private void initializeUI() {
@@ -133,7 +133,7 @@ public abstract class EntityEditView extends BorderPane {
     final State existingAndModifiedState = States.aggregateState(Conjunction.AND,
             getModel().getEntityNewObserver().getReversedObserver(),
             getModel().getModifiedObserver());
-    EntityFXUtil.linkToEnabledState(button, existingAndModifiedState.getObserver());
+    EntityUiUtil.linkToEnabledState(button, existingAndModifiedState.getObserver());
 
     return button;
   }
@@ -141,7 +141,7 @@ public abstract class EntityEditView extends BorderPane {
   private Button createDeleteButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.DELETE));
     button.setOnAction(event -> delete());
-    EntityFXUtil.linkToEnabledState(button, getModel().getEntityNewObserver().getReversedObserver());
+    EntityUiUtil.linkToEnabledState(button, getModel().getEntityNewObserver().getReversedObserver());
 
     return button;
   }
@@ -164,7 +164,7 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private void update() {
-    if (EntityFXUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE))) {
+    if (EntityUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE))) {
       try {
         editModel.update();
       }
@@ -175,7 +175,7 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private void delete() {
-    if (EntityFXUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_ENTITY))) {
+    if (EntityUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_ENTITY))) {
       try {
         editModel.delete();
       }

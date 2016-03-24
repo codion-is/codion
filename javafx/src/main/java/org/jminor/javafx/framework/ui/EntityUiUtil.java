@@ -51,7 +51,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
-public final class EntityFXUtil {
+public final class EntityUiUtil {
 
   public static boolean confirm(final String message) {
     return confirm(null, null, message);

@@ -36,7 +36,7 @@ import java.util.List;
 import java.util.ListIterator;
 import java.util.Objects;
 
-public class ObservableEntityList implements ObservableList<Entity> {
+public class EntityTableModel implements ObservableList<Entity> {
 
   private final String entityID;
   private final EntityConnectionProvider connectionProvider;
@@ -50,7 +50,7 @@ public class ObservableEntityList implements ObservableList<Entity> {
 
   private EntitySelectCriteria selectCriteria;
 
-  public ObservableEntityList(final String entityID, final EntityConnectionProvider connectionProvider) {
+  public EntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
   }

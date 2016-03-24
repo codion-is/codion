@@ -7,14 +7,14 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.javafx.framework.model.EntityModel;
-import org.jminor.javafx.framework.ui.EntityApplication;
+import org.jminor.javafx.framework.ui.EntityApplicationView;
 import org.jminor.javafx.framework.ui.EntityTableView;
 import org.jminor.javafx.framework.ui.EntityView;
 
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public final class EmpDeptFX extends EntityApplication<EmpDeptFXModel> {
+public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
 
   static {
     EmpDept.init();
@@ -34,14 +34,14 @@ public final class EmpDeptFX extends EntityApplication<EmpDeptFXModel> {
     final EntityModel departmentModel = getModel().getEntityModel(EmpDept.T_DEPARTMENT);
     final EntityView departmentView = new EntityView(departmentModel,
             new DepartmentEditView(departmentModel.getEditModel()),
-            new EntityTableView(departmentModel.getEntityList()));
-    departmentModel.getEntityList().refresh();
+            new EntityTableView(departmentModel.getTableModell()));
+    departmentModel.getTableModell().refresh();
 
     final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
     final EntityView employeeView = new EntityView(employeeModel,
             new EmployeeEditView(employeeModel.getEditModel()),
-            new EntityTableView(employeeModel.getEntityList()));
-    employeeModel.getEntityList().refresh();
+            new EntityTableView(employeeModel.getTableModell()));
+    employeeModel.getTableModell().refresh();
 
     departmentView.addDetailView(employeeView);
 

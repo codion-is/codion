@@ -18,16 +18,16 @@ import java.util.Objects;
 public class EntityModel {
 
   private final EntityEditModel editModel;
-  private final ObservableEntityList entityList;
+  private final EntityTableModel tableModell;
 
   private final List<EntityModel> detailModels = new ArrayList<>();
 
-  public EntityModel(final EntityEditModel editModel, final ObservableEntityList entityList) {
+  public EntityModel(final EntityEditModel editModel, final EntityTableModel tableModel) {
     Objects.requireNonNull(editModel);
     this.editModel = editModel;
-    this.entityList = entityList;
-    if (this.entityList != null) {
-      this.entityList.setEditModel(editModel);
+    this.tableModell = tableModel;
+    if (this.tableModell != null) {
+      this.tableModell.setEditModel(editModel);
     }
     bindEvents();
   }
@@ -40,8 +40,8 @@ public class EntityModel {
     return editModel;
   }
 
-  public final ObservableEntityList getEntityList() {
-    return entityList;
+  public final EntityTableModel getTableModell() {
+    return tableModell;
   }
 
   public final void addDetailModel(final EntityModel entityModel) {
@@ -72,7 +72,7 @@ public class EntityModel {
     editModel.addInsertListener(this::handleInsert);
     editModel.addUpdateListener(this::handleUpdate);
     editModel.addDeleteListener(this::handleDelete);
-    if (entityList != null) {
+    if (tableModell != null) {
       editModel.addEntitySetListener(entity -> {
         try {
           for (final EntityModel detailModel : detailModels) {
@@ -84,12 +84,12 @@ public class EntityModel {
         }
       });
     }
-    if (entityList != null) {
-      entityList.addSelectionModelSetListener(selectionModel ->
+    if (tableModell != null) {
+      tableModell.addSelectionModelSetListener(selectionModel ->
               selectionModel.getSelectedItems().addListener((ListChangeListener<Entity>) c -> {
         try {
           for (final EntityModel detailModel : detailModels) {
-            detailModel.initialize(getEntityID(), entityList.getSelectionModel().getSelectedItems());
+            detailModel.initialize(getEntityID(), tableModell.getSelectionModel().getSelectedItems());
           }
         }
         catch (final DatabaseException e) {
@@ -103,23 +103,23 @@ public class EntityModel {
     final List<Property.ForeignKeyProperty> foreignKeyProperties =
             Entities.getForeignKeyProperties(getEntityID(), masterEntityID);
     editModel.setValue(foreignKeyProperties.get(0).getPropertyID(), foreignKeyEntities.get(0));
-    entityList.filterBy(foreignKeyProperties.get(0), foreignKeyEntities);
+    tableModell.filterBy(foreignKeyProperties.get(0), foreignKeyEntities);
   }
 
   private void handleInsert(final List<Entity> inserted) {
-    entityList.addAll(0, inserted);
+    tableModell.addAll(0, inserted);
   }
 
   private void handleUpdate(final List<Entity> updated) {
     for (final Entity entity : updated) {
-      final int index = entityList.indexOf(entity);
+      final int index = tableModell.indexOf(entity);
       if (index != -1) {
-        entityList.set(index, entity);
+        tableModell.set(index, entity);
       }
     }
   }
 
   private void handleDelete(final List<Entity> deleted) {
-    entityList.removeAll(deleted);
+    tableModell.removeAll(deleted);
   }
 }

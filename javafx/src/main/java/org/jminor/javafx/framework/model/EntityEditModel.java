@@ -138,7 +138,7 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
   }
 
   public ObservableList<Entity> createForeignKeyList(final String propertyID) {
-    return new ObservableEntityList(Entities.getForeignKeyProperty(getEntity().getEntityID(),
+    return new EntityTableModel(Entities.getForeignKeyProperty(getEntity().getEntityID(),
             propertyID).getReferencedEntityID(), connectionProvider);
   }
 
