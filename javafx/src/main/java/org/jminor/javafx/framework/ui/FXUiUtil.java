@@ -118,7 +118,7 @@ public final class FXUiUtil {
     alert.showAndWait();
   }
 
-  public static Value<Entity> createEntityValue(final Property.ForeignKeyProperty property, final ComboBox comboBox) {
+  public static Value<Entity> createEntityValue(final Property.ForeignKeyProperty property, final ComboBox<Entity> comboBox) {
     return PropertyValues.selectedValue(comboBox.getSelectionModel());
   }
 

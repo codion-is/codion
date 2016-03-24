@@ -4,6 +4,7 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.model.Conjunction;
+import org.jminor.common.model.Item;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
 import org.jminor.framework.domain.Entities;
@@ -70,6 +71,16 @@ public abstract class EntityEditView extends BorderPane {
     checkControl(propertyID);
     final ComboBox<Entity> box = FXUiUtil.createComboBox(Entities.getForeignKeyProperty(getModel().getEntityID(),
             propertyID), getModel());
+
+    controls.put(propertyID, box);
+
+    return box;
+  }
+
+  protected final ComboBox<Item> createItemComboBox(final String propertyID) {
+    checkControl(propertyID);
+    final ComboBox<Item> box = FXUiUtil.createItemComboBox((Property.ValueListProperty)
+            Entities.getProperty(getModel().getEntityID(), propertyID), getModel());
 
     controls.put(propertyID, box);
 
