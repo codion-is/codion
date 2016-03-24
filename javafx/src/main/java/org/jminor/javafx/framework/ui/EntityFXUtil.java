@@ -3,10 +3,13 @@
  */
 package org.jminor.javafx.framework.ui;
 
+import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
@@ -19,13 +22,24 @@ import javafx.application.Platform;
 import javafx.beans.property.StringProperty;
 import javafx.beans.value.ChangeListener;
 import javafx.beans.value.ObservableValue;
+import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
+import javafx.scene.control.PasswordField;
+import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.image.ImageView;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Priority;
 
+import java.io.PrintWriter;
+import java.io.StringWriter;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -35,12 +49,55 @@ import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
 import java.util.Objects;
+import java.util.Optional;
 
 public final class EntityFXUtil {
 
   public static boolean confirm(final String message) {
+    return confirm(null, null, message);
+  }
+
+  public static boolean confirm(final String headerText, final String message) {
+    return confirm(null, headerText, message);
+  }
+
+  public static boolean confirm(final String title, final String headerText, final String message) {
+    Objects.requireNonNull(message);
     final Alert alert = new Alert(Alert.AlertType.CONFIRMATION, message, ButtonType.OK, ButtonType.CANCEL);
+    if (title != null) {
+      alert.setTitle(title);
+    }
+    if (headerText != null) {
+      alert.setHeaderText(headerText);
+    }
     return alert.showAndWait().get() == ButtonType.OK;
+  }
+
+  public static void showExceptionDialog(final Throwable exception) {
+    final Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.setTitle(Messages.get(Messages.EXCEPTION));
+    alert.setHeaderText(exception.getClass().getSimpleName());
+    alert.setContentText(exception.getMessage());
+
+    final StringWriter stringWriter = new StringWriter();
+    exception.printStackTrace(new PrintWriter(stringWriter));
+
+    final TextArea stackTraceArea = new TextArea(stringWriter.toString());
+    stackTraceArea.setEditable(false);
+    stackTraceArea.setWrapText(true);
+
+    stackTraceArea.setMaxWidth(Double.MAX_VALUE);
+    stackTraceArea.setMaxHeight(Double.MAX_VALUE);
+    GridPane.setVgrow(stackTraceArea, Priority.ALWAYS);
+    GridPane.setHgrow(stackTraceArea, Priority.ALWAYS);
+
+    final GridPane expandableContent = new GridPane();
+    expandableContent.setMaxWidth(Double.MAX_VALUE);
+    expandableContent.add(stackTraceArea, 0, 1);
+
+    alert.getDialogPane().setExpandableContent(expandableContent);
+
+    alert.showAndWait();
   }
 
   public static TextField createTextField(final Property property, final EntityEditModel editModel) {
@@ -61,7 +118,7 @@ public final class EntityFXUtil {
   }
 
   public static TextField createLongField(final Property property, final EntityEditModel editModel,
-                                             final StateObserver enabledState) {
+                                          final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
     final StringValue<Long> propertyValue = PropertyValues.longPropertyValue(textField.textProperty(),
             (NumberFormat) property.getFormat());
@@ -146,6 +203,60 @@ public final class EntityFXUtil {
     }
 
     return picker;
+  }
+
+  public static User showLoginDialog(final String applicationTitle, final String defaultUserName, final ImageView icon) {
+    final Dialog<User> dialog = new Dialog<>();
+    dialog.setTitle(Messages.get(Messages.LOGIN));
+    dialog.setHeaderText(applicationTitle);
+    dialog.setGraphic(icon);
+
+    final ButtonType loginButtonType = new ButtonType(Messages.get(Messages.OK), ButtonBar.ButtonData.OK_DONE);
+    dialog.getDialogPane().getButtonTypes().addAll(loginButtonType, ButtonType.CANCEL);
+
+    final GridPane grid = new GridPane();
+    grid.setHgap(10);
+    grid.setVgap(10);
+    grid.setPadding(new Insets(20, 150, 10, 10));
+
+    final TextField username = new TextField(defaultUserName == null ? "" : defaultUserName);
+    username.setPromptText(Messages.get(Messages.USERNAME));
+    final PasswordField password = new PasswordField();
+    password.setPromptText(Messages.get(Messages.PASSWORD));
+
+    grid.add(new Label(Messages.get(Messages.USERNAME)), 0, 0);
+    grid.add(username, 1, 0);
+    grid.add(new Label(Messages.get(Messages.PASSWORD)), 0, 1);
+    grid.add(password, 1, 1);
+
+    final Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
+    loginButton.setDisable(true);
+
+    final ChangeListener<String> usernamePasswordListener = (observable, oldValue, newValue) ->
+            loginButton.setDisable(password.textProperty().getValue().trim().isEmpty() ||
+                    username.textProperty().getValue().trim().isEmpty());
+
+    password.textProperty().addListener(usernamePasswordListener);
+    username.textProperty().addListener(usernamePasswordListener);
+
+    dialog.getDialogPane().setContent(grid);
+
+    Platform.runLater(password::requestFocus);
+
+    dialog.setResultConverter(dialogButton -> {
+      if (dialogButton == loginButtonType) {
+        return new User(username.getText(), password.getText());
+      }
+
+      return null;
+    });
+
+    final Optional<User> result = dialog.showAndWait();
+    if (result.isPresent()) {
+      return result.get();
+    }
+
+    throw new CancelException();
   }
 
   private static final class LocalDateValue implements Value<LocalDate> {

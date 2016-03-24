@@ -17,7 +17,6 @@ import java.util.Objects;
 
 public class EntityModel {
 
-  private final String entityID;
   private final EntityEditModel editModel;
   private final ObservableEntityList entityList;
 
@@ -27,15 +26,46 @@ public class EntityModel {
     Objects.requireNonNull(editModel);
     this.editModel = editModel;
     this.entityList = entityList;
-    if (entityList != null && editModel != null) {
-      entityList.setEditModel(editModel);
+    if (this.entityList != null) {
+      this.entityList.setEditModel(editModel);
     }
-    this.entityID = editModel.getEntityID();
     bindEvents();
+  }
+
+  public final String getEntityID() {
+    return editModel.getEntityID();
+  }
+
+  public final EntityEditModel getEditModel() {
+    return editModel;
+  }
+
+  public final ObservableEntityList getEntityList() {
+    return entityList;
   }
 
   public final void addDetailModel(final EntityModel entityModel) {
     detailModels.add(entityModel);
+  }
+
+  public final EntityModel getDetailModel(final String entityID) {
+    for (final EntityModel model : detailModels) {
+      if (model.getEntityID().equals(entityID)) {
+        return model;
+      }
+    }
+
+    throw new IllegalArgumentException("Detail model with entityID '" + entityID + "' not found");
+  }
+
+  public final EntityModel getDetailModel(final Class<? extends EntityModel> detailModelClass) {
+    for (final EntityModel model : detailModels) {
+      if (model.getClass().equals(detailModelClass)) {
+        return model;
+      }
+    }
+
+    throw new IllegalArgumentException("Detail model of class '" + detailModelClass + "' not found");
   }
 
   private void bindEvents() {
@@ -91,17 +121,5 @@ public class EntityModel {
 
   private void handleDelete(final List<Entity> deleted) {
     entityList.removeAll(deleted);
-  }
-
-  public String getEntityID() {
-    return entityID;
-  }
-
-  public EntityEditModel getEditModel() {
-    return editModel;
-  }
-
-  public ObservableEntityList getEntityList() {
-    return entityList;
   }
 }
