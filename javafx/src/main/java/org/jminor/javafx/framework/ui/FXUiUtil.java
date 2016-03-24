@@ -247,6 +247,10 @@ public final class FXUiUtil {
     return dateValue;
   }
 
+  public static Value<LocalDate> createLocalDateValue(final Value<Date> dateValue) {
+    return new LocalDateValue(dateValue);
+  }
+
   public static void link(final BooleanProperty property, final StateObserver stateObserver) {
     Objects.requireNonNull(property);
     Objects.requireNonNull(stateObserver);
@@ -377,30 +381,30 @@ public final class FXUiUtil {
 
   private static final class LocalDateValue implements Value<LocalDate> {
 
-    private final Value modelValue;
+    private final Value dateValue;
 
-    private LocalDateValue(final Value<Date> modelValue) {
-      this.modelValue = modelValue;
+    private LocalDateValue(final Value<Date> dateValue) {
+      this.dateValue = dateValue;
     }
 
     @Override
     public void set(final LocalDate value) {
       if (value == null) {
-        modelValue.set(null);
+        dateValue.set(null);
       }
       else {
-        modelValue.set(Date.from(value.atStartOfDay(ZoneId.systemDefault()).toInstant()));
+        dateValue.set(Date.from(value.atStartOfDay(ZoneId.systemDefault()).toInstant()));
       }
     }
 
     @Override
     public LocalDate get() {
-      return toLocalDate((Date) modelValue.get());
+      return toLocalDate((Date) dateValue.get());
     }
 
     @Override
     public EventObserver<LocalDate> getObserver() {
-      return modelValue.getObserver();
+      return dateValue.getObserver();
     }
 
     private static LocalDate toLocalDate(final Date date) {

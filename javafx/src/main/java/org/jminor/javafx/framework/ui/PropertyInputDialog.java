@@ -6,6 +6,7 @@ package org.jminor.javafx.framework.ui;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.Value;
+import org.jminor.common.model.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -20,10 +21,9 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
-import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
-import javafx.scene.layout.GridPane;
 
+import java.sql.Date;
 import java.sql.Types;
 import java.time.LocalDate;
 
@@ -31,6 +31,7 @@ public final class PropertyInputDialog extends Dialog<Object> {
 
   public PropertyInputDialog(final Property property, final Object defaultValue,
                              final EntityConnectionProvider connectionProvider) {
+    setTitle(property.getCaption());
     final Control control = createControl(property, connectionProvider);
     final Value value = createValue(property, control, defaultValue);
     initializeUI(property, control);
@@ -41,15 +42,8 @@ public final class PropertyInputDialog extends Dialog<Object> {
   }
 
   private void initializeUI(final Property property, final Control control) {
-    final Label label = new Label(property.getCaption());
-
-    final GridPane grid = new GridPane();
-    grid.add(label, 0, 0);
-    grid.add(control, 1, 0);
-
     getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-
-    getDialogPane().setContent(grid);
+    getDialogPane().setContent(control);
   }
 
   private Control createControl(final Property property, final EntityConnectionProvider connectionProvider) {
@@ -98,8 +92,9 @@ public final class PropertyInputDialog extends Dialog<Object> {
       case Types.DATE:
       case Types.TIMESTAMP:
       case Types.TIME:
-        final StringValue<LocalDate> dateValue = FXUiUtil.createDateValue(property, (DatePicker) control);
-        dateValue.set((LocalDate) defaultValue);
+        final Value<java.util.Date> dateValue = Values.value((Date) defaultValue);
+        final StringValue<LocalDate> value = FXUiUtil.createDateValue(property, (DatePicker) control);
+        Values.link(FXUiUtil.createLocalDateValue(dateValue), value);
         return dateValue;
       case Types.DOUBLE:
         final StringValue<Double> doubleValue = FXUiUtil.createDoubleValue(property, (TextField) control);
@@ -135,5 +130,4 @@ public final class PropertyInputDialog extends Dialog<Object> {
 
     return tableModel;
   }
-
 }
