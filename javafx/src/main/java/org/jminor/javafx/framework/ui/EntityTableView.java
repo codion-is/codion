@@ -30,13 +30,13 @@ import java.util.Optional;
 
 public class EntityTableView extends TableView<Entity> {
 
-  private final EntityListModel tableModel;
+  private final EntityListModel listModel;
   private final TextField filterText = new TextField();
 
-  public EntityTableView(final EntityListModel tableModel) {
-    super(new FilteredList<>(tableModel));
-    this.tableModel = tableModel;
-    this.tableModel.setSelectionModel(getSelectionModel());
+  public EntityTableView(final EntityListModel listModel) {
+    super(new FilteredList<>(listModel));
+    this.listModel = listModel;
+    this.listModel.setSelectionModel(getSelectionModel());
     filterText.setPromptText(FrameworkMessages.get(FrameworkMessages.SEARCH));
     initializeColumns();
     addPopupMenu();
@@ -47,7 +47,7 @@ public class EntityTableView extends TableView<Entity> {
   public final void deleteSelected() {
     if (FXUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED))) {
       try {
-        tableModel.deleteSelected();
+        listModel.deleteSelected();
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);
@@ -55,8 +55,8 @@ public class EntityTableView extends TableView<Entity> {
     }
   }
 
-  public final EntityListModel getTableModel() {
-    return tableModel;
+  public final EntityListModel getListModel() {
+    return listModel;
   }
 
   public final TextField getFilterTextField() {
@@ -68,8 +68,8 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void initializeColumns() {
-    for (final Property property : Entities.getVisibleProperties(tableModel.getEntityID())) {
-      getColumns().add(new EntityTableColumn(property, tableModel.getCellValueFactory(property)));
+    for (final Property property : Entities.getVisibleProperties(listModel.getEntityID())) {
+      getColumns().add(new EntityTableColumn(property, listModel.getCellValueFactory(property)));
     }
   }
 
@@ -80,7 +80,7 @@ public class EntityTableView extends TableView<Entity> {
     final MenuItem refresh = new MenuItem(FrameworkMessages.get(FrameworkMessages.REFRESH));
     refresh.setOnAction(actionEvent -> {
       try {
-        tableModel.refresh();
+        listModel.refresh();
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);
@@ -91,9 +91,9 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private Menu createUpdateSelectedItem() {
-    final StateObserver disabled = getTableModel().getSelectionEmptyObserver();
+    final StateObserver disabled = getListModel().getSelectionEmptyObserver();
     final Menu updateSelected = new Menu(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED));
-    EntityUtil.getUpdatableProperties(getTableModel().getEntityID()).stream().filter(
+    EntityUtil.getUpdatableProperties(getListModel().getEntityID()).stream().filter(
             this::includeUpdateSelectedProperty).forEach(property -> {
       final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
       final MenuItem updateProperty = new MenuItem(caption);
@@ -106,18 +106,18 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void updateSelectedEntities(final Property property) {
-    final List<Entity> selectedEntities = EntityUtil.copyEntities(getTableModel().getSelectionModel().getSelectedItems());
+    final List<Entity> selectedEntities = EntityUtil.copyEntities(getListModel().getSelectionModel().getSelectedItems());
 
     final Collection values = EntityUtil.getDistinctValues(property.getPropertyID(), selectedEntities);
     final Object defaultValue = values.size() == 1 ? values.iterator().next() : null;
 
-    final PropertyInputDialog inputDialog = new PropertyInputDialog(property, defaultValue, getTableModel().getConnectionProvider());
+    final PropertyInputDialog inputDialog = new PropertyInputDialog(property, defaultValue, getListModel().getConnectionProvider());
 
     final Optional<Object> value = inputDialog.showAndWait();
     try {
       if (value.isPresent()) {
         EntityUtil.put(property.getPropertyID(), value.get(), selectedEntities);
-        getTableModel().getEditModel().update(selectedEntities);
+        getListModel().getEditModel().update(selectedEntities);
       }
     }
     catch (final DatabaseException e) {
