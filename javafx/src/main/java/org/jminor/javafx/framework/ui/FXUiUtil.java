@@ -29,6 +29,7 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
 import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
@@ -51,7 +52,7 @@ import java.util.Date;
 import java.util.Objects;
 import java.util.Optional;
 
-public final class EntityUiUtil {
+public final class FXUiUtil {
 
   public static boolean confirm(final String message) {
     return confirm(null, null, message);
@@ -95,7 +96,14 @@ public final class EntityUiUtil {
     expandableContent.setMaxWidth(Double.MAX_VALUE);
     expandableContent.add(stackTraceArea, 0, 1);
 
-    alert.getDialogPane().setExpandableContent(expandableContent);
+    final DialogPane dialogPane = alert.getDialogPane();
+    dialogPane.setExpandableContent(expandableContent);
+    dialogPane.expandedProperty().addListener(value -> {
+      Platform.runLater(() -> {
+        dialogPane.requestLayout();
+        dialogPane.getScene().getWindow().sizeToScene();
+      });
+    });
 
     alert.showAndWait();
   }
@@ -205,7 +213,7 @@ public final class EntityUiUtil {
     return picker;
   }
 
-  public static User showLoginDialog(final String applicationTitle, final String defaultUserName, final ImageView icon) {
+  public static User showLoginDialog(final String applicationTitle, final User defaultUser, final ImageView icon) {
     final Dialog<User> dialog = new Dialog<>();
     dialog.setTitle(Messages.get(Messages.LOGIN));
     dialog.setHeaderText(applicationTitle);
@@ -219,9 +227,10 @@ public final class EntityUiUtil {
     grid.setVgap(10);
     grid.setPadding(new Insets(20, 150, 10, 10));
 
-    final TextField username = new TextField(defaultUserName == null ? "" : defaultUserName);
+    final TextField username = new TextField(defaultUser == null ? "" : defaultUser.getUsername());
     username.setPromptText(Messages.get(Messages.USERNAME));
     final PasswordField password = new PasswordField();
+    password.setText(defaultUser == null || defaultUser.getPassword() == null ? "" : defaultUser.getPassword());
     password.setPromptText(Messages.get(Messages.PASSWORD));
 
     grid.add(new Label(Messages.get(Messages.USERNAME)), 0, 0);
@@ -230,7 +239,8 @@ public final class EntityUiUtil {
     grid.add(password, 1, 1);
 
     final Node loginButton = dialog.getDialogPane().lookupButton(loginButtonType);
-    loginButton.setDisable(true);
+    loginButton.setDisable(password.textProperty().getValue().trim().isEmpty() ||
+            username.textProperty().getValue().trim().isEmpty());
 
     final ChangeListener<String> usernamePasswordListener = (observable, oldValue, newValue) ->
             loginButton.setDisable(password.textProperty().getValue().trim().isEmpty() ||

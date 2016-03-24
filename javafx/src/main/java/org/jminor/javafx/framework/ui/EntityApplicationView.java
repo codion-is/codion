@@ -38,7 +38,7 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
   public EntityApplicationView(final String applicationTitle, final String iconFileName) {
     this.applicationTitle = applicationTitle;
     this.iconFileName = iconFileName;
-    Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> handleException(throwable));
+    Thread.currentThread().setUncaughtExceptionHandler((thread, throwable) -> handleException((Exception) throwable));
   }
 
   public final Model getModel() {
@@ -59,27 +59,35 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
       stage.show();
     }
     catch (final Exception e) {
-      handleException(Util.unwrapAndLog(e, RuntimeException.class, LOG));
+      handleException(e);
       stage.close();
     }
-  }
-
-  protected User getApplicationUser() {
-    return showLoginPanel();
   }
 
   protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeID) {
     return EntityConnectionProviders.connectionProvider(user, clientTypeID);
   }
 
+  protected User getDefaultUser() {
+    final String defaultUserName = Configuration.getValue(Configuration.USERNAME_PREFIX) + System.getProperty("user.name");
+
+    return new User(defaultUserName, "");
+  }
+
   protected String getApplicationIdentifier() {
     return getClass().getName();
   }
 
-  protected final User showLoginPanel() {
-    final String defaultUserName = Configuration.getValue(Configuration.USERNAME_PREFIX) + System.getProperty("user.name");
+  protected final User getApplicationUser() {
+    if (Configuration.getBooleanValue(Configuration.AUTHENTICATION_REQUIRED)) {
+      return showLoginPanel(getDefaultUser());
+    }
 
-    return EntityUiUtil.showLoginDialog(applicationTitle, defaultUserName,
+    return getDefaultUser();
+  }
+
+  protected final User showLoginPanel(final User defaultUser) {
+    return FXUiUtil.showLoginDialog(applicationTitle, defaultUser,
             new ImageView(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName))));
   }
 
@@ -87,10 +95,10 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
 
   protected abstract Model initializeApplicationModel(final EntityConnectionProvider connectionProvider);
 
-  private void handleException(final Throwable throwable) {
-    if (throwable instanceof CancelException) {
+  private void handleException(final Exception e) {
+    if (e instanceof CancelException) {
       return;
     }
-    EntityUiUtil.showExceptionDialog(throwable);
+    FXUiUtil.showExceptionDialog(Util.unwrapAndLog(e, RuntimeException.class, LOG));
   }
 }

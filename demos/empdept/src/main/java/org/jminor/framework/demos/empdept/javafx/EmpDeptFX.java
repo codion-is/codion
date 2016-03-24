@@ -4,6 +4,7 @@
 package org.jminor.framework.demos.empdept.javafx;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.javafx.framework.model.EntityModel;
@@ -27,6 +28,11 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
   @Override
   protected EmpDeptFXModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
     return new EmpDeptFXModel(connectionProvider);
+  }
+
+  @Override
+  protected User getDefaultUser() {
+    return new User("scott", "tiger");
   }
 
   @Override

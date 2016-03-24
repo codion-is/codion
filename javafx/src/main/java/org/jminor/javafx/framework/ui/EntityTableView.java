@@ -36,7 +36,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   public final void deleteSelected() {
-    if (EntityUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED))) {
+    if (FXUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED))) {
       try {
         tableModel.deleteSelected();
       }
