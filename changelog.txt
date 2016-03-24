@@ -4191,3 +4191,4 @@
   UiUtil.chooseFileToSave() renamed to selectFileToSave() for consistency
   States.AggregateStateListener bug fixed, incorrect new value reported, test added
   EntityUtil.getEntity() refactored from DefaultEntityEditModel.getDefaultEntity()
+  EntityUtil.mapToOriginalPrimaryKey() moved from DefaultEntityEditModel

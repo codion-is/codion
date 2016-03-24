@@ -517,6 +517,37 @@ public final class EntityUtil {
   }
 
   /**
+   * Maps the given entities and their updated counterparts to their original primary keys,
+   * assumes a single copy of each entity in the given lists.
+   * @param entitiesBeforeUpdate the entities before update
+   * @param entitiesAfterUpdate the entities after update
+   * @return the updated entities mapped to their respective original primary keys
+   */
+  public static Map<Entity.Key, Entity> mapToOriginalPrimaryKey(final List<Entity> entitiesBeforeUpdate,
+                                                                final List<Entity> entitiesAfterUpdate) {
+    final List<Entity> entitiesAfterUpdateCopy = new ArrayList<>(entitiesAfterUpdate);
+    final Map<Entity.Key, Entity> keyMap = new HashMap<>(entitiesBeforeUpdate.size());
+    for (final Entity entity : entitiesBeforeUpdate) {
+      keyMap.put(entity.getOriginalKey(), findAndRemove(entity.getKey(), entitiesAfterUpdateCopy.listIterator()));
+    }
+
+    return keyMap;
+  }
+
+  private static Entity findAndRemove(final Entity.Key primaryKey, final ListIterator<Entity> iterator) {
+    while (iterator.hasNext()) {
+      final Entity current = iterator.next();
+      if (current.getKey().equals(primaryKey)) {
+        iterator.remove();
+
+        return current;
+      }
+    }
+
+    return null;
+  }
+
+  /**
    * A class for mapping between entities and corresponding bean classes
    */
   public static class EntityBeanMapper {
