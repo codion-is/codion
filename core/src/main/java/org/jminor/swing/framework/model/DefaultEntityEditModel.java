@@ -566,7 +566,7 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
     Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY);
     final EntityComboBoxModel model = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
     if (getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyID())) {
-      model.setNullValue(EntityUtil.createToStringEntity(entityID, (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM)));
+      model.setNullValue(EntityUtil.createToStringEntity(foreignKeyProperty.getReferencedEntityID(), (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM)));
     }
 
     return model;

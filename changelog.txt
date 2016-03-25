@@ -4192,3 +4192,4 @@
   States.AggregateStateListener bug fixed, incorrect new value reported, test added
   EntityUtil.getEntity() refactored from DefaultEntityEditModel.getDefaultEntity()
   EntityUtil.mapToOriginalPrimaryKey() moved from DefaultEntityEditModel
+  DefaultEntityEditModel.createForeignKeyComboBoxModel() bug fixed, incorrect entityID for null value entity
