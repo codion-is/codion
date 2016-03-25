@@ -647,7 +647,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       }
     };
     toggleControl.setIcon(Images.loadImage(Images.IMG_FILTER_16));
-    toggleControl.setDescription(FrameworkMessages.get(FrameworkMessages.SEARCH));
+    toggleControl.setDescription(FrameworkMessages.get(FrameworkMessages.SHOW_CRITERIA_PANEL));
 
     return toggleControl;
   }
