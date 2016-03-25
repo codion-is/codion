@@ -7,14 +7,11 @@ import org.jminor.common.model.Item;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.javafx.framework.model.EntityListModel;
 import org.jminor.javafx.framework.ui.values.PropertyValues;
 import org.jminor.javafx.framework.ui.values.StringValue;
 
-import javafx.collections.transformation.SortedList;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -35,7 +32,7 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
   public PropertyInputDialog(final Property property, final Object defaultValue,
                              final EntityConnectionProvider connectionProvider) {
     setTitle(property.getCaption());
-    this.control = createControl(property, connectionProvider);
+    this.control = FXUiUtil.createControl(property, connectionProvider);
     final Value value = createValue(property, control, defaultValue);
     if (control instanceof TextField) {
       ((TextField) control).selectAll();
@@ -52,32 +49,6 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
   private void initializeUI(final Property property, final Control control) {
     getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
     getDialogPane().setContent(control);
-  }
-
-  private Control createControl(final Property property, final EntityConnectionProvider connectionProvider) {
-    if (property instanceof Property.ForeignKeyProperty) {
-      return new ComboBox<>(createEntityListModel((Property.ForeignKeyProperty) property, connectionProvider));
-    }
-    if (property instanceof Property.ValueListProperty) {
-      return new ComboBox<>(FXUiUtil.createValueListComboBoxModel((Property.ValueListProperty) property));
-    }
-
-    switch (property.getType()) {
-      case Types.BOOLEAN:
-        return FXUiUtil.createCheckBox(property);
-      case Types.DATE:
-      case Types.TIMESTAMP:
-      case Types.TIME:
-        return FXUiUtil.createDatePicker(property);
-      case Types.DOUBLE:
-      case Types.INTEGER:
-      case Types.BIGINT:
-      case Types.CHAR:
-      case Types.VARCHAR:
-        return FXUiUtil.createTextField(property);
-      default:
-        throw new IllegalArgumentException("Unsupported property type: " + property.getType());
-    }
   }
 
   private Value createValue(final Property property, final Control control, final Object defaultValue) {
@@ -124,13 +95,6 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
       default:
         throw new IllegalArgumentException("Unsupported property type: " + property.getType());
     }
-  }
-
-  private static SortedList<Entity> createEntityListModel(final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
-    final EntityListModel listModel = new EntityListModel(property.getReferencedEntityID(), connectionProvider);
-    listModel.refresh();
-
-    return new SortedList<>(listModel, Entities.getComparator(property.getReferencedEntityID()));
   }
 
   public static final class InputResult {

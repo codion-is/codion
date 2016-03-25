@@ -14,6 +14,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -37,6 +38,7 @@ import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
+import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
@@ -45,12 +47,14 @@ import javafx.scene.control.PasswordField;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
+import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
 import java.io.PrintWriter;
 import java.io.StringWriter;
+import java.sql.Types;
 import java.text.Format;
 import java.text.NumberFormat;
 import java.text.ParseException;
@@ -86,6 +90,42 @@ public final class FXUiUtil {
 
   public static Value<Entity> createEntityValue(final Property.ForeignKeyProperty property, final ComboBox<Entity> comboBox) {
     return PropertyValues.selectedValue(comboBox.getSelectionModel());
+  }
+
+  public static ToggleButton createToggleButton(final State state) {
+    final ToggleButton button = new ToggleButton();
+    button.setSelected(state.isActive());
+    button.selectedProperty().addListener((observable, oldValue, newValue) -> {
+      state.setActive(newValue);
+    });
+
+    return button;
+  }
+
+  public static Control createControl(final Property property, final EntityConnectionProvider connectionProvider) {
+    if (property instanceof Property.ForeignKeyProperty) {
+      return new ComboBox<>(createEntityListModel((Property.ForeignKeyProperty) property, connectionProvider));
+    }
+    if (property instanceof Property.ValueListProperty) {
+      return new ComboBox<>(createValueListComboBoxModel((Property.ValueListProperty) property));
+    }
+
+    switch (property.getType()) {
+      case Types.BOOLEAN:
+        return createCheckBox(property);
+      case Types.DATE:
+      case Types.TIMESTAMP:
+      case Types.TIME:
+        return createDatePicker(property);
+      case Types.DOUBLE:
+      case Types.INTEGER:
+      case Types.BIGINT:
+      case Types.CHAR:
+      case Types.VARCHAR:
+        return createTextField(property);
+      default:
+        throw new IllegalArgumentException("Unsupported property type: " + property.getType());
+    }
   }
 
   public static CheckBox createCheckBox(final Property property) {
@@ -372,6 +412,13 @@ public final class FXUiUtil {
     });
 
     alert.showAndWait();
+  }
+
+  private static SortedList<Entity> createEntityListModel(final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
+    final EntityListModel listModel = new EntityListModel(property.getReferencedEntityID(), connectionProvider);
+    listModel.refresh();
+
+    return new SortedList<>(listModel, Entities.getComparator(property.getReferencedEntityID()));
   }
 
   private static final class LocalDateValue implements Value<LocalDate> {

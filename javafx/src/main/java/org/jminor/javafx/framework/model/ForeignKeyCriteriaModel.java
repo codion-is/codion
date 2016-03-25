@@ -20,6 +20,10 @@ public final class ForeignKeyCriteriaModel extends PropertyCriteriaModel<Propert
     this.connectionProvider = connectionProvider;
   }
 
+  public EntityConnectionProvider getConnectionProvider() {
+    return connectionProvider;
+  }
+
   public void setCriteria(final List<Entity> entities) {
     getUpperBoundValue().set(entities);
     getSearchTypeValue().set(SearchType.LIKE);

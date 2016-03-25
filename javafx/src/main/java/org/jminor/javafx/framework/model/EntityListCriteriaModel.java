@@ -27,7 +27,7 @@ public final class EntityListCriteriaModel {
 
   private final String entityID;
   private final EntityConnectionProvider connectionProvider;
-  private final Map<Property, PropertyCriteriaModel> criteriaModels = new LinkedHashMap<>();
+  private final Map<Property.SearchableProperty, PropertyCriteriaModel> criteriaModels = new LinkedHashMap<>();
   private final State criteriaStateChangedState = States.state();
 
   private String rememberedCriteriaState = "";
@@ -38,6 +38,10 @@ public final class EntityListCriteriaModel {
     this.connectionProvider = connectionProvider;
     initializePropertyCriteria();
     bindEvents();
+  }
+
+  public final PropertyCriteriaModel getPropertyCriteriaModel(final Property.SearchableProperty property) {
+    return criteriaModels.get(property);
   }
 
   public final void rememberCurrentCriteriaState() {

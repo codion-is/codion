@@ -35,6 +35,10 @@ public class PropertyCriteriaModel<T extends Property.SearchableProperty> {
     bindEvents();
   }
 
+  public T getProperty() {
+    return property;
+  }
+
   public final Value getUpperBoundValue() {
     return upperBound;
   }

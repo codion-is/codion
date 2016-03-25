@@ -85,14 +85,14 @@ public class EntityListModel implements ObservableList<Entity> {
     bindSelectionModelEvents();
   }
 
-  public TableSelectionModel<Entity> getSelectionModel() {
+  public final TableSelectionModel<Entity> getSelectionModel() {
     if (selectionModel == null) {
       throw new IllegalStateException("Selection model has not been set");
     }
     return selectionModel;
   }
 
-  public void addSelectionModelSetListener(final EventInfoListener<TableSelectionModel<Entity>> listener) {
+  public final void addSelectionModelSetListener(final EventInfoListener<TableSelectionModel<Entity>> listener) {
     selectionModelSetEvent.addInfoListener(listener);
   }
 
@@ -101,6 +101,10 @@ public class EntityListModel implements ObservableList<Entity> {
       throw new IllegalStateException("No edit model has been set for list: " + this);
     }
     return editModel;
+  }
+
+  public final EntityListCriteriaModel getCriteriaModel() {
+    return criteriaModel;
   }
 
   public final void refresh() {

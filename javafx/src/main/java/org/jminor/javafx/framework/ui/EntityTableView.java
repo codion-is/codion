@@ -14,7 +14,6 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.EntityListModel;
 
 import javafx.application.Platform;
-import javafx.beans.value.ObservableValue;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
 import javafx.scene.control.ContextMenu;
@@ -24,7 +23,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
-import javafx.util.Callback;
 
 import java.util.Collection;
 import java.util.List;
@@ -70,7 +68,7 @@ public class EntityTableView extends TableView<Entity> {
 
   private void initializeColumns() {
     for (final Property property : Entities.getVisibleProperties(listModel.getEntityID())) {
-      getColumns().add(new EntityTableColumn(property, listModel.getCellValueFactory(property)));
+      getColumns().add(new EntityTableColumn(listModel, property, listModel.getCellValueFactory(property)));
     }
   }
 
@@ -152,25 +150,5 @@ public class EntityTableView extends TableView<Entity> {
         return false;
       });
     });
-  }
-
-  public static final class EntityTableColumn extends TableColumn<Entity, Object> {
-
-    private final Property property;
-
-    public EntityTableColumn(final Property property,
-                             final Callback<CellDataFeatures<Entity, Object>, ObservableValue<Object>> cellValueFactory) {
-      super(property.getCaption());
-      this.property = property;
-      final int preferredWidth = property.getPreferredColumnWidth();
-      if (preferredWidth > 0) {
-        setPrefWidth(preferredWidth);
-      }
-      setCellValueFactory(cellValueFactory);
-    }
-
-    public Property getProperty() {
-      return property;
-    }
   }
 }
