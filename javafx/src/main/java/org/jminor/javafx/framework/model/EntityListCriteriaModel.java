@@ -10,6 +10,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.State;
+import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -40,17 +41,17 @@ public final class EntityListCriteriaModel {
     bindEvents();
   }
 
-  public final PropertyCriteriaModel getPropertyCriteriaModel(final Property.SearchableProperty property) {
+  public PropertyCriteriaModel getPropertyCriteriaModel(final Property.SearchableProperty property) {
     return criteriaModels.get(property);
   }
 
-  public final void rememberCurrentCriteriaState() {
+  public void rememberCurrentCriteriaState() {
     rememberedCriteriaState = getCriteriaModelState();
     criteriaStateChangedState.setActive(false);
   }
 
-  public void addCriteriaStateListener(final EventListener listener) {
-    criteriaStateChangedState.addListener(listener);
+  public StateObserver getCriteriaStateChangedObserver() {
+    return criteriaStateChangedState.getObserver();
   }
 
   public EntitySelectCriteria getSelectCriteria() {

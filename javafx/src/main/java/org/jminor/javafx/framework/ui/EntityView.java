@@ -83,7 +83,7 @@ public class EntityView extends BorderPane {
     editPane.setCenter(editView);
     editPane.setRight(editView.getButtonPanel());
     final BorderPane tableBottomPane = new BorderPane();
-    tableBottomPane.setLeft(tableView.getFilterTextField());
+    tableBottomPane.setCenter(tableView.getToolPane());
     final BorderPane tablePane = new BorderPane();
     tablePane.setCenter(tableView);
     tablePane.setBottom(tableBottomPane);

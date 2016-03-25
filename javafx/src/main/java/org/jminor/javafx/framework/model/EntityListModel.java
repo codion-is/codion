@@ -110,6 +110,7 @@ public class EntityListModel implements ObservableList<Entity> {
   public final void refresh() {
     try {
       setAll(connectionProvider.getConnection().selectMany(getSelectCriteria()));
+      criteriaModel.rememberCurrentCriteriaState();
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);

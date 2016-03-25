@@ -27,7 +27,7 @@ import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.GridPane;
+import javafx.scene.layout.VBox;
 
 import java.sql.Types;
 import java.util.Collections;
@@ -62,14 +62,20 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   public final Node getButtonPanel() {
-    final GridPane buttonPane = new GridPane();
-    buttonPane.addRow(0, createInsertButton());
-    buttonPane.addRow(1, createUpdateButton());
-    buttonPane.addRow(2, createDeleteButton());
-    buttonPane.addRow(3, createClearButton());
-    buttonPane.addRow(4, createRefreshButton());
+    final Button insert = createInsertButton();
+    insert.maxWidthProperty().setValue(Double.MAX_VALUE);
+    final Button update = createUpdateButton();
+    update.maxWidthProperty().setValue(Double.MAX_VALUE);
+    final Button delete = createDeleteButton();
+    delete.maxWidthProperty().setValue(Double.MAX_VALUE);
+    final Button clear = createClearButton();
+    clear.maxWidthProperty().setValue(Double.MAX_VALUE);
+    final Button refresh = createRefreshButton();
+    refresh.maxWidthProperty().setValue(Double.MAX_VALUE);
 
-    return buttonPane;
+    final VBox box = new VBox(insert, update, delete, clear, refresh);
+
+    return box;
   }
 
   public void selectInputControl() {

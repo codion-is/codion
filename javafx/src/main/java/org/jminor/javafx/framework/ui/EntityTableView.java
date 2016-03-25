@@ -16,6 +16,8 @@ import org.jminor.javafx.framework.model.EntityListModel;
 import javafx.application.Platform;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.geometry.Pos;
+import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
@@ -24,6 +26,12 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
+import javafx.scene.control.ToolBar;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.Pane;
+import javafx.scene.layout.Priority;
+import javafx.scene.layout.StackPane;
+import javafx.scene.layout.VBox;
 
 import java.util.Collection;
 import java.util.List;
@@ -32,6 +40,7 @@ public class EntityTableView extends TableView<Entity> {
 
   private final EntityListModel listModel;
   private final TextField filterText = new TextField();
+  private final BorderPane toolPane = new BorderPane();
 
   public EntityTableView(final EntityListModel listModel) {
     super(new SortedList<>(new FilteredList<>(listModel)));
@@ -39,6 +48,7 @@ public class EntityTableView extends TableView<Entity> {
     this.listModel.setSelectionModel(getSelectionModel());
     filterText.setPromptText(FrameworkMessages.get(FrameworkMessages.SEARCH));
     initializeColumns();
+    initializeToolPane();
     setTableMenuButtonVisible(true);
     addPopupMenu();
     addKeyEvents();
@@ -68,6 +78,10 @@ public class EntityTableView extends TableView<Entity> {
     return filterText;
   }
 
+  public final Pane getToolPane() {
+    return toolPane;
+  }
+
   protected boolean includeUpdateSelectedProperty(final Property property) {
     return true;
   }
@@ -78,11 +92,34 @@ public class EntityTableView extends TableView<Entity> {
     }
   }
 
+  private void initializeToolPane() {
+    final StackPane filterPane = new StackPane(filterText);
+    StackPane.setAlignment(filterText, Pos.CENTER);
+    VBox.setVgrow(filterText, Priority.ALWAYS);
+    toolPane.setLeft(filterPane);
+    toolPane.setRight(createToolBar());
+  }
+
+  private ToolBar createToolBar() {
+    final ToolBar toolBar = new ToolBar();
+    toolBar.getItems().add(createRefreshButton());
+
+    return toolBar;
+  }
+
+  private Button createRefreshButton() {
+    final Button button = new Button(FrameworkMessages.get(FrameworkMessages.REFRESH));
+    FXUiUtil.link(button.disableProperty(),
+            listModel.getCriteriaModel().getCriteriaStateChangedObserver().getReversedObserver());
+
+    return button;
+  }
+
   private void addPopupMenu() {
     final Menu updateSelected = createUpdateSelectedItem();
     final MenuItem delete = new MenuItem(FrameworkMessages.get(FrameworkMessages.DELETE));
     delete.setOnAction(actionEvent -> deleteSelected());
-    final CheckMenuItem showCriteriaPane = new CheckMenuItem("Show criteria panel");
+    final CheckMenuItem showCriteriaPane = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.SHOW_CRITERIA_PANEL));
     showCriteriaPane.selectedProperty().addListener((observable, oldValue, newValue) -> {
       setCriteriaPaneVisible(newValue);
     });
