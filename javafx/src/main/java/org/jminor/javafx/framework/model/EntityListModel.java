@@ -35,7 +35,6 @@ import javafx.util.Callback;
 
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -60,8 +59,6 @@ public class EntityListModel implements ObservableList<Entity> {
   private EntityEditModel editModel;
 
   private EntitySelectCriteria selectCriteria;
-
-  private boolean sortAfterRefresh = false;
 
   public EntityListModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this.entityID = entityID;
@@ -112,20 +109,13 @@ public class EntityListModel implements ObservableList<Entity> {
     return editModel;
   }
 
-  public final void refresh() throws DatabaseException {
-    final List<Entity> entities = connectionProvider.getConnection().selectMany(getSelectCriteria());
-    if (sortAfterRefresh) {
-      Collections.sort(entities, Entities.getComparator(getEntityID()));
+  public final void refresh() {
+    try {
+      setAll(connectionProvider.getConnection().selectMany(getSelectCriteria()));
     }
-    setAll(entities);
-  }
-
-  public boolean isSortAfterRefresh() {
-    return sortAfterRefresh;
-  }
-
-  public void setSortAfterRefresh(final boolean sortAfterRefresh) {
-    this.sortAfterRefresh = sortAfterRefresh;
+    catch (final DatabaseException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   public StateObserver getSelectionEmptyObserver() {
@@ -351,6 +341,7 @@ public class EntityListModel implements ObservableList<Entity> {
     editModel.addInsertListener(insertEvent -> addAll(insertEvent.getInsertedEntities()));
     editModel.addUpdateListener(updateEvent -> replaceEntitiesByKey(new HashMap<>(updateEvent.getUpdatedEntities())));
     editModel.addDeleteListener(deleteEvent -> removeAll(deleteEvent.getDeletedEntities()));
+    editModel.addRefreshListener(this::refresh);
   }
 
     /**

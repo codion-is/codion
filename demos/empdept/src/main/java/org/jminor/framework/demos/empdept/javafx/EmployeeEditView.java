@@ -28,9 +28,9 @@ public final class EmployeeEditView extends EntityEditView {
     final TextField id = createTextField(EmpDept.EMPLOYEE_ID);
     final TextField name = createTextField(EmpDept.EMPLOYEE_NAME);
     final TextField location = createTextField(EmpDept.EMPLOYEE_SALARY);
-    final ComboBox<Entity> department = createComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK);
+    final ComboBox<Entity> department = createForeignKeyComboBox(EmpDept.EMPLOYEE_DEPARTMENT_FK);
     final DatePicker picker = createDatePicker(EmpDept.EMPLOYEE_HIREDATE);
-    final ComboBox<Entity> manager = createComboBox(EmpDept.EMPLOYEE_MGR_FK);
+    final ComboBox<Entity> manager = createForeignKeyComboBox(EmpDept.EMPLOYEE_MGR_FK);
 
     final GridPane gridPane = new GridPane();
 

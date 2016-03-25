@@ -47,7 +47,7 @@ public abstract class EntityEditView extends BorderPane {
     return this;
   }
 
-  public final EntityEditModel getModel() {
+  public final EntityEditModel getEditModel() {
     return editModel;
   }
 
@@ -57,6 +57,7 @@ public abstract class EntityEditView extends BorderPane {
     buttonPane.addRow(1, createUpdateButton());
     buttonPane.addRow(2, createDeleteButton());
     buttonPane.addRow(3, createClearButton());
+    buttonPane.addRow(4, createRefreshButton());
 
     return buttonPane;
   }
@@ -67,12 +68,12 @@ public abstract class EntityEditView extends BorderPane {
 
   protected abstract Node initializeEditPanel();
 
-  protected final ComboBox<Entity> createComboBox(final String propertyID) {
-    checkControl(propertyID);
-    final ComboBox<Entity> box = FXUiUtil.createComboBox(Entities.getForeignKeyProperty(getModel().getEntityID(),
-            propertyID), getModel());
+  protected final ComboBox<Entity> createForeignKeyComboBox(final String foreignKeyPropertyID) {
+    checkControl(foreignKeyPropertyID);
+    final ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(Entities.getForeignKeyProperty(editModel.getEntityID(),
+            foreignKeyPropertyID), editModel);
 
-    controls.put(propertyID, box);
+    controls.put(foreignKeyPropertyID, box);
 
     return box;
   }
@@ -80,7 +81,7 @@ public abstract class EntityEditView extends BorderPane {
   protected final ComboBox<Item> createItemComboBox(final String propertyID) {
     checkControl(propertyID);
     final ComboBox<Item> box = FXUiUtil.createItemComboBox((Property.ValueListProperty)
-            Entities.getProperty(getModel().getEntityID(), propertyID), getModel());
+            Entities.getProperty(editModel.getEntityID(), propertyID), editModel);
 
     controls.put(propertyID, box);
 
@@ -93,16 +94,16 @@ public abstract class EntityEditView extends BorderPane {
     final TextField textField;
     switch (property.getType()) {
       case Types.INTEGER:
-        textField = FXUiUtil.createIntegerField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+        textField = FXUiUtil.createIntegerField(Entities.getProperty(editModel.getEntityID(), propertyID), editModel);
         break;
       case Types.BIGINT:
-        textField = FXUiUtil.createLongField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+        textField = FXUiUtil.createLongField(Entities.getProperty(editModel.getEntityID(), propertyID), editModel);
         break;
       case Types.DOUBLE:
-        textField = FXUiUtil.createDoubleField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+        textField = FXUiUtil.createDoubleField(Entities.getProperty(editModel.getEntityID(), propertyID), editModel);
         break;
       case Types.VARCHAR:
-        textField = FXUiUtil.createTextField(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+        textField = FXUiUtil.createTextField(Entities.getProperty(editModel.getEntityID(), propertyID), editModel);
         break;
       default:
         throw new IllegalArgumentException("Text field type for property: " + propertyID + " is not defined");
@@ -114,7 +115,7 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   protected final DatePicker createDatePicker(final String propertyID) {
-    return FXUiUtil.createDatePicker(Entities.getProperty(getModel().getEntityID(), propertyID), editModel);
+    return FXUiUtil.createDatePicker(Entities.getProperty(editModel.getEntityID(), propertyID), editModel);
   }
 
   private void initializeUI() {
@@ -132,8 +133,8 @@ public abstract class EntityEditView extends BorderPane {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.UPDATE));
     button.setOnAction(event -> update());
     final State existingAndModifiedState = States.aggregateState(Conjunction.AND,
-            getModel().getEntityNewObserver().getReversedObserver(),
-            getModel().getModifiedObserver());
+            editModel.getEntityNewObserver().getReversedObserver(),
+            editModel.getModifiedObserver());
     FXUiUtil.link(button.disableProperty(), existingAndModifiedState.getReversedObserver());
 
     return button;
@@ -142,7 +143,7 @@ public abstract class EntityEditView extends BorderPane {
   private Button createDeleteButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.DELETE));
     button.setOnAction(event -> delete());
-    FXUiUtil.link(button.disableProperty(), getModel().getEntityNewObserver());
+    FXUiUtil.link(button.disableProperty(), editModel.getEntityNewObserver());
 
     return button;
   }
@@ -150,6 +151,13 @@ public abstract class EntityEditView extends BorderPane {
   private Button createClearButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.CLEAR));
     button.setOnAction(event -> editModel.clear());
+
+    return button;
+  }
+
+  private Button createRefreshButton() {
+    final Button button = new Button(FrameworkMessages.get(FrameworkMessages.REFRESH));
+    button.setOnAction(event -> editModel.refresh());
 
     return button;
   }

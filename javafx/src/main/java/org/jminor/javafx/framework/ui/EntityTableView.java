@@ -13,8 +13,10 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.EntityListModel;
 
+import javafx.application.Platform;
 import javafx.beans.value.ObservableValue;
 import javafx.collections.transformation.FilteredList;
+import javafx.collections.transformation.SortedList;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
@@ -26,7 +28,6 @@ import javafx.util.Callback;
 
 import java.util.Collection;
 import java.util.List;
-import java.util.Optional;
 
 public class EntityTableView extends TableView<Entity> {
 
@@ -34,7 +35,7 @@ public class EntityTableView extends TableView<Entity> {
   private final TextField filterText = new TextField();
 
   public EntityTableView(final EntityListModel listModel) {
-    super(new FilteredList<>(listModel));
+    super(new SortedList<>(new FilteredList<>(listModel)));
     this.listModel = listModel;
     this.listModel.setSelectionModel(getSelectionModel());
     filterText.setPromptText(FrameworkMessages.get(FrameworkMessages.SEARCH));
@@ -78,14 +79,7 @@ public class EntityTableView extends TableView<Entity> {
     final MenuItem delete = new MenuItem(FrameworkMessages.get(FrameworkMessages.DELETE));
     delete.setOnAction(actionEvent -> deleteSelected());
     final MenuItem refresh = new MenuItem(FrameworkMessages.get(FrameworkMessages.REFRESH));
-    refresh.setOnAction(actionEvent -> {
-      try {
-        listModel.refresh();
-      }
-      catch (final DatabaseException e) {
-        throw new RuntimeException(e);
-      }
-    });
+    refresh.setOnAction(actionEvent -> listModel.refresh());
 
     setContextMenu(new ContextMenu(updateSelected, delete, refresh));
   }
@@ -108,15 +102,16 @@ public class EntityTableView extends TableView<Entity> {
   private void updateSelectedEntities(final Property property) {
     final List<Entity> selectedEntities = EntityUtil.copyEntities(getListModel().getSelectionModel().getSelectedItems());
 
-    final Collection values = EntityUtil.getDistinctValues(property.getPropertyID(), selectedEntities);
+    final Collection<Object> values = EntityUtil.getDistinctValues(property.getPropertyID(), selectedEntities);
     final Object defaultValue = values.size() == 1 ? values.iterator().next() : null;
 
     final PropertyInputDialog inputDialog = new PropertyInputDialog(property, defaultValue, getListModel().getConnectionProvider());
 
-    final Optional<Object> value = inputDialog.showAndWait();
+    Platform.runLater(inputDialog.getControl()::requestFocus);
+    final PropertyInputDialog.InputResult result = inputDialog.showAndWait().get();
     try {
-      if (value.isPresent()) {
-        EntityUtil.put(property.getPropertyID(), value.get(), selectedEntities);
+      if (result.isInputAccepted()) {
+        EntityUtil.put(property.getPropertyID(), result.getValue(), selectedEntities);
         getListModel().getEditModel().update(selectedEntities);
       }
     }
@@ -133,15 +128,23 @@ public class EntityTableView extends TableView<Entity> {
     });
   }
 
+  private SortedList<Entity> getSortedList() {
+    return (SortedList<Entity>) getItems();
+  }
+
+  private FilteredList<Entity> getFilteredList() {
+    return (FilteredList<Entity>) getSortedList().getSource();
+  }
+
   private void bindEvents() {
-    filterText.textProperty().addListener((observable, oldValue, newValue) -> {
-      ((FilteredList<Entity>) getItems()).setPredicate(entity -> {
-        if (Util.nullOrEmpty(newValue)) {
+    getSortedList().comparatorProperty().bind(comparatorProperty());
+    filterText.textProperty().addListener((observable, oldValue, filterByValue) -> {
+      getFilteredList().setPredicate(entity -> {
+        if (Util.nullOrEmpty(filterByValue)) {
           return true;
         }
         for (final TableColumn<Entity, ?> column : getColumns()) {
-          if (entity.getAsString(((EntityTableColumn) column).getProperty())
-                  .toLowerCase().contains(newValue.toLowerCase())) {
+          if (entity.getAsString(((EntityTableColumn) column).getProperty()).toLowerCase().contains(filterByValue.toLowerCase())) {
             return true;
           }
         }

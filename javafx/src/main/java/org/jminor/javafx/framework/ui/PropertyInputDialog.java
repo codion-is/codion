@@ -3,17 +3,18 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.javafx.framework.model.EntityListModel;
 import org.jminor.javafx.framework.ui.values.PropertyValues;
 import org.jminor.javafx.framework.ui.values.StringValue;
 
+import javafx.collections.transformation.SortedList;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -27,18 +28,25 @@ import java.sql.Date;
 import java.sql.Types;
 import java.time.LocalDate;
 
-public final class PropertyInputDialog extends Dialog<Object> {
+public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputResult> {
+
+  private final Control control;
 
   public PropertyInputDialog(final Property property, final Object defaultValue,
                              final EntityConnectionProvider connectionProvider) {
     setTitle(property.getCaption());
-    final Control control = createControl(property, connectionProvider);
+    this.control = createControl(property, connectionProvider);
     final Value value = createValue(property, control, defaultValue);
+    if (control instanceof TextField) {
+      ((TextField) control).selectAll();
+    }
     initializeUI(property, control);
-    setResultConverter((dialogButton) -> {
-      final ButtonBar.ButtonData data = dialogButton == null ? null : dialogButton.getButtonData();
-      return data == ButtonBar.ButtonData.OK_DONE ? value.get() : null;
-    });
+    setResultConverter((dialogButton) -> new InputResult(dialogButton != null &&
+            dialogButton.getButtonData() == ButtonBar.ButtonData.OK_DONE, value.get()));
+  }
+
+  public Control getControl() {
+    return control;
   }
 
   private void initializeUI(final Property property, final Control control) {
@@ -48,7 +56,7 @@ public final class PropertyInputDialog extends Dialog<Object> {
 
   private Control createControl(final Property property, final EntityConnectionProvider connectionProvider) {
     if (property instanceof Property.ForeignKeyProperty) {
-      return new ComboBox<>(createEntityComboBoxModel((Property.ForeignKeyProperty) property, connectionProvider));
+      return new ComboBox<>(createEntityListModel((Property.ForeignKeyProperty) property, connectionProvider));
     }
     if (property instanceof Property.ValueListProperty) {
       return new ComboBox<>(FXUiUtil.createValueListComboBoxModel((Property.ValueListProperty) property));
@@ -118,16 +126,28 @@ public final class PropertyInputDialog extends Dialog<Object> {
     }
   }
 
-  private EntityListModel createEntityComboBoxModel(final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
-    final EntityListModel tableModel = new EntityListModel(property.getReferencedEntityID(), connectionProvider);
-    tableModel.setSortAfterRefresh(true);
-    try {
-      tableModel.refresh();
-    }
-    catch (final DatabaseException e) {
-      throw new RuntimeException(e);
+  private static SortedList<Entity> createEntityListModel(final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
+    final EntityListModel listModel = new EntityListModel(property.getReferencedEntityID(), connectionProvider);
+    listModel.refresh();
+
+    return new SortedList<>(listModel, Entities.getComparator(property.getReferencedEntityID()));
+  }
+
+  public static final class InputResult {
+    private final boolean inputAccepted;
+    private final Object value;
+
+    public InputResult(final boolean inputAccepted, final Object value) {
+      this.inputAccepted = inputAccepted;
+      this.value = value;
     }
 
-    return tableModel;
+    public boolean isInputAccepted() {
+      return inputAccepted;
+    }
+
+    public Object getValue() {
+      return value;
+    }
   }
 }

@@ -6,6 +6,7 @@ package org.jminor.javafx.framework.model;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
+import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
@@ -34,9 +35,12 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
   private final Event<InsertEvent> insertEvent = Events.event();
   private final Event<UpdateEvent> updateEvent = Events.event();
   private final Event<DeleteEvent> deleteEvent = Events.event();
+  private final Event refreshEvent = Events.event();
 
   private final Event<Entity> entitySetEvent = Events.event();
   private final State entityNewState = States.state(true);
+
+  private final Map<Property.ForeignKeyProperty, EntityListModel> foreignKeyListModels = new HashMap<>();
 
   /**
    * Contains true if values should persist for the given property when the model is cleared
@@ -86,6 +90,11 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
 
   public final void clear() {
     setEntity(null);
+  }
+
+  public final void refresh() {
+    foreignKeyListModels.values().forEach(EntityListModel::refresh);
+    refreshEvent.fire();
   }
 
   public final List<Entity> insert() throws DatabaseException, ValidationException {
@@ -144,6 +153,29 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
     }
   }
 
+  public final EntityListModel getForeignKeyListModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+    Objects.requireNonNull(foreignKeyProperty);
+    EntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
+    if (listModel == null) {
+      listModel = createForeignKeyListModel(foreignKeyProperty);
+      foreignKeyListModels.put(foreignKeyProperty, listModel);
+    }
+
+    return listModel;
+  }
+
+  public EntityListModel createForeignKeyListModel(final Property.ForeignKeyProperty foreignKeyProperty) {
+    Objects.requireNonNull(foreignKeyProperty);
+    final EntityListModel model = new EntityListModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
+    //todo
+//    if (getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyID())) {
+//      model.setNullValue(EntityUtil.createToStringEntity(foreignKeyProperty.getReferencedEntityID(),
+//              (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM)));
+//    }
+
+    return model;
+  }
+
   public final Value createValue(final String propertyID) {
     return new EntityValue<>(propertyID, this);
   }
@@ -166,6 +198,10 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
 
   public final void addDeleteListener(final EventInfoListener<DeleteEvent> listener) {
     deleteEvent.addInfoListener(listener);
+  }
+
+  public final void addRefreshListener(final EventListener listener) {
+    refreshEvent.addListener(listener);
   }
 
   public final Entity getDefaultEntity() {

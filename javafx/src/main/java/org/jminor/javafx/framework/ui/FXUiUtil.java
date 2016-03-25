@@ -3,7 +3,6 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.EventObserver;
@@ -15,6 +14,7 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
+import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.javafx.framework.model.EntityEditModel;
@@ -82,40 +82,6 @@ public final class FXUiUtil {
       alert.setHeaderText(headerText);
     }
     return alert.showAndWait().get() == ButtonType.OK;
-  }
-
-  public static void showExceptionDialog(final Throwable exception) {
-    final Alert alert = new Alert(Alert.AlertType.ERROR);
-    alert.setTitle(Messages.get(Messages.EXCEPTION));
-    alert.setHeaderText(exception.getClass().getSimpleName());
-    alert.setContentText(exception.getMessage());
-
-    final StringWriter stringWriter = new StringWriter();
-    exception.printStackTrace(new PrintWriter(stringWriter));
-
-    final TextArea stackTraceArea = new TextArea(stringWriter.toString());
-    stackTraceArea.setEditable(false);
-    stackTraceArea.setWrapText(true);
-
-    stackTraceArea.setMaxWidth(Double.MAX_VALUE);
-    stackTraceArea.setMaxHeight(Double.MAX_VALUE);
-    GridPane.setVgrow(stackTraceArea, Priority.ALWAYS);
-    GridPane.setHgrow(stackTraceArea, Priority.ALWAYS);
-
-    final GridPane expandableContent = new GridPane();
-    expandableContent.setMaxWidth(Double.MAX_VALUE);
-    expandableContent.add(stackTraceArea, 0, 1);
-
-    final DialogPane dialogPane = alert.getDialogPane();
-    dialogPane.setExpandableContent(expandableContent);
-    dialogPane.expandedProperty().addListener(value -> {
-      Platform.runLater(() -> {
-        dialogPane.requestLayout();
-        dialogPane.getScene().getWindow().sizeToScene();
-      });
-    });
-
-    alert.showAndWait();
   }
 
   public static Value<Entity> createEntityValue(final Property.ForeignKeyProperty property, final ComboBox<Entity> comboBox) {
@@ -258,18 +224,13 @@ public final class FXUiUtil {
     stateObserver.addInfoListener(property::setValue);
   }
 
-  public static ComboBox<Entity> createComboBox(final Property.ForeignKeyProperty property,
-                                                final EntityEditModel editModel) {
-    final EntityListModel tableModel = new EntityListModel(property.getReferencedEntityID(), editModel.getConnectionProvider());
-    tableModel.setSortAfterRefresh(true);
-    final ComboBox<Entity> box = new ComboBox<>(tableModel);
+  public static ComboBox<Entity> createForeignKeyComboBox(final Property.ForeignKeyProperty property,
+                                                          final EntityEditModel editModel) {
+    final EntityListModel listModel = editModel.getForeignKeyListModel(property);
+    listModel.refresh();
+    final ComboBox<Entity> box = new ComboBox<>(new SortedList<>(listModel, Entities.getComparator(editModel.getEntityID())));
     Values.link(editModel.createValue(property.getPropertyID()), PropertyValues.selectedValue(box.getSelectionModel()));
-    try {
-      ((EntityListModel) box.getItems()).refresh();
-    }
-    catch (final DatabaseException e) {
-      throw new RuntimeException(e);
-    }
+
     return box;
   }
 
@@ -377,6 +338,40 @@ public final class FXUiUtil {
     }
 
     throw new CancelException();
+  }
+
+  public static void showExceptionDialog(final Throwable exception) {
+    final Alert alert = new Alert(Alert.AlertType.ERROR);
+    alert.setTitle(Messages.get(Messages.EXCEPTION));
+    alert.setHeaderText(exception.getClass().getSimpleName());
+    alert.setContentText(exception.getMessage());
+
+    final StringWriter stringWriter = new StringWriter();
+    exception.printStackTrace(new PrintWriter(stringWriter));
+
+    final TextArea stackTraceArea = new TextArea(stringWriter.toString());
+    stackTraceArea.setEditable(false);
+    stackTraceArea.setWrapText(true);
+
+    stackTraceArea.setMaxWidth(Double.MAX_VALUE);
+    stackTraceArea.setMaxHeight(Double.MAX_VALUE);
+    GridPane.setVgrow(stackTraceArea, Priority.ALWAYS);
+    GridPane.setHgrow(stackTraceArea, Priority.ALWAYS);
+
+    final GridPane expandableContent = new GridPane();
+    expandableContent.setMaxWidth(Double.MAX_VALUE);
+    expandableContent.add(stackTraceArea, 0, 1);
+
+    final DialogPane dialogPane = alert.getDialogPane();
+    dialogPane.setExpandableContent(expandableContent);
+    dialogPane.expandedProperty().addListener(value -> {
+      Platform.runLater(() -> {
+        dialogPane.requestLayout();
+        dialogPane.getScene().getWindow().sizeToScene();
+      });
+    });
+
+    alert.showAndWait();
   }
 
   private static final class LocalDateValue implements Value<LocalDate> {
