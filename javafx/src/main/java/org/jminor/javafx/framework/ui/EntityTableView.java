@@ -136,6 +136,14 @@ public class EntityTableView extends TableView<Entity> {
     }
   }
 
+  private SortedList<Entity> getSortedList() {
+    return (SortedList<Entity>) getItems();
+  }
+
+  private FilteredList<Entity> getFilteredList() {
+    return (FilteredList<Entity>) getSortedList().getSource();
+  }
+
   private void addKeyEvents() {
     setOnKeyReleased(event -> {
       switch (event.getCode()) {
@@ -149,14 +157,6 @@ public class EntityTableView extends TableView<Entity> {
           break;
       }
     });
-  }
-
-  private SortedList<Entity> getSortedList() {
-    return (SortedList<Entity>) getItems();
-  }
-
-  private FilteredList<Entity> getFilteredList() {
-    return (FilteredList<Entity>) getSortedList().getSource();
   }
 
   private void bindEvents() {

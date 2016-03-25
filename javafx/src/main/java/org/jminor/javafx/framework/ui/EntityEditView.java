@@ -14,8 +14,10 @@ import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.EntityEditModel;
 
 import javafx.application.Platform;
+import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
@@ -73,8 +75,7 @@ public abstract class EntityEditView extends BorderPane {
   public void selectInputControl() {
     final List<Property> properties = Entities.getProperties(editModel.getEntityID(), controls.keySet());
     Collections.sort(properties, (o1, o2) -> o1.toString().compareToIgnoreCase(o2.toString()));
-    final ListView<Property> propertyList = new ListView<>(
-            new ImmutableObservableList<>(properties.toArray(new Property[properties.size()])));
+    final ListView<Property> propertyList = new ListView<>(FXCollections.observableArrayList(properties));
     propertyList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
     final Dialog<Property> dialog = new Dialog<>();
     dialog.getDialogPane().setContent(propertyList);
