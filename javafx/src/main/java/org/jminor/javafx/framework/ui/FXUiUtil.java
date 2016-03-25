@@ -102,6 +102,16 @@ public final class FXUiUtil {
     return button;
   }
 
+  public static CheckBox createCheckBox(final State state) {
+    final CheckBox box = new CheckBox();
+    box.setSelected(state.isActive());
+    box.selectedProperty().addListener((observable, oldValue, newValue) -> {
+      state.setActive(newValue);
+    });
+
+    return box;
+  }
+
   public static Control createControl(final Property property, final EntityConnectionProvider connectionProvider) {
     if (property instanceof Property.ForeignKeyProperty) {
       return new ComboBox<>(createEntityListModel((Property.ForeignKeyProperty) property, connectionProvider));
@@ -275,7 +285,7 @@ public final class FXUiUtil {
   }
 
   public static ComboBox<Item> createItemComboBox(final Property.ValueListProperty property,
-                                                         final EntityEditModel editModel) {
+                                                  final EntityEditModel editModel) {
     final ComboBox<Item> comboBox = new ComboBox<>(createValueListComboBoxModel(property));
     Values.link(editModel.createValue(property.getPropertyID()), PropertyValues.selectedItemValue(comboBox.getSelectionModel()));
     return comboBox;

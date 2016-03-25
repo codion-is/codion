@@ -18,33 +18,42 @@ import javafx.util.Callback;
 public final class EntityTableColumn extends TableColumn<Entity, Object> {
 
   private final Property property;
+  private final BorderPane basePane;
+  private final Pane centerPane;
 
   public EntityTableColumn(final EntityListModel listModel, final Property property,
                            final Callback<CellDataFeatures<Entity, Object>, ObservableValue<Object>> cellValueFactory) {
-    super();
     this.property = property;
+    this.basePane = new BorderPane();
+    final Label headerLabel = new Label(property.getCaption());
+    this.basePane.setTop(headerLabel);
+    this.centerPane = createCenterPane(listModel);
+    setCellValueFactory(cellValueFactory);
     final int preferredWidth = property.getPreferredColumnWidth();
     if (preferredWidth > 0) {
       setPrefWidth(preferredWidth);
     }
-    final Label header = new Label(property.getCaption());
+    setGraphic(basePane);
+  }
+
+  public void setCenterPaneVisible(final boolean visible) {
+    basePane.setCenter(visible ? centerPane : null);
+  }
+
+  private Pane createCenterPane(final EntityListModel listModel) {
     if (property instanceof Property.SearchableProperty) {
       final PropertyCriteriaModel<Property.SearchableProperty> criteriaModel =
               listModel.getCriteriaModel().getPropertyCriteriaModel((Property.SearchableProperty) property);
-      final PropertyCriteriaView criteriaView = new PropertyCriteriaView(header, criteriaModel);
+      final PropertyCriteriaView criteriaView = new PropertyCriteriaView(criteriaModel);
       criteriaView.prefWidthProperty().setValue(getWidth());
-      setGraphic(criteriaView);
       widthProperty().addListener((observable, oldValue, newValue) -> {
         criteriaView.prefWidthProperty().set(newValue.doubleValue());
       });
+
+      return criteriaView;
     }
-    else {
-      final BorderPane emptyPane = new BorderPane();
-      emptyPane.setTop(header);
-      emptyPane.setCenter(new Pane());
-      setGraphic(emptyPane);
-    }
-    setCellValueFactory(cellValueFactory);
+
+    return new Pane();
   }
 
   public Property getProperty() {

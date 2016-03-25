@@ -16,9 +16,11 @@ import org.jminor.javafx.framework.model.EntityListModel;
 import javafx.application.Platform;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
@@ -41,6 +43,10 @@ public class EntityTableView extends TableView<Entity> {
     addPopupMenu();
     addKeyEvents();
     bindEvents();
+  }
+
+  public void setCriteriaPaneVisible(final boolean visible) {
+    getColumns().forEach(column -> ((EntityTableColumn) column).setCenterPaneVisible(visible));
   }
 
   public final void deleteSelected() {
@@ -76,10 +82,22 @@ public class EntityTableView extends TableView<Entity> {
     final Menu updateSelected = createUpdateSelectedItem();
     final MenuItem delete = new MenuItem(FrameworkMessages.get(FrameworkMessages.DELETE));
     delete.setOnAction(actionEvent -> deleteSelected());
+    final CheckMenuItem showCriteriaPane = new CheckMenuItem("Show criteria panel");
+    showCriteriaPane.selectedProperty().addListener((observable, oldValue, newValue) -> {
+      setCriteriaPaneVisible(newValue);
+    });
     final MenuItem refresh = new MenuItem(FrameworkMessages.get(FrameworkMessages.REFRESH));
     refresh.setOnAction(actionEvent -> listModel.refresh());
 
-    setContextMenu(new ContextMenu(updateSelected, delete, refresh));
+    final ContextMenu contextMenu = new ContextMenu();
+    contextMenu.getItems().add(updateSelected);
+    contextMenu.getItems().add(delete);
+    contextMenu.getItems().add(new SeparatorMenuItem());
+    contextMenu.getItems().add(showCriteriaPane);
+    contextMenu.getItems().add(new SeparatorMenuItem());
+    contextMenu.getItems().add(refresh);
+
+    setContextMenu(contextMenu);
   }
 
   private Menu createUpdateSelectedItem() {
