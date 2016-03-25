@@ -3,20 +3,14 @@
  */
 package org.jminor.javafx.framework.model;
 
-import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.db.criteria.CriteriaSet;
-import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.Events;
-import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -33,7 +27,6 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableSelectionModel;
 import javafx.util.Callback;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -47,7 +40,7 @@ public class EntityListModel implements ObservableList<Entity> {
   private final String entityID;
   private final EntityConnectionProvider connectionProvider;
   private final ObservableList<Entity> list = FXCollections.observableArrayList();
-  private final List<Criteria<Property.ColumnProperty>> propertyCriteria = new ArrayList<>();
+  private final EntityListCriteriaModel criteriaModel;
 
   private final Event<TableSelectionModel<Entity>> selectionModelSetEvent = Events.event();
   private final State selectionEmptyState = States.state(true);
@@ -63,6 +56,7 @@ public class EntityListModel implements ObservableList<Entity> {
   public EntityListModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
+    this.criteriaModel = new EntityListCriteriaModel(entityID, connectionProvider);
   }
 
   public EntityConnectionProvider getConnectionProvider() {
@@ -118,34 +112,29 @@ public class EntityListModel implements ObservableList<Entity> {
     }
   }
 
-  public StateObserver getSelectionEmptyObserver() {
+  public final StateObserver getSelectionEmptyObserver() {
     if (selectionModel == null) {
       throw new IllegalStateException("No selection model has been set");
     }
     return selectionEmptyState.getObserver();
   }
 
-  public StateObserver getSingleSelectionObserver() {
+  public final StateObserver getSingleSelectionObserver() {
     if (selectionModel == null) {
       throw new IllegalStateException("No selection model has been set");
     }
     return singleSelectionState.getObserver();
   }
 
-  public StateObserver getMultipleSelectionObserver() {
+  public final StateObserver getMultipleSelectionObserver() {
     if (selectionModel == null) {
       throw new IllegalStateException("No selection model has been set");
     }
     return multipleSelectionState.getObserver();
   }
 
-  public void filterBy(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> entities) throws DatabaseException {
-    Objects.requireNonNull(foreignKeyProperty);
-    Objects.requireNonNull(entities);
-    propertyCriteria.clear();
-    if (!entities.isEmpty()) {
-      propertyCriteria.add(EntityCriteriaUtil.foreignKeyCriteria(foreignKeyProperty, SearchType.LIKE, entities));
-    }
+  public final void filterBy(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> entities) throws DatabaseException {
+    criteriaModel.filterBy(foreignKeyProperty, entities);
     refresh();
   }
 
@@ -327,14 +316,10 @@ public class EntityListModel implements ObservableList<Entity> {
   }
 
   protected EntitySelectCriteria getSelectCriteria() {
-    if (propertyCriteria.isEmpty()) {
-      return EntityCriteriaUtil.selectCriteria(entityID).setOrderByClause(Entities.getOrderByClause(entityID));
-    }
+    final EntitySelectCriteria selectCriteria = criteriaModel.getSelectCriteria();
+    selectCriteria.setOrderByClause(Entities.getOrderByClause(entityID));
 
-    final CriteriaSet<Property.ColumnProperty> criteriaSet = CriteriaUtil.criteriaSet(
-            Conjunction.AND, propertyCriteria);
-
-    return EntityCriteriaUtil.selectCriteria(entityID, criteriaSet).setOrderByClause(Entities.getOrderByClause(entityID));
+    return selectCriteria;
   }
 
   private void bindEditModelEvents() {
@@ -344,7 +329,7 @@ public class EntityListModel implements ObservableList<Entity> {
     editModel.addRefreshListener(this::refresh);
   }
 
-    /**
+  /**
    * Replace the entities identified by the Entity.Key map keys with their respective value
    * @param entityMap the entities to replace mapped to the corresponding primary key found in this table model
    */
