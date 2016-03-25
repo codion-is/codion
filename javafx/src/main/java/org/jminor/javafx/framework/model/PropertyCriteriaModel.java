@@ -35,10 +35,6 @@ public class PropertyCriteriaModel<T extends Property.SearchableProperty> {
     bindEvents();
   }
 
-  public T getProperty() {
-    return property;
-  }
-
   public final Value getUpperBoundValue() {
     return upperBound;
   }
@@ -57,6 +53,10 @@ public class PropertyCriteriaModel<T extends Property.SearchableProperty> {
 
   public void addCriteriaStateListener(final EventListener listener) {
     criteriaStateEvent.addListener(listener);
+  }
+
+  public T getProperty() {
+    return property;
   }
 
   public final Criteria<Property.ColumnProperty> getColumnCriteria() {

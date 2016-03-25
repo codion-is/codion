@@ -88,26 +88,70 @@ public final class FXUiUtil {
     return alert.showAndWait().get() == ButtonType.OK;
   }
 
+  public static Value createValue(final Property property, final Control control, final Object defaultValue) {
+    if (property instanceof Property.ForeignKeyProperty) {
+      final Value<Entity> entityValue = PropertyValues.selectedValue(((ComboBox<Entity>) control).getSelectionModel());
+      entityValue.set((Entity) defaultValue);
+      return entityValue;
+    }
+    if (property instanceof Property.ValueListProperty) {
+      final Value listValue = PropertyValues.selectedItemValue(((ComboBox<Item>) control).getSelectionModel());
+      listValue.set(defaultValue);
+      return listValue;
+    }
+
+    switch (property.getType()) {
+      case Types.BOOLEAN:
+        final Value<Boolean> booleanValue = PropertyValues.booleanPropertyValue(((CheckBox) control).selectedProperty());
+        booleanValue.set((Boolean) defaultValue);
+        return booleanValue;
+      case Types.DATE:
+      case Types.TIMESTAMP:
+      case Types.TIME:
+        final Value<Date> dateValue = Values.value((java.sql.Date) defaultValue);
+        final StringValue<LocalDate> value = createDateValue(property, (DatePicker) control);
+        Values.link(createLocalDateValue(dateValue), value);
+        return dateValue;
+      case Types.DOUBLE:
+        final StringValue<Double> doubleValue = createDoubleValue(property, (TextField) control);
+        doubleValue.set((Double) defaultValue);
+        return doubleValue;
+      case Types.INTEGER:
+        final StringValue<Integer> integerValue = createIntegerValue(property, (TextField) control);
+        integerValue.set((Integer) defaultValue);
+        return integerValue;
+      case Types.BIGINT:
+        final StringValue<Long> longValue = createLongValue(property, (TextField) control);
+        longValue.set((Long) defaultValue);
+        return longValue;
+      case Types.CHAR:
+      case Types.VARCHAR:
+        final StringValue<String> stringValue = createStringValue((TextField) control);
+        stringValue.set((String) defaultValue);
+        return stringValue;
+      default:
+        throw new IllegalArgumentException("Unsupported property type: " + property.getType());
+    }
+  }
+
   public static Value<Entity> createEntityValue(final Property.ForeignKeyProperty property, final ComboBox<Entity> comboBox) {
     return PropertyValues.selectedValue(comboBox.getSelectionModel());
   }
 
   public static ToggleButton createToggleButton(final State state) {
     final ToggleButton button = new ToggleButton();
-    button.setSelected(state.isActive());
-    button.selectedProperty().addListener((observable, oldValue, newValue) -> {
-      state.setActive(newValue);
-    });
+    final Value<Boolean> checkBoxValue = PropertyValues.booleanPropertyValue(button.selectedProperty());
+    final Value<Boolean> stateValue = Values.stateValue(state);
+    Values.link(stateValue, checkBoxValue);
 
     return button;
   }
 
   public static CheckBox createCheckBox(final State state) {
     final CheckBox box = new CheckBox();
-    box.setSelected(state.isActive());
-    box.selectedProperty().addListener((observable, oldValue, newValue) -> {
-      state.setActive(newValue);
-    });
+    final Value<Boolean> checkBoxValue = PropertyValues.booleanPropertyValue(box.selectedProperty());
+    final Value<Boolean> stateValue = Values.stateValue(state);
+    Values.link(stateValue, checkBoxValue);
 
     return box;
   }

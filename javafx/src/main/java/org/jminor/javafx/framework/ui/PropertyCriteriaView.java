@@ -3,6 +3,8 @@
  */
 package org.jminor.javafx.framework.ui;
 
+import org.jminor.common.model.Value;
+import org.jminor.common.model.Values;
 import org.jminor.framework.domain.Property;
 import org.jminor.javafx.framework.model.ForeignKeyCriteriaModel;
 import org.jminor.javafx.framework.model.PropertyCriteriaModel;
@@ -28,17 +30,23 @@ public final class PropertyCriteriaView extends BorderPane {
   }
 
   private CheckBox createEnabledBox() {
-    final CheckBox box = FXUiUtil.createCheckBox(model.getEnabledState());
-
-    return box;
+    return FXUiUtil.createCheckBox(model.getEnabledState());
   }
 
   private Control createUpperBoundControl() {
-    return createControl();
+    final Control control = createControl();
+    final Value value = FXUiUtil.createValue(model.getProperty(), control, null);
+    Values.link(model.getUpperBoundValue(), value);
+
+    return control;
   }
 
   private Control createLowerBoundControl() {
-    return createControl();
+    final Control control = createControl();
+    final Value value = FXUiUtil.createValue(model.getProperty(), control, null);
+    Values.link(model.getLowerBoundValue(), value);
+
+    return control;
   }
 
   private Control createControl() {
