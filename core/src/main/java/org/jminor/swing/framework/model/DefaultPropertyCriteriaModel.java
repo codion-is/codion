@@ -4,6 +4,7 @@
 package org.jminor.swing.framework.model;
 
 import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.model.SearchType;
 import org.jminor.common.model.table.DefaultColumnCriteriaModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -44,9 +45,9 @@ public class DefaultPropertyCriteriaModel extends DefaultColumnCriteriaModel<Pro
   /** {@inheritDoc} */
   @Override
   public final Criteria<Property.ColumnProperty> getCriteria() {
-    return getValueCount(getSearchType()) == 1 ?
-            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), getSearchType(), isCaseSensitive(), getUpperBound()) :
-            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), getSearchType(), isCaseSensitive(), Arrays.asList(getLowerBound(), getUpperBound()));
+    return getSearchType().getValues().equals(SearchType.Values.TWO) ?
+            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), getSearchType(), isCaseSensitive(), Arrays.asList(getLowerBound(), getUpperBound())) :
+            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), getSearchType(), isCaseSensitive(), getUpperBound());
   }
 
   private String toString(final Object object) {

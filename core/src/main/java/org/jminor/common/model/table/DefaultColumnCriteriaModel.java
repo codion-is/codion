@@ -31,7 +31,7 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
 
   private final Value upperBoundValue = Values.value();
   private final Value lowerBoundValue = Values.value();
-  private final Event<SearchType> searchTypeChangedEvent = Events.event();
+  private final Value<SearchType> searchTypeValue = Values.value(SearchType.LIKE);
   private final Event criteriaStateChangedEvent = Events.event();
   private final Event criteriaModelClearedEvent = Events.event();
   private final Event<Boolean> enabledChangedEvent = Events.event();
@@ -43,7 +43,6 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   private final int type;
   private final Format format;
 
-  private SearchType searchType = SearchType.LIKE;
   private boolean enabled = false;
   private boolean autoEnable = true;
   private boolean automaticWildcard = false;
@@ -187,7 +186,7 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   /** {@inheritDoc} */
   @Override
   public final SearchType getSearchType() {
-    return searchType;
+    return searchTypeValue.get();
   }
 
   /** {@inheritDoc} */
@@ -195,10 +194,7 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   public final void setSearchType(final SearchType searchType) {
     Util.rejectNullValue(searchType, "searchType");
     checkLock();
-    if (!this.searchType.equals(searchType)) {
-      this.searchType = searchType;
-      searchTypeChangedEvent.fire(this.searchType);
-    }
+    searchTypeValue.set(searchType);
   }
 
   /** {@inheritDoc} */
@@ -370,19 +366,19 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   /** {@inheritDoc} */
   @Override
   public final void addSearchTypeListener(final EventInfoListener<SearchType> listener) {
-    searchTypeChangedEvent.addInfoListener(listener);
+    searchTypeValue.getObserver().addInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeSearchTypeListener(final EventInfoListener listener) {
-    searchTypeChangedEvent.removeInfoListener(listener);
+    searchTypeValue.getObserver().removeInfoListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final EventObserver<SearchType> getSearchTypeObserver() {
-    return searchTypeChangedEvent.getObserver();
+    return searchTypeValue.getObserver();
   }
 
   /** {@inheritDoc} */
@@ -403,7 +399,7 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
       toCompare = DateUtil.floorTimestamp((Timestamp) toCompare);
     }
 
-    switch (searchType) {
+    switch (searchTypeValue.get()) {
       case LIKE:
         return includeLike(toCompare);
       case NOT_LIKE:
@@ -417,26 +413,7 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
       case OUTSIDE_RANGE:
         return includeOutsideRange(toCompare);
       default:
-        throw new IllegalArgumentException("Undefined search type: " + searchType);
-    }
-  }
-
-  /**
-   * @param searchType the search type
-   * @return the number of input values required for the given search type
-   */
-  public static int getValueCount(final SearchType searchType) {
-    switch(searchType) {
-      case LIKE:
-      case LESS_THAN:
-      case GREATER_THAN:
-      case NOT_LIKE:
-        return 1;
-      case WITHIN_RANGE:
-      case OUTSIDE_RANGE:
-        return 2;
-      default:
-        throw new IllegalArgumentException("Undefined search type " + searchType);
+        throw new IllegalArgumentException("Undefined search type: " + searchTypeValue.get());
     }
   }
 
@@ -568,7 +545,7 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
         if (autoEnable) {
           final boolean upperBoundNull = upperBoundValue.get() == null;
           final boolean lowerBoundNull = lowerBoundValue.get() == null;
-          if (getValueCount(searchType) == 2) {
+          if (searchTypeValue.get().getValues().equals(SearchType.Values.TWO)) {
             setEnabled(!lowerBoundNull && !upperBoundNull);
           }
           else {
@@ -581,12 +558,12 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
     lowerBoundValue.getObserver().addListener(autoEnableListener);
     upperBoundValue.getObserver().addListener(criteriaStateChangedEvent);
     lowerBoundValue.getObserver().addListener(criteriaStateChangedEvent);
-    searchTypeChangedEvent.addListener(criteriaStateChangedEvent);
+    searchTypeValue.getObserver().addListener(criteriaStateChangedEvent);
     enabledChangedEvent.addListener(criteriaStateChangedEvent);
-    searchTypeChangedEvent.addListener(new EventListener() {
+    searchTypeValue.getObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
-        lowerBoundRequiredState.setActive(getSearchType() == SearchType.WITHIN_RANGE || getSearchType() == SearchType.OUTSIDE_RANGE);
+        lowerBoundRequiredState.setActive(getSearchType().getValues().equals(SearchType.Values.TWO));
       }
     });
   }

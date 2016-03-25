@@ -10,21 +10,23 @@ import org.jminor.common.i18n.Messages;
  */
 public enum SearchType {
 
-  LIKE("  = ", Messages.get(Messages.LIKE)),
-  NOT_LIKE("  \u2260 ", Messages.get(Messages.NOT_LIKE)),
+  LIKE("  = ", Messages.get(Messages.LIKE), Values.MANY),
+  NOT_LIKE("  \u2260 ", Messages.get(Messages.NOT_LIKE), Values.MANY),
   /** Less than or equals*/
-  LESS_THAN("  \u2264 ", Messages.get(Messages.LESS_THAN)),
+  LESS_THAN("  \u2264 ", Messages.get(Messages.LESS_THAN), Values.ONE),
   /** Greater than or equals*/
-  GREATER_THAN("  \u2265 ", Messages.get(Messages.GREATER_THAN)),
-  WITHIN_RANGE("\u2265 \u2264", Messages.get(Messages.WITHIN_RANGE)),
-  OUTSIDE_RANGE("\u2264 \u2265", Messages.get(Messages.OUTSIDE_RANGE));
+  GREATER_THAN("  \u2265 ", Messages.get(Messages.GREATER_THAN), Values.ONE),
+  WITHIN_RANGE("\u2265 \u2264", Messages.get(Messages.WITHIN_RANGE), Values.TWO),
+  OUTSIDE_RANGE("\u2264 \u2265", Messages.get(Messages.OUTSIDE_RANGE), Values.TWO);
 
   private final String caption;
   private final String description;
+  private final Values values;
 
-  SearchType(final String caption, final String description) {
+  SearchType(final String caption, final String description, final Values values) {
     this.caption = caption;
     this.description = description;
+    this.values = values;
   }
 
   public String getCaption() {
@@ -33,5 +35,16 @@ public enum SearchType {
 
   public String getDescription() {
     return description;
+  }
+
+  public Values getValues() {
+    return values;
+  }
+
+  /**
+   * The number of values expected for a SearchType
+   */
+  public enum Values {
+    ONE, TWO, MANY
   }
 }

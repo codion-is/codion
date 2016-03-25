@@ -4193,3 +4193,5 @@
   EntityUtil.getEntity() refactored from DefaultEntityEditModel.getDefaultEntity()
   EntityUtil.mapToOriginalPrimaryKey() moved from DefaultEntityEditModel
   DefaultEntityEditModel.createForeignKeyComboBoxModel() bug fixed, incorrect entityID for null value entity
+  SearchType.Values enum added
+  DefaultColumnCriteriaModel refactored
