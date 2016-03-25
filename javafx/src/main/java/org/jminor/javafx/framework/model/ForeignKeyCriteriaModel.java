@@ -25,7 +25,7 @@ public final class ForeignKeyCriteriaModel extends PropertyCriteriaModel<Propert
   }
 
   public void setCriteria(final List<Entity> entities) {
-    getUpperBoundValue().set(entities);
+    getUpperBoundValue().set(entities.isEmpty() ? null : entities);
     getSearchTypeValue().set(SearchType.LIKE);
     getEnabledState().setActive(!entities.isEmpty());
   }

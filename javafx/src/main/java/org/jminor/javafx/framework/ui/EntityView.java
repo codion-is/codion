@@ -25,6 +25,7 @@ public class EntityView extends BorderPane {
     this.model = model;
     this.editView = editView;
     this.tableView = tableView;
+    addKeyEvents();
     bindEvents();
   }
 
@@ -51,12 +52,29 @@ public class EntityView extends BorderPane {
     }
   }
 
+  private void addKeyEvents() {
+    setOnKeyReleased(event -> {
+      switch (event.getCode()) {
+        case I:
+          if (editView != null && event.isControlDown()) {
+            editView.selectInputControl();
+          }
+          event.consume();
+          break;
+        case F5:
+          tableView.getListModel().refresh();
+          event.consume();
+          break;
+      }
+    });
+  }
+
   private void bindEvents() {
-   detailViewTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-     if (newValue != null) {
-       ((EntityView) newValue.getContent()).initializePanel();
-     }
-   });
+    detailViewTabPane.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
+      if (newValue != null) {
+        ((EntityView) newValue.getContent()).initializePanel();
+      }
+    });
   }
 
   private void initializeUI() {

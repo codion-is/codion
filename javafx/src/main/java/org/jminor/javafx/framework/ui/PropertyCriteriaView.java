@@ -12,6 +12,7 @@ import org.jminor.javafx.framework.model.PropertyCriteriaModel;
 import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Control;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 
 public final class PropertyCriteriaView extends BorderPane {
@@ -57,7 +58,11 @@ public final class PropertyCriteriaView extends BorderPane {
     else {
       control = FXUiUtil.createControl(model.getProperty(), null);
     }
-    control.maxWidthProperty().set(Double.MAX_VALUE);
+    control.setOnKeyReleased(event -> {
+      if (event.getCode().equals(KeyCode.ENTER)) {
+        model.getEnabledState().setActive(!model.getEnabledState().isActive());
+      }
+    });
 
     return control;
   }

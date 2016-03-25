@@ -13,18 +13,26 @@ import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.EntityEditModel;
 
+import javafx.application.Platform;
 import javafx.scene.Node;
 import javafx.scene.control.Button;
+import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
+import javafx.scene.control.Dialog;
+import javafx.scene.control.ListView;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 
 import java.sql.Types;
+import java.util.Collections;
 import java.util.HashMap;
+import java.util.List;
 import java.util.Map;
+import java.util.Optional;
 
 public abstract class EntityEditView extends BorderPane {
 
@@ -60,6 +68,30 @@ public abstract class EntityEditView extends BorderPane {
     buttonPane.addRow(4, createRefreshButton());
 
     return buttonPane;
+  }
+
+  public void selectInputControl() {
+    final List<Property> properties = Entities.getProperties(editModel.getEntityID(), controls.keySet());
+    Collections.sort(properties, (o1, o2) -> o1.toString().compareToIgnoreCase(o2.toString()));
+    final ListView<Property> propertyList = new ListView<>(
+            new ImmutableObservableList<>(properties.toArray(new Property[properties.size()])));
+    propertyList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
+    final Dialog<Property> dialog = new Dialog<>();
+    dialog.getDialogPane().setContent(propertyList);
+    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+    dialog.setResultConverter(buttonType -> {
+      if (buttonType != null && buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+        return propertyList.getSelectionModel().getSelectedItem();
+      }
+
+      return null;
+    });
+
+    Platform.runLater(propertyList::requestFocus);
+    final Optional<Property> result = dialog.showAndWait();
+    if (result.isPresent()) {
+      controls.get(result.get().getPropertyID()).requestFocus();
+    }
   }
 
   protected final void setInitialFocusProperty(final String initialFocusPropertyID) {
@@ -115,7 +147,11 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   protected final DatePicker createDatePicker(final String propertyID) {
-    return FXUiUtil.createDatePicker(Entities.getProperty(editModel.getEntityID(), propertyID), editModel);
+    checkControl(propertyID);
+    final DatePicker picker = FXUiUtil.createDatePicker(Entities.getProperty(editModel.getEntityID(), propertyID), editModel);
+    controls.put(propertyID, picker);
+
+    return picker;
   }
 
   private void initializeUI() {

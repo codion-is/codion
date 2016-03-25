@@ -23,6 +23,7 @@ public final class EntityTableColumn extends TableColumn<Entity, Object> {
 
   public EntityTableColumn(final EntityListModel listModel, final Property property,
                            final Callback<CellDataFeatures<Entity, Object>, ObservableValue<Object>> cellValueFactory) {
+    super(property.getCaption());
     this.property = property;
     this.basePane = new BorderPane();
     final Label headerLabel = new Label(property.getCaption());

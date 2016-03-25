@@ -69,11 +69,11 @@ public class EntityModel {
   }
 
   private void bindEvents() {
-    if (tableModell != null) {
+    if (tableModell == null) {
       editModel.addEntitySetListener(entity -> {
         try {
           for (final EntityModel detailModel : detailModels) {
-            detailModel.initialize(getEntityID(), Collections.singletonList(entity));
+            detailModel.initialize(getEntityID(), entity == null ? Collections.emptyList() : Collections.singletonList(entity));
           }
         }
         catch (final DatabaseException e) {
@@ -81,7 +81,7 @@ public class EntityModel {
         }
       });
     }
-    if (tableModell != null) {
+    else {
       tableModell.addSelectionModelSetListener(selectionModel ->
               selectionModel.getSelectedItems().addListener((ListChangeListener<Entity>) c -> {
         try {

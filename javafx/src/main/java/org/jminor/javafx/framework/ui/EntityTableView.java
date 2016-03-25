@@ -24,7 +24,6 @@ import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
 import javafx.scene.control.TextField;
-import javafx.scene.input.KeyCode;
 
 import java.util.Collection;
 import java.util.List;
@@ -40,6 +39,7 @@ public class EntityTableView extends TableView<Entity> {
     this.listModel.setSelectionModel(getSelectionModel());
     filterText.setPromptText(FrameworkMessages.get(FrameworkMessages.SEARCH));
     initializeColumns();
+    setTableMenuButtonVisible(true);
     addPopupMenu();
     addKeyEvents();
     bindEvents();
@@ -138,8 +138,15 @@ public class EntityTableView extends TableView<Entity> {
 
   private void addKeyEvents() {
     setOnKeyReleased(event -> {
-      if (event.getCode() == KeyCode.DELETE) {
-        deleteSelected();
+      switch (event.getCode()) {
+        case DELETE:
+          deleteSelected();
+          event.consume();
+          break;
+        case F5:
+          listModel.refresh();
+          event.consume();
+          break;
       }
     });
   }
@@ -160,7 +167,7 @@ public class EntityTableView extends TableView<Entity> {
           return true;
         }
         for (final TableColumn<Entity, ?> column : getColumns()) {
-          if (entity.getAsString(((EntityTableColumn) column).getProperty()).toLowerCase().contains(filterByValue.toLowerCase())) {
+          if (column.isVisible() && entity.getAsString(((EntityTableColumn) column).getProperty()).toLowerCase().contains(filterByValue.toLowerCase())) {
             return true;
           }
         }
