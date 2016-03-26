@@ -209,7 +209,17 @@ public class EntityEditModel extends DefaultValueMapEditModel<String, Object> {
   }
 
   public Object getDefaultValue(final Property property) {
-    return isValuePersistent(property) ? getValue(property.getPropertyID()) : property.getDefaultValue();
+    if (isValuePersistent(property)) {
+      final Entity entity = (Entity) getValueMap();
+      if (property instanceof Property.ForeignKeyProperty) {
+        return entity.getForeignKey((Property.ForeignKeyProperty) property);
+      }
+      else {
+        return entity.get(property);
+      }
+    }
+
+    return property.getDefaultValue();
   }
 
   public boolean isValuePersistent(final Property property) {
