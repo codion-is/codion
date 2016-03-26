@@ -10,10 +10,14 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
+import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.EntityApplicationModel;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
+import javafx.scene.control.Menu;
+import javafx.scene.control.MenuBar;
+import javafx.scene.control.MenuItem;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
@@ -30,6 +34,7 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
   private final String iconFileName;
 
   private Model model;
+  private Stage mainStage;
 
   public EntityApplicationView(final String applicationTitle) {
     this(applicationTitle, DEFAULT_ICON_FILE_NAME);
@@ -48,13 +53,16 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
   @Override
   public final void start(final Stage stage) {
     try {
+      this.mainStage = stage;
       final User user = getApplicationUser();
       final EntityConnectionProvider connectionProvider = initializeConnectionProvider(user, getApplicationIdentifier());
       connectionProvider.getConnection();//throws exception if the server is not reachable or credentials are incorrect
       this.model = initializeApplicationModel(connectionProvider);
       stage.setTitle(applicationTitle);
       stage.getIcons().add(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName)));
-      stage.setScene(initializeApplicationScene(stage));
+      final Scene applicationScene = initializeApplicationScene(stage);
+//      ((VBox) applicationScene.getRoot()).getChildren().addAll(createMainMenu());
+      stage.setScene(applicationScene);
 
       stage.show();
     }
@@ -76,6 +84,17 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
 
   protected String getApplicationIdentifier() {
     return getClass().getName();
+  }
+
+  protected MenuBar createMainMenu() {
+    final MenuBar menuBar = new MenuBar();
+    final Menu file = new Menu(FrameworkMessages.get(FrameworkMessages.FILE));
+    final MenuItem exit = new MenuItem(FrameworkMessages.get(FrameworkMessages.EXIT));
+    exit.setOnAction(event -> mainStage.close());
+    file.getItems().add(exit);
+    menuBar.getMenus().add(file);
+
+    return menuBar;
   }
 
   protected final User getApplicationUser() {

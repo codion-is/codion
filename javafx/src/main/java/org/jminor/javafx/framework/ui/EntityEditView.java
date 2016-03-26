@@ -23,9 +23,11 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
+import javafx.scene.control.Label;
 import javafx.scene.control.ListView;
 import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
+import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.VBox;
 
@@ -37,6 +39,12 @@ import java.util.Map;
 import java.util.Optional;
 
 public abstract class EntityEditView extends BorderPane {
+
+  private static final KeyCode INSERT_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.INSERT_MNEMONIC));
+  private static final KeyCode UPDATE_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.UPDATE_MNEMONIC));
+  private static final KeyCode DELETE_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.DELETE_MNEMONIC));
+  private static final KeyCode CLEAR_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC));
+  private static final KeyCode REFRESH_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC));
 
   private final EntityEditModel editModel;
   private final Map<String, Control> controls = new HashMap<>();
@@ -59,6 +67,15 @@ public abstract class EntityEditView extends BorderPane {
 
   public final EntityEditModel getEditModel() {
     return editModel;
+  }
+
+  public final void requestInitialFocus() {
+    if (initialFocusPropertyID != null && controls.containsKey(initialFocusPropertyID)) {
+      controls.get(initialFocusPropertyID).requestFocus();
+    }
+    else {
+      requestFocus();
+    }
   }
 
   public final Node getButtonPanel() {
@@ -161,8 +178,40 @@ public abstract class EntityEditView extends BorderPane {
     return picker;
   }
 
+  protected final Label createLabel(final String propertyID) {
+    return new Label(Entities.getProperty(getEditModel().getEntityID(), propertyID).getCaption());
+  }
+
   private void initializeUI() {
     setCenter(initializeEditPanel());
+    addKeyEvents();
+  }
+
+  private void addKeyEvents() {
+    setOnKeyReleased(event -> {
+      if (event.isAltDown()) {
+        if (event.getCode().equals(INSERT_KEY_CODE)) {
+          insert();
+          event.consume();
+        }
+        else if (event.getCode().equals(UPDATE_KEY_CODE)) {
+          update();
+          event.consume();
+        }
+        else if (event.getCode().equals(DELETE_KEY_CODE)) {
+          delete();
+          event.consume();
+        }
+        else if (event.getCode().equals(CLEAR_KEY_CODE)) {
+          editModel.clear();
+          event.consume();
+        }
+        else if (event.getCode().equals(REFRESH_KEY_CODE)) {
+          editModel.refresh();
+          event.consume();
+        }
+      }
+    });
   }
 
   private Button createInsertButton() {
@@ -240,12 +289,6 @@ public abstract class EntityEditView extends BorderPane {
   private void clearAfterInsert() {
     editModel.clear();
     requestInitialFocus();
-  }
-
-  private void requestInitialFocus() {
-    if (initialFocusPropertyID != null && controls.containsKey(initialFocusPropertyID)) {
-      controls.get(initialFocusPropertyID).requestFocus();
-    }
   }
 
   private void checkControl(final String propertyID) {
