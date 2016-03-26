@@ -141,7 +141,8 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void getEntityCopy() throws DatabaseException {
-    final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP, TestDomain.EMP_NAME, "MARTIN");
+    final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP,
+            TestDomain.EMP_NAME, "MARTIN");
     employeeEditModel.setEntity(employee);
     final Entity copyWithPrimaryKeyValue = employeeEditModel.getEntityCopy();
     assertEquals(employee, copyWithPrimaryKeyValue);
@@ -158,6 +159,25 @@ public final class DefaultEntityEditModelTest {
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullConnectionProvider() {
     new DefaultEntityEditModel("entityID", null);
+  }
+
+  @Test
+  public void getDefaultForeignKeyValue() throws DatabaseException {
+    final Entity employee = employeeEditModel.getConnectionProvider().getConnection().selectSingle(TestDomain.T_EMP,
+            TestDomain.EMP_NAME, "MARTIN");
+    employeeEditModel.setEntity(employee);
+    //clear the department foreign key value
+    Entity dept = employeeEditModel.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK);
+    employeeEditModel.setValue(TestDomain.EMP_DEPARTMENT_FK, null);
+    //set the reference key property value
+    assertTrue(employeeEditModel.isValueNull(TestDomain.EMP_DEPARTMENT_FK));
+    employeeEditModel.setValue(TestDomain.EMP_DEPARTMENT, dept.get(TestDomain.DEPARTMENT_ID));
+    assertFalse(employeeEditModel.getEntityCopy().isLoaded(TestDomain.EMP_DEPARTMENT_FK));
+    dept = employeeEditModel.getForeignKeyValue(TestDomain.EMP_DEPARTMENT_FK);
+    assertNull(dept);
+    dept = (Entity) employeeEditModel.getDefaultValue(
+            Entities.getProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
+    assertNotNull(dept);
   }
 
   @Test

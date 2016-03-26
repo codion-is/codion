@@ -172,7 +172,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   /**
    * Returns the value associated with the given property.
    * Foreign key values which have non-null references but have not been loaded are simply returned
-   * as null, use {@link #getForeignKeyValue(org.jminor.framework.domain.Property.ForeignKeyProperty)}
+   * as null, use {@link #getForeignKey(Property.ForeignKeyProperty)} (org.jminor.framework.domain.Property.ForeignKeyProperty)}
    * to get an empty entity instance
    * @param property the property for which to retrieve the value
    * @return the value associated with the given property.
@@ -224,10 +224,24 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   public Entity getForeignKey(final String foreignKeyPropertyID) {
     final Property property = getProperty(foreignKeyPropertyID);
     if (property instanceof Property.ForeignKeyProperty) {
-      return getForeignKeyValue((Property.ForeignKeyProperty) property);
+      return getForeignKey((Property.ForeignKeyProperty) property);
     }
 
     throw new IllegalArgumentException(foreignKeyPropertyID + " is not a foreign key property");
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public Entity getForeignKey(final Property.ForeignKeyProperty foreignKeyProperty) {
+    final Entity value = (Entity) super.get(foreignKeyProperty.getPropertyID());
+    if (value == null) {//possibly not loaded
+      final Entity.Key referencedKey = getReferencedKey(foreignKeyProperty);
+      if (referencedKey != null) {
+        return new DefaultEntity(DefaultEntityDefinition.getDefinitionMap().get(referencedKey.getEntityID()), referencedKey);
+      }
+    }
+
+    return value;
   }
 
   /** {@inheritDoc} */
@@ -434,7 +448,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   }
 
   /**
-   * Returns true if one or more of the properties involved in the given foreign key is null
+   * Returns true if any of the properties involved in the given foreign key are null
    * @param foreignKeyProperty the foreign key property
    * @return true if the foreign key is null
    */
@@ -631,18 +645,6 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
     }
 
     return derivedProperty.getValueProvider().getValue(values);
-  }
-
-  private Entity getForeignKeyValue(final Property.ForeignKeyProperty foreignKeyProperty) {
-    final Entity value = (Entity) super.get(foreignKeyProperty.getPropertyID());
-    if (value == null) {//possibly not loaded
-      final Entity.Key referencedKey = getReferencedKey(foreignKeyProperty);
-      if (referencedKey != null) {
-        return new DefaultEntity(DefaultEntityDefinition.getDefinitionMap().get(referencedKey.getEntityID()), referencedKey);
-      }
-    }
-
-    return value;
   }
 
   private boolean writablePropertiesModified() {

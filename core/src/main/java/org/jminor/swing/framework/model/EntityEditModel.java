@@ -250,9 +250,8 @@ public interface EntityEditModel extends ValueMapEditModel<String, Object>, Refr
   void clearComboBoxModels();
 
   /**
-   * Returns the default value for the given property, used when initializing a new
-   * default entity for this edit model. This does not apply to denormalized properties
-   * nor properties that are wrapped in foreign key properties.
+   * Returns the default value for the given property, used when initializing a new default entity for this edit model.
+   * This method is only called for properties that are non-denormalized and are not part of a foreign key.
    * If the default value of a property should be the last value used, call {@link #setValuePersistent(String, boolean)}
    * with <code>true</code> for the given property or override {@link #isValuePersistent} so that it
    * returns <code>true</code> for that property in case the value should persist.

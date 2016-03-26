@@ -164,7 +164,17 @@ public class DefaultEntityEditModel extends DefaultValueMapEditModel<String, Obj
   /** {@inheritDoc} */
   @Override
   public Object getDefaultValue(final Property property) {
-    return isValuePersistent(property) ? getValue(property.getPropertyID()) : property.getDefaultValue();
+    if (isValuePersistent(property)) {
+      final Entity entity = (Entity) getValueMap();
+      if (property instanceof Property.ForeignKeyProperty) {
+        return entity.getForeignKey((Property.ForeignKeyProperty) property);
+      }
+      else {
+        return entity.get(property);
+      }
+    }
+
+    return property.getDefaultValue();
   }
 
   /** {@inheritDoc} */

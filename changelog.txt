@@ -4195,3 +4195,5 @@
   DefaultEntityEditModel.createForeignKeyComboBoxModel() bug fixed, incorrect entityID for null value entity
   SearchType.Values enum added
   DefaultColumnCriteriaModel refactored
+  Entity.getForeignKey(Property.ForeignKeyProperty) added
+  DefaultEntityEditModel.getDefaultValue() now returns an empty entity for non loaded foreign key values where the referenced primary key is available

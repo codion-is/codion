@@ -38,7 +38,7 @@ public final class EntityUtil {
 
   /**
    * Populates an entity of the given type using the values provided by the given valueProvider,
-   * only non-derived and non-denormalized values are fetched from the value provider
+   * only non-derived, non-denormalized and values that are not part of a foreign key are fetched from the value provider
    * @param entityID the entity ID
    * @param valueProvider the value provider
    * @return the populated entity

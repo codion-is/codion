@@ -153,6 +153,18 @@ public interface Entity extends ValueMap<String, Object>, Comparable<Entity> {
   Entity getForeignKey(final String foreignKeyPropertyID);
 
   /**
+   * Returns the Entity instance referenced by the given foreign key property.
+   * If the underlying reference property contains a value, that is,
+   * a foreign key value exists but the actual referenced entity has not
+   * been loaded, an "empty" entity is returned, containing only the primary
+   * key value. Null is returned only if the actual reference property is null.
+   * @param foreignKeyProperty the foreign key property for which to retrieve the value
+   * @return the value of the foreign key property
+   * @see #isLoaded(String)
+   */
+  Entity getForeignKey(final Property.ForeignKeyProperty foreignKeyProperty);
+
+  /**
    * Returns the primary key of the entity referenced by the given {@link Property.ForeignKeyProperty},
    * if the reference is null this method returns null.
    * @param foreignKeyProperty the foreign key property for which to retrieve the underlying {@link Entity.Key}
