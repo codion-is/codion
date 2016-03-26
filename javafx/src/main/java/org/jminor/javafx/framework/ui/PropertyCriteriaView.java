@@ -9,7 +9,6 @@ import org.jminor.framework.domain.Property;
 import org.jminor.javafx.framework.model.ForeignKeyCriteriaModel;
 import org.jminor.javafx.framework.model.PropertyCriteriaModel;
 
-import javafx.geometry.Insets;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.Control;
 import javafx.scene.input.KeyCode;
@@ -28,6 +27,10 @@ public final class PropertyCriteriaView extends BorderPane {
     this.upperBoundControl = createUpperBoundControl();
     this.lowerBoundControl = createLowerBoundControl();
     initializeUI();
+  }
+
+  public CheckBox getEnabledCheckBox() {
+    return enabledBox;
   }
 
   private CheckBox createEnabledBox() {
@@ -69,9 +72,5 @@ public final class PropertyCriteriaView extends BorderPane {
 
   private void initializeUI() {
     setCenter(upperBoundControl);
-    final BorderPane checkBoxPane = new BorderPane();
-    checkBoxPane.setCenter(enabledBox);
-    setRight(checkBoxPane);
-    setMargin(checkBoxPane, new Insets(0, 0, 0, 5));
   }
 }

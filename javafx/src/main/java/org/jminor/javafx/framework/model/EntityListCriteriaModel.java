@@ -74,7 +74,6 @@ public final class EntityListCriteriaModel {
           throws DatabaseException {
     Objects.requireNonNull(foreignKeyProperty);
     Objects.requireNonNull(entities);
-    clear();
     final ForeignKeyCriteriaModel criteriaModel = (ForeignKeyCriteriaModel) criteriaModels.get(foreignKeyProperty);
     if (criteriaModel == null) {
       throw new IllegalArgumentException("Criteria model not found for property: " + foreignKeyProperty);

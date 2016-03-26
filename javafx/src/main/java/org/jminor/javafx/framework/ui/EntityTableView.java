@@ -56,7 +56,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   public void setCriteriaPaneVisible(final boolean visible) {
-    getColumns().forEach(column -> ((EntityTableColumn) column).setCenterPaneVisible(visible));
+    getColumns().forEach(column -> ((EntityTableColumn) column).setCriteriaViewVisible(visible));
   }
 
   public final void deleteSelected() {
