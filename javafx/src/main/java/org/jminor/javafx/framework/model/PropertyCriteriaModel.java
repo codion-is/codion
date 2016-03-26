@@ -5,8 +5,10 @@ package org.jminor.javafx.framework.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
+import org.jminor.common.model.Item;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
@@ -15,6 +17,9 @@ import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Property;
+
+import javafx.collections.FXCollections;
+import javafx.collections.ObservableList;
 
 import java.util.Arrays;
 import java.util.Collection;
@@ -28,6 +33,7 @@ public class PropertyCriteriaModel<T extends Property.SearchableProperty> {
   private final Value lowerBound = Values.value();
   private final Value<SearchType> searchType = Values.value(SearchType.LIKE);
   private final State enabledState = States.state();
+  private final State lowerBoundRequiredState = States.state();
   private final Event<String> criteriaStateEvent = Events.event();
 
   public PropertyCriteriaModel(final T property) {
@@ -64,7 +70,22 @@ public class PropertyCriteriaModel<T extends Property.SearchableProperty> {
             searchType.get(), getValues());
   }
 
-  public void clear() {
+  public final ObservableList<Item<SearchType>> getSearchTypeList() {
+    final ObservableList<Item<SearchType>> items = FXCollections.observableArrayList();
+    getSearchTypes(property).forEach(searchType -> items.add(new Item<>(searchType, searchType.getCaption())));
+
+    return items;
+  }
+
+  public final boolean isLowerBoundRequired() {
+    return lowerBoundRequiredState.isActive();
+  }
+
+  public final void addLowerBoundRequiredListener(final EventInfoListener<Boolean> listener) {
+    lowerBoundRequiredState.addInfoListener(listener);
+  }
+
+  public final void clear() {
     upperBound.set(null);
     lowerBound.set(null);
     searchType.set(SearchType.LIKE);
@@ -110,5 +131,19 @@ public class PropertyCriteriaModel<T extends Property.SearchableProperty> {
     lowerBound.getObserver().addListener(criteriaStateListener);
     searchType.getObserver().addListener(criteriaStateListener);
     enabledState.getObserver().addListener(criteriaStateListener);
+    searchType.getObserver().addListener(() ->
+            lowerBoundRequiredState.setActive(searchType.get().getValues().equals(SearchType.Values.TWO)));
+  }
+
+  private static Collection<SearchType> getSearchTypes(final Property property) {
+    if (property instanceof Property.ForeignKeyProperty) {
+      return Arrays.asList(SearchType.LIKE, SearchType.NOT_LIKE);
+    }
+    else if (property.isBoolean()) {
+      return Collections.singleton(SearchType.LIKE);
+    }
+    else {
+      return Arrays.asList(SearchType.values());
+    }
   }
 }

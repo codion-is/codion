@@ -42,6 +42,12 @@ public final class EntityTableColumn extends TableColumn<Entity, Object> {
     return property;
   }
 
+  public void setCriteriaViewAdvanced(final boolean advanced) {
+    if (criteriaView != null) {
+      criteriaView.setAdvanced(advanced);
+    }
+  }
+
   public void setCriteriaViewVisible(final boolean visible) {
     basePane.setTop(visible ? topPane : null);
     basePane.setCenter(visible ? criteriaView : new Pane());

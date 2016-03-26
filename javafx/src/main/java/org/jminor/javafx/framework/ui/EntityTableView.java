@@ -59,6 +59,10 @@ public class EntityTableView extends TableView<Entity> {
     getColumns().forEach(column -> ((EntityTableColumn) column).setCriteriaViewVisible(visible));
   }
 
+  public void setCriteriaPaneAdvanced(final boolean advanced) {
+    getColumns().forEach(column -> ((EntityTableColumn) column).setCriteriaViewAdvanced(advanced));
+  }
+
   public final void deleteSelected() {
     if (FXUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_DELETE_SELECTED))) {
       try {
@@ -119,10 +123,6 @@ public class EntityTableView extends TableView<Entity> {
     final Menu updateSelected = createUpdateSelectedItem();
     final MenuItem delete = new MenuItem(FrameworkMessages.get(FrameworkMessages.DELETE));
     delete.setOnAction(actionEvent -> deleteSelected());
-    final CheckMenuItem showCriteriaPane = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.SHOW_CRITERIA_PANEL));
-    showCriteriaPane.selectedProperty().addListener((observable, oldValue, newValue) -> {
-      setCriteriaPaneVisible(newValue);
-    });
     final MenuItem refresh = new MenuItem(FrameworkMessages.get(FrameworkMessages.REFRESH));
     refresh.setOnAction(actionEvent -> listModel.refresh());
 
@@ -130,11 +130,31 @@ public class EntityTableView extends TableView<Entity> {
     contextMenu.getItems().add(updateSelected);
     contextMenu.getItems().add(delete);
     contextMenu.getItems().add(new SeparatorMenuItem());
-    contextMenu.getItems().add(showCriteriaPane);
+    contextMenu.getItems().add(createSearchMenu());
     contextMenu.getItems().add(new SeparatorMenuItem());
     contextMenu.getItems().add(refresh);
 
     setContextMenu(contextMenu);
+  }
+
+  private Menu createSearchMenu() {
+    final CheckMenuItem showCriteriaPane = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.SHOW));
+    showCriteriaPane.selectedProperty().addListener((observable, oldValue, newValue) -> {
+      setCriteriaPaneVisible(newValue);
+    });
+    final CheckMenuItem advanced = new CheckMenuItem(FrameworkMessages.get(FrameworkMessages.ADVANCED));
+    advanced.selectedProperty().addListener((observable, oldValue, newValue) -> {
+      setCriteriaPaneAdvanced(newValue);
+    });
+    final MenuItem clear = new MenuItem(FrameworkMessages.get(FrameworkMessages.CLEAR));
+    clear.setOnAction(event -> listModel.getCriteriaModel().clear());
+
+    final Menu searchMenu = new Menu(FrameworkMessages.get(FrameworkMessages.SEARCH));
+    searchMenu.getItems().add(showCriteriaPane);
+    searchMenu.getItems().add(advanced);
+    searchMenu.getItems().add(clear);
+
+    return searchMenu;
   }
 
   private Menu createUpdateSelectedItem() {
