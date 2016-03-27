@@ -328,7 +328,7 @@ public class EntityListModel implements ObservableList<Entity> {
   }
 
   private void bindEditModelEvents() {
-    editModel.addInsertListener(insertEvent -> addAll(insertEvent.getInsertedEntities()));
+    editModel.addInsertListener(insertEvent -> addAll(0, insertEvent.getInsertedEntities()));
     editModel.addUpdateListener(updateEvent -> replaceEntitiesByKey(new HashMap<>(updateEvent.getUpdatedEntities())));
     editModel.addDeleteListener(deleteEvent -> removeAll(deleteEvent.getDeletedEntities()));
     editModel.addRefreshListener(this::refresh);

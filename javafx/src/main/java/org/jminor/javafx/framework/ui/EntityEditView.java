@@ -3,6 +3,7 @@
  */
 package org.jminor.javafx.framework.ui;
 
+import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.State;
@@ -16,6 +17,7 @@ import org.jminor.javafx.framework.model.EntityEditModel;
 import javafx.application.Platform;
 import javafx.collections.FXCollections;
 import javafx.scene.Node;
+import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -79,8 +81,8 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   public final Node getButtonPanel() {
-    final Button insert = createInsertButton();
-    insert.maxWidthProperty().setValue(Double.MAX_VALUE);
+    final Button save = createSaveButton();
+    save.maxWidthProperty().setValue(Double.MAX_VALUE);
     final Button update = createUpdateButton();
     update.maxWidthProperty().setValue(Double.MAX_VALUE);
     final Button delete = createDeleteButton();
@@ -90,7 +92,7 @@ public abstract class EntityEditView extends BorderPane {
     final Button refresh = createRefreshButton();
     refresh.maxWidthProperty().setValue(Double.MAX_VALUE);
 
-    final VBox box = new VBox(insert, update, delete, clear, refresh);
+    final VBox box = new VBox(save, update, delete, clear, refresh);
 
     return box;
   }
@@ -191,11 +193,11 @@ public abstract class EntityEditView extends BorderPane {
     setOnKeyReleased(event -> {
       if (event.isAltDown()) {
         if (event.getCode().equals(INSERT_KEY_CODE)) {
-          insert();
+          save();
           event.consume();
         }
         else if (event.getCode().equals(UPDATE_KEY_CODE)) {
-          update();
+          update(true);
           event.consume();
         }
         else if (event.getCode().equals(DELETE_KEY_CODE)) {
@@ -211,19 +213,25 @@ public abstract class EntityEditView extends BorderPane {
           event.consume();
         }
       }
+      else if (event.isControlDown()) {
+        if (event.getCode().equals(KeyCode.I)) {
+          selectInputControl();
+          event.consume();
+        }
+      }
     });
   }
 
-  private Button createInsertButton() {
+  private Button createSaveButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.INSERT));
-    button.setOnAction(event -> insert());
+    button.setOnAction(event -> save());
 
     return button;
   }
 
   private Button createUpdateButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.UPDATE));
-    button.setOnAction(event -> update());
+    button.setOnAction(event -> update(true));
     final State existingAndModifiedState = States.aggregateState(Conjunction.AND,
             editModel.getEntityNewObserver().getReversedObserver(),
             editModel.getModifiedObserver());
@@ -254,18 +262,45 @@ public abstract class EntityEditView extends BorderPane {
     return button;
   }
 
-  private void insert() {
+  private void save() {
     try {
-      editModel.insert();
-      clearAfterInsert();
+      if (editModel.isEntityNew() || !editModel.getModifiedObserver().isActive()) {
+        //no entity selected or selected entity is unmodified can only insert
+        editModel.insert();
+        clearAfterInsert();
+      }
+      else {//possibly update
+        final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+        alert.setTitle(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT_TITLE));
+        alert.setHeaderText(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT));
+
+        final ButtonType update = new ButtonType(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_RECORD));
+        final ButtonType insert = new ButtonType(FrameworkMessages.get(FrameworkMessages.INSERT_NEW));
+        final ButtonType cancel = new ButtonType(Messages.get(Messages.CANCEL), ButtonBar.ButtonData.CANCEL_CLOSE);
+        alert.getButtonTypes().setAll(update, insert, cancel);
+        ((Button) alert.getDialogPane().lookupButton(update)).setDefaultButton(true);
+
+        final Optional<ButtonType> result = alert.showAndWait();
+        if (!result.isPresent() || result.get().equals(cancel)) {
+          return;
+        }
+
+        if (result.get().equals(update)) {
+          update(false);
+        }
+        else {
+          editModel.insert();
+          clearAfterInsert();
+        }
+      }
     }
     catch (final Exception e) {
       throw new RuntimeException(e);
     }
   }
 
-  private void update() {
-    if (FXUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE))) {
+  private void update(final boolean confirm) {
+    if (!confirm || FXUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE))) {
       try {
         editModel.update();
       }
