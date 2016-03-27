@@ -50,7 +50,7 @@ public class DefaultPropertyCriteriaModel extends DefaultColumnCriteriaModel<Pro
             EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), getSearchType(), isCaseSensitive(), getUpperBound());
   }
 
-  private String toString(final Object object) {
+  private static String toString(final Object object) {
     final StringBuilder stringBuilder = new StringBuilder();
     if (object instanceof Collection) {
       for (final Object obj : ((Collection) object)) {

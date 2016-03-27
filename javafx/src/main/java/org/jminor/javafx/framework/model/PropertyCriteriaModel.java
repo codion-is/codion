@@ -7,6 +7,7 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.SearchType;
@@ -29,8 +30,8 @@ public class PropertyCriteriaModel<T extends Property.SearchableProperty> {
 
   private final T property;
 
-  private final Value upperBound = Values.value();
-  private final Value lowerBound = Values.value();
+  private final Value upperBound = new CriteriaValue();
+  private final Value lowerBound = new CriteriaValue();
   private final Value<SearchType> searchType = Values.value(SearchType.LIKE);
   private final State enabledState = States.state();
   private final State lowerBoundRequiredState = States.state();
@@ -93,24 +94,14 @@ public class PropertyCriteriaModel<T extends Property.SearchableProperty> {
   }
 
   public final String getSearchStateString() {
-    final StringBuilder builder = new StringBuilder(enabledState.isActive() ? "enabled" : "disabled")
-            .append(searchType.get().toString());
-    final Object upper = upperBound.get();
-    if (upper instanceof Collection) {
-      builder.append(Util.getCollectionContentsAsString((Collection) upper, false));
-    }
-    else {
-      builder.append(upper == null ? "null" : upper.toString());
-    }
-    final Object lower = lowerBound.get();
-    if (lower instanceof Collection) {
-      builder.append(Util.getCollectionContentsAsString((Collection) lower, false));
-    }
-    else {
-      builder.append(lower == null ? "null" : lower.toString());
+    final StringBuilder stringBuilder = new StringBuilder(property.getPropertyID());
+    if (enabledState.isActive()) {
+      stringBuilder.append(searchType.get());
+      stringBuilder.append(upperBound.get() != null ? toString(upperBound.get()) : "null");
+      stringBuilder.append(lowerBound.get() != null ? toString(lowerBound.get()) : "null");
     }
 
-    return builder.toString();
+    return stringBuilder.toString();
   }
 
   private Collection getValues() {
@@ -126,6 +117,16 @@ public class PropertyCriteriaModel<T extends Property.SearchableProperty> {
   }
 
   private void bindEvents() {
+    final EventListener autoEnableListener = () -> {
+      if (searchType.get().getValues().equals(SearchType.Values.TWO)) {
+        enabledState.setActive(lowerBound.get() != null && upperBound.get() != null);
+      }
+      else {
+        enabledState.setActive(upperBound.get() != null);
+      }
+    };
+    upperBound.getObserver().addListener(autoEnableListener);
+    lowerBound.getObserver().addListener(autoEnableListener);
     final EventListener criteriaStateListener = () -> criteriaStateEvent.fire(getSearchStateString());
     upperBound.getObserver().addListener(criteriaStateListener);
     lowerBound.getObserver().addListener(criteriaStateListener);
@@ -144,6 +145,54 @@ public class PropertyCriteriaModel<T extends Property.SearchableProperty> {
     }
     else {
       return Arrays.asList(SearchType.values());
+    }
+  }
+
+  private static String toString(final Object object) {
+    final StringBuilder stringBuilder = new StringBuilder();
+    if (object instanceof Collection) {
+      for (final Object obj : ((Collection) object)) {
+        stringBuilder.append(toString(obj));
+      }
+    }
+    else {
+      stringBuilder.append(object);
+    }
+
+    return stringBuilder.toString();
+  }
+
+  private static final class CriteriaValue implements Value<Object> {
+
+    private final Event<Object> changeEvent = Events.event();
+
+    private Object value;
+
+    @Override
+    public void set(final Object value) {
+      final Object newValue = transformValue(value);
+      if (!Util.equal(this.value, newValue)) {
+        this.value = newValue;
+        changeEvent.fire(this.value);
+      }
+    }
+
+    @Override
+    public Object get() {
+      return value;
+    }
+
+    @Override
+    public EventObserver<Object> getObserver() {
+      return changeEvent.getObserver();
+    }
+
+    private static Object transformValue(final Object value) {
+      if (value instanceof String && ((String) value).isEmpty()) {
+        return null;
+      }
+
+      return value;
     }
   }
 }

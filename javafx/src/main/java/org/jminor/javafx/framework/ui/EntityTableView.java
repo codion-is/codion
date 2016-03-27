@@ -4,7 +4,6 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -121,10 +120,8 @@ public class EntityTableView extends TableView<Entity> {
 
   private void addPopupMenu() {
     final Menu updateSelected = createUpdateSelectedItem();
-    final MenuItem delete = new MenuItem(FrameworkMessages.get(FrameworkMessages.DELETE));
-    delete.setOnAction(actionEvent -> deleteSelected());
-    final MenuItem refresh = new MenuItem(FrameworkMessages.get(FrameworkMessages.REFRESH));
-    refresh.setOnAction(actionEvent -> listModel.refresh());
+    final MenuItem delete = createDeleteSelectionItem();
+    final MenuItem refresh = createRefreshItem();
 
     final ContextMenu contextMenu = new ContextMenu();
     contextMenu.getItems().add(updateSelected);
@@ -158,18 +155,32 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private Menu createUpdateSelectedItem() {
-    final StateObserver disabled = getListModel().getSelectionEmptyObserver();
     final Menu updateSelected = new Menu(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED));
+    FXUiUtil.link(updateSelected.disableProperty(), getListModel().getSelectionEmptyObserver());
     EntityUtil.getUpdatableProperties(getListModel().getEntityID()).stream().filter(
             this::includeUpdateSelectedProperty).forEach(property -> {
       final String caption = property.getCaption() == null ? property.getPropertyID() : property.getCaption();
       final MenuItem updateProperty = new MenuItem(caption);
-      FXUiUtil.link(updateProperty.disableProperty(), disabled);
       updateProperty.setOnAction(actionEvent -> updateSelectedEntities(property));
       updateSelected.getItems().add(updateProperty);
     });
 
     return updateSelected;
+  }
+
+  private MenuItem createDeleteSelectionItem() {
+    final MenuItem delete = new MenuItem(FrameworkMessages.get(FrameworkMessages.DELETE));
+    delete.setOnAction(actionEvent -> deleteSelected());
+    FXUiUtil.link(delete.disableProperty(), getListModel().getSelectionEmptyObserver());
+
+    return delete;
+  }
+
+  private MenuItem createRefreshItem() {
+    final MenuItem refresh = new MenuItem(FrameworkMessages.get(FrameworkMessages.REFRESH));
+    refresh.setOnAction(actionEvent -> listModel.refresh());
+
+    return refresh;
   }
 
   private void updateSelectedEntities(final Property property) {
@@ -206,8 +217,10 @@ public class EntityTableView extends TableView<Entity> {
       switch (event.getCode()) {
         case DELETE:
           //todo events from criteria view controls
-          deleteSelected();
-          event.consume();
+          if (!getSelectionModel().isEmpty()) {
+            deleteSelected();
+            event.consume();
+          }
           break;
         case F5:
           listModel.refresh();
