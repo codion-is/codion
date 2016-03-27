@@ -9,33 +9,35 @@ import org.jminor.javafx.framework.model.EntityListModel;
 import org.jminor.javafx.framework.model.PropertyCriteriaModel;
 
 import javafx.beans.value.ObservableValue;
-import javafx.scene.control.CheckBox;
-import javafx.scene.control.Label;
 import javafx.scene.control.TableColumn;
-import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 
 public final class EntityTableColumn extends TableColumn<Entity, Object> {
 
   private final Property property;
-  private final BorderPane basePane;
-  private final BorderPane topPane;
   private final PropertyCriteriaView criteriaView;
 
   public EntityTableColumn(final EntityListModel listModel, final Property property,
                            final Callback<CellDataFeatures<Entity, Object>, ObservableValue<Object>> cellValueFactory) {
     super(property.getCaption());
     this.property = property;
-    this.criteriaView = initializeCriteriaView(listModel);
-    this.topPane = createTopPane();
-    this.basePane = new BorderPane();
+    if (property instanceof Property.SearchableProperty) {
+      this.criteriaView = initializeCriteriaView(listModel);
+    }
+    else {
+      this.criteriaView = null;
+    }
     setCellValueFactory(cellValueFactory);
     final int preferredWidth = property.getPreferredColumnWidth();
     if (preferredWidth > 0) {
       setPrefWidth(preferredWidth);
     }
-    setGraphic(basePane);
+    if (criteriaView != null) {
+      widthProperty().addListener((observable, oldValue, newValue) -> {
+        criteriaView.prefWidthProperty().set(newValue.doubleValue());
+      });
+    }
   }
 
   public Property getProperty() {
@@ -49,43 +51,21 @@ public final class EntityTableColumn extends TableColumn<Entity, Object> {
   }
 
   public void setCriteriaViewVisible(final boolean visible) {
-    basePane.setTop(visible ? topPane : null);
-    basePane.setCenter(visible ? criteriaView : new Pane());
+    if (criteriaView != null) {
+      setGraphic(visible ? criteriaView : null);
+    }
   }
 
   private PropertyCriteriaView initializeCriteriaView(final EntityListModel listModel) {
-    if (property instanceof Property.SearchableProperty) {
-      final PropertyCriteriaModel<Property.SearchableProperty> criteriaModel =
-              listModel.getCriteriaModel().getPropertyCriteriaModel((Property.SearchableProperty) property);
-      final PropertyCriteriaView criteriaView = new PropertyCriteriaView(criteriaModel);
-      criteriaView.prefWidthProperty().setValue(getWidth());
-      widthProperty().addListener((observable, oldValue, newValue) -> {
-        criteriaView.prefWidthProperty().set(newValue.doubleValue());
-      });
+    final PropertyCriteriaModel<Property.SearchableProperty> criteriaModel =
+            listModel.getCriteriaModel().getPropertyCriteriaModel((Property.SearchableProperty) property);
+    final PropertyCriteriaView criteriaView = new PropertyCriteriaView(criteriaModel);
+    criteriaView.prefWidthProperty().setValue(getWidth());
+    widthProperty().addListener((observable, oldValue, newValue) -> {
+      criteriaView.prefWidthProperty().set(newValue.doubleValue());
+    });
 
-      return criteriaView;
-    }
-
-    return null;
-  }
-
-  private BorderPane createTopPane() {
-    final BorderPane topPane = new BorderPane(new Label(property.getCaption()));
-    topPane.setRight(createCheckBoxPane());
-
-    return topPane;
-  }
-
-  private BorderPane createCheckBoxPane() {
-    if (property instanceof Property.SearchableProperty) {
-      final CheckBox enabledBox = criteriaView.getEnabledCheckBox();
-      final BorderPane checkBoxPane = new BorderPane();
-      checkBoxPane.setCenter(enabledBox);
-
-      return checkBoxPane;
-    }
-
-    return null;
+    return criteriaView;
   }
 
   private Pane createCenterPane(final EntityListModel listModel) {

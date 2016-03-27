@@ -16,36 +16,63 @@ import org.jminor.javafx.framework.model.PropertyCriteriaModel;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
+import javafx.scene.control.Label;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
-import javafx.scene.layout.HBox;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.Pane;
 
 public final class PropertyCriteriaView extends BorderPane {
 
   private final PropertyCriteriaModel<? extends Property.SearchableProperty> model;
-  private final ComboBox<Item<SearchType>> searchTypeComboBox;
+  private final Pane searchTypePane;
+  private final Pane topPane;
+  private final Label header;
   private final CheckBox enabledBox;
+  private final Pane checkBoxPane;
   private final Control upperBoundControl;
   private final Control lowerBoundControl;
   private final State advancedCriteria = States.state();
 
   public PropertyCriteriaView(final PropertyCriteriaModel<? extends Property.SearchableProperty> model) {
     this.model = model;
-    this.searchTypeComboBox = createSearchTypeComboBox();
+    this.header = new Label(model.getProperty().getCaption());
     this.enabledBox = createEnabledBox();
+    this.checkBoxPane = createCheckBoxPane();
     this.upperBoundControl = createUpperBoundControl();
     this.lowerBoundControl = createLowerBoundControl();
+    this.topPane = createTopPane();
+    this.searchTypePane = createSearchTypePane();
+    setTop(topPane);
     initializeUI();
     bindEvents();
-  }
-
-  public CheckBox getEnabledCheckBox() {
-    return enabledBox;
   }
 
   public void setAdvanced(final boolean advanced) {
     advancedCriteria.setActive(advanced);
     initializeUI();
+  }
+
+  private BorderPane createTopPane() {
+    final BorderPane pane = new BorderPane(header);
+    pane.setRight(checkBoxPane);
+
+    return pane;
+  }
+
+  private BorderPane createSearchTypePane() {
+    final BorderPane pane = new BorderPane(createSearchTypeComboBox());
+    final Label filler = new Label();
+    pane.setRight(filler);
+
+    return pane;
+  }
+
+  private BorderPane createCheckBoxPane() {
+    final BorderPane checkBoxPane = new BorderPane();
+    checkBoxPane.setCenter(enabledBox);
+
+    return checkBoxPane;
   }
 
   private ComboBox<Item<SearchType>> createSearchTypeComboBox() {
@@ -54,6 +81,8 @@ public final class PropertyCriteriaView extends BorderPane {
     comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
       model.getSearchTypeValue().set(newValue.getItem());
     });
+    comboBox.maxWidthProperty().set(Double.MAX_VALUE);
+    comboBox.minWidthProperty().set(0);
 
     return comboBox;
   }
@@ -91,6 +120,8 @@ public final class PropertyCriteriaView extends BorderPane {
         model.getEnabledState().setActive(!model.getEnabledState().isActive());
       }
     });
+    control.minWidthProperty().setValue(0);
+    control.maxWidthProperty().setValue(Double.MAX_VALUE);
 
     return control;
   }
@@ -108,12 +139,14 @@ public final class PropertyCriteriaView extends BorderPane {
     }
   }
 
-  private BorderPane createAdvancedView() {
+  private Pane createAdvancedView() {
     final BorderPane borderPane = new BorderPane();
-    borderPane.setTop(searchTypeComboBox);
+    borderPane.setTop(searchTypePane);
     if (model.isLowerBoundRequired()) {
-      final HBox box = new HBox(lowerBoundControl, upperBoundControl);
-      borderPane.setCenter(box);
+      final GridPane gridPane = new GridPane();
+      gridPane.addColumn(0, lowerBoundControl);
+      gridPane.addColumn(1, upperBoundControl);
+      borderPane.setCenter(gridPane);
     }
     else {
       borderPane.setCenter(upperBoundControl);
