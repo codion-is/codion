@@ -100,6 +100,10 @@ public final class PropertyCriteriaView extends BorderPane {
   }
 
   private Control createLowerBoundControl() {
+    if (model.getProperty() instanceof Property.ForeignKeyProperty) {
+      //never required
+      return null;
+    }
     final Control control = createControl();
     final Value value = FXUiUtil.createValue(model.getProperty(), control, null);
     Values.link(model.getLowerBoundValue(), value);

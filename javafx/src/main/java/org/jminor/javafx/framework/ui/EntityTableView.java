@@ -205,6 +205,7 @@ public class EntityTableView extends TableView<Entity> {
     setOnKeyReleased(event -> {
       switch (event.getCode()) {
         case DELETE:
+          //todo events from criteria view controls
           deleteSelected();
           event.consume();
           break;
