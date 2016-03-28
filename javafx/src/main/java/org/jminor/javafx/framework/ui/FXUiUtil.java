@@ -33,6 +33,7 @@ import javafx.collections.ObservableList;
 import javafx.collections.transformation.SortedList;
 import javafx.geometry.Insets;
 import javafx.scene.Node;
+import javafx.scene.Parent;
 import javafx.scene.control.Alert;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
@@ -466,6 +467,17 @@ public final class FXUiUtil {
     });
 
     alert.showAndWait();
+  }
+
+  public static <T> T getParentOfType(final Node node, final Class<T> clazz) {
+    Objects.requireNonNull(node);
+    Objects.requireNonNull(clazz);
+    Parent parent = node.getParent();
+    while (parent != null && !parent.getClass().equals(clazz)) {
+      parent = parent.getParent();
+    }
+
+    return (T) parent;
   }
 
   private static SortedList<Entity> createEntityListModel(final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {

@@ -14,7 +14,6 @@ public final class EmpDeptFXModel extends EntityApplicationModel {
 
   public EmpDeptFXModel(final EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
-    setupEntityModels(connectionProvider);
   }
 
   @Override
@@ -22,13 +21,13 @@ public final class EmpDeptFXModel extends EntityApplicationModel {
     EmpDept.init();
   }
 
-  private void setupEntityModels(final EntityConnectionProvider connectionProvider) {
+  protected void setupEntityModels() {
     final EntityModel departmentModel = new EntityModel(
-            new EntityEditModel(EmpDept.T_DEPARTMENT, connectionProvider),
-            new EntityListModel(EmpDept.T_DEPARTMENT, connectionProvider));
+            new EntityEditModel(EmpDept.T_DEPARTMENT, getConnectionProvider()),
+            new EntityListModel(EmpDept.T_DEPARTMENT, getConnectionProvider()));
     final EntityModel employeeModel = new EntityModel(
-            new EntityEditModel(EmpDept.T_EMPLOYEE, connectionProvider),
-            new EntityListModel(EmpDept.T_EMPLOYEE, connectionProvider));
+            new EntityEditModel(EmpDept.T_EMPLOYEE, getConnectionProvider()),
+            new EntityListModel(EmpDept.T_EMPLOYEE, getConnectionProvider()));
     departmentModel.addDetailModel(employeeModel);
 
     addEntityModel(departmentModel);

@@ -138,7 +138,7 @@ public class EntityListModel implements ObservableList<Entity> {
     return multipleSelectionState.getObserver();
   }
 
-  public final void filterBy(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> entities) throws DatabaseException {
+  public final void filterBy(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> entities) {
     criteriaModel.setCriteriaValues(foreignKeyProperty.getPropertyID(), entities);
     refresh();
   }

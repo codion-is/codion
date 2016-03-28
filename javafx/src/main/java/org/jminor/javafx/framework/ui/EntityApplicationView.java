@@ -58,6 +58,7 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
 
   public final void addEntityView(final EntityView entityView) {
     entityViews.add(entityView);
+    entityView.setParentView(this);
   }
 
   @Override
@@ -149,6 +150,7 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
     }
     final TabPane tabPane = new TabPane();
     for (final EntityView entityView : entityViews) {
+      entityView.initializePanel();
       tabPane.getTabs().add(new Tab(entityView.getCaption(), entityView));
     }
     final Scene scene = new Scene(tabPane);

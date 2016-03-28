@@ -15,6 +15,8 @@ public abstract class EntityApplicationModel {
 
   public EntityApplicationModel(final EntityConnectionProvider connectionProvider) {
     this.connectionProvider = connectionProvider;
+    loadDomainModel();
+    setupEntityModels();
   }
 
   public final EntityConnectionProvider getConnectionProvider() {
@@ -46,6 +48,8 @@ public abstract class EntityApplicationModel {
 
     throw new IllegalArgumentException("Entity model of class '" + modelClass + "' not found");
   }
+
+  protected abstract void setupEntityModels();
 
   protected abstract void loadDomainModel();
 }

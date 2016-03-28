@@ -23,11 +23,23 @@ public class EntityView extends BorderPane implements ViewTreeNode {
   private final EntityTableView tableView;
   private final List<EntityView> detailViews = new ArrayList<>();
 
-  private EntityView parentView;
+  private ViewTreeNode parentView;
 
   private final TabPane detailViewTabPane = new TabPane();
 
   private boolean initialized = false;
+
+  public EntityView(final EntityModel model) {
+    this(model, (EntityEditView) null);
+  }
+
+  public EntityView(final EntityModel model, final EntityEditView editView) {
+    this(model, editView, new EntityTableView(model.getTableModel()));
+  }
+
+  public EntityView(final EntityModel model, final EntityTableView tableView) {
+    this(model, null, tableView);
+  }
 
   public EntityView(final EntityModel model, final EntityEditView editView, final EntityTableView tableView) {
     this(Entities.getCaption(model.getEntityID()), model, editView, tableView);
@@ -50,7 +62,7 @@ public class EntityView extends BorderPane implements ViewTreeNode {
     return caption;
   }
 
-  public final void setParentView(final EntityView parentView) {
+  public final void setParentView(final ViewTreeNode parentView) {
     this.parentView = parentView;
   }
 
@@ -113,7 +125,7 @@ public class EntityView extends BorderPane implements ViewTreeNode {
   }
 
   public final void addDetailView(final EntityView detailView) {
-    detailViewTabPane.getTabs().add(new Tab(Entities.getCaption(detailView.getModel().getEntityID()), detailView));
+    detailViews.add(detailView);
     detailView.setParentView(this);
   }
 
@@ -188,20 +200,26 @@ public class EntityView extends BorderPane implements ViewTreeNode {
   private void navigateLeft() {
     final EntityView leftSibling = (EntityView) getPreviousSiblingView();
     if (leftSibling != null) {
-      leftSibling.requestInputFocus();
+      leftSibling.activateView();
     }
   }
 
   private void navigateRight() {
     final EntityView rightSibling = (EntityView) getNextSiblingView();
     if (rightSibling != null) {
-      rightSibling.requestInputFocus();
+      rightSibling.activateView();
     }
   }
 
   private void navigateUp() {
-    if (parentView != null) {
-      parentView.requestInputFocus();
+    if (parentView != null && parentView instanceof EntityView) {
+      ((EntityView) parentView).requestInputFocus();
+    }
+  }
+
+  private void navigateDown() {
+    if (!detailViewTabPane.getTabs().isEmpty()) {
+      ((EntityView) detailViewTabPane.getSelectionModel().getSelectedItem().getContent()).activateView();
     }
   }
 
@@ -217,10 +235,15 @@ public class EntityView extends BorderPane implements ViewTreeNode {
     }
   }
 
-  private void navigateDown() {
-    if (!detailViewTabPane.getTabs().isEmpty()) {
-      ((EntityView) detailViewTabPane.getSelectionModel().getSelectedItem().getContent()).requestInputFocus();
+  private void activateView() {
+    initializePanel();
+    final TabPane parent = FXUiUtil.getParentOfType(this, TabPane.class);
+    if (parent != null) {
+      parent.getTabs().stream().filter(tab -> tab.getContent().equals(this)).forEach(tab -> {
+        parent.getSelectionModel().select(tab);
+      });
     }
+    requestInputFocus();
   }
 
   private void bindEvents() {
@@ -232,24 +255,37 @@ public class EntityView extends BorderPane implements ViewTreeNode {
   }
 
   private void initializeUI() {
-    editView.initializePanel();
-    final BorderPane editPane = new BorderPane();
-    editPane.setCenter(editView);
-    editPane.setRight(editView.getButtonPanel());
+    final BorderPane editPane;
+    if (editView != null) {
+      editPane = new BorderPane();
+      editView.initializePanel();
+      editPane.setCenter(editView);
+      editPane.setRight(editView.getButtonPanel());
+    }
+    else {
+      editPane = null;
+    }
     final BorderPane tableBottomPane = new BorderPane();
     tableBottomPane.setCenter(tableView.getToolPane());
     final BorderPane tablePane = new BorderPane();
     tablePane.setCenter(tableView);
     tablePane.setBottom(tableBottomPane);
-    if (detailViewTabPane.getTabs().isEmpty()) {
-      setTop(editPane);
+    if (detailViews.isEmpty()) {
+      if (editPane != null) {
+        setTop(editPane);
+      }
       setCenter(tablePane);
     }
     else {
       final BorderPane leftPane = new BorderPane();
-      leftPane.setTop(editPane);
+      if (editPane != null) {
+        leftPane.setTop(editPane);
+      }
       leftPane.setCenter(tablePane);
 
+      for (final EntityView detailView : detailViews) {
+        detailViewTabPane.getTabs().add(new Tab(detailView.getCaption(), detailView));
+      }
       final SplitPane splitPane = new SplitPane(leftPane, detailViewTabPane);
       setCenter(splitPane);
     }

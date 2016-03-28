@@ -13,6 +13,7 @@
     <dependency org="org.jminor" name="jminor-swing-client-bundle" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-plugin-jasperreports" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-client-test" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-javafx" rev="latest.release"/>
 
     <dependency org="org.jfree" name="jcommon" rev="1.0.23" conf="compile->master"/>
     <dependency org="org.jfree" name="jfreechart" rev="1.0.19" conf="compile->master"/>

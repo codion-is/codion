@@ -4,6 +4,8 @@
 package org.jminor.javafx.framework.model;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.Util;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -18,16 +20,29 @@ import java.util.Objects;
 public class EntityModel {
 
   private final EntityEditModel editModel;
-  private final EntityListModel tableModell;
+  private final EntityListModel tableModel;
 
   private final List<EntityModel> detailModels = new ArrayList<>();
+
+  public EntityModel(final String entityID, final EntityConnectionProvider connectionProvider) {
+    this(new EntityEditModel(entityID, connectionProvider));
+  }
+
+  public EntityModel(final EntityEditModel editModel) {
+    this(Objects.requireNonNull(editModel), new EntityListModel(editModel.getEntityID(), editModel.getConnectionProvider()));
+  }
+
+  public EntityModel(final EntityListModel tableModel) {
+    this(Objects.requireNonNull(tableModel).getEditModel() == null ? new EntityEditModel(tableModel.getEntityID(),
+            tableModel.getConnectionProvider()) : tableModel.getEditModel(), tableModel);
+  }
 
   public EntityModel(final EntityEditModel editModel, final EntityListModel tableModel) {
     Objects.requireNonNull(editModel);
     this.editModel = editModel;
-    this.tableModell = tableModel;
-    if (this.tableModell != null) {
-      this.tableModell.setEditModel(editModel);
+    this.tableModel = tableModel;
+    if (this.tableModel != null) {
+      this.tableModel.setEditModel(editModel);
     }
     bindEvents();
   }
@@ -40,8 +55,8 @@ public class EntityModel {
     return editModel;
   }
 
-  public final EntityListModel getTableModell() {
-    return tableModell;
+  public final EntityListModel getTableModel() {
+    return tableModel;
   }
 
   public final void addDetailModel(final EntityModel entityModel) {
@@ -68,8 +83,24 @@ public class EntityModel {
     throw new IllegalArgumentException("Detail model of class '" + detailModelClass + "' not found");
   }
 
+  @Override
+  public String toString() {
+    return getClass().getSimpleName() + ": " + getEntityID();
+  }
+
+  /**
+   * By default this method sets the foreign key value in the edit model if the entity is new, using the first item in {@code foreignKeyValues}.
+   * @param foreignKeyProperty the foreign key referring to the master model doing the initialization
+   * @param foreignKeyValues the foreign key entities selected or otherwise indicated as being active in the master model
+   */
+  protected void handleInitialization(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
+    if (editModel.isEntityNew() && !Util.nullOrEmpty(foreignKeyValues)) {
+      editModel.setValue(foreignKeyProperty.getPropertyID(), foreignKeyValues.get(0));
+    }
+  }
+
   private void bindEvents() {
-    if (tableModell == null) {
+    if (tableModel == null) {
       editModel.addEntitySetListener(entity -> {
         try {
           for (final EntityModel detailModel : detailModels) {
@@ -82,24 +113,32 @@ public class EntityModel {
       });
     }
     else {
-      tableModell.addSelectionModelSetListener(selectionModel ->
+      tableModel.addSelectionModelSetListener(selectionModel ->
               selectionModel.getSelectedItems().addListener((ListChangeListener<Entity>) c -> {
-        try {
-          for (final EntityModel detailModel : detailModels) {
-            detailModel.initialize(getEntityID(), tableModell.getSelectionModel().getSelectedItems());
-          }
-        }
-        catch (final DatabaseException e) {
-          throw new RuntimeException(e);
-        }
-      }));
+                try {
+                  for (final EntityModel detailModel : detailModels) {
+                    detailModel.initialize(getEntityID(), tableModel.getSelectionModel().getSelectedItems());
+                  }
+                }
+                catch (final DatabaseException e) {
+                  throw new RuntimeException(e);
+                }
+              }));
     }
   }
 
   private void initialize(final String masterEntityID, final List<Entity> foreignKeyEntities) throws DatabaseException {
     final List<Property.ForeignKeyProperty> foreignKeyProperties =
             Entities.getForeignKeyProperties(getEntityID(), masterEntityID);
-    editModel.setValue(foreignKeyProperties.get(0).getPropertyID(), foreignKeyEntities.get(0));
-    tableModell.filterBy(foreignKeyProperties.get(0), foreignKeyEntities);
+    if (!foreignKeyProperties.isEmpty()) {
+      initialize(foreignKeyProperties.get(0), foreignKeyEntities);
+    }
+  }
+
+  private void initialize(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
+    if (tableModel != null) {
+      tableModel.filterBy(foreignKeyProperty, foreignKeyValues);
+    }
+    handleInitialization(foreignKeyProperty, foreignKeyValues);
   }
 }
