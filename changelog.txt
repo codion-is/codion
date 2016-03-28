@@ -4197,3 +4197,4 @@
   DefaultColumnCriteriaModel refactored
   Entity.getForeignKey(Property.ForeignKeyProperty) added
   DefaultEntityEditModel.getDefaultValue() now returns an empty entity for non loaded foreign key values where the referenced primary key is available
+  DefaultColumnCriteriaModel, enabled boolean variable replaced with a State

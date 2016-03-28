@@ -34,8 +34,8 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   private final Value<SearchType> searchTypeValue = Values.value(SearchType.LIKE);
   private final Event criteriaStateChangedEvent = Events.event();
   private final Event criteriaModelClearedEvent = Events.event();
-  private final Event<Boolean> enabledChangedEvent = Events.event();
 
+  private final State enabledState = States.state();
   private final State lockedState = States.state();
   private final State lowerBoundRequiredState = States.state();
 
@@ -43,7 +43,6 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   private final int type;
   private final Format format;
 
-  private boolean enabled = false;
   private boolean autoEnable = true;
   private boolean automaticWildcard = false;
   private boolean caseSensitive = true;
@@ -124,7 +123,7 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
     setSearchType(SearchType.LIKE);
     setUpperBound(value);
     final boolean enableSearch = value != null;
-    if (enabled != enableSearch) {
+    if (enabledState.isActive() != enableSearch) {
       setEnabled(enableSearch);
     }
   }
@@ -232,16 +231,15 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   /** {@inheritDoc} */
   @Override
   public final boolean isEnabled() {
-    return enabled;
+    return enabledState.isActive();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setEnabled(final boolean enabled) {
     checkLock();
-    if (this.enabled != enabled) {
-      this.enabled = enabled;
-      enabledChangedEvent.fire(this.enabled);
+    if (enabledState.isActive() != enabled) {
+      enabledState.setActive(enabled);
     }
   }
 
@@ -288,19 +286,19 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   /** {@inheritDoc} */
   @Override
   public final EventObserver<Boolean> getEnabledObserver() {
-    return enabledChangedEvent.getObserver();
+    return enabledState.getObserver();
   }
 
   /** {@inheritDoc} */
   @Override
   public final void addEnabledListener(final EventListener listener) {
-    enabledChangedEvent.addListener(listener);
+    enabledState.addListener(listener);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void removeEnabledListener(final EventListener listener) {
-    enabledChangedEvent.removeListener(listener);
+    enabledState.removeListener(listener);
   }
 
   /** {@inheritDoc} */
@@ -384,13 +382,13 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
   /** {@inheritDoc} */
   @Override
   public final boolean include(final Object object) {
-    return !enabled || include(getComparable(object));
+    return !enabledState.isActive() || include(getComparable(object));
   }
 
   /** {@inheritDoc} */
   @Override
   public final boolean include(final Comparable comparable) {
-    if (!enabled) {
+    if (!enabledState.isActive()) {
       return true;
     }
 
@@ -559,7 +557,7 @@ public class DefaultColumnCriteriaModel<K> implements ColumnCriteriaModel<K> {
     upperBoundValue.getObserver().addListener(criteriaStateChangedEvent);
     lowerBoundValue.getObserver().addListener(criteriaStateChangedEvent);
     searchTypeValue.getObserver().addListener(criteriaStateChangedEvent);
-    enabledChangedEvent.addListener(criteriaStateChangedEvent);
+    enabledState.addListener(criteriaStateChangedEvent);
     searchTypeValue.getObserver().addListener(new EventListener() {
       @Override
       public void eventOccurred() {
