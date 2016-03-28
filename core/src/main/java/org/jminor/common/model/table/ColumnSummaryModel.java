@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.common.model.table;
+package org.jminor.common.model.table;
 
 import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;

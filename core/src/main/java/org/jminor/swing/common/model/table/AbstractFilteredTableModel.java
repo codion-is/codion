@@ -9,6 +9,8 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.common.model.table.ColumnSummaryModel;
+import org.jminor.common.model.table.DefaultColumnSummaryModel;
 
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;

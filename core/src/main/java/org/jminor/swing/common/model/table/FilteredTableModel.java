@@ -7,6 +7,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
+import org.jminor.common.model.table.ColumnSummaryModel;
 
 import javax.swing.table.TableModel;
 import java.awt.Point;

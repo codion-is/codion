@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.table;
 
-import org.jminor.swing.common.model.table.ColumnSummaryModel;
+import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.swing.common.model.table.FilteredTableModel;
 
 import javax.swing.JPanel;
