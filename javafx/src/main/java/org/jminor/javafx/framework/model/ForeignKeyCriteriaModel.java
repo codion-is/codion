@@ -3,20 +3,23 @@
  */
 package org.jminor.javafx.framework.model;
 
-import org.jminor.common.model.SearchType;
+import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.model.table.DefaultColumnCriteriaModel;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entity;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Property;
 
-import java.util.List;
+import java.util.Collection;
+import java.util.Collections;
 
-public final class ForeignKeyCriteriaModel extends PropertyCriteriaModel<Property.ForeignKeyProperty> {
+public final class ForeignKeyCriteriaModel extends DefaultColumnCriteriaModel<Property.ForeignKeyProperty> {
 
   private final EntityConnectionProvider connectionProvider;
 
-  public ForeignKeyCriteriaModel(final Property.ForeignKeyProperty foreignKeyProperty,
+  public ForeignKeyCriteriaModel(final Property.ForeignKeyProperty property,
                                  final EntityConnectionProvider connectionProvider) {
-    super(foreignKeyProperty);
+    super(property, property.getType(), (String) Configuration.getValue(Configuration.WILDCARD_CHARACTER));
     this.connectionProvider = connectionProvider;
   }
 
@@ -24,9 +27,37 @@ public final class ForeignKeyCriteriaModel extends PropertyCriteriaModel<Propert
     return connectionProvider;
   }
 
-  public void setCriteria(final List<Entity> entities) {
-    getUpperBoundValue().set(entities.isEmpty() ? null : entities);
-    getSearchTypeValue().set(SearchType.LIKE);
-    getEnabledState().setActive(!entities.isEmpty());
+  public Criteria<Property.ColumnProperty> getCriteria() {
+    final Object upperBound = getUpperBound();
+    if (upperBound instanceof Collection) {
+      return EntityCriteriaUtil.foreignKeyCriteria(getColumnIdentifier(), getSearchType(), (Collection) upperBound);
+    }
+
+    return EntityCriteriaUtil.foreignKeyCriteria(getColumnIdentifier(), getSearchType(), Collections.singletonList(upperBound));
+  }
+
+  public String toString() {
+    final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyID());
+    if (isEnabled()) {
+      stringBuilder.append(getSearchType());
+      stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
+      stringBuilder.append(getLowerBound() != null ? toString(getLowerBound()) : "null");
+    }
+
+    return stringBuilder.toString();
+  }
+
+  private static String toString(final Object object) {
+    final StringBuilder stringBuilder = new StringBuilder();
+    if (object instanceof Collection) {
+      for (final Object obj : ((Collection) object)) {
+        stringBuilder.append(toString(obj));
+      }
+    }
+    else {
+      stringBuilder.append(object);
+    }
+
+    return stringBuilder.toString();
   }
 }

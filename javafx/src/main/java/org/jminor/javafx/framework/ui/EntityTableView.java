@@ -217,10 +217,10 @@ public class EntityTableView extends TableView<Entity> {
       switch (event.getCode()) {
         case DELETE:
           //todo events from criteria view controls
-          if (!getSelectionModel().isEmpty()) {
-            deleteSelected();
-            event.consume();
-          }
+//          if (!getSelectionModel().isEmpty()) {
+//            deleteSelected();
+//            event.consume();
+//          }
           break;
         case F5:
           listModel.refresh();
@@ -238,7 +238,8 @@ public class EntityTableView extends TableView<Entity> {
           return true;
         }
         for (final TableColumn<Entity, ?> column : getColumns()) {
-          if (column.isVisible() && entity.getAsString(((EntityTableColumn) column).getProperty()).toLowerCase().contains(filterByValue.toLowerCase())) {
+          if (column.isVisible() && entity.getAsString(((EntityTableColumn) column).getProperty()).toLowerCase()
+                  .contains(filterByValue.toLowerCase())) {
             return true;
           }
         }

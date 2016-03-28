@@ -6,29 +6,28 @@ package org.jminor.javafx.framework.model;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.criteria.CriteriaUtil;
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
+import org.jminor.common.model.Util;
+import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 
+import java.util.Collection;
 import java.util.LinkedHashMap;
-import java.util.List;
 import java.util.Map;
-import java.util.Objects;
 
 public final class EntityListCriteriaModel {
 
   private final String entityID;
   private final EntityConnectionProvider connectionProvider;
-  private final Map<Property.SearchableProperty, PropertyCriteriaModel> criteriaModels = new LinkedHashMap<>();
+  private final Map<String, ColumnCriteriaModel<? extends Property.SearchableProperty>> criteriaModels = new LinkedHashMap<>();
   private final State criteriaStateChangedState = States.state();
 
   private String rememberedCriteriaState = "";
@@ -41,8 +40,8 @@ public final class EntityListCriteriaModel {
     bindEvents();
   }
 
-  public PropertyCriteriaModel getPropertyCriteriaModel(final Property.SearchableProperty property) {
-    return criteriaModels.get(property);
+  public ColumnCriteriaModel<? extends Property.SearchableProperty> getPropertyCriteriaModel(final String propertyID) {
+    return criteriaModels.get(propertyID);
   }
 
   public void rememberCurrentCriteriaState() {
@@ -56,8 +55,16 @@ public final class EntityListCriteriaModel {
 
   public EntitySelectCriteria getSelectCriteria() {
     final CriteriaSet<Property.ColumnProperty> criteria = CriteriaUtil.criteriaSet(Conjunction.AND);
-    criteriaModels.values().stream().filter(model ->
-            model.getEnabledState().isActive()).forEach(model -> criteria.add(model.getColumnCriteria()));
+    for (final ColumnCriteriaModel<? extends Property.SearchableProperty> model : criteriaModels.values()) {
+      if (model.isEnabled()) {
+        if (model instanceof PropertyCriteriaModel) {
+          criteria.add(((PropertyCriteriaModel) model).getCriteria());
+        }
+        else if (model instanceof ForeignKeyCriteriaModel) {
+          criteria.add(((ForeignKeyCriteriaModel) model).getCriteria());
+        }
+      }
+    }
     if (criteria.getCriteriaCount() > 0) {
       return EntityCriteriaUtil.selectCriteria(entityID, criteria);
     }
@@ -67,33 +74,33 @@ public final class EntityListCriteriaModel {
   }
 
   public void clear() {
-    criteriaModels.values().forEach(PropertyCriteriaModel::clear);
+    criteriaModels.values().forEach(ColumnCriteriaModel::clearCriteria);
   }
 
-  public void filterBy(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> entities)
-          throws DatabaseException {
-    Objects.requireNonNull(foreignKeyProperty);
-    Objects.requireNonNull(entities);
-    final ForeignKeyCriteriaModel criteriaModel = (ForeignKeyCriteriaModel) criteriaModels.get(foreignKeyProperty);
-    if (criteriaModel == null) {
-      throw new IllegalArgumentException("Criteria model not found for property: " + foreignKeyProperty);
+  public final boolean setCriteriaValues(final String propertyID, final Collection<?> values) {
+    final String criteriaState = getCriteriaModelState();
+    if (criteriaModels.containsKey(propertyID)) {
+      final ColumnCriteriaModel criteriaModel = criteriaModels.get(propertyID);
+      criteriaModel.setEnabled(!Util.nullOrEmpty(values));
+      criteriaModel.setUpperBound((Object) null);//because the upperBound could be a reference to the active entity which changes accordingly
+      criteriaModel.setUpperBound(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
     }
-    criteriaModel.setCriteria(entities);
+    return !criteriaState.equals(getCriteriaModelState());
   }
 
   private void initializePropertyCriteria() {
     Entities.getColumnProperties(entityID).stream().filter(columnProperty ->
             !columnProperty.isForeignKeyProperty() && !columnProperty.isAggregateColumn()).forEach(columnProperty ->
-            criteriaModels.put(columnProperty, new PropertyCriteriaModel<>(columnProperty)));
+            criteriaModels.put(columnProperty.getPropertyID(), new PropertyCriteriaModel(columnProperty)));
     for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(entityID)) {
-      criteriaModels.put(foreignKeyProperty, new ForeignKeyCriteriaModel(foreignKeyProperty, connectionProvider));
+      criteriaModels.put(foreignKeyProperty.getPropertyID(), new ForeignKeyCriteriaModel(foreignKeyProperty, connectionProvider));
     }
   }
 
   private String getCriteriaModelState() {
     final StringBuilder stringBuilder = new StringBuilder();
-    for (final PropertyCriteriaModel model : criteriaModels.values()) {
-      stringBuilder.append(model.getSearchStateString());
+    for (final ColumnCriteriaModel model : criteriaModels.values()) {
+      stringBuilder.append(model.toString());
     }
 
     return stringBuilder.toString();
@@ -105,7 +112,7 @@ public final class EntityListCriteriaModel {
       //todo necessary?
 //      criteriaStateChangedEvent.fire();
     };
-    for (final PropertyCriteriaModel model : criteriaModels.values()) {
+    for (final ColumnCriteriaModel model : criteriaModels.values()) {
       model.addCriteriaStateListener(listener);
     }
   }

@@ -3,10 +3,10 @@
  */
 package org.jminor.javafx.framework.ui;
 
+import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.javafx.framework.model.EntityListModel;
-import org.jminor.javafx.framework.model.PropertyCriteriaModel;
 
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn;
@@ -57,8 +57,8 @@ public final class EntityTableColumn extends TableColumn<Entity, Object> {
   }
 
   private PropertyCriteriaView initializeCriteriaView(final EntityListModel listModel) {
-    final PropertyCriteriaModel<Property.SearchableProperty> criteriaModel =
-            listModel.getCriteriaModel().getPropertyCriteriaModel((Property.SearchableProperty) property);
+    final ColumnCriteriaModel<? extends Property.SearchableProperty> criteriaModel =
+            listModel.getCriteriaModel().getPropertyCriteriaModel(property.getPropertyID());
     final PropertyCriteriaView criteriaView = new PropertyCriteriaView(criteriaModel);
     criteriaView.prefWidthProperty().setValue(getWidth());
     widthProperty().addListener((observable, oldValue, newValue) -> {

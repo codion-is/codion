@@ -82,6 +82,10 @@ public final class PropertyValues {
 
     @Override
     public String fromString(final String string) {
+      if (string != null && string.isEmpty()) {
+        return null;
+      }
+
       return string;
     }
   }

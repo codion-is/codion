@@ -9,10 +9,11 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.States;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
+import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.javafx.framework.model.ForeignKeyCriteriaModel;
-import org.jminor.javafx.framework.model.PropertyCriteriaModel;
 
+import javafx.collections.FXCollections;
 import javafx.scene.control.CheckBox;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
@@ -22,9 +23,12 @@ import javafx.scene.layout.BorderPane;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Pane;
 
+import java.util.ArrayList;
+import java.util.Collection;
+
 public final class PropertyCriteriaView extends BorderPane {
 
-  private final PropertyCriteriaModel<? extends Property.SearchableProperty> model;
+  private final ColumnCriteriaModel<? extends Property.SearchableProperty> model;
   private final Pane searchTypePane;
   private final Pane topPane;
   private final Label header;
@@ -34,9 +38,9 @@ public final class PropertyCriteriaView extends BorderPane {
   private final Control lowerBoundControl;
   private final State advancedCriteria = States.state();
 
-  public PropertyCriteriaView(final PropertyCriteriaModel<? extends Property.SearchableProperty> model) {
+  public PropertyCriteriaView(final ColumnCriteriaModel<? extends Property.SearchableProperty> model) {
     this.model = model;
-    this.header = new Label(model.getProperty().getCaption());
+    this.header = new Label(model.getColumnIdentifier().getCaption());
     this.enabledBox = createEnabledBox();
     this.checkBoxPane = createCheckBoxPane();
     this.upperBoundControl = createUpperBoundControl();
@@ -76,10 +80,11 @@ public final class PropertyCriteriaView extends BorderPane {
   }
 
   private ComboBox<Item<SearchType>> createSearchTypeComboBox() {
-    final ComboBox<Item<SearchType>> comboBox = new ComboBox<>(model.getSearchTypeList());
-    comboBox.getSelectionModel().select(new Item<>(model.getSearchTypeValue().get()));
+    final ComboBox<Item<SearchType>> comboBox = new ComboBox<>(
+            FXCollections.observableArrayList(getSearchTypes(model.getColumnIdentifier())));
+    comboBox.getSelectionModel().select(new Item<>(model.getSearchType()));
     comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-      model.getSearchTypeValue().set(newValue.getItem());
+      model.setSearchType(newValue.getItem());
     });
     comboBox.maxWidthProperty().set(Double.MAX_VALUE);
     comboBox.minWidthProperty().set(0);
@@ -88,24 +93,27 @@ public final class PropertyCriteriaView extends BorderPane {
   }
 
   private CheckBox createEnabledBox() {
-    return FXUiUtil.createCheckBox(model.getEnabledState());
+    final CheckBox box = new CheckBox();
+    Values.link(Values.beanValue(model, "enabled", boolean.class, model.getEnabledObserver()), FXUiUtil.createBooleanValue(box));
+
+    return box;
   }
 
   private Control createUpperBoundControl() {
     final Control control = createControl();
-    final Value value = FXUiUtil.createValue(model.getProperty(), control, null);
+    final Value value = FXUiUtil.createValue(model.getColumnIdentifier(), control, null);
     Values.link(model.getUpperBoundValue(), value);
 
     return control;
   }
 
   private Control createLowerBoundControl() {
-    if (model.getProperty() instanceof Property.ForeignKeyProperty) {
+    if (model.getColumnIdentifier() instanceof Property.ForeignKeyProperty) {
       //never required
       return null;
     }
     final Control control = createControl();
-    final Value value = FXUiUtil.createValue(model.getProperty(), control, null);
+    final Value value = FXUiUtil.createValue(model.getColumnIdentifier(), control, null);
     Values.link(model.getLowerBoundValue(), value);
 
     return control;
@@ -114,14 +122,14 @@ public final class PropertyCriteriaView extends BorderPane {
   private Control createControl() {
     final Control control;
     if (model instanceof ForeignKeyCriteriaModel) {
-      control = FXUiUtil.createControl(model.getProperty(), ((ForeignKeyCriteriaModel) model).getConnectionProvider());
+      control = FXUiUtil.createControl(model.getColumnIdentifier(), ((ForeignKeyCriteriaModel) model).getConnectionProvider());
     }
     else {
-      control = FXUiUtil.createControl(model.getProperty(), null);
+      control = FXUiUtil.createControl(model.getColumnIdentifier(), null);
     }
     control.setOnKeyReleased(event -> {
       if (event.getCode().equals(KeyCode.ENTER)) {
-        model.getEnabledState().setActive(!model.getEnabledState().isActive());
+        model.setEnabled(!model.isEnabled());
       }
     });
     control.minWidthProperty().setValue(0);
@@ -131,7 +139,7 @@ public final class PropertyCriteriaView extends BorderPane {
   }
 
   private void bindEvents() {
-    model.addLowerBoundRequiredListener(lowerBoundRequired -> initializeUI());
+    model.addLowerBoundRequiredListener(() -> initializeUI());
   }
 
   private void initializeUI() {
@@ -157,5 +165,23 @@ public final class PropertyCriteriaView extends BorderPane {
     }
 
     return borderPane;
+  }
+
+  private static Collection<Item<SearchType>> getSearchTypes(final Property property) {
+    final Collection<Item<SearchType>> types = new ArrayList<>();
+    if (property instanceof Property.ForeignKeyProperty) {
+      types.add(new Item<>(SearchType.LIKE, SearchType.LIKE.getCaption()));
+      types.add(new Item<>(SearchType.NOT_LIKE, SearchType.NOT_LIKE.getCaption()));
+    }
+    else if (property.isBoolean()) {
+      types.add(new Item<>(SearchType.LIKE, SearchType.LIKE.getCaption()));
+    }
+    else {
+      for (final SearchType searchType : SearchType.values()) {
+        types.add(new Item<>(searchType, searchType.getCaption()));
+      }
+    }
+
+    return types;
   }
 }

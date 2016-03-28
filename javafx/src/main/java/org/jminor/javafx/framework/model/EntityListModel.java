@@ -139,7 +139,7 @@ public class EntityListModel implements ObservableList<Entity> {
   }
 
   public final void filterBy(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> entities) throws DatabaseException {
-    criteriaModel.filterBy(foreignKeyProperty, entities);
+    criteriaModel.setCriteriaValues(foreignKeyProperty.getPropertyID(), entities);
     refresh();
   }
 
