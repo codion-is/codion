@@ -5,6 +5,7 @@ package org.jminor.javafx.framework.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.common.model.table.DefaultColumnCriteriaModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -21,16 +22,23 @@ public final class PropertyCriteriaModel extends DefaultColumnCriteriaModel<Prop
 
   public Criteria<Property.ColumnProperty> getCriteria() {
     return getSearchType().getValues().equals(SearchType.Values.TWO) ?
-            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), getSearchType(), isCaseSensitive(), Arrays.asList(getLowerBound(), getUpperBound())) :
-            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), getSearchType(), isCaseSensitive(), getUpperBound());
+            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), getSearchType(),
+                    isCaseSensitive(), Arrays.asList(getLowerBound(), getUpperBound())) :
+            EntityCriteriaUtil.propertyCriteria(getColumnIdentifier(), getSearchType(),
+                    isCaseSensitive(), getUpperBound());
   }
 
+  @Override
   public String toString() {
-    final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyID());
-    if (isEnabled()) {
-      stringBuilder.append(getSearchType());
-      stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
-      stringBuilder.append(getLowerBound() != null ? toString(getLowerBound()) : "null");
+    return toString(this);
+  }
+
+  static String toString(final ColumnCriteriaModel<? extends Property.SearchableProperty> model) {
+    final StringBuilder stringBuilder = new StringBuilder(model.getColumnIdentifier().getPropertyID());
+    if (model.isEnabled()) {
+      stringBuilder.append(model.getSearchType());
+      stringBuilder.append(model.getUpperBound() != null ? toString(model.getUpperBound()) : "null");
+      stringBuilder.append(model.getLowerBound() != null ? toString(model.getLowerBound()) : "null");
     }
 
     return stringBuilder.toString();

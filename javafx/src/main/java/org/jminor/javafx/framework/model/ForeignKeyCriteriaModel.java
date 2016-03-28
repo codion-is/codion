@@ -36,28 +36,8 @@ public final class ForeignKeyCriteriaModel extends DefaultColumnCriteriaModel<Pr
     return EntityCriteriaUtil.foreignKeyCriteria(getColumnIdentifier(), getSearchType(), Collections.singletonList(upperBound));
   }
 
+  @Override
   public String toString() {
-    final StringBuilder stringBuilder = new StringBuilder(getColumnIdentifier().getPropertyID());
-    if (isEnabled()) {
-      stringBuilder.append(getSearchType());
-      stringBuilder.append(getUpperBound() != null ? toString(getUpperBound()) : "null");
-      stringBuilder.append(getLowerBound() != null ? toString(getLowerBound()) : "null");
-    }
-
-    return stringBuilder.toString();
-  }
-
-  private static String toString(final Object object) {
-    final StringBuilder stringBuilder = new StringBuilder();
-    if (object instanceof Collection) {
-      for (final Object obj : ((Collection) object)) {
-        stringBuilder.append(toString(obj));
-      }
-    }
-    else {
-      stringBuilder.append(object);
-    }
-
-    return stringBuilder.toString();
+    return PropertyCriteriaModel.toString(this);
   }
 }
