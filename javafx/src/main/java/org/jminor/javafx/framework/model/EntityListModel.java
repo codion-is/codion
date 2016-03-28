@@ -3,6 +3,7 @@
  */
 package org.jminor.javafx.framework.model;
 
+import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
@@ -11,7 +12,7 @@ import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
+import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
@@ -27,6 +28,7 @@ import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableSelectionModel;
 import javafx.util.Callback;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
 import java.util.Iterator;
@@ -51,7 +53,10 @@ public class EntityListModel implements ObservableList<Entity> {
 
   private EntityEditModel editModel;
 
-  private EntitySelectCriteria selectCriteria;
+  /**
+   * If true then querying should be disabled if no criteria is specified
+   */
+  private boolean queryCriteriaRequired = false;
 
   public EntityListModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this.entityID = entityID;
@@ -107,14 +112,19 @@ public class EntityListModel implements ObservableList<Entity> {
     return criteriaModel;
   }
 
+  public final boolean isQueryCriteriaRequired() {
+    return queryCriteriaRequired;
+  }
+
+  public final EntityListModel setQueryCriteriaRequired(final boolean value) {
+    this.queryCriteriaRequired = value;
+    return this;
+  }
+
   public final void refresh() {
-    try {
-      setAll(connectionProvider.getConnection().selectMany(getSelectCriteria()));
-      criteriaModel.rememberCurrentCriteriaState();
-    }
-    catch (final DatabaseException e) {
-      throw new RuntimeException(e);
-    }
+    final List<Entity> queryResult = performQuery(criteriaModel.getTableCriteria());
+    setAll(queryResult);
+    criteriaModel.rememberCurrentCriteriaState();
   }
 
   public final StateObserver getSelectionEmptyObserver() {
@@ -138,9 +148,10 @@ public class EntityListModel implements ObservableList<Entity> {
     return multipleSelectionState.getObserver();
   }
 
-  public final void filterBy(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> entities) {
-    criteriaModel.setCriteriaValues(foreignKeyProperty.getPropertyID(), entities);
-    refresh();
+  public final void setForeignKeyCriteriaValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> entities) {
+    if (criteriaModel.setCriteriaValues(foreignKeyProperty.getPropertyID(), entities)) {
+      refresh();
+    }
   }
 
   public final Callback<TableColumn.CellDataFeatures<Entity, Object>, ObservableValue<Object>> getCellValueFactory(final Property property) {
@@ -320,11 +331,25 @@ public class EntityListModel implements ObservableList<Entity> {
     list.removeListener(listener);
   }
 
-  protected EntitySelectCriteria getSelectCriteria() {
-    final EntitySelectCriteria selectCriteria = criteriaModel.getSelectCriteria();
-    selectCriteria.setOrderByClause(Entities.getOrderByClause(entityID));
+  /**
+   * Queries for the data used to populate this EntityTableModel when it is refreshed,
+   * using the order by clause returned by {@link #getOrderByClause()}
+   * @param criteria a criteria
+   * @return entities selected from the database according the the query criteria.
+   * @see EntityTableCriteriaModel#getTableCriteria()
+   */
+  protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
+    if (criteria == null && queryCriteriaRequired) {
+      return new ArrayList<>();
+    }
 
-    return selectCriteria;
+    try {
+      return connectionProvider.getConnection().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
+              Entities.getOrderByClause(entityID)));
+    }
+    catch (final DatabaseException e) {
+      throw new RuntimeException(e);
+    }
   }
 
   private void bindEditModelEvents() {

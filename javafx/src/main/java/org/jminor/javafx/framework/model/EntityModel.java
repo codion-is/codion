@@ -61,6 +61,9 @@ public class EntityModel {
 
   public final void addDetailModel(final EntityModel entityModel) {
     detailModels.add(entityModel);
+    if (entityModel.getTableModel() != null) {
+      entityModel.getTableModel().setQueryCriteriaRequired(true);
+    }
   }
 
   public final EntityModel getDetailModel(final String entityID) {
@@ -137,7 +140,7 @@ public class EntityModel {
 
   private void initialize(final Property.ForeignKeyProperty foreignKeyProperty, final List<Entity> foreignKeyValues) {
     if (tableModel != null) {
-      tableModel.filterBy(foreignKeyProperty, foreignKeyValues);
+      tableModel.setForeignKeyCriteriaValues(foreignKeyProperty, foreignKeyValues);
     }
     handleInitialization(foreignKeyProperty, foreignKeyValues);
   }

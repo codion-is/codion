@@ -124,6 +124,14 @@ public class EntityView extends BorderPane implements ViewTreeNode {
     return this;
   }
 
+  public EntityEditView getEditView() {
+    return editView;
+  }
+
+  public EntityTableView getTableView() {
+    return tableView;
+  }
+
   public final void addDetailView(final EntityView detailView) {
     detailViews.add(detailView);
     detailView.setParentView(this);

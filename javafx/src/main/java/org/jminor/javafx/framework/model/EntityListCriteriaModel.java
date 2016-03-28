@@ -14,8 +14,6 @@ import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.db.criteria.EntityCriteriaUtil;
-import org.jminor.framework.db.criteria.EntitySelectCriteria;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 
@@ -53,24 +51,21 @@ public final class EntityListCriteriaModel {
     return criteriaStateChangedState.getObserver();
   }
 
-  public EntitySelectCriteria getSelectCriteria() {
-    final CriteriaSet<Property.ColumnProperty> criteria = CriteriaUtil.criteriaSet(Conjunction.AND);
-    for (final ColumnCriteriaModel<? extends Property.SearchableProperty> model : criteriaModels.values()) {
-      if (model.isEnabled()) {
-        if (model instanceof PropertyCriteriaModel) {
-          criteria.add(((PropertyCriteriaModel) model).getCriteria());
-        }
-        else if (model instanceof ForeignKeyCriteriaModel) {
-          criteria.add(((ForeignKeyCriteriaModel) model).getCriteria());
-        }
+  public final Criteria<Property.ColumnProperty> getTableCriteria() {
+    final CriteriaSet<Property.ColumnProperty> criteriaSet = CriteriaUtil.criteriaSet(Conjunction.AND);
+    criteriaModels.values().stream().filter(ColumnCriteriaModel::isEnabled).forEach(model -> {
+      if (model instanceof PropertyCriteriaModel) {
+        criteriaSet.add(((PropertyCriteriaModel) model).getCriteria());
       }
+      else if (model instanceof ForeignKeyCriteriaModel) {
+        criteriaSet.add(((ForeignKeyCriteriaModel) model).getCriteria());
+      }
+    });
+    if (additionalCriteria != null) {
+      criteriaSet.add(additionalCriteria);
     }
-    if (criteria.getCriteriaCount() > 0) {
-      return EntityCriteriaUtil.selectCriteria(entityID, criteria);
-    }
-    else {
-      return EntityCriteriaUtil.selectCriteria(entityID);
-    }
+
+    return criteriaSet.getCriteriaCount() > 0 ? criteriaSet : null;
   }
 
   public void clear() {
@@ -85,7 +80,7 @@ public final class EntityListCriteriaModel {
       criteriaModel.setUpperBound((Object) null);//because the upperBound could be a reference to the active entity which changes accordingly
       criteriaModel.setUpperBound(values != null && values.isEmpty() ? null : values);//this then fails to register a changed upper bound
     }
-    return !criteriaState.equals(getCriteriaModelState());
+    return !criteriaState.equals(rememberedCriteriaState);
   }
 
   private void initializePropertyCriteria() {
