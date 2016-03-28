@@ -3,7 +3,6 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
@@ -18,13 +17,18 @@ import javafx.scene.Scene;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuBar;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.Tab;
+import javafx.scene.control.TabPane;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.stage.Stage;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-public abstract class EntityApplicationView<Model extends EntityApplicationModel> extends Application {
+import java.util.ArrayList;
+import java.util.List;
+
+public abstract class EntityApplicationView<Model extends EntityApplicationModel> extends Application implements ViewTreeNode {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationView.class);
 
@@ -32,6 +36,8 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
 
   private final String applicationTitle;
   private final String iconFileName;
+
+  private final List<EntityView> entityViews = new ArrayList<>();
 
   private Model model;
   private Stage mainStage;
@@ -50,6 +56,30 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
     return model;
   }
 
+  public final void addEntityView(final EntityView entityView) {
+    entityViews.add(entityView);
+  }
+
+  @Override
+  public final ViewTreeNode getParentView() {
+    return null;
+  }
+
+  @Override
+  public final ViewTreeNode getPreviousSiblingView() {
+    return null;
+  }
+
+  @Override
+  public final ViewTreeNode getNextSiblingView() {
+    return null;
+  }
+
+  @Override
+  public final List<? extends ViewTreeNode> getChildViews() {
+    return entityViews;
+  }
+
   @Override
   public final void start(final Stage stage) {
     try {
@@ -60,6 +90,7 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
       this.model = initializeApplicationModel(connectionProvider);
       stage.setTitle(applicationTitle);
       stage.getIcons().add(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName)));
+      initializeEntitieViews();
       final Scene applicationScene = initializeApplicationScene(stage);
 //      ((VBox) applicationScene.getRoot()).getChildren().addAll(createMainMenu());
       stage.setScene(applicationScene);
@@ -110,7 +141,20 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
             new ImageView(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName))));
   }
 
-  protected abstract Scene initializeApplicationScene(final Stage primaryStage) throws DatabaseException;
+  protected abstract void initializeEntitieViews();
+
+  protected Scene initializeApplicationScene(final Stage primaryStage) {
+    if (entityViews.isEmpty()) {
+      throw new IllegalStateException("No entity views have been added");
+    }
+    final TabPane tabPane = new TabPane();
+    for (final EntityView entityView : entityViews) {
+      tabPane.getTabs().add(new Tab(entityView.getCaption(), entityView));
+    }
+    final Scene scene = new Scene(tabPane);
+
+    return scene;
+  };
 
   protected abstract Model initializeApplicationModel(final EntityConnectionProvider connectionProvider);
 

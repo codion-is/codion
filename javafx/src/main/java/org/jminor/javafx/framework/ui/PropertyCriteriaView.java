@@ -88,6 +88,7 @@ public final class PropertyCriteriaView extends BorderPane {
     });
     comboBox.maxWidthProperty().set(Double.MAX_VALUE);
     comboBox.minWidthProperty().set(0);
+    FXUiUtil.link(comboBox.disableProperty(), model.getLockedObserver());
 
     return comboBox;
   }
@@ -95,6 +96,7 @@ public final class PropertyCriteriaView extends BorderPane {
   private CheckBox createEnabledBox() {
     final CheckBox box = new CheckBox();
     Values.link(Values.beanValue(model, "enabled", boolean.class, model.getEnabledObserver()), FXUiUtil.createBooleanValue(box));
+    FXUiUtil.link(box.disableProperty(), model.getLockedObserver());
 
     return box;
   }
@@ -130,16 +132,18 @@ public final class PropertyCriteriaView extends BorderPane {
     control.setOnKeyReleased(event -> {
       if (event.getCode().equals(KeyCode.ENTER)) {
         model.setEnabled(!model.isEnabled());
+        event.consume();
       }
     });
     control.minWidthProperty().setValue(0);
     control.maxWidthProperty().setValue(Double.MAX_VALUE);
+    FXUiUtil.link(control.disableProperty(), model.getLockedObserver());
 
     return control;
   }
 
   private void bindEvents() {
-    model.addLowerBoundRequiredListener(() -> initializeUI());
+    model.addLowerBoundRequiredListener(this::initializeUI);
   }
 
   private void initializeUI() {

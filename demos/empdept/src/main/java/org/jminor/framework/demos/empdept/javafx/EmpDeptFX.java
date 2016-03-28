@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.demos.empdept.javafx;
 
-import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
@@ -12,14 +11,7 @@ import org.jminor.javafx.framework.ui.EntityApplicationView;
 import org.jminor.javafx.framework.ui.EntityTableView;
 import org.jminor.javafx.framework.ui.EntityView;
 
-import javafx.scene.Scene;
-import javafx.stage.Stage;
-
 public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
-
-  static {
-    EmpDept.init();
-  }
 
   public EmpDeptFX() {
     super("EmpDeptFX");
@@ -36,7 +28,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
   }
 
   @Override
-  protected Scene initializeApplicationScene(final Stage primaryStage) throws DatabaseException {
+  protected void initializeEntitieViews() {
     final EntityModel departmentModel = getModel().getEntityModel(EmpDept.T_DEPARTMENT);
     final EntityView departmentView = new EntityView(departmentModel,
             new DepartmentEditView(departmentModel.getEditModel()),
@@ -53,7 +45,7 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
 
     departmentView.initializePanel();
 
-    return new Scene(departmentView);
+    addEntityView(departmentView);
   }
 
   public static void main(final String[] args) {

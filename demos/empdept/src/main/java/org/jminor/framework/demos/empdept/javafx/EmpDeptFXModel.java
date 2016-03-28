@@ -17,6 +17,11 @@ public final class EmpDeptFXModel extends EntityApplicationModel {
     setupEntityModels(connectionProvider);
   }
 
+  @Override
+  protected void loadDomainModel() {
+    EmpDept.init();
+  }
+
   private void setupEntityModels(final EntityConnectionProvider connectionProvider) {
     final EntityModel departmentModel = new EntityModel(
             new EntityEditModel(EmpDept.T_DEPARTMENT, connectionProvider),

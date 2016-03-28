@@ -12,19 +12,29 @@ import javafx.scene.control.TabPane;
 import javafx.scene.input.KeyEvent;
 import javafx.scene.layout.BorderPane;
 
-public class EntityView extends BorderPane {
+import java.util.ArrayList;
+import java.util.List;
 
+public class EntityView extends BorderPane implements ViewTreeNode {
+
+  private final String caption;
   private final EntityModel model;
   private final EntityEditView editView;
   private final EntityTableView tableView;
+  private final List<EntityView> detailViews = new ArrayList<>();
 
-  private EntityView masterView;
+  private EntityView parentView;
 
   private final TabPane detailViewTabPane = new TabPane();
 
   private boolean initialized = false;
 
   public EntityView(final EntityModel model, final EntityEditView editView, final EntityTableView tableView) {
+    this(Entities.getCaption(model.getEntityID()), model, editView, tableView);
+  }
+
+  public EntityView(final String caption, final EntityModel model, final EntityEditView editView, final EntityTableView tableView) {
+    this.caption = caption;
     this.model = model;
     this.editView = editView;
     this.tableView = tableView;
@@ -36,8 +46,61 @@ public class EntityView extends BorderPane {
     return model;
   }
 
-  public final void setMasterView(final EntityView masterView) {
-    this.masterView = masterView;
+  public final String getCaption() {
+    return caption;
+  }
+
+  public final void setParentView(final EntityView parentView) {
+    this.parentView = parentView;
+  }
+
+  @Override
+  public final ViewTreeNode getParentView() {
+    return parentView;
+  }
+
+  @Override
+  public final ViewTreeNode getPreviousSiblingView() {
+    if (getParentView() == null) {
+      return null;
+    }
+
+    final List<? extends ViewTreeNode> siblings = getParentView().getChildViews();
+    if (siblings.contains(this)) {
+      final int index = siblings.indexOf(this);
+      if (index == 0) {
+        return siblings.get(siblings.size() - 1);
+      }
+      else {
+        return siblings.get(index - 1);
+      }
+    }
+
+    return null;
+  }
+
+  @Override
+  public final ViewTreeNode getNextSiblingView() {
+    if (getParentView() == null) {//no parent, no siblings
+      return null;
+    }
+    final List<? extends ViewTreeNode> siblings = getParentView().getChildViews();
+    if (siblings.contains(this)) {
+      final int index = siblings.indexOf(this);
+      if (index == siblings.size() - 1) {
+        return siblings.get(0);
+      }
+      else {
+        return siblings.get(index + 1);
+      }
+    }
+
+    return null;
+  }
+
+  @Override
+  public final List<? extends ViewTreeNode> getChildViews() {
+    return detailViews;
   }
 
   public final EntityView initializePanel() {
@@ -51,7 +114,7 @@ public class EntityView extends BorderPane {
 
   public final void addDetailView(final EntityView detailView) {
     detailViewTabPane.getTabs().add(new Tab(Entities.getCaption(detailView.getModel().getEntityID()), detailView));
-    detailView.setMasterView(this);
+    detailView.setParentView(this);
   }
 
   private void checkIfInitalized() {
@@ -81,6 +144,7 @@ public class EntityView extends BorderPane {
             tableView.requestFocus();
             event.consume();
           }
+          break;
         case I:
           if (editView != null && event.isControlDown()) {
             editView.selectInputControl();
@@ -121,17 +185,23 @@ public class EntityView extends BorderPane {
     }
   }
 
-  private void navigateRight() {
-
+  private void navigateLeft() {
+    final EntityView leftSibling = (EntityView) getPreviousSiblingView();
+    if (leftSibling != null) {
+      leftSibling.requestInputFocus();
+    }
   }
 
-  private void navigateLeft() {
-
+  private void navigateRight() {
+    final EntityView rightSibling = (EntityView) getNextSiblingView();
+    if (rightSibling != null) {
+      rightSibling.requestInputFocus();
+    }
   }
 
   private void navigateUp() {
-    if (masterView != null) {
-      masterView.requestInputFocus();
+    if (parentView != null) {
+      parentView.requestInputFocus();
     }
   }
 

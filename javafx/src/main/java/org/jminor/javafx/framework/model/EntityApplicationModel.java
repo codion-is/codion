@@ -8,7 +8,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import java.util.ArrayList;
 import java.util.List;
 
-public class EntityApplicationModel {
+public abstract class EntityApplicationModel {
 
   private final EntityConnectionProvider connectionProvider;
   private final List<EntityModel> entityModels = new ArrayList<>();
@@ -46,4 +46,6 @@ public class EntityApplicationModel {
 
     throw new IllegalArgumentException("Entity model of class '" + modelClass + "' not found");
   }
+
+  protected abstract void loadDomainModel();
 }
