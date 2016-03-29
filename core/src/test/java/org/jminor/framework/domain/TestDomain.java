@@ -26,6 +26,23 @@ public final class TestDomain {
   public static final String MASTER_NAME = "name";
   public static final String MASTER_CODE = "code";
 
+  static {
+    Entities.define(T_MASTER,
+            Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
+            Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
+            Properties.columnProperty(MASTER_CODE, Types.INTEGER))
+            .setComparator(new Comparator<Entity>() {
+              @Override
+              public int compare(final Entity o1, final Entity o2) {
+                final Integer code1 = o1.getInteger(MASTER_CODE);
+                final Integer code2 = o2.getInteger(MASTER_CODE);
+
+                return code1.compareTo(code2);
+              }
+            })
+            .setStringProvider(new Entities.StringProvider(MASTER_NAME));
+  }
+
   public static final String DETAIL_ID = "id";
   public static final String DETAIL_INT = "int";
   public static final String DETAIL_DOUBLE = "double";
@@ -50,21 +67,6 @@ public final class TestDomain {
           new Item(2, "2"), new Item(3, "3"));
 
   static {
-    Entities.define(T_MASTER,
-            Properties.primaryKeyProperty(MASTER_ID, Types.BIGINT),
-            Properties.columnProperty(MASTER_NAME, Types.VARCHAR),
-            Properties.columnProperty(MASTER_CODE, Types.INTEGER))
-            .setComparator(new Comparator<Entity>() {
-              @Override
-              public int compare(final Entity o1, final Entity o2) {
-                final Integer code1 = o1.getInteger(MASTER_CODE);
-                final Integer code2 = o2.getInteger(MASTER_CODE);
-
-                return code1.compareTo(code2);
-              }
-            })
-            .setStringProvider(new Entities.StringProvider(MASTER_NAME));
-
     Entities.define(T_DETAIL,
             Properties.primaryKeyProperty(DETAIL_ID, Types.BIGINT),
             Properties.columnProperty(DETAIL_INT, Types.INTEGER, DETAIL_INT),

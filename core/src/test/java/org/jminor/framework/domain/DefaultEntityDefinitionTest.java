@@ -48,6 +48,17 @@ public class DefaultEntityDefinitionTest {
   }
 
   @Test(expected = IllegalArgumentException.class)
+  public void foreignKeyPropertyCountMismatch() {
+    Entities.define("test.composite_key_master",
+            Properties.columnProperty("first").setPrimaryKeyIndex(0),
+            Properties.columnProperty("second").setPrimaryKeyIndex(1));
+    new DefaultEntityDefinition("test.composite_reference",
+            Properties.foreignKeyProperty("reference_fk", null, "test.composite_key_master",
+                    Properties.columnProperty("reference")
+                            .setPrimaryKeyIndex(0)));
+  }
+
+  @Test(expected = IllegalArgumentException.class)
   public void duplicatePropertyIDs() {
     new DefaultEntityDefinition("entityID", "tableName",
             Properties.primaryKeyProperty("id"),

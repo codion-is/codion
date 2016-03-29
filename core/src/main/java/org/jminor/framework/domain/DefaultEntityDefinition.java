@@ -193,7 +193,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     this.entityID = entityID;
     this.caption = entityID;
     this.tableName = tableName;
-    this.properties = Collections.unmodifiableMap(initializeProperties(entityID, propertyDefinitions));
+    this.properties = initializeProperties(entityID, propertyDefinitions);
     this.groupByClause = initializeGroupByClause(getColumnProperties());
     this.resultPacker = new EntityResultPacker(entityID, getColumnProperties(properties.values()),
             getTransientProperties(properties.values()), this.properties.size());
@@ -648,7 +648,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
     }
     checkPrimaryKey(entityID, properties);
 
-    return properties;
+    return Collections.unmodifiableMap(properties);
   }
 
   private static void initializeForeignKeyProperty(final String entityID, final Map<String, Property> properties,
