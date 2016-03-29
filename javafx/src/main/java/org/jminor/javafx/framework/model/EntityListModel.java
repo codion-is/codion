@@ -72,8 +72,7 @@ public class EntityListModel implements ObservableList<Entity> {
     if (this.editModel != null) {
       throw new IllegalStateException("Edit model has already been set");
     }
-    Objects.requireNonNull(editModel);
-    this.editModel = editModel;
+    this.editModel = Objects.requireNonNull(editModel);
     bindEditModelEvents();
   }
 
@@ -81,7 +80,7 @@ public class EntityListModel implements ObservableList<Entity> {
     if (this.selectionModel != null) {
       throw new IllegalStateException("Selection model has already been set");
     }
-    this.selectionModel = selectionModel;
+    this.selectionModel = Objects.requireNonNull(selectionModel);
     this.selectionModel.setSelectionMode(SelectionMode.MULTIPLE);
     this.selectionEmptyState.setActive(this.selectionModel.isEmpty());
     this.singleSelectionState.setActive(this.selectionModel.getSelectedIndices().size() == 1);
