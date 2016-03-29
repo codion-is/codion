@@ -4199,3 +4199,4 @@
   DefaultEntityEditModel.getDefaultValue() now returns an empty entity for non loaded foreign key values where the referenced primary key is available
   DefaultColumnCriteriaModel, enabled boolean variable replaced with a State
   ColumnSummaryModel moved to org.jminor.common.model.table
+  DefaultEntityLookupModel no longer throws exception if created with no lookup properties, but throws IllegalStateException in performQuery() instead
