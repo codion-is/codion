@@ -45,9 +45,9 @@ public final class DefaultEntityLookupModelTest {
     new DefaultEntityLookupModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER, null);
   }
 
-  @Test(expected = IllegalArgumentException.class)
-  public void constructorNoLookupProperties() {
-    new DefaultEntityLookupModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER, Collections.emptyList());
+  @Test(expected = IllegalStateException.class)
+  public void performQueryNoLookupProperties() {
+    new DefaultEntityLookupModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER, Collections.emptyList()).performQuery();
   }
 
   @Test(expected = IllegalArgumentException.class)

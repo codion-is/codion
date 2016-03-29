@@ -653,14 +653,20 @@ final class DefaultEntityDefinition implements Entity.Definition {
 
   private static void initializeForeignKeyProperty(final String entityID, final Map<String, Property> properties,
                                                    final Property.ForeignKeyProperty foreignKeyProperty) {
-    if (Configuration.getBooleanValue(Configuration.STRICT_FOREIGN_KEYS)
-            && !entityID.equals(foreignKeyProperty.getReferencedEntityID())
-            && !ENTITY_DEFINITIONS.containsKey(foreignKeyProperty.getReferencedEntityID())) {
-      throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getReferencedEntityID()
-              + "' referenced by entity '" + entityID + "' via foreign key property '"
-              + foreignKeyProperty.getPropertyID() + "' has not been defined");
+    final List<Property.ColumnProperty> referenceProperties = foreignKeyProperty.getReferenceProperties();
+    final boolean selfReferential = entityID.equals(foreignKeyProperty.getReferencedEntityID());
+    if (Configuration.getBooleanValue(Configuration.STRICT_FOREIGN_KEYS)) {
+      if (!selfReferential && !ENTITY_DEFINITIONS.containsKey(foreignKeyProperty.getReferencedEntityID())) {
+        throw new IllegalArgumentException("Entity '" + foreignKeyProperty.getReferencedEntityID()
+                + "' referenced by entity '" + entityID + "' via foreign key property '"
+                + foreignKeyProperty.getPropertyID() + "' has not been defined");
+      }
+      if (!selfReferential && referenceProperties.size() != ENTITY_DEFINITIONS.get(foreignKeyProperty.getReferencedEntityID()).getPrimaryKeyProperties().size()) {
+        throw new IllegalArgumentException("Number of reference properties in '" + entityID + "." + foreignKeyProperty.getPropertyID() +
+                "' does not match the number of primary key properties in the referenced entity '" + foreignKeyProperty.getReferencedEntityID() + "'");
+      }
     }
-    for (final Property referenceProperty : foreignKeyProperty.getReferenceProperties()) {
+    for (final Property referenceProperty : referenceProperties) {
       if (!(referenceProperty instanceof Property.MirrorProperty)) {
         if (properties.containsKey(referenceProperty.getPropertyID())) {
           throw new IllegalArgumentException("Property with ID " + referenceProperty.getPropertyID()
