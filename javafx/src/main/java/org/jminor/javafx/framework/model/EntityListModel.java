@@ -333,7 +333,6 @@ public class EntityListModel implements ObservableList<Entity> {
 
   /**
    * Queries for the data used to populate this EntityTableModel when it is refreshed,
-   * using the order by clause returned by {@link #getOrderByClause()}
    * @param criteria a criteria
    * @return entities selected from the database according the the query criteria.
    * @see EntityTableCriteriaModel#getTableCriteria()
