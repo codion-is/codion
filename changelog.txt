@@ -4201,3 +4201,5 @@
   ColumnSummaryModel moved to org.jminor.common.model.table
   DefaultEntityLookupModel no longer throws exception if created with no lookup properties, but throws IllegalStateException in performQuery() instead
   DefaultEntityDefinition.initializeForeignKeyProperty() improved foreign key validation, reference property count checked
+  Util.rejectNullOrEmpty(String) added
+  DefultEntityDefinition constructor now rejects both null and empty entityID and tableName values

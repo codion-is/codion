@@ -186,8 +186,8 @@ final class DefaultEntityDefinition implements Entity.Definition {
    * @throws IllegalArgumentException if no primary key property is specified
    */
   DefaultEntityDefinition(final String entityID, final String tableName, final Property... propertyDefinitions) {
-    Util.rejectNullValue(entityID, "entityID");
-    Util.rejectNullValue(tableName, "tableName");
+    Util.rejectNullOrEmpty(entityID, "entityID");
+    Util.rejectNullOrEmpty(tableName, "tableName");
     Util.rejectNullValue(propertyDefinitions, "entityDefinitions");
     this.domainID = entityID;
     this.entityID = entityID;
@@ -210,7 +210,7 @@ final class DefaultEntityDefinition implements Entity.Definition {
   /** {@inheritDoc} */
   @Override
   public Entity.Definition setTableName(final String tableName) {
-    Util.rejectNullValue(tableName, "tableName");
+    Util.rejectNullOrEmpty(tableName, "tableName");
     this.tableName = tableName;
     return this;
   }
