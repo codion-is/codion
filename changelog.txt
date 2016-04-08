@@ -4203,3 +4203,4 @@
   DefaultEntityDefinition.initializeForeignKeyProperty() improved foreign key validation, reference property count checked
   Util.rejectNullOrEmpty(String) added
   DefultEntityDefinition constructor now rejects both null and empty entityID and tableName values
+  UiUtil.selectFileToSave() overloaded with confirmOverwrite parameter

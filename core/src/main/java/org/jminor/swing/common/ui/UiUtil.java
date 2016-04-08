@@ -352,6 +352,20 @@ public final class UiUtil {
    * @throws CancelException in case the user cancels
    */
   public static synchronized File selectFileToSave(final JComponent dialogParent, final String startDir, final String defaultFileName) {
+    return selectFileToSave(dialogParent, startDir, defaultFileName, true);
+  }
+
+  /**
+   * Displays a save file dialog for creating a new file
+   * @param dialogParent the dialog parent
+   * @param startDir the start dir, user.dir if not specified
+   * @param defaultFileName the default file name to suggest
+   * @param confirmOverwrite if true then the user is asked to confirm overwrite if the file exists
+   * @return the selected file
+   * @throws CancelException in case the user cancels
+   */
+  public static synchronized File selectFileToSave(final JComponent dialogParent, final String startDir,
+                                                   final String defaultFileName, final boolean confirmOverwrite) {
     if (fileChooser == null) {
       try {
         setWaitCursor(true, dialogParent);
@@ -383,7 +397,7 @@ public final class UiUtil {
       int option = fileChooser.showSaveDialog(dialogParent);
       if (option == JFileChooser.APPROVE_OPTION) {
         selectedFile = fileChooser.getSelectedFile();
-        if (selectedFile.exists()) {
+        if (selectedFile.exists() && confirmOverwrite) {
           option = JOptionPane.showConfirmDialog(dialogParent, Messages.get(Messages.OVERWRITE_FILE),
                   Messages.get(Messages.FILE_EXISTS), JOptionPane.YES_NO_CANCEL_OPTION);
           if (option == JOptionPane.YES_OPTION) {
