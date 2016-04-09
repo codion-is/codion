@@ -42,6 +42,13 @@ public final class Configuration {
   public static final String CONNECTION_TYPE_REMOTE = "remote";
 
   /**
+   * The version of the server the last RemoteEntityConnectionProvider connected to.
+   * Value type: Version<br>
+   * Default value: the client version
+   */
+  public static final String REMOTE_SERVER_VERSION = "jminor.server.version";
+
+  /**
    * Specifies whether the client should connect locally or remotely,
    * accepted values: local, remote<br>
    * Value type: String<br>
@@ -689,6 +696,7 @@ public final class Configuration {
     PROPERTIES.put(LOAD_TEST_LOGIN_DELAY, DEFAULT_LOAD_TEST_LOGIN_DELAY);
     PROPERTIES.put(LOAD_TEST_REMOTE_HOSTNAME, "localhost");
     PROPERTIES.put(CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_LOCAL);
+    PROPERTIES.put(REMOTE_SERVER_VERSION, Util.getVersion());
     PROPERTIES.put(CONNECTION_SCHEDULE_VALIDATION, true);
     PROPERTIES.put(CONNECTION_VALIDITY_CHECK_TIMEOUT, 0);
     PROPERTIES.put(SERVER_CLIENT_LOGGING_ENABLED, false);

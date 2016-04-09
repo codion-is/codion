@@ -20,6 +20,22 @@ public interface EntitySelectCriteria extends EntityCriteria {
   EntitySelectCriteria setOrderByClause(final String orderByClause);
 
   /**
+   * Adds the given property to the underlying order by clause, as ascending
+   * Overrides {@link #setOrderByClause(String)}.
+   * @param propertyID the propertyID
+   * @return this EntitytSelectCriteriaInstance
+   */
+  EntitySelectCriteria orderByAscending(final String propertyID);
+
+  /**
+   * Adds the given property to the underlying order by clause, as descending.
+   * Overrides {@link #setOrderByClause(String)}.
+   * @param propertyID the propertyID
+   * @return this EntitytSelectCriteriaInstance
+   */
+  EntitySelectCriteria orderByDescending(final String propertyID);
+
+  /**
    * @return the limit to use for the given criteria
    */
   int getLimit();

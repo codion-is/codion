@@ -9,6 +9,8 @@ import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Version;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
@@ -22,8 +24,10 @@ import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.HashMap;
+import java.util.LinkedHashMap;
 import java.util.List;
 import java.util.Map;
+import java.util.Set;
 
 /**
  * A factory class for query criteria implementations.
@@ -32,6 +36,8 @@ public final class EntityCriteriaUtil {
 
   private static final int IN_CLAUSE_LIMIT = 100;//JDBC limit
   private static final String IN_PREFIX = " in (";
+  //todo remove when time is right
+  private static final Version V0_9_11 = new Version(0, 9, 11);
 
   private EntityCriteriaUtil() {}
 
@@ -91,7 +97,7 @@ public final class EntityCriteriaUtil {
                                                     final SearchType searchType, final String orderByClause,
                                                     final int fetchCount, final Object value) {
     return new DefaultEntitySelectCriteria(entityID, createPropertyCriteria(entityID, propertyID, searchType, value),
-            orderByClause, fetchCount);
+            fetchCount).setOrderByClause(orderByClause);
   }
 
   /**
@@ -100,7 +106,7 @@ public final class EntityCriteriaUtil {
    * @return a select criteria including all entities of the given type
    */
   public static EntitySelectCriteria selectCriteria(final String entityID, final String orderByClause) {
-    return new DefaultEntitySelectCriteria(entityID, null, orderByClause);
+    return new DefaultEntitySelectCriteria(entityID, null).setOrderByClause(orderByClause);
   }
 
   /**
@@ -135,7 +141,7 @@ public final class EntityCriteriaUtil {
    */
   public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property.ColumnProperty> propertyCriteria,
                                                     final String orderByClause, final int fetchCount) {
-    return new DefaultEntitySelectCriteria(entityID, propertyCriteria, orderByClause, fetchCount);
+    return new DefaultEntitySelectCriteria(entityID, propertyCriteria, fetchCount).setOrderByClause(orderByClause);
   }
 
   /**
@@ -428,6 +434,7 @@ public final class EntityCriteriaUtil {
     private EntityCriteria criteria;
     private Map<String, Integer> foreignKeyFetchDepthLimits;
 
+    private OrderBy orderBy;
     private String orderByClause;
     private int fetchCount;
     private boolean forUpdate;
@@ -451,21 +458,7 @@ public final class EntityCriteriaUtil {
      * @see EntityKeyCriteria
      */
     private DefaultEntitySelectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria) {
-      this(entityID, criteria, null);
-    }
-
-    /**
-     * Instantiates a new DefaultEntityCriteria
-     * @param entityID the ID of the entity to select
-     * @param criteria the Criteria object
-     * @param orderByClause the 'order by' clause to use, without the 'order by' keywords,
-     * i.e. "last_name, first_name desc"
-     * @see org.jminor.common.db.criteria.CriteriaSet
-     * @see PropertyCriteria
-     * @see EntityKeyCriteria
-     */
-    private DefaultEntitySelectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria, final String orderByClause) {
-      this(entityID, criteria, orderByClause, -1);
+      this(entityID, criteria, -1);
     }
 
     /**
@@ -477,25 +470,10 @@ public final class EntityCriteriaUtil {
      * @see PropertyCriteria
      * @see EntityKeyCriteria
      */
-    private DefaultEntitySelectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria, final int fetchCount) {
-      this(entityID, criteria, null, fetchCount);
-    }
-
-    /**
-     * Instantiates a new DefaultEntityCriteria
-     * @param entityID the ID of the entity to select
-     * @param criteria the Criteria object
-     * @param orderByClause the 'order by' clause to use, i.e. "last_name, first_name desc"
-     * @param fetchCount the maximum number of records to fetch from the result
-     * @see org.jminor.common.db.criteria.CriteriaSet
-     * @see PropertyCriteria
-     * @see EntityKeyCriteria
-     */
-    private DefaultEntitySelectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria, final String orderByClause,
+    private DefaultEntitySelectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria,
                                         final int fetchCount) {
       this.criteria = new DefaultEntityCriteria(entityID, criteria);
       this.fetchCount = fetchCount;
-      this.orderByClause = orderByClause;
     }
 
     @Override
@@ -530,12 +508,24 @@ public final class EntityCriteriaUtil {
 
     @Override
     public String getOrderByClause() {
-      return orderByClause;
+      return orderBy != null ? orderBy.getOrderByClause() : orderByClause;
     }
 
     @Override
     public EntitySelectCriteria setOrderByClause(final String orderByClause) {
       this.orderByClause = orderByClause;
+      return this;
+    }
+
+    @Override
+    public EntitySelectCriteria orderByAscending(final String propertyID) {
+      getOrderBy().add(propertyID, OrderBy.SortOrder.ASCENDING);
+      return this;
+    }
+
+    @Override
+    public EntitySelectCriteria orderByDescending(final String propertyID) {
+      getOrderBy().add(propertyID, OrderBy.SortOrder.DESCENDING);
       return this;
     }
 
@@ -600,7 +590,19 @@ public final class EntityCriteriaUtil {
       return this;
     }
 
+    private OrderBy getOrderBy() {
+      if (orderBy == null) {
+        orderBy = new OrderBy(getEntityID());
+      }
+
+      return orderBy;
+    }
+
     private void writeObject(final ObjectOutputStream stream) throws IOException {
+      final Version serverVersion = (Version) Configuration.getValue(Configuration.REMOTE_SERVER_VERSION);
+      if (serverVersion.compareTo(V0_9_11) >= 0) {
+        stream.writeObject(orderBy);
+      }
       stream.writeObject(orderByClause);
       stream.writeInt(fetchCount);
       stream.writeBoolean(forUpdate);
@@ -612,6 +614,7 @@ public final class EntityCriteriaUtil {
 
     @SuppressWarnings({"unchecked"})
     private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
+      orderBy = (OrderBy) stream.readObject();
       orderByClause = (String) stream.readObject();
       fetchCount = stream.readInt();
       forUpdate = stream.readBoolean();
@@ -1096,6 +1099,61 @@ public final class EntityCriteriaUtil {
       }
 
       throw new IllegalArgumentException("Foreign key criteria uses only Entity or Entity.Key instances for values");
+    }
+  }
+
+  private static final class OrderBy implements Serializable {
+
+    private static final long serialVersionUID = 1;
+
+    private enum SortOrder {
+      ASCENDING, DESCENDING
+    }
+
+    private String entityID;
+    private LinkedHashMap<String, SortOrder> propertySortOrder = new LinkedHashMap<>();
+
+    private OrderBy(final String entityID) {
+      Util.rejectNullValue(entityID, "entityID");
+      this.entityID = entityID;
+    }
+
+    private OrderBy add(final String propertyID, final SortOrder order) {
+      Util.rejectNullValue(propertyID, "propertyID");
+      if (propertySortOrder.containsKey(propertyID)) {
+        throw new IllegalArgumentException("Order by already contains the given property: " + propertyID);
+      }
+      propertySortOrder.put(propertyID, order);
+      return this;
+    }
+
+    private String getOrderByClause() {
+      final StringBuilder builder = new StringBuilder();
+      final Set<Map.Entry<String, SortOrder>> entries = propertySortOrder.entrySet();
+      int counter = 0;
+      for (final Map.Entry<String, SortOrder> entry : entries) {
+        final Property.ColumnProperty property = Entities.getColumnProperty(entityID, entry.getKey());
+        builder.append(property.getColumnName());
+        if (entry.getValue().equals(SortOrder.DESCENDING)) {
+          builder.append(" desc");
+        }
+        if (counter++ < entries.size() - 1) {
+          builder.append(", ");
+        }
+      }
+
+      return builder.toString();
+    }
+
+    private void writeObject(final ObjectOutputStream stream) throws IOException {
+      stream.writeObject(entityID);
+      stream.writeObject(propertySortOrder);
+    }
+
+    @SuppressWarnings({"unchecked"})
+    private void readObject(final ObjectInputStream stream) throws ClassNotFoundException, IOException {
+      entityID = (String) stream.readObject();
+      propertySortOrder = (LinkedHashMap<String, SortOrder>) stream.readObject();
     }
   }
 }

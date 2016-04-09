@@ -4184,7 +4184,7 @@
   DefaultEntityLookupModel, added parameter validation
   DefaultEntityDefinition.initializeSelectColumnsString() bug fixed, did not use getColumnName() when constructing query
 0.9.10
-  Entity.Data and Property.Data annotations added for database specific entity information, such as table and column names
+  Entity.Table and Property.Column annotations added for database specific entity information, such as table and column names
   Refactoring due the above
   Entity.Definition.setSelectQuery(selectQuery) added as deprecated for backwards compatibility
   Demo deployment process improved
@@ -4204,3 +4204,6 @@
   Util.rejectNullOrEmpty(String) added
   DefultEntityDefinition constructor now rejects both null and empty entityID and tableName values
   UiUtil.selectFileToSave() overloaded with confirmOverwrite parameter
+0.9.11 [server/client incompatible]
+  EntityDefinition.setSelectQuery(String) removed, was deprecated
+  EntitySelectCriteria.orderByAscending(propertyID) and orderByDescending(propertyID) added

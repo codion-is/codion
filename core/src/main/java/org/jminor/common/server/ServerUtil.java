@@ -11,6 +11,7 @@ import org.slf4j.LoggerFactory;
 
 import java.io.Serializable;
 import java.rmi.NotBoundException;
+import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.rmi.registry.LocateRegistry;
 import java.rmi.registry.Registry;
@@ -83,13 +84,15 @@ public final class ServerUtil {
    * @param serverNamePrefix the server name prefix, an empty string results in all servers being returned
    * @param registryPort the port on which to lookup the registry
    * @param serverPort the required server port, -1 for any port
+   * @param <T> the Remote object type served by the server
    * @return the servers having a name with the given prefix
    * @throws RemoteException in case of a remote exception
    * @throws NotBoundException in case no such server is found
    */
-  public static Server getServer(final String serverHostName, final String serverNamePrefix,
-                                 final int registryPort, final int serverPort) throws RemoteException, NotBoundException {
-    final List<Server> servers = getServers(serverHostName, serverNamePrefix, registryPort, serverPort);
+  public static <T extends Remote> Server<T> getServer(final String serverHostName, final String serverNamePrefix,
+                                                       final int registryPort, final int serverPort)
+          throws RemoteException, NotBoundException {
+    final List<Server<T>> servers = getServers(serverHostName, serverNamePrefix, registryPort, serverPort);
     if (!servers.isEmpty()) {
       return servers.get(0);
     }
@@ -99,9 +102,9 @@ public final class ServerUtil {
     }
   }
 
-  private static List<Server> getServers(final String hostNames, final String serverNamePrefix,
+  private static <T extends Remote> List<Server<T>> getServers(final String hostNames, final String serverNamePrefix,
                                          final int registryPort, final int serverPort) throws RemoteException {
-    final List<Server> servers = new ArrayList<>();
+    final List<Server<T>> servers = new ArrayList<>();
     for (final String serverHostName : hostNames.split(",")) {
       LOG.info("Searching for servers,  host: \"{}\", server name prefix: \"{}\", server port: {}, registry port {}",
               new Object[] {serverHostName, serverNamePrefix, serverPort, registryPort});
@@ -110,7 +113,7 @@ public final class ServerUtil {
         if (name.startsWith(serverNamePrefix)) {
           LOG.info("Found server \"{}\"", name);
           try {
-            final Server server = checkServer((Server) registry.lookup(name), serverPort);
+            final Server<T> server = checkServer((Server<T>) registry.lookup(name), serverPort);
             if (server != null) {
               LOG.info("Adding server \"{}\"", name);
               servers.add(server);
@@ -127,7 +130,7 @@ public final class ServerUtil {
     return servers;
   }
 
-  private static Server checkServer(final Server server, final int requestedPort) throws RemoteException {
+  private static <T extends Remote> Server<T> checkServer(final Server<T> server, final int requestedPort) throws RemoteException {
     final Server.ServerInfo serverInfo = server.getServerInfo();
     if (requestedPort != -1 && serverInfo.getServerPort() != requestedPort) {
       LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
@@ -142,10 +145,10 @@ public final class ServerUtil {
     return null;
   }
 
-  private static final class ServerComparator implements Comparator<Server>, Serializable {
+  private static final class ServerComparator<T extends Remote> implements Comparator<Server<T>>, Serializable {
     private static final long serialVersionUID = 1;
     @Override
-    public int compare(final Server o1, final Server o2) {
+    public int compare(final Server<T> o1, final Server<T> o2) {
       try {
         return Integer.valueOf(o1.getServerLoad()).compareTo(o2.getServerLoad());
       }

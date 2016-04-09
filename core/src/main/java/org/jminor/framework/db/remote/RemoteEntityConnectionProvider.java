@@ -35,7 +35,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   private final String serverHostName;
   private final UUID clientID;
   private final String clientTypeID;
-  private Server server;
+  private Server<RemoteEntityConnection> server;
   private Server.ServerInfo serverInfo;
   //todo client version
 
@@ -104,8 +104,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      final RemoteEntityConnection remote = (RemoteEntityConnection) getServer().connect(
-              ClientUtil.connectionInfo(getUser(), clientID, clientTypeID));
+      final RemoteEntityConnection remote = getServer().connect(ClientUtil.connectionInfo(getUser(), clientID, clientTypeID));
 
       return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(remote));
     }
@@ -130,7 +129,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @throws java.rmi.NotBoundException if no server is reachable or if the servers found are not using the specified port
    * @throws java.rmi.RemoteException in case of remote exceptions
    */
-  private Server getServer() throws RemoteException, NotBoundException {
+  private Server<RemoteEntityConnection> getServer() throws RemoteException, NotBoundException {
     boolean unreachable = false;
     try {
       if (this.server != null) {
@@ -159,6 +158,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     this.server = ServerUtil.getServer(serverHostName,
             Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX), registryPort, serverPort);
     this.serverInfo = this.server.getServerInfo();
+    Configuration.setValue(Configuration.REMOTE_SERVER_VERSION, this.serverInfo.getServerVersion());
   }
 
   private static final class RemoteEntityConnectionHandler implements InvocationHandler {

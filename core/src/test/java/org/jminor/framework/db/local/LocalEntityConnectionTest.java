@@ -169,7 +169,7 @@ public class LocalEntityConnectionTest {
   @Test
   public void selectManyLimitOffset() throws Exception {
     final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP)
-            .setOrderByClause("ename").setLimit(2);
+            .orderByAscending(TestDomain.EMP_NAME).setLimit(2);
     List<Entity> result = connection.selectMany(criteria);
     assertEquals(2, result.size());
     criteria.setLimit(3);

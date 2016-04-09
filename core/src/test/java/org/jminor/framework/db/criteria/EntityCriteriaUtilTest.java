@@ -118,6 +118,19 @@ public class EntityCriteriaUtilTest {
     assertEquals(criteria.getOrderByClause(), TestDomain.DEPARTMENT_NAME);
   }
 
+  @Test
+  public void selectCriteriaOrderBy() {
+    final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP)
+            .orderByAscending(TestDomain.EMP_DEPARTMENT).orderByDescending(TestDomain.EMP_ID);
+    assertEquals("deptno, empno desc", criteria.getOrderByClause());
+  }
+
+  @Test(expected = IllegalArgumentException.class)
+  public void selectCriteriaOrderBySamePropertyID() {
+    EntityCriteriaUtil.selectCriteria(TestDomain.T_EMP)
+            .orderByAscending(TestDomain.EMP_DEPARTMENT).orderByDescending(TestDomain.EMP_DEPARTMENT);
+  }
+
   private void assertKeyCriteria(final EntityCriteria criteria) {
     assertEquals(TestDomain.T_DEPARTMENT, criteria.getEntityID());
     assertEquals("deptno = ?", criteria.getWhereClause());
