@@ -115,7 +115,8 @@ public final class EntityCriteriaUtil {
    * @param primaryKeys the primary keys referenced by the given properties
    * @return a select criteria based on the given values
    */
-  public static EntitySelectCriteria selectCriteria(final String entityID, final List<Property.ColumnProperty> foreignKeyReferenceProperties,
+  public static EntitySelectCriteria selectCriteria(final String entityID,
+                                                    final List<Property.ColumnProperty> foreignKeyReferenceProperties,
                                                     final List<Entity.Key> primaryKeys) {
     final EntityKeyCriteria entityKeyCriteria = new EntityKeyCriteria(foreignKeyReferenceProperties, primaryKeys);
     return new DefaultEntitySelectCriteria(entityID, entityKeyCriteria);
@@ -123,13 +124,14 @@ public final class EntityCriteriaUtil {
 
   /**
    * @param entityID the entity ID
-   * @param criteria the column criteria
+   * @param propertyCriteria the column criteria
    * @param orderByClause the order by clause, without the 'order by' keywords
    * @return a select criteria based on the given column criteria
    */
-  public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property.ColumnProperty> criteria,
+  public static EntitySelectCriteria selectCriteria(final String entityID,
+                                                    final Criteria<Property.ColumnProperty> propertyCriteria,
                                                     final String orderByClause) {
-    return selectCriteria(entityID, criteria, orderByClause, -1);
+    return selectCriteria(entityID, propertyCriteria, orderByClause, -1);
   }
 
   /**
@@ -139,7 +141,8 @@ public final class EntityCriteriaUtil {
    * @param fetchCount the maximum number of entities to fetch
    * @return a select criteria based on the given column criteria
    */
-  public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property.ColumnProperty> propertyCriteria,
+  public static EntitySelectCriteria selectCriteria(final String entityID,
+                                                    final Criteria<Property.ColumnProperty> propertyCriteria,
                                                     final String orderByClause, final int fetchCount) {
     return new DefaultEntitySelectCriteria(entityID, propertyCriteria, fetchCount).setOrderByClause(orderByClause);
   }
@@ -166,7 +169,8 @@ public final class EntityCriteriaUtil {
    * @param propertyCriteria the column criteria
    * @return a select criteria based on the given column criteria
    */
-  public static EntitySelectCriteria selectCriteria(final String entityID, final Criteria<Property.ColumnProperty> propertyCriteria) {
+  public static EntitySelectCriteria selectCriteria(final String entityID,
+                                                    final Criteria<Property.ColumnProperty> propertyCriteria) {
     return new DefaultEntitySelectCriteria(entityID, propertyCriteria);
   }
 

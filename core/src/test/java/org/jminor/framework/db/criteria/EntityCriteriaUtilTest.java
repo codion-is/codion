@@ -112,7 +112,7 @@ public class EntityCriteriaUtilTest {
   @Test
   public void simpleCriteria() {
     final EntitySelectCriteria criteria = EntityCriteriaUtil.selectCriteria(TestDomain.T_DEPARTMENT,
-            CriteriaUtil.<Property.ColumnProperty>stringCriteria("department name is not null"), TestDomain.DEPARTMENT_NAME, -1);
+            CriteriaUtil.stringCriteria("department name is not null"), TestDomain.DEPARTMENT_NAME, -1);
     assertEquals(0, criteria.getValues().size());
     assertEquals(0, criteria.getValueKeys().size());
     assertEquals(criteria.getOrderByClause(), TestDomain.DEPARTMENT_NAME);
