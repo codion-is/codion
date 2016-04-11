@@ -238,6 +238,7 @@ public final class ServerUtil {
         builder.append(" (databaseUser: ").append(databaseUser.toString()).append(")");
       }
       builder.append("@").append(clientHost).append(" [").append(connectionInfo.getClientTypeID())
+              .append(connectionInfo.getClientVersion() != null ? "-" + connectionInfo.getClientVersion() : "")
               .append("] - ").append(connectionInfo.getClientID().toString());
 
       return builder.toString();
