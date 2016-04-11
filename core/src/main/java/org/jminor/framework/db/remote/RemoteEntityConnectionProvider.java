@@ -6,6 +6,7 @@ package org.jminor.framework.db.remote;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Version;
 import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerUtil;
@@ -35,9 +36,9 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   private final String serverHostName;
   private final UUID clientID;
   private final String clientTypeID;
+  private final Version clientVersion;
   private Server<RemoteEntityConnection> server;
   private Server.ServerInfo serverInfo;
-  //todo client version
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.
@@ -48,7 +49,20 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    */
   public RemoteEntityConnectionProvider(final String serverHostName, final User user, final UUID clientID,
                                         final String clientTypeID) {
-    this(serverHostName, user, clientID, clientTypeID, true);
+    this(serverHostName, user, clientID, clientTypeID, null);
+  }
+
+  /**
+   * Instantiates a new RemoteEntityConnectionProvider.
+   * @param serverHostName the server host name
+   * @param user the user to use when initializing connections
+   * @param clientID a UUID identifying the client
+   * @param clientTypeID a string identifying the client type
+   * @param clientVersion the client version
+   */
+  public RemoteEntityConnectionProvider(final String serverHostName, final User user, final UUID clientID,
+                                        final String clientTypeID, final Version clientVersion) {
+    this(serverHostName, user, clientID, clientTypeID, clientVersion, true);
   }
 
   /**
@@ -60,11 +74,13 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
   public RemoteEntityConnectionProvider(final String serverHostName, final User user, final UUID clientID,
-                                        final String clientTypeID, final boolean scheduleValidityCheck) {
+                                        final String clientTypeID, final Version clientVersion,
+                                        final boolean scheduleValidityCheck) {
     super(user, scheduleValidityCheck);
     this.serverHostName = Util.rejectNullValue(serverHostName, "serverHostName");
     this.clientID = Util.rejectNullValue(clientID, "clientID");
     this.clientTypeID = Util.rejectNullValue(clientTypeID, "clientTypeID");
+    this.clientVersion = clientVersion;
     Util.resolveTrustStoreFromClasspath(clientTypeID);
   }
 
@@ -104,7 +120,8 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   protected EntityConnection connect() {
     try {
       LOG.debug("Initializing connection for {}", getUser());
-      final RemoteEntityConnection remote = getServer().connect(ClientUtil.connectionInfo(getUser(), clientID, clientTypeID));
+      final RemoteEntityConnection remote = getServer().connect(
+              ClientUtil.connectionInfo(getUser(), clientID, clientTypeID, clientVersion));
 
       return Util.initializeProxy(EntityConnection.class, new RemoteEntityConnectionHandler(remote));
     }
@@ -158,7 +175,13 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
     this.server = ServerUtil.getServer(serverHostName,
             Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX), registryPort, serverPort);
     this.serverInfo = this.server.getServerInfo();
-    Configuration.setValue(Configuration.REMOTE_SERVER_VERSION, this.serverInfo.getServerVersion());
+    final Version serverVersion = this.serverInfo.getServerVersion();
+    if (serverVersion != null) {
+      Configuration.setValue(Configuration.REMOTE_SERVER_VERSION, serverVersion);
+    }
+    else {
+      Configuration.clearValue(Configuration.REMOTE_SERVER_VERSION);
+    }
   }
 
   private static final class RemoteEntityConnectionHandler implements InvocationHandler {

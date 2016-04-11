@@ -6,6 +6,7 @@ package org.jminor.framework.demos.chinook.client.ui;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
+import org.jminor.common.model.Version;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.beans.ui.AlbumEditPanel;
@@ -138,6 +139,11 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     tools.add(Controls.methodControl(getModel(), "updateInvoiceTotals", "Update invoice totals"));
 
     return tools;
+  }
+
+  @Override
+  protected Version getClientVersion() {
+    return new Version(0, 1, 0);
   }
 
   public static void main(final String[] args) throws CancelException {

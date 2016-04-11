@@ -12,6 +12,7 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Version;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
@@ -656,7 +657,14 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @throws CancelException in case the initialization is cancelled
    */
   protected EntityConnectionProvider initializeConnectionProvider(final User user, final String clientTypeID) {
-    return EntityConnectionProviders.connectionProvider(user, clientTypeID);
+    return EntityConnectionProviders.connectionProvider(user, clientTypeID, getClientVersion());
+  }
+
+  /**
+   * @return the client version if specified, null by default
+   */
+  protected Version getClientVersion() {
+    return null;
   }
 
   /**

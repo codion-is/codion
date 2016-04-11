@@ -4207,3 +4207,5 @@
 0.9.11 [server/client incompatible]
   EntityDefinition.setSelectQuery(String) removed, was deprecated
   EntitySelectCriteria.orderByAscending(propertyID) and orderByDescending(propertyID) added
+  EntityCriteriaUtil.DefaultEntitySelectCriteria serialization backwards compatibility check improved
+  Client version functionality added, EntityApplicationPanel.getClientVersion()

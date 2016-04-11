@@ -604,10 +604,13 @@ public final class EntityCriteriaUtil {
 
     private void writeObject(final ObjectOutputStream stream) throws IOException {
       final Version serverVersion = (Version) Configuration.getValue(Configuration.REMOTE_SERVER_VERSION);
-      if (serverVersion.compareTo(V0_9_11) >= 0) {
+      if (serverVersion != null && serverVersion.compareTo(V0_9_11) >= 0) {
         stream.writeObject(orderBy);
+        stream.writeObject(orderByClause);
       }
-      stream.writeObject(orderByClause);
+      else {
+        stream.writeObject(orderBy != null ? orderBy.getOrderByClause() : orderByClause);
+      }
       stream.writeInt(fetchCount);
       stream.writeBoolean(forUpdate);
       stream.writeObject(foreignKeyFetchDepthLimits);
