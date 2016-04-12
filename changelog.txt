@@ -4209,3 +4209,4 @@
   EntitySelectCriteria.orderByAscending(propertyID) and orderByDescending(propertyID) added
   EntityCriteriaUtil.DefaultEntitySelectCriteria serialization backwards compatibility check improved
   Client version functionality added, EntityApplicationPanel.getClientVersion()
+  DatabaseException.errorCode field added, transient for now due to serialization
