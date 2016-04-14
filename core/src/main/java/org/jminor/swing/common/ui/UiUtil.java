@@ -946,12 +946,22 @@ public final class UiUtil {
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
-        textComponent.selectAll();
+        SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+            textComponent.selectAll();
+          }
+        });
       }
 
       @Override
       public void focusLost(final FocusEvent e) {
-        textComponent.select(0, 0);
+        SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+            textComponent.select(0, 0);
+          }
+        });
       }
     });
 
@@ -967,7 +977,12 @@ public final class UiUtil {
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
-        textComponent.setCaretPosition(0);
+        SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+            textComponent.setCaretPosition(0);
+          }
+        });
       }
     });
 
@@ -983,7 +998,12 @@ public final class UiUtil {
     textComponent.addFocusListener(new FocusAdapter() {
       @Override
       public void focusGained(final FocusEvent e) {
-        textComponent.setCaretPosition(textComponent.getText().length());
+        SwingUtilities.invokeLater(new Runnable() {
+          @Override
+          public void run() {
+            textComponent.setCaretPosition(textComponent.getText().length());
+          }
+        });
       }
     });
 

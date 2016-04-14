@@ -4210,3 +4210,4 @@
   EntityCriteriaUtil.DefaultEntitySelectCriteria serialization backwards compatibility check improved
   Client version functionality added, EntityApplicationPanel.getClientVersion()
   DatabaseException.errorCode field added, transient for now due to serialization
+  UiUtil, now uses SwingUtilities.invokeLater() for focus gained events, JFormattedTextField did not behave correctly without it
