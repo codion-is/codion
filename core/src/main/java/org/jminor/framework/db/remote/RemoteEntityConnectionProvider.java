@@ -71,6 +71,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
    * @param user the user to use when initializing connections
    * @param clientID a UUID identifying the client
    * @param clientTypeID a string identifying the client type
+   * @param clientVersion the client version, if any
    * @param scheduleValidityCheck if true then a periodic validity check is performed on the connection
    */
   public RemoteEntityConnectionProvider(final String serverHostName, final User user, final UUID clientID,

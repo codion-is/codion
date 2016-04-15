@@ -148,7 +148,7 @@ public final class Values {
     @Override
     public void set(final V value) {
       if (setMethod == null) {
-        throw new IllegalStateException("Trying to set a readOnly value");
+        throw new IllegalStateException("Bean property set method not found: " + getMethod.getName());
       }
       try {
         setMethod.invoke(valueOwner, value);

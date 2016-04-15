@@ -16,6 +16,12 @@ public class DatabaseException extends Exception  {
   private final String statement;
 
   /**
+   * The underlying error code, if any, transient so it's not
+   * available client side if running in a server/client environment
+   */
+  private transient final int errorCode;
+
+  /**
    * Constructs a new DatabaseException instance
    * @param message the exception message
    */
@@ -31,6 +37,7 @@ public class DatabaseException extends Exception  {
   public DatabaseException(final String message, final String statement) {
     super(message);
     this.statement = statement;
+    this.errorCode = -1;
   }
 
   /**
@@ -52,7 +59,11 @@ public class DatabaseException extends Exception  {
     super(message);
     this.statement = statement;
     if (cause != null) {
+      errorCode = cause.getErrorCode();
       setStackTrace(cause.getStackTrace());
+    }
+    else {
+      errorCode = -1;
     }
   }
 
@@ -61,5 +72,14 @@ public class DatabaseException extends Exception  {
    */
   public final String getStatement() {
     return this.statement;
+  }
+
+  /**
+   * Returns the underlying error code, not that this is not available when running
+   * in a client/server environment.
+   * @return the underlying error code, -1 if not available
+   */
+  public int getErrorCode() {
+    return errorCode;
   }
 }
