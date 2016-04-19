@@ -6,14 +6,14 @@ package org.jminor.swing.framework.ui;
 import org.jminor.common.model.EventListener;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.framework.model.EntityTableCriteriaModel;
+import org.jminor.framework.model.EntityTableModel;
+import org.jminor.framework.model.ForeignKeyCriteriaModel;
+import org.jminor.framework.model.PropertyCriteriaModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.table.ColumnCriteriaPanel;
-import org.jminor.swing.framework.model.EntityTableCriteriaModel;
-import org.jminor.swing.framework.model.EntityTableModel;
-import org.jminor.swing.framework.model.ForeignKeyCriteriaModel;
-import org.jminor.swing.framework.model.PropertyCriteriaModel;
 
 import javax.swing.BorderFactory;
 import javax.swing.DefaultListCellRenderer;

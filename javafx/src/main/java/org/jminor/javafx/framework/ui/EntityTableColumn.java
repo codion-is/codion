@@ -4,9 +4,10 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.javafx.framework.model.EntityListModel;
+import org.jminor.javafx.framework.model.FXEntityListModel;
 
 import javafx.beans.value.ObservableValue;
 import javafx.scene.control.TableColumn;
@@ -18,7 +19,8 @@ public final class EntityTableColumn extends TableColumn<Entity, Object> {
   private final Property property;
   private final PropertyCriteriaView criteriaView;
 
-  public EntityTableColumn(final EntityListModel listModel, final Property property,
+  public EntityTableColumn(final FXEntityListModel listModel, final Property property,
+                           final EntityConnectionProvider connectionProvider,
                            final Callback<CellDataFeatures<Entity, Object>, ObservableValue<Object>> cellValueFactory) {
     super(property.getCaption());
     this.property = property;
@@ -56,7 +58,7 @@ public final class EntityTableColumn extends TableColumn<Entity, Object> {
     }
   }
 
-  private PropertyCriteriaView initializeCriteriaView(final EntityListModel listModel) {
+  private PropertyCriteriaView initializeCriteriaView(final FXEntityListModel listModel) {
     final ColumnCriteriaModel<? extends Property.SearchableProperty> criteriaModel =
             listModel.getCriteriaModel().getPropertyCriteriaModel(property.getPropertyID());
     final PropertyCriteriaView criteriaView = new PropertyCriteriaView(criteriaModel);
@@ -68,7 +70,7 @@ public final class EntityTableColumn extends TableColumn<Entity, Object> {
     return criteriaView;
   }
 
-  private Pane createCenterPane(final EntityListModel listModel) {
+  private Pane createCenterPane(final FXEntityListModel listModel) {
     if (property instanceof Property.SearchableProperty) {
       return criteriaView;
     }

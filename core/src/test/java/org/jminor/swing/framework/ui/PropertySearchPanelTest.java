@@ -7,8 +7,8 @@ import org.jminor.common.model.SearchType;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.swing.framework.model.DefaultPropertyCriteriaModel;
-import org.jminor.swing.framework.model.PropertyCriteriaModel;
+import org.jminor.framework.model.DefaultPropertyCriteriaModel;
+import org.jminor.framework.model.PropertyCriteriaModel;
 
 import org.junit.Before;
 import org.junit.Test;

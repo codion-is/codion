@@ -9,12 +9,12 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.TestDomain;
+import org.jminor.framework.model.DefaultEntityApplicationModel;
+import org.jminor.framework.model.EntityApplicationModel;
+import org.jminor.framework.model.EntityLoadTestModel;
+import org.jminor.framework.model.EntityTableModel;
 import org.jminor.framework.server.EntityConnectionServerTest;
-import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
-import org.jminor.swing.framework.model.DefaultEntityModel;
-import org.jminor.swing.framework.model.EntityApplicationModel;
-import org.jminor.swing.framework.model.EntityTableModel;
-import org.jminor.swing.framework.testing.EntityLoadTestModel;
+import org.jminor.swing.framework.model.SwingEntityModel;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -131,7 +131,7 @@ public class EntityLoadTestModelTest {
         TestDomain.init();
       }
     };
-    model.addEntityModel(new DefaultEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
+    model.addEntityModel(new SwingEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
     final EntityTableModel tableModel = model.getEntityModel(TestDomain.T_DEPARTMENT).getTableModel();
     tableModel.setQueryCriteriaRequired(false);
     tableModel.refresh();

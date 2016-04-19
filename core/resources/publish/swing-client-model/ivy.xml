@@ -17,6 +17,7 @@
 
   <dependencies defaultconf="runtime">
     <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-client-model" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-swing-common-model" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-db-local" rev="latest.integration"/>

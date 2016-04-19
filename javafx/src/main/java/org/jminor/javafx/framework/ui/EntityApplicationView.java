@@ -10,7 +10,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.javafx.framework.model.EntityApplicationModel;
+import org.jminor.framework.model.EntityApplicationModel;
 
 import javafx.application.Application;
 import javafx.scene.Scene;

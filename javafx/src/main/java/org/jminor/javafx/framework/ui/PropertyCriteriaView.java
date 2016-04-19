@@ -10,8 +10,10 @@ import org.jminor.common.model.States;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
 import org.jminor.common.model.table.ColumnCriteriaModel;
+import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.javafx.framework.model.ForeignKeyCriteriaModel;
+import org.jminor.framework.model.DefaultForeignKeyCriteriaModel;
+import org.jminor.javafx.framework.model.FXForeignKeyCriteriaListModel;
 
 import javafx.collections.FXCollections;
 import javafx.scene.control.CheckBox;
@@ -103,8 +105,10 @@ public final class PropertyCriteriaView extends BorderPane {
 
   private Control createUpperBoundControl() {
     final Control control = createControl();
-    final Value value = FXUiUtil.createValue(model.getColumnIdentifier(), control, null);
-    Values.link(model.getUpperBoundValue(), value);
+    if (!(control instanceof EntityLookupField)) {
+      final Value value = FXUiUtil.createValue(model.getColumnIdentifier(), control, null);
+      Values.link(model.getUpperBoundValue(), value);
+    }
 
     return control;
   }
@@ -123,18 +127,25 @@ public final class PropertyCriteriaView extends BorderPane {
 
   private Control createControl() {
     final Control control;
-    if (model instanceof ForeignKeyCriteriaModel) {
-      control = FXUiUtil.createControl(model.getColumnIdentifier(), ((ForeignKeyCriteriaModel) model).getConnectionProvider());
+    if (model instanceof FXForeignKeyCriteriaListModel) {
+      final FXForeignKeyCriteriaListModel listModel = (FXForeignKeyCriteriaListModel) model;
+      control = new ComboBox<>(listModel.getListModel().getSortedList());
+      listModel.getListModel().setSelectionModel(((ComboBox<Entity>) control).getSelectionModel());
+    }
+    else if (model instanceof DefaultForeignKeyCriteriaModel) {
+      control = new EntityLookupField(((DefaultForeignKeyCriteriaModel) model).getEntityLookupModel());
     }
     else {
       control = FXUiUtil.createControl(model.getColumnIdentifier(), null);
     }
-    control.setOnKeyReleased(event -> {
-      if (event.getCode().equals(KeyCode.ENTER)) {
-        model.setEnabled(!model.isEnabled());
-        event.consume();
-      }
-    });
+    if (!(control instanceof EntityLookupField)) {
+      control.setOnKeyReleased(event -> {
+        if (event.getCode().equals(KeyCode.ENTER)) {
+          model.setEnabled(!model.isEnabled());
+          event.consume();
+        }
+      });
+    }
     control.minWidthProperty().setValue(0);
     control.maxWidthProperty().setValue(Double.MAX_VALUE);
     FXUiUtil.link(control.disableProperty(), model.getLockedObserver());

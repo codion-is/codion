@@ -3,6 +3,8 @@
  */
 package org.jminor.swing.common.model.table;
 
+import org.jminor.common.model.table.SelectionModel;
+
 import org.junit.Test;
 
 import javax.swing.table.TableColumn;
@@ -12,9 +14,10 @@ import java.util.List;
 
 import static org.junit.Assert.assertEquals;
 
+//todo move rename refactor
 public class DefaultTableSelectionModelTest {
 
-  private final TableSelectionModel<String> testModel;
+  private final SelectionModel<String> testModel;
 
   public DefaultTableSelectionModelTest() {
     final List<String> data = Arrays.asList("A", "B", "C");

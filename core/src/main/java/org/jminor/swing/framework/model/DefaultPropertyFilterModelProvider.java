@@ -5,6 +5,8 @@ package org.jminor.swing.framework.model;
 
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.model.DefaultPropertyFilterModel;
+import org.jminor.framework.model.PropertyFilterModelProvider;
 
 /**
  * A default PropertyFilterModelProvider implementation.

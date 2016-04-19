@@ -5,7 +5,7 @@ package org.jminor.framework.demos.empdept.javafx;
 
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
-import org.jminor.javafx.framework.model.EntityEditModel;
+import org.jminor.javafx.framework.model.FXEntityEditModel;
 import org.jminor.javafx.framework.ui.EntityEditView;
 
 import javafx.scene.Node;
@@ -16,7 +16,7 @@ import javafx.scene.layout.GridPane;
 
 public final class EmployeeEditView extends EntityEditView {
 
-  public EmployeeEditView(final EntityEditModel editModel) {
+  public EmployeeEditView(final FXEntityEditModel editModel) {
     super(editModel);
   }
 

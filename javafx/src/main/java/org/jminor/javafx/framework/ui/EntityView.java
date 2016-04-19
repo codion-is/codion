@@ -4,7 +4,8 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.framework.domain.Entities;
-import org.jminor.javafx.framework.model.EntityModel;
+import org.jminor.framework.model.EntityModel;
+import org.jminor.javafx.framework.model.FXEntityListModel;
 
 import javafx.scene.control.SplitPane;
 import javafx.scene.control.Tab;
@@ -17,6 +18,12 @@ import java.util.List;
 
 public class EntityView extends BorderPane implements ViewTreeNode {
 
+  private final SplitPane splitPane = new SplitPane();
+
+  public enum PanelState {
+    DIALOG, EMBEDDED, HIDDEN
+  }
+
   private final String caption;
   private final EntityModel model;
   private final EntityEditView editView;
@@ -28,13 +35,14 @@ public class EntityView extends BorderPane implements ViewTreeNode {
   private final TabPane detailViewTabPane = new TabPane();
 
   private boolean initialized = false;
+  private PanelState detailPanelState = PanelState.EMBEDDED;
 
   public EntityView(final EntityModel model) {
     this(model, (EntityEditView) null);
   }
 
   public EntityView(final EntityModel model, final EntityEditView editView) {
-    this(model, editView, new EntityTableView(model.getTableModel()));
+    this(model, editView, new EntityTableView((FXEntityListModel) model.getTableModel()));
   }
 
   public EntityView(final EntityModel model, final EntityTableView tableView) {
@@ -221,7 +229,7 @@ public class EntityView extends BorderPane implements ViewTreeNode {
 
   private void navigateUp() {
     if (parentView != null && parentView instanceof EntityView) {
-      ((EntityView) parentView).requestInputFocus();
+      ((EntityView) parentView).activateView();
     }
   }
 
@@ -294,8 +302,35 @@ public class EntityView extends BorderPane implements ViewTreeNode {
       for (final EntityView detailView : detailViews) {
         detailViewTabPane.getTabs().add(new Tab(detailView.getCaption(), detailView));
       }
-      final SplitPane splitPane = new SplitPane(leftPane, detailViewTabPane);
+      splitPane.getItems().add(leftPane);
       setCenter(splitPane);
+      setDetailPanelState(detailPanelState);
     }
+  }
+
+  private void setDetailPanelState(final PanelState state) {
+    if (detailViewTabPane == null) {
+      this.detailPanelState = state;
+      return;
+    }
+    if (state != PanelState.HIDDEN) {
+      getTabbedDetailPanel().initializePanel();
+    }
+
+    final EntityModel entityModel = getModel();
+    if (state == PanelState.HIDDEN) {
+      entityModel.removeLinkedDetailModel(getTabbedDetailPanel().model);
+    }
+    else {
+      entityModel.addLinkedDetailModel(getTabbedDetailPanel().model);
+    }
+    detailPanelState = state;
+    if (state.equals(PanelState.EMBEDDED)) {
+      splitPane.getItems().add(detailViewTabPane);
+    }
+  }
+
+  private EntityView getTabbedDetailPanel() {
+    return (EntityView) detailViewTabPane.getSelectionModel().getSelectedItem().getContent();
   }
 }

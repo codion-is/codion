@@ -12,10 +12,8 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.javafx.framework.model.EntityEditModel;
+import org.jminor.javafx.framework.model.FXEntityEditModel;
 
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -24,10 +22,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
@@ -48,13 +43,13 @@ public abstract class EntityEditView extends BorderPane {
   private static final KeyCode CLEAR_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC));
   private static final KeyCode REFRESH_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC));
 
-  private final EntityEditModel editModel;
+  private final FXEntityEditModel editModel;
   private final Map<String, Control> controls = new HashMap<>();
   private boolean initialized = false;
 
   private String initialFocusPropertyID;
 
-  public EntityEditView(final EntityEditModel editModel) {
+  public EntityEditView(final FXEntityEditModel editModel) {
     this.editModel = editModel;
   }
 
@@ -67,7 +62,7 @@ public abstract class EntityEditView extends BorderPane {
     return this;
   }
 
-  public final EntityEditModel getEditModel() {
+  public final FXEntityEditModel getEditModel() {
     return editModel;
   }
 
@@ -100,24 +95,9 @@ public abstract class EntityEditView extends BorderPane {
   public void selectInputControl() {
     final List<Property> properties = Entities.getProperties(editModel.getEntityID(), controls.keySet());
     Collections.sort(properties, (o1, o2) -> o1.toString().compareToIgnoreCase(o2.toString()));
-    final ListView<Property> propertyList = new ListView<>(FXCollections.observableArrayList(properties));
-    propertyList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    final Dialog<Property> dialog = new Dialog<>();
-    dialog.getDialogPane().setContent(propertyList);
-    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-    dialog.setResultConverter(buttonType -> {
-      if (buttonType != null && buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
-        return propertyList.getSelectionModel().getSelectedItem();
-      }
 
-      return null;
-    });
-
-    Platform.runLater(propertyList::requestFocus);
-    final Optional<Property> result = dialog.showAndWait();
-    if (result.isPresent()) {
-      controls.get(result.get().getPropertyID()).requestFocus();
-    }
+    final Property selected = FXUiUtil.selectValues(properties).get(0);
+    controls.get(selected.getPropertyID()).requestFocus();
   }
 
   protected final void setInitialFocusProperty(final String initialFocusPropertyID) {

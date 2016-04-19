@@ -4,8 +4,8 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.ui.input.AbstractInputProvider;
-import org.jminor.swing.framework.model.EntityLookupModel;
 
 import java.util.Collection;
 

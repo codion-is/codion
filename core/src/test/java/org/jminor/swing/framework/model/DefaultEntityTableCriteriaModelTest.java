@@ -11,6 +11,8 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
+import org.jminor.framework.model.EntityTableCriteriaModel;
+import org.jminor.framework.model.PropertyCriteriaModel;
 
 import org.junit.Test;
 
@@ -21,8 +23,8 @@ import static org.junit.Assert.*;
 
 public class DefaultEntityTableCriteriaModelTest {
 
-  private final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-  private final EntityTableCriteriaModel criteriaModel = tableModel.getCriteriaModel();
+  private final EntityTableCriteriaModel criteriaModel = new DefaultEntityTableModel(TestDomain.T_EMP,
+          EntityConnectionProvidersTest.CONNECTION_PROVIDER).getCriteriaModel();
 
   static {
     TestDomain.init();
@@ -37,9 +39,9 @@ public class DefaultEntityTableCriteriaModelTest {
     assertEquals(8, criteriaModel.getPropertyCriteriaModels().size());
 
     criteriaModel.refresh();
-    assertTrue(((ForeignKeyCriteriaModel) criteriaModel.getPropertyCriteriaModel(TestDomain.EMP_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() > 1);
+    assertTrue(((SwingForeignKeyCriteriaModel) criteriaModel.getPropertyCriteriaModel(TestDomain.EMP_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() > 1);
     criteriaModel.clear();
-    assertTrue(((ForeignKeyCriteriaModel) criteriaModel.getPropertyCriteriaModel(TestDomain.EMP_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() == 0);
+    assertTrue(((SwingForeignKeyCriteriaModel) criteriaModel.getPropertyCriteriaModel(TestDomain.EMP_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() == 0);
 
     assertFalse(criteriaModel.isFilterEnabled(TestDomain.EMP_DEPARTMENT_FK));
     assertFalse(criteriaModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));

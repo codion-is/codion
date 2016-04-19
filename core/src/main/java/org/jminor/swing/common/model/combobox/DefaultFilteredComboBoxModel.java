@@ -8,7 +8,9 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.combobox.FilteredComboBoxModel;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.event.ListDataEvent;
 import javax.swing.event.ListDataListener;
 import java.io.Serializable;
@@ -23,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * A default {@link FilteredComboBoxModel} implementation.
  */
-public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T> {
+public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, ComboBoxModel<T> {
 
   private static final FilterCriteria ACCEPT_ALL_CRITERIA = new FilterCriteria.AcceptAllCriteria();
 

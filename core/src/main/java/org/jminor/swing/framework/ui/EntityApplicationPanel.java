@@ -17,7 +17,9 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
 import org.jminor.swing.common.ui.ExceptionHandler;
@@ -29,8 +31,6 @@ import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
-import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
-import org.jminor.swing.framework.model.EntityApplicationModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -485,6 +487,38 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    */
   public final void removeApplicationStartedListener(final EventListener listener) {
     applicationStartedEvent.removeListener(listener);
+  }
+
+  /**
+   * @return a tree model showing the dependencies between entities via foreign keys
+   */
+  public static TreeModel getDependencyTreeModel() {
+    return getDependencyTreeModel(null);
+  }
+
+  /**
+   * @param domainID the ID of the domain for which to return a dependency tree model
+   * @return a tree model showing the dependencies between entities via foreign keys
+   */
+  public static TreeModel getDependencyTreeModel(final String domainID) {
+    final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
+    for (final String entityID : Entities.getDefinitions(domainID).keySet()) {
+      if (Entities.getForeignKeyProperties(entityID).isEmpty() || referencesOnlySelf(entityID)) {
+        root.add(new EntityDependencyTreeNode(domainID, entityID));
+      }
+    }
+
+    return new DefaultTreeModel(root);
+  }
+
+  private static boolean referencesOnlySelf(final String entityID) {
+    for (final Property.ForeignKeyProperty fkProperty : Entities.getForeignKeyProperties(entityID)) {
+      if (!fkProperty.getReferencedEntityID().equals(entityID)) {
+        return false;
+      }
+    }
+
+    return true;
   }
 
   /**
@@ -1188,7 +1222,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   }
 
   private JScrollPane initializeDependencyTree() {
-    return initializeTree(DefaultEntityApplicationModel.getDependencyTreeModel());
+    return initializeTree(getDependencyTreeModel());
   }
 
   private JScrollPane initializeTree(final TreeModel treeModel) {
@@ -1241,5 +1275,57 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     }
 
     return username;
+  }
+
+  private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
+
+    private final String domainID;
+
+    private EntityDependencyTreeNode(final String domainID, final String entityID) {
+      super(entityID);
+      this.domainID = domainID;
+      Util.rejectNullValue(entityID, "entityID");
+    }
+
+    /**
+     * @return the ID of the entity this node represents
+     */
+    public String getEntityID() {
+      return (String) getUserObject();
+    }
+
+    @Override
+    public void setParent(final MutableTreeNode newParent) {
+      super.setParent(newParent);
+      removeAllChildren();
+      for (final EntityDependencyTreeNode child : initializeChildren()) {
+        add(child);
+      }
+    }
+
+    private List<EntityDependencyTreeNode> initializeChildren() {
+      final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
+      for (final String entityID : Entities.getDefinitions(domainID).keySet()) {
+        for (final Property.ForeignKeyProperty fkProperty : Entities.getForeignKeyProperties(entityID)) {
+          if (fkProperty.getReferencedEntityID().equals(getEntityID()) && !foreignKeyCycle(fkProperty.getReferencedEntityID())) {
+            childrenList.add(new EntityDependencyTreeNode(domainID, entityID));
+          }
+        }
+      }
+
+      return childrenList;
+    }
+
+    private boolean foreignKeyCycle(final String referencedEntityID) {
+      TreeNode tmp = getParent();
+      while (tmp instanceof EntityDependencyTreeNode) {
+        if (((EntityDependencyTreeNode) tmp).getEntityID().equals(referencedEntityID)) {
+          return true;
+        }
+        tmp = tmp.getParent();
+      }
+
+      return false;
+    }
   }
 }

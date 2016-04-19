@@ -6,7 +6,7 @@ package org.jminor.framework.demos.empdept.beans.ui;
 import org.jminor.common.model.User;
 import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.framework.testing.EntityEditPanelTestUnit;
 
 import org.junit.Test;

@@ -6,8 +6,8 @@ package org.jminor.swing.framework.ui;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
+import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.framework.model.DefaultEntityComboBoxModel;
-import org.jminor.swing.framework.model.EntityComboBoxModel;
 
 import org.junit.Test;
 

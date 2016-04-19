@@ -6,8 +6,8 @@ package org.jminor.framework.demos.chinook.javafx;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.javafx.framework.model.EntityApplicationModel;
-import org.jminor.javafx.framework.model.EntityModel;
+import org.jminor.framework.model.EntityApplicationModel;
+import org.jminor.framework.model.EntityModel;
 import org.jminor.javafx.framework.ui.EntityApplicationView;
 import org.jminor.javafx.framework.ui.EntityView;
 

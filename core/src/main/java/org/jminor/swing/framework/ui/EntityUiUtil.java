@@ -23,6 +23,10 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.framework.model.DefaultEntityLookupModel;
+import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
@@ -41,10 +45,7 @@ import org.jminor.swing.common.ui.textfield.IntField;
 import org.jminor.swing.common.ui.textfield.LongField;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.valuemap.ValueLinkValidators;
-import org.jminor.swing.framework.model.DefaultEntityLookupModel;
-import org.jminor.swing.framework.model.EntityComboBoxModel;
-import org.jminor.swing.framework.model.EntityEditModel;
-import org.jminor.swing.framework.model.EntityLookupModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import ch.qos.logback.classic.Level;
 import org.slf4j.Logger;
@@ -322,7 +323,7 @@ public final class EntityUiUtil {
     Util.rejectNullValue(foreignKeyProperty, FOREIGN_KEY_PROPERTY_PARAM_NAME);
     Util.rejectNullValue(editModel, EDIT_MODEL_PARAM_NAME);
     checkProperty(foreignKeyProperty, editModel);
-    final EntityComboBoxModel boxModel = editModel.getForeignKeyComboBoxModel(foreignKeyProperty);
+    final EntityComboBoxModel boxModel = ((SwingEntityEditModel) editModel).getForeignKeyComboBoxModel(foreignKeyProperty);
     boxModel.refresh();
     final EntityComboBox comboBox = new EntityComboBox(boxModel);
     ValueLinks.selectedItemValueLink(comboBox, EditModelValues.<Entity>value(editModel, foreignKeyProperty.getPropertyID()));
@@ -808,7 +809,8 @@ public final class EntityUiUtil {
    */
   public static SteppedComboBox createPropertyComboBox(final Property.ColumnProperty property, final EntityEditModel editModel,
                                                        final StateObserver enabledState, final boolean editable) {
-    final SteppedComboBox comboBox = createComboBox(property, editModel, editModel.getComboBoxModel(property), enabledState, editable);
+    final SteppedComboBox comboBox = createComboBox(property, editModel,
+            (ComboBoxModel) ((SwingEntityEditModel) editModel).getComboBoxModel(property.getPropertyID()), enabledState, editable);
     if (!editable) {
       addComboBoxCompletion(comboBox);
     }

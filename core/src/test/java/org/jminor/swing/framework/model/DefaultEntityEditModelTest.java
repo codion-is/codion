@@ -10,6 +10,7 @@ import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
@@ -20,7 +21,9 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.swing.common.model.combobox.FilteredComboBoxModel;
+import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityLookupModel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -34,7 +37,7 @@ import static org.junit.Assert.*;
 
 public final class DefaultEntityEditModelTest {
 
-  private DefaultEntityEditModel employeeEditModel;
+  private SwingEntityEditModel employeeEditModel;
   private Property.ColumnProperty jobProperty;
   private Property.ForeignKeyProperty deptProperty;
 
@@ -43,7 +46,7 @@ public final class DefaultEntityEditModelTest {
     TestDomain.init();
     jobProperty = Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
     deptProperty = Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
-    employeeEditModel = new DefaultEntityEditModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
+    employeeEditModel = new SwingEntityEditModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
       @Override
       public Object getDefaultValue(final Property property) {
         if (property.is(TestDomain.EMP_HIREDATE)) {
@@ -57,24 +60,23 @@ public final class DefaultEntityEditModelTest {
 
   @Test
   public void getComboBoxModel() {
-    final FilteredComboBoxModel<String> model = employeeEditModel.getComboBoxModel(jobProperty);
+    final FilteredComboBoxModel<String> model = (FilteredComboBoxModel<String>) employeeEditModel.getComboBoxModel(jobProperty.getPropertyID());
     model.setNullValue("null");
     assertNotNull(model);
     assertTrue(employeeEditModel.containsComboBoxModel(jobProperty.getPropertyID()));
-    assertEquals(model, employeeEditModel.getComboBoxModel(jobProperty));
+    assertEquals(model, employeeEditModel.getComboBoxModel(jobProperty.getPropertyID()));
     employeeEditModel.refreshComboBoxModels();
     employeeEditModel.clearComboBoxModels();
-    assertTrue(employeeEditModel.getComboBoxModel(jobProperty).isCleared());
+    assertTrue(employeeEditModel.getComboBoxModel(jobProperty.getPropertyID()).isCleared());
     employeeEditModel.refreshComboBoxModels();
     employeeEditModel.clear();
-    assertTrue(employeeEditModel.getComboBoxModel(jobProperty).isCleared());
+    assertTrue(employeeEditModel.getComboBoxModel(jobProperty.getPropertyID()).isCleared());
   }
 
   @Test
   public void getForeignKeyComboBoxModel() {
     assertFalse(employeeEditModel.containsComboBoxModel(deptProperty.getPropertyID()));
     final EntityComboBoxModel model = employeeEditModel.getForeignKeyComboBoxModel(deptProperty);
-    assertTrue(employeeEditModel.containsComboBoxModel(deptProperty.getPropertyID()));
     assertNotNull(model);
     assertTrue(model.isCleared());
     assertTrue(model.getAllItems().isEmpty());
@@ -153,12 +155,12 @@ public final class DefaultEntityEditModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullEntityID() {
-    new DefaultEntityEditModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    new SwingEntityEditModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullConnectionProvider() {
-    new DefaultEntityEditModel("entityID", null);
+    new SwingEntityEditModel("entityID", null);
   }
 
   @Test
@@ -447,8 +449,8 @@ public final class DefaultEntityEditModelTest {
     assertNull(employeeEditModel.getValue(TestDomain.EMP_MGR_FK));
     employeeEditModel.setEntity(null);
     assertEquals(DateUtil.floorDate(new Date()), employeeEditModel.getValue(TestDomain.EMP_HIREDATE));
-    assertFalse(employeeEditModel.getEntity().isModified(TestDomain.EMP_HIREDATE));
-    assertFalse(employeeEditModel.getEntity().isModified());
+    assertFalse(employeeEditModel.getEntityCopy().isModified(TestDomain.EMP_HIREDATE));
+    assertFalse(employeeEditModel.getEntityCopy().isModified());
   }
 
   @Test
@@ -489,7 +491,7 @@ public final class DefaultEntityEditModelTest {
     employeeEditModel.setEntity(king);
     employeeEditModel.setValue(TestDomain.EMP_NAME, "New name");
     employeeEditModel.setEntity(adams);
-    assertEquals(adams, employeeEditModel.getEntity());
+    assertEquals(adams, employeeEditModel.getEntityCopy());
 
     employeeEditModel.removeConfirmSetEntityObserver(alwaysConfirmListener);
     employeeEditModel.setEntity(null);

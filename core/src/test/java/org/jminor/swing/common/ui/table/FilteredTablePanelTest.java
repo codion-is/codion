@@ -8,6 +8,7 @@ import org.jminor.swing.common.model.table.AbstractFilteredTableModelTest;
 import org.junit.Test;
 
 import javax.swing.JTextField;
+import javax.swing.ListSelectionModel;
 import java.awt.AWTException;
 import java.util.Arrays;
 
@@ -60,7 +61,7 @@ public class FilteredTablePanelTest {
     assertEquals(2, tableModel.getSelectionModel().getSelectedIndex());
 
     searchField.setText("");
-    tableModel.getSelectionModel().clearSelection();
+    ((ListSelectionModel) tableModel.getSelectionModel()).clearSelection();
 
     panel.findNextValue(false, true, "da");
     assertEquals(0, tableModel.getSelectionModel().getSelectedIndex());

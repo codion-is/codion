@@ -16,6 +16,7 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.common.model.combobox.DefaultFilteredComboBoxModel;
 
 import java.util.ArrayList;

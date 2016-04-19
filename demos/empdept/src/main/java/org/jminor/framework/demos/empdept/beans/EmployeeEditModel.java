@@ -14,15 +14,15 @@ import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.framework.model.DefaultEntityComboBoxModel;
-import org.jminor.swing.framework.model.DefaultEntityEditModel;
-import org.jminor.swing.framework.model.EntityComboBoxModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Arrays;
 
 import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 
-public final class EmployeeEditModel extends DefaultEntityEditModel {
+public final class EmployeeEditModel extends SwingEntityEditModel {
 
   public EmployeeEditModel(final EntityConnectionProvider connectionProvider) {
     super(T_EMPLOYEE, connectionProvider);

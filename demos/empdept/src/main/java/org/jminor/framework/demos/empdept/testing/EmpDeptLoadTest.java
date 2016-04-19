@@ -9,13 +9,13 @@ import org.jminor.common.model.tools.ScenarioException;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.model.DefaultEntityApplicationModel;
+import org.jminor.framework.model.EntityApplicationModel;
+import org.jminor.framework.model.EntityLoadTestModel;
+import org.jminor.framework.model.EntityModel;
 import org.jminor.framework.testing.EntityTestUnit;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
-import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
-import org.jminor.swing.framework.model.DefaultEntityModel;
-import org.jminor.swing.framework.model.EntityApplicationModel;
-import org.jminor.swing.framework.model.EntityModel;
-import org.jminor.swing.framework.testing.EntityLoadTestModel;
+import org.jminor.swing.framework.model.SwingEntityModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -41,8 +41,8 @@ public final class EmpDeptLoadTest extends EntityLoadTestModel {
         EmpDept.init();
       }
     };
-    final EntityModel deptModel = new DefaultEntityModel(EmpDept.T_DEPARTMENT, applicationModel.getConnectionProvider());
-    deptModel.addDetailModel(new DefaultEntityModel(EmpDept.T_EMPLOYEE, applicationModel.getConnectionProvider()));
+    final EntityModel deptModel = new SwingEntityModel(EmpDept.T_DEPARTMENT, applicationModel.getConnectionProvider());
+    deptModel.addDetailModel(new SwingEntityModel(EmpDept.T_EMPLOYEE, applicationModel.getConnectionProvider()));
     applicationModel.addEntityModel(deptModel);
 
     final EntityModel model = applicationModel.getEntityModel(EmpDept.T_DEPARTMENT);

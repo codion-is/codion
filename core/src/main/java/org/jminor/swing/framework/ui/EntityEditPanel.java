@@ -20,6 +20,10 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.EntityDataProvider;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.ui.DateInputPanel;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
 import org.jminor.swing.common.ui.ExceptionHandler;
@@ -33,10 +37,6 @@ import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
-import org.jminor.swing.framework.model.EntityComboBoxModel;
-import org.jminor.swing.framework.model.EntityDataProvider;
-import org.jminor.swing.framework.model.EntityEditModel;
-import org.jminor.swing.framework.model.EntityLookupModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -2113,7 +2113,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
       super("", Images.loadImage(Images.IMG_ADD_16));
       this.component = component;
       if (component instanceof EntityComboBox) {
-        this.dataProvider = ((EntityComboBox) component).getModel();
+        this.dataProvider = ((EntityComboBoxModel) ((EntityComboBox) component).getModel());
       }
       else if (component instanceof EntityLookupField) {
         this.dataProvider = ((EntityLookupField) component).getModel();

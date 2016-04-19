@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
+import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.DateInputPanel;
-import org.jminor.swing.framework.model.EntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 

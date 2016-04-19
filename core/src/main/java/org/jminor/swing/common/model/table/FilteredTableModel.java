@@ -8,6 +8,7 @@ import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnSummaryModel;
+import org.jminor.common.model.table.SelectionModel;
 
 import javax.swing.table.TableModel;
 import java.awt.Point;
@@ -18,7 +19,7 @@ import java.util.Collection;
  * @param <R> the type representing the rows in this table model
  * @param <C> type type used to identify columns in this table model, Integer for simple indexed identification for example
  */
-public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableSelectionModel.TableModelProxy<R>, TableModel, Refreshable {
+public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableModelProxy<R>, TableModel, Refreshable {
 
   /**
    * @param listener a listener to be notified each time a refresh is about to start
@@ -153,7 +154,7 @@ public interface FilteredTableModel<R, C> extends FilteredModel<R>, TableSelecti
   /**
    * @return the selection model used by this table model
    */
-  TableSelectionModel<R> getSelectionModel();
+  SelectionModel<R> getSelectionModel();
 
   /**
    * @return the sorting model

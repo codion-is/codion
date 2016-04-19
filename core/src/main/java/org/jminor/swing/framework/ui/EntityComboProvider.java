@@ -4,9 +4,10 @@
 package org.jminor.swing.framework.ui;
 
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.model.EntityComboBoxModel;
 import org.jminor.swing.common.ui.input.AbstractInputProvider;
-import org.jminor.swing.framework.model.EntityComboBoxModel;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 
 /**
@@ -38,6 +39,6 @@ public final class EntityComboProvider extends AbstractInputProvider<Entity, JCo
       comboBoxModel.setSelectedItem(currentValue);
     }
 
-    return new JComboBox<>(comboBoxModel);
+    return new JComboBox<>((ComboBoxModel<Entity>) comboBoxModel);
   }
 }

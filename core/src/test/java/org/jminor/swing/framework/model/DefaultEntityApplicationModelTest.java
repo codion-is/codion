@@ -7,6 +7,9 @@ import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.TestDomain;
+import org.jminor.framework.model.DefaultEntityApplicationModel;
+import org.jminor.framework.model.EntityModel;
+import org.jminor.swing.framework.ui.EntityApplicationPanel;
 
 import org.junit.Test;
 
@@ -21,7 +24,7 @@ public final class DefaultEntityApplicationModelTest {
   @Test
   public void getDependencyTreeModel() {
     TestDomain.init();
-    final TreeModel model = DefaultEntityApplicationModel.getDependencyTreeModel(TestDomain.SCOTT_DOMAIN_ID);
+    final TreeModel model = EntityApplicationPanel.getDependencyTreeModel(TestDomain.SCOTT_DOMAIN_ID);
     final DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
     final Enumeration tree = root.preorderEnumeration();
     DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.nextElement();
@@ -146,8 +149,8 @@ public final class DefaultEntityApplicationModelTest {
         TestDomain.init();
       }
     };
-    final EntityModel deptModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, model.getConnectionProvider());
-    final EntityModel empModel = new DefaultEntityModel(TestDomain.T_EMP, model.getConnectionProvider());
+    final EntityModel deptModel = new SwingEntityModel(TestDomain.T_DEPARTMENT, model.getConnectionProvider());
+    final EntityModel empModel = new SwingEntityModel(TestDomain.T_EMP, model.getConnectionProvider());
     deptModel.addDetailModel(empModel);
     deptModel.addLinkedDetailModel(empModel);
 
@@ -175,10 +178,10 @@ public final class DefaultEntityApplicationModelTest {
     assertFalse(model.containsUnsavedData());
   }
 
-  private static class DeptModel extends DefaultEntityModel {
+  private static class DeptModel extends SwingEntityModel {
     private DeptModel(final EntityConnectionProvider connectionProvider) {
       super(TestDomain.T_DEPARTMENT, connectionProvider);
-      addDetailModel(new DefaultEntityModel(TestDomain.T_EMP, connectionProvider));
+      addDetailModel(new SwingEntityModel(TestDomain.T_EMP, connectionProvider));
     }
   }
 }

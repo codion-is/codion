@@ -5,8 +5,8 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.TestDomain;
+import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.framework.model.DefaultEntityTableModel;
-import org.jminor.swing.framework.model.EntityTableModel;
 
 import org.junit.Test;
 

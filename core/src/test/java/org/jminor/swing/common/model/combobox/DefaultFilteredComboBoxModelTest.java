@@ -21,7 +21,7 @@ import static org.junit.Assert.*;
 
 public class DefaultFilteredComboBoxModelTest {
 
-  private FilteredComboBoxModel<String> testModel;
+  private DefaultFilteredComboBoxModel<String> testModel;
 
   private static final String NULL = "null";
   private static final String ANNA = "anna";

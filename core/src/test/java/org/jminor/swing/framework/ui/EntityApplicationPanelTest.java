@@ -7,9 +7,9 @@ import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
-import org.jminor.swing.framework.model.DefaultEntityModel;
-import org.jminor.swing.framework.model.EntityApplicationModel;
+import org.jminor.framework.model.DefaultEntityApplicationModel;
+import org.jminor.framework.model.EntityApplicationModel;
+import org.jminor.swing.framework.model.SwingEntityModel;
 
 import org.junit.After;
 import org.junit.Test;
@@ -43,7 +43,7 @@ public class EntityApplicationPanelTest {
           }
         };
 
-        model.addEntityModel(new DefaultEntityModel(TestDomain.T_EMP, connectionProvider));
+        model.addEntityModel(new SwingEntityModel(TestDomain.T_EMP, connectionProvider));
 
         return model;
       }

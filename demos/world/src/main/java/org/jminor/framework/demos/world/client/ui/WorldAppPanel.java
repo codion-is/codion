@@ -11,8 +11,8 @@ import org.jminor.framework.demos.world.beans.ui.CityEditPanel;
 import org.jminor.framework.demos.world.beans.ui.CountryEditPanel;
 import org.jminor.framework.demos.world.beans.ui.CountryLanguageEditPanel;
 import org.jminor.framework.demos.world.domain.World;
+import org.jminor.framework.model.DefaultEntityApplicationModel;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
 

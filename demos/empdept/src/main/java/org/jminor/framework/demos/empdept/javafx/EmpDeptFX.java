@@ -6,7 +6,9 @@ package org.jminor.framework.demos.empdept.javafx;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
-import org.jminor.javafx.framework.model.EntityModel;
+import org.jminor.framework.model.EntityModel;
+import org.jminor.javafx.framework.model.FXEntityEditModel;
+import org.jminor.javafx.framework.model.FXEntityListModel;
 import org.jminor.javafx.framework.ui.EntityApplicationView;
 import org.jminor.javafx.framework.ui.EntityTableView;
 import org.jminor.javafx.framework.ui.EntityView;
@@ -31,14 +33,14 @@ public final class EmpDeptFX extends EntityApplicationView<EmpDeptFXModel> {
   protected void initializeEntitieViews() {
     final EntityModel departmentModel = getModel().getEntityModel(EmpDept.T_DEPARTMENT);
     final EntityView departmentView = new EntityView(departmentModel,
-            new DepartmentEditView(departmentModel.getEditModel()),
-            new EntityTableView(departmentModel.getTableModel()));
+            new DepartmentEditView((FXEntityEditModel) departmentModel.getEditModel()),
+            new EntityTableView((FXEntityListModel) departmentModel.getTableModel()));
     departmentModel.getTableModel().refresh();
 
     final EntityModel employeeModel = departmentModel.getDetailModel(EmpDept.T_EMPLOYEE);
     final EntityView employeeView = new EntityView(employeeModel,
-            new EmployeeEditView(employeeModel.getEditModel()),
-            new EntityTableView(employeeModel.getTableModel()));
+            new EmployeeEditView((FXEntityEditModel) employeeModel.getEditModel()),
+            new EntityTableView((FXEntityListModel) employeeModel.getTableModel()));
     employeeModel.getTableModel().refresh();
 
     departmentView.addDetailView(employeeView);

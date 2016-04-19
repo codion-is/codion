@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
+import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.framework.model.EntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JLabel;

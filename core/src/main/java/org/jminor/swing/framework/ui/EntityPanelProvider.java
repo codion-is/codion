@@ -7,12 +7,12 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
-import org.jminor.swing.framework.model.DefaultEntityModel;
+import org.jminor.framework.model.DefaultEntityModel;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityModel;
+import org.jminor.framework.model.EntityModelProvider;
+import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.framework.model.DefaultEntityModelProvider;
-import org.jminor.swing.framework.model.EntityEditModel;
-import org.jminor.swing.framework.model.EntityModel;
-import org.jminor.swing.framework.model.EntityModelProvider;
-import org.jminor.swing.framework.model.EntityTableModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -328,7 +328,7 @@ public class EntityPanelProvider implements Comparable {
    */
   public final EntityPanel createPanel(final EntityModel model) {
     if (model == null) {
-      throw new IllegalArgumentException("Can not create EntityPanel without an EntityModel");
+      throw new IllegalArgumentException("Can not create EntityPanel without an SwingEntityModel");
     }
     try {
       final EntityPanel entityPanel = initializePanel(model);

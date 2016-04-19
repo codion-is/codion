@@ -18,10 +18,14 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.framework.model.DefaultEntityTableCriteriaModel;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityTableCriteriaModel;
+import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
 import org.jminor.swing.common.model.table.FilteredTableColumnModel;
-import org.jminor.swing.common.model.table.SortingDirective;
+import org.jminor.swing.common.model.table.FilteredTableModel;
 import org.jminor.swing.common.model.table.TableSortModel;
 
 import org.slf4j.Logger;
@@ -60,7 +64,8 @@ import java.util.Map;
  * EntityTablePanel panel = new EntityTablePanel(model);
  * </pre>
  */
-public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, Property> implements EntityTableModel {
+public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, Property>
+        implements EntityTableModel, FilteredTableModel<Entity, Property> {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityTableModel.class);
 
@@ -125,7 +130,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    * @param connectionProvider the db provider
    */
   public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    this(entityID, connectionProvider, new DefaultEntityTableSortModel(entityID), new DefaultEntityTableCriteriaModel(entityID, connectionProvider));
+    this(entityID, connectionProvider, new DefaultEntityTableSortModel(entityID),
+            new DefaultEntityTableCriteriaModel(entityID, connectionProvider,
+                    new DefaultPropertyFilterModelProvider(), new DefaultPropertyCriteriaModelProvider()));
   }
 
   /**
@@ -496,19 +503,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final SortingDirective getSortingDirective(final String propertyID) {
-    return getSortModel().getSortingDirective(Entities.getProperty(entityID, propertyID));
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void setSortingDirective(final String propertyID, final SortingDirective directive,
-                                        final boolean addColumnToSort) {
-    getSortModel().setSortingDirective(Entities.getProperty(entityID, propertyID), directive, addColumnToSort);
-  }
-
-  /** {@inheritDoc} */
-  @Override
   public void setColumns(final String... propertyIDs) {
     final List<Property> properties = Entities.getProperties(getEntityID(), propertyIDs);
     getColumnModel().setColumns(properties.toArray(new Property[properties.size()]));
@@ -555,6 +549,12 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
     }
 
     return Util.getDelimitedString(header, data, String.valueOf(delimiter));
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public void addSelectionChangedListener(final EventListener listener) {
+    getSelectionModel().addSelectionChangedListener(listener);
   }
 
   @Override

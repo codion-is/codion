@@ -7,6 +7,13 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.model.DefaultEntityLookupModel;
+import org.jminor.framework.model.DefaultForeignKeyCriteriaModel;
+import org.jminor.framework.model.DefaultPropertyCriteriaModel;
+import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.EntityLookupModel;
+import org.jminor.framework.model.PropertyCriteriaModel;
+import org.jminor.framework.model.PropertyCriteriaModelProvider;
 
 /**
  * A default PropertyCriteriaModelProvider implementation.
@@ -33,7 +40,7 @@ public class DefaultPropertyCriteriaModelProvider implements PropertyCriteriaMod
       final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(property.getReferencedEntityID(), connectionProvider);
       comboBoxModel.setNullValue(EntityUtil.createToStringEntity(property.getReferencedEntityID(), ""));
 
-      return new DefaultForeignKeyCriteriaModel(property, comboBoxModel);
+      return new SwingForeignKeyCriteriaModel(property, comboBoxModel);
     }
     else {
       final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityID(),

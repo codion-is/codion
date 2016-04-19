@@ -9,8 +9,10 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.States;
+import org.jminor.common.model.table.SelectionModel;
 
 import javax.swing.DefaultListSelectionModel;
+import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import java.util.ArrayList;
@@ -23,7 +25,7 @@ import java.util.List;
  * A default table selection model implementation
  * @param <R> the type of rows
  */
-public final class DefaultTableSelectionModel<R> extends DefaultListSelectionModel implements TableSelectionModel<R> {
+public final class DefaultTableSelectionModel<R> extends DefaultListSelectionModel implements SelectionModel<R>, ListSelectionModel {
 
   private final Event selectionChangedEvent = Events.event();
   private final Event selectedIndexChangedEvent = Events.event();

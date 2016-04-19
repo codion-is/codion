@@ -14,16 +14,17 @@ import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.model.EntityApplicationModel;
+import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityLoadTestModel;
+import org.jminor.framework.model.EntityModel;
+import org.jminor.framework.model.EntityTableModel;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
-import org.jminor.swing.framework.model.DefaultEntityModel;
-import org.jminor.swing.framework.model.EntityApplicationModel;
-import org.jminor.swing.framework.model.EntityComboBoxModel;
-import org.jminor.swing.framework.model.EntityEditModel;
-import org.jminor.swing.framework.model.EntityModel;
-import org.jminor.swing.framework.model.EntityTableModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.model.reporting.EntityReportUtil;
-import org.jminor.swing.framework.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -171,7 +172,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
       albumEditModel.setEntity(album);
       try {
         final Entity insertedAlbum = albumEditModel.insert().get(0);
-        final EntityEditModel trackEditModel = albumModel.getDetailModel(T_TRACK).getEditModel();
+        final SwingEntityEditModel trackEditModel = (SwingEntityEditModel) albumModel.getDetailModel(T_TRACK).getEditModel();
         final EntityComboBoxModel genreComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_GENREID_FK);
         selectRandomItem(genreComboBoxModel);
         final EntityComboBoxModel mediaTypeComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_MEDIATYPEID_FK);
@@ -240,8 +241,8 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     customerModel.addLinkedDetailModel(invoiceModel);
     invoiceModel.addLinkedDetailModel(invoicelineModel);
 
-    final EntityModel genreModel = new DefaultEntityModel(T_GENRE, connectionProvider);
-    final EntityModel genreTrackModel = new DefaultEntityModel(T_TRACK, connectionProvider);
+    final EntityModel genreModel = new SwingEntityModel(T_GENRE, connectionProvider);
+    final EntityModel genreTrackModel = new SwingEntityModel(T_TRACK, connectionProvider);
     genreModel.addDetailModel(genreTrackModel);
     genreModel.addLinkedDetailModel(genreTrackModel);
 

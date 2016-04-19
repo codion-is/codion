@@ -5,6 +5,12 @@ package org.jminor.swing.framework.model;
 
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
+import org.jminor.framework.model.DefaultEntityEditModel;
+import org.jminor.framework.model.DefaultEntityModel;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityModel;
+import org.jminor.framework.model.EntityModelProvider;
+import org.jminor.framework.model.EntityTableModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -234,7 +240,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
   }
 
   private EntityEditModel initializeDefaultEditModel(final EntityConnectionProvider connectionProvider) {
-    return new DefaultEntityEditModel(entityID, connectionProvider);
+    return new SwingEntityEditModel(entityID, connectionProvider);
   }
 
   private EntityTableModel initializeDefaultTableModel(final EntityConnectionProvider connectionProvider) {

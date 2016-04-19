@@ -11,7 +11,9 @@ import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.DefaultColumnSummaryModel;
+import org.jminor.common.model.table.SelectionModel;
 
+import javax.swing.ListSelectionModel;
 import javax.swing.event.TableModelEvent;
 import javax.swing.event.TableModelListener;
 import javax.swing.table.AbstractTableModel;
@@ -64,7 +66,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   /**
    * The selection model
    */
-  private final TableSelectionModel<R> selectionModel;
+  private final SelectionModel<R> selectionModel;
 
   /**
    * The TableColumnModel
@@ -225,7 +227,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
 
   /** {@inheritDoc} */
   @Override
-  public final TableSelectionModel<R> getSelectionModel() {
+  public final SelectionModel<R> getSelectionModel() {
     return selectionModel;
   }
 
@@ -248,7 +250,7 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   @Override
   public final Collection getValues(final C columnIdentifier, final boolean selectedOnly) {
     final int columnModelIndex = columnModel.getTableColumn(columnIdentifier).getModelIndex();
-    final TableSelectionModel selectionModel = getSelectionModel();
+    final ListSelectionModel selectionModel = (ListSelectionModel) getSelectionModel();
     final Collection values = new ArrayList();
     for (int row = 0; row < getVisibleItemCount(); row++) {
       if (!selectedOnly || selectionModel.isSelectedIndex(row)) {

@@ -8,6 +8,7 @@ import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.model.PropertyCriteriaModel;
 import org.jminor.swing.common.model.combobox.BooleanComboBoxModel;
 import org.jminor.swing.common.model.combobox.ItemComboBoxModel;
 import org.jminor.swing.common.ui.UiUtil;
@@ -18,7 +19,6 @@ import org.jminor.swing.common.ui.table.ColumnCriteriaPanel;
 import org.jminor.swing.common.ui.textfield.DoubleField;
 import org.jminor.swing.common.ui.textfield.IntField;
 import org.jminor.swing.common.ui.textfield.LongField;
-import org.jminor.swing.framework.model.PropertyCriteriaModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.JComboBox;

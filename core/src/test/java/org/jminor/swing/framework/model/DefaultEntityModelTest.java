@@ -17,12 +17,21 @@ import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
+import org.jminor.framework.model.DefaultEntityEditModel;
+import org.jminor.framework.model.DefaultEntityModel;
+import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityModel;
+import org.jminor.framework.model.EntityTableModel;
+import org.jminor.swing.common.model.table.FilteredTableModel;
 import org.jminor.swing.common.ui.ValueLinks;
 
 import org.junit.Before;
 import org.junit.Test;
 
+import javax.swing.ComboBoxModel;
 import javax.swing.JComboBox;
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -34,14 +43,14 @@ import static org.junit.Assert.*;
 
 public final class DefaultEntityModelTest {
 
-  private DefaultEntityModel departmentModel;
+  private SwingEntityModel departmentModel;
   private int eventCount = 0;
 
-  public static class EmpModel extends DefaultEntityModel {
+  public static class EmpModel extends SwingEntityModel {
     public EmpModel(final EntityConnectionProvider connectionProvider) {
-      super(new DefaultEntityEditModel(TestDomain.T_EMP, connectionProvider));
-      getEditModel().getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).refresh();
-      getEditModel().getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK).refresh();
+      super(new SwingEntityEditModel(TestDomain.T_EMP, connectionProvider));
+      ((SwingEntityEditModel) getEditModel()).getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).refresh();
+      ((SwingEntityEditModel) getEditModel()).getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK).refresh();
     }
   }
 
@@ -50,10 +59,10 @@ public final class DefaultEntityModelTest {
     //here we're basically testing for the entity in the edit model being modified after
     //being set when selected in the table model, this usually happens when combo box models
     //are being filtered on property value change, see EmployeeEditModel.bindEvents()
-    final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
-    final EntityEditModel employeeEditModel = employeeModel.getEditModel();
+    final SwingEntityModel employeeModel = (SwingEntityModel) departmentModel.getDetailModel(TestDomain.T_EMP);
+    final SwingEntityEditModel employeeEditModel = (SwingEntityEditModel) employeeModel.getEditModel();
     final EntityTableModel employeeTableModel = employeeModel.getTableModel();
-    ValueLinks.selectedItemValueLink(new JComboBox<>(employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)),
+    ValueLinks.selectedItemValueLink(new JComboBox<>((ComboBoxModel<Entity>) employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)),
             EditModelValues.<Entity>value(employeeEditModel, TestDomain.EMP_MGR_FK));
     employeeTableModel.refresh();
     for (final Entity employee : employeeTableModel.getAllItems()) {
@@ -78,7 +87,7 @@ public final class DefaultEntityModelTest {
     Entity operations = deptTableModel.getSelectionModel().getSelectedItem();
     assertEquals(80, operations.get(TestDomain.DEPARTMENT_ID));
 
-    deptTableModel.setFilterCriteria(new FilterCriteria<Entity>() {
+    ((FilteredTableModel) deptTableModel).setFilterCriteria(new FilterCriteria<Entity>() {
       @Override
       public boolean include(final Entity item) {
         return !Util.equal(80, item.get(TestDomain.DEPARTMENT_ID));
@@ -89,7 +98,7 @@ public final class DefaultEntityModelTest {
     deptEditModel.setValue(TestDomain.DEPARTMENT_ID, 40);
     deptEditModel.update();
 
-    operations = deptTableModel.getFilteredItems().get(0);
+    operations = ((FilteredTableModel<Entity, Property>) deptTableModel).getFilteredItems().get(0);
     assertEquals(40, operations.get(TestDomain.DEPARTMENT_ID));
   }
 
@@ -103,7 +112,7 @@ public final class DefaultEntityModelTest {
     assertNotNull(employeeModel);
     assertTrue(departmentModel.getLinkedDetailModels().contains(employeeModel));
     departmentModel.refresh();
-    final EntityEditModel employeeEditModel = employeeModel.getEditModel();
+    final SwingEntityEditModel employeeEditModel = (SwingEntityEditModel) employeeModel.getEditModel();
     final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
     departmentsComboBoxModel.refresh();
     final Entity.Key primaryKey = Entities.key(TestDomain.T_DEPARTMENT);
@@ -163,18 +172,18 @@ public final class DefaultEntityModelTest {
 
   @Test
   public void constructor() {
-    new DefaultEntityModel(new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
-    new DefaultEntityModel(new DefaultEntityTableModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
+    new SwingEntityModel(new SwingEntityEditModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
+    new SwingEntityModel(new DefaultEntityTableModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullEntityID() {
-    new DefaultEntityModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    new SwingEntityModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullConnectionProvider() {
-    new DefaultEntityModel(TestDomain.T_EMP, null);
+    new SwingEntityModel(TestDomain.T_EMP, null);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -184,16 +193,21 @@ public final class DefaultEntityModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorTableModelEntityIDMismatch() {
-    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DEPARTMENT,
+            EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP,
+            EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     new DefaultEntityModel(editModel, tableModel);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorTableModelEditModelMismatch() {
-    final EntityEditModel editModel = new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-    final EntityEditModel editModel2 = new DefaultEntityEditModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel = new SwingEntityEditModel(TestDomain.T_DEPARTMENT,
+            EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final EntityEditModel editModel2 = new SwingEntityEditModel(TestDomain.T_DEPARTMENT,
+            EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final EntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_DEPARTMENT,
+            EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     tableModel.setEditModel(editModel);
     new DefaultEntityModel(editModel2, tableModel);
   }
@@ -237,12 +251,13 @@ public final class DefaultEntityModelTest {
               TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "OPERATIONS");
       departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
       final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
-      final EntityComboBoxModel deptComboBoxModel = employeeModel.getEditModel().getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
+      final EntityComboBoxModel deptComboBoxModel = ((SwingEntityEditModel) employeeModel.getEditModel())
+              .getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
       deptComboBoxModel.refresh();
       deptComboBoxModel.setSelectedItem(department);
       departmentModel.getTableModel().deleteSelected();
-      assertEquals(3, employeeModel.getEditModel().getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).getSize());
-      assertNotNull(employeeModel.getEditModel().getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).getSelectedValue());
+      assertEquals(3, ((SwingEntityEditModel) employeeModel.getEditModel()).getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).getSize());
+      assertNotNull(((SwingEntityEditModel) employeeModel.getEditModel()).getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK).getSelectedValue());
     }
     finally {
       departmentModel.getConnectionProvider().getConnection().rollbackTransaction();
@@ -278,14 +293,14 @@ public final class DefaultEntityModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void addSameDetailModelTwice() {
-    departmentModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    departmentModel = new SwingEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     departmentModel.addDetailModels(employeeModel, employeeModel);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void addDetailModelDetailModelAlreadyHasMasterModel() {
-    departmentModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    departmentModel = new SwingEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     employeeModel.setMasterModel(departmentModel);
     departmentModel.addDetailModel(employeeModel);
@@ -293,10 +308,10 @@ public final class DefaultEntityModelTest {
 
   @Test(expected = IllegalStateException.class)
   public void setMasterModel() {
-    departmentModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    departmentModel = new SwingEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     employeeModel.setMasterModel(departmentModel);
-    employeeModel.setMasterModel(new DefaultEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
+    employeeModel.setMasterModel(new SwingEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
   }
 
   @Test
@@ -325,7 +340,8 @@ public final class DefaultEntityModelTest {
 
   @Before
   public void setUp() throws Exception {
-    departmentModel = new DefaultEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    TestDomain.init();
+    departmentModel = new SwingEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     departmentModel.addDetailModel(employeeModel);
     departmentModel.setDetailModelForeignKey(employeeModel, TestDomain.EMP_DEPARTMENT_FK);

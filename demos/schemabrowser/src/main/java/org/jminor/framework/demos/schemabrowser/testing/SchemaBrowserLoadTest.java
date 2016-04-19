@@ -8,11 +8,11 @@ import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
+import org.jminor.framework.model.DefaultEntityApplicationModel;
+import org.jminor.framework.model.EntityApplicationModel;
+import org.jminor.framework.model.EntityLoadTestModel;
+import org.jminor.framework.model.EntityModel;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
-import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
-import org.jminor.swing.framework.model.EntityApplicationModel;
-import org.jminor.swing.framework.model.EntityModel;
-import org.jminor.swing.framework.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;

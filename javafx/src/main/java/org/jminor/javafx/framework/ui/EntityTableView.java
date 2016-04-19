@@ -5,22 +5,23 @@ package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.javafx.framework.model.EntityListModel;
+import org.jminor.javafx.framework.model.FXEntityListModel;
 
 import javafx.application.Platform;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.geometry.Pos;
 import javafx.scene.control.Button;
 import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
+import javafx.scene.control.MultipleSelectionModel;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -37,14 +38,15 @@ import java.util.List;
 
 public class EntityTableView extends TableView<Entity> {
 
-  private final EntityListModel listModel;
+  private final FXEntityListModel listModel;
   private final TextField filterText = new TextField();
   private final BorderPane toolPane = new BorderPane();
 
-  public EntityTableView(final EntityListModel listModel) {
-    super(new SortedList<>(new FilteredList<>(listModel)));
+  public EntityTableView(final FXEntityListModel listModel) {
+    super(listModel.getSortedList());
     this.listModel = listModel;
     this.listModel.setSelectionModel(getSelectionModel());
+    ((MultipleSelectionModel<Entity>) this.listModel.getListSelectionModel()).setSelectionMode(SelectionMode.MULTIPLE);
     filterText.setPromptText(FrameworkMessages.get(FrameworkMessages.SEARCH));
     initializeColumns();
     initializeToolPane();
@@ -73,7 +75,7 @@ public class EntityTableView extends TableView<Entity> {
     }
   }
 
-  public final EntityListModel getListModel() {
+  public final FXEntityListModel getListModel() {
     return listModel;
   }
 
@@ -91,7 +93,8 @@ public class EntityTableView extends TableView<Entity> {
 
   private void initializeColumns() {
     for (final Property property : Entities.getVisibleProperties(listModel.getEntityID())) {
-      getColumns().add(new EntityTableColumn(listModel, property, listModel.getCellValueFactory(property)));
+      getColumns().add(new EntityTableColumn(listModel, property, listModel.getConnectionProvider(),
+              listModel.getCellValueFactory(property)));
     }
   }
 
@@ -112,8 +115,9 @@ public class EntityTableView extends TableView<Entity> {
 
   private Button createRefreshButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.REFRESH));
+    button.setOnAction(event -> listModel.refresh());
     FXUiUtil.link(button.disableProperty(),
-            listModel.getCriteriaModel().getCriteriaStateChangedObserver().getReversedObserver());
+            listModel.getCriteriaModel().getCriteriaStateObserver().getReversedObserver());
 
     return button;
   }
@@ -202,14 +206,9 @@ public class EntityTableView extends TableView<Entity> {
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
     }
-  }
-
-  private SortedList<Entity> getSortedList() {
-    return (SortedList<Entity>) getItems();
-  }
-
-  private FilteredList<Entity> getFilteredList() {
-    return (FilteredList<Entity>) getSortedList().getSource();
+    catch (ValidationException e) {
+      //todo
+    }
   }
 
   private void addKeyEvents() {
@@ -231,9 +230,9 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void bindEvents() {
-    getSortedList().comparatorProperty().bind(comparatorProperty());
+    listModel.getSortedList().comparatorProperty().bind(comparatorProperty());
     filterText.textProperty().addListener((observable, oldValue, filterByValue) -> {
-      getFilteredList().setPredicate(entity -> {
+      listModel.getFilteredList().setPredicate(entity -> {
         if (Util.nullOrEmpty(filterByValue)) {
           return true;
         }

@@ -11,13 +11,13 @@ import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
-import org.jminor.swing.framework.model.DefaultEntityEditModel;
+import org.jminor.framework.model.DefaultEntityApplicationModel;
+import org.jminor.framework.model.EntityApplicationModel;
+import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityModelProvider;
 import org.jminor.swing.framework.model.DefaultEntityModelProvider;
-import org.jminor.swing.framework.model.EntityApplicationModel;
-import org.jminor.swing.framework.model.EntityComboBoxModel;
-import org.jminor.swing.framework.model.EntityEditModel;
-import org.jminor.swing.framework.model.EntityModelProvider;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
@@ -88,7 +88,7 @@ public class EmpDeptMinimalApp {
    * We extend the default entity edit model to provide a custom
    * combo box model for the manager property
    */
-  public static final class EmployeeEditModel extends DefaultEntityEditModel {
+  public static final class EmployeeEditModel extends SwingEntityEditModel {
 
     public EmployeeEditModel(final EntityConnectionProvider connectionProvider) {
       super("scott.emp", connectionProvider);

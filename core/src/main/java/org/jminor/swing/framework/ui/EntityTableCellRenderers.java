@@ -5,7 +5,7 @@ package org.jminor.swing.framework.ui;
 
 import org.jminor.common.model.Util;
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.framework.model.EntityTableModel;
+import org.jminor.framework.model.EntityTableModel;
 
 import javax.swing.JCheckBox;
 import javax.swing.JTable;
@@ -158,7 +158,7 @@ public final class EntityTableCellRenderers {
       final boolean propertyCriteriaEnabled = tableModel.getCriteriaModel().isEnabled(property.getPropertyID());
       final boolean propertyFilterEnabled = tableModel.getCriteriaModel().isFilterEnabled(property.getPropertyID());
       final boolean showCriteria = indicateCriteria && (propertyCriteriaEnabled || propertyFilterEnabled);
-      final Color cellColor = tableModel.getPropertyBackgroundColor(row, property);
+      final Color cellColor = (Color) tableModel.getPropertyBackgroundColor(row, property);
       if (showCriteria) {
         setBackground(getCriteriaEnabledColor(row, propertyCriteriaEnabled, propertyFilterEnabled, cellColor));
       }

@@ -6,9 +6,9 @@ package org.jminor.swing.framework.ui;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.TestDomain;
+import org.jminor.framework.model.EntityModel;
+import org.jminor.framework.model.EntityModelProvider;
 import org.jminor.swing.framework.model.DefaultEntityModelProvider;
-import org.jminor.swing.framework.model.EntityModel;
-import org.jminor.swing.framework.model.EntityModelProvider;
 
 import org.junit.Test;
 

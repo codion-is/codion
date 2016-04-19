@@ -6,6 +6,8 @@ package org.jminor.swing.framework.model;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.TestDomain;
+import org.jminor.framework.model.EntityModel;
+import org.jminor.framework.model.EntityModelProvider;
 
 import org.junit.Test;
 
@@ -36,7 +38,7 @@ public class DefaultEntityModelProviderTest {
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
   }
 
-  static final class DepartmentEditModel extends DefaultEntityEditModel {
+  static final class DepartmentEditModel extends SwingEntityEditModel {
 
     public DepartmentEditModel(final EntityConnectionProvider connectionProvider) {
       super(TestDomain.T_DEPARTMENT, connectionProvider);
