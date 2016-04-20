@@ -200,14 +200,14 @@ public class EntityTableView extends TableView<Entity> {
     try {
       if (result.isInputAccepted()) {
         EntityUtil.put(property.getPropertyID(), result.getValue(), selectedEntities);
-        getListModel().getEditModel().update(selectedEntities);
+        getListModel().update(selectedEntities);
       }
+    }
+    catch (final ValidationException e) {
+      FXUiUtil.showExceptionDialog(e);
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
-    }
-    catch (ValidationException e) {
-      //todo
     }
   }
 

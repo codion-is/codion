@@ -156,11 +156,11 @@ public interface EntityTableModel extends EntityDataProvider, Refreshable {
 
   /**
    * @param row the row for which to retrieve the background color
-   * @param columnProperty the column property for which to retrieve the background color
+   * @param property the property for which to retrieve the background color
    * @return an Object representing the background color for this row and property, specified by the row entity
    * @see org.jminor.framework.domain.Entity.Definition#setBackgroundColorProvider(org.jminor.framework.domain.Entity.BackgroundColorProvider)
    */
-  Object getPropertyBackgroundColor(final int row, final Property columnProperty);
+  Object getPropertyBackgroundColor(final int row, final Property property);
 
   /**
    * @param propertyID the propertyID

@@ -16,8 +16,10 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultEntityTableCriteriaModel;
+import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableCriteriaModel;
 import org.jminor.framework.model.EntityTableModel;
 
@@ -42,7 +44,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 
-public class FXEntityListModel implements org.jminor.framework.model.EntityTableModel, ObservableList<Entity> {
+public class FXEntityListModel implements EntityTableModel, ObservableList<Entity> {
 
   private final String entityID;
   private final EntityConnectionProvider connectionProvider;
@@ -58,10 +60,12 @@ public class FXEntityListModel implements org.jminor.framework.model.EntityTable
 
   private FXEntityEditModel editModel;
 
-  /**
-   * If true then querying should be disabled if no criteria is specified
-   */
+  private InsertAction insertAction = InsertAction.ADD_TOP;
   private boolean queryCriteriaRequired = false;
+  private boolean queryConfigurationAllowed = true;
+  private boolean batchUpdateAllowed = true;
+  private boolean removeEntitiesOnDelete = true;
+  private int fetchCount = -1;
 
   public FXEntityListModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this(entityID, connectionProvider, new DefaultEntityTableCriteriaModel(entityID, connectionProvider,
@@ -108,11 +112,11 @@ public class FXEntityListModel implements org.jminor.framework.model.EntityTable
     return selectionModel.getSelectionModel();
   }
 
-  public SortedList<Entity> getSortedList() {
+  public final SortedList<Entity> getSortedList() {
     return sortedList;
   }
 
-  public FilteredList<Entity> getFilteredList() {
+  public final FilteredList<Entity> getFilteredList() {
     return filteredList;
   }
 
@@ -143,7 +147,7 @@ public class FXEntityListModel implements org.jminor.framework.model.EntityTable
     refreshEvent.fire();
   }
 
-  public void addRefreshListener(final EventListener listener) {
+  public final void addRefreshListener(final EventListener listener) {
     refreshEvent.addListener(listener);
   }
 
@@ -168,8 +172,9 @@ public class FXEntityListModel implements org.jminor.framework.model.EntityTable
     return selectionModel.getMultipleSelectionObserver();
   }
 
+  /** {@inheritDoc} */
   @Override
-  public void addSelectionChangedListener(final EventListener listener) {
+  public final void addSelectionChangedListener(final EventListener listener) {
     selectionChangedEvent.addListener(listener);
   }
 
@@ -187,6 +192,7 @@ public class FXEntityListModel implements org.jminor.framework.model.EntityTable
     return entityID;
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Entity get(final int index) {
     return list.get(index);
@@ -196,329 +202,450 @@ public class FXEntityListModel implements org.jminor.framework.model.EntityTable
     getEditModel().delete(getSelectionModel().getSelectedItems());
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int size() {
     return list.size();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void addListener(final ListChangeListener<? super Entity> listener) {
     list.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void removeListener(final ListChangeListener<? super Entity> listener) {
     list.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean addAll(final Entity... elements) {
     return list.addAll(elements);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean setAll(final Entity... elements) {
     return list.setAll(elements);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean setAll(final Collection<? extends Entity> col) {
     return list.setAll(col);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean removeAll(final Entity... elements) {
     return list.removeAll();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean retainAll(final Entity... elements) {
     return list.retainAll(elements);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void remove(final int from, final int to) {
     list.remove(from, to);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean isEmpty() {
     return list.isEmpty();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean contains(final Object o) {
     return list.contains(o);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Iterator<Entity> iterator() {
     return list.iterator();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Object[] toArray() {
     return list.toArray();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final <T> T[] toArray(final T[] a) {
     return list.toArray(a);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean add(final Entity entity) {
     return list.add(entity);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean remove(final Object o) {
     return list.remove(o);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean containsAll(final Collection<?> c) {
     return list.containsAll(c);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean addAll(final Collection<? extends Entity> c) {
     return list.addAll(c);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean addAll(final int index, final Collection<? extends Entity> c) {
     return list.addAll(index, c);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean removeAll(final Collection<?> c) {
     return list.removeAll(c);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final boolean retainAll(final Collection<?> c) {
     return list.retainAll(c);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void clear() {
     list.clear();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Entity set(final int index, final Entity element) {
     return list.set(index, element);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void add(final int index, final Entity element) {
     list.add(index, element);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final Entity remove(final int index) {
     return list.remove(index);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int indexOf(final Object o) {
     return list.indexOf(o);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final int lastIndexOf(final Object o) {
     return list.lastIndexOf(o);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final ListIterator<Entity> listIterator() {
     return list.listIterator();
   }
 
+  /** {@inheritDoc} */
   @Override
   public final ListIterator<Entity> listIterator(final int index) {
     return list.listIterator(index);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final List<Entity> subList(final int fromIndex, final int toIndex) {
     return list.subList(fromIndex, toIndex);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void addListener(final InvalidationListener listener) {
     list.addListener(listener);
   }
 
+  /** {@inheritDoc} */
   @Override
   public final void removeListener(final InvalidationListener listener) {
     list.removeListener(listener);
   }
 
+  /** {@inheritDoc} */
   @Override
   public List<Entity> getAllItems() {
     return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getRowCount() {
     return size();
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean hasEditModel() {
     return editModel != null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues) {
-
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(this.entityID, foreignKeyEntityID);
+    for (final Entity entity : getAllItems()) {
+      for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
+        for (final Entity foreignKeyValue : foreignKeyValues) {
+          final Entity currentForeignKeyValue = entity.getForeignKey(foreignKeyProperty.getPropertyID());
+          if (Objects.equals(currentForeignKeyValue, foreignKeyValue)) {
+            currentForeignKeyValue.setAs(foreignKeyValue);
+          }
+        }
+      }
+    }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void addEntities(final List<Entity> entities, final boolean atTop) {
-
+    if (atTop) {
+      addAll(0, entities);
+    }
+    else {
+      addAll(entities);
+    }
   }
 
+  /** {@inheritDoc} */
   @Override
   public void replaceEntities(final Collection<Entity> entities) {
-
+    replaceEntitiesByKey(EntityUtil.mapToKey(entities));
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isQueryConfigurationAllowed() {
-    return false;
+    return queryConfigurationAllowed;
   }
 
+  /** {@inheritDoc} */
   @Override
-  public EntityTableModel setQueryConfigurationAllowed(final boolean value) {
-    return null;
+  public EntityTableModel setQueryConfigurationAllowed(final boolean queryConfigurationAllowed) {
+    this.queryConfigurationAllowed = queryConfigurationAllowed;
+    return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isDeleteAllowed() {
-    return false;
+    return editModel != null && editModel.isDeleteAllowed();
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isReadOnly() {
-    return false;
+    return editModel == null || editModel.isReadOnly();
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isUpdateAllowed() {
-    return false;
+    return editModel != null && editModel.isUpdateAllowed();
   }
 
+  /** {@inheritDoc} */
   @Override
-  public boolean isBatchUpdateAllowed() {
-    return false;
+  public final boolean isBatchUpdateAllowed() {
+    return batchUpdateAllowed;
   }
 
+  /** {@inheritDoc} */
   @Override
-  public EntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed) {
-    return null;
+  public final EntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed) {
+    this.batchUpdateAllowed = batchUpdateAllowed;
+    return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public ColumnSummaryModel getColumnSummaryModel(final String propertyID) {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
+  /** {@inheritDoc} */
   @Override
-  public Color getPropertyBackgroundColor(final int row, final Property columnProperty) {
-    return null;
+  public Color getPropertyBackgroundColor(final int row, final Property property) {
+    return (Color) get(row).getBackgroundColor(property);
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getPropertyColumnIndex(final String propertyID) {
-    return 0;
+    throw new UnsupportedOperationException();
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getStatusMessage() {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
+  /** {@inheritDoc} */
   @Override
   public int getFetchCount() {
-    return 0;
+    return fetchCount;
   }
 
+  /** {@inheritDoc} */
   @Override
   public EntityTableModel setFetchCount(final int fetchCount) {
-    return null;
+    this.fetchCount = fetchCount;
+    return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void update(final List<Entity> entities) throws ValidationException, DatabaseException {
-
+    Objects.requireNonNull(entities);
+    if (!isUpdateAllowed()) {
+      throw new IllegalStateException("Updating is not allowed via this table model");
+    }
+    if (entities.size() > 1 && !batchUpdateAllowed) {
+      throw new IllegalStateException("Batch update of entities is not allowed!");
+    }
+    editModel.update(entities);
   }
 
+  /** {@inheritDoc} */
   @Override
   public boolean isRemoveEntitiesOnDelete() {
-    return false;
+    return removeEntitiesOnDelete;
   }
 
+  /** {@inheritDoc} */
   @Override
-  public EntityTableModel setRemoveEntitiesOnDelete(final boolean value) {
-    return null;
+  public EntityTableModel setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
+    this.removeEntitiesOnDelete = removeEntitiesOnDelete;
+    return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public InsertAction getInsertAction() {
-    return null;
+    return insertAction;
   }
 
+  /** {@inheritDoc} */
   @Override
   public EntityTableModel setInsertAction(final InsertAction insertAction) {
-    return null;
+    Objects.requireNonNull(insertAction);
+    this.insertAction = insertAction;
+    return this;
   }
 
+  /** {@inheritDoc} */
   @Override
   public Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
     return null;
   }
 
+  /** {@inheritDoc} */
   @Override
   public void setSelectedByKey(final Collection<Entity.Key> keys) {
-
+    final List<Entity.Key> keyList = new ArrayList<>(keys);
+    final List<Entity> toSelect = new ArrayList<>(keys.size());
+    stream().filter(entity -> keyList.contains(entity.getKey())).forEach(entity -> {
+      toSelect.add(entity);
+      keyList.remove(entity.getKey());
+    });
+    getSelectionModel().setSelectedItems(toSelect);
   }
 
+  /** {@inheritDoc} */
   @Override
-  public Collection<Entity> getEntitiesByPropertyValue(final Map<String, Object> values) {
-    return null;
+  public final Collection<Entity> getEntitiesByPropertyValue(final Map<String, Object> values) {
+    final List<Entity> entities = new ArrayList<>();
+    for (final Entity entity : getAllItems()) {
+      boolean equal = true;
+      for (final Map.Entry<String, Object> entries : values.entrySet()) {
+        final String propertyID = entries.getKey();
+        if (!entity.get(propertyID).equals(entries.getValue())) {
+          equal = false;
+          break;
+        }
+      }
+      if (equal) {
+        entities.add(entity);
+      }
+    }
+
+    return entities;
   }
 
-  @Override
-  public Iterator<Entity> getSelectedEntitiesIterator() {
-    return null;
-  }
-
+  /** {@inheritDoc} */
   @Override
   public Entity getEntityByKey(final Entity.Key primaryKey) {
+    for (final Entity entity : filteredList) {
+      if (entity.getKey().equals(primaryKey)) {
+        return entity;
+      }
+    }
+
     return null;
+
   }
 
+  /** {@inheritDoc} */
+  @Override
+  public Iterator<Entity> getSelectedEntitiesIterator() {
+    return selectionModel.getSelectedItems().iterator();
+  }
+
+  /** {@inheritDoc} */
   @Override
   public int indexOf(final Entity.Key primaryKey) {
-    return 0;
+    return indexOf(getEntityByKey(primaryKey));
   }
 
+  /** {@inheritDoc} */
   @Override
   public void savePreferences() {
-
+    throw new UnsupportedOperationException();
   }
 
+  /** {@inheritDoc} */
   @Override
   public void setColumns(final String... propertyIDs) {
-
+    throw new UnsupportedOperationException();
   }
 
+  /** {@inheritDoc} */
   @Override
   public String getTableDataAsDelimitedString(final char delimiter) {
-    return null;
+    throw new UnsupportedOperationException();
   }
 
   /**
@@ -534,7 +661,7 @@ public class FXEntityListModel implements org.jminor.framework.model.EntityTable
 
     try {
       return connectionProvider.getConnection().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
-              Entities.getOrderByClause(entityID)));
+              Entities.getOrderByClause(entityID), fetchCount));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -542,10 +669,27 @@ public class FXEntityListModel implements org.jminor.framework.model.EntityTable
   }
 
   private void bindEditModelEvents() {
-    getEditModel().addAfterInsertListener(insertEvent -> addAll(0, insertEvent.getInsertedEntities()));
-    getEditModel().addAfterUpdateListener(updateEvent -> replaceEntitiesByKey(new HashMap<>(updateEvent.getUpdatedEntities())));
-    getEditModel().addAfterDeleteListener(deleteEvent -> removeAll(deleteEvent.getDeletedEntities()));
+    getEditModel().addAfterInsertListener(this::handleInsert);
+    getEditModel().addAfterUpdateListener(this::handleUpdate);
+    getEditModel().addAfterDeleteListener(this::handleDelete);
     getEditModel().addAfterRefreshListener(this::refresh);
+  }
+
+  private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
+    getSelectionModel().clearSelection();
+    if (!insertAction.equals(InsertAction.DO_NOTHING)) {
+      addEntities(insertEvent.getInsertedEntities(), insertAction.equals(InsertAction.ADD_TOP));
+    }
+  }
+
+  private void handleUpdate(final EntityEditModel.UpdateEvent updateEvent) {
+    replaceEntitiesByKey(new HashMap<>(updateEvent.getUpdatedEntities()));
+  }
+
+  private void handleDelete(final EntityEditModel.DeleteEvent deleteEvent) {
+    if (removeEntitiesOnDelete) {
+      removeAll(deleteEvent.getDeletedEntities());
+    }
   }
 
   /**
