@@ -4217,3 +4217,4 @@
   JavaFX improvements
   Ivy module configuration improved
   SwingPropertyCriteriaModelProvider added, DefaultPropertyCriteriaModelProvider and DefaultPropertyFilterModelProvider moved to framework.model
+  FXCriteriaModelProvider now extends DefaultPropertyCriteriaModelProvider

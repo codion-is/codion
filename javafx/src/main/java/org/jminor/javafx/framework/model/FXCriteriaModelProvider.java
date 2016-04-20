@@ -3,15 +3,11 @@ package org.jminor.javafx.framework.model;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.model.DefaultEntityLookupModel;
 import org.jminor.framework.model.DefaultEntityTableCriteriaModel;
-import org.jminor.framework.model.DefaultForeignKeyCriteriaModel;
-import org.jminor.framework.model.DefaultPropertyCriteriaModel;
-import org.jminor.framework.model.EntityLookupModel;
+import org.jminor.framework.model.DefaultPropertyCriteriaModelProvider;
 import org.jminor.framework.model.PropertyCriteriaModel;
-import org.jminor.framework.model.PropertyCriteriaModelProvider;
 
-public class FXCriteriaModelProvider implements PropertyCriteriaModelProvider {
+public class FXCriteriaModelProvider extends DefaultPropertyCriteriaModelProvider {
 
   private final boolean useForeignKeyListModels;
 
@@ -26,30 +22,15 @@ public class FXCriteriaModelProvider implements PropertyCriteriaModelProvider {
   public PropertyCriteriaModel<? extends Property.SearchableProperty> initializePropertyCriteriaModel(
           final Property.SearchableProperty property, final EntityConnectionProvider connectionProvider) {
     if (property instanceof Property.ForeignKeyProperty) {
-      return initializeForeignKeyCriteriaModel((Property.ForeignKeyProperty) property, connectionProvider);
-    }
-    else if (property instanceof Property.ColumnProperty) {
-      return new DefaultPropertyCriteriaModel((Property.ColumnProperty) property);
+      final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) property;
+      if (Entities.isSmallDataset(foreignKeyProperty.getReferencedEntityID())) {
+        //todo comboBoxModel.setNullValue(EntityUtil.createToStringEntity(property.getReferencedEntityID(), ""));
+        return new FXForeignKeyCriteriaListModel(foreignKeyProperty,
+                useForeignKeyListModels ? createListModel(foreignKeyProperty, connectionProvider) : null);
+      }
     }
 
-    throw new IllegalArgumentException("Not a searchable property (Property.ColumnProperty or Property.ForeignKeyProperty): " + property);
-  }
-
-  private PropertyCriteriaModel<? extends Property.SearchableProperty> initializeForeignKeyCriteriaModel(
-          final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
-    if (Entities.isSmallDataset(property.getReferencedEntityID())) {
-      //todo
-//        comboBoxModel.setNullValue(EntityUtil.createToStringEntity(property.getReferencedEntityID(), ""));
-
-      return new FXForeignKeyCriteriaListModel(property, useForeignKeyListModels ? createListModel(property, connectionProvider) : null);
-    }
-    else {
-      final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityID(),
-              connectionProvider, Entities.getSearchProperties(property.getReferencedEntityID()));
-      lookupModel.getMultipleSelectionAllowedValue().set(true);
-
-      return new DefaultForeignKeyCriteriaModel(property, lookupModel);
-    }
+    return super.initializePropertyCriteriaModel(property, connectionProvider);
   }
 
   private FXEntityListModel createListModel(final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
