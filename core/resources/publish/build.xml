@@ -19,7 +19,9 @@
     <ivy:resolve/>
     <ivy:deliver deliverpattern="ivy.xml" pubrevision="${version}"/>
     <ivy:makepom ivyfile="ivy.xml" pomfile="${base.dir}/${ant.project.name}.pom">
+      <mapping conf="compile" scope="compile" />
       <mapping conf="runtime" scope="runtime" />
+      <mapping conf="test" scope="test" />
       <mapping conf="sources" scope="sources" />
       <mapping conf="javadoc" scope="javadoc" />
     </ivy:makepom>

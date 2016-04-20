@@ -4215,3 +4215,4 @@
 0.10.0
   Major refactoring for reuse of model classes in JavaFX, module client-model added
   JavaFX improvements
+  Ivy module configuration improved
