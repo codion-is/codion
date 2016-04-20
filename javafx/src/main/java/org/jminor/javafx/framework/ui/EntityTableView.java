@@ -215,11 +215,10 @@ public class EntityTableView extends TableView<Entity> {
     setOnKeyReleased(event -> {
       switch (event.getCode()) {
         case DELETE:
-          //todo events from criteria view controls
-//          if (!getSelectionModel().isEmpty()) {
-//            deleteSelected();
-//            event.consume();
-//          }
+          if (event.getTarget() == this && !getSelectionModel().isEmpty()) {
+            deleteSelected();
+            event.consume();
+          }
           break;
         case F5:
           listModel.refresh();

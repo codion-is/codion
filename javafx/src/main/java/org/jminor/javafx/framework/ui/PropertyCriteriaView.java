@@ -7,7 +7,6 @@ import org.jminor.common.model.Item;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
-import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.domain.Entity;
@@ -106,8 +105,7 @@ public final class PropertyCriteriaView extends BorderPane {
   private Control createUpperBoundControl() {
     final Control control = createControl();
     if (!(control instanceof EntityLookupField)) {
-      final Value value = FXUiUtil.createValue(model.getColumnIdentifier(), control, null);
-      Values.link(model.getUpperBoundValue(), value);
+      Values.link(model.getUpperBoundValue(), FXUiUtil.createValue(model.getColumnIdentifier(), control, null));
     }
 
     return control;
@@ -119,8 +117,7 @@ public final class PropertyCriteriaView extends BorderPane {
       return null;
     }
     final Control control = createControl();
-    final Value value = FXUiUtil.createValue(model.getColumnIdentifier(), control, null);
-    Values.link(model.getLowerBoundValue(), value);
+    Values.link(model.getLowerBoundValue(), FXUiUtil.createValue(model.getColumnIdentifier(), control, null));
 
     return control;
   }

@@ -12,7 +12,6 @@ import org.jminor.framework.domain.Entity;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.MultipleSelectionModel;
 
-import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -26,7 +25,6 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   private final State singleSelectionState = States.state(false);
 
   private final javafx.scene.control.SelectionModel<Entity> selectionModel;
-  private final List<Entity> selectedItems = new ArrayList<>();
   private int selectedIndex = -1;
 
   public FXEntityListSelectionModel(final javafx.scene.control.SelectionModel<Entity> selectionModel) {
@@ -119,7 +117,10 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   @Override
   public List<Integer> getSelectedIndexes() {
     if (selectionModel instanceof MultipleSelectionModel) {
-      return ((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices();
+      return Collections.unmodifiableList(((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices());
+    }
+    else if (selectionModel.isEmpty()) {
+      return Collections.emptyList();
     }
 
     return Collections.singletonList(selectionModel.selectedIndexProperty().get());
@@ -150,9 +151,8 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     if (selectionModel instanceof MultipleSelectionModel) {
       return ((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices().size();
     }
-    else {
-      return selectionModel.getSelectedIndex() == -1 ? 0 : 1;
-    }
+
+    return selectionModel.getSelectedIndex() == -1 ? 0 : 1;
   }
 
   @Override
@@ -160,21 +160,24 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     if (selectionModel instanceof MultipleSelectionModel) {
       ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems().setAll(items);
     }
+    else if (items.isEmpty()) {
+      selectionModel.clearSelection();
+    }
     else {
-      selectedItems.clear();
-      selectedItems.addAll(items);
-      selectionChangedEvent.fire();
+      selectionModel.select(items.iterator().next());
     }
   }
 
   @Override
   public List<Entity> getSelectedItems() {
     if (selectionModel instanceof MultipleSelectionModel) {
-      return ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems();
+      return Collections.unmodifiableList(((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems());
     }
-    else {
-      return selectedItems;
+    else if (selectionModel.isEmpty()) {
+      return Collections.emptyList();
     }
+
+    return Collections.singletonList(selectionModel.getSelectedItem());
   }
 
   @Override
@@ -185,9 +188,8 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     else if (selectionModel instanceof MultipleSelectionModel) {
       return ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems().get(0);
     }
-    else {
-      return selectionModel.getSelectedItem();
-    }
+
+    return selectionModel.getSelectedItem();
   }
 
   @Override
@@ -234,22 +236,18 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
     if (selectionModel instanceof MultipleSelectionModel) {
       ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems().addListener((ListChangeListener<Entity>) change -> {
         selectionEmptyState.setActive(selectionModel.isEmpty());
-        final List<Integer> selectedIndices = new ArrayList<>(((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices());
+        final List<Integer> selectedIndices = getSelectedIndexes();
         singleSelectionState.setActive(selectedIndices.size() == 1);
         multipleSelectionState.setActive(!selectionEmptyState.isActive() && !singleSelectionState.isActive());
         selectionChangedEvent.fire();
       });
     }
-    else {
-      selectionModel.selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
-        selectionEmptyState.setActive(selectionModel.isEmpty());
-        final int newSelectedIndex = newValue.intValue();
-        if (selectedIndex != newSelectedIndex) {
-          selectedIndex = newSelectedIndex;
-          selectedIndexChangedEvent.fire();
-        }
-        selectionChangedEvent.fire();
-      });
-    }
+    selectionModel.selectedIndexProperty().addListener((observable, oldValue, newValue) -> {
+      final int newSelectedIndex = newValue.intValue();
+      if (selectedIndex != newSelectedIndex) {
+        selectedIndex = newSelectedIndex;
+        selectedIndexChangedEvent.fire();
+      }
+    });
   }
 }

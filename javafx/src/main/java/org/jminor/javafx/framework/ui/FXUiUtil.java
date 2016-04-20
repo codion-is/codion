@@ -221,7 +221,7 @@ public final class FXUiUtil {
 
   public static EntityLookupField createLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
                                                     final FXEntityEditModel editModel) {
-    return null;//todo
+    return new EntityLookupField(editModel.getForeignKeyLookupModel(foreignKeyProperty));
   }
 
   public static TextField createTextField(final Property property, final FXEntityEditModel editModel) {
@@ -344,6 +344,7 @@ public final class FXUiUtil {
     final FXEntityListModel listModel = editModel.getForeignKeyListModel(property);
     listModel.refresh();
     final ComboBox<Entity> box = new ComboBox<>(listModel.getSortedList());
+    listModel.setSelectionModel(box.getSelectionModel());
     Values.link(EditModelValues.value(editModel, property.getPropertyID()), PropertyValues.selectedValue(box.getSelectionModel()));
 
     return box;
@@ -486,7 +487,7 @@ public final class FXUiUtil {
       });
     });
 
-    alert.showAndWait();
+    Platform.runLater(alert::showAndWait);
   }
 
   public static <T> T getParentOfType(final Node node, final Class<T> clazz) {

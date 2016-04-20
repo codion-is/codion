@@ -563,13 +563,7 @@ public class FXEntityListModel implements org.jminor.framework.model.EntityTable
     selectionModel.addSelectionChangedListener(selectionChangedEvent);
     selectionModel.addSelectedIndexListener(() -> {
       if (editModel != null) {
-        final List<Entity> selected = selectionModel.getSelectedItems();
-        if (selected.isEmpty()) {
-          editModel.setEntity(null);
-        }
-        else {
-          editModel.setEntity(selected.get(0));
-        }
+        editModel.setEntity(selectionModel.getSelectedItem());
       }
     });
   }
