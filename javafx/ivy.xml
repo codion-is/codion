@@ -20,6 +20,8 @@
     <dependency org="org.jminor" name="jminor-common-model" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="${version}"/>
 
+    <dependency org="org.jminor" name="jminor-client-model" rev="${version}"/>
+
     <dependency org="org.jminor" name="jminor-db-local" rev="${version}" conf="runtime->default;test->master"/>
     <dependency org="org.jminor" name="jminor-db-remote" rev="${version}" conf="runtime->default"/>
 
