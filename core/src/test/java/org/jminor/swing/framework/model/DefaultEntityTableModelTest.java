@@ -16,6 +16,8 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.DefaultEntityTableCriteriaModel;
+import org.jminor.framework.model.DefaultPropertyCriteriaModelProvider;
+import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableCriteriaModel;
 import org.jminor.framework.model.EntityTableModel;

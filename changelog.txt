@@ -4216,3 +4216,4 @@
   Major refactoring for reuse of model classes in JavaFX, module client-model added
   JavaFX improvements
   Ivy module configuration improved
+  SwingPropertyCriteriaModelProvider added, DefaultPropertyCriteriaModelProvider and DefaultPropertyFilterModelProvider moved to framework.model

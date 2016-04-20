@@ -19,6 +19,7 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.DefaultEntityTableCriteriaModel;
+import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
 import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableCriteriaModel;
 import org.jminor.framework.model.EntityTableModel;
@@ -132,7 +133,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this(entityID, connectionProvider, new DefaultEntityTableSortModel(entityID),
             new DefaultEntityTableCriteriaModel(entityID, connectionProvider,
-                    new DefaultPropertyFilterModelProvider(), new DefaultPropertyCriteriaModelProvider()));
+                    new DefaultPropertyFilterModelProvider(), new SwingPropertyCriteriaModelProvider()));
   }
 
   /**

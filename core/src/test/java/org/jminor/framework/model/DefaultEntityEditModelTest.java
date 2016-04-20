@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.model;
+package org.jminor.framework.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
@@ -10,10 +10,10 @@ import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.State;
 import org.jminor.common.model.StateObserver;
-import org.jminor.common.model.combobox.FilteredComboBoxModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
+import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
@@ -21,9 +21,6 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityLookupModel;
 
 import org.junit.Before;
 import org.junit.Test;
@@ -37,7 +34,7 @@ import static org.junit.Assert.*;
 
 public final class DefaultEntityEditModelTest {
 
-  private SwingEntityEditModel employeeEditModel;
+  private EntityEditModel employeeEditModel;
   private Property.ColumnProperty jobProperty;
   private Property.ForeignKeyProperty deptProperty;
 
@@ -46,60 +43,7 @@ public final class DefaultEntityEditModelTest {
     TestDomain.init();
     jobProperty = Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
     deptProperty = Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK);
-    employeeEditModel = new SwingEntityEditModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
-      @Override
-      public Object getDefaultValue(final Property property) {
-        if (property.is(TestDomain.EMP_HIREDATE)) {
-          return DateUtil.floorDate(new Date());
-        }
-
-        return super.getDefaultValue(property);
-      }
-    };
-  }
-
-  @Test
-  public void getComboBoxModel() {
-    final FilteredComboBoxModel<String> model = (FilteredComboBoxModel<String>) employeeEditModel.getComboBoxModel(jobProperty.getPropertyID());
-    model.setNullValue("null");
-    assertNotNull(model);
-    assertTrue(employeeEditModel.containsComboBoxModel(jobProperty.getPropertyID()));
-    assertEquals(model, employeeEditModel.getComboBoxModel(jobProperty.getPropertyID()));
-    employeeEditModel.refreshComboBoxModels();
-    employeeEditModel.clearComboBoxModels();
-    assertTrue(employeeEditModel.getComboBoxModel(jobProperty.getPropertyID()).isCleared());
-    employeeEditModel.refreshComboBoxModels();
-    employeeEditModel.clear();
-    assertTrue(employeeEditModel.getComboBoxModel(jobProperty.getPropertyID()).isCleared());
-  }
-
-  @Test
-  public void getForeignKeyComboBoxModel() {
-    assertFalse(employeeEditModel.containsComboBoxModel(deptProperty.getPropertyID()));
-    final EntityComboBoxModel model = employeeEditModel.getForeignKeyComboBoxModel(deptProperty);
-    assertNotNull(model);
-    assertTrue(model.isCleared());
-    assertTrue(model.getAllItems().isEmpty());
-    employeeEditModel.refreshComboBoxModels();
-    assertFalse(model.isCleared());
-    assertFalse(model.getAllItems().isEmpty());
-    employeeEditModel.clearComboBoxModels();
-    assertTrue(model.isCleared());
-    assertTrue(model.getAllItems().isEmpty());
-  }
-
-  @Test
-  public void createForeignKeyComboBoxModel() {
-    final EntityComboBoxModel model = employeeEditModel.createForeignKeyComboBoxModel(deptProperty);
-    assertNotNull(model);
-    assertTrue(model.isCleared());
-    assertTrue(model.getAllItems().isEmpty());
-    assertEquals(deptProperty.getReferencedEntityID(), model.getEntityID());
-  }
-
-  @Test(expected = IllegalArgumentException.class)
-  public void getForeignKeyComboBoxModelNonFKProperty() {
-    employeeEditModel.getForeignKeyComboBoxModel(jobProperty.getPropertyID());
+    employeeEditModel = new TestEntityEditModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
@@ -155,12 +99,12 @@ public final class DefaultEntityEditModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullEntityID() {
-    new SwingEntityEditModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    new TestEntityEditModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullConnectionProvider() {
-    new SwingEntityEditModel("entityID", null);
+    new TestEntityEditModel("entityID", null);
   }
 
   @Test
@@ -510,5 +454,30 @@ public final class DefaultEntityEditModelTest {
     assertEquals(king.get(TestDomain.EMP_DEPARTMENT_FK), employeeEditModel.getValue(TestDomain.EMP_DEPARTMENT_FK));
 
     Configuration.setValue(Configuration.WARN_ABOUT_UNSAVED_DATA, false);
+  }
+
+  private static final class TestEntityEditModel extends DefaultEntityEditModel {
+
+    public TestEntityEditModel(final String entityID, final EntityConnectionProvider connectionProvider) {
+      super(entityID, connectionProvider);
+    }
+
+    @Override
+    public void addForeignKeyValues(final List<Entity> values) {}
+
+    @Override
+    public void removeForeignKeyValues(final List<Entity> values) {}
+
+    @Override
+    public void clear() {}
+
+    @Override
+    public Object getDefaultValue(final Property property) {
+      if (property.is(TestDomain.EMP_HIREDATE)) {
+        return DateUtil.floorDate(new Date());
+      }
+
+      return super.getDefaultValue(property);
+    }
   }
 }

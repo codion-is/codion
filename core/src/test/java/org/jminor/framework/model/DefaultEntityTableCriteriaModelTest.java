@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.model;
+package org.jminor.framework.model;
 
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.EventListener;
@@ -11,8 +11,6 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.framework.model.EntityTableCriteriaModel;
-import org.jminor.framework.model.PropertyCriteriaModel;
 
 import org.junit.Test;
 
@@ -23,8 +21,9 @@ import static org.junit.Assert.*;
 
 public class DefaultEntityTableCriteriaModelTest {
 
-  private final EntityTableCriteriaModel criteriaModel = new DefaultEntityTableModel(TestDomain.T_EMP,
-          EntityConnectionProvidersTest.CONNECTION_PROVIDER).getCriteriaModel();
+  private final EntityTableCriteriaModel criteriaModel = new DefaultEntityTableCriteriaModel(TestDomain.T_EMP,
+          EntityConnectionProvidersTest.CONNECTION_PROVIDER, new DefaultPropertyFilterModelProvider(),
+          new DefaultPropertyCriteriaModelProvider());
 
   static {
     TestDomain.init();
@@ -37,11 +36,6 @@ public class DefaultEntityTableCriteriaModelTest {
     assertEquals(Conjunction.OR, criteriaModel.getConjunction());
     assertEquals(9, criteriaModel.getPropertyFilterModels().size());
     assertEquals(8, criteriaModel.getPropertyCriteriaModels().size());
-
-    criteriaModel.refresh();
-    assertTrue(((SwingForeignKeyCriteriaModel) criteriaModel.getPropertyCriteriaModel(TestDomain.EMP_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() > 1);
-    criteriaModel.clear();
-    assertTrue(((SwingForeignKeyCriteriaModel) criteriaModel.getPropertyCriteriaModel(TestDomain.EMP_DEPARTMENT_FK)).getEntityComboBoxModel().getSize() == 0);
 
     assertFalse(criteriaModel.isFilterEnabled(TestDomain.EMP_DEPARTMENT_FK));
     assertFalse(criteriaModel.isEnabled(TestDomain.EMP_DEPARTMENT_FK));

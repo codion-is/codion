@@ -14,16 +14,33 @@ import org.jminor.swing.framework.model.SwingEntityModel;
 import org.junit.After;
 import org.junit.Test;
 
+import javax.swing.tree.DefaultMutableTreeNode;
+import javax.swing.tree.TreeModel;
 import java.util.Collections;
+import java.util.Enumeration;
 import java.util.List;
 
-import static org.junit.Assert.assertNotNull;
+import static org.junit.Assert.*;
 
 public class EntityApplicationPanelTest {
 
   @After
   public void tearDown() {
     Thread.setDefaultUncaughtExceptionHandler(null);
+  }
+
+  @Test
+  public void getDependencyTreeModel() {
+    TestDomain.init();
+    final TreeModel model = EntityApplicationPanel.getDependencyTreeModel(TestDomain.SCOTT_DOMAIN_ID);
+    final DefaultMutableTreeNode root = (DefaultMutableTreeNode) model.getRoot();
+    final Enumeration tree = root.preorderEnumeration();
+    DefaultMutableTreeNode node = (DefaultMutableTreeNode) tree.nextElement();
+    assertNull(node.getUserObject());
+    node = (DefaultMutableTreeNode) tree.nextElement();
+    assertEquals(TestDomain.T_DEPARTMENT, node.getUserObject());
+    node = (DefaultMutableTreeNode) tree.nextElement();
+    assertEquals(TestDomain.T_EMP, node.getUserObject());
   }
 
   @Test

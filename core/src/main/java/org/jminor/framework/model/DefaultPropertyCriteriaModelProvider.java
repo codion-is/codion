@@ -1,19 +1,11 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.model;
+package org.jminor.framework.model;
 
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.model.DefaultEntityLookupModel;
-import org.jminor.framework.model.DefaultForeignKeyCriteriaModel;
-import org.jminor.framework.model.DefaultPropertyCriteriaModel;
-import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.framework.model.EntityLookupModel;
-import org.jminor.framework.model.PropertyCriteriaModel;
-import org.jminor.framework.model.PropertyCriteriaModelProvider;
 
 /**
  * A default PropertyCriteriaModelProvider implementation.
@@ -36,18 +28,11 @@ public class DefaultPropertyCriteriaModelProvider implements PropertyCriteriaMod
 
   private PropertyCriteriaModel<? extends Property.SearchableProperty> initializeForeignKeyCriteriaModel(
           final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
-    if (Entities.isSmallDataset(property.getReferencedEntityID())) {
-      final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(property.getReferencedEntityID(), connectionProvider);
-      comboBoxModel.setNullValue(EntityUtil.createToStringEntity(property.getReferencedEntityID(), ""));
 
-      return new SwingForeignKeyCriteriaModel(property, comboBoxModel);
-    }
-    else {
-      final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityID(),
-              connectionProvider, Entities.getSearchProperties(property.getReferencedEntityID()));
-      lookupModel.getMultipleSelectionAllowedValue().set(true);
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(property.getReferencedEntityID(),
+            connectionProvider, Entities.getSearchProperties(property.getReferencedEntityID()));
+    lookupModel.getMultipleSelectionAllowedValue().set(true);
 
-      return new DefaultForeignKeyCriteriaModel(property, lookupModel);
-    }
+    return new DefaultForeignKeyCriteriaModel(property, lookupModel);
   }
 }

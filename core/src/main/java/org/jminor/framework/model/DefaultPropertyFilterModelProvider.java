@@ -1,12 +1,10 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.model;
+package org.jminor.framework.model;
 
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.domain.Property;
-import org.jminor.framework.model.DefaultPropertyFilterModel;
-import org.jminor.framework.model.PropertyFilterModelProvider;
 
 /**
  * A default PropertyFilterModelProvider implementation.

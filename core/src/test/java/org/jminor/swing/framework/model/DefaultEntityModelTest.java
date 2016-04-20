@@ -62,7 +62,8 @@ public final class DefaultEntityModelTest {
     final SwingEntityModel employeeModel = (SwingEntityModel) departmentModel.getDetailModel(TestDomain.T_EMP);
     final SwingEntityEditModel employeeEditModel = (SwingEntityEditModel) employeeModel.getEditModel();
     final EntityTableModel employeeTableModel = employeeModel.getTableModel();
-    ValueLinks.selectedItemValueLink(new JComboBox<>((ComboBoxModel<Entity>) employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)),
+    ValueLinks.selectedItemValueLink(new JComboBox<>((ComboBoxModel<Entity>)
+            employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)),
             EditModelValues.<Entity>value(employeeEditModel, TestDomain.EMP_MGR_FK));
     employeeTableModel.refresh();
     for (final Entity employee : employeeTableModel.getAllItems()) {
@@ -113,7 +114,8 @@ public final class DefaultEntityModelTest {
     assertTrue(departmentModel.getLinkedDetailModels().contains(employeeModel));
     departmentModel.refresh();
     final SwingEntityEditModel employeeEditModel = (SwingEntityEditModel) employeeModel.getEditModel();
-    final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
+    final EntityComboBoxModel departmentsComboBoxModel = employeeEditModel.getForeignKeyComboBoxModel(
+            Entities.getForeignKeyProperty(TestDomain.T_EMP, TestDomain.EMP_DEPARTMENT_FK));
     departmentsComboBoxModel.refresh();
     final Entity.Key primaryKey = Entities.key(TestDomain.T_DEPARTMENT);
     primaryKey.put(TestDomain.DEPARTMENT_ID, 40);//operations, no employees
