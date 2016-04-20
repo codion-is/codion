@@ -19,7 +19,7 @@ public final class SwingForeignKeyCriteriaModel extends DefaultForeignKeyCriteri
   private final EntityComboBoxModel entityComboBoxModel;
 
   /**
-   * Constructs a DefaultForeignKeyCriteriaModel instance
+   * Constructs a SwingForeignKeyCriteriaModel instance
    * @param property the property
    * @param entityComboBoxModel a EntityComboBoxModel
    */

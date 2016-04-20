@@ -35,7 +35,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   private final Map<String, Refreshable> comboBoxModels = new HashMap<>();
 
   /**
-   * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by <code>entityID</code>.
+   * Instantiates a new {@link SwingEntityEditModel} based on the entity identified by <code>entityID</code>.
    * @param entityID the ID of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    */
@@ -44,7 +44,7 @@ public class SwingEntityEditModel extends DefaultEntityEditModel {
   }
 
   /**
-   * Instantiates a new {@link DefaultEntityEditModel} based on the entity identified by <code>entityID</code>.
+   * Instantiates a new {@link SwingEntityEditModel} based on the entity identified by <code>entityID</code>.
    * @param entityID the ID of the entity to base this {@link DefaultEntityEditModel} on
    * @param connectionProvider the {@link EntityConnectionProvider} instance
    * @param validator the validator to use
