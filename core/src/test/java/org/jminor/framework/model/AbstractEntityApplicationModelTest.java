@@ -1,20 +1,19 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.swing.framework.model;
+package org.jminor.framework.model;
 
 import org.jminor.common.model.User;
-import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.framework.model.DefaultEntityApplicationModel;
-import org.jminor.framework.model.EntityModel;
 
 import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public final class DefaultEntityApplicationModelTest {
+public abstract class AbstractEntityApplicationModelTest<T extends EntityModel> {
+
+  protected abstract T createDepartmentModel();
 
   @Test
   public void test() {
@@ -24,7 +23,7 @@ public final class DefaultEntityApplicationModelTest {
         TestDomain.init();
       }
     };
-    model.addEntityModels(new DeptModel(model.getConnectionProvider()));
+    model.addEntityModels(createDepartmentModel());
     final EntityModel deptModel = model.getEntityModel(TestDomain.T_DEPARTMENT);
     assertNotNull(deptModel);
     deptModel.getDetailModel(TestDomain.T_EMP).getTableModel().setQueryCriteriaRequired(false);
@@ -74,7 +73,7 @@ public final class DefaultEntityApplicationModelTest {
         TestDomain.init();
       }
     };
-    final DeptModel departmentModel = new DeptModel(model.getConnectionProvider());
+    final T departmentModel = createDepartmentModel();
     model.addEntityModels(departmentModel);
     assertEquals(departmentModel, model.getEntityModel(TestDomain.T_DEPARTMENT));
   }
@@ -87,7 +86,7 @@ public final class DefaultEntityApplicationModelTest {
         TestDomain.init();
       }
     };
-    model.getEntityModel(DeptModel.class);
+    model.getEntityModel(EntityModel.class);
   }
 
   @Test
@@ -98,9 +97,9 @@ public final class DefaultEntityApplicationModelTest {
         TestDomain.init();
       }
     };
-    final DeptModel departmentModel = new DeptModel(model.getConnectionProvider());
+    final T departmentModel = createDepartmentModel();
     model.addEntityModels(departmentModel);
-    assertEquals(departmentModel, model.getEntityModel(DeptModel.class));
+    assertEquals(departmentModel, model.getEntityModel(departmentModel.getClass()));
   }
 
   @Test
@@ -111,11 +110,11 @@ public final class DefaultEntityApplicationModelTest {
         TestDomain.init();
       }
     };
-    final DeptModel departmentModel = new DeptModel(model.getConnectionProvider());
+    final T departmentModel = createDepartmentModel();
     model.addEntityModels(departmentModel);
 
     assertTrue(model.containsEntityModel(TestDomain.T_DEPARTMENT));
-    assertTrue(model.containsEntityModel(DeptModel.class));
+    assertTrue(model.containsEntityModel(departmentModel.getClass()));
     assertTrue(model.containsEntityModel(departmentModel));
 
     assertFalse(model.containsEntityModel(TestDomain.T_EMP));
@@ -130,9 +129,8 @@ public final class DefaultEntityApplicationModelTest {
         TestDomain.init();
       }
     };
-    final EntityModel deptModel = new SwingEntityModel(TestDomain.T_DEPARTMENT, model.getConnectionProvider());
-    final EntityModel empModel = new SwingEntityModel(TestDomain.T_EMP, model.getConnectionProvider());
-    deptModel.addDetailModel(empModel);
+    final EntityModel deptModel = createDepartmentModel();
+    final EntityModel empModel = deptModel.getDetailModel(TestDomain.T_EMP);
     deptModel.addLinkedDetailModel(empModel);
 
     model.addEntityModel(deptModel);
@@ -157,12 +155,5 @@ public final class DefaultEntityApplicationModelTest {
 
     deptModel.getEditModel().setValue(TestDomain.DEPARTMENT_NAME, name);
     assertFalse(model.containsUnsavedData());
-  }
-
-  private static class DeptModel extends SwingEntityModel {
-    private DeptModel(final EntityConnectionProvider connectionProvider) {
-      super(TestDomain.T_DEPARTMENT, connectionProvider);
-      addDetailModel(new SwingEntityModel(TestDomain.T_EMP, connectionProvider));
-    }
   }
 }
