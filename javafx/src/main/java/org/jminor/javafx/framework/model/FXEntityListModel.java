@@ -10,6 +10,7 @@ import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.StateObserver;
+import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
@@ -77,6 +78,13 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
 
   public FXEntityListModel(final String entityID, final EntityConnectionProvider connectionProvider,
                            final EntityTableCriteriaModel criteriaModel) {
+    if (!criteriaModel.getEntityID().equals(entityID)) {
+      throw new IllegalArgumentException("Entity ID mismatch, criteriaModel: " + criteriaModel.getEntityID()
+              + ", tableModel: " + entityID);
+    }
+    if (Entities.getVisibleProperties(entityID).isEmpty()) {
+      throw new IllegalStateException("No visible properties defined for entity: " + entityID);
+    }
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
     this.criteriaModel = criteriaModel;
@@ -88,11 +96,15 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
     return connectionProvider;
   }
 
-  public final void setEditModel(final org.jminor.framework.model.EntityEditModel editModel) {
+  public final void setEditModel(final EntityEditModel editModel) {
+    Util.rejectNullValue(editModel, "editModel");
     if (this.editModel != null) {
       throw new IllegalStateException("Edit model has already been set");
     }
-    this.editModel = (FXEntityEditModel) Objects.requireNonNull(editModel);
+    if (!editModel.getEntityID().equals(entityID)) {
+      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityID() + ", tableModel: " + entityID);
+    }
+    this.editModel = (FXEntityEditModel) editModel;
     bindEditModelEvents();
   }
 
@@ -568,7 +580,14 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
   /** {@inheritDoc} */
   @Override
   public Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
-    return null;
+    final List<Entity> entities = new ArrayList<>();
+    getAllItems().forEach(entity -> keys.forEach(key -> {
+      if (entity.getKey().equals(key)) {
+        entities.add(entity);
+      }
+    }));
+
+    return entities;
   }
 
   /** {@inheritDoc} */

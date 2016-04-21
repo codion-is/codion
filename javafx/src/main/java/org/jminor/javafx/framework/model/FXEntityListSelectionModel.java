@@ -107,7 +107,8 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   @Override
   public void setSelectedIndexes(final Collection<Integer> indexes) {
     if (selectionModel instanceof MultipleSelectionModel) {
-      ((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices().setAll(indexes);
+      selectionModel.clearSelection();
+      indexes.forEach(selectionModel::select);
     }
     else {
       throw new UnsupportedOperationException();
@@ -158,7 +159,8 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   @Override
   public void setSelectedItems(final Collection<Entity> items) {
     if (selectionModel instanceof MultipleSelectionModel) {
-      ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems().setAll(items);
+      selectionModel.clearSelection();
+      items.forEach(selectionModel::select);
     }
     else if (items.isEmpty()) {
       selectionModel.clearSelection();

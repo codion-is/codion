@@ -149,7 +149,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
                                  final TableSortModel<Entity, Property> sortModel, final EntityTableCriteriaModel criteriaModel) {
     super(sortModel, Util.rejectNullValue(criteriaModel, "criteriaModel").getPropertyFilterModels());
     if (!criteriaModel.getEntityID().equals(entityID)) {
-      throw new IllegalArgumentException("Entity ID mismatch, criteriaModel: " + criteriaModel.getEntityID() + ", tableModel: " + entityID);
+      throw new IllegalArgumentException("Entity ID mismatch, criteriaModel: " + criteriaModel.getEntityID()
+              + ", tableModel: " + entityID);
     }
     this.entityID = entityID;
     this.connectionProvider = connectionProvider;
