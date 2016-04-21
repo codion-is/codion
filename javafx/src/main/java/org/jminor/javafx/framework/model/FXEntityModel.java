@@ -11,15 +11,15 @@ import java.util.Objects;
 public class FXEntityModel extends DefaultEntityModel {
 
   public FXEntityModel(final String entityID, final EntityConnectionProvider connectionProvider) {
-    super(new FXEntityEditModel(entityID, connectionProvider), new FXEntityListModel(entityID, connectionProvider));
+    this(new FXEntityEditModel(entityID, connectionProvider), new FXEntityListModel(entityID, connectionProvider));
   }
 
   public FXEntityModel(final FXEntityEditModel editModel) {
-    super(Objects.requireNonNull(editModel), new FXEntityListModel(editModel.getEntityID(), editModel.getConnectionProvider()));
+    this(Objects.requireNonNull(editModel), new FXEntityListModel(editModel.getEntityID(), editModel.getConnectionProvider()));
   }
 
   public FXEntityModel(final FXEntityListModel tableModel) {
-    super(Objects.requireNonNull(tableModel).getEditModel() == null ? new FXEntityEditModel(tableModel.getEntityID(),
+    this(Objects.requireNonNull(tableModel).getEditModel() == null ? new FXEntityEditModel(tableModel.getEntityID(),
             tableModel.getConnectionProvider()) : tableModel.getEditModel(), tableModel);
   }
 

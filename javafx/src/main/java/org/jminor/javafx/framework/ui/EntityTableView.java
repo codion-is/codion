@@ -21,8 +21,6 @@ import javafx.scene.control.CheckMenuItem;
 import javafx.scene.control.ContextMenu;
 import javafx.scene.control.Menu;
 import javafx.scene.control.MenuItem;
-import javafx.scene.control.MultipleSelectionModel;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.SeparatorMenuItem;
 import javafx.scene.control.TableColumn;
 import javafx.scene.control.TableView;
@@ -47,8 +45,7 @@ public class EntityTableView extends TableView<Entity> {
     super(listModel.getSortedList());
     this.listModel = listModel;
     this.listModel.setSelectionModel(getSelectionModel());
-    ((MultipleSelectionModel<Entity>) this.listModel.getListSelectionModel()).setSelectionMode(SelectionMode.MULTIPLE);
-    filterText.setPromptText(FrameworkMessages.get(FrameworkMessages.SEARCH));
+    this.filterText.setPromptText(FrameworkMessages.get(FrameworkMessages.SEARCH));
     initializeColumns();
     initializeToolPane();
     setTableMenuButtonVisible(true);
@@ -57,11 +54,11 @@ public class EntityTableView extends TableView<Entity> {
     bindEvents();
   }
 
-  public void setCriteriaPaneVisible(final boolean visible) {
+  public final void setCriteriaPaneVisible(final boolean visible) {
     getColumns().forEach(column -> ((EntityTableColumn) column).setCriteriaViewVisible(visible));
   }
 
-  public void setCriteriaPaneAdvanced(final boolean advanced) {
+  public final void setCriteriaPaneAdvanced(final boolean advanced) {
     getColumns().forEach(column -> ((EntityTableColumn) column).setCriteriaViewAdvanced(advanced));
   }
 

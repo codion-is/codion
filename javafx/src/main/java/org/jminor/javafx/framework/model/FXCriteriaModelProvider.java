@@ -18,14 +18,11 @@ public class FXCriteriaModelProvider extends DefaultPropertyCriteriaModelProvide
       final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) property;
       if (Entities.isSmallDataset(foreignKeyProperty.getReferencedEntityID())) {
         //todo comboBoxModel.setNullValue(EntityUtil.createToStringEntity(property.getReferencedEntityID(), ""));
-        return new FXForeignKeyCriteriaListModel(foreignKeyProperty, createListModel(foreignKeyProperty, connectionProvider));
+        return new FXForeignKeyCriteriaListModel(foreignKeyProperty, new ObservableEntityList(
+                foreignKeyProperty.getReferencedEntityID(), connectionProvider));
       }
     }
 
     return super.initializePropertyCriteriaModel(property, connectionProvider);
-  }
-
-  private ObservableEntityList createListModel(final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
-    return new ObservableEntityList(property.getReferencedEntityID(), connectionProvider);
   }
 }

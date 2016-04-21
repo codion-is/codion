@@ -23,6 +23,8 @@ import javafx.collections.FXCollections;
 import javafx.collections.ObservableList;
 import javafx.collections.transformation.FilteredList;
 import javafx.collections.transformation.SortedList;
+import javafx.scene.control.MultipleSelectionModel;
+import javafx.scene.control.SelectionMode;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -88,6 +90,9 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
       throw new IllegalStateException("Selection model has already been set");
     }
     this.selectionModel = new FXEntityListSelectionModel(Objects.requireNonNull(selectionModel));
+    if (selectionModel instanceof MultipleSelectionModel) {
+      ((MultipleSelectionModel<Entity>) selectionModel).setSelectionMode(SelectionMode.MULTIPLE);
+    }
     bindSelectionModelEvents();
   }
 
@@ -96,10 +101,6 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
       throw new IllegalStateException("Selection model has not been set");
     }
     return selectionModel;
-  }
-
-  public final javafx.scene.control.SelectionModel<Entity> getListSelectionModel() {
-    return selectionModel.getSelectionModel();
   }
 
   public final void addRefreshListener(final EventListener listener) {
