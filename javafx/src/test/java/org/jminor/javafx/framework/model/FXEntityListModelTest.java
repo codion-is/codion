@@ -3,7 +3,6 @@
  */
 package org.jminor.javafx.framework.model;
 
-import org.jminor.common.db.criteria.Criteria;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
@@ -83,7 +82,7 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
       setEditModel(new FXEntityEditModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
     }
     @Override
-    protected List<Entity> performQuery(final Criteria criteria) {
+    protected List<Entity> queryContents() {
       return Arrays.asList(entities);
     }
   }

@@ -3,7 +3,6 @@
  */
 package org.jminor.javafx.framework.model;
 
-import org.jminor.common.model.EventListener;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultForeignKeyCriteriaModel;
@@ -12,14 +11,14 @@ import java.util.Collection;
 
 public final class FXForeignKeyCriteriaListModel extends DefaultForeignKeyCriteriaModel {
 
-  private final FXEntityListModel listModel;
+  private final ObservableEntityList listModel;
 
   /**
    * Constructs a DefaultForeignKeyCriteriaModel instance
    * @param property the property
    * @param listModel the list model to use
    */
-  public FXForeignKeyCriteriaListModel(final Property.ForeignKeyProperty property, final FXEntityListModel listModel) {
+  public FXForeignKeyCriteriaListModel(final Property.ForeignKeyProperty property, final ObservableEntityList listModel) {
     super(property);
     this.listModel = listModel;
     if (listModel != null) {
@@ -33,7 +32,7 @@ public final class FXForeignKeyCriteriaListModel extends DefaultForeignKeyCriter
     }
   }
 
-  public FXEntityListModel getListModel() {
+  public ObservableEntityList getListModel() {
     return listModel;
   }
 
@@ -54,12 +53,9 @@ public final class FXForeignKeyCriteriaListModel extends DefaultForeignKeyCriter
   }
 
   private void bindListModelEvents() {
-    listModel.addSelectionChangedListener(new EventListener() {
-      @Override
-      public void eventOccurred() {
-        if (!isUpdatingModel()) {
-          setUpperBound(listModel.getSelectionModel().getSelectedItem());
-        }
+    listModel.addSelectionChangedListener(() -> {
+      if (!isUpdatingModel()) {
+        setUpperBound(listModel.getSelectionModel().getSelectedItem());
       }
     });
     addUpperBoundListener(() -> {
@@ -77,7 +73,6 @@ public final class FXForeignKeyCriteriaListModel extends DefaultForeignKeyCriter
         setUpdatingModel(false);
       }
     });
-
     listModel.addRefreshListener(() -> {
       final Object upper = getUpperBound();
       if ((upper instanceof Collection && !((Collection) upper).isEmpty())) {

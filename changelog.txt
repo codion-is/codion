@@ -4223,3 +4223,4 @@
   AbstractEntityTableModelTest refactored from DefaultEntityTableModelTest, SwingEntityTableModelTest added and FXEntityListModelTest improved
   AbstractEntityModelTest refactored from DefaultEntityModelTest, SwingEntityModelTest and FXEntityModelTest added
   AbstractEntityApplicationModelTest refactored from DefaultEntityApplicationModelTest, SwingEntityApplicationModelTest and FXEntityApplicationModelTest added
+  ObservableEntityList refactored from FXEntityListModel

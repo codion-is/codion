@@ -5,14 +5,8 @@ package org.jminor.javafx.framework.model;
 
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventListener;
-import org.jminor.common.model.Events;
-import org.jminor.common.model.FilterCriteria;
-import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnSummaryModel;
-import org.jminor.common.model.table.SelectionModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
@@ -25,46 +19,27 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableCriteriaModel;
 import org.jminor.framework.model.EntityTableModel;
 
-import javafx.beans.InvalidationListener;
 import javafx.beans.property.ReadOnlyObjectWrapper;
 import javafx.beans.value.ObservableValue;
-import javafx.collections.FXCollections;
-import javafx.collections.ListChangeListener;
-import javafx.collections.ObservableList;
-import javafx.collections.transformation.FilteredList;
-import javafx.collections.transformation.SortedList;
 import javafx.scene.control.TableColumn;
 import javafx.util.Callback;
 
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
-import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 
-public class FXEntityListModel implements EntityTableModel, ObservableList<Entity> {
+public class FXEntityListModel extends ObservableEntityList implements EntityTableModel {
 
-  private final String entityID;
-  private final EntityConnectionProvider connectionProvider;
-  private final ObservableList<Entity> list = FXCollections.observableArrayList();
-  private final SortedList<Entity> sortedList;
-  private final FilteredList<Entity> filteredList;
   private final EntityTableCriteriaModel criteriaModel;
 
-  private final Event refreshEvent = Events.event();
-  private final Event selectionChangedEvent = Events.event();
-  private final Event filteringDoneEvent = Events.event();
-
-  private FXEntityListSelectionModel selectionModel;
-
   private FXEntityEditModel editModel;
+
   private InsertAction insertAction = InsertAction.ADD_TOP;
-  private FilterCriteria<Entity> filterCriteria;
   private boolean queryCriteriaRequired = false;
   private boolean queryConfigurationAllowed = true;
   private boolean batchUpdateAllowed = true;
@@ -73,11 +48,12 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
 
   public FXEntityListModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this(entityID, connectionProvider, new DefaultEntityTableCriteriaModel(entityID, connectionProvider,
-            null, new FXCriteriaModelProvider(true)));
+            null, new FXCriteriaModelProvider()));
   }
 
   public FXEntityListModel(final String entityID, final EntityConnectionProvider connectionProvider,
                            final EntityTableCriteriaModel criteriaModel) {
+    super(entityID, connectionProvider);
     if (!criteriaModel.getEntityID().equals(entityID)) {
       throw new IllegalArgumentException("Entity ID mismatch, criteriaModel: " + criteriaModel.getEntityID()
               + ", tableModel: " + entityID);
@@ -85,15 +61,8 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
     if (Entities.getVisibleProperties(entityID).isEmpty()) {
       throw new IllegalStateException("No visible properties defined for entity: " + entityID);
     }
-    this.entityID = entityID;
-    this.connectionProvider = connectionProvider;
     this.criteriaModel = criteriaModel;
-    this.filteredList = new FilteredList<>(list);
-    this.sortedList = new SortedList<>(filteredList);
-  }
-
-  public EntityConnectionProvider getConnectionProvider() {
-    return connectionProvider;
+    bindEvents();
   }
 
   public final void setEditModel(final EntityEditModel editModel) {
@@ -101,34 +70,11 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
     if (this.editModel != null) {
       throw new IllegalStateException("Edit model has already been set");
     }
-    if (!editModel.getEntityID().equals(entityID)) {
-      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityID() + ", tableModel: " + entityID);
+    if (!editModel.getEntityID().equals(getEntityID())) {
+      throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityID() + ", tableModel: " + getEntityID());
     }
     this.editModel = (FXEntityEditModel) editModel;
     bindEditModelEvents();
-  }
-
-  public final void setSelectionModel(final javafx.scene.control.SelectionModel<Entity> selectionModel) {
-    if (this.selectionModel != null) {
-      throw new IllegalStateException("Selection model has already been set");
-    }
-    this.selectionModel = new FXEntityListSelectionModel(Objects.requireNonNull(selectionModel));
-    bindSelectionModelEvents();
-  }
-
-  public final SelectionModel<Entity> getSelectionModel() {
-    if (selectionModel == null) {
-      throw new IllegalStateException("Selection model has not been set");
-    }
-    return selectionModel;
-  }
-
-  public final javafx.scene.control.SelectionModel<Entity> getListSelectionModel() {
-    return selectionModel.getSelectionModel();
-  }
-
-  public final SortedList<Entity> getSortedList() {
-    return sortedList;
   }
 
   public final FXEntityEditModel getEditModel() {
@@ -151,44 +97,6 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
     return this;
   }
 
-  public final void refresh() {
-    final List<Entity> queryResult = performQuery(criteriaModel.getTableCriteria());
-    setAll(queryResult);
-    criteriaModel.rememberCurrentCriteriaState();
-    refreshEvent.fire();
-  }
-
-  public final void addRefreshListener(final EventListener listener) {
-    refreshEvent.addListener(listener);
-  }
-
-  public final StateObserver getSelectionEmptyObserver() {
-    if (selectionModel == null) {
-      throw new IllegalStateException("No selection model has been set");
-    }
-    return selectionModel.getSelectionEmptyObserver();
-  }
-
-  public final StateObserver getSingleSelectionObserver() {
-    if (selectionModel == null) {
-      throw new IllegalStateException("No selection model has been set");
-    }
-    return selectionModel.getSingleSelectionObserver();
-  }
-
-  public final StateObserver getMultipleSelectionObserver() {
-    if (selectionModel == null) {
-      throw new IllegalStateException("No selection model has been set");
-    }
-    return selectionModel.getMultipleSelectionObserver();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void addSelectionChangedListener(final EventListener listener) {
-    selectionChangedEvent.addListener(listener);
-  }
-
   public final void setForeignKeyCriteriaValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> entities) {
     if (criteriaModel.setCriteriaValues(foreignKeyProperty.getPropertyID(), entities)) {
       refresh();
@@ -199,234 +107,26 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
     return row -> new ReadOnlyObjectWrapper<>(row.getValue().get(property.getPropertyID()));
   }
 
-  public final String getEntityID() {
-    return entityID;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Entity get(final int index) {
-    return list.get(index);
-  }
-
   public final void deleteSelected() throws DatabaseException {
     getEditModel().delete(getSelectionModel().getSelectedItems());
   }
 
   /** {@inheritDoc} */
   @Override
-  public final int size() {
-    return list.size();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void addListener(final ListChangeListener<? super Entity> listener) {
-    list.addListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void removeListener(final ListChangeListener<? super Entity> listener) {
-    list.removeListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean addAll(final Entity... elements) {
-    return list.addAll(elements);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean setAll(final Entity... elements) {
-    return list.setAll(elements);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean setAll(final Collection<? extends Entity> col) {
-    return list.setAll(col);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean removeAll(final Entity... elements) {
-    return list.removeAll();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean retainAll(final Entity... elements) {
-    return list.retainAll(elements);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void remove(final int from, final int to) {
-    list.remove(from, to);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isEmpty() {
-    return list.isEmpty();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean contains(final Object o) {
-    return list.contains(o);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Iterator<Entity> iterator() {
-    return list.iterator();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Object[] toArray() {
-    return list.toArray();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final <T> T[] toArray(final T[] a) {
-    return list.toArray(a);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean add(final Entity entity) {
-    return list.add(entity);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean remove(final Object o) {
-    return list.remove(o);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean containsAll(final Collection<?> c) {
-    return list.containsAll(c);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean addAll(final Collection<? extends Entity> c) {
-    return list.addAll(c);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean addAll(final int index, final Collection<? extends Entity> c) {
-    return list.addAll(index, c);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean removeAll(final Collection<?> c) {
-    return list.removeAll(c);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean retainAll(final Collection<?> c) {
-    return list.retainAll(c);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void clear() {
-    list.clear();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Entity set(final int index, final Entity element) {
-    return list.set(index, element);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void add(final int index, final Entity element) {
-    list.add(index, element);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final Entity remove(final int index) {
-    return list.remove(index);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final int indexOf(final Object o) {
-    return list.indexOf(o);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final int lastIndexOf(final Object o) {
-    return list.lastIndexOf(o);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final ListIterator<Entity> listIterator() {
-    return list.listIterator();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final ListIterator<Entity> listIterator(final int index) {
-    return list.listIterator(index);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final List<Entity> subList(final int fromIndex, final int toIndex) {
-    return list.subList(fromIndex, toIndex);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void addListener(final InvalidationListener listener) {
-    list.addListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void removeListener(final InvalidationListener listener) {
-    list.removeListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public List<Entity> getAllItems() {
-    return this;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public int getRowCount() {
+  public final int getRowCount() {
     return size();
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean hasEditModel() {
+  public final boolean hasEditModel() {
     return editModel != null;
   }
 
   /** {@inheritDoc} */
   @Override
-  public void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues) {
-    final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(this.entityID, foreignKeyEntityID);
+  public final void replaceForeignKeyValues(final String foreignKeyEntityID, final Collection<Entity> foreignKeyValues) {
+    final List<Property.ForeignKeyProperty> foreignKeyProperties = Entities.getForeignKeyProperties(getEntityID(), foreignKeyEntityID);
     for (final Entity entity : getAllItems()) {
       for (final Property.ForeignKeyProperty foreignKeyProperty : foreignKeyProperties) {
         for (final Entity foreignKeyValue : foreignKeyValues) {
@@ -441,7 +141,7 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
 
   /** {@inheritDoc} */
   @Override
-  public void addEntities(final List<Entity> entities, final boolean atTop) {
+  public final void addEntities(final List<Entity> entities, final boolean atTop) {
     if (atTop) {
       addAll(0, entities);
     }
@@ -452,38 +152,38 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
 
   /** {@inheritDoc} */
   @Override
-  public void replaceEntities(final Collection<Entity> entities) {
+  public final void replaceEntities(final Collection<Entity> entities) {
     replaceEntitiesByKey(EntityUtil.mapToKey(entities));
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean isQueryConfigurationAllowed() {
+  public final boolean isQueryConfigurationAllowed() {
     return queryConfigurationAllowed;
   }
 
   /** {@inheritDoc} */
   @Override
-  public EntityTableModel setQueryConfigurationAllowed(final boolean queryConfigurationAllowed) {
+  public final EntityTableModel setQueryConfigurationAllowed(final boolean queryConfigurationAllowed) {
     this.queryConfigurationAllowed = queryConfigurationAllowed;
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean isDeleteAllowed() {
+  public final boolean isDeleteAllowed() {
     return editModel != null && editModel.isDeleteAllowed();
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean isReadOnly() {
+  public final boolean isReadOnly() {
     return editModel == null || editModel.isReadOnly();
   }
 
   /** {@inheritDoc} */
   @Override
-  public boolean isUpdateAllowed() {
+  public final boolean isUpdateAllowed() {
     return editModel != null && editModel.isUpdateAllowed();
   }
 
@@ -502,44 +202,44 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
 
   /** {@inheritDoc} */
   @Override
-  public ColumnSummaryModel getColumnSummaryModel(final String propertyID) {
+  public final ColumnSummaryModel getColumnSummaryModel(final String propertyID) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
   @Override
-  public Color getPropertyBackgroundColor(final int row, final Property property) {
+  public final Color getPropertyBackgroundColor(final int row, final Property property) {
     return (Color) get(row).getBackgroundColor(property);
   }
 
   /** {@inheritDoc} */
   @Override
-  public int getPropertyColumnIndex(final String propertyID) {
+  public final int getPropertyColumnIndex(final String propertyID) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
   @Override
-  public String getStatusMessage() {
+  public final String getStatusMessage() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
   @Override
-  public int getFetchCount() {
+  public final int getFetchCount() {
     return fetchCount;
   }
 
   /** {@inheritDoc} */
   @Override
-  public EntityTableModel setFetchCount(final int fetchCount) {
+  public final EntityTableModel setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public void update(final List<Entity> entities) throws ValidationException, DatabaseException {
+  public final void update(final List<Entity> entities) throws ValidationException, DatabaseException {
     Objects.requireNonNull(entities);
     if (!isUpdateAllowed()) {
       throw new IllegalStateException("Updating is not allowed via this table model");
@@ -552,26 +252,26 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
 
   /** {@inheritDoc} */
   @Override
-  public boolean isRemoveEntitiesOnDelete() {
+  public final boolean isRemoveEntitiesOnDelete() {
     return removeEntitiesOnDelete;
   }
 
   /** {@inheritDoc} */
   @Override
-  public EntityTableModel setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
+  public final EntityTableModel setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
     this.removeEntitiesOnDelete = removeEntitiesOnDelete;
     return this;
   }
 
   /** {@inheritDoc} */
   @Override
-  public InsertAction getInsertAction() {
+  public final InsertAction getInsertAction() {
     return insertAction;
   }
 
   /** {@inheritDoc} */
   @Override
-  public EntityTableModel setInsertAction(final InsertAction insertAction) {
+  public final EntityTableModel setInsertAction(final InsertAction insertAction) {
     Objects.requireNonNull(insertAction);
     this.insertAction = insertAction;
     return this;
@@ -579,7 +279,7 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
 
   /** {@inheritDoc} */
   @Override
-  public Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
+  public final Collection<Entity> getEntitiesByKey(final Collection<Entity.Key> keys) {
     final List<Entity> entities = new ArrayList<>();
     getAllItems().forEach(entity -> keys.forEach(key -> {
       if (entity.getKey().equals(key)) {
@@ -592,7 +292,7 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
 
   /** {@inheritDoc} */
   @Override
-  public void setSelectedByKey(final Collection<Entity.Key> keys) {
+  public final void setSelectedByKey(final Collection<Entity.Key> keys) {
     final List<Entity.Key> keyList = new ArrayList<>(keys);
     final List<Entity> toSelect = new ArrayList<>(keys.size());
     stream().filter(entity -> keyList.contains(entity.getKey())).forEach(entity -> {
@@ -625,8 +325,8 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
 
   /** {@inheritDoc} */
   @Override
-  public Entity getEntityByKey(final Entity.Key primaryKey) {
-    for (final Entity entity : filteredList) {
+  public final Entity getEntityByKey(final Entity.Key primaryKey) {
+    for (final Entity entity : getFilteredList()) {
       if (entity.getKey().equals(primaryKey)) {
         return entity;
       }
@@ -638,149 +338,57 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
 
   /** {@inheritDoc} */
   @Override
-  public Iterator<Entity> getSelectedEntitiesIterator() {
-    return selectionModel.getSelectedItems().iterator();
+  public final Iterator<Entity> getSelectedEntitiesIterator() {
+    return getSelectionModel().getSelectedItems().iterator();
   }
 
   /** {@inheritDoc} */
   @Override
-  public int indexOf(final Entity.Key primaryKey) {
+  public final int indexOf(final Entity.Key primaryKey) {
     return indexOf(getEntityByKey(primaryKey));
   }
 
   /** {@inheritDoc} */
   @Override
-  public void savePreferences() {
+  public final void savePreferences() {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
   @Override
-  public void setColumns(final String... propertyIDs) {
+  public final void setColumns(final String... propertyIDs) {
     throw new UnsupportedOperationException();
   }
 
   /** {@inheritDoc} */
   @Override
-  public String getTableDataAsDelimitedString(final char delimiter) {
+  public final String getTableDataAsDelimitedString(final char delimiter) {
     throw new UnsupportedOperationException();
   }
 
-  /** {@inheritDoc} */
-  @Override
-  public final FilterCriteria<Entity> getFilterCriteria() {
-    return filterCriteria;
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void setFilterCriteria(final FilterCriteria<Entity> filterCriteria) {
-    this.filterCriteria = filterCriteria;
-    filterContents();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void filterContents() {
-    filteredList.setPredicate(entity -> filterCriteria == null || filterCriteria.include(entity));
-    filteringDoneEvent.fire();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void addFilteringListener(final EventListener listener) {
-    filteringDoneEvent.addListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final void removeFilteringListener(final EventListener listener) {
-    filteringDoneEvent.removeListener(listener);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final List<Entity> getVisibleItems() {
-    return Collections.unmodifiableList(this);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final List<Entity> getFilteredItems() {
-    if (size() != filteredList.size()) {
-      final List<Entity> result = new ArrayList<>(this);
-      result.removeAll(filteredList);
-
-      return result;
-    }
-
-    return Collections.emptyList();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final int getVisibleItemCount() {
-    return filteredList.size();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final int getFilteredItemCount() {
-    return size() - filteredList.size();
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean contains(final Entity item, final boolean includeFiltered) {
-    if (includeFiltered) {
-      return filteredList.contains(item) || contains(item);
-    }
-
-    return contains(item);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isVisible(final Entity item) {
-    return filteredList.contains(item);
-  }
-
-  /** {@inheritDoc} */
-  @Override
-  public final boolean isFiltered(final Entity item) {
-    return filterCriteria != null && filterCriteria.include(item);
-  }
-
-  /**
-   * Queries for the data used to populate this EntityTableModel when it is refreshed,
-   * @param criteria a criteria
-   * @return entities selected from the database according the the query criteria.
-   * @see EntityTableCriteriaModel#getTableCriteria()
-   */
-  protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
+  protected List<Entity> queryContents() {
+    final Criteria<Property.ColumnProperty> criteria = criteriaModel.getTableCriteria();
     if (criteria == null && queryCriteriaRequired) {
       return new ArrayList<>();
     }
 
     try {
-      return connectionProvider.getConnection().selectMany(EntityCriteriaUtil.selectCriteria(entityID, criteria,
-              Entities.getOrderByClause(entityID), fetchCount));
+      return getConnectionProvider().getConnection().selectMany(EntityCriteriaUtil.selectCriteria(getEntityID(), criteria,
+              getOrderByClause(), fetchCount));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
 
-  private void bindEditModelEvents() {
-    getEditModel().addAfterInsertListener(this::handleInsert);
-    getEditModel().addAfterUpdateListener(this::handleUpdate);
-    getEditModel().addAfterDeleteListener(this::handleDelete);
-    getEditModel().addAfterRefreshListener(this::refresh);
-    getEditModel().addEntitySetListener(entity -> {
-      if (entity == null && !getSelectionModel().isSelectionEmpty()) {
-        getSelectionModel().clearSelection();
-      }
-    });
+  /**
+   * The order by clause to use when selecting the data for this model,
+   * by default the order by clause defined for the underlying entity
+   * @return the order by clause
+   * @see Entities#getOrderByClause(String)
+   */
+  protected String getOrderByClause() {
+    return Entities.getOrderByClause(getEntityID());
   }
 
   private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
@@ -806,19 +414,35 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
    */
   private void replaceEntitiesByKey(final Map<Entity.Key, Entity> entityMap) {
     final List<Integer> selected = getSelectionModel().getSelectedIndexes();
-    list.replaceAll(entity -> {
+    replaceAll(entity -> {
       final Entity toReplaceWith = entityMap.get(entity.getKey());
       return toReplaceWith == null ? entity : toReplaceWith;
     });
     getSelectionModel().setSelectedIndexes(selected);
   }
 
-  private void bindSelectionModelEvents() {
-    selectionModel.addSelectionChangedListener(selectionChangedEvent);
-    selectionModel.addSelectedIndexListener(() -> {
+  protected void bindSelectionModelEvents() {
+    super.bindSelectionModelEvents();
+    getSelectionModel().addSelectedIndexListener(() -> {
       if (editModel != null) {
-        editModel.setEntity(selectionModel.getSelectedItem());
+        editModel.setEntity(getSelectionModel().getSelectedItem());
       }
     });
+  }
+
+  private void bindEditModelEvents() {
+    getEditModel().addAfterInsertListener(this::handleInsert);
+    getEditModel().addAfterUpdateListener(this::handleUpdate);
+    getEditModel().addAfterDeleteListener(this::handleDelete);
+    getEditModel().addAfterRefreshListener(this::refresh);
+    getEditModel().addEntitySetListener(entity -> {
+      if (entity == null && !getSelectionModel().isSelectionEmpty()) {
+        getSelectionModel().clearSelection();
+      }
+    });
+  }
+
+  private void bindEvents() {
+    addRefreshListener(criteriaModel::rememberCurrentCriteriaState);
   }
 }

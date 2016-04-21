@@ -16,11 +16,11 @@ import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
 import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.javafx.framework.model.FXEntityEditModel;
 import org.jminor.javafx.framework.model.FXEntityListModel;
+import org.jminor.javafx.framework.model.ObservableEntityList;
 import org.jminor.javafx.framework.ui.values.PropertyValues;
 import org.jminor.javafx.framework.ui.values.StringValue;
 
@@ -501,11 +501,13 @@ public final class FXUiUtil {
     return (T) parent;
   }
 
-  private static SortedList<Entity> createEntityListModel(final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
-    final FXEntityListModel listModel = new FXEntityListModel(property.getReferencedEntityID(), connectionProvider);
-    listModel.refresh();
+  private static SortedList<Entity> createEntityListModel(final Property.ForeignKeyProperty property,
+                                                          final EntityConnectionProvider connectionProvider) {
+    final ObservableEntityList entityList = new ObservableEntityList(property.getReferencedEntityID(),
+            connectionProvider);
+    entityList.refresh();
 
-    return new SortedList<>(listModel, Entities.getComparator(property.getReferencedEntityID()));
+    return entityList.getSortedList();
   }
 
   private static <T> List<T> selectValues(final List<T> values, final boolean single) {
