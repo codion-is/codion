@@ -8,6 +8,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
+import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SelectionModel;
@@ -37,6 +38,7 @@ import javafx.util.Callback;
 import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
@@ -55,12 +57,13 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
 
   private final Event refreshEvent = Events.event();
   private final Event selectionChangedEvent = Events.event();
+  private final Event filteringDoneEvent = Events.event();
 
   private FXEntityListSelectionModel selectionModel;
 
   private FXEntityEditModel editModel;
-
   private InsertAction insertAction = InsertAction.ADD_TOP;
+  private FilterCriteria<Entity> filterCriteria;
   private boolean queryCriteriaRequired = false;
   private boolean queryConfigurationAllowed = true;
   private boolean batchUpdateAllowed = true;
@@ -114,10 +117,6 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
 
   public final SortedList<Entity> getSortedList() {
     return sortedList;
-  }
-
-  public final FilteredList<Entity> getFilteredList() {
-    return filteredList;
   }
 
   public final FXEntityEditModel getEditModel() {
@@ -646,6 +645,91 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
   @Override
   public String getTableDataAsDelimitedString(final char delimiter) {
     throw new UnsupportedOperationException();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final FilterCriteria<Entity> getFilterCriteria() {
+    return filterCriteria;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void setFilterCriteria(final FilterCriteria<Entity> filterCriteria) {
+    this.filterCriteria = filterCriteria;
+    filterContents();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void filterContents() {
+    filteredList.setPredicate(entity -> filterCriteria == null || filterCriteria.include(entity));
+    filteringDoneEvent.fire();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void addFilteringListener(final EventListener listener) {
+    filteringDoneEvent.addListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final void removeFilteringListener(final EventListener listener) {
+    filteringDoneEvent.removeListener(listener);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final List<Entity> getVisibleItems() {
+    return Collections.unmodifiableList(this);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final List<Entity> getFilteredItems() {
+    if (size() != filteredList.size()) {
+      final List<Entity> result = new ArrayList<>(this);
+      result.removeAll(filteredList);
+
+      return result;
+    }
+
+    return Collections.emptyList();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final int getVisibleItemCount() {
+    return filteredList.size();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final int getFilteredItemCount() {
+    return size() - filteredList.size();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean contains(final Entity item, final boolean includeFiltered) {
+    if (includeFiltered) {
+      return filteredList.contains(item) || contains(item);
+    }
+
+    return contains(item);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isVisible(final Entity item) {
+    return filteredList.contains(item);
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public final boolean isFiltered(final Entity item) {
+    return filterCriteria != null && filterCriteria.include(item);
   }
 
   /**

@@ -4219,3 +4219,4 @@
   SwingPropertyCriteriaModelProvider added, DefaultPropertyCriteriaModelProvider and DefaultPropertyFilterModelProvider moved to framework.model
   FXCriteriaModelProvider now extends DefaultPropertyCriteriaModelProvider
   FXEntityListModel, a bunch of EntityTableModel methods implemented
+  EntityTableModel now implements FilteredModel

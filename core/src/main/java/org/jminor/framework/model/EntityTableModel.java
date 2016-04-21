@@ -5,6 +5,7 @@ package org.jminor.framework.model;
 
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.EventListener;
+import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.table.SelectionModel;
@@ -20,7 +21,7 @@ import java.util.Map;
 /**
  * Specifies a table model containing {@link Entity} objects
  */
-public interface EntityTableModel extends EntityDataProvider, Refreshable {
+public interface EntityTableModel extends EntityDataProvider, FilteredModel<Entity>, Refreshable {
 
   /**
    * Defines the actions a table model can perform when entities are inserted via the associated edit model

@@ -4,6 +4,7 @@
 package org.jminor.javafx.framework.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entities;
@@ -230,20 +231,25 @@ public class EntityTableView extends TableView<Entity> {
 
   private void bindEvents() {
     listModel.getSortedList().comparatorProperty().bind(comparatorProperty());
-    filterText.textProperty().addListener((observable, oldValue, filterByValue) -> {
-      listModel.getFilteredList().setPredicate(entity -> {
-        if (Util.nullOrEmpty(filterByValue)) {
-          return true;
-        }
-        for (final TableColumn<Entity, ?> column : getColumns()) {
-          if (column.isVisible() && entity.getAsString(((EntityTableColumn) column).getProperty()).toLowerCase()
-                  .contains(filterByValue.toLowerCase())) {
-            return true;
+    final List<Property> properties = Entities.getVisibleProperties(listModel.getEntityID());
+    filterText.textProperty().addListener((observable, oldValue, newValue) -> {
+      if (Util.nullOrEmpty(newValue)) {
+        listModel.setFilterCriteria(new FilterCriteria.AcceptAllCriteria());
+      }
+      else {
+        listModel.setFilterCriteria(item -> {
+          boolean found = false;
+          for (final TableColumn<Entity, ?> column : getColumns()) {
+            final Object value = column.getCellObservableValue(item).getValue();
+            if (value != null && value.toString().toLowerCase().contains(newValue.toLowerCase())) {
+              found = true;
+              break;
+            }
           }
-        }
 
-        return false;
-      });
+          return found;
+        });
+      }
     });
   }
 }
