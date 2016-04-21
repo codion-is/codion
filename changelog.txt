@@ -4221,3 +4221,4 @@
   FXEntityListModel, a bunch of EntityTableModel methods implemented
   EntityTableModel now implements FilteredModel
   AbstractEntityTableModelTest refactored from DefaultEntityTableModelTest, SwingEntityTableModelTest added and FXEntityListModelTest improved
+  AbstractEntityModelTest refactored from DefaultEntityModelTest, SwingEntityModelTest and FXEntityModelTest added

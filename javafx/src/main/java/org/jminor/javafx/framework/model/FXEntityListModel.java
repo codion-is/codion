@@ -776,6 +776,11 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
     getEditModel().addAfterUpdateListener(this::handleUpdate);
     getEditModel().addAfterDeleteListener(this::handleDelete);
     getEditModel().addAfterRefreshListener(this::refresh);
+    getEditModel().addEntitySetListener(entity -> {
+      if (entity == null && !getSelectionModel().isSelectionEmpty()) {
+        getSelectionModel().clearSelection();
+      }
+    });
   }
 
   private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
@@ -800,10 +805,12 @@ public class FXEntityListModel implements EntityTableModel, ObservableList<Entit
    * @param entityMap the entities to replace mapped to the corresponding primary key found in this table model
    */
   private void replaceEntitiesByKey(final Map<Entity.Key, Entity> entityMap) {
+    final List<Integer> selected = getSelectionModel().getSelectedIndexes();
     list.replaceAll(entity -> {
       final Entity toReplaceWith = entityMap.get(entity.getKey());
       return toReplaceWith == null ? entity : toReplaceWith;
     });
+    getSelectionModel().setSelectedIndexes(selected);
   }
 
   private void bindSelectionModelEvents() {

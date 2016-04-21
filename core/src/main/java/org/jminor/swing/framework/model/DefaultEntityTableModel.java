@@ -765,6 +765,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
         break;
       }
     }
+    filterContents();
   }
 
   private void handleDeleteInternal(final EntityEditModel.DeleteEvent deleteEvent) {

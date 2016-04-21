@@ -29,6 +29,10 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
     super(entityID, connectionProvider, validator);
   }
 
+  public final FXEntityListModel getForeignKeyListModel(final String foreignKeyPropertyID) {
+    return getForeignKeyListModel(Entities.getForeignKeyProperty(getEntityID(), foreignKeyPropertyID));
+  }
+
   public final FXEntityListModel getForeignKeyListModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Objects.requireNonNull(foreignKeyProperty);
     FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);

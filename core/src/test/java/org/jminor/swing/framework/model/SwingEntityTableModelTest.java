@@ -49,12 +49,12 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Override
-  protected DefaultEntityTableModel createEmpTableModelWithoutEditModel() {
+  protected DefaultEntityTableModel createEmployeeTableModelWithoutEditModel() {
     return new DefaultEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Override
-  protected DefaultEntityTableModel createDeptTableModel() {
+  protected DefaultEntityTableModel createDepartmentTableModel() {
     final DefaultEntityTableModel deptModel = new DefaultEntityTableModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
     deptModel.setEditModel(new SwingEntityEditModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider()));
 
@@ -62,7 +62,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Override
-  protected DefaultEntityTableModel createEmpTableModel() {
+  protected DefaultEntityTableModel createEmployeeTableModel() {
     final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.setEditModel(new SwingEntityEditModel(TestDomain.T_EMP, testModel.getConnectionProvider()));
 
@@ -70,7 +70,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Override
-  protected EntityEditModel createDeptEditModel() {
+  protected EntityEditModel createDepartmentEditModel() {
     return new SwingEntityEditModel(TestDomain.T_MASTER, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 

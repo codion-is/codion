@@ -1,3 +1,6 @@
+/*
+ * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
+ */
 package org.jminor.javafx.framework.model;
 
 import org.jminor.common.model.Event;
@@ -12,6 +15,7 @@ import org.jminor.framework.domain.Entity;
 import javafx.collections.ListChangeListener;
 import javafx.scene.control.MultipleSelectionModel;
 
+import java.util.ArrayList;
 import java.util.Collection;
 import java.util.Collections;
 import java.util.List;
@@ -118,7 +122,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   @Override
   public List<Integer> getSelectedIndexes() {
     if (selectionModel instanceof MultipleSelectionModel) {
-      return Collections.unmodifiableList(((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices());
+      return Collections.unmodifiableList(new ArrayList<>(((MultipleSelectionModel<Entity>) selectionModel).getSelectedIndices()));
     }
     else if (selectionModel.isEmpty()) {
       return Collections.emptyList();
@@ -173,7 +177,7 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   @Override
   public List<Entity> getSelectedItems() {
     if (selectionModel instanceof MultipleSelectionModel) {
-      return Collections.unmodifiableList(((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems());
+      return Collections.unmodifiableList(new ArrayList<>(((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems()));
     }
     else if (selectionModel.isEmpty()) {
       return Collections.emptyList();
@@ -197,7 +201,8 @@ public final class FXEntityListSelectionModel implements SelectionModel<Entity> 
   @Override
   public void setSelectedItem(final Entity item) {
     if (selectionModel instanceof MultipleSelectionModel) {
-      ((MultipleSelectionModel<Entity>) selectionModel).getSelectedItems().setAll(item);
+      selectionModel.clearSelection();
+      selectionModel.select(item);
     }
     else {
       selectionModel.select(item);

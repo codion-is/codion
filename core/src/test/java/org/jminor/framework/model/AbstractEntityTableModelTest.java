@@ -37,13 +37,13 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   protected abstract T createMasterTableModel();
 
-  protected abstract T createEmpTableModelWithoutEditModel();
+  protected abstract T createEmployeeTableModelWithoutEditModel();
 
-  protected abstract T createDeptTableModel();
+  protected abstract T createDepartmentTableModel();
 
-  protected abstract T createEmpTableModel();
+  protected abstract T createEmployeeTableModel();
 
-  protected abstract EntityEditModel createDeptEditModel();
+  protected abstract EntityEditModel createDepartmentEditModel();
 
   protected abstract T createDetailTableModel();
 
@@ -51,7 +51,7 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test
   public void setSelectedByKey() {
-    final T tableModel = createEmpTableModelWithoutEditModel();
+    final T tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
     final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
@@ -80,7 +80,7 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test
   public void getSelectedEntitiesIterator() {
-    final T tableModel = createEmpTableModelWithoutEditModel();
+    final T tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
     tableModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0, 3, 5));
@@ -92,13 +92,13 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test(expected = IllegalStateException.class)
   public void updateNoEditModel() throws CancelException, ValidationException, DatabaseException {
-    final T tableModel = createEmpTableModelWithoutEditModel();
+    final T tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.update(new ArrayList<>());
   }
 
   @Test(expected = IllegalStateException.class)
   public void deleteSelectedNoEditModel() throws CancelException, DatabaseException {
-    final T tableModel = createEmpTableModelWithoutEditModel();
+    final T tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
     tableModel.getSelectionModel().setSelectedIndex(0);
     tableModel.deleteSelected();
@@ -106,7 +106,7 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test
   public void addOnInsert() throws CancelException, DatabaseException, ValidationException {
-    final T deptModel = createDeptTableModel();
+    final T deptModel = createDepartmentTableModel();
     deptModel.refresh();
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_BOTTOM);
@@ -135,7 +135,7 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test
   public void removeOnDelete() throws CancelException, DatabaseException {
-    final EntityTableModel tableModel = createEmpTableModel();
+    final EntityTableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
     final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
@@ -166,7 +166,7 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test
   public void getEntityByKey() {
-    final EntityTableModel tableModel = createEmpTableModelWithoutEditModel();
+    final EntityTableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
     final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
@@ -180,14 +180,14 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test(expected = IllegalArgumentException.class)
   public void setEditModelNullValue() {
-    final EntityTableModel tableModel = createEmpTableModelWithoutEditModel();
+    final EntityTableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.setEditModel(null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setEditModelWrongEntityID() {
-    final EntityTableModel tableModel = createEmpTableModelWithoutEditModel();
-    tableModel.setEditModel(createDeptEditModel());
+    final EntityTableModel tableModel = createEmployeeTableModelWithoutEditModel();
+    tableModel.setEditModel(createDepartmentEditModel());
   }
 
   @Test(expected = IllegalStateException.class)
