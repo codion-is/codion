@@ -8,6 +8,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.model.EntityModel;
+import org.jminor.javafx.framework.model.FXEntityEditModel;
 import org.jminor.javafx.framework.ui.EntityApplicationView;
 import org.jminor.javafx.framework.ui.EntityView;
 
@@ -22,7 +23,7 @@ public class ChinookFXAppView extends EntityApplicationView<ChinookFXAppModel> {
     final EntityApplicationModel model = getModel();
 
     final EntityModel artistModel = model.getEntityModel(Chinook.T_ARTIST);
-    final EntityView artists = new EntityView(artistModel);
+    final EntityView artists = new EntityView(artistModel, new ArtistEditVew((FXEntityEditModel) artistModel.getEditModel()));
     final EntityModel albumModel = artistModel.getDetailModel(Chinook.T_ALBUM);
     final EntityView albums = new EntityView(albumModel);
     final EntityModel trackModel = albumModel.getDetailModel(Chinook.T_TRACK);
