@@ -19,12 +19,10 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableCriteriaModel;
 import org.jminor.framework.model.EntityTableModel;
 
-import javafx.beans.property.ReadOnlyObjectWrapper;
-import javafx.beans.value.ObservableValue;
+import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
-import javafx.util.Callback;
+import javafx.scene.paint.Color;
 
-import java.awt.Color;
 import java.util.ArrayList;
 import java.util.Collection;
 import java.util.HashMap;
@@ -38,6 +36,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   private final EntityTableCriteriaModel criteriaModel;
 
   private FXEntityEditModel editModel;
+  private ObservableList<? extends TableColumn<Entity, ?>> columns;
 
   private InsertAction insertAction = InsertAction.ADD_TOP;
   private boolean queryCriteriaRequired = false;
@@ -84,6 +83,10 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     return editModel;
   }
 
+  public final void setColumns(final ObservableList<? extends TableColumn<Entity, ?>> columns) {
+    this.columns = columns;
+  }
+
   public final EntityTableCriteriaModel getCriteriaModel() {
     return criteriaModel;
   }
@@ -101,10 +104,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     if (criteriaModel.setCriteriaValues(foreignKeyProperty.getPropertyID(), entities)) {
       refresh();
     }
-  }
-
-  public final Callback<TableColumn.CellDataFeatures<Entity, Object>, ObservableValue<Object>> getCellValueFactory(final Property property) {
-    return row -> new ReadOnlyObjectWrapper<>(row.getValue().get(property.getPropertyID()));
   }
 
   public final void deleteSelected() throws DatabaseException {
@@ -363,7 +362,19 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final String getTableDataAsDelimitedString(final char delimiter) {
-    throw new UnsupportedOperationException();
+    final List<String> headerValues = new ArrayList<>();
+    final List<Property> properties = new ArrayList<>();
+    columns.forEach(entityTableColumn -> {
+      final Property property = ((PropertyColumn) entityTableColumn).getProperty();
+      properties.add(property);
+      headerValues.add(property.getCaption());
+    });
+
+    final String[][] header = {headerValues.toArray(new String[headerValues.size()])};
+
+    return Util.getDelimitedString(header, EntityUtil.getStringValueArray(properties,
+            getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
+            String.valueOf(delimiter));
   }
 
   protected List<Entity> queryContents() {
@@ -444,5 +455,19 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   private void bindEvents() {
     addRefreshListener(criteriaModel::rememberCurrentCriteriaState);
+  }
+
+  public static class PropertyColumn extends TableColumn<Entity, Object> {
+
+    private final Property property;
+
+    protected PropertyColumn(final Property property) {
+      super(property.getCaption());
+      this.property = property;
+    }
+
+    public Property getProperty() {
+      return property;
+    }
   }
 }

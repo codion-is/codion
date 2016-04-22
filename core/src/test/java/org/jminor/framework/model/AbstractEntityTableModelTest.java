@@ -321,4 +321,17 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
   public void noVisibleColumns() {
     createMasterTableModel();
   }
+
+  @Test
+  public void getTableDataAsDelimitedString() {
+    final EntityTableModel deptModel = createDepartmentTableModel();
+    deptModel.refresh();
+    final String expected =
+            "deptno\tdname\tloc\n" +
+            "10\tACCOUNTING\tNEW YORK\n" +
+            "40\tOPERATIONS\tBOSTON\n" +
+            "20\tRESEARCH\tDALLAS\n" +
+            "30\tSALES\tCHICAGO";
+    assertEquals(expected, deptModel.getTableDataAsDelimitedString('\t'));
+  }
 }

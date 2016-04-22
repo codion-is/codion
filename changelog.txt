@@ -4224,3 +4224,6 @@
   AbstractEntityModelTest refactored from DefaultEntityModelTest, SwingEntityModelTest and FXEntityModelTest added
   AbstractEntityApplicationModelTest refactored from DefaultEntityApplicationModelTest, SwingEntityApplicationModelTest and FXEntityApplicationModelTest added
   ObservableEntityList refactored from FXEntityListModel
+  Util.getDelimitedString() no longer appends a redundant line separator at end
+  EntityUtil.getStringValueArray() added
+  FXEntityListModel.getTableDataAsDelimitedString() implemented

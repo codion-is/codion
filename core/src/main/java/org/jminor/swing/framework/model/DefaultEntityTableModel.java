@@ -537,20 +537,9 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
     final String[][] header = {headerValues.toArray(new String[headerValues.size()])};
 
-    final List<Entity> entities = getSelectionModel().isSelectionEmpty()
-            ? getVisibleItems() : getSelectionModel().getSelectedItems();
-
-    final String[][] data = new String[entities.size()][];
-    for (int i = 0; i < data.length; i++) {
-      final List<String> line = new ArrayList<>();
-      for (final Property property : properties) {
-        line.add(entities.get(i).getAsString(property));
-      }
-
-      data[i] = line.toArray(new String[line.size()]);
-    }
-
-    return Util.getDelimitedString(header, data, String.valueOf(delimiter));
+    return Util.getDelimitedString(header, EntityUtil.getStringValueArray(properties,
+            getSelectionModel().isSelectionEmpty() ? getVisibleItems() : getSelectionModel().getSelectedItems()),
+            String.valueOf(delimiter));
   }
 
   /** {@inheritDoc} */

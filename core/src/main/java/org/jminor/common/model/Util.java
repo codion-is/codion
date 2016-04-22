@@ -501,14 +501,17 @@ public final class Util {
       contents.append(LINE_SEPARATOR);
     }
 
-    for (final String[] someData : data) {
+    for (int i = 0; i < data.length; i++) {
+      final String[] someData = data[i];
       for (int j = 0; j < someData.length; j++) {
         contents.append(someData[j]);
         if (j < someData.length - 1) {
           contents.append(delimiter);
         }
       }
-      contents.append(LINE_SEPARATOR);
+      if (i < someData.length) {
+        contents.append(LINE_SEPARATOR);
+      }
     }
 
     return contents.toString();
