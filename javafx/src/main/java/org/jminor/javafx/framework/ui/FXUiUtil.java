@@ -54,6 +54,8 @@ import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
@@ -80,6 +82,12 @@ public final class FXUiUtil {
 
   public static <T> List<T> selectValues(final List<T> values) {
     return selectValues(values, false);
+  }
+
+  public static void setClipboard(final String string) {
+    final ClipboardContent content = new ClipboardContent();
+    content.putString(string);
+    Clipboard.getSystemClipboard().setContent(content);
   }
 
   public static boolean confirm(final String message) {

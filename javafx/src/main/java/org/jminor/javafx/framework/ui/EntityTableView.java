@@ -14,7 +14,6 @@ import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.javafx.framework.model.FXEntityListModel;
-import org.jminor.swing.common.ui.UiUtil;
 
 import javafx.application.Platform;
 import javafx.beans.property.ReadOnlyObjectWrapper;
@@ -249,7 +248,7 @@ public class EntityTableView extends TableView<Entity> {
   }
 
   private void copyTable() {
-    UiUtil.setClipboard(listModel.getTableDataAsDelimitedString('\t'));
+    FXUiUtil.setClipboard(listModel.getTableDataAsDelimitedString('\t'));
   }
 
   private void copyCell() {
@@ -258,7 +257,7 @@ public class EntityTableView extends TableView<Entity> {
       final TablePosition<Entity, Object> pos = getSelectionModel().getSelectedCells().get(0);
       final Entity item = listModel.get(pos.getRow());
       final String value = item.getAsString(((EntityTableColumn) pos.getTableColumn()).getProperty());
-      UiUtil.setClipboard(value);
+      FXUiUtil.setClipboard(value);
     }
   }
 
