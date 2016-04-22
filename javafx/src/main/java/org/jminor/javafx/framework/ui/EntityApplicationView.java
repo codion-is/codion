@@ -144,8 +144,7 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
   }
 
   /**
-   * todo
-   * Called during the exit() method, override to save user preferences on program exit,
+   * Called on application exit, override to save user preferences on program exit,
    * remember to call super.savePreferences() when overriding
    */
   protected void savePreferences() {
