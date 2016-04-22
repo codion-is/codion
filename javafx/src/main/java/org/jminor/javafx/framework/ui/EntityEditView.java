@@ -193,7 +193,6 @@ public abstract class EntityEditView extends BorderPane {
     return pane;
   }
 
-
   private void initializeUI() {
     final BorderPane top = new BorderPane();
     final BorderPane topLeft = new BorderPane();
