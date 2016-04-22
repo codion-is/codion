@@ -334,4 +334,10 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
             "30\tSALES\tCHICAGO";
     assertEquals(expected, deptModel.getTableDataAsDelimitedString('\t'));
   }
+
+  @Test
+  public void setColumns() {
+    final EntityTableModel empModel = createEmployeeTableModel();
+    empModel.setColumns(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT_FK, TestDomain.EMP_HIREDATE);
+  }
 }

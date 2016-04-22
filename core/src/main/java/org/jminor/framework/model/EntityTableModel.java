@@ -23,6 +23,11 @@ import java.util.Map;
  */
 public interface EntityTableModel extends EntityDataProvider, FilteredModel<Entity>, Refreshable {
 
+  String PREFERENCES_COLUMNS = "columns";
+  String PREFERENCES_COLUMN_WIDTH = "width";
+  String PREFERENCES_COLUMN_VISIBLE = "visible";
+  String PREFERENCES_COLUMN_INDEX = "index";
+
   /**
    * Defines the actions a table model can perform when entities are inserted via the associated edit model
    */

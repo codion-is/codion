@@ -93,6 +93,7 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
       stage.getIcons().add(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName)));
       initializeEntitieViews();
       final Scene applicationScene = initializeApplicationScene(stage);
+      stage.setOnCloseRequest(event -> savePreferences());
 //      ((VBox) applicationScene.getRoot()).getChildren().addAll(createMainMenu());
       stage.setScene(applicationScene);
 
@@ -140,6 +141,15 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
   protected final User showLoginPanel(final User defaultUser) {
     return FXUiUtil.showLoginDialog(applicationTitle, defaultUser,
             new ImageView(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName))));
+  }
+
+  /**
+   * todo
+   * Called during the exit() method, override to save user preferences on program exit,
+   * remember to call super.savePreferences() when overriding
+   */
+  protected void savePreferences() {
+    entityViews.forEach(EntityView::savePreferences);
   }
 
   protected abstract void initializeEntitieViews();

@@ -8,6 +8,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;
+import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
@@ -22,21 +23,29 @@ import org.jminor.framework.model.EntityTableModel;
 import javafx.collections.ObservableList;
 import javafx.scene.control.TableColumn;
 import javafx.scene.paint.Color;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.Collection;
+import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 
 public class FXEntityListModel extends ObservableEntityList implements EntityTableModel {
 
+  private static final Logger LOG = LoggerFactory.getLogger(FXEntityListModel.class);
+
   private final EntityTableCriteriaModel criteriaModel;
 
   private FXEntityEditModel editModel;
   private ObservableList<? extends TableColumn<Entity, ?>> columns;
+  private List<PropertyTableColumn> initialColumns;
 
   private InsertAction insertAction = InsertAction.ADD_TOP;
   private boolean queryCriteriaRequired = false;
@@ -84,7 +93,12 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   }
 
   public final void setColumns(final ObservableList<? extends TableColumn<Entity, ?>> columns) {
+    if (this.columns != null) {
+      throw new IllegalStateException("Columns have already been set");
+    }
     this.columns = columns;
+    this.initialColumns = new ArrayList<>((Collection<PropertyTableColumn>) columns);
+    applyPreferences();
   }
 
   public final EntityTableCriteriaModel getCriteriaModel() {
@@ -350,13 +364,35 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   /** {@inheritDoc} */
   @Override
   public final void savePreferences() {
-    throw new UnsupportedOperationException();
+    if (Configuration.getBooleanValue(Configuration.USE_CLIENT_PREFERENCES)) {
+      try {
+        Util.putUserPreference(getUserPreferencesKey(), createPreferences().toString());
+      }
+      catch (final Exception e) {
+        LOG.error("Error while saving preferences", e);
+      }
+    }
   }
 
   /** {@inheritDoc} */
   @Override
   public final void setColumns(final String... propertyIDs) {
-    throw new UnsupportedOperationException();
+    final List<String> propertyIDList = Arrays.asList(propertyIDs);
+    final ListIterator<? extends TableColumn<Entity, ?>> listIterator = columns.listIterator();
+    new ArrayList<>(columns).forEach(column -> {
+      if (!propertyIDList.contains(((PropertyTableColumn) column).getProperty().getPropertyID())) {
+        columns.remove(column);
+      }
+    });
+    columns.sort(new Comparator<TableColumn<Entity, ?>>() {
+      @Override
+      public int compare(final TableColumn<Entity, ?> col1, final TableColumn<Entity, ?> col2) {
+        final Integer first = propertyIDList.indexOf(((PropertyTableColumn) col1).getProperty().getPropertyID());
+        final Integer second = propertyIDList.indexOf(((PropertyTableColumn) col2).getProperty().getPropertyID());
+
+        return first.compareTo(second);
+      }
+    });
   }
 
   /** {@inheritDoc} */
@@ -365,7 +401,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     final List<String> headerValues = new ArrayList<>();
     final List<Property> properties = new ArrayList<>();
     columns.forEach(entityTableColumn -> {
-      final Property property = ((PropertyColumn) entityTableColumn).getProperty();
+      final Property property = ((PropertyTableColumn) entityTableColumn).getProperty();
       properties.add(property);
       headerValues.add(property.getCaption());
     });
@@ -384,8 +420,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
 
     try {
-      return getConnectionProvider().getConnection().selectMany(EntityCriteriaUtil.selectCriteria(getEntityID(), criteria,
-              getOrderByClause(), fetchCount));
+      return getConnectionProvider().getConnection().selectMany(EntityCriteriaUtil.selectCriteria(getEntityID(),
+              criteria, getOrderByClause(), fetchCount));
     }
     catch (final DatabaseException e) {
       throw new RuntimeException(e);
@@ -400,6 +436,21 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    */
   protected String getOrderByClause() {
     return Entities.getOrderByClause(getEntityID());
+  }
+
+  /**
+   * Returns the key used to identify user preferences for this table model, that is column positions, widths and such.
+   * The default implementation is:
+   * <pre>
+   * {@code
+   * return getClass().getSimpleName() + "-" + getEntityID();
+   * }
+   * </pre>
+   * Override in case this key is not unique.
+   * @return the key used to identify user preferences for this table model
+   */
+  protected String getUserPreferencesKey() {
+    return getClass().getSimpleName() + "-" + getEntityID();
   }
 
   private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
@@ -432,6 +483,62 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     getSelectionModel().setSelectedIndexes(selected);
   }
 
+  private void applyPreferences() {
+    if (Configuration.getBooleanValue(Configuration.USE_CLIENT_PREFERENCES)) {
+      final String preferencesString = Util.getUserPreference(getUserPreferencesKey(), "");
+      try {
+        if (preferencesString.length() > 0) {
+          final org.json.JSONObject preferences = new org.json.JSONObject(preferencesString).getJSONObject(PREFERENCES_COLUMNS);
+          applyColumnPreferences(preferences);
+          columns.sort(new ColumnOrder(preferences));
+        }
+      }
+      catch (final Exception e) {
+        LOG.error("Error while applying preferences: " + preferencesString, e);
+      }
+    }
+  }
+
+  private void applyColumnPreferences(final org.json.JSONObject preferences) {
+    for (final PropertyTableColumn column : initialColumns) {
+      final Property property = column.getProperty();
+      if (columns.contains(column)) {
+        try {
+          final org.json.JSONObject columnPreferences = preferences.getJSONObject(property.getPropertyID());
+          column.setPrefWidth(columnPreferences.getInt(PREFERENCES_COLUMN_WIDTH));
+          if (!columnPreferences.getBoolean(PREFERENCES_COLUMN_VISIBLE)) {
+            columns.remove(column);
+          }
+        }
+        catch (final Exception e) {
+          LOG.info("Property preferences not found: " + property, e);
+        }
+      }
+    }
+  }
+
+  private org.json.JSONObject createPreferences() throws Exception {
+    final org.json.JSONObject preferencesRoot = new org.json.JSONObject();
+    preferencesRoot.put(PREFERENCES_COLUMNS, createColumnPreferences());
+
+    return preferencesRoot;
+  }
+
+  private org.json.JSONObject createColumnPreferences() throws Exception {
+    final org.json.JSONObject columnPreferencesRoot = new org.json.JSONObject();
+    for (final PropertyTableColumn column : initialColumns) {
+      final Property property = column.getProperty();
+      final org.json.JSONObject columnObject = new org.json.JSONObject();
+      final boolean visible = columns.contains(column);
+      columnObject.put(PREFERENCES_COLUMN_WIDTH, column.getWidth());
+      columnObject.put(PREFERENCES_COLUMN_VISIBLE, visible);
+      columnObject.put(PREFERENCES_COLUMN_INDEX, visible ? columns.indexOf(column) : -1);
+      columnPreferencesRoot.put(property.getPropertyID(), columnObject);
+    }
+
+    return columnPreferencesRoot;
+  }
+
   protected void bindSelectionModelEvents() {
     super.bindSelectionModelEvents();
     getSelectionModel().addSelectedIndexListener(() -> {
@@ -457,17 +564,54 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     addRefreshListener(criteriaModel::rememberCurrentCriteriaState);
   }
 
-  public static class PropertyColumn extends TableColumn<Entity, Object> {
+  public static class PropertyTableColumn extends TableColumn<Entity, Object> {
 
     private final Property property;
 
-    protected PropertyColumn(final Property property) {
+    protected PropertyTableColumn(final Property property) {
       super(property.getCaption());
       this.property = property;
     }
 
-    public Property getProperty() {
+    public final Property getProperty() {
       return property;
+    }
+
+    @Override
+    public final String toString() {
+      return property.getPropertyID();
+    }
+  }
+
+  private static final class ColumnOrder implements Comparator<TableColumn<Entity, ?>> {
+
+    private final org.json.JSONObject preferences;
+
+    private ColumnOrder(final org.json.JSONObject preferences) {
+      this.preferences = preferences;
+    }
+
+    @Override
+    public int compare(final TableColumn<Entity, ?> col1, final TableColumn<Entity, ?> col2) {
+      try {
+        final org.json.JSONObject columnOnePreferences = preferences.getJSONObject(((PropertyTableColumn) col1).getProperty().getPropertyID());
+        final org.json.JSONObject columnTwoPreferences = preferences.getJSONObject(((PropertyTableColumn) col2).getProperty().getPropertyID());
+        Integer firstIndex = columnOnePreferences.getInt(PREFERENCES_COLUMN_INDEX);
+        if (firstIndex == null) {
+          firstIndex = 0;
+        }
+        Integer secondIndex = columnTwoPreferences.getInt(PREFERENCES_COLUMN_INDEX);
+        if (secondIndex == null) {
+          secondIndex = 0;
+        }
+
+        return firstIndex.compareTo(secondIndex);
+      }
+      catch (final Exception e) {
+        LOG.info("Property preferences not found", e);
+      }
+
+      return 0;
     }
   }
 }

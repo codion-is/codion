@@ -4227,3 +4227,4 @@
   Util.getDelimitedString() no longer appends a redundant line separator at end
   EntityUtil.getStringValueArray() added
   FXEntityListModel.getTableDataAsDelimitedString() implemented
+  FXEntityListModel.savePreferences() and setColumns() implemented

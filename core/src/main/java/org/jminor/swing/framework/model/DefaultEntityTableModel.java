@@ -70,11 +70,6 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityTableModel.class);
 
-  private static final String PREFERENCES_COLUMNS = "columns";
-  private static final String PREFERENCES_COLUMN_WIDTH = "width";
-  private static final String PREFERENCES_COLUMN_VISIBLE = "visible";
-  private static final String PREFERENCES_COLUMN_INDEX = "index";
-
   /**
    * The entity ID
    */

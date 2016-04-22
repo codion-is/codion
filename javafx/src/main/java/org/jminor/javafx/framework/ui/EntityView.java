@@ -145,6 +145,14 @@ public class EntityView extends BorderPane implements ViewTreeNode {
     detailView.setParentView(this);
   }
 
+  /**
+   * Saves any user preferences for all entity panels and associated elements
+   */
+  public final void savePreferences() {
+    detailViews.forEach(EntityView::savePreferences);
+    getModel().savePreferences();
+  }
+
   private void checkIfInitalized() {
     if (initialized) {
       throw new IllegalStateException("View has already been initialized");

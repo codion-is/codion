@@ -13,7 +13,7 @@ import javafx.beans.value.ObservableValue;
 import javafx.scene.layout.Pane;
 import javafx.util.Callback;
 
-public final class EntityTableColumn extends FXEntityListModel.PropertyColumn {
+public final class EntityTableColumn extends FXEntityListModel.PropertyTableColumn {
 
   private final PropertyCriteriaView criteriaView;
 
