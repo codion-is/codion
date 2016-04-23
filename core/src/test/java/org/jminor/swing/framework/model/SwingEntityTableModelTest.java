@@ -15,7 +15,6 @@ import org.jminor.framework.model.AbstractEntityTableModelTest;
 import org.jminor.framework.model.DefaultEntityTableCriteriaModel;
 import org.jminor.framework.model.DefaultPropertyCriteriaModelProvider;
 import org.jminor.framework.model.DefaultPropertyFilterModelProvider;
-import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityTableCriteriaModel;
 import org.jminor.swing.common.model.table.SortingDirective;
 
@@ -31,7 +30,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public final class SwingEntityTableModelTest extends AbstractEntityTableModelTest<DefaultEntityTableModel> {
+public final class SwingEntityTableModelTest extends AbstractEntityTableModelTest<SwingEntityEditModel, DefaultEntityTableModel> {
 
   @Override
   protected EntityTableModelTmp createTestTableModel() {
@@ -70,12 +69,12 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Override
-  protected EntityEditModel createDepartmentEditModel() {
+  protected SwingEntityEditModel createDepartmentEditModel() {
     return new SwingEntityEditModel(TestDomain.T_MASTER, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Override
-  protected EntityEditModel createDetailEditModel() {
+  protected SwingEntityEditModel createDetailEditModel() {
     return new SwingEntityEditModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 

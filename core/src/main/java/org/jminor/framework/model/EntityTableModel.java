@@ -21,7 +21,7 @@ import java.util.Map;
 /**
  * Specifies a table model containing {@link Entity} objects
  */
-public interface EntityTableModel extends EntityDataProvider, FilteredModel<Entity>, Refreshable {
+public interface EntityTableModel<EditModel extends EntityEditModel> extends EntityDataProvider, FilteredModel<Entity>, Refreshable {
 
   String PREFERENCES_COLUMNS = "columns";
   String PREFERENCES_COLUMN_WIDTH = "width";
@@ -70,7 +70,7 @@ public interface EntityTableModel extends EntityDataProvider, FilteredModel<Enti
    * @throws IllegalStateException in case an {@link EntityEditModel} has already been associated with this {@link EntityTableModel}
    * @throws IllegalArgumentException in case the given {@link EntityEditModel} is not based on the same entityID as this {@link EntityTableModel}
    */
-  void setEditModel(final EntityEditModel editModel);
+  void setEditModel(final EditModel editModel);
 
   /**
    * Sets <code>foreignKeyValues</code> as the search criteria values for the given foreignKeyProperty
@@ -114,7 +114,7 @@ public interface EntityTableModel extends EntityDataProvider, FilteredModel<Enti
    * @param value the value
    * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel setQueryConfigurationAllowed(final boolean value);
+  EntityTableModel<EditModel> setQueryConfigurationAllowed(final boolean value);
 
   /**
    * @return the {@link EntityTableCriteriaModel} instance used by this table model
@@ -151,7 +151,7 @@ public interface EntityTableModel extends EntityDataProvider, FilteredModel<Enti
    * @param batchUpdateAllowed true if this model should allow multiple entities to be updated at a time
    * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed);
+  EntityTableModel<EditModel> setBatchUpdateAllowed(final boolean batchUpdateAllowed);
 
   /**
    * Returns the {@link ColumnSummaryModel} associated with the property identified by <code>propertyID</code>
@@ -192,7 +192,7 @@ public interface EntityTableModel extends EntityDataProvider, FilteredModel<Enti
    * @param fetchCount the fetch count
    * @return this table model
    */
-  EntityTableModel setFetchCount(final int fetchCount);
+  EntityTableModel<EditModel> setFetchCount(final int fetchCount);
 
   /**
    * Updates the given entities. If the entities are unmodified or the list is empty
@@ -225,7 +225,7 @@ public interface EntityTableModel extends EntityDataProvider, FilteredModel<Enti
    * when no criteria is applied, which can be problematic in the case of huge datasets.
    * @return this table model instance
    */
-  EntityTableModel setQueryCriteriaRequired(final boolean value);
+  EntityTableModel<EditModel> setQueryCriteriaRequired(final boolean value);
 
   /**
    * @return true if entities that are deleted via the associated edit model
@@ -238,7 +238,7 @@ public interface EntityTableModel extends EntityDataProvider, FilteredModel<Enti
    * should be automatically removed from this table model
    * @return this {@link EntityTableModel} instance
    */
-  EntityTableModel setRemoveEntitiesOnDelete(final boolean value);
+  EntityTableModel<EditModel> setRemoveEntitiesOnDelete(final boolean value);
 
   /**
    * @return the action performed when entities are inserted via the associated edit model
@@ -249,7 +249,7 @@ public interface EntityTableModel extends EntityDataProvider, FilteredModel<Enti
    * @param insertAction the action to perform when entities are inserted via the associated edit model
    * @return this EntityTableModel instance
    */
-  EntityTableModel setInsertAction(final InsertAction insertAction);
+  EntityTableModel<EditModel> setInsertAction(final InsertAction insertAction);
 
   /**
    * Finds entities according to the values in <code>keys</code>

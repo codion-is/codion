@@ -7,8 +7,7 @@ import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.framework.model.DefaultEntityApplicationModel;
-import org.jminor.framework.model.EntityApplicationModel;
+import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 
 import org.junit.After;
@@ -46,14 +45,14 @@ public class EntityApplicationPanelTest {
   @Test
   public void test() throws Exception {
     Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, "local");
-    final EntityApplicationPanel panel = new EntityApplicationPanel() {
+    final EntityApplicationPanel<SwingEntityApplicationModel> panel = new EntityApplicationPanel<SwingEntityApplicationModel>() {
       @Override
-      protected List<EntityPanel> initializeEntityPanels(final EntityApplicationModel applicationModel) {
+      protected List<EntityPanel> initializeEntityPanels(final SwingEntityApplicationModel applicationModel) {
         return Collections.singletonList(new EntityPanel(applicationModel.getEntityModel(TestDomain.T_EMP)));
       }
       @Override
-      protected EntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
-        final EntityApplicationModel model = new DefaultEntityApplicationModel(connectionProvider) {
+      protected SwingEntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) {
+        final SwingEntityApplicationModel model = new SwingEntityApplicationModel(connectionProvider) {
           @Override
           protected void loadDomainModel() {
             TestDomain.init();

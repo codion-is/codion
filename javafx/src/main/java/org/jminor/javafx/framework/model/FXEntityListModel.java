@@ -37,7 +37,7 @@ import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 
-public class FXEntityListModel extends ObservableEntityList implements EntityTableModel {
+public class FXEntityListModel extends ObservableEntityList implements EntityTableModel<FXEntityEditModel> {
 
   private static final Logger LOG = LoggerFactory.getLogger(FXEntityListModel.class);
 
@@ -73,7 +73,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     bindEvents();
   }
 
-  public final void setEditModel(final EntityEditModel editModel) {
+  public final void setEditModel(final FXEntityEditModel editModel) {
     Util.rejectNullValue(editModel, "editModel");
     if (this.editModel != null) {
       throw new IllegalStateException("Edit model has already been set");
@@ -177,7 +177,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableModel setQueryConfigurationAllowed(final boolean queryConfigurationAllowed) {
+  public final FXEntityListModel setQueryConfigurationAllowed(final boolean queryConfigurationAllowed) {
     this.queryConfigurationAllowed = queryConfigurationAllowed;
     return this;
   }
@@ -208,7 +208,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed) {
+  public final FXEntityListModel setBatchUpdateAllowed(final boolean batchUpdateAllowed) {
     this.batchUpdateAllowed = batchUpdateAllowed;
     return this;
   }
@@ -245,7 +245,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableModel setFetchCount(final int fetchCount) {
+  public final FXEntityListModel setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
     return this;
   }
@@ -271,7 +271,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableModel setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
+  public final FXEntityListModel setRemoveEntitiesOnDelete(final boolean removeEntitiesOnDelete) {
     this.removeEntitiesOnDelete = removeEntitiesOnDelete;
     return this;
   }
@@ -284,7 +284,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableModel setInsertAction(final InsertAction insertAction) {
+  public final FXEntityListModel setInsertAction(final InsertAction insertAction) {
     Objects.requireNonNull(insertAction);
     this.insertAction = insertAction;
     return this;

@@ -11,7 +11,7 @@ import org.jminor.javafx.framework.ui.EntityTableView;
 
 import javafx.embed.swing.JFXPanel;
 
-public final class FXEntityApplicationModelTest extends AbstractEntityApplicationModelTest<FXEntityModel> {
+public final class FXEntityApplicationModelTest extends AbstractEntityApplicationModelTest<FXEntityModel, FXEntityEditModel, FXEntityListModel> {
 
   static {
     new JFXPanel();
@@ -20,8 +20,8 @@ public final class FXEntityApplicationModelTest extends AbstractEntityApplicatio
   @Override
   protected FXEntityModel createDepartmentModel() {
     final FXEntityModel model = new DeptModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-    new EntityTableView((FXEntityListModel) model.getTableModel());
-    new EntityTableView((FXEntityListModel) model.getDetailModel(TestDomain.T_EMP).getTableModel());
+    new EntityTableView(model.getTableModel());
+    new EntityTableView(model.getDetailModel(TestDomain.T_EMP).getTableModel());
 
     return model;
   }

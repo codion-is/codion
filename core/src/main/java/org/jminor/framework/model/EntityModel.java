@@ -14,17 +14,19 @@ import java.util.List;
 /**
  * Specifies a class responsible for, among other things, coordinating a {@link EntityEditModel} and an {@link EntityTableModel}.
  */
-public interface EntityModel extends Refreshable, EntityDataProvider {
+public interface EntityModel<Model extends EntityModel<Model, EditModel, TableModel>,
+        EditModel extends EntityEditModel,  TableModel extends EntityTableModel<EditModel>>
+        extends Refreshable, EntityDataProvider {
 
   /**
    * @return the {@link EntityEditModel} instance used by this {@link EntityModel}
    */
-  EntityEditModel getEditModel();
+  EditModel getEditModel();
 
   /**
    * @return the {@link EntityTableModel}, null if none is specified
    */
-  EntityTableModel getTableModel();
+  TableModel getTableModel();
 
   /**
    * @return true if this {@link EntityModel} contains a {@link EntityTableModel}
@@ -34,7 +36,7 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
   /**
    * @return an unmodifiable collection containing the detail models that are currently linked to this model
    */
-  Collection<EntityModel> getLinkedDetailModels();
+  Collection<Model> getLinkedDetailModels();
 
   /**
    * Adds the given model to the currently linked detail models. Linked models are updated and filtered according
@@ -42,7 +44,7 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
    * Calling this method with a null argument or a model which is already linked is safe.
    * @param detailModel links the given detail model to this model
    */
-  void addLinkedDetailModel(final EntityModel detailModel);
+  void addLinkedDetailModel(final Model detailModel);
 
   /**
    * Removes the given model from the currently linked detail models. Linked models are updated and filtered according
@@ -50,7 +52,7 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
    * Calling this method with a null argument or a model which is not linked is safe.
    * @param detailModel unlinks the given detail model from this model
    */
-  void removeLinkedDetailModel(final EntityModel detailModel);
+  void removeLinkedDetailModel(final Model detailModel);
 
   /**
    * Initializes this {@link EntityModel} according to the given foreign key entities.
@@ -74,12 +76,12 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
    * @param entityModel the master entity model
    * @throws IllegalStateException if the master model has already been set
    */
-  void setMasterModel(final EntityModel entityModel);
+  void setMasterModel(final Model entityModel);
 
   /**
    * @return the master model, if any
    */
-  EntityModel getMasterModel();
+  Model getMasterModel();
 
   /**
    * Adds the given detail model to this model, sets this model as the master model of the
@@ -88,7 +90,7 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
    * any data, via {@link EntityTableModel#setQueryCriteriaRequired(boolean)}
    * @param detailModels the detail models to add
    */
-  void addDetailModels(final EntityModel... detailModels);
+  void addDetailModels(final Model... detailModels);
 
   /**
    * Adds the given detail model to this model, sets this model as the master model of the
@@ -98,13 +100,13 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
    * @param detailModel the detail model
    * @return the detail model just added
    */
-  EntityModel addDetailModel(final EntityModel detailModel);
+  Model addDetailModel(final Model detailModel);
 
   /**
    * @param modelClass the detail model class
    * @return true if this model contains a detail model of the given class
    */
-  boolean containsDetailModel(final Class<? extends EntityModel> modelClass);
+  boolean containsDetailModel(final Class<? extends Model> modelClass);
 
   /**
    * @param entityID the entity ID
@@ -116,14 +118,14 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
    * @param detailModel the detail model
    * @return true if this model contains the given detail model
    */
-  boolean containsDetailModel(final EntityModel detailModel);
+  boolean containsDetailModel(final Model detailModel);
 
   /**
    * Returns the first detail model of the given type
    * @param modelClass the type of the required {@link EntityModel}
    * @return the detail model of type <code>entityModelClass</code>, null if none is found
    */
-  EntityModel getDetailModel(final Class<? extends EntityModel> modelClass);
+  Model getDetailModel(final Class<? extends Model> modelClass);
 
   /**
    * Returns a detail model of the given type
@@ -131,12 +133,12 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
    * @return the detail model of type <code>entityModelClass</code>
    * @throws IllegalArgumentException in case no detail model for the given entityID is found
    */
-  EntityModel getDetailModel(final String entityID);
+  Model getDetailModel(final String entityID);
 
   /**
    * @return an unmodifiable collection containing the detail models this model contains
    */
-  Collection<? extends EntityModel> getDetailModels();
+  Collection<? extends Model> getDetailModels();
 
   /**
    * Indicates that the given detail model is based on the foreign key with the given ID, this becomes
@@ -148,14 +150,14 @@ public interface EntityModel extends Refreshable, EntityDataProvider {
    * @see #initialize(org.jminor.framework.domain.Property.ForeignKeyProperty, java.util.List)
    * @throws IllegalArgumentException in case this EntityModel does not contain the given detail model
    */
-  void setDetailModelForeignKey(final EntityModel detailModel, final String foreignKeyPropertyID);
+  void setDetailModelForeignKey(final Model detailModel, final String foreignKeyPropertyID);
 
   /**
    * @param detailModel the detail model
    * @return the {@link org.jminor.framework.domain.Property.ForeignKeyProperty}
    * the given detail model is based on, null if none has been defined
    */
-  Property.ForeignKeyProperty getDetailModelForeignKey(final EntityModel detailModel);
+  Property.ForeignKeyProperty getDetailModelForeignKey(final Model detailModel);
 
   /**
    * Refreshes the detail models.

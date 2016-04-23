@@ -5,11 +5,10 @@ package org.jminor.framework.demos.chinook.javafx;
 
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.framework.model.DefaultEntityApplicationModel;
-import org.jminor.framework.model.EntityModel;
+import org.jminor.javafx.framework.model.FXEntityApplicationModel;
 import org.jminor.javafx.framework.model.FXEntityModel;
 
-public class ChinookFXAppModel extends DefaultEntityApplicationModel {
+public final class ChinookFXAppModel extends FXEntityApplicationModel {
 
   public ChinookFXAppModel(final EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
@@ -18,9 +17,9 @@ public class ChinookFXAppModel extends DefaultEntityApplicationModel {
 
   protected void setupEntityModels() {
     //artists
-    final EntityModel artists = new FXEntityModel(Chinook.T_ARTIST, getConnectionProvider());
-    final EntityModel albums = new FXEntityModel(Chinook.T_ALBUM, getConnectionProvider());
-    final EntityModel tracks = new FXEntityModel(Chinook.T_TRACK, getConnectionProvider());
+    final FXEntityModel artists = new FXEntityModel(Chinook.T_ARTIST, getConnectionProvider());
+    final FXEntityModel albums = new FXEntityModel(Chinook.T_ALBUM, getConnectionProvider());
+    final FXEntityModel tracks = new FXEntityModel(Chinook.T_TRACK, getConnectionProvider());
 
     artists.addDetailModel(albums);
     albums.addDetailModel(tracks);

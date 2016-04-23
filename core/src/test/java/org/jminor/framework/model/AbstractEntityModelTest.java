@@ -26,32 +26,33 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public abstract class AbstractEntityModelTest<T extends EntityModel> {
+public abstract class AbstractEntityModelTest<Model extends DefaultEntityModel<Model, EditModel, TableModel>,
+        EditModel extends DefaultEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
   static {
     TestDomain.init();
   }
 
-  protected final EntityModel departmentModel = createDepartmentModel();
+  protected final Model departmentModel = createDepartmentModel();
   private int eventCount = 0;
 
-  protected abstract T createDepartmentModel();
+  protected abstract Model createDepartmentModel();
 
-  protected abstract T createDepartmentModelWithoutDetailModel();
+  protected abstract Model createDepartmentModelWithoutDetailModel();
 
-  protected abstract EntityEditModel createDepartmentEditModel();
+  protected abstract EditModel createDepartmentEditModel();
 
-  protected abstract EntityTableModel createEmployeeTableModel();
+  protected abstract TableModel createEmployeeTableModel();
 
-  protected abstract EntityTableModel createDepartmentTableModel();
+  protected abstract TableModel createDepartmentTableModel();
 
-  protected abstract T createEmployeeModel();
+  protected abstract Model createEmployeeModel();
 
   @Test
   public void testUpdatePrimaryKey() throws DatabaseException, ValidationException {
     departmentModel.refresh();
     final EntityEditModel deptEditModel = departmentModel.getEditModel();
-    final EntityTableModel deptTableModel = departmentModel.getTableModel();
+    final TableModel deptTableModel = departmentModel.getTableModel();
     final Entity.Key operationsKey = Entities.key(TestDomain.T_DEPARTMENT);
     operationsKey.put(TestDomain.DEPARTMENT_ID, 40);//operations
     deptTableModel.setSelectedByKey(Collections.singletonList(operationsKey));
@@ -62,7 +63,7 @@ public abstract class AbstractEntityModelTest<T extends EntityModel> {
     deptEditModel.update();
 
     assertFalse(deptTableModel.getSelectionModel().isSelectionEmpty());
-    Entity operations = deptTableModel.getSelectionModel().getSelectedItem();
+    final Entity operations = deptTableModel.getSelectionModel().getSelectedItem();
     assertEquals(80, operations.get(TestDomain.DEPARTMENT_ID));
 
     ((FilteredModel<Entity>) deptTableModel).setFilterCriteria(new FilterCriteria<Entity>() {
@@ -94,7 +95,7 @@ public abstract class AbstractEntityModelTest<T extends EntityModel> {
     departmentModel.refresh();
     assertTrue(departmentModel.getTableModel().getRowCount() > 0);
 
-    final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
+    final Model employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     employeeModel.refresh();
     assertTrue(employeeModel.getTableModel().getRowCount() > 0);
 
@@ -112,15 +113,15 @@ public abstract class AbstractEntityModelTest<T extends EntityModel> {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorTableModelEntityIDMismatch() {
-    final EntityEditModel editModel = createDepartmentEditModel();
-    final EntityTableModel tableModel = createEmployeeTableModel();
+    final EditModel editModel = createDepartmentEditModel();
+    final TableModel tableModel = createEmployeeTableModel();
     new DefaultEntityModel(editModel, tableModel);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorTableModelEditModelMismatch() {
-    final EntityEditModel editModel = createDepartmentEditModel();
-    final EntityEditModel editModel2 = createDepartmentEditModel();
+    final DefaultEntityEditModel editModel = createDepartmentEditModel();
+    final DefaultEntityEditModel editModel2 = createDepartmentEditModel();
     final EntityTableModel tableModel = createDepartmentTableModel();
     tableModel.setEditModel(editModel);
     new DefaultEntityModel(editModel2, tableModel);
@@ -189,23 +190,23 @@ public abstract class AbstractEntityModelTest<T extends EntityModel> {
 
   @Test(expected = IllegalArgumentException.class)
   public void addSameDetailModelTwice() {
-    final EntityModel model = createDepartmentModelWithoutDetailModel();
-    final EntityModel employeeModel = createEmployeeModel();
+    final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
+    final DefaultEntityModel employeeModel = createEmployeeModel();
     model.addDetailModels(employeeModel, employeeModel);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void addDetailModelDetailModelAlreadyHasMasterModel() {
-    final EntityModel model = createDepartmentModelWithoutDetailModel();
-    final EntityModel employeeModel = createEmployeeModel();
+    final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
+    final DefaultEntityModel employeeModel = createEmployeeModel();
     employeeModel.setMasterModel(model);
     model.addDetailModel(employeeModel);
   }
 
   @Test(expected = IllegalStateException.class)
   public void setMasterModel() {
-    final EntityModel model = createDepartmentModelWithoutDetailModel();
-    final EntityModel employeeModel = createEmployeeModel();
+    final DefaultEntityModel model = createDepartmentModelWithoutDetailModel();
+    final DefaultEntityModel employeeModel = createEmployeeModel();
     employeeModel.setMasterModel(model);
     employeeModel.setMasterModel(departmentModel);
   }

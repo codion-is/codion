@@ -5,11 +5,11 @@ package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.EntityUtil;
-import org.jminor.framework.model.EntityTableModel;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 import org.jminor.framework.plugins.jasperreports.ui.JasperReportsUIWrapper;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.framework.model.DefaultEntityTableModel;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 import org.jminor.swing.framework.ui.reporting.EntityReportUiUtil;
 
@@ -20,7 +20,7 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.CUSTOMER_CUSTOME
 
 public class CustomerTablePanel extends EntityTablePanel {
 
-  public CustomerTablePanel(final EntityTableModel tableModel) {
+  public CustomerTablePanel(final DefaultEntityTableModel tableModel) {
     super(tableModel);
   }
 

@@ -4,9 +4,9 @@
 package org.jminor.framework.demos.petstore.beans.ui;
 
 import org.jminor.framework.demos.petstore.domain.Petstore;
-import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
@@ -19,7 +19,7 @@ import static org.jminor.framework.demos.petstore.domain.Petstore.TAG_ITEM_TAG_F
 
 public class TagItemEditPanel extends EntityEditPanel {
 
-  public TagItemEditPanel(final EntityEditModel model) {
+  public TagItemEditPanel(final SwingEntityEditModel model) {
     super(model);
   }
 

@@ -23,12 +23,10 @@ import org.jminor.framework.demos.chinook.beans.ui.PlaylistTrackEditPanel;
 import org.jminor.framework.demos.chinook.beans.ui.TrackEditPanel;
 import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entities;
-import org.jminor.framework.model.DefaultEntityApplicationModel;
-import org.jminor.framework.model.EntityApplicationModel;
-import org.jminor.framework.model.EntityModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
@@ -43,7 +41,7 @@ import java.util.Locale;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
-public final class ChinookAppPanel extends EntityApplicationPanel {
+public final class ChinookAppPanel extends EntityApplicationPanel<ChinookAppPanel.ChinookApplicationModel> {
   /* ARTIST
   *   ALBUM
   *     TRACK
@@ -78,36 +76,36 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected List<EntityPanel> initializeEntityPanels(final EntityApplicationModel applicationModel) {
+  protected List<EntityPanel> initializeEntityPanels(final ChinookApplicationModel applicationModel) {
     final List<EntityPanel> panels = new ArrayList<>();
 
-    final EntityModel artistModel = applicationModel.getEntityModel(Chinook.T_ARTIST);
+    final SwingEntityModel artistModel = applicationModel.getEntityModel(Chinook.T_ARTIST);
     final EntityPanel artistPanel = new EntityPanel(artistModel, new ArtistEditPanel(artistModel.getEditModel()));
-    final EntityModel albumModel = artistModel.getDetailModel(Chinook.T_ALBUM);
+    final SwingEntityModel albumModel = artistModel.getDetailModel(Chinook.T_ALBUM);
     final EntityPanel albumPanel = new EntityPanel(albumModel, new AlbumEditPanel(albumModel.getEditModel()));
-    final EntityModel trackModel = albumModel.getDetailModel(Chinook.T_TRACK);
+    final SwingEntityModel trackModel = albumModel.getDetailModel(Chinook.T_TRACK);
     final EntityPanel trackPanel = new EntityPanel(trackModel, new TrackEditPanel(trackModel.getEditModel()));
 
     albumPanel.addDetailPanel(trackPanel);
     artistPanel.addDetailPanel(albumPanel);
     panels.add(artistPanel);
 
-    final EntityModel playlistModel = applicationModel.getEntityModel(Chinook.T_PLAYLIST);
+    final SwingEntityModel playlistModel = applicationModel.getEntityModel(Chinook.T_PLAYLIST);
     final EntityPanel playlistPanel = new EntityPanel(playlistModel, new PlaylistEditPanel(playlistModel.getEditModel()));
-    final EntityModel playlistTrackModel = playlistModel.getDetailModel(Chinook.T_PLAYLISTTRACK);
+    final SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(Chinook.T_PLAYLISTTRACK);
     final EntityPanel playlistTrackPanel = new EntityPanel(playlistTrackModel, new PlaylistTrackEditPanel(playlistTrackModel.getEditModel()));
 
     playlistPanel.addDetailPanel(playlistTrackPanel);
     panels.add(playlistPanel);
 
-    final EntityModel customerModel = applicationModel.getEntityModel(Chinook.T_CUSTOMER);
+    final SwingEntityModel customerModel = applicationModel.getEntityModel(Chinook.T_CUSTOMER);
     final EntityPanel customerPanel = new EntityPanel(customerModel, new CustomerEditPanel(customerModel.getEditModel()),
             new CustomerTablePanel(customerModel.getTableModel()));
-    final EntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
+    final SwingEntityModel invoiceModel = customerModel.getDetailModel(Chinook.T_INVOICE);
     final EntityPanel invoicePanel = new EntityPanel(invoiceModel, new InvoiceEditPanel(invoiceModel.getEditModel()));
     invoicePanel.setIncludeDetailPanelTabPane(false);
 
-    final EntityModel invoiceLineModel = invoiceModel.getDetailModel(Chinook.T_INVOICELINE);
+    final SwingEntityModel invoiceLineModel = invoiceModel.getDetailModel(Chinook.T_INVOICELINE);
     final EntityPanel invoiceLinePanel = new EntityPanel(invoiceLineModel, new InvoiceLineEditPanel(invoiceLineModel.getEditModel()));
     final EntityTablePanel invoiceLineTablePanel = invoiceLinePanel.getTablePanel();
     invoiceLineTablePanel.setIncludeSouthPanel(false);
@@ -128,7 +126,7 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
+  protected ChinookApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
     return new ChinookApplicationModel(connectionProvider);
   }
 
@@ -154,27 +152,27 @@ public final class ChinookAppPanel extends EntityApplicationPanel {
     new ChinookAppPanel().startApplication("Chinook", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }
 
-  public static final class ChinookApplicationModel extends DefaultEntityApplicationModel {
+  public static final class ChinookApplicationModel extends SwingEntityApplicationModel {
 
     public ChinookApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
-      final EntityModel artistModel = new SwingEntityModel(Chinook.T_ARTIST, connectionProvider);
-      final EntityModel albumModel = new SwingEntityModel(Chinook.T_ALBUM, connectionProvider);
-      final EntityModel trackModel = new SwingEntityModel(Chinook.T_TRACK, connectionProvider);
+      final SwingEntityModel artistModel = new SwingEntityModel(Chinook.T_ARTIST, connectionProvider);
+      final SwingEntityModel albumModel = new SwingEntityModel(Chinook.T_ALBUM, connectionProvider);
+      final SwingEntityModel trackModel = new SwingEntityModel(Chinook.T_TRACK, connectionProvider);
 
       albumModel.addDetailModel(trackModel);
       artistModel.addDetailModel(albumModel);
       addEntityModel(artistModel);
 
-      final EntityModel playlistModel = new SwingEntityModel(Chinook.T_PLAYLIST, connectionProvider);
-      final EntityModel playlistTrackModel = new SwingEntityModel(Chinook.T_PLAYLISTTRACK, connectionProvider);
+      final SwingEntityModel playlistModel = new SwingEntityModel(Chinook.T_PLAYLIST, connectionProvider);
+      final SwingEntityModel playlistTrackModel = new SwingEntityModel(Chinook.T_PLAYLISTTRACK, connectionProvider);
 
       playlistModel.addDetailModel(playlistTrackModel);
       addEntityModel(playlistModel);
 
-      final EntityModel customerModel = new SwingEntityModel(Chinook.T_CUSTOMER, connectionProvider);
-      final EntityModel invoiceModel = new SwingEntityModel(Chinook.T_INVOICE, connectionProvider);
-      final EntityModel invoiceLineModel = new SwingEntityModel(Chinook.T_INVOICELINE, connectionProvider);
+      final SwingEntityModel customerModel = new SwingEntityModel(Chinook.T_CUSTOMER, connectionProvider);
+      final SwingEntityModel invoiceModel = new SwingEntityModel(Chinook.T_INVOICE, connectionProvider);
+      final SwingEntityModel invoiceLineModel = new SwingEntityModel(Chinook.T_INVOICELINE, connectionProvider);
       invoiceLineModel.getTableModel().setQueryConfigurationAllowed(false);
       invoiceModel.addDetailModel(invoiceLineModel);
       invoiceModel.addLinkedDetailModel(invoiceLineModel);

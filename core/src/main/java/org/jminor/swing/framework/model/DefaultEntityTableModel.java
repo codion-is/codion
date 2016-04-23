@@ -66,7 +66,7 @@ import java.util.Map;
  * </pre>
  */
 public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, Property>
-        implements EntityTableModel, FilteredTableModel<Entity, Property> {
+        implements EntityTableModel<SwingEntityEditModel>, FilteredTableModel<Entity, Property> {
 
   private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityTableModel.class);
 
@@ -83,7 +83,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
   /**
    * The edit model to use when updating/deleting entities
    */
-  private EntityEditModel editModel;
+  private SwingEntityEditModel editModel;
 
   /**
    * The criteria model
@@ -162,7 +162,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final void setEditModel(final EntityEditModel editModel) {
+  public final void setEditModel(final SwingEntityEditModel editModel) {
     Util.rejectNullValue(editModel, "editModel");
     if (this.editModel != null) {
       throw new IllegalStateException("Edit model has already been set for table model: " + this);
@@ -189,7 +189,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableModel setQueryConfigurationAllowed(final boolean value) {
+  public final DefaultEntityTableModel setQueryConfigurationAllowed(final boolean value) {
     this.queryConfigurationAllowed = value;
     return this;
   }
@@ -202,7 +202,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableModel setFetchCount(final int fetchCount) {
+  public final DefaultEntityTableModel setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
     return this;
   }
@@ -215,7 +215,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableModel setQueryCriteriaRequired(final boolean value) {
+  public final DefaultEntityTableModel setQueryCriteriaRequired(final boolean value) {
     this.queryCriteriaRequired = value;
     return this;
   }
@@ -228,7 +228,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public EntityTableModel setInsertAction(final InsertAction insertAction) {
+  public DefaultEntityTableModel setInsertAction(final InsertAction insertAction) {
     Util.rejectNullValue(insertAction, "insertAction");
     this.insertAction = insertAction;
     return this;
@@ -242,7 +242,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableModel setRemoveEntitiesOnDelete(final boolean value) {
+  public final DefaultEntityTableModel setRemoveEntitiesOnDelete(final boolean value) {
     this.removeEntitiesOnDelete = value;
     return this;
   }
@@ -261,7 +261,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final EntityEditModel getEditModel() {
+  public final SwingEntityEditModel getEditModel() {
     if (editModel == null) {
       throw new IllegalStateException("No edit model has been set for table model: " + this);
     }
@@ -282,7 +282,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed) {
+  public final DefaultEntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed) {
     this.batchUpdateAllowed = batchUpdateAllowed;
     return this;
   }

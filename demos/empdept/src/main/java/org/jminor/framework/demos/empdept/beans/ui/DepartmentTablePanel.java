@@ -6,11 +6,11 @@ package org.jminor.framework.demos.empdept.beans.ui;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.domain.EntityUtil;
-import org.jminor.framework.model.EntityTableModel;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 import org.jminor.framework.plugins.jasperreports.ui.JasperReportsUIWrapper;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
+import org.jminor.swing.framework.model.DefaultEntityTableModel;
 import org.jminor.swing.framework.ui.EntityTablePanel;
 import org.jminor.swing.framework.ui.reporting.EntityReportUiUtil;
 
@@ -22,7 +22,7 @@ import static org.jminor.framework.demos.empdept.domain.EmpDept.EMPLOYEE_REPORT;
 
 public class DepartmentTablePanel extends EntityTablePanel {
 
-  public DepartmentTablePanel(final EntityTableModel tableModel) {
+  public DepartmentTablePanel(final DefaultEntityTableModel tableModel) {
     super(tableModel);
   }
 

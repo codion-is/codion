@@ -6,10 +6,8 @@ package org.jminor.swing.framework.model;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.model.DefaultEntityModel;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityTableModel;
 
-public class SwingEntityModel extends DefaultEntityModel {
+public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, SwingEntityEditModel, DefaultEntityTableModel> {
 
   /** Instantiates a new SwingEntityModel with default EntityEditModel and EntityTableModel implementations.
    * @param entityID the ID of the Entity this DefaultEntityModel represents
@@ -24,7 +22,7 @@ public class SwingEntityModel extends DefaultEntityModel {
    * Instantiates a new SwingEntityModel, including a {@link DefaultEntityTableModel}
    * @param editModel the edit model
    */
-  public SwingEntityModel(final EntityEditModel editModel) {
+  public SwingEntityModel(final SwingEntityEditModel editModel) {
     super(editModel, new DefaultEntityTableModel(editModel.getEntityID(), editModel.getConnectionProvider()));
   }
 
@@ -32,7 +30,7 @@ public class SwingEntityModel extends DefaultEntityModel {
    * Instantiates a new SwingEntityModel, including a default {@link SwingEntityEditModel}
    * @param tableModel the table model
    */
-  public SwingEntityModel(final EntityTableModel tableModel) {
+  public SwingEntityModel(final DefaultEntityTableModel tableModel) {
     this(tableModel.hasEditModel() ? tableModel.getEditModel() : new SwingEntityEditModel(tableModel.getEntityID(),
             tableModel.getConnectionProvider()), tableModel);
   }
@@ -42,7 +40,7 @@ public class SwingEntityModel extends DefaultEntityModel {
    * @param editModel the edit model
    * @param tableModel the table model
    */
-  public SwingEntityModel(final EntityEditModel editModel, final EntityTableModel tableModel) {
+  public SwingEntityModel(final SwingEntityEditModel editModel, final DefaultEntityTableModel tableModel) {
     super(editModel, tableModel);
   }
 }

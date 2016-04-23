@@ -25,33 +25,33 @@ import java.util.Map;
 
 import static org.junit.Assert.*;
 
-public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
+public abstract class AbstractEntityTableModelTest<EditModel extends EntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
-  protected final T testModel = createTestTableModel();
+  protected final TableModel testModel = createTestTableModel();
 
   static {
     TestDomain.init();
   }
 
-  protected abstract T createTestTableModel();
+  protected abstract TableModel createTestTableModel();
 
-  protected abstract T createMasterTableModel();
+  protected abstract TableModel createMasterTableModel();
 
-  protected abstract T createEmployeeTableModelWithoutEditModel();
+  protected abstract TableModel createEmployeeTableModelWithoutEditModel();
 
-  protected abstract T createDepartmentTableModel();
+  protected abstract TableModel createDepartmentTableModel();
 
-  protected abstract T createEmployeeTableModel();
+  protected abstract TableModel createEmployeeTableModel();
 
-  protected abstract EntityEditModel createDepartmentEditModel();
+  protected abstract EditModel createDepartmentEditModel();
 
-  protected abstract T createDetailTableModel();
+  protected abstract TableModel createDetailTableModel();
 
-  protected abstract EntityEditModel createDetailEditModel();
+  protected abstract EditModel createDetailEditModel();
 
   @Test
   public void setSelectedByKey() {
-    final T tableModel = createEmployeeTableModelWithoutEditModel();
+    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
     final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
@@ -80,7 +80,7 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test
   public void getSelectedEntitiesIterator() {
-    final T tableModel = createEmployeeTableModelWithoutEditModel();
+    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
     tableModel.getSelectionModel().setSelectedIndexes(Arrays.asList(0, 3, 5));
@@ -92,13 +92,13 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test(expected = IllegalStateException.class)
   public void updateNoEditModel() throws CancelException, ValidationException, DatabaseException {
-    final T tableModel = createEmployeeTableModelWithoutEditModel();
+    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.update(new ArrayList<>());
   }
 
   @Test(expected = IllegalStateException.class)
   public void deleteSelectedNoEditModel() throws CancelException, DatabaseException {
-    final T tableModel = createEmployeeTableModelWithoutEditModel();
+    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
     tableModel.getSelectionModel().setSelectedIndex(0);
     tableModel.deleteSelected();
@@ -106,7 +106,7 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test
   public void addOnInsert() throws CancelException, DatabaseException, ValidationException {
-    final T deptModel = createDepartmentTableModel();
+    final TableModel deptModel = createDepartmentTableModel();
     deptModel.refresh();
 
     deptModel.setInsertAction(EntityTableModel.InsertAction.ADD_BOTTOM);
@@ -135,7 +135,7 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test
   public void removeOnDelete() throws CancelException, DatabaseException {
-    final EntityTableModel tableModel = createEmployeeTableModel();
+    final TableModel tableModel = createEmployeeTableModel();
     tableModel.refresh();
 
     final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
@@ -166,7 +166,7 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test
   public void getEntityByKey() {
-    final EntityTableModel tableModel = createEmployeeTableModelWithoutEditModel();
+    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.refresh();
 
     final Entity.Key pk1 = Entities.key(TestDomain.T_EMP);
@@ -180,13 +180,13 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test(expected = IllegalArgumentException.class)
   public void setEditModelNullValue() {
-    final EntityTableModel tableModel = createEmployeeTableModelWithoutEditModel();
+    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.setEditModel(null);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void setEditModelWrongEntityID() {
-    final EntityTableModel tableModel = createEmployeeTableModelWithoutEditModel();
+    final TableModel tableModel = createEmployeeTableModelWithoutEditModel();
     tableModel.setEditModel(createDepartmentEditModel());
   }
 
@@ -198,8 +198,8 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test
   public void setAndGetEditModel() {
-    final EntityTableModel tableModel = createDetailTableModel();
-    final EntityEditModel editModel = createDetailEditModel();
+    final TableModel tableModel = createDetailTableModel();
+    final EditModel editModel = createDetailEditModel();
     assertFalse(tableModel.hasEditModel());
     tableModel.setEditModel(editModel);
     assertTrue(tableModel.hasEditModel());
@@ -208,14 +208,14 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test(expected = IllegalStateException.class)
   public void getEditModelNoEditModelSet() {
-    final EntityTableModel tableModel = createDetailTableModel();
+    final TableModel tableModel = createDetailTableModel();
     tableModel.getEditModel();
   }
 
   @Test
   public void isUpdateAllowed() {
-    final EntityTableModel tableModel = createDetailTableModel();
-    final EntityEditModel editModel = createDetailEditModel();
+    final TableModel tableModel = createDetailTableModel();
+    final EditModel editModel = createDetailEditModel();
     assertFalse(tableModel.isUpdateAllowed());
     tableModel.setEditModel(editModel);
     assertTrue(tableModel.isUpdateAllowed());
@@ -225,8 +225,8 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test
   public void isDeleteAllowed() {
-    final EntityTableModel tableModel = createDetailTableModel();
-    final EntityEditModel editModel = createDetailEditModel();
+    final TableModel tableModel = createDetailTableModel();
+    final EditModel editModel = createDetailEditModel();
     assertFalse(tableModel.isDeleteAllowed());
     tableModel.setEditModel(editModel);
     assertTrue(tableModel.isDeleteAllowed());
@@ -324,7 +324,7 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test
   public void getTableDataAsDelimitedString() {
-    final EntityTableModel deptModel = createDepartmentTableModel();
+    final TableModel deptModel = createDepartmentTableModel();
     deptModel.refresh();
     final String expected =
             "deptno\tdname\tloc\n" +
@@ -337,7 +337,7 @@ public abstract class AbstractEntityTableModelTest<T extends EntityTableModel> {
 
   @Test
   public void setColumns() {
-    final EntityTableModel empModel = createEmployeeTableModel();
+    final TableModel empModel = createEmployeeTableModel();
     empModel.setColumns(TestDomain.EMP_COMMISSION, TestDomain.EMP_DEPARTMENT_FK, TestDomain.EMP_HIREDATE);
   }
 }

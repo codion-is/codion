@@ -15,10 +15,10 @@ import java.util.List;
 /**
  * A central application model class.
  */
-public abstract class DefaultEntityApplicationModel implements EntityApplicationModel {
+public abstract class DefaultEntityApplicationModel<Model extends DefaultEntityModel> implements EntityApplicationModel<Model> {
 
   private final EntityConnectionProvider connectionProvider;
-  private final List<EntityModel> entityModels = new ArrayList<>();
+  private final List<Model> entityModels = new ArrayList<>();
 
   /**
    * Instantiates a new DefaultEntityApplicationModel
@@ -41,7 +41,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   public final void login(final User user) {
     Util.rejectNullValue(user, "user");
     connectionProvider.setUser(user);
-    for (final EntityModel entityModel : entityModels) {
+    for (final Model entityModel : entityModels) {
       entityModel.refresh();
     }
     handleLogin();
@@ -69,16 +69,16 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
 
   /** {@inheritDoc} */
   @Override
-  public final void addEntityModels(final EntityModel... entityModels) {
+  public final void addEntityModels(final Model... entityModels) {
     Util.rejectNullValue(entityModels, "entityModels");
-    for (final EntityModel entityModel : entityModels) {
+    for (final Model entityModel : entityModels) {
       addEntityModel(entityModel);
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityModel addEntityModel(final EntityModel detailModel) {
+  public final Model addEntityModel(final Model detailModel) {
     this.entityModels.add(detailModel);
 
     return detailModel;
@@ -86,8 +86,8 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
 
   /** {@inheritDoc} */
   @Override
-  public final boolean containsEntityModel(final Class<? extends EntityModel> modelClass) {
-    for (final EntityModel entityModel : entityModels) {
+  public final boolean containsEntityModel(final Class<? extends Model> modelClass) {
+    for (final Model entityModel : entityModels) {
       if (entityModel.getClass().equals(modelClass)) {
         return true;
       }
@@ -99,7 +99,7 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   /** {@inheritDoc} */
   @Override
   public final boolean containsEntityModel(final String entityID) {
-    for (final EntityModel entityModel : entityModels) {
+    for (final Model entityModel : entityModels) {
       if (entityModel.getEntityID().equals(entityID)) {
         return true;
       }
@@ -110,20 +110,20 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
 
   /** {@inheritDoc} */
   @Override
-  public final boolean containsEntityModel(final EntityModel entityModel) {
+  public final boolean containsEntityModel(final Model entityModel) {
     return entityModels.contains(entityModel);
   }
 
   /** {@inheritDoc} */
   @Override
-  public final List<? extends EntityModel> getEntityModels() {
+  public final List<? extends Model> getEntityModels() {
     return Collections.unmodifiableList(entityModels);
   }
 
   /** {@inheritDoc} */
   @Override
   public final void refresh() {
-    for (final EntityModel entityModel : entityModels) {
+    for (final Model entityModel : entityModels) {
       entityModel.refresh();
     }
   }
@@ -131,15 +131,15 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
   /** {@inheritDoc} */
   @Override
   public final void clear() {
-    for (final EntityModel entityModel : entityModels) {
+    for (final Model entityModel : entityModels) {
       entityModel.clear();
     }
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityModel getEntityModel(final Class<? extends EntityModel> modelClass) {
-    for (final EntityModel model : entityModels) {
+  public final Model getEntityModel(final Class<? extends Model> modelClass) {
+    for (final Model model : entityModels) {
       if (model.getClass().equals(modelClass)) {
         return model;
       }
@@ -150,8 +150,8 @@ public abstract class DefaultEntityApplicationModel implements EntityApplication
 
   /** {@inheritDoc} */
   @Override
-  public final EntityModel getEntityModel(final String entityID) {
-    for (final EntityModel entityModel : entityModels) {
+  public final Model getEntityModel(final String entityID) {
+    for (final Model entityModel : entityModels) {
       if (entityModel.getEntityID().equals(entityID)) {
         return entityModel;
       }

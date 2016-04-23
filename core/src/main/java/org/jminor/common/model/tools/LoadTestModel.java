@@ -119,7 +119,7 @@ public abstract class LoadTestModel<T> implements LoadTest {
    */
   public LoadTestModel(final User user, final int maximumThinkTime, final int loginDelayFactor,
                        final int applicationBatchSize, final int warningTime) {
-    this(user, new ArrayList<UsageScenario<T>>(), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
+    this(user, new ArrayList<>(), maximumThinkTime, loginDelayFactor, applicationBatchSize, warningTime);
   }
 
   /**

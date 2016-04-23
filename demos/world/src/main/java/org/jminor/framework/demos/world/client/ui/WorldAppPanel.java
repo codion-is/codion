@@ -11,8 +11,8 @@ import org.jminor.framework.demos.world.beans.ui.CityEditPanel;
 import org.jminor.framework.demos.world.beans.ui.CountryEditPanel;
 import org.jminor.framework.demos.world.beans.ui.CountryLanguageEditPanel;
 import org.jminor.framework.demos.world.domain.World;
-import org.jminor.framework.model.DefaultEntityApplicationModel;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
 
@@ -47,7 +47,7 @@ public final class WorldAppPanel extends EntityApplicationPanel<WorldAppPanel.Wo
     new WorldAppPanel().startApplication("World", null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger"));
   }
 
-  public static final class WorldAppModel extends DefaultEntityApplicationModel {
+  public static final class WorldAppModel extends SwingEntityApplicationModel {
 
     private WorldAppModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);

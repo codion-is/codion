@@ -6,8 +6,6 @@ package org.jminor.swing.framework.model;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.framework.model.EntityModel;
-import org.jminor.framework.model.EntityModelProvider;
 
 import org.junit.Test;
 
@@ -22,17 +20,17 @@ public class DefaultEntityModelProviderTest {
 
   @Test
   public void testDetailModelProvider() {
-    final EntityModelProvider departmentModelProvider = new DefaultEntityModelProvider(TestDomain.T_DEPARTMENT)
+    final DefaultEntityModelProvider departmentModelProvider = new DefaultEntityModelProvider(TestDomain.T_DEPARTMENT)
             .setEditModelClass(DepartmentEditModel.class)
             .setTableModelClass(DepartmentTableModel.class);
-    final EntityModelProvider employeeModelProvider = new DefaultEntityModelProvider(TestDomain.T_EMP);
+    final DefaultEntityModelProvider employeeModelProvider = new DefaultEntityModelProvider(TestDomain.T_EMP);
 
     departmentModelProvider.addDetailModelProvider(employeeModelProvider);
 
     assertEquals(DepartmentEditModel.class, departmentModelProvider.getEditModelClass());
     assertEquals(DepartmentTableModel.class, departmentModelProvider.getTableModelClass());
 
-    final EntityModel departmentModel = departmentModelProvider.createModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER, false);
+    final SwingEntityModel departmentModel = departmentModelProvider.createModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER, false);
     assertTrue(departmentModel.getEditModel() instanceof DepartmentEditModel);
     assertTrue(departmentModel.getTableModel() instanceof DepartmentTableModel);
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));

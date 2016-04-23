@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
-import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JTextField;
@@ -14,7 +14,7 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public class CustomerEditPanel extends EntityEditPanel {
 
-  public CustomerEditPanel(final EntityEditModel editModel) {
+  public CustomerEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
 

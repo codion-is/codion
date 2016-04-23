@@ -8,7 +8,7 @@ import org.jminor.framework.model.DefaultEntityModel;
 
 import java.util.Objects;
 
-public class FXEntityModel extends DefaultEntityModel {
+public class FXEntityModel extends DefaultEntityModel<FXEntityModel, FXEntityEditModel, FXEntityListModel> {
 
   public FXEntityModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this(new FXEntityEditModel(entityID, connectionProvider), new FXEntityListModel(entityID, connectionProvider));

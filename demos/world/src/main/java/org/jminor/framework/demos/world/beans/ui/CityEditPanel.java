@@ -4,8 +4,8 @@
 package org.jminor.framework.demos.world.beans.ui;
 
 import org.jminor.framework.demos.world.domain.World;
-import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.UiUtil;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
@@ -15,7 +15,7 @@ public final class CityEditPanel extends EntityEditPanel {
   private static final int COMBOBOX_WIDTH = 120;
   private static final int TEXT_FIELD_COLUMNS = 12;
 
-  public CityEditPanel(final EntityEditModel editModel) {
+  public CityEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
 

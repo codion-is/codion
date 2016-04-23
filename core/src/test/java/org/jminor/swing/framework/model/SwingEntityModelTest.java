@@ -13,11 +13,7 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.AbstractEntityModelTest;
-import org.jminor.framework.model.DefaultEntityModel;
 import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityModel;
-import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.common.ui.ValueLinks;
 
 import org.junit.Test;
@@ -29,12 +25,12 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public final class SwingEntityModelTest extends AbstractEntityModelTest<SwingEntityModel> {
+public final class SwingEntityModelTest extends AbstractEntityModelTest<SwingEntityModel, SwingEntityEditModel, DefaultEntityTableModel> {
 
   @Override
   protected SwingEntityModel createDepartmentModel() {
     final SwingEntityModel departmentModel = new SwingEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
-    final EntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
+    final SwingEntityModel employeeModel = new EmpModel(departmentModel.getConnectionProvider());
     departmentModel.addDetailModel(employeeModel);
     departmentModel.setDetailModelForeignKey(employeeModel, TestDomain.EMP_DEPARTMENT_FK);
     departmentModel.addLinkedDetailModel(employeeModel);
@@ -54,17 +50,17 @@ public final class SwingEntityModelTest extends AbstractEntityModelTest<SwingEnt
   }
 
   @Override
-  protected EntityEditModel createDepartmentEditModel() {
+  protected SwingEntityEditModel createDepartmentEditModel() {
     return new SwingEntityEditModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Override
-  protected EntityTableModel createEmployeeTableModel() {
+  protected DefaultEntityTableModel createEmployeeTableModel() {
     return new DefaultEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Override
-  protected EntityTableModel createDepartmentTableModel() {
+  protected DefaultEntityTableModel createDepartmentTableModel() {
     return new DefaultEntityTableModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
@@ -75,7 +71,7 @@ public final class SwingEntityModelTest extends AbstractEntityModelTest<SwingEnt
     //are being filtered on property value change, see EmployeeEditModel.bindEvents()
     final SwingEntityModel employeeModel = (SwingEntityModel) departmentModel.getDetailModel(TestDomain.T_EMP);
     final SwingEntityEditModel employeeEditModel = (SwingEntityEditModel) employeeModel.getEditModel();
-    final EntityTableModel employeeTableModel = employeeModel.getTableModel();
+    final DefaultEntityTableModel employeeTableModel = employeeModel.getTableModel();
     ValueLinks.selectedItemValueLink(new JComboBox<>((ComboBoxModel<Entity>)
             employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)),
             EditModelValues.<Entity>value(employeeEditModel, TestDomain.EMP_MGR_FK));
@@ -89,10 +85,10 @@ public final class SwingEntityModelTest extends AbstractEntityModelTest<SwingEnt
   @Test
   public void testDetailModels() throws CancelException, DatabaseException, ValidationException {
     assertTrue(departmentModel.containsDetailModel(TestDomain.T_EMP));
-    assertNull(departmentModel.getDetailModel(DefaultEntityModel.class));
+    assertNull(departmentModel.getDetailModel(SwingEntityModel.class));
     assertFalse(departmentModel.containsDetailModel("undefined"));
-    assertFalse(departmentModel.containsDetailModel(DefaultEntityModel.class));
-    final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
+    assertFalse(departmentModel.containsDetailModel(SwingEntityModel.class));
+    final SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
     assertNotNull(employeeModel);
     assertTrue(departmentModel.getLinkedDetailModels().contains(employeeModel));
     departmentModel.refresh();
@@ -142,7 +138,7 @@ public final class SwingEntityModelTest extends AbstractEntityModelTest<SwingEnt
       final Entity department = departmentModel.getConnectionProvider().getConnection().selectSingle(
               TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME, "OPERATIONS");
       departmentModel.getTableModel().getSelectionModel().setSelectedItem(department);
-      final EntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
+      final SwingEntityModel employeeModel = departmentModel.getDetailModel(TestDomain.T_EMP);
       final EntityComboBoxModel deptComboBoxModel = ((SwingEntityEditModel) employeeModel.getEditModel())
               .getForeignKeyComboBoxModel(TestDomain.EMP_DEPARTMENT_FK);
       deptComboBoxModel.refresh();

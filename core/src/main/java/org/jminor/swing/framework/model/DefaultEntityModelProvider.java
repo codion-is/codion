@@ -5,12 +5,7 @@ package org.jminor.swing.framework.model;
 
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.model.DefaultEntityEditModel;
-import org.jminor.framework.model.DefaultEntityModel;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityModel;
 import org.jminor.framework.model.EntityModelProvider;
-import org.jminor.framework.model.EntityTableModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -21,17 +16,17 @@ import java.util.List;
 /**
  * A default {@link EntityModelProvider} implementation.
  */
-public class DefaultEntityModelProvider implements EntityModelProvider {
+public class DefaultEntityModelProvider implements EntityModelProvider<SwingEntityModel, SwingEntityEditModel, DefaultEntityTableModel> {
 
   protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityModelProvider.class);
 
   private final String entityID;
 
-  private final List<EntityModelProvider> detailModelProviders = new ArrayList<>();
+  private final List<EntityModelProvider<SwingEntityModel, SwingEntityEditModel, DefaultEntityTableModel>> detailModelProviders = new ArrayList<>();
 
-  private Class<? extends EntityModel> modelClass = DefaultEntityModel.class;
-  private Class<? extends EntityEditModel> editModelClass = DefaultEntityEditModel.class;
-  private Class<? extends EntityTableModel> tableModelClass = DefaultEntityTableModel.class;
+  private Class<? extends SwingEntityModel> modelClass = SwingEntityModel.class;
+  private Class<? extends SwingEntityEditModel> editModelClass = SwingEntityEditModel.class;
+  private Class<? extends DefaultEntityTableModel> tableModelClass = DefaultEntityTableModel.class;
 
   /**
    * Instantiates a new DefaultEntityModelProvider based on the given entity ID
@@ -46,7 +41,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
    * @param entityID the entity ID
    * @param entityModelClass the entity model class
    */
-  public DefaultEntityModelProvider(final String entityID, final Class<? extends EntityModel> entityModelClass) {
+  public DefaultEntityModelProvider(final String entityID, final Class<? extends SwingEntityModel> entityModelClass) {
     this.entityID = entityID;
     this.modelClass = entityModelClass;
   }
@@ -59,7 +54,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
   /** {@inheritDoc} */
   @Override
-  public final EntityModelProvider setModelClass(final Class<? extends EntityModel> modelClass) {
+  public final DefaultEntityModelProvider setModelClass(final Class<? extends SwingEntityModel> modelClass) {
     Util.rejectNullValue(modelClass, "modelClass");
     this.modelClass = modelClass;
     return this;
@@ -67,7 +62,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
   /** {@inheritDoc} */
   @Override
-  public final EntityModelProvider setEditModelClass(final Class<? extends EntityEditModel> editModelClass) {
+  public final DefaultEntityModelProvider setEditModelClass(final Class<? extends SwingEntityEditModel> editModelClass) {
     Util.rejectNullValue(editModelClass, "editModelClass");
     this.editModelClass = editModelClass;
     return this;
@@ -75,7 +70,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
   /** {@inheritDoc} */
   @Override
-  public final EntityModelProvider setTableModelClass(final Class<? extends EntityTableModel> tableModelClass) {
+  public final DefaultEntityModelProvider setTableModelClass(final Class<? extends DefaultEntityTableModel> tableModelClass) {
     Util.rejectNullValue(tableModelClass, "tableModelClass");
     this.tableModelClass = tableModelClass;
     return this;
@@ -83,25 +78,26 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
   /** {@inheritDoc} */
   @Override
-  public final Class<? extends EntityModel> getModelClass() {
+  public final Class<? extends SwingEntityModel> getModelClass() {
     return modelClass;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Class<? extends EntityEditModel> getEditModelClass() {
+  public final Class<? extends SwingEntityEditModel> getEditModelClass() {
     return editModelClass;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final Class<? extends EntityTableModel> getTableModelClass() {
+  public final Class<? extends DefaultEntityTableModel> getTableModelClass() {
     return tableModelClass;
   }
 
   /** {@inheritDoc} */
   @Override
-  public final EntityModelProvider addDetailModelProvider(final EntityModelProvider detailModelProvider) {
+  public final DefaultEntityModelProvider addDetailModelProvider(final EntityModelProvider<SwingEntityModel,
+          SwingEntityEditModel, DefaultEntityTableModel> detailModelProvider) {
     if (!detailModelProviders.contains(detailModelProvider)) {
       detailModelProviders.add(detailModelProvider);
     }
@@ -111,7 +107,8 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
   /** {@inheritDoc} */
   @Override
-  public final boolean containsDetailModelProvider(final EntityModelProvider detailModelProvider) {
+  public final boolean containsDetailModelProvider(final EntityModelProvider<SwingEntityModel, SwingEntityEditModel,
+          DefaultEntityTableModel> detailModelProvider) {
     return detailModelProviders.contains(detailModelProvider);
   }
 
@@ -129,10 +126,10 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
   /** {@inheritDoc} */
   @Override
-  public final EntityModel createModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
+  public final SwingEntityModel createModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
     try {
-      final EntityModel model;
-      if (modelClass.equals(DefaultEntityModel.class)) {
+      final SwingEntityModel model;
+      if (modelClass.equals(SwingEntityModel.class)) {
         LOG.debug("{} initializing a default entity model", this);
         model = initializeDefaultModel(connectionProvider, detailModel);
       }
@@ -140,7 +137,7 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
         LOG.debug("{} initializing a custom entity model: {}", this, modelClass);
         model = modelClass.getConstructor(EntityConnectionProvider.class).newInstance(connectionProvider);
       }
-      for (final EntityModelProvider detailProvider : detailModelProviders) {
+      for (final EntityModelProvider<SwingEntityModel, SwingEntityEditModel, DefaultEntityTableModel> detailProvider : detailModelProviders) {
         model.addDetailModel(detailProvider.createModel(connectionProvider, true));
       }
       configureModel(model);
@@ -157,10 +154,10 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
   /** {@inheritDoc} */
   @Override
-  public final EntityEditModel createEditModel(final EntityConnectionProvider connectionProvider) {
+  public final SwingEntityEditModel createEditModel(final EntityConnectionProvider connectionProvider) {
     try {
-      final EntityEditModel editModel;
-      if (editModelClass.equals(DefaultEntityEditModel.class)) {
+      final SwingEntityEditModel editModel;
+      if (editModelClass.equals(SwingEntityEditModel.class)) {
         LOG.debug("{} initializing a default model", this);
         editModel = initializeDefaultEditModel(connectionProvider);
       }
@@ -182,9 +179,9 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
 
   /** {@inheritDoc} */
   @Override
-  public final EntityTableModel createTableModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
+  public final DefaultEntityTableModel createTableModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
     try {
-      final EntityTableModel tableModel;
+      final DefaultEntityTableModel tableModel;
       if (tableModelClass.equals(DefaultEntityTableModel.class)) {
         LOG.debug("{} initializing a default table model", this);
         tableModel = initializeDefaultTableModel(connectionProvider);
@@ -213,37 +210,37 @@ public class DefaultEntityModelProvider implements EntityModelProvider {
    * Called after each initialization.
    * @param entityModel the entity model to configure
    */
-  protected void configureModel(final EntityModel entityModel) {/*Provided for subclasses*/}
+  protected void configureModel(final SwingEntityModel entityModel) {/*Provided for subclasses*/}
 
   /**
    * Override to configure the provided EntityEditModel instance.
    * Called after each initialization.
    * @param editModel the edit model to configure
    */
-  protected void configureEditModel(final EntityEditModel editModel) {/*Provided for subclasses*/}
+  protected void configureEditModel(final SwingEntityEditModel editModel) {/*Provided for subclasses*/}
 
   /**
    * Override to configure the provided EntityTableModel instance.
    * Called after each initialization.
    * @param tableModel the edit model to configure
    */
-  protected void configureTableModel(final EntityTableModel tableModel) {/*Provided for subclasses*/}
+  protected void configureTableModel(final DefaultEntityTableModel tableModel) {/*Provided for subclasses*/}
 
-  private EntityModel initializeDefaultModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
-    final EntityTableModel tableModel = createTableModel(connectionProvider, detailModel);
+  private SwingEntityModel initializeDefaultModel(final EntityConnectionProvider connectionProvider, final boolean detailModel) {
+    final DefaultEntityTableModel tableModel = createTableModel(connectionProvider, detailModel);
     if (!tableModel.hasEditModel()) {
-      final EntityEditModel editModel = createEditModel(connectionProvider);
+      final SwingEntityEditModel editModel = createEditModel(connectionProvider);
       tableModel.setEditModel(editModel);
     }
 
-    return new DefaultEntityModel(tableModel.getEditModel(), tableModel);
+    return new SwingEntityModel(tableModel.getEditModel(), tableModel);
   }
 
-  private EntityEditModel initializeDefaultEditModel(final EntityConnectionProvider connectionProvider) {
+  private SwingEntityEditModel initializeDefaultEditModel(final EntityConnectionProvider connectionProvider) {
     return new SwingEntityEditModel(entityID, connectionProvider);
   }
 
-  private EntityTableModel initializeDefaultTableModel(final EntityConnectionProvider connectionProvider) {
+  private DefaultEntityTableModel initializeDefaultTableModel(final EntityConnectionProvider connectionProvider) {
     return new DefaultEntityTableModel(entityID, connectionProvider);
   }
 }

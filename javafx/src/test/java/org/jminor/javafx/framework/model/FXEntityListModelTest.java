@@ -8,7 +8,6 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.AbstractEntityTableModelTest;
-import org.jminor.framework.model.EntityEditModel;
 import org.jminor.javafx.framework.ui.EntityTableView;
 
 import javafx.embed.swing.JFXPanel;
@@ -16,7 +15,7 @@ import javafx.embed.swing.JFXPanel;
 import java.util.Arrays;
 import java.util.List;
 
-public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FXEntityListModel> {
+public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FXEntityEditModel, FXEntityListModel> {
 
   static {
     new JFXPanel();
@@ -64,12 +63,12 @@ public final class FXEntityListModelTest extends AbstractEntityTableModelTest<FX
   }
 
   @Override
-  protected EntityEditModel createDepartmentEditModel() {
+  protected FXEntityEditModel createDepartmentEditModel() {
     return new FXEntityEditModel(TestDomain.T_MASTER, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Override
-  protected EntityEditModel createDetailEditModel() {
+  protected FXEntityEditModel createDetailEditModel() {
     return new FXEntityEditModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 

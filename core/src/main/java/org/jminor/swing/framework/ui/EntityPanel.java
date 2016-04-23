@@ -11,9 +11,6 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.EntityEditModel;
-import org.jminor.framework.model.EntityModel;
-import org.jminor.framework.model.EntityTableModel;
 import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
 import org.jminor.swing.common.ui.MasterDetailPanel;
@@ -22,6 +19,9 @@ import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.framework.model.DefaultEntityTableModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -106,7 +106,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /**
    * The EntityModel instance used by this EntityPanel
    */
-  private final EntityModel entityModel;
+  private final SwingEntityModel entityModel;
 
   /**
    * The caption to use when presenting this entity panel
@@ -228,7 +228,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * The default caption of the underlying entity is used.
    * @param entityModel the EntityModel
    */
-  public EntityPanel(final EntityModel entityModel) {
+  public EntityPanel(final SwingEntityModel entityModel) {
     this(entityModel, Entities.getCaption(Util.rejectNullValue(entityModel, "entityModel").getEntityID()));
   }
 
@@ -237,7 +237,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param entityModel the EntityModel
    * @param caption the caption to use when presenting this entity panel
    */
-  public EntityPanel(final EntityModel entityModel, final String caption) {
+  public EntityPanel(final SwingEntityModel entityModel, final String caption) {
     this(entityModel, caption, null, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
   }
 
@@ -246,7 +246,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param entityModel the EntityModel
    * @param editPanel the edit panel
    */
-  public EntityPanel(final EntityModel entityModel, final EntityEditPanel editPanel) {
+  public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel) {
     this(entityModel, Entities.getCaption(entityModel.getEntityID()), editPanel);
   }
 
@@ -255,7 +255,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param entityModel the EntityModel
    * @param tablePanel the table panel
    */
-  public EntityPanel(final EntityModel entityModel, final EntityTablePanel tablePanel) {
+  public EntityPanel(final SwingEntityModel entityModel, final EntityTablePanel tablePanel) {
     this(entityModel, Entities.getCaption(entityModel.getEntityID()), tablePanel);
   }
 
@@ -265,7 +265,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param caption the caption to use when presenting this entity panel
    * @param editPanel the edit panel
    */
-  public EntityPanel(final EntityModel entityModel, final String caption, final EntityEditPanel editPanel) {
+  public EntityPanel(final SwingEntityModel entityModel, final String caption, final EntityEditPanel editPanel) {
     this(entityModel, caption, editPanel, entityModel.containsTableModel() ? new EntityTablePanel(entityModel.getTableModel()) : null);
   }
 
@@ -275,7 +275,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param caption the caption to use when presenting this entity panel
    * @param tablePanel the table panel
    */
-  public EntityPanel(final EntityModel entityModel, final String caption, final EntityTablePanel tablePanel) {
+  public EntityPanel(final SwingEntityModel entityModel, final String caption, final EntityTablePanel tablePanel) {
     this(entityModel, caption, null, tablePanel);
   }
 
@@ -285,7 +285,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param editPanel the edit panel
    * @param tablePanel the table panel
    */
-  public EntityPanel(final EntityModel entityModel, final EntityEditPanel editPanel, final EntityTablePanel tablePanel) {
+  public EntityPanel(final SwingEntityModel entityModel, final EntityEditPanel editPanel, final EntityTablePanel tablePanel) {
     this(entityModel, Entities.getCaption(entityModel.getEntityID()), editPanel, tablePanel);
   }
 
@@ -296,7 +296,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @param editPanel the edit panel
    * @param tablePanel the table panel
    */
-  public EntityPanel(final EntityModel entityModel, final String caption, final EntityEditPanel editPanel,
+  public EntityPanel(final SwingEntityModel entityModel, final String caption, final EntityEditPanel editPanel,
                      final EntityTablePanel tablePanel) {
     Util.rejectNullValue(entityModel, "entityModel");
     this.entityModel = entityModel;
@@ -308,21 +308,21 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /**
    * @return the EntityModel
    */
-  public final EntityModel getModel() {
+  public final SwingEntityModel getModel() {
     return entityModel;
   }
 
   /**
    * @return the EntityEditModel
    */
-  public final EntityEditModel getEditModel() {
+  public final SwingEntityEditModel getEditModel() {
     return entityModel.getEditModel();
   }
 
   /**
    * @return the EntityTableModel, null if none is available
    */
-  public final EntityTableModel getTableModel() {
+  public final DefaultEntityTableModel getTableModel() {
     return entityModel.getTableModel();
   }
 
@@ -494,7 +494,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @return the currently visible/linked detail EntityPanel, if any
    */
   public final Collection<EntityPanel> getLinkedDetailPanels() {
-    final Collection<EntityModel> linkedDetailModels = entityModel.getLinkedDetailModels();
+    final Collection<SwingEntityModel> linkedDetailModels = entityModel.getLinkedDetailModels();
     final Collection<EntityPanel> linkedDetailPanels = new ArrayList<>(linkedDetailModels.size());
     for (final EntityPanel detailPanel : detailEntityPanels) {
       if (linkedDetailModels.contains(detailPanel.entityModel)) {
@@ -586,7 +586,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   public final void setActiveDetailPanel(final MasterDetailPanel detailPanel) {
     if (detailPanelTabbedPane != null) {
       detailPanelTabbedPane.setSelectedComponent((JComponent) detailPanel);
-      for (final EntityModel linkedModel : new ArrayList<>(entityModel.getLinkedDetailModels())) {
+      for (final SwingEntityModel linkedModel : new ArrayList<>(entityModel.getLinkedDetailModels())) {
         entityModel.removeLinkedDetailModel(linkedModel);
       }
       entityModel.addLinkedDetailModel(getTabbedDetailPanel().getModel());

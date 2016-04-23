@@ -15,7 +15,7 @@ import java.util.List;
 /**
  * A class for running multiple EntityApplicationModel instances for load testing purposes.
  */
-public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicationModel> {
+public abstract class EntityLoadTestModel<ApplicationModel extends EntityApplicationModel> extends LoadTestModel<ApplicationModel> {
 
   /**
    * Instantiates a new EntityLoadTestModel.
@@ -23,7 +23,7 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
    * @param user the default user
    * @param usageScenarios the usage scenarios
    */
-  public EntityLoadTestModel(final User user, final Collection<? extends UsageScenario<EntityApplicationModel>> usageScenarios) {
+  public EntityLoadTestModel(final User user, final Collection<? extends UsageScenario<ApplicationModel>> usageScenarios) {
     super(user, usageScenarios, Configuration.getIntValue(Configuration.LOAD_TEST_THINKTIME),
             Configuration.getIntValue(Configuration.LOAD_TEST_LOGIN_DELAY),
             Configuration.getIntValue(Configuration.LOAD_TEST_BATCH_SIZE));
@@ -102,18 +102,19 @@ public abstract class EntityLoadTestModel extends LoadTestModel<EntityApplicatio
 
   /** {@inheritDoc} */
   @Override
-  protected final void disconnectApplication(final EntityApplicationModel application) {
+  protected final void disconnectApplication(final ApplicationModel application) {
     application.getConnectionProvider().disconnect();
   }
 
   /** {@inheritDoc} */
   @Override
-  protected abstract EntityApplicationModel initializeApplication();
+  protected abstract ApplicationModel initializeApplication();
 
   /**
    * An abstract base class for usage scenarios based on EntityApplicationModel instances
    */
-  public abstract static class AbstractEntityUsageScenario extends AbstractUsageScenario<EntityApplicationModel> {
+  public abstract static class AbstractEntityUsageScenario<ApplicationModel extends EntityApplicationModel>
+          extends AbstractUsageScenario<ApplicationModel> {
 
     /**
      * Instantiates a new AbstractEntityUsageScenario

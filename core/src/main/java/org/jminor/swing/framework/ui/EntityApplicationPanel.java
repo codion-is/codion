@@ -31,6 +31,7 @@ import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -82,7 +83,8 @@ import java.util.Map;
  * A central application panel class.
  * @param <Model> the application model type
  */
-public abstract class EntityApplicationPanel<Model extends EntityApplicationModel> extends JPanel implements ExceptionHandler, MasterDetailPanel {
+public abstract class EntityApplicationPanel<Model extends SwingEntityApplicationModel>
+        extends JPanel implements ExceptionHandler, MasterDetailPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
@@ -143,7 +145,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @param panelProviders the main application panel providers
    * @return this application panel instance
    */
-  public final EntityApplicationPanel addEntityPanelProviders(final EntityPanelProvider... panelProviders) {
+  public final EntityApplicationPanel<Model> addEntityPanelProviders(final EntityPanelProvider... panelProviders) {
     Util.rejectNullValue(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addEntityPanelProvider(panelProvider);
@@ -156,7 +158,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @param panelProvider the main application panel provider
    * @return this application panel instance
    */
-  public final EntityApplicationPanel addEntityPanelProvider(final EntityPanelProvider panelProvider) {
+  public final EntityApplicationPanel<Model> addEntityPanelProvider(final EntityPanelProvider panelProvider) {
     entityPanelProviders.add(panelProvider);
     return this;
   }
@@ -166,7 +168,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @param panelProviders the support application panel providers
    * @return this application panel instance
    */
-  public final EntityApplicationPanel addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
+  public final EntityApplicationPanel<Model> addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
     Util.rejectNullValue(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addSupportPanelProvider(panelProvider);
@@ -179,7 +181,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @param panelProvider the support application panel provider
    * @return this application panel instance
    */
-  public final EntityApplicationPanel addSupportPanelProvider(final EntityPanelProvider panelProvider) {
+  public final EntityApplicationPanel<Model> addSupportPanelProvider(final EntityPanelProvider panelProvider) {
     supportPanelProviders.add(panelProvider);
     return this;
   }

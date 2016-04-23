@@ -37,6 +37,7 @@ import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -156,7 +157,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    */
-  public EntityEditPanel(final EntityEditModel editModel) {
+  public EntityEditPanel(final SwingEntityEditModel editModel) {
     this(editModel, SAVE, UPDATE, DELETE, CLEAR, REFRESH);
   }
 
@@ -166,7 +167,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param controlKeys if specified only controls with those keys are initialized,
    * null or an empty String array will result in no controls being initialized
    */
-  public EntityEditPanel(final EntityEditModel editModel, final String... controlKeys) {
+  public EntityEditPanel(final SwingEntityEditModel editModel, final String... controlKeys) {
     this.editModel = Util.rejectNullValue(editModel, "editModel");
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
       ACTIVE_STATE_GROUP.addState(activeState);

@@ -7,24 +7,24 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
+import org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
-import org.jminor.framework.model.DefaultEntityApplicationModel;
-import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.model.EntityLoadTestModel;
-import org.jminor.framework.model.EntityModel;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
+import org.jminor.swing.framework.model.SwingEntityModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.util.Collections;
 import java.util.UUID;
 
-public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
+public final class SchemaBrowserLoadTest extends EntityLoadTestModel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
-  private static final UsageScenario<EntityApplicationModel> SCENARIO = new AbstractEntityUsageScenario() {
+  private static final UsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> SCENARIO
+          = new AbstractEntityUsageScenario<SchemaBrowserAppPanel.SchemaBrowserApplicationModel>() {
     @Override
-    protected void performScenario(final EntityApplicationModel application) {
-      final EntityModel schemaModel = application.getEntityModels().iterator().next();
+    protected void performScenario(final SchemaBrowserAppPanel.SchemaBrowserApplicationModel application) {
+      final SwingEntityModel schemaModel = application.getEntityModels().iterator().next();
       schemaModel.getTableModel().refresh();
       selectRandomRow(schemaModel.getTableModel());
       selectRandomRow(schemaModel.getDetailModels().iterator().next().getTableModel());
@@ -37,23 +37,19 @@ public final class SchemaBrowserLoadTest extends EntityLoadTestModel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel applicationModel = new DefaultEntityApplicationModel(
-            new RemoteEntityConnectionProvider(Configuration.getStringValue(Configuration.SERVER_HOST_NAME),
-                    getUser(), UUID.randomUUID(), getClass().getSimpleName())) {
-      @Override
-      protected void loadDomainModel() {
-        SchemaBrowser.init();
-      }
-    };
-    final EntityModel schemaModel = applicationModel.getEntityModel(SchemaBrowser.T_SCHEMA);
-    final EntityModel dbObjectModel = schemaModel.getDetailModel(SchemaBrowser.T_TABLE);
+  protected SchemaBrowserAppPanel.SchemaBrowserApplicationModel initializeApplication() throws CancelException {
+    final SchemaBrowserAppPanel.SchemaBrowserApplicationModel applicationModel =
+            new SchemaBrowserAppPanel.SchemaBrowserApplicationModel(
+                    new RemoteEntityConnectionProvider(Configuration.getStringValue(Configuration.SERVER_HOST_NAME),
+                            getUser(), UUID.randomUUID(), getClass().getSimpleName()));
+    final SwingEntityModel schemaModel = applicationModel.getEntityModel(SchemaBrowser.T_SCHEMA);
+    final SwingEntityModel dbObjectModel = schemaModel.getDetailModel(SchemaBrowser.T_TABLE);
     schemaModel.addLinkedDetailModel(dbObjectModel);
-    final EntityModel columnModel = dbObjectModel.getDetailModel(SchemaBrowser.T_COLUMN);
-    final EntityModel constraintModel = dbObjectModel.getDetailModel(SchemaBrowser.T_CONSTRAINT);
+    final SwingEntityModel columnModel = dbObjectModel.getDetailModel(SchemaBrowser.T_COLUMN);
+    final SwingEntityModel constraintModel = dbObjectModel.getDetailModel(SchemaBrowser.T_CONSTRAINT);
     dbObjectModel.addDetailModel(columnModel);
     dbObjectModel.addDetailModel(constraintModel);
-    final EntityModel columnConstraintModel = dbObjectModel.getDetailModel(SchemaBrowser.T_COLUMN_CONSTRAINT);
+    final SwingEntityModel columnConstraintModel = dbObjectModel.getDetailModel(SchemaBrowser.T_COLUMN_CONSTRAINT);
     constraintModel.addDetailModel(columnConstraintModel);
     dbObjectModel.addLinkedDetailModel(columnModel);
 

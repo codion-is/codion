@@ -8,7 +8,8 @@ import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.AbstractEntityApplicationModelTest;
 
-public final class SwingEntityApplicationModelTest extends AbstractEntityApplicationModelTest<SwingEntityModel> {
+public final class SwingEntityApplicationModelTest extends AbstractEntityApplicationModelTest<SwingEntityModel,
+        SwingEntityEditModel, DefaultEntityTableModel> {
 
   @Override
   protected SwingEntityModel createDepartmentModel() {

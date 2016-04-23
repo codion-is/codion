@@ -40,20 +40,20 @@ public class EntityLoadTestModelTest {
     Configuration.setValue(Configuration.CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_BEFORE_TEST);
   }
 
-  private static final class TestLoadTestModel extends EntityLoadTestModel {
+  private static final class TestLoadTestModel extends EntityLoadTestModel<DefaultEntityApplicationModel> {
 
     public TestLoadTestModel() {
-      super(User.UNIT_TEST_USER, Arrays.asList(new EntityLoadTestModel.AbstractEntityUsageScenario("1") {
+      super(User.UNIT_TEST_USER, Arrays.asList(new EntityLoadTestModel.AbstractEntityUsageScenario<DefaultEntityApplicationModel>("1") {
         @Override
-        protected void performScenario(final EntityApplicationModel application) throws ScenarioException {}
-      }, new EntityLoadTestModel.AbstractEntityUsageScenario("2") {
+        protected void performScenario(final DefaultEntityApplicationModel application) throws ScenarioException {}
+      }, new EntityLoadTestModel.AbstractEntityUsageScenario<DefaultEntityApplicationModel>("2") {
         @Override
-        protected void performScenario(final EntityApplicationModel application) throws ScenarioException {}
+        protected void performScenario(final DefaultEntityApplicationModel application) throws ScenarioException {}
       }));
     }
 
     @Override
-    protected EntityApplicationModel initializeApplication() {
+    protected DefaultEntityApplicationModel initializeApplication() {
       return new DefaultEntityApplicationModel(
               EntityConnectionProviders.connectionProvider(getUser(), EntityLoadTestModelTest.class.getSimpleName())) {
         @Override

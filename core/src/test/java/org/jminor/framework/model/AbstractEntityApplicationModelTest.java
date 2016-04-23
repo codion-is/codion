@@ -11,9 +11,10 @@ import org.junit.Test;
 
 import static org.junit.Assert.*;
 
-public abstract class AbstractEntityApplicationModelTest<T extends EntityModel> {
+public abstract class AbstractEntityApplicationModelTest<Model extends DefaultEntityModel<Model, EditModel, TableModel>,
+        EditModel extends DefaultEntityEditModel, TableModel extends EntityTableModel<EditModel>> {
 
-  protected abstract T createDepartmentModel();
+  protected abstract Model createDepartmentModel();
 
   @Test
   public void test() {
@@ -73,7 +74,7 @@ public abstract class AbstractEntityApplicationModelTest<T extends EntityModel> 
         TestDomain.init();
       }
     };
-    final T departmentModel = createDepartmentModel();
+    final Model departmentModel = createDepartmentModel();
     model.addEntityModels(departmentModel);
     assertEquals(departmentModel, model.getEntityModel(TestDomain.T_DEPARTMENT));
   }
@@ -97,7 +98,7 @@ public abstract class AbstractEntityApplicationModelTest<T extends EntityModel> 
         TestDomain.init();
       }
     };
-    final T departmentModel = createDepartmentModel();
+    final Model departmentModel = createDepartmentModel();
     model.addEntityModels(departmentModel);
     assertEquals(departmentModel, model.getEntityModel(departmentModel.getClass()));
   }
@@ -110,7 +111,7 @@ public abstract class AbstractEntityApplicationModelTest<T extends EntityModel> 
         TestDomain.init();
       }
     };
-    final T departmentModel = createDepartmentModel();
+    final Model departmentModel = createDepartmentModel();
     model.addEntityModels(departmentModel);
 
     assertTrue(model.containsEntityModel(TestDomain.T_DEPARTMENT));
@@ -129,8 +130,8 @@ public abstract class AbstractEntityApplicationModelTest<T extends EntityModel> 
         TestDomain.init();
       }
     };
-    final EntityModel deptModel = createDepartmentModel();
-    final EntityModel empModel = deptModel.getDetailModel(TestDomain.T_EMP);
+    final Model deptModel = createDepartmentModel();
+    final Model empModel = deptModel.getDetailModel(TestDomain.T_EMP);
     deptModel.addLinkedDetailModel(empModel);
 
     model.addEntityModel(deptModel);

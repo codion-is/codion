@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.petstore.beans.ui;
 
-import org.jminor.framework.model.EntityEditModel;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityComboBox;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
@@ -14,7 +14,7 @@ import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 public class ProductEditPanel extends EntityEditPanel {
 
-  public ProductEditPanel(final EntityEditModel model) {
+  public ProductEditPanel(final SwingEntityEditModel model) {
     super(model);
   }
 
