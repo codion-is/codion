@@ -19,7 +19,6 @@ import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
 import org.jminor.swing.common.ui.ExceptionHandler;
@@ -722,7 +721,6 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
 
   /**
    * Override to add event bindings after initialization
-   * @see #initialize(EntityApplicationModel)
    */
   protected void bindEvents() {}
 
