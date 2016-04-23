@@ -7,7 +7,8 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.model.DefaultEntityModel;
 
-public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, SwingEntityEditModel, DefaultEntityTableModel> {
+public class SwingEntityModel
+        extends DefaultEntityModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
   /** Instantiates a new SwingEntityModel with default EntityEditModel and EntityTableModel implementations.
    * @param entityID the ID of the Entity this DefaultEntityModel represents
@@ -19,18 +20,18 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
   }
 
   /**
-   * Instantiates a new SwingEntityModel, including a {@link DefaultEntityTableModel}
+   * Instantiates a new SwingEntityModel, including a {@link SwingEntityTableModel}
    * @param editModel the edit model
    */
   public SwingEntityModel(final SwingEntityEditModel editModel) {
-    super(editModel, new DefaultEntityTableModel(editModel.getEntityID(), editModel.getConnectionProvider()));
+    super(editModel, new SwingEntityTableModel(editModel.getEntityID(), editModel.getConnectionProvider()));
   }
 
   /**
    * Instantiates a new SwingEntityModel, including a default {@link SwingEntityEditModel}
    * @param tableModel the table model
    */
-  public SwingEntityModel(final DefaultEntityTableModel tableModel) {
+  public SwingEntityModel(final SwingEntityTableModel tableModel) {
     this(tableModel.hasEditModel() ? tableModel.getEditModel() : new SwingEntityEditModel(tableModel.getEntityID(),
             tableModel.getConnectionProvider()), tableModel);
   }
@@ -40,7 +41,7 @@ public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, Swing
    * @param editModel the edit model
    * @param tableModel the table model
    */
-  public SwingEntityModel(final SwingEntityEditModel editModel, final DefaultEntityTableModel tableModel) {
+  public SwingEntityModel(final SwingEntityEditModel editModel, final SwingEntityTableModel tableModel) {
     super(editModel, tableModel);
   }
 }

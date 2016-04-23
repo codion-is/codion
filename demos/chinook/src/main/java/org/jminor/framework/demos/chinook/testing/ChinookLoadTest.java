@@ -19,9 +19,9 @@ import org.jminor.framework.model.EntityEditModel;
 import org.jminor.framework.model.EntityLoadTestModel;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
-import org.jminor.swing.framework.model.DefaultEntityTableModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.model.reporting.EntityReportUtil;
 
 import javax.swing.SwingUtilities;
@@ -45,7 +45,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
         selectRandomRows(customerModel.getTableModel(), RANDOM.nextInt(6) + 2);
         final SwingEntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
         selectRandomRows(invoiceModel.getTableModel(), RANDOM.nextInt(6) + 2);
-        final DefaultEntityTableModel invoiceLineTableModel = invoiceModel.getDetailModel(T_INVOICELINE).getTableModel();
+        final SwingEntityTableModel invoiceLineTableModel = invoiceModel.getDetailModel(T_INVOICELINE).getTableModel();
         final List<Entity> invoiceLines = invoiceLineTableModel.getAllItems();
         EntityUtil.put(Chinook.INVOICELINE_QUANTITY, RANDOM.nextInt(4) + 1, invoiceLines);
 
@@ -92,7 +92,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
     @Override
     protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
       try {
-        final DefaultEntityTableModel customerModel = application.getEntityModel(T_CUSTOMER).getTableModel();
+        final SwingEntityTableModel customerModel = application.getEntityModel(T_CUSTOMER).getTableModel();
         customerModel.refresh();
         selectRandomRow(customerModel);
 
@@ -193,7 +193,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.C
           trackEditModel.insert();
         }
 
-        final DefaultEntityTableModel trackTableModel = albumModel.getDetailModel(T_TRACK).getTableModel();
+        final SwingEntityTableModel trackTableModel = albumModel.getDetailModel(T_TRACK).getTableModel();
         trackTableModel.getSelectionModel().selectAll();
         trackTableModel.deleteSelected();
         albumEditModel.delete();

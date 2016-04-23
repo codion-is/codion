@@ -12,9 +12,9 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.swing.framework.model.DefaultEntityModelProvider;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityModelProvider;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
@@ -199,7 +199,7 @@ public class EmpDeptMinimalApp {
       //now, let's assemble our application
       final EntityPanelProvider departmentProvider = new EntityPanelProvider("scott.dept")
               .setEditPanelClass(DepartmentEditPanel.class);
-      final DefaultEntityModelProvider employeeModelProvider = new DefaultEntityModelProvider("scott.emp")
+      final SwingEntityModelProvider employeeModelProvider = new SwingEntityModelProvider("scott.emp")
               .setEditModelClass(EmployeeEditModel.class);
       final EntityPanelProvider employeeProvider = new EntityPanelProvider(employeeModelProvider)
               .setEditPanelClass(EmployeeEditPanel.class);

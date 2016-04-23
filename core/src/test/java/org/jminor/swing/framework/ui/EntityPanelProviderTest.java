@@ -6,8 +6,8 @@ package org.jminor.swing.framework.ui;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.swing.framework.model.DefaultEntityModelProvider;
 import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.model.SwingEntityModelProvider;
 
 import org.junit.Test;
 
@@ -19,8 +19,8 @@ public class EntityPanelProviderTest {
   @Test
   public void testDetailPanelProvider() {
     TestDomain.init();
-    final DefaultEntityModelProvider customerModelProvider = new DefaultEntityModelProvider(TestDomain.T_DEPARTMENT);
-    final DefaultEntityModelProvider invoiceModelProvider = new DefaultEntityModelProvider(TestDomain.T_EMP);
+    final SwingEntityModelProvider customerModelProvider = new SwingEntityModelProvider(TestDomain.T_DEPARTMENT);
+    final SwingEntityModelProvider invoiceModelProvider = new SwingEntityModelProvider(TestDomain.T_EMP);
 
     customerModelProvider.addDetailModelProvider(invoiceModelProvider);
 

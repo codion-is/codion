@@ -7,10 +7,10 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entities;
-import org.jminor.swing.framework.model.DefaultEntityModelProvider;
-import org.jminor.swing.framework.model.DefaultEntityTableModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.model.SwingEntityModelProvider;
+import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import java.util.ArrayList;
 import java.util.Collections;
@@ -21,7 +21,7 @@ import java.util.List;
  * A class providing EntityPanel instances.
  * Note: this class has a natural ordering based on the caption which is inconsistent with equals.
  */
-public class EntityPanelProvider implements Comparable {
+public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
 
   private static final double DEFAULT_SPLIT_PANEL_RESIZE_WEIGHT = 0.5;
 
@@ -37,7 +37,7 @@ public class EntityPanelProvider implements Comparable {
   private Class<? extends EntityTablePanel> tablePanelClass = EntityTablePanel.class;
   private Class<? extends EntityEditPanel> editPanelClass;
 
-  private final DefaultEntityModelProvider modelProvider;
+  private final SwingEntityModelProvider modelProvider;
 
   private final List<EntityPanelProvider> detailPanelProviders = new ArrayList<>();
 
@@ -83,14 +83,14 @@ public class EntityPanelProvider implements Comparable {
     Util.rejectNullValue(entityPanelClass, "entityPanelClass");
     this.caption = caption;
     this.panelClass = entityPanelClass;
-    this.modelProvider = new DefaultEntityModelProvider(entityID, entityModelClass);
+    this.modelProvider = new SwingEntityModelProvider(entityID, entityModelClass);
   }
 
   /**
    * Instantiates a new EntityPanelProvider
    * @param modelProvider the EntityModelProvider to base this panel provider on
    */
-  public EntityPanelProvider (final DefaultEntityModelProvider modelProvider) {
+  public EntityPanelProvider (final SwingEntityModelProvider modelProvider) {
     this(modelProvider, Entities.getCaption(modelProvider.getEntityID()));
   }
 
@@ -99,7 +99,7 @@ public class EntityPanelProvider implements Comparable {
    * @param modelProvider the EntityModelProvider to base this panel provider on
    * @param caption the panel caption to use
    */
-  public EntityPanelProvider (final DefaultEntityModelProvider modelProvider, final String caption) {
+  public EntityPanelProvider (final SwingEntityModelProvider modelProvider, final String caption) {
     Util.rejectNullValue(modelProvider, "modelProvider");
     this.modelProvider = modelProvider;
     this.caption = caption;
@@ -115,7 +115,7 @@ public class EntityPanelProvider implements Comparable {
   /**
    * @return the EntityModelProvider this panel provider is based on
    */
-  public final DefaultEntityModelProvider getModelProvider() {
+  public final SwingEntityModelProvider getModelProvider() {
     return modelProvider;
   }
 
@@ -267,10 +267,10 @@ public class EntityPanelProvider implements Comparable {
 
   /** {@inheritDoc} */
   @Override
-  public final int compareTo(final Object o) {
+  public final int compareTo(final EntityPanelProvider panelProvider) {
     final String thisCompare = caption == null ? modelProvider.getModelClass().getSimpleName() : caption;
-    final String thatCompare = ((EntityPanelProvider) o).caption == null
-            ? ((EntityPanelProvider) o).panelClass.getSimpleName() : ((EntityPanelProvider) o).caption;
+    final String thatCompare = panelProvider.caption == null
+            ? ((EntityPanelProvider) panelProvider).panelClass.getSimpleName() : panelProvider.caption;
 
     return comparator.compare(thisCompare, thatCompare);
   }
@@ -444,12 +444,12 @@ public class EntityPanelProvider implements Comparable {
     }
   }
 
-  private EntityTablePanel initializeTablePanel(final DefaultEntityTableModel tableModel) {
+  private EntityTablePanel initializeTablePanel(final SwingEntityTableModel tableModel) {
     try {
       if (!tableModel.getEntityID().equals(getEntityID())) {
         throw new IllegalArgumentException("Entity ID mismatch, tableModel: " + tableModel.getEntityID() + ", required: " + getEntityID());
       }
-      final EntityTablePanel tablePanel = tablePanelClass.getConstructor(DefaultEntityTableModel.class).newInstance(tableModel);
+      final EntityTablePanel tablePanel = tablePanelClass.getConstructor(SwingEntityTableModel.class).newInstance(tableModel);
       configureTablePanel(tablePanel);
 
       return tablePanel;

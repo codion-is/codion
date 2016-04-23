@@ -18,10 +18,10 @@ import org.jminor.framework.plugins.json.EntityJSONParser;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.framework.model.DefaultEntityModelProvider;
-import org.jminor.swing.framework.model.DefaultEntityTableModel;
 import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.model.SwingEntityModelProvider;
+import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
 import org.jminor.swing.framework.ui.EntityTablePanel;
@@ -38,7 +38,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     final EmployeePanelProvider employeePanelProvider = new EmployeePanelProvider(employeeModelProvider);
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
-    final DefaultEntityModelProvider departmentModelProvider = new DefaultEntityModelProvider(T_DEPARTMENT) {
+    final SwingEntityModelProvider departmentModelProvider = new SwingEntityModelProvider(T_DEPARTMENT) {
       @Override
       protected void configureModel(final SwingEntityModel entityModel) {
         entityModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().setQueryCriteriaRequired(false);
@@ -90,14 +90,14 @@ public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpD
     }
   }
 
-  private static final class EmployeeModelProvider extends DefaultEntityModelProvider {
+  private static final class EmployeeModelProvider extends SwingEntityModelProvider {
     private EmployeeModelProvider() {
       super(EmpDept.T_EMPLOYEE);
       setEditModelClass(EmployeeEditModel.class);
     }
 
     @Override
-    protected void configureTableModel(final DefaultEntityTableModel tableModel) {
+    protected void configureTableModel(final SwingEntityTableModel tableModel) {
       tableModel.getColumnSummaryModel(EMPLOYEE_SALARY).setSummary(ColumnSummary.AVERAGE);
     }
   }

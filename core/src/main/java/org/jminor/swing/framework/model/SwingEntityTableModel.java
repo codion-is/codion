@@ -56,19 +56,19 @@ import java.util.Map;
  *
  * EntityConnectionProvider connectionProvider = EntityConnectionProviders.createConnectionProvider(user, clientTypeID);
  *
- * EntityTableModel tableModel = new DefaultEntityTableModel(entityID, connectionProvider);
+ * SwingEntityTableModel tableModel = new SwingEntityTableModel(entityID, connectionProvider);
  *
- * EntityEditModel editModel = ...;
+ * SwingEntityEditModel editModel = ...;
  *
  * tableModel.setEditModel(editModel);
  *
  * EntityTablePanel panel = new EntityTablePanel(model);
  * </pre>
  */
-public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, Property>
+public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Property>
         implements EntityTableModel<SwingEntityEditModel>, FilteredTableModel<Entity, Property> {
 
-  private static final Logger LOG = LoggerFactory.getLogger(DefaultEntityTableModel.class);
+  private static final Logger LOG = LoggerFactory.getLogger(SwingEntityTableModel.class);
 
   /**
    * The entity ID
@@ -125,7 +125,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    * @param entityID the entity ID
    * @param connectionProvider the db provider
    */
-  public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider) {
+  public SwingEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     this(entityID, connectionProvider, new DefaultEntityTableSortModel(entityID),
             new DefaultEntityTableCriteriaModel(entityID, connectionProvider,
                     new DefaultPropertyFilterModelProvider(), new SwingPropertyCriteriaModelProvider()));
@@ -140,8 +140,8 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
    * @throws IllegalArgumentException if <code>criteriaModel</code> is null or the criteria model entityID
    * does not match the one supplied as parameter
    */
-  public DefaultEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider,
-                                 final TableSortModel<Entity, Property> sortModel, final EntityTableCriteriaModel criteriaModel) {
+  public SwingEntityTableModel(final String entityID, final EntityConnectionProvider connectionProvider,
+                               final TableSortModel<Entity, Property> sortModel, final EntityTableCriteriaModel criteriaModel) {
     super(sortModel, Util.rejectNullValue(criteriaModel, "criteriaModel").getPropertyFilterModels());
     if (!criteriaModel.getEntityID().equals(entityID)) {
       throw new IllegalArgumentException("Entity ID mismatch, criteriaModel: " + criteriaModel.getEntityID()
@@ -189,7 +189,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final DefaultEntityTableModel setQueryConfigurationAllowed(final boolean value) {
+  public final SwingEntityTableModel setQueryConfigurationAllowed(final boolean value) {
     this.queryConfigurationAllowed = value;
     return this;
   }
@@ -202,7 +202,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final DefaultEntityTableModel setFetchCount(final int fetchCount) {
+  public final SwingEntityTableModel setFetchCount(final int fetchCount) {
     this.fetchCount = fetchCount;
     return this;
   }
@@ -215,7 +215,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final DefaultEntityTableModel setQueryCriteriaRequired(final boolean value) {
+  public final SwingEntityTableModel setQueryCriteriaRequired(final boolean value) {
     this.queryCriteriaRequired = value;
     return this;
   }
@@ -228,7 +228,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public DefaultEntityTableModel setInsertAction(final InsertAction insertAction) {
+  public SwingEntityTableModel setInsertAction(final InsertAction insertAction) {
     Util.rejectNullValue(insertAction, "insertAction");
     this.insertAction = insertAction;
     return this;
@@ -242,7 +242,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final DefaultEntityTableModel setRemoveEntitiesOnDelete(final boolean value) {
+  public final SwingEntityTableModel setRemoveEntitiesOnDelete(final boolean value) {
     this.removeEntitiesOnDelete = value;
     return this;
   }
@@ -282,7 +282,7 @@ public class DefaultEntityTableModel extends AbstractFilteredTableModel<Entity, 
 
   /** {@inheritDoc} */
   @Override
-  public final DefaultEntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed) {
+  public final SwingEntityTableModel setBatchUpdateAllowed(final boolean batchUpdateAllowed) {
     this.batchUpdateAllowed = batchUpdateAllowed;
     return this;
   }

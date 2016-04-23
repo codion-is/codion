@@ -12,18 +12,18 @@ import org.junit.Test;
 import static org.junit.Assert.assertEquals;
 import static org.junit.Assert.assertTrue;
 
-public class DefaultEntityModelProviderTest {
+public final class SwingEntityModelProviderTest {
 
-  public DefaultEntityModelProviderTest() {
+  public SwingEntityModelProviderTest() {
     TestDomain.init();
   }
 
   @Test
   public void testDetailModelProvider() {
-    final DefaultEntityModelProvider departmentModelProvider = new DefaultEntityModelProvider(TestDomain.T_DEPARTMENT)
+    final SwingEntityModelProvider departmentModelProvider = new SwingEntityModelProvider(TestDomain.T_DEPARTMENT)
             .setEditModelClass(DepartmentEditModel.class)
             .setTableModelClass(DepartmentTableModel.class);
-    final DefaultEntityModelProvider employeeModelProvider = new DefaultEntityModelProvider(TestDomain.T_EMP);
+    final SwingEntityModelProvider employeeModelProvider = new SwingEntityModelProvider(TestDomain.T_EMP);
 
     departmentModelProvider.addDetailModelProvider(employeeModelProvider);
 
@@ -43,7 +43,7 @@ public class DefaultEntityModelProviderTest {
     }
   }
 
-  static final class DepartmentTableModel extends DefaultEntityTableModel {
+  static final class DepartmentTableModel extends SwingEntityTableModel {
 
     public DepartmentTableModel(final EntityConnectionProvider connectionProvider) {
       super(TestDomain.T_DEPARTMENT, connectionProvider);

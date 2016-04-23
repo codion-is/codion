@@ -47,9 +47,9 @@ import org.jminor.swing.common.ui.input.TextInputProvider;
 import org.jminor.swing.common.ui.input.ValueListInputProvider;
 import org.jminor.swing.common.ui.table.ColumnCriteriaPanel;
 import org.jminor.swing.common.ui.table.FilteredTablePanel;
-import org.jminor.swing.framework.model.DefaultEntityTableModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -206,7 +206,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
    */
-  public EntityTablePanel(final DefaultEntityTableModel tableModel) {
+  public EntityTablePanel(final SwingEntityTableModel tableModel) {
     this(tableModel, new EntityTableCriteriaPanel(tableModel));
   }
 
@@ -215,7 +215,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param tableModel the EntityTableModel instance
    * @param criteriaPanel the criteria panel
    */
-  public EntityTablePanel(final DefaultEntityTableModel tableModel, final EntityTableCriteriaPanel criteriaPanel) {
+  public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityTableCriteriaPanel criteriaPanel) {
     super((FilteredTableModel<Entity, Property>) tableModel, new ColumnCriteriaPanelProvider<Property>() {
       @Override
       public ColumnCriteriaPanel<Property> createColumnCriteriaPanel(final TableColumn column) {
@@ -305,8 +305,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   /**
    * @return the EntityTableModel used by this EntityTablePanel
    */
-  public final DefaultEntityTableModel getEntityTableModel() {
-    return (DefaultEntityTableModel) super.getTableModel();
+  public final SwingEntityTableModel getEntityTableModel() {
+    return (SwingEntityTableModel) super.getTableModel();
   }
 
   /**
@@ -558,7 +558,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       return;
     }
 
-    final DefaultEntityTableModel tableModel = getEntityTableModel();
+    final SwingEntityTableModel tableModel = getEntityTableModel();
     try {
       UiUtil.setWaitCursor(true, this);
       final Map<String, Collection<Entity>> dependencies =
@@ -740,7 +740,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities,
                                                               final EntityConnectionProvider connectionProvider,
                                                               final String entityID) {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(entityID, connectionProvider) {
+    final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityID, connectionProvider) {
       @Override
       protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
         return super.performQuery(criteria);
@@ -765,7 +765,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a Collection containing the selected entities
    * @throws CancelException in case the user cancels the operation
    */
-  public static Collection<Entity> selectEntities(final DefaultEntityTableModel lookupModel, final JComponent dialogOwner,
+  public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final JComponent dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle) {
     return selectEntities(lookupModel, dialogOwner, singleSelection, dialogTitle, null);
   }
@@ -780,7 +780,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a Collection containing the selected entities
    * @throws CancelException in case the user cancels the operation
    */
-  public static Collection<Entity> selectEntities(final DefaultEntityTableModel lookupModel, final JComponent dialogOwner,
+  public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final JComponent dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle,
                                                   final Dimension preferredSize) {
     Util.rejectNullValue(lookupModel, "lookupModel");

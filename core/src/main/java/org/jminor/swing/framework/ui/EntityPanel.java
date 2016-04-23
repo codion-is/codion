@@ -19,9 +19,9 @@ import org.jminor.swing.common.ui.control.Control;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
-import org.jminor.swing.framework.model.DefaultEntityTableModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -322,7 +322,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
   /**
    * @return the EntityTableModel, null if none is available
    */
-  public final DefaultEntityTableModel getTableModel() {
+  public final SwingEntityTableModel getTableModel() {
     return entityModel.getTableModel();
   }
 

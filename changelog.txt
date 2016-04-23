@@ -4229,3 +4229,5 @@
   FXEntityListModel.getTableDataAsDelimitedString() implemented
   FXEntityListModel.savePreferences() and setColumns() implemented
   framework.model generified
+  DefaultEntityTableModel renamed to SwingEntityTableModel
+  DefaultEntityModelProvider renamed to SwingEntityModelProvider

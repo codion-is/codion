@@ -25,7 +25,8 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public final class SwingEntityModelTest extends AbstractEntityModelTest<SwingEntityModel, SwingEntityEditModel, DefaultEntityTableModel> {
+public final class SwingEntityModelTest
+        extends AbstractEntityModelTest<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
   @Override
   protected SwingEntityModel createDepartmentModel() {
@@ -55,13 +56,13 @@ public final class SwingEntityModelTest extends AbstractEntityModelTest<SwingEnt
   }
 
   @Override
-  protected DefaultEntityTableModel createEmployeeTableModel() {
-    return new DefaultEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+  protected SwingEntityTableModel createEmployeeTableModel() {
+    return new SwingEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Override
-  protected DefaultEntityTableModel createDepartmentTableModel() {
-    return new DefaultEntityTableModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+  protected SwingEntityTableModel createDepartmentTableModel() {
+    return new SwingEntityTableModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Test
@@ -71,7 +72,7 @@ public final class SwingEntityModelTest extends AbstractEntityModelTest<SwingEnt
     //are being filtered on property value change, see EmployeeEditModel.bindEvents()
     final SwingEntityModel employeeModel = (SwingEntityModel) departmentModel.getDetailModel(TestDomain.T_EMP);
     final SwingEntityEditModel employeeEditModel = (SwingEntityEditModel) employeeModel.getEditModel();
-    final DefaultEntityTableModel employeeTableModel = employeeModel.getTableModel();
+    final SwingEntityTableModel employeeTableModel = employeeModel.getTableModel();
     ValueLinks.selectedItemValueLink(new JComboBox<>((ComboBoxModel<Entity>)
             employeeEditModel.getForeignKeyComboBoxModel(TestDomain.EMP_MGR_FK)),
             EditModelValues.<Entity>value(employeeEditModel, TestDomain.EMP_MGR_FK));
@@ -156,7 +157,7 @@ public final class SwingEntityModelTest extends AbstractEntityModelTest<SwingEnt
   public void constructor() {
     new SwingEntityModel(new SwingEntityEditModel(TestDomain.T_DEPARTMENT,
             EntityConnectionProvidersTest.CONNECTION_PROVIDER));
-    new SwingEntityModel(new DefaultEntityTableModel(TestDomain.T_DEPARTMENT,
+    new SwingEntityModel(new SwingEntityTableModel(TestDomain.T_DEPARTMENT,
             EntityConnectionProvidersTest.CONNECTION_PROVIDER));
   }
 

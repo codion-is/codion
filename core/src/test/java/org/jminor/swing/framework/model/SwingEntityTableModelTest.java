@@ -30,7 +30,7 @@ import java.util.List;
 
 import static org.junit.Assert.*;
 
-public final class SwingEntityTableModelTest extends AbstractEntityTableModelTest<SwingEntityEditModel, DefaultEntityTableModel> {
+public final class SwingEntityTableModelTest extends AbstractEntityTableModelTest<SwingEntityEditModel, SwingEntityTableModel> {
 
   @Override
   protected EntityTableModelTmp createTestTableModel() {
@@ -38,31 +38,31 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   }
 
   @Override
-  protected DefaultEntityTableModel createMasterTableModel() {
-    return new DefaultEntityTableModel(TestDomain.T_MASTER, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+  protected SwingEntityTableModel createMasterTableModel() {
+    return new SwingEntityTableModel(TestDomain.T_MASTER, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Override
-  protected DefaultEntityTableModel createDetailTableModel() {
-    return new DefaultEntityTableModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+  protected SwingEntityTableModel createDetailTableModel() {
+    return new SwingEntityTableModel(TestDomain.T_DETAIL, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Override
-  protected DefaultEntityTableModel createEmployeeTableModelWithoutEditModel() {
-    return new DefaultEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+  protected SwingEntityTableModel createEmployeeTableModelWithoutEditModel() {
+    return new SwingEntityTableModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Override
-  protected DefaultEntityTableModel createDepartmentTableModel() {
-    final DefaultEntityTableModel deptModel = new DefaultEntityTableModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
+  protected SwingEntityTableModel createDepartmentTableModel() {
+    final SwingEntityTableModel deptModel = new SwingEntityTableModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider());
     deptModel.setEditModel(new SwingEntityEditModel(TestDomain.T_DEPARTMENT, testModel.getConnectionProvider()));
 
     return deptModel;
   }
 
   @Override
-  protected DefaultEntityTableModel createEmployeeTableModel() {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
+  protected SwingEntityTableModel createEmployeeTableModel() {
+    final SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.setEditModel(new SwingEntityEditModel(TestDomain.T_EMP, testModel.getConnectionProvider()));
 
     return tableModel;
@@ -82,12 +82,12 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   public void nonMatchingCriteriaModelEntityID() {
     final EntityTableCriteriaModel criteriaModel = new DefaultEntityTableCriteriaModel(TestDomain.T_DEPARTMENT, null,
             new DefaultPropertyFilterModelProvider(), new DefaultPropertyCriteriaModelProvider());
-    new DefaultEntityTableModel(TestDomain.T_EMP, null, null, criteriaModel);
+    new SwingEntityTableModel(TestDomain.T_EMP, null, null, criteriaModel);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void nullCriteriaModel() {
-    new DefaultEntityTableModel(TestDomain.T_EMP, null);
+    new SwingEntityTableModel(TestDomain.T_EMP, null);
   }
 
   @Test
@@ -135,7 +135,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
   @Test
   public void testSortComparator() {
     final Property masterFKProperty = Entities.getProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ENTITY_FK);
-    final Comparator comparator = ((DefaultEntityTableModel.DefaultEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(masterFKProperty);
+    final Comparator comparator = ((SwingEntityTableModel.DefaultEntityTableSortModel) testModel.getSortModel()).initializeColumnComparator(masterFKProperty);
     assertEquals(comparator, Entities.getComparator(TestDomain.T_MASTER));
   }
 
@@ -179,7 +179,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
 
   @Test
   public void indexOf() {
-    final DefaultEntityTableModel tableModel = new DefaultEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
+    final SwingEntityTableModel tableModel = new SwingEntityTableModel(TestDomain.T_EMP, testModel.getConnectionProvider());
     tableModel.refresh();
     tableModel.getSortModel().setSortingDirective(Entities.getProperty(TestDomain.T_EMP, TestDomain.EMP_NAME),
             SortingDirective.ASCENDING, false);
@@ -224,7 +224,7 @@ public final class SwingEntityTableModelTest extends AbstractEntityTableModelTes
     Util.flushUserPreferences();
   }
 
-  public static final class EntityTableModelTmp extends DefaultEntityTableModel {
+  public static final class EntityTableModelTmp extends SwingEntityTableModel {
 
     private final Entity[] entities = initTestEntities(new Entity[5]);
 
