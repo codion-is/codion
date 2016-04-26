@@ -97,7 +97,7 @@ public class DefaultColumnCriteriaModelTest {
     model.setUpperBound(new Date());
     model.setUpperBound(new Timestamp(System.currentTimeMillis()));
     model.setUpperBound(new Object());
-    model.setUpperBound(Boolean.valueOf(true));
+    model.setUpperBound(true);
 
     model.setLowerBound(2.2);
     model.setLowerBound(1);
@@ -106,7 +106,7 @@ public class DefaultColumnCriteriaModelTest {
     model.setLowerBound(new Date());
     model.setLowerBound(new Timestamp(System.currentTimeMillis()));
     model.setLowerBound(new Object());
-    model.setLowerBound(Boolean.valueOf(true));
+    model.setLowerBound(true);
 
     model.clearCriteria();
     assertEquals(1, clearCounter.get());

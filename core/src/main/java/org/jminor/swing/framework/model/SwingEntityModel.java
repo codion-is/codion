@@ -7,8 +7,7 @@ import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.model.DefaultEntityModel;
 
-public class SwingEntityModel
-        extends DefaultEntityModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
+public class SwingEntityModel extends DefaultEntityModel<SwingEntityModel, SwingEntityEditModel, SwingEntityTableModel> {
 
   /** Instantiates a new SwingEntityModel with default EntityEditModel and EntityTableModel implementations.
    * @param entityID the ID of the Entity this DefaultEntityModel represents

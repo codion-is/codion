@@ -81,7 +81,7 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     if (!editModel.getEntityID().equals(getEntityID())) {
       throw new IllegalArgumentException("Entity ID mismatch, editModel: " + editModel.getEntityID() + ", tableModel: " + getEntityID());
     }
-    this.editModel = (FXEntityEditModel) editModel;
+    this.editModel = editModel;
     bindEditModelEvents();
   }
 

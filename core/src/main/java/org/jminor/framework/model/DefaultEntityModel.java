@@ -41,8 +41,9 @@ import java.util.Set;
  * EntityPanel panel = new EntityPanel(model);
  * </pre>
  */
-public class DefaultEntityModel<Model extends DefaultEntityModel<Model, EditModel, TableModel>, EditModel extends DefaultEntityEditModel,
-        TableModel extends EntityTableModel<EditModel>> implements EntityModel<Model, EditModel, TableModel> {
+public class DefaultEntityModel<Model extends DefaultEntityModel<Model, EditModel, TableModel>,
+        EditModel extends DefaultEntityEditModel, TableModel extends EntityTableModel<EditModel>>
+        implements EntityModel<Model, EditModel, TableModel> {
 
   protected static final Logger LOG = LoggerFactory.getLogger(DefaultEntityModel.class);
 

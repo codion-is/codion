@@ -15,7 +15,7 @@ import java.util.List;
  * Specifies a class responsible for, among other things, coordinating a {@link EntityEditModel} and an {@link EntityTableModel}.
  */
 public interface EntityModel<Model extends EntityModel<Model, EditModel, TableModel>,
-        EditModel extends EntityEditModel,  TableModel extends EntityTableModel<EditModel>>
+        EditModel extends EntityEditModel, TableModel extends EntityTableModel<EditModel>>
         extends Refreshable, EntityDataProvider {
 
   /**
