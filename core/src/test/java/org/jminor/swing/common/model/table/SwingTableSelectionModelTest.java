@@ -15,11 +15,11 @@ import java.util.List;
 import static org.junit.Assert.assertEquals;
 
 //todo move rename refactor
-public class DefaultTableSelectionModelTest {
+public class SwingTableSelectionModelTest {
 
   private final SelectionModel<String> testModel;
 
-  public DefaultTableSelectionModelTest() {
+  public SwingTableSelectionModelTest() {
     final List<String> data = Arrays.asList("A", "B", "C");
     final TableColumn column = new TableColumn(0);
     column.setIdentifier(0);

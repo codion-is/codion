@@ -9,7 +9,7 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.PropertyComboBoxModel;
-import org.jminor.swing.common.model.combobox.DefaultFilteredComboBoxModel;
+import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -18,7 +18,7 @@ import java.util.List;
 /**
  * A combo box model based on a single entity property.
  */
-public class DefaultPropertyComboBoxModel<T> extends DefaultFilteredComboBoxModel<T> implements PropertyComboBoxModel {
+public class SwingPropertyComboBoxModel<T> extends SwingFilteredComboBoxModel<T> implements PropertyComboBoxModel {
 
   private final ValueCollectionProvider<T> valueProvider;
 
@@ -28,8 +28,8 @@ public class DefaultPropertyComboBoxModel<T> extends DefaultFilteredComboBoxMode
    * @param property the underlying property
    * @param nullValue the value to use to represent a null value
    */
-  public DefaultPropertyComboBoxModel(final String entityID, final EntityConnectionProvider connectionProvider,
-                                      final Property.ColumnProperty property, final T nullValue) {
+  public SwingPropertyComboBoxModel(final String entityID, final EntityConnectionProvider connectionProvider,
+                                    final Property.ColumnProperty property, final T nullValue) {
     this(new ValueCollectionProvider<T>() {
       @Override
       public Collection<T> values() {
@@ -47,7 +47,7 @@ public class DefaultPropertyComboBoxModel<T> extends DefaultFilteredComboBoxMode
    * @param valueProvider provides the values to show in this combo box model
    * @param nullValue the value to use to represent a null value
    */
-  public DefaultPropertyComboBoxModel(final ValueCollectionProvider<T> valueProvider, final T nullValue) {
+  public SwingPropertyComboBoxModel(final ValueCollectionProvider<T> valueProvider, final T nullValue) {
     super(nullValue);
     this.valueProvider = valueProvider;
   }

@@ -17,7 +17,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.framework.model.EntityLookupModel;
-import org.jminor.swing.common.model.combobox.DefaultFilteredComboBoxModel;
+import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.UiValues;
 import org.jminor.swing.common.ui.ValueLinks;
@@ -359,7 +359,7 @@ public final class EntityLookupField extends JTextField {
 
     private void initializeUI(final EntityLookupModel lookupModel) {
       final JPanel propertyBasePanel = new JPanel(new CardLayout(5, 5));
-      final DefaultFilteredComboBoxModel<Property.ColumnProperty> propertyComboBoxModel = new DefaultFilteredComboBoxModel<>();
+      final SwingFilteredComboBoxModel<Property.ColumnProperty> propertyComboBoxModel = new SwingFilteredComboBoxModel<>();
       for (final Map.Entry<Property.ColumnProperty, EntityLookupModel.LookupSettings> entry :
               lookupModel.getPropertyLookupSettings().entrySet()) {
         propertyComboBoxModel.addItem(entry.getKey());

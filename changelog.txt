@@ -4232,3 +4232,4 @@
   DefaultEntityTableModel renamed to SwingEntityTableModel
   DefaultEntityModelProvider renamed to SwingEntityModelProvider
   Snapshot release mechanism enabled
+  More swing components renamed

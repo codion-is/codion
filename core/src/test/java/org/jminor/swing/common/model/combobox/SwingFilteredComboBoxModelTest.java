@@ -19,9 +19,9 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
-public class DefaultFilteredComboBoxModelTest {
+public class SwingFilteredComboBoxModelTest {
 
-  private DefaultFilteredComboBoxModel<String> testModel;
+  private SwingFilteredComboBoxModel<String> testModel;
 
   private static final String NULL = "null";
   private static final String ANNA = "anna";
@@ -284,7 +284,7 @@ public class DefaultFilteredComboBoxModelTest {
 
   @Before
   public void setUp() throws Exception {
-    testModel = new DefaultFilteredComboBoxModel<>();
+    testModel = new SwingFilteredComboBoxModel<>();
     testModel.setNullValue(NULL);
     final List<String> names = new ArrayList<>();
     names.add(ANNA);

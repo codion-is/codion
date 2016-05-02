@@ -25,7 +25,7 @@ import java.util.List;
  * A default table selection model implementation
  * @param <R> the type of rows
  */
-public final class DefaultTableSelectionModel<R> extends DefaultListSelectionModel implements SelectionModel<R>, ListSelectionModel {
+public final class SwingTableSelectionModel<R> extends DefaultListSelectionModel implements SelectionModel<R>, ListSelectionModel {
 
   private final Event selectionChangedEvent = Events.event();
   private final Event selectedIndexChangedEvent = Events.event();
@@ -48,16 +48,16 @@ public final class DefaultTableSelectionModel<R> extends DefaultListSelectionMod
   private final TableModelProxy<R> tableModelProxy;
 
   /**
-   * Instantiates a new DefaultTableSelectionModel
+   * Instantiates a new SwingTableSelectionModel
    * @param tableModelProxy the TableModelProxy required for accessing table model items and size
    */
-  public DefaultTableSelectionModel(final TableModelProxy<R> tableModelProxy) {
+  public SwingTableSelectionModel(final TableModelProxy<R> tableModelProxy) {
     this.tableModelProxy = tableModelProxy;
     this.tableModelProxy.addTableModelListener(new TableModelListener() {
       @Override
       public void tableChanged(final TableModelEvent e) {
         if (e.getType() == TableModelEvent.DELETE) {
-          DefaultTableSelectionModel.super.removeIndexInterval(e.getFirstRow(), e.getLastRow());
+          SwingTableSelectionModel.super.removeIndexInterval(e.getFirstRow(), e.getLastRow());
         }
       }
     });

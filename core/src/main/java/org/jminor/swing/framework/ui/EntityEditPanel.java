@@ -95,7 +95,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * The edit model this edit panel is associated with
    */
-  private final EntityEditModel editModel;
+  private final SwingEntityEditModel editModel;
 
   /**
    * Input components mapped to their respective propertyIDs
@@ -185,7 +185,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * @return the edit model this panel is based on
    */
-  public final EntityEditModel getEditModel() {
+  public final SwingEntityEditModel getEditModel() {
     return editModel;
   }
 

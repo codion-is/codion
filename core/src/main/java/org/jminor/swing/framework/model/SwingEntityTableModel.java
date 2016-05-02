@@ -27,6 +27,7 @@ import org.jminor.swing.common.model.table.AbstractFilteredTableModel;
 import org.jminor.swing.common.model.table.AbstractTableSortModel;
 import org.jminor.swing.common.model.table.FilteredTableColumnModel;
 import org.jminor.swing.common.model.table.FilteredTableModel;
+import org.jminor.swing.common.model.table.SortingDirective;
 import org.jminor.swing.common.model.table.TableSortModel;
 
 import org.slf4j.Logger;
@@ -324,6 +325,17 @@ public class SwingEntityTableModel extends AbstractFilteredTableModel<Entity, Pr
   @Override
   public final boolean isCellEditable(final int rowIndex, final int columnIndex) {
     return false;
+  }
+
+  /**
+   * A convenience method for setting the sorting directive for the given property
+   * @param propertyID the property ID
+   * @param directive the directive
+   * @param addColumnToSort if true then the column is added to the sorting state
+   * @see TableSortModel#setSortingDirective(Object, SortingDirective, boolean)
+   */
+  public void setSortingDirective(final String propertyID, final SortingDirective directive, final boolean addColumnToSort) {
+    getSortModel().setSortingDirective(Entities.getProperty(getEntityID(), propertyID), directive, addColumnToSort);
   }
 
   /** {@inheritDoc} */

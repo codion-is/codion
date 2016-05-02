@@ -18,7 +18,7 @@ import java.util.Collections;
 
 import static org.junit.Assert.*;
 
-public class DefaultFilteredTableColumnModelTest {
+public class SwingFilteredTableColumnModelTest {
 
   @Test
   public void testModel() {
@@ -66,12 +66,12 @@ public class DefaultFilteredTableColumnModelTest {
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullColumns() {
-    new DefaultFilteredTableColumnModel<>(null, new ArrayList<ColumnCriteriaModel<Integer>>());
+    new SwingFilteredTableColumnModel<>(null, new ArrayList<ColumnCriteriaModel<Integer>>());
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNoColumns() {
-    new DefaultFilteredTableColumnModel<>(new ArrayList<TableColumn>(), new ArrayList<ColumnCriteriaModel<Integer>>());
+    new SwingFilteredTableColumnModel<>(new ArrayList<TableColumn>(), new ArrayList<ColumnCriteriaModel<Integer>>());
   }
 
   @Test
@@ -85,8 +85,8 @@ public class DefaultFilteredTableColumnModelTest {
     final TableColumn column3 = new TableColumn(3);
     column3.setIdentifier(3);
 
-    final DefaultFilteredTableColumnModel<Integer> columnModel =
-            new DefaultFilteredTableColumnModel<>(Arrays.asList(column0, column1, column2, column3), null);
+    final SwingFilteredTableColumnModel<Integer> columnModel =
+            new SwingFilteredTableColumnModel<>(Arrays.asList(column0, column1, column2, column3), null);
 
     columnModel.setColumns(1, 3);
     assertTrue(columnModel.isColumnVisible(1));
@@ -129,6 +129,6 @@ public class DefaultFilteredTableColumnModelTest {
     column.setIdentifier(0);
     final ColumnCriteriaModel<Integer> filterModel = new DefaultColumnCriteriaModel<>(0, Types.VARCHAR, "%");
 
-    return new DefaultFilteredTableColumnModel<>(Collections.singletonList(column), Collections.singletonList(filterModel));
+    return new SwingFilteredTableColumnModel<>(Collections.singletonList(column), Collections.singletonList(filterModel));
   }
 }

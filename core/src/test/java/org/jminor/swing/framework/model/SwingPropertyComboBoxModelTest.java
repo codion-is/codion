@@ -16,15 +16,15 @@ import org.junit.Test;
 
 import static org.junit.Assert.assertTrue;
 
-public final class DefaultPropertyComboBoxModelTest {
+public final class SwingPropertyComboBoxModelTest {
 
   private final FilteredComboBoxModel comboBoxModel;
   private final Event refreshEvent = Events.event();
 
-  public DefaultPropertyComboBoxModelTest() {
+  public SwingPropertyComboBoxModelTest() {
     TestDomain.init();
     final Property.ColumnProperty property = Entities.getColumnProperty(TestDomain.T_DEPARTMENT, TestDomain.DEPARTMENT_NAME);
-    comboBoxModel = new DefaultPropertyComboBoxModel(TestDomain.T_DEPARTMENT,
+    comboBoxModel = new SwingPropertyComboBoxModel(TestDomain.T_DEPARTMENT,
             EntityConnectionProvidersTest.CONNECTION_PROVIDER, property, null);
     refreshEvent.addListener(new EventListener() {
       @Override

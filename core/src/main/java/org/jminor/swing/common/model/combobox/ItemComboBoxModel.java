@@ -12,7 +12,7 @@ import java.util.Comparator;
 /**
  * A ComboBoxModel implementation based on the {@link Item} class.
  */
-public class ItemComboBoxModel<T> extends DefaultFilteredComboBoxModel<Item<T>> {
+public class ItemComboBoxModel<T> extends SwingFilteredComboBoxModel<Item<T>> {
 
   /** Constructs a new ItemComboBoxModel. */
   public ItemComboBoxModel() {}

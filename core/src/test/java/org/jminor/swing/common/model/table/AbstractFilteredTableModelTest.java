@@ -500,7 +500,7 @@ public final class AbstractFilteredTableModelTest {
         events.incrementAndGet();
       }
     };
-    final DefaultTableSelectionModel<String> selectionModel = (DefaultTableSelectionModel<String>) tableModel.getSelectionModel();
+    final SwingTableSelectionModel<String> selectionModel = (SwingTableSelectionModel<String>) tableModel.getSelectionModel();
     selectionModel.addSelectedIndexListener(listener);
     selectionModel.addSelectionChangedListener(listener);
 
@@ -628,7 +628,7 @@ public final class AbstractFilteredTableModelTest {
     assertTrue("Model should contain all entities", tableModelContainsAll(ITEMS, false, tableModel));
 
     //test selection and filtering together
-    final DefaultTableSelectionModel<String> selectionModel = (DefaultTableSelectionModel<String>) tableModel.getSelectionModel();
+    final SwingTableSelectionModel<String> selectionModel = (SwingTableSelectionModel<String>) tableModel.getSelectionModel();
     tableModel.getSelectionModel().addSelectedIndexes(Collections.singletonList(3));
     assertEquals("current index should fit", 3, selectionModel.getMinSelectionIndex());
 
@@ -658,15 +658,15 @@ public final class AbstractFilteredTableModelTest {
   public void testSelectionAndFiltering() {
     tableModel.refresh();
     tableModel.getSelectionModel().addSelectedIndexes(Collections.singletonList(3));
-    assertEquals("current index should fit", 3, ((DefaultTableSelectionModel) tableModel.getSelectionModel()).getMinSelectionIndex());
+    assertEquals("current index should fit", 3, ((SwingTableSelectionModel) tableModel.getSelectionModel()).getMinSelectionIndex());
 
     tableModel.getColumnModel().getColumnFilterModel(0).setLikeValue("d");
     assertEquals("current index should fit", 0,
-            ((DefaultTableSelectionModel) tableModel.getSelectionModel()).getMinSelectionIndex());
+            ((SwingTableSelectionModel) tableModel.getSelectionModel()).getMinSelectionIndex());
     assertEquals("selected indexes should fit", Collections.singletonList(0), tableModel.getSelectionModel().getSelectedIndexes());
     tableModel.getColumnModel().getColumnFilterModel(0).setEnabled(false);
     assertEquals("current index should fit", 0,
-            ((DefaultTableSelectionModel) tableModel.getSelectionModel()).getMinSelectionIndex());
+            ((SwingTableSelectionModel) tableModel.getSelectionModel()).getMinSelectionIndex());
     assertEquals("selected item should fit", ITEMS[3], tableModel.getSelectionModel().getSelectedItem());
   }
 

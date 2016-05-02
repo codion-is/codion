@@ -102,8 +102,8 @@ public abstract class AbstractFilteredTableModel<R, C> extends AbstractTableMode
   public AbstractFilteredTableModel(final TableSortModel<R, C> sortModel, final Collection<? extends ColumnCriteriaModel<C>> columnFilterModels) {
     Util.rejectNullValue(sortModel, "sortModel");
     this.sortModel = sortModel;
-    this.columnModel = new DefaultFilteredTableColumnModel<>(sortModel.getColumns(), columnFilterModels);
-    this.selectionModel = new DefaultTableSelectionModel<>(this);
+    this.columnModel = new SwingFilteredTableColumnModel<>(sortModel.getColumns(), columnFilterModels);
+    this.selectionModel = new SwingTableSelectionModel<>(this);
     this.filterCriteria = new DefaultFilterCriteria<>(this.columnModel.getColumnFilterModels());
     bindEventsInternal();
   }

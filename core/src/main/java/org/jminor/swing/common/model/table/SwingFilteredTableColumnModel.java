@@ -27,7 +27,7 @@ import java.util.Map;
  * A TableColumnModel handling hidden columns
  * @param <C> the type of column identifier
  */
-public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel implements FilteredTableColumnModel<C> {
+public class SwingFilteredTableColumnModel<C> extends DefaultTableColumnModel implements FilteredTableColumnModel<C> {
 
   private final Event<C> columnHiddenEvent = Events.event();
   private final Event<C> columnShownEvent = Events.event();
@@ -53,12 +53,12 @@ public class DefaultFilteredTableColumnModel<C> extends DefaultTableColumnModel 
   private final int[] columnIndexCache;
 
   /**
-   * Instantiates a new DefaultFilteredTableColumnModel, note that the TableColumnModel
+   * Instantiates a new SwingFilteredTableColumnModel, note that the TableColumnModel
    * this model is to be based on must contain all the columns when this constructor is called
    * @param columns the columns to base this model on
    * @param columnFilterModels the filter models if any
    */
-  public DefaultFilteredTableColumnModel(final List<TableColumn> columns, final Collection<? extends ColumnCriteriaModel<C>> columnFilterModels) {
+  public SwingFilteredTableColumnModel(final List<TableColumn> columns, final Collection<? extends ColumnCriteriaModel<C>> columnFilterModels) {
     if (columns == null || columns.isEmpty()) {
       throw new IllegalArgumentException("One or more columns must be specified");
     }

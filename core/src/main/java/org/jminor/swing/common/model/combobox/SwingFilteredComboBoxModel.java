@@ -25,7 +25,7 @@ import java.util.concurrent.CopyOnWriteArrayList;
 /**
  * A default {@link FilteredComboBoxModel} implementation.
  */
-public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, ComboBoxModel<T> {
+public class SwingFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>, ComboBoxModel<T> {
 
   private static final FilterCriteria ACCEPT_ALL_CRITERIA = new FilterCriteria.AcceptAllCriteria();
 
@@ -52,30 +52,30 @@ public class DefaultFilteredComboBoxModel<T> implements FilteredComboBoxModel<T>
   private final CopyOnWriteArrayList<ListDataListener> listDataListeners = new CopyOnWriteArrayList<>();
 
   /**
-   * Instantiates a new DefaultFilteredComboBoxModel, without a nullValueString.
+   * Instantiates a new SwingFilteredComboBoxModel, without a nullValueString.
    * The model contents are sorted automatically.
    */
-  public DefaultFilteredComboBoxModel() {
+  public SwingFilteredComboBoxModel() {
     this(null);
   }
 
   /**
-   * Instantiates a new DefaultFilteredComboBoxModel, without a nullValueString.
+   * Instantiates a new SwingFilteredComboBoxModel, without a nullValueString.
    * The model contents are sorted automatically with a default collation based comparator.
    * @param nullValue a value representing a null value, which is shown at the top of the item list
    */
-  public DefaultFilteredComboBoxModel(final T nullValue) {
+  public SwingFilteredComboBoxModel(final T nullValue) {
     this(nullValue, new SortComparator<>(nullValue));
   }
 
   /**
-   * Instantiates a new DefaultFilteredComboBoxModel with the given nullValueString.
+   * Instantiates a new SwingFilteredComboBoxModel with the given nullValueString.
    * @param nullValue a value representing a null value, which is shown at the top of the item list
    * @param sortComparator the Comparator used to sort the contents of this combo box model, if null then
    * the contents are not sorted
    * @see #isNullValueSelected()
    */
-  public DefaultFilteredComboBoxModel(final T nullValue, final Comparator<? super T> sortComparator) {
+  public SwingFilteredComboBoxModel(final T nullValue, final Comparator<? super T> sortComparator) {
     this.nullValue = nullValue;
     this.sortComparator = sortComparator;
   }

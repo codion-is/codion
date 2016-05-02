@@ -17,7 +17,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.swing.common.model.combobox.DefaultFilteredComboBoxModel;
+import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -31,7 +31,7 @@ import java.util.Set;
 /**
  * A ComboBoxModel based on an Entity, showing by default all the entities in the underlying table.
  */
-public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Entity> implements EntityComboBoxModel {
+public class SwingEntityComboBoxModel extends SwingFilteredComboBoxModel<Entity> implements EntityComboBoxModel {
 
   private final Event refreshDoneEvent = Events.event();
 
@@ -89,7 +89,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
    * @param entityID the ID of the entity this combo box model should represent
    * @param connectionProvider a EntityConnectionProvider instance
    */
-  public DefaultEntityComboBoxModel(final String entityID, final EntityConnectionProvider connectionProvider) {
+  public SwingEntityComboBoxModel(final String entityID, final EntityConnectionProvider connectionProvider) {
     Util.rejectNullValue(entityID, "entityID");
     Util.rejectNullValue(connectionProvider, "connectionProvider");
     this.entityID = entityID;
@@ -232,7 +232,7 @@ public class DefaultEntityComboBoxModel extends DefaultFilteredComboBoxModel<Ent
   public final EntityComboBoxModel createForeignKeyFilterComboBoxModel(final String foreignKeyPropertyID) {
     final Property.ForeignKeyProperty foreignKeyProperty = Entities.getForeignKeyProperty(entityID, foreignKeyPropertyID);
     final EntityComboBoxModel foreignKeyModel =
-            new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
+            new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
     foreignKeyModel.setNullValue(EntityUtil.createToStringEntity(foreignKeyProperty.getReferencedEntityID(), "-"));
     foreignKeyModel.refresh();
     linkForeignKeyComboBoxModel(foreignKeyPropertyID, foreignKeyModel);

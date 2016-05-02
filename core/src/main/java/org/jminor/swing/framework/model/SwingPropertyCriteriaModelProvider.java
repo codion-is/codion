@@ -24,7 +24,7 @@ public class SwingPropertyCriteriaModelProvider extends DefaultPropertyCriteriaM
     if (property instanceof Property.ForeignKeyProperty) {
       final Property.ForeignKeyProperty foreignKeyProperty = (Property.ForeignKeyProperty) property;
       if (Entities.isSmallDataset(foreignKeyProperty.getReferencedEntityID())) {
-        final EntityComboBoxModel comboBoxModel = new DefaultEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
+        final EntityComboBoxModel comboBoxModel = new SwingEntityComboBoxModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider);
         comboBoxModel.setNullValue(EntityUtil.createToStringEntity(foreignKeyProperty.getReferencedEntityID(), ""));
 
         return new SwingForeignKeyCriteriaModel(foreignKeyProperty, comboBoxModel);

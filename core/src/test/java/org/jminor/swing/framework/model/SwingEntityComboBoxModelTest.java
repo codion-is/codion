@@ -26,23 +26,23 @@ import java.util.concurrent.atomic.AtomicInteger;
 
 import static org.junit.Assert.*;
 
-public final class DefaultEntityComboBoxModelTest {
+public final class SwingEntityComboBoxModelTest {
 
-  private final DefaultEntityComboBoxModel comboBoxModel;
+  private final SwingEntityComboBoxModel comboBoxModel;
 
-  public DefaultEntityComboBoxModelTest() {
+  public SwingEntityComboBoxModelTest() {
     TestDomain.init();
-    comboBoxModel = new DefaultEntityComboBoxModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    comboBoxModel = new SwingEntityComboBoxModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullEntityID() {
-    new DefaultEntityComboBoxModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    new SwingEntityComboBoxModel(null, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Test(expected = IllegalArgumentException.class)
   public void constructorNullConnectionProvider() {
-    new DefaultEntityComboBoxModel(TestDomain.T_EMP, null);
+    new SwingEntityComboBoxModel(TestDomain.T_EMP, null);
   }
 
   @Test
