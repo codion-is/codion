@@ -10,14 +10,13 @@ import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser;
 import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
-import org.jminor.swing.framework.model.EntityApplicationModel;
+import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
 
 import javax.swing.JTable;
 
-public class SchemaBrowserAppPanel extends EntityApplicationPanel {
+public class SchemaBrowserAppPanel extends EntityApplicationPanel<SchemaBrowserAppPanel.SchemaBrowserApplicationModel> {
 
   @Override
   protected void setupEntityPanelProviders() {
@@ -34,7 +33,7 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
+  protected SchemaBrowserApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
     return new SchemaBrowserApplicationModel(connectionProvider);
   }
 
@@ -49,8 +48,8 @@ public class SchemaBrowserAppPanel extends EntityApplicationPanel {
     new SchemaBrowserAppPanel().startApplication("Schema Browser", null, false, UiUtil.getScreenSizeRatio(0.5), new User("scott", "tiger"));
   }
 
-  private static final class SchemaBrowserApplicationModel extends DefaultEntityApplicationModel {
-    private SchemaBrowserApplicationModel(final EntityConnectionProvider connectionProvider) {
+  public static final class SchemaBrowserApplicationModel extends SwingEntityApplicationModel {
+    public SchemaBrowserApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
     }
 

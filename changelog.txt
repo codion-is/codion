@@ -4212,3 +4212,24 @@
   DatabaseException.errorCode field added, transient for now due to serialization
   UiUtil, now uses SwingUtilities.invokeLater() for focus gained events, JFormattedTextField did not behave correctly without it
   Values, bean value error message improved
+0.10.0
+  Major refactoring for reuse of model classes in JavaFX, module client-model added
+  JavaFX improvements
+  Ivy module configuration improved
+  SwingPropertyCriteriaModelProvider added, DefaultPropertyCriteriaModelProvider and DefaultPropertyFilterModelProvider moved to framework.model
+  FXCriteriaModelProvider now extends DefaultPropertyCriteriaModelProvider
+  FXEntityListModel, a bunch of EntityTableModel methods implemented
+  EntityTableModel now implements FilteredModel
+  AbstractEntityTableModelTest refactored from DefaultEntityTableModelTest, SwingEntityTableModelTest added and FXEntityListModelTest improved
+  AbstractEntityModelTest refactored from DefaultEntityModelTest, SwingEntityModelTest and FXEntityModelTest added
+  AbstractEntityApplicationModelTest refactored from DefaultEntityApplicationModelTest, SwingEntityApplicationModelTest and FXEntityApplicationModelTest added
+  ObservableEntityList refactored from FXEntityListModel
+  Util.getDelimitedString() no longer appends a redundant line separator at end
+  EntityUtil.getStringValueArray() added
+  FXEntityListModel.getTableDataAsDelimitedString() implemented
+  FXEntityListModel.savePreferences() and setColumns() implemented
+  framework.model generified
+  DefaultEntityTableModel renamed to SwingEntityTableModel
+  DefaultEntityModelProvider renamed to SwingEntityModelProvider
+  Snapshot release mechanism enabled
+  More swing components renamed

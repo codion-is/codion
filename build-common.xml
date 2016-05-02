@@ -126,11 +126,13 @@
     <ivy:resolve/>
     <ivy:deliver deliverpattern="ivy.xml" pubrevision="${version}"/>
     <ivy:makepom ivyfile="ivy.xml" pomfile="dist/${ant.project.name}.pom">
+      <mapping conf="compile" scope="compile" />
       <mapping conf="runtime" scope="runtime" />
+      <mapping conf="test" scope="test" />
       <mapping conf="sources" scope="sources" />
       <mapping conf="javadoc" scope="javadoc" />
     </ivy:makepom>
-    <ivy:publish pubrevision="${version}" status="release" resolver="publish" overwrite="true" forcedeliver="true">
+    <ivy:publish pubrevision="${version}" status="${release.status}" resolver="publish.${release.status}" overwrite="true" forcedeliver="true">
       <artifacts pattern="dist/[artifact].[ext]"/>
     </ivy:publish>
     <move file="ivy.xml.bak" tofile="ivy.xml"/>

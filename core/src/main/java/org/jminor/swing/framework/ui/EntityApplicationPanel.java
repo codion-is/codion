@@ -17,6 +17,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.domain.Entities;
+import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
 import org.jminor.swing.SwingConfiguration;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
@@ -29,8 +30,7 @@ import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
-import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
-import org.jminor.swing.framework.model.EntityApplicationModel;
+import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -59,7 +59,9 @@ import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
 import javax.swing.tree.DefaultMutableTreeNode;
 import javax.swing.tree.DefaultTreeModel;
+import javax.swing.tree.MutableTreeNode;
 import javax.swing.tree.TreeModel;
+import javax.swing.tree.TreeNode;
 import javax.swing.tree.TreePath;
 import java.awt.BorderLayout;
 import java.awt.Dimension;
@@ -80,7 +82,8 @@ import java.util.Map;
  * A central application panel class.
  * @param <Model> the application model type
  */
-public abstract class EntityApplicationPanel<Model extends EntityApplicationModel> extends JPanel implements ExceptionHandler, MasterDetailPanel {
+public abstract class EntityApplicationPanel<Model extends SwingEntityApplicationModel>
+        extends JPanel implements ExceptionHandler, MasterDetailPanel {
 
   private static final Logger LOG = LoggerFactory.getLogger(EntityApplicationPanel.class);
 
@@ -141,7 +144,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @param panelProviders the main application panel providers
    * @return this application panel instance
    */
-  public final EntityApplicationPanel addEntityPanelProviders(final EntityPanelProvider... panelProviders) {
+  public final EntityApplicationPanel<Model> addEntityPanelProviders(final EntityPanelProvider... panelProviders) {
     Util.rejectNullValue(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addEntityPanelProvider(panelProvider);
@@ -154,7 +157,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @param panelProvider the main application panel provider
    * @return this application panel instance
    */
-  public final EntityApplicationPanel addEntityPanelProvider(final EntityPanelProvider panelProvider) {
+  public final EntityApplicationPanel<Model> addEntityPanelProvider(final EntityPanelProvider panelProvider) {
     entityPanelProviders.add(panelProvider);
     return this;
   }
@@ -164,7 +167,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @param panelProviders the support application panel providers
    * @return this application panel instance
    */
-  public final EntityApplicationPanel addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
+  public final EntityApplicationPanel<Model> addSupportPanelProviders(final EntityPanelProvider... panelProviders) {
     Util.rejectNullValue(panelProviders, "panelProviders");
     for (final EntityPanelProvider panelProvider : panelProviders) {
       addSupportPanelProvider(panelProvider);
@@ -177,7 +180,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
    * @param panelProvider the support application panel provider
    * @return this application panel instance
    */
-  public final EntityApplicationPanel addSupportPanelProvider(final EntityPanelProvider panelProvider) {
+  public final EntityApplicationPanel<Model> addSupportPanelProvider(final EntityPanelProvider panelProvider) {
     supportPanelProviders.add(panelProvider);
     return this;
   }
@@ -488,6 +491,38 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   }
 
   /**
+   * @return a tree model showing the dependencies between entities via foreign keys
+   */
+  public static TreeModel getDependencyTreeModel() {
+    return getDependencyTreeModel(null);
+  }
+
+  /**
+   * @param domainID the ID of the domain for which to return a dependency tree model
+   * @return a tree model showing the dependencies between entities via foreign keys
+   */
+  public static TreeModel getDependencyTreeModel(final String domainID) {
+    final DefaultMutableTreeNode root = new DefaultMutableTreeNode(null);
+    for (final String entityID : Entities.getDefinitions(domainID).keySet()) {
+      if (Entities.getForeignKeyProperties(entityID).isEmpty() || referencesOnlySelf(entityID)) {
+        root.add(new EntityDependencyTreeNode(domainID, entityID));
+      }
+    }
+
+    return new DefaultTreeModel(root);
+  }
+
+  private static boolean referencesOnlySelf(final String entityID) {
+    for (final Property.ForeignKeyProperty fkProperty : Entities.getForeignKeyProperties(entityID)) {
+      if (!fkProperty.getReferencedEntityID().equals(entityID)) {
+        return false;
+      }
+    }
+
+    return true;
+  }
+
+  /**
    * Returns the JTabbedPane used by the default UI, note that this can be null if the default UI
    * initialization has been overridden. Returns null until {@link #initializeUI()} has been called
    * @return the default application tab pane
@@ -686,7 +721,6 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
 
   /**
    * Override to add event bindings after initialization
-   * @see #initialize(EntityApplicationModel)
    */
   protected void bindEvents() {}
 
@@ -1188,7 +1222,7 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
   }
 
   private JScrollPane initializeDependencyTree() {
-    return initializeTree(DefaultEntityApplicationModel.getDependencyTreeModel());
+    return initializeTree(getDependencyTreeModel());
   }
 
   private JScrollPane initializeTree(final TreeModel treeModel) {
@@ -1241,5 +1275,57 @@ public abstract class EntityApplicationPanel<Model extends EntityApplicationMode
     }
 
     return username;
+  }
+
+  private static final class EntityDependencyTreeNode extends DefaultMutableTreeNode {
+
+    private final String domainID;
+
+    private EntityDependencyTreeNode(final String domainID, final String entityID) {
+      super(entityID);
+      this.domainID = domainID;
+      Util.rejectNullValue(entityID, "entityID");
+    }
+
+    /**
+     * @return the ID of the entity this node represents
+     */
+    public String getEntityID() {
+      return (String) getUserObject();
+    }
+
+    @Override
+    public void setParent(final MutableTreeNode newParent) {
+      super.setParent(newParent);
+      removeAllChildren();
+      for (final EntityDependencyTreeNode child : initializeChildren()) {
+        add(child);
+      }
+    }
+
+    private List<EntityDependencyTreeNode> initializeChildren() {
+      final List<EntityDependencyTreeNode> childrenList = new ArrayList<>();
+      for (final String entityID : Entities.getDefinitions(domainID).keySet()) {
+        for (final Property.ForeignKeyProperty fkProperty : Entities.getForeignKeyProperties(entityID)) {
+          if (fkProperty.getReferencedEntityID().equals(getEntityID()) && !foreignKeyCycle(fkProperty.getReferencedEntityID())) {
+            childrenList.add(new EntityDependencyTreeNode(domainID, entityID));
+          }
+        }
+      }
+
+      return childrenList;
+    }
+
+    private boolean foreignKeyCycle(final String referencedEntityID) {
+      TreeNode tmp = getParent();
+      while (tmp instanceof EntityDependencyTreeNode) {
+        if (((EntityDependencyTreeNode) tmp).getEntityID().equals(referencedEntityID)) {
+          return true;
+        }
+        tmp = tmp.getParent();
+      }
+
+      return false;
+    }
   }
 }

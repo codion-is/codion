@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.petstore.beans.ui;
 
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
-import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JTextField;
@@ -13,7 +13,7 @@ import static org.jminor.framework.demos.petstore.domain.Petstore.*;
 
 public class CategoryEditPanel extends EntityEditPanel {
 
-  public CategoryEditPanel(final EntityEditModel model) {
+  public CategoryEditPanel(final SwingEntityEditModel model) {
     super(model);
   }
 

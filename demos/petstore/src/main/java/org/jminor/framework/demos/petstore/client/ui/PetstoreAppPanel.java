@@ -16,15 +16,14 @@ import org.jminor.framework.demos.petstore.beans.ui.TagEditPanel;
 import org.jminor.framework.demos.petstore.beans.ui.TagItemEditPanel;
 import org.jminor.framework.demos.petstore.domain.Petstore;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
-import org.jminor.swing.framework.model.EntityApplicationModel;
+import org.jminor.swing.framework.model.SwingEntityApplicationModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
 
 import java.util.Locale;
 
-public final class PetstoreAppPanel extends EntityApplicationPanel {
+public final class PetstoreAppPanel extends EntityApplicationPanel<PetstoreAppPanel.PetstoreApplicationModel> {
 
   @Override
   protected void setupEntityPanelProviders() {
@@ -53,7 +52,7 @@ public final class PetstoreAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
+  protected PetstoreApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
     return new PetstoreApplicationModel(connectionProvider);
   }
 
@@ -63,8 +62,8 @@ public final class PetstoreAppPanel extends EntityApplicationPanel {
     new PetstoreAppPanel().startApplication("The Pet Store", null, false, UiUtil.getScreenSizeRatio(0.8), new User("scott", "tiger"));
   }
 
-  private static final class PetstoreApplicationModel extends DefaultEntityApplicationModel {
-    private PetstoreApplicationModel(final EntityConnectionProvider connectionProvider) {
+  public static final class PetstoreApplicationModel extends SwingEntityApplicationModel {
+    public PetstoreApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
     }
 

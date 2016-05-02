@@ -10,7 +10,7 @@ import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.javafx.framework.model.EntityApplicationModel;
+import org.jminor.framework.model.EntityApplicationModel;
 
 import javafx.application.Application;
 import javafx.scene.Scene;
@@ -93,6 +93,7 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
       stage.getIcons().add(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName)));
       initializeEntitieViews();
       final Scene applicationScene = initializeApplicationScene(stage);
+      stage.setOnCloseRequest(event -> savePreferences());
 //      ((VBox) applicationScene.getRoot()).getChildren().addAll(createMainMenu());
       stage.setScene(applicationScene);
 
@@ -140,6 +141,14 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
   protected final User showLoginPanel(final User defaultUser) {
     return FXUiUtil.showLoginDialog(applicationTitle, defaultUser,
             new ImageView(new Image(EntityApplicationView.class.getResourceAsStream(iconFileName))));
+  }
+
+  /**
+   * Called on application exit, override to save user preferences on program exit,
+   * remember to call super.savePreferences() when overriding
+   */
+  protected void savePreferences() {
+    entityViews.forEach(EntityView::savePreferences);
   }
 
   protected abstract void initializeEntitieViews();

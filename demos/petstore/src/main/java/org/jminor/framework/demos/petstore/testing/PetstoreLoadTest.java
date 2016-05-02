@@ -7,25 +7,23 @@ import org.jminor.common.model.CancelException;
 import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
-import org.jminor.framework.demos.petstore.domain.Petstore;
+import org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel;
+import org.jminor.framework.model.EntityLoadTestModel;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
-import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
-import org.jminor.swing.framework.model.EntityApplicationModel;
-import org.jminor.swing.framework.model.EntityModel;
-import org.jminor.swing.framework.testing.EntityLoadTestModel;
+import org.jminor.swing.framework.model.SwingEntityModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
 import java.util.Collections;
 import java.util.UUID;
 
-public final class PetstoreLoadTest extends EntityLoadTestModel {
+public final class PetstoreLoadTest extends EntityLoadTestModel<PetstoreAppPanel.PetstoreApplicationModel> {
 
   public PetstoreLoadTest() {
-    super(User.UNIT_TEST_USER, Collections.singletonList(new AbstractUsageScenario<EntityApplicationModel>("selectRecords") {
+    super(User.UNIT_TEST_USER, Collections.singletonList(new AbstractUsageScenario<PetstoreAppPanel.PetstoreApplicationModel>("selectRecords") {
       @Override
-      protected void performScenario(final EntityApplicationModel application) {
-        final EntityModel categoryModel = application.getEntityModels().iterator().next();
+      protected void performScenario(final PetstoreAppPanel.PetstoreApplicationModel application) {
+        final SwingEntityModel categoryModel = application.getEntityModels().iterator().next();
         categoryModel.getTableModel().getSelectionModel().clearSelection();
         categoryModel.refresh();
         selectRandomRow(categoryModel.getTableModel());
@@ -36,20 +34,15 @@ public final class PetstoreLoadTest extends EntityLoadTestModel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplication() throws CancelException {
-    final EntityApplicationModel applicationModel = new DefaultEntityApplicationModel(
+  protected PetstoreAppPanel.PetstoreApplicationModel initializeApplication() throws CancelException {
+    final PetstoreAppPanel.PetstoreApplicationModel applicationModel = new PetstoreAppPanel.PetstoreApplicationModel(
             new RemoteEntityConnectionProvider(Configuration.getStringValue(Configuration.SERVER_HOST_NAME),
-                    getUser(), UUID.randomUUID(), getClass().getSimpleName())) {
-      @Override
-      protected void loadDomainModel() {
-        Petstore.init();
-      }
-    };
-    final EntityModel categoryModel = applicationModel.getEntityModels().iterator().next();
+                    getUser(), UUID.randomUUID(), getClass().getSimpleName()));
+    final SwingEntityModel categoryModel = applicationModel.getEntityModels().iterator().next();
     categoryModel.addLinkedDetailModel(categoryModel.getDetailModels().iterator().next());
-    final EntityModel productModel = categoryModel.getDetailModels().iterator().next();
+    final SwingEntityModel productModel = categoryModel.getDetailModels().iterator().next();
     productModel.addLinkedDetailModel(productModel.getDetailModels().iterator().next());
-    final EntityModel itemModel = productModel.getDetailModels().iterator().next();
+    final SwingEntityModel itemModel = productModel.getDetailModels().iterator().next();
     itemModel.addLinkedDetailModel(itemModel.getDetailModels().iterator().next());
 
     return applicationModel;

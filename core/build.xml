@@ -162,6 +162,8 @@
                  includes="org/jminor/framework/db/remote/*"/>
     <dist_module module-name="jminor-db-test"
                  includes="org/jminor/framework/testing/EntityTestUnit*"/>
+    <dist_module module-name="jminor-client-model"
+                 includes="org/jminor/framework/model/*"/>
     <dist_module module-name="jminor-swing-client-model"
                  includes="org/jminor/swing/framework/model/**"/>
     <dist_module module-name="jminor-swing-client-ui"
@@ -179,6 +181,7 @@
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="
               jminor-common-model/jminor-common-model.jar,
+              jminor-client-model/jminor-client-model.jar,
               jminor-swing-common-model/jminor-swing-common-model.jar,
               jminor-swing-common-ui/jminor-swing-common-ui.jar,
               jminor-db-core/jminor-db-core.jar,
@@ -191,6 +194,7 @@
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="
               jminor-common-model/jminor-common-model-sources.jar,
+              jminor-client-model/jminor-client-model-sources.jar,
               jminor-swing-common-model/jminor-swing-common-model-sources.jar,
               jminor-swing-common-ui/jminor-swing-common-ui-sources.jar,
               jminor-db-core/jminor-db-core-sources.jar,
@@ -203,6 +207,7 @@
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="
               jminor-common-model/jminor-common-model-javadoc.jar,
+              jminor-client-model/jminor-client-model-javadoc.jar,
               jminor-swing-common-model/jminor-swing-common-model-javadoc.jar,
               jminor-swing-common-ui/jminor-swing-common-ui-javadoc.jar,
               jminor-db-core/jminor-db-core-javadoc.jar,
@@ -222,6 +227,7 @@
     <subant target="publish" buildpath="${basedir}/resources/publish/db-local"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-remote"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-test"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/client-model"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/swing-common-model"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/swing-common-ui"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/swing-client-model"/>
@@ -242,7 +248,8 @@
              group="Common org.jminor.common*,
                     Db org.jminor.framework.db*,
                     Domain org.jminor.framework.domain*,
-                    Swing-client org.jminor.swing*,
+                    Client model org.jminor.framework.model*,
+                    Swing client org.jminor.swing*,
                     Server org.jminor.framework.server*">
       <classpath refid="lib.compile"/>
       <link href="http://download.oracle.com/javase/8/docs/api/"/>

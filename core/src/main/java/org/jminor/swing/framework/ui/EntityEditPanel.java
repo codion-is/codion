@@ -20,6 +20,10 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.EntityDataProvider;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.swing.common.ui.DateInputPanel;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
 import org.jminor.swing.common.ui.ExceptionHandler;
@@ -33,10 +37,7 @@ import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
-import org.jminor.swing.framework.model.EntityComboBoxModel;
-import org.jminor.swing.framework.model.EntityDataProvider;
-import org.jminor.swing.framework.model.EntityEditModel;
-import org.jminor.swing.framework.model.EntityLookupModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -94,7 +95,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * The edit model this edit panel is associated with
    */
-  private final EntityEditModel editModel;
+  private final SwingEntityEditModel editModel;
 
   /**
    * Input components mapped to their respective propertyIDs
@@ -156,7 +157,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * Instantiates a new EntityEditPanel based on the given {@link EntityEditModel}
    * @param editModel the {@link EntityEditModel} instance to base this EntityEditPanel on
    */
-  public EntityEditPanel(final EntityEditModel editModel) {
+  public EntityEditPanel(final SwingEntityEditModel editModel) {
     this(editModel, SAVE, UPDATE, DELETE, CLEAR, REFRESH);
   }
 
@@ -166,7 +167,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
    * @param controlKeys if specified only controls with those keys are initialized,
    * null or an empty String array will result in no controls being initialized
    */
-  public EntityEditPanel(final EntityEditModel editModel, final String... controlKeys) {
+  public EntityEditPanel(final SwingEntityEditModel editModel, final String... controlKeys) {
     this.editModel = Util.rejectNullValue(editModel, "editModel");
     if (!Configuration.getBooleanValue(Configuration.ALL_PANELS_ACTIVE)) {
       ACTIVE_STATE_GROUP.addState(activeState);
@@ -184,7 +185,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
   /**
    * @return the edit model this panel is based on
    */
-  public final EntityEditModel getEditModel() {
+  public final SwingEntityEditModel getEditModel() {
     return editModel;
   }
 
@@ -2113,7 +2114,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
       super("", Images.loadImage(Images.IMG_ADD_16));
       this.component = component;
       if (component instanceof EntityComboBox) {
-        this.dataProvider = ((EntityComboBox) component).getModel();
+        this.dataProvider = ((EntityComboBoxModel) ((EntityComboBox) component).getModel());
       }
       else if (component instanceof EntityLookupField) {
         this.dataProvider = ((EntityLookupField) component).getModel();

@@ -6,7 +6,7 @@ package org.jminor.framework.demos.chinook.beans.ui;
 import org.jminor.swing.common.ui.DateInputPanel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
-import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JTextField;
@@ -15,7 +15,7 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public class EmployeeEditPanel extends EntityEditPanel {
 
-  public EmployeeEditPanel(final EntityEditModel editModel) {
+  public EmployeeEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
 

@@ -3,19 +3,19 @@
  */
 package org.jminor.javafx.framework.ui;
 
+import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.State;
 import org.jminor.common.model.States;
+import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.javafx.framework.model.EntityEditModel;
+import org.jminor.javafx.framework.model.FXEntityEditModel;
 
-import javafx.application.Platform;
-import javafx.collections.FXCollections;
 import javafx.scene.Node;
 import javafx.scene.control.Alert;
 import javafx.scene.control.Button;
@@ -24,10 +24,7 @@ import javafx.scene.control.ButtonType;
 import javafx.scene.control.ComboBox;
 import javafx.scene.control.Control;
 import javafx.scene.control.DatePicker;
-import javafx.scene.control.Dialog;
 import javafx.scene.control.Label;
-import javafx.scene.control.ListView;
-import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextField;
 import javafx.scene.input.KeyCode;
 import javafx.scene.layout.BorderPane;
@@ -48,13 +45,15 @@ public abstract class EntityEditView extends BorderPane {
   private static final KeyCode CLEAR_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.CLEAR_MNEMONIC));
   private static final KeyCode REFRESH_KEY_CODE = KeyCode.getKeyCode(FrameworkMessages.get(FrameworkMessages.REFRESH_MNEMONIC));
 
-  private final EntityEditModel editModel;
+  private final FXEntityEditModel editModel;
   private final Map<String, Control> controls = new HashMap<>();
+
   private boolean initialized = false;
-
+  private boolean requestFocusAfterInsert = true;
   private String initialFocusPropertyID;
+  private String afterInsertFocusPropertyID;
 
-  public EntityEditView(final EntityEditModel editModel) {
+  public EntityEditView(final FXEntityEditModel editModel) {
     this.editModel = editModel;
   }
 
@@ -67,16 +66,13 @@ public abstract class EntityEditView extends BorderPane {
     return this;
   }
 
-  public final EntityEditModel getEditModel() {
+  public final FXEntityEditModel getEditModel() {
     return editModel;
   }
 
   public final void requestInitialFocus() {
-    if (initialFocusPropertyID != null && controls.containsKey(initialFocusPropertyID)) {
-      controls.get(initialFocusPropertyID).requestFocus();
-    }
-    else {
-      requestFocus();
+    if (isVisible()) {
+      requestInitialFocus(false);
     }
   }
 
@@ -100,36 +96,41 @@ public abstract class EntityEditView extends BorderPane {
   public void selectInputControl() {
     final List<Property> properties = Entities.getProperties(editModel.getEntityID(), controls.keySet());
     Collections.sort(properties, (o1, o2) -> o1.toString().compareToIgnoreCase(o2.toString()));
-    final ListView<Property> propertyList = new ListView<>(FXCollections.observableArrayList(properties));
-    propertyList.getSelectionModel().setSelectionMode(SelectionMode.SINGLE);
-    final Dialog<Property> dialog = new Dialog<>();
-    dialog.getDialogPane().setContent(propertyList);
-    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-    dialog.setResultConverter(buttonType -> {
-      if (buttonType != null && buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
-        return propertyList.getSelectionModel().getSelectedItem();
-      }
-
-      return null;
-    });
-
-    Platform.runLater(propertyList::requestFocus);
-    final Optional<Property> result = dialog.showAndWait();
-    if (result.isPresent()) {
-      controls.get(result.get().getPropertyID()).requestFocus();
-    }
+    controls.get(FXUiUtil.selectValues(properties).get(0).getPropertyID()).requestFocus();
   }
 
-  protected final void setInitialFocusProperty(final String initialFocusPropertyID) {
+  public final void setInitialFocusProperty(final String initialFocusPropertyID) {
     this.initialFocusPropertyID = initialFocusPropertyID;
+  }
+
+  public final void setAfterInsertFocusProperty(final String afterInsertFocusPropertyID) {
+    this.afterInsertFocusPropertyID = afterInsertFocusPropertyID;
+  }
+
+  public void setRequestFocusAfterInsert(final boolean requestFocusAfterInsert) {
+    this.requestFocusAfterInsert = requestFocusAfterInsert;
   }
 
   protected abstract Node initializeEditPanel();
 
+  /**
+   * for overriding, called before insert/update
+   * @throws org.jminor.common.model.valuemap.exception.ValidationException in case of a validation failure
+   */
+  protected void validateData() throws ValidationException {}
+
+  protected final EntityLookupField createForeignKeyLookupField(final String foreignKeyPropertyID) {
+    checkControl(foreignKeyPropertyID);
+    final EntityLookupField lookupField = FXUiUtil.createLookupField(Entities.getForeignKeyProperty(
+            editModel.getEntityID(), foreignKeyPropertyID), editModel);
+
+    return lookupField;
+  }
+
   protected final ComboBox<Entity> createForeignKeyComboBox(final String foreignKeyPropertyID) {
     checkControl(foreignKeyPropertyID);
-    final ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(Entities.getForeignKeyProperty(editModel.getEntityID(),
-            foreignKeyPropertyID), editModel);
+    final ComboBox<Entity> box = FXUiUtil.createForeignKeyComboBox(Entities.getForeignKeyProperty(
+            editModel.getEntityID(), foreignKeyPropertyID), editModel);
 
     controls.put(foreignKeyPropertyID, box);
 
@@ -184,8 +185,20 @@ public abstract class EntityEditView extends BorderPane {
     return new Label(Entities.getProperty(getEditModel().getEntityID(), propertyID).getCaption());
   }
 
+  protected final BorderPane createPropertyPanel(final String propertyID) {
+    final BorderPane pane = new BorderPane();
+    pane.setTop(createLabel(propertyID));
+    pane.setCenter(controls.get(propertyID));
+
+    return pane;
+  }
+
   private void initializeUI() {
-    setCenter(initializeEditPanel());
+    final BorderPane top = new BorderPane();
+    final BorderPane topLeft = new BorderPane();
+    topLeft.setCenter(initializeEditPanel());
+    top.setLeft(topLeft);
+    setTop(top);
     addKeyEvents();
   }
 
@@ -205,7 +218,7 @@ public abstract class EntityEditView extends BorderPane {
           event.consume();
         }
         else if (event.getCode().equals(CLEAR_KEY_CODE)) {
-          editModel.clear();
+          editModel.setEntity(null);
           event.consume();
         }
         else if (event.getCode().equals(REFRESH_KEY_CODE)) {
@@ -250,7 +263,7 @@ public abstract class EntityEditView extends BorderPane {
 
   private Button createClearButton() {
     final Button button = new Button(FrameworkMessages.get(FrameworkMessages.CLEAR));
-    button.setOnAction(event -> editModel.clear());
+    button.setOnAction(event -> editModel.setEntity(null));
 
     return button;
   }
@@ -263,38 +276,49 @@ public abstract class EntityEditView extends BorderPane {
   }
 
   private void save() {
-    try {
-      if (editModel.isEntityNew() || !editModel.getModifiedObserver().isActive()) {
-        //no entity selected or selected entity is unmodified can only insert
-        editModel.insert();
-        clearAfterInsert();
+    if (editModel.isEntityNew() || !editModel.getModifiedObserver().isActive()) {
+      //no entity selected or selected entity is unmodified can only insert
+      insert();
+    }
+    else {//possibly update
+      final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
+      alert.setTitle(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT_TITLE));
+      alert.setHeaderText(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT));
+
+      final ButtonType update = new ButtonType(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_RECORD));
+      final ButtonType insert = new ButtonType(FrameworkMessages.get(FrameworkMessages.INSERT_NEW));
+      final ButtonType cancel = new ButtonType(Messages.get(Messages.CANCEL), ButtonBar.ButtonData.CANCEL_CLOSE);
+      alert.getButtonTypes().setAll(update, insert, cancel);
+      ((Button) alert.getDialogPane().lookupButton(update)).setDefaultButton(true);
+
+      final Optional<ButtonType> result = alert.showAndWait();
+      if (!result.isPresent() || result.get().equals(cancel)) {
+        return;
       }
-      else {//possibly update
-        final Alert alert = new Alert(Alert.AlertType.CONFIRMATION);
-        alert.setTitle(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT_TITLE));
-        alert.setHeaderText(FrameworkMessages.get(FrameworkMessages.UPDATE_OR_INSERT));
 
-        final ButtonType update = new ButtonType(FrameworkMessages.get(FrameworkMessages.UPDATE_SELECTED_RECORD));
-        final ButtonType insert = new ButtonType(FrameworkMessages.get(FrameworkMessages.INSERT_NEW));
-        final ButtonType cancel = new ButtonType(Messages.get(Messages.CANCEL), ButtonBar.ButtonData.CANCEL_CLOSE);
-        alert.getButtonTypes().setAll(update, insert, cancel);
-        ((Button) alert.getDialogPane().lookupButton(update)).setDefaultButton(true);
-
-        final Optional<ButtonType> result = alert.showAndWait();
-        if (!result.isPresent() || result.get().equals(cancel)) {
-          return;
-        }
-
-        if (result.get().equals(update)) {
-          update(false);
-        }
-        else {
-          editModel.insert();
-          clearAfterInsert();
-        }
+      if (result.get().equals(update)) {
+        update(false);
+      }
+      else {
+        insert();
       }
     }
-    catch (final Exception e) {
+  }
+
+  private void insert() {
+    try {
+      validateData();
+      editModel.insert();
+      editModel.setEntity(null);
+      if (requestFocusAfterInsert) {
+        requestInitialFocus(true);
+      }
+    }
+    catch (final ValidationException e) {
+      FXUiUtil.showExceptionDialog(e);
+      controls.get((String) ((ValidationException) e).getKey());
+    }
+    catch (final DatabaseException e) {
       throw new RuntimeException(e);
     }
   }
@@ -302,9 +326,15 @@ public abstract class EntityEditView extends BorderPane {
   private void update(final boolean confirm) {
     if (!confirm || FXUiUtil.confirm(FrameworkMessages.get(FrameworkMessages.CONFIRM_UPDATE))) {
       try {
+        validateData();
         editModel.update();
+        requestInitialFocus(false);
       }
-      catch (final Exception e) {
+      catch (final ValidationException e) {
+        FXUiUtil.showExceptionDialog(e);
+        controls.get((String) ((ValidationException) e).getKey());
+      }
+      catch (final DatabaseException e) {
         throw new RuntimeException(e);
       }
     }
@@ -315,15 +345,22 @@ public abstract class EntityEditView extends BorderPane {
       try {
         editModel.delete();
       }
-      catch (final Exception e) {
+      catch (final DatabaseException e) {
         throw new RuntimeException(e);
       }
     }
   }
 
-  private void clearAfterInsert() {
-    editModel.clear();
-    requestInitialFocus();
+  private void requestInitialFocus(final boolean afterInsert) {
+    final Control focusControl = afterInsert && afterInsertFocusPropertyID != null ?
+            controls.get(afterInsertFocusPropertyID) :
+            controls.get(initialFocusPropertyID);
+    if (focusControl != null && focusControl.isFocusTraversable()) {
+      focusControl.requestFocus();//InWindow();
+    }
+    else {
+      requestFocus();
+    }
   }
 
   private void checkControl(final String propertyID) {

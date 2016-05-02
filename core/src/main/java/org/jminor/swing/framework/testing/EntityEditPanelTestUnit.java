@@ -7,8 +7,8 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.swing.framework.model.DefaultEntityEditModel;
-import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 /**
@@ -64,7 +64,7 @@ public abstract class EntityEditPanelTestUnit {
    * @return the edit model to base the edit panel on, by default a default edit model implementation
    */
   protected EntityEditModel createEditModel() {
-    return new DefaultEntityEditModel(getEntityID(), getConnectionProvider());
+    return new SwingEntityEditModel(getEntityID(), getConnectionProvider());
   }
 
   /**

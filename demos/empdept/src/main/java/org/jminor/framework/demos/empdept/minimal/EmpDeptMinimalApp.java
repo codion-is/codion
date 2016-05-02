@@ -11,13 +11,10 @@ import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Properties;
 import org.jminor.framework.domain.Property;
-import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
-import org.jminor.swing.framework.model.DefaultEntityEditModel;
-import org.jminor.swing.framework.model.DefaultEntityModelProvider;
-import org.jminor.swing.framework.model.EntityApplicationModel;
-import org.jminor.swing.framework.model.EntityComboBoxModel;
-import org.jminor.swing.framework.model.EntityEditModel;
-import org.jminor.swing.framework.model.EntityModelProvider;
+import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.swing.framework.model.SwingEntityApplicationModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityModelProvider;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
@@ -88,7 +85,7 @@ public class EmpDeptMinimalApp {
    * We extend the default entity edit model to provide a custom
    * combo box model for the manager property
    */
-  public static final class EmployeeEditModel extends DefaultEntityEditModel {
+  public static final class EmployeeEditModel extends SwingEntityEditModel {
 
     public EmployeeEditModel(final EntityConnectionProvider connectionProvider) {
       super("scott.emp", connectionProvider);
@@ -120,7 +117,7 @@ public class EmpDeptMinimalApp {
    */
   public static final class DepartmentEditPanel extends EntityEditPanel {
 
-    public DepartmentEditPanel(final EntityEditModel editModel) {
+    public DepartmentEditPanel(final SwingEntityEditModel editModel) {
       super(editModel);
     }
 
@@ -143,7 +140,7 @@ public class EmpDeptMinimalApp {
    */
   public static final class EmployeeEditPanel extends EntityEditPanel {
 
-    public EmployeeEditPanel(final EntityEditModel editModel) {
+    public EmployeeEditPanel(final SwingEntityEditModel editModel) {
       super(editModel);
     }
 
@@ -176,7 +173,7 @@ public class EmpDeptMinimalApp {
    * loadDomainModel method, by simply instantiating our domain class, which
    * initializes the entities it defines.
    */
-  private static final class EmpDeptApplicationModel extends DefaultEntityApplicationModel {
+  public static final class EmpDeptApplicationModel extends SwingEntityApplicationModel {
 
     private EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
@@ -195,14 +192,14 @@ public class EmpDeptMinimalApp {
    * implement the initializeApplicationModel function by returning an instance
    * of the application model class we defined above.
    */
-  private static final class EmpDeptApplicationPanel extends EntityApplicationPanel {
+  private static final class EmpDeptApplicationPanel extends EntityApplicationPanel<EmpDeptApplicationModel> {
 
     @Override
     protected void setupEntityPanelProviders() {
       //now, let's assemble our application
       final EntityPanelProvider departmentProvider = new EntityPanelProvider("scott.dept")
               .setEditPanelClass(DepartmentEditPanel.class);
-      final EntityModelProvider employeeModelProvider = new DefaultEntityModelProvider("scott.emp")
+      final SwingEntityModelProvider employeeModelProvider = new SwingEntityModelProvider("scott.emp")
               .setEditModelClass(EmployeeEditModel.class);
       final EntityPanelProvider employeeProvider = new EntityPanelProvider(employeeModelProvider)
               .setEditPanelClass(EmployeeEditPanel.class);
@@ -213,7 +210,7 @@ public class EmpDeptMinimalApp {
     }
 
     @Override
-    protected EntityApplicationModel initializeApplicationModel(
+    protected EmpDeptApplicationModel initializeApplicationModel(
             final EntityConnectionProvider connectionProvider) throws CancelException {
       return new EmpDeptApplicationModel(connectionProvider);
     }
@@ -233,7 +230,7 @@ public class EmpDeptMinimalApp {
     System.setProperty("javax.net.ssl.trustStore", "resources/security/JMinorClientTruststore");
 
     //we create an instance of our application panel
-    final EntityApplicationPanel mainPanel = new EmpDeptApplicationPanel();
+    final EmpDeptApplicationPanel mainPanel = new EmpDeptApplicationPanel();
 
     //and then we start the application
     mainPanel.startApplication("EmpDept Minimal", null, false,

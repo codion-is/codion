@@ -32,6 +32,7 @@ import javax.swing.JScrollPane;
 import javax.swing.JTable;
 import javax.swing.JTextField;
 import javax.swing.JViewport;
+import javax.swing.ListSelectionModel;
 import javax.swing.UIManager;
 import javax.swing.event.ChangeEvent;
 import javax.swing.event.ChangeListener;
@@ -451,7 +452,7 @@ public class FilteredTablePanel<T, C> extends JPanel {
   }
 
   private JTable initializeJTable() {
-    return new JTable(tableModel, tableModel.getColumnModel(), tableModel.getSelectionModel());
+    return new JTable(tableModel, tableModel.getColumnModel(), (ListSelectionModel) tableModel.getSelectionModel());
   }
 
   private JTextField initializeSearchField() {

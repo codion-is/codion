@@ -5,7 +5,7 @@ package org.jminor.framework.demos.world.beans.ui;
 
 import org.jminor.framework.demos.world.domain.World;
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import java.awt.GridLayout;
@@ -15,7 +15,7 @@ public final class CountryLanguageEditPanel extends EntityEditPanel {
   private static final int COMBOBOX_WIDTH = 120;
   private static final int TEXT_FIELD_COLUMNS = 12;
 
-  public CountryLanguageEditPanel(final EntityEditModel editModel) {
+  public CountryLanguageEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
 

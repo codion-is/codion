@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
-import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JTextField;
@@ -14,7 +14,7 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.PLAYLISTTRACK_TR
 
 public class PlaylistTrackEditPanel extends EntityEditPanel {
 
-  public PlaylistTrackEditPanel(final EntityEditModel editModel) {
+  public PlaylistTrackEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
 

@@ -235,6 +235,26 @@ public final class EntityUtil {
   }
 
   /**
+   * Creates a two dimensional array containing the values of the given properties for the given entities in string format.
+   * @param properties the properties
+   * @param entities the entities
+   * @return the values of the given properties from the given entities in a two dimensional array
+   */
+  public static  String[][] getStringValueArray(final List<Property> properties, final List<Entity> entities) {
+    final String[][] data = new String[entities.size()][];
+    for (int i = 0; i < data.length; i++) {
+      final List<String> line = new ArrayList<>();
+      for (final Property property : properties) {
+        line.add(entities.get(i).getAsString(property));
+      }
+
+      data[i] = line.toArray(new String[line.size()]);
+    }
+
+    return data;
+  }
+
+  /**
    * Sets the value of the property with ID <code>propertyID</code> to <code>value</code>
    * in the given entities
    * @param propertyID the ID of the property for which to set the value

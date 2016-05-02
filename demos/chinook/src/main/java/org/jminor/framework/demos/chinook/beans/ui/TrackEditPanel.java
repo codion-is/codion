@@ -5,7 +5,7 @@ package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.swing.common.ui.TextInputPanel;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
-import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JLabel;
@@ -17,7 +17,7 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
 public class TrackEditPanel extends EntityEditPanel {
 
-  public TrackEditPanel(final EntityEditModel editModel) {
+  public TrackEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
 

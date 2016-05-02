@@ -16,14 +16,13 @@ import org.jminor.common.model.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
-import org.jminor.swing.common.model.combobox.DefaultFilteredComboBoxModel;
-import org.jminor.swing.common.model.combobox.FilteredComboBoxModel;
+import org.jminor.framework.model.EntityLookupModel;
+import org.jminor.swing.common.model.combobox.SwingFilteredComboBoxModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.UiValues;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 import org.jminor.swing.common.ui.textfield.TextFieldHint;
-import org.jminor.swing.framework.model.EntityLookupModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -168,14 +167,14 @@ public final class EntityLookupField extends JTextField {
   }
 
   private void linkToModel() {
-    Values.link(getModel().getSearchStringValue(), UiValues.textValue(this, null, true));
+    Values.link(model.getSearchStringValue(), UiValues.textValue(this, null, true));
     model.getSearchStringValue().getObserver().addInfoListener(new EventInfoListener<String>() {
       @Override
       public void eventOccurred(final String info) {
         updateColors();
       }
     });
-    getModel().addSelectedEntitiesListener(new EventListener() {
+    model.addSelectedEntitiesListener(new EventListener() {
       @Override
       public void eventOccurred() {
         setCaretPosition(0);
@@ -360,7 +359,7 @@ public final class EntityLookupField extends JTextField {
 
     private void initializeUI(final EntityLookupModel lookupModel) {
       final JPanel propertyBasePanel = new JPanel(new CardLayout(5, 5));
-      final FilteredComboBoxModel<Property.ColumnProperty> propertyComboBoxModel = new DefaultFilteredComboBoxModel<>();
+      final SwingFilteredComboBoxModel<Property.ColumnProperty> propertyComboBoxModel = new SwingFilteredComboBoxModel<>();
       for (final Map.Entry<Property.ColumnProperty, EntityLookupModel.LookupSettings> entry :
               lookupModel.getPropertyLookupSettings().entrySet()) {
         propertyComboBoxModel.addItem(entry.getKey());

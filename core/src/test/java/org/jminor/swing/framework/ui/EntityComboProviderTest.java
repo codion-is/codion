@@ -6,8 +6,8 @@ package org.jminor.swing.framework.ui;
 import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.swing.framework.model.DefaultEntityComboBoxModel;
-import org.jminor.swing.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 
 import org.junit.Test;
 
@@ -23,7 +23,7 @@ public class EntityComboProviderTest {
 
   @Test
   public void test() throws Exception {
-    final EntityComboBoxModel model = new DefaultEntityComboBoxModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    final EntityComboBoxModel model = new SwingEntityComboBoxModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
     final EntityComboProvider provider = new EntityComboProvider(model, null);
 
     assertNull(provider.getValue());

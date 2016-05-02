@@ -81,12 +81,12 @@ public class EntitiesTest {
   public void entity() {
     TestDomain.init();
     final Entity.Key key = Entities.key(TestDomain.T_MASTER);
-    key.put(TestDomain.MASTER_ID, 10l);
+    key.put(TestDomain.MASTER_ID, 10L);
 
     final Entity master = Entities.entity(key);
     assertEquals(TestDomain.T_MASTER, master.getEntityID());
     assertTrue(master.containsKey(TestDomain.MASTER_ID));
-    assertEquals(10l, master.get(TestDomain.MASTER_ID));
+    assertEquals(10L, master.get(TestDomain.MASTER_ID));
   }
 
   @Test

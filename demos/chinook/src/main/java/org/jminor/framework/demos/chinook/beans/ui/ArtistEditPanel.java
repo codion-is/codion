@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.chinook.beans.ui;
 
-import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JTextField;
@@ -13,7 +13,7 @@ import static org.jminor.framework.demos.chinook.domain.Chinook.ARTIST_NAME;
 
 public class ArtistEditPanel extends EntityEditPanel {
 
-  public ArtistEditPanel(final EntityEditModel editModel) {
+  public ArtistEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
 

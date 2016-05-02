@@ -5,7 +5,7 @@ package org.jminor.framework.demos.empdept.beans.ui;
 
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.layout.FlexibleGridLayout;
-import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JComboBox;
@@ -16,7 +16,7 @@ import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 
 public class EmployeeEditPanel extends EntityEditPanel {
 
-  public EmployeeEditPanel(final EntityEditModel editModel) {
+  public EmployeeEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
 

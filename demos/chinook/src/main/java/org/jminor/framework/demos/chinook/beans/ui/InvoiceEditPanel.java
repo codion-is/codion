@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.swing.common.ui.DateInputPanel;
-import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 import org.jminor.swing.framework.ui.EntityPanel;
 
@@ -20,7 +20,7 @@ public class InvoiceEditPanel extends EntityEditPanel {
 
   private EntityPanel invoiceLinePanel;
 
-  public InvoiceEditPanel(final EntityEditModel editModel) {
+  public InvoiceEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
   }
 

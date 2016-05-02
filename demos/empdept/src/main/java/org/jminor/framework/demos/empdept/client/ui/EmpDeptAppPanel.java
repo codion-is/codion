@@ -18,12 +18,10 @@ import org.jminor.framework.plugins.json.EntityJSONParser;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlSet;
 import org.jminor.swing.common.ui.control.Controls;
-import org.jminor.swing.framework.model.DefaultEntityApplicationModel;
-import org.jminor.swing.framework.model.DefaultEntityModelProvider;
-import org.jminor.swing.framework.model.EntityApplicationModel;
-import org.jminor.swing.framework.model.EntityModel;
-import org.jminor.swing.framework.model.EntityModelProvider;
-import org.jminor.swing.framework.model.EntityTableModel;
+import org.jminor.swing.framework.model.SwingEntityApplicationModel;
+import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.model.SwingEntityModelProvider;
+import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.ui.EntityApplicationPanel;
 import org.jminor.swing.framework.ui.EntityPanelProvider;
 import org.jminor.swing.framework.ui.EntityTablePanel;
@@ -33,16 +31,16 @@ import java.nio.charset.Charset;
 
 import static org.jminor.framework.demos.empdept.domain.EmpDept.*;
 
-public class EmpDeptAppPanel extends EntityApplicationPanel {
+public class EmpDeptAppPanel extends EntityApplicationPanel<EmpDeptAppPanel.EmpDeptApplicationModel> {
   @Override
   protected void setupEntityPanelProviders() {
     final EmployeeModelProvider employeeModelProvider = new EmployeeModelProvider();
     final EmployeePanelProvider employeePanelProvider = new EmployeePanelProvider(employeeModelProvider);
     employeePanelProvider.setEditPanelClass(EmployeeEditPanel.class);
 
-    final EntityModelProvider departmentModelProvider = new DefaultEntityModelProvider(T_DEPARTMENT) {
+    final SwingEntityModelProvider departmentModelProvider = new SwingEntityModelProvider(T_DEPARTMENT) {
       @Override
-      protected void configureModel(final EntityModel entityModel) {
+      protected void configureModel(final SwingEntityModel entityModel) {
         entityModel.getDetailModel(EmpDept.T_EMPLOYEE).getTableModel().setQueryCriteriaRequired(false);
       }
     };
@@ -70,7 +68,7 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
+  protected EmpDeptApplicationModel initializeApplicationModel(final EntityConnectionProvider connectionProvider) throws CancelException {
     return new EmpDeptApplicationModel(connectionProvider);
   }
 
@@ -81,8 +79,8 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     new EmpDeptAppPanel().startApplication("Emp-Dept", null, false, UiUtil.getScreenSizeRatio(0.6), new User("scott", "tiger"));
   }
 
-  private static final class EmpDeptApplicationModel extends DefaultEntityApplicationModel {
-    private EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
+  public static final class EmpDeptApplicationModel extends SwingEntityApplicationModel {
+    public EmpDeptApplicationModel(final EntityConnectionProvider connectionProvider) {
       super(connectionProvider);
     }
 
@@ -92,14 +90,14 @@ public class EmpDeptAppPanel extends EntityApplicationPanel {
     }
   }
 
-  private static final class EmployeeModelProvider extends DefaultEntityModelProvider {
+  private static final class EmployeeModelProvider extends SwingEntityModelProvider {
     private EmployeeModelProvider() {
       super(EmpDept.T_EMPLOYEE);
       setEditModelClass(EmployeeEditModel.class);
     }
 
     @Override
-    protected void configureTableModel(final EntityTableModel tableModel) {
+    protected void configureTableModel(final SwingEntityTableModel tableModel) {
       tableModel.getColumnSummaryModel(EMPLOYEE_SALARY).setSummary(ColumnSummary.AVERAGE);
     }
   }

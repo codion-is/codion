@@ -5,10 +5,10 @@ package org.jminor.framework.demos.chinook.javafx;
 
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.domain.Chinook;
-import org.jminor.javafx.framework.model.EntityApplicationModel;
-import org.jminor.javafx.framework.model.EntityModel;
+import org.jminor.javafx.framework.model.FXEntityApplicationModel;
+import org.jminor.javafx.framework.model.FXEntityModel;
 
-public class ChinookFXAppModel extends EntityApplicationModel {
+public final class ChinookFXAppModel extends FXEntityApplicationModel {
 
   public ChinookFXAppModel(final EntityConnectionProvider connectionProvider) {
     super(connectionProvider);
@@ -17,9 +17,9 @@ public class ChinookFXAppModel extends EntityApplicationModel {
 
   protected void setupEntityModels() {
     //artists
-    final EntityModel artists = new EntityModel(Chinook.T_ARTIST, getConnectionProvider());
-    final EntityModel albums = new EntityModel(Chinook.T_ALBUM, getConnectionProvider());
-    final EntityModel tracks = new EntityModel(Chinook.T_TRACK, getConnectionProvider());
+    final FXEntityModel artists = new FXEntityModel(Chinook.T_ARTIST, getConnectionProvider());
+    final FXEntityModel albums = new FXEntityModel(Chinook.T_ALBUM, getConnectionProvider());
+    final FXEntityModel tracks = new FXEntityModel(Chinook.T_TRACK, getConnectionProvider());
 
     artists.addDetailModel(albums);
     albums.addDetailModel(tracks);
@@ -27,17 +27,17 @@ public class ChinookFXAppModel extends EntityApplicationModel {
     addEntityModel(artists);
 
     //playlists
-    final EntityModel playlists = new EntityModel(Chinook.T_PLAYLIST, getConnectionProvider());
-    final EntityModel playlisttracks = new EntityModel(Chinook.T_PLAYLISTTRACK, getConnectionProvider());
+    final FXEntityModel playlists = new FXEntityModel(Chinook.T_PLAYLIST, getConnectionProvider());
+    final FXEntityModel playlisttracks = new FXEntityModel(Chinook.T_PLAYLISTTRACK, getConnectionProvider());
 
     playlists.addDetailModel(playlisttracks);
 
     addEntityModel(playlists);
 
     //customers
-    final EntityModel customers = new EntityModel(Chinook.T_CUSTOMER, getConnectionProvider());
-    final EntityModel invoices = new EntityModel(Chinook.T_INVOICE, getConnectionProvider());
-    final EntityModel invoicelines = new EntityModel(Chinook.T_INVOICELINE, getConnectionProvider());
+    final FXEntityModel customers = new FXEntityModel(Chinook.T_CUSTOMER, getConnectionProvider());
+    final FXEntityModel invoices = new FXEntityModel(Chinook.T_INVOICE, getConnectionProvider());
+    final FXEntityModel invoicelines = new FXEntityModel(Chinook.T_INVOICELINE, getConnectionProvider());
 
     customers.addDetailModel(invoices);
     invoices.addDetailModel(invoicelines);

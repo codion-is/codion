@@ -1,32 +1,39 @@
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
   <info organisation="org.jminor" module="jminor-swing-client-ui"/>
 
-  <configurations defaultconfmapping="runtime">
-    <conf name="runtime"/>
+  <configurations defaultconfmapping="compile->default">
+    <conf name="compile"/>
+    <conf name="runtime" extends="compile"/>
+    <conf name="test" extends="runtime"/>
     <conf name="sources"/>
     <conf name="javadoc"/>
   </configurations>
 
   <publications>
-    <artifact name="jminor-swing-client-ui" type="jar" ext="jar" conf="runtime"/>
-    <artifact name="jminor-swing-client-ui" type="pom" ext="pom" conf="runtime"/>
+    <artifact name="jminor-swing-client-ui" type="jar" ext="jar" conf="compile"/>
+    <artifact name="jminor-swing-client-ui" type="pom" ext="pom" conf="compile"/>
     <artifact name="jminor-swing-client-ui-sources" type="source" ext="jar" conf="sources" m:classifier="sources"/>
     <artifact name="jminor-swing-client-ui-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
   </publications>
 
-  <dependencies defaultconf="runtime">
+  <dependencies defaultconf="compile">
     <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-client-model" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-swing-common-model" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-swing-common-ui" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-swing-client-model" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-db-local" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-db-remote" rev="latest.integration"/>
+
+    <dependency org="org.jminor" name="jminor-db-local" rev="latest.integration" conf="runtime->default"/>
+    <dependency org="org.jminor" name="jminor-db-remote" rev="latest.integration" conf="runtime->default"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.3"/>
     <dependency org="ch.qos.logback" name="logback-core" rev="1.1.3"/>
 
     <dependency org="org.json" name="json" rev="20090211"/>
+
+    <dependency org="junit" name="junit" rev="4.12" conf="test->master"/>
+    <dependency org="org.hamcrest" name="hamcrest-core" rev="1.3" conf="test->master"/>
   </dependencies>
 </ivy-module>

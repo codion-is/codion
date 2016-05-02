@@ -38,7 +38,7 @@ public class DefaultEntityTest {
   @Test
   public void serialization() throws Exception {
     final Entity referencedEntityValue = Entities.entity(TestDomain.T_MASTER);
-    referencedEntityValue.put(TestDomain.MASTER_ID, 1l);
+    referencedEntityValue.put(TestDomain.MASTER_ID, 1L);
     referencedEntityValue.put(TestDomain.MASTER_NAME, "name");
     referencedEntityValue.put(TestDomain.MASTER_CODE, 10);
     final String originalStringValue = "string value";
@@ -65,7 +65,7 @@ public class DefaultEntityTest {
   @Test
   public void setAs() {
     final Entity referencedEntityValue = Entities.entity(TestDomain.T_MASTER);
-    referencedEntityValue.put(TestDomain.MASTER_ID, 2l);
+    referencedEntityValue.put(TestDomain.MASTER_ID, 2L);
     referencedEntityValue.put(TestDomain.MASTER_NAME, masterName);
     referencedEntityValue.put(TestDomain.MASTER_CODE, 7);
 
@@ -88,11 +88,11 @@ public class DefaultEntityTest {
     final Entity entity = Entities.entity(TestDomain.T_MASTER);
     final String newName = "aname";
 
-    entity.put(TestDomain.MASTER_ID, 2l);
+    entity.put(TestDomain.MASTER_ID, 2L);
     entity.put(TestDomain.MASTER_NAME, masterName);
     entity.put(TestDomain.MASTER_CODE, 7);
 
-    entity.put(TestDomain.MASTER_ID, -55l);
+    entity.put(TestDomain.MASTER_ID, -55L);
     //the id is not updatable as it is part of the primary key, which is not updatable by default
     assertFalse(entity.getModifiedObserver().isActive());
     entity.save(TestDomain.MASTER_ID);
@@ -125,7 +125,7 @@ public class DefaultEntityTest {
     //assert not modified
     assertFalse(referencedEntityValue.isModified());
 
-    referencedEntityValue.put(TestDomain.MASTER_ID, 2l);
+    referencedEntityValue.put(TestDomain.MASTER_ID, 2L);
     referencedEntityValue.put(TestDomain.MASTER_NAME, masterName);
     referencedEntityValue.put(TestDomain.MASTER_CODE, 7);
 
@@ -235,11 +235,11 @@ public class DefaultEntityTest {
     assertTrue(testEntity.isValueNull(TestDomain.DETAIL_ENTITY_ID));
     assertTrue(testEntity.isValueNull(TestDomain.DETAIL_ENTITY_FK));
     assertTrue(testEntity.isForeignKeyNull(Entities.getForeignKeyProperty(TestDomain.T_DETAIL, TestDomain.DETAIL_ENTITY_FK)));
-    testEntity.put(TestDomain.DETAIL_ENTITY_ID, 10l);
+    testEntity.put(TestDomain.DETAIL_ENTITY_ID, 10L);
 
     assertFalse(testEntity.isLoaded(TestDomain.DETAIL_ENTITY_FK));
     final Entity referencedEntityValue = testEntity.getForeignKey(TestDomain.DETAIL_ENTITY_FK);
-    assertEquals(Long.valueOf(10), referencedEntityValue.get(TestDomain.MASTER_ID));
+    assertEquals(10L, referencedEntityValue.get(TestDomain.MASTER_ID));
     assertFalse(testEntity.isLoaded(TestDomain.DETAIL_ENTITY_FK));
     assertFalse(testEntity.isValueNull(TestDomain.DETAIL_ENTITY_FK));
     assertFalse(testEntity.isValueNull(TestDomain.DETAIL_ENTITY_ID));

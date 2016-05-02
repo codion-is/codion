@@ -8,9 +8,9 @@ import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.domain.TestDomain;
-import org.jminor.swing.framework.model.DefaultEntityEditModel;
-import org.jminor.swing.framework.model.EntityEditModel;
-import org.jminor.swing.framework.model.EntityLookupModel;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityLookupModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import org.junit.Test;
 
@@ -22,7 +22,7 @@ public class LookupValueLinkTest {
   private final EntityEditModel model;
 
   public LookupValueLinkTest() {
-    model = new DefaultEntityEditModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
+    model = new SwingEntityEditModel(TestDomain.T_EMP, EntityConnectionProvidersTest.CONNECTION_PROVIDER);
   }
 
   @Test

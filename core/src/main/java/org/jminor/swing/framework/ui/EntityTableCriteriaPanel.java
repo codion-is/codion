@@ -8,6 +8,11 @@ import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.Events;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.framework.model.EntityTableCriteriaModel;
+import org.jminor.framework.model.EntityTableModel;
+import org.jminor.framework.model.ForeignKeyCriteriaModel;
+import org.jminor.framework.model.PropertyCriteriaModel;
+import org.jminor.swing.common.model.table.FilteredTableModel;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.ControlSet;
@@ -15,10 +20,6 @@ import org.jminor.swing.common.ui.control.Controls;
 import org.jminor.swing.common.ui.images.Images;
 import org.jminor.swing.common.ui.table.AbstractTableColumnSyncPanel;
 import org.jminor.swing.common.ui.table.ColumnCriteriaPanel;
-import org.jminor.swing.framework.model.EntityTableCriteriaModel;
-import org.jminor.swing.framework.model.EntityTableModel;
-import org.jminor.swing.framework.model.ForeignKeyCriteriaModel;
-import org.jminor.swing.framework.model.PropertyCriteriaModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;
@@ -67,7 +68,7 @@ public final class EntityTableCriteriaPanel extends JPanel {
       throw new IllegalArgumentException("An advanced and/or a simple criteria panel is required");
     }
     this.criteriaModel = tableModel.getCriteriaModel();
-    this.columns = tableModel.getColumnModel().getAllColumns();
+    this.columns = ((FilteredTableModel) tableModel).getColumnModel().getAllColumns();
     this.advancedCriteriaPanel = advancedCriteriaPanel;
     this.simpleCriteriaPanel = simpleCriteriaPanel;
     setLayout(new BorderLayout());
@@ -213,7 +214,7 @@ public final class EntityTableCriteriaPanel extends JPanel {
   }
 
   private static AbstractTableColumnSyncPanel initializeAdvancedSearchPanel(final EntityTableModel tableModel, final int verticalFillerWidth) {
-    final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(tableModel.getColumnModel()) {
+    final AbstractTableColumnSyncPanel panel = new AbstractTableColumnSyncPanel(((FilteredTableModel) tableModel).getColumnModel()) {
       @Override
       protected JPanel initializeColumnPanel(final TableColumn column) {
         final Property property = (Property) column.getIdentifier();

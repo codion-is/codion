@@ -14,16 +14,15 @@ import org.jminor.framework.demos.chinook.domain.Chinook;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
+import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityLoadTestModel;
 import org.jminor.framework.plugins.jasperreports.model.JasperReportsWrapper;
 import org.jminor.swing.common.ui.tools.LoadTestPanel;
-import org.jminor.swing.framework.model.DefaultEntityModel;
-import org.jminor.swing.framework.model.EntityApplicationModel;
-import org.jminor.swing.framework.model.EntityComboBoxModel;
-import org.jminor.swing.framework.model.EntityEditModel;
-import org.jminor.swing.framework.model.EntityModel;
-import org.jminor.swing.framework.model.EntityTableModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.model.SwingEntityTableModel;
 import org.jminor.swing.framework.model.reporting.EntityReportUtil;
-import org.jminor.swing.framework.testing.EntityLoadTestModel;
 
 import javax.swing.SwingUtilities;
 import javax.swing.UIManager;
@@ -34,18 +33,19 @@ import java.util.List;
 
 import static org.jminor.framework.demos.chinook.domain.Chinook.*;
 
-public final class ChinookLoadTest extends EntityLoadTestModel {
+public final class ChinookLoadTest extends EntityLoadTestModel<ChinookAppPanel.ChinookApplicationModel> {
 
-  private static final UsageScenario<EntityApplicationModel> UPDATE_TOTALS = new AbstractEntityUsageScenario("updateTotals") {
+  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> UPDATE_TOTALS =
+          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("updateTotals") {
     @Override
-    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
+    protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel customerModel = application.getEntityModel(T_CUSTOMER);
+        final SwingEntityModel customerModel = application.getEntityModel(T_CUSTOMER);
         customerModel.getTableModel().refresh();
         selectRandomRows(customerModel.getTableModel(), RANDOM.nextInt(6) + 2);
-        final EntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
+        final SwingEntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
         selectRandomRows(invoiceModel.getTableModel(), RANDOM.nextInt(6) + 2);
-        final EntityTableModel invoiceLineTableModel = invoiceModel.getDetailModel(T_INVOICELINE).getTableModel();
+        final SwingEntityTableModel invoiceLineTableModel = invoiceModel.getDetailModel(T_INVOICELINE).getTableModel();
         final List<Entity> invoiceLines = invoiceLineTableModel.getAllItems();
         EntityUtil.put(Chinook.INVOICELINE_QUANTITY, RANDOM.nextInt(4) + 1, invoiceLines);
 
@@ -64,14 +64,15 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     }
   };
 
-  private static final UsageScenario<EntityApplicationModel> VIEW_GENRE = new AbstractEntityUsageScenario("viewGenre") {
+  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> VIEW_GENRE =
+          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("viewGenre") {
     @Override
-    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
+    protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel genreModel = application.getEntityModel(T_GENRE);
+        final SwingEntityModel genreModel = application.getEntityModel(T_GENRE);
         genreModel.getTableModel().refresh();
         selectRandomRow(genreModel.getTableModel());
-        final EntityModel trackModel = genreModel.getDetailModel(T_TRACK);
+        final SwingEntityModel trackModel = genreModel.getDetailModel(T_TRACK);
         selectRandomRows(trackModel.getTableModel(), 2);
         genreModel.getConnectionProvider().getConnection().selectDependentEntities(trackModel.getTableModel().getSelectionModel().getSelectedItems());
       }
@@ -86,11 +87,12 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     }
   };
 
-  private static final UsageScenario<EntityApplicationModel> VIEW_CUSTOMER_REPORT = new AbstractEntityUsageScenario("viewCustomerReport") {
+  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> VIEW_CUSTOMER_REPORT =
+          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("viewCustomerReport") {
     @Override
-    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
+    protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
       try {
-        final EntityTableModel customerModel = application.getEntityModel(T_CUSTOMER).getTableModel();
+        final SwingEntityTableModel customerModel = application.getEntityModel(T_CUSTOMER).getTableModel();
         customerModel.refresh();
         selectRandomRow(customerModel);
 
@@ -113,14 +115,15 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     }
   };
 
-  private static final UsageScenario<EntityApplicationModel> VIEW_INVOICE = new AbstractEntityUsageScenario("viewInvoice") {
+  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> VIEW_INVOICE =
+          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("viewInvoice") {
     @Override
-    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
+    protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel customerModel = application.getEntityModel(T_CUSTOMER);
+        final SwingEntityModel customerModel = application.getEntityModel(T_CUSTOMER);
         customerModel.getTableModel().refresh();
         selectRandomRow(customerModel.getTableModel());
-        final EntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
+        final SwingEntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
         selectRandomRow(invoiceModel.getTableModel());
       }
       catch (final Exception e) {
@@ -134,14 +137,15 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     }
   };
 
-  private static final UsageScenario<EntityApplicationModel> VIEW_ALBUM = new AbstractEntityUsageScenario("viewAlbum") {
+  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> VIEW_ALBUM =
+          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("viewAlbum") {
     @Override
-    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
+    protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
       try {
-        final EntityModel artistModel = application.getEntityModel(T_ARTIST);
+        final SwingEntityModel artistModel = application.getEntityModel(T_ARTIST);
         artistModel.getTableModel().refresh();
         selectRandomRow(artistModel.getTableModel());
-        final EntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
+        final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
         selectRandomRow(albumModel.getTableModel());
       }
       catch (final Exception e) {
@@ -155,14 +159,15 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     }
   };
 
-  private static final UsageScenario<EntityApplicationModel> INSERT_DELETE_ALBUM = new AbstractEntityUsageScenario("insertDeleteAlbum") {
+  private static final UsageScenario<ChinookAppPanel.ChinookApplicationModel> INSERT_DELETE_ALBUM =
+          new AbstractEntityUsageScenario<ChinookAppPanel.ChinookApplicationModel>("insertDeleteAlbum") {
     @Override
-    protected void performScenario(final EntityApplicationModel application) throws ScenarioException {
-      final EntityModel artistModel = application.getEntityModel(T_ARTIST);
+    protected void performScenario(final ChinookAppPanel.ChinookApplicationModel application) throws ScenarioException {
+      final SwingEntityModel artistModel = application.getEntityModel(T_ARTIST);
       artistModel.getTableModel().refresh();
       selectRandomRow(artistModel.getTableModel());
       final Entity artist = artistModel.getTableModel().getSelectionModel().getSelectedItem();
-      final EntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
+      final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
       final EntityEditModel albumEditModel = albumModel.getEditModel();
       final Entity album = Entities.entity(T_ALBUM);
       album.put(ALBUM_ARTISTID_FK, artist);
@@ -171,7 +176,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
       albumEditModel.setEntity(album);
       try {
         final Entity insertedAlbum = albumEditModel.insert().get(0);
-        final EntityEditModel trackEditModel = albumModel.getDetailModel(T_TRACK).getEditModel();
+        final SwingEntityEditModel trackEditModel = (SwingEntityEditModel) albumModel.getDetailModel(T_TRACK).getEditModel();
         final EntityComboBoxModel genreComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_GENREID_FK);
         selectRandomItem(genreComboBoxModel);
         final EntityComboBoxModel mediaTypeComboBoxModel = trackEditModel.getForeignKeyComboBoxModel(TRACK_MEDIATYPEID_FK);
@@ -188,7 +193,7 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
           trackEditModel.insert();
         }
 
-        final EntityTableModel trackTableModel = albumModel.getDetailModel(T_TRACK).getTableModel();
+        final SwingEntityTableModel trackTableModel = albumModel.getDetailModel(T_TRACK).getTableModel();
         trackTableModel.getSelectionModel().selectAll();
         trackTableModel.deleteSelected();
         albumEditModel.delete();
@@ -210,9 +215,9 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
   }
 
   @Override
-  protected EntityApplicationModel initializeApplication() throws CancelException {
+  protected ChinookAppPanel.ChinookApplicationModel initializeApplication() throws CancelException {
     final EntityConnectionProvider connectionProvider = EntityConnectionProviders.connectionProvider(getUser(), ChinookLoadTest.class.getSimpleName());
-    final EntityApplicationModel appModel = new ChinookAppPanel.ChinookApplicationModel(connectionProvider);
+    final ChinookAppPanel.ChinookApplicationModel appModel = new ChinookAppPanel.ChinookApplicationModel(connectionProvider);
     /* ARTIST
     *   ALBUM
     *     TRACK
@@ -224,24 +229,24 @@ public final class ChinookLoadTest extends EntityLoadTestModel {
     *   INVOICE
     *     INVOICELINE
     */
-    final EntityModel artistModel = appModel.getEntityModel(T_ARTIST);
-    final EntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
-    final EntityModel trackModel = albumModel.getDetailModel(T_TRACK);
+    final SwingEntityModel artistModel = appModel.getEntityModel(T_ARTIST);
+    final SwingEntityModel albumModel = artistModel.getDetailModel(T_ALBUM);
+    final SwingEntityModel trackModel = albumModel.getDetailModel(T_TRACK);
     artistModel.addLinkedDetailModel(albumModel);
     albumModel.addLinkedDetailModel(trackModel);
 
-    final EntityModel playlistModel = appModel.getEntityModel(T_PLAYLIST);
-    final EntityModel playlistTrackModel = playlistModel.getDetailModel(T_PLAYLISTTRACK);
+    final SwingEntityModel playlistModel = appModel.getEntityModel(T_PLAYLIST);
+    final SwingEntityModel playlistTrackModel = playlistModel.getDetailModel(T_PLAYLISTTRACK);
     playlistModel.addLinkedDetailModel(playlistTrackModel);
 
-    final EntityModel customerModel = appModel.getEntityModel(T_CUSTOMER);
-    final EntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
-    final EntityModel invoicelineModel = invoiceModel.getDetailModel(T_INVOICELINE);
+    final SwingEntityModel customerModel = appModel.getEntityModel(T_CUSTOMER);
+    final SwingEntityModel invoiceModel = customerModel.getDetailModel(T_INVOICE);
+    final SwingEntityModel invoicelineModel = invoiceModel.getDetailModel(T_INVOICELINE);
     customerModel.addLinkedDetailModel(invoiceModel);
     invoiceModel.addLinkedDetailModel(invoicelineModel);
 
-    final EntityModel genreModel = new DefaultEntityModel(T_GENRE, connectionProvider);
-    final EntityModel genreTrackModel = new DefaultEntityModel(T_TRACK, connectionProvider);
+    final SwingEntityModel genreModel = new SwingEntityModel(T_GENRE, connectionProvider);
+    final SwingEntityModel genreTrackModel = new SwingEntityModel(T_TRACK, connectionProvider);
     genreModel.addDetailModel(genreTrackModel);
     genreModel.addLinkedDetailModel(genreTrackModel);
 

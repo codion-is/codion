@@ -6,10 +6,11 @@ package org.jminor.swing.framework.ui;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.model.EntityComboBoxModel;
+import org.jminor.framework.model.ForeignKeyCriteriaModel;
 import org.jminor.swing.common.ui.combobox.MaximumMatch;
 import org.jminor.swing.common.ui.table.ColumnCriteriaPanel;
-import org.jminor.swing.framework.model.EntityComboBoxModel;
-import org.jminor.swing.framework.model.ForeignKeyCriteriaModel;
+import org.jminor.swing.framework.model.SwingForeignKeyCriteriaModel;
 
 import javax.swing.JComponent;
 
@@ -56,8 +57,8 @@ public final class ForeignKeyCriteriaPanel extends ColumnCriteriaPanel<Property.
     }
 
     private JComponent initializeForeignKeyField() {
-      final EntityComboBoxModel boxModel = ((ForeignKeyCriteriaModel) model).getEntityComboBoxModel();
-      if (boxModel != null) {
+      if (model instanceof SwingForeignKeyCriteriaModel) {
+        final EntityComboBoxModel boxModel = ((SwingForeignKeyCriteriaModel) model).getEntityComboBoxModel();
         boxModel.refresh();
         final EntityComboBox field = new EntityComboBox(boxModel);
         MaximumMatch.enable(field);

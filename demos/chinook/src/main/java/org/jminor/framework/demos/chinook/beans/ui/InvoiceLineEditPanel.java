@@ -4,7 +4,7 @@
 package org.jminor.framework.demos.chinook.beans.ui;
 
 import org.jminor.swing.common.ui.UiUtil;
-import org.jminor.swing.framework.model.EntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
 import org.jminor.swing.framework.ui.EntityEditPanel;
 
 import javax.swing.JLabel;
@@ -18,7 +18,7 @@ public class InvoiceLineEditPanel extends EntityEditPanel {
 
   private JTextField tableSearchField;
 
-  public InvoiceLineEditPanel(final EntityEditModel editModel) {
+  public InvoiceLineEditPanel(final SwingEntityEditModel editModel) {
     super(editModel);
     editModel.setValuePersistent(INVOICELINE_TRACKID_FK, false);
   }

@@ -24,7 +24,11 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.i18n.FrameworkMessages;
+import org.jminor.framework.model.EntityEditModel;
+import org.jminor.framework.model.EntityTableModel;
+import org.jminor.framework.model.PropertyCriteriaModel;
 import org.jminor.swing.SwingConfiguration;
+import org.jminor.swing.common.model.table.FilteredTableModel;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;
@@ -43,12 +47,9 @@ import org.jminor.swing.common.ui.input.TextInputProvider;
 import org.jminor.swing.common.ui.input.ValueListInputProvider;
 import org.jminor.swing.common.ui.table.ColumnCriteriaPanel;
 import org.jminor.swing.common.ui.table.FilteredTablePanel;
-import org.jminor.swing.framework.model.DefaultEntityModel;
-import org.jminor.swing.framework.model.DefaultEntityTableModel;
-import org.jminor.swing.framework.model.EntityEditModel;
-import org.jminor.swing.framework.model.EntityModel;
-import org.jminor.swing.framework.model.EntityTableModel;
-import org.jminor.swing.framework.model.PropertyCriteriaModel;
+import org.jminor.swing.framework.model.SwingEntityEditModel;
+import org.jminor.swing.framework.model.SwingEntityModel;
+import org.jminor.swing.framework.model.SwingEntityTableModel;
 
 import javax.swing.AbstractAction;
 import javax.swing.AbstractButton;
@@ -205,7 +206,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * Initializes a new EntityTablePanel instance
    * @param tableModel the EntityTableModel instance
    */
-  public EntityTablePanel(final EntityTableModel tableModel) {
+  public EntityTablePanel(final SwingEntityTableModel tableModel) {
     this(tableModel, new EntityTableCriteriaPanel(tableModel));
   }
 
@@ -214,8 +215,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param tableModel the EntityTableModel instance
    * @param criteriaPanel the criteria panel
    */
-  public EntityTablePanel(final EntityTableModel tableModel, final EntityTableCriteriaPanel criteriaPanel) {
-    super(tableModel, new ColumnCriteriaPanelProvider<Property>() {
+  public EntityTablePanel(final SwingEntityTableModel tableModel, final EntityTableCriteriaPanel criteriaPanel) {
+    super((FilteredTableModel<Entity, Property>) tableModel, new ColumnCriteriaPanelProvider<Property>() {
       @Override
       public ColumnCriteriaPanel<Property> createColumnCriteriaPanel(final TableColumn column) {
         return new PropertyFilterPanel(tableModel.getCriteriaModel().getPropertyFilterModel(
@@ -304,8 +305,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   /**
    * @return the EntityTableModel used by this EntityTablePanel
    */
-  public final EntityTableModel getEntityTableModel() {
-    return (EntityTableModel) super.getTableModel();
+  public final SwingEntityTableModel getEntityTableModel() {
+    return (SwingEntityTableModel) super.getTableModel();
   }
 
   /**
@@ -557,7 +558,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       return;
     }
 
-    final EntityTableModel tableModel = getEntityTableModel();
+    final SwingEntityTableModel tableModel = getEntityTableModel();
     try {
       UiUtil.setWaitCursor(true, this);
       final Map<String, Collection<Entity>> dependencies =
@@ -739,10 +740,10 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   public static EntityTablePanel createStaticEntityTablePanel(final Collection<Entity> entities,
                                                               final EntityConnectionProvider connectionProvider,
                                                               final String entityID) {
-    final EntityTableModel tableModel = new DefaultEntityTableModel(entityID, connectionProvider) {
+    final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityID, connectionProvider) {
       @Override
       protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
-        return new ArrayList<>(entities);
+        return super.performQuery(criteria);
       }
     };
     tableModel.setQueryConfigurationAllowed(false);
@@ -764,7 +765,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a Collection containing the selected entities
    * @throws CancelException in case the user cancels the operation
    */
-  public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final JComponent dialogOwner,
+  public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final JComponent dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle) {
     return selectEntities(lookupModel, dialogOwner, singleSelection, dialogTitle, null);
   }
@@ -779,7 +780,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @return a Collection containing the selected entities
    * @throws CancelException in case the user cancels the operation
    */
-  public static Collection<Entity> selectEntities(final EntityTableModel lookupModel, final JComponent dialogOwner,
+  public static Collection<Entity> selectEntities(final SwingEntityTableModel lookupModel, final JComponent dialogOwner,
                                                   final boolean singleSelection, final String dialogTitle,
                                                   final Dimension preferredSize) {
     Util.rejectNullValue(lookupModel, "lookupModel");
@@ -804,7 +805,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       }
     };
 
-    final EntityModel model = new DefaultEntityModel(lookupModel);
+    final SwingEntityModel model = new SwingEntityModel(lookupModel);
     model.getEditModel().setReadOnly(true);
     final EntityTablePanel entityTablePanel = new EntityTablePanel(lookupModel);
     entityTablePanel.initializePanel();
@@ -1183,10 +1184,11 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    * @param editModel the edit model involved in the updating
    * @return a Entity InputProvider
    */
-  protected final InputProvider createEntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty, final Entity currentValue,
+  protected final InputProvider createEntityInputProvider(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                          final Entity currentValue,
                                                           final EntityEditModel editModel) {
     if (Entities.isSmallDataset(foreignKeyProperty.getReferencedEntityID())) {
-      return new EntityComboProvider(editModel.createForeignKeyComboBoxModel(foreignKeyProperty), currentValue);
+      return new EntityComboProvider(((SwingEntityEditModel) editModel).createForeignKeyComboBoxModel(foreignKeyProperty), currentValue);
     }
     else {
       return new EntityLookupProvider(editModel.createForeignKeyLookupModel(foreignKeyProperty), currentValue);
@@ -1397,8 +1399,8 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       }
     };
     getEntityTableModel().getSelectionModel().addSelectionChangedListener(statusListener);
-    getEntityTableModel().addFilteringListener(statusListener);
-    getEntityTableModel().addTableDataChangedListener(statusListener);
+    ((FilteredTableModel) getEntityTableModel()).addFilteringListener(statusListener);
+    ((FilteredTableModel) getEntityTableModel()).addTableDataChangedListener(statusListener);
 
     for (final PropertyCriteriaModel criteriaModel : getEntityTableModel().getCriteriaModel().getPropertyCriteriaModels()) {
       criteriaModel.addCriteriaStateListener(new EventListener() {
@@ -1441,7 +1443,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
         final JLabel label = (JLabel) defaultHeaderRenderer.getTableCellRendererComponent(table, value, isSelected,
                 hasFocus, row, column);
         final EntityTableModel tableModel = getEntityTableModel();
-        final TableColumn tableColumn = tableModel.getColumnModel().getColumn(column);
+        final TableColumn tableColumn = ((FilteredTableModel) tableModel).getColumnModel().getColumn(column);
         final TableCellRenderer renderer = tableColumn.getCellRenderer();
         final Property property = (Property) tableColumn.getIdentifier();
         final boolean indicateSearch = renderer instanceof EntityTableCellRenderer

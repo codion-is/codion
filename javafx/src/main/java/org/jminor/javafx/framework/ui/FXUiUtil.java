@@ -14,12 +14,13 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
+import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.framework.db.EntityConnectionProvider;
-import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
-import org.jminor.javafx.framework.model.EntityEditModel;
-import org.jminor.javafx.framework.model.EntityListModel;
+import org.jminor.javafx.framework.model.FXEntityEditModel;
+import org.jminor.javafx.framework.model.FXEntityListModel;
+import org.jminor.javafx.framework.model.ObservableEntityList;
 import org.jminor.javafx.framework.ui.values.PropertyValues;
 import org.jminor.javafx.framework.ui.values.StringValue;
 
@@ -35,6 +36,7 @@ import javafx.geometry.Insets;
 import javafx.scene.Node;
 import javafx.scene.Parent;
 import javafx.scene.control.Alert;
+import javafx.scene.control.Button;
 import javafx.scene.control.ButtonBar;
 import javafx.scene.control.ButtonType;
 import javafx.scene.control.CheckBox;
@@ -44,12 +46,16 @@ import javafx.scene.control.DatePicker;
 import javafx.scene.control.Dialog;
 import javafx.scene.control.DialogPane;
 import javafx.scene.control.Label;
+import javafx.scene.control.ListView;
 import javafx.scene.control.PasswordField;
+import javafx.scene.control.SelectionMode;
 import javafx.scene.control.TextArea;
 import javafx.scene.control.TextField;
 import javafx.scene.control.TextFormatter;
 import javafx.scene.control.ToggleButton;
 import javafx.scene.image.ImageView;
+import javafx.scene.input.Clipboard;
+import javafx.scene.input.ClipboardContent;
 import javafx.scene.layout.GridPane;
 import javafx.scene.layout.Priority;
 
@@ -64,10 +70,25 @@ import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
 import java.util.Date;
+import java.util.List;
 import java.util.Objects;
 import java.util.Optional;
 
 public final class FXUiUtil {
+
+  public static <T> T selectValue(final List<T> values) {
+    return selectValues(values, true).get(0);
+  }
+
+  public static <T> List<T> selectValues(final List<T> values) {
+    return selectValues(values, false);
+  }
+
+  public static void setClipboard(final String string) {
+    final ClipboardContent content = new ClipboardContent();
+    content.putString(string);
+    Clipboard.getSystemClipboard().setContent(content);
+  }
 
   public static boolean confirm(final String message) {
     return confirm(null, null, message);
@@ -91,9 +112,11 @@ public final class FXUiUtil {
 
   public static Value createValue(final Property property, final Control control, final Object defaultValue) {
     if (property instanceof Property.ForeignKeyProperty) {
-      final Value<Entity> entityValue = PropertyValues.selectedValue(((ComboBox<Entity>) control).getSelectionModel());
-      entityValue.set((Entity) defaultValue);
-      return entityValue;
+      if (control instanceof ComboBox) {
+        final Value<Entity> entityValue = PropertyValues.selectedValue(((ComboBox<Entity>) control).getSelectionModel());
+        entityValue.set((Entity) defaultValue);
+        return entityValue;
+      }
     }
     if (property instanceof Property.ValueListProperty) {
       final Value listValue = PropertyValues.selectedItemValue(((ComboBox<Item>) control).getSelectionModel());
@@ -187,15 +210,15 @@ public final class FXUiUtil {
     return createCheckBox(property, (StateObserver) null);
   }
 
-  public static CheckBox createCheckBox(final Property property, final EntityEditModel editModel) {
+  public static CheckBox createCheckBox(final Property property, final FXEntityEditModel editModel) {
     return createCheckBox(property, editModel, null);
   }
 
-  public static CheckBox createCheckBox(final Property property, final EntityEditModel editModel,
+  public static CheckBox createCheckBox(final Property property, final FXEntityEditModel editModel,
                                         final StateObserver enabledState) {
     final CheckBox checkBox = createCheckBox(property, enabledState);
     final Value<Boolean> propertyValue = createBooleanValue(checkBox);
-    Values.link(editModel.createValue(property.getPropertyID()), propertyValue);
+    Values.link(EditModelValues.value(editModel, property.getPropertyID()), propertyValue);
 
     return checkBox;
   }
@@ -204,15 +227,20 @@ public final class FXUiUtil {
     return PropertyValues.booleanPropertyValue(checkBox.selectedProperty());
   }
 
-  public static TextField createTextField(final Property property, final EntityEditModel editModel) {
+  public static EntityLookupField createLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                    final FXEntityEditModel editModel) {
+    return new EntityLookupField(editModel.getForeignKeyLookupModel(foreignKeyProperty));
+  }
+
+  public static TextField createTextField(final Property property, final FXEntityEditModel editModel) {
     return createTextField(property, editModel, null);
   }
 
-  public static TextField createTextField(final Property property, final EntityEditModel editModel,
+  public static TextField createTextField(final Property property, final FXEntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
     final StringValue<String> propertyValue = createStringValue(textField);
-    Values.link(editModel.createValue(property.getPropertyID()), propertyValue);
+    Values.link(EditModelValues.value(editModel, property.getPropertyID()), propertyValue);
 
     return textField;
   }
@@ -221,15 +249,15 @@ public final class FXUiUtil {
     return PropertyValues.stringPropertyValue(textField.textProperty());
   }
 
-  public static TextField createLongField(final Property property, final EntityEditModel editModel) {
+  public static TextField createLongField(final Property property, final FXEntityEditModel editModel) {
     return createLongField(property, editModel, null);
   }
 
-  public static TextField createLongField(final Property property, final EntityEditModel editModel,
+  public static TextField createLongField(final Property property, final FXEntityEditModel editModel,
                                           final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
     final StringValue<Long> propertyValue = createLongValue(property, textField);
-    Values.link(editModel.createValue(property.getPropertyID()), propertyValue);
+    Values.link(EditModelValues.value(editModel, property.getPropertyID()), propertyValue);
 
     return textField;
   }
@@ -242,15 +270,15 @@ public final class FXUiUtil {
     return propertyValue;
   }
 
-  public static TextField createIntegerField(final Property property, final EntityEditModel editModel) {
+  public static TextField createIntegerField(final Property property, final FXEntityEditModel editModel) {
     return createIntegerField(property, editModel, null);
   }
 
-  public static TextField createIntegerField(final Property property, final EntityEditModel editModel,
+  public static TextField createIntegerField(final Property property, final FXEntityEditModel editModel,
                                              final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
     final StringValue<Integer> propertyValue = createIntegerValue(property, textField);
-    Values.link(editModel.createValue(property.getPropertyID()), propertyValue);
+    Values.link(EditModelValues.value(editModel, property.getPropertyID()), propertyValue);
 
     return textField;
   }
@@ -263,15 +291,15 @@ public final class FXUiUtil {
     return propertyValue;
   }
 
-  public static TextField createDoubleField(final Property property, final EntityEditModel editModel) {
+  public static TextField createDoubleField(final Property property, final FXEntityEditModel editModel) {
     return createDoubleField(property, editModel, null);
   }
 
-  public static TextField createDoubleField(final Property property, final EntityEditModel editModel,
+  public static TextField createDoubleField(final Property property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
     final TextField textField = createTextField(property, enabledState);
     final StringValue<Double> propertyValue = createDoubleValue(property, textField);
-    Values.link(editModel.createValue(property.getPropertyID()), propertyValue);
+    Values.link(EditModelValues.value(editModel, property.getPropertyID()), propertyValue);
 
     return textField;
   }
@@ -284,16 +312,16 @@ public final class FXUiUtil {
     return propertyValue;
   }
 
-  public static DatePicker createDatePicker(final Property property, final EntityEditModel editModel) {
+  public static DatePicker createDatePicker(final Property property, final FXEntityEditModel editModel) {
     return createDatePicker(property, editModel, null);
   }
 
-  public static DatePicker createDatePicker(final Property property, final EntityEditModel editModel,
+  public static DatePicker createDatePicker(final Property property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
     final DatePicker picker = createDatePicker(property, enabledState);
     final StringValue<LocalDate> value = createDateValue(property, picker);
 
-    Values.link(new LocalDateValue(editModel.createValue(property.getPropertyID())), value);
+    Values.link(new LocalDateValue(EditModelValues.value(editModel, property.getPropertyID())), value);
 
     return picker;
   }
@@ -320,19 +348,20 @@ public final class FXUiUtil {
   }
 
   public static ComboBox<Entity> createForeignKeyComboBox(final Property.ForeignKeyProperty property,
-                                                          final EntityEditModel editModel) {
-    final EntityListModel listModel = editModel.getForeignKeyListModel(property);
+                                                          final FXEntityEditModel editModel) {
+    final FXEntityListModel listModel = editModel.getForeignKeyListModel(property);
     listModel.refresh();
-    final ComboBox<Entity> box = new ComboBox<>(new SortedList<>(listModel, Entities.getComparator(editModel.getEntityID())));
-    Values.link(editModel.createValue(property.getPropertyID()), PropertyValues.selectedValue(box.getSelectionModel()));
+    final ComboBox<Entity> box = new ComboBox<>(listModel.getSortedList());
+    listModel.setSelectionModel(box.getSelectionModel());
+    Values.link(EditModelValues.value(editModel, property.getPropertyID()), PropertyValues.selectedValue(box.getSelectionModel()));
 
     return box;
   }
 
   public static ComboBox<Item> createItemComboBox(final Property.ValueListProperty property,
-                                                  final EntityEditModel editModel) {
+                                                  final FXEntityEditModel editModel) {
     final ComboBox<Item> comboBox = new ComboBox<>(createValueListComboBoxModel(property));
-    Values.link(editModel.createValue(property.getPropertyID()), PropertyValues.selectedItemValue(comboBox.getSelectionModel()));
+    Values.link(EditModelValues.value(editModel, property.getPropertyID()), PropertyValues.selectedItemValue(comboBox.getSelectionModel()));
     return comboBox;
   }
 
@@ -466,7 +495,7 @@ public final class FXUiUtil {
       });
     });
 
-    alert.showAndWait();
+    Platform.runLater(alert::showAndWait);
   }
 
   public static <T> T getParentOfType(final Node node, final Class<T> clazz) {
@@ -480,11 +509,54 @@ public final class FXUiUtil {
     return (T) parent;
   }
 
-  private static SortedList<Entity> createEntityListModel(final Property.ForeignKeyProperty property, final EntityConnectionProvider connectionProvider) {
-    final EntityListModel listModel = new EntityListModel(property.getReferencedEntityID(), connectionProvider);
-    listModel.refresh();
+  private static SortedList<Entity> createEntityListModel(final Property.ForeignKeyProperty property,
+                                                          final EntityConnectionProvider connectionProvider) {
+    final ObservableEntityList entityList = new ObservableEntityList(property.getReferencedEntityID(),
+            connectionProvider);
+    entityList.refresh();
 
-    return new SortedList<>(listModel, Entities.getComparator(property.getReferencedEntityID()));
+    return entityList.getSortedList();
+  }
+
+  private static <T> List<T> selectValues(final List<T> values, final boolean single) {
+    final ListView<T> listView = new ListView<>(FXCollections.observableArrayList(values));
+    listView.getSelectionModel().setSelectionMode(single ? SelectionMode.SINGLE : SelectionMode.MULTIPLE);
+    final Dialog<List<T>> dialog = new Dialog<>();
+    dialog.getDialogPane().setContent(listView);
+    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+    dialog.setResultConverter(buttonType -> {
+      if (buttonType != null && buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+        return listView.getSelectionModel().getSelectedItems();
+      };
+
+      return null;
+    });
+    listView.setOnMouseClicked(event -> {
+      if (event.getClickCount() == 2) {
+        ((Button) dialog.getDialogPane().lookupButton(ButtonType.OK)).fire();
+      }
+    });
+    listView.setOnKeyPressed(event -> {
+      switch (event.getCode()) {
+        case ENTER:
+          ((Button) dialog.getDialogPane().lookupButton(ButtonType.OK)).fire();
+          break;
+        case ESCAPE:
+          ((Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL)).fire();
+          break;
+      }
+    });
+
+    Platform.runLater(listView::requestFocus);
+    final Optional<List<T>> result = dialog.showAndWait();
+    if (result.isPresent()) {
+      final List<T> selected = result.get();
+      if (!selected.isEmpty()) {
+        return selected;
+      }
+    }
+
+    throw new CancelException();
   }
 
   private static final class LocalDateValue implements Value<LocalDate> {

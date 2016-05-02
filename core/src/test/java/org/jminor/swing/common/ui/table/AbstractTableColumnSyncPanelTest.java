@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.ui.table;
 
-import org.jminor.swing.common.model.table.DefaultFilteredTableColumnModel;
 import org.jminor.swing.common.model.table.FilteredTableColumnModel;
+import org.jminor.swing.common.model.table.SwingFilteredTableColumnModel;
 
 import org.junit.Test;
 
@@ -20,7 +20,7 @@ public class AbstractTableColumnSyncPanelTest {
   private final FilteredTableColumnModel columnModel;
 
   public AbstractTableColumnSyncPanelTest() {
-    columnModel = new DefaultFilteredTableColumnModel(Arrays.asList(new TableColumn(0, 20), new TableColumn(2, 20)), null);
+    columnModel = new SwingFilteredTableColumnModel(Arrays.asList(new TableColumn(0, 20), new TableColumn(2, 20)), null);
     panel = new TableColumnSyncPanelImpl(columnModel);
   }
 
