@@ -18,7 +18,6 @@
 
   <dependencies defaultconf="compile">
     <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-client-model" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-swing-common-model" rev="latest.integration"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7"/>

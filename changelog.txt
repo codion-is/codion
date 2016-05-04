@@ -4233,3 +4233,6 @@
   DefaultEntityModelProvider renamed to SwingEntityModelProvider
   Snapshot release mechanism enabled
   More swing components renamed
+0.10.1
+  jminor-client-model module renamed to jminor-framework-model
+  jminor-framework-model-unittests module added

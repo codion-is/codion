@@ -1,0 +1,3 @@
+<project name="jminor-framework-model-unittests">
+  <import file="../build.xml"/>
+</project>

@@ -162,8 +162,14 @@
                  includes="org/jminor/framework/db/remote/*"/>
     <dist_module module-name="jminor-db-test"
                  includes="org/jminor/framework/testing/EntityTestUnit*"/>
-    <dist_module module-name="jminor-client-model"
+    <dist_module module-name="jminor-framework-model"
                  includes="org/jminor/framework/model/*"/>
+    <dist_module module-name="jminor-framework-model-unittests"
+                 includes="org/jminor/framework/domain/TestDomain*,
+                 org/jminor/framework/model/Abstract*,
+                 org/jminor/framework/db/EntityConnectionProvidersTest*"
+                 build.basedir="${build.test}"
+                 src.basedir="${src.test}"/>
     <dist_module module-name="jminor-swing-client-model"
                  includes="org/jminor/swing/framework/model/**"/>
     <dist_module module-name="jminor-swing-client-ui"
@@ -181,7 +187,7 @@
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="
               jminor-common-model/jminor-common-model.jar,
-              jminor-client-model/jminor-client-model.jar,
+              jminor-framework-model/jminor-framework-model.jar,
               jminor-swing-common-model/jminor-swing-common-model.jar,
               jminor-swing-common-ui/jminor-swing-common-ui.jar,
               jminor-db-core/jminor-db-core.jar,
@@ -194,7 +200,7 @@
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="
               jminor-common-model/jminor-common-model-sources.jar,
-              jminor-client-model/jminor-client-model-sources.jar,
+              jminor-framework-model/jminor-framework-model-sources.jar,
               jminor-swing-common-model/jminor-swing-common-model-sources.jar,
               jminor-swing-common-ui/jminor-swing-common-ui-sources.jar,
               jminor-db-core/jminor-db-core-sources.jar,
@@ -207,7 +213,7 @@
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${dist}" includes="
               jminor-common-model/jminor-common-model-javadoc.jar,
-              jminor-client-model/jminor-client-model-javadoc.jar,
+              jminor-framework-model/jminor-framework-model-javadoc.jar,
               jminor-swing-common-model/jminor-swing-common-model-javadoc.jar,
               jminor-swing-common-ui/jminor-swing-common-ui-javadoc.jar,
               jminor-db-core/jminor-db-core-javadoc.jar,
@@ -227,7 +233,8 @@
     <subant target="publish" buildpath="${basedir}/resources/publish/db-local"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-remote"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/db-test"/>
-    <subant target="publish" buildpath="${basedir}/resources/publish/client-model"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/framework-model"/>
+    <subant target="publish" buildpath="${basedir}/resources/publish/framework-model-unittests"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/swing-common-model"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/swing-common-ui"/>
     <subant target="publish" buildpath="${basedir}/resources/publish/swing-client-model"/>
@@ -588,11 +595,13 @@
     <attribute name="module-name"/>
     <attribute name="includes" default=""/>
     <attribute name="excludes" default=""/>
+    <attribute name="build.basedir" default="${build.main}"/>
+    <attribute name="src.basedir" default="${src.main}"/>
     <sequential>
-      <jar jarfile="${dist}/@{module-name}/@{module-name}.jar" basedir="${build.main}"
+      <jar jarfile="${dist}/@{module-name}/@{module-name}.jar" basedir="@{build.basedir}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
-      <jar jarfile="${dist}/@{module-name}/@{module-name}-sources.jar" basedir="${src.main}"
+      <jar jarfile="${dist}/@{module-name}/@{module-name}-sources.jar" basedir="@{src.basedir}"
            manifest="${build.main}/META-INF/MANIFEST.MF"
            includes="@{includes}" excludes="@{excludes}"/>
       <jar jarfile="${dist}/@{module-name}/@{module-name}-javadoc.jar" basedir="${javadoc}"
