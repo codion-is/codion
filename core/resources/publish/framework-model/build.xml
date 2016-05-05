@@ -1,3 +1,0 @@
-<project name="jminor-framework-model">
-  <import file="../build.xml"/>
-</project>

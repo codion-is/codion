@@ -1,3 +1,0 @@
-<project name="jminor-swing-common-ui">
-  <import file="../build.xml"/>
-</project>

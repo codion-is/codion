@@ -1,3 +1,0 @@
-<project name="jminor-server">
-  <import file="../build.xml"/>
-</project>

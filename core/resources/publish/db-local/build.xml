@@ -1,3 +1,0 @@
-<project name="jminor-db-local">
-  <import file="../build.xml"/>
-</project>
