@@ -1,0 +1,3 @@
+<project name="jminor-swing-client-test">
+  <import file="../../../build-module.xml"/>
+</project>

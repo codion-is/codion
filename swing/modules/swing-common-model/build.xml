@@ -1,0 +1,3 @@
+<project name="jminor-swing-common-model">
+  <import file="../../../build-module.xml"/>
+</project>
