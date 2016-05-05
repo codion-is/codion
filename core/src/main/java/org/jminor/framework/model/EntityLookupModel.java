@@ -4,7 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Value;
 import org.jminor.framework.domain.Entity;
@@ -122,7 +122,7 @@ public interface EntityLookupModel extends EntityDataProvider {
   /**
    * @param listener a listener to be notified each time the selected entities are changed
    */
-  void addSelectedEntitiesListener(final EventListener listener);
+  void addSelectedEntitiesListener(final EventInfoListener<Collection<Entity>> listener);
 
   /**
    * @return a StateObserver indicating whether or not the search string represents the selected entities

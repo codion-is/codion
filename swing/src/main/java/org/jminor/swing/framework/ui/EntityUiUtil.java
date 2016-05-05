@@ -7,7 +7,6 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.Event;
 import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.StateObserver;
@@ -1129,10 +1128,9 @@ public final class EntityUiUtil {
 
     private LookupUIValue(final EntityLookupModel lookupModel) {
       this.lookupModel = lookupModel;
-      this.lookupModel.addSelectedEntitiesListener(new EventListener() {
+      this.lookupModel.addSelectedEntitiesListener(new EventInfoListener<Collection<Entity>>() {
         @Override
-        public void eventOccurred() {
-          final Collection<Entity> selected = lookupModel.getSelectedEntities();
+        public void eventOccurred(final Collection<Entity> selected) {
           changeEvent.eventOccurred(selected.isEmpty() ? null : selected.iterator().next());
         }
       });

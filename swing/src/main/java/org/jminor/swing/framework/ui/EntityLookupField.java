@@ -49,6 +49,7 @@ import java.awt.event.ActionListener;
 import java.awt.event.FocusEvent;
 import java.awt.event.FocusListener;
 import java.awt.event.KeyEvent;
+import java.util.Collection;
 import java.util.List;
 import java.util.Map;
 
@@ -174,9 +175,9 @@ public final class EntityLookupField extends JTextField {
         updateColors();
       }
     });
-    model.addSelectedEntitiesListener(new EventListener() {
+    model.addSelectedEntitiesListener(new EventInfoListener<Collection<Entity>>() {
       @Override
-      public void eventOccurred() {
+      public void eventOccurred(final Collection<Entity> info) {
         setCaretPosition(0);
       }
     });

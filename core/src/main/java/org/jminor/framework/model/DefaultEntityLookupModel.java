@@ -9,6 +9,7 @@ import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.SearchType;
@@ -40,7 +41,7 @@ import java.util.Map;
  */
 public class DefaultEntityLookupModel implements EntityLookupModel {
 
-  private final Event selectedEntitiesChangedEvent = Events.event();
+  private final Event<Collection<Entity>> selectedEntitiesChangedEvent = Events.event();
   private final State searchStringRepresentsSelectedState = States.state(true);
 
   /**
@@ -156,7 +157,7 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
       this.selectedEntities.addAll(entities);
     }
     refreshSearchText();
-    selectedEntitiesChangedEvent.fire();
+    selectedEntitiesChangedEvent.fire(Collections.unmodifiableCollection(selectedEntities));
   }
 
   /** {@inheritDoc} */
@@ -270,8 +271,8 @@ public class DefaultEntityLookupModel implements EntityLookupModel {
 
   /** {@inheritDoc} */
   @Override
-  public final void addSelectedEntitiesListener(final EventListener listener) {
-    selectedEntitiesChangedEvent.addListener(listener);
+  public final void addSelectedEntitiesListener(final EventInfoListener<Collection<Entity>> listener) {
+    selectedEntitiesChangedEvent.addInfoListener(listener);
   }
 
   /** {@inheritDoc} */

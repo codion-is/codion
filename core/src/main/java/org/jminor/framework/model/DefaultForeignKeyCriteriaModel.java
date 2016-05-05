@@ -4,6 +4,7 @@
 package org.jminor.framework.model;
 
 import org.jminor.common.db.criteria.Criteria;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventListener;
 import org.jminor.common.model.table.DefaultColumnCriteriaModel;
 import org.jminor.framework.Configuration;
@@ -117,12 +118,11 @@ public class DefaultForeignKeyCriteriaModel extends DefaultColumnCriteriaModel<P
   }
 
   private void bindLookupModelEvents() {
-    entityLookupModel.addSelectedEntitiesListener(new EventListener() {
+    entityLookupModel.addSelectedEntitiesListener(new EventInfoListener<Collection<Entity>>() {
       @Override
-      public void eventOccurred() {
+      public void eventOccurred(final Collection<Entity> selectedEntities) {
         try {
           setUpdatingModel(true);
-          final Collection<Entity> selectedEntities = entityLookupModel.getSelectedEntities();
           setUpperBound(selectedEntities.isEmpty() ? null : selectedEntities);
         }
         finally {

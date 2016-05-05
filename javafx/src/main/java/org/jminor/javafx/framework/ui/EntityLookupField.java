@@ -40,6 +40,10 @@ public final class EntityLookupField extends TextField {
     updateColors();
   }
 
+  public EntityLookupModel getModel() {
+    return model;
+  }
+
   public void setValidBackgroundColor(final Color validBackgroundColor) {
     this.validBackgroundColor = validBackgroundColor;
   }

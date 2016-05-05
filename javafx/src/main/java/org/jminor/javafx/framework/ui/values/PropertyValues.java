@@ -9,6 +9,8 @@ import org.jminor.common.model.Events;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
+import org.jminor.framework.domain.Entity;
+import org.jminor.framework.model.EntityLookupModel;
 
 import javafx.beans.property.BooleanProperty;
 import javafx.beans.property.StringProperty;
@@ -26,6 +28,7 @@ import java.text.SimpleDateFormat;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.time.format.DateTimeParseException;
+import java.util.Collection;
 
 public final class PropertyValues {
 
@@ -41,6 +44,10 @@ public final class PropertyValues {
 
   public static <V> Value<V> selectedValue(final SingleSelectionModel<V> selectionModel) {
     return new SelectedValue<>(selectionModel);
+  }
+
+  public static Value<Collection<Entity>> lookupValue(final EntityLookupModel model) {
+    return new EntityLookupValue(model);
   }
 
   public static StringValue<String> stringPropertyValue(final StringProperty property) {
@@ -353,6 +360,32 @@ public final class PropertyValues {
     @Override
     public EventObserver getObserver() {
       return changeEvent.getObserver();
+    }
+  }
+
+  private static final class EntityLookupValue implements Value<Collection<Entity>> {
+
+    private final EntityLookupModel lookupModel;
+    private final Event<Collection<Entity>> selectionListener = Events.event();
+
+    private EntityLookupValue(final EntityLookupModel lookupModel) {
+      this.lookupModel = lookupModel;
+      this.lookupModel.addSelectedEntitiesListener(selectionListener);
+    }
+
+    @Override
+    public void set(final Collection<Entity> value) {
+      lookupModel.setSelectedEntities(value);
+    }
+
+    @Override
+    public Collection<Entity> get() {
+      return lookupModel.getSelectedEntities();
+    }
+
+    @Override
+    public EventObserver<Collection<Entity>> getObserver() {
+      return selectionListener.getObserver();
     }
   }
 }

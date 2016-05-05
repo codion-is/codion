@@ -1,4 +1,4 @@
-<project name="jminor">
+<project name="jminor-core">
 
   <property file="build.properties"/>
 

@@ -69,6 +69,8 @@ import java.text.SimpleDateFormat;
 import java.time.Instant;
 import java.time.LocalDate;
 import java.time.ZoneId;
+import java.util.Collection;
+import java.util.Collections;
 import java.util.Date;
 import java.util.List;
 import java.util.Objects;
@@ -117,6 +119,11 @@ public final class FXUiUtil {
         entityValue.set((Entity) defaultValue);
         return entityValue;
       }
+      else if (control instanceof EntityLookupField) {
+        final Value<Collection<Entity>> entityValue = PropertyValues.lookupValue (((EntityLookupField) control).getModel());
+        entityValue.set(defaultValue == null ? Collections.emptyList() : Collections.singletonList((Entity) defaultValue));
+        return entityValue;
+      }
     }
     if (property instanceof Property.ValueListProperty) {
       final Value listValue = PropertyValues.selectedItemValue(((ComboBox<Item>) control).getSelectionModel());
@@ -158,7 +165,7 @@ public final class FXUiUtil {
     }
   }
 
-  public static Value<Entity> createEntityValue(final Property.ForeignKeyProperty property, final ComboBox<Entity> comboBox) {
+  public static Value<Entity> createEntityValue(final ComboBox<Entity> comboBox) {
     return PropertyValues.selectedValue(comboBox.getSelectionModel());
   }
 
@@ -190,11 +197,11 @@ public final class FXUiUtil {
 
     switch (property.getType()) {
       case Types.BOOLEAN:
-        return createCheckBox(property);
+        return createCheckBox();
       case Types.DATE:
       case Types.TIMESTAMP:
       case Types.TIME:
-        return createDatePicker(property);
+        return createDatePicker();
       case Types.DOUBLE:
       case Types.INTEGER:
       case Types.BIGINT:
@@ -206,17 +213,13 @@ public final class FXUiUtil {
     }
   }
 
-  public static CheckBox createCheckBox(final Property property) {
-    return createCheckBox(property, (StateObserver) null);
-  }
-
   public static CheckBox createCheckBox(final Property property, final FXEntityEditModel editModel) {
     return createCheckBox(property, editModel, null);
   }
 
   public static CheckBox createCheckBox(final Property property, final FXEntityEditModel editModel,
                                         final StateObserver enabledState) {
-    final CheckBox checkBox = createCheckBox(property, enabledState);
+    final CheckBox checkBox = createCheckBox(enabledState);
     final Value<Boolean> propertyValue = createBooleanValue(checkBox);
     Values.link(EditModelValues.value(editModel, property.getPropertyID()), propertyValue);
 
@@ -318,7 +321,7 @@ public final class FXUiUtil {
 
   public static DatePicker createDatePicker(final Property property, final FXEntityEditModel editModel,
                                             final StateObserver enabledState) {
-    final DatePicker picker = createDatePicker(property, enabledState);
+    final DatePicker picker = createDatePicker(enabledState);
     final StringValue<LocalDate> value = createDateValue(property, picker);
 
     Values.link(new LocalDateValue(EditModelValues.value(editModel, property.getPropertyID())), value);
@@ -365,7 +368,11 @@ public final class FXUiUtil {
     return comboBox;
   }
 
-  public static CheckBox createCheckBox(final Property property, final StateObserver enabledState) {
+  public static CheckBox createCheckBox() {
+    return createCheckBox(null);
+  }
+
+  public static CheckBox createCheckBox(final StateObserver enabledState) {
     final CheckBox checkBox = new CheckBox();
     if (enabledState != null) {
       link(checkBox.disableProperty(), enabledState.getReversedObserver());
@@ -375,10 +382,8 @@ public final class FXUiUtil {
   }
 
   public static ObservableList<Item> createValueListComboBoxModel(final Property.ValueListProperty property) {
-    final SortedList<Item> model =  new SortedList<>(FXCollections.observableArrayList(property.getValues()),
+    return new SortedList<>(FXCollections.observableArrayList(property.getValues()),
             (o1, o2) -> o1.toString().compareTo(o2.toString()));
-
-    return model;
   }
 
   public static TextField createTextField(final Property property) {
@@ -395,11 +400,11 @@ public final class FXUiUtil {
     return textField;
   }
 
-  public static DatePicker createDatePicker(final Property property) {
-    return createDatePicker(property, (StateObserver) null);
+  public static DatePicker createDatePicker() {
+    return createDatePicker(null);
   }
 
-  public static DatePicker createDatePicker(final Property property, final StateObserver enabledState) {
+  public static DatePicker createDatePicker(final StateObserver enabledState) {
     final DatePicker picker = new DatePicker();
     if (enabledState != null) {
       link(picker.disableProperty(), enabledState.getReversedObserver());
@@ -527,7 +532,7 @@ public final class FXUiUtil {
     dialog.setResultConverter(buttonType -> {
       if (buttonType != null && buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
         return listView.getSelectionModel().getSelectedItems();
-      };
+      }
 
       return null;
     });
@@ -543,6 +548,8 @@ public final class FXUiUtil {
           break;
         case ESCAPE:
           ((Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL)).fire();
+          break;
+        default:
           break;
       }
     });

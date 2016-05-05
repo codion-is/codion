@@ -4239,3 +4239,5 @@
   jminor-swing project module split from jminor-core
   Major refactoring of build files
   More build file refactoring
+  Sonar based JavaFX fixes
+  EntityLookupModel.addSelectedEntitiesListener() parameter changed to EventInfoListener<Collection<Entity>>
