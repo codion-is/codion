@@ -1,5 +1,7 @@
 <project name="empdept">
   <import file="../build-demo.xml"/>
+  <property name="client.main.class" value="org.jminor.framework.demos.empdept.client.ui.EmpDeptAppPanel"/>
+  <property name="loadtest.main.class" value="org.jminor.framework.demos.empdept.testing.EmpDeptLoadTest"/>
 
   <target name="build" depends="jminor-common.build">
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">

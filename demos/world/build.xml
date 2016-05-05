@@ -1,3 +1,4 @@
 <project name="world">
   <import file="../build-demo.xml"/>
+  <property name="client.main.class" value="org.jminor.framework.demos.world.client.ui.WorldAppPanel"/>
 </project>

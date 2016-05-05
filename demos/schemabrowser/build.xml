@@ -1,3 +1,5 @@
 <project name="schemabrowser">
   <import file="../build-demo.xml"/>
+  <property name="client.main.class" value="org.jminor.framework.demos.schemabrowser.client.ui.SchemaBrowserAppPanel"/>
+  <property name="loadtest.main.class" value="org.jminor.framework.demos.schemabrowser.testing.SchemaBrowserLoadTest"/>
 </project>

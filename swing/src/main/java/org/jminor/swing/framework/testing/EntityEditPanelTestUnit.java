@@ -57,7 +57,7 @@ public abstract class EntityEditPanelTestUnit {
    * @throws Exception in case of an exception
    */
   protected EntityEditPanel createEditPanel() throws Exception {
-    return editPanelClass.getConstructor(EntityEditModel.class).newInstance(createEditModel());
+    return editPanelClass.getConstructor(SwingEntityEditModel.class).newInstance(createEditModel());
   }
 
   /**

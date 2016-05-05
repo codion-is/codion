@@ -1,0 +1,255 @@
+<project name="jminor">
+
+  <property file="build.properties"/>
+
+  <path id="lib.test">
+    <fileset dir="core/${lib}/test"/>
+  </path>
+
+  <path id="lib.runtime.server">
+    <fileset dir="core/${dist}/jminor-common-model"/>
+    <fileset dir="core/${dist}/jminor-db-core"/>
+    <fileset dir="core/${dist}/jminor-db-local"/>
+    <fileset dir="core/${dist}/jminor-server"/>
+    <fileset dir="core/${lib}/runtime.server"/>
+  </path>
+
+  <path id="lib.runtime.server.monitor">
+    <fileset dir="core/${dist}/jminor-common-model"/>
+    <fileset dir="swing/${dist}/jminor-server-monitor"/>
+    <fileset dir="swing/${dist}/jminor-swing-common-model"/>
+    <fileset dir="swing/${dist}/jminor-swing-common-ui"/>
+    <fileset dir="swing/${lib}/runtime.server-monitor"/>
+  </path>
+
+  <path id="build.demos.main">
+    <pathelement path="demos/chinook/build/main"/>
+    <pathelement path="demos/empdept/build/main"/>
+    <pathelement path="demos/petstore/build/main"/>
+    <pathelement path="demos/schemabrowser/build/main"/>
+    <pathelement path="demos/world/build/main"/>
+  </path>
+
+  <path id="build.plugins.main">
+    <path location="plugins/imagepanel/build/main"/>
+    <path location="plugins/jasperreports/build/main"/>
+    <path location="plugins/json/build/main"/>
+    <path location="plugins/nextreports/build/main"/>
+    <path location="plugins/rest/build/main"/>
+    <path location="plugins/tomcat-pool/build/main"/>
+  </path>
+
+  <path id="lib.plugins">
+    <path>
+      <fileset dir="plugins/imagepanel/lib/test"/>
+      <fileset dir="plugins/jasperreports/lib/test"/>
+      <fileset dir="plugins/json/lib/test"/>
+      <fileset dir="plugins/nextreports/lib/test"/>
+      <fileset dir="plugins/rest/lib/test"/>
+      <fileset dir="plugins/tomcat-pool/lib/test"/>
+    </path>
+  </path>
+
+  <target name="deploy_server"
+          description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
+    <subant target="dist" buildpath="core"/>
+    <subant target="create_keystore" buildpath="core"/>
+    <subant target="create_demo_h2db" buildpath="core"/>
+
+    <copy file="core/${dist}/jminor-common-model/jminor-common-model.jar"
+          tofile="${deploy.server.path}/lib/jminor-common-model-${version}.jar"/>
+    <copy file="core/${dist}/jminor-db-core/jminor-db-core.jar"
+          tofile="${deploy.server.path}/lib/jminor-db-core-${version}.jar"/>
+    <copy file="core/${dist}/jminor-db-local/jminor-db-local.jar"
+          tofile="${deploy.server.path}/lib/jminor-db-local-${version}.jar"/>
+    <copy file="core/${dist}/jminor-server/jminor-server.jar"
+          tofile="${deploy.server.path}/lib/jminor-server-${version}.jar"/>
+
+    <subant target="dist" buildpath="demos"/>
+    <copy file="demos/chinook/dist/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="demos/empdept/dist/empdept-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="demos/petstore/dist/petstore-domain.jar" todir="${deploy.server.path}/lib"/>
+    <copy file="demos/world/dist/world-domain.jar" todir="${deploy.server.path}/lib"/>
+
+    <subant target="dist" buildpath="plugins"/>
+    <copy file="plugins/jasperreports/dist/jminor-plugin-jasperreports.jar"
+          tofile="${deploy.server.path}/lib/jminor-plugin-jasperreports-${version}.jar"/>
+    <copy todir="${deploy.server.path}/lib">
+      <fileset dir="plugins/jasperreports/lib/runtime" excludes="*jminor*"/>
+    </copy>
+    <copy file="plugins/rest/dist/jminor-plugin-rest.jar"
+          tofile="${deploy.server.path}/lib/jminor-plugin-rest-${version}.jar"/>
+    <copy file="plugins/json/dist/jminor-plugin-json.jar"
+          tofile="${deploy.server.path}/lib/jminor-plugin-json-${version}.jar"/>
+    <copy todir="${deploy.server.path}/lib">
+      <fileset dir="plugins/rest/lib/runtime" excludes="*jminor*"/>
+    </copy>
+
+    <copy todir="${deploy.server.path}/lib">
+      <fileset dir="core/${lib}/runtime.server"/>
+    </copy>
+    <copy todir="${deploy.server.path}">
+      <fileset dir="core/resources/server/"/>
+    </copy>
+    <copy file="${deploy.server.policy}" todir="${deploy.server.path}/config"/>
+    <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.path}/config"/>
+    <copy file="${deploy.server.notsoserial.whitelist}" todir="${deploy.server.path}/config"/>
+    <copy file="${deploy.server.keystore}" todir="${deploy.server.path}/config"/>
+    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.path}/config"/>
+    <chmod dir="${deploy.server.path}" perm="u+x" type="file" includes="*.sh"/>
+    <copy todir="${deploy.server.path}/h2db">
+      <fileset dir="${db.h2.dir}"/>
+    </copy>
+    <copy todir="${deploy.server.path}/reports/demos" flatten="true">
+      <fileset dir="demos/chinook/build/reports" includes="**/*.jasper"/>
+      <fileset dir="demos/empdept/build/reports" includes="**/*.jasper"/>
+    </copy>
+  </target>
+
+  <target name="deploy_server_monitor"
+          description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
+    <subant target="create_keystore" buildpath="core"/>
+    <subant target="dist" buildpath="core"/>
+    <subant target="dist" buildpath="swing"/>
+
+    <mkdir dir="${deploy.server.monitor.path}"/>
+    <copy file="core/${dist}/jminor-common-model/jminor-common-model.jar"
+          tofile="${deploy.server.monitor.path}/lib/jminor-common-model-${version}.jar"/>
+    <copy file="swing/${dist}/jminor-swing-common-model/jminor-swing-common-model.jar"
+          tofile="${deploy.server.monitor.path}/lib/jminor-swing-common-model-${version}.jar"/>
+    <copy file="swing/${dist}/jminor-swing-common-ui/jminor-swing-common-ui.jar"
+          tofile="${deploy.server.monitor.path}/lib/jminor-swing-common-ui-${version}.jar"/>
+    <copy file="swing/${dist}/jminor-server-monitor/jminor-server-monitor.jar"
+          tofile="${deploy.server.monitor.path}/lib/jminor-server-monitor-${version}.jar"/>
+    <copy todir="${deploy.server.monitor.path}/lib">
+      <fileset dir="swing/${lib}/runtime.server-monitor"/>
+    </copy>
+    <copy todir="${deploy.server.monitor.path}">
+      <fileset dir="${basedir}/core/resources/server_monitor/"/>
+    </copy>
+    <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.path}/config"/>
+    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.path}/config"/>
+    <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
+  </target>
+
+  <target name="deploy_demos"
+          description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
+    <subant target="create_keystore" buildpath="core"/>
+    <subant target="deploy" buildpath="demos"/>
+    <delete dir="${deploy.demos.dir}"/>
+    <deploy_demo_app demo-name="chinook"/>
+    <deploy_demo_app demo-name="empdept"/>
+    <deploy_demo_app demo-name="petstore"/>
+    <deploy_demo_app demo-name="schemabrowser"/>
+    <deploy_demo_app demo-name="world"/>
+  </target>
+
+  <target name="clean">
+    <subant target="clean" buildpath="core"/>
+    <subant target="clean" buildpath="swing"/>
+    <subant target="clean" buildpath="javafx"/>
+    <subant target="clean" buildpath="plugins"/>
+    <subant target="clean" buildpath="demos"/>
+  </target>
+
+  <target name="build">
+    <subant target="build" buildpath="core"/>
+    <subant target="build" buildpath="swing"/>
+    <subant target="build" buildpath="javafx"/>
+    <subant target="build" buildpath="plugins"/>
+    <subant target="build" buildpath="demos"/>
+  </target>
+
+  <target name="dist">
+    <subant target="dist" buildpath="core"/>
+    <subant target="dist" buildpath="swing"/>
+    <subant target="dist" buildpath="javafx"/>
+    <subant target="dist" buildpath="plugins"/>
+    <subant target="dist" buildpath="demos"/>
+  </target>
+
+  <target name="run_unit_tests">
+    <subant target="run_unit_tests" buildpath="core"/>
+    <subant target="run_unit_tests" buildpath="swing"/>
+    <subant target="run_unit_tests" buildpath="javafx"/>
+    <subant target="run_unit_tests" buildpath="plugins"/>
+    <subant target="run_unit_tests" buildpath="demos"/>
+  </target>
+
+  <target name="run_server" description="Runs the RMI server">
+    <subant target="create_keystore" buildpath="core"/>
+    <subant target="dist" buildpath="core"/>
+    <subant target="build" buildpath="plugins"/>
+    <subant target="build" buildpath="demos"/>
+    <!--todo reports, copy to temp loc-->
+    <!--<copy todir="build/demos/reports" flatten="true">-->
+      <!--<fileset dir="demos/chinook/build/reports" includes="**/*.jasper"/>-->
+      <!--<fileset dir="demos/empdept/build/reports" includes="**/*.jasper"/>-->
+    <!--</copy>-->
+    <java classname="org.jminor.framework.server.DefaultEntityConnectionServerAdmin" fork="yes" dir="demos">
+      <classpath>
+        <path refid="lib.runtime.server"/>
+        <path refid="build.plugins.main"/>
+        <path refid="build.demos.main"/>
+        <path refid="lib.plugins"/>
+      </classpath>
+      <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
+      <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
+      <jvmarg value="-Djminor.db.port=${demo.db.port}"/>
+      <jvmarg value="-Djminor.db.sid=${demo.db.sid}"/>
+      <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
+      <jvmarg value="-Djminor.db.embeddedInMemory=${demo.db.embeddedInMemory}"/>
+      <jvmarg value="-Djminor.db.initScript=create_h2_db.sql"/>
+      <jvmarg value="-Djminor.server.pooling.initial=scott:tiger"/>
+      <jvmarg value="-Djminor.server.clientLoggingEnabled=true"/>
+      <jvmarg value="-Djminor.server.port=2222"/>
+      <jvmarg value="-Djminor.server.admin.port=4444"/>
+      <jvmarg value="-Djminor.server.domain.classes=org.jminor.framework.demos.empdept.domain.EmpDept, org.jminor.framework.demos.petstore.domain.Petstore, org.jminor.framework.demos.chinook.domain.Chinook, org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser, org.jminor.framework.demos.world.domain.World"/>
+      <jvmarg value="-Djavax.net.ssl.keyStore=${deploy.server.keystore}"/>
+      <jvmarg value="-Djava.security.policy=${deploy.server.policy}"/>
+      <jvmarg value="-Djavax.net.ssl.keyStorePassword=${demo.server.keystorePassword}"/>
+      <jvmarg value="-Djava.rmi.server.hostname=localhost"/>
+    </java>
+    <delete dir="build/demos"/>
+  </target>
+
+  <target name="run_server_monitor" description="Runs the RMI server monitor">
+    <!--<subant target="create_keystore" buildpath="core"/>-->
+    <!--<subant target="dist" buildpath="core"/>-->
+    <!--<subant target="dist" buildpath="swing"/>-->
+    <java classname="org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
+      <classpath>
+        <path refid="lib.runtime.server.monitor"/>
+      </classpath>
+      <jvmarg value="-Djminor.server.hostname=localhost"/>
+      <jvmarg value="-Djavax.net.ssl.trustStore=${deploy.server.monitor.truststore}"/>
+      <jvmarg value="-Djava.security.policy=${deploy.server.monitor.policy}"/>
+    </java>
+  </target>
+
+  <!--<target name="run_generator" depends="build"-->
+          <!--description="Runs the entity generator">-->
+    <!--<java classname="org.jminor.swing.framework.generator.ui.EntityGeneratorPanel" fork="yes">-->
+      <!--<classpath>-->
+        <!--<path refid="build.main"/>-->
+        <!--<path refid="lib.runtime.client"/>-->
+      <!--</classpath>-->
+      <!--<jvmarg value="-Djminor.db.type=h2"/>-->
+      <!--<jvmarg value="-Djminor.db.host=h2db/h2"/>-->
+      <!--<jvmarg value="-Djminor.db.embedded=true"/>-->
+    <!--</java>-->
+  <!--</target>-->
+
+  <macrodef name="deploy_demo_app">
+    <attribute name="demo-name"/>
+    <sequential>
+      <copy todir="${deploy.demos.dir}/web/@{demo-name}">
+        <fileset dir="demos/@{demo-name}/dist/deployment/web"/>
+      </copy>
+      <copy todir="${deploy.demos.dir}/local/@{demo-name}">
+        <fileset dir="demos/@{demo-name}/dist/deployment/local"/>
+      </copy>
+    </sequential>
+  </macrodef>
+
+</project>

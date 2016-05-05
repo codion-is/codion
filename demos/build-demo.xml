@@ -27,6 +27,56 @@
     <!--manifest="${build.main}/META-INF/MANIFEST.MF"/>-->
   </target>
 
+  <target name="run_local"
+          description="Runs the demo application with a local db connection">
+    <java classname="${client.main.class}" fork="yes" dir="${basedir}">
+      <classpath>
+        <pathelement path="${build.main}"/>
+        <path refid="lib.runtime"/>
+      </classpath>
+      <jvmarg value="-Djminor.db.type=${demo.db.type}"/>
+      <jvmarg value="-Djminor.db.host=${demo.db.host}"/>
+      <jvmarg value="-Djminor.db.port=${demo.db.port}"/>
+      <jvmarg value="-Djminor.db.sid=${demo.db.sid}"/>
+      <jvmarg value="-Djminor.db.embedded=${demo.db.embedded}"/>
+      <jvmarg value="-Djminor.db.embeddedInMemory=${demo.db.embeddedInMemory}"/>
+      <jvmarg value="-Djminor.db.initScript=${demo.db.initScript}"/>
+      <jvmarg value="-Djminor.report.path=build/reports"/>
+    </java>
+  </target>
+
+  <target name="run_remote" depends="build"
+          description="Runs the demo application with a remote db connection">
+    <java classname="${client.main.class}" fork="yes">
+      <classpath>
+        <pathelement path="${build.main}"/>
+        <path refid="lib.runtime"/>
+      </classpath>
+      <jvmarg value="-Djminor.client.connectionType=remote"/>
+      <jvmarg value="-Djminor.server.hostname=localhost"/>
+      <!--this report path setting is based on the fact that the server is run in the demos directory-->
+      <jvmarg value="-Djminor.report.path=chinook/build/reports"/>
+      <jvmarg value="-Djavax.net.ssl.trustStore=../../core/resources/security/JMinorClientTruststore"/>
+      <jvmarg value="-Djava.security.policy=../../core/resources/security/jminor_client.policy"/>
+    </java>
+  </target>
+
+  <target name="run_load_test" depends="build"
+          description="Runs the load testing application with a remote db connection">
+    <java classname="${loadtest.main.class}" fork="yes">
+      <classpath>
+        <pathelement path="${build.main}"/>
+        <path refid="lib.runtime"/>
+      </classpath>
+      <jvmarg value="-Djminor.client.connectionType=remote"/>
+      <jvmarg value="-Djminor.server.hostname=localhost"/>
+      <!--this report path setting is based on the fact that the server is run in the demos directory-->
+      <jvmarg value="-Djminor.report.path=chinook/build/reports"/>
+      <jvmarg value="-Djavax.net.ssl.trustStore=../../core/resources/security/JMinorClientTruststore"/>
+      <jvmarg value="-Djava.security.policy=../../core/resources/security/jminor_load_test.policy"/>
+    </java>
+  </target>
+
   <target name="deploy" depends="dist">
     <taskdef name="getdown_digest" classname="com.threerings.getdown.tools.DigesterTask" classpathref="lib.ant.util"/>
     <delete dir="dist/deployment"/>
@@ -46,6 +96,7 @@
     <delete dir="dist/deployment/libtmp"/>
 
     <!--create web deployment, webstart and getdown-->
+    <mkdir dir="dist/deployment/web"/>
     <copy file="dist/deployment/${ant.project.name}.jar" todir="dist/deployment/web"/>
     <zip destfile="dist/deployment/web/${ant.project.name}.jar" update="true">
       <zipfileset dir="src/main/config/" includes="${ant.project.name}.jnlp" fullpath="JNLP-INF/APPLICATION.JNLP"/>
@@ -67,6 +118,7 @@
     <delete dir="dist/deployment/web/getdown.tmp"/>
 
     <!--create local deployment-->
+    <mkdir dir="dist/deployment/local"/>
     <copy todir="dist/deployment/local">
       <file file="dist/deployment/${ant.project.name}.jar"/>
       <fileset dir="src/main/config" includes="**/*.sh, **/*.bat"/>

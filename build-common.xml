@@ -10,6 +10,10 @@
     <fileset dir="${lib}/compile"/>
   </path>
 
+  <path id="lib.runtime">
+    <fileset dir="${lib}/runtime"/>
+  </path>
+
   <path id="lib.test">
     <path location="${build.main}"/>
     <path location="${build.test}"/>
