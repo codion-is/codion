@@ -15,7 +15,7 @@ import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.EntityUtil;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.EntityComboBoxModel;
-import org.jminor.swing.framework.model.DefaultEntityComboBoxModel;
+import org.jminor.swing.framework.model.SwingEntityComboBoxModel;
 import org.jminor.swing.framework.model.SwingEntityEditModel;
 
 import java.util.Arrays;
@@ -33,7 +33,7 @@ public final class EmployeeEditModel extends SwingEntityEditModel {
   @Override
   public EntityComboBoxModel createForeignKeyComboBoxModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     if (foreignKeyProperty.is(EMPLOYEE_MGR_FK)) {
-      final EntityComboBoxModel managerModel = new DefaultEntityComboBoxModel(T_EMPLOYEE, getConnectionProvider());
+      final EntityComboBoxModel managerModel = new SwingEntityComboBoxModel(T_EMPLOYEE, getConnectionProvider());
       managerModel.setNullValue(EntityUtil.createToStringEntity(T_EMPLOYEE, getString(NONE)));
       managerModel.setFilterSelectedItem(false);
       //Only show the president and managers

@@ -11,7 +11,7 @@
       <ibiblio name="libs-release" m2compatible="true"
                root="http://${artifactory.host}:${artifactory.port}/artifactory/libs-release"/>
       <ibiblio name="libs-release-local" m2compatible="true"
-               root="http://${artifactory.host}:${artifactory.port}/artifactory/libs-releases-local"/>
+               root="http://${artifactory.host}:${artifactory.port}/artifactory/libs-release-local"/>
       <ibiblio name="libs-snapshot-local" m2compatible="true"
                root="http://${artifactory.host}:${artifactory.port}/artifactory/libs-snapshot-local"/>
       <ibiblio name="ext-snapshot-local" m2compatible="true"

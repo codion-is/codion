@@ -7,14 +7,10 @@ import org.jminor.common.model.User;
 import org.jminor.common.model.tools.ScenarioException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProviders;
-import org.jminor.framework.db.EntityConnectionProvidersTest;
 import org.jminor.framework.domain.TestDomain;
 import org.jminor.framework.model.DefaultEntityApplicationModel;
-import org.jminor.framework.model.EntityApplicationModel;
 import org.jminor.framework.model.EntityLoadTestModel;
-import org.jminor.framework.model.EntityTableModel;
 import org.jminor.framework.server.EntityConnectionServerTest;
-import org.jminor.swing.framework.model.SwingEntityModel;
 
 import org.junit.AfterClass;
 import org.junit.BeforeClass;
@@ -121,30 +117,5 @@ public class EntityLoadTestModelTest {
 
     assertFalse(loadTest.isPaused());
     assertEquals(0, loadTest.getApplicationCount());
-  }
-
-  @Test
-  public void testMethods() {
-    final EntityApplicationModel model = new DefaultEntityApplicationModel(EntityConnectionProvidersTest.CONNECTION_PROVIDER) {
-      @Override
-      protected void loadDomainModel() {
-        TestDomain.init();
-      }
-    };
-    model.addEntityModel(new SwingEntityModel(TestDomain.T_DEPARTMENT, EntityConnectionProvidersTest.CONNECTION_PROVIDER));
-    final EntityTableModel tableModel = model.getEntityModel(TestDomain.T_DEPARTMENT).getTableModel();
-    tableModel.setQueryCriteriaRequired(false);
-    tableModel.refresh();
-
-    EntityLoadTestModel.selectRandomRow(tableModel);
-    assertFalse(tableModel.getSelectionModel().getSelectionEmptyObserver().isActive());
-
-    EntityLoadTestModel.selectRandomRows(tableModel, 3);
-    assertEquals(3, tableModel.getSelectionModel().getSelectedItems().size());
-
-    EntityLoadTestModel.selectRandomRows(tableModel, 0.5);
-    assertEquals(2, tableModel.getSelectionModel().getSelectedItems().size());
-
-    model.getConnectionProvider().disconnect();
   }
 }

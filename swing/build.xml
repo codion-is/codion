@@ -1,0 +1,129 @@
+<project name="jminor-swing">
+
+  <property name="project.root" value="../"/>
+  <import file="../build-common.xml"/>
+
+  <path id="lib.runtime.client">
+    <fileset dir="${lib}/runtime.client"/>
+  </path>
+
+  <path id="lib.runtime.server-monitor">
+    <fileset dir="${lib}/runtime.server-monitor"/>
+  </path>
+
+  <target name="dist" depends="jminor-common.dist"
+          description="Builds all distribution jar files in the dist directory">
+    <dist_module module-name="jminor-swing-common-model"
+                 includes="org/jminor/swing/common/model/**,
+                   org/jminor/swing/SwingConfiguration.class"/>
+    <dist_module module-name="jminor-swing-common-ui"
+                 includes="org/jminor/swing/common/ui/**"/>
+    <dist_module module-name="jminor-swing-client-model"
+                 includes="org/jminor/swing/framework/model/**"/>
+    <dist_module module-name="jminor-swing-client-ui"
+                 includes="org/jminor/swing/framework/ui/**"/>
+    <dist_module module-name="jminor-swing-client-test"
+                 includes="org/jminor/swing/framework/testing/**"/>
+    <dist_module module-name="jminor-server-monitor"
+                 includes="org/jminor/framework/Configuration.class,
+                   org/jminor/swing/framework/server/monitor/**,
+                   org/jminor/framework/server/EntityConnectionServerAdmin.class"/>
+
+    <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle.jar"
+         manifest="${build.main}/META-INF/MANIFEST.MF">
+      <zipgroupfileset dir="${lib}/runtime/" includes="
+              jminor-common-model-${version}.jar,
+              jminor-framework-model-${version}.jar,
+              jminor-db-core-${version}.jar,
+              jminor-db-local-${version}.jar,
+              jminor-db-remote-${version}.jar"/>
+      <zipgroupfileset dir="${dist}" includes="
+              jminor-swing-common-model/jminor-swing-common-model.jar,
+              jminor-swing-common-ui/jminor-swing-common-ui.jar,
+              jminor-swing-client-model/jminor-swing-client-model.jar,
+              jminor-swing-client-ui/jminor-swing-client-ui.jar"/>
+    </jar>
+    <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle-sources.jar"
+         manifest="${build.main}/META-INF/MANIFEST.MF">
+      <zipgroupfileset dir="${lib}/sources/" includes="
+              jminor-common-model-${version}.jar,
+              jminor-framework-model-${version}.jar,
+              jminor-db-core-${version}.jar,
+              jminor-db-local-${version}.jar,
+              jminor-db-remote-${version}.jar"/>
+      <zipgroupfileset dir="${dist}" includes="
+              jminor-swing-common-model/jminor-swing-common-model-sources.jar,
+              jminor-swing-common-ui/jminor-swing-common-ui-sources.jar,
+              jminor-swing-client-model/jminor-swing-client-model-sources.jar,
+              jminor-swing-client-ui/jminor-swing-client-ui-sources.jar"/>
+    </jar>
+    <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle-javadoc.jar"
+         manifest="${build.main}/META-INF/MANIFEST.MF">
+      <zipgroupfileset dir="${lib}/javadoc/" includes="
+              jminor-common-model-${version}.jar,
+              jminor-framework-model-${version}.jar,
+              jminor-db-core-${version}.jar,
+              jminor-db-local-${version}.jar,
+              jminor-db-remote-${version}.jar"/>
+      <zipgroupfileset dir="${dist}" includes="
+              jminor-swing-common-model/jminor-swing-common-model-javadoc.jar,
+              jminor-swing-common-ui/jminor-swing-common-ui-javadoc.jar,
+              jminor-swing-client-model/jminor-swing-client-model-javadoc.jar,
+              jminor-swing-client-ui/jminor-swing-client-ui-javadoc.jar"/>
+    </jar>
+
+    <!--<copy file="${basedir}/../changelog.txt" todir="${dist}"/>-->
+  </target>
+
+  <target name="publish" depends="dist"
+          description="Publish all project artifacts">
+    <subant target="publish" buildpath="${basedir}/modules/swing-common-model"/>
+    <subant target="publish" buildpath="${basedir}/modules/swing-common-ui"/>
+    <subant target="publish" buildpath="${basedir}/modules/swing-client-model"/>
+    <subant target="publish" buildpath="${basedir}/modules/swing-client-ui"/>
+    <subant target="publish" buildpath="${basedir}/modules/swing-client-test"/>
+    <subant target="publish" buildpath="${basedir}/modules/swing-client-bundle"/>
+    <subant target="publish" buildpath="${basedir}/modules/server-monitor"/>
+  </target>
+
+  <target name="deploy_server_monitor" depends="dist, create_keystore"
+          description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
+    <mkdir dir="${deploy.server.monitor.path}"/>
+    <copy file="${dist}/jminor-common-model/jminor-common-model.jar"
+          tofile="${deploy.server.monitor.path}/lib/jminor-common-model-${version}.jar"/>
+    <copy file="${dist}/jminor-swing-common-model/jminor-swing-common-model.jar"
+          tofile="${deploy.server.monitor.path}/lib/jminor-swing-common-model-${version}.jar"/>
+    <copy file="${dist}/jminor-swing-common-ui/jminor-swing-common-ui.jar"
+          tofile="${deploy.server.monitor.path}/lib/jminor-swing-common-ui-${version}.jar"/>
+    <copy file="${dist}/jminor-server-monitor/jminor-server-monitor.jar"
+          tofile="${deploy.server.monitor.path}/lib/jminor-server-monitor-${version}.jar"/>
+    <copy todir="${deploy.server.monitor.path}/lib">
+      <fileset dir="${lib}/runtime.server-monitor"/>
+    </copy>
+    <copy todir="${deploy.server.monitor.path}">
+      <fileset dir="${basedir}/resources/server_monitor/"/>
+    </copy>
+    <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.path}/config"/>
+    <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.path}/config"/>
+    <chmod dir="${deploy.server.monitor.path}" perm="u+x" type="file" includes="*.sh"/>
+  </target>
+
+  <!--<target name="deploy_generator" depends="dist, create_demo_h2db"-->
+  <!--description="Deploys the entity generator to the path defined by the 'deploy.generator.path' property">-->
+  <!--<mkdir dir="${deploy.generator.path}"/>-->
+  <!--<copy file="${dist}/jminor/jminor.jar"-->
+  <!--tofile="${deploy.generator.path}/lib/jminor-${version}.jar"/>-->
+  <!--<copy todir="${deploy.generator.path}/lib">-->
+  <!--<fileset dir="${lib}/runtime.client"/>-->
+  <!--</copy>-->
+  <!--<copy todir="${deploy.generator.path}">-->
+  <!--<fileset dir="${basedir}/resources/entity_generator/"/>-->
+  <!--</copy>-->
+  <!--<copy todir="${deploy.generator.path}/h2db">-->
+  <!--<fileset dir="${db.h2.dir}"/>-->
+  <!--</copy>-->
+  <!--<copy file="${deploy.generator.policy}" todir="${deploy.generator.config.path}"/>-->
+  <!--<chmod dir="${deploy.generator.path}" perm="u+x" type="file" includes="*.sh"/>-->
+  <!--</target>-->
+
+</project>

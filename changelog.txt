@@ -4236,3 +4236,5 @@
 0.10.1
   jminor-client-model module renamed to jminor-framework-model
   jminor-framework-model-unittests module added
+  jminor-swing project module split from jminor-core
+  Major refactoring of build files

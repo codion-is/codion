@@ -1,0 +1,26 @@
+Filtering
+There are two ways to filter data; filtering it before it is sent to the client (by configuring the underlying query), this filtering method is restricted to properties mapping directly to columns in the underlying table.
+Data can also be filtered after it is retrieved from the database, with this method you are not restricted to table column properties.
+The search panel is accessible via the funnel button as well as the table popup menu. After activating the required filters you must refresh the table to retrieve the filtered data.
+To show the filter dialog for a table column, click the column header while holding down the CTR and SHIFT buttons. A * prefix on the column caption indicates an active filter.
+
+To enable/disable the automatic filtering of detail tables, use the Selection Filter setting found in the menu (Settings->Selection Filter).
+
+Sorting
+To sort a table, click a column header once to sort ascending, a second time to sort descending and a third time to reset the sorting.
+
+To sort by more than one column, hold down the CTRL key while repeating the method described above for subsequent columns.
+
+Navigation
+To navigate between panels with the keyboard, use the arrow keys while holding down the CTRL-ALT keys. Pressing CTRL-T transfers focus to the table, CTR-E transfers focus to the edit panel, CTR-S transfers focus to the search panel (use TAB to navigate to the required field) and CTR-F transfers focus to the table search field. CTR-I selects an input field.
+
+Layout
+To resize or hide the active panel with the keyboard, use the arrow keys while holding down the SHIFT and ALT keys.
+To resize the selected column in a table, use the LEFT and RIGHT arrow keys while holding down the ALT key.
+To move the selected column in a table, use the LEFT and RIGHT arrow keys while holding down the SHIFT and ALT key.
+
+Dependencies
+To view the records that depend on the selected record(s), right click to pop up a context menu and select the View Dependencies option.
+
+Table Menu
+To show a popup menu in the active table using the keyboard, press CTRL-G.

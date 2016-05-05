@@ -1,14 +1,13 @@
-<project name="jminor-demo" default="build" basedir="." xmlns:ivy="antlib:org.apache.ivy.ant" xmlns:jacoco="antlib:org.jacoco.ant">
+<project name="jminor-demo">
 
   <property name="project.root" value="../../"/>
   <property name="junit.db.initScript" value="src/main/sql/create_schema.sql"/>
-  <property file="${project.root}/core/build.properties"/>
-  <property file="${project.root}/core/user.properties"/>
   <import file="../build-common.xml"/>
 
   <target name="dist" depends="jminor-common.dist">
     <jar jarfile="dist/${ant.project.name}-domain.jar" basedir="build/main"
-         includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*, org/jminor/framework/demos/${ant.project.name}/server/**/*"
+         includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*,
+         org/jminor/framework/demos/${ant.project.name}/server/**/*"
          manifest="${build.main}/META-INF/MANIFEST.MF"/>
 
     <!--create anothor domain jar file without annotations using the purgeannotationrefs library-->

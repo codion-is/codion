@@ -1,0 +1,147 @@
+/*
+ * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package org.jminor.swing.common.ui.input;
+
+import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
+import org.jminor.common.model.EventObserver;
+import org.jminor.common.model.Events;
+import org.jminor.common.model.Util;
+import org.jminor.swing.common.ui.UiUtil;
+
+import javax.swing.AbstractAction;
+import javax.swing.BorderFactory;
+import javax.swing.JButton;
+import javax.swing.JComponent;
+import javax.swing.JOptionPane;
+import javax.swing.JPanel;
+import java.awt.BorderLayout;
+import java.awt.FlowLayout;
+import java.awt.event.ActionEvent;
+import java.awt.event.KeyEvent;
+
+/**
+ * A panel for presenting a InputProvider.
+ */
+public final class InputProviderPanel<T, K extends JComponent> extends JPanel implements InputProvider<T, K> {
+
+  private static final int COLUMNS = 2;
+
+  private final Event<Integer> buttonClickedEvent = Events.event();
+  private final InputProvider<T, K> inputProvider;
+  private final JButton okButton;
+  private final JButton cancelButton;
+
+  private int buttonValue = -Integer.MAX_VALUE;
+
+  /**
+   * Instantiates a new InputProviderPanel
+   * @param caption the input panel caption
+   * @param inputProvider the InputProvider to use
+   */
+  public InputProviderPanel(final String caption, final InputProvider<T, K> inputProvider) {
+    Util.rejectNullValue(inputProvider, "inputProvider");
+    this.inputProvider = inputProvider;
+    this.okButton = createButton(Messages.get(Messages.OK), Messages.get(Messages.OK_MNEMONIC), JOptionPane.OK_OPTION);
+    this.cancelButton = createButton(Messages.get(Messages.CANCEL), Messages.get(Messages.CANCEL_MNEMONIC), JOptionPane.CANCEL_OPTION);
+    initUI(caption);
+  }
+
+  /**
+   * @return true if the input has been accepted, that is, the OK button has been clicked
+   */
+  public boolean isInputAccepted() {
+    return buttonValue == JOptionPane.OK_OPTION;
+  }
+
+  /**
+   * @return the OK button
+   */
+  public JButton getOkButton() {
+    return okButton;
+  }
+
+  /**
+   * @return the Cancel button
+   */
+  public JButton getCancelButton() {
+    return cancelButton;
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public T getValue() {
+    return inputProvider.getValue();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  public K getInputComponent() {
+    return inputProvider.getInputComponent();
+  }
+
+  /**
+   * @return an EventObserver notified when a button is clicked,
+   * the event info is either {@link JOptionPane#CANCEL_OPTION}
+   * or {@link JOptionPane#OK_OPTION} depending on the button clicked
+   */
+  public EventObserver<Integer> getButtonClickObserver() {
+    return buttonClickedEvent.getObserver();
+  }
+
+  /**
+   * @param listener a listener notified each time a button is clicked,
+   * the event info is either {@link JOptionPane#CANCEL_OPTION}
+   * or {@link JOptionPane#OK_OPTION} depending on the button clicked
+   */
+  public void addButtonClickListener(final EventInfoListener<Integer> listener) {
+    buttonClickedEvent.addInfoListener(listener);
+  }
+
+  /**
+   * @param listener the listener to remove
+   */
+  public void removeButtonClickListener(final EventInfoListener listener) {
+    buttonClickedEvent.removeInfoListener(listener);
+  }
+
+  private void initUI(final String caption) {
+    setLayout(UiUtil.createBorderLayout());
+    if (caption != null) {
+      setBorder(BorderFactory.createTitledBorder(caption));
+    }
+    add(inputProvider.getInputComponent(), BorderLayout.CENTER);
+    final JPanel btnBase = new JPanel(new FlowLayout(FlowLayout.CENTER));
+    btnBase.add(createButtonPanel());
+    add(btnBase, BorderLayout.SOUTH);
+  }
+
+  private JPanel createButtonPanel() {
+    final JPanel panel = new JPanel(UiUtil.createGridLayout(1, COLUMNS));
+    panel.add(okButton);
+    UiUtil.addKeyEvent(this, KeyEvent.VK_ESCAPE, 0, JComponent.WHEN_IN_FOCUSED_WINDOW, true, new AbstractAction("cancelInput") {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        cancelButton.doClick();
+      }
+    });
+    panel.add(cancelButton);
+
+    return panel;
+  }
+
+  private JButton createButton(final String caption, final String mnemonic, final int option) {
+    final JButton button = new JButton(new AbstractAction(caption) {
+      @Override
+      public void actionPerformed(final ActionEvent e) {
+        buttonValue = option;
+        buttonClickedEvent.fire(option);
+      }
+    });
+    button.setMnemonic(mnemonic.charAt(0));
+
+    return button;
+  }
+}

@@ -1,0 +1,43 @@
+/*
+ * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
+ */
+package org.jminor.swing.common.ui.textfield;
+
+import org.junit.Test;
+
+import javax.swing.JTextField;
+
+import static org.junit.Assert.assertEquals;
+
+public class SizedDocumentTest {
+
+  @Test
+  public void test() {
+    final JTextField txt = new JTextField();
+    final SizedDocument document = new SizedDocument();
+    txt.setDocument(document);
+    txt.setText("hello");
+    assertEquals("hello", txt.getText());
+
+    document.setMaxLength(10);
+    assertEquals(10, document.getMaxLength());
+
+    txt.setText("hellohello");
+    assertEquals("hellohello", txt.getText());
+
+    txt.setText("hellohellohello");//invalid
+    assertEquals("hellohello", txt.getText());
+
+    document.setDocumentCase(SizedDocument.DocumentCase.UPPERCASE);
+    assertEquals(SizedDocument.DocumentCase.UPPERCASE, document.getDocumentCase());
+
+    txt.setText("hello");
+    assertEquals("HELLO", txt.getText());
+
+    document.setDocumentCase(SizedDocument.DocumentCase.LOWERCASE);
+    assertEquals(SizedDocument.DocumentCase.LOWERCASE, document.getDocumentCase());
+
+    txt.setText("HELLO");
+    assertEquals("hello", txt.getText());
+  }
+}

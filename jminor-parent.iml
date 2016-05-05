@@ -11,6 +11,7 @@
     <orderEntry type="module" module-name="demo-schemabrowser" scope="RUNTIME" />
     <orderEntry type="module" module-name="demo-world" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-core" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-swing" scope="RUNTIME" />
     <orderEntry type="module" module-name="jminor-javafx" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-imagepanel" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-jasperreports" scope="RUNTIME" />
