@@ -26,10 +26,10 @@
   </target>
 
   <target name="clean">
-    <delete dir="${build.main}"/>
-    <delete dir="${build.test}"/>
+    <delete dir="${build.root}"/>
     <delete dir="${javadoc}"/>
     <delete dir="${dist}"/>
+    <delete dir="${test}"/>
   </target>
 
   <target name="resolve_libraries"
@@ -44,23 +44,22 @@
 
   <target name="build" depends="init, resolve_libraries">
     <javac destdir="build/main" debug="${build.debuginfo}" includeantruntime="false">
-      <src path="src/main/java"/>
+      <src path="${src.main}"/>
       <classpath>
         <path refid="lib.compile"/>
       </classpath>
     </javac>
-    <copy todir="build/main">
-      <fileset dir="src/main/java" excludes="**/*.java"/>
+    <copy todir="${build.main}">
+      <fileset dir="${src.main}" excludes="**/*.java"/>
     </copy>
-    <javac destdir="build/test" debug="${build.debuginfo}" includeantruntime="false">
-      <src path="src/test/java"/>
+    <javac destdir="${build.test}" debug="${build.debuginfo}" includeantruntime="false">
+      <src path="${src.test}"/>
       <classpath>
-        <path location="build/main"/>
         <path refid="lib.test"/>
       </classpath>
     </javac>
-    <copy todir="build/test">
-      <fileset dir="src/test/java" excludes="**/*.java"/>
+    <copy todir="${build.test}">
+      <fileset dir="${src.test}" excludes="**/*.java"/>
     </copy>
   </target>
 
@@ -133,7 +132,7 @@
 
   <target name="dist" depends="clean, build, javadoc">
     <tstamp />
-    <mkdir dir="build/main/META-INF"/>
+    <mkdir dir="${build.main}/META-INF"/>
     <manifest file="build/main/META-INF/MANIFEST.MF">
       <attribute name="Specification-Title" value="${ant.project.name}"/>
       <attribute name="Specification-Version" value="${version}"/>
