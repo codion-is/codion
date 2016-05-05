@@ -176,6 +176,13 @@
     <subant target="run_unit_tests" buildpath="demos"/>
   </target>
 
+  <target name="publish">
+    <subant target="publish" buildpath="core"/>
+    <subant target="publish" buildpath="swing"/>
+    <subant target="publish" buildpath="javafx"/>
+    <subant target="publish" buildpath="plugins"/>
+  </target>
+
   <target name="run_server" description="Runs the RMI server">
     <subant target="create_keystore" buildpath="core"/>
     <subant target="dist" buildpath="core"/>
