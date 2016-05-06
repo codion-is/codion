@@ -4241,3 +4241,4 @@
   More build file refactoring
   Sonar based JavaFX fixes
   EntityLookupModel.addSelectedEntitiesListener() parameter changed to EventInfoListener<Collection<Entity>>
+  Server monitor module refactored from Swing module

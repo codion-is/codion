@@ -1,4 +1,4 @@
-<project name="jminor-core">
+<project name="jminor-parent">
 
   <property file="build.properties"/>
 
@@ -15,11 +15,8 @@
   </path>
 
   <path id="lib.runtime.server.monitor">
-    <fileset dir="core/${dist}/jminor-common-model"/>
-    <fileset dir="swing/${dist}/jminor-server-monitor"/>
-    <fileset dir="swing/${dist}/jminor-swing-common-model"/>
-    <fileset dir="swing/${dist}/jminor-swing-common-ui"/>
-    <fileset dir="swing/${lib}/runtime.server-monitor"/>
+    <fileset dir="server-monitor/${dist}"/>
+    <fileset dir="server-monitor/${lib}/runtime"/>
   </path>
 
   <path id="build.demos.main">
@@ -111,6 +108,7 @@
     <subant target="create_keystore" buildpath="core"/>
     <subant target="dist" buildpath="core"/>
     <subant target="dist" buildpath="swing"/>
+    <subant target="dist" buildpath="server-monitor"/>
 
     <mkdir dir="${deploy.server.monitor.path}"/>
     <copy file="core/${dist}/jminor-common-model/jminor-common-model.jar"
@@ -119,13 +117,13 @@
           tofile="${deploy.server.monitor.path}/lib/jminor-swing-common-model-${version}.jar"/>
     <copy file="swing/${dist}/jminor-swing-common-ui/jminor-swing-common-ui.jar"
           tofile="${deploy.server.monitor.path}/lib/jminor-swing-common-ui-${version}.jar"/>
-    <copy file="swing/${dist}/jminor-server-monitor/jminor-server-monitor.jar"
+    <copy file="server-monitor/${dist}/jminor-server-monitor.jar"
           tofile="${deploy.server.monitor.path}/lib/jminor-server-monitor-${version}.jar"/>
     <copy todir="${deploy.server.monitor.path}/lib">
-      <fileset dir="swing/${lib}/runtime.server-monitor"/>
+      <fileset dir="server-monitor/${lib}/runtime"/>
     </copy>
     <copy todir="${deploy.server.monitor.path}">
-      <fileset dir="${basedir}/core/resources/server_monitor/"/>
+      <fileset dir="${basedir}/server-monitor/resources"/>
     </copy>
     <copy file="${deploy.server.monitor.policy}" todir="${deploy.server.monitor.path}/config"/>
     <copy file="${deploy.server.monitor.truststore}" todir="${deploy.server.monitor.path}/config"/>
@@ -148,6 +146,7 @@
     <subant target="clean" buildpath="core"/>
     <subant target="clean" buildpath="swing"/>
     <subant target="clean" buildpath="javafx"/>
+    <subant target="clean" buildpath="server-monitor"/>
     <subant target="clean" buildpath="plugins"/>
     <subant target="clean" buildpath="demos"/>
   </target>
@@ -156,6 +155,7 @@
     <subant target="build" buildpath="core"/>
     <subant target="build" buildpath="swing"/>
     <subant target="build" buildpath="javafx"/>
+    <subant target="build" buildpath="server-monitor"/>
     <subant target="build" buildpath="plugins"/>
     <subant target="build" buildpath="demos"/>
   </target>
@@ -164,6 +164,7 @@
     <subant target="dist" buildpath="core"/>
     <subant target="dist" buildpath="swing"/>
     <subant target="dist" buildpath="javafx"/>
+    <subant target="dist" buildpath="server-monitor"/>
     <subant target="dist" buildpath="plugins"/>
     <subant target="dist" buildpath="demos"/>
   </target>
@@ -172,6 +173,7 @@
     <subant target="run_unit_tests" buildpath="core"/>
     <subant target="run_unit_tests" buildpath="swing"/>
     <subant target="run_unit_tests" buildpath="javafx"/>
+    <subant target="run_unit_tests" buildpath="server-monitor"/>
     <subant target="run_unit_tests" buildpath="plugins"/>
     <subant target="run_unit_tests" buildpath="demos"/>
   </target>
@@ -180,6 +182,7 @@
     <subant target="publish" buildpath="core"/>
     <subant target="publish" buildpath="swing"/>
     <subant target="publish" buildpath="javafx"/>
+    <subant target="publish" buildpath="server-monitor"/>
     <subant target="publish" buildpath="plugins"/>
   </target>
 
@@ -221,9 +224,10 @@
   </target>
 
   <target name="run_server_monitor" description="Runs the RMI server monitor">
-    <!--<subant target="create_keystore" buildpath="core"/>-->
-    <!--<subant target="dist" buildpath="core"/>-->
-    <!--<subant target="dist" buildpath="swing"/>-->
+    <subant target="create_keystore" buildpath="core"/>
+    <subant target="dist" buildpath="core"/>
+    <subant target="dist" buildpath="swing"/>
+    <subant target="dist" buildpath="server-monitor"/>
     <java classname="org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
       <classpath>
         <path refid="lib.runtime.server.monitor"/>

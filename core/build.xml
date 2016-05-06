@@ -50,7 +50,8 @@
                  build.basedir="${build.test}"
                  src.basedir="${src.test}"/>
     <dist_module module-name="jminor-server"
-                 includes="org/jminor/framework/server/*"/>
+                 includes="org/jminor/framework/Configuration.class,
+                 org/jminor/framework/server/*"/>
 
     <copy file="${basedir}/../changelog.txt" todir="${dist}"/>
   </target>

@@ -16,10 +16,6 @@
                  includes="org/jminor/swing/framework/ui/**"/>
     <dist_module module-name="jminor-swing-client-test"
                  includes="org/jminor/swing/framework/testing/**"/>
-    <dist_module module-name="jminor-server-monitor"
-                 includes="org/jminor/framework/Configuration.class,
-                   org/jminor/swing/framework/server/monitor/**,
-                   org/jminor/framework/server/EntityConnectionServerAdmin.class"/>
 
     <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
@@ -75,7 +71,6 @@
     <subant target="publish" buildpath="${basedir}/modules/swing-client-ui"/>
     <subant target="publish" buildpath="${basedir}/modules/swing-client-test"/>
     <subant target="publish" buildpath="${basedir}/modules/swing-client-bundle"/>
-    <subant target="publish" buildpath="${basedir}/modules/server-monitor"/>
   </target>
 
   <!--<target name="deploy_generator" depends="dist, create_demo_h2db"-->
