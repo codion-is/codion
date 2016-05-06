@@ -147,7 +147,7 @@
     <deploy_demo_app demo-name="world"/>
   </target>
 
-  <target name="clean">
+  <target name="clean" description="Clean all modules">
     <subant target="clean" buildpath="core"/>
     <subant target="clean" buildpath="swing"/>
     <subant target="clean" buildpath="javafx"/>
@@ -156,7 +156,7 @@
     <subant target="clean" buildpath="demos"/>
   </target>
 
-  <target name="build">
+  <target name="build" description="Builds all modules">
     <subant target="build" buildpath="core"/>
     <subant target="build" buildpath="swing"/>
     <subant target="build" buildpath="javafx"/>
@@ -165,7 +165,7 @@
     <subant target="build" buildpath="demos"/>
   </target>
 
-  <target name="dist">
+  <target name="dist" description="Distributes all modules">
     <subant target="dist" buildpath="core"/>
     <subant target="dist" buildpath="swing"/>
     <subant target="dist" buildpath="javafx"/>
@@ -174,7 +174,7 @@
     <subant target="dist" buildpath="demos"/>
   </target>
 
-  <target name="run_unit_tests">
+  <target name="run_unit_tests" description="Runs unit tests for all modules">
     <subant target="run_unit_tests" buildpath="core"/>
     <subant target="run_unit_tests" buildpath="swing"/>
     <subant target="run_unit_tests" buildpath="javafx"/>
@@ -183,7 +183,7 @@
     <subant target="run_unit_tests" buildpath="demos"/>
   </target>
 
-  <target name="publish" depends="clear_ivy_cache">
+  <target name="publish" depends="clear_ivy_cache" description="Publishes all project artifacts">
     <subant target="publish" buildpath="core"/>
     <subant target="publish" buildpath="swing"/>
     <subant target="publish" buildpath="javafx"/>
@@ -191,7 +191,7 @@
     <subant target="publish" buildpath="plugins"/>
   </target>
 
-  <target name="clear_ivy_cache">
+  <target name="clear_ivy_cache" description="Clears JMinor from the ivy cache">
     <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
     <ivy:configure/>
     <delete includeemptydirs="true">
@@ -251,7 +251,7 @@
     </java>
   </target>
 
-  <target name="sonar"
+  <target name="sonar" depends="run_unit_tests"
           description="Runs a Sonar analysis on the project, reusing unit test reports">
     <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml" classpathref="lib.ant.util"/>
     <sonar:sonar/>
