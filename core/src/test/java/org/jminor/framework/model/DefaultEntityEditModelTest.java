@@ -268,7 +268,7 @@ public final class DefaultEntityEditModelTest {
       employeeEditModel.getConnectionProvider().getConnection().beginTransaction();
       employeeEditModel.setValue(TestDomain.EMP_COMMISSION, 1000d);
       employeeEditModel.setValue(TestDomain.EMP_HIREDATE, DateUtil.floorDate(new Date()));
-      employeeEditModel.setValue(TestDomain.EMP_JOB, "A Jobby");
+      employeeEditModel.setValue(TestDomain.EMP_JOB, "CLERK");
       employeeEditModel.setValue(TestDomain.EMP_NAME, "Björn");
       employeeEditModel.setValue(TestDomain.EMP_SALARY, 1000d);
 

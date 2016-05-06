@@ -159,7 +159,7 @@
          manifest="${build.main}/META-INF/MANIFEST.MF"/>
   </target>
 
-  <target name="publish" depends="dist">
+  <target name="publish" depends="dist" description="Publishes the module artifacts">
     <fail unless="version">Version information not set</fail>
     <copy file="ivy.xml" tofile="ivy.xml.bak" overwrite="true"/>
     <ivy:settings file="${project.root}/ivysettings.xml"/>

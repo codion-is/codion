@@ -47,7 +47,7 @@ public class EntityUtilTest {
     final Integer id = 42;
     final Double commission = 42.2;
     final Date hiredate = new Date();
-    final String job = "job";
+    final String job = "CLERK";
     final Integer manager = 12;
     final String name = "John Doe";
     final Double salary = 1234.5;
@@ -102,7 +102,7 @@ public class EntityUtilTest {
     final Integer id = 42;
     final Double commission = 42.2;
     final Date hiredate = new Date();
-    final String job = "job";
+    final String job = "CLERK";
     final Integer manager = 12;
     final String name = "John Doe";
     final Double salary = 1234.5;

@@ -397,7 +397,7 @@ public class LocalEntityConnectionTest {
 
       connection2.delete(Collections.singletonList(allen.getKey()));
 
-      allen.put(TestDomain.EMP_JOB, "A JOB");
+      allen.put(TestDomain.EMP_JOB, "CLERK");
       try {
         connection.update(Collections.singletonList(allen));
         fail("Should not be able to update record deleted by another connection");

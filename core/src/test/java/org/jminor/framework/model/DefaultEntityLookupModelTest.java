@@ -88,9 +88,9 @@ public final class DefaultEntityLookupModelTest {
     });
     final Entity employee = Entities.entity(TestDomain.T_EMP);
     employee.put(TestDomain.EMP_NAME, "Darri");
-    employee.put(TestDomain.EMP_JOB, "Test");
+    employee.put(TestDomain.EMP_JOB, "CLERK");
     lookupModel.setSelectedEntities(Collections.singletonList(employee));
-    assertEquals(lookupModel.getSearchString(), "Test");
+    assertEquals(lookupModel.getSearchString(), "CLERK");
     lookupModel.setToStringProvider(null);
     lookupModel.setSelectedEntities(Collections.singletonList(employee));
     assertEquals(lookupModel.getSearchString(), "Darri");
@@ -117,18 +117,26 @@ public final class DefaultEntityLookupModelTest {
     result = lookupModel.performQuery();
     assertTrue("Result should contain John", contains(result, "John"));
     assertTrue("Result should contain johnson", contains(result, "johnson"));
+    assertFalse("Result should not contain Andy", contains(result, "Andy"));
+    assertFalse("Result should not contain Andrew", contains(result, "Andrew"));
+
+    lookupModel.setSearchString("le");
+    result = lookupModel.performQuery();
+    assertTrue("Result should contain John", contains(result, "John"));
+    assertFalse("Result should not contain johnson", contains(result, "johnson"));
     assertTrue("Result should contain Andy", contains(result, "Andy"));
-    assertTrue("Result should contain Andrew", contains(result, "Andrew"));
+    assertFalse("Result should not contain Andrew", contains(result, "Andrew"));
 
     final Property.ColumnProperty employeeNameProperty = Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_NAME);
     final Property.ColumnProperty employeeJobProperty = Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB);
 
     lookupModel.getPropertyLookupSettings().get(employeeNameProperty).getWildcardPrefixValue().set(false);
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPrefixValue().set(false);
+    lookupModel.setSearchString("jo,cl");
     result = lookupModel.performQuery();
     assertTrue("Result should contain John", contains(result, "John"));
     assertTrue("Result should contain johnson", contains(result, "johnson"));
-    assertFalse("Result should not contain Andy", contains(result, "Andy"));
+    assertTrue("Result should contain Andy", contains(result, "Andy"));
     assertFalse("Result should not contain andrew", contains(result, "Andrew"));
 
     lookupModel.setSearchString("Joh");
@@ -180,7 +188,7 @@ public final class DefaultEntityLookupModelTest {
     lookupModel.getPropertyLookupSettings().get(employeeJobProperty).getWildcardPostfixValue().set(true);
     lookupModel.setAdditionalLookupCriteria(
             EntityCriteriaUtil.propertyCriteria(Entities.getColumnProperty(TestDomain.T_EMP, TestDomain.EMP_JOB),
-                    SearchType.NOT_LIKE, "ajob"));
+                    SearchType.NOT_LIKE, "MANAGER"));
     result = lookupModel.performQuery();
     assertTrue("Result should contain john", contains(result, "John"));
     assertFalse("Result should not contain johnson", contains(result, "johnson"));
@@ -236,7 +244,7 @@ public final class DefaultEntityLookupModelTest {
     emp.put(TestDomain.EMP_DEPARTMENT_FK, dept);
     emp.put(TestDomain.EMP_COMMISSION, 1000d);
     emp.put(TestDomain.EMP_HIREDATE, new Date());
-    emp.put(TestDomain.EMP_JOB, "nojob");
+    emp.put(TestDomain.EMP_JOB, "CLERK");
     emp.put(TestDomain.EMP_NAME, "John");
     emp.put(TestDomain.EMP_SALARY, 1000d);
 
@@ -244,7 +252,7 @@ public final class DefaultEntityLookupModelTest {
     emp2.put(TestDomain.EMP_DEPARTMENT_FK, dept);
     emp2.put(TestDomain.EMP_COMMISSION, 1000d);
     emp2.put(TestDomain.EMP_HIREDATE, new Date());
-    emp2.put(TestDomain.EMP_JOB, "ajob");
+    emp2.put(TestDomain.EMP_JOB, "MANAGER");
     emp2.put(TestDomain.EMP_NAME, "johnson");
     emp2.put(TestDomain.EMP_SALARY, 1000d);
 
@@ -252,7 +260,7 @@ public final class DefaultEntityLookupModelTest {
     emp3.put(TestDomain.EMP_DEPARTMENT_FK, dept);
     emp3.put(TestDomain.EMP_COMMISSION, 1000d);
     emp3.put(TestDomain.EMP_HIREDATE, new Date());
-    emp3.put(TestDomain.EMP_JOB, "nojob");
+    emp3.put(TestDomain.EMP_JOB, "CLERK");
     emp3.put(TestDomain.EMP_NAME, "Andy");
     emp3.put(TestDomain.EMP_SALARY, 1000d);
 
@@ -260,7 +268,7 @@ public final class DefaultEntityLookupModelTest {
     emp4.put(TestDomain.EMP_DEPARTMENT_FK, dept);
     emp4.put(TestDomain.EMP_COMMISSION, 1000d);
     emp4.put(TestDomain.EMP_HIREDATE, new Date());
-    emp4.put(TestDomain.EMP_JOB, "ajob");
+    emp4.put(TestDomain.EMP_JOB, "MANAGER");
     emp4.put(TestDomain.EMP_NAME, "Andrew");
     emp4.put(TestDomain.EMP_SALARY, 1000d);
 
