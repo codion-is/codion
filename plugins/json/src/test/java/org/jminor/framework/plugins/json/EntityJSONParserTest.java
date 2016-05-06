@@ -69,7 +69,7 @@ public class EntityJSONParserTest {
     mgr30.put(TestDomain.EMP_DEPARTMENT_FK, dept20);
     mgr30.put(TestDomain.EMP_HIREDATE, hiredate);
     mgr30.put(TestDomain.EMP_ID, -30);
-    mgr30.put(TestDomain.EMP_JOB, "MGR");
+    mgr30.put(TestDomain.EMP_JOB, "MANAGER");
     mgr30.put(TestDomain.EMP_NAME, "MGR NAME");
     mgr30.put(TestDomain.EMP_SALARY, 2500.5);
 
@@ -78,7 +78,7 @@ public class EntityJSONParserTest {
     mgr50.put(TestDomain.EMP_DEPARTMENT_FK, dept20);
     mgr50.put(TestDomain.EMP_HIREDATE, hiredate);
     mgr50.put(TestDomain.EMP_ID, -50);
-    mgr50.put(TestDomain.EMP_JOB, "MGR2");
+    mgr50.put(TestDomain.EMP_JOB, "MANAGER");
     mgr50.put(TestDomain.EMP_NAME, "MGR2 NAME");
     mgr50.put(TestDomain.EMP_SALARY, 2500.5);
 
@@ -87,7 +87,7 @@ public class EntityJSONParserTest {
     emp1.put(TestDomain.EMP_DEPARTMENT_FK, dept10);
     emp1.put(TestDomain.EMP_HIREDATE, hiredate);
     emp1.put(TestDomain.EMP_ID, -500);
-    emp1.put(TestDomain.EMP_JOB, "A JOB");
+    emp1.put(TestDomain.EMP_JOB, "CLERK");
     emp1.put(TestDomain.EMP_MGR_FK, mgr30);
     emp1.put(TestDomain.EMP_NAME, "A NAME");
     emp1.put(TestDomain.EMP_SALARY, 2500.5);
@@ -104,7 +104,7 @@ public class EntityJSONParserTest {
     final Date newHiredate = format.parse("2002-11-21");
     emp1.put(TestDomain.EMP_COMMISSION, 550.55);
     emp1.put(TestDomain.EMP_DEPARTMENT_FK, dept20);
-    emp1.put(TestDomain.EMP_JOB, "ANOTHER JOB");
+    emp1.put(TestDomain.EMP_JOB, "ANALYST");
     emp1.put(TestDomain.EMP_MGR_FK, mgr50);
     emp1.put(TestDomain.EMP_NAME, "ANOTHER NAME");
     emp1.put(TestDomain.EMP_SALARY, 3500.5);
@@ -116,7 +116,7 @@ public class EntityJSONParserTest {
 
     assertEquals(500.5, emp1Deserialized.getOriginal(TestDomain.EMP_COMMISSION));
     assertEquals(dept10, emp1Deserialized.getOriginal(TestDomain.EMP_DEPARTMENT_FK));
-    assertEquals("A JOB", emp1Deserialized.getOriginal(TestDomain.EMP_JOB));
+    assertEquals("CLERK", emp1Deserialized.getOriginal(TestDomain.EMP_JOB));
     assertEquals(mgr30, emp1Deserialized.getOriginal(TestDomain.EMP_MGR_FK));
     assertEquals(hiredate, emp1Deserialized.getOriginal(TestDomain.EMP_HIREDATE));
     assertEquals("A NAME", emp1Deserialized.getOriginal(TestDomain.EMP_NAME));
@@ -130,7 +130,7 @@ public class EntityJSONParserTest {
     emp2.put(TestDomain.EMP_DEPARTMENT_FK, dept10);
     emp2.put(TestDomain.EMP_HIREDATE, hiredate);
     emp2.put(TestDomain.EMP_ID, -200);
-    emp2.put(TestDomain.EMP_JOB, "JOB");
+    emp2.put(TestDomain.EMP_JOB, "CLERK");
     emp2.put(TestDomain.EMP_MGR_FK, mgr50);
     emp2.put(TestDomain.EMP_NAME, "NAME");
     emp2.put(TestDomain.EMP_SALARY, 3500.5);
