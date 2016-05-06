@@ -3,6 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.domain;
 
+import org.jminor.common.model.Item;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Properties;
@@ -10,6 +11,7 @@ import org.jminor.framework.domain.Property;
 
 import java.awt.Color;
 import java.sql.Types;
+import java.util.Arrays;
 import java.util.Locale;
 import java.util.ResourceBundle;
 
@@ -80,8 +82,8 @@ public class EmpDept {
             Properties.foreignKeyProperty(EMPLOYEE_DEPARTMENT_FK, getString(EMPLOYEE_DEPARTMENT_FK), T_DEPARTMENT,
                     Properties.columnProperty(EMPLOYEE_DEPARTMENT))
                     .setNullable(false),
-            Properties.columnProperty(EMPLOYEE_JOB, Types.VARCHAR, getString(EMPLOYEE_JOB))
-                    .setMaxLength(9),
+            Properties.valueListProperty(EMPLOYEE_JOB, Types.VARCHAR, getString(EMPLOYEE_JOB),
+                    Arrays.asList(new Item("ANALYST"), new Item("CLERK"), new Item("MANAGER"), new Item("PRESIDENT"), new Item("SALESMAN"))),
             Properties.columnProperty(EMPLOYEE_SALARY, Types.DOUBLE, getString(EMPLOYEE_SALARY))
                     .setNullable(false).setMin(1000).setMax(10000).setMaximumFractionDigits(2),
             Properties.columnProperty(EMPLOYEE_COMMISSION, Types.DOUBLE, getString(EMPLOYEE_COMMISSION))

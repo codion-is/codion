@@ -26,7 +26,7 @@ public final class EntityEditViewTest {
     editView.getButtonPanel();
   }
 
-  private static final class EmpEditView extends EntityEditView {
+  static final class EmpEditView extends EntityEditView {
 
     public EmpEditView(final FXEntityEditModel editModel) {
       super(editModel);

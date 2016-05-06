@@ -137,9 +137,9 @@ public abstract class EntityEditView extends BorderPane {
     return box;
   }
 
-  protected final ComboBox<Item> createItemComboBox(final String propertyID) {
+  protected final ComboBox<Item> createValueListComboBox(final String propertyID) {
     checkControl(propertyID);
-    final ComboBox<Item> box = FXUiUtil.createItemComboBox((Property.ValueListProperty)
+    final ComboBox<Item> box = FXUiUtil.createValueListComboBox((Property.ValueListProperty)
             Entities.getProperty(editModel.getEntityID(), propertyID), editModel);
 
     controls.put(propertyID, box);

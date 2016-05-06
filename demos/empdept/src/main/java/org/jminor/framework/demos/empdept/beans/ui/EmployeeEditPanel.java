@@ -23,7 +23,7 @@ public class EmployeeEditPanel extends EntityEditPanel {
   @Override
   protected void initializeUI() {
     final JTextField txtName = (JTextField) UiUtil.makeUpperCase(createTextField(EMPLOYEE_NAME));
-    final JTextField txtJob = (JTextField) UiUtil.makeUpperCase(createTextField(EMPLOYEE_JOB));
+    createValueListComboBox(EMPLOYEE_JOB);
     final JComboBox boxManager = createForeignKeyComboBox(EMPLOYEE_MGR_FK);
     createForeignKeyComboBox(EMPLOYEE_DEPARTMENT_FK);
     createTextField(EMPLOYEE_SALARY);
@@ -33,7 +33,6 @@ public class EmployeeEditPanel extends EntityEditPanel {
     setInitialFocusComponent(txtName);
 
     txtName.setColumns(8);
-    txtJob.setColumns(8);
     boxManager.setPreferredSize(UiUtil.getPreferredTextFieldSize());
 
     setLayout(new FlexibleGridLayout(3,3,5,5,true,false));

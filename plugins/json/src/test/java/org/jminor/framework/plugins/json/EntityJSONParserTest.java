@@ -6,6 +6,7 @@ package org.jminor.framework.plugins.json;
 import org.jminor.common.model.SerializeException;
 import org.jminor.framework.domain.Entities;
 import org.jminor.framework.domain.Entity;
+import org.jminor.framework.domain.TestDomain;
 
 import org.json.JSONException;
 import org.junit.Test;

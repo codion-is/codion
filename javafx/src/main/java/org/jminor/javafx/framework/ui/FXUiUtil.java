@@ -409,8 +409,8 @@ public final class FXUiUtil {
     return box;
   }
 
-  public static ComboBox<Item> createItemComboBox(final Property.ValueListProperty property,
-                                                  final FXEntityEditModel editModel) {
+  public static ComboBox<Item> createValueListComboBox(final Property.ValueListProperty property,
+                                                       final FXEntityEditModel editModel) {
     final ComboBox<Item> comboBox = new ComboBox<>(createValueListComboBoxModel(property));
     Values.link(EditModelValues.value(editModel, property.getPropertyID()), PropertyValues.selectedItemValue(comboBox.getSelectionModel()));
     return comboBox;
