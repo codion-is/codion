@@ -72,6 +72,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     bindEvents();
   }
 
+  /** {@inheritDoc} */
+  @Override
   public final void setEditModel(final FXEntityEditModel editModel) {
     Util.rejectNullValue(editModel, "editModel");
     if (this.editModel != null) {
@@ -84,6 +86,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     bindEditModelEvents();
   }
 
+  /** {@inheritDoc} */
+  @Override
   public final FXEntityEditModel getEditModel() {
     if (editModel == null) {
       throw new IllegalStateException("No edit model has been set for list: " + this);
@@ -100,25 +104,35 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     applyPreferences();
   }
 
+  /** {@inheritDoc} */
+  @Override
   public final EntityTableCriteriaModel getCriteriaModel() {
     return criteriaModel;
   }
 
+  /** {@inheritDoc} */
+  @Override
   public final boolean isQueryCriteriaRequired() {
     return queryCriteriaRequired;
   }
 
+  /** {@inheritDoc} */
+  @Override
   public final FXEntityListModel setQueryCriteriaRequired(final boolean value) {
     this.queryCriteriaRequired = value;
     return this;
   }
 
+  /** {@inheritDoc} */
+  @Override
   public final void setForeignKeyCriteriaValues(final Property.ForeignKeyProperty foreignKeyProperty, final Collection<Entity> entities) {
     if (criteriaModel.setCriteriaValues(foreignKeyProperty.getPropertyID(), entities)) {
       refresh();
     }
   }
 
+  /** {@inheritDoc} */
+  @Override
   public final void deleteSelected() throws DatabaseException {
     getEditModel().delete(getSelectionModel().getSelectedItems());
   }
@@ -411,6 +425,8 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
             String.valueOf(delimiter));
   }
 
+  /** {@inheritDoc} */
+  @Override
   protected List<Entity> queryContents() {
     final Criteria<Property.ColumnProperty> criteria = criteriaModel.getTableCriteria();
     if (criteria == null && queryCriteriaRequired) {
@@ -449,6 +465,17 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
    */
   protected String getUserPreferencesKey() {
     return getClass().getSimpleName() + "-" + getEntityID();
+  }
+
+  /** {@inheritDoc} */
+  @Override
+  protected void bindSelectionModelEvents() {
+    super.bindSelectionModelEvents();
+    getSelectionModel().addSelectedIndexListener(() -> {
+      if (editModel != null) {
+        editModel.setEntity(getSelectionModel().getSelectedItem());
+      }
+    });
   }
 
   private void handleInsert(final EntityEditModel.InsertEvent insertEvent) {
@@ -535,15 +562,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
     }
 
     return columnPreferencesRoot;
-  }
-
-  protected void bindSelectionModelEvents() {
-    super.bindSelectionModelEvents();
-    getSelectionModel().addSelectedIndexListener(() -> {
-      if (editModel != null) {
-        editModel.setEntity(getSelectionModel().getSelectedItem());
-      }
-    });
   }
 
   private void bindEditModelEvents() {

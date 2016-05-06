@@ -46,7 +46,7 @@
     <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
   </target>
 
-  <target name="build" depends="init, resolve_libraries">
+  <target name="build" depends="init, resolve_libraries" description="Builds this module">
     <javac destdir="build/main" debug="${build.debuginfo}" includeantruntime="false">
       <src path="${src.main}"/>
       <classpath>

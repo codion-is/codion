@@ -192,7 +192,7 @@ public final class H2Database extends AbstractDatabase {
   /**
    * Initializes a shared H2 database instance
    */
-  private synchronized static void initializeSharedDatabase(final String databaseName, final String scriptPath,
+  private static synchronized void initializeSharedDatabase(final String databaseName, final String scriptPath,
                                                             final boolean inMemory) {
     if (!sharedDatabaseInitialized) {
       initializeDatabase(databaseName, scriptPath, inMemory);

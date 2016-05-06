@@ -91,27 +91,13 @@ public final class EntityLookupField extends TextField {
   }
 
   private void showEmptyResultMessage() {
-    final Alert alert = new Alert(Alert.AlertType.INFORMATION,
-            FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA), ButtonType.OK);
-    Platform.runLater(() -> alert.showAndWait());
+    Platform.runLater(new Alert(Alert.AlertType.INFORMATION,
+            FrameworkMessages.get(FrameworkMessages.NO_RESULTS_FROM_CRITERIA), ButtonType.OK)::showAndWait);
   }
 
   private void updateColors() {
 //    final boolean validBackground = model.searchStringRepresentsSelected() || (searchHint != null && searchHint.isHintTextVisible());
 //    setBackground(validBackground ? validBackgroundColor : invalidBackgroundColor);
-  }
-
-  private void handleEnter() {
-    if (!model.getSearchStringRepresentsSelectedObserver().isActive()) {
-      performLookup(true);
-    }
-  }
-
-  private void handleEscape() {
-    if (model.getSearchStringRepresentsSelectedObserver().getReversedObserver().isActive()) {
-      model.refreshSearchText();
-      selectAll();
-    }
   }
 
   private class LookupKeyHandler implements EventHandler<KeyEvent> {
@@ -125,6 +111,21 @@ public final class EntityLookupField extends TextField {
         case ENTER:
           handleEnter();
           break;
+        default:
+          break;
+      }
+    }
+
+    private void handleEnter() {
+      if (!model.getSearchStringRepresentsSelectedObserver().isActive()) {
+        performLookup(true);
+      }
+    }
+
+    private void handleEscape() {
+      if (model.getSearchStringRepresentsSelectedObserver().getReversedObserver().isActive()) {
+        model.refreshSearchText();
+        selectAll();
       }
     }
   }
