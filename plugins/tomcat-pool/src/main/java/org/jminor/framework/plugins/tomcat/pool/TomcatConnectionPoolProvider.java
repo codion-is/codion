@@ -49,7 +49,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
     return new DataSource(pp);
   }
 
-  private static class DataSourceWrapper extends AbstractConnectionPool<DataSource> {
+  private static final class DataSourceWrapper extends AbstractConnectionPool<DataSource> {
 
     private DataSourceWrapper(final Database database, final User user, final DataSource dataSource) {
       super(dataSource, user);

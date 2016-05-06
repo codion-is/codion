@@ -16,8 +16,6 @@ import javax.swing.JTabbedPane;
 import javax.swing.JToolBar;
 import java.awt.BorderLayout;
 import java.rmi.RemoteException;
-import java.util.ArrayList;
-import java.util.Collection;
 
 /**
  * A HostMonitorPanel
@@ -70,7 +68,6 @@ public final class HostMonitorPanel extends JPanel {
     model.addServerRemovedListener(new EventInfoListener<ServerMonitor>() {
       @Override
       public void eventOccurred(final ServerMonitor serverMonitor) {
-        final Collection<ServerMonitorPanel> serverTabs = new ArrayList<>();
         for (int i = 0; i < serverPane.getTabCount(); i++) {
           final ServerMonitorPanel panel = (ServerMonitorPanel) serverPane.getComponentAt(i);
           if (panel.getModel() == serverMonitor) {

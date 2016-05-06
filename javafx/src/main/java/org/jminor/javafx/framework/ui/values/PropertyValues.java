@@ -197,7 +197,7 @@ public final class PropertyValues {
     }
   }
 
-  private static class DateConverter extends StringConverter<LocalDate> {
+  private static final class DateConverter extends StringConverter<LocalDate> {
 
     private final DateTimeFormatter dateFormatter;
 
@@ -228,7 +228,7 @@ public final class PropertyValues {
     }
   }
 
-  private static class DefaultStringValue<V> implements StringValue<V> {
+  private static final class DefaultStringValue<V> implements StringValue<V> {
 
     private final StringProperty stringProperty;
     private final StringConverter<V> converter;
@@ -270,7 +270,7 @@ public final class PropertyValues {
     }
   }
 
-  private static class BooleanPropertyValue implements Value<Boolean> {
+  private static final class BooleanPropertyValue implements Value<Boolean> {
 
     private final BooleanProperty booleanProperty;
     private final Event<Boolean> changeEvent = Events.event();
@@ -301,7 +301,7 @@ public final class PropertyValues {
     }
   }
 
-  private static class SelectedValue<V> implements Value<V> {
+  private static final class SelectedValue<V> implements Value<V> {
 
     private final SingleSelectionModel<V> selectionModel;
     private final Event<V> changeEvent = Events.event();

@@ -33,7 +33,6 @@ import java.util.Comparator;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
-import java.util.ListIterator;
 import java.util.Map;
 import java.util.Objects;
 
@@ -378,7 +377,6 @@ public class FXEntityListModel extends ObservableEntityList implements EntityTab
   @Override
   public final void setColumns(final String... propertyIDs) {
     final List<String> propertyIDList = Arrays.asList(propertyIDs);
-    final ListIterator<? extends TableColumn<Entity, ?>> listIterator = columns.listIterator();
     new ArrayList<>(columns).forEach(column -> {
       if (!propertyIDList.contains(((PropertyTableColumn) column).getProperty().getPropertyID())) {
         columns.remove(column);
