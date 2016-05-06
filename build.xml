@@ -1,6 +1,11 @@
 <project name="jminor-parent">
 
+  <property file="user.properties"/>
   <property file="build.properties"/>
+
+  <path id="lib.ant.util">
+    <fileset dir="core/${lib}/ant.util"/>
+  </path>
 
   <path id="lib.test">
     <fileset dir="core/${lib}/test"/>
@@ -236,6 +241,12 @@
       <jvmarg value="-Djavax.net.ssl.trustStore=${deploy.server.monitor.truststore}"/>
       <jvmarg value="-Djava.security.policy=${deploy.server.monitor.policy}"/>
     </java>
+  </target>
+
+  <target name="sonar" depends="run_unit_tests"
+          description="Runs a Sonar analysis on the project, reusing unit test reports">
+    <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml" classpathref="lib.ant.util"/>
+    <sonar:sonar/>
   </target>
 
   <!--<target name="run_generator" depends="build"-->
