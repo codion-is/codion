@@ -506,7 +506,10 @@ public abstract class DefaultEntityEditModel extends DefaultValueMapEditModel<St
       throw new IllegalStateException("No search properties defined for entity: " + foreignKeyProperty.getReferencedEntityID());
     }
 
-    return new DefaultEntityLookupModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider, searchProperties);
+    final EntityLookupModel lookupModel = new DefaultEntityLookupModel(foreignKeyProperty.getReferencedEntityID(), connectionProvider, searchProperties);
+    lookupModel.getMultipleSelectionAllowedValue().set(false);
+
+    return lookupModel;
   }
 
   /** {@inheritDoc} */

@@ -4242,3 +4242,4 @@
   Sonar based JavaFX fixes
   EntityLookupModel.addSelectedEntitiesListener() parameter changed to EventInfoListener<Collection<Entity>>
   Server monitor module refactored from Swing module
+  DefaultEntityEditModel.createForeignKeyLookupModel() now restricts the lookup model to single selection
