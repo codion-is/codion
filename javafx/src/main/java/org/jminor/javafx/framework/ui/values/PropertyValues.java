@@ -4,6 +4,7 @@
 package org.jminor.javafx.framework.ui.values;
 
 import org.jminor.common.model.Event;
+import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Events;
 import org.jminor.common.model.Item;
@@ -46,8 +47,13 @@ public final class PropertyValues {
     return new SelectedValue<>(selectionModel);
   }
 
-  public static Value<Collection<Entity>> lookupValue(final EntityLookupModel model) {
-    return new EntityLookupValue(model);
+  public static Value lookupValue(final EntityLookupModel model) {
+    if (model.getMultipleSelectionAllowedValue().get()) {
+      return new EntityLookupMultiValue(model);
+    }
+    else {
+      return new EntityLookupSingleValue(model);
+    }
   }
 
   public static StringValue<String> stringPropertyValue(final StringProperty property) {
@@ -363,12 +369,45 @@ public final class PropertyValues {
     }
   }
 
-  private static final class EntityLookupValue implements Value<Collection<Entity>> {
+  private static final class EntityLookupSingleValue implements Value<Entity> {
+
+    private final EntityLookupModel lookupModel;
+    private final Event<Entity> selectionListener = Events.event();
+
+    private EntityLookupSingleValue(final EntityLookupModel lookupModel) {
+      this.lookupModel = lookupModel;
+      this.lookupModel.addSelectedEntitiesListener(new EventInfoListener<Collection<Entity>>() {
+        @Override
+        public void eventOccurred(final Collection<Entity> selected) {
+          selectionListener.fire(selected.isEmpty() ? null : selected.iterator().next());
+        }
+      });
+    }
+
+    @Override
+    public void set(final Entity value) {
+      lookupModel.setSelectedEntity(value);
+    }
+
+    @Override
+    public Entity get() {
+      final Collection<Entity> selected = lookupModel.getSelectedEntities();
+
+      return selected.isEmpty() ? null : selected.iterator().next();
+    }
+
+    @Override
+    public EventObserver<Entity> getObserver() {
+      return selectionListener.getObserver();
+    }
+  }
+
+  private static final class EntityLookupMultiValue implements Value<Collection<Entity>> {
 
     private final EntityLookupModel lookupModel;
     private final Event<Collection<Entity>> selectionListener = Events.event();
 
-    private EntityLookupValue(final EntityLookupModel lookupModel) {
+    private EntityLookupMultiValue(final EntityLookupModel lookupModel) {
       this.lookupModel = lookupModel;
       this.lookupModel.addSelectedEntitiesListener(selectionListener);
     }

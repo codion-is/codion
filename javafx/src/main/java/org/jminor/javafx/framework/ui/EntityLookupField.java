@@ -60,7 +60,7 @@ public final class EntityLookupField extends TextField {
       }
       else {
         if (!model.searchStringRepresentsSelected()) {
-          List<Entity> queryResult;
+          final List<Entity> queryResult;
           queryResult = model.performQuery();
           if (queryResult.size() == 1) {
             model.setSelectedEntities(queryResult);
@@ -87,7 +87,7 @@ public final class EntityLookupField extends TextField {
   }
 
   private void selectEntities(final List<Entity> queryResult) {
-    Platform.runLater(() -> model.setSelectedEntities(FXUiUtil.selectValues(queryResult)));
+    Platform.runLater(() -> model.setSelectedEntities(FXUiUtil.selectValues(queryResult, !model.getMultipleSelectionAllowedValue().get())));
   }
 
   private void showEmptyResultMessage() {

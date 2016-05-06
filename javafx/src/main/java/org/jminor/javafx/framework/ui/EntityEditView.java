@@ -188,7 +188,9 @@ public abstract class EntityEditView extends BorderPane {
   protected final BorderPane createPropertyPanel(final String propertyID) {
     final BorderPane pane = new BorderPane();
     pane.setTop(createLabel(propertyID));
-    pane.setCenter(controls.get(propertyID));
+    final Control control = controls.get(propertyID);
+    control.setMaxWidth(Double.MAX_VALUE);
+    pane.setCenter(control);
 
     return pane;
   }

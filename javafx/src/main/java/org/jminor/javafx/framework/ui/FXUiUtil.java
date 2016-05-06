@@ -18,6 +18,7 @@ import org.jminor.common.model.valuemap.EditModelValues;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
+import org.jminor.framework.model.EntityLookupModel;
 import org.jminor.javafx.framework.model.FXEntityEditModel;
 import org.jminor.javafx.framework.model.FXEntityListModel;
 import org.jminor.javafx.framework.model.ObservableEntityList;
@@ -84,6 +85,49 @@ public final class FXUiUtil {
 
   public static <T> List<T> selectValues(final List<T> values) {
     return selectValues(values, false);
+  }
+
+  public static <T> List<T> selectValues(final List<T> values, final boolean single) {
+    final ListView<T> listView = new ListView<>(FXCollections.observableArrayList(values));
+    listView.getSelectionModel().setSelectionMode(single ? SelectionMode.SINGLE : SelectionMode.MULTIPLE);
+    final Dialog<List<T>> dialog = new Dialog<>();
+    dialog.getDialogPane().setContent(listView);
+    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
+    dialog.setResultConverter(buttonType -> {
+      if (buttonType != null && buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
+        return listView.getSelectionModel().getSelectedItems();
+      }
+
+      return null;
+    });
+    listView.setOnMouseClicked(event -> {
+      if (event.getClickCount() == 2) {
+        ((Button) dialog.getDialogPane().lookupButton(ButtonType.OK)).fire();
+      }
+    });
+    listView.setOnKeyPressed(event -> {
+      switch (event.getCode()) {
+        case ENTER:
+          ((Button) dialog.getDialogPane().lookupButton(ButtonType.OK)).fire();
+          break;
+        case ESCAPE:
+          ((Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL)).fire();
+          break;
+        default:
+          break;
+      }
+    });
+
+    Platform.runLater(listView::requestFocus);
+    final Optional<List<T>> result = dialog.showAndWait();
+    if (result.isPresent()) {
+      final List<T> selected = result.get();
+      if (!selected.isEmpty()) {
+        return selected;
+      }
+    }
+
+    throw new CancelException();
   }
 
   public static void setClipboard(final String string) {
@@ -230,11 +274,6 @@ public final class FXUiUtil {
     return PropertyValues.booleanPropertyValue(checkBox.selectedProperty());
   }
 
-  public static EntityLookupField createLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
-                                                    final FXEntityEditModel editModel) {
-    return new EntityLookupField(editModel.getForeignKeyLookupModel(foreignKeyProperty));
-  }
-
   public static TextField createTextField(final Property property, final FXEntityEditModel editModel) {
     return createTextField(property, editModel, null);
   }
@@ -348,6 +387,15 @@ public final class FXUiUtil {
     Objects.requireNonNull(stateObserver);
     property.setValue(stateObserver.isActive());
     stateObserver.addInfoListener(property::setValue);
+  }
+
+  public static EntityLookupField createLookupField(final Property.ForeignKeyProperty foreignKeyProperty,
+                                                    final FXEntityEditModel editModel) {
+    final EntityLookupModel lookupModel = editModel.getForeignKeyLookupModel(foreignKeyProperty);
+    final EntityLookupField lookupField = new EntityLookupField(lookupModel);
+    Values.link(EditModelValues.value(editModel, foreignKeyProperty.getPropertyID()), PropertyValues.lookupValue(lookupModel));
+
+    return lookupField;
   }
 
   public static ComboBox<Entity> createForeignKeyComboBox(final Property.ForeignKeyProperty property,
@@ -521,49 +569,6 @@ public final class FXUiUtil {
     entityList.refresh();
 
     return entityList.getSortedList();
-  }
-
-  private static <T> List<T> selectValues(final List<T> values, final boolean single) {
-    final ListView<T> listView = new ListView<>(FXCollections.observableArrayList(values));
-    listView.getSelectionModel().setSelectionMode(single ? SelectionMode.SINGLE : SelectionMode.MULTIPLE);
-    final Dialog<List<T>> dialog = new Dialog<>();
-    dialog.getDialogPane().setContent(listView);
-    dialog.getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
-    dialog.setResultConverter(buttonType -> {
-      if (buttonType != null && buttonType.getButtonData() == ButtonBar.ButtonData.OK_DONE) {
-        return listView.getSelectionModel().getSelectedItems();
-      }
-
-      return null;
-    });
-    listView.setOnMouseClicked(event -> {
-      if (event.getClickCount() == 2) {
-        ((Button) dialog.getDialogPane().lookupButton(ButtonType.OK)).fire();
-      }
-    });
-    listView.setOnKeyPressed(event -> {
-      switch (event.getCode()) {
-        case ENTER:
-          ((Button) dialog.getDialogPane().lookupButton(ButtonType.OK)).fire();
-          break;
-        case ESCAPE:
-          ((Button) dialog.getDialogPane().lookupButton(ButtonType.CANCEL)).fire();
-          break;
-        default:
-          break;
-      }
-    });
-
-    Platform.runLater(listView::requestFocus);
-    final Optional<List<T>> result = dialog.showAndWait();
-    if (result.isPresent()) {
-      final List<T> selected = result.get();
-      if (!selected.isEmpty()) {
-        return selected;
-      }
-    }
-
-    throw new CancelException();
   }
 
   private static final class LocalDateValue implements Value<LocalDate> {
