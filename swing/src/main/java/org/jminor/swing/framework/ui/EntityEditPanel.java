@@ -2114,7 +2114,7 @@ public abstract class EntityEditPanel extends JPanel implements ExceptionHandler
       super("", Images.loadImage(Images.IMG_ADD_16));
       this.component = component;
       if (component instanceof EntityComboBox) {
-        this.dataProvider = ((EntityComboBoxModel) ((EntityComboBox) component).getModel());
+        this.dataProvider = (EntityComboBoxModel) ((EntityComboBox) component).getModel();
       }
       else if (component instanceof EntityLookupField) {
         this.dataProvider = ((EntityLookupField) component).getModel();

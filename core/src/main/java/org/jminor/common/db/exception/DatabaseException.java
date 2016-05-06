@@ -19,7 +19,7 @@ public class DatabaseException extends Exception  {
    * The underlying error code, if any, transient so it's not
    * available client side if running in a server/client environment
    */
-  private transient final int errorCode;
+  private final transient int errorCode;
 
   /**
    * Constructs a new DatabaseException instance

@@ -19,5 +19,7 @@ public final class SwingMessages {
     UIManager.put("OptionPane.messageDialogTitle", FrameworkMessages.get(FrameworkMessages.OPTION_PANE_MESSAGE_DIALOG_TITLE));
   }
 
+  private SwingMessages() {}
+
   public static void init() {}
 }

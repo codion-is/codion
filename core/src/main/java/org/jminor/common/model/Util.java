@@ -86,6 +86,7 @@ public final class Util {
   private static final String KEY = "key";
   private static final int INPUT_BUFFER_SIZE = 8192;
   private static final int TEN = 10;
+  private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
   private static Preferences userPreferences;
 
   static {
@@ -96,8 +97,6 @@ public final class Util {
       throw new RuntimeException(e);
     }
   }
-
-  private Util() {}
 
   /**
    * Specifies the main configuration file.<br>
@@ -115,6 +114,8 @@ public final class Util {
    * @see #parseConfigurationFile()
    */
   public static final String ADDITIONAL_CONFIGURATION_FILES = "jminor.additionalConfigurationFiles";
+
+  private Util() {}
 
   /**
    * Returns true if the given host is reachable, false if it is not or an exception is thrown while trying
@@ -231,7 +232,7 @@ public final class Util {
     if (noGrouping.length() == 0) {
       return null;
     }
-    if (noGrouping.equals("-")) {
+    if ("-".equals(noGrouping)) {
       return  -1;
     }
 
@@ -249,7 +250,7 @@ public final class Util {
       return null;
     }
 
-    if (text.equals("-")) {
+    if ("-".equals(text)) {
       return -1d;
     }
 
@@ -271,7 +272,7 @@ public final class Util {
     if (noGrouping.length() == 0) {
       return null;
     }
-    if (noGrouping.equals("-")) {
+    if ("-".equals(noGrouping)) {
       return  -1L;
     }
 
@@ -599,7 +600,7 @@ public final class Util {
   public static String getVersionString() {
     final String versionString = getVersionAndBuildNumberString();
     if (versionString.toLowerCase().contains("-")) {
-      return versionString.substring(0, versionString.toLowerCase().indexOf("-"));
+      return versionString.substring(0, versionString.toLowerCase().indexOf('-'));
     }
 
     return versionString;
@@ -695,8 +696,6 @@ public final class Util {
       return bytes;
     }
   }
-
-  private static final String AB = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ";
 
   /**
    * Creates a random string from alphanumeric uppercase characters

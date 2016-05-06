@@ -106,7 +106,7 @@ public class DefaultForeignKeyCriteriaModel extends DefaultColumnCriteriaModel<P
   private String toString(final Object object) {
     final StringBuilder stringBuilder = new StringBuilder();
     if (object instanceof Collection) {
-      for (final Object obj : ((Collection) object)) {
+      for (final Object obj : (Collection) object) {
         stringBuilder.append(toString(obj));
       }
     }
@@ -136,7 +136,7 @@ public class DefaultForeignKeyCriteriaModel extends DefaultColumnCriteriaModel<P
         if (!isUpdatingModel()) {//noinspection unchecked
           final Object upperBound = getUpperBound();
           if (upperBound instanceof Entity) {
-            entityLookupModel.setSelectedEntities(Collections.singletonList(((Entity) upperBound)));
+            entityLookupModel.setSelectedEntities(Collections.singletonList((Entity) upperBound));
           }
           else {//noinspection unchecked
             entityLookupModel.setSelectedEntities((Collection<Entity>) upperBound);

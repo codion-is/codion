@@ -269,8 +269,7 @@ public class EntityPanelProvider implements Comparable<EntityPanelProvider> {
   @Override
   public final int compareTo(final EntityPanelProvider panelProvider) {
     final String thisCompare = caption == null ? modelProvider.getModelClass().getSimpleName() : caption;
-    final String thatCompare = panelProvider.caption == null
-            ? ((EntityPanelProvider) panelProvider).panelClass.getSimpleName() : panelProvider.caption;
+    final String thatCompare = panelProvider.caption == null ? panelProvider.panelClass.getSimpleName() : panelProvider.caption;
 
     return comparator.compare(thisCompare, thatCompare);
   }

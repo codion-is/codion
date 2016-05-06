@@ -46,14 +46,12 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
 
   public FXEntityListModel createForeignKeyListModel(final Property.ForeignKeyProperty foreignKeyProperty) {
     Objects.requireNonNull(foreignKeyProperty);
-    final FXEntityListModel model = new FXEntityListModel(foreignKeyProperty.getReferencedEntityID(), getConnectionProvider());
+    return new FXEntityListModel(foreignKeyProperty.getReferencedEntityID(), getConnectionProvider());
     //todo
 //    if (getValidator().isNullable(getEntity(), foreignKeyProperty.getPropertyID())) {
 //      model.setNullValue(EntityUtil.createToStringEntity(foreignKeyProperty.getReferencedEntityID(),
 //              (String) Configuration.getValue(Configuration.COMBO_BOX_NULL_VALUE_ITEM)));
 //    }
-
-    return model;
   }
 
   @Override
@@ -81,9 +79,9 @@ public class FXEntityEditModel extends DefaultEntityEditModel {
       for (final Property.ForeignKeyProperty foreignKeyProperty : Entities.getForeignKeyProperties(getEntityID(), entry.getKey())) {
         final FXEntityListModel listModel = foreignKeyListModels.get(foreignKeyProperty);
         if (listModel != null) {
-          final Entity selectedEntity = listModel.getSelectionModel().getSelectedItem();
           entry.getValue().forEach(listModel::remove);
           //todo
+//          final Entity selectedEntity = listModel.getSelectionModel().getSelectedItem();
 //          if (listModel.isVisible(selectedEntity)) {
 //            listModel.setSelectedItem(selectedEntity);
 //          }//if the null value is selected we're fine, otherwise select topmost item

@@ -72,6 +72,15 @@ public final class SwingConfiguration {
    */
   public static final String SPLIT_PANE_DIVIDER_SIZE = "jminor.client.splitPaneDividerSize";
 
+  private static final int DEFAULT_TABLE_AUTO_RESIZE_MODE = JTable.AUTO_RESIZE_OFF;
+  private static final int DEFAULT_TAB_PLACEMENT = JTabbedPane.TOP;
+  private static final int DEFAULT_LABEL_TEXT_ALIGNMENT = JLabel.LEFT;
+  private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
+
+  private static final Properties PROPERTIES = new Properties();
+
+  private SwingConfiguration() {}
+
   /**
    * Sets the given configuration value
    * @param key the property key
@@ -117,13 +126,6 @@ public final class SwingConfiguration {
   public static String getStringValue(final String key) {
     return (String) getValue(key);
   }
-
-  private static final Properties PROPERTIES = new Properties();
-
-  private static final int DEFAULT_TABLE_AUTO_RESIZE_MODE = JTable.AUTO_RESIZE_OFF;
-  private static final int DEFAULT_TAB_PLACEMENT = JTabbedPane.TOP;
-  private static final int DEFAULT_LABEL_TEXT_ALIGNMENT = JLabel.LEFT;
-  private static final int DEFAULT_SPLIT_PANE_DIVIDER_SIZE = 18;
 
   static {
     PROPERTIES.put(TABLE_AUTO_RESIZE_MODE, DEFAULT_TABLE_AUTO_RESIZE_MODE);

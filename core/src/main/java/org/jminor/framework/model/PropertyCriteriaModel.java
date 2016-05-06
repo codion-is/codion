@@ -24,5 +24,6 @@ public interface PropertyCriteriaModel<T extends Property.SearchableProperty> ex
    * the state of this criteria model has changed.
    * @return a String representing the state of this criteria model
    */
+  @Override
   String toString();
 }

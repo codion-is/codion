@@ -271,7 +271,7 @@ final class DefaultConnectionPool extends AbstractConnectionPool<Deque<DatabaseC
     DatabaseConnection connection = null;
     boolean destroyConnection = false;
     synchronized (pool) {
-      if (pool.size() > 0) {
+      if (!pool.isEmpty()) {
         connection = pool.pop();
         if (!connection.isConnected()) {
           destroyConnection = true;

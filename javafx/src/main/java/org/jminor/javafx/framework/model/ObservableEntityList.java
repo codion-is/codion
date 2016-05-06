@@ -34,6 +34,8 @@ import java.util.Objects;
 public class ObservableEntityList extends SimpleListProperty<Entity>
         implements ObservableList<Entity>, FilteredModel<Entity>, Refreshable {
 
+  private static final String NO_SELECTION_MODEL_HAS_BEEN_SET = "No selection model has been set";
+
   private final String entityID;
   private final EntityConnectionProvider connectionProvider;
   private final SortedList<Entity> sortedList;
@@ -65,6 +67,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
     return connectionProvider;
   }
 
+  @Override
   public final void refresh() {
     List<Entity> selectedItems = null;
     if (selectionModel != null) {
@@ -98,7 +101,7 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   public final SelectionModel<Entity> getSelectionModel() {
     if (selectionModel == null) {
-      throw new IllegalStateException("Selection model has not been set");
+      throw new IllegalStateException(NO_SELECTION_MODEL_HAS_BEEN_SET);
     }
     return selectionModel;
   }
@@ -109,21 +112,21 @@ public class ObservableEntityList extends SimpleListProperty<Entity>
 
   public final StateObserver getSelectionEmptyObserver() {
     if (selectionModel == null) {
-      throw new IllegalStateException("No selection model has been set");
+      throw new IllegalStateException(NO_SELECTION_MODEL_HAS_BEEN_SET);
     }
     return selectionModel.getSelectionEmptyObserver();
   }
 
   public final StateObserver getSingleSelectionObserver() {
     if (selectionModel == null) {
-      throw new IllegalStateException("No selection model has been set");
+      throw new IllegalStateException(NO_SELECTION_MODEL_HAS_BEEN_SET);
     }
     return selectionModel.getSingleSelectionObserver();
   }
 
   public final StateObserver getMultipleSelectionObserver() {
     if (selectionModel == null) {
-      throw new IllegalStateException("No selection model has been set");
+      throw new IllegalStateException(NO_SELECTION_MODEL_HAS_BEEN_SET);
     }
     return selectionModel.getMultipleSelectionObserver();
   }

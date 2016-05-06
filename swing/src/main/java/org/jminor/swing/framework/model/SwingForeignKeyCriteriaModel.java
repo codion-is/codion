@@ -63,7 +63,7 @@ public final class SwingForeignKeyCriteriaModel extends DefaultForeignKeyCriteri
         try {
           setUpdatingModel(true);
           final Object upper = getUpperBound();
-          if ((upper instanceof Collection && !((Collection) upper).isEmpty())) {
+          if (upper instanceof Collection && !((Collection) upper).isEmpty()) {
             entityComboBoxModel.setSelectedItem((Entity) ((Collection) upper).iterator().next());
           }
           else {
@@ -80,7 +80,7 @@ public final class SwingForeignKeyCriteriaModel extends DefaultForeignKeyCriteri
       @Override
       public void eventOccurred() {
         final Object upper = getUpperBound();
-        if ((upper instanceof Collection && !((Collection) upper).isEmpty())) {
+        if (upper instanceof Collection && !((Collection) upper).isEmpty()) {
           entityComboBoxModel.setSelectedItem((Entity) ((Collection) upper).iterator().next());
         }
         else {

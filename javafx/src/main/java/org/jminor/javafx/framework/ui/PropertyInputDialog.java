@@ -25,8 +25,8 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
     if (control instanceof TextField) {
       ((TextField) control).selectAll();
     }
-    initializeUI(property, control);
-    setResultConverter((dialogButton) -> new InputResult(dialogButton != null &&
+    initializeUI(control);
+    setResultConverter(dialogButton -> new InputResult(dialogButton != null &&
             dialogButton.getButtonData() == ButtonBar.ButtonData.OK_DONE, value.get()));
   }
 
@@ -34,7 +34,7 @@ public final class PropertyInputDialog extends Dialog<PropertyInputDialog.InputR
     return control;
   }
 
-  private void initializeUI(final Property property, final Control control) {
+  private void initializeUI(final Control control) {
     getDialogPane().getButtonTypes().addAll(ButtonType.OK, ButtonType.CANCEL);
     getDialogPane().setContent(control);
   }

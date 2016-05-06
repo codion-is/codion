@@ -15,12 +15,12 @@ import java.util.UUID;
  */
 public final class EntityConnectionProviders {
 
-  private EntityConnectionProviders() {}
-
   private static final String REMOTE_CONNECTION_PROVIDER =
           Configuration.getStringValue(Configuration.REMOTE_CONNECTION_PROVIDER);
   private static final String LOCAL_CONNECTION_PROVIDER =
           Configuration.getStringValue(Configuration.LOCAL_CONNECTION_PROVIDER);
+
+  private EntityConnectionProviders() {}
 
   /**
    * Returns a EntityConnectionProvider according to system properties, using a randomly generated clientID

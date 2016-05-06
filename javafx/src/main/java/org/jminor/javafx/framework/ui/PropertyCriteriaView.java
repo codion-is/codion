@@ -84,9 +84,7 @@ public final class PropertyCriteriaView extends BorderPane {
     final ComboBox<Item<SearchType>> comboBox = new ComboBox<>(
             FXCollections.observableArrayList(getSearchTypes(model.getColumnIdentifier())));
     comboBox.getSelectionModel().select(new Item<>(model.getSearchType()));
-    comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> {
-      model.setSearchType(newValue.getItem());
-    });
+    comboBox.getSelectionModel().selectedItemProperty().addListener((observable, oldValue, newValue) -> model.setSearchType(newValue.getItem()));
     comboBox.maxWidthProperty().set(Double.MAX_VALUE);
     comboBox.minWidthProperty().set(0);
     FXUiUtil.link(comboBox.disableProperty(), model.getLockedObserver());

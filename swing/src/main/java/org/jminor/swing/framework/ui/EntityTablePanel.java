@@ -506,7 +506,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
    */
   public final Control getRefreshControl() {
     final String refreshCaption = FrameworkMessages.get(FrameworkMessages.REFRESH);
-    return Controls.methodControl(getEntityTableModel(), "refresh", refreshCaption,
+    return Controls.methodControl(getEntityTableModel(), REFRESH, refreshCaption,
             null, FrameworkMessages.get(FrameworkMessages.REFRESH_TIP), refreshCaption.charAt(0),
             null, Images.loadImage(Images.IMG_REFRESH_16));
   }
@@ -743,7 +743,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
     final SwingEntityTableModel tableModel = new SwingEntityTableModel(entityID, connectionProvider) {
       @Override
       protected List<Entity> performQuery(final Criteria<Property.ColumnProperty> criteria) {
-        return super.performQuery(criteria);
+        return new ArrayList<>(entities);
       }
     };
     tableModel.setQueryConfigurationAllowed(false);
@@ -1356,7 +1356,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
   private JToolBar initializeRefreshToolbar() {
     final KeyStroke keyStroke = KeyStroke.getKeyStroke(KeyEvent.VK_F5, 0);
     final String keyName = keyStroke.toString().replace("pressed ", "");
-    final Control refresh = Controls.methodControl(getEntityTableModel(), "refresh", null,
+    final Control refresh = Controls.methodControl(getEntityTableModel(), REFRESH, null,
             getEntityTableModel().getCriteriaModel().getCriteriaStateObserver(), FrameworkMessages.get(FrameworkMessages.REFRESH_TIP)
             + " (" + keyName + ")", 0, null, Images.loadImage(Images.IMG_STOP_16));
 

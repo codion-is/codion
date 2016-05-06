@@ -56,7 +56,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
       dataSource.setDataSource(Util.initializeProxy(javax.sql.DataSource.class, new InvocationHandler() {
         @Override
         public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-          if (method.getName().equals("getConnection")) {
+          if ("getConnection".equals(method.getName())) {
             try {
               final Connection connection = database.createConnection(user);
               getCounter().incrementConnectionsCreatedCounter();
@@ -64,7 +64,7 @@ public final class TomcatConnectionPoolProvider implements ConnectionPoolProvide
               return Util.initializeProxy(Connection.class, new InvocationHandler() {
                 @Override
                 public Object invoke(final Object proxy, final Method method, final Object[] args) throws Throwable {
-                  if (method.getName().equals("close")) {
+                  if ("close".equals(method.getName())) {
                     getCounter().incrementConnectionsDestroyedCounter();
                   }
 

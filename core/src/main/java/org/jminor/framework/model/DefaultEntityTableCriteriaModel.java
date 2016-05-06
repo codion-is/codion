@@ -260,13 +260,13 @@ public class DefaultEntityTableCriteriaModel implements EntityTableCriteriaModel
   /** {@inheritDoc} */
   @Override
   public final void performSimpleSearch() {
-    final Conjunction conjunction = getConjunction();
+    final Conjunction previousConjunction = getConjunction();
     try {
       setConjunction(Conjunction.OR);
       simpleSearchPerformedEvent.fire();
     }
     finally {
-      setConjunction(conjunction);
+      setConjunction(previousConjunction);
     }
   }
 

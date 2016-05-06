@@ -20,11 +20,6 @@ import java.util.Properties;
 public final class Configuration {
 
   /**
-   * A convenience method for loading this class so that it parses configuration files and such
-   */
-  public static void init() {}
-
-  /**
    * A prefix used to name server admin instances
    */
   public static final String SERVER_ADMIN_PREFIX = "Admin - ";
@@ -555,6 +550,27 @@ public final class Configuration {
    */
   public static final String USE_CLIENT_PREFERENCES = "jminor.client.useClientPreferences";
 
+  private static final int DEFAULT_LOAD_TEST_THINKTIME = 2000;
+  private static final int DEFAULT_LOAD_TEST_BATCH_SIZE = 10;
+  private static final int DEFAULT_LOAD_TEST_LOGIN_DELAY = 2;
+  private static final int DEFAULT_SERVER_CONNECTION_LIMIT = -1;
+  private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 120000;
+  private static final int DEFAULT_SERVER_CONNECTION_LOG_SIZE = 40;
+  private static final int DEFAULT_SERVER_ADMIN_PORT = 3333;
+  private static final int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;
+  private static final int DEFAULT_WEB_SERVER_PORT = 80;
+  private static final int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
+  private static final int DEFAULT_SERVER_MONITOR_UPDATE_RATE = 5;
+
+  private static final Properties PROPERTIES = new Properties();
+
+  private Configuration() {}
+
+  /**
+   * A convenience method for loading this class so that it parses configuration files and such
+   */
+  public static void init() {}
+
   /**
    * Sets the given configuration value
    * @param key the property key
@@ -673,20 +689,6 @@ public final class Configuration {
 
     return values;
   }
-
-  private static final Properties PROPERTIES = new Properties();
-
-  private static final int DEFAULT_LOAD_TEST_THINKTIME = 2000;
-  private static final int DEFAULT_LOAD_TEST_BATCH_SIZE = 10;
-  private static final int DEFAULT_LOAD_TEST_LOGIN_DELAY = 2;
-  private static final int DEFAULT_SERVER_CONNECTION_LIMIT = -1;
-  private static final int DEFAULT_SERVER_CONNECTION_TIMEOUT = 120000;
-  private static final int DEFAULT_SERVER_CONNECTION_LOG_SIZE = 40;
-  private static final int DEFAULT_SERVER_ADMIN_PORT = 3333;
-  private static final int DEFAULT_FOREIGN_KEY_FETCH_DEPTH = 1;
-  private static final int DEFAULT_WEB_SERVER_PORT = 80;
-  private static final int DEFAULT_MAXIMUM_FRACTION_DIGITS = 10;
-  private static final int DEFAULT_SERVER_MONITOR_UPDATE_RATE = 5;
 
   static {
     Util.parseConfigurationFile();

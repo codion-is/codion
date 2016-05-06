@@ -303,7 +303,7 @@ public final class MethodLogger {
      * @return true if this log entry contains sub log entries
      */
     public boolean containsSubLog() {
-      return subEntries.size() > 0;
+      return !subEntries.isEmpty();
     }
 
     /**

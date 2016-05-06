@@ -310,6 +310,7 @@ public interface EntityTableModel<EditModel extends EntityEditModel> extends Ent
   /**
    * @return the items in this table model, visible and filtered
    */
+  @Override
   List<Entity> getAllItems();
 
   /**

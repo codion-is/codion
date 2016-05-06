@@ -26,7 +26,7 @@ public abstract class AbstractTableSortModel<R, C> implements TableSortModel<R, 
   private static final Comparator<Comparable<Object>> COMPARABLE_COMPARATOR = new Comparator<Comparable<Object>>() {
     @Override
     public int compare(final Comparable<Object> o1, final Comparable<Object> o2) {
-      return (o1.compareTo(o2));
+      return o1.compareTo(o2);
     }
   };
   private static final Comparator LEXICAL_COMPARATOR = Util.getSpaceAwareCollator();

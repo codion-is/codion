@@ -79,6 +79,8 @@ import java.util.Optional;
 
 public final class FXUiUtil {
 
+  private FXUiUtil() {}
+
   public static <T> T selectValue(final List<T> values) {
     return selectValues(values, true).get(0);
   }

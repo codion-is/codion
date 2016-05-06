@@ -162,9 +162,8 @@ public abstract class EntityApplicationView<Model extends EntityApplicationModel
       entityView.initializePanel();
       tabPane.getTabs().add(new Tab(entityView.getCaption(), entityView));
     }
-    final Scene scene = new Scene(tabPane);
 
-    return scene;
+    return new Scene(tabPane);
   };
 
   protected abstract Model initializeApplicationModel(final EntityConnectionProvider connectionProvider);

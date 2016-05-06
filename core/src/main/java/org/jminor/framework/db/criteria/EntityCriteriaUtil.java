@@ -780,7 +780,7 @@ public final class EntityCriteriaUtil {
       else {
         this.values = Collections.singletonList(value);
       }
-      if (values.size() == 0) {
+      if (values.isEmpty()) {
         throw new IllegalArgumentException("No values specified for PropertyCriteria: " + property);
       }
       this.property = property;

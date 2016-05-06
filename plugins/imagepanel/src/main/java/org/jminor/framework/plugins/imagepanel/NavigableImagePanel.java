@@ -215,7 +215,7 @@ public final class NavigableImagePanel extends JPanel {
     @Override
     public void mouseWheelMoved(final MouseWheelEvent e) {
       final Point p = e.getPoint();
-      final boolean zoomIn = (e.getWheelRotation() < 0);
+      final boolean zoomIn = e.getWheelRotation() < 0;
       if (isInNavigationImage(p)) {
         if (zoomIn) {
           navZoomFactor = ONE_POINT_O + zoomIncrement;
@@ -556,14 +556,13 @@ public final class NavigableImagePanel extends JPanel {
     final Coords coords = panelToImageCoords(p);
     final int x = coords.getIntX();
     final int y = coords.getIntY();
-    return (x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight());
+    return x >= 0 && x < image.getWidth() && y >= 0 && y < image.getHeight();
   }
 
   //Tests whether a given point in the panel falls within the navigation image
   //boundaries.
   private boolean isInNavigationImage(final Point p) {
-    return (navigationImageEnabled && p.x < getScreenNavImageWidth()
-            && p.y < getScreenNavImageHeight());
+    return navigationImageEnabled && p.x < getScreenNavImageWidth() && p.y < getScreenNavImageHeight();
   }
 
   //Used when the image is resized.
@@ -576,8 +575,8 @@ public final class NavigableImagePanel extends JPanel {
 
   //Tests whether the image is displayed in its entirety in the panel.
   private boolean isFullImageInPanel() {
-    return (originX >= 0 && (originX + getScreenImageWidth()) < getWidth()
-            && originY >= 0 && (originY + getScreenImageHeight()) < getHeight());
+    return originX >= 0 && (originX + getScreenImageWidth()) < getWidth()
+            && originY >= 0 && (originY + getScreenImageHeight()) < getHeight();
   }
 
   /**
@@ -602,8 +601,7 @@ public final class NavigableImagePanel extends JPanel {
   //than the original image. In other words,
   //when image decimation stops and interpolation starts.
   private boolean isHighQualityRendering() {
-    return (highQualityRenderingEnabled
-            && scale > HIGH_QUALITY_RENDERING_SCALE_THRESHOLD);
+    return highQualityRenderingEnabled && scale > HIGH_QUALITY_RENDERING_SCALE_THRESHOLD;
   }
 
   /**

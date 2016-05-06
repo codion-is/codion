@@ -71,6 +71,22 @@ final class LocalEntityConnection implements EntityConnection {
   private static final String WHERE = "where ";
   private static final String WHERE_SPACE_PREFIX = " where ";
 
+  /**
+   * A result packer for fetching blobs from a result set containing a single blob column
+   */
+  private static final ResultPacker<Blob> BLOB_RESULT_PACKER = new ResultPacker<Blob>() {
+    @Override
+    public List<Blob> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
+      final List<Blob> blobs = new ArrayList<>();
+      int counter = 0;
+      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
+        blobs.add(resultSet.getBlob(1));
+      }
+
+      return blobs;
+    }
+  };
+
   private final DatabaseConnection connection;
 
   private boolean optimisticLocking;
@@ -1244,22 +1260,6 @@ final class LocalEntityConnection implements EntityConnection {
       return foreignKeyProperties;
     }
   }
-
-  /**
-   * A result packer for fetching blobs from a result set containing a single blob column
-   */
-  private static final ResultPacker<Blob> BLOB_RESULT_PACKER = new ResultPacker<Blob>() {
-    @Override
-    public List<Blob> pack(final ResultSet resultSet, final int fetchCount) throws SQLException {
-      final List<Blob> blobs = new ArrayList<>();
-      int counter = 0;
-      while (resultSet.next() && (fetchCount < 0 || counter++ < fetchCount)) {
-        blobs.add(resultSet.getBlob(1));
-      }
-
-      return blobs;
-    }
-  };
 
   /**
    * A {@link MethodLogger.ArgumentStringProvider} implementation tailored for EntityConnections

@@ -12,6 +12,8 @@ import java.io.IOException;
 
 public final class NextReportsUiUtil {
 
+  private NextReportsUiUtil() {}
+
   public static void openReport(final ReportResult<NextReportsResult> reportsResult, final File file) throws IOException {
     Desktop.getDesktop().open(reportsResult.getResult().writeResultToFile(file));
   }

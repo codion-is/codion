@@ -458,10 +458,10 @@ public abstract class EntityTestUnit {
   }
 
   private static int getRandomInteger(final Property property) {
-    final double min = property.getMin() == null ? MININUM_RANDOM_NUMBER : property.getMin();
-    final double max = property.getMax() == null ? MAXIMUM_RANDOM_NUMBER : property.getMax();
+    final int min = (int) (property.getMin() == null ? MININUM_RANDOM_NUMBER : property.getMin());
+    final int max = (int) (property.getMax() == null ? MAXIMUM_RANDOM_NUMBER : property.getMax());
 
-    return (int) (min + (RANDOM.nextDouble() * ((max - min) + 1)));
+    return RANDOM.nextInt((max - min) + 1) + min;
   }
 
   private static double getRandomDouble(final Property property) {

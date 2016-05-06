@@ -129,7 +129,7 @@ public abstract class AbstractTableColumnSyncPanel extends JPanel {
 
     @Override
     public void propertyChange(final PropertyChangeEvent evt) {
-      if (evt.getPropertyName().equals("width")) {
+      if ("width".equals(evt.getPropertyName())) {
         syncPanelWidth(panel, column);
       }
     }

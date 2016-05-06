@@ -11,8 +11,6 @@ import java.util.ResourceBundle;
  */
 public final class FrameworkMessages {
 
-  private FrameworkMessages() {}
-
   private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(FrameworkMessages.class.getName(), Locale.getDefault());
 
   public static final String OPTION_PANE_INPUT_DIALOG_TITLE = "OptionPane.inputDialogTitle";
@@ -122,6 +120,8 @@ public final class FrameworkMessages {
   public static final String PROPERTY_VALUE_TOO_SMALL = "property_value_too_small";
 
   public static final String HAS_BEEN_DELETED = "has_been_deleted";
+
+  private FrameworkMessages() {}
 
   /**
    * Retrieves the locale string associated with the given key

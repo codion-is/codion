@@ -1030,7 +1030,7 @@ class DefaultProperty implements Property {
 
     DefaultMirrorProperty(final String propertyID) {
       super(propertyID, -1, null);
-      setReadOnly(true);
+      super.setReadOnly(true);
     }
   }
 
@@ -1198,8 +1198,8 @@ class DefaultProperty implements Property {
     DefaultSubqueryProperty(final String propertyID, final int type, final String caption, final String subquery,
                             final int columnType) {
       super(propertyID, type, caption, columnType);
-      setReadOnly(true);
-      setUpdatable(false);
+      super.setReadOnly(true);
+      super.setUpdatable(false);
       this.subquery = subquery;
     }
 
@@ -1216,7 +1216,7 @@ class DefaultProperty implements Property {
     DefaultAuditProperty(final String propertyID, final int type, final AuditAction auditAction, final String caption) {
       super(propertyID, type, caption);
       this.auditAction = auditAction;
-      setReadOnly(true);
+      super.setReadOnly(true);
     }
 
     @Override

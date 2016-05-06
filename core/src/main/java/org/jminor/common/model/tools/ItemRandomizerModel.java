@@ -209,6 +209,8 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
    */
   private static final class DefaultRandomItem<T> implements ItemRandomizer.RandomItem<T> {
 
+    private static final String WEIGHT_CAN_NOT_BE_NEGATIVE = "Weight can not be negative";
+
     private final T item;
     private int weight = 0;
     private boolean enabled = true;
@@ -220,7 +222,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
      */
     private DefaultRandomItem(final T item, final int weight) {
       if (weight < 0) {
-        throw new IllegalStateException("Weight can not be negative");
+        throw new IllegalStateException(WEIGHT_CAN_NOT_BE_NEGATIVE);
       }
       this.item = item;
       this.weight = weight;
@@ -269,7 +271,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     @Override
     public void decrementWeight() {
       if (weight == 0) {
-        throw new IllegalStateException("Weight can not be negative");
+        throw new IllegalStateException(WEIGHT_CAN_NOT_BE_NEGATIVE);
       }
 
       weight--;
@@ -278,7 +280,7 @@ public class ItemRandomizerModel<T> implements ItemRandomizer<T> {
     @Override
     public void setWeight(final int weight) {
       if (weight < 0) {
-        throw new IllegalStateException("Weight can not be negative");
+        throw new IllegalStateException(WEIGHT_CAN_NOT_BE_NEGATIVE);
       }
 
       this.weight = weight;

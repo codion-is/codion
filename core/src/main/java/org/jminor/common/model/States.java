@@ -226,12 +226,6 @@ public final class States {
       throw new UnsupportedOperationException("The state of aggregate states can't be set");
     }
 
-    private boolean getPreviousState(final StateObserver excludeState, final boolean previousValue) {
-      synchronized (lock) {
-        return isActive(conjunction, excludeState, previousValue);
-      }
-    }
-
     private boolean isActive(final Conjunction conjunction, final StateObserver exclude, final boolean excludeReplacement) {
       for (final AggregateStateListener listener : stateListeners) {
         final StateObserver state = listener.getState();
@@ -274,6 +268,12 @@ public final class States {
 
       private StateObserver getState() {
         return state;
+      }
+    }
+
+    private boolean getPreviousState(final StateObserver excludeState, final boolean previousValue) {
+      synchronized (lock) {
+        return isActive(conjunction, excludeState, previousValue);
       }
     }
   }

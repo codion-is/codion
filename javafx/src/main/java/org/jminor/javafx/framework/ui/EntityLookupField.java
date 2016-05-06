@@ -25,6 +25,7 @@ import java.util.List;
 public final class EntityLookupField extends TextField {
 
   private final EntityLookupModel model;
+  //todo used during focus lost, todo implement
   private boolean performingLookup = false;
 
   private Color validBackgroundColor;

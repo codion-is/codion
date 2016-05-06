@@ -11,8 +11,6 @@ import java.util.ResourceBundle;
  */
 public final class Messages {
 
-  private Messages() {}
-
   private static final ResourceBundle BUNDLE = ResourceBundle.getBundle(Messages.class.getName(), Locale.getDefault());
 
   public static final String CANCEL = "cancel";
@@ -93,6 +91,8 @@ public final class Messages {
   public static final String MINIMUM = "minimum";
   public static final String MAXIMUM = "maximum";
   public static final String MINIMUM_AND_MAXIMUM = "minimum_and_maximum";
+
+  private Messages() {}
 
   /**
    * Retrieves the locale string associated with the given key

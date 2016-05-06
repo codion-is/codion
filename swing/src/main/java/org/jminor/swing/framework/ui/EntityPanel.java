@@ -1427,7 +1427,7 @@ public class EntityPanel extends JPanel implements MasterDetailPanel {
    * @return the size to use when showing the detail dialog
    */
   private Dimension getDetailDialogSize(final Dimension parentSize) {
-    return new Dimension((int) (parentSize.width / DETAIL_DIALOG_SIZE_RATIO), (containsEditPanel()) ?
+    return new Dimension((int) (parentSize.width / DETAIL_DIALOG_SIZE_RATIO), containsEditPanel() ?
             (int) (parentSize.height / DETAIL_DIALOG_SIZE_RATIO) : parentSize.height - DETAIL_DIALOG_HEIGHT_OFFSET);
   }
 

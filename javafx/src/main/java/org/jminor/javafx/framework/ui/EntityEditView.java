@@ -88,9 +88,7 @@ public abstract class EntityEditView extends BorderPane {
     final Button refresh = createRefreshButton();
     refresh.maxWidthProperty().setValue(Double.MAX_VALUE);
 
-    final VBox box = new VBox(save, update, delete, clear, refresh);
-
-    return box;
+    return new VBox(save, update, delete, clear, refresh);
   }
 
   public void selectInputControl() {
@@ -228,11 +226,9 @@ public abstract class EntityEditView extends BorderPane {
           event.consume();
         }
       }
-      else if (event.isControlDown()) {
-        if (event.getCode().equals(KeyCode.I)) {
-          selectInputControl();
-          event.consume();
-        }
+      else if (event.isControlDown() && event.getCode().equals(KeyCode.I)) {
+        selectInputControl();
+        event.consume();
       }
     });
   }
@@ -334,7 +330,7 @@ public abstract class EntityEditView extends BorderPane {
       }
       catch (final ValidationException e) {
         FXUiUtil.showExceptionDialog(e);
-        controls.get((String) ((ValidationException) e).getKey());
+        controls.get((String) e.getKey());
       }
       catch (final DatabaseException e) {
         throw new RuntimeException(e);

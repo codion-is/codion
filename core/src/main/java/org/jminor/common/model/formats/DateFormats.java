@@ -10,8 +10,6 @@ import java.text.SimpleDateFormat;
  */
 public final class DateFormats {
 
-  private DateFormats() {}
-
   /** dd-MM-yy */
   public static final String COMPACT_DASH = "dd-MM-yy";
   /** ddMMyy */
@@ -36,6 +34,8 @@ public final class DateFormats {
   public static final String FULL_TIMESTAMP = "dd-MM-yyyy HH:mm:ss";
   /** ddMMyy HH:mm:ss */
   public static final String FULL_COMPACT_TIMESTAMP = "ddMMyy HH:mm:ss";
+
+  private DateFormats() {}
 
   /**
    * Instantiates a non-lenient date format
