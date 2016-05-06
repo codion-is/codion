@@ -13,7 +13,7 @@
     <dependency org="org.jacoco" name="org.jacoco.ant" rev="0.7.5.201505241946" conf="ant.util->default"/>
     <dependency org="org.apache.ivy" name="ivy" rev="2.4.0" conf="ant.util->default"/>
     <dependency org="com.threerings" name="getdown" rev="${getdown.version}" conf="ant.util->default"/>
-    <dependency org="org.codehaus.sonar-plugins" name="sonar-ant-task" rev="2.2" conf="ant.util->default"/>
+    <dependency org="org.sonarsource.scanner.ant" name="sonarqube-ant-task" rev="2.4.1" conf="ant.util->default"/>
     <!--logging-->
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7"
                 conf="compile->master;runtime.server->master"/>

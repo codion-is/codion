@@ -1,4 +1,4 @@
-<project name="jminor-parent">
+<project name="jminor-parent" xmlns:sonar="antlib:org.sonar.ant" xmlns:ivy="antlib:org.apache.ivy.ant">
 
   <property file="user.properties"/>
   <property file="build.properties"/>
@@ -183,12 +183,20 @@
     <subant target="run_unit_tests" buildpath="demos"/>
   </target>
 
-  <target name="publish">
+  <target name="publish" depends="clear_ivy_cache">
     <subant target="publish" buildpath="core"/>
     <subant target="publish" buildpath="swing"/>
     <subant target="publish" buildpath="javafx"/>
     <subant target="publish" buildpath="server-monitor"/>
     <subant target="publish" buildpath="plugins"/>
+  </target>
+
+  <target name="clear_ivy_cache">
+    <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
+    <ivy:configure/>
+    <delete includeemptydirs="true">
+      <fileset dir="${ivy.cache.dir}" includes="org.jminor/**/*"/>
+    </delete>
   </target>
 
   <target name="run_server" description="Runs the RMI server">
@@ -243,7 +251,7 @@
     </java>
   </target>
 
-  <target name="sonar" depends="run_unit_tests"
+  <target name="sonar"
           description="Runs a Sonar analysis on the project, reusing unit test reports">
     <taskdef uri="antlib:org.sonar.ant" resource="org/sonar/ant/antlib.xml" classpathref="lib.ant.util"/>
     <sonar:sonar/>
