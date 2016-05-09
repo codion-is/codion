@@ -4244,3 +4244,4 @@
   Server monitor module refactored from Swing module
   DefaultEntityEditModel.createForeignKeyLookupModel() now restricts the lookup model to single selection
   Sonar run
+  Ant build dependencies moved from core module

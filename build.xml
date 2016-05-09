@@ -4,11 +4,7 @@
   <property file="build.properties"/>
 
   <path id="lib.ant.util">
-    <fileset dir="core/${lib}/ant.util"/>
-  </path>
-
-  <path id="lib.test">
-    <fileset dir="core/${lib}/test"/>
+    <fileset dir="${lib}/ant"/>
   </path>
 
   <path id="lib.runtime.server">

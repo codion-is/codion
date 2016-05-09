@@ -2,18 +2,12 @@
   <info organisation="org.jminor" module="jminor" />
 
   <configurations>
-    <conf name="ant.util" description="Utilities required by the build process" />
     <conf name="compile" description="used for building core framework components" />
     <conf name="test" extends="compile" description="used for building and running the framework unit tests" />
     <conf name="runtime.server" extends="compile" description="used for running a server instance" />
   </configurations>
 
   <dependencies>
-    <!--build utilities-->
-    <dependency org="org.jacoco" name="org.jacoco.ant" rev="0.7.5.201505241946" conf="ant.util->default"/>
-    <dependency org="org.apache.ivy" name="ivy" rev="2.4.0" conf="ant.util->default"/>
-    <dependency org="com.threerings" name="getdown" rev="${getdown.version}" conf="ant.util->default"/>
-    <dependency org="org.sonarsource.scanner.ant" name="sonarqube-ant-task" rev="2.4.1" conf="ant.util->default"/>
     <!--logging-->
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7"
                 conf="compile->master;runtime.server->master"/>
@@ -37,8 +31,6 @@
     <!--database used for demos and unit tests-->
     <dependency org="com.h2database" name="h2" rev="1.4.191"
                 conf="test->master;runtime.server->master"/>
-    <!--<dependency org="org.dyndns.fichtner.purgeannotationrefs" name="anttask" rev="0.3.2-SNAPSHOT"-->
-                <!--conf="ant.util->default"/>-->
     <!--<dependency org="org.kantega" name="notsoserial" rev="1.0-SNAPSHOT"-->
                 <!--conf="-->
                 <!--runtime.server->master"/>-->

@@ -110,7 +110,7 @@
 
     <!--getdown-->
     <getdown_digest appdir="dist/deployment/web"/>
-    <copy todir="dist/deployment/web/getdown.tmp/${ant.project.name}" file="../../core/lib/ant.util/getdown-${getdown.version}.jar"/>
+    <copy todir="dist/deployment/web/getdown.tmp/${ant.project.name}" file="../../lib/ant/getdown-${getdown.version}.jar"/>
     <concat destfile="dist/deployment/web/getdown.tmp/${ant.project.name}/getdown.txt">appbase = http://jminor.no-ip.org/demos/${ant.project.name}/</concat>
     <concat destfile="dist/deployment/web/getdown.tmp/${ant.project.name}.sh">java -jar ${ant.project.name}/getdown-${getdown.version}.jar ${ant.project.name}</concat>
     <copy file="dist/deployment/web/getdown.tmp/${ant.project.name}.sh" tofile="dist/deployment/web/getdown.tmp/${ant.project.name}.bat"/>

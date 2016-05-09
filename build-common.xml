@@ -3,7 +3,7 @@
   <property file="${project.root}/build.properties"/>
 
   <path id="lib.ant.util">
-    <fileset dir="${project.root}/core/${lib}/ant.util"/>
+    <fileset dir="${project.root}/${lib}/ant"/>
   </path>
 
   <path id="lib.compile">
@@ -38,11 +38,16 @@
 
   <target name="resolve_libraries"
           description="Resolves all libraries according to ivy.xml">
-    <mkdir dir="${project.root}/core/${lib}/ant.util"/>
+    <!--handle ant build libraries-->
+    <mkdir dir="${project.root}/${lib}/ant"/>
     <get src="http://search.maven.org/remotecontent?filepath=org/apache/ivy/ivy/2.4.0/ivy-2.4.0.jar"
-         dest="${project.root}/core/${lib}/ant.util/ivy-2.4.0.jar" skipexisting="true"/>
+         dest="${project.root}/${lib}/ant/ivy-2.4.0.jar" skipexisting="true"/>
     <taskdef resource="org/apache/ivy/ant/antlib.xml" uri="antlib:org.apache.ivy.ant" classpathref="lib.ant.util"/>
     <ivy:settings file="${project.root}/ivysettings.xml"/>
+    <ivy:resolve file="${project.root}/build-ivy.xml"/>
+    <ivy:retrieve pattern="${project.root}/${lib}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
+    <!--handle module dependencies-->
+    <ivy:resolve file="ivy.xml"/>
     <ivy:retrieve pattern="${lib}/[conf]/[artifact]-[revision].[ext]" sync="true"/>
   </target>
 
