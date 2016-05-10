@@ -3,7 +3,7 @@
   <property name="client.main.class" value="org.jminor.framework.demos.chinook.client.ui.ChinookAppPanel"/>
   <property name="loadtest.main.class" value="org.jminor.framework.demos.chinook.testing.ChinookLoadTest"/>
 
-  <target name="build" depends="jminor-common.build">
+  <target name="build" depends="common.build">
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
       <classpath refid="lib.test"/>
     </taskdef>

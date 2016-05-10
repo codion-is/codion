@@ -8,7 +8,7 @@ import org.jminor.common.db.Database;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
-import org.jminor.common.server.Server;
+import org.jminor.common.server.ServerInfo;
 
 import ch.qos.logback.classic.Level;
 
@@ -46,7 +46,7 @@ public interface EntityConnectionServerAdmin extends Remote {
    * @return static information about the server
    * @throws RemoteException in case of an exception
    */
-  Server.ServerInfo getServerInfo() throws RemoteException;
+  ServerInfo getServerInfo() throws RemoteException;
 
   /**
    * @return the number of active connections

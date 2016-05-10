@@ -14,8 +14,8 @@
 
     <jar href="lib/jminor.jar" main="true" />
 
-    <!--  libraries-->
-    <jar href="lib/jminor-common.jar"/>
+    <!--  libraries todo -->
+    <!--<jar href="lib/jminor-common.jar"/>-->
     <jar href="lib/slf4j-api-1.6.1.jar"/>
     <jar href="lib/logback-core-0.9.24.jar"/>
     <jar href="lib/logback-classic-0.9.24.jar"/>

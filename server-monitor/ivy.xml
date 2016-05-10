@@ -17,7 +17,11 @@
   </publications>
 
   <dependencies defaultconf="compile">
-    <dependency org="org.jminor" name="jminor-common" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-db" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-server-api" rev="${version}"/>
+
     <dependency org="org.jminor" name="jminor-swing-common-model" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-common-ui" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-server" rev="${version}" conf="%->master"/>
@@ -31,6 +35,7 @@
     <dependency org="org.jfree" name="jcommon" rev="1.0.23"/>
     <dependency org="org.jfree" name="jfreechart" rev="1.0.19"/>
 
+    <dependency org="org.jminor" name="jminor-common-server" rev="${version}" conf="test->default"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="${version}" conf="test->default"/>
     <dependency org="org.jminor" name="jminor-db-local" rev="${version}" conf="test->default"/>
     <dependency org="org.jminor" name="jminor-db-remote" rev="${version}" conf="test->default"/>

@@ -17,7 +17,10 @@
   </publications>
 
   <dependencies defaultconf="compile">
-    <dependency org="org.jminor" name="jminor-common" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-db" rev="${version}"/>
+
     <dependency org="org.jminor" name="jminor-swing-common-model" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-common-ui" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-client-model" rev="${version}"/>

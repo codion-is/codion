@@ -19,7 +19,11 @@
   </publications>
 
   <dependencies defaultconf="compile">
-    <dependency org="org.jminor" name="jminor-common" rev="${version}" conf="sources->sources;javadoc->javadoc"/>
+    <dependency org="org.jminor" name="jminor-common-core" rev="${version}" conf="sources->sources;javadoc->javadoc"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="${version}" conf="sources->sources;javadoc->javadoc"/>
+    <dependency org="org.jminor" name="jminor-common-db" rev="${version}" conf="sources->sources;javadoc->javadoc"/>
+    <dependency org="org.jminor" name="jminor-common-server-api" rev="${version}" conf="sources->sources;javadoc->javadoc"/>
+
     <dependency org="org.jminor" name="jminor-db-core" rev="${version}" conf="sources->sources;javadoc->javadoc"/>
     <dependency org="org.jminor" name="jminor-framework-model" rev="${version}" conf="sources->sources;javadoc->javadoc"/>
     <dependency org="org.jminor" name="jminor-framework-model-unittests" rev="${version}"/>

@@ -4,7 +4,7 @@
   <property name="junit.db.initScript" value="src/main/sql/create_schema.sql"/>
   <import file="../build-common.xml"/>
 
-  <target name="dist" depends="jminor-common.dist">
+  <target name="dist" depends="common.dist">
     <jar jarfile="dist/${ant.project.name}-domain.jar" basedir="build/main"
          includes="org/jminor/framework/demos/${ant.project.name}/domain/**/*,
          org/jminor/framework/demos/${ant.project.name}/server/**/*"

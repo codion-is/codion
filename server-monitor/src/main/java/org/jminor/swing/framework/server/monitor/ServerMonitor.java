@@ -10,7 +10,7 @@ import org.jminor.common.Events;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.formats.DateFormats;
-import org.jminor.common.server.Server;
+import org.jminor.common.server.ServerInfo;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
@@ -47,7 +47,7 @@ public final class ServerMonitor {
   private final Event<Integer> connectionLimitChangedEvent = Events.event();
 
   private final String hostName;
-  private final Server.ServerInfo serverInfo;
+  private final ServerInfo serverInfo;
   private final int registryPort;
   private final EntityConnectionServerAdmin server;
 
@@ -91,7 +91,7 @@ public final class ServerMonitor {
   private final XYSeries daemonThreadCountSeries = new XYSeries("Daemon Threads");
   private final XYSeriesCollection threadCountCollection = new XYSeriesCollection();
 
-  public ServerMonitor(final String hostName, final Server.ServerInfo serverInfo, final int registryPort) throws RemoteException {
+  public ServerMonitor(final String hostName, final ServerInfo serverInfo, final int registryPort) throws RemoteException {
     this.hostName = hostName;
     this.serverInfo = serverInfo;
     this.registryPort = registryPort;
@@ -123,7 +123,7 @@ public final class ServerMonitor {
     return server;
   }
 
-  public Server.ServerInfo getServerInfo() {
+  public ServerInfo getServerInfo() {
     return serverInfo;
   }
 

@@ -1,7 +1,7 @@
 package org.jminor.framework.plugins.imagepanel;
 
+import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.Util;
 import org.jminor.framework.domain.Entity;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.Control;

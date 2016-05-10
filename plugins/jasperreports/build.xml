@@ -2,7 +2,7 @@
   <property name="project.root" value="../../"/>
   <import file="../../build-common.xml"/>
 
-  <target name="build" depends="jminor-common.build">
+  <target name="build" depends="common.build">
     <taskdef name="jrc" classname="net.sf.jasperreports.ant.JRAntCompileTask">
       <classpath refid="lib.test"/>
     </taskdef>

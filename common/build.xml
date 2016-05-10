@@ -8,18 +8,32 @@
     <format property="build.date" pattern="yyyy.MM.dd HH:mm"/>
   </tstamp>
 
-  <target name="build" depends="jminor-common.build"
+  <target name="build" depends="common.build"
           description="Compiles all source files">
     <concat destfile="${build.main}/org/jminor/common/version.txt">${version}-build ${build.date}</concat>
   </target>
 
-  <target name="dist" depends="jminor-common.dist"
+  <target name="dist" depends="common.dist"
           description="Builds all distribution jar files in the dist directory">
-    <dist_module module-name="jminor-common" includes="org/jminor/common/**"/>
+    <dist_module module-name="jminor-common-core" includes="org/jminor/common/*.*,org/jminor/common/i18n/**"/>
+    <dist_module module-name="jminor-common-model" includes="org/jminor/common/model/**"/>
+    <dist_module module-name="jminor-common-db" includes="org/jminor/common/db/**"/>
+    <dist_module module-name="jminor-common-server" includes="org/jminor/common/server/**"/>
+    <dist_module module-name="jminor-common-server-api"
+                 includes="org/jminor/common/server/ClientInfo*,
+                           org/jminor/common/server/ClientLog*,
+                           org/jminor/common/server/ClientUtil*,
+                           org/jminor/common/server/ConnectionInfo*,
+                           org/jminor/common/server/DefaultServerInfo*,
+                           org/jminor/common/server/Server*"/>
   </target>
 
   <target name="publish" depends="dist" description="Publish all project artifacts">
     <fail unless="version">Version information not set</fail>
-    <subant target="publish" buildpath="${basedir}/modules/common"/>
+    <subant target="publish" buildpath="${basedir}/modules/common-core"/>
+    <subant target="publish" buildpath="${basedir}/modules/common-model"/>
+    <subant target="publish" buildpath="${basedir}/modules/common-db"/>
+    <subant target="publish" buildpath="${basedir}/modules/common-server"/>
+    <subant target="publish" buildpath="${basedir}/modules/common-server-api"/>
   </target>
 </project>

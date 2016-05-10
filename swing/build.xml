@@ -3,7 +3,7 @@
   <property name="project.root" value="../"/>
   <import file="../build-common.xml"/>
 
-  <target name="dist" depends="jminor-common.dist"
+  <target name="dist" depends="common.dist"
           description="Builds all distribution jar files in the dist directory">
     <dist_module module-name="jminor-swing-common-model"
                  includes="org/jminor/swing/common/model/**,
@@ -20,7 +20,10 @@
     <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${lib}/runtime/" includes="
-              jminor-common-${version}.jar,
+              jminor-common-core-${version}.jar,
+              jminor-common-model-${version}.jar,
+              jminor-common-db-${version}.jar,
+              jminor-common-server-api-${version}.jar,
               jminor-framework-model-${version}.jar,
               jminor-db-core-${version}.jar,
               jminor-db-local-${version}.jar,
@@ -34,7 +37,10 @@
     <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle-sources.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${lib}/sources/" includes="
-              jminor-common-${version}.jar,
+              jminor-common-core-${version}.jar,
+              jminor-common-model-${version}.jar,
+              jminor-common-db-${version}.jar,
+              jminor-common-server-api-${version}.jar,
               jminor-framework-model-${version}.jar,
               jminor-db-core-${version}.jar,
               jminor-db-local-${version}.jar,
@@ -48,7 +54,10 @@
     <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle-javadoc.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${lib}/javadoc/" includes="
-              jminor-common-${version}.jar,
+              jminor-common-core-${version}.jar,
+              jminor-common-model-${version}.jar,
+              jminor-common-db-${version}.jar,
+              jminor-common-server-api-${version}.jar,
               jminor-framework-model-${version}.jar,
               jminor-db-core-${version}.jar,
               jminor-db-local-${version}.jar,

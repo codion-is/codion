@@ -7,7 +7,7 @@
     <fileset dir="${lib}/runtime"/>
   </path>
 
-  <target name="run_server_monitor" depends="jminor-common.build" description="Runs the RMI server monitor">
+  <target name="run_server_monitor" depends="common.build" description="Runs the RMI server monitor">
     <java classname="org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
       <classpath>
         <path refid="lib.runtime.server.monitor"/>

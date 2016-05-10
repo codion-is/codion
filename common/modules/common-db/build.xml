@@ -1,0 +1,3 @@
+<project name="jminor-common-db">
+  <import file="../../../build-module.xml"/>
+</project>

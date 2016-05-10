@@ -8,11 +8,7 @@
   </path>
 
   <path id="lib.runtime.server">
-    <fileset dir="common/${dist}/jminor-common"/>
-    <fileset dir="framework/${dist}/jminor-db-core"/>
-    <fileset dir="framework/${dist}/jminor-db-local"/>
-    <fileset dir="framework/${dist}/jminor-server"/>
-    <fileset dir="framework/${lib}/runtime.server"/>
+    <fileset dir="framework/${lib}/runtime.server/"/>
   </path>
 
   <path id="build.demos.main">
@@ -45,18 +41,15 @@
 
   <target name="deploy_server"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
-    <subant target="dist" buildpath="common"/>
+    <subant target="dist" buildpath="framework"/>
     <subant target="create_keystore" buildpath="framework"/>
     <subant target="create_demo_h2db" buildpath="framework"/>
 
-    <copy file="common/${dist}/jminor-common/jminor-common.jar"
-          tofile="${deploy.server.path}/lib/jminor-common-${version}.jar"/>
-    <copy file="framework/${dist}/jminor-db-core/jminor-db-core.jar"
-          tofile="${deploy.server.path}/lib/jminor-db-core-${version}.jar"/>
-    <copy file="framework/${dist}/jminor-db-local/jminor-db-local.jar"
-          tofile="${deploy.server.path}/lib/jminor-db-local-${version}.jar"/>
     <copy file="framework/${dist}/jminor-server/jminor-server.jar"
           tofile="${deploy.server.path}/lib/jminor-server-${version}.jar"/>
+    <copy todir="${deploy.server.path}/lib">
+      <fileset dir="framework/${lib}/runtime.server"/>
+    </copy>
 
     <subant target="dist" buildpath="demos"/>
     <copy file="demos/chinook/dist/chinook-domain.jar" todir="${deploy.server.path}/lib"/>
@@ -102,18 +95,8 @@
   <target name="deploy_server_monitor"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
     <subant target="create_keystore" buildpath="framework"/>
-    <subant target="dist" buildpath="common"/>
-    <subant target="dist" buildpath="framework"/>
-    <subant target="dist" buildpath="swing"/>
     <subant target="dist" buildpath="server-monitor"/>
 
-    <mkdir dir="${deploy.server.monitor.path}"/>
-    <copy file="common/${dist}/jminor-common/jminor-common.jar"
-          tofile="${deploy.server.monitor.path}/lib/jminor-common-${version}.jar"/>
-    <copy file="swing/${dist}/jminor-swing-common-model/jminor-swing-common-model.jar"
-          tofile="${deploy.server.monitor.path}/lib/jminor-swing-common-model-${version}.jar"/>
-    <copy file="swing/${dist}/jminor-swing-common-ui/jminor-swing-common-ui.jar"
-          tofile="${deploy.server.monitor.path}/lib/jminor-swing-common-ui-${version}.jar"/>
     <copy file="server-monitor/${dist}/jminor-server-monitor.jar"
           tofile="${deploy.server.monitor.path}/lib/jminor-server-monitor-${version}.jar"/>
     <copy todir="${deploy.server.monitor.path}/lib">
@@ -198,8 +181,7 @@
 
   <target name="run_server" description="Runs the RMI server">
     <subant target="create_keystore" buildpath="framework"/>
-    <subant target="dist" buildpath="common"/>
-    <subant target="dist" buildpath="framework"/>
+    <subant target="resolve_libraries" buildpath="framework"/>
     <subant target="build" buildpath="plugins"/>
     <subant target="build" buildpath="demos"/>
     <!--todo reports, copy to temp loc-->

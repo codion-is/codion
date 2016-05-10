@@ -7,7 +7,7 @@
     <fileset dir="${lib}/runtime.server"/>
   </path>
 
-  <target name="dist" depends="jminor-common.dist"
+  <target name="dist" depends="common.dist"
           description="Builds all distribution jar files in the dist directory">
     <dist_module module-name="jminor-db-core"
                  includes="org/jminor/framework/Configuration.class,

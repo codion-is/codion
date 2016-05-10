@@ -131,7 +131,7 @@ public final class ServerUtil {
   }
 
   private static <T extends Remote> Server<T> checkServer(final Server<T> server, final int requestedPort) throws RemoteException {
-    final Server.ServerInfo serverInfo = server.getServerInfo();
+    final ServerInfo serverInfo = server.getServerInfo();
     if (requestedPort != -1 && serverInfo.getServerPort() != requestedPort) {
       LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
             new Object[] {serverInfo.getServerName(), serverInfo.getServerPort(), requestedPort});

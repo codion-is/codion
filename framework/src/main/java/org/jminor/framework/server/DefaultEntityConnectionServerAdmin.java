@@ -14,7 +14,7 @@ import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
-import org.jminor.common.server.Server;
+import org.jminor.common.server.ServerInfo;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 
@@ -108,7 +108,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public Server.ServerInfo getServerInfo() {
+  public ServerInfo getServerInfo() {
     return server.getServerInfo();
   }
 

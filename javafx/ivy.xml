@@ -17,7 +17,10 @@
   </publications>
 
   <dependencies defaultconf="compile">
-    <dependency org="org.jminor" name="jminor-common" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-db" rev="${version}"/>
+
     <dependency org="org.jminor" name="jminor-db-core" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-framework-model" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-framework-model-unittests" rev="${version}" conf="test->default"/>

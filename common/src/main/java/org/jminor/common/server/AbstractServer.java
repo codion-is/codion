@@ -4,12 +4,10 @@
 package org.jminor.common.server;
 
 import org.jminor.common.Util;
-import org.jminor.common.Version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 
-import java.io.Serializable;
 import java.rmi.NoSuchObjectException;
 import java.rmi.Remote;
 import java.rmi.RemoteException;
@@ -341,48 +339,6 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
 
     private T getConnection() {
       return connection;
-    }
-  }
-
-  private static final class DefaultServerInfo implements ServerInfo, Serializable {
-    private static final long serialVersionUID = 1;
-
-    private final UUID serverID;
-    private final String serverName;
-    private final int serverPort;
-    private final long serverStartupTime;
-    private final Version serverVersion = Util.getVersion();
-
-    private DefaultServerInfo(final UUID serverID, final String serverName, final int serverPort, final long serverStartupTime) {
-      this.serverID = serverID;
-      this.serverName = serverName;
-      this.serverPort = serverPort;
-      this.serverStartupTime = serverStartupTime;
-    }
-
-    @Override
-    public String getServerName() {
-      return serverName;
-    }
-
-    @Override
-    public UUID getServerID() {
-      return serverID;
-    }
-
-    @Override
-    public int getServerPort() {
-      return serverPort;
-    }
-
-    @Override
-    public Version getServerVersion() {
-      return serverVersion;
-    }
-
-    @Override
-    public long getStartTime() {
-      return serverStartupTime;
     }
   }
 }

@@ -17,7 +17,9 @@
   </publications>
 
   <dependencies defaultconf="compile->default">
-    <dependency org="org.jminor" name="jminor-common" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-model" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-db" rev="${version}"/>
 
     <dependency org="org.apache.tomcat" name="tomcat-jdbc" rev="8.0.24" conf="compile->master"/>
     <dependency org="org.apache.tomcat" name="tomcat-juli" rev="8.0.24" conf="compile->master"/>
