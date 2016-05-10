@@ -20,6 +20,6 @@
 
   <target name="publish" depends="dist" description="Publish all project artifacts">
     <fail unless="version">Version information not set</fail>
-    <subant target="publish" buildpath="${basedir}/modules/common-model"/>
+    <subant target="publish" buildpath="${basedir}/modules/common"/>
   </target>
 </project>

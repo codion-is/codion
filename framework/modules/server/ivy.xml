@@ -17,10 +17,10 @@
   </publications>
 
   <dependencies defaultconf="compile">
-    <dependency org="org.jminor" name="jminor-common" rev="latest.integration"/>
-    <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-common" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-db-core" rev="${version}"/>
 
-    <dependency org="org.jminor" name="jminor-db-local" rev="latest.integration" conf="runtime->default"/>
+    <dependency org="org.jminor" name="jminor-db-local" rev="${version}" conf="runtime->default"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.3"/>

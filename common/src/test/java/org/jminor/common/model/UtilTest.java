@@ -214,17 +214,17 @@ public class UtilTest {
 
   @Test
   public void countLines() throws IOException {
-    assertEquals(50, Util.countLines("jminor-common.iml"));
-    assertEquals(50, Util.countLines(new File("jminor-common.iml")));
-    assertEquals(47, Util.countLines(new File("jminor-common.iml"), "<"));
+    assertEquals(44, Util.countLines("jminor-common.iml"));
+    assertEquals(44, Util.countLines(new File("jminor-common.iml")));
+    assertEquals(41, Util.countLines(new File("jminor-common.iml"), "<"));
   }
 
   @Test
   public void getTextFileContents() throws IOException {
-    final String contents = "<project name=\"jminor-common-model\">" + Util.LINE_SEPARATOR +
+    final String contents = "<project name=\"jminor-common\">" + Util.LINE_SEPARATOR +
             "  <import file=\"../../../build-module.xml\"/>" + Util.LINE_SEPARATOR +
             "</project>" + Util.LINE_SEPARATOR;
-    assertEquals(contents, Util.getTextFileContents("modules/common-model/build.xml", Charset.defaultCharset()));
+    assertEquals(contents, Util.getTextFileContents("modules/common/build.xml", Charset.defaultCharset()));
   }
 
   @Test
