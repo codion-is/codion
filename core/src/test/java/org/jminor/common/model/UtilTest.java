@@ -214,9 +214,9 @@ public class UtilTest {
 
   @Test
   public void countLines() throws IOException {
-    assertEquals(50, Util.countLines("jminor-core.iml"));
-    assertEquals(50, Util.countLines(new File("jminor-core.iml")));
-    assertEquals(47, Util.countLines(new File("jminor-core.iml"), "<"));
+    assertEquals(50, Util.countLines("jminor-common.iml"));
+    assertEquals(50, Util.countLines(new File("jminor-common.iml")));
+    assertEquals(47, Util.countLines(new File("jminor-common.iml"), "<"));
   }
 
   @Test

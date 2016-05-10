@@ -10,7 +10,7 @@
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="module" module-name="jminor-core" exported="" />
+    <orderEntry type="module" module-name="jminor-common" exported="" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>
