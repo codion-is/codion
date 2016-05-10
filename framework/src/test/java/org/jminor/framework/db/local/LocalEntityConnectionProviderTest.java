@@ -4,7 +4,6 @@
 package org.jminor.framework.db.local;
 
 import org.jminor.common.db.Database;
-import org.jminor.common.db.DatabasesTest;
 import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnection;
 
@@ -16,7 +15,7 @@ public class LocalEntityConnectionProviderTest {
 
   @Test
   public void test() {
-    final Database database = DatabasesTest.createTestDatabaseInstance();
+    final Database database = LocalEntityConnectionTest.createTestDatabaseInstance();
     final LocalEntityConnectionProvider provider = new LocalEntityConnectionProvider(User.UNIT_TEST_USER, database);
 
     assertEquals(database.getHost(), provider.getServerHostName());

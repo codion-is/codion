@@ -9,15 +9,10 @@
 
   <path id="lib.runtime.server">
     <fileset dir="core/${dist}/jminor-common-model"/>
-    <fileset dir="core/${dist}/jminor-db-core"/>
-    <fileset dir="core/${dist}/jminor-db-local"/>
-    <fileset dir="core/${dist}/jminor-server"/>
-    <fileset dir="core/${lib}/runtime.server"/>
-  </path>
-
-  <path id="lib.runtime.server.monitor">
-    <fileset dir="server-monitor/${dist}"/>
-    <fileset dir="server-monitor/${lib}/runtime"/>
+    <fileset dir="framework/${dist}/jminor-db-core"/>
+    <fileset dir="framework/${dist}/jminor-db-local"/>
+    <fileset dir="framework/${dist}/jminor-server"/>
+    <fileset dir="framework/${lib}/runtime.server"/>
   </path>
 
   <path id="build.demos.main">
@@ -56,11 +51,11 @@
 
     <copy file="core/${dist}/jminor-common-model/jminor-common-model.jar"
           tofile="${deploy.server.path}/lib/jminor-common-model-${version}.jar"/>
-    <copy file="core/${dist}/jminor-db-core/jminor-db-core.jar"
+    <copy file="framework/${dist}/jminor-db-core/jminor-db-core.jar"
           tofile="${deploy.server.path}/lib/jminor-db-core-${version}.jar"/>
-    <copy file="core/${dist}/jminor-db-local/jminor-db-local.jar"
+    <copy file="framework/${dist}/jminor-db-local/jminor-db-local.jar"
           tofile="${deploy.server.path}/lib/jminor-db-local-${version}.jar"/>
-    <copy file="core/${dist}/jminor-server/jminor-server.jar"
+    <copy file="framework/${dist}/jminor-server/jminor-server.jar"
           tofile="${deploy.server.path}/lib/jminor-server-${version}.jar"/>
 
     <subant target="dist" buildpath="demos"/>
@@ -84,10 +79,10 @@
     </copy>
 
     <copy todir="${deploy.server.path}/lib">
-      <fileset dir="core/${lib}/runtime.server"/>
+      <fileset dir="framework/${lib}/runtime.server"/>
     </copy>
     <copy todir="${deploy.server.path}">
-      <fileset dir="core/resources/server/"/>
+      <fileset dir="framework/resources/server/"/>
     </copy>
     <copy file="${deploy.server.policy}" todir="${deploy.server.path}/config"/>
     <copy file="${deploy.server.allpermissions.policy}" todir="${deploy.server.path}/config"/>
@@ -145,6 +140,7 @@
 
   <target name="clean" description="Clean all modules">
     <subant target="clean" buildpath="core"/>
+    <subant target="clean" buildpath="framework"/>
     <subant target="clean" buildpath="swing"/>
     <subant target="clean" buildpath="javafx"/>
     <subant target="clean" buildpath="server-monitor"/>
@@ -154,6 +150,7 @@
 
   <target name="build" description="Builds all modules">
     <subant target="build" buildpath="core"/>
+    <subant target="build" buildpath="framework"/>
     <subant target="build" buildpath="swing"/>
     <subant target="build" buildpath="javafx"/>
     <subant target="build" buildpath="server-monitor"/>
@@ -163,6 +160,7 @@
 
   <target name="dist" description="Distributes all modules">
     <subant target="dist" buildpath="core"/>
+    <subant target="dist" buildpath="framework"/>
     <subant target="dist" buildpath="swing"/>
     <subant target="dist" buildpath="javafx"/>
     <subant target="dist" buildpath="server-monitor"/>
@@ -172,6 +170,7 @@
 
   <target name="run_unit_tests" description="Runs unit tests for all modules">
     <subant target="run_unit_tests" buildpath="core"/>
+    <subant target="run_unit_tests" buildpath="framework"/>
     <subant target="run_unit_tests" buildpath="swing"/>
     <subant target="run_unit_tests" buildpath="javafx"/>
     <subant target="run_unit_tests" buildpath="server-monitor"/>
@@ -181,6 +180,7 @@
 
   <target name="publish" depends="clear_ivy_cache" description="Publishes all project artifacts">
     <subant target="publish" buildpath="core"/>
+    <subant target="publish" buildpath="framework"/>
     <subant target="publish" buildpath="swing"/>
     <subant target="publish" buildpath="javafx"/>
     <subant target="publish" buildpath="server-monitor"/>
@@ -196,8 +196,9 @@
   </target>
 
   <target name="run_server" description="Runs the RMI server">
-    <subant target="create_keystore" buildpath="core"/>
+    <subant target="create_keystore" buildpath="framework"/>
     <subant target="dist" buildpath="core"/>
+    <subant target="dist" buildpath="framework"/>
     <subant target="build" buildpath="plugins"/>
     <subant target="build" buildpath="demos"/>
     <!--todo reports, copy to temp loc-->
@@ -230,21 +231,6 @@
       <jvmarg value="-Djava.rmi.server.hostname=localhost"/>
     </java>
     <delete dir="build/demos"/>
-  </target>
-
-  <target name="run_server_monitor" description="Runs the RMI server monitor">
-    <subant target="create_keystore" buildpath="core"/>
-    <subant target="dist" buildpath="core"/>
-    <subant target="dist" buildpath="swing"/>
-    <subant target="dist" buildpath="server-monitor"/>
-    <java classname="org.jminor.swing.framework.server.monitor.ui.EntityServerMonitorPanel" fork="yes">
-      <classpath>
-        <path refid="lib.runtime.server.monitor"/>
-      </classpath>
-      <jvmarg value="-Djminor.server.hostname=localhost"/>
-      <jvmarg value="-Djavax.net.ssl.trustStore=${deploy.server.monitor.truststore}"/>
-      <jvmarg value="-Djava.security.policy=${deploy.server.monitor.policy}"/>
-    </java>
   </target>
 
   <target name="sonar" depends="run_unit_tests"

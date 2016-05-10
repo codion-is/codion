@@ -19,5 +19,7 @@
     <orderEntry type="module" module-name="plugin-nextreports" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-rest" scope="RUNTIME" />
     <orderEntry type="module" module-name="plugin-tomcat-pool" scope="RUNTIME" />
+    <orderEntry type="module" module-name="jminor-framework" />
+    <orderEntry type="module" module-name="jminor-server-monitor" />
   </component>
 </module>

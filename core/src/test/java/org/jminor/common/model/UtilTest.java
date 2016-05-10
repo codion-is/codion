@@ -214,17 +214,17 @@ public class UtilTest {
 
   @Test
   public void countLines() throws IOException {
-    assertEquals(3, Util.countLines("resources/security/all_permissions.policy"));
-    assertEquals(3, Util.countLines(new File("resources/security/all_permissions.policy")));
-    assertEquals(2, Util.countLines(new File("resources/security/all_permissions.policy"), "}"));
+    assertEquals(50, Util.countLines("jminor-core.iml"));
+    assertEquals(50, Util.countLines(new File("jminor-core.iml")));
+    assertEquals(47, Util.countLines(new File("jminor-core.iml"), "<"));
   }
 
   @Test
   public void getTextFileContents() throws IOException {
-    final String contents = "grant {" + Util.LINE_SEPARATOR +
-            "  permission java.security.AllPermission;" + Util.LINE_SEPARATOR +
-            "};" + Util.LINE_SEPARATOR;
-    assertEquals(contents, Util.getTextFileContents("resources/security/all_permissions.policy", Charset.defaultCharset()));
+    final String contents = "<project name=\"jminor-common-model\">" + Util.LINE_SEPARATOR +
+            "  <import file=\"../../../build-module.xml\"/>" + Util.LINE_SEPARATOR +
+            "</project>" + Util.LINE_SEPARATOR;
+    assertEquals(contents, Util.getTextFileContents("modules/common-model/build.xml", Charset.defaultCharset()));
   }
 
   @Test
