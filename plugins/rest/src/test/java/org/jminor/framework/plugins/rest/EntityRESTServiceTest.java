@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.plugins.rest;
 
+import org.jminor.common.User;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.User;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;

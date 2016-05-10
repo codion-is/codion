@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.model.EventInfoListener;
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import org.junit.Test;

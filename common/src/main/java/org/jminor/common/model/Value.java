@@ -3,6 +3,8 @@
  */
 package org.jminor.common.model;
 
+import org.jminor.common.EventObserver;
+
 /**
  * A wrapper class for setting and getting a value
  * @param <V> the type of the value

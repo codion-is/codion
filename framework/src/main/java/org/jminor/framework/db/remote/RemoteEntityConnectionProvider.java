@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.db.remote;
 
+import org.jminor.common.User;
+import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.Version;
 import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerUtil;

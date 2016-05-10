@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.model.EventListener;
+import org.jminor.common.EventListener;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.DefaultForeignKeyCriteriaModel;

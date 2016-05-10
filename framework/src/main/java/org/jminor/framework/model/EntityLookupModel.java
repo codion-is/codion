@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.StateObserver;
 import org.jminor.common.db.criteria.Criteria;
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Value;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;

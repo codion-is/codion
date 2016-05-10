@@ -3,13 +3,13 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventObserver;
+import org.jminor.common.Events;
+import org.jminor.common.StateObserver;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.Events;
-import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;

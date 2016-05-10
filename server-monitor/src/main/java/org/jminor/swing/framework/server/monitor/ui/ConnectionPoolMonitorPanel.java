@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
+import org.jminor.common.EventListener;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
-import org.jminor.common.model.EventListener;
 import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.swing.common.ui.UiUtil;

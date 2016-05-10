@@ -3,7 +3,7 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.model.Util;
+import org.jminor.common.Util;
 
 import java.io.Serializable;
 import java.lang.annotation.ElementType;

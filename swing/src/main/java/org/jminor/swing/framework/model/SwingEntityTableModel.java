@@ -3,10 +3,10 @@
  */
 package org.jminor.swing.framework.model;
 
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventListener;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnSummaryModel;
 import org.jminor.common.model.valuemap.exception.ValidationException;

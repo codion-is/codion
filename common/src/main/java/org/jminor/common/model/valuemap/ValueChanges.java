@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.model.Util;
+import org.jminor.common.Util;
 
 /**
  * Factory class for {@link ValueChange} instances

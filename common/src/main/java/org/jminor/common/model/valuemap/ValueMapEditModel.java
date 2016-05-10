@@ -3,9 +3,9 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.StateObserver;
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventObserver;
+import org.jminor.common.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import java.util.Collection;

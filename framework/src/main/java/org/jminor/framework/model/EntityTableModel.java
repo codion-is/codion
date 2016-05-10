@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.EventListener;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.table.ColumnSummaryModel;

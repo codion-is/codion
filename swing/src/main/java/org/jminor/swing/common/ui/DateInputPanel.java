@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.ui;
 
+import org.jminor.common.StateObserver;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.Util;
 
 import javax.swing.AbstractAction;

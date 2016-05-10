@@ -3,14 +3,14 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.Events;
-import org.jminor.common.model.State;
-import org.jminor.common.model.StateObserver;
-import org.jminor.common.model.States;
-import org.jminor.common.model.Util;
+import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventObserver;
+import org.jminor.common.Events;
+import org.jminor.common.State;
+import org.jminor.common.StateObserver;
+import org.jminor.common.States;
+import org.jminor.common.Util;
 
 import java.util.Collection;
 import java.util.Collections;

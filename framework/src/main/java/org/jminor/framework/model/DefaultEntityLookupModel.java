@@ -3,19 +3,19 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.Conjunction;
+import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventListener;
+import org.jminor.common.Events;
+import org.jminor.common.State;
+import org.jminor.common.StateObserver;
+import org.jminor.common.States;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.Conjunction;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventListener;
-import org.jminor.common.model.Events;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.State;
-import org.jminor.common.model.StateObserver;
-import org.jminor.common.model.States;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;

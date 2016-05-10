@@ -3,7 +3,7 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.model.Version;
+import org.jminor.common.Version;
 
 import java.rmi.Remote;
 import java.rmi.RemoteException;

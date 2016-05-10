@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.db;
 
+import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.dbms.H2Database;
-import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.local.LocalEntityConnectionProvider;
 

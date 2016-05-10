@@ -3,14 +3,14 @@
  */
 package org.jminor.javafx.framework.ui;
 
+import org.jminor.common.EventObserver;
+import org.jminor.common.State;
+import org.jminor.common.StateObserver;
+import org.jminor.common.States;
+import org.jminor.common.User;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.EventObserver;
 import org.jminor.common.model.Item;
-import org.jminor.common.model.State;
-import org.jminor.common.model.StateObserver;
-import org.jminor.common.model.States;
-import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;

@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
-import org.jminor.common.model.EventInfoListener;
+import org.jminor.common.EventInfoListener;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.control.ControlProvider;
 import org.jminor.swing.common.ui.control.ControlSet;

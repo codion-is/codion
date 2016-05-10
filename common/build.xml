@@ -10,7 +10,7 @@
 
   <target name="build" depends="jminor-common.build"
           description="Compiles all source files">
-    <concat destfile="${build.main}/org/jminor/common/model/version.txt">${version}-build ${build.date}</concat>
+    <concat destfile="${build.main}/org/jminor/common/version.txt">${version}-build ${build.date}</concat>
   </target>
 
   <target name="dist" depends="jminor-common.dist"

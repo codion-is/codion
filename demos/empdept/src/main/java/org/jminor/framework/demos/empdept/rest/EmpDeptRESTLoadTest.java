@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.demos.empdept.rest;
 
+import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.common.model.tools.ScenarioException;

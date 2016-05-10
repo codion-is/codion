@@ -3,6 +3,8 @@
  */
 package org.jminor.common.model;
 
+import org.jminor.common.EventListener;
+
 import org.junit.Test;
 
 import java.util.concurrent.TimeUnit;

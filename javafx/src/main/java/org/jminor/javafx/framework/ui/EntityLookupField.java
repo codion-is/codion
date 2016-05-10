@@ -3,8 +3,8 @@
  */
 package org.jminor.javafx.framework.ui;
 
+import org.jminor.common.Util;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.Values;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.i18n.FrameworkMessages;

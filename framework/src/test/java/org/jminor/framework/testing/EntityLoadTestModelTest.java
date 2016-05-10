@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.testing;
 
-import org.jminor.common.model.User;
+import org.jminor.common.User;
 import org.jminor.common.model.tools.ScenarioException;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProviders;

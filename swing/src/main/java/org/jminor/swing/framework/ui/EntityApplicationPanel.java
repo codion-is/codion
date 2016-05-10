@@ -3,16 +3,16 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventListener;
+import org.jminor.common.Events;
+import org.jminor.common.StateObserver;
+import org.jminor.common.User;
+import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventListener;
-import org.jminor.common.model.Events;
-import org.jminor.common.model.StateObserver;
-import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
-import org.jminor.common.model.Version;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
@@ -236,7 +236,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
   /**
    * Performs a login, fetching user information via <code>getUser</code>
    * @throws CancelException in case the login is cancelled
-   * @see #getUser(String, org.jminor.common.model.User, javax.swing.ImageIcon)
+   * @see #getUser(String, org.jminor.common.User, javax.swing.ImageIcon)
    */
   public final void login() {
     applicationModel.login(getUser(frameTitle, null, null));
@@ -383,7 +383,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
 
   /**
    * Exits this application
-   * @see #addOnExitListener(org.jminor.common.model.EventListener)
+   * @see #addOnExitListener(EventListener)
    * @see Configuration#CONFIRM_EXIT
    * @see Configuration#WARN_ABOUT_UNSAVED_DATA
    * @throws CancelException if the exit is cancelled

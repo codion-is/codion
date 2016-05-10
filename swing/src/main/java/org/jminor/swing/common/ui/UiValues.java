@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.common.ui;
 
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.Events;
+import org.jminor.common.Event;
+import org.jminor.common.EventObserver;
+import org.jminor.common.Events;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;

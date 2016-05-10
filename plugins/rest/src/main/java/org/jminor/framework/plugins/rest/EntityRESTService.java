@@ -3,13 +3,13 @@
  */
 package org.jminor.framework.plugins.rest;
 
+import org.jminor.common.Conjunction;
+import org.jminor.common.User;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.Server;

@@ -3,14 +3,14 @@
  */
 package org.jminor.javafx.framework.model;
 
+import org.jminor.common.Event;
+import org.jminor.common.EventListener;
+import org.jminor.common.Events;
+import org.jminor.common.StateObserver;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventListener;
-import org.jminor.common.model.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.FilteredModel;
 import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.table.SelectionModel;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;

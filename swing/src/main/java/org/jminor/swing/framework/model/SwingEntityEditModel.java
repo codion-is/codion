@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.model;
 
-import org.jminor.common.model.EventListener;
+import org.jminor.common.EventListener;
 import org.jminor.common.model.Refreshable;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;

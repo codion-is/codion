@@ -3,6 +3,8 @@
  */
 package org.jminor.common.model;
 
+import org.jminor.common.EventListener;
+
 import java.util.List;
 
 /**

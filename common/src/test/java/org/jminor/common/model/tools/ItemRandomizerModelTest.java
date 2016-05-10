@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.tools;
 
-import org.jminor.common.model.EventListener;
+import org.jminor.common.EventListener;
 
 import org.junit.Test;
 

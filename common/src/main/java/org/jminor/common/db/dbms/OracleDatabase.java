@@ -3,9 +3,9 @@
  */
 package org.jminor.common.db.dbms;
 
+import org.jminor.common.Util;
 import org.jminor.common.db.AbstractDatabase;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.Util;
 
 import java.sql.SQLException;
 import java.util.HashMap;

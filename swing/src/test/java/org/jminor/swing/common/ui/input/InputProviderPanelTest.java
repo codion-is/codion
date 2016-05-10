@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui.input;
 
-import org.jminor.common.model.EventInfoListener;
+import org.jminor.common.EventInfoListener;
 
 import org.junit.Test;
 

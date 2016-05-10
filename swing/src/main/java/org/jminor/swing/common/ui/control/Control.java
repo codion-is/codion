@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.common.ui.control;
 
-import org.jminor.common.model.EventListener;
-import org.jminor.common.model.StateObserver;
-import org.jminor.common.model.States;
+import org.jminor.common.EventListener;
+import org.jminor.common.StateObserver;
+import org.jminor.common.States;
 
 import javax.swing.AbstractAction;
 import javax.swing.Action;

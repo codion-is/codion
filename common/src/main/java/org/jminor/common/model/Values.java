@@ -3,6 +3,12 @@
  */
 package org.jminor.common.model;
 
+import org.jminor.common.Event;
+import org.jminor.common.EventListener;
+import org.jminor.common.EventObserver;
+import org.jminor.common.Events;
+import org.jminor.common.State;
+
 import java.lang.reflect.Method;
 
 /**

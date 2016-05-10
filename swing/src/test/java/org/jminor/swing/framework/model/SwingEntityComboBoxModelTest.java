@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.framework.model;
 
+import org.jminor.common.EventListener;
 import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.EventListener;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvidersTest;

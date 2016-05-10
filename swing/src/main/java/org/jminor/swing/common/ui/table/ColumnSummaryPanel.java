@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.ui.table;
 
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventListener;
 import org.jminor.common.model.table.ColumnSummaryModel;
 
 import javax.swing.AbstractAction;

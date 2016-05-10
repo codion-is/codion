@@ -3,12 +3,12 @@
  */
 package org.jminor.framework.model;
 
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventListener;
+import org.jminor.common.State;
+import org.jminor.common.StateObserver;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Refreshable;
-import org.jminor.common.model.State;
-import org.jminor.common.model.StateObserver;
 import org.jminor.common.model.valuemap.ValueCollectionProvider;
 import org.jminor.common.model.valuemap.ValueMap;
 import org.jminor.common.model.valuemap.ValueMapEditModel;

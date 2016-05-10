@@ -3,10 +3,10 @@
  */
 package org.jminor.javafx.framework.ui;
 
+import org.jminor.common.State;
+import org.jminor.common.States;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.State;
-import org.jminor.common.model.States;
 import org.jminor.common.model.Values;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.domain.Entity;

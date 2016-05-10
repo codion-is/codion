@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.framework.server.monitor;
 
-import org.jminor.common.model.Event;
-import org.jminor.common.model.Events;
+import org.jminor.common.Event;
+import org.jminor.common.Events;
 import org.jminor.common.model.tools.MethodLogger;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;

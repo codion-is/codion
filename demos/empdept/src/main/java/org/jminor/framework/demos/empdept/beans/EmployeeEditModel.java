@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.empdept.beans;
 
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventListener;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.Util;

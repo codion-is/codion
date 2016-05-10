@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.domain;
 
+import org.jminor.common.EventInfoListener;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.EventInfoListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChange;
 

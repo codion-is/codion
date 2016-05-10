@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.ui;
 
-import org.jminor.common.model.State;
-import org.jminor.common.model.States;
+import org.jminor.common.State;
+import org.jminor.common.States;
 import org.jminor.swing.common.ui.textfield.SizedDocument;
 
 import org.junit.Test;

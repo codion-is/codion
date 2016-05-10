@@ -3,15 +3,15 @@
  */
 package org.jminor.common.db.tools;
 
+import org.jminor.common.EventListener;
+import org.jminor.common.User;
+import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPools;
-import org.jminor.common.model.EventListener;
-import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.common.model.tools.ScenarioException;
 

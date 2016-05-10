@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.common.model.table;
 
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.Events;
+import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.Events;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 

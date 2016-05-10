@@ -3,9 +3,9 @@
  */
 package org.jminor.common.db;
 
+import org.jminor.common.User;
+import org.jminor.common.Util;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.MethodLogger;
 
 import org.slf4j.Logger;

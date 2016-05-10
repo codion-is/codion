@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.db;
 
-import org.jminor.common.model.StateObserver;
-import org.jminor.common.model.User;
+import org.jminor.common.StateObserver;
+import org.jminor.common.User;
 
 /**
  * Interface for a class responsible for providing EntityConnection objects.

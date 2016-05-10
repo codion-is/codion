@@ -284,7 +284,7 @@ public interface Property extends Attribute {
   /**
    * Specifies a property based on a table column
    */
-  interface ColumnProperty extends SearchableProperty, org.jminor.common.model.Column {
+  interface ColumnProperty extends SearchableProperty, org.jminor.common.db.Column {
 
     /**
      * @return the data type of the underlying column, usually the same as {@link #getType()}

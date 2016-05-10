@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.EventListener;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.EventListener;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entities;

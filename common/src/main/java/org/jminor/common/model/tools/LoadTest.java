@@ -3,8 +3,8 @@
  */
 package org.jminor.common.model.tools;
 
-import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.User;
+import org.jminor.common.EventObserver;
+import org.jminor.common.User;
 
 import org.jfree.data.xy.XYDataset;
 import org.jfree.data.xy.YIntervalSeriesCollection;

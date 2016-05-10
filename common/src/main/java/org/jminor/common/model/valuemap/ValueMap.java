@@ -3,10 +3,10 @@
  */
 package org.jminor.common.model.valuemap;
 
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventListener;
-import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.StateObserver;
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventListener;
+import org.jminor.common.EventObserver;
+import org.jminor.common.StateObserver;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 
 import java.util.Set;
@@ -214,7 +214,7 @@ public interface ValueMap<K, V> extends ValueProvider<K, V>, ValueCollectionProv
     /**
      * Notifies all re-validation listeners that a re-validation is called for, for example
      * due to modified validation settings
-     * @see #addRevalidationListener(org.jminor.common.model.EventListener)
+     * @see #addRevalidationListener(EventListener)
      */
     void revalidate();
 

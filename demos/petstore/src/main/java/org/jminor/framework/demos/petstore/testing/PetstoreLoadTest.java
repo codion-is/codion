@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.petstore.testing;
 
+import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.remote.RemoteEntityConnectionProvider;
 import org.jminor.framework.demos.petstore.client.ui.PetstoreAppPanel;

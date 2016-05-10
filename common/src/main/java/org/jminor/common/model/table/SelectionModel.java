@@ -3,8 +3,8 @@
  */
 package org.jminor.common.model.table;
 
-import org.jminor.common.model.EventListener;
-import org.jminor.common.model.StateObserver;
+import org.jminor.common.EventListener;
+import org.jminor.common.StateObserver;
 
 import java.util.Collection;
 import java.util.List;
@@ -53,14 +53,14 @@ public interface SelectionModel<R> {
   /**
    * Moves all selected indexes down one index, wraps around.
    * If the selection is empty the first item in this model is selected.
-   * @see #addSelectionChangedListener(org.jminor.common.model.EventListener)
+   * @see #addSelectionChangedListener(EventListener)
    */
   void moveSelectionDown();
 
   /**
    * Moves all selected indexes up one index, wraps around.
    * If the selection is empty the last item in this model is selected.
-   * @see #addSelectionChangedListener(org.jminor.common.model.EventListener)
+   * @see #addSelectionChangedListener(EventListener)
    */
   void moveSelectionUp();
 

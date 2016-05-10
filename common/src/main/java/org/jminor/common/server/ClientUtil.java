@@ -3,9 +3,9 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
-import org.jminor.common.model.Version;
+import org.jminor.common.User;
+import org.jminor.common.Util;
+import org.jminor.common.Version;
 
 import java.io.Serializable;
 import java.util.UUID;

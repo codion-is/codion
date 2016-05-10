@@ -3,8 +3,8 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.model.Util;
-import org.jminor.common.model.Version;
+import org.jminor.common.Util;
+import org.jminor.common.Version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.ui.tools;
 
+import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.User;
 import org.jminor.common.model.tools.LoadTestModel;
 
 import org.junit.Test;

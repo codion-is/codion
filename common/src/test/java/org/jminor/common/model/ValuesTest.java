@@ -3,6 +3,13 @@
  */
 package org.jminor.common.model;
 
+import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventListener;
+import org.jminor.common.Events;
+import org.jminor.common.State;
+import org.jminor.common.States;
+
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;

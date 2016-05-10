@@ -3,11 +3,11 @@
  */
 package org.jminor.swing.common.ui.control;
 
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.Events;
-import org.jminor.common.model.State;
-import org.jminor.common.model.StateObserver;
+import org.jminor.common.Event;
+import org.jminor.common.EventObserver;
+import org.jminor.common.Events;
+import org.jminor.common.State;
+import org.jminor.common.StateObserver;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;

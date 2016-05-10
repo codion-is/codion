@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.model.combobox;
 
-import org.jminor.common.model.EventListener;
+import org.jminor.common.EventListener;
 import org.jminor.common.model.FilterCriteria;
 
 import org.junit.After;

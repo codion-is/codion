@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.framework.server.monitor.ui;
 
+import org.jminor.common.Event;
+import org.jminor.common.Events;
 import org.jminor.common.model.CancelException;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.swing.common.ui.DefaultExceptionHandler;

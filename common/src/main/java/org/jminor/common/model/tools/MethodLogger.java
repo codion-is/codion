@@ -3,8 +3,8 @@
  */
 package org.jminor.common.model.tools;
 
+import org.jminor.common.Util;
 import org.jminor.common.model.DateUtil;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;
 
 import java.io.IOException;

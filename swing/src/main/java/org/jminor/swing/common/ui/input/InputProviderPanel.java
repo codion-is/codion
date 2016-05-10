@@ -3,11 +3,11 @@
  */
 package org.jminor.swing.common.ui.input;
 
+import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventObserver;
+import org.jminor.common.Events;
 import org.jminor.common.i18n.Messages;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.Events;
 import org.jminor.common.model.Util;
 import org.jminor.swing.common.ui.UiUtil;
 

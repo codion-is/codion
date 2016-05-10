@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.tools;
 
-import org.jminor.common.model.EventObserver;
+import org.jminor.common.EventObserver;
 
 import java.util.Collection;
 

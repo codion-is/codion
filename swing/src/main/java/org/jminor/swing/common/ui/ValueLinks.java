@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.ui;
 
-import org.jminor.common.model.EventObserver;
+import org.jminor.common.EventObserver;
 import org.jminor.common.model.Value;
 import org.jminor.common.model.Values;
 import org.jminor.swing.common.ui.textfield.DoubleField;

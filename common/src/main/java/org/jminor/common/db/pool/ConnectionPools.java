@@ -3,12 +3,12 @@
  */
 package org.jminor.common.db.pool;
 
+import org.jminor.common.User;
+import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.User;
-import org.jminor.common.model.Util;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -83,7 +83,7 @@ public final class ConnectionPools {
   /**
    * @param user the user
    * @return the connection pool for the given user, null if none exists
-   * @see #containsConnectionPool(org.jminor.common.model.User)
+   * @see #containsConnectionPool(User)
    */
   public static synchronized ConnectionPool getConnectionPool(final User user) {
     return CONNECTION_POOLS.get(user);

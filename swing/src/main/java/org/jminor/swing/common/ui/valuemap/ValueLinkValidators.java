@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.common.ui.valuemap;
 
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventListener;
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventListener;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.ValueChange;
 import org.jminor.common.model.valuemap.ValueMapEditModel;

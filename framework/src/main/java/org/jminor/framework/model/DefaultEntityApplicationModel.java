@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.model.User;
+import org.jminor.common.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
 

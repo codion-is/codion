@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.common.model.combobox;
 
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventListener;
-import org.jminor.common.model.Events;
+import org.jminor.common.Event;
+import org.jminor.common.EventListener;
+import org.jminor.common.Events;
 import org.jminor.common.model.FilterCriteria;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.combobox.FilteredComboBoxModel;

@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.common.model.table;
 
-import org.jminor.common.model.EventListener;
+import org.jminor.common.EventListener;
 
 import javax.swing.table.TableColumn;
 import java.util.List;

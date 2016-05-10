@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.model.EventListener;
+import org.jminor.common.EventListener;
 import org.jminor.common.model.Refreshable;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.domain.Property;

@@ -3,7 +3,7 @@
  */
 package org.jminor.common.model.tools;
 
-import org.jminor.common.model.Util;
+import org.jminor.common.Util;
 
 import java.util.Collection;
 import java.util.Iterator;

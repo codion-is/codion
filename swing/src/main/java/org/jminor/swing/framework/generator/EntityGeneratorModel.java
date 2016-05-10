@@ -3,15 +3,15 @@
  */
 package org.jminor.swing.framework.generator;
 
+import org.jminor.common.Event;
+import org.jminor.common.EventListener;
+import org.jminor.common.Events;
+import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
 import org.jminor.common.db.ResultPacker;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventListener;
-import org.jminor.common.model.Events;
-import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.table.DefaultColumnCriteriaModel;
 import org.jminor.swing.common.model.table.AbstractFilteredTableModel;

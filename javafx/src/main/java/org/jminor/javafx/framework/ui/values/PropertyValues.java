@@ -3,12 +3,12 @@
  */
 package org.jminor.javafx.framework.ui.values;
 
-import org.jminor.common.model.Event;
-import org.jminor.common.model.EventInfoListener;
-import org.jminor.common.model.EventObserver;
-import org.jminor.common.model.Events;
+import org.jminor.common.Event;
+import org.jminor.common.EventInfoListener;
+import org.jminor.common.EventObserver;
+import org.jminor.common.Events;
+import org.jminor.common.Util;
 import org.jminor.common.model.Item;
-import org.jminor.common.model.Util;
 import org.jminor.common.model.Value;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityLookupModel;
