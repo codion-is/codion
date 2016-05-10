@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <ivy-module version="2.0" xmlns:m="http://ant.apache.org/ivy/maven">
-  <info organisation="org.jminor" module="jminor-common-server-api"/>
+  <info organisation="org.jminor" module="jminor-common-server-client"/>
 
   <configurations defaultconfmapping="compile->default">
     <conf name="compile"/>
@@ -11,10 +11,10 @@
   </configurations>
 
   <publications>
-    <artifact name="jminor-common-server-api" type="jar" ext="jar" conf="compile"/>
-    <artifact name="jminor-common-server-api" type="pom" ext="pom" conf="compile"/>
-    <artifact name="jminor-common-server-api-sources" type="source" ext="jar" conf="sources" m:classifier="sources"/>
-    <artifact name="jminor-common-server-api-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
+    <artifact name="jminor-common-server-client" type="jar" ext="jar" conf="compile"/>
+    <artifact name="jminor-common-server-client" type="pom" ext="pom" conf="compile"/>
+    <artifact name="jminor-common-server-client-sources" type="source" ext="jar" conf="sources" m:classifier="sources"/>
+    <artifact name="jminor-common-server-client-javadoc" type="javadoc" ext="jar" conf="javadoc" m:classifier="javadoc"/>
   </publications>
 
   <dependencies defaultconf="compile">

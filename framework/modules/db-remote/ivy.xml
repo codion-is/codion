@@ -19,7 +19,7 @@
   <dependencies defaultconf="compile">
     <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-common-model" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-common-server-api" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-common-server-client" rev="${version}"/>
 
     <dependency org="org.jminor" name="jminor-db-core" rev="${version}"/>
 
