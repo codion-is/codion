@@ -8,7 +8,7 @@
   </path>
 
   <path id="lib.runtime.server">
-    <fileset dir="core/${dist}/jminor-common-model"/>
+    <fileset dir="common/${dist}/jminor-common-model"/>
     <fileset dir="framework/${dist}/jminor-db-core"/>
     <fileset dir="framework/${dist}/jminor-db-local"/>
     <fileset dir="framework/${dist}/jminor-server"/>
@@ -45,11 +45,11 @@
 
   <target name="deploy_server"
           description="Deploys the rmi server to the path defined by the 'deploy.server.path' property">
-    <subant target="dist" buildpath="core"/>
-    <subant target="create_keystore" buildpath="core"/>
-    <subant target="create_demo_h2db" buildpath="core"/>
+    <subant target="dist" buildpath="common"/>
+    <subant target="create_keystore" buildpath="framework"/>
+    <subant target="create_demo_h2db" buildpath="framework"/>
 
-    <copy file="core/${dist}/jminor-common-model/jminor-common-model.jar"
+    <copy file="common/${dist}/jminor-common-model/jminor-common-model.jar"
           tofile="${deploy.server.path}/lib/jminor-common-model-${version}.jar"/>
     <copy file="framework/${dist}/jminor-db-core/jminor-db-core.jar"
           tofile="${deploy.server.path}/lib/jminor-db-core-${version}.jar"/>
@@ -101,13 +101,14 @@
 
   <target name="deploy_server_monitor"
           description="Deploys the rmi server monitor to the path defined by the 'deploy.server.monitor.path' property">
-    <subant target="create_keystore" buildpath="core"/>
-    <subant target="dist" buildpath="core"/>
+    <subant target="create_keystore" buildpath="framework"/>
+    <subant target="dist" buildpath="common"/>
+    <subant target="dist" buildpath="framework"/>
     <subant target="dist" buildpath="swing"/>
     <subant target="dist" buildpath="server-monitor"/>
 
     <mkdir dir="${deploy.server.monitor.path}"/>
-    <copy file="core/${dist}/jminor-common-model/jminor-common-model.jar"
+    <copy file="common/${dist}/jminor-common-model/jminor-common-model.jar"
           tofile="${deploy.server.monitor.path}/lib/jminor-common-model-${version}.jar"/>
     <copy file="swing/${dist}/jminor-swing-common-model/jminor-swing-common-model.jar"
           tofile="${deploy.server.monitor.path}/lib/jminor-swing-common-model-${version}.jar"/>
@@ -128,7 +129,7 @@
 
   <target name="deploy_demos"
           description="Deploys the demo applications to the path defined by the 'deploy.demos.dir' property">
-    <subant target="create_keystore" buildpath="core"/>
+    <subant target="create_keystore" buildpath="framework"/>
     <subant target="deploy" buildpath="demos"/>
     <delete dir="${deploy.demos.dir}"/>
     <deploy_demo_app demo-name="chinook"/>
@@ -139,7 +140,7 @@
   </target>
 
   <target name="clean" description="Clean all modules">
-    <subant target="clean" buildpath="core"/>
+    <subant target="clean" buildpath="common"/>
     <subant target="clean" buildpath="framework"/>
     <subant target="clean" buildpath="swing"/>
     <subant target="clean" buildpath="javafx"/>
@@ -149,7 +150,7 @@
   </target>
 
   <target name="build" description="Builds all modules">
-    <subant target="build" buildpath="core"/>
+    <subant target="build" buildpath="common"/>
     <subant target="build" buildpath="framework"/>
     <subant target="build" buildpath="swing"/>
     <subant target="build" buildpath="javafx"/>
@@ -159,7 +160,7 @@
   </target>
 
   <target name="dist" description="Distributes all modules">
-    <subant target="dist" buildpath="core"/>
+    <subant target="dist" buildpath="common"/>
     <subant target="dist" buildpath="framework"/>
     <subant target="dist" buildpath="swing"/>
     <subant target="dist" buildpath="javafx"/>
@@ -169,7 +170,7 @@
   </target>
 
   <target name="run_unit_tests" description="Runs unit tests for all modules">
-    <subant target="run_unit_tests" buildpath="core"/>
+    <subant target="run_unit_tests" buildpath="common"/>
     <subant target="run_unit_tests" buildpath="framework"/>
     <subant target="run_unit_tests" buildpath="swing"/>
     <subant target="run_unit_tests" buildpath="javafx"/>
@@ -179,7 +180,7 @@
   </target>
 
   <target name="publish" depends="clear_ivy_cache" description="Publishes all project artifacts">
-    <subant target="publish" buildpath="core"/>
+    <subant target="publish" buildpath="common"/>
     <subant target="publish" buildpath="framework"/>
     <subant target="publish" buildpath="swing"/>
     <subant target="publish" buildpath="javafx"/>
@@ -197,7 +198,7 @@
 
   <target name="run_server" description="Runs the RMI server">
     <subant target="create_keystore" buildpath="framework"/>
-    <subant target="dist" buildpath="core"/>
+    <subant target="dist" buildpath="common"/>
     <subant target="dist" buildpath="framework"/>
     <subant target="build" buildpath="plugins"/>
     <subant target="build" buildpath="demos"/>

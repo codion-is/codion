@@ -4,15 +4,15 @@
     <connections />
   </component>
   <component name="NewModuleRootManager" LANGUAGE_LEVEL="JDK_1_8" inherit-compiler-output="false">
-    <output url="file://$MODULE_DIR$/build/main" />
-    <output-test url="file://$MODULE_DIR$/build/test" />
+    <output url="file://$MODULE_DIR$/../core/build/main" />
+    <output-test url="file://$MODULE_DIR$/../core/build/test" />
     <exclude-output />
     <content url="file://$MODULE_DIR$">
       <sourceFolder url="file://$MODULE_DIR$/src/main/java" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src/test/java" isTestSource="true" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
-      <excludeFolder url="file://$MODULE_DIR$/docs/api" />
-      <excludeFolder url="file://$MODULE_DIR$/h2db" />
+      <excludeFolder url="file://$MODULE_DIR$/../core/docs/api" />
+      <excludeFolder url="file://$MODULE_DIR$/../core/h2db" />
     </content>
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
@@ -23,7 +23,7 @@
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/lib/compile" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../core/lib/compile" recursive="false" />
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="TEST">
@@ -33,17 +33,17 @@
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/lib/test" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../core/lib/test" recursive="false" />
       </library>
     </orderEntry>
     <orderEntry type="module-library" scope="RUNTIME">
       <library>
         <CLASSES>
-          <root url="file://$MODULE_DIR$/lib/runtime.server" />
+          <root url="file://$MODULE_DIR$/../core/lib/runtime.server" />
         </CLASSES>
         <JAVADOC />
         <SOURCES />
-        <jarDirectory url="file://$MODULE_DIR$/lib/runtime.server" recursive="false" />
+        <jarDirectory url="file://$MODULE_DIR$/../core/lib/runtime.server" recursive="false" />
       </library>
     </orderEntry>
   </component>

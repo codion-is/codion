@@ -105,8 +105,8 @@
              storepass="${jar.sign.storepass}" keystore="${jar.sign.keystore}"/>
     <copy file="src/main/config/${ant.project.name}.jnlp" todir="dist/deployment/web" failonerror="false"/>
     <copy file="src/main/config/getdown.txt" todir="dist/deployment/web"/>
-    <copy file="../../core/docs/jminor.org/jminor_logo_2.png" tofile="dist/deployment/web/jminor.png"/>
-    <copy file="../../core/docs/jminor.org/jminor_logo_medium.png" tofile="dist/deployment/web/jminor-getdown.png"/>
+    <copy file="../../common/docs/jminor.org/jminor_logo_2.png" tofile="dist/deployment/web/jminor.png"/>
+    <copy file="../../common/docs/jminor.org/jminor_logo_medium.png" tofile="dist/deployment/web/jminor-getdown.png"/>
 
     <!--getdown-->
     <getdown_digest appdir="dist/deployment/web"/>

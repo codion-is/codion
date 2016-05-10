@@ -4246,3 +4246,4 @@
   Sonar run
   Ant build dependencies moved from core module
   Framework module split from core
+  Core module renamed to common
