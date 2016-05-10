@@ -17,7 +17,7 @@
   </publications>
 
   <dependencies defaultconf="compile">
-    <dependency org="org.jminor" name="jminor-common-model" rev="latest.integration"/>
+    <dependency org="org.jminor" name="jminor-common" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-db-core" rev="latest.integration"/>
     <dependency org="org.jminor" name="jminor-db-local" rev="latest.integration"/>
 

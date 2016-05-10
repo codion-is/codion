@@ -4247,3 +4247,4 @@
   Ant build dependencies moved from core module
   Framework module split from core
   Core module renamed to common
+  Module jminor-common-model renamed to jminor-common

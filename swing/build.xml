@@ -20,7 +20,7 @@
     <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${lib}/runtime/" includes="
-              jminor-common-model-${version}.jar,
+              jminor-common-${version}.jar,
               jminor-framework-model-${version}.jar,
               jminor-db-core-${version}.jar,
               jminor-db-local-${version}.jar,
@@ -34,7 +34,7 @@
     <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle-sources.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${lib}/sources/" includes="
-              jminor-common-model-${version}.jar,
+              jminor-common-${version}.jar,
               jminor-framework-model-${version}.jar,
               jminor-db-core-${version}.jar,
               jminor-db-local-${version}.jar,
@@ -48,7 +48,7 @@
     <jar jarfile="${dist}/jminor-swing-client-bundle/jminor-swing-client-bundle-javadoc.jar"
          manifest="${build.main}/META-INF/MANIFEST.MF">
       <zipgroupfileset dir="${lib}/javadoc/" includes="
-              jminor-common-model-${version}.jar,
+              jminor-common-${version}.jar,
               jminor-framework-model-${version}.jar,
               jminor-db-core-${version}.jar,
               jminor-db-local-${version}.jar,

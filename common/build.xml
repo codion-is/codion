@@ -15,7 +15,7 @@
 
   <target name="dist" depends="jminor-common.dist"
           description="Builds all distribution jar files in the dist directory">
-    <dist_module module-name="jminor-common-model" includes="org/jminor/common/**"/>
+    <dist_module module-name="jminor-common" includes="org/jminor/common/**"/>
   </target>
 
   <target name="publish" depends="dist" description="Publish all project artifacts">
