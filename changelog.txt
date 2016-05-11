@@ -4249,5 +4249,6 @@
   Core module renamed to common
   Module jminor-common-model renamed to jminor-common
 0.10.2
+  Substantial refactoring of org.jminor.common package
   Module common split into sub-modules
   Module jminor-common-server-api renamed to jminor-common-server-client
