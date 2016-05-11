@@ -3,11 +3,11 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.Conjunction;
 import org.jminor.common.State;
 import org.jminor.common.States;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.Item;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.domain.Entities;

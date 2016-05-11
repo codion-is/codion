@@ -3,8 +3,8 @@
  */
 package org.jminor.swing.framework.generator.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.User;
 import org.jminor.swing.framework.generator.EntityGeneratorModel;
 
 import org.junit.Test;

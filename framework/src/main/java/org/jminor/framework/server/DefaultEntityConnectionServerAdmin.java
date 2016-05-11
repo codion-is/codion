@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.server;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseUtil;
 import org.jminor.common.db.Databases;
@@ -11,10 +10,12 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPoolStatistics;
 import org.jminor.common.db.pool.ConnectionPools;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Version;
 import org.jminor.common.server.ClientInfo;
 import org.jminor.common.server.ClientLog;
-import org.jminor.common.server.ServerInfo;
+import org.jminor.common.server.Server;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 
@@ -108,7 +109,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
 
   /** {@inheritDoc} */
   @Override
-  public ServerInfo getServerInfo() {
+  public Server.ServerInfo getServerInfo() {
     return server.getServerInfo();
   }
 
@@ -510,7 +511,7 @@ public final class DefaultEntityConnectionServerAdmin extends UnicastRemoteObjec
   }
 
   private static String initializeServerName(final String databaseHost, final String sid) {
-    return Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX) + " " + Util.getVersionString()
+    return Configuration.getStringValue(Configuration.SERVER_NAME_PREFIX) + " " + Version.getVersionString()
             + "@" + (sid != null ? sid.toUpperCase() : databaseHost.toUpperCase());
   }
 

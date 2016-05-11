@@ -3,6 +3,8 @@
  */
 package org.jminor.common;
 
+import org.jminor.common.model.Conjunction;
+
 import org.junit.Test;
 
 import java.util.concurrent.atomic.AtomicInteger;

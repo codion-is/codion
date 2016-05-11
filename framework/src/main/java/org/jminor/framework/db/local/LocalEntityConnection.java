@@ -3,8 +3,6 @@
  */
 package org.jminor.framework.db.local;
 
-import org.jminor.common.Conjunction;
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnections;
@@ -15,7 +13,9 @@ import org.jminor.common.db.criteria.CriteriaUtil;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.db.exception.RecordModifiedException;
 import org.jminor.common.db.exception.RecordNotFoundException;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;

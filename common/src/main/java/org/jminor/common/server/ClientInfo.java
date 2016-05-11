@@ -3,7 +3,7 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.User;
+import org.jminor.common.model.User;
 
 /**
  * Contains basic information about a remote client required by a server

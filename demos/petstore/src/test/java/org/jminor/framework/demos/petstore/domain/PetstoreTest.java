@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.demos.petstore.domain;
 
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 import org.jminor.framework.testing.EntityTestUnit;
 
 import org.junit.Test;

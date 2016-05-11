@@ -1,3 +1,0 @@
-<project name="jminor-common-server-client">
-  <import file="../../../build-module.xml"/>
-</project>

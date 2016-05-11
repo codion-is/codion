@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.common.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 
 import javax.swing.AbstractAction;
 import javax.swing.Icon;

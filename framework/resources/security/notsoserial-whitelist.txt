@@ -72,9 +72,9 @@ net.sf.jasperreports.engine.type.WhenNoDataTypeEnum
 net.sf.jasperreports.engine.type.WhenResourceMissingTypeEnum
 org.jminor.common.db.criteria.CriteriaUtil$DefaultCriteriaSet
 org.jminor.common.db.criteria.CriteriaUtil$StringCriteria
-org.jminor.common.Conjunction
-org.jminor.common.User
-org.jminor.common.Version
+org.jminor.common.model.Conjunction
+org.jminor.common.model.User
+org.jminor.common.model.Version
 org.jminor.common.model.SearchType
 org.jminor.common.server.ClientUtil$DefaultConnectionInfo
 org.jminor.framework.db.criteria.EntityCriteriaUtil$DefaultEntityCriteria

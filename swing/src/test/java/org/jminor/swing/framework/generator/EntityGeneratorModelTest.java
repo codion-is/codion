@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.generator;
 
 import org.jminor.common.EventListener;
-import org.jminor.common.User;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.swing.common.model.table.SortingDirective;
 

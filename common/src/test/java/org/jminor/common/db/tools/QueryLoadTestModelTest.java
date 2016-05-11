@@ -3,9 +3,9 @@
  */
 package org.jminor.common.db.tools;
 
-import org.jminor.common.User;
 import org.jminor.common.db.DatabasesTest;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.User;
 
 import org.junit.Test;
 

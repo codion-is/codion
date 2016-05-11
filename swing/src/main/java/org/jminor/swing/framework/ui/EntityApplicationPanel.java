@@ -8,11 +8,11 @@ import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.StateObserver;
-import org.jminor.common.User;
-import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Version;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;
@@ -236,7 +236,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
   /**
    * Performs a login, fetching user information via <code>getUser</code>
    * @throws CancelException in case the login is cancelled
-   * @see #getUser(String, org.jminor.common.User, javax.swing.ImageIcon)
+   * @see #getUser(String, User, javax.swing.ImageIcon)
    */
   public final void login() {
     applicationModel.login(getUser(frameTitle, null, null));
@@ -674,7 +674,7 @@ public abstract class EntityApplicationPanel<Model extends SwingEntityApplicatio
    */
   protected JPanel getAboutPanel() {
     final JPanel panel = new JPanel(UiUtil.createBorderLayout());
-    final String versionString = Util.getVersionAndBuildNumberString();
+    final String versionString = Version.getVersionAndBuildNumberString();
     panel.add(new JLabel(Images.loadImage("jminor_logo32.gif")), BorderLayout.WEST);
     final JTextField txtVersionMemory = new JTextField(versionString + " (" + Util.getMemoryUsageString() + ")");
     txtVersionMemory.setEditable(false);

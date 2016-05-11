@@ -1,7 +1,7 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common;
+package org.jminor.common.model;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;
@@ -30,7 +30,7 @@ public final class User implements Serializable {
    * @param password the password
    */
   public User(final String username, final String password) {
-    Util.rejectNullValue(username, "username");
+    org.jminor.common.Util.rejectNullValue(username, "username");
     this.username = username;
     this.password = password;
   }

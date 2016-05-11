@@ -3,10 +3,10 @@
  */
 package org.jminor.common.db;
 
-import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.exception.AuthenticationException;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.User;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

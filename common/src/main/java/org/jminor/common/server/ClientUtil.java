@@ -3,9 +3,9 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.User;
 import org.jminor.common.Util;
-import org.jminor.common.Version;
+import org.jminor.common.model.User;
+import org.jminor.common.model.Version;
 
 import java.io.Serializable;
 import java.util.UUID;
@@ -38,7 +38,7 @@ public final class ClientUtil {
    */
   public static ConnectionInfo connectionInfo(final User user, final UUID clientID, final String clientTypeID,
                                               final Version clientVersion) {
-    return new DefaultConnectionInfo(user, clientID, clientTypeID, clientVersion, Util.getVersion());
+    return new DefaultConnectionInfo(user, clientID, clientTypeID, clientVersion, Version.getVersion());
   }
 
   private static final class DefaultConnectionInfo implements ConnectionInfo, Serializable {

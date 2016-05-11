@@ -22,24 +22,10 @@ import java.util.Map;
 public class Util {
 
   /**
-   * The name of the file containing the current version information
-   */
-  public static final String VERSION_FILE = "version.txt";
-  /**
    * The line separator for the current system
    */
   public static final String LINE_SEPARATOR = System.getProperty("line.separator");
-  private static final Version VERSION;
   protected static final String KEY = "key";
-
-  static {
-    try {
-      VERSION = Version.parse(getTextFileContents(Util.class, VERSION_FILE));
-    }
-    catch (final IOException e) {
-      throw new RuntimeException(e);
-    }
-  }
 
   protected Util() {}
 
@@ -105,32 +91,6 @@ public class Util {
     }
 
     return contents.toString();
-  }
-
-  /**
-   * @return a string containing the framework version number, without any version metadata (fx. build no.)
-   */
-  public static String getVersionString() {
-    final String versionString = getVersionAndBuildNumberString();
-    if (versionString.toLowerCase().contains("-")) {
-      return versionString.substring(0, versionString.toLowerCase().indexOf('-'));
-    }
-
-    return versionString;
-  }
-
-  /**
-   * @return a string containing the framework version and version metadata
-   */
-  public static String getVersionAndBuildNumberString() {
-    return VERSION.toString();
-  }
-
-  /**
-   * @return the framework Version
-   */
-  public static Version getVersion() {
-    return VERSION;
   }
 
   /**

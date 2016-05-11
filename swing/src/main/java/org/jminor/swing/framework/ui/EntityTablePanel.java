@@ -3,7 +3,6 @@
  */
 package org.jminor.swing.framework.ui;
 
-import org.jminor.common.Conjunction;
 import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
@@ -14,6 +13,7 @@ import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SerializeException;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;

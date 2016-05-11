@@ -15,17 +15,14 @@
 
   <target name="dist" depends="common.dist"
           description="Builds all distribution jar files in the dist directory">
-    <dist_module module-name="jminor-common-core" includes="org/jminor/common/*.*,org/jminor/common/i18n/**"/>
+    <dist_module module-name="jminor-common-core" includes="org/jminor/common/*.*,
+          org/jminor/common/i18n/**,
+          org/jminor/common/model/Conjunction*,
+          org/jminor/common/model/User*,
+          org/jminor/common/model/Version*"/>
     <dist_module module-name="jminor-common-model" includes="org/jminor/common/model/**"/>
     <dist_module module-name="jminor-common-db" includes="org/jminor/common/db/**"/>
     <dist_module module-name="jminor-common-server" includes="org/jminor/common/server/**"/>
-    <dist_module module-name="jminor-common-server-client"
-                 includes="org/jminor/common/server/ClientInfo*,
-                           org/jminor/common/server/ClientLog*,
-                           org/jminor/common/server/ClientUtil*,
-                           org/jminor/common/server/ConnectionInfo*,
-                           org/jminor/common/server/DefaultServerInfo*,
-                           org/jminor/common/server/Server*"/>
   </target>
 
   <target name="publish" depends="dist" description="Publish all project artifacts">
@@ -34,6 +31,5 @@
     <subant target="publish" buildpath="${basedir}/modules/common-model"/>
     <subant target="publish" buildpath="${basedir}/modules/common-db"/>
     <subant target="publish" buildpath="${basedir}/modules/common-server"/>
-    <subant target="publish" buildpath="${basedir}/modules/common-server-client"/>
   </target>
 </project>

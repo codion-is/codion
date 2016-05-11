@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.demos.chinook.client.ui;
 
-import org.jminor.common.User;
-import org.jminor.common.Version;
 import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
+import org.jminor.common.model.Version;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.demos.chinook.beans.ui.AlbumEditPanel;

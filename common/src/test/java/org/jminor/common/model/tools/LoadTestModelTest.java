@@ -4,8 +4,8 @@
 package org.jminor.common.model.tools;
 
 import org.jminor.common.EventListener;
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 
 import org.junit.Test;
 

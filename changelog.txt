@@ -4252,3 +4252,5 @@
   Substantial refactoring of org.jminor.common package
   Module common split into sub-modules
   Module jminor-common-server-api renamed to jminor-common-server-client
+  Module abomination jminor-common-server-client removed
+  ServerInfo and DefaultServerInfo made inner classes of Server and AbstractServer respectively, Conjunction, User and Version moved back to common.model, for backwards compatability

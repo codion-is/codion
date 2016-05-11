@@ -3,8 +3,8 @@
  */
 package org.jminor.common.db.criteria;
 
-import org.jminor.common.Conjunction;
 import org.jminor.common.Util;
+import org.jminor.common.model.Conjunction;
 
 import java.io.IOException;
 import java.io.ObjectInputStream;

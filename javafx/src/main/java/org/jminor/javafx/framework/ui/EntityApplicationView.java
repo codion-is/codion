@@ -3,8 +3,8 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnectionProvider;

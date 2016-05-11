@@ -3,7 +3,7 @@
  */
 package org.jminor.swing.framework.testing;
 
-import org.jminor.common.User;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.EntityConnectionProviders;

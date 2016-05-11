@@ -4,7 +4,7 @@
 package org.jminor.swing.common.ui.tools;
 
 import org.jminor.common.EventListener;
-import org.jminor.common.User;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.tools.ItemRandomizer;
 import org.jminor.common.model.tools.LoadTest;

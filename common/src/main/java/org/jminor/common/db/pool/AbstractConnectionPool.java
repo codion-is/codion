@@ -3,8 +3,8 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.User;
 import org.jminor.common.model.TaskScheduler;
+import org.jminor.common.model.User;
 
 import java.util.LinkedList;
 import java.util.List;

@@ -3,12 +3,12 @@
  */
 package org.jminor.common.db.pool;
 
-import org.jminor.common.User;
 import org.jminor.common.Util;
 import org.jminor.common.db.Database;
 import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.DatabaseConnections;
 import org.jminor.common.db.exception.DatabaseException;
+import org.jminor.common.model.User;
 
 import java.util.ArrayList;
 import java.util.Collection;

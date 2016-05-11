@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.db.remote;
 
-import org.jminor.common.User;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.User;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.EntityConnection;
 import org.jminor.framework.server.EntityConnectionServerTest;

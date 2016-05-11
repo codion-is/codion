@@ -3,13 +3,12 @@
  */
 package org.jminor.framework.db.remote;
 
-import org.jminor.common.User;
-import org.jminor.common.Version;
 import org.jminor.common.i18n.Messages;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Version;
 import org.jminor.common.server.ClientUtil;
 import org.jminor.common.server.Server;
-import org.jminor.common.server.ServerInfo;
 import org.jminor.common.server.ServerUtil;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.db.AbstractEntityConnectionProvider;
@@ -39,7 +38,7 @@ public final class RemoteEntityConnectionProvider extends AbstractEntityConnecti
   private final String clientTypeID;
   private final Version clientVersion;
   private Server<RemoteEntityConnection> server;
-  private ServerInfo serverInfo;
+  private Server.ServerInfo serverInfo;
 
   /**
    * Instantiates a new RemoteEntityConnectionProvider.

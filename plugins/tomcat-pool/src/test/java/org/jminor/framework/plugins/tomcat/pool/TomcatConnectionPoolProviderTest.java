@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.plugins.tomcat.pool;
 
-import org.jminor.common.User;
 import org.jminor.common.db.dbms.H2Database;
 import org.jminor.common.db.pool.ConnectionPool;
+import org.jminor.common.model.User;
 
 import org.junit.Test;
 

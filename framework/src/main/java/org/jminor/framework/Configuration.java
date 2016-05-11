@@ -4,6 +4,7 @@
 package org.jminor.framework;
 
 import org.jminor.common.model.Util;
+import org.jminor.common.model.Version;
 import org.jminor.common.model.formats.DateFormats;
 
 import java.rmi.registry.Registry;
@@ -698,7 +699,7 @@ public final class Configuration {
     PROPERTIES.put(LOAD_TEST_LOGIN_DELAY, DEFAULT_LOAD_TEST_LOGIN_DELAY);
     PROPERTIES.put(LOAD_TEST_REMOTE_HOSTNAME, "localhost");
     PROPERTIES.put(CLIENT_CONNECTION_TYPE, CONNECTION_TYPE_LOCAL);
-    PROPERTIES.put(REMOTE_SERVER_VERSION, Util.getVersion());
+    PROPERTIES.put(REMOTE_SERVER_VERSION, Version.getVersion());
     PROPERTIES.put(CONNECTION_SCHEDULE_VALIDATION, true);
     PROPERTIES.put(CONNECTION_VALIDITY_CHECK_TIMEOUT, 0);
     PROPERTIES.put(SERVER_CLIENT_LOGGING_ENABLED, false);

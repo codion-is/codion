@@ -3,6 +3,8 @@
  */
 package org.jminor.common.server;
 
+import org.jminor.common.model.Version;
+
 import java.rmi.Remote;
 import java.rmi.RemoteException;
 import java.util.UUID;
@@ -49,6 +51,36 @@ public interface Server<T extends Remote> extends Remote {
    * @throws RemoteException in case of an exception
    */
   boolean connectionsAvailable() throws RemoteException;
+
+  /**
+   * Encapsulates static server information
+   */
+  interface ServerInfo {
+    /**
+     * @return the server name
+     */
+    String getServerName();
+
+    /**
+     * @return a unique identifier for this server
+     */
+    UUID getServerID();
+
+    /**
+     * @return the server Version
+     */
+    Version getServerVersion();
+
+    /**
+     * @return the server port
+     */
+    int getServerPort();
+
+    /**
+     * @return the time of server startup
+     */
+    long getStartTime();
+  }
 
   /**
    * Auxiliary servers to be run in conjunction with a Server must implement this interface,

@@ -3,10 +3,10 @@
  */
 package org.jminor.framework.db.criteria;
 
-import org.jminor.common.Conjunction;
 import org.jminor.common.db.criteria.Criteria;
 import org.jminor.common.db.criteria.CriteriaSet;
 import org.jminor.common.db.criteria.CriteriaUtil;
+import org.jminor.common.model.Conjunction;
 import org.jminor.common.model.SearchType;
 import org.jminor.common.model.formats.DateFormats;
 import org.jminor.framework.domain.Properties;

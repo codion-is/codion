@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.empdept.beans.ui;
 
-import org.jminor.common.User;
+import org.jminor.common.model.User;
 import org.jminor.framework.demos.empdept.beans.EmployeeEditModel;
 import org.jminor.framework.demos.empdept.domain.EmpDept;
 import org.jminor.framework.model.EntityEditModel;

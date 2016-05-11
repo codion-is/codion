@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.demos.world.client.ui;
 
-import org.jminor.common.User;
+import org.jminor.common.model.User;
 import org.jminor.swing.framework.testing.EntityApplicationPanelTestUnit;
 
 import org.junit.Test;

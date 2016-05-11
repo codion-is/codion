@@ -3,8 +3,8 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.User;
-import org.jminor.common.Version;
+import org.jminor.common.model.User;
+import org.jminor.common.model.Version;
 
 import java.util.UUID;
 

@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.db.local;
 
-import org.jminor.common.User;
 import org.jminor.common.db.Database;
+import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnection;
 
 import org.junit.Test;

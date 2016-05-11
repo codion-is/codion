@@ -1,8 +1,9 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common;
+package org.jminor.common.model;
 
+import java.io.IOException;
 import java.io.Serializable;
 
 /**
@@ -17,6 +18,22 @@ public final class Version implements Comparable<Version>, Serializable {
   private static final int MAJOR_INDEX = 0;
   private static final int MINOR_INDEX = 1;
   private static final int PATCH_INDEX = 2;
+
+  /**
+   * The name of the file containing the current version information
+   */
+  public static final String VERSION_FILE = "version.txt";
+
+  private static final Version VERSION;
+
+  static {
+    try {
+      VERSION = parse(org.jminor.common.Util.getTextFileContents(org.jminor.common.Util.class, VERSION_FILE));
+    }
+    catch (final IOException e) {
+      throw new RuntimeException(e);
+    }
+  }
 
   private final int major;
   private final int minor;
@@ -125,6 +142,32 @@ public final class Version implements Comparable<Version>, Serializable {
     }
 
     return result;
+  }
+
+  /**
+   * @return a string containing the framework version number, without any version metadata (fx. build no.)
+   */
+  public static String getVersionString() {
+    final String versionString = getVersionAndBuildNumberString();
+    if (versionString.toLowerCase().contains("-")) {
+      return versionString.substring(0, versionString.toLowerCase().indexOf('-'));
+    }
+
+    return versionString;
+  }
+
+  /**
+   * @return a string containing the framework version and version metadata
+   */
+  public static String getVersionAndBuildNumberString() {
+    return VERSION.toString();
+  }
+
+  /**
+   * @return the framework Version
+   */
+  public static Version getVersion() {
+    return VERSION;
   }
 
   /**

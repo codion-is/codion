@@ -3,7 +3,7 @@
  */
 package org.jminor.framework.model;
 
-import org.jminor.common.User;
+import org.jminor.common.model.User;
 import org.jminor.common.model.tools.LoadTestModel;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.domain.Entity;

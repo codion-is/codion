@@ -3,9 +3,9 @@
  */
 package org.jminor.framework.demos.empdept.minimal;
 
-import org.jminor.common.User;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.SearchType;
+import org.jminor.common.model.User;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.db.criteria.EntityCriteriaUtil;
 import org.jminor.framework.domain.Entities;

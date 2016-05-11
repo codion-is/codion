@@ -7,7 +7,7 @@ import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.Events;
-import org.jminor.common.server.ServerInfo;
+import org.jminor.common.server.Server;
 import org.jminor.framework.Configuration;
 import org.jminor.framework.server.EntityConnectionServerAdmin;
 
@@ -53,7 +53,7 @@ public final class HostMonitor {
 
   public void refresh() throws RemoteException {
     removeUnreachableServers();
-    for (final ServerInfo serverInfo : getEntityServers(hostName, registryPort)) {
+    for (final Server.ServerInfo serverInfo : getEntityServers(hostName, registryPort)) {
       if (!containsServerMonitor(serverInfo.getServerID())) {
         final ServerMonitor serverMonitor = new ServerMonitor(hostName, serverInfo, registryPort);
         serverMonitor.addServerShutDownListener(new EventListener() {
@@ -108,8 +108,8 @@ public final class HostMonitor {
     }
   }
 
-  private static List<ServerInfo> getEntityServers(final String serverHostName, final int registryPort) {
-    final List<ServerInfo> servers = new ArrayList<>();
+  private static List<Server.ServerInfo> getEntityServers(final String serverHostName, final int registryPort) {
+    final List<Server.ServerInfo> servers = new ArrayList<>();
     try {
       LOG.debug("HostMonitor locating registry on host: {}, port: {}: ", serverHostName, registryPort);
       final Registry registry = LocateRegistry.getRegistry(serverHostName, registryPort);

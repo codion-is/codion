@@ -3,8 +3,8 @@
  */
 package org.jminor.common.server;
 
-import org.jminor.common.User;
-import org.jminor.common.Version;
+import org.jminor.common.model.User;
+import org.jminor.common.model.Version;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
@@ -131,7 +131,7 @@ public final class ServerUtil {
   }
 
   private static <T extends Remote> Server<T> checkServer(final Server<T> server, final int requestedPort) throws RemoteException {
-    final ServerInfo serverInfo = server.getServerInfo();
+    final Server.ServerInfo serverInfo = server.getServerInfo();
     if (requestedPort != -1 && serverInfo.getServerPort() != requestedPort) {
       LOG.error("Server \"{}\" is serving on port {}, requested port was {}",
             new Object[] {serverInfo.getServerName(), serverInfo.getServerPort(), requestedPort});

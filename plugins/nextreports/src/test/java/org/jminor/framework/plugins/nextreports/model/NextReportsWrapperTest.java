@@ -3,8 +3,8 @@
  */
 package org.jminor.framework.plugins.nextreports.model;
 
-import org.jminor.common.User;
 import org.jminor.common.db.dbms.H2Database;
+import org.jminor.common.model.User;
 import org.jminor.common.model.reports.ReportException;
 import org.jminor.common.model.reports.ReportResult;
 import org.jminor.framework.db.EntityConnectionProvider;
