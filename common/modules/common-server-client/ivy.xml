@@ -18,7 +18,7 @@
   </publications>
 
   <dependencies defaultconf="compile">
-    <dependency org="org.jminor" name="jminor-common-core" rev="0.10.2-SNAPSHOT"/>
+    <dependency org="org.jminor" name="jminor-common-core" rev="${version}"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.3"/>
