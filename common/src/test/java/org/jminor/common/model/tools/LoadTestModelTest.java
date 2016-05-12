@@ -19,16 +19,16 @@ public class LoadTestModelTest {
   private static final LoadTestModel.UsageScenario SCENARIO = new LoadTestModel.AbstractUsageScenario("test") {
     int counter = 0;
     @Override
-    protected void performScenario(final Object application) throws ScenarioException {
+    protected void performScenario(final Object application) throws LoadTest.ScenarioException {
       if (counter++ % 2 == 0) {
-        throw new ScenarioException();
+        throw new LoadTest.ScenarioException();
       }
     }
   };
 
   private static final LoadTestModel.UsageScenario SCENARIO_II = new LoadTestModel.AbstractUsageScenario("testII") {
     @Override
-    protected void performScenario(final Object application) throws ScenarioException {}
+    protected void performScenario(final Object application) throws LoadTest.ScenarioException {}
   };
 
   @Test(expected = IllegalArgumentException.class)

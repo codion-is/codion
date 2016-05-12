@@ -15,12 +15,17 @@
 
   <target name="dist" depends="common.dist"
           description="Builds all distribution jar files in the dist directory">
-    <dist_module module-name="jminor-common-core" includes="org/jminor/common/*.*,
-          org/jminor/common/i18n/**,
-          org/jminor/common/model/Conjunction*,
-          org/jminor/common/model/User*,
-          org/jminor/common/model/Version*"/>
-    <dist_module module-name="jminor-common-model" includes="org/jminor/common/model/**"/>
+    <dist_module module-name="jminor-common-core"
+                 includes="org/jminor/common/*.*,
+                 org/jminor/common/i18n/**,
+                 org/jminor/common/model/Conjunction*,
+                 org/jminor/common/model/User*,
+                 org/jminor/common/model/Version*"/>
+    <dist_module module-name="jminor-common-model"
+                 includes="org/jminor/common/model/**"
+                 excludes="org/jminor/common/model/Conjunction*,
+                 org/jminor/common/model/User*,
+                 org/jminor/common/model/Version*"/>
     <dist_module module-name="jminor-common-db" includes="org/jminor/common/db/**"/>
     <dist_module module-name="jminor-common-server" includes="org/jminor/common/server/**"/>
   </target>

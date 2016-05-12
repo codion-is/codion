@@ -7,7 +7,7 @@
           description="Builds all distribution jar files in the dist directory">
     <dist_module module-name="jminor-swing-common-model"
                  includes="org/jminor/swing/common/model/**,
-                   org/jminor/swing/SwingConfiguration.class"/>
+                 org/jminor/swing/SwingConfiguration.class"/>
     <dist_module module-name="jminor-swing-common-ui"
                  includes="org/jminor/swing/common/ui/**"/>
     <dist_module module-name="jminor-swing-client-model"

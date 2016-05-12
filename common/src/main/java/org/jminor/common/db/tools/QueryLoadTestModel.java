@@ -13,7 +13,6 @@ import org.jminor.common.db.pool.ConnectionPool;
 import org.jminor.common.db.pool.ConnectionPools;
 import org.jminor.common.model.User;
 import org.jminor.common.model.tools.LoadTestModel;
-import org.jminor.common.model.tools.ScenarioException;
 
 import java.sql.Connection;
 import java.sql.PreparedStatement;
