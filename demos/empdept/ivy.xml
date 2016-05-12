@@ -18,7 +18,7 @@
     <dependency org="org.jminor" name="jminor-javafx" rev="${version}"/>
 
     <dependency org="javax.ws.rs" name="jsr311-api" rev="1.1.1" conf="compile->master"/>
-    <dependency org="org.jminor" name="jminor-db-test" rev="${version}" conf="compile->master"/>
+    <dependency org="org.jminor" name="jminor-framework-db-test" rev="${version}" conf="compile->master"/>
     <dependency org="org.apache.httpcomponents" name="httpclient" rev="4.5" conf="compile->master"/>
     <dependency org="org.apache.httpcomponents" name="httpcore" rev="4.4.1" conf="compile->master"/>
 

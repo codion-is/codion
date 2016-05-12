@@ -23,7 +23,7 @@
 
     <dependency org="org.jminor" name="jminor-swing-common-model" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-common-ui" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-db-core" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
 
     <dependency org="net.sf.jasperreports" name="jasperreports" rev="6.0.0" conf="%->master"/>
 
@@ -36,7 +36,7 @@
     <dependency org="commons-beanutils" name="commons-beanutils" rev="1.9.0" conf="runtime->master"/>
     <dependency org="org.eclipse.jdt.core.compiler" name="ecj" rev="4.3.1" conf="runtime->master"/>
 
-    <dependency org="org.jminor" name="jminor-db-local" rev="${version}" conf="test->master"/>
+    <dependency org="org.jminor" name="jminor-framework-db-local" rev="${version}" conf="test->master"/>
     <dependency org="org.jminor" name="jminor-framework-model-unittests" rev="${version}" conf="test->master"/>
     <dependency org="org.jminor" name="jminor-swing-client-model" rev="${version}" conf="test->master"/>
     <dependency org="junit" name="junit" rev="4.12" conf="test->master"/>

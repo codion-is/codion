@@ -25,8 +25,8 @@
     <dependency org="org.jminor" name="jminor-swing-common-ui" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-client-model" rev="${version}"/>
     <dependency org="org.jminor" name="jminor-swing-client-ui" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-db-core" rev="${version}"/>
-    <dependency org="org.jminor" name="jminor-db-local" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-framework-db-core" rev="${version}"/>
+    <dependency org="org.jminor" name="jminor-framework-db-local" rev="${version}"/>
 
     <dependency org="org.slf4j" name="slf4j-api" rev="1.7.7"/>
     <dependency org="ch.qos.logback" name="logback-classic" rev="1.1.3"/>

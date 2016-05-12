@@ -9,7 +9,7 @@
 
   <target name="dist" depends="common.dist"
           description="Builds all distribution jar files in the dist directory">
-    <dist_module module-name="jminor-db-core"
+    <dist_module module-name="jminor-framework-db-core"
                  includes="org/jminor/framework/Configuration.class,
                  org/jminor/framework/db/*,
                  org/jminor/framework/db/criteria/*,
@@ -17,11 +17,11 @@
                  org/jminor/framework/i18n/**"
                  excludes="org/jminor/framework/db/remote*,
                  org/jminor/framework/db/local*,"/>
-    <dist_module module-name="jminor-db-local"
+    <dist_module module-name="jminor-framework-db-local"
                  includes="org/jminor/framework/db/local/*"/>
-    <dist_module module-name="jminor-db-remote"
+    <dist_module module-name="jminor-framework-db-remote"
                  includes="org/jminor/framework/db/remote/*"/>
-    <dist_module module-name="jminor-db-test"
+    <dist_module module-name="jminor-framework-db-test"
                  includes="org/jminor/framework/testing/EntityTestUnit*"/>
     <dist_module module-name="jminor-framework-model"
                  includes="org/jminor/framework/model/*"/>
@@ -35,7 +35,7 @@
                  org/jminor/framework/server/TestLoginProxy*"
                  build.basedir="${build.test}"
                  src.basedir="${src.test}"/>
-    <dist_module module-name="jminor-server"
+    <dist_module module-name="jminor-framework-server"
                  includes="org/jminor/framework/Configuration.class,
                  org/jminor/framework/server/*"/>
 
@@ -43,15 +43,15 @@
   </target>
 
   <target name="publish" depends="dist"
-          description="Publish all project artifacts">
+          description="Publish all module artifacts">
     <fail unless="version">Version information not set</fail>
-    <subant target="publish" buildpath="${basedir}/modules/db-core"/>
-    <subant target="publish" buildpath="${basedir}/modules/db-local"/>
-    <subant target="publish" buildpath="${basedir}/modules/db-remote"/>
-    <subant target="publish" buildpath="${basedir}/modules/db-test"/>
+    <subant target="publish" buildpath="${basedir}/modules/framework-db-core"/>
+    <subant target="publish" buildpath="${basedir}/modules/framework-db-local"/>
+    <subant target="publish" buildpath="${basedir}/modules/framework-db-remote"/>
+    <subant target="publish" buildpath="${basedir}/modules/framework-db-test"/>
     <subant target="publish" buildpath="${basedir}/modules/framework-model"/>
     <subant target="publish" buildpath="${basedir}/modules/framework-model-unittests"/>
-    <subant target="publish" buildpath="${basedir}/modules/server"/>
+    <subant target="publish" buildpath="${basedir}/modules/framework-server"/>
   </target>
 
   <target name="javadoc" depends="build" unless="skip.javadoc"

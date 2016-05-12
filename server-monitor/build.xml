@@ -1,4 +1,4 @@
-<project name="jminor-server-monitor">
+<project name="jminor-framework-server-monitor">
   <property name="project.root" value="../"/>
   <import file="../build-common.xml"/>
 

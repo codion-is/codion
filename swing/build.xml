@@ -24,9 +24,9 @@
               jminor-common-model-${version}.jar,
               jminor-common-db-${version}.jar,
               jminor-framework-model-${version}.jar,
-              jminor-db-core-${version}.jar,
-              jminor-db-local-${version}.jar,
-              jminor-db-remote-${version}.jar"/>
+              jminor-framework-db-core-${version}.jar,
+              jminor-framework-db-local-${version}.jar,
+              jminor-framework-db-remote-${version}.jar"/>
       <zipgroupfileset dir="${dist}" includes="
               jminor-swing-common-model/jminor-swing-common-model.jar,
               jminor-swing-common-ui/jminor-swing-common-ui.jar,
@@ -40,9 +40,9 @@
               jminor-common-model-${version}.jar,
               jminor-common-db-${version}.jar,
               jminor-framework-model-${version}.jar,
-              jminor-db-core-${version}.jar,
-              jminor-db-local-${version}.jar,
-              jminor-db-remote-${version}.jar"/>
+              jminor-framework-db-core-${version}.jar,
+              jminor-framework-db-local-${version}.jar,
+              jminor-framework-db-remote-${version}.jar"/>
       <zipgroupfileset dir="${dist}" includes="
               jminor-swing-common-model/jminor-swing-common-model-sources.jar,
               jminor-swing-common-ui/jminor-swing-common-ui-sources.jar,
@@ -56,9 +56,9 @@
               jminor-common-model-${version}.jar,
               jminor-common-db-${version}.jar,
               jminor-framework-model-${version}.jar,
-              jminor-db-core-${version}.jar,
-              jminor-db-local-${version}.jar,
-              jminor-db-remote-${version}.jar"/>
+              jminor-framework-db-core-${version}.jar,
+              jminor-framework-db-local-${version}.jar,
+              jminor-framework-db-remote-${version}.jar"/>
       <zipgroupfileset dir="${dist}" includes="
               jminor-swing-common-model/jminor-swing-common-model-javadoc.jar,
               jminor-swing-common-ui/jminor-swing-common-ui-javadoc.jar,

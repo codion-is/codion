@@ -45,8 +45,8 @@
     <subant target="create_keystore" buildpath="framework"/>
     <subant target="create_demo_h2db" buildpath="framework"/>
 
-    <copy file="framework/${dist}/jminor-server/jminor-server.jar"
-          tofile="${deploy.server.path}/lib/jminor-server-${version}.jar"/>
+    <copy file="framework/${dist}/jminor-framework-server/jminor-framework-server.jar"
+          tofile="${deploy.server.path}/lib/jminor-framework-server-${version}.jar"/>
     <copy todir="${deploy.server.path}/lib">
       <fileset dir="framework/${lib}/runtime.server"/>
     </copy>
@@ -97,8 +97,8 @@
     <subant target="create_keystore" buildpath="framework"/>
     <subant target="dist" buildpath="server-monitor"/>
 
-    <copy file="server-monitor/${dist}/jminor-server-monitor.jar"
-          tofile="${deploy.server.monitor.path}/lib/jminor-server-monitor-${version}.jar"/>
+    <copy file="server-monitor/${dist}/jminor-framework-server-monitor.jar"
+          tofile="${deploy.server.monitor.path}/lib/jminor-framework-server-monitor-${version}.jar"/>
     <copy todir="${deploy.server.monitor.path}/lib">
       <fileset dir="server-monitor/${lib}/runtime"/>
     </copy>

@@ -4258,3 +4258,5 @@
   Value and Values moved to org.jminor.common
   SerializeException made inner class of Serializer
   TaskScheduler moved to org.jminor.common.model.tools
+0.10.3
+  Framework modules renamed for consistency

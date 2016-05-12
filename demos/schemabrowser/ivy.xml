@@ -18,7 +18,7 @@
 
     <dependency org="com.h2database" name="h2" rev="1.3.176" conf="runtime->master"/>
 
-    <dependency org="org.jminor" name="jminor-db-test" rev="${version}" conf="test->master"/>
+    <dependency org="org.jminor" name="jminor-framework-db-test" rev="${version}" conf="test->master"/>
 
     <dependency org="junit" name="junit" rev="4.12" conf="test->master"/>
     <dependency org="org.hamcrest" name="hamcrest-core" rev="1.3" conf="test->master"/>
