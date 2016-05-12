@@ -12,10 +12,10 @@ import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
 import org.jminor.common.Util;
+import org.jminor.common.Value;
+import org.jminor.common.Values;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.Value;
-import org.jminor.common.model.Values;
 
 import java.sql.Timestamp;
 import java.sql.Types;

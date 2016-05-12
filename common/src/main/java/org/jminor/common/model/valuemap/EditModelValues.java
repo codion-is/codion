@@ -7,7 +7,7 @@ import org.jminor.common.Event;
 import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
-import org.jminor.common.model.Value;
+import org.jminor.common.Value;
 
 /**
  * A factory class for creating values based on {@link ValueMapEditModel}

@@ -3,9 +3,9 @@
  */
 package org.jminor.swing.framework.ui;
 
+import org.jminor.common.Value;
 import org.jminor.common.model.DateUtil;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.Value;
 import org.jminor.common.model.table.ColumnCriteriaModel;
 import org.jminor.framework.domain.Property;
 import org.jminor.framework.model.PropertyCriteriaModel;

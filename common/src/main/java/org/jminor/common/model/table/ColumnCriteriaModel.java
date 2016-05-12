@@ -7,8 +7,8 @@ import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.StateObserver;
+import org.jminor.common.Value;
 import org.jminor.common.model.SearchType;
-import org.jminor.common.model.Value;
 
 import java.text.Format;
 

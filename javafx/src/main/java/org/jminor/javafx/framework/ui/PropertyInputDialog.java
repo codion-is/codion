@@ -3,7 +3,7 @@
  */
 package org.jminor.javafx.framework.ui;
 
-import org.jminor.common.model.Value;
+import org.jminor.common.Value;
 import org.jminor.framework.db.EntityConnectionProvider;
 import org.jminor.framework.domain.Property;
 

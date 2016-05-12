@@ -4,8 +4,8 @@
 package org.jminor.swing.common.ui;
 
 import org.jminor.common.EventObserver;
-import org.jminor.common.model.Value;
-import org.jminor.common.model.Values;
+import org.jminor.common.Value;
+import org.jminor.common.Values;
 import org.jminor.swing.common.ui.textfield.DoubleField;
 import org.jminor.swing.common.ui.textfield.IntField;
 import org.jminor.swing.common.ui.textfield.LongField;

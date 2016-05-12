@@ -4255,3 +4255,4 @@
   Module abomination jminor-common-server-client removed
   ServerInfo and DefaultServerInfo made inner classes of Server and AbstractServer respectively, Conjunction, User and Version moved back to common.model, for backwards compatability
   ScenarioException made inner class of LoadTest
+  Value and Values moved to org.jminor.common

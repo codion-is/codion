@@ -1,13 +1,7 @@
 /*
  * Copyright (c) 2004 - 2016, Björn Darri Sigurðsson. All Rights Reserved.
  */
-package org.jminor.common.model;
-
-import org.jminor.common.Event;
-import org.jminor.common.EventListener;
-import org.jminor.common.EventObserver;
-import org.jminor.common.Events;
-import org.jminor.common.State;
+package org.jminor.common;
 
 import java.lang.reflect.Method;
 
@@ -128,7 +122,8 @@ public final class Values {
         this.getMethod = Util.getGetMethod(valueClass, propertyName, valueOwner);
       }
       catch (final NoSuchMethodException e) {
-        throw new IllegalArgumentException("Bean property get method for " + propertyName + ", type: " + valueClass + " not found in class " + valueOwner.getClass().getName(), e);
+        throw new IllegalArgumentException("Bean property get method for " + propertyName + ", type: " + valueClass +
+                " not found in class " + valueOwner.getClass().getName(), e);
       }
       try {
         this.setMethod = Util.getSetMethod(valueClass, propertyName, valueOwner);

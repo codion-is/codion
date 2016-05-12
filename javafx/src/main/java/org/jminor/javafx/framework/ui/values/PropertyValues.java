@@ -8,8 +8,8 @@ import org.jminor.common.EventInfoListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.Util;
+import org.jminor.common.Value;
 import org.jminor.common.model.Item;
-import org.jminor.common.model.Value;
 import org.jminor.framework.domain.Entity;
 import org.jminor.framework.model.EntityLookupModel;
 

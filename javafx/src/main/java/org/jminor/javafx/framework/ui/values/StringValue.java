@@ -3,7 +3,7 @@
  */
 package org.jminor.javafx.framework.ui.values;
 
-import org.jminor.common.model.Value;
+import org.jminor.common.Value;
 
 import javafx.util.StringConverter;
 

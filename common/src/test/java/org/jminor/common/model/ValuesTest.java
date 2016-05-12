@@ -9,6 +9,8 @@ import org.jminor.common.EventListener;
 import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.States;
+import org.jminor.common.Value;
+import org.jminor.common.Values;
 
 import org.junit.Test;
 

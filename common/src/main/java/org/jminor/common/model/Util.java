@@ -20,7 +20,6 @@ import java.io.InputStream;
 import java.io.ObjectInputStream;
 import java.io.ObjectOutputStream;
 import java.lang.reflect.InvocationHandler;
-import java.lang.reflect.Method;
 import java.lang.reflect.Proxy;
 import java.net.InetAddress;
 import java.net.URI;
@@ -67,7 +66,6 @@ public final class Util extends org.jminor.common.Util {
 
   private static final Logger LOG = LoggerFactory.getLogger(Util.class);
   private static final Random RANDOM = new Random();
-  private static final int K = 1024;
   private static final String SPACE = " ";
   private static final String UNDERSCORE = "_";
   private static final int INPUT_BUFFER_SIZE = 8192;
@@ -227,41 +225,6 @@ public final class Util extends org.jminor.common.Util {
     }
 
     return Long.parseLong(noGrouping);
-  }
-
-  /**
-   * @return the total memory allocated by this JVM in kilobytes
-   */
-  public static long getAllocatedMemory() {
-    return Runtime.getRuntime().totalMemory() / K;
-  }
-
-  /**
-   * @return the free memory available to this JVM in kilobytes
-   */
-  public static long getFreeMemory() {
-    return Runtime.getRuntime().freeMemory() / K;
-  }
-
-  /**
-   * @return the maximum memory available to this JVM in kilobytes
-   */
-  public static long getMaxMemory() {
-    return Runtime.getRuntime().maxMemory() / K;
-  }
-
-  /**
-   * @return the memory used by this JVM in kilobytes
-   */
-  public static long getUsedMemory() {
-    return getAllocatedMemory() - getFreeMemory();
-  }
-
-  /**
-   * @return a String indicating the memory usage of this JVM
-   */
-  public static String getMemoryUsageString() {
-    return getUsedMemory() + " KB";
   }
 
   /**
@@ -735,78 +698,6 @@ public final class Util extends org.jminor.common.Util {
     }
 
     return exception;
-  }
-
-  /**
-   * @param valueType the class of the value for the given bean property
-   * @param property the name of the bean property for which to retrieve the set method
-   * @param valueOwner a bean instance
-   * @return the method used to set the value of the linked property
-   * @throws NoSuchMethodException if the method does not exist in the owner class
-   */
-  public static Method getSetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
-    rejectNullValue(valueOwner, "valueOwner");
-    return getSetMethod(valueType, property, valueOwner.getClass());
-  }
-
-  /**
-   * @param valueType the class of the value for the given bean property
-   * @param property the name of the bean property for which to retrieve the set method
-   * @param ownerClass the bean class
-   * @return the method used to set the value of the linked property
-   * @throws NoSuchMethodException if the method does not exist in the owner class
-   */
-  public static Method getSetMethod(final Class valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
-    rejectNullValue(valueType, "valueType");
-    rejectNullValue(property, "property");
-    rejectNullValue(ownerClass, "ownerClass");
-    if (property.length() == 0) {
-      throw new IllegalArgumentException("Property must be specified");
-    }
-    final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
-    return ownerClass.getMethod("set" + propertyName, valueType);
-  }
-
-  /**
-   * @param valueType the class of the value for the given bean property
-   * @param property the name of the bean property for which to retrieve the get method
-   * @param valueOwner a bean instance
-   * @return the method used to get the value of the linked property
-   * @throws NoSuchMethodException if the method does not exist in the owner class
-   */
-  public static Method getGetMethod(final Class valueType, final String property, final Object valueOwner) throws NoSuchMethodException {
-    rejectNullValue(valueOwner, "valueOwner");
-    return getGetMethod(valueType, property, valueOwner.getClass());
-  }
-
-  /**
-   * @param valueType the class of the value for the given bean property
-   * @param property the name of the bean property for which to retrieve the get method
-   * @param ownerClass the bean class
-   * @return the method used to get the value of the linked property
-   * @throws NoSuchMethodException if the method does not exist in the owner class
-   */
-  public static Method getGetMethod(final Class valueType, final String property, final Class<?> ownerClass) throws NoSuchMethodException {
-    rejectNullValue(valueType, "valueType");
-    rejectNullValue(property, "property");
-    rejectNullValue(ownerClass, "ownerClass");
-    if (property.length() == 0) {
-      throw new IllegalArgumentException("Property must be specified");
-    }
-    final String propertyName = Character.toUpperCase(property.charAt(0)) + property.substring(1);
-    if (valueType.equals(boolean.class) || valueType.equals(Boolean.class)) {
-      try {
-        return ownerClass.getMethod("is" + propertyName);
-      }
-      catch (final NoSuchMethodException ignored) {/*ignored*/}
-      try {
-        return ownerClass.getMethod(propertyName.substring(0, 1).toLowerCase()
-                + propertyName.substring(1, propertyName.length()));
-      }
-      catch (final NoSuchMethodException ignored) {/*ignored*/}
-    }
-
-    return ownerClass.getMethod("get" + propertyName);
   }
 
   /**

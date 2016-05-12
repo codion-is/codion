@@ -8,8 +8,8 @@ import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
-import org.jminor.common.model.Value;
-import org.jminor.common.model.Values;
+import org.jminor.common.Value;
+import org.jminor.common.Values;
 import org.jminor.swing.common.model.checkbox.TristateButtonModel;
 
 import javax.swing.ButtonModel;
