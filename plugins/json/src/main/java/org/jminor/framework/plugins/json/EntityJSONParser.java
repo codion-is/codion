@@ -3,7 +3,6 @@
  */
 package org.jminor.framework.plugins.json;
 
-import org.jminor.common.model.SerializeException;
 import org.jminor.common.model.Serializer;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.formats.DateFormats;

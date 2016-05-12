@@ -359,9 +359,9 @@ public final class Util extends org.jminor.common.Util {
    * Deserializes a list of Objects from the given file
    * @param file the file
    * @return deserialized objects
-   * @throws SerializeException in case of an exception
+   * @throws Serializer.SerializeException in case of an exception
    */
-  public static List<Object> deserializeFromFile(final File file) throws SerializeException {
+  public static List<Object> deserializeFromFile(final File file) throws Serializer.SerializeException {
     final List<Object> objects = new ArrayList<>();
     try (final ObjectInputStream inputStream = new ObjectInputStream(new FileInputStream(file))) {
       while (true) {
@@ -370,7 +370,7 @@ public final class Util extends org.jminor.common.Util {
     }
     catch (final EOFException ignored) {/*ignored*/}
     catch (final Exception e) {
-      throw new SerializeException(e.getMessage(), e);
+      throw new Serializer.SerializeException(e.getMessage(), e);
     }
 
     return objects;
@@ -380,16 +380,16 @@ public final class Util extends org.jminor.common.Util {
    * Srializes a Collection of Objects to a given file
    * @param objects the objects to serialize
    * @param file the file
-   * @throws SerializeException in case of an exception
+   * @throws Serializer.SerializeException in case of an exception
    */
-  public static void serializeToFile(final Collection objects, final File file) throws SerializeException {
+  public static void serializeToFile(final Collection objects, final File file) throws Serializer.SerializeException {
     try (final ObjectOutputStream outputStream = new ObjectOutputStream(new FileOutputStream(file))) {
       for (final Object object : objects) {
         outputStream.writeObject(object);
       }
     }
     catch (final IOException e) {
-      throw new SerializeException(e.getMessage(), e);
+      throw new Serializer.SerializeException(e.getMessage(), e);
     }
   }
 

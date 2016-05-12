@@ -14,7 +14,7 @@ import org.jminor.common.db.exception.DatabaseException;
 import org.jminor.common.i18n.Messages;
 import org.jminor.common.model.CancelException;
 import org.jminor.common.model.Conjunction;
-import org.jminor.common.model.SerializeException;
+import org.jminor.common.model.Serializer;
 import org.jminor.common.model.Util;
 import org.jminor.common.model.valuemap.exception.ValidationException;
 import org.jminor.framework.Configuration;
@@ -609,7 +609,7 @@ public class EntityTablePanel extends FilteredTablePanel<Entity, Property> {
       Util.writeFile(EntityUtil.getEntitySerializer().serialize(selected), UiUtil.selectFileToSave(this, null, null));
       JOptionPane.showMessageDialog(this, FrameworkMessages.get(FrameworkMessages.EXPORT_SELECTED_DONE));
     }
-    catch (IOException | CancelException | SerializeException e) {
+    catch (IOException | CancelException | Serializer.SerializeException e) {
       handleException(e);
     }
   }
