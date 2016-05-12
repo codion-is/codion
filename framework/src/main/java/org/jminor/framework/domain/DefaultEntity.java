@@ -665,7 +665,7 @@ final class DefaultEntity extends DefaultValueMap<String, Object> implements Ent
   }
 
   /**
-   * Sets the property value, propagates foreign key values and rounds floating point values
+   * Sets the property value and propagates foreign key values
    * @param property the property
    * @param value the value
    * @param validateType if true then type validation is performed
