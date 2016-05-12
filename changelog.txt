@@ -4260,3 +4260,4 @@
   TaskScheduler moved to org.jminor.common.model.tools
 0.10.3
   Framework modules renamed for consistency
+  AbstractServer.DefaultLoginProxy and DefaultConnectionValidator inner classes added

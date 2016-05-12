@@ -32,27 +32,9 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
 
   private final Map<UUID, ClientConnectionInfo<T>> connections = Collections.synchronizedMap(new HashMap<UUID, ClientConnectionInfo<T>>());
   private final Map<String, LoginProxy> loginProxies = Collections.synchronizedMap(new HashMap<String, LoginProxy>());
-  private final LoginProxy defaultLoginProxy = new LoginProxy() {
-    @Override
-    public String getClientTypeID() {
-      return "defaultClient";
-    }
-    @Override
-    public ClientInfo doLogin(final ClientInfo clientInfo) {
-      return clientInfo;
-    }
-    @Override
-    public void doLogout(final ClientInfo clientInfo) {/*Not required*/}
-    @Override
-    public void close() {/*Not required*/}
-  };
+  private final LoginProxy defaultLoginProxy = new DefaultLoginProxy();
   private final Map<String, ConnectionValidator> connectionValidators = Collections.synchronizedMap(new HashMap<String, ConnectionValidator>());
-  private final ConnectionValidator defaultConnectionValidator = new ConnectionValidator() {
-    @Override
-    public String getClientTypeID() {return "defaultClient";}
-    @Override
-    public void validate(final ConnectionInfo connectionInfo) throws ServerException.ConnectionValidationException {/*Not required*/}
-  };
+  private final ConnectionValidator defaultConnectionValidator = new DefaultConnectionValidator();
 
   private final ServerInfo serverInfo;
   private volatile int connectionLimit = -1;
@@ -384,5 +366,33 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
     public long getStartTime() {
       return serverStartupTime;
     }
+  }
+
+  private static final class DefaultLoginProxy implements LoginProxy {
+    @Override
+    public String getClientTypeID() {
+      return "defaultClient";
+    }
+
+    @Override
+    public ClientInfo doLogin(final ClientInfo clientInfo) {
+      return clientInfo;
+    }
+
+    @Override
+    public void doLogout(final ClientInfo clientInfo) {/*No logout action required*/}
+
+    @Override
+    public void close() {/*Not required*/}
+  }
+
+  private static final class DefaultConnectionValidator implements ConnectionValidator {
+    @Override
+    public String getClientTypeID() {
+      return "defaultClient";
+    }
+
+    @Override
+    public void validate(final ConnectionInfo connectionInfo) throws ServerException.ConnectionValidationException {/*No validation*/}
   }
 }
