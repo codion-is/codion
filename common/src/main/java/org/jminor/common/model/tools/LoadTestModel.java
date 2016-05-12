@@ -8,7 +8,6 @@ import org.jminor.common.EventListener;
 import org.jminor.common.EventObserver;
 import org.jminor.common.Events;
 import org.jminor.common.Util;
-import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
 
 import org.jfree.data.xy.XYSeries;

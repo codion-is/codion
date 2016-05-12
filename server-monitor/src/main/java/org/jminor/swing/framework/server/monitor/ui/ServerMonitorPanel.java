@@ -4,7 +4,7 @@
 package org.jminor.swing.framework.server.monitor.ui;
 
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.TaskScheduler;
+import org.jminor.common.model.tools.TaskScheduler;
 import org.jminor.swing.common.ui.UiUtil;
 import org.jminor.swing.common.ui.ValueLinks;
 import org.jminor.swing.common.ui.control.ControlProvider;

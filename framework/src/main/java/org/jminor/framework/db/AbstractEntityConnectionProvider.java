@@ -6,9 +6,9 @@ package org.jminor.framework.db;
 import org.jminor.common.State;
 import org.jminor.common.StateObserver;
 import org.jminor.common.States;
-import org.jminor.common.model.TaskScheduler;
 import org.jminor.common.model.User;
 import org.jminor.common.model.Util;
+import org.jminor.common.model.tools.TaskScheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;

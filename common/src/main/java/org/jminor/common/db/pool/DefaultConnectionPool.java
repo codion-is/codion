@@ -6,7 +6,7 @@ package org.jminor.common.db.pool;
 import org.jminor.common.db.DatabaseConnection;
 import org.jminor.common.db.DatabaseConnectionProvider;
 import org.jminor.common.db.exception.DatabaseException;
-import org.jminor.common.model.TaskScheduler;
+import org.jminor.common.model.tools.TaskScheduler;
 
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
