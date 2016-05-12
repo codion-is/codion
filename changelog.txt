@@ -4261,3 +4261,5 @@
 0.10.3
   Framework modules renamed for consistency
   AbstractServer.DefaultLoginProxy and DefaultConnectionValidator inner classes added
+  AbstractServer, IllegalArgumentException replaced with IllegalStateException in a couple of places
+  AbstractServer, bug fixed, added user authentication when retrieving an existing connection

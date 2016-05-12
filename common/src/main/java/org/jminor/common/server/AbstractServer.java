@@ -4,6 +4,7 @@
 package org.jminor.common.server;
 
 import org.jminor.common.Util;
+import org.jminor.common.model.User;
 import org.jminor.common.model.Version;
 
 import org.slf4j.Logger;
@@ -139,17 +140,21 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
   @Override
   public final T connect(final ConnectionInfo connectionInfo) throws RemoteException, ServerException.ServerFullException,
           ServerException.LoginException, ServerException.ConnectionValidationException {
-    Util.rejectNullValue(connectionInfo, "connectionInfo");
-
     if (shuttingDown) {
       throw ServerException.loginException("Server is shutting down");
     }
+    Util.rejectNullValue(connectionInfo, "connectionInfo");
+    Util.rejectNullValue(connectionInfo.getUser(), "user");
+    Util.rejectNullValue(connectionInfo.getClientID(), "clientID");
+    Util.rejectNullValue(connectionInfo.getClientTypeID(), "clientTypeID");
+
     getConnectionValidator(connectionInfo.getClientTypeID()).validate(connectionInfo);
     final LoginProxy loginProxy = getLoginProxy(connectionInfo.getClientTypeID());
     LOG.debug("Connecting client {}, loginProxy {}", connectionInfo, loginProxy);
     synchronized (connections) {
       ClientConnectionInfo<T> clientConnectionInfo = connections.get(connectionInfo.getClientID());
       if (clientConnectionInfo != null) {
+        validateUserCredentials(connectionInfo.getUser(), clientConnectionInfo.getClientInfo().getUser());
         LOG.debug("Active connection exists {}", connectionInfo);
         return clientConnectionInfo.getConnection();
       }
@@ -191,7 +196,7 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
    * the login proxy is removed.
    * @param clientTypeID the client type ID with which to associate the given login proxy
    * @param loginProxy the login proxy
-   * @throws IllegalArgumentException in case the login proxy has already been set for the given client type
+   * @throws IllegalStateException in case the login proxy has already been set for the given client type
    */
   public final void setLoginProxy(final String clientTypeID, final LoginProxy loginProxy) {
     synchronized (loginProxies) {
@@ -200,7 +205,7 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
       }
       else {
         if (loginProxies.containsKey(clientTypeID)) {
-          throw new IllegalArgumentException("Login proxy has already been set for: " + clientTypeID);
+          throw new IllegalStateException("Login proxy has already been set for: " + clientTypeID);
         }
         loginProxies.put(clientTypeID, loginProxy);
       }
@@ -212,7 +217,7 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
    * the connection validator is removed.
    * @param clientTypeID the client type ID with which to associate the given connection validator
    * @param connectionValidator the connection validator
-   * @throws IllegalArgumentException in case the connection validator has already been set for the given client type
+   * @throws IllegalStateException in case the connection validator has already been set for the given client type
    */
   public final void setConnectionValidator(final String clientTypeID, final ConnectionValidator connectionValidator) {
     synchronized (connectionValidators) {
@@ -221,7 +226,7 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
       }
       else {
         if (connectionValidators.containsKey(clientTypeID)) {
-          throw new IllegalArgumentException("Connection validator has already been set for: " + clientTypeID);
+          throw new IllegalStateException("Connection validator has already been set for: " + clientTypeID);
         }
         connectionValidators.put(clientTypeID, connectionValidator);
       }
@@ -281,6 +286,13 @@ public abstract class AbstractServer<T extends Remote> extends UnicastRemoteObje
    * @throws RemoteException in case of an exception
    */
   protected abstract void doDisconnect(final T connection) throws RemoteException;
+
+  private void validateUserCredentials(final User loginUser, final User currentConnectionUser) throws ServerException.AuthenticationException {
+    if (!Util.equal(loginUser.getUsername(), currentConnectionUser.getUsername())
+            || !Util.equal(loginUser.getPassword(), currentConnectionUser.getPassword())) {
+      throw ServerException.authenticationException("Authentication failed");
+    }
+  }
 
   private boolean maximumNumberOfConnectionReached() {
     return connectionLimit > -1 && getConnectionCount() >= connectionLimit;

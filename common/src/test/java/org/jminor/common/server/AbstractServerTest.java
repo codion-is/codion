@@ -18,8 +18,7 @@ import static org.junit.Assert.*;
 public class AbstractServerTest {
 
   @Test
-  public void testConnectionCount() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException,
-          ServerException.ConnectionValidationException {
+  public void testConnectionCount() throws RemoteException, ServerException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
@@ -44,8 +43,7 @@ public class AbstractServerTest {
   }
 
   @Test(expected = ServerException.ServerFullException.class)
-  public void testConnectionLimitReached() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException,
-          ServerException.ConnectionValidationException {
+  public void testConnectionLimitReached() throws RemoteException, ServerException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ConnectionInfo clientInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
@@ -57,8 +55,7 @@ public class AbstractServerTest {
   }
 
   @Test
-  public void testConnect() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException,
-          ServerException.ConnectionValidationException {
+  public void testConnect() throws RemoteException, ServerException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
@@ -85,8 +82,7 @@ public class AbstractServerTest {
   }
 
   @Test
-  public void testLoginProxy() throws RemoteException, ServerException.ServerFullException, ServerException.LoginException,
-          ServerException.ConnectionValidationException {
+  public void testLoginProxy() throws RemoteException, ServerException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
@@ -131,8 +127,7 @@ public class AbstractServerTest {
   }
 
   @Test
-  public void testConnectionValidator() throws RemoteException, ServerException.ConnectionValidationException, ServerException.LoginException,
-          ServerException.ServerFullException {
+  public void testConnectionValidator() throws RemoteException, ServerException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     final String clientTypeID = "clientTypeID";
     final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, UUID.randomUUID(), clientTypeID);
@@ -172,7 +167,39 @@ public class AbstractServerTest {
     assertEquals(connectionInfo.getClientID(), connection.getClientInfo().getClientID());
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = ServerException.AuthenticationException.class)
+  public void connectionTheftWrongPassword() throws RemoteException, ServerException {
+    final TestServer server = new TestServer(1234, "remoteServerTestServer");
+    final String clientTypeID = "clientTypeID";
+
+    final UUID connectionID = UUID.randomUUID();
+    final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, connectionID, clientTypeID);
+    final ConnectionInfo connectionInfo2 = ClientUtil.connectionInfo(
+            new User(User.UNIT_TEST_USER.getUsername(), "test"), connectionID, clientTypeID);
+
+    final ServerTest serverTest = server.connect(connectionInfo);
+
+    //try to steal the connection using the same connectionID, but incorrect user credentials
+    server.connect(connectionInfo2);
+  }
+
+  @Test(expected = ServerException.AuthenticationException.class)
+  public void connectionTheftWrongUsername() throws RemoteException, ServerException {
+    final TestServer server = new TestServer(1234, "remoteServerTestServer");
+    final String clientTypeID = "clientTypeID";
+
+    final UUID connectionID = UUID.randomUUID();
+    final ConnectionInfo connectionInfo = ClientUtil.connectionInfo(User.UNIT_TEST_USER, connectionID, clientTypeID);
+    final ConnectionInfo connectionInfo2 = ClientUtil.connectionInfo(
+            new User("test", User.UNIT_TEST_USER.getPassword()), connectionID, clientTypeID);
+
+    final ServerTest serverTest = server.connect(connectionInfo);
+
+    //try to steal the connection using the same connectionID, but incorrect user credentials
+    server.connect(connectionInfo2);
+  }
+
+  @Test(expected = IllegalStateException.class)
   public void setLoginProxyAgain() throws RemoteException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     try {
@@ -198,7 +225,7 @@ public class AbstractServerTest {
     }
   }
 
-  @Test(expected = IllegalArgumentException.class)
+  @Test(expected = IllegalStateException.class)
   public void setClientValidatorAgain() throws RemoteException {
     final TestServer server = new TestServer(1234, "remoteServerTestServer");
     try {
