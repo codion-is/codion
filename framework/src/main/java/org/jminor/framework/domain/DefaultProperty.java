@@ -31,8 +31,8 @@ import java.util.Map;
  */
 class DefaultProperty implements Property {
 
-  private static final ValueConverter DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
-  private static final ValueConverter DATE_VALUE_CONVERTER = new DateValueConverter();
+  private static final ValueConverter<Object, Object> DEFAULT_VALUE_CONVERTER = new DefaultValueConverter();
+  private static final ValueConverter<java.util.Date, java.sql.Date> DATE_VALUE_CONVERTER = new DateValueConverter();
 
   /**
    * The ID of the entity this property is associated with
@@ -548,10 +548,10 @@ class DefaultProperty implements Property {
   static class DefaultColumnProperty extends DefaultProperty implements ColumnProperty {
 
     private final int columnType;
-    private final ValueFetcher valueFetcher;
-    private final ResultPacker resultPacker;
+    private final ValueFetcher<Object> valueFetcher;
+    private final ResultPacker<Object> resultPacker;
     private String columnName;
-    private ValueConverter valueConverter;
+    private ValueConverter<Object, Object> valueConverter;
     private int selectIndex = -1;
     private int primaryKeyIndex = -1;
     private boolean columnHasDefaultValue = false;
@@ -745,14 +745,14 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public final ColumnProperty setValueConverter(final ValueConverter valueConverter) {
+    public final ColumnProperty setValueConverter(final ValueConverter<Object, Object> valueConverter) {
       Util.rejectNullValue(valueConverter, "valueConverter");
       this.valueConverter = valueConverter;
       return this;
     }
 
     @Override
-    public final ResultPacker getResultPacker() {
+    public final ResultPacker<Object> getResultPacker() {
       return resultPacker;
     }
 
@@ -764,7 +764,7 @@ class DefaultProperty implements Property {
       return DEFAULT_VALUE_CONVERTER;
     }
 
-    private static ValueFetcher initializeValueFetcher(final DefaultColumnProperty property) {
+    private static ValueFetcher<Object> initializeValueFetcher(final DefaultColumnProperty property) {
       if (property instanceof MirrorProperty) {
         return null;
       }
@@ -1239,7 +1239,7 @@ class DefaultProperty implements Property {
     }
   }
 
-  static final class BooleanValueConverter implements ValueConverter {
+  static final class BooleanValueConverter implements ValueConverter<Boolean, Object> {
 
     private final Object trueValue;
     private final Object falseValue;
@@ -1267,7 +1267,7 @@ class DefaultProperty implements Property {
     }
 
     @Override
-    public Object toColumnValue(final Object value) {
+    public Object toColumnValue(final Boolean value) {
       if (value == null) {
         return null;
       }
@@ -1280,7 +1280,7 @@ class DefaultProperty implements Property {
     }
   }
 
-  private static final class DefaultValueConverter implements ValueConverter {
+  private static final class DefaultValueConverter implements ValueConverter<Object, Object> {
     @Override
     public Object toColumnValue(final Object value) {
       return value;
@@ -1292,22 +1292,26 @@ class DefaultProperty implements Property {
     }
   }
 
-  private static final class DateValueConverter implements ValueConverter {
+  private static final class DateValueConverter implements ValueConverter<java.util.Date, java.sql.Date> {
     @Override
-    public Object toColumnValue(final Object value) {
-      if (value != null && !(value instanceof java.sql.Date)) {
-        return new java.sql.Date(((java.util.Date) value).getTime());
+    public java.sql.Date toColumnValue(final java.util.Date value) {
+      if (value == null) {
+        return null;
       }
-      return value;
+      else if (value instanceof java.sql.Date) {
+        return (java.sql.Date) value;
+      }
+
+      return new java.sql.Date(value.getTime());
     }
 
     @Override
-    public Object fromColumnValue(final Object columnValue) {
+    public java.util.Date fromColumnValue(final java.sql.Date columnValue) {
       return columnValue;
     }
   }
 
-  private static final class PropertyResultPacker implements ResultPacker {
+  private static final class PropertyResultPacker implements ResultPacker<Object> {
     private final Property.ColumnProperty property;
 
     private PropertyResultPacker(final Property.ColumnProperty property) {

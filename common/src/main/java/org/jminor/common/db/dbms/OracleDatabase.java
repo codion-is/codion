@@ -55,7 +55,7 @@ public final class OracleDatabase extends AbstractDatabase {
    * Instantiates a new OracleDatabase.
    */
   public OracleDatabase() {
-    super(ORACLE, DRIVER_CLASS_NAME);
+    super(Type.ORACLE, DRIVER_CLASS_NAME);
   }
 
   /**
@@ -65,7 +65,7 @@ public final class OracleDatabase extends AbstractDatabase {
    * @param sid the service identifier
    */
   public OracleDatabase(final String host, final String port, final String sid) {
-    super(ORACLE, DRIVER_CLASS_NAME, host, port, sid);
+    super(Type.ORACLE, DRIVER_CLASS_NAME, host, port, sid);
   }
 
   /** {@inheritDoc} */

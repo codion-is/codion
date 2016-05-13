@@ -14,7 +14,7 @@ public final class AbstractDatabaseTest {
 
   private static final String DRIVER_CLASS = "some.driver.Class";
 
-  private final AbstractDatabase database = new AbstractDatabase("h2", DRIVER_CLASS) {
+  private final AbstractDatabase database = new AbstractDatabase(Database.Type.H2, DRIVER_CLASS) {
     @Override
     public String getAutoIncrementValueSQL(final String idSource) {
       return null;

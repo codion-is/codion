@@ -26,7 +26,7 @@ public class DatabasesTest {
     final String embeddedInMemory = System.getProperty(Database.DATABASE_EMBEDDED_IN_MEMORY, "false");
     final String initScript = System.getProperty(H2Database.DATABASE_INIT_SCRIPT);
     try {
-      System.setProperty(Database.DATABASE_TYPE, type == null ? Database.H2 : type);
+      System.setProperty(Database.DATABASE_TYPE, type == null ? Database.Type.H2.toString() : type);
       System.setProperty(Database.DATABASE_HOST, host == null ? "h2db/h2" : host);
       System.setProperty(Database.DATABASE_PORT, port);
       System.setProperty(Database.DATABASE_SID, sid);
@@ -51,43 +51,43 @@ public class DatabasesTest {
     final String embeddedInMemory = System.getProperty(Database.DATABASE_EMBEDDED_IN_MEMORY, "false");
     final String initScript = System.getProperty(H2Database.DATABASE_INIT_SCRIPT);
     try {
-      System.setProperty(Database.DATABASE_TYPE, Database.DERBY);
+      System.setProperty(Database.DATABASE_TYPE, Database.Type.DERBY.toString());
       System.setProperty(Database.DATABASE_HOST, "host");
       System.setProperty(Database.DATABASE_EMBEDDED, "true");
       Database database = Databases.createInstance();
       assertTrue(database instanceof DerbyDatabase);
 
-      System.setProperty(Database.DATABASE_TYPE, Database.H2);
+      System.setProperty(Database.DATABASE_TYPE, Database.Type.H2.toString());
       System.setProperty(Database.DATABASE_HOST, "host");
       System.setProperty(Database.DATABASE_EMBEDDED, "true");
       database = Databases.createInstance();
       assertTrue(database instanceof H2Database);
 
-      System.setProperty(Database.DATABASE_TYPE, Database.HSQL);
+      System.setProperty(Database.DATABASE_TYPE, Database.Type.HSQL.toString());
       System.setProperty(Database.DATABASE_HOST, "host");
       System.setProperty(Database.DATABASE_EMBEDDED, "true");
       database = Databases.createInstance();
       assertTrue(database instanceof HSQLDatabase);
 
-      System.setProperty(Database.DATABASE_TYPE, Database.MYSQL);
+      System.setProperty(Database.DATABASE_TYPE, Database.Type.MYSQL.toString());
       System.setProperty(Database.DATABASE_PORT, "3306");
       System.setProperty(Database.DATABASE_SID, "sid");
       database = Databases.createInstance();
       assertTrue(database instanceof MySQLDatabase);
 
-      System.setProperty(Database.DATABASE_TYPE, Database.ORACLE);
+      System.setProperty(Database.DATABASE_TYPE, Database.Type.ORACLE.toString());
       System.setProperty(Database.DATABASE_PORT, "1521");
       System.setProperty(Database.DATABASE_SID, "sid");
       database = Databases.createInstance();
       assertTrue(database instanceof OracleDatabase);
 
-      System.setProperty(Database.DATABASE_TYPE, Database.POSTGRESQL);
+      System.setProperty(Database.DATABASE_TYPE, Database.Type.POSTGRESQL.toString());
       System.setProperty(Database.DATABASE_PORT, "5435");
       System.setProperty(Database.DATABASE_SID, "sid");
       database = Databases.createInstance();
       assertTrue(database instanceof PostgreSQLDatabase);
 
-      System.setProperty(Database.DATABASE_TYPE, Database.SQLSERVER);
+      System.setProperty(Database.DATABASE_TYPE, Database.Type.SQLSERVER.toString());
       System.setProperty(Database.DATABASE_PORT, "7414");
       System.setProperty(Database.DATABASE_SID, "sid");
       database = Databases.createInstance();

@@ -5,9 +5,11 @@ package org.jminor.common.db;
 
 /**
  * Converts to and from SQL values, such as integers being used
- * to represent booleans in a database
+ * to represent booleans in a database.
+ * @param T the type of the value
+ * @param V the type of the underlying column
  */
-public interface ValueConverter {
+public interface ValueConverter<T, C> {
 
   /**
    * Translates the given value into a sql value, usually this is not required
@@ -16,11 +18,11 @@ public interface ValueConverter {
    * @param value the value to translate
    * @return the sql value used to represent the given value
    */
-  Object toColumnValue(final Object value);
+  C toColumnValue(final T value);
 
   /**
    * @param columnValue the SQL value to translate from
    * @return the value of SQL <code>columnValue</code>
    */
-  Object fromColumnValue(final Object columnValue);
+  T fromColumnValue(final C columnValue);
 }

@@ -21,7 +21,7 @@ public final class SQLServerDatabase extends AbstractDatabase {
    * Instantiates a new SQLServerDatabase.
    */
   public SQLServerDatabase() {
-    super(SQLSERVER, DRIVER_CLASS_NAME);
+    super(Type.SQLSERVER, DRIVER_CLASS_NAME);
   }
 
   /**
@@ -31,7 +31,7 @@ public final class SQLServerDatabase extends AbstractDatabase {
    * @param databaseName the database name
    */
   public SQLServerDatabase(final String host, final String port, final String databaseName) {
-    super(SQLSERVER, DRIVER_CLASS_NAME, host, port, databaseName, false);
+    super(Type.SQLSERVER, DRIVER_CLASS_NAME, host, port, databaseName, false);
   }
 
   /** {@inheritDoc} */

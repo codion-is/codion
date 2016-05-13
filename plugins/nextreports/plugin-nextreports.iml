@@ -11,6 +11,7 @@
     <orderEntry type="inheritedJdk" />
     <orderEntry type="sourceFolder" forTests="false" />
     <orderEntry type="module" module-name="jminor-framework" />
+    <orderEntry type="module" module-name="jminor-swing" />
     <orderEntry type="module-library">
       <library>
         <CLASSES>

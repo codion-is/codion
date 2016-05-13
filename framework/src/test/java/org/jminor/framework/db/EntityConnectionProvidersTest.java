@@ -32,7 +32,7 @@ public class EntityConnectionProvidersTest {
     final String embeddedInMemory = System.getProperty(Database.DATABASE_EMBEDDED_IN_MEMORY, "false");
     final String initScript = System.getProperty(H2Database.DATABASE_INIT_SCRIPT);
     try {
-      System.setProperty(Database.DATABASE_TYPE, type == null ? Database.H2 : type);
+      System.setProperty(Database.DATABASE_TYPE, type == null ? Database.Type.H2.toString() : type);
       System.setProperty(Database.DATABASE_HOST, host == null ? "h2db/h2" : host);
       System.setProperty(Database.DATABASE_PORT, port);
       System.setProperty(Database.DATABASE_SID, sid);

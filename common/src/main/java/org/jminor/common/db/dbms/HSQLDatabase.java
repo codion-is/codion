@@ -23,7 +23,7 @@ public final class HSQLDatabase extends AbstractDatabase {
    * Instantiates a new H2Database.
    */
   public HSQLDatabase() {
-    super(HSQL, DRIVER_CLASS_NAME);
+    super(Type.HSQL, DRIVER_CLASS_NAME);
   }
 
   /**
@@ -31,7 +31,7 @@ public final class HSQLDatabase extends AbstractDatabase {
    * @param databaseName the path to the database files
    */
   public HSQLDatabase(final String databaseName) {
-    super(HSQL, DRIVER_CLASS_NAME, databaseName, null, null, true);
+    super(Type.HSQL, DRIVER_CLASS_NAME, databaseName, null, null, true);
   }
 
   /**
@@ -41,7 +41,7 @@ public final class HSQLDatabase extends AbstractDatabase {
    * @param sid the service identifier
    */
   public HSQLDatabase(final String host, final String port, final String sid) {
-    super(HSQL, DRIVER_CLASS_NAME, host, port, sid, false);
+    super(Type.HSQL, DRIVER_CLASS_NAME, host, port, sid, false);
   }
 
   /** {@inheritDoc} */

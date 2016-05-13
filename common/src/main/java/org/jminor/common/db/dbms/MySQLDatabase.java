@@ -21,7 +21,7 @@ public final class MySQLDatabase extends AbstractDatabase {
    * Instantiates a new MySQLDatabase.
    */
   public MySQLDatabase() {
-    super(MYSQL, DRIVER_CLASS_NAME);
+    super(Type.MYSQL, DRIVER_CLASS_NAME);
   }
 
   /**
@@ -31,7 +31,7 @@ public final class MySQLDatabase extends AbstractDatabase {
    * @param dbname the db name
    */
   public MySQLDatabase(final String host, final String port, final String dbname) {
-    super(MYSQL, DRIVER_CLASS_NAME, host, port, dbname);
+    super(Type.MYSQL, DRIVER_CLASS_NAME, host, port, dbname);
   }
 
   /** {@inheritDoc} */

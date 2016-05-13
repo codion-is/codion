@@ -7,9 +7,10 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 
 /**
- * Fetches a single value from a result set
+ * Fetches a single value from a result set.
+ * @param T the type of the value being fetched
  */
-public interface ValueFetcher {
+public interface ValueFetcher<T> {
 
   /**
    * Fetches a single value from a ResultSet
@@ -17,5 +18,5 @@ public interface ValueFetcher {
    * @return a single value fetched from the given ResultSet
    * @throws java.sql.SQLException in case of an exception
    */
-  Object fetchValue(final ResultSet resultSet) throws SQLException;
+  T fetchValue(final ResultSet resultSet) throws SQLException;
 }

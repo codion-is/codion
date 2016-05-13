@@ -31,7 +31,7 @@ public final class DerbyDatabase extends AbstractDatabase {
    * Instantiates a new DerbyDatabase.
    */
   public DerbyDatabase() {
-    super(DERBY, EMBEDDED ? EMBEDDED_DRIVER_CLASS_NAME : DRIVER_CLASS_NAME);
+    super(Type.DERBY, EMBEDDED ? EMBEDDED_DRIVER_CLASS_NAME : DRIVER_CLASS_NAME);
   }
 
   /**
@@ -39,7 +39,7 @@ public final class DerbyDatabase extends AbstractDatabase {
    * @param databaseName the path to the database files
    */
   public DerbyDatabase(final String databaseName) {
-    super(DERBY, EMBEDDED_DRIVER_CLASS_NAME, databaseName, null, null, true);
+    super(Type.DERBY, EMBEDDED_DRIVER_CLASS_NAME, databaseName, null, null, true);
   }
 
   /**
@@ -49,7 +49,7 @@ public final class DerbyDatabase extends AbstractDatabase {
    * @param sid the service identifier
    */
   public DerbyDatabase(final String host, final String port, final String sid) {
-    super(DERBY, DRIVER_CLASS_NAME, host, port, sid, false);
+    super(Type.DERBY, DRIVER_CLASS_NAME, host, port, sid, false);
   }
 
   /** {@inheritDoc} */

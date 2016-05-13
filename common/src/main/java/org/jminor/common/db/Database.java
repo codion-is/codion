@@ -15,15 +15,19 @@ import java.util.Properties;
  */
 public interface Database {
 
+  enum Type {
+    DERBY, H2, HSQL, MYSQL, ORACLE, POSTGRESQL, SQLSERVER, OTHER
+  }
+
   /**
-   * Specifies the database type
-   * @see Database#DERBY
-   * @see Database#HSQL
-   * @see Database#H2
-   * @see Database#MYSQL
-   * @see Database#ORACLE
-   * @see Database#POSTGRESQL
-   * @see Database#SQLSERVER
+   * Specifies the database type by name, this property is case insensitive
+   * @see Database.Type#DERBY
+   * @see Database.Type#HSQL
+   * @see Database.Type#H2
+   * @see Database.Type#MYSQL
+   * @see Database.Type#ORACLE
+   * @see Database.Type#POSTGRESQL
+   * @see Database.Type#SQLSERVER
    */
   String DATABASE_TYPE = "jminor.db.type";
 
@@ -69,48 +73,6 @@ public interface Database {
   String DATABASE_IMPLEMENTATION_CLASS = "jminor.db.implementation";
 
   /**
-   * The constant used to denote the Oracle database type
-   * @see Database#DATABASE_TYPE
-   */
-  String ORACLE = "oracle";
-
-  /**
-   * The constant used to denote the MySQL database type
-   * @see Database#DATABASE_TYPE
-   */
-  String MYSQL = "mysql";
-
-  /**
-   * The constant used to denote the PostgreSQL database type
-   * @see Database#DATABASE_TYPE
-   */
-  String POSTGRESQL = "postgresql";
-
-  /**
-   * The constant used to denote the Microsoft SQL Server database type
-   * @see Database#DATABASE_TYPE
-   */
-  String SQLSERVER = "sqlserver";
-
-  /**
-   * The constant used to denote the Derby database type
-   * @see Database#DATABASE_TYPE
-   */
-  String DERBY = "derby";
-
-  /**
-   * The constant used to denote the H2 database type
-   * @see Database#DATABASE_TYPE
-   */
-  String H2 = "h2";
-
-  /**
-   * The constant used to denote the HSQL database type
-   * @see Database#DATABASE_TYPE
-   */
-  String HSQL = "hsql";
-
-  /**
    * The constant used to denote the username value in the connection properties
    */
   String USER_PROPERTY = "user";
@@ -129,7 +91,7 @@ public interface Database {
   /**
    * @return the name of the dbms in use
    */
-  String getDatabaseType();
+  Type getDatabaseType();
 
   /**
    * @return the database host name

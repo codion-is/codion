@@ -50,31 +50,34 @@ public final class Databases {
    * @return the database type string as specified by the DATABASE_TYPE system property
    * @see Database#DATABASE_TYPE
    */
-  public static String getDatabaseType() {
-    return System.getProperty(Database.DATABASE_TYPE);
-  }
-
-  private static String getDatabaseClassName() {
-    final String dbType = getDatabaseType();
+  public static Database.Type getDatabaseType() {
+    final String dbType = System.getProperty(Database.DATABASE_TYPE);
     if (dbType == null) {
       throw new IllegalArgumentException("Required system property missing: " + Database.DATABASE_TYPE);
     }
 
+    return Database.Type.valueOf(dbType.trim().toUpperCase());
+  }
+
+  private static String getDatabaseClassName() {
+    final Database.Type dbType = getDatabaseType();
     switch (dbType) {
-      case Database.POSTGRESQL:
+      case POSTGRESQL:
         return "org.jminor.common.db.dbms.PostgreSQLDatabase";
-      case Database.MYSQL:
+      case MYSQL:
         return "org.jminor.common.db.dbms.MySQLDatabase";
-      case Database.ORACLE:
+      case ORACLE:
         return "org.jminor.common.db.dbms.OracleDatabase";
-      case Database.SQLSERVER:
+      case SQLSERVER:
         return "org.jminor.common.db.dbms.SQLServerDatabase";
-      case Database.DERBY:
+      case DERBY:
         return "org.jminor.common.db.dbms.DerbyDatabase";
-      case Database.H2:
+      case H2:
         return "org.jminor.common.db.dbms.H2Database";
-      case Database.HSQL:
+      case HSQL:
         return "org.jminor.common.db.dbms.HSQLDatabase";
+      case OTHER:
+        throw new IllegalArgumentException("Database type OTHER does not have an implementation");
       default:
         throw new IllegalArgumentException("Unknown database type: " + dbType);
     }

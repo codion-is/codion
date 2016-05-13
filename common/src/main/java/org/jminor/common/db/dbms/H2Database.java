@@ -60,7 +60,7 @@ public final class H2Database extends AbstractDatabase {
    * @param embeddedInMemory if true then this instance is memory based
    */
   public H2Database(final String databaseName, final boolean embeddedInMemory) {
-    super(H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
+    super(Type.H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
     initializeSharedDatabase(databaseName, System.getProperty(DATABASE_INIT_SCRIPT), embeddedInMemory);
     this.embeddedInMemory = embeddedInMemory;
   }
@@ -72,7 +72,7 @@ public final class H2Database extends AbstractDatabase {
    * @param databaseName the database name
    */
   public H2Database(final String host, final String port, final String databaseName) {
-    super(H2, DRIVER_CLASS_NAME, host, port, databaseName, false);
+    super(Type.H2, DRIVER_CLASS_NAME, host, port, databaseName, false);
     this.embeddedInMemory = false;
   }
 
@@ -94,7 +94,7 @@ public final class H2Database extends AbstractDatabase {
    * @throws RuntimeException in case of an error during initialization
    */
   public H2Database(final String databaseName, final String initScript, final boolean embeddedInMemory) {
-    super(H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
+    super(Type.H2, DRIVER_CLASS_NAME, databaseName, null, null, true);
     initializeDatabase(databaseName, initScript, embeddedInMemory);
     this.embeddedInMemory = embeddedInMemory;
 

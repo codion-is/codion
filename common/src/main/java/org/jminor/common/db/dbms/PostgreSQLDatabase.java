@@ -24,7 +24,7 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
    * Instantiates a new PostgreSQLDatabase.
    */
   public PostgreSQLDatabase() {
-    super(POSTGRESQL, DRIVER_CLASS_NAME);
+    super(Type.POSTGRESQL, DRIVER_CLASS_NAME);
   }
 
   /**
@@ -34,7 +34,7 @@ public final class PostgreSQLDatabase extends AbstractDatabase {
    * @param database the database name
    */
   public PostgreSQLDatabase(final String host, final String port, final String database) {
-    super(POSTGRESQL, DRIVER_CLASS_NAME, host, port, database, false);
+    super(Type.POSTGRESQL, DRIVER_CLASS_NAME, host, port, database, false);
   }
 
   /** {@inheritDoc} */

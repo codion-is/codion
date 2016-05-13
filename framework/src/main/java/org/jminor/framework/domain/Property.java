@@ -428,12 +428,12 @@ public interface Property extends Attribute {
      * @param valueConverter the converter
      * @return this Property instance
      */
-    ColumnProperty setValueConverter(final ValueConverter valueConverter);
+    ColumnProperty setValueConverter(final ValueConverter<Object, Object> valueConverter);
 
     /**
      * @return a ResultPacker responsible for packing this property
      */
-    ResultPacker getResultPacker();
+    ResultPacker<Object> getResultPacker();
   }
 
   /**

@@ -19,7 +19,7 @@ public class SchemaBrowser {
 
   private static final ResourceBundle bundle =
           ResourceBundle.getBundle("org.jminor.framework.demos.schemabrowser.domain.SchemaBrowser",
-                  new Locale(Databases.getDatabaseType()));
+                  new Locale(Databases.getDatabaseType().toString().toLowerCase()));
 
   public static final String T_SCHEMA = "schema";
   public static final String SCHEMA_NAME = bundle.getString("schema_name");

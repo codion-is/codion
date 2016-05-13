@@ -30,7 +30,7 @@ import java.util.Map;
 public final class NextReportsWrapper implements ReportWrapper<NextReportsResult, Void>, Serializable {
 
   static {
-    DialectFactory.addDialect(Database.H2.toUpperCase(), OracleDialect.class.getName());
+    DialectFactory.addDialect(Database.Type.H2.toString().toUpperCase(), OracleDialect.class.getName());
   }
 
   private final String reportPath;
